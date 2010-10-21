@@ -467,6 +467,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnSaveFile(wxCommandEvent& event);
         void OnCloseFile(wxCommandEvent& event);
         void OnOpenFile(wxCommandEvent& event);
+        void OnOpenFolderFiles(wxCommandEvent& event);
         void OnOpenWith(wxCommandEvent& event);
         void OnProperties(wxCommandEvent& event);
         void OnNotes(wxCommandEvent& event);
@@ -489,6 +490,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void DoOpenFile(ProjectFile* pf, const wxString& filename);
         int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
         void RemoveFilesRecursively(wxTreeItemId& sel_id);
+        void OpenFilesRecursively(wxTreeItemId& sel_id);
 
         cbAuiNotebook* m_pNotebook;
         wxTreeCtrl* m_pTree;

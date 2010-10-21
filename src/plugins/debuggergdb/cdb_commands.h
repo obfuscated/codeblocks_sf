@@ -288,9 +288,15 @@ class CdbCmd_Watch : public DebuggerCmd
             if (m_pWatch->format != Undefined)
                 m_pDriver->DebugLog(_T("Watch formats are not supported by this driver"));
             m_Cmd << _T("?? ") << m_pWatch->keyword;
+            m_pWatch->hasActiveCommand = true;
         }
         void ParseOutput(const wxString& output)
         {
+            if(m_pWatch->pendingDelete)
+            {
+                m_pDTree->DeleteWatch(m_pWatch);
+                return;
+            }
 //            struct HWND__ * 0x7ffd8000
 //
 //            struct tagWNDCLASSEXA

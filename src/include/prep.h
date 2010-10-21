@@ -10,15 +10,33 @@
 #include <wx/version.h>
 #endif
 
+#if (  __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 6) ) \
+    && !defined __GXX_EXPERIMENTAL_CXX0X__
+// it is a const object...
+const class nullptr_t
+{
+public:
+    // constructor
+    nullptr_t() {}
+    // convertible to any type of null non-member pointer...
+    template<typename T> operator T* () const{ return (T*)0; }
+    // or any type of null member pointer...
+    template<typename C, typename T> operator T C::* () const { return (T C::*)0; }
+    // support operator overloading (== and !=)
+    template<typename T> bool equals(T const& rhs) const { return rhs == 0; }
+private:
+    // can't take address of nullptr
+    void operator&() const;
+    // can't copyable
+    nullptr_t(const nullptr_t&);
+    const nullptr_t& operator=(const nullptr_t&);
+} nullptr;
 
-
-/* -----------------------------------------------
-   remove this once the compiler supports C++0x*/
-   struct null_pointer_t { template<typename T> operator T*() const { return (T*) 0; }; };
-   extern null_pointer_t nullptr;
-/* ----------------------------------------------- */
-
-
+template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return lhs.equals(rhs); }
+template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return rhs.equals(lhs); }
+template<typename T> inline bool operator!=(const nullptr_t& lhs, T const& rhs) { return !lhs.equals(rhs); }
+template<typename T> inline bool operator!=(T const& lhs, const nullptr_t& rhs) { return !rhs.equals(lhs); }
+#endif
 
 /*  ---------------------------------------------------------------------------------------------------------
     Version<major, minor, revision>::eval

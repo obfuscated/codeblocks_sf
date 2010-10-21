@@ -155,7 +155,7 @@
 				<Option external_deps="base\tinyxml\libtxml.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -nd" />
+				<Option parameters="--debug-log --no-check-associations --multiple-instance -nd" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -197,7 +197,7 @@
 				<Option working_dir="devel" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd" />
+				<Option parameters="--debug-log --no-check-associations --multiple-instance -ns -nd" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -646,6 +646,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\cbproject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbstatusbar.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\cbstyledtextctrl.h">
@@ -1236,6 +1239,12 @@
 		<Unit filename="plugins\codecompletion\codecompletion.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\coderefactoring.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\coderefactoring.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1246,6 +1255,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\expression.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\expression.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\parser\parser.cpp">
@@ -1402,6 +1417,12 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMSVC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC10.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC10.h">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMSVC8.cpp">
@@ -2048,6 +2069,9 @@
 		<Unit filename="sdk\cbproject.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\cbstatusbar.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\cbstyledtextctrl.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2278,9 +2302,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\newfromtemplatedlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\nullptr.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\personalitymanager.cpp">

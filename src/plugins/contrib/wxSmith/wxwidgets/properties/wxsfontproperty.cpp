@@ -86,7 +86,7 @@ wxFont wxsFontData::BuildFont()
         else if ( SysFont == _T("wxSYS_SYSTEM_FONT") )         Base = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
         else if ( SysFont == _T("wxSYS_DEVICE_DEFAULT_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_DEVICE_DEFAULT_FONT);
         else if ( SysFont == _T("wxSYS_DEFAULT_GUI_FONT") )    Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-        
+
         if ( !Base.Ok() )                                      Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 
         if ( HasSize ) Base.SetPointSize(Size);
@@ -297,6 +297,13 @@ bool wxsFontProperty::ShowEditor(wxsPropertyContainer* Object)
     wxsSimpleFontEditorDlg Dlg(0,VALUE);
     return Dlg.ShowModal() == wxID_OK;
 }
+
+wxString wxsFontProperty::GetStr(wxsPropertyContainer* Object)
+{
+    wxString res = VALUE.BuildFont().GetNativeFontInfoUserDesc();
+    return res.IsEmpty()?wxsCustomEditorProperty::GetStr(Object):res;
+}
+
 
 bool wxsFontProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {

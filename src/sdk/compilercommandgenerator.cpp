@@ -55,6 +55,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_CFlags.clear();
     m_LDFlags.clear();
     m_RCFlags.clear();
+    m_LDAdd.clear();
 
     // don't clear the backticks cache - it wouldn't be a cache then :)
 //    m_Backticks.clear();

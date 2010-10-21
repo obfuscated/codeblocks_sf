@@ -15,20 +15,57 @@
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
 
-#define TOKEN_DEBUG_OUTPUT 0
+bool g_EnableDebugTrace = false;
+const wxString g_DebugTraceFile = wxEmptyString;
 
-#if TOKEN_DEBUG_OUTPUT
-    #include <wx/stopwatch.h>
-    #define TRACE(format, args...)\
-    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#define CC_TOKEN_DEBUG_OUTPUT 0
+
+#if CC_TOKEN_DEBUG_OUTPUT == 1
+    #define TRACE(format, args...) \
+        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+    #define TRACE2(format, args...)
+#elif CC_TOKEN_DEBUG_OUTPUT == 2
+    #define TRACE(format, args...)                                              \
+        do                                                                      \
+        {                                                                       \
+            if (g_EnableDebugTrace)                                             \
+                Manager::Get()->GetLogManager()->DebugLog(F(format, ##args));   \
+        }                                                                       \
+        while (false)
+    #define TRACE2(format, args...) \
+        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
 #else
     #define TRACE(format, args...)
+    #define TRACE2(format, args...)
 #endif
+
+ProfileTimer::ProfileMap ProfileTimer::m_ProfileMap;
+
+FileType CCFileTypeOf(const wxString& filename)
+{
+    const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
+    const int pos = file.Find(_T('.'), true);
+    wxString ext;
+    if (pos != wxNOT_FOUND)
+        ext = file.SubString(pos + 1, file.Len());
+
+    if (   ext.IsEmpty()
+        || ext == _T("h")
+        || ext == _T("hpp")
+        || ext == _T("tcc"))
+        return ftHeader;
+    else if (   ext ==_T("cpp")
+             || ext ==_T("c")
+             || ext ==_T("cxx") )
+        return ftSource;
+    else
+        return ftOther;
+}
 
 inline void SaveTokenIdxSetToFile(wxOutputStream* f,const TokenIdxSet& data)
 {
     SaveIntToFile(f, (int)(data.size()));
-    for (TokenIdxSet::iterator it = data.begin(); it != data.end(); it++)
+    for (TokenIdxSet::iterator it = data.begin(); it != data.end(); ++it)
     {
         int num = *it;
         SaveIntToFile(f, num);
@@ -51,7 +88,7 @@ bool LoadTokenIdxSetFromFile(wxInputStream* f,TokenIdxSet* data)
             break;
         }
         int num = 0;
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; ++i)
         {
             if (!LoadIntFromFile(f,&num))
             {
@@ -64,28 +101,7 @@ bool LoadTokenIdxSetFromFile(wxInputStream* f,TokenIdxSet* data)
     return result;
 }
 
-Token::Token()
-    :
-    m_FileIdx(0),
-    m_Line(0),
-    m_ImplFileIdx(0),
-    m_ImplLine(0),
-    m_ImplLineStart(0),
-    m_ImplLineEnd(0),
-    m_Scope(tsUndefined),
-    m_TokenKind(tkUndefined),
-    m_IsOperator(false),
-    m_IsLocal(false),
-    m_IsTemp(false),
-    m_ParentIndex(-1),
-    m_pUserData(0),
-    m_pTree(0),
-    m_Self(-1)
-{
-    m_Ticket = GetTokenTicket();
-}
-
-Token::Token(const wxString& name, unsigned int file, unsigned int line) :
+Token::Token(const wxString& name, unsigned int file, unsigned int line, size_t ticket) :
     m_Name(name),
     m_FileIdx(file),
     m_Line(line),
@@ -99,38 +115,32 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line) :
     m_IsLocal(false),
     m_IsTemp(false),
     m_ParentIndex(-1),
-    m_pUserData(0),
-    m_pTree(0),
-    m_Self(-1)
+    m_UserData(0),
+    m_TokensTree(0),
+    m_Self(-1),
+    m_Ticket(ticket)
 {
     //ctor
-    m_Ticket = GetTokenTicket();
 }
 
 Token::~Token()
 {
     //dtor
-}
-
-unsigned long Token::GetTokenTicket()
-{
-    static wxCriticalSection s_TicketProtection;
-    static unsigned long ticket = 256; // Reserve some space for the class browser
-    wxCriticalSectionLocker lock(s_TicketProtection);
-    return ticket++;
+    m_TemplateMap.clear();
+    m_TemplateType.clear();
 }
 
 wxString Token::GetParentName()
 {
-    wxString parentname = _T("");
-    wxCriticalSectionLocker* lock = 0;
-    if (m_pTree)
-        lock = new wxCriticalSectionLocker(s_MutexProtection);
+    wxString parentname;
+    wxCriticalSectionLocker* locker = 0;
+    if (m_TokensTree)
+        locker = new(std::nothrow) wxCriticalSectionLocker(s_TokensTreeCritical);
     Token* parent = GetParentToken();
     if (parent)
         parentname = parent->m_Name;
-    if (lock)
-        delete lock;
+    if (locker)
+        delete locker;
     return parentname;
 }
 
@@ -155,6 +165,10 @@ wxString Token::DisplayName() const
             result.RemoveLast();
             return result << m_Name << _T(")") <<  m_Args;
         }
+
+        if (!m_TemplateArgument.IsEmpty())
+            result << m_TemplateArgument;
+
         return result << _T(" ") << m_Name;
     }
     else if (m_TokenKind == tkPreprocessor)
@@ -166,10 +180,10 @@ wxString Token::DisplayName() const
 
     // else
     if (!m_Type.IsEmpty())
-        result << m_Type << _T(" ");
+        result << m_Type << m_TemplateArgument << _T(" ");
 
     if (m_TokenKind == tkEnumerator)
-        return     result << GetNamespace() << m_Name << _T("=") << m_Args;
+        return result << GetNamespace() << m_Name << _T("=") << m_Args;
 
     return result << GetNamespace() << m_Name << m_Args;
 }
@@ -177,24 +191,76 @@ wxString Token::DisplayName() const
 Token* Token::GetParentToken()
 {
     Token* the_token = 0;
-    if (!m_pTree)
+    if (!m_TokensTree)
         return 0;
-    the_token = m_pTree->at(m_ParentIndex);
+    the_token = m_TokensTree->at(m_ParentIndex);
     return the_token;
+}
+
+bool Token::IsValidAncestor(const wxString& ancestor)
+{
+    switch (ancestor.Len())
+    {
+    case 3:
+        if (ancestor == _T("int"))
+            return false;
+        break;
+
+    case 4:
+        if (   ancestor == _T("void")
+            || ancestor == _T("bool")
+            || ancestor == _T("long")
+            || ancestor == _T("char") )
+        {
+            return false;
+        }
+        break;
+
+    case 5:
+        if (   ancestor == _T("short")
+            || ancestor == _T("float") )
+        {
+            return false;
+        }
+        break;
+
+    case 6:
+        if (   ancestor == _T("size_t")
+            || ancestor == _T("double") )
+        {
+            return false;
+        }
+        break;
+
+    case 10:
+        if (ancestor == _T("value_type"))
+            return false;
+        break;
+
+    default:
+        if (   ancestor.StartsWith(_T("unsigned"))
+            || ancestor.StartsWith(_T("signed")) )
+        {
+            return false;
+        }
+        break;
+    }
+
+    return true;
 }
 
 wxString Token::GetFilename() const
 {
-    if (!m_pTree)
+    if (!m_TokensTree)
         return wxString(_T(""));
-    return m_pTree->GetFilename(m_FileIdx);
+    return m_TokensTree->GetFilename(m_FileIdx);
 }
 
 wxString Token::GetImplFilename() const
 {
-    if (!m_pTree)
+    if (!m_TokensTree)
         return wxString(_T(""));
-    return m_pTree->GetFilename(m_ImplFileIdx);
+    return m_TokensTree->GetFilename(m_ImplFileIdx);
 }
 
 bool Token::MatchesFiles(const TokenFilesSet& files)
@@ -215,7 +281,7 @@ wxString Token::GetNamespace() const
 {
     const wxString dcolon(_T("::"));
     wxString res;
-    Token* parentToken = m_pTree->at(m_ParentIndex);
+    Token* parentToken = m_TokensTree->at(m_ParentIndex);
     while (parentToken)
     {
         res.Prepend(dcolon);
@@ -225,25 +291,41 @@ wxString Token::GetNamespace() const
     return res;
 }
 
-void Token::AddChild(int child)
+bool Token::AddChild(int childIdx)
 {
-    if (child >= 0)
-        m_Children.insert(child);
+    if (childIdx < 0)
+        return false;
+    m_Children.insert(childIdx);
+    return true;
+}
+
+bool Token::DeleteAllChildren()
+{
+    if (!m_TokensTree)
+        return false;
+    for (;;)
+    {
+        TokenIdxSet::iterator it = m_Children.begin();
+        if (it == m_Children.end())
+            break;
+        m_TokensTree->erase(*it);
+    }
+    return true;
 }
 
 bool Token::InheritsFrom(int idx) const
 {
-    if (idx < 0 || !m_pTree)
+    if (idx < 0 || !m_TokensTree)
         return false;
 
-    Token* token = m_pTree->at(idx);
+    Token* token = m_TokensTree->at(idx);
     if (!token)
         return false;
 
     for (TokenIdxSet::iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
     {
         int idx2 = *it;
-        Token* ancestor = m_pTree->at(idx2);
+        Token* ancestor = m_TokensTree->at(idx2);
 
         if (!ancestor)
             continue;
@@ -413,7 +495,10 @@ bool Token::SerializeOut(wxOutputStream* f)
 // *** TokensTree ***
 
 TokensTree::TokensTree() :
-    m_Modified(false)
+    m_Modified(false),
+    m_StructUnionUnnamedCount(0),
+    m_EnumUnnamedCount(0),
+    m_TokenTicketCount(255) // Reserve some space for the class browser
 {
     m_Tokens.clear();
     m_Tree.clear();
@@ -450,7 +535,7 @@ void TokensTree::clear()
     m_FilesStatus.clear();
 
     size_t i;
-    for (i = 0;i < m_Tokens.size(); i++)
+    for (i = 0;i < m_Tokens.size(); ++i)
     {
         Token* token = m_Tokens[i];
         if (token)
@@ -511,7 +596,7 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
     TokenIdxSet::iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
     int result = -1;
-    for (it = curList.begin(); it != curList.end(); it++)
+    for (it = curList.begin(); it != curList.end(); ++it)
     {
         result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
@@ -521,9 +606,7 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
         if (!curToken)
             continue;
 
-        if (   (   (parent < 0)
-                || (curToken->m_ParentIndex == parent) )
-            && (curToken->m_TokenKind & kindMask) )
+        if ((curToken->m_ParentIndex == parent) && (curToken->m_TokenKind & kindMask))
         {
             return result;
         }
@@ -536,23 +619,23 @@ size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool case
 {
     result.clear();
 
-    set<size_t> lists;
+    std::set<size_t> lists;
     int numitems = m_Tree.FindMatches(s, lists, caseSensitive, is_prefix);
     if (!numitems)
         return 0;
 
     // now the lists contains indexes to all the matching keywords
     // first loop will find all the keywords
-    for (set<size_t>::iterator it = lists.begin(); it != lists.end(); it++)
+    for (std::set<size_t>::iterator it = lists.begin(); it != lists.end(); ++it)
     {
         TokenIdxSet* curset = &(m_Tree.GetItemAtPos(*it));
         // second loop will get all the items mapped by the same keyword,
         // for example, we have ClassA::foo, ClassB::foo ...
         if (curset)
         {
-            for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); it2++)
+            for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
             {
-                Token* token = at(*it);
+                Token* token = at(*it2);
                 if (   token
                     && (   (kindMask == tkUndefined)
                         || (token->m_TokenKind & kindMask) ) )
@@ -654,7 +737,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     // Step 2: Detach token from its ancestors
 
     nodes = (oldToken->m_DirectAncestors);
-    for (it = nodes.begin();it!=nodes.end(); it++)
+    for (it = nodes.begin();it!=nodes.end(); ++it)
     {
         int ancestoridx = *it;
         if (ancestoridx < 0 || (size_t)ancestoridx >= m_Tokens.size())
@@ -669,7 +752,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     // Step 3: Remove children
 
     nodes = (oldToken->m_Children); // Copy the list to avoid interference
-    for (it = nodes.begin();it!=nodes.end(); it++)
+    for (it = nodes.begin();it!=nodes.end(); ++it)
         RemoveToken(*it);
     // m_Children SHOULD be empty by now - but clear anyway.
     oldToken->m_Children.clear();
@@ -677,14 +760,14 @@ void TokensTree::RemoveToken(Token* oldToken)
     // Step 4: Remove descendants
 
     nodes = oldToken->m_Descendants; // Copy the list to avoid interference
-    for (it = nodes.begin();it!=nodes.end(); it++)
+    for (it = nodes.begin();it!=nodes.end(); ++it)
     {
         if (*it == idx) // that should not happen, we can not be our own descendant, but in fact that can happen with boost
         {
             Manager::Get()->GetLogManager()->DebugLog(_T("Break out the loop to remove descendants, to avoid a crash. We can not be our own descendant!"));
             break;
         }
-         RemoveToken(*it);
+        RemoveToken(*it);
     }
     // m_Descendants SHOULD be empty by now - but clear anyway.
     oldToken->m_Descendants.clear();
@@ -742,7 +825,7 @@ int TokensTree::AddTokenToList(Token* newToken, int forceidx)
         }
     }
 
-    newToken->m_pTree = this;
+    newToken->m_TokensTree = this;
     newToken->m_Self = result;
     // Clean up extra string memory
 
@@ -763,7 +846,6 @@ void TokensTree::RemoveTokenFromList(int idx)
     {
         m_Tokens[idx] = 0;
         m_FreeTokens.push_back(idx);
-        m_FilesToBeReparsed.insert(oldToken->m_FileIdx);
         delete oldToken;
     }
 }
@@ -776,29 +858,39 @@ void TokensTree::RemoveFile(const wxString& filename)
 
 void TokensTree::RemoveFile(int fileIndex)
 {
-    if (fileIndex <=0 )
+    if (fileIndex <= 0)
         return;
+
     TokenIdxSet& the_list = m_FilesMap[fileIndex];
-    TokenIdxSet::iterator it;
-    for (it = the_list.begin(); it != the_list.end();it++)
+    for (TokenIdxSet::iterator it = the_list.begin(); it != the_list.end();)
     {
         int idx = *it;
         if (idx < 0 || (size_t)idx > m_Tokens.size())
+        {
+            the_list.erase(it++);
             continue;
-        Token* the_token = at(idx);
+        }
 
+        Token* the_token = at(idx);
         if (!the_token)
+        {
+            the_list.erase(it++);
             continue;
+        }
 
         // do not remove token lightly...
         // only if both its decl filename and impl filename are either empty or match this file
         // if one of those filenames do not match the above criteria
         // just clear the relevant info, leaving the token where it is...
-
         bool match1 = the_token->m_FileIdx     == 0 || (int)the_token->m_FileIdx     == fileIndex;
         bool match2 = the_token->m_ImplFileIdx == 0 || (int)the_token->m_ImplFileIdx == fileIndex;
-        if (match1 && match2)
+        bool match3 = CheckChildRemove(the_token,fileIndex);
+        if (match1 && match2 && match3)
+        {
             RemoveToken(the_token); // safe to remove the token
+            the_list.erase(it++);
+            continue;
+        }
         else
         {
             // do not remove token, just clear the matching info
@@ -813,33 +905,186 @@ void TokensTree::RemoveFile(int fileIndex)
                 the_token->m_ImplLine = 0;
             }
         }
+
+        ++it;
     }
-    the_list.clear();
 }
 
-void TokensTree::FreeTemporaries()
+bool TokensTree::CheckChildRemove(Token * token, int fileIndex)
 {
-    for (int i = m_Tokens.size() -1;i >= 0;i--)
+    TokenIdxSet& nodes = (token->m_Children); // Copy the list to avoid interference
+    TokenIdxSet::iterator it;
+    for (it = nodes.begin(); it != nodes.end(); ++it)
     {
-        Token* token = m_Tokens[i];
-        if (token && token->m_IsTemp)
-            RemoveToken(token);
+        int idx = *it;
+        if (idx < 0 || (size_t)idx > m_Tokens.size())
+            continue;
+
+        Token* the_token = at(idx);
+        if (!the_token)
+            continue;
+
+        bool match1 = the_token->m_FileIdx     == 0 || (int)the_token->m_FileIdx     == fileIndex;
+        bool match2 = the_token->m_ImplFileIdx == 0 || (int)the_token->m_ImplFileIdx == fileIndex;
+        if(match1 && match2)
+            continue;
+        else
+            return false;          // one child is belong to another file
     }
+    return true;                   // no children should be reserved, so we can safely remov the token
+
 }
 
 void TokensTree::RecalcFreeList()
 {
     m_FreeTokens.clear();
-    for (int i = m_Tokens.size() -1;i >= 0;i--)
+    for (int i = m_Tokens.size() - 1; i >= 0; --i)
     {
         if (!m_Tokens[i])
             m_FreeTokens.push_back(i);
     }
 }
 
+void TokensTree::RecalcInheritanceChain(Token* token)
+{
+    if (!token)
+        return;
+    if (!(token->m_TokenKind & (tkClass | tkTypedef | tkEnum | tkNamespace)))
+        return;
+    if (token->m_AncestorsString.IsEmpty())
+        return;
+
+    token->m_DirectAncestors.clear();
+    token->m_Ancestors.clear();
+
+    TRACE(_T("RecalcInheritanceChain() : Token %s, Ancestors %s"), token->m_Name.wx_str(),
+          token->m_AncestorsString.wx_str());
+
+    wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
+    while (tkz.HasMoreTokens())
+    {
+        wxString ancestor = tkz.GetNextToken();
+        if (ancestor.IsEmpty() || ancestor == token->m_Name)
+            continue;
+
+        TRACE(_T("RecalcInheritanceChain() : Ancestor %s"), ancestor.wx_str());
+
+        // ancestors might contain namespaces, e.g. NS::Ancestor
+        if (ancestor.Find(_T("::")) != wxNOT_FOUND)
+        {
+            Token* ancestorToken = 0;
+            wxStringTokenizer anctkz(ancestor, _T("::"));
+            while (anctkz.HasMoreTokens())
+            {
+                wxString ns = anctkz.GetNextToken();
+                if (!ns.IsEmpty())
+                {
+                    int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->GetSelf() : -1,
+                                                  tkNamespace | tkClass | tkTypedef);
+                    ancestorToken = at(ancestorIdx);
+                    if (!ancestorToken) // unresolved
+                        break;
+                }
+            }
+            if (   ancestorToken
+                && ancestorToken != token
+                && (ancestorToken->m_TokenKind == tkClass || ancestorToken->m_TokenKind == tkNamespace) )
+            {
+                TRACE(_T("RecalcInheritanceChain() : Resolved to %s"), ancestorToken->m_Name.wx_str());
+                RecalcInheritanceChain(ancestorToken);
+                token->m_Ancestors.insert(ancestorToken->GetSelf());
+                ancestorToken->m_Descendants.insert(token->GetSelf());
+                TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
+            }
+            else
+                TRACE(_T("RecalcInheritanceChain() :  ! '%s' (unresolved)"), ancestor.wx_str());
+        }
+        else // no namespaces in ancestor
+        {
+            // accept multiple matches for inheritance
+            TokenIdxSet result;
+            FindMatches(ancestor, result, true, false);
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+            {
+                Token* ancestorToken = at(*it);
+                // only classes take part in inheritance
+                if (   ancestorToken
+                    && (ancestorToken != token)
+                    && (   (ancestorToken->m_TokenKind == tkClass)
+                        || (ancestorToken->m_TokenKind == tkEnum)
+                        || (ancestorToken->m_TokenKind == tkTypedef)
+                        || (ancestorToken->m_TokenKind == tkNamespace) ) )
+                {
+                    RecalcInheritanceChain(ancestorToken);
+                    token->m_Ancestors.insert(*it);
+                    ancestorToken->m_Descendants.insert(token->GetSelf());
+                    TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
+                }
+            }
+#if CC_TOKEN_DEBUG_OUTPUT
+            if (result.empty())
+                TRACE(_T("RecalcInheritanceChain() :  ! '%s' (unresolved)"), ancestor.wx_str());
+#endif
+        }
+
+        // Now, we have calc all the direct ancestors
+
+        token->m_DirectAncestors = token->m_Ancestors;
+
+        if (!token->m_IsLocal) // global symbols are linked once
+        {
+            TRACE(_T("RecalcInheritanceChain() : Removing ancestor string from %s"), token->m_Name.wx_str());
+            token->m_AncestorsString.Clear();
+        }
+    }
+
+#if CC_TOKEN_DEBUG_OUTPUT
+    TRACE(_T("RecalcInheritanceChain() : First iteration took : %ld ms"), sw.Time());
+    sw.Start();
+#endif
+
+    // recalc
+    TokenIdxSet result;
+    for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
+        RecalcFullInheritance(*it, result);
+
+    // now, add the resulting set to ancestors set
+    for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+    {
+        Token* ancestor = at(*it);
+        if (ancestor)
+        {
+            token->m_Ancestors.insert(*it);
+            ancestor->m_Descendants.insert(token->GetSelf());
+        }
+    }
+
+#if CC_TOKEN_DEBUG_OUTPUT
+    if (token)
+    {
+        // debug loop
+        TRACE(_T("RecalcInheritanceChain() : Ancestors for %s:"), token->m_Name.wx_str());
+        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
+        {
+            Token* anc_token = at(*it);
+            if (anc_token)
+                TRACE(_T("RecalcInheritanceChain() :  + %s"), anc_token->m_Name.wx_str());
+            else
+                TRACE(_T("RecalcInheritanceChain() :  + NULL?!"));
+        }
+    }
+#endif
+
+#if CC_TOKEN_DEBUG_OUTPUT
+    TRACE(_T("RecalcInheritanceChain() : Second iteration took : %ld ms"), sw.Time());
+#endif
+
+    TRACE(_T("RecalcInheritanceChain() : Full inheritance calculated."));
+}
+
 void TokensTree::RecalcData()
 {
-#if TOKEN_DEBUG_OUTPUT
+#if CC_TOKEN_DEBUG_OUTPUT
     wxStopWatch sw;
 #endif
 
@@ -851,7 +1096,7 @@ void TokensTree::RecalcData()
         if (!token)
             continue;
 
-        if (!(token->m_TokenKind & (tkClass | tkTypedef | tkEnum)))
+        if (!(token->m_TokenKind & (tkClass | tkTypedef | tkEnum | tkNamespace)))
             continue;
         if (token->m_AncestorsString.IsEmpty())
             continue;
@@ -892,13 +1137,14 @@ void TokensTree::RecalcData()
                             break;
                     }
                 }
-                if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)
+                if (ancestorToken
+                    && ancestorToken != token
+                    && (ancestorToken->m_TokenKind == tkClass || ancestorToken->m_TokenKind == tkNamespace) )
                 {
                     TRACE(_T("RecalcData() : Resolved to %s"), ancestorToken->m_Name.wx_str());
                     token->m_Ancestors.insert(ancestorToken->GetSelf());
                     ancestorToken->m_Descendants.insert(i);
                     TRACE(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.wx_str());
-
                 }
                 else
                     TRACE(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.wx_str());
@@ -908,7 +1154,7 @@ void TokensTree::RecalcData()
                 // accept multiple matches for inheritance
                 TokenIdxSet result;
                 FindMatches(ancestor, result, true, false);
-                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); it++)
+                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
                 {
                     Token* ancestorToken = at(*it);
                     // only classes take part in inheritance
@@ -916,14 +1162,15 @@ void TokensTree::RecalcData()
                         && (ancestorToken != token)
                         && (   (ancestorToken->m_TokenKind == tkClass)
                             || (ancestorToken->m_TokenKind == tkEnum)
-                            || (ancestorToken->m_TokenKind == tkTypedef) ) )
+                            || (ancestorToken->m_TokenKind == tkTypedef)
+                            || (ancestorToken->m_TokenKind == tkNamespace) ) )
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);
                         TRACE(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.wx_str());
                     }
                 }
-#if TOKEN_DEBUG_OUTPUT
+#if CC_TOKEN_DEBUG_OUTPUT
                 if (result.empty())
                     TRACE(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.wx_str());
 #endif
@@ -934,12 +1181,12 @@ void TokensTree::RecalcData()
 
         if (!token->m_IsLocal) // global symbols are linked once
         {
-            TRACE(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.wx_str(), token->m_Name.wx_str());
+            TRACE(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.wx_str());
             token->m_AncestorsString.Clear();
         }
     }
 
-#if TOKEN_DEBUG_OUTPUT
+#if CC_TOKEN_DEBUG_OUTPUT
     TRACE(_T("RecalcData() : First iteration took : %ld ms"), sw.Time());
     sw.Start();
 #endif
@@ -956,11 +1203,11 @@ void TokensTree::RecalcData()
 
         // recalc
         TokenIdxSet result;
-        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
+        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
             RecalcFullInheritance(*it, result);
 
         // now, add the resulting set to ancestors set
-        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); it++)
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* ancestor = at(*it);
             if (ancestor)
@@ -970,12 +1217,12 @@ void TokensTree::RecalcData()
             }
         }
 
-#if TOKEN_DEBUG_OUTPUT
+#if CC_TOKEN_DEBUG_OUTPUT
         if (token)
         {
             // debug loop
             TRACE(_T("RecalcData() : Ancestors for %s:"), token->m_Name.wx_str());
-            for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
+            for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
             {
                 Token* anc_token = at(*it);
                 if (anc_token)
@@ -983,11 +1230,10 @@ void TokensTree::RecalcData()
                 else
                     TRACE(_T("RecalcData() :  + NULL?!"));
             }
-
         }
 #endif
     }
-#if TOKEN_DEBUG_OUTPUT
+#if CC_TOKEN_DEBUG_OUTPUT
     TRACE(_T("RecalcData() : Second iteration took : %ld ms"), sw.Time());
 #endif
 
@@ -1013,7 +1259,7 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
     TRACE(_T("RecalcFullInheritance() : Anc: '%s'"), ancestor->m_Name.wx_str());
 
     // for all its ancestors
-    for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); it++)
+    for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); ++it)
     {
         if (*it != -1 && // not global scope
             *it != parentIdx && // not the same token (avoid infinite loop)
@@ -1076,7 +1322,7 @@ void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
         if (token)
         {
             token->m_IsLocal = local;
-            token->m_pUserData = userData;
+            token->m_UserData = userData;
         }
     }
 }

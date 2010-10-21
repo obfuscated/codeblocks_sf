@@ -507,7 +507,7 @@ void CompilerOptionsDlg::DoFillOthers()
     if (spn)
     {
         spn->SetRange(1, 16);
-        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1));
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 2));
     }
 
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);

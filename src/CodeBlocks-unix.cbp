@@ -19,7 +19,6 @@
 				<Linker>
 					<Add library="bfd" />
 					<Add library="iberty" />
-					<Add library="intl" />
 					<Add directory="base/exchndl/lib" />
 				</Linker>
 			</Target>
@@ -127,7 +126,7 @@
 				<Option external_deps="base/tinyxml/libtxml.a;sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;sdk/scripting/lib/libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ni" />
+				<Option parameters="--debug-log --multiple-instance -ni" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -160,7 +159,7 @@
 				<Option working_dir="devel" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DENABLE_BINRELOC" />
@@ -447,6 +446,10 @@
 		<Unit filename="base/exchndl/include/libiberty.h">
 			<Option target="exchndl" />
 		</Unit>
+		<Unit filename="base/exchndl/intlimpl.c">
+			<Option compilerVar="CC" />
+			<Option target="exchndl" />
+		</Unit>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
@@ -499,6 +502,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbproject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbstatusbar.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbstyledtextctrl.h">
@@ -944,7 +950,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/tinyxml/tinystr.h">
-			<Option target="sdk" />
 			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="include/tinyxml/tinywxuni.h">
@@ -1090,6 +1095,12 @@
 		<Unit filename="plugins/codecompletion/codecompletion.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/coderefactoring.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/coderefactoring.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1100,6 +1111,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/expression.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/expression.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/parser/parser.cpp">
@@ -1902,6 +1919,9 @@
 		<Unit filename="sdk/cbproject.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/cbstatusbar.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/cbstyledtextctrl.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2132,9 +2152,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/newfromtemplatedlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/nullptr.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/personalitymanager.cpp">

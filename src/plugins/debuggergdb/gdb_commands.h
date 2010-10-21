@@ -729,9 +729,15 @@ class GdbCmd_Watch : public DebuggerCmd
                     m_Cmd = cbC2U(e.desc);
                 }
             }
+            m_pWatch->hasActiveCommand = true;
         }
         void ParseOutput(const wxString& output)
         {
+            if(m_pWatch->pendingDelete)
+            {
+                m_pDTree->DeleteWatch(m_pWatch);
+                return;
+            }
             wxString w;
             w << m_pWatch->keyword << _T(" = ");
             if (!m_ParseFunc.IsEmpty())
@@ -756,6 +762,7 @@ class GdbCmd_Watch : public DebuggerCmd
             }
             w << _T('\n');
             m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
+            m_pWatch->hasActiveCommand = false;
         }
 };
 
@@ -775,18 +782,33 @@ class GdbCmd_FindWatchType : public DebuggerCmd
         {
             m_Cmd << _T("whatis ");
             m_Cmd << m_pWatch->keyword;
+            m_pWatch->hasActiveCommand = true;
         }
         void ParseOutput(const wxString& output)
         {
+            if(m_pWatch->pendingDelete)
+            {
+                m_pDTree->DeleteWatch(m_pWatch);
+                return;
+            }
             // examples:
             // type = wxString
             // type = const wxChar
             // type = Action *
             // type = bool
-
-            wxString tmp = output.AfterFirst(_T('='));
-            // actually add this watch with high priority
-            m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch, tmp), DebuggerDriver::High);
+            if(output.StartsWith(_T("No symbol")) || output.StartsWith(_T("Attempt to ")))
+            {
+                wxString w;
+                w << m_pWatch->keyword << _T(" = ") << output << _T('\n');
+                m_pDTree->BuildTree(m_pWatch, w, wsfGDB);
+            }
+            else
+            {
+                wxString tmp = output.AfterFirst(_T('='));
+                // actually add this watch with high priority
+                m_pDriver->QueueCommand(new GdbCmd_Watch(m_pDriver, m_pDTree, m_pWatch, tmp), DebuggerDriver::High);
+            }
+            m_pWatch->hasActiveCommand = false;
         }
 };
 
@@ -1333,7 +1355,7 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
                     continue;
                 }
                 wxString addr = lines[i].BeforeFirst(_T(':'));
-                size_t pos = lines[i].find(_T('x'), 3); // skip 'x' of address
+                size_t pos = lines[i].find(_T('x'), lines[i].rfind(_T(':'))); // skip 'x' of address
                 while (pos != wxString::npos)
                 {
                     wxString hexbyte;

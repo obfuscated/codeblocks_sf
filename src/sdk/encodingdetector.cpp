@@ -135,7 +135,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
     if (m_BOMSizeInBytes > 0)
     {
         for (int i = 0; i < m_BOMSizeInBytes; ++i)
-            *buffer++;
+            buffer++;
     }
 
     size_t outlen = 0;

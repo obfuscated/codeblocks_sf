@@ -104,9 +104,11 @@ function OptimizationsOn(base, compilerID)
 {
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        if (!GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8")))
+        if (   !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8"))
+            && !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc10")) )
         {
-            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8
+
+            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
         }
         base.AddCompilerOption(_T("/Ox"));
         base.AddCompilerOption(_T("/DNDEBUG"));

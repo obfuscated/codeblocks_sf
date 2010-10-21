@@ -76,7 +76,8 @@ function OnLeave_CompilerPage(fwd)
     if (fwd)
     {
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
             msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
@@ -118,7 +119,7 @@ function SetupProject(project)
     // These functions are located in <templates_path>/common_functions.script.
     // If you add other commonly used functions or bug-fix anything in that file,
     // please share it with us :)
-    
+
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
@@ -175,7 +176,8 @@ function SetupTarget(target,is_debug)
         DebugSymbolsOn(target, Wizard.GetCompilerID());
         //Special consideration for MSVC 7.1
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             if (!multi_thread_dynamic)
             {
@@ -205,7 +207,8 @@ function SetupTarget(target,is_debug)
         OptimizationsOn(target, Wizard.GetCompilerID());
         //Special consideration for MSVC 7.1
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             if (!multi_thread_dynamic)
             {

@@ -22,10 +22,10 @@ class wxsCustomEditorProperty : public wxsProperty
          */
         virtual bool ShowEditor(wxsPropertyContainer* Object) =0;
 
-    protected:
-
         /** \brief Function giving string representation of property */
         virtual wxString GetStr(wxsPropertyContainer* Object) { return _("Click to edit"); }
+
+    protected:
 
         /** \brief Function parsing string representation of property
          *

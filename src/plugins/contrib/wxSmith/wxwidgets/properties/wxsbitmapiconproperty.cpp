@@ -139,6 +139,14 @@ wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString& PGName,const wxStri
     DefaultClient(_DefaultClient)
 {}
 
+wxString wxsBitmapIconProperty::GetStr(wxsPropertyContainer* Object)
+{
+    wxString res = VALUE.Id;
+    if(res.IsEmpty())
+        res = VALUE.FileName;
+    return res.IsEmpty()?wxString(_("Click to add")):res;
+}
+
 bool wxsBitmapIconProperty::ShowEditor(wxsPropertyContainer* Object)
 {
     wxsBitmapIconEditorDlg Dlg(0,VALUE,DefaultClient);

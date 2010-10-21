@@ -24,11 +24,10 @@
 									<object class="wxChoice" name="cmbView">
 										<content>
 											<item>Current file&apos;s symbols</item>
-											<item>Active project&apos;s symbols</item>
-											<item>All local symbols (workspace)</item>
+											<item>Current project&apos;s symbols</item>
 											<item>Everything</item>
 										</content>
-										<selection>2</selection>
+										<selection>0</selection>
 									</object>
 									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<option>1</option>

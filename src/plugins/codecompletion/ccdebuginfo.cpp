@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: $
- * $Id: $
- * $HeadURL: $
+ * $Revision: 6674 $
+ * $Id: ccdebuginfo.cpp 6674 2010-10-07 05:29:41Z loaden $
+ * $HeadURL: http://svn.berlios.de/svnroot/repos/codeblocks/branches/codecompletion_refactoring/src/plugins/codecompletion/ccdebuginfo.cpp $
  */
 
 #include <sdk.h>
@@ -89,9 +89,9 @@ BEGIN_EVENT_TABLE(CCDebugInfo,wxScrollingDialog)
     //*)
 END_EVENT_TABLE()
 
-CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
-    : m_pParser(parser),
-    m_pToken(token)
+CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token) :
+    m_Parser(parser),
+    m_Token(token)
 {
     //(*Initialize(CCDebugInfo)
     wxBoxSizer* BoxSizer10;
@@ -278,7 +278,7 @@ void CCDebugInfo::FillFiles()
     lstFiles->Freeze();
     lstFiles->Clear();
 
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
     {
         wxString file = tokens->m_FilenamesMap.GetString(i);
@@ -294,7 +294,7 @@ void CCDebugInfo::FillDirs()
     lstDirs->Freeze();
     lstDirs->Clear();
 
-    const wxArrayString& dirs = m_pParser->GetIncludeDirs();
+    const wxArrayString& dirs = m_Parser->GetIncludeDirs();
     for (size_t i = 0; i < dirs.GetCount(); ++i)
     {
         const wxString& file = dirs[i];
@@ -307,7 +307,7 @@ void CCDebugInfo::FillDirs()
 
 void CCDebugInfo::DisplayTokenInfo()
 {
-    if (!m_pToken)
+    if (!m_Token)
     {
         txtID->SetLabel(wxEmptyString);
         txtName->SetLabel(wxEmptyString);
@@ -330,13 +330,14 @@ void CCDebugInfo::DisplayTokenInfo()
         return;
     }
 
-    TokensTree* tokens = m_pParser->GetTokens();
-    Token* parent = tokens->at(m_pToken->m_ParentIndex);
+    TokensTree* tokens = m_Parser->GetTokens();
+    Token* parent = tokens->at(m_Token->m_ParentIndex);
+    tokens->RecalcInheritanceChain(m_Token);
 
-    wxString args = m_pToken->m_Args;
-    wxString argsStr = m_pToken->m_StrippedArgs;
-    wxString tmplArg = m_pToken->m_TemplateArgument;
-    wxString ttype = m_pToken->m_Type;
+    wxString args = m_Token->m_Args;
+    wxString argsStr = m_Token->m_StrippedArgs;
+    wxString tmplArg = m_Token->m_TemplateArgument;
+    wxString ttype = m_Token->m_Type;
 
     // so they can be displayed in wxStaticText
     args.Replace(_T("&"), _T("&&"), true);
@@ -344,44 +345,46 @@ void CCDebugInfo::DisplayTokenInfo()
     tmplArg.Replace(_T("&"), _T("&&"), true);
     ttype.Replace(_T("&"), _T("&&"), true);
 
-    txtID->SetLabel(wxString::Format(_T("%d"), m_pToken->GetSelf()));
-    txtName->SetLabel(m_pToken->m_Name);
-    txtKind->SetLabel(m_pToken->GetTokenKindString());
-    txtScope->SetLabel(m_pToken->GetTokenScopeString());
+    txtID->SetLabel(wxString::Format(_T("%d"), m_Token->GetSelf()));
+    txtName->SetLabel(m_Token->m_Name);
+    txtKind->SetLabel(m_Token->GetTokenKindString());
+    txtScope->SetLabel(m_Token->GetTokenScopeString());
     txtType->SetLabel(ttype);
-    txtActualType->SetLabel(m_pToken->m_ActualType);
+    txtActualType->SetLabel(m_Token->m_ActualType);
     txtArgs->SetLabel(args);
     txtArgsStripped->SetLabel(argsStr);
     txtTemplateArg->SetLabel(tmplArg);
-    txtIsOp->SetLabel(m_pToken->m_IsOperator ? _("Yes") : _("No"));
-    txtIsLocal->SetLabel(m_pToken->m_IsLocal ? _("Yes") : _("No"));
-    txtIsTemp->SetLabel(m_pToken->m_IsTemp ? _("Yes") : _("No"));
-    txtIsConst->SetLabel(m_pToken->m_IsConst ? _("Yes") : _("No"));
-    txtNamespace->SetLabel(m_pToken->GetNamespace());
+    txtIsOp->SetLabel(m_Token->m_IsOperator ? _("Yes") : _("No"));
+    txtIsLocal->SetLabel(m_Token->m_IsLocal ? _("Yes") : _("No"));
+    txtIsTemp->SetLabel(m_Token->m_IsTemp ? _("Yes") : _("No"));
+    txtIsConst->SetLabel(m_Token->m_IsConst ? _("Yes") : _("No"));
+    txtNamespace->SetLabel(m_Token->GetNamespace());
     #if wxCHECK_VERSION(2, 9, 0)
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _("<Global namespace>").wx_str(), m_pToken->m_ParentIndex));
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _("<Global namespace>").wx_str(), m_Token->m_ParentIndex));
     #else
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _("<Global namespace>"), m_pToken->m_ParentIndex));
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _("<Global namespace>"), m_Token->m_ParentIndex));
     #endif
+
     FillChildren();
     FillAncestors();
     FillDescendants();
-    if (!m_pToken->GetFilename().IsEmpty())
-        txtDeclFile->SetLabel(wxString::Format(_T("%s : %d"), m_pToken->GetFilename().c_str(), m_pToken->m_Line));
+
+    if (!m_Token->GetFilename().IsEmpty())
+        txtDeclFile->SetLabel(wxString::Format(_T("%s : %d"), m_Token->GetFilename().c_str(), m_Token->m_Line));
     else
         txtDeclFile->SetLabel(wxEmptyString);
-    if (!m_pToken->GetImplFilename().IsEmpty())
-        txtImplFile->SetLabel(wxString::Format(_("%s : %d (code lines: %d to %d)"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine, m_pToken->m_ImplLineStart, m_pToken->m_ImplLineEnd));
+    if (!m_Token->GetImplFilename().IsEmpty())
+        txtImplFile->SetLabel(wxString::Format(_("%s : %d (code lines: %d to %d)"), m_Token->GetImplFilename().c_str(), m_Token->m_ImplLine, m_Token->m_ImplLineStart, m_Token->m_ImplLineEnd));
     else
         txtImplFile->SetLabel(wxEmptyString);
-    txtUserData->SetLabel(wxString::Format(_T("0x%p"), m_pToken->m_pUserData));
+    txtUserData->SetLabel(wxString::Format(_T("0x%p"), m_Token->m_UserData));
 }
 
 void CCDebugInfo::FillChildren()
 {
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     cmbChildren->Clear();
-    for (TokenIdxSet::iterator it = m_pToken->m_Children.begin(); it != m_pToken->m_Children.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Children.begin(); it != m_Token->m_Children.end(); ++it)
     {
         Token* child = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
@@ -396,9 +399,9 @@ void CCDebugInfo::FillChildren()
 
 void CCDebugInfo::FillAncestors()
 {
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     cmbAncestors->Clear();
-    for (TokenIdxSet::iterator it = m_pToken->m_Ancestors.begin(); it != m_pToken->m_Ancestors.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
     {
         Token* ancestor = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
@@ -413,9 +416,9 @@ void CCDebugInfo::FillAncestors()
 
 void CCDebugInfo::FillDescendants()
 {
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     cmbDescendants->Clear();
-    for (TokenIdxSet::iterator it = m_pToken->m_Descendants.begin(); it != m_pToken->m_Descendants.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Descendants.begin(); it != m_Token->m_Descendants.end(); ++it)
     {
         Token* descendant = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
@@ -430,13 +433,13 @@ void CCDebugInfo::FillDescendants()
 
 void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 {
-    if (!m_pParser)
+    if (!m_Parser)
         return;
 
     wxBusyCursor busy;
 
     lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
-                                       m_pParser->GetTokens()->size(), m_pParser->GetFilesCount()));
+                                       m_Parser->GetTokens()->size(), m_Parser->GetFilesCount()));
     DisplayTokenInfo();
     FillFiles();
     FillDirs();
@@ -446,17 +449,17 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     wxString search = txtFilter->GetValue();
 
-    m_pToken = 0;
+    m_Token = 0;
 
     // first determine if the user entered an ID or a search mask
     long unsigned id;
     if (search.ToULong(&id, 10))
     {
         // easy; ID
-        m_pToken = tokens->at(id);
+        m_Token = tokens->at(id);
     }
     else
     {
@@ -472,7 +475,7 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
         // a single result?
         if (result.size() == 1)
         {
-            m_pToken = tokens->at(*(result.begin()));
+            m_Token = tokens->at(*(result.begin()));
         }
         else
         {
@@ -488,7 +491,7 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), arr, this);
             if (sel == -1)
                 return;
-            m_pToken = tokens->at(intarr[sel]);
+            m_Token = tokens->at(intarr[sel]);
         }
     }
 
@@ -498,16 +501,16 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbAncestors->GetSelection();
-    if (!m_pToken || idx == -1)
+    if (!m_Token || idx == -1)
         return;
 
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     int count = 0;
-    for (TokenIdxSet::iterator it = m_pToken->m_Ancestors.begin(); it != m_pToken->m_Ancestors.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
     {
         if (count == idx)
         {
-            m_pToken = tokens->at(*it);
+            m_Token = tokens->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -518,16 +521,16 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
 void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbDescendants->GetSelection();
-    if (!m_pToken || idx == -1)
+    if (!m_Token || idx == -1)
         return;
 
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     int count = 0;
-    for (TokenIdxSet::iterator it = m_pToken->m_Descendants.begin(); it != m_pToken->m_Descendants.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Descendants.begin(); it != m_Token->m_Descendants.end(); ++it)
     {
         if (count == idx)
         {
-            m_pToken = tokens->at(*it);
+            m_Token = tokens->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -537,29 +540,29 @@ void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
 
 void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
 {
-    if (!m_pToken || m_pToken->m_ParentIndex == -1)
+    if (!m_Token || m_Token->m_ParentIndex == -1)
         return;
 
-    m_pToken = m_pParser->GetTokens()->at(m_pToken->m_ParentIndex);
+    m_Token = m_Parser->GetTokens()->at(m_Token->m_ParentIndex);
     DisplayTokenInfo();
 }
 
 void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbChildren->GetSelection();
-    if (!m_pToken || idx == -1)
+    if (!m_Token || idx == -1)
         return;
 
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     if (!tokens)
         return;
 
     int count = 0;
-    for (TokenIdxSet::iterator it = m_pToken->m_Children.begin(); it != m_pToken->m_Children.end(); ++it)
+    for (TokenIdxSet::iterator it = m_Token->m_Children.begin(); it != m_Token->m_Children.end(); ++it)
     {
         if (count == idx)
         {
-            m_pToken = tokens->at(*it);
+            m_Token = tokens->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -593,7 +596,7 @@ void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
 
 void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 {
-    TokensTree* tokens = m_pParser->GetTokens();
+    TokensTree* tokens = m_Parser->GetTokens();
     if (!tokens)
         return;
 
@@ -601,6 +604,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
     saveWhat.Add(_("Dump the tokens tree"));
     saveWhat.Add(_("Dump the file list"));
     saveWhat.Add(_("Dump the list of include directories"));
+    saveWhat.Add(_("Dump the token list of files"));
 
     int sel = wxGetSingleChoiceIndex(_("What do you want to save?"),
                                      _("CC Debug Info"), saveWhat, this);
@@ -629,7 +633,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                 {
                     wxString file = tokens->m_FilenamesMap.GetString(i);
                     if (!file.IsEmpty())
-                        files += file + _T("\n");
+                        files += file + _T("\r\n");
                 }
                 SaveCCDebugInfo(_("Save file list"), files);
             }
@@ -637,14 +641,49 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
         case 2:
             {
                 wxString dirs;
-                const wxArrayString& dirsArray = m_pParser->GetIncludeDirs();
+                const wxArrayString& dirsArray = m_Parser->GetIncludeDirs();
                 for (size_t i = 0; i < dirsArray.GetCount(); ++i)
                 {
                     const wxString& dir = dirsArray[i];
                     if (!dir.IsEmpty())
-                        dirs += dir + _T("\n");
+                        dirs += dir + _T("\r\n");
                 }
                 SaveCCDebugInfo(_("Save list of include directories"), dirs);
+            }
+            break;
+        case 3:
+            {
+                wxString fileTokens;
+                {
+                    wxWindowDisabler disableAll;
+                    wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
+                                       Manager::Get()->GetAppWindow());
+                    for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
+                    {
+                        const wxString file = tokens->m_FilenamesMap.GetString(i);
+                        if (!file.IsEmpty())
+                        {
+                            fileTokens += file + _T("\r\n");
+
+                            TokenIdxSet result;
+                            tokens->FindTokensInFile(file, result, tkUndefined);
+                            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                            {
+                                Token* token = tokens->at(*it);
+                                fileTokens << token->GetTokenKindString() << _T(" ");
+                                if (token->m_TokenKind == tkFunction)
+                                    fileTokens << token->m_Name << token->m_Args << _T("\t");
+                                else
+                                    fileTokens << token->DisplayName() << _T("\t");
+                                fileTokens << _T("[") << token->m_Line << _T(",") << token->m_ImplLine << _T("]");
+                                fileTokens << _T("\r\n");
+                            }
+                        }
+                        fileTokens += _T("\r\n");
+                    }
+                }
+
+                SaveCCDebugInfo(_("Save token list of files"), fileTokens);
             }
             break;
         default:

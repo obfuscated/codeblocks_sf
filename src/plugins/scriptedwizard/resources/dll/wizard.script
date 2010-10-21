@@ -107,7 +107,7 @@ function SetupTarget(target, is_debug)
 
     // Add user32.lib for MessageBox()
     target.AddLinkLib(_T("user32"));
-    
+
     if (is_debug)
     {
         // enable debugging symbols for this target
@@ -127,7 +127,8 @@ function SetupTarget(target, is_debug)
             target.AddCompilerOption(_T("/MDd"));
         else
             target.AddCompilerOption(_T("/MD"));
-        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             /* Incremental linking shall be set to NO to embed manifest in the following way.
             * Visit http://msdn2.microsoft.com/en-us/library/ms235605(VS.80).aspx for more details.

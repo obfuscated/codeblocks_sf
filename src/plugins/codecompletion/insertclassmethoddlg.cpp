@@ -30,8 +30,8 @@ BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkPublic"), InsertClassMethodDlg::OnFilterChange)
 END_EVENT_TABLE()
 
-InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename)
-    : m_pParser(parser),
+InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename) :
+    m_Parser(parser),
     m_Decl(true),
     m_Filename(filename)
 {
@@ -72,13 +72,13 @@ wxArrayString InsertClassMethodDlg::GetCode() const
 
 void InsertClassMethodDlg::FillClasses()
 {
-    if (!m_pParser || !m_pParser->Done())
+    if (!m_Parser || !m_Parser->Done())
         return;
 
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
-    TokensTree* tree = m_pParser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokens();
     for (size_t i = 0; i < tree->size(); ++i)
     {
         Token* token = tree->at(i);
@@ -94,7 +94,7 @@ void InsertClassMethodDlg::FillClasses()
 
 void InsertClassMethodDlg::FillMethods()
 {
-    if (!m_pParser || !m_pParser->Done())
+    if (!m_Parser || !m_Parser->Done())
         return;
 
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
@@ -135,6 +135,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
     //Manager::Get()->GetLogManager()->DebugLog("Fill methods for %s", parentToken->m_DisplayName.c_str());
 
     // loop ascending the inheritance tree
+    tree->RecalcInheritanceChain(parentToken);
 
     for (TokenIdxSet::iterator it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); ++it)
     {

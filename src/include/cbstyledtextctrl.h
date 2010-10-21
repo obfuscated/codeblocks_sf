@@ -19,14 +19,31 @@ class cbStyledTextCtrl : public wxScintilla
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
         virtual ~cbStyledTextCtrl();
         wxDateTime GetLastFocusTime() const {return m_lastFocusTime;}
+
+        void EnableTabSmartJump(bool enable = true);
+        bool IsCharacter(int style);
+        bool IsString(int style);
+        bool IsPreprocessor(int style);
+        bool IsComment(int style);
+        void CallTipCancel();
+
     private:
         void OnContextMenu(wxContextMenuEvent& event);
         void OnKillFocus(wxFocusEvent& event);
-        void OnGetFocus(wxFocusEvent& event);
-        void OnGPM(wxMouseEvent& event);
+        void OnSetFocus(wxFocusEvent& event);
+        void OnMouseMiddleDown(wxMouseEvent& event);
+        void OnKeyDown(wxKeyEvent& event);
+        void OnKeyUp(wxKeyEvent& event);
+        void OnMouseLeftUp(wxMouseEvent& event);
+
+        bool AllowTabSmartJump();
+        void HighlightRightBrace();
 
         wxWindow* m_pParent;
         wxLongLong m_lastFocusTime;
+        int m_bracePosition;
+        int m_lastPosition;
+        bool m_tabSmartJump;
 
         DECLARE_EVENT_TABLE()
 };

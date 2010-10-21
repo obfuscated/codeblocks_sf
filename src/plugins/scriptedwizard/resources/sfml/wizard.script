@@ -47,17 +47,17 @@ function OnLeave_SFMLPath(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, SFMLPathDefault, SFMLPathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("Audio.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Audio.hpp"), _T("SFML's include")))
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("Config.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Config.hpp"), _T("SFML's include")))
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("Graphics.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Graphics.hpp"), _T("SFML's include")))
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("Network.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Network.hpp"), _T("SFML's include")))
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("System.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/System.hpp"), _T("SFML's include")))
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("Window.hpp"), _T("SFML's include")))
+        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Window.hpp"), _T("SFML's include")))
             return false;
 
         // verify library dependencies

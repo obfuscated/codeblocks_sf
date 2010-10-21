@@ -9,7 +9,7 @@
 # Some variables to make maintaining this script easier
 CODEBLOCKS_BASE_VERSION="10.05svn"
 CODEBLOCKS_SVN_URL="svn://svn.berlios.de/codeblocks/trunk"
-CODEBLOCKS_LOCAL_DIR="../codeblocks-$CODEBLOCKS_BASE_VERSION-download"
+CODEBLOCKS_LOCAL_DIR="../codeblocks-$CODEBLOCKS_BASE_VERSION-download/codeblocks-$CODEBLOCKS_BASE_VERSION"
 OLD_DIR=`pwd`
 
 USAGE='This script is used to generate the orig tarball used in building 
@@ -41,6 +41,7 @@ set -e
 download() {
     local url="$1"
     local target="$2"
+    mkdir -p $target
     svn co $1 $2 --non-interactive
 }
 
@@ -75,10 +76,9 @@ if [ "$SVN_REV" -eq "0" ]; then
     exit 1
 fi
 
-CODEBLOCKS_ORIG_TARBALL=codeblocks_$CODEBLOCKS_BASE_VERSION$SVN_REV.orig.tar.bz2
-CODEBLOCKS_DIST_TARBALL=codeblocks-$CODEBLOCKS_BASE_VERSION$SVN_REV.tar.bz2
+CODEBLOCKS_ORIG_TARBALL=codeblocks_$CODEBLOCKS_BASE_VERSION$SVN_REV.orig.tar.gz
 
-if [ -f ../$CODEBLOCKS_TARBALL_STUB.orig.tar.gz ]; then
+if [ -f ../../$CODEBLOCKS_ORIG_TARBALL ]; then
     echo "We already have the newest revision in $CODEBLOCKS_ORIG_TARBALL ."
     exit 0
 fi
@@ -86,15 +86,17 @@ fi
 
 # Create source tarball
 echo "Create sources tarball"
-./configure --enable-keep-dlls=no
-make dist
+#echo "pre-configuring sources"
+#./configure --enable-keep-dlls=no
+cd ..
+#echo "creatingng tarball $CODEBLOCKS_ORIG_TARBALL "
+tar zcf $CODEBLOCKS_ORIG_TARBALL --exclude=".svn" --exclude="*.dll" codeblocks-$CODEBLOCKS_BASE_VERSION
 
-# Rename tarball
-echo "Renaming  tarball"
-mv $CODEBLOCKS_DIST_TARBALL ../$CODEBLOCKS_ORIG_TARBALL
+# Move tarball to right directory
+mv $CODEBLOCKS_ORIG_TARBALL ..
 
 cd $OLD_DIR
-dch -v 10.05svn$SVN_REV-1 "New svn revision"
+./update_revision.sh
 
 # Perform cleanup
 if [ ! -z "$REMOVE_UPSTREAM_DIR" ]; then

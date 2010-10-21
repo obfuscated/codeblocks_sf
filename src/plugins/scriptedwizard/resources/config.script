@@ -18,6 +18,9 @@ function RegisterWizards()
     // project wizards
     //
     RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),         _T("Console"));
+    RegisterWizard(wizProject,     _T("fortran/app"),  _T("Fortran application"),   _T("Fortran"));
+    RegisterWizard(wizProject,     _T("fortran/lib"),  _T("Fortran library"),       _T("Fortran"));
+    RegisterWizard(wizProject,     _T("fortran/dll"),  _T("Fortran DLL"),           _T("Fortran"));
     RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)
@@ -69,6 +72,7 @@ function RegisterWizards()
     RegisterWizard(wizFiles,       _T("empty_file"),   _T("Empty file"),            _T("C/C++"));
     RegisterWizard(wizFiles,       _T("c_file"),       _T("C/C++ source"),          _T("C/C++"));
     RegisterWizard(wizFiles,       _T("h_file"),       _T("C/C++ header"),          _T("C/C++"));
+    RegisterWizard(wizFiles,       _T("fortran/file"), _T("Fortran source"),        _T("Fortran"));
 }
 
 function RegisterWizard(type, folder, title, category)

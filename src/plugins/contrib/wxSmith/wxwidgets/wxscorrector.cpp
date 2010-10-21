@@ -27,6 +27,8 @@
 #include "wxsitemresdata.h"
 #include <logmanager.h>
 
+static const wxString s_IdPrefix = _T("ID_");
+
 wxsCorrector::wxsCorrector(wxsItemResData* Data):
     m_Data(Data),
     m_NeedRebuild(true)
@@ -101,7 +103,10 @@ bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
         }
         else
         {
-            m_Ids.insert(IdName);
+            if (!IsWxWidgetsIdPrefix(IdName))
+            {
+                m_Ids.insert(IdName);
+            }
         }
     }
 
@@ -138,7 +143,10 @@ bool wxsCorrector::FillEmpty(wxsItem* Item)
         {
             Ret = true;
             SetNewIdName(Item);
-            m_Ids.insert(Item->GetIdName());
+            if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
+            {
+                m_Ids.insert(Item->GetIdName());
+            }
         }
     }
 
@@ -188,11 +196,30 @@ void wxsCorrector::AfterChange(wxsItem* Item)
             Item->SetIdName(IdName);
         }
 
-        if ( m_Ids.empty() || (m_Ids.find(IdName) != m_Ids.end()) )
+        if ( m_Ids.find(IdName) != m_Ids.end() )
         {
             SetNewIdName(Item);
         }
-        m_Ids.insert(Item->GetIdName());
+
+        if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
+        {
+            m_Ids.insert(Item->GetIdName());
+        }
+    }
+
+    if ( Item->GetPropertiesFlags() & flLocal )
+    {
+        wxString prefix = s_IdPrefix;
+        prefix << Item->GetInfo().DefaultVarName.Upper();
+        wxString curIdName = Item->GetIdName();
+        if (curIdName.StartsWith(prefix))
+        {
+            Item->SetIdName(_T("wxID_ANY"));
+            if (m_Ids.find(curIdName) != m_Ids.end())
+            {
+                m_Ids.erase(curIdName);
+            }
+        }
     }
 
     m_NeedRebuild = false;
@@ -223,8 +250,10 @@ void wxsCorrector::RebuildSetsReq(wxsItem* Item,wxsItem* Exclude)
 
         if ( Item->GetPropertiesFlags() & flId )
         {
-            wxString Id = Item->GetIdName();
-            m_Ids.insert(Id);
+            if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
+            {
+                m_Ids.insert(Item->GetIdName());
+            }
         }
     }
 
@@ -252,7 +281,7 @@ void wxsCorrector::SetNewVarName(wxsItem* Item)
 
 void wxsCorrector::SetNewIdName(wxsItem* Item)
 {
-    wxString Prefix = _T("ID_");
+    wxString Prefix = s_IdPrefix;
     Prefix << Item->GetInfo().DefaultVarName.Upper();
     wxString NewName;
     for ( int i=1;; i++ )
@@ -296,7 +325,10 @@ void wxsCorrector::BeforePasteReq(wxsItem* Item)
         {
             SetNewIdName(Item);
         }
-        m_Ids.insert(Item->GetIdName());
+        if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
+        {
+            m_Ids.insert(Item->GetIdName());
+        }
     }
 
     wxsParent* Parent = Item->ConvertToParent();
@@ -382,6 +414,11 @@ bool wxsCorrector::FixIdName(wxString& Id)
 
     // We'll use FixVarName's routines to correct identifier
     return FixVarName(Id);
+}
+
+bool wxsCorrector::IsWxWidgetsIdPrefix(const wxString& Id)
+{
+    return Id.StartsWith(_T("wxID_"));
 }
 
 void wxsCorrector::ClearCache()

@@ -667,7 +667,8 @@ function SetupProject(project)
         }
         // Please remember that the following code have been added separately as it is not tested with MSVC 6
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             project.AddCompilerOption(_T("/TP"));
             project.AddCompilerOption(_T("/Gd"));
@@ -683,6 +684,11 @@ function SetupProject(project)
         {
             project.AddCompilerOption(_T("/Zc:wchar_t"));
             project.AddCompilerOption(_T("/D_VC80_UPGRADE=0x0600"));
+        }
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
+        {
+            project.AddCompilerOption(_T("/Zc:wchar_t"));
+            project.AddCompilerOption(_T("/Zc:auto"));
         }
 
         project.AddIncludeDir(WxPath + _T("/contrib/include"));
@@ -727,7 +733,8 @@ function SetupProject(project)
         project.AddCompilerOption(_T("-DWX_PRECOMP"));
     }
     else if (WantPCH && (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-                        || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))))
+                        || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+                        || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10"))))
     {
         project.AddCompilerOption(_T("/FI\"") + PCHFileName + _T("\""));
         project.AddCompilerOption(_T("/Yc\"") + PCHFileName + _T("\""));
@@ -921,7 +928,8 @@ function SetupTarget(target, is_debug)
             }
         }
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+            || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
             if(WantPCH) // Add support for PCH
                 target.AddCompilerOption(_T("/Fp\"") + obj_output_dir + exe_file_name + _T(".pch\""));

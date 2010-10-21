@@ -47,9 +47,15 @@ function OnLeave_SDLPath(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, SDLPathDefault, SDLPathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("SDL.h"), _T("SDL's include")))
-            return false;
-
+            
+        if (!IO.FileExists(dir_nomacro_inc + wxFILE_SEP_PATH + _T("SDL.h")))
+        {
+            if (VerifyFile(dir_nomacro_inc, _T("SDL/SDL.h"), _T("SDL's include")))
+                SDLPathDefaultInc = SDLPathDefaultInc + _T("/SDL");
+            else
+                return false;
+        }
+        
         // verify library dependencies
         local dir_nomacro_lib = GetCompilerLibDir(dir, SDLPathDefault, SDLPathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())

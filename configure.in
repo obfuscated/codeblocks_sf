@@ -271,39 +271,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/Makefile
 	src/plugins/scriptedwizard/resources/Makefile
 	src/plugins/scriptedwizard/resources/arm/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/src/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/h/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/src/Makefile
 	src/plugins/scriptedwizard/resources/avr/Makefile
 	src/plugins/scriptedwizard/resources/c_file/Makefile
 	src/plugins/scriptedwizard/resources/console/Makefile
@@ -313,21 +280,13 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/empty/Makefile
 	src/plugins/scriptedwizard/resources/empty_file/Makefile
 	src/plugins/scriptedwizard/resources/fltk/Makefile
-	src/plugins/scriptedwizard/resources/fltk/files/Makefile
-	src/plugins/scriptedwizard/resources/fltk/fluid/Makefile
+	src/plugins/scriptedwizard/resources/fortran/Makefile
 	src/plugins/scriptedwizard/resources/glfw/Makefile
-	src/plugins/scriptedwizard/resources/glfw/files/Makefile
 	src/plugins/scriptedwizard/resources/glut/Makefile
-	src/plugins/scriptedwizard/resources/glut/files/Makefile
 	src/plugins/scriptedwizard/resources/gtk/Makefile
-	src/plugins/scriptedwizard/resources/gtk/files/Makefile
 	src/plugins/scriptedwizard/resources/h_file/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/Makefile
-	src/plugins/scriptedwizard/resources/irrlicht/files/Makefile
 	src/plugins/scriptedwizard/resources/lf/Makefile
-	src/plugins/scriptedwizard/resources/lf/files/Makefile
-	src/plugins/scriptedwizard/resources/lf/files/quick/Makefile
-	src/plugins/scriptedwizard/resources/lf/files/structured/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/files/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/lccstub/Makefile
@@ -366,42 +325,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sys/Makefile
 	src/plugins/scriptedwizard/resources/sys/files/Makefile
 	src/plugins/scriptedwizard/resources/tricore/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/EasyKit-TC1767/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1161/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1162/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1762/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1766/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1797/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1797/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1797/src/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/h/Makefile
-	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/src/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile

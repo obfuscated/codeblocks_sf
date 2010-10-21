@@ -1,1 +1,0 @@
-SUBDIRS = h ld src

@@ -47,7 +47,7 @@ wxRegEx reClass(wxT(
 */
 wxRegEx reStruct(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"(?:typedef"							// Maybe a typedef declaration.
+	"(typedef"							// Maybe a typedef declaration.
 	"[[:space:]]+)?"						// Followed by at least one space.
 	"struct[[:space:]]+"				// The word struct, followed by some space (at least one).
 	"([^[:space:]\\:\\{\\;]+)"			// The struct name (made of no space, no colon, no bracket, no semicolon).

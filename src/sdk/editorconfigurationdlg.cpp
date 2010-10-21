@@ -239,8 +239,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
 
-    // 8 point is not readable on Mac OS X, increase font size:
-    wxFont tmpFont(platform::macosx ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+    // setting the default editor font size to 10 point
+    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
 
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
     // read them all in the array
@@ -513,8 +513,8 @@ void EditorConfigurationDlg::WriteColours()
 
 void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 {
-    // 8 point is not readable on Mac OS X, increase font size:
-    wxFont tmpFont(platform::macosx ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+    // setting the default editor font size to 10 point
+    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
 
     if (!m_FontString.IsEmpty())
     {

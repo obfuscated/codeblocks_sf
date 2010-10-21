@@ -769,6 +769,11 @@ void DebuggerTree::OnDeleteWatch(wxCommandEvent& WXUNUSED(event))
     Watch* w = data ? data->m_pWatch : 0;
     if (w)
     {
+        if(w->hasActiveCommand)
+        {
+            w->pendingDelete = true;
+            return;
+        }
         DeleteWatch(w);
         m_pTree->Delete(m_pTree->GetSelection());
     }

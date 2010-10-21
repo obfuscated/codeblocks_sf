@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision$
- * $Id$
- * $HeadURL$
+ * $Revision: 6678 $
+ * $Id: ccoptionsprjdlg.cpp 6678 2010-10-08 05:07:32Z loaden $
+ * $HeadURL: http://svn.berlios.de/svnroot/repos/codeblocks/branches/codecompletion_refactoring/src/plugins/codecompletion/ccoptionsprjdlg.cpp $
  */
 
 #include <sdk.h>
@@ -25,13 +25,13 @@ BEGIN_EVENT_TABLE(CCOptionsProjectDlg, wxPanel)
     EVT_BUTTON(XRCID("btnDelete"), CCOptionsProjectDlg::OnDelete)
 END_EVENT_TABLE()
 
-CCOptionsProjectDlg::CCOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParser* np)
-    : m_pProject(project),
-    m_pNativeParser(np),
-    m_pParser(m_pNativeParser->GetParserPtr())
+CCOptionsProjectDlg::CCOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParser* np) :
+    m_Project(project),
+    m_NativeParser(np),
+    m_Parser(&np->GetParser())
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlProjectCCOptions"));
-    m_OldPaths = m_pNativeParser->GetProjectSearchDirs(m_pProject);
+    m_OldPaths = m_NativeParser->GetProjectSearchDirs(m_Project);
 
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     control->Clear();
@@ -50,8 +50,8 @@ void CCOptionsProjectDlg::OnAdd(wxCommandEvent& /*event*/)
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
 
     EditPathDlg dlg(this,
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
+            m_Project ? m_Project->GetBasePath() : _T(""),
+            m_Project ? m_Project->GetBasePath() : _T(""),
             _("Add directory"));
 
     PlaceWindow(&dlg);
@@ -71,7 +71,7 @@ void CCOptionsProjectDlg::OnEdit(wxCommandEvent& /*event*/)
 
     EditPathDlg dlg(this,
             control->GetString(sel),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
+            m_Project ? m_Project->GetBasePath() : _T(""),
             _("Edit directory"));
 
     PlaceWindow(&dlg);
@@ -114,10 +114,11 @@ void CCOptionsProjectDlg::OnApply()
     {
         for (size_t i = 0; i < newpaths.GetCount(); ++i)
         {
-            m_pParser->AddIncludeDir(newpaths[i]);
+            if (m_Parser)
+                m_Parser->AddIncludeDir(newpaths[i]);
         }
 
-        wxArrayString& pdirs = m_pNativeParser->GetProjectSearchDirs(m_pProject);
+        wxArrayString& pdirs = m_NativeParser->GetProjectSearchDirs(m_Project);
         pdirs = newpaths;
 
         cbMessageBox(_("You have changed the C/C++ parser search paths for this project.\n"

@@ -47,6 +47,7 @@ namespace
                     Object(object)
             {
                 SetEditor(wxPG_EDITOR(TextCtrlAndButton));
+                SetValue(Property->GetStr(Object));
             }
 
             virtual bool OnEvent(
@@ -56,11 +57,20 @@ namespace
             {
                 if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
                 {
-                    return Property->ShowEditor(Object);
+                    if(Property->ShowEditor(Object))
+                    {
+                        SetValueInEvent (Property->GetStr(Object));
+                        return true;
+                    }
+                    return false;
                 }
                 return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
             }
 
+            virtual wxString GetValueAsString( int flags = 0 ) const
+            {
+                return Property->GetStr(Object);
+            }
 
             /** \brief Pointer to wxsProperty which created this
              *
@@ -74,7 +84,6 @@ namespace
 void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
     wxPGId PGId = Grid->AppendIn(Parent,new wxsCustomEditorPropertyPropClass(GetPGName(),wxPG_LABEL,this,Object));
-    Grid->SetPropertyValue(PGId,GetStr(Object));
     if ( !CanParseStr() )
     {
         Grid->LimitPropertyEditing(PGId);
@@ -89,6 +98,5 @@ bool wxsCustomEditorProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGrid
 
 bool wxsCustomEditorProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId PGId,long Index)
 {
-    Grid->SetPropertyValue(PGId,GetStr(Object));
     return true;
 }

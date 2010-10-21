@@ -299,109 +299,42 @@ struct cbEditorInternalData
         return -1;
     }
 
-    bool IsComment( int style )
-    {
-        cbStyledTextCtrl* control = m_pOwner->GetControl();
-        switch ( control->GetLexer() )
-        {
-            case wxSCI_LEX_CPP:
-                return  style == wxSCI_C_COMMENT ||
-                        style == wxSCI_C_COMMENTLINE ||
-                        style == wxSCI_C_COMMENTDOC ||
-                        style == wxSCI_C_COMMENTDOCKEYWORD ||
-                        style == wxSCI_C_COMMENTDOCKEYWORDERROR ||
-                        style == wxSCI_C_COMMENTLINEDOC;
-            case wxSCI_LEX_D:
-                return  style == wxSCI_D_COMMENT ||
-                        style == wxSCI_D_COMMENTLINE ||
-                        style == wxSCI_D_COMMENTDOC ||
-                        style == wxSCI_D_COMMENTDOCKEYWORD ||
-                        style == wxSCI_D_COMMENTDOCKEYWORDERROR ||
-                        style == wxSCI_D_COMMENTLINEDOC;
-            default:
-                return false;
-        }
-        return false;
-    }
-
-    bool IsPreprocessor( int style )
-    {
-        cbStyledTextCtrl* control = m_pOwner->GetControl();
-        if ( control->GetLexer() == wxSCI_LEX_CPP )
-            return  style == wxSCI_C_PREPROCESSOR;
-        return false;
-    }
-
-    bool IsCharacterOrString( int  style )
-    {
-        cbStyledTextCtrl* control = m_pOwner->GetControl();
-        switch ( control->GetLexer() )
-        {
-            case wxSCI_LEX_CPP:
-                return style == wxSCI_C_STRING || style == wxSCI_C_CHARACTER;
-            case wxSCI_LEX_D:
-                return style == wxSCI_D_STRING || style == wxSCI_D_CHARACTER;
-            default:
-                return false;
-        }
-        return false;
-    }
-
-    bool IsCharacter( int  style )
-    {
-        cbStyledTextCtrl* control = m_pOwner->GetControl();
-        switch ( control->GetLexer() )
-        {
-            case wxSCI_LEX_CPP:
-                return style == wxSCI_C_CHARACTER;
-            case wxSCI_LEX_D:
-                return style == wxSCI_D_CHARACTER;
-            default:
-                return false;
-        }
-        return false;
-    }
-
     void DoBraceCompletion(const wxChar& ch)
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();
         int pos = control->GetCurrentPos();
         int style = control->GetStyleAt(pos);
-        if ( IsComment(style) || IsPreprocessor(style) )
+        if ( control->IsComment(style) || control->IsPreprocessor(style) )
             return;
-        if ( ch == _T('\'') )
+        if (ch == _T('\'') || ch == _T('"'))
         {
-            if ( (control->GetCharAt(pos) == ch) && (pos > 1) && (control->GetCharAt(pos-2) != _T('\\')) )
+            if (   (control->GetCharAt(pos) == ch)
+                && (control->GetCharAt(pos - 2) != _T('\\')) )
             {
                 control->DeleteBack();
                 control->GotoPos(pos);
             }
             else
             {
-                if ( (control->GetCharAt(pos-2) == _T('\\')) || IsCharacterOrString(style) )
+                const wxChar left = control->GetCharAt(pos - 2);
+                const wxChar right = control->GetCharAt(pos);
+                if (   control->IsCharacter(style)
+                    || control->IsString(style)
+                    || left == _T('\\')
+                    || (   (left > _T(' '))
+                        && (left != _T('('))
+                        && (left != _T('=')) )
+                    || (   (right > _T(' '))
+                        && (right != _T(')')) ) )
+                {
                     return;
+                }
                 control->AddText(ch);
                 control->GotoPos(pos);
             }
             return;
         }
-        if ( ch == _T('"') )
-        {
-            if ( (control->GetCharAt(pos) == ch) && (pos > 1) && (control->GetCharAt(pos-2) != _T('\\')) )
-            {
-                control->DeleteBack();
-                control->GotoPos(pos);
-            }
-            else
-            {
-                if ( (control->GetCharAt(pos-2) == _T('\\')) || IsCharacter(style) )
-                    return;
-                control->AddText(ch);
-                control->GotoPos(pos);
-            }
-            return;
-        }
-        if ( IsCharacterOrString(style) )
+        if ( control->IsCharacter(style) || control->IsString(style) )
             return;
         const wxString leftBrace(_T("([{"));
         const wxString rightBrace(_T(")]}"));
@@ -409,15 +342,32 @@ struct cbEditorInternalData
         const wxString unWant(_T(");\n\r\t\b "));
         const wxChar nextChar = control->GetCharAt(pos);
         #if wxCHECK_VERSION(2, 9, 0)
-        if ((index != wxNOT_FOUND) && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || nextChar == _T('\0')))
+        if ((index != wxNOT_FOUND) && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || (pos == control->GetLength())))
         #else
-        if ((index != wxNOT_FOUND) && ((unWant.Find(nextChar) != wxNOT_FOUND) || nextChar == _T('\0')))
+        if ((index != wxNOT_FOUND) && ((unWant.Find(nextChar) != wxNOT_FOUND) || (pos == control->GetLength())))
         #endif
         {
             control->AddText(rightBrace.GetChar(index));
             control->GotoPos(pos);
             if (ch == _T('{'))
             {
+                const int curLine = control->GetCurrentLine();
+                int keyLine = curLine;
+                wxString text;
+                do
+                {
+                    int keyPos = control->GetLineIndentPosition(keyLine);
+                    int start = control->WordStartPosition(keyPos, true);
+                    int end = control->WordEndPosition(keyPos, true);
+                    text = control->GetTextRange(start, end);
+                }
+                while (   (text.IsEmpty() || text == _T("public") || text == _T("protected") || text == _T("private"))
+                       && (text != _T("namespace"))
+                       && (--keyLine >= 0) );
+
+                if (text == _T("class") || text == _T("struct") || text == _T("enum") || text == _T("union"))
+                    control->InsertText(control->GetLineEndPosition(curLine), _T(";"));
+
                 const wxRegEx reg(_T("^[ \t]*{}[ \t]*"));
                 if (reg.Matches(control->GetCurLine()))
                 {
@@ -659,6 +609,7 @@ const int idRemoveFileFromProject = wxNewId();
 
 const int idBookmarkAdd = wxNewId();
 const int idBookmarkRemove = wxNewId();
+const int idBookmarkRemoveAll = wxNewId();
 
 const int idBreakpointAdd = wxNewId();
 const int idBreakpointEdit = wxNewId();
@@ -694,6 +645,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idRemoveFileFromProject, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkAdd, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkRemove, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarkRemoveAll, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBreakpointAdd, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBreakpointEdit, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBreakpointRemove, cbEditor::OnContextMenuEntry)
@@ -821,6 +773,8 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
     SetEditorStyleBeforeFileOpen();
     m_IsOK = Open();
     SetEditorStyleAfterFileOpen();
+    if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
+        FoldAll();
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK || filename.IsEmpty())
@@ -1223,7 +1177,6 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
         InternalSetEditorStyleBeforeFileOpen(m_pControl2);
 
     SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
-    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
 
     SetLanguage( HL_AUTO );
 }
@@ -1235,6 +1188,8 @@ void cbEditor::SetEditorStyleAfterFileOpen()
         InternalSetEditorStyleAfterFileOpen(m_pControl2);
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
 
     // line numbers
     if (mgr->ReadBool(_T("/show_line_numbers"), true))
@@ -1271,8 +1226,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
-    // 8 point is not readable on Mac OS X, increase font size
-    wxFont font(platform::macosx ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+    // setting the default editor font size to 10 point
+    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
 
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
 
@@ -1412,13 +1367,14 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), false) ? _T("1") : _T("0"));
 
 // code folding
-    control->SetProperty(_T("fold"), mgr->ReadBool(_T("/folding/show_folds"), true) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.html"), mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.compact"), _T("0"));
-    control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
     {
+        control->SetProperty(_T("fold"), _T("1"));
+        control->SetProperty(_T("fold.html"), mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
+        control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
+        control->SetProperty(_T("fold.compact"), _T("0"));
+        control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
+
         control->Colourise(0, -1);
         control->SetFoldFlags(16);
         control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
@@ -1430,7 +1386,10 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 
     }
     else
+    {
+        control->SetProperty(_T("fold"), _T("0"));
         control->SetMarginWidth(foldingMargin, 0);
+    }
 
 // line numbering
     control->SetMarginType(lineMargin, wxSCI_MARGIN_NUMBER);
@@ -1626,10 +1585,6 @@ bool cbEditor::Open(bool detectEncoding)
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
-//    SetLanguage(HL_AUTO); // bottleneck !!! no need to set it here, it's already done in SetEditorStyleBeforeFileOpen
-
-    if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
-        FoldAll();
 
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
@@ -2628,7 +2583,8 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             insert = CreateContextSubMenu(idInsert);
             editsubmenu = CreateContextSubMenu(idEdit);
             bookmarks = CreateContextSubMenu(idBookmarks);
-            folding = CreateContextSubMenu(idFolding);
+            if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false))
+                folding = CreateContextSubMenu(idFolding);
         }
         if(insert)
         {
@@ -2746,6 +2702,8 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
             {
                 popup->Append(idBookmarkAdd, _("Add bookmark"));
             }
+
+            popup->Append(idBookmarkRemoveAll, _("Remove all bookmark"));
 
             // display menu... wxWindows help says not to force the position
             PopupMenu(popup);
@@ -2875,6 +2833,8 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         control->MarkerAdd(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
     else if (id == idBookmarkRemove)
         control->MarkerDelete(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
+    else if (id == idBookmarkRemoveAll)
+        control->MarkerDeleteAll(BOOKMARK_MARKER);
     else if (id == idBookmarksToggle)
         MarkerToggle(BOOKMARK_MARKER);
     else if (id == idBookmarksNext)
@@ -2992,8 +2952,13 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 //    Manager::Get()->GetLogManager()->Close();
 
     cbStyledTextCtrl* control = GetControl();
-    int pos = control->GetCurrentPos();
-    wxChar ch = event.GetKey();
+    const int pos = control->GetCurrentPos();
+    const wxChar ch = event.GetKey();
+
+    static bool autoIndentStart = false;
+    static bool autoIndentDone = true;
+    static int autoIndentLine = -1;
+    static int autoIndentLineIndent = -1;
 
     // indent
     if (ch == _T('\n'))
@@ -3049,7 +3014,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 
                             if ( c != _T('}') )
                             {
-                                if(control->GetUseTabs())
+                                if (control->GetUseTabs())
                                     indent << _T('\t'); // 1 tab
                                 else
                                     indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
@@ -3063,11 +3028,19 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                                 }
                             }
                         }
+                        else if (b == _T(':'))
+                        {
+                            if (control->GetUseTabs())
+                                indent << _T('\t'); // 1 tab
+                            else
+                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+                        }
                         break;
+
                     case wxSCI_LEX_PYTHON:
                         if (b == _T(':'))
                         {
-                            if(control->GetUseTabs())
+                            if (control->GetUseTabs())
                                 indent << _T('\t'); // 1 tab
                             else
                                 indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
@@ -3079,7 +3052,149 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             control->GotoPos(pos + indent.Length());
             control->ChooseCaretX();
         }
+
+        // smart indent
+        if (smartIndent && currLine > 0)
+        {
+            if (!autoIndentDone)
+            {
+                bool valid = true;
+                int line = control->GetCurrentLine();
+                if (line < autoIndentLine)
+                    valid = false;
+                else
+                {
+                    while (--line > autoIndentLine)
+                    {
+                        if (control->GetLineIndentation(line) < autoIndentLineIndent)
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!valid)
+                {
+                    autoIndentStart = false;
+                    autoIndentDone = true;
+                    autoIndentLine = -1;
+                    autoIndentLineIndent = -1;
+                }
+            }
+
+            if (autoIndentDone)
+            {
+                const int pos = control->GetLineIndentPosition(currLine - 1);
+                const wxString text = control->GetTextRange(pos, control->WordEndPosition(pos, true));
+                if (   text == _T("if")
+                    || text == _T("else")
+                    || text == _T("for")
+                    || text == _T("while")
+                    || text == _T("do") )
+                {
+                    const wxChar ch = m_pData->GetLastNonWhitespaceChar();
+                    if (ch != _T(';') && ch != _T('}'))
+                    {
+                        autoIndentDone = false;
+                        autoIndentLine = currLine - 1;
+                        autoIndentLineIndent = control->GetLineIndentation(currLine - 1);
+                    }
+                }
+            }
+
+            if (!autoIndentDone)
+            {
+                if (autoIndentStart)
+                {
+                    const wxChar ch = m_pData->GetLastNonWhitespaceChar();
+                    if (ch == _T(';') || ch == _T('}'))
+                    {
+                        control->SetLineIndentation(currLine, autoIndentLineIndent);
+                        control->GotoPos(control->GetLineEndPosition(currLine));
+
+                        autoIndentStart = false;
+                        autoIndentDone = true;
+                        autoIndentLine = -1;
+                        autoIndentLineIndent = -1;
+                    }
+                }
+                else
+                {
+                    int lastLine = currLine;
+                    while (--lastLine >= 0)
+                    {
+                        const int lineIndentPos = control->GetLineIndentPosition(lastLine);
+                        const int start = control->WordStartPosition(lineIndentPos, true);
+                        const int end = control->WordEndPosition(lineIndentPos, true);
+                        const wxString last = control->GetTextRange(start, end);
+
+                        if (   last == _T("if")
+                            || last == _T("else")
+                            || last == _T("for")
+                            || last == _T("while")
+                            || last == _T("do") )
+                        {
+                            const wxString text = control->GetTextRange(lineIndentPos + last.Len(), pos);
+                            int level = 0;
+                            for (size_t i = 0; i < text.Len(); ++i)
+                            {
+                                if (text[i] == _T('('))
+                                    ++level;
+                                else if (text[i] == _T(')'))
+                                    --level;
+                            }
+
+                            if (!level)
+                            {
+                                autoIndentStart = true;
+                                control->SetLineIndentation(currLine, autoIndentLineIndent);
+                                control->Tab();
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         control->EndUndoAction();
+    }
+
+    // unindent
+    else if (ch == _T('{'))
+    {
+        if (autoIndentStart)
+        {
+            bool valid = true;
+            int line = control->GetCurrentLine();
+            if (line < autoIndentLine)
+                valid = false;
+            else
+            {
+                while (--line > autoIndentLine)
+                {
+                    if (control->GetLineIndentation(line) < autoIndentLineIndent)
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
+
+            if (valid)
+            {
+                control->BeginUndoAction();
+                control->SetLineIndentation(control->GetCurrentLine(), autoIndentLineIndent);
+                control->EndUndoAction();
+            }
+
+            autoIndentStart = false;
+            autoIndentDone = true;
+            autoIndentLine = -1;
+            autoIndentLineIndent = -1;
+        }
     }
 
     // unindent
@@ -3112,6 +3227,75 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 }
             }
             control->EndUndoAction();
+        }
+    }
+
+    // unindent
+    else if (ch == _T(':'))
+    {
+        bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
+        if (smartIndent && control->GetLexer() == wxSCI_LEX_CPP)
+        {
+            const int curLine = control->GetCurrentLine();
+            const int pos = control->GetLineIndentPosition(curLine);
+            const wxString text = control->GetTextRange(pos, control->WordEndPosition(pos, true));
+            if (   text == _T("public")
+                || text == _T("protected")
+                || text == _T("private")
+                || text == _T("case")
+                || text == _T("default") )
+            {
+                const bool isSwitch = (text == _T("case") || text == _T("default"));
+                int lastLine = curLine;
+                int lastLineIndent = -1;
+                while (--lastLine >= 0)
+                {
+                    const int lineIndentPos = control->GetLineIndentPosition(lastLine);
+                    const int start = control->WordStartPosition(lineIndentPos, true);
+                    const int end = control->WordEndPosition(lineIndentPos, true);
+
+                    const wxString last = control->GetTextRange(start, end);
+                    if (last.IsEmpty())
+                        continue;
+
+                    if (isSwitch)
+                    {
+                        if (last == _T("case"))
+                        {
+                            lastLineIndent = control->GetLineIndentation(lastLine);
+                            break;
+                        }
+                        else if (last == _T("switch"))
+                            break;
+                    }
+                    else
+                    {
+                        if (   last == _T("public")
+                            || last == _T("protected")
+                            || last == _T("private") )
+                        {
+                            lastLineIndent = control->GetLineIndentation(lastLine);
+                            break;
+                        }
+                        else if (last == _T("class"))
+                            break;
+                    }
+                }
+
+                control->BeginUndoAction();
+
+                if (lastLineIndent != -1)
+                    control->SetLineIndentation(curLine, lastLineIndent);
+                else
+                {
+                    const int curLineIndent = control->GetLineIndentation(curLine);
+                    const int tabWidth = control->GetTabWidth();
+                    if (curLineIndent >= tabWidth)
+                        control->SetLineIndentation(curLine, curLineIndent - tabWidth);
+                }
+
+                control->EndUndoAction();
+            }
         }
     }
 

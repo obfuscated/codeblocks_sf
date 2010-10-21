@@ -38,6 +38,7 @@ class cbStyledTextCtrl;
 class ListCtrlLogger;
 class LoaderBase;
 struct EditorManagerInternalData;
+class SearchResultsLog;
 
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
@@ -144,6 +145,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
 
+        SearchResultsLog* GetSearchResultLogger() const { return m_pSearchLog; }
+
         void OnGenericContextMenuHandler(wxCommandEvent& event);
         void OnPageChanged(wxAuiNotebookEvent& event);
         void OnPageChanging(wxAuiNotebookEvent& event);
@@ -202,7 +205,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         size_t                     m_nNotebookStackSize;
         cbFindReplaceData*         m_LastFindReplaceData;
         EditorColourSet*           m_Theme;
-        ListCtrlLogger*            m_pSearchLog;
+        SearchResultsLog*          m_pSearchLog;
         int                        m_SearchLogIndex;
         int                        m_Zoom;
         bool                       m_isCheckingForExternallyModifiedFiles;

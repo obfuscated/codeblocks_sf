@@ -91,6 +91,7 @@ class wxsBitmapIconProperty: public wxsCustomEditorProperty
         virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
+        virtual wxString GetStr(wxsPropertyContainer* Object);
 
 	private:
 

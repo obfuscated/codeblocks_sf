@@ -1136,7 +1136,7 @@
 																</object>
 																<object class="sizeritem">
 																	<object class="wxSpinCtrl" name="spnParallelProcesses">
-																		<value>1</value>
+																		<value>2</value>
 																		<min>1</min>
 																		<max>16</max>
 																	</object>

@@ -307,11 +307,12 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
                     m_MasterPath.Append(_T("\\IA32"));
 
                     // Now check for the installation of MSVC
-                    const wxString msvcIds[3] = { _T("msvc6"),
+                    const wxString msvcIds[4] = { _T("msvc6"),
                                                   _T("msvctk"),
-                                                  _T("msvc8") };
+                                                  _T("msvc8"),
+                                                  _T("msvc10") };
                     bool msvcFound = false;
-                    for (int i = 0; i < 3; ++i)
+                    for (int i = 0; i < 4; ++i)
                     {
                         Compiler* vcComp = CompilerFactory::GetCompiler(msvcIds[i]);
                         if (vcComp)

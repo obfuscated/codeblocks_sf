@@ -99,6 +99,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
             desiredSize(100, 100),
             floatingSize(150, 150),
             minimumSize(40, 40),
+            floatingPos(200, 150),
             dockSide(dsUndefined),
             row(-1),
             column(-1),
@@ -115,8 +116,9 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
             title(rhs.title),
             pWindow(rhs.pWindow),
             desiredSize(rhs.desiredSize),
-            floatingSize(rhs.minimumSize),
+            floatingSize(rhs.floatingSize),
             minimumSize(rhs.minimumSize),
+            floatingPos(rhs.floatingPos),
             dockSide(rhs.dockSide),
             row(rhs.row),
             column(rhs.column),
@@ -135,6 +137,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
         wxSize desiredSize; ///< The desired size.
         wxSize floatingSize;///< The desired floating size.
         wxSize minimumSize; ///< The minimum allowed size.
+        wxPoint floatingPos;///< The desired floating position.
         DockSide dockSide;  ///< The side to dock it.
         int row;            ///< The row to dock it.
         int column;         ///< The column to dock it.
@@ -323,6 +326,9 @@ extern EVTIMPORT const wxEventType cbEVT_HIDE_DOCK_WINDOW;
 // to actually find out its state use IsWindowReallyShown(event.pWindow);
 extern EVTIMPORT const wxEventType cbEVT_DOCK_WINDOW_VISIBILITY;
 #define EVT_DOCK_WINDOW_VISIBILITY(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DOCK_WINDOW_VISIBILITY, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
+// force update current view layout
+extern EVTIMPORT const wxEventType cbEVT_UPDATE_VIEW_LAYOUT;
+#define EVT_UPDATE_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_UPDATE_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),
 // ask which is the current view layout
 extern EVTIMPORT const wxEventType cbEVT_QUERY_VIEW_LAYOUT;
 #define EVT_QUERY_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_QUERY_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),

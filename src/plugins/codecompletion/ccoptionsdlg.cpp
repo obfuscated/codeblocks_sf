@@ -75,10 +75,10 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
 END_EVENT_TABLE()
 
-CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc)
-    : m_Parser(this),
-    m_pNativeParsers(np),
-    m_pCodeCompletion(cc)
+CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc) :
+    m_NativeParsers(np),
+    m_CodeCompletion(cc),
+    m_Parser(np->GetTempParser())
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -87,23 +87,29 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkLocals", wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
     XRCCTRL(*this, "chkGlobals", wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
     XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
+    XRCCTRL(*this, "chkComplexMacros", wxCheckBox)->SetValue(m_Parser.Options().parseComplexMacros);
+    XRCCTRL(*this, "txtUpFrontHeaders", wxTextCtrl)->SetValue(cfg->Read(_T("/up_front_headers"), _T("<cstddef>, <wx/defs.h>, <wx/dlimpexp.h>, <wx/toplevel.h>, <boost/config.hpp>, <boost/filesystem/config.hpp>, \"pch.h\", \"sdk.h\", \"stdafx.h\"")));
     XRCCTRL(*this, "chkNoCC", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
     XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
     XRCCTRL(*this, "chkTypeMode", wxCheckBox)->SetValue(m_Parser.Options().whileTyping);
     XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
     XRCCTRL(*this, "chkEvalTooltip", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"), true));
     XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
+    XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
+    XRCCTRL(*this, "chkAddDoxgenComment", wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"), false));
     XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
-    XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 4));
+    XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 3));
     XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));
     XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
     XRCCTRL(*this, "chkExpandNS", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().expandNS);
     XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().treeMembers);
     XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
+    XRCCTRL(*this, "spnParsersNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_parsers"), 5));
     XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
     XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
     XRCCTRL(*this, "chkNoSB", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
     XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"), wxEmptyString));
+    XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->SetValue(cfg->ReadBool(_T("/scope_filter"), true));
 
     XRCCTRL(*this, "chkKL_1", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set1"), true));
     XRCCTRL(*this, "chkKL_2", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set2"), true));
@@ -115,12 +121,12 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkKL_8", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set8"), false));
     XRCCTRL(*this, "chkKL_9", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set9"), false));
 
-    int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
+    int timerDelay = cfg->ReadInt(_T("/cc_delay"), 300);
     XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
     UpdateSliderLabel();
 
-    const ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
-    ConfigManagerContainer::StringToStringMap::const_iterator it = repl.begin();
+    const wxStringHashMap& repl = Tokenizer::GetTokenReplacementsMap();
+    wxStringHashMap::const_iterator it = repl.begin();
     while (it != repl.end())
     {
         XRCCTRL(*this, "lstRepl", wxListBox)->Append(it->first + _T(" -> ") + it->second);
@@ -282,6 +288,8 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 
     XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkEvalTooltip", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAddDoxgenComment", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->Enable(en && auto_launch);
@@ -291,6 +299,7 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "chkTypeMode", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "lblFillupChars", wxStaticText)->Enable(en);
     XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtUpFrontHeaders", wxTextCtrl)->Enable(en);
 
     en = !XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue();
     XRCCTRL(*this, "chkInheritance", wxCheckBox)->Enable(en);
@@ -308,6 +317,7 @@ void CCOptionsDlg::OnApply()
     // force parser to read its options that we write in the config
     cfg->Write(_T("/use_code_completion"), (bool)!XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
     cfg->Write(_T("/max_threads"), (int)XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/max_parsers"), (int)XRCCTRL(*this, "spnParsersNum", wxSpinCtrl)->GetValue());
 
     int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
     cfg->Write(_T("/cc_delay"), (int)timerDelay);
@@ -317,7 +327,10 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().followLocalIncludes = XRCCTRL(*this, "chkLocals", wxCheckBox)->GetValue();
     m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals", wxCheckBox)->GetValue();
     m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();
+    m_Parser.Options().parseComplexMacros = XRCCTRL(*this, "chkComplexMacros", wxCheckBox)->GetValue();
     cfg->Write(_T("/auto_select_one"), (bool)XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->GetValue());
+    cfg->Write(_T("/auto_add_parentheses"), (bool)XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue());
+    cfg->Write(_T("/add_doxgen_comment"), (bool)XRCCTRL(*this, "chkAddDoxgenComment", wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_launch"), (bool)XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_launch_chars"), (int)XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->GetValue());
     cfg->Write(_T("/max_matches"), (int)XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->GetValue());
@@ -328,10 +341,12 @@ void CCOptionsDlg::OnApply()
 
     cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue());
     cfg->Write(_T("/fillup_chars"), XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->GetValue());
+    cfg->Write(_T("/up_front_headers"), XRCCTRL(*this, "txtUpFrontHeaders", wxTextCtrl)->GetValue());
     m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().expandNS = XRCCTRL(*this, "chkExpandNS", wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().treeMembers = XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue();
     cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());
+    cfg->Write(_T("/scope_filter"),  (bool)XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
 
     cfg->Write(_T("/lexer_keywords_set1"), (bool)XRCCTRL(*this, "chkKL_1", wxCheckBox)->GetValue());
     cfg->Write(_T("/lexer_keywords_set2"), (bool)XRCCTRL(*this, "chkKL_2", wxCheckBox)->GetValue());
@@ -344,6 +359,6 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/lexer_keywords_set9"), (bool)XRCCTRL(*this, "chkKL_9", wxCheckBox)->GetValue());
 
     m_Parser.WriteOptions();
-    m_pNativeParsers->RereadParserOptions();
-    m_pCodeCompletion->RereadOptions();
+    m_NativeParsers->RereadParserOptions();
+    m_CodeCompletion->RereadOptions();
 }

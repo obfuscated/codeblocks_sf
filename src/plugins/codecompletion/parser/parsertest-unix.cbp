@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CC ParserTest (unix)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="parsertest">
+				<Option output="../../../devel/parsertest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/codecompletion/parsertest" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="parsertest;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Ulinux" />
+			<Add option="-Uunix" />
+			<Add option="-fPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCC_PARSER_TEST" />
+			<Add directory="../../../../src/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add directory="../../../../src/devel" />
+		</Linker>
+		<Unit filename="app.cpp" />
+		<Unit filename="expression.cpp" />
+		<Unit filename="expression.h" />
+		<Unit filename="frame.cpp" />
+		<Unit filename="frame.h" />
+		<Unit filename="parser.h" />
+		<Unit filename="parserdummy.cpp" />
+		<Unit filename="parsertest.cpp" />
+		<Unit filename="parsertest.h" />
+		<Unit filename="parserthread.cpp" />
+		<Unit filename="parserthread.h" />
+		<Unit filename="searchtree.cpp" />
+		<Unit filename="searchtree.h" />
+		<Unit filename="test.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="token.cpp" />
+		<Unit filename="token.h" />
+		<Unit filename="tokenizer.cpp" />
+		<Unit filename="tokenizer.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="app.cpp" main="-- None --" init_handlers="never" language="CPP" />
+				<resources>
+					<wxFrame wxs="wxsmith/Frame.wxs" src="frame.cpp" hdr="frame.h" name="Frame" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -48,7 +48,29 @@
 #include <algorithm>
 #include <iterator>
 
-using namespace std;
+#define CC_CODECOMPLETION_DEBUG_OUTPUT 0
+
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
+    #define TRACE(format, args...) \
+        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+    #define TRACE2(format, args...)
+#elif CC_CODECOMPLETION_DEBUG_OUTPUT == 2
+    #define TRACE(format, args...)                                              \
+        do                                                                      \
+        {                                                                       \
+            if (g_EnableDebugTrace)                                             \
+                Manager::Get()->GetLogManager()->DebugLog(F(format, ##args));   \
+        }                                                                       \
+        while (false)
+    #define TRACE2(format, args...) \
+        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+#else
+    #define TRACE(format, args...)
+    #define TRACE2(format, args...)
+#endif
+
+static wxCriticalSection s_HeadersCriticalSection;
+static wxString g_GlobalScope(_T("<global>"));
 
 // this auto-registers the plugin
 namespace
@@ -150,7 +172,12 @@ int idMenuGotoNextFunction      = wxNewId();
 int idMenuGotoDeclaration       = wxNewId();
 int idMenuGotoImplementation    = wxNewId();
 int idMenuOpenIncludeFile       = wxNewId();
+int idMenuFindReferences        = wxNewId();
+int idMenuRenameSymbols         = wxNewId();
 int idViewClassBrowser          = wxNewId();
+int idCurrentProjectReparse     = wxNewId();
+int idSelectedProjectReparse    = wxNewId();
+int idSelectedFileReparse       = wxNewId();
 int idEditorSubMenu             = wxNewId();
 int idClassMethod               = wxNewId();
 int idUnimplementedClassMethods = wxNewId();
@@ -160,12 +187,19 @@ int idOpenIncludeFile           = wxNewId();
 int idStartParsingProjects      = wxNewId();
 int idCodeCompleteTimer         = wxNewId();
 int idFunctionsParsingTimer     = wxNewId();
+int idRealtimeParsingTimer      = wxNewId();
+int idToolbarTimer              = wxNewId();
+int idProjectSavedTimer         = wxNewId();
+
+int THREAD_UPDATE               = wxNewId();
+int THREAD_COMPLETED            = wxNewId();
 
 // milliseconds
-#define EDITOR_AND_LINE_INTERVAL 150
+#define REALTIME_PARSING_DELAY      500
+#define EDITOR_AND_LINE_INTERVAL    150
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
-    EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idViewClassBrowser, CodeCompletion::OnUpdateUI)
+    EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
 
     EVT_MENU(idMenuCodeComplete, CodeCompletion::OnCodeComplete)
     EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
@@ -174,6 +208,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idMenuGotoNextFunction, CodeCompletion::OnGotoNextFunction)
     EVT_MENU(idMenuGotoDeclaration, CodeCompletion::OnGotoDeclaration)
     EVT_MENU(idMenuGotoImplementation, CodeCompletion::OnGotoDeclaration)
+    EVT_MENU(idMenuFindReferences, CodeCompletion::OnFindReferences)
+    EVT_MENU(idMenuRenameSymbols, CodeCompletion::OnRenameSymbols)
     EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
     EVT_MENU(idUnimplementedClassMethods, CodeCompletion::OnUnimplementedClassMethods)
     EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
@@ -182,28 +218,185 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idMenuOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
 
     EVT_MENU(idViewClassBrowser, CodeCompletion::OnViewClassBrowser)
+    EVT_MENU(idCurrentProjectReparse, CodeCompletion::OnCurrentProjectReparse)
+    EVT_MENU(idSelectedProjectReparse, CodeCompletion::OnSelectedProjectReparse)
+    EVT_MENU(idSelectedFileReparse, CodeCompletion::OnSelectedFileReparse)
 
     EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
     EVT_TIMER(idFunctionsParsingTimer, CodeCompletion::OnStartParsingFunctions)
+    EVT_TIMER(idRealtimeParsingTimer, CodeCompletion::OnRealtimeParsing)
+    EVT_TIMER(idToolbarTimer, CodeCompletion::OnStartParsingFunctions)
+    EVT_TIMER(idProjectSavedTimer, CodeCompletion::OnProjectSavedTimer)
 
-//    EVT_CHOICE(XRCID("chcCodeCompletionScope"),  CodeCompletion::OnScope)
+    EVT_CHOICE(XRCID("chcCodeCompletionScope"),  CodeCompletion::OnScope)
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"),  CodeCompletion::OnFunction)
 
     EVT_MENU(PARSER_END, CodeCompletion::OnParserEnd)
-
+    EVT_MENU(PARSER_START, CodeCompletion::OnParserStart)
+    EVT_MENU(THREAD_UPDATE, CodeCompletion::OnThreadUpdate)
+    EVT_MENU(THREAD_COMPLETED, CodeCompletion::OnThreadCompletion)
 END_EVENT_TABLE()
 
+class SystemHeadersThread : public wxThread
+{
+public:
+    SystemHeadersThread(CodeCompletion* parent, SystemHeadersMap& headersMap, const wxArrayString& incDirs) :
+        m_Parent(parent),
+        m_SystemHeadersMap(headersMap),
+        m_IncludeDirs(incDirs)
+    {
+        Create();
+        SetPriority(WXTHREAD_MIN_PRIORITY);
+    }
+
+    virtual void* Entry()
+    {
+        wxArrayString dirs;
+        {
+            wxCriticalSectionLocker locker(s_HeadersCriticalSection);
+            for (size_t i = 0; i < m_IncludeDirs.GetCount(); ++i)
+            {
+                if (m_SystemHeadersMap.find(m_IncludeDirs[i]) == m_SystemHeadersMap.end())
+                {
+                    dirs.Add(m_IncludeDirs[i]);
+                    m_SystemHeadersMap[m_IncludeDirs[i]] = StringSet();
+                }
+            }
+        }
+
+        for (size_t i = 0; i < dirs.GetCount() && !TestDestroy(); ++i)
+        {
+            wxDir dir(dirs[i]);
+            if (!dir.IsOpened())
+                continue;
+
+            HeaderDirTraverser traverser(m_SystemHeadersMap, dirs[i]);
+            dir.Traverse(traverser, wxEmptyString, wxDIR_FILES | wxDIR_DIRS);
+
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_UPDATE);
+            evt.SetClientData(this);
+            evt.SetString(wxString::Format(_T("Get Headers: %s , %d"), dirs[i].wx_str(),
+                                           m_SystemHeadersMap[dirs[i]].size()));
+            wxPostEvent(m_Parent, evt);
+        }
+
+        if (!TestDestroy())
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_COMPLETED);
+            evt.SetClientData(this);
+            if (!dirs.IsEmpty())
+                evt.SetString(wxString::Format(_T("Get the system header file path: %d"), dirs.GetCount()));
+            wxPostEvent(m_Parent, evt);
+        }
+
+        return NULL;
+    }
+
+private:
+    CodeCompletion*   m_Parent;
+    SystemHeadersMap& m_SystemHeadersMap;
+    wxArrayString     m_IncludeDirs;
+
+private:
+    class HeaderDirTraverser : public wxDirTraverser
+    {
+    public:
+        HeaderDirTraverser(SystemHeadersMap& headersMap, const wxString& searchDir) :
+            m_SystemHeadersMap(headersMap),
+            m_SearchDir(searchDir),
+            m_Headers(headersMap[searchDir]),
+            m_Locker(NULL),
+            m_HeaderCount(0)
+        {}
+
+        ~HeaderDirTraverser()
+        {
+            if (m_Locker)
+                delete m_Locker;
+        }
+
+        virtual wxDirTraverseResult OnFile(const wxString& filename)
+        {
+            if (!AddLock())
+                return wxDIR_STOP;
+
+            wxFileName fn(filename);
+            if (!fn.HasExt() || fn.GetExt().GetChar(0) == _T('h'))
+            {
+                fn.MakeRelativeTo(m_SearchDir);
+                wxString final(fn.GetFullPath());
+                final.Replace(_T("\\"), _T("/"), true);
+                m_Headers.insert(final);
+            }
+
+            return wxDIR_CONTINUE;
+        }
+
+        virtual wxDirTraverseResult OnDir(const wxString& dirname)
+        {
+            if (!AddLock())
+                return wxDIR_STOP;
+
+            wxString path(dirname);
+            if (path.Last() != wxFILE_SEP_PATH)
+                path.Append(wxFILE_SEP_PATH);
+
+            if (m_SystemHeadersMap.find(path) != m_SystemHeadersMap.end())
+                return wxDIR_IGNORE;
+            return wxDIR_CONTINUE;
+        }
+
+        bool AddLock()
+        {
+            if (++m_HeaderCount % 100 == 1)
+            {
+                if (m_Locker)
+                {
+                    delete m_Locker;
+                    m_Locker = NULL;
+                }
+
+                wxMilliSleep(1);
+                m_Locker = new(std::nothrow) wxCriticalSectionLocker(s_HeadersCriticalSection);
+            }
+
+            return m_Locker != NULL;
+        }
+
+    private:
+        const SystemHeadersMap&  m_SystemHeadersMap;
+        const wxString&          m_SearchDir;
+        StringSet&              m_Headers;
+        wxCriticalSectionLocker* m_Locker;
+        size_t                   m_HeaderCount;
+    };
+};
+
 CodeCompletion::CodeCompletion() :
+    m_InitDone(false),
+    m_CodeRefactoring(m_NativeParser),
     m_EditorHookId(0),
     m_TimerCodeCompletion(this, idCodeCompleteTimer),
     m_TimerFunctionsParsing(this, idFunctionsParsingTimer),
-    m_pCodeCompletionLastEditor(0),
+    m_TimerRealtimeParsing(this, idRealtimeParsingTimer),
+    m_TimerToolbar(this, idToolbarTimer),
+    m_TimerProjectSaved(this, idProjectSavedTimer),
+    m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
+    m_ToolBar(0),
+    m_Function(0),
+    m_Scope(0),
     m_ToolbarChanged(true),
     m_CurrentLine(0),
-    m_LastFile(wxEmptyString),
-    m_NeedReparse(false)
+    m_NeedReparse(false),
+    m_UseCodeCompletion(true),
+    m_CCAutoLaunchChars(3),
+    m_CCAutoLaunch(true),
+    m_CCLaunchDelay(300),
+    m_CCMaxMatches(16384),
+    m_CCAutoAddParentheses(true),
+    m_CCAutoSelectOne(false)
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
         NotifyMissingFile(_T("codecompletion.zip"));
@@ -211,42 +404,59 @@ CodeCompletion::CodeCompletion() :
 
 CodeCompletion::~CodeCompletion()
 {
+    while (!m_SystemHeadersThread.empty())
+    {
+        SystemHeadersThread* thread = m_SystemHeadersThread.front();
+        if (thread->IsRunning())
+            thread->Delete();
+        m_SystemHeadersThread.pop_front();
+    }
 }
 
 void CodeCompletion::LoadTokenReplacements()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    ConfigManagerContainer::StringToStringMap repl;
+    cfg->Read(_T("token_replacements"), &repl);
 
-    ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
-    repl.clear();
+    // for GCC
+    repl[_T("_GLIBCXX_STD")]                    = _T("std");
+    repl[_T("_GLIBCXX_STD_D")]                  = _T("std");
+    repl[_T("_GLIBCXX_STD_P")]                  = _T("std");
+    repl[_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE")] = _T("+namespace std {");
+    repl[_T("_GLIBCXX_END_NESTED_NAMESPACE")]   = _T("}");
+    repl[_T("_GLIBCXX_BEGIN_NAMESPACE")]        = _T("+namespace std {");
+    repl[_T("_GLIBCXX_END_NAMESPACE")]          = _T("}");
+    repl[_T("_GLIBCXX_BEGIN_NAMESPACE_TR1")]    = _T("namespace tr1 {");
+    repl[_T("_GLIBCXX_END_NAMESPACE_TR1")]      = _T("}");
 
-    if (!cfg->Exists(_T("token_replacements")))
-    {
-        // first run; add default replacements string
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                    _T("std"));
+    // for VC
+    repl[_T("_STD_BEGIN")]                      = _T("namespace std {");
+    repl[_T("_STD_END")]                        = _T("}");
+    repl[_T("_STDEXT_BEGIN")]                   = _T("namespace std {");
+    repl[_T("_STDEXT_END")]                     = _T("}");
 
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE"), _T("+namespace"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"),   _T("}"));
+    // for wxWidgets
+    repl[_T("BEGIN_EVENT_TABLE")]               = _T("-END_EVENT_TABLE");
+    repl[_T("WXDLLEXPORT")]                     = _T("");
+    repl[_T("WXEXPORT")]                        = _T("");
+    repl[_T("WXIMPORT")]                        = _T("");
 
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"),        _T("+namespace"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE"),          _T("}"));
-
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"),      _T("}"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),    _T("-namespace tr1 {"));
-
-        // for VC
-        Tokenizer::SetReplacementString(_T("_STD_BEGIN"),                      _T("-namespace std {"));
-        Tokenizer::SetReplacementString(_T("_STD_END"),                        _T("}"));
-    }
-    else
-        cfg->Read(_T("token_replacements"), &repl);
+    // apply
+    Tokenizer::ConvertToHashReplacementMap(repl);
 }
 
 void CodeCompletion::SaveTokenReplacements()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    const ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
+    const wxStringHashMap& hashRepl = Tokenizer::GetTokenReplacementsMap();
+    ConfigManagerContainer::StringToStringMap repl;
+    wxStringHashMap::const_iterator it = hashRepl.begin();
+    for (; it != hashRepl.end(); it++)
+    {
+        repl[it->first] = it->second;
+    }
     cfg->Write(_T("token_replacements"), repl);
 }
 
@@ -279,6 +489,46 @@ void CodeCompletion::RereadOptions()
     m_LexerKeywordsToInclude[6] = cfg->ReadBool(_T("/lexer_keywords_set7"), false);
     m_LexerKeywordsToInclude[7] = cfg->ReadBool(_T("/lexer_keywords_set8"), false);
     m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
+
+    // for CC
+    m_UseCodeCompletion    = cfg->ReadBool(_T("/use_code_completion"), true);
+    m_CCAutoLaunchChars    = cfg->ReadInt(_T("/auto_launch_chars"), 3);
+    m_CCAutoLaunch         = cfg->ReadBool(_T("/auto_launch"), true);
+    m_CCLaunchDelay        = cfg->ReadInt(_T("/cc_delay"), 300);
+    m_CCMaxMatches         = cfg->ReadInt(_T("/max/matches"), 16384);
+    m_CCAutoAddParentheses = cfg->ReadBool(_T("/auto_add_parentheses"), true);
+    m_CCFillupChars        = cfg->Read(_T("/fillup_chars"), wxEmptyString);
+    m_CCAutoSelectOne      = cfg->ReadBool(_T("/auto_select_one"), false);
+
+    if (m_ToolBar)
+    {
+        UpdateToolBar();
+        CodeBlocksLayoutEvent evt(cbEVT_UPDATE_VIEW_LAYOUT);
+        Manager::Get()->ProcessEvent(evt);
+        ParseFunctionsAndFillToolbar(true);
+    }
+}
+
+void CodeCompletion::UpdateToolBar()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    bool showScope = cfg->ReadBool(_T("/scope_filter"), true);
+
+    if (showScope && !m_Scope)
+    {
+        m_Scope = new wxChoice(m_ToolBar, wxNewId(), wxPoint(0, 0), wxSize(280, -1), 0, 0);
+        m_ToolBar->InsertControl(0, m_Scope);
+    }
+    else if (!showScope && m_Scope)
+    {
+        m_ToolBar->DeleteTool(m_Scope->GetId());
+        m_Scope = NULL;
+    }
+    else
+        return;
+
+    m_ToolBar->Realize();
+    m_ToolBar->SetInitialSize();
 }
 
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
@@ -292,8 +542,21 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     {
         m_EditMenu = menuBar->GetMenu(pos);
         m_EditMenu->AppendSeparator();
-        m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tCtrl-Space"));
+
+        const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
+        if (   (   info->Language >= wxLANGUAGE_CHINESE
+                && info->Language <= wxLANGUAGE_CHINESE_TAIWAN )
+            || info->Language == wxLANGUAGE_JAPANESE
+            || info->Language == wxLANGUAGE_KOREAN )
+        {
+            m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tShift-Space"));
+        }
+        else
+            m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tCtrl-Space"));
+
         m_EditMenu->Append(idMenuShowCallTip, _("Show call tip\tCtrl-Shift-Space"));
+        m_EditMenu->AppendSeparator();
+        m_EditMenu->Append(idMenuRenameSymbols, _("Rename symbols\tAlt-N"));
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Edit menu!"));
@@ -307,6 +570,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoNextFunction, _("Goto next function\tCtrl-PgDn"));
         m_SearchMenu->Append(idMenuGotoDeclaration, _("Goto declaration\tCtrl-Shift-."));
         m_SearchMenu->Append(idMenuGotoImplementation, _("Goto implementation\tCtrl-."));
+        m_SearchMenu->Append(idMenuFindReferences, _("Find references\tAlt-."));
         m_SearchMenu->Append(idMenuOpenIncludeFile, _("Open include file\tCtrl-Alt-."));
     }
     else
@@ -318,20 +582,55 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     {
         m_ViewMenu = menuBar->GetMenu(idx);
         wxMenuItemList& items = m_ViewMenu->GetMenuItems();
+        bool inserted = false;
+
         // find the first separator and insert before it
         for (size_t i = 0; i < items.GetCount(); ++i)
         {
             if (items[i]->IsSeparator())
             {
                 m_ViewMenu->InsertCheckItem(i, idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
-                return;
+                inserted = true;
+                break;
             }
         }
+
         // not found, just append
-        m_ViewMenu->AppendCheckItem(idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
+        if (!inserted)
+            m_ViewMenu->AppendCheckItem(idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find View menu!"));
+
+    // add Reparse item in the "Project" menu
+    idx = menuBar->FindMenu(_("&Project"));
+    if (idx != wxNOT_FOUND)
+    {
+        m_ProjectMenu = menuBar->GetMenu(idx);
+        wxMenuItemList& items = m_ProjectMenu->GetMenuItems();
+        bool inserted = false;
+
+        // find the first separator and insert before it
+        for (size_t i = items.GetCount() - 1; i > 0; --i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                m_ProjectMenu->InsertSeparator(i);
+                m_ProjectMenu->Insert(i + 1, idCurrentProjectReparse, _("Reparse current project"), _("Reparse of the final switched project"));
+                inserted = true;
+                break;
+            }
+        }
+
+        // not found, just append
+        if (!inserted)
+        {
+            m_ProjectMenu->AppendSeparator();
+            m_ProjectMenu->Append(idCurrentProjectReparse, _("Reparse current project"), _("Reparse of the final switched project"));
+        }
+    }
+    else
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Project menu!"));
 }
 
 // invariant : on return true : NameUnderCursor is NOT empty
@@ -380,7 +679,8 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
     {
         wxString NameUnderCursor;
         bool IsInclude = false;
-        if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+        const bool nameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
+        if (nameUnderCursor)
         {
             if (IsInclude)
             {
@@ -392,15 +692,26 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
             else
             {
                 wxString msg;
+                size_t pos = 0;
                 msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(0, idGotoDeclaration, msg);
+                menu->Insert(pos, idGotoDeclaration, msg);
+                ++pos;
 
                 msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(1, idGotoImplementation, msg);
+                menu->Insert(pos, idGotoImplementation, msg);
+                ++pos;
 
-                menu->Insert(2, wxID_SEPARATOR, wxEmptyString);
+                if (m_NativeParser.GetParser().Done())
+                {
+                    msg.Printf(_("Find references of: '%s'"), NameUnderCursor.wx_str());
+                    menu->Insert(pos, idMenuFindReferences, msg);
+                    ++pos;
+                }
+
+                menu->Insert(pos, wxID_SEPARATOR, wxEmptyString);
             }
         }
+
         const int insertId = menu->FindItem(_("Insert"));
         if (insertId != wxNOT_FOUND)
         {
@@ -419,6 +730,24 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         }
         else
             Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
+
+        if (m_NativeParser.GetParser().Done() && nameUnderCursor && !IsInclude)
+        {
+            wxMenu* refactorMenu = new wxMenu();
+            refactorMenu->Append(idMenuRenameSymbols, _("Rename symbols"), _("Rename symbols under cursor"));
+            menu->AppendSeparator();
+            menu->Append(wxID_ANY, _T("Code Refactoring"), refactorMenu);
+        }
+    }
+    else if (type == mtProjectManager)
+    {
+        if (data)
+        {
+            if (data->GetKind() == FileTreeData::ftdkProject)
+                menu->Append(idSelectedProjectReparse, _("Reparse this project"), _("Reparse current actived project"));
+            else if (data->GetKind() == FileTreeData::ftdkFile)
+                menu->Append(idSelectedFileReparse, _("Reparse this file"), _("Reparse current selected file"));
+        }
     }
 }
 
@@ -428,34 +757,35 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
     m_Function = XRCCTRL(*toolBar, "chcCodeCompletionFunction", wxChoice);
     m_Scope = XRCCTRL(*toolBar, "chcCodeCompletionScope", wxChoice);
-    m_Scope->Disable();
-    toolBar->Realize();
-    toolBar->SetInitialSize();
+
+    m_ToolBar = toolBar;
+    UpdateToolBar();
+    EnableToolbarTools(false);
+
     return true;
 }
 
 void CodeCompletion::OnAttach()
 {
-    m_PageIndex  = -1;
-    m_InitDone   = false;
-    m_EditMenu   = 0;
-    m_SearchMenu = 0;
-    m_ViewMenu   = 0;
-    m_Function   = 0;
-    m_Scope      = 0;
-    m_ParsedProjects.clear();
+    m_PageIndex   = -1;
+    m_EditMenu    = 0;
+    m_SearchMenu  = 0;
+    m_ViewMenu    = 0;
+    m_ProjectMenu = 0;
+    m_ToolBar     = 0;
+    m_Function    = 0;
+    m_Scope       = 0;
     m_FunctionsScope.clear();
     m_NameSpaces.clear();
     m_AllFunctionsScopes.clear();
     m_ToolbarChanged = true; // by default
 
-    m_LastFile = wxEmptyString;
+    m_LastFile.clear();
 
     LoadTokenReplacements();
     RereadOptions();
 
-    m_LastPosForCodeCompletion = -1;
-    m_StartIdxNameSpaceInScope = -1;
+    m_LastPosForCodeCompletion = wxNOT_FOUND;
     m_NativeParser.SetNextHandler(this);
 
     m_NativeParser.CreateClassBrowser();
@@ -472,6 +802,7 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
     pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,       new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnValueTooltip));
     pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorModified));
 
     pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
@@ -480,19 +811,23 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_PROJECT_SAVE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectSaved));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED,   new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_CHANGED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileChanged));
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
 {
     SaveTokenReplacements();
 
+    m_NativeParser.RemoveClassBrowser(appShutDown);
+    m_NativeParser.ClearParsers();
+
     // unregister hook
     // 'true' will delete the functor too
     EditorHooks::UnregisterHook(m_EditorHookId, true);
 
-    m_NativeParser.RemoveClassBrowser(appShutDown);
-    m_NativeParser.ClearParsers();
-    m_ParsedProjects.clear();
+    // remove registered event sinks
+    Manager::Get()->RemoveAllEventSinksFor(this);
+
     m_FunctionsScope.clear();
     m_NameSpaces.clear();
     m_AllFunctionsScopes.clear();
@@ -503,6 +838,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
     {
         m_EditMenu->Delete(idMenuCodeComplete);
         m_EditMenu->Delete(idMenuShowCallTip);
+        m_EditMenu->Delete(idMenuRenameSymbols);
     }
     if (m_SearchMenu)
     {
@@ -511,6 +847,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuGotoNextFunction);
         m_SearchMenu->Delete(idMenuGotoDeclaration);
         m_SearchMenu->Delete(idMenuGotoImplementation);
+        m_SearchMenu->Delete(idMenuFindReferences);
         m_SearchMenu->Delete(idMenuOpenIncludeFile);
     }
 }
@@ -553,48 +890,39 @@ int CodeCompletion::CodeComplete()
     if (!IsAttached() || !m_InitDone)
         return -1;
 
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (!parser)
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser?!"));
-        return -4;
-    }
+    const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
 
     TokenIdxSet result;
-    if (  (m_NativeParser.MarkItemsByAI(result, parser->Options().useSmartSense) > 0)
+    if (   m_NativeParser.MarkItemsByAI(result, m_NativeParser.GetParser().Options().useSmartSense, true, caseSens)
         || m_NativeParser.LastAISearchWasGlobal() ) // enter even if no match (code-complete C++ keywords)
     {
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("%d results"), result.size()));
 
-        size_t max_match = cfg->ReadInt(_T("/max/matches"), 16384);
-        if (result.size() <= max_match)
+        if (result.size() <= m_CCMaxMatches)
         {
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list..."));
 
-            wxImageList* ilist = parser->GetImageList();
+            wxImageList* ilist = m_NativeParser.GetImageList();
             ed->GetControl()->ClearRegisteredImages();
 
-            bool caseSens = parser ? parser->Options().caseSensitive : false;
             wxArrayString items;
             items.Alloc(result.size());
             int pos   = ed->GetControl()->GetCurrentPos();
             int start = ed->GetControl()->WordStartPosition(pos, true);
             wxArrayInt already_registered;
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
-            TokensTree* tokens = parser->GetTokens();
+            TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+            m_SearchItem.clear();
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                m_SearchItem.clear();
                 Token* token = tokens->at(*it);
                 if (!token || token->m_Name.IsEmpty())
                     continue;
@@ -604,7 +932,7 @@ int CodeCompletion::CodeComplete()
                     continue;
 
                 unique_strings.insert(token->m_Name);
-                int iidx = parser->GetTokenKindImage(token);
+                int iidx = m_NativeParser.GetTokenKindImage(token);
                 if (already_registered.Index(iidx) == wxNOT_FOUND)
                 {
                     ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
@@ -613,9 +941,9 @@ int CodeCompletion::CodeComplete()
                 wxString tmp;
                 tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
                 items.Add(tmp);
-                if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
+                if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
                 {
-                    m_SearchItem[token->m_Name] = token->m_Args.size()-2;
+                    m_SearchItem[token->m_Name] = token->m_Args.size() - 2;
                 }
                 if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
                 {
@@ -673,7 +1001,7 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-            if (items.GetCount() == 0)
+            if (items.IsEmpty())
             {
                 if (s_DebugSmartSense)
                     Manager::Get()->GetLogManager()->DebugLog(_T("No items found."));
@@ -688,17 +1016,10 @@ int CodeCompletion::CodeComplete()
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Done generating tokens list"));
 
-            // Remove duplicate items
-            for (size_t i=0; i<items.Count()-1; i++)
-            {
-                if (items.Item(i)==items.Item(i+1))
-                    items.RemoveAt(i);
-            }
-
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
-            ed->GetControl()->AutoCompSetFillUps(cfg->Read(_T("/fillup_chars"), wxEmptyString));
-            ed->GetControl()->AutoCompSetChooseSingle(m_IsAutoPopup ? false : cfg->ReadBool(_T("/auto_select_one"), false));
+            ed->GetControl()->AutoCompSetFillUps(m_CCFillupChars);
+            ed->GetControl()->AutoCompSetChooseSingle(m_IsAutoPopup ? false : m_CCAutoSelectOne);
             ed->GetControl()->AutoCompSetAutoHide(true);
             ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
             wxString final = GetStringFromArray(items, _T(" "));
@@ -721,7 +1042,7 @@ int CodeCompletion::CodeComplete()
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
 
-        if (!parser->Done())
+        if (!m_NativeParser.GetParser().Done())
         {
             wxString msg = _("C++ Parser is still parsing files...");
             ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
@@ -750,40 +1071,106 @@ bool TestIncludeLine(wxString const &line)
     return false;
 }
 
-wxArrayString GetIncludeDirs(cbProject &project)
+int CompareStringLen(const wxString& first, const wxString& second)
+{
+    return second.Len() - first.Len();
+}
+
+void GetStringFromSet(wxString& str, const StringSet& s, const wxString& separator)
+{
+    size_t totalLen = 0;
+    for (StringSet::iterator it = s.begin(); it != s.end(); ++it)
+        totalLen += (*it).Len();
+    str.Clear();
+    str.Alloc(totalLen + s.size() * separator.Len() + 1);
+    for (StringSet::iterator it = s.begin(); it != s.end(); ++it)
+        str << *it << separator;
+}
+
+wxArrayString& CodeCompletion::GetSystemIncludeDirs(Parser* parser, bool force)
+{
+    static Parser* lastParser = NULL;
+    static wxArrayString incDirs;
+
+    if ((!parser || !force) && parser == lastParser)
+        return incDirs;
+    else
+    {
+        incDirs.Clear();
+        lastParser = parser;
+    }
+
+    cbProject* project = m_NativeParser.GetProjectByParser(parser);
+    wxString prjPath;
+    if (project)
+        prjPath = project->GetCommonTopLevelPath();
+
+    incDirs = parser->GetIncludeDirs();
+    for (size_t i = 0; i < incDirs.GetCount();)
+    {
+        if (incDirs[i].Last() != wxFILE_SEP_PATH)
+            incDirs[i].Append(wxFILE_SEP_PATH);
+        if (project && incDirs[i].StartsWith(prjPath))
+            incDirs.RemoveAt(i);
+        else
+            ++i;
+    }
+
+    return incDirs;
+}
+
+void CodeCompletion::GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs)
+{
+    for (size_t i = 0; i < targets.GetCount(); ++i)
+    {
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(targets[i]);
+        wxFileName fn(targets[i], wxEmptyString);
+        if (fn.IsRelative())
+        {
+            const wxArrayString oldDirs = fn.GetDirs();
+            fn.SetPath(basePath);
+            for (size_t j = 0; j < oldDirs.GetCount(); ++j)
+                fn.AppendDir(oldDirs[j]);
+        }
+
+        const wxString path = fn.GetFullPath();
+        if (dirs.Index(path) == wxNOT_FOUND)
+            dirs.Add(path);
+    }
+}
+
+wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets)
 {
     wxArrayString dirs;
+    const wxString prjPath = project->GetCommonTopLevelPath();
+    GetAbsolutePath(prjPath, project->GetIncludeDirs(), dirs);
+
+    for (size_t i = 0; i < buildTargets.GetCount(); ++i)
+        GetAbsolutePath(prjPath, project->GetBuildTarget(buildTargets[i])->GetIncludeDirs(), dirs);
+
+    wxArrayString sysDirs;
+    for (size_t i = 0; i < dirs.GetCount();)
     {
-        wxArrayString target_dirs = project.GetIncludeDirs();
-
-        for(size_t ii = 0; ii < target_dirs.GetCount(); ++ii)
+        if (dirs[i].StartsWith(prjPath))
+            ++i;
+        else
         {
-            wxFileName filename;
-            NormalizePath(filename, target_dirs[ii]);
-
-            wxString fullname = filename.GetFullPath();
-            fullname.Replace(_T("\\"), _T("/"), true);
-            if (dirs.Index(fullname) == wxNOT_FOUND)
-                dirs.Add(fullname);
+            wxCriticalSectionLocker locker(s_HeadersCriticalSection);
+            if (m_SystemHeadersMap.find(dirs[i]) == m_SystemHeadersMap.end())
+                sysDirs.Add(dirs[i]);
+            dirs.RemoveAt(i);
         }
     }
 
-    wxString target_name = project.GetActiveBuildTarget();
-    ProjectBuildTarget *target = project.GetBuildTarget(target_name);
-    if (target)
+    if (!sysDirs.IsEmpty())
     {
-        wxArrayString target_dirs = target->GetIncludeDirs();
-        for(size_t ii = 0; ii < target_dirs.GetCount(); ++ii)
-        {
-            wxFileName filename;
-            NormalizePath(filename, target_dirs[ii]);
-
-            wxString fullname = filename.GetFullPath();
-            fullname.Replace(_T("\\"), _T("/"), true);
-            if (dirs.Index(fullname) == wxNOT_FOUND)
-                dirs.Add(fullname);
-        }
+        SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, sysDirs);
+        m_SystemHeadersThread.push_back(thread);
+        if (!m_SystemHeadersThread.front()->IsRunning() && m_NativeParser.Done())
+            thread->Run();
     }
+
+    dirs.Sort(CompareStringLen);
     return dirs;
 }
 
@@ -791,11 +1178,134 @@ wxArrayString GetIncludeDirs(cbProject &project)
 // #include "| or #include <|
 void CodeCompletion::CodeCompleteIncludes()
 {
+    wxStopWatch sw;
+
     if (!IsAttached() || !m_InitDone)
         return;
 
-    cbProject* pPrj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (!pPrj)
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    const wxString curFile(ed->GetFilename());
+    const wxString curPath(wxFileName(curFile).GetPath());
+    wxArrayString buildTargets;
+
+    cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
+    ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
+    if (pf)
+        buildTargets = pf->buildTargets;
+
+    FileType ft = FileTypeOf(ed->GetShortName());
+    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+        return;
+
+    const int pos = ed->GetControl()->GetCurrentPos();
+    const int lineStartPos = ed->GetControl()->PositionFromLine(ed->GetControl()->GetCurrentLine());
+    wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
+    line.Trim();
+    if (line.IsEmpty() || !TestIncludeLine(line))
+        return;
+
+    int keyPos = line.Find(_T('"'));
+    if (keyPos == wxNOT_FOUND)
+        keyPos = line.Find(_T('<'));
+    if (keyPos == wxNOT_FOUND || keyPos > pos - lineStartPos)
+        return;
+    ++keyPos;
+
+    // now, we are after the quote prompt
+    wxString filename = line.SubString(keyPos, pos - lineStartPos - 1);
+    filename.Replace(_T("\\"), _T("/"), true);
+    if (filename.Last() == _T('"') || filename.Last() == _T('>'))
+        filename.RemoveLast();
+
+    // fill a list of matching files
+    StringSet files;
+
+    // #include < or #include "
+    {
+        wxCriticalSectionLocker locker(s_HeadersCriticalSection);
+        wxArrayString& incDirs = GetSystemIncludeDirs(&m_NativeParser.GetParser(),
+                                                      project ? project->GetModified() : true);
+        for (size_t i = 0; i < incDirs.GetCount(); ++i)
+        {
+            SystemHeadersMap::iterator it = m_SystemHeadersMap.find(incDirs[i]);
+            if (it != m_SystemHeadersMap.end())
+            {
+                const StringSet& headers = it->second;
+                for (StringSet::iterator it = headers.begin(); it != headers.end(); ++it)
+                {
+                    const wxString& file = *it;
+                    if (file.StartsWith(filename))
+                        files.insert(file);
+                }
+            }
+        }
+    }
+
+    // #include "
+    if (project)
+    {
+        const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
+            if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
+            {
+                wxString file = pf->file.GetFullPath();
+                wxString header;
+                for (size_t j = 0; j < localIncludeDirs.GetCount(); ++j)
+                {
+                    const wxString& dir = localIncludeDirs[j];
+                    if (file.StartsWith(dir))
+                    {
+                        header = file.Mid(dir.Len());
+                        break;
+                    }
+                }
+
+                if (header.IsEmpty())
+                {
+                    if (pf->buildTargets != buildTargets)
+                        continue;
+
+                    wxFileName fn(file);
+                    fn.MakeRelativeTo(curPath);
+                    header = fn.GetFullPath();
+                }
+
+                if (header.StartsWith(filename))
+                {
+                    header.Replace(_T("\\"), _T("/"), true);
+                    files.insert(header);
+                }
+            }
+        }
+    }
+
+    // popup the auto completion window
+    if (!files.empty())
+    {
+        ed->GetControl()->ClearRegisteredImages();
+        ed->GetControl()->AutoCompSetIgnoreCase(false);
+        ed->GetControl()->AutoCompSetCancelAtStart(true);
+        ed->GetControl()->AutoCompSetFillUps(m_CCFillupChars);
+        ed->GetControl()->AutoCompSetChooseSingle(false);
+        ed->GetControl()->AutoCompSetAutoHide(true);
+        ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
+        wxString final;
+        GetStringFromSet(final, files, _T(" "));
+        final.RemoveLast(); // remove last space
+        ed->GetControl()->AutoCompShow(pos - lineStartPos - keyPos, final);
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Get include file count is %d, use time is %d"),
+                                                    files.size(), sw.Time()));
+    }
+}
+
+void CodeCompletion::CodeCompletePreprocessor()
+{
+    if (!IsAttached() || !m_InitDone)
         return;
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -803,76 +1313,30 @@ void CodeCompletion::CodeCompleteIncludes()
     if (!ed)
         return;
 
-    Parser* parser = m_NativeParser.GetParserPtr();
-    const bool caseSens = parser ? parser->Options().caseSensitive : false;
+    cbStyledTextCtrl* control = ed->GetControl();
+    const int curPos = control->GetCurrentPos();
+    const int start = control->WordStartPosition(curPos, true);
+    const int end = control->WordEndPosition(curPos, true);
 
-    FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
-        return;
-
-    int pos = ed->GetControl()->GetCurrentPos();
-    int lineStartPos = ed->GetControl()->PositionFromLine(ed->GetControl()->GetCurrentLine());
-    wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
-    //Manager::Get()->GetLogManager()->DebugLog("#include cc for \"%s\"", line.c_str());
-    line.Trim();
-    if (line.IsEmpty() || !TestIncludeLine(line))
-        return;
-
-    size_t quote_pos = line.find(_T('"'));
-    if (quote_pos == wxString::npos)
-        quote_pos = line.find(_T('<'));
-    if (quote_pos == wxString::npos || quote_pos > static_cast<size_t>(pos - lineStartPos))
-        return;
-    ++quote_pos;
-
-    // now, we are after the quote prompt
-    wxString filename = line.substr(quote_pos, pos - lineStartPos - quote_pos);
-    filename.Replace(_T("\\"), _T("/"), true);
-
-    wxArrayString include_dirs = GetIncludeDirs(*pPrj);
-
-    // fill a list of matching project files
-    wxArrayString files;
-    for (int i = 0; i < pPrj->GetFilesCount(); ++i)
-    {
-        ProjectFile* pf = pPrj->GetFile(i);
-        if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
-        {
-            wxString current_filename = pf->relativeFilename;
-            current_filename.Replace(_T("\\"), _T("/"), true);
-            if (current_filename.find(filename) != wxString::npos)
-            {
-                if (include_dirs.GetCount() > 0)
-                {
-                    bool found = false;
-                    for(size_t dir_index = 0; dir_index < include_dirs.GetCount(); ++dir_index)
-                    {
-                        wxString const &dir = include_dirs[dir_index];
-                        if (current_filename.StartsWith(dir))
-                        {
-                            files.Add(current_filename.substr(dir.length()));
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                        files.Add(current_filename);
-                }
-                else
-                    files.Add(current_filename);
-            }
-        }
-    }
-
-    // popup the auto completion window
-    if (files.GetCount() != 0)
-    {
-        files.Sort();
-        ed->GetControl()->ClearRegisteredImages();
-        ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
-        ed->GetControl()->AutoCompShow(pos - lineStartPos - quote_pos, GetStringFromArray(files, _T(" ")));
-    }
+    wxArrayString tokens;
+    tokens.Add(_T("include"));
+    tokens.Add(_T("if"));
+    tokens.Add(_T("ifdef"));
+    tokens.Add(_T("ifndef"));
+    tokens.Add(_T("elif"));
+    tokens.Add(_T("elifdef"));
+    tokens.Add(_T("elifndef"));
+    tokens.Add(_T("else"));
+    tokens.Add(_T("endif"));
+    tokens.Add(_T("define"));
+    tokens.Add(_T("undef"));
+    tokens.Add(_T("pragma"));
+    tokens.Add(_T("error"));
+    tokens.Add(_T("line"));
+    tokens.Sort();
+    ed->GetControl()->ClearRegisteredImages();
+    ed->GetControl()->AutoCompSetIgnoreCase(false);
+    ed->GetControl()->AutoCompShow(end - start, GetStringFromArray(tokens, _T(" ")));
 }
 
 wxArrayString CodeCompletion::GetCallTips()
@@ -958,17 +1422,10 @@ int CodeCompletion::DoClassMethodDeclImpl()
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return -4;
 
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (!parser)
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
-        return -4;
-    }
-
     wxString filename = ed->GetFilename();
 
     // open the insert class dialog
-    InsertClassMethodDlg dlg(Manager::Get()->GetAppWindow(), parser, filename);
+    InsertClassMethodDlg dlg(Manager::Get()->GetAppWindow(), &m_NativeParser.GetParser(), filename);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -1007,32 +1464,31 @@ int CodeCompletion::DoAllMethodsImpl()
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return -4;
 
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (!parser)
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
-        return -4;
-    }
-
-    // mask for filenames (include only classes declared in filename.*)
-    wxString filename = UnixFilename(ed->GetFilename().BeforeLast(_T('.')));
-    filename << _T('.');
-
-    TokensTree* tree = parser->GetTokens();
+    TokensTree* tree = m_NativeParser.GetParser().GetTokens();
 
     // get all filenames' indices matching our mask
-    std::set<size_t> result;
-    tree->m_FilenamesMap.FindMatches(filename, result, true, true);
+    TokenFilesSet result;
+    TokenFilesSet tmp;
+    wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
+    for (size_t i = 0; i < paths.GetCount(); ++i)
+    {
+        tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
+        for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
+            result.insert(*it);
+    }
+
     if (result.empty())
     {
-        cbMessageBox(_("File not in parser's database: ") + filename + _T('*'), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("Can not find any file in parser's database."), _("Warning"), wxICON_WARNING);
         return -5;
     }
 
     // loop matching files, loop tokens in file and get list of un-implemented functions
     wxArrayString arr; // for selection (keeps strings)
     wxArrayInt arrint; // for selection (keeps indices)
-    for (std::set<size_t>::iterator itf = result.begin(); itf != result.end(); ++itf)
+    typedef std::map<int, std::pair<int, wxString> > ImplMap;
+    ImplMap im;
+    for (TokenFilesSet::iterator itf = result.begin(); itf != result.end(); ++itf)
     {
         TokenIdxSet& tokens = tree->m_FilesMap[*itf];
         // loop tokens in file
@@ -1043,15 +1499,20 @@ int CodeCompletion::DoAllMethodsImpl()
                 (token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)) && // is method
                 token->m_ImplLine == 0) // is un-implemented
             {
-                arr.Add(token->DisplayName());
-                arrint.Add(*its);
+                im[token->m_Line] = std::make_pair(*its, token->DisplayName());
             }
         }
     }
 
+    for (ImplMap::iterator it = im.begin(); it != im.end(); ++it)
+    {
+        arrint.Add(it->second.first);
+        arr.Add(it->second.second);
+    }
+
     if (arr.empty())
     {
-        cbMessageBox(_("No classes declared or no un-implemented class methods found in ") + filename + _T('*'), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("No classes declared or no un-implemented class methods found."), _("Warning"), wxICON_WARNING);
         return -5;
     }
 
@@ -1063,6 +1524,9 @@ int CodeCompletion::DoAllMethodsImpl()
         int pos = control->GetCurrentPos();
         int line = control->LineFromPosition(pos);
         control->GotoPos(control->PositionFromLine(line));
+
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+        bool addDoxgenComment = cfg->ReadBool(_T("/add_doxgen_comment"), false);
 
         wxArrayInt indices = dlg.GetSelectedIndices();
         for (size_t i = 0; i < indices.GetCount(); ++i)
@@ -1076,14 +1540,22 @@ int CodeCompletion::DoAllMethodsImpl()
 
             // actual code generation
             wxString str;
+            str << _T("\n");
             str << ed->GetLineIndentString(line - 1);
-            str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
-            str << token->m_Type << _T(" ") << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
-            if (token->m_IsConst)
+            if (addDoxgenComment)
+                str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
+            wxString type = token->m_Type;
+            if ((type.Last() == _T('&') || type.Last() == _T('*')) && type[type.Len() - 2] == _T(' '))
             {
-                str << _T(" const");
+                type[type.Len() - 2] = type.Last();
+                type.RemoveLast();
             }
-            str << _T("\n{\n\n}\n\n");
+            if (!type.IsEmpty())
+                str << type << _T(" ");
+            str << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
+            if (token->m_IsConst)
+                str << _T(" const");
+            str << _T("\n{\n}\n");
 
             // add code in editor
             control->SetTargetStart(pos);
@@ -1104,14 +1576,30 @@ void CodeCompletion::DoCodeComplete()
     if (!ed)
         return;
 
-    int style = ed->GetControl()->GetStyleAt(ed->GetControl()->GetCurrentPos());
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
-//    Manager::Get()->GetLogManager()->DebugLog(_T("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
-    if (style == wxSCI_C_PREPROCESSOR)
+    cbStyledTextCtrl* control = ed->GetControl();
+    const int pos = control->GetCurrentPos();
+    const int style = control->GetStyleAt(pos);
+    const int lineIndentPos = control->GetLineIndentPosition(control->GetCurrentLine());
+
+    const wxChar lineFirstChar = ed->GetControl()->GetCharAt(lineIndentPos);
+    const wxChar curChar = ed->GetControl()->GetCharAt(pos - 1);
+
+    if (lineFirstChar == _T('#'))
     {
-        CodeCompleteIncludes();
+        const int start = control->WordStartPosition(lineIndentPos + 1, true);
+        const int end = control->WordEndPosition(lineIndentPos + 1, true);
+        const wxString str = control->GetTextRange(start, end);
+
+        if (str == _T("include"))
+            CodeCompleteIncludes();
+        else if (end >= pos)
+            CodeCompletePreprocessor();
         return;
     }
+    else if (curChar == _T('#'))
+        return;
+    else if (lineFirstChar == _T(':') && curChar == _T(':'))
+        return;
 
     if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
         return;
@@ -1165,47 +1653,33 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
 
     // parse any projects opened through DDE or the command-line
-    ParseActiveProjects();
-    ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-    m_NativeParser.SetClassBrowserProject(prjMan->GetActiveProject());
+    cbProject* curProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (curProject && !m_NativeParser.GetParserByProject(curProject))
+        m_NativeParser.CreateParser(curProject);
+
+    // parse any files opened through DDE or the command-line
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (editor)
+        m_NativeParser.OnEditorActivated(editor);
 
     event.Skip();
 }
 
 void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
 {
-    if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_pCodeCompletionLastEditor) == -1)
+    if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_LastEditor) == -1)
         return; // editor is invalid (probably closed already)
 
     // ask for code-completion *only* if the editor is still after the "." or "->" operator
-    if (m_pCodeCompletionLastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
+    if (m_LastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
     {
         DoCodeComplete();
         m_LastPosForCodeCompletion = -1; // reset it
     }
 }
 
-void CodeCompletion::ParseActiveProjects()
-{
-    // parse all active projects
-    m_InitDone = false;
-    ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-    for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
-    {
-        cbProject* curproject = prjMan->GetProjects()->Item(i);
-        if (m_ParsedProjects.find(curproject)==m_ParsedProjects.end())
-        {
-            m_ParsedProjects.insert(curproject);
-            m_NativeParser.AddParser(curproject);
-        }
-    }
-    m_InitDone = true;
-}
-
 void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnWorkspaceChanged"));
-
     // EVT_WORKSPACE_CHANGED is a powerful event, it's sent after any project
     // has finished loading or closing. It's the *LAST* event to be sent when
     // the workspace has been changed, and it's not sent if the application is
@@ -1213,14 +1687,15 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
     // widgets.
     if (IsAttached() && m_InitDone)
     {
-        // Parse the projects
-        ParseActiveProjects();
+        cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (project && !m_NativeParser.GetParserByProject(project))
+            m_NativeParser.CreateParser(project);
+
         // Update the Function toolbar
         ParseFunctionsAndFillToolbar();
+
         // Update the class browser
-        ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-        m_NativeParser.SetClassBrowserProject(prjMan->GetActiveProject());
-        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
+        if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfProject)
             m_NativeParser.UpdateClassBrowser();
     }
     event.Skip();
@@ -1228,54 +1703,72 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectActivated"));
-
     // The Class browser shouldn't be updated if we're in the middle of loading/closing
     // a project/workspace, because the class browser would need to be updated again.
     // So we need to update it with the EVT_WORKSPACE_CHANGED event, which gets
     // triggered after everything's finished loading/closing.
-
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
-        m_NativeParser.SetClassBrowserProject(event.GetProject());
-        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
+        cbProject* project = event.GetProject();
+        if (project && !m_NativeParser.GetParserByProject(project) && project->GetFilesCount() > 0)
+            m_NativeParser.CreateParser(project);
+
+        if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfProject)
             m_NativeParser.UpdateClassBrowser();
     }
-        m_NativeParser.SetClassBrowserProject(event.GetProject());
+
     event.Skip();
 }
 
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectClosed"));
-
     // After this, the Class Browser needs to be updated. It will happen
     // when we receive the next EVT_PROJECT_ACTIVATED event.
     if (IsAttached() && m_InitDone)
     {
-        m_ParsedProjects.erase(event.GetProject());
-        m_NativeParser.RemoveParser(event.GetProject());
+        cbProject* project = event.GetProject();
+        if (project && m_NativeParser.GetParserByProject(project))
+            m_NativeParser.DeleteParser(project);
     }
     event.Skip();
 }
 
 void CodeCompletion::OnProjectSaved(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectSaved"));
-
     // reparse project (compiler search dirs might have changed)
-    if (IsAttached() && m_InitDone && event.GetProject())
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing project."));
-        m_NativeParser.ReparseProject(event.GetProject());
-    }
+    if (m_TimerProjectSaved.IsRunning())
+        m_TimerProjectSaved.Stop();
+
+    m_TimerProjectSaved.SetClientData(event.GetProject());
+    // we need more time for waiting wxExecute in NativeParser::AddCompilerPredefinedMacros
+    m_TimerProjectSaved.Start(200, wxTIMER_ONE_SHOT);
+
     event.Skip();
+}
+
+void CodeCompletion::OnProjectSavedTimer(wxTimerEvent& event)
+{
+    cbProject* project = static_cast<cbProject*>(m_TimerProjectSaved.GetClientData());
+    m_TimerProjectSaved.SetClientData(NULL);
+
+    ProjectsArray* projs = Manager::Get()->GetProjectManager()->GetProjects();
+    if (projs->Index(project) == wxNOT_FOUND)
+        return;
+
+    if (IsAttached() && m_InitDone && project)
+    {
+        if (   m_NativeParser.GetParserByProject(project)
+            && m_NativeParser.DeleteParser(project) )
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing project."));
+        }
+
+        m_NativeParser.CreateParser(project);
+    }
 }
 
 void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectFileAdded"));
-
     if (IsAttached() && m_InitDone)
         m_NativeParser.AddFileToParser(event.GetProject(), event.GetString());
     event.Skip();
@@ -1283,10 +1776,20 @@ void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent& event)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectFileRemoved"));
-
     if (IsAttached() && m_InitDone)
         m_NativeParser.RemoveFileFromParser(event.GetProject(), event.GetString());
+    event.Skip();
+}
+
+void CodeCompletion::OnProjectFileChanged(CodeBlocksEvent& event)
+{
+    if (IsAttached() && m_InitDone)
+    {
+        wxString filename = event.GetString();
+        cbProject* project = m_NativeParser.GetProjectByFilename(filename);
+        if (project && m_NativeParser.ReparseFile(project, filename))
+            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when file changed: ") + filename);
+    }
     event.Skip();
 }
 
@@ -1305,67 +1808,131 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 {
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
-        EditorBase* ed = event.GetEditor();
-        if (!ed)
-            return;
-        Parser* parser = m_NativeParser.GetParserPtr();
-        if (!parser)
-            return;
-
-        Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing active editor ") + ed->GetFilename());
-        parser->Reparse(ed->GetFilename());
-        ParseFunctionsAndFillToolbar(true);
+        EditorBase* editor = event.GetEditor();
+        if (editor)
+        {
+            wxString filename = editor->GetFilename();
+            cbProject* project = m_NativeParser.GetProjectByFilename(filename);
+            if (project && m_NativeParser.ReparseFile(project, filename))
+            {
+                Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing active editor ") + filename);
+                if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
+                    ParseFunctionsAndFillToolbar(true);
+            }
+        }
     }
+
     event.Skip();
+}
+
+void CodeCompletion::OnThreadUpdate(wxCommandEvent& event)
+{
+    if (!m_SystemHeadersThread.empty())
+    {
+        SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
+        if (thread == m_SystemHeadersThread.front())
+            Manager::Get()->GetLogManager()->DebugLog(event.GetString());
+    }
+}
+
+void CodeCompletion::OnThreadCompletion(wxCommandEvent& event)
+{
+    if (!m_SystemHeadersThread.empty())
+    {
+        SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
+        if (thread == m_SystemHeadersThread.front())
+        {
+            if (!event.GetString().IsEmpty())
+                Manager::Get()->GetLogManager()->DebugLog(event.GetString());
+            m_SystemHeadersThread.pop_front();
+        }
+
+        if (   !m_SystemHeadersThread.empty()
+            && !m_SystemHeadersThread.front()->IsRunning()
+            && m_NativeParser.Done() )
+        {
+            m_SystemHeadersThread.front()->Run();
+        }
+    }
 }
 
 // compare method for the sort algorithm for our FunctionScope struct
 bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
 {
-    if (fs1.Name == fs2.Name)
+	int result = wxStricmp(fs1.Scope, fs2.Scope);
+	if (result == 0)
     {
-        return fs1.StartLine < fs2.StartLine;
+		result = wxStricmp(fs1.Name, fs2.Name);
+		if (result == 0)
+		{
+			result = fs1.StartLine - fs2.StartLine;
+		}
     }
-    else
-    {
-        return fs1.Name < fs2.Name;
-    }
+
+    return result < 0;
 }
 
+bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+{
+    int result = wxStricmp(fs1.Scope, fs2.Scope);
+    if (result == 0)
+    {
+        result = wxStricmp(fs1.Name, fs2.Name);
+    }
+
+    return result == 0;
+}
+
+bool LessNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+{
+	return ns1.Name < ns2.Name;
+}
+
+bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+{
+	return ns1.Name == ns2.Name;
+}
 
 // help method in finding the namespace position in the vector for the namespace containing the current line
 int CodeCompletion::NameSpacePosition() const
 {
-    int retValue = -1; // -1 : not found
-    for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
+    int retValue = wxNOT_FOUND;
+    int startLine = wxNOT_FOUND;
+    for (unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
     {
-            const NameSpace Ns = m_NameSpaces[idxNs];
-            if (Ns.StartLine <= m_CurrentLine && Ns.EndLine >= m_CurrentLine)
-            {    // got one, maybe there might be a btter fitting namespace (embedded namespaces)
-                // so keep on looking
-                retValue = static_cast<int>(idxNs);
-            }
-            else if (Ns.StartLine > m_CurrentLine)
-            {    // past the curent line, stop searching
-            }
-    } // end for : idx : idxNs
+		const NameSpace& Ns = m_NameSpaces[idxNs];
+		if (m_CurrentLine >= Ns.StartLine && m_CurrentLine <= Ns.EndLine && Ns.StartLine > startLine)
+		{
+		    // got one, maybe there might be a btter fitting namespace (embedded namespaces)
+			// so keep on looking
+			retValue = static_cast<int>(idxNs);
+			startLine = Ns.StartLine;
+		}
+    }
+
     return retValue;
 }
 
 // help method in finding the function position in the vector for the function containing the current line
-int CodeCompletion::FunctionPosition() const
+void CodeCompletion::FunctionPosition(int &scopeItem, int &functionItem) const
 {
-    int retValue = -1; // -1 : not found
-    for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+    scopeItem = wxNOT_FOUND;
+    functionItem = wxNOT_FOUND;
+
+    for (unsigned int idxSc = 0; idxSc < m_ScopeMarks.size(); ++idxSc)
     {
-        const FunctionScope fs = m_FunctionsScope[idxFn];
-        if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
-        {    // got it :)
-            retValue = static_cast<int>(idxFn);
-            break;
-        }
+		unsigned int start = m_ScopeMarks[idxSc];
+		unsigned int end = (idxSc + 1 < m_ScopeMarks.size()) ? m_ScopeMarks[idxSc + 1] : m_FunctionsScope.size();
+		for (int idxFn = 0; start + idxFn < end; ++idxFn)
+		{
+			const FunctionScope fs = m_FunctionsScope[start + idxFn];
+			if (m_CurrentLine >= fs.StartLine && m_CurrentLine <= fs.EndLine)
+			{
+				scopeItem = idxSc;
+				functionItem = idxFn;
+			}
+		}
     }
-    return retValue;
 }
 
 void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
@@ -1378,7 +1945,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
     int current_line = ed->GetControl()->GetCurrentLine();
 
     // search previous/next function from current line, default: previous
-    int line = -1;  // -1 : not found
+    int line = wxNOT_FOUND;
     if (m_FunctionsScope.size())
     {
         unsigned int best_func = 0;
@@ -1419,7 +1986,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
         { line = m_FunctionsScope[best_func].StartLine; }
     }
 
-    if (line != -1)
+    if (line != wxNOT_FOUND)
     {
         ed->GotoLine(line);
         ed->SetFocus();
@@ -1431,6 +1998,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan) // Closing the app?
         return;
+
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed || !ed->GetControl())
     {
@@ -1438,11 +2006,17 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
             m_Function->Clear();
         if (m_Scope)
             m_Scope->Clear();
+
+        EnableToolbarTools(false);
+        m_LastFile.Clear();
         return;
     }
-    wxString filename = ed->GetFilename();
+
+    const wxString filename = ed->GetFilename();
     if (filename.IsEmpty())
         return;
+
+    bool fileParseFinished = m_NativeParser.GetParser().IsFileParsed(filename);
     FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
 
     // *** Part 1: Parse the file (if needed) ***
@@ -1451,98 +2025,204 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         m_TimerFunctionsParsing.Stop();
         funcdata->m_FunctionsScope.clear();
         funcdata->m_NameSpaces.clear();
-        funcdata->parsed = true;
 
-        Parser* parser = m_NativeParser.GetParserPtr();
-        if (!parser)
-            return;
         TokenIdxSet result;
-        TokensTree* tmptree = parser->GetTokens();
-        parser->FindTokensInFile(filename, result, tkFunction | tkConstructor | tkDestructor);
+        TokensTree* tmptree = m_NativeParser.GetParser().GetTokens();
+        m_NativeParser.GetParser().FindTokensInFile(filename, result, tkAnyFunction | tkEnum | tkClass | tkNamespace);
+
+        if (!result.empty())
+            funcdata->parsed = true;
+        else
+            fileParseFinished = false;
+
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
+            unsigned int fileIdx = m_NativeParser.GetParser().GetTokens()->GetFileIndex(filename);
             const Token* token = tmptree->at(*it);
             if (token && token->m_ImplLine != 0)
             {
-                FunctionScope func;
-                func.StartLine = token->m_ImplLine - 1;
-                func.EndLine = token->m_ImplLineEnd - 1;
-                func.Scope = token->GetNamespace();
-                wxString result = token->m_Name;
-                result << token->m_Args;
-                if (!token->m_Type.IsEmpty())
-                    result << _T(" : ") << token->m_Type;
-                func.Name = result;
-                funcdata->m_FunctionsScope.push_back(func);
+                FunctionScope fs;
+                fs.StartLine = token->m_ImplLine - 1;
+                fs.EndLine = token->m_ImplLineEnd - 1;
+                if (token->m_TokenKind & tkAnyFunction && fileIdx == token->m_ImplFileIdx)
+                {
+					fs.Scope = token->GetNamespace();
+                    if (fs.Scope.IsEmpty())
+                        fs.Scope = g_GlobalScope;
+					wxString result = token->m_Name;
+					result << token->m_Args;
+					if (!token->m_Type.IsEmpty())
+						result << _T(" : ") << token->m_Type;
+					fs.Name = result;
+					funcdata->m_FunctionsScope.push_back(fs);
+                }
+				else if (token->m_TokenKind & (tkEnum | tkClass | tkNamespace))
+				{
+					fs.Scope = token->GetNamespace() + token->m_Name + _T("::");
+					funcdata->m_FunctionsScope.push_back(fs);
+				}
             }
-            else if (token && token->m_TokenKind == tkNamespace)
-            {
-                NameSpace Ns;
-                Ns.StartLine = token->m_ImplLine - 1;
-                Ns.EndLine = token->m_ImplLineEnd - 1;
-                Ns.Name = token->m_Name;
-                funcdata->m_NameSpaces.push_back(Ns);
-            }
-        }
-        // sort the vector
-        sort(funcdata->m_FunctionsScope.begin(), funcdata->m_FunctionsScope.end(), LessFunctionScope);
-        m_ToolbarChanged = true;
+		}
+
+		FunctionsScopeVec& functionsScopes = funcdata->m_FunctionsScope;
+		NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;
+
+        m_NativeParser.GetParser().ParseBufferForNamespaces(ed->GetControl()->GetText(), nameSpaces);
+		sort(nameSpaces.begin(), nameSpaces.end(), LessNameSpace);
+
+		copy(nameSpaces.begin(), nameSpaces.end(), back_inserter(functionsScopes));
+        sort(functionsScopes.begin(), functionsScopes.end(), LessFunctionScope);
+
+        // remove consecutive duplicates
+        FunctionsScopeVec::iterator it;
+        it = unique(functionsScopes.begin(), functionsScopes.end(), EqualFunctionScope);
+        functionsScopes.resize(it - functionsScopes.begin());
+
+		/*
+		Manager::Get()->GetLogManager()->DebugLog(F(_T("Found %d namespace locations"), nameSpaces.size()));
+		for (unsigned int i = 0; i < nameSpaces.size(); ++i)
+			Manager::Get()->GetLogManager()->DebugLog(F(_T("\t%s (%d:%d)"),
+				nameSpaces[i].Name.wx_str(), nameSpaces[i].StartLine, nameSpaces[i].EndLine));
+		*/
+
+       m_ToolbarChanged = true;
     }
 
     // *** Part 2: Fill the toolbar ***
     m_FunctionsScope = funcdata->m_FunctionsScope;
     m_NameSpaces     = funcdata->m_NameSpaces;
 
+	m_ScopeMarks.clear();
+	unsigned int fsSize = m_FunctionsScope.size();
+	if (!m_FunctionsScope.empty())
+	{
+		m_ScopeMarks.push_back(0);
+		if (m_Scope)
+		{
+            wxString lastScope = m_FunctionsScope[0].Scope;
+            for (unsigned int idx = 1; idx < fsSize; ++idx)
+            {
+                const wxString& currentScope = m_FunctionsScope[idx].Scope;
+                if (lastScope != currentScope)
+                {
+                    m_ScopeMarks.push_back(idx);
+                    lastScope = currentScope;
+                }
+            }
+		}
+	}
+
+    /*
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("Parsed %d functionscope items"), m_FunctionsScope.size()));
+	for (unsigned int i = 0; i < m_FunctionsScope.size(); ++i)
+		Manager::Get()->GetLogManager()->DebugLog(F(_T("\t%s%s (%d:%d)"),
+			m_FunctionsScope[i].Scope.wx_str(), m_FunctionsScope[i].Name.wx_str(),
+			m_FunctionsScope[i].StartLine, m_FunctionsScope[i].EndLine));
+    */
+
     // Does the toolbar need a refresh?
-    if (m_ToolbarChanged || m_LastFile!=filename)
+    if (m_ToolbarChanged || m_LastFile != filename)
     {
         // Update the last editor and changed flag...
         m_ToolbarChanged = false;
         m_LastFile = filename;
+
         // ...and refresh the toolbars.
         m_Function->Clear();
-        m_Scope->Clear();
 
-        // add to the choice controls
-        for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
-        {
-            const FunctionScope fs = m_FunctionsScope[idxFn];
-            m_Function->Append(fs.Name);
-            m_Scope->Append(fs.Scope);
-        } // end for : idx : idxFn
-        // add namespaces to the scope
-        m_StartIdxNameSpaceInScope = m_FunctionsScope.size();
-        for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
-        {
-            const NameSpace Ns = m_NameSpaces[idxNs];
-            m_Scope->Append(Ns.Name);
-        } // end for : idx : idxNs
+		if (m_Scope)
+		{
+		    m_Scope->Freeze();
+            m_Scope->Clear();
+
+            // add to the choice controls
+            for (unsigned int idxSc = 0; idxSc < m_ScopeMarks.size(); ++idxSc)
+            {
+                int idxFn = m_ScopeMarks[idxSc];
+                const FunctionScope& fs = m_FunctionsScope[idxFn];
+                m_Scope->Append(fs.Scope);
+            }
+
+            m_Scope->Thaw();
+		}
+		else
+		{
+            m_Function->Freeze();
+
+            for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+            {
+                const FunctionScope& fs = m_FunctionsScope[idxFn];
+                m_Function->Append(fs.Scope + fs.Name);
+            }
+
+            m_Function->Thaw();
+		}
     }
 
-    // Finally, find the current function and update
+    // Find the current function and update
     FindFunctionAndUpdate(ed->GetControl()->GetCurrentLine());
+
+    // Control the toolbar state
+    EnableToolbarTools(fileParseFinished);
 }
 
 void CodeCompletion::FindFunctionAndUpdate(int currentLine)
 {
-    // Find the current function and update
     m_CurrentLine = currentLine;
-    int sel = FunctionPosition();
-    if ( (sel != -1) && (sel != m_Function->GetSelection()) )
+
+    int selSc, selFn;
+    FunctionPosition(selSc, selFn);
+
+	if (m_Scope)
+	{
+        if (selSc != wxNOT_FOUND && selSc != m_Scope->GetSelection())
+        {
+            m_Scope->SetSelection(selSc);
+            UpdateFunctions(selSc);
+        }
+        else if (selSc == wxNOT_FOUND)
+        {
+            m_Scope->SetSelection(wxNOT_FOUND);
+        }
+	}
+
+    if (selFn != wxNOT_FOUND && selFn != m_Function->GetSelection())
     {
-        m_Function->SetSelection(sel);
-        m_Scope->SetSelection(sel);
+        m_Function->SetSelection(selFn);
     }
-    else if (sel == -1)
+    else if (selFn == wxNOT_FOUND)
     {
         m_Function->SetSelection(wxNOT_FOUND);
-        // TODO (Morten#5#): Set scope correctly
+
+        wxChoice* choice = (m_Scope) ? m_Scope : m_Function;
+
         int NsSel = NameSpacePosition();
-        if (NsSel != -1)
-            m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
+        if (NsSel != wxNOT_FOUND)
+            choice->SetStringSelection(m_NameSpaces[NsSel].Name);
+        else if (!m_Scope)
+            choice->SetSelection(wxNOT_FOUND);
         else
-            m_Scope->SetSelection(wxNOT_FOUND);
+        {
+            choice->SetStringSelection(g_GlobalScope);
+            wxCommandEvent evt;
+            OnScope(evt);
+        }
     }
+}
+
+void CodeCompletion::UpdateFunctions(unsigned int scopeItem)
+{
+	m_Function->Freeze();
+	m_Function->Clear();
+
+	unsigned int idxEnd = (scopeItem + 1 < m_ScopeMarks.size()) ? m_ScopeMarks[scopeItem + 1] : m_FunctionsScope.size();
+	for (unsigned int idxFn = m_ScopeMarks[scopeItem]; idxFn < idxEnd; ++idxFn)
+	{
+		const wxString &name = m_FunctionsScope[idxFn].Name;
+		m_Function->Append(name);
+	}
+
+	m_Function->Thaw();
 }
 
 void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
@@ -1550,17 +2230,16 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
     if (!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
     {
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+        wxString filename;
         if (ed)
         {
-            wxString filename = ed->GetFilename();
+            filename = ed->GetFilename();
             // wxString s_tmplog = _T("CC: OnEditorOpen... Filename: ");
             // s_tmplog = s_tmplog + filename;
             // Manager::Get()->GetLogManager()->DebugLog(s_tmplog);
             FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
             funcdata->parsed = false;
         }
-        if (!ProjectManager::IsBusy())
-            m_TimerFunctionsParsing.Start(50, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();
@@ -1570,9 +2249,23 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
-        EditorBase* eb = event.GetEditor();
-        m_NativeParser.OnEditorActivated(eb);
-        ParseFunctionsAndFillToolbar();
+        EditorBase* editor = event.GetEditor();
+        if (!editor || editor->GetFilename().IsEmpty())
+            return;
+
+        if (   !m_LastFile.IsEmpty()
+            && m_LastFile != g_StartHereTitle
+            && m_LastFile == editor->GetFilename() )
+        {
+            return;
+        }
+
+        m_NativeParser.OnEditorActivated(editor);
+
+        if (m_TimerFunctionsParsing.IsRunning())
+            m_TimerFunctionsParsing.Stop();
+
+        m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 50, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();
@@ -1580,25 +2273,58 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 {
+    m_NativeParser.OnEditorClosed(event.GetEditor());
+    m_LastFile.Clear();
+
     EditorManager* edm = Manager::Get()->GetEditorManager();
+    if (!edm)
+        return;
+
+    wxString activeFile;
+    EditorBase* eb = edm->GetActiveEditor();
+    if (eb)
+        activeFile = eb->GetFilename();
 
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
-    if (edm->GetEditorsCount() == 0)
+    if (edm->GetEditorsCount() == 0 || activeFile == g_StartHereTitle)
     {
+        EnableToolbarTools(false);
+
         // clear toolbar when closing last editor
-        m_Scope->Clear();
-        m_Function->Clear();
+        if (m_Scope)
+            m_Scope->Clear();
+        if (m_Function)
+            m_Function->Clear();
+
         cbEditor* ed = edm->GetBuiltinEditor(event.GetEditor());
-        wxString filename(wxEmptyString);
+        wxString filename;
         if (ed)
             filename = ed->GetFilename();
 
         m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
         m_AllFunctionsScopes[filename].m_NameSpaces.clear();
         m_AllFunctionsScopes[filename].parsed = false;
-        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfFile)
+        if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfFile)
             m_NativeParser.UpdateClassBrowser();
+    }
+
+    event.Skip();
+}
+
+void CodeCompletion::OnEditorModified(CodeBlocksEvent& event)
+{
+    EditorBase* editor = event.GetEditor();
+    if (editor)
+    {
+        wxString filename = editor->GetFilename();
+        cbProject* project = m_NativeParser.GetProjectByFilename(filename);
+        if (project && m_NativeParser.ReparseFile(project, filename))
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when editor modified: ") + filename);
+            if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
+                ParseFunctionsAndFillToolbar(true);
+        }
     }
 
     event.Skip();
@@ -1610,6 +2336,15 @@ void CodeCompletion::OnStartParsingFunctions(wxTimerEvent& event)
     {
         ParseFunctionsAndFillToolbar();
     }
+}
+
+void CodeCompletion::OnFindFunctionAndUpdate(wxTimerEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    FindFunctionAndUpdate(ed->GetControl()->GetCurrentLine());
 }
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
@@ -1646,35 +2381,31 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         if (pos < 0 || pos >= ed->GetControl()->GetLength())
             return;
 
-        Parser* parser = m_NativeParser.GetParserPtr();
-        if (parser)
+        TokenIdxSet result;
+        int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
+        if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
         {
-            TokenIdxSet result;
-            int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
-            if (m_NativeParser.MarkItemsByAI(result, true, true, true, endOfWord))
+            wxString msg;
+            int count = 0;
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                wxString msg;
-                int count = 0;
-                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                Token* token = m_NativeParser.GetParser().GetTokens()->at(*it);
+                if (token)
                 {
-                    Token* token = parser->GetTokens()->at(*it);
-                    if (token)
+                    msg << token->DisplayName() << _T("\n");
+                    ++count;
+                    if (count > 32) // allow max 32 matches (else something is definitely wrong)
                     {
-                        msg << token->DisplayName() << _T("\n");
-                        ++count;
-                        if (count > 32) // allow max 32 matches (else something is definitely wrong)
-                        {
-                            msg.Clear();
-                            break;
-                        }
+                        msg.Clear();
+                        break;
                     }
                 }
-                if (!msg.IsEmpty())
-                {
-                    msg.RemoveLast(); // last \n
-                    ed->GetControl()->CallTipShow(pos, msg);
+            }
+            if (!msg.IsEmpty())
+            {
+                msg.RemoveLast(); // last \n
+                ed->GetControl()->CallTipShow(pos, msg);
 //                    Manager::Get()->GetLogManager()->DebugLog(F(msg));
-                }
             }
         }
     }
@@ -1682,11 +2413,17 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 {
+    wxString NameUnderCursor;
+    bool IsInclude = false;
+    const bool HasNameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
+
     const bool HasEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != 0;
     if (m_EditMenu)
     {
         m_EditMenu->Enable(idMenuCodeComplete, HasEd);
         m_EditMenu->Enable(idMenuShowCallTip, HasEd);
+        const bool RenameEnable = HasNameUnderCursor && !IsInclude && m_NativeParser.GetParser().Done();
+        m_EditMenu->Enable(idMenuRenameSymbols, RenameEnable);
     }
 
     if (m_SearchMenu)
@@ -1694,12 +2431,12 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
         m_SearchMenu->Enable(idMenuGotoFunction,       HasEd);
         m_SearchMenu->Enable(idMenuGotoPrevFunction,   HasEd);
         m_SearchMenu->Enable(idMenuGotoNextFunction,   HasEd);
-        wxString NameUnderCursor;
-        bool IsInclude = false;
-        const bool HasNameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
+
         const bool GotoEnable = HasNameUnderCursor && !IsInclude;
         m_SearchMenu->Enable(idMenuGotoDeclaration,    GotoEnable);
         m_SearchMenu->Enable(idMenuGotoImplementation, GotoEnable);
+        const bool FindEnable = HasNameUnderCursor && !IsInclude && m_NativeParser.GetParser().Done();
+        m_SearchMenu->Enable(idMenuFindReferences, FindEnable);
         const bool IncludeEnable = HasNameUnderCursor && IsInclude;
         m_SearchMenu->Enable(idMenuOpenIncludeFile, IncludeEnable);
     }
@@ -1708,6 +2445,12 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
     {
         bool isVis = IsWindowReallyShown((wxWindow*)m_NativeParser.GetClassBrowser());
         m_ViewMenu->Check(idViewClassBrowser, isVis);
+    }
+
+    if (m_ProjectMenu)
+    {
+        cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
+        m_ProjectMenu->Enable(idCurrentProjectReparse, !!project);
     }
 
     // must do...
@@ -1737,17 +2480,16 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     if (!ed)
         return;
 
-    Parser parser(this);
-    parser.ParseBufferForFunctions(ed->GetControl()->GetText());
+    m_NativeParser.GetTempParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
     wxArrayString funcs;
-    TokensTree* tmptree = parser.GetTempTokens();
-
-    if (!tmptree->size())
+    TokensTree* tmptree = m_NativeParser.GetTempParser().GetTempTokens();
+    if (tmptree->empty())
     {
         cbMessageBox(_("No functions parsed in this file..."));
         return;
     }
+
     wxArrayString tokens;
     SearchTree<Token*> tmpsearch;
     tokens.Clear();
@@ -1760,6 +2502,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             tmpsearch.AddItem(token->DisplayName(), token);
         }
     }
+
     IncrementalSelectIteratorStringArray iterator(tokens);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
                                  _("Select function..."), _("Please select function to go to:"));
@@ -1774,6 +2517,8 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             ed->GotoLine(token->m_Line - 1);
         }
     }
+
+    tmptree->clear();
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
@@ -1799,40 +2544,28 @@ void CodeCompletion::OnUnimplementedClassMethods(wxCommandEvent& event)
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-    // killerbot : the menu and right click pop up menu ensured there is a name under the cursor
-    // BUT it seems the shortcut keys are not disabled although there menu counter part is
-    // ---> so check is needed and gracefully shut up when the Name under the cursor is empty
-    bool MoveOn = false;
-    wxString NameUnderCursor;
-    bool IsInclude = false;
-    if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
-    {
-        if (!IsInclude)
-        {   // alright move on
-            MoveOn = true;
-        }
-    }
-    if (!MoveOn)
+    cbEditor* editor = edMan->GetBuiltinActiveEditor();
+    if (!editor)
         return;
 
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (!parser)
-        return;
+    const int pos = editor->GetControl()->GetCurrentPos();
+    const int start = editor->GetControl()->WordStartPosition(pos, true);
+    const int end = editor->GetControl()->WordEndPosition(pos, true);
+    const wxString target = editor->GetControl()->GetTextRange(start, end);
 
     // prepare a boolean filter for declaration/implementation
     bool isDecl = event.GetId() == idGotoDeclaration || event.GetId() == idMenuGotoDeclaration;
     bool isImpl = event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation;
 
     // get the matching set
-    Token* token = 0;
     TokenIdxSet result;
-    parser->GetTokens()->FindMatches(NameUnderCursor, result, true, false);
+    m_NativeParser.MarkItemsByAI(result, true, false, true, end);
 
-//cbMessageBox(wxString::Format(_("TEST: %s %d"), NameUnderCursor.c_str(), result.size()), _("Warning"), wxICON_WARNING);
     // one match
+    Token* token = NULL;
     if (result.size() == 1)
     {
-        Token* sel = parser->GetTokens()->at(*(result.begin()));
+        Token* sel = m_NativeParser.GetParser().GetTokens()->at(*(result.begin()));
         if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
             (isDecl && !sel->GetFilename().IsEmpty()))
         {
@@ -1848,7 +2581,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            Token* sel = parser->GetTokens()->at(*it);
+            Token* sel = m_NativeParser.GetParser().GetTokens()->at(*it);
             if (sel)
             {
                 // only match tokens that have filename info
@@ -1863,14 +2596,14 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         if (selections.GetCount() > 1)
         {
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
-            if (sel == -1)
+            if (sel == wxNOT_FOUND)
                 return;
-            token = parser->GetTokens()->at(int_selections[sel]);
+            token = m_NativeParser.GetParser().GetTokens()->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
         {    // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
-            token = parser->GetTokens()->at(int_selections[0]);
+            token = m_NativeParser.GetParser().GetTokens()->at(int_selections[0]);
         }
     }
 
@@ -1885,7 +2618,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             }
             else
             {
-                cbMessageBox(wxString::Format(_("Implementation not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+                cbMessageBox(wxString::Format(_("Implementation not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
             }
         }
         else
@@ -1896,14 +2629,24 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             }
             else
             {
-                cbMessageBox(wxString::Format(_("Declaration not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+                cbMessageBox(wxString::Format(_("Declaration not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
             }
         }
     }
     else
     {
-        cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString::Format(_("Not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
     }
+}
+
+void CodeCompletion::OnFindReferences(wxCommandEvent& event)
+{
+    m_CodeRefactoring.FindReferences();
+}
+
+void CodeCompletion::OnRenameSymbols(wxCommandEvent& event)
+{
+    m_CodeRefactoring.RenameSymbols();
 }
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
@@ -1926,10 +2669,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     if (!MoveOn)
         return; // nothing under cursor or thing under cursor is not an include
 
-    wxArrayString foundSet;
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (parser)
-        foundSet = parser->FindFileInIncludeDirs(NameUnderCursor); // search in all parser's include dirs
+    wxArrayString foundSet = m_NativeParser.GetParser().FindFileInIncludeDirs(NameUnderCursor); // search in all parser's include dirs
 
     // look in the same dir as the source file
     wxFileName fname = NameUnderCursor;
@@ -1938,7 +2678,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         foundSet.Add(fname.GetFullPath());
 
     // search for the file in project files
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
     if (project)
     {
         for (int i = 0; i < project->GetFilesCount(); ++i)
@@ -1988,17 +2728,54 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
 }
 
+void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent& event)
+{
+    m_NativeParser.ReparseCurrentProject();
+    event.Skip();
+}
+
+void CodeCompletion::OnSelectedProjectReparse(wxCommandEvent& event)
+{
+    m_NativeParser.ReparseSelectedProject();
+    event.Skip();
+}
+
+void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
+{
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    if (!tree)
+        return;
+
+    wxTreeItemId treeItem =  tree->GetSelection();
+    if (!treeItem.IsOk())
+        return;
+
+    const FileTreeData* data = static_cast<FileTreeData*>(tree->GetItemData(treeItem));
+    if (!data)
+        return;
+
+    if (data->GetKind() == FileTreeData::ftdkFile)
+    {
+        cbProject* project = data->GetProject();
+        ProjectFile* pf = project->GetFile(data->GetFileIndex());
+        if (pf && m_NativeParser.ReparseFile(project, pf->file.GetFullPath()))
+        {
+             Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing the selected file ") +
+                                                          pf->file.GetFullPath());
+        }
+    }
+
+    event.Skip();
+}
+
 void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-
-    if (!IsAttached() ||
-        !m_InitDone ||
-        !cfg->ReadBool(_T("/use_code_completion"), true))
+    if (!IsAttached() || !m_InitDone || !m_UseCodeCompletion)
     {
         event.Skip();
         return;
     }
+
     cbStyledTextCtrl* control = editor->GetControl();
 
 //    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
@@ -2015,76 +2792,123 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
+        int curPos = control->GetCurrentPos();
+        int startPos = control->WordStartPosition(curPos, true);
+        const int endPos = control->WordEndPosition(curPos, true);
+
+        if (control->IsPreprocessor(control->GetStyleAt(curPos)))
+        {
+            control->DelLineRight();
+            int pos = startPos;
+            wxChar ch = control->GetCharAt(pos);
+            while (ch != _T('<') && ch != _T('"') && ch != _T('#'))
+                ch = control->GetCharAt(--pos);
+            if (ch == _T('<') || ch == _T('"'))
+                startPos = pos + 1;
+        }
+
         wxString itemText = event.GetText();
-        map<wxString, int>::iterator it = m_SearchItem.find(itemText);
+        const wxString alreadyText = control->GetTextRange(curPos, endPos);
+        if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
+            curPos = endPos;
+
+        control->AutoCompCancel();
+        control->SetTargetStart(startPos);
+        control->SetTargetEnd(curPos);
+
+        std::map<wxString, int>::const_iterator it = m_SearchItem.find(itemText);
         if (it != m_SearchItem.end())
         {
-            control->AutoCompCancel();
-            int pos = control->GetCurrentPos();
-            int start = control->WordStartPosition(pos, true);
-            control->SetTargetStart(start);
-            control->SetTargetEnd(pos);
-            control->ReplaceTarget(itemText+_T("()"));
-            pos = control->GetCurrentPos();
-            control->GotoPos(pos + itemText.size()+2);
+            //Check if there are brace behind the target
+            wxString addString(itemText);
+            if (control->GetCharAt(curPos) != _T('('))
+                addString += _T("()");
+
+            control->ReplaceTarget(addString);
+            control->GotoPos(control->GetCurrentPos() + itemText.size() + 2);
             if ((*it).second != 0)
             {
-                pos = control->GetCurrentPos();
-                control->GotoPos(pos - 1);
+                control->GotoPos(control->GetCurrentPos() - 1);
+                control->EnableTabSmartJump();
+                ShowCallTip();
             }
+        }
+        else
+        {
+            if (control->IsPreprocessor(control->GetStyleAt(curPos)))
+            {
+                const wxChar start = control->GetCharAt(startPos - 1);
+                if (start == _T('"'))
+                    itemText << _T('"');
+                else if (start == _T('<'))
+                    itemText << _T('>');
+            }
+
+            control->ReplaceTarget(itemText);
+            control->GotoPos(startPos + itemText.Length());
         }
     }
 
-    if (   (event.GetEventType() == wxEVT_SCI_CHARADDED)
-        && (!control->AutoCompActive()) ) // not already active autocompletion)
+    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
     {
         // a character was just added in the editor
         m_TimerCodeCompletion.Stop();
-        wxChar ch = event.GetKey();
-        int pos = control->GetCurrentPos();
-        int wordstart = control->WordStartPosition(pos, true);
+        const wxChar ch = event.GetKey();
+        const int pos = control->GetCurrentPos();
+        const int wordStartPos = control->WordStartPosition(pos, true);
+
+        // -2 is used next because the char has already been added and Pos is ahead of it...
+        const wxChar prevChar = control->GetCharAt(pos - 2);
 
         // if more than two chars have been typed, invoke CC
-        int autoCCchars = cfg->ReadInt(_T("/auto_launch_chars"), 4);
-        bool autoCC = cfg->ReadBool(_T("/auto_launch"), true) &&
-                      pos - wordstart >= autoCCchars;
+        const bool autoCC = m_CCAutoLaunch && (pos - wordStartPos >= m_CCAutoLaunchChars);
 
         // update calltip highlight while we type
         if (control->CallTipActive())
             ShowCallTip();
 
         // start calltip
-        if (ch == _T('('))
+        if (ch == _T('(') || ch == _T(','))
         {
-            if (control->CallTipActive())
-                ++m_ActiveCalltipsNest;
-            ShowCallTip();
-        }
-        // end calltip
-        else if (ch == _T(')'))
-        {
-            // cancel any active calltip
-            control->CallTipCancel();
-            if (m_ActiveCalltipsNest > 0)
+            int style = control->GetStyleAt(control->GetCurrentPos() - 1);
+            if (!(control->IsString(style) || control->IsCharacter(style) || control->IsComment(style)))
             {
-                --m_ActiveCalltipsNest;
+                if (control->CallTipActive())
+                    ++m_ActiveCalltipsNest;
                 ShowCallTip();
             }
         }
 
-        else if (    autoCC
-                 || (ch == _T('"')) // this and the next one are for #include's completion
-                 || (ch == _T('<'))
+        // end calltip
+        else if (ch == _T(')') || ch == _T(';'))
+        {
+            int style = control->GetStyleAt(control->GetCurrentPos() - 1);
+            if (!(control->IsString(style) || control->IsCharacter(style) || control->IsComment(style)))
+            {
+                // cancel any active calltip
+                control->CallTipCancel();
+                if (m_ActiveCalltipsNest > 0)
+                {
+                    --m_ActiveCalltipsNest;
+                    ShowCallTip();
+                }
+            }
+        }
+
+        // code completion
+        else if (   (autoCC && !control->AutoCompActive()) // not already active autocompletion
+                 || (prevChar == _T('"')) // #include "
+                 || (prevChar == _T('<')) // #include <
                  || (ch == _T('.'))
-                 // -2 is used next because the char has already been added and Pos is ahead of it...
-                 || (   (ch == _T('>'))
-                     && (control->GetCharAt(pos - 2) == _T('-')) )
-                 || (   (ch == _T(':'))
-                     && (control->GetCharAt(pos - 2) == _T(':')) ) )
+                 || (ch == _T('#'))
+                 || (   (ch == _T('>')) // ->
+                     && (prevChar == _T('-')) )
+                 || (   (ch == _T(':')) // ::
+                     && (prevChar == _T(':')) ) )
         {
             int style = control->GetStyleAt(pos);
             //Manager::Get()->GetLogManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
-            if (ch == _T('"') || ch == _T('<'))
+            if (prevChar == _T('"') || prevChar == _T('<'))
             {
                 if (style != wxSCI_C_PREPROCESSOR)
                 {
@@ -2101,8 +2925,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 }
             }
 
-            int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
-            if (autoCC || timerDelay == 0)
+            if (autoCC || m_CCLaunchDelay == 0)
             {
                 if (autoCC)
                     m_IsAutoPopup = true;
@@ -2113,14 +2936,13 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             else
             {
                 m_LastPosForCodeCompletion = pos;
-                m_pCodeCompletionLastEditor = editor;
-                m_TimerCodeCompletion.Start(timerDelay, wxTIMER_ONE_SHOT);
+                m_LastEditor = editor;
+                m_TimerCodeCompletion.Start(m_CCLaunchDelay, wxTIMER_ONE_SHOT);
             }
         }
     }
 
-    Parser* parser = m_NativeParser.GetParserPtr();
-    if (   parser && parser->Options().whileTyping
+    if (   m_NativeParser.GetParser().Options().whileTyping
         && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
             || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
     {
@@ -2128,38 +2950,109 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     }
     if (control->GetCurrentLine() != m_CurrentLine)
     {
-        if (parser && m_NeedReparse)
+        if (m_NeedReparse)
         {
-            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing while typing for editor ") + editor->GetFilename());
-            parser->Reparse(editor->GetFilename());
+            m_TimerRealtimeParsing.Stop();
+            m_TimerRealtimeParsing.Start(REALTIME_PARSING_DELAY, wxTIMER_ONE_SHOT);
             m_NeedReparse = false;
         }
-        else
-            FindFunctionAndUpdate(control->GetCurrentLine());
+
+        if (event.GetEventType() == wxEVT_SCI_UPDATEUI)
+        {
+            if (m_TimerToolbar.IsRunning())
+                m_TimerToolbar.Stop();
+            m_TimerToolbar.Start(EDITOR_AND_LINE_INTERVAL, wxTIMER_ONE_SHOT);
+        }
     }
 
     // allow others to handle this event
     event.Skip();
 }
 
+void CodeCompletion::OnScope(wxCommandEvent&)
+{
+	int sel = m_Scope->GetSelection();
+	if (sel != wxNOT_FOUND && sel < static_cast<int>(m_ScopeMarks.size()))
+	{
+		UpdateFunctions(sel);
+	}
+}
+
 void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 {
-    int sel = m_Function->GetSelection();
-    if (sel != -1 && sel < static_cast<int>(m_FunctionsScope.size()))
+    int selSc = (m_Scope) ? m_Scope->GetSelection() : 0;
+    if (selSc != wxNOT_FOUND && selSc < static_cast<int>(m_ScopeMarks.size()))
     {
-        int Line = m_FunctionsScope[sel].StartLine;
-        EditorManager* edMan = Manager::Get()->GetEditorManager();
-        cbEditor* ed = edMan->GetBuiltinActiveEditor();
-        if (!ed)
-            return;
-        ed->GotoLine(Line);
-        m_Scope->SetSelection(sel);
-        ed->SetFocus();
+		int idxFn = m_ScopeMarks[selSc] + m_Function->GetSelection();
+		if (idxFn != wxNOT_FOUND && idxFn < static_cast<int>(m_FunctionsScope.size()))
+		{
+			int Line = m_FunctionsScope[idxFn].StartLine;
+			cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+			if (!ed)
+				return;
+			ed->GotoLine(Line);
+			ed->SetFocus();
+		}
+    }
+}
+
+void CodeCompletion::OnParserStart(wxCommandEvent& event)
+{
+    ParsingType type = static_cast<ParsingType>(event.GetInt());
+    if (type == ptCreateParser)
+    {
+        Parser* parser = static_cast<Parser*>(event.GetEventObject());
+        wxArrayString& dirs = GetSystemIncludeDirs(parser, true);
+        SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, dirs);
+        m_SystemHeadersThread.push_back(thread);
+
+        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        if (editor && editor->GetFilename() != g_StartHereTitle)
+        {
+            cbProject* project = m_NativeParser.GetProjectByParser(parser);
+            cbProject* edPrj = m_NativeParser.GetProjectByFilename(editor->GetFilename());
+            if (edPrj == project)
+                EnableToolbarTools(false);
+        }
     }
 }
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
-    if (!ProjectManager::IsBusy())
-        ParseFunctionsAndFillToolbar(true);
+    ParsingType type = static_cast<ParsingType>(event.GetInt());
+    if (type == ptCreateParser)
+    {
+        if (   !m_SystemHeadersThread.empty()
+            && !m_SystemHeadersThread.front()->IsRunning()
+            && m_NativeParser.Done() )
+        {
+            m_SystemHeadersThread.front()->Run();
+        }
+    }
+
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (!editor || editor->GetFilename() == g_StartHereTitle)
+        return;
+
+    if (m_TimerFunctionsParsing.IsRunning())
+        m_TimerFunctionsParsing.Stop();
+
+    ParseFunctionsAndFillToolbar(true);
+}
+
+void CodeCompletion::EnableToolbarTools(bool enable)
+{
+    if (m_Scope)
+        m_Scope->Enable(enable);
+    if (m_Function)
+        m_Function->Enable(enable);
+}
+
+void CodeCompletion::OnRealtimeParsing(wxTimerEvent& event)
+{
+    cbProject* project = m_NativeParser.GetProjectByFilename(m_LastFile);
+    if (project && !project->GetFileByFilename(m_LastFile, false, true))
+        return;
+    if (m_NativeParser.ReparseFile(project, m_LastFile))
+        Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when typing for editor ") + m_LastFile);
 }

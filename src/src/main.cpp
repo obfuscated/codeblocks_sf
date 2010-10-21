@@ -27,6 +27,9 @@
 #include "scriptingsettingsdlg.h"
 #include "startherepage.h"
 #include "switcherdlg.h"
+#if wxUSE_STATUSBAR
+    #include "cbstatusbar.h"
+#endif
 
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
@@ -586,6 +589,7 @@ void MainFrame::RegisterEvents()
     pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
     pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
 
+    pm->RegisterEventSink(cbEVT_UPDATE_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutUpdate));
     pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
     pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
 
@@ -650,7 +654,7 @@ void MainFrame::CreateIDE()
     // script console
     m_pScriptConsole = new ScriptConsole(this, -1);
     m_LayoutManager.AddPane(m_pScriptConsole, wxAuiPaneInfo().Name(wxT("ScriptConsole")).
-                            Caption(_("Scripting console")).Float().MinSize(100,100));
+                            Caption(_("Scripting console")).Float().MinSize(100,100).FloatingPosition(300, 200));
 
     DoUpdateLayout();
     DoUpdateLayoutColours();
@@ -1418,7 +1422,16 @@ void MainFrame::DoSelectLayout(const wxString& name)
             Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
 }
-
+void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
+{
+#if wxUSE_STATUSBAR
+    cbStatusBar *sbar = (cbStatusBar *)GetStatusBar();
+    if (!sbar)
+        return;
+    plugin->CreateStatusField(sbar);
+    sbar->AdjustFieldsSize();
+#endif
+}
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
     wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
@@ -1516,6 +1529,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
         }
         // toolbar
         DoAddPluginToolbar(plugin);
+        DoAddPluginStatusField(plugin);
     }
 }
 
@@ -1727,7 +1741,11 @@ void MainFrame::DoUpdateStatusBar()
     else
     {
         int panel = 0;
-        SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
+        EditorBase *eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        if ( eb )
+            SetStatusText(eb->GetFilename(), panel++);
+        else
+            SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
@@ -1819,6 +1837,8 @@ void MainFrame::DoUpdateLayout()
 {
     if (!m_StartupDone)
         return;
+
+    DoFixToolbarsLayout();
     m_LayoutManager.Update();
 }
 
@@ -2474,11 +2494,14 @@ bool MainFrame::OnDropFiles(wxCoord /*x*/, wxCoord /*y*/, const wxArrayString& f
         wxBusyCursor useless;
         wxPaintEvent e;
         ProcessEvent(e);
-
+#if !wxCHECK_VERSION(2, 8, 11)
         Freeze();
+#endif
         for (unsigned int i = 0; i < files.GetCount(); ++i)
           success &= OpenGeneric(files[i]);
+#if !wxCHECK_VERSION(2, 8, 11)
         Thaw();
+#endif
     }
     return success;
 }
@@ -2800,13 +2823,6 @@ void MainFrame::OnEraseBackground(wxEraseEvent& event)
 
 void MainFrame::OnSize(wxSizeEvent& event)
 {
-    if (m_pProgressBar)
-    {
-        wxRect r;
-        GetStatusBar()->GetFieldRect(1, r);
-        m_pProgressBar->SetPosition(r.GetPosition());
-        m_pProgressBar->SetSize(r.GetSize());
-    }
 
     // for flicker-free display
     event.Skip();
@@ -3346,10 +3362,13 @@ void MainFrame::OnEditStreamCommentSelected(wxCommandEvent& /*event*/)
         {
             int startPos = stc->GetSelectionStart();
             int endPos   = stc->GetSelectionEnd();
-            if ( startPos == endPos )
-            {   // if nothing selected stream comment current line
-                startPos = stc->PositionFromLine  (stc->LineFromPosition(startPos));
-                endPos   = stc->GetLineEndPosition(stc->LineFromPosition(startPos));
+            if ( startPos == endPos ) { // if nothing selected stream comment current *word* first
+                startPos = stc->WordStartPosition(stc->GetCurrentPos(), true);
+                endPos   = stc->WordEndPosition  (stc->GetCurrentPos(), true);
+                if ( startPos == endPos ) { // if nothing selected stream comment current line
+                    startPos = stc->PositionFromLine  (stc->LineFromPosition(startPos));
+                    endPos   = stc->GetLineEndPosition(stc->LineFromPosition(startPos));
+                }
             }
             else {
                 /**
@@ -3366,11 +3385,33 @@ void MainFrame::OnEditStreamCommentSelected(wxCommandEvent& /*event*/)
                 }
             }
             // stream comment block
-            stc->InsertText( startPos, comment.streamCommentStart );
-             // we already inserted some characters so out endPos changed
-            endPos += comment.streamCommentStart.Length();
-            stc->InsertText( endPos, comment.streamCommentEnd );
-            stc->SetSelectionVoid(startPos,endPos);
+            int p1 = startPos - 1;
+            while (stc->GetCharAt(p1) == _T(' ') && p1 > 0)
+                --p1;
+            p1 -= 1;
+            int p2 = endPos;
+            while (stc->GetCharAt(p2) == _T(' ') && p2 < stc->GetLength())
+                ++p2;
+            const wxString start = stc->GetTextRange(p1, p1 + comment.streamCommentStart.Length());
+            const wxString end = stc->GetTextRange(p2, p2 + comment.streamCommentEnd.Length());
+            if (start == comment.streamCommentStart && end == comment.streamCommentEnd)
+            {
+                stc->SetTargetStart(p1);
+                stc->SetTargetEnd(p2 + 2);
+                wxString target = stc->GetTextRange(p1 + 2, p2);
+                stc->ReplaceTarget(target);
+                stc->GotoPos(p1 + target.Length());
+            }
+            else
+            {
+                stc->InsertText( startPos, comment.streamCommentStart );
+                // we already inserted some characters so out endPos changed
+                startPos += comment.streamCommentStart.Length();
+                endPos += comment.streamCommentStart.Length();
+                stc->InsertText( endPos, comment.streamCommentEnd );
+                stc->SetSelectionVoid(startPos,endPos);
+            }
+
         }
         stc->EndUndoAction();
     }
@@ -3834,7 +3875,8 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditHighlightMode, ed);
     mbar->Enable(idEditSelectAll, canSelAll);
     mbar->Enable(idEditBookmarks, ed);
-    mbar->Enable(idEditFolding, ed);
+    mbar->Enable(idEditFolding, ed &&
+                                Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false));
     mbar->Enable(idEditEOLMode, ed);
     mbar->Enable(idEditEncoding, ed);
     mbar->Enable(idEditSpecialCommands, ed);
@@ -4045,16 +4087,15 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 {
     wxStatusBar* sb = GetStatusBar();
-    if (sb)
-    {
+    if (!sb) return;
+
+    if (sb->IsShown())
         sb->Hide();
-        SetStatusBar(0);
-        sb->Destroy();
-    }
     else
-        DoCreateStatusBar();
+        sb->Show();
 
     DoUpdateStatusBar();
+    DoUpdateLayout();
 }
 
 void MainFrame::OnFocusEditor(wxCommandEvent& /*event*/)
@@ -4196,6 +4237,12 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 
     cbPlugin* plugin = event.GetPlugin();
 
+#if wxUSE_STATUSBAR
+    cbStatusBar *sb = (cbStatusBar*)GetStatusBar();
+    if ( sb )
+        sb->RemoveField(plugin);
+#endif
+
     // remove toolbar, if any
     if (m_PluginsTools[plugin])
     {
@@ -4330,32 +4377,33 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
     wxString name = event.name;
     if (name.IsEmpty())
     {
-        static int idx = 1;
-        name = wxString::Format(_T("UntitledPane%d"), idx++);
+        static int idx = 0;
+        name = wxString::Format(_T("UntitledPane%d"), ++idx);
     }
 // TODO (mandrav##): Check for existing pane with the same name
-    info = info.Name(name);
-    info = info.Caption(event.title.IsEmpty() ? name : event.title);
+    info.Name(name);
+    info.Caption(event.title.IsEmpty() ? name : event.title);
     switch (event.dockSide)
     {
-        case CodeBlocksDockEvent::dsLeft: info = info.Left(); break;
-        case CodeBlocksDockEvent::dsRight: info = info.Right(); break;
-        case CodeBlocksDockEvent::dsTop: info = info.Top(); break;
-        case CodeBlocksDockEvent::dsBottom: info = info.Bottom(); break;
-        case CodeBlocksDockEvent::dsFloating: info = info.Float(); break;
-
+        case CodeBlocksDockEvent::dsLeft: info.Left(); break;
+        case CodeBlocksDockEvent::dsRight: info.Right(); break;
+        case CodeBlocksDockEvent::dsTop: info.Top(); break;
+        case CodeBlocksDockEvent::dsBottom: info.Bottom(); break;
+        case CodeBlocksDockEvent::dsFloating: info.Float(); break;
         default: break;
     }
-    info = info.Show(event.shown);
-    info = info.BestSize(event.desiredSize);
-    info = info.FloatingSize(event.floatingSize);
-    info = info.MinSize(event.minimumSize);
-    info = info.Layer(event.stretch ? 1 : 0);
+    info.Show(event.shown);
+    info.BestSize(event.desiredSize);
+    info.FloatingSize(event.floatingSize);
+    info.FloatingPosition(event.floatingPos);
+    info.MinSize(event.minimumSize);
+    info.Layer(event.stretch ? 1 : 0);
+
     if (event.row != -1)
-        info = info.Row(event.row);
+        info.Row(event.row);
     if (event.column != -1)
-        info = info.Position(event.column);
-    info = info.CloseButton(event.hideable ? true : false);
+        info.Position(event.column);
+    info.CloseButton(event.hideable ? true : false);
     m_LayoutManager.AddPane(event.pWindow, info);
     DoUpdateLayout();
 }
@@ -4390,6 +4438,12 @@ void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& /*event*/)
 {
 //    if (m_ScriptConsoleID != -1 && event.GetId() == m_ScriptConsoleID)
 //        ShowHideScriptConsole();
+}
+
+void MainFrame::OnLayoutUpdate(CodeBlocksLayoutEvent& WXUNUSED(event))
+{
+    DoFixToolbarsLayout();
+    DoUpdateLayout();
 }
 
 void MainFrame::OnLayoutQuery(CodeBlocksLayoutEvent& event)
@@ -4480,3 +4534,13 @@ void MainFrame::StartupDone()
     m_StartupDone = true;
     DoUpdateLayout();
 }
+
+#if wxUSE_STATUSBAR
+wxStatusBar *MainFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
+{
+    cbStatusBar *statusBar = new cbStatusBar(this, id, style, name);
+    statusBar->SetFieldsCount(number);
+
+    return statusBar;
+}
+#endif

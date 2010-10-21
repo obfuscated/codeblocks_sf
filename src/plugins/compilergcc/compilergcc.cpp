@@ -46,17 +46,16 @@
 #include "compilerMINGW.h"
 #ifdef __WXGTK__
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
-    #include "compilerDMD.h"
     #include "compilerGNUARM.h"
     #include "compilerGNUAVR.h"
 #endif
 #ifdef __WXMSW__
     #include "compilerMSVC.h"
     #include "compilerMSVC8.h"
+    #include "compilerMSVC10.h"
     #include "compilerBCC.h"
     #include "compilerDMC.h"
     #include "compilerOW.h"
-    #include "compilerDMD.h"
     #include "compilerGNUARM.h"
     #include "compilerGNUAVR.h"
     #include "compilerGNUMSP430.h"
@@ -68,6 +67,7 @@
 #include "compilerTcc.h"
 #include "compilerGDC.h"
 #include "compilerLDC.h"
+#include "compilerDMD.h"
 #include "compilerGNUPOWERPC.h"
 #include "compilerGNUTRICORE.h"
 
@@ -384,6 +384,7 @@ void CompilerGCC::OnAttach()
     // can't use platform::windows here due to classes do *not* exist on other platform than windows!
     CompilerFactory::RegisterCompiler(new CompilerMSVC);
     CompilerFactory::RegisterCompiler(new CompilerMSVC8);
+    CompilerFactory::RegisterCompiler(new CompilerMSVC10);
     CompilerFactory::RegisterCompiler(new CompilerBCC);
     CompilerFactory::RegisterCompiler(new CompilerDMC);
     CompilerFactory::RegisterCompiler(new CompilerOW);
@@ -1059,7 +1060,7 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 void CompilerGCC::AllocProcesses()
 {
     // create the parallel processes array
-    m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
+    m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 2);
     m_Processes = new wxProcess*[m_ParallelProcessCount];
     m_Pid = new long int[m_ParallelProcessCount];
     m_ProcessOutputFiles = new wxString[m_ParallelProcessCount];
@@ -1750,6 +1751,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         if (Manager::Get()->GetEditorManager()->GetActiveEditor())
             return RunSingleFile(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         return -1;
+    }
+    else
+    {
+        target = m_Project->GetBuildTarget(m_Project->GetActiveBuildTarget());
     }
     DoPrepareQueue();
     if (!CompilerValid(target))
@@ -2964,8 +2969,14 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
 
 int CompilerGCC::CompileFile(const wxString& file)
 {
+    ProjectBuildTarget* target = NULL;
+    if (CheckProject())
+    {
+        target = m_Project->GetBuildTarget(m_Project->GetActiveBuildTarget());
+    }
+
     DoPrepareQueue();
-    if (!CompilerValid())
+    if (!CompilerValid(target))
         return -1;
 
     ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;

@@ -37,7 +37,7 @@ if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
 	# Also change the revision number in debian/changelog for package versioning
 	DCH=`which dch`
 	if [ "x$DCH" != "x" ]; then
-		if [ -f $DCH ]; then
+		if [ -x "$DCH" ]; then
 			AKT_REV=`sed -e 's/.*svn\([0-9]*\).*/\1/' -e 'q' < debian/changelog`
 			if [ $REV -gt $AKT_REV ]; then
 				dch -v 10.05svn$REV "New svn revision"

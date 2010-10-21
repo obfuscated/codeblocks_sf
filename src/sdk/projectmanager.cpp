@@ -86,6 +86,7 @@ int idMenuAddFilesRecursivelyPopup = wxNewId();
 int idMenuAddFile = wxNewId();
 int idMenuAddFilesRecursively = wxNewId();
 int idMenuRemoveFolderFilesPopup = wxNewId();
+int idMenuOpenFolderFilesPopup = wxNewId();
 int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
 int idMenuRenameFile = wxNewId();
@@ -187,6 +188,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFolderFilesPopup, ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuOpenFolderFilesPopup, ProjectManager::OnOpenFolderFiles)
     EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuRenameFile, ProjectManager::OnRenameFile)
     EVT_MENU(idMenuSaveProject, ProjectManager::OnSaveProject)
@@ -629,6 +631,8 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             f.MakeRelativeTo(ftd->GetProject()->GetCommonTopLevelPath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
             menu.Enable(idMenuRemoveFolderFilesPopup, PopUpMenuOption);
+            menu.Append(idMenuOpenFolderFilesPopup, wxString::Format(_("Open %s*"), f.GetFullPath().c_str()));
+            menu.Enable(idMenuOpenFolderFilesPopup, PopUpMenuOption);
         }
 
         // if it is a virtual folder
@@ -639,6 +643,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), ftd->GetFolder().c_str()));
+            menu.Append(idMenuOpenFolderFilesPopup, wxString::Format(_("Open %s*"), ftd->GetFolder().c_str()));
             menu.AppendSeparator();
             menu.Append(idMenuFindFile, _("Find file..."));
             menu.Enable(idMenuFindFile, PopUpMenuOption);
@@ -2229,6 +2234,30 @@ void ProjectManager::OnOpenFile(wxCommandEvent& WXUNUSED(event))
     DoOpenSelectedFile();
 }
 
+void ProjectManager::OnOpenFolderFiles(wxCommandEvent& event)
+{
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+
+    // open all files from a folder
+    if (cbMessageBox(_("Are you sure you want to recursively open from the project all the files under this folder?"),
+                     _("Confirmation"),
+                     wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+    {
+        return;
+    }
+
+    if (   ftd->GetKind() == FileTreeData::ftdkFolder
+        || ftd->GetKind() == FileTreeData::ftdkVirtualFolder )
+    {
+        OpenFilesRecursively(sel);
+    }
+
+    event.Skip();
+}
+
 void ProjectManager::OnOpenWith(wxCommandEvent& event)
 {
     wxTreeItemId sel = m_pTree->GetSelection();
@@ -2748,6 +2777,42 @@ void ProjectManager::RemoveFilesRecursively(wxTreeItemId& sel_id)
                         || data->GetKind() == FileTreeData::ftdkVirtualFolder)
                 {
                     RemoveFilesRecursively(child);
+                }
+            }
+            ++i;
+        }
+        else
+            break;
+    }
+}
+
+void ProjectManager::OpenFilesRecursively(wxTreeItemId& sel_id)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child;
+    wxString filename;
+    size_t i = 0;
+    while (i < m_pTree->GetChildrenCount(sel_id))
+    {
+        if (i == 0)
+            child = m_pTree->GetFirstChild(sel_id, cookie);
+        else
+            child = m_pTree->GetNextChild(sel_id, cookie);
+        if (child.IsOk())
+        {
+            FileTreeData* data = (FileTreeData*)m_pTree->GetItemData(child);
+            if (data)
+            {
+                cbProject* prj = data->GetProject();
+                if (prj && data->GetKind() == FileTreeData::ftdkFile)
+                {
+                    ProjectFile* pf = data->GetProjectFile();
+                    DoOpenFile(pf, pf->file.GetFullPath());
+                }
+                else if (   data->GetKind() == FileTreeData::ftdkFolder
+                         || data->GetKind() == FileTreeData::ftdkVirtualFolder )
+                {
+                    OpenFilesRecursively(child);
                 }
             }
             ++i;

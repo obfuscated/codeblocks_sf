@@ -153,7 +153,7 @@ bool CppCheck::DoCppCheckVersion()
     if (pid==-1)
     {
         bool failed = true;
-        if (cbMessageBox(_("Failed to lauch cppcheck.\nDo you want to select the cppcheck executable?"),
+        if (cbMessageBox(_("Failed to launch cppcheck.\nDo you want to select the cppcheck executable?"),
                          _("Question"), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_YES)
         {
             wxString filename = wxFileSelector(_("Select the cppcheck executable"));
@@ -175,8 +175,8 @@ bool CppCheck::DoCppCheckVersion()
         }
         if (failed)
         {
-            AppendToLog(_("Failed to lauch cppcheck."));
-            cbMessageBox(_("Failed to lauch cppcheck."), _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+            AppendToLog(_("Failed to launch cppcheck."));
+            cbMessageBox(_("Failed to launch cppcheck."), _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
             return false;
         }
     }
@@ -204,12 +204,14 @@ int CppCheck::Execute()
     }
 
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-    ::wxSetWorkingDirectory(Project->GetBasePath());
     const long Files = Project->GetFilesCount();
     if(!Files)
     {
     	return 0;
     }
+    const wxString Basepath = Project->GetBasePath();
+    ::wxSetWorkingDirectory(Basepath);
+    AppendToLog(_T("switching working directory to : ") + Basepath);
     wxFile Input;
     const wxString InputFileName = _T("CppCheckInput.txt");
     if(!Input.Create(InputFileName, true))
@@ -231,7 +233,7 @@ int CppCheck::Execute()
     }
 
     wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
-    if(IncludeList.IsEmpty())
+    if(!IncludeList.IsEmpty())
     {
 		CommandLine += _T(" ") + IncludeList.Trim();
     }
@@ -241,10 +243,10 @@ int CppCheck::Execute()
         wxWindowDisabler disableAll;
         wxBusyInfo running(_("Running cppcheck... please wait (this may take several minutes)..."),
                            Manager::Get()->GetAppWindow());
-        long pid = wxExecute(CommandLine, Output, Errors, wxEXEC_SYNC);
+        const long pid = wxExecute(CommandLine, Output, Errors, wxEXEC_SYNC);
         if (pid==-1)
         {
-            wxString msg = _("Failed to lauch cppcheck.\nMake sure the application is in the path!");
+            wxString msg = _("Failed to launch cppcheck.\nMake sure the application is in the path!");
             AppendToLog(msg);
             cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
             ::wxRemoveFile(InputFileName);
