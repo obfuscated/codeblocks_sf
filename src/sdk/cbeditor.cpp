@@ -1240,6 +1240,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     control->SetMouseDwellTime(1000);
 
+    control->SetCaretStyle(mgr->ReadInt(_T("/caret/style"), wxSCI_CARETSTYLE_LINE));
     control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
     control->SetCaretForeground(GetOptionColour(_T("/caret/colour"), *wxBLACK));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));

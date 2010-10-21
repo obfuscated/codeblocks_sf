@@ -41,6 +41,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void OnHighlightOccurrences(wxCommandEvent& event);
         void OnMultipleSelections(wxCommandEvent& event);
         void UpdateSampleFont(bool askForNewFont);
+        void OnCaretStyle(wxCommandEvent& event);
 
         void EndModal(int retCode);
     private:

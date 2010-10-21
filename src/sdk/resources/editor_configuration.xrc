@@ -711,6 +711,23 @@
 												<hgap>4</hgap>
 												<growablecols>1</growablecols>
 												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT27">
+														<label>Style:</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxChoice" name="lstCaretStyle">
+														<content>
+															<item>Invisible</item>
+															<item>Line</item>
+															<item>Block</item>
+														</content>
+														<selection>1</selection>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												</object>
+												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT24">
 														<label>Width:</label>
 													</object>
