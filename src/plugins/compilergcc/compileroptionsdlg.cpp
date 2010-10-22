@@ -506,8 +506,11 @@ void CompilerOptionsDlg::DoFillOthers()
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
-        spn->SetRange(1, 16);
-        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 2));
+		int count = wxThread::GetCPUCount();
+		if (-1 == count)
+			count = 1;
+        spn->SetRange(1, count);
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), count));
     }
 
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
