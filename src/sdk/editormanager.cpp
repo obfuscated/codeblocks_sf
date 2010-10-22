@@ -419,7 +419,7 @@ void EditorManager::LoadAutoComplete()
         m_AutoCompleteMap[name] = code;
     }
 
-    if (m_AutoCompleteMap.size() == 0)
+    if (m_AutoCompleteMap.empty())
     {
         // default auto-complete items
         m_AutoCompleteMap[_T("if")]     = _T("if (|)\n\t;");
@@ -429,11 +429,23 @@ void EditorManager::LoadAutoComplete()
         m_AutoCompleteMap[_T("guard")]  = _T("#ifndef $(Guard token)\n#define $(Guard token)\n\n|\n\n#endif // $(Guard token)\n");
         m_AutoCompleteMap[_T("while")]  = _T("while (|)\n\t;");
         m_AutoCompleteMap[_T("whileb")] = _T("while (|)\n{\n\t\n}");
-        m_AutoCompleteMap[_T("switch")] = _T("switch (|)\n{\n\tcase :\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}\n");
+        m_AutoCompleteMap[_T("switch")] = _T("switch (|)\n{\ncase :\n\tbreak;\n\ndefault:\n\tbreak;\n}\n");
         m_AutoCompleteMap[_T("for")]    = _T("for (|; ; )\n\t;");
         m_AutoCompleteMap[_T("forb")]   = _T("for (|; ; )\n{\n\t\n}");
-        m_AutoCompleteMap[_T("class")]  = _T("class $(Class name)|\n{\n\tpublic:\n\t\t$(Class name)();\n\t\t~$(Class name)();\n\tprotected:\n\t\t\n\tprivate:\n\t\t\n};\n");
+        m_AutoCompleteMap[_T("class")]  = _T("class $(Class name)|\n{\npublic:\n\t$(Class name)();\n\t~$(Class name)();\nprotected:\nprivate:\n};\n");
         m_AutoCompleteMap[_T("struct")] = _T("struct |\n{\n\t\n};\n");
+    }
+
+    const bool useTabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
+    const int tabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+    const wxString tabSpace = wxString(_T(' '), tabSize);
+    for (AutoCompleteMap::iterator it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
+    {
+        wxString& item = it->second;
+        if (useTabs)
+            item.Replace(tabSpace, _T("\t"), true);
+        else
+            item.Replace(_T("\t"), tabSpace, true);
     }
 
     // date and time macros

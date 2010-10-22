@@ -1023,6 +1023,17 @@ void EditorConfigurationDlg::EndModal(int retCode)
         // save any changes in auto-completion
         wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
         AutoCompUpdate(lstKeyword->GetSelection());
+		const bool useTabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
+		const int tabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+		const wxString tabSpace = wxString(_T(' '), tabSize);
+		for (AutoCompleteMap::iterator it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
+		{
+			wxString& item = it->second;
+			if (useTabs)
+				item.Replace(tabSpace, _T("\t"), true);
+			else
+				item.Replace(_T("\t"), tabSpace, true);
+		}
         AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
         map = m_AutoCompMap;
 
