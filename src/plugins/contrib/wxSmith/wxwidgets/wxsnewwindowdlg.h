@@ -82,6 +82,7 @@ class wxsNewWindowDlg : public wxScrollingDialog
         static const long ID_STATICTEXT6;
         static const long ID_TEXTCTRL7;
         static const long ID_CHECKBOX14;
+        static const long ID_CHECKBOX15;
         static const long ID_CHECKBOX13;
         //*)
 
@@ -153,6 +154,7 @@ class wxsNewWindowDlg : public wxScrollingDialog
         wxCheckBox* m_UseXrc;
         wxTextCtrl* m_Header;
         wxStaticText* StaticText9;
+        wxCheckBox* m_UseI18n;
         wxStdDialogButtonSizer* StdDialogButtonSizer1;
         wxStaticText* StaticText11;
         wxCheckBox* m_UsePCH;

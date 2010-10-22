@@ -328,30 +328,30 @@ void wxSmith::OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading)
 
 void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 {
-    event.Skip();
     cbProject* Proj = event.GetProject();
     wxsProject* wxsProj = GetSmithProject(Proj);
     wxsProj->UpdateName();
     Proj->SetModified(wxsProj->GetWasModifiedDuringLoad());
+    event.Skip();
 }
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
-    event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() ) return;
     delete i->second;
     m_ProjectMap.erase(i);
+    event.Skip();
 }
 
 void wxSmith::OnProjectRenamed(CodeBlocksEvent& event)
 {
-    event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() ) return;
     i->second->UpdateName();
+    event.Skip();
 }
 
 void wxSmith::OnConfigure(wxCommandEvent& event)

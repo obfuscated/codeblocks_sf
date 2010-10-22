@@ -515,6 +515,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
     wxsCodingLang Language = Context->m_Language;
     wxString WindowParent = Context->m_WindowParent;
     long Flags = Context->m_Flags;
+    const bool Translation = m_ResourceData->GetTranslation();
 
     while ( *Fmt )
     {
@@ -911,7 +912,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                         case _T('t'):
                         {
                             wxChar* String = va_arg(ap,wxChar*);
-                            Result << wxsCodeMarks::WxString(Language,String?String:_T(""),true);
+                            Result << wxsCodeMarks::WxString(Language, String ? String : _T(""), Translation);
                             break;
                         }
 

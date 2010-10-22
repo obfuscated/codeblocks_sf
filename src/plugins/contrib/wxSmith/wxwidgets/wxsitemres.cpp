@@ -120,6 +120,7 @@ wxsItemRes::wxsItemRes(wxsProject* Owner,const wxString& Type,bool CanBeMain):
     m_HdrFileName(wxEmptyString),
     m_XrcFileName(wxEmptyString),
     m_UseForwardDeclarations(false),
+    m_UseI18n(true),
     m_CanBeMain(CanBeMain)
 {
 }
@@ -131,7 +132,8 @@ wxsItemRes::wxsItemRes(const wxString& FileName,const TiXmlElement* XrcElem,cons
     m_SrcFileName(wxEmptyString),
     m_HdrFileName(wxEmptyString),
     m_XrcFileName(FileName),
-    m_UseForwardDeclarations(false)
+    m_UseForwardDeclarations(false),
+    m_UseI18n(true)
 {
     SetResourceName(cbC2U(XrcElem->Attribute("name")));
 }
@@ -152,6 +154,7 @@ bool wxsItemRes::OnReadConfig(const TiXmlElement* Node)
     m_HdrFileName = cbC2U(Node->Attribute("hdr"));
     m_XrcFileName = cbC2U(Node->Attribute("xrc"));
     m_UseForwardDeclarations = (cbC2U(Node->Attribute("fwddecl")) == _T("1"));
+    m_UseI18n = (cbC2U(Node->Attribute("i18n")) == _T("1"));
 
     // m_XrcFileName may be empty because it's not used when generating full source code
     return !m_WxsFileName.empty() &&
@@ -168,10 +171,10 @@ bool wxsItemRes::OnWriteConfig(TiXmlElement* Node)
     {
         Node->SetAttribute("xrc",cbU2C(m_XrcFileName));
     }
-    if ( m_UseForwardDeclarations )
-    {
-        Node->SetAttribute("fwddecl","1");
-    }
+
+    Node->SetAttribute("fwddecl", m_UseForwardDeclarations ? "1" : "0");
+    Node->SetAttribute("i18n", m_UseI18n? "1" : "0");
+
     return true;
 }
 
@@ -472,6 +475,7 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                 m_WxsFileName = Params.Wxs;
             }
             m_UseForwardDeclarations = Params.UseFwdDecl;
+            m_UseI18n = Params.UseI18n;
             return true;
         }
 
@@ -509,6 +513,7 @@ wxsItemResData* wxsItemRes::BuildResData(wxsItemEditor* Editor)
         GetResourceType(),
         GetLanguage(),
         m_UseForwardDeclarations,
+        m_UseI18n,
         GetTreeItemId(),
         Editor,
         this);

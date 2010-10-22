@@ -60,6 +60,7 @@ class wxsItemResData
             const wxString& ClassType,
             wxsCodingLang   Language,
             bool UseForwardDeclarations,
+            bool WithTranslation,
             wxsResourceItemId TreeId,
             wxsItemEditor*  Editor,
             wxsItemResFunctions* Functions
@@ -136,7 +137,7 @@ class wxsItemResData
         inline int GetPropertiesFilter() { return m_PropertiesFilter; }
 
         /** \brief Getting name of wxs file (global path) */
-        inline const wxString& GetWxsFileName() { return m_SrcFileName; }
+        inline const wxString& GetWxsFileName() { return m_SrcFileName; } // TODO (Loaden#2#) should be m_WxsFileName ??
 
         /** \brief Getting name of source file (global path) */
         inline const wxString& GetSrcFileName() { return m_SrcFileName; }
@@ -152,6 +153,9 @@ class wxsItemResData
 
         /** \brief Getting name class used as base for this resource (like wxDialog) */
         inline const wxString& GetClassType() { return m_ClassType; }
+
+        /** \brief Getting state of internationalize, this allows for translation */
+        inline const bool GetTranslation() { return m_Translation; }
 
         /** \brief Getting language used in resource */
         inline wxsCodingLang GetLanguage() { return m_Language; }
@@ -354,6 +358,7 @@ class wxsItemResData
         wxString m_SrcFileName;
         wxString m_HdrFileName;
         wxString m_XrcFileName;
+        bool     m_Translation; // Generate strings with _() macro instead of _T() macro
         wxString m_ClassName;
         wxString m_ClassType;
         wxsCodingLang m_Language;

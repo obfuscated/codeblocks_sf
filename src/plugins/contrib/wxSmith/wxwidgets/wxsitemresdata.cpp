@@ -55,6 +55,7 @@ wxsItemResData::wxsItemResData(
     const wxString& ClassType,
     wxsCodingLang Language,
     bool UseForwardDeclarations,
+    bool WithTranslation,
     wxsResourceItemId TreeId,
     wxsItemEditor* Editor,
     wxsItemResFunctions* Functions):
@@ -65,6 +66,7 @@ wxsItemResData::wxsItemResData(
         m_ClassName(ClassName),
         m_ClassType(ClassType),
         m_Language(Language),
+        m_Translation(WithTranslation),
         m_TreeId(TreeId),
         m_ToolsId(),
         m_ToolsNodeIsExpanded(false),

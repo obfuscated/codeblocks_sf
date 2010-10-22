@@ -116,6 +116,7 @@ const long wxsNewWindowDlg::ID_CHECKBOX12 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT6 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL7 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX14 = wxNewId();
+const long wxsNewWindowDlg::ID_CHECKBOX15 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX13 = wxNewId();
 //*)
 
@@ -254,8 +255,11 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_UseFwdDecl = new wxCheckBox(this, ID_CHECKBOX14, _("Use forward declarations"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX14"));
     m_UseFwdDecl->SetValue(false);
     m_AdvancedOptionsSizer->Add(m_UseFwdDecl, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_UseI18n = new wxCheckBox(this, ID_CHECKBOX15, _("Use internationalize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX15"));
+    m_UseI18n->SetValue(true);
+    m_AdvancedOptionsSizer->Add(m_UseI18n, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_AddWxs = new wxCheckBox(this, ID_CHECKBOX13, _("Add wxs file to project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX13"));
-    m_AddWxs->SetValue(false);
+    m_AddWxs->SetValue(true);
     m_AdvancedOptionsSizer->Add(m_AddWxs, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_RootSizer->Add(m_AdvancedOptionsSizer, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_RootSizer->Add(300,5,0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -336,6 +340,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_ScopeMembersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopemembers"),(int)wxsItemRes::NewResourceParams::Public);
     m_ScopeHandlersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopehandlers"),(int)wxsItemRes::NewResourceParams::Private);
     m_UseFwdDecl->SetValue(Cfg->ReadBool(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue()));
+    m_UseI18n->SetValue(Cfg->ReadBool(_T("/newresource/usei18n"),m_UseI18n->GetValue()));
     m_PchGuard->SetValue(Cfg->Read(_T("/newresource/pchguard"),m_PchGuard->GetValue()));
     UpdateScopeButtons();
     OnUseXrcChange(event);
@@ -384,6 +389,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Params.ScopeMembers   = m_ScopeMembersVal;
     Params.ScopeHandlers  = m_ScopeHandlersVal;
     Params.UseFwdDecl     = m_UseFwdDecl->GetValue();
+    Params.UseI18n        = m_UseI18n->GetValue();
     Params.PchGuard       = m_PchGuard->GetValue();
 
     // Need to do some checks
@@ -580,6 +586,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Cfg->Write(_T("/newresource/scopehandlers"),(int)m_ScopeHandlersVal);
     Cfg->Write(_T("/newresource/sourcedirectory"),m_SourceDirectory);
     Cfg->Write(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue());
+    Cfg->Write(_T("/newresource/usei18n"),m_UseI18n->GetValue());
     Cfg->Write(_T("/newresource/pchguard"),m_PchGuard->GetValue());
 
     EndModal(wxID_OK);

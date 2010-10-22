@@ -123,9 +123,7 @@
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxComboBox" name="ID_COMBOBOX1" variable="m_Pch" member="yes">
-									<default>-1</default>
-								</object>
+								<object class="wxComboBox" name="ID_COMBOBOX1" variable="m_Pch" member="yes" />
 								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
@@ -371,8 +369,17 @@
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX15" variable="m_UseI18n" member="yes">
+							<label>Use internationalize</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX13" variable="m_AddWxs" member="yes">
 							<label>Add wxs file to project</label>
+							<checked>1</checked>
 						</object>
 						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
