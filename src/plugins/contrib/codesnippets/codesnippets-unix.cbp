@@ -21,6 +21,10 @@
 				<Option object_output="../../../.objs/plugins/contrib/codesnippets/app" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Linker>
+					<Add library="X11" />
+					<Add library="gdk-x11-2.0" />
+				</Linker>
 			</Target>
 		</Build>
 		<VirtualTargets>
