@@ -593,7 +593,8 @@ void wxsItemResData::RebuildSourceCode()
             }
 
             // Add some initial headers
-            Context.AddHeader(_T("<wx/intl.h>"),_T(""),hfLocal|hfInPCH);
+            if (m_Translation)
+                Context.AddHeader(_T("<wx/intl.h>"),_T(""),hfLocal|hfInPCH);
             Context.AddHeader(_T("<wx/string.h>"),_T(""),hfLocal|hfInPCH);
             if ( m_PropertiesFilter & flMixed )
             {

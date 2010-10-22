@@ -153,8 +153,12 @@ bool wxsItemRes::OnReadConfig(const TiXmlElement* Node)
     m_SrcFileName = cbC2U(Node->Attribute("src"));
     m_HdrFileName = cbC2U(Node->Attribute("hdr"));
     m_XrcFileName = cbC2U(Node->Attribute("xrc"));
-    m_UseForwardDeclarations = (cbC2U(Node->Attribute("fwddecl")) == _T("1"));
-    m_UseI18n = (cbC2U(Node->Attribute("i18n")) == _T("1"));
+    const wxString fwddecl = cbC2U(Node->Attribute("fwddecl"));
+    if (!fwddecl.IsEmpty())
+        m_UseForwardDeclarations = (fwddecl == _T("1") || fwddecl == _T("true"));
+    const wxString i18n = cbC2U(Node->Attribute("i18n"));
+    if (!i18n.IsEmpty())
+        m_UseI18n = (i18n == _T("1") || i18n == _T("true"));
 
     // m_XrcFileName may be empty because it's not used when generating full source code
     return !m_WxsFileName.empty() &&
@@ -173,7 +177,7 @@ bool wxsItemRes::OnWriteConfig(TiXmlElement* Node)
     }
 
     Node->SetAttribute("fwddecl", m_UseForwardDeclarations ? "1" : "0");
-    Node->SetAttribute("i18n", m_UseI18n? "1" : "0");
+    Node->SetAttribute("i18n", m_UseI18n ? "1" : "0");
 
     return true;
 }
