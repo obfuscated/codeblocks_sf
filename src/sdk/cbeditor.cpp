@@ -1240,8 +1240,12 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     control->SetMouseDwellTime(1000);
 
-    control->SetCaretStyle(mgr->ReadInt(_T("/caret/style"), wxSCI_CARETSTYLE_LINE));
-    control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
+    int caretStyle = mgr->ReadInt(_T("/caret/style"), wxSCI_CARETSTYLE_LINE);
+    control->SetCaretStyle(caretStyle);
+    if(caretStyle == wxSCI_CARETSTYLE_LINE)
+        control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
+    else
+        control->SetCaretWidth(1);
     control->SetCaretForeground(GetOptionColour(_T("/caret/colour"), *wxBLACK));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
