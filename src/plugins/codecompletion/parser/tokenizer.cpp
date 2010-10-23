@@ -831,7 +831,6 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
 // if we stay here, return false
 bool Tokenizer::SkipComment()
 {
-    TRACE(_T("SkipComment() : Start from line = %d"), m_LineNumber);
     if (IsEOF())
         return false;
 
@@ -850,6 +849,7 @@ bool Tokenizer::SkipComment()
     else
         return false;     // Not a comment, return false;
 
+    TRACE(_T("SkipComment() : Start from line = %d"), m_LineNumber);
     MoveToNextChar(2);    // Skip the comment prompt
 
     // Here, we are in the comment body

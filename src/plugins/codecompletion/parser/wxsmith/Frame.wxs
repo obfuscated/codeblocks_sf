@@ -10,7 +10,7 @@
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_LOGMAIN" variable="m_logCtrl" member="yes">
 					<size>900,550</size>
-					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2</style>
+					<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2</style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
