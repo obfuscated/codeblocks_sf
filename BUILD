@@ -30,6 +30,21 @@ make install
 For the last step you must be root.
 That's it.
 
+or:
+
+./configure --prefix=/usr --with-contrib-plugins=all,-help
+make
+make install
+
+"all" compiles all contrib plugins
+"all,-help" compiles all contrib plugins except the help plugin
+By default, no contrib plugins are compiled
+Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,
+                  codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,headerfixup,
+                  help,hexeditor,incsearch,keybinder,libfinder,MouseSap,
+                  NassiShneiderman, profiler,regex,exporter,symtab,ThreadSearch,Valgrind,wxsmith,
+                  wxsmithcontrib,wxsmithaui
+
 Working on Code::Blocks sources from within Code::Blocks!
 ---------------------------------------------------------
 The following apply for all platforms where you have Code::Blocks installed and working.
