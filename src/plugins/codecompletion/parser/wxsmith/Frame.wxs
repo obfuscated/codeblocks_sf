@@ -8,7 +8,7 @@
 		<id_arg>0</id_arg>
 		<object class="wxBoxSizer" variable="sizer" member="no">
 			<object class="sizeritem">
-				<object class="wxTextCtrl" name="ID_LOGMAIN" variable="m_logCtrl" member="yes">
+				<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
 					<size>900,550</size>
 					<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2</style>
 				</object>
@@ -20,27 +20,27 @@
 		<object class="wxMenuBar" variable="MenuBar1" member="no">
 			<object class="wxMenu" variable="Menu2" member="no">
 				<label>&amp;File</label>
-				<object class="wxMenuItem" name="ID_OPEN" variable="MenuItem3" member="no">
+				<object class="wxMenuItem" name="wxID_OPEN" variable="MenuItem3" member="no">
 					<label>&amp;Open...</label>
 					<accel>Ctrl+O</accel>
 					<help>Open the source code to be tested</help>
 					<handler function="OnMenuOpenSelected" entry="EVT_MENU" />
 				</object>
-				<object class="wxMenuItem" name="ID_RELOAD" variable="MenuItem6" member="no">
+				<object class="wxMenuItem" name="wxID_REFRESH" variable="MenuItem6" member="no">
 					<label>&amp;Reload</label>
 					<accel>F5</accel>
 					<help>Reload test file</help>
 					<handler function="OnMenuReloadSelected" entry="EVT_MENU" />
 				</object>
 				<object class="separator" />
-				<object class="wxMenuItem" name="ID_SAVE" variable="MenuItem1" member="no">
+				<object class="wxMenuItem" name="wxID_SAVE" variable="MenuItem1" member="no">
 					<label>&amp;Save Log...</label>
 					<accel>Ctrl+S</accel>
 					<help>Save log file to hard disk </help>
 					<handler function="OnMenuSaveSelected" entry="EVT_MENU" />
 				</object>
 				<object class="separator" />
-				<object class="wxMenuItem" name="ID_QUIT" variable="MenuItem2" member="no">
+				<object class="wxMenuItem" name="wxID_EXIT" variable="MenuItem2" member="no">
 					<label>&amp;Quit</label>
 					<accel>Ctrl+Q</accel>
 					<handler function="OnMenuQuitSelected" entry="EVT_MENU" />
@@ -48,7 +48,7 @@
 			</object>
 			<object class="wxMenu" variable="Menu1" member="no">
 				<label>&amp;Search</label>
-				<object class="wxMenuItem" name="ID_FIND" variable="MenuItem4" member="no">
+				<object class="wxMenuItem" name="wxID_FIND" variable="MenuItem4" member="no">
 					<label>&amp;Find...</label>
 					<accel>Ctrl+F</accel>
 					<help>Find keyword</help>
@@ -57,23 +57,23 @@
 			</object>
 			<object class="wxMenu" variable="Menu3" member="no">
 				<label>&amp;Help</label>
-				<object class="wxMenuItem" name="ID_ABOUT" variable="MenuItem5" member="no">
+				<object class="wxMenuItem" name="wxID_ABOUT" variable="MenuItem5" member="no">
 					<label>&amp;About</label>
 					<handler function="OnMenuAboutSelected" entry="EVT_MENU" />
 				</object>
 			</object>
 		</object>
-		<object class="wxStatusBar" name="ID_STATUSBAR" variable="m_statuBar" member="yes">
+		<object class="wxStatusBar" name="wxID_ANY" variable="m_StatuBar" member="yes">
 			<fields>1</fields>
 			<widths>-10</widths>
 			<styles>wxSB_NORMAL</styles>
 		</object>
-		<object class="wxFileDialog" variable="m_openFile" member="yes">
+		<object class="wxFileDialog" variable="m_OpenFile" member="yes">
 			<message>Select Test Source File</message>
 			<default_dir>.</default_dir>
 			<wildcard>*.cpp;*.h</wildcard>
 		</object>
-		<object class="wxFileDialog" variable="m_saveFile" member="yes">
+		<object class="wxFileDialog" variable="m_SaveFile" member="yes">
 			<message>Select file</message>
 			<default_dir>.</default_dir>
 			<default_file>log.txt</default_file>

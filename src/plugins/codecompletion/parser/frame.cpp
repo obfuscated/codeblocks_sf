@@ -26,14 +26,6 @@
 #include <wx/filename.h>
 
 //(*IdInit(Frame)
-const long Frame::ID_LOGMAIN = wxNewId();
-const long Frame::ID_OPEN = wxNewId();
-const long Frame::ID_RELOAD = wxNewId();
-const long Frame::ID_SAVE = wxNewId();
-const long Frame::ID_QUIT = wxNewId();
-const long Frame::ID_FIND = wxNewId();
-const long Frame::ID_ABOUT = wxNewId();
-const long Frame::ID_STATUSBAR = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(Frame, wxFrame)
@@ -64,32 +56,32 @@ Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
     Create(0, wxID_ANY, _("Parser Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
     sizer = new wxBoxSizer(wxHORIZONTAL);
-    m_LogCtrl = new wxTextCtrl(this, ID_LOGMAIN, wxEmptyString, wxDefaultPosition, wxSize(900,550), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2, wxDefaultValidator, _T("ID_LOGMAIN"));
+    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(900,550), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2, wxDefaultValidator, _T("wxID_ANY"));
     sizer->Add(m_LogCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(sizer);
     MenuBar1 = new wxMenuBar();
     Menu2 = new wxMenu();
-    MenuItem3 = new wxMenuItem(Menu2, ID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
+    MenuItem3 = new wxMenuItem(Menu2, wxID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
     Menu2->Append(MenuItem3);
-    MenuItem6 = new wxMenuItem(Menu2, ID_RELOAD, _("&Reload\tF5"), _("Reload test file"), wxITEM_NORMAL);
+    MenuItem6 = new wxMenuItem(Menu2, wxID_REFRESH, _("&Reload\tF5"), _("Reload test file"), wxITEM_NORMAL);
     Menu2->Append(MenuItem6);
     Menu2->AppendSeparator();
-    MenuItem1 = new wxMenuItem(Menu2, ID_SAVE, _("&Save Log...\tCtrl+S"), _("Save log file to hard disk "), wxITEM_NORMAL);
+    MenuItem1 = new wxMenuItem(Menu2, wxID_SAVE, _("&Save Log...\tCtrl+S"), _("Save log file to hard disk "), wxITEM_NORMAL);
     Menu2->Append(MenuItem1);
     Menu2->AppendSeparator();
-    MenuItem2 = new wxMenuItem(Menu2, ID_QUIT, _("&Quit\tCtrl+Q"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem2 = new wxMenuItem(Menu2, wxID_EXIT, _("&Quit\tCtrl+Q"), wxEmptyString, wxITEM_NORMAL);
     Menu2->Append(MenuItem2);
     MenuBar1->Append(Menu2, _("&File"));
     Menu1 = new wxMenu();
-    MenuItem4 = new wxMenuItem(Menu1, ID_FIND, _("&Find...\tCtrl+F"), _("Find keyword"), wxITEM_NORMAL);
+    MenuItem4 = new wxMenuItem(Menu1, wxID_FIND, _("&Find...\tCtrl+F"), _("Find keyword"), wxITEM_NORMAL);
     Menu1->Append(MenuItem4);
     MenuBar1->Append(Menu1, _("&Search"));
     Menu3 = new wxMenu();
-    MenuItem5 = new wxMenuItem(Menu3, ID_ABOUT, _("&About"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem5 = new wxMenuItem(Menu3, wxID_ABOUT, _("&About"), wxEmptyString, wxITEM_NORMAL);
     Menu3->Append(MenuItem5);
     MenuBar1->Append(Menu3, _("&Help"));
     SetMenuBar(MenuBar1);
-    m_StatuBar = new wxStatusBar(this, ID_STATUSBAR, 0, _T("ID_STATUSBAR"));
+    m_StatuBar = new wxStatusBar(this, wxID_ANY, 0, _T("wxID_ANY"));
     int __wxStatusBarWidths_1[1] = { -10 };
     int __wxStatusBarStyles_1[1] = { wxSB_NORMAL };
     m_StatuBar->SetFieldsCount(1,__wxStatusBarWidths_1);
@@ -101,12 +93,12 @@ Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
     sizer->SetSizeHints(this);
     Center();
 
-    Connect(ID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuOpenSelected);
-    Connect(ID_RELOAD,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuReloadSelected);
-    Connect(ID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuSaveSelected);
-    Connect(ID_QUIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuQuitSelected);
-    Connect(ID_FIND,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuFindSelected);
-    Connect(ID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
+    Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuOpenSelected);
+    Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuReloadSelected);
+    Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuSaveSelected);
+    Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuQuitSelected);
+    Connect(wxID_FIND,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuFindSelected);
+    Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
     //*)
 
     m_StatuBar->SetStatusText(_("Ready!"));

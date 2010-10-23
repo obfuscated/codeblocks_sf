@@ -34,14 +34,6 @@ private:
 
 protected:
     //(*Identifiers(Frame)
-    static const long ID_LOGMAIN;
-    static const long ID_OPEN;
-    static const long ID_RELOAD;
-    static const long ID_SAVE;
-    static const long ID_QUIT;
-    static const long ID_FIND;
-    static const long ID_ABOUT;
-    static const long ID_STATUSBAR;
     //*)
 
 private:
@@ -57,10 +49,10 @@ private:
 
 private:
     //(*Declarations(Frame)
-    wxFileDialog*        m_OpenFile;
-    wxFileDialog*        m_SaveFile;
-    wxStatusBar*         m_StatuBar;
-    wxTextCtrl*          m_LogCtrl;
+    wxFileDialog* m_SaveFile;
+    wxStatusBar* m_StatuBar;
+    wxTextCtrl* m_LogCtrl;
+    wxFileDialog* m_OpenFile;
     //*)
 
     size_t               m_LogCount;

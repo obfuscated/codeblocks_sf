@@ -38,6 +38,56 @@
     #define TRACE2(format, args...)
 #endif
 
+class ScopeDialog : public wxDialog
+{
+public:
+    ScopeDialog(wxWindow* parent, const wxString& title) :
+        wxDialog(parent, wxID_ANY, title)
+    {
+        wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
+        wxString findImgFile = ConfigManager::GetDataFolder() + _T("/images/filefind.png");
+        wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, wxBitmap(wxImage(findImgFile)));
+        infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choice the find scope for search tokens?"));
+        infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL,
+                       wxDLG_UNIT(this, wxSize(5, 0)).GetWidth());
+        sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+        m_OpenFiles = new wxButton(this, ID_OPEN_FILES, _("&Open files"), wxDefaultPosition, wxDefaultSize, 0,
+                                   wxDefaultValidator, _T("ID_OPEN_FILES"));
+        m_OpenFiles->SetDefault();
+        btnSizer->Add(m_OpenFiles, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        m_ProjectFiles = new wxButton(this, ID_PROJECT_FILES, _("&Project files"), wxDefaultPosition,
+                                      wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
+        btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        SetSizer(sizer);
+        sizer->Fit(this);
+        sizer->SetSizeHints(this);
+        Center();
+
+        Connect(ID_OPEN_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnOpenFilesClick);
+        Connect(ID_PROJECT_FILES, wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ScopeDialog::OnProjectFilesClick);
+        Connect(wxID_ANY, wxEVT_CLOSE_WINDOW, (wxObjectEventFunction)&ScopeDialog::OnClose);
+    }
+
+public:
+    static const long ID_OPEN_FILES;
+    static const long ID_PROJECT_FILES;
+
+private:
+    void OnClose(wxCloseEvent& event) { EndDialog(wxID_CLOSE); }
+    void OnOpenFilesClick(wxCommandEvent& event) { EndDialog(ID_OPEN_FILES);}
+    void OnProjectFilesClick(wxCommandEvent& event) { EndDialog(ID_PROJECT_FILES); }
+
+    wxButton* m_OpenFiles;
+    wxButton* m_ProjectFiles;
+};
+
+const long ScopeDialog::ID_OPEN_FILES = wxNewId();
+const long ScopeDialog::ID_PROJECT_FILES = wxNewId();
+
 CodeRefactoring::CodeRefactoring(NativeParser& np) :
     m_NativeParser(np)
 {
@@ -107,11 +157,11 @@ bool CodeRefactoring::Parse()
         files.Add(editor->GetFilename());
     else
     {
-        const int ret = cbMessageBox(_("Only search open files? Select \"No\" search the project!"),
-                                     _("Code Refactoring"), wxICON_QUESTION | wxYES_NO | wxCANCEL);
-        if (ret == wxID_YES)
+        ScopeDialog scopeDlg(Manager::Get()->GetAppWindow(), _("Code Refactoring"));
+        const int ret = scopeDlg.ShowModal();
+        if (ret == ScopeDialog::ID_OPEN_FILES)
             GetOpenedFiles(files);
-        else if (ret == wxID_NO)
+        else if (ret == ScopeDialog::ID_PROJECT_FILES)
             GetAllProjectFiles(files, project);
         else
             return false;
