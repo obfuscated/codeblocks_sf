@@ -313,6 +313,8 @@ wxString wxsEventsEditor::GetFunctionProposition(const wxsEventDesc* Event)
 
     wxString NewNameBase;
     wxString VarName = m_Item->IsRootItem() ? _T("") : m_Item->GetVarName();
+    if (VarName.StartsWith(_T("m_")))
+        VarName = VarName.Right(VarName.Len() - 2);
     NewNameBase.Printf(_T("On%s%s"),VarName.c_str(),Event->NewFuncNameBase.c_str());
 
     int Suffix = 0;
