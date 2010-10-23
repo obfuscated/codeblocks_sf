@@ -571,8 +571,13 @@ void UsrGlblMgrEditDialog::Save()
     {
         t = ((wxTextCtrl*) FindWindow(builtinMembers[i]))->GetValue();
 
-        if (i == 0 && t.Contains(_T('#') + currentVar))
+        if (   i == 0
+            && (   (   !currentVar.IsEmpty()
+                    && t.IsEmpty() )
+                || t.Contains(_T('#') + currentVar) ) )
+        {
             t.assign(_T("(invalid)"));
+        }
 
         if (t.Contains(mbr + builtinMembers[i]))
             t.assign(_T("(invalid)"));
