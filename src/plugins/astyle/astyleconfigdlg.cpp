@@ -226,6 +226,7 @@ int Foo(bool isBar)\n\
   XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkPadHeader", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkDelEmptyLine", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->Enable(!en);
@@ -314,6 +315,7 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_out"), false));
   XRCCTRL(*this, "chkPadHeader", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_header"), false));
   XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->SetValue(cfg->ReadBool(_T("/unpad_parentheses"), false));
+  XRCCTRL(*this, "chkDelEmptyLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/delete_empty_lines"), false));
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_complex"), false));
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_blocks"), false));
   XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/convert_tabs"), false));
@@ -371,6 +373,7 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/pad_parentheses_out"), XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_header"), XRCCTRL(*this, "chkPadHeader", wxCheckBox)->GetValue());
   cfg->Write(_T("/unpad_parentheses"), XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->GetValue());
+  cfg->Write(_T("/delete_empty_lines"), XRCCTRL(*this, "chkDelEmptyLine", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_complex"), XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_blocks"), XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->GetValue());
   cfg->Write(_T("/convert_tabs"), XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->GetValue());

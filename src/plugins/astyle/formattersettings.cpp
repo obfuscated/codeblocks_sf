@@ -139,6 +139,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setParensInsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_in")));
       formatter.setParensHeaderPaddingMode(cfg->ReadBool(_T("/pad_header")));
       formatter.setParensUnPaddingMode(cfg->ReadBool(_T("/unpad_parentheses")));
+      formatter.setDeleteEmptyLinesMode(cfg->ReadBool(_T("/delete_empty_lines")));
       formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
       formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
       formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));

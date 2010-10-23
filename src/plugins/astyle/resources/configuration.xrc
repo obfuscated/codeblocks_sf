@@ -339,6 +339,13 @@
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkDelEmptyLine">
+												<label>Delete empty lines within a function or method</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKeepComplex">
 												<label>Don&apos;t break complex statements and multiple statements residing in a single line</label>
 											</object>
