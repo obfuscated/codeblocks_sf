@@ -3153,6 +3153,20 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                             if (!level)
                             {
                                 autoIndentStart = true;
+
+                                int nonblankpos;
+                                wxChar c = m_pData->GetNextNonWhitespaceCharOfLine(pos, &nonblankpos);
+                                if (c == _T('}') && currLine == control->LineFromPosition(nonblankpos))
+                                {
+                                    control->NewLine();
+                                    control->GotoPos(pos);
+
+                                    autoIndentStart = false;
+                                    autoIndentDone = true;
+                                    autoIndentLine = -1;
+                                    autoIndentLineIndent = -1;
+                                }
+
                                 control->SetLineIndentation(currLine, autoIndentLineIndent);
                                 control->Tab();
                             }
