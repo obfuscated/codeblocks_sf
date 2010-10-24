@@ -323,20 +323,9 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/stlport/Makefile
 	src/plugins/scriptedwizard/resources/stlport/files/Makefile
 	src/plugins/scriptedwizard/resources/sys/Makefile
-	src/plugins/scriptedwizard/resources/sys/files/Makefile
 	src/plugins/scriptedwizard/resources/tricore/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile
-	src/plugins/scriptedwizard/resources/win32gui/files/Makefile
-	src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile
-	src/plugins/scriptedwizard/resources/win32gui/files/frame/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/common/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/pch/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/rc/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/dialog/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/frame/Makefile
-	src/plugins/scriptedwizard/resources/wxwidgets/wxsmith/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
 	src/plugins/xpmanifest/Makefile

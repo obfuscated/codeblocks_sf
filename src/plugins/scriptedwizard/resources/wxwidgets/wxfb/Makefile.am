@@ -1,1 +1,0 @@
-SUBDIRS = dialog frame
