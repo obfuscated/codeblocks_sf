@@ -3395,7 +3395,18 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         }
 
     }
-
+    // If we remove the folding-point (the brace or whatever) from a folded block,
+    // we have to make the hidden lines visible, otherwise, they
+    // will no longer be reachable, until the editor is closed and reopened again
+    if ((event.GetModificationType() & wxSCI_MOD_CHANGEFOLD) &&
+        (event.GetFoldLevelPrev() & wxSCI_FOLDLEVELHEADERFLAG)) {
+        cbStyledTextCtrl* control = GetControl();
+        int line = event.GetLine();
+		if (! control->GetFoldExpanded(line)) {
+			control->SetFoldExpanded(line, true);
+            control->ShowLines(line, control->GetLastChild(line, -1));
+		}
+	}
     OnScintillaEvent(event);
 } // end of OnEditorModified
 
