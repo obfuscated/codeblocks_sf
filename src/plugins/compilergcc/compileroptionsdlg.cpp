@@ -509,9 +509,9 @@ void CompilerOptionsDlg::DoFillOthers()
         int count = wxThread::GetCPUCount();
         if (-1 == count)
             count = 1;
-        else if (count > 1)
-            --count;
         spn->SetRange(1, std::max(16, count));
+        if (count > 1)
+            --count;
         spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), count));
     }
 

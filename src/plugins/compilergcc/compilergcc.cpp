@@ -1066,7 +1066,7 @@ void CompilerGCC::AllocProcesses()
     else if (count > 1)
         --count;
     m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), count);
-    m_Processes = new wxProcess* [m_ParallelProcessCount];
+    m_Processes = new wxProcess*[m_ParallelProcessCount];
     m_Pid = new long int[m_ParallelProcessCount];
     m_ProcessOutputFiles = new wxString[m_ParallelProcessCount];
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
