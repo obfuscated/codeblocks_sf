@@ -310,11 +310,16 @@ void wxsEventsEditor::FindFunctions(const wxString& ArgType,wxArrayString& Array
 wxString wxsEventsEditor::GetFunctionProposition(const wxsEventDesc* Event)
 {
     // Creating proposition of new function name
-
     wxString NewNameBase;
     wxString VarName = m_Item->IsRootItem() ? _T("") : m_Item->GetVarName();
-    if (VarName.StartsWith(_T("m_")))
-        VarName = VarName.Right(VarName.Len() - 2);
+    if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/removeprefix"), false))
+    {
+        if (VarName.StartsWith(_T("m_")))
+            VarName = VarName.Right(VarName.Len() - 2);
+        else if (VarName.StartsWith(_T("_")))
+            VarName = VarName.Right(VarName.Len() - 1);
+    }
+
     NewNameBase.Printf(_T("On%s%s"),VarName.c_str(),Event->NewFuncNameBase.c_str());
 
     int Suffix = 0;

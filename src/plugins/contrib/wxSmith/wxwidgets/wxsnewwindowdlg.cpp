@@ -37,8 +37,8 @@
 #include <projectfile.h>
 
 //(*InternalHeaders(wxsNewWindowDlg)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 namespace
@@ -79,11 +79,8 @@ namespace
 }
 
 //(*IdInit(wxsNewWindowDlg)
-const long wxsNewWindowDlg::ID_STATICTEXT1 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL1 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT2 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL2 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT3 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL3 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX1 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL4 = wxNewId();
@@ -91,20 +88,13 @@ const long wxsNewWindowDlg::ID_CHECKBOX3 = wxNewId();
 const long wxsNewWindowDlg::ID_BUTTON1 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX2 = wxNewId();
 const long wxsNewWindowDlg::ID_COMBOBOX1 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT11 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL8 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX4 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL5 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT4 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL6 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT7 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT8 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT9 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT10 = wxNewId();
 const long wxsNewWindowDlg::ID_BUTTON2 = wxNewId();
 const long wxsNewWindowDlg::ID_BUTTON3 = wxNewId();
 const long wxsNewWindowDlg::ID_BUTTON4 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT5 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX5 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX9 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX6 = wxNewId();
@@ -113,7 +103,6 @@ const long wxsNewWindowDlg::ID_CHECKBOX7 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX11 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX8 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX12 = wxNewId();
-const long wxsNewWindowDlg::ID_STATICTEXT6 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL7 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX14 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX15 = wxNewId();
@@ -137,24 +126,32 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_Project(Project)
 {
     //(*Initialize(wxsNewWindowDlg)
+    wxStaticText* StaticText10;
+    wxStaticText* StaticText9;
+    wxStaticText* StaticText2;
+    wxStaticText* StaticText6;
+    wxStaticText* StaticText8;
+    wxStaticText* StaticText11;
     wxStaticText* StaticText1;
     wxStaticText* StaticText3;
-    wxStaticText* StaticText2;
-    
+    wxStaticText* StaticText5;
+    wxStaticText* StaticText7;
+    wxStaticText* StaticText4;
+
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
     FlexGridSizer1->AddGrowableCol(1);
-    StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Class Name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    StaticText1 = new wxStaticText(this, wxID_ANY, _("Class Name:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText1, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_Class = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(80,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     FlexGridSizer1->Add(m_Class, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-    StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Header file:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    StaticText2 = new wxStaticText(this, wxID_ANY, _("Header file:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText2, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_Header = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxSize(80,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
     FlexGridSizer1->Add(m_Header, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Source file:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+    StaticText3 = new wxStaticText(this, wxID_ANY, _("Source file:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(StaticText3, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_Source = new wxTextCtrl(this, ID_TEXTCTRL3, wxEmptyString, wxDefaultPosition, wxSize(80,-1), 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
     FlexGridSizer1->Add(m_Source, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -182,7 +179,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     FlexGridSizer2->Add(m_Pch, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
     BoxSizer1->Add(21,16,0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-    StaticText11 = new wxStaticText(this, ID_STATICTEXT11, _("PCH guard define:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
+    StaticText11 = new wxStaticText(this, wxID_ANY, _("PCH guard define:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     BoxSizer1->Add(StaticText11, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
     FlexGridSizer2->Add(BoxSizer1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     m_PchGuard = new wxTextCtrl(this, ID_TEXTCTRL8, _("WX_PRECOMP"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL8"));
@@ -193,21 +190,21 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_InitFunc = new wxTextCtrl(this, ID_TEXTCTRL5, _("BuildContent"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL5"));
     m_InitFunc->Disable();
     FlexGridSizer2->Add(m_InitFunc, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Base class name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+    StaticText4 = new wxStaticText(this, wxID_ANY, _("Base class name:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer2->Add(StaticText4, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_BaseClass = new wxTextCtrl(this, ID_TEXTCTRL6, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL6"));
     FlexGridSizer2->Add(m_BaseClass, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("Scopes:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
+    StaticText7 = new wxStaticText(this, wxID_ANY, _("Scopes:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer2->Add(StaticText7, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
     FlexGridSizer4 = new wxFlexGridSizer(0, 3, 0, 5);
     FlexGridSizer4->AddGrowableCol(0);
     FlexGridSizer4->AddGrowableCol(1);
     FlexGridSizer4->AddGrowableCol(2);
-    StaticText8 = new wxStaticText(this, ID_STATICTEXT8, _("IDs:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
+    StaticText8 = new wxStaticText(this, wxID_ANY, _("IDs:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer4->Add(StaticText8, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Members:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    StaticText9 = new wxStaticText(this, wxID_ANY, _("Members:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer4->Add(StaticText9, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Handlers:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
+    StaticText10 = new wxStaticText(this, wxID_ANY, _("Handlers:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer4->Add(StaticText10, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_ScopeIds = new wxButton(this, ID_BUTTON2, _("Public"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
     FlexGridSizer4->Add(m_ScopeIds, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -216,7 +213,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_ScopeHandlers = new wxButton(this, ID_BUTTON4, _("Public"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
     FlexGridSizer4->Add(m_ScopeHandlers, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer2->Add(FlexGridSizer4, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-    StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("Constructor arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
+    StaticText5 = new wxStaticText(this, wxID_ANY, _("Constructor arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer2->Add(StaticText5, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer3 = new wxFlexGridSizer(0, 2, 0, 10);
     FlexGridSizer3->AddGrowableCol(0);
@@ -247,7 +244,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_CtorSizeDef->Disable();
     FlexGridSizer3->Add(m_CtorSizeDef, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer2->Add(FlexGridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("Custom arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
+    StaticText6 = new wxStaticText(this, wxID_ANY, _("Custom arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer2->Add(StaticText6, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorCustom = new wxTextCtrl(this, ID_TEXTCTRL7, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL7"));
     FlexGridSizer2->Add(m_CtorCustom, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -271,7 +268,8 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     SetSizer(m_RootSizer);
     m_RootSizer->Fit(this);
     m_RootSizer->SetSizeHints(this);
-    
+    Center();
+
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnClassChanged);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnHeaderChanged);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);
