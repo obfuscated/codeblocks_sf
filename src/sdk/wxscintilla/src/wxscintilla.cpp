@@ -114,6 +114,8 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_CHARDELETED )
 /* C::B begin */
 DEFINE_EVENT_TYPE( wxEVT_SCI_SETFOCUS )
 DEFINE_EVENT_TYPE( wxEVT_SCI_KILLFOCUS )
+DEFINE_EVENT_TYPE( wxEVT_SCI_TAB )
+DEFINE_EVENT_TYPE( wxEVT_SCI_ESC )
 /* C::B end */
 
 
@@ -4702,6 +4704,12 @@ void wxScintilla::OnKeyDown (wxKeyEvent& evt)
     int processed = m_swx->DoKeyDown(evt, &m_lastKeyDownConsumed);
     if (!processed && !m_lastKeyDownConsumed)
         evt.Skip();
+/* C::B begin */
+    if (evt.GetKeyCode() == WXK_TAB)
+        NotifyTab();
+    else if (evt.GetKeyCode() == WXK_ESCAPE)
+        NotifyEsc();
+/* C::B end */
 }
 
 
@@ -4765,6 +4773,20 @@ wxSize wxScintilla::DoGetBestSize() const
 void wxScintilla::NotifyFocus(bool focus)
 {
     wxScintillaEvent evt (focus ? wxEVT_SCI_SETFOCUS : wxEVT_SCI_KILLFOCUS, GetId());
+    evt.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(evt);
+}
+
+void wxScintilla::NotifyTab()
+{
+    wxScintillaEvent evt(wxEVT_SCI_TAB, GetId());
+    evt.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(evt);
+}
+
+void wxScintilla::NotifyEsc()
+{
+    wxScintillaEvent evt(wxEVT_SCI_ESC, GetId());
     evt.SetEventObject(this);
     GetEventHandler()->ProcessEvent(evt);
 }

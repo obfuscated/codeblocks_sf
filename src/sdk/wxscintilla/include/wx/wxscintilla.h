@@ -4287,6 +4287,8 @@ protected:
     // Turn notifications from Scintilla into events
 /* C::B begin */
     void NotifyFocus(bool focus);
+    void NotifyTab();
+    void NotifyEsc();
 /* C::B end */
     void NotifyChange();
     void NotifyParent(SCNotification* scn);
@@ -4471,6 +4473,8 @@ DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CHARDELETED,168
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SETFOCUS,            1681)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_KILLFOCUS,           1682)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_FINISHED_DRAG,       1683)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_TAB,                 1684)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ESC,                 1685)
 /* C::B end */
 END_DECLARE_EVENT_TYPES()
 #else
@@ -4508,7 +4512,9 @@ END_DECLARE_EVENT_TYPES()
 /* C::B begin */
         wxEVT_SCI_SETFOCUS,
         wxEVT_SCI_KILLFOCUS,
-        wxEVT_SCI_FINISHED_DRAG
+        wxEVT_SCI_FINISHED_DRAG,
+        wxEVT_SCI_TAB,
+        wxEVT_SCI_ESC
 /* C::B end */
     };
 #endif
@@ -4562,6 +4568,8 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #define EVT_SCI_SETFOCUS(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SETFOCUS               id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_KILLFOCUS(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KILLFOCUS              id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_FINISHED_DRAG(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_FINISHED_DRAG,         id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_TAB(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_TAB,                   id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_ESC(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ESC,                   id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 /* C::B end */
 
 #endif
