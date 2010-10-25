@@ -1927,8 +1927,11 @@ void ParserThread::HandleEnum()
     bool isUnnamed = false;
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString token = m_Tokenizer.GetToken();
+    if (token == ParserConsts::kw_class)
+        token = m_Tokenizer.GetToken();
     if (token.IsEmpty())
         return;
+
     else if (token==ParserConsts::opbrace)
     {
         // we have an un-named enum
