@@ -8,7 +8,7 @@
  */
 
 #include <sdk.h>
-#include "AbbreviationsConfigPanel.h"
+#include "abbreviationsconfigpanel.h"
 
 #include <editormanager.h>
 #include <editorcolourset.h>

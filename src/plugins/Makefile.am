@@ -42,6 +42,10 @@ if BUILD_TODO
 MAYBE_TODO=todo
 endif
 
+if BUILD_ABBREVIATIONS
+MAYBE_ABBREVIATIONS=abbreviations
+endif
+
 if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
@@ -57,11 +61,13 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_PROJECTSIMPORTER) \
 		$(MAYBE_OPENFILESLIST) \
 		$(MAYBE_TODO) \
+		$(MAYBE_ABBREVIATIONS) \
 		$(MAYBE_MANIFEST) \
 		contrib
 # the 'contrib' subdir contains its own filtering
 
-DIST_SUBDIRS = astyle \
+DIST_SUBDIRS = abbreviations \
+		astyle \
 		autosave \
 		classwizard \
 		codecompletion \

@@ -11,8 +11,8 @@
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
 
-#include "Abbreviations.h"
-#include "AbbreviationsConfigPanel.h"
+#include "abbreviations.h"
+#include "abbreviationsconfigpanel.h"
 
 #include <sqplus.h>
 #include <sc_base_types.h>

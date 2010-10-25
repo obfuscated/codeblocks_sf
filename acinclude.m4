@@ -197,6 +197,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the abbreviations plugin)
+abbreviations_default="yes"
+AC_ARG_ENABLE(abbreviations, [AC_HELP_STRING([--enable-abbreviations], [build the abbreviations plugin (default YES)])],,
+                       enable_abbreviations=$abbreviations_default)
+AM_CONDITIONAL([BUILD_ABBREVIATIONS], [test "x$enable_abbreviations" = "xyes"])
+if test "x$enable_abbreviations" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to keep prebuild windows dll's in dist-tarball)
 keep_dlls_default="yes"
 AC_ARG_ENABLE(keep-dlls, [AC_HELP_STRING([--enable-keep-dlls], [keep prebuild windows dll's in dist-tarball (default YES)])],,
@@ -213,7 +224,7 @@ case $host in
 	*-*-cygwin* | *-*-mingw*)
 		AC_MSG_CHECKING(whether to build the xp-manifest plugin)
 		xpmanifest_default="yes"
-		AC_ARG_ENABLE(todo, [AC_HELP_STRING([--enable-xpmanifest], [build the xp-manifest plugin (default YES)])],,
+		AC_ARG_ENABLE(xpmanifest, [AC_HELP_STRING([--enable-xpmanifest], [build the xp-manifest plugin (default YES)])],,
                        enable_xpmanifest=$xpmanifest_default)
 		AM_CONDITIONAL([BUILD_MANIFEST], [test "x$enable_xpmanifest" = "xyes"])
 		if test "x$enable_xpmanifest" = "xyes"; then

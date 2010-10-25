@@ -328,6 +328,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
+	src/plugins/abbreviations/Makefile
+	src/plugins/abbreviations/resources/Makefile
 	src/plugins/xpmanifest/Makefile
 	src/plugins/contrib/Makefile
 	src/plugins/contrib/AutoVersioning/Makefile
