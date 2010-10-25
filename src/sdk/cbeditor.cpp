@@ -230,12 +230,7 @@ struct cbEditorInternalData
         {
             wxChar c = control->GetCharAt(--position);
             int style = control->GetStyleAt(position);
-            bool inComment = style == wxSCI_C_COMMENT ||
-                            style == wxSCI_C_COMMENTDOC ||
-                            style == wxSCI_C_COMMENTDOCKEYWORD ||
-                            style == wxSCI_C_COMMENTDOCKEYWORDERROR ||
-                            style == wxSCI_C_COMMENTLINE ||
-                            style == wxSCI_C_COMMENTLINEDOC;
+            bool inComment = control->IsComment(style);
             if (c == _T('\n'))
             {
                 count++;
@@ -1816,80 +1811,7 @@ bool cbEditor::FixFoldState()
 
 void cbEditor::AutoComplete()
 {
-    LogManager* msgMan = Manager::Get()->GetLogManager();
-    AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
-    cbStyledTextCtrl* control = GetControl();
-    int curPos = control->GetCurrentPos();
-    int wordStartPos = control->WordStartPosition(curPos, true);
-    wxString keyword = control->GetTextRange(wordStartPos, curPos);
-    wxString lineIndent = GetLineIndentString(control->GetCurrentLine());
-    msgMan->DebugLog(_T("Auto-complete keyword: ") + keyword);
-
-    AutoCompleteMap::iterator it;
-    for (it = map.begin(); it != map.end(); ++it)
-    {
-        if (keyword == it->first)
-        {
-            // found; auto-complete it
-            msgMan->DebugLog(_T("Auto-complete match for keyword found."));
-
-            // indent code accordingly
-            wxString code = it->second;
-            code.Replace(_T("\n"), _T('\n') + lineIndent);
-
-            // look for and replace macros
-            bool canceled = false;
-            int macroPos = code.Find(_T("$("));
-            while (macroPos != -1)
-            {
-                // locate ending parenthesis
-                int macroPosEnd = macroPos + 2;
-                int len = (int)code.Length();
-                while (macroPosEnd < len && code.GetChar(macroPosEnd) != _T(')'))
-                    ++macroPosEnd;
-                if (macroPosEnd == len)
-                    break; // no ending parenthesis
-
-                wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
-                msgMan->DebugLog(_T("Found macro: ") + macroName);
-                wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
-                if (macro.IsEmpty())
-                {
-                    canceled = true;
-                    break;
-                }
-                code.Replace(_T("$(") + macroName + _T(")"), macro);
-                macroPos = code.Find(_T("$("));
-            }
-
-            if (canceled)
-                break;
-
-            control->BeginUndoAction();
-
-            // delete keyword
-            control->SetSelectionVoid(wordStartPos, curPos);
-            control->ReplaceSelection(_T(""));
-            curPos = wordStartPos;
-
-            // replace any other macros in the generated code
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
-            // add the text
-            control->InsertText(curPos, code);
-
-            // put cursor where "|" appears in code (if it appears)
-            int caretPos = code.Find(_T('|'));
-            if (caretPos != -1)
-            {
-                control->SetCurrentPos(curPos + caretPos);
-                control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
-                control->ReplaceSelection(_T(""));
-            }
-
-            control->EndUndoAction();
-            break;
-        }
-    }
+    Manager::Get()->GetLogManager()->Log(_T("cbEditor::AutoComplete() is obsolete.\nUse AutoComplete(cbEditor &ed) from the Abbreviations plugin instead."));
 }
 
 void cbEditor::DoFoldAll(int fold)

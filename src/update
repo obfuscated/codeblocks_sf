@@ -45,6 +45,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml >
 ${ZIPCMD} -jqu9 ${RESDIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null

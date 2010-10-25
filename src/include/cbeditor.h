@@ -197,18 +197,7 @@ class DLLIMPORT cbEditor : public EditorBase
           */
         void Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers);
 
-        /** Try to auto-complete the current word.
-          *
-          * This has nothing to do with code-completion plugins. Editor auto-completion
-          * is a feature that saves typing common blocks of code, e.g.
-          *
-          * If you have typed "forb" (no quotes) and select auto-complete, then
-          * it will convert "forb" to "for ( ; ; ){ }".
-          * If the word up to the caret position is an unknown keyword, nothing happens.
-          *
-          * These keywords/code pairs can be edited in the editor configuration
-          * dialog.
-          */
+        /** This method is obsolete, use the abbreviations plugin instead. */
         void AutoComplete();
 
         /** Move the caret at the specified line.

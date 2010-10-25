@@ -398,6 +398,25 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
+			<Target title="Abbreviations">
+				<Option output="devel/share/codeblocks/plugins/libabbreviations.so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="devel/share/codeblocks/plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
+					<Add directory="include/scripting/bindings" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="28" />
@@ -405,7 +424,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxpropgrid;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxpropgrid;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;Abbreviations;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxpropgrid;Compiler depslib;" />
 		</VirtualTargets>
@@ -972,6 +991,18 @@
 		</Unit>
 		<Unit filename="include/xtra_res.h">
 			<Option target="sdk" />
+		</Unit>
+		<Unit filename="plugins/abbreviations/abbreviations.cpp">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins/abbreviations/abbreviations.h">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins/abbreviations/abbreviationsconfigpanel.cpp">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins/abbreviations/abbreviationsconfigpanel.h">
+			<Option target="Abbreviations" />
 		</Unit>
 		<Unit filename="plugins/astyle/asstreamiterator.cpp">
 			<Option target="AStyle" />

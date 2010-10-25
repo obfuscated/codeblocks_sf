@@ -151,7 +151,6 @@ class MainFrame : public wxFrame
         void OnEditToggleCommentSelected(wxCommandEvent & event);
         void OnEditStreamCommentSelected(wxCommandEvent & event);
         void OnEditBoxCommentSelected(wxCommandEvent & event);
-        void OnEditAutoComplete(wxCommandEvent& event);
 
         void OnEditBookmarksToggle(wxCommandEvent& event);
         void OnEditBookmarksNext(wxCommandEvent& event);

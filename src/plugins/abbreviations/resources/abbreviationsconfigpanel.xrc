@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxPanel" name="AbbreviationsConfigPanel">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT11">
+					<label>Auto-complete has nothing to do with the code-completion plugin.</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT12">
+					<label>It is invoked by typing one of the keywords below and pressing Ctrl-J.</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT13">
+					<label>It then replaces the typed keyword with the corresponding code.</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="spacer">
+				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<size>0,8</size>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT14">
+					<label>Notes:</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT15">
+					<label>* If you put a | (pipe) symbol in the code, the caret will be placed there.</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT16">
+					<label>* You can put macros in the code, like $$(my macro).</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT17">
+					<label>  You will be asked for the macro substitution value, when auto-completing.</label>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Keyword/code pairs</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer">
+							<cols>2</cols>
+							<vgap>4</vgap>
+							<hgap>4</hgap>
+							<growablecols>1</growablecols>
+							<growablerows>1</growablerows>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT18">
+									<label>Keywords:</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT19">
+									<label>Code:</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxListBox" name="lstAutoCompKeyword">
+									<style>wxLB_SORT</style>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="unknown" name="txtAutoCompCode">
+									<style></style>
+									<style></style>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxButton" name="btnAutoCompAdd">
+											<label>Add</label>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnAutoCompDelete">
+											<label>Delete</label>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									</object>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>4</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>4</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

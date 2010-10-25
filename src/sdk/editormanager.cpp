@@ -224,14 +224,11 @@ EditorManager::EditorManager()
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
     CreateSearchLog();
-    LoadAutoComplete();
     m_Zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
 }
 
 EditorManager::~EditorManager()
 {
-    SaveAutoComplete();
-
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pSearchLog);
     Manager::Get()->ProcessEvent(evt);
 
@@ -400,95 +397,6 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
     values.Add(lineTextL);
 
     m_pSearchLog->Append(values, line == -1 ? Logger::caption : Logger::info);
-}
-
-void EditorManager::LoadAutoComplete()
-{
-    m_AutoCompleteMap.clear();
-    wxArrayString list = Manager::Get()->GetConfigManager(_T("editor"))->EnumerateSubPaths(_T("/auto_complete"));
-    for (unsigned int i = 0; i < list.GetCount(); ++i)
-    {
-        wxString name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/name"), wxEmptyString);
-        wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/code"), wxEmptyString);
-        if (name.IsEmpty() || code.IsEmpty())
-            continue;
-        // convert non-printable chars to printable
-        code.Replace(_T("\\n"), _T("\n"));
-        code.Replace(_T("\\r"), _T("\r"));
-        code.Replace(_T("\\t"), _T("\t"));
-        m_AutoCompleteMap[name] = code;
-    }
-
-    if (m_AutoCompleteMap.empty())
-    {
-        // default auto-complete items
-        m_AutoCompleteMap[_T("if")]     = _T("if (|)\n\t;");
-        m_AutoCompleteMap[_T("ifb")]    = _T("if (|)\n{\n\t\n}");
-        m_AutoCompleteMap[_T("ife")]    = _T("if (|)\n{\n\t\n}\nelse\n{\n\t\n}");
-        m_AutoCompleteMap[_T("ifei")]   = _T("if (|)\n{\n\t\n}\nelse if ()\n{\n\t\n}\nelse\n{\n\t\n}");
-        m_AutoCompleteMap[_T("guard")]  = _T("#ifndef $(Guard token)\n#define $(Guard token)\n\n|\n\n#endif // $(Guard token)\n");
-        m_AutoCompleteMap[_T("while")]  = _T("while (|)\n\t;");
-        m_AutoCompleteMap[_T("whileb")] = _T("while (|)\n{\n\t\n}");
-        m_AutoCompleteMap[_T("switch")] = _T("switch (|)\n{\ncase :\n\tbreak;\n\ndefault:\n\tbreak;\n}\n");
-        m_AutoCompleteMap[_T("for")]    = _T("for (|; ; )\n\t;");
-        m_AutoCompleteMap[_T("forb")]   = _T("for (|; ; )\n{\n\t\n}");
-        m_AutoCompleteMap[_T("class")]  = _T("class $(Class name)|\n{\npublic:\n\t$(Class name)();\n\t~$(Class name)();\nprotected:\nprivate:\n};\n");
-        m_AutoCompleteMap[_T("struct")] = _T("struct |\n{\n\t\n};\n");
-    }
-
-    const bool useTabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
-    const int tabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
-    const wxString tabSpace = wxString(_T(' '), tabSize);
-    for (AutoCompleteMap::iterator it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
-    {
-        wxString& item = it->second;
-        if (useTabs)
-            item.Replace(tabSpace, _T("\t"), true);
-        else
-            item.Replace(_T("\t"), tabSpace, true);
-    }
-
-    // date and time macros
-    // these are auto-added if they 're found to be missing
-    const wxString timeAndDate[9][2] =
-    {
-        { _T("tday"),   _T("$TDAY") },
-        { _T("tdayu"),  _T("$TDAY_UTC") },
-        { _T("today"),  _T("$TODAY") },
-        { _T("todayu"), _T("$TODAY_UTC") },
-        { _T("now"),    _T("$NOW") },
-        { _T("nowl"),   _T("$NOW_L") },
-        { _T("nowu"),   _T("$NOW_UTC") },
-        { _T("nowlu"),  _T("$NOW_L_UTC") },
-        { _T("wdu"),    _T("$WEEKDAY_UTC") },
-    };
-    for (int i = 0; i < 9; ++i)
-    {
-        if (m_AutoCompleteMap.find(timeAndDate[i][0]) == m_AutoCompleteMap.end())
-            m_AutoCompleteMap[timeAndDate[i][0]] = timeAndDate[i][1];
-    }
-}
-
-void EditorManager::SaveAutoComplete()
-{
-    Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/auto_complete"));
-    AutoCompleteMap::iterator it;
-    int count = 0;
-    for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
-    {
-        wxString code = it->second;
-        // convert non-printable chars to printable
-        code.Replace(_T("\n"), _T("\\n"));
-        code.Replace(_T("\r"), _T("\\r"));
-        code.Replace(_T("\t"), _T("\\t"));
-
-        ++count;
-        wxString key;
-        key.Printf(_T("/auto_complete/entry%d/name"), count);
-        Manager::Get()->GetConfigManager(_T("editor"))->Write(key, it->first);
-        key.Printf(_T("/auto_complete/entry%d/code"), count);
-        Manager::Get()->GetConfigManager(_T("editor"))->Write(key, code);
-    }
 }
 
 int EditorManager::GetEditorsCount()

@@ -461,11 +461,6 @@
         <help>Boxcomments the selected lines of code</help>
       </object>
       <object class="separator"/>
-      <object class="wxMenuItem" name="idEditAutoComplete">
-        <label>Auto-complete</label>
-        <accel>Ctrl-J</accel>
-        <help>Auto-completes the word under the caret (nothing to do with code-completion plugins)</help>
-      </object>
       <object class="wxMenuItem" name="idEditGotoMatchingBrace">
         <label>Goto matching brace</label>
         <accel>Ctrl-Shift-B</accel>

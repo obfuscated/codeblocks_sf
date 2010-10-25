@@ -40,7 +40,6 @@ class LoaderBase;
 struct EditorManagerInternalData;
 class SearchResultsLog;
 
-WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
 // forward decl
 struct cbFindReplaceData;
@@ -85,7 +84,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
         int GetEditorsCount();
-        AutoCompleteMap& GetAutoCompleteMap(){ return m_AutoCompleteMap; }
 
         EditorBase* IsOpen(const wxString& filename);
         cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
@@ -181,10 +179,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void CreateSearchLog();
         void LogSearch(const wxString& file, int line, const wxString& lineText);
 
-        void LoadAutoComplete();
-        void SaveAutoComplete();
-
-        AutoCompleteMap m_AutoCompleteMap;
     private:
         EditorManager(const EditorManager& /*rhs*/); // prevent copy construction
 

@@ -196,7 +196,6 @@ int idEditUncommentSelected = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected = XRCID("idEditToggleCommentSelected");
 int idEditStreamCommentSelected = XRCID("idEditStreamCommentSelected");
 int idEditBoxCommentSelected = XRCID("idEditBoxCommentSelected");
-int idEditAutoComplete = XRCID("idEditAutoComplete");
 
 int idViewLayoutDelete = XRCID("idViewLayoutDelete");
 int idViewLayoutSave = XRCID("idViewLayoutSave");
@@ -286,7 +285,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditBookmarksNext, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCommentSelected, MainFrame::OnEditMenuUpdateUI)
-    EVT_UPDATE_UI(idEditAutoComplete, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditUncommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditToggleCommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditStreamCommentSelected, MainFrame::OnEditMenuUpdateUI)
@@ -403,7 +401,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,  MainFrame::OnEditBookmarksPrevious)
     EVT_MENU(idEditCommentSelected, MainFrame::OnEditCommentSelected)
-    EVT_MENU(idEditAutoComplete, MainFrame::OnEditAutoComplete)
     EVT_MENU(idEditUncommentSelected, MainFrame::OnEditUncommentSelected)
     EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
     EVT_MENU(idEditStreamCommentSelected, MainFrame::OnEditStreamCommentSelected)
@@ -3487,13 +3484,6 @@ void MainFrame::OnEditBoxCommentSelected(wxCommandEvent& /*event*/)
     }
 } // end of OnEditBoxCommentSelected
 
-void MainFrame::OnEditAutoComplete(wxCommandEvent& /*event*/)
-{
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
-        ed->AutoComplete();
-}
-
 void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -3882,7 +3872,6 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditSpecialCommands, ed);
     mbar->Enable(idEditSpecialCommandsCase, ed && hasSel);
     mbar->Enable(idEditCommentSelected, ed);
-    mbar->Enable(idEditAutoComplete, ed);
     mbar->Enable(idEditUncommentSelected, ed);
     mbar->Enable(idEditToggleCommentSelected, ed);
     mbar->Enable(idEditStreamCommentSelected, ed);

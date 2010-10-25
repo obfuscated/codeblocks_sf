@@ -48,7 +48,6 @@ const wxString base_imgs[] =
     _T("folding"),
     _T("gutter-margin"),
     _T("syntax-highlight"),
-    _T("abbrev"),
     _T("default-code"),
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
@@ -76,9 +75,6 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_COMBOBOX(XRCID("cmbLangs"),                    EditorConfigurationDlg::OnChangeLang)
     EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),          EditorConfigurationDlg::OnChangeDefCodeFileType)
     EVT_COMBOBOX(XRCID("cmbThemes"),                   EditorConfigurationDlg::OnColourTheme)
-    EVT_LISTBOX(XRCID("lstAutoCompKeyword"),           EditorConfigurationDlg::OnAutoCompKeyword)
-    EVT_BUTTON(XRCID("btnAutoCompAdd"),                EditorConfigurationDlg::OnAutoCompAdd)
-    EVT_BUTTON(XRCID("btnAutoCompDelete"),             EditorConfigurationDlg::OnAutoCompDelete)
     EVT_CHECKBOX(XRCID("chkDynamicWidth"),             EditorConfigurationDlg::OnDynamicCheck)
     EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),     EditorConfigurationDlg::OnHighlightOccurrences)
     EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"), EditorConfigurationDlg::OnMultipleSelections)
@@ -90,12 +86,10 @@ END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     : m_TextColourControl(0L),
-    m_AutoCompTextControl(0L),
     m_Theme(0L),
     m_Lang(HL_NONE),
     m_DefCodeFileType(0),
     m_ThemeModified(false),
-    m_LastAutoCompKeyword(-1),
     m_EnableChangebar(false)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureEditor"),_T("wxScrollingDialog"));
@@ -219,24 +213,6 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/find_latin2"), false));
     XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/use_system"), true));
 
-    // auto-complete
-    CreateAutoCompText();
-    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-    lstKeyword->Clear();
-    m_AutoCompMap = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
-    AutoCompleteMap::iterator it;
-    for (it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
-    {
-        lstKeyword->Append(it->first);
-    }
-    if (m_AutoCompMap.size() != 0)
-    {
-        lstKeyword->SetSelection(0);
-        m_LastAutoCompKeyword = 0;
-        it = m_AutoCompMap.begin();
-        m_AutoCompTextControl->SetText(it->second);
-    }
-
     // default code
     XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->SetSelection(m_DefCodeFileType);
     wxString key;
@@ -293,9 +269,6 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 
     if (m_TextColourControl)
         delete m_TextColourControl;
-
-    if (m_AutoCompTextControl)
-        delete m_AutoCompTextControl;
 }
 
 void EditorConfigurationDlg::AddPluginPanels()
@@ -399,20 +372,6 @@ void EditorConfigurationDlg::CreateColoursSample()
     FillColourComponents();
 }
 
-void EditorConfigurationDlg::CreateAutoCompText()
-{
-    if (m_AutoCompTextControl)
-        delete m_AutoCompTextControl;
-    m_AutoCompTextControl = new cbStyledTextCtrl(this, wxID_ANY);
-    m_AutoCompTextControl->SetTabWidth(4);
-    m_AutoCompTextControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
-    m_AutoCompTextControl->SetMarginWidth(0, 32);
-    m_AutoCompTextControl->SetViewWhiteSpace(1);
-    m_AutoCompTextControl->SetMinSize(wxSize(50,50));
-    ApplyColours();
-    wxXmlResource::Get()->AttachUnknownControl(_T("txtAutoCompCode"), m_AutoCompTextControl);
-}
-
 void EditorConfigurationDlg::FillColourComponents()
 {
     wxListBox* colours = XRCCTRL(*this, "lstComponents", wxListBox);
@@ -436,11 +395,6 @@ void EditorConfigurationDlg::ApplyColours()
         {
             m_TextColourControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt);
             m_Theme->Apply(m_Lang, m_TextColourControl);
-        }
-        if (m_AutoCompTextControl)
-        {
-            m_AutoCompTextControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt);
-            m_Theme->Apply(m_Theme->GetHighlightLanguage(_T("C/C++")), m_AutoCompTextControl);
         }
     }
 }
@@ -801,78 +755,6 @@ void EditorConfigurationDlg::OnBoldItalicUline(wxCommandEvent& /*event*/)
     WriteColours();
 }
 
-void EditorConfigurationDlg::AutoCompUpdate(int index)
-{
-    if (index != -1)
-    {
-        wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-        wxString lastSel = lstKeyword->GetString(index);
-        if (m_AutoCompTextControl->GetText() != m_AutoCompMap[lastSel])
-            m_AutoCompMap[lastSel] = m_AutoCompTextControl->GetText();
-    }
-}
-
-void EditorConfigurationDlg::OnAutoCompAdd(wxCommandEvent& /*event*/)
-{
-    wxString key = wxGetTextFromUser(_("Please enter the new keyword"), _("Add keyword"));
-    if (!key.IsEmpty())
-    {
-        AutoCompleteMap::iterator it = m_AutoCompMap.find(key);
-        if (it != m_AutoCompMap.end())
-        {
-            cbMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR, this);
-            return;
-        }
-        m_AutoCompMap[key] = _T("");
-        wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-        lstKeyword->Append(key);
-        AutoCompUpdate(lstKeyword->GetSelection());
-        m_AutoCompTextControl->SetText(_T(""));
-        m_LastAutoCompKeyword = lstKeyword->GetCount() - 1;
-        lstKeyword->SetSelection(m_LastAutoCompKeyword);
-    }
-}
-
-void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& /*event*/)
-{
-    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-    if (lstKeyword->GetSelection() == -1)
-        return;
-
-    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
-        return;
-
-    int sel = lstKeyword->GetSelection();
-    AutoCompleteMap::iterator it = m_AutoCompMap.find(lstKeyword->GetString(sel));
-    if (it != m_AutoCompMap.end())
-    {
-        m_AutoCompMap.erase(it);
-        lstKeyword->Delete(sel);
-        if (sel >= (int)(lstKeyword->GetCount()))
-            sel = lstKeyword->GetCount() - 1;
-        lstKeyword->SetSelection(sel);
-        if (sel != -1)
-        {
-            m_AutoCompTextControl->SetText(m_AutoCompMap[lstKeyword->GetString(sel)]);
-            m_LastAutoCompKeyword = sel;
-        }
-        else
-            m_AutoCompTextControl->SetText(_T(""));
-    }
-}
-
-void EditorConfigurationDlg::OnAutoCompKeyword(wxCommandEvent& /*event*/)
-{
-    wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-    if (lstKeyword->GetSelection() == m_LastAutoCompKeyword)
-        return;
-
-    AutoCompUpdate(m_LastAutoCompKeyword);
-    // list new keyword's code
-    m_AutoCompTextControl->SetText(m_AutoCompMap[lstKeyword->GetString(lstKeyword->GetSelection())]);
-    m_LastAutoCompKeyword = lstKeyword->GetSelection();
-}
-
 void EditorConfigurationDlg::OnDynamicCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->Enable(!event.IsChecked());
@@ -1019,23 +901,6 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/default_encoding/use_option"),  XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->GetSelection());
         cfg->Write(_T("/default_encoding/find_latin2"), XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->GetValue());
         cfg->Write(_T("/default_encoding/use_system"),  XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->GetValue());
-
-        // save any changes in auto-completion
-        wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
-        AutoCompUpdate(lstKeyword->GetSelection());
-		const bool useTabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
-		const int tabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
-		const wxString tabSpace = wxString(_T(' '), tabSize);
-		for (AutoCompleteMap::iterator it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
-		{
-			wxString& item = it->second;
-			if (useTabs)
-				item.Replace(tabSpace, _T("\t"), true);
-			else
-				item.Replace(_T("\t"), tabSpace, true);
-		}
-        AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
-        map = m_AutoCompMap;
 
         // finally, apply settings in all plugins' panels
         for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)

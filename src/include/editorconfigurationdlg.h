@@ -34,9 +34,6 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void OnEditFilemasks(wxCommandEvent& event);
         void OnChangeLang(wxCommandEvent& event);
         void OnChangeDefCodeFileType(wxCommandEvent& event);
-        void OnAutoCompKeyword(wxCommandEvent& event);
-        void OnAutoCompAdd(wxCommandEvent& event);
-        void OnAutoCompDelete(wxCommandEvent& event);
         void OnDynamicCheck(wxCommandEvent& event);
         void OnHighlightOccurrences(wxCommandEvent& event);
         void OnMultipleSelections(wxCommandEvent& event);
@@ -49,8 +46,6 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void AddPluginPanels();
         void UpdateListbookImages();
         void CreateColoursSample();
-        void CreateAutoCompText();
-        void AutoCompUpdate(int index);
         void ApplyColours();
         void FillColourComponents();
         void ReadColours();
@@ -59,14 +54,11 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void ChangeTheme();
         bool AskToSaveTheme();
         cbStyledTextCtrl* m_TextColourControl;
-        cbStyledTextCtrl* m_AutoCompTextControl;
         EditorColourSet* m_Theme;
         HighlightLanguage m_Lang;
         int m_DefCodeFileType;
         wxArrayString m_DefaultCode;  //!< will store the default code during configuration for each type
         bool m_ThemeModified;
-        int m_LastAutoCompKeyword;
-        AutoCompleteMap m_AutoCompMap;
         ConfigurationPanelsArray m_PluginPanels;
         wxString m_FontString; // This is to store font data temporarily
         bool m_EnableChangebar; // remember whether changebar was enabled or not
