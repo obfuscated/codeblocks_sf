@@ -22,7 +22,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
@@ -46,6 +46,7 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
+			<Add option="-Wno-attributes" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
@@ -1201,25 +1202,25 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxScrollingDialog wxs="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" src="wxwidgets/wxwidgetsguiappadoptingdlg.cpp" hdr="wxwidgets/wxwidgetsguiappadoptingdlg.h" name="wxWidgetsGUIAppAdoptingDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsNewWindowDlg.wxs" src="wxwidgets/wxsnewwindowdlg.cpp" hdr="wxwidgets/wxsnewwindowdlg.h" name="wxsNewWindowDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsArrayStringEditorDlg.wxs" src="properties/wxsarraystringeditordlg.cpp" hdr="properties/wxsarraystringeditordlg.h" name="wxsArrayStringEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsArrayStringCheckEditorDlg.wxs" src="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" hdr="wxwidgets/properties/wxsarraystringcheckeditordlg.h" name="wxsArrayStringCheckEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsBitmapIconEditorDlg.wxs" src="wxwidgets/properties/wxsbitmapiconeditordlg.cpp" hdr="wxwidgets/properties/wxsbitmapiconeditordlg.h" name="wxsBitmapIconEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets/properties/wxsfonteditordlg.h" name="wxsFontEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets/properties/wxsfontfaceeditordlg.h" name="wxsFontFaceEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsSimpleFontEditorDlg.wxs" src="wxwidgets/properties/wxssimplefonteditordlg.cpp" hdr="wxwidgets/properties/wxssimplefonteditordlg.h" name="wxsSimpleFontEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsImageListDlg.wxs" src="wxwidgets/properties/wxsimagelistdlg.cpp" hdr="wxwidgets/properties/wxsimagelistdlg.h" name="wxsImageListDlg" language="CPP" />
-					<wxPanel wxs="wxsmith/wxWidgetsGUIConfigPanel.wxs" src="wxwidgets/wxwidgetsguiconfigpanel.cpp" hdr="wxwidgets/wxwidgetsguiconfigpanel.h" name="wxWidgetsGUIConfigPanel" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsSizerParentQP.wxs" src="wxwidgets/wxssizerparentqp.cpp" hdr="wxwidgets/wxssizerparentqp.h" name="wxsSizerParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsNotebookParentQP.wxs" src="wxwidgets/defitems/wxsnotebook.cpp" hdr="wxwidgets/defitems/wxsnotebook.cpp" name="wxsNotebookParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsChoicebookParentQP.wxs" src="wxwidgets/defitems/wxschoicebook.cpp" hdr="wxwidgets/defitems/wxschoicebook.cpp" name="wxsChoicebookParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" name="wxsListbookParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsTreebookParentQP.wxs" src="wxwidgets/defitems/wxstreebook.cpp" hdr="wxwidgets/defitems/wxstreebook.cpp" name="wxsTreebookParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" name="wxsMenuEditor" language="CPP" />
-					<wxPanel wxs="wxsmith/wxstoolbareditor.wxs" src="wxwidgets/defitems/wxstoolbareditor.cpp" hdr="wxwidgets/defitems/wxstoolbareditor.h" name="wxsToolBarEditor" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsDeleteItemRes.wxs" src="wxwidgets/wxsdeleteitemres.cpp" hdr="wxwidgets/wxsdeleteitemres.h" name="wxsDeleteItemRes" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" src="wxwidgets/wxwidgetsguiappadoptingdlg.cpp" hdr="wxwidgets/wxwidgetsguiappadoptingdlg.h" fwddecl="0" i18n="1" name="wxWidgetsGUIAppAdoptingDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsNewWindowDlg.wxs" src="wxwidgets/wxsnewwindowdlg.cpp" hdr="wxwidgets/wxsnewwindowdlg.h" fwddecl="0" i18n="1" name="wxsNewWindowDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsArrayStringEditorDlg.wxs" src="properties/wxsarraystringeditordlg.cpp" hdr="properties/wxsarraystringeditordlg.h" fwddecl="0" i18n="1" name="wxsArrayStringEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsArrayStringCheckEditorDlg.wxs" src="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" hdr="wxwidgets/properties/wxsarraystringcheckeditordlg.h" fwddecl="0" i18n="1" name="wxsArrayStringCheckEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsBitmapIconEditorDlg.wxs" src="wxwidgets/properties/wxsbitmapiconeditordlg.cpp" hdr="wxwidgets/properties/wxsbitmapiconeditordlg.h" fwddecl="0" i18n="1" name="wxsBitmapIconEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets/properties/wxsfonteditordlg.h" fwddecl="0" i18n="1" name="wxsFontEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets/properties/wxsfontfaceeditordlg.h" fwddecl="0" i18n="1" name="wxsFontFaceEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsSimpleFontEditorDlg.wxs" src="wxwidgets/properties/wxssimplefonteditordlg.cpp" hdr="wxwidgets/properties/wxssimplefonteditordlg.h" fwddecl="0" i18n="1" name="wxsSimpleFontEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsImageListDlg.wxs" src="wxwidgets/properties/wxsimagelistdlg.cpp" hdr="wxwidgets/properties/wxsimagelistdlg.h" fwddecl="0" i18n="1" name="wxsImageListDlg" language="CPP" />
+					<wxPanel wxs="wxsmith/wxWidgetsGUIConfigPanel.wxs" src="wxwidgets/wxwidgetsguiconfigpanel.cpp" hdr="wxwidgets/wxwidgetsguiconfigpanel.h" fwddecl="0" i18n="1" name="wxWidgetsGUIConfigPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsSizerParentQP.wxs" src="wxwidgets/wxssizerparentqp.cpp" hdr="wxwidgets/wxssizerparentqp.h" fwddecl="0" i18n="1" name="wxsSizerParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsNotebookParentQP.wxs" src="wxwidgets/defitems/wxsnotebook.cpp" hdr="wxwidgets/defitems/wxsnotebook.cpp" fwddecl="0" i18n="1" name="wxsNotebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsChoicebookParentQP.wxs" src="wxwidgets/defitems/wxschoicebook.cpp" hdr="wxwidgets/defitems/wxschoicebook.cpp" fwddecl="0" i18n="1" name="wxsChoicebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" fwddecl="0" i18n="1" name="wxsListbookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsTreebookParentQP.wxs" src="wxwidgets/defitems/wxstreebook.cpp" hdr="wxwidgets/defitems/wxstreebook.cpp" fwddecl="0" i18n="1" name="wxsTreebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" fwddecl="0" i18n="1" name="wxsSettings" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" fwddecl="0" i18n="1" name="wxsMenuEditor" language="CPP" />
+					<wxPanel wxs="wxsmith/wxstoolbareditor.wxs" src="wxwidgets/defitems/wxstoolbareditor.cpp" hdr="wxwidgets/defitems/wxstoolbareditor.h" fwddecl="0" i18n="1" name="wxsToolBarEditor" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsDeleteItemRes.wxs" src="wxwidgets/wxsdeleteitemres.cpp" hdr="wxwidgets/wxsdeleteitemres.h" fwddecl="0" i18n="1" name="wxsDeleteItemRes" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />
