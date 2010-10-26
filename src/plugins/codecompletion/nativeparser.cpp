@@ -3053,8 +3053,8 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
         return -1;
     }
 
-    int line = searchData->control->LineFromPosition(pos) + 1;
-    if (   (line == m_LastLine)
+    const int curLine = searchData->control->LineFromPosition(pos) + 1;
+    if (   (curLine == m_LastLine)
         && ( (searchData->control == m_LastControl) && (!searchData->control->GetModify()) )
         && (searchData->file == m_LastFile) )
     {
@@ -3074,7 +3074,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
                                                     searchData->file.wx_str()));
     m_LastFile    = searchData->file;
     m_LastControl = searchData->control;
-    m_LastLine    = line;
+    m_LastLine    = curLine;
 
     // we have all the tokens in the current file, then just do a loop on all the tokens, see if the line is in
     // the token's imp.
@@ -3083,7 +3083,8 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Found %d results"), num_results));
 
-    Token* token = GetTokenFromCurrentLine(result, line);
+    size_t fileIdx = m_Parser->GetTokens()->GetFileIndex(searchData->file);
+    Token* token = GetTokenFromCurrentLine(result, curLine, fileIdx);
     if (token)
     {
         // got it :)
@@ -3704,7 +3705,7 @@ void NativeParser::ResolveOpeartor(const OperatorType& tokenOperatorType, const 
     }
 }
 
-Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine)
+Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx)
 {
     TokensTree* tree = m_Parser->GetTokens();
     if (!tree)
@@ -3716,30 +3717,45 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
         Token* token = tree->at(*it);
         if (token)
         {
-            if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("GetTokenFromCurrentLine() Iterating: tN='%s', tF='%s', tStart=%d, tEnd=%d"),
-                                                            token->DisplayName().wx_str(), token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd));
+            TRACE(_T("GetTokenFromCurrentLine() Iterating: tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+                  token->DisplayName().wx_str(), token->GetFilename().wx_str(),
+                  token->m_ImplLineStart, token->m_ImplLineEnd);
+
             if (   token->m_TokenKind & tkAnyFunction
+                && token->m_ImplFileIdx == fileIdx
                 && token->m_ImplLineStart <= curLine
                 && token->m_ImplLineEnd >= curLine)
             {
+                TRACE2(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+                       token->DisplayName().wx_str(), token->GetFilename().wx_str(),
+                       token->m_ImplLineStart, token->m_ImplLineEnd);
                 return token;
             }
             else if (   token->m_TokenKind == tkConstructor
+                     && token->m_ImplFileIdx == fileIdx
                      && token->m_ImplLine <= curLine
                      && token->m_ImplLineStart >= curLine)
             {
+                TRACE2(_T("GetTokenFromCurrentLine() tkConstructor : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+                       token->DisplayName().wx_str(), token->GetFilename().wx_str(),
+                       token->m_ImplLineStart, token->m_ImplLineEnd);
                 return token;
             }
             else if (   token->m_TokenKind == tkClass
                      && token->m_ImplLineStart <= curLine
                      && token->m_ImplLineEnd >= curLine)
             {
+                TRACE2(_T("GetTokenFromCurrentLine() tkClass : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+                       token->DisplayName().wx_str(), token->GetFilename().wx_str(),
+                       token->m_ImplLineStart, token->m_ImplLineEnd);
                 classToken = token;
+                continue;
             }
-            else if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("GetTokenFromCurrentLine() Function out of bounds: tN='%s', tF='%s', tStart=%d, tEnd=%d, line=%d (size_t)line=%d"),
-                                                            token->DisplayName().wx_str(), token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd, curLine, curLine));
+
+            TRACE(_T("GetTokenFromCurrentLine() Function out of bounds: tN='%s', tF='%s', tStart=%d, ")
+                  _T("tEnd=%d, line=%d (size_t)line=%d"), token->DisplayName().wx_str(),
+                  token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd,
+                  curLine, curLine);
         }
     }
 
@@ -3766,7 +3782,10 @@ void NativeParser::InitCCSearchVariables()
 void NativeParser::RemoveLastFunctionChildren()
 {
     Token* token = m_Parser->GetTokens()->at(m_LastFuncTokenIdx);
-    m_LastFuncTokenIdx = -1;
-    if (token && token->m_TokenKind & tkAnyFunction)
-        token->DeleteAllChildren();
+    if (token)
+    {
+        m_LastFuncTokenIdx = -1;
+        if (token->m_TokenKind & tkAnyFunction)
+            token->DeleteAllChildren();
+    }
 }

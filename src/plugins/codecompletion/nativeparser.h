@@ -534,7 +534,7 @@ private:
      * @param tokens all current file's function and class
      * @param curLine the line of the current position
      */
-    Token* GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine);
+    Token* GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx);
 
     /** Init cc search member variables */
     void InitCCSearchVariables();
