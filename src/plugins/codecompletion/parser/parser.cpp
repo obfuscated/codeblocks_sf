@@ -579,15 +579,13 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
 	ParserThreadOptions opts;
 	opts.useBuffer          = true;
 	opts.wantPreprocessor   = m_Options.wantPreprocessor;
-	opts.parseComplexMacros = m_Options.parseComplexMacros;
+	opts.parseComplexMacros = false;
 
 	ParserThread thread(this,
 						wxEmptyString,
 						true,
 						opts,
 						m_TempTokensTree);
-
-    wxCriticalSectionLocker locker(s_ParserThreadCritical);
 	return thread.ParseBufferForNamespaces(buffer, result);
 }
 
@@ -596,15 +594,13 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
     ParserThreadOptions opts;
     opts.useBuffer          = true;
 	opts.wantPreprocessor   = m_Options.wantPreprocessor;
-	opts.parseComplexMacros = m_Options.parseComplexMacros;
+	opts.parseComplexMacros = false;
 
     ParserThread thread(this,
                         wxEmptyString,
                         false,
                         opts,
                         m_TempTokensTree);
-
-    wxCriticalSectionLocker locker(s_ParserThreadCritical);
     return thread.ParseBufferForUsingNamespace(buffer, result);
 }
 

@@ -24,8 +24,6 @@ extern int NEW_TOKEN;
 extern int FILE_NEEDS_PARSING;
 extern const wxString g_UnnamedSymbol;
 
-static wxCriticalSection s_ParserThreadCritical;
-
 struct NameSpace
 {
 	wxString Name;
@@ -108,13 +106,6 @@ public:
     /** ParserThread destructor.*/
     virtual ~ParserThread();
 
-    /** Execute() is a virtual function derived from cbThreadedTask class, we should override it here. In
-      * the batch parsing mode, a lot of parser threads were generated and executed concurrently, this
-      * often happens when user open a project. Every parserthread task will firstly be added to the thread pool, later
-      * called automatically from the thread pool.
-      */
-    int Execute() { return Parse() ? 0 : 1; }
-
     /** Do the main job (syntax analysis) here */
     bool Parse();
 
@@ -132,15 +123,16 @@ public:
       */
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 
-    /** Set the tokenstree member*/
-    virtual void SetTokens(TokensTree* tokensTree);
-
-    /** return the parsing file name*/
-    const wxString& GetFilename() const { return m_Filename; }
-
 protected:
     /** specify which "class like type" we are handling: struct or class or union*/
     enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
+
+    /** Execute() is a virtual function derived from cbThreadedTask class, we should override it here. In
+      * the batch parsing mode, a lot of parser threads were generated and executed concurrently, this
+      * often happens when user open a project. Every parserthread task will firstly be added to the thread pool, later
+      * called automatically from the thread pool.
+      */
+    int Execute() { return Parse() ? 0 : 1; }
 
     /** skip until we meet one of the characters in the wxString
       * @param chars wxString specifies all the ending characters

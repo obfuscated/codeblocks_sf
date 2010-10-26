@@ -54,6 +54,8 @@
 #define IS_ALIVE !TestDestroy()
 #endif
 
+static wxCriticalSection g_ParserThreadCritical;
+
 int THREAD_START       = wxNewId();
 int THREAD_END         = wxNewId();
 int NEW_TOKEN          = wxNewId();
@@ -166,11 +168,6 @@ void ParserThread::Log(const wxString& log)
 //    Manager::ProcessPendingEvents();
 }
 
-void ParserThread::SetTokens(TokensTree* tokensTree)
-{
-    m_TokensTree = tokensTree;
-}
-
 wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting)
 {
     unsigned int level = m_Tokenizer.GetNestingLevel();
@@ -255,6 +252,7 @@ void ParserThread::SkipAngleBraces()
 
 bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
+    wxCriticalSectionLocker locker(g_ParserThreadCritical);
 	m_Tokenizer.InitFromBuffer(buffer);
 	if (!m_Tokenizer.IsOK())
 		return false;
@@ -335,6 +333,7 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
 
 bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
+    wxCriticalSectionLocker locker(g_ParserThreadCritical);
     m_Tokenizer.InitFromBuffer(buffer);
     if (!m_Tokenizer.IsOK())
         return false;
@@ -441,7 +440,7 @@ bool ParserThread::InitTokenizer()
 
 bool ParserThread::Parse()
 {
-    wxCriticalSectionLocker locker(s_ParserThreadCritical);
+    wxCriticalSectionLocker locker(g_ParserThreadCritical);
 
     if (!IS_ALIVE || !InitTokenizer())
         return false;

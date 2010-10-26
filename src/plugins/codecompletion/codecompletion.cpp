@@ -407,9 +407,9 @@ CodeCompletion::~CodeCompletion()
     while (!m_SystemHeadersThread.empty())
     {
         SystemHeadersThread* thread = m_SystemHeadersThread.front();
-        if (thread->IsRunning())
-            thread->Delete();
         m_SystemHeadersThread.pop_front();
+        if (thread->IsAlive())
+            thread->Kill();
     }
 }
 
@@ -2068,10 +2068,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 		NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;
 
         m_NativeParser.GetParser().ParseBufferForNamespaces(ed->GetControl()->GetText(), nameSpaces);
-		sort(nameSpaces.begin(), nameSpaces.end(), LessNameSpace);
+		std::sort(nameSpaces.begin(), nameSpaces.end(), LessNameSpace);
 
-		copy(nameSpaces.begin(), nameSpaces.end(), back_inserter(functionsScopes));
-        sort(functionsScopes.begin(), functionsScopes.end(), LessFunctionScope);
+		std::copy(nameSpaces.begin(), nameSpaces.end(), back_inserter(functionsScopes));
+        std::sort(functionsScopes.begin(), functionsScopes.end(), LessFunctionScope);
 
         // remove consecutive duplicates
         FunctionsScopeVec::iterator it;
