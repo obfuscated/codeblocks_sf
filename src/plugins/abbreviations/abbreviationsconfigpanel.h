@@ -40,7 +40,7 @@ private:
     wxListBox*        m_Keyword;
     int               m_LastAutoCompKeyword;
     AutoCompleteMap   m_AutoCompMap;
-    Abbreviations*    m_plugin;
+    Abbreviations*    m_Plugin;
 
     DECLARE_EVENT_TABLE()
 };

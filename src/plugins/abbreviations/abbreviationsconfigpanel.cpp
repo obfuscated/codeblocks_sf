@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision:
- * $Id:
- * $HeadURL:
+ * $Revision: $
+ * $Id: $
+ * $HeadURL: $
  */
 
 #include <sdk.h>
@@ -24,25 +24,23 @@ END_EVENT_TABLE()
 AbbreviationsConfigPanel::AbbreviationsConfigPanel(wxWindow* parent, Abbreviations* plugin) :
     m_AutoCompTextControl(0L),
     m_LastAutoCompKeyword(-1),
-    m_plugin(plugin)
+    m_Plugin(plugin)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("AbbreviationsConfigPanel"), _T("wxPanel"));
 
     InitCompText();
     m_Keyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
     m_Keyword->Clear();
-    m_AutoCompMap = m_plugin->m_AutoCompleteMap;// Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
-    AutoCompleteMap::iterator it;
-    for (it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
-    {
+    m_AutoCompMap = m_Plugin->m_AutoCompleteMap;
+
+    for (AutoCompleteMap::iterator it = m_AutoCompMap.begin(); it != m_AutoCompMap.end(); ++it)
         m_Keyword->Append(it->first);
-    }
-    if (m_AutoCompMap.size() != 0)
+
+    if (!m_AutoCompMap.empty())
     {
-        m_Keyword->SetSelection(0);
         m_LastAutoCompKeyword = 0;
-        it = m_AutoCompMap.begin();
-        m_AutoCompTextControl->SetText(it->second);
+        m_Keyword->SetSelection(0);
+        m_AutoCompTextControl->SetText(m_AutoCompMap.begin()->second);
     }
 
     Connect(XRCID("lstAutoCompKeyword"), wxEVT_COMMAND_LISTBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
@@ -65,7 +63,6 @@ void AbbreviationsConfigPanel::InitCompText()
     if (m_AutoCompTextControl)
         delete m_AutoCompTextControl;
     m_AutoCompTextControl = new cbStyledTextCtrl(this, wxID_ANY);
-
     m_AutoCompTextControl->SetTabWidth(4);
     m_AutoCompTextControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     m_AutoCompTextControl->SetMarginWidth(0, 32);
@@ -132,7 +129,8 @@ void AbbreviationsConfigPanel::OnAutoCompDelete(wxCommandEvent& event)
     if (m_Keyword->GetSelection() == -1)
         return;
 
-    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
+    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"),
+                     wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
         return;
 
     int sel = m_Keyword->GetSelection();
@@ -170,7 +168,7 @@ void AbbreviationsConfigPanel::OnApply()
     // save any changes in auto-completion
     AutoCompUpdate(m_Keyword->GetSelection());
     Abbreviations::ExchangeTabAndSpaces(m_AutoCompMap);
-    m_plugin->m_AutoCompleteMap = m_AutoCompMap;
+    m_Plugin->m_AutoCompleteMap = m_AutoCompMap;
 }
 
 void AbbreviationsConfigPanel::OnCancel()

@@ -81,7 +81,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxListBox" name="lstAutoCompKeyword">
-									<style>wxLB_SORT</style>
+									<style>wxLB_SINGLE | wxLB_NEEDED_SB</style>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<option>1</option>
