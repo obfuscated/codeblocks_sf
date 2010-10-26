@@ -77,15 +77,18 @@ NativeParser::NativeParser() :
     m_Parser(&m_TempParser),
     m_EditorStartWord(-1),
     m_EditorEndWord(-1),
+    m_CallTipCommas(0),
+    m_LastFuncTokenIdx(-1),
+    m_LastControl(nullptr),
+    m_LastFunction(nullptr),
+    m_LastLine(-1),
+    m_LastResult(-1),
+    m_LastAISearchWasGlobal(false),
     m_TimerEditorActivated(this, idTimerEditorActivated),
     m_TimerReparseAfterClear(this, idTimerReparseAfterClear),
-    m_CallTipCommas(0),
     m_ClassBrowser(NULL),
-    m_GettingCalltips(false),
     m_ClassBrowserIsFloating(false),
-    m_LastAISearchWasGlobal(false),
-    m_ImageList(NULL),
-    m_LastFuncTokenIdx(-1)
+    m_ImageList(NULL)
 {
     m_TemplateMap.clear();
 
@@ -190,7 +193,11 @@ NativeParser::~NativeParser()
 
 void NativeParser::SetParser(Parser* parser)
 {
+    RemoveLastFunctionChildren();
+    InitCCSearchVariables();
+
     m_Parser = parser;
+
     if (m_ClassBrowser)
     {
         m_ClassBrowser->SetParser(parser);
@@ -1542,12 +1549,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
     {
         // remove old temporaries
         m_Parser->GetTempTokens()->Clear();
-        Token* token = m_Parser->GetTokens()->at(m_LastFuncTokenIdx);
-        if (token)
-        {
-            token->DeleteAllChildren();
-            m_LastFuncTokenIdx = -1;
-        }
+        RemoveLastFunctionChildren();
 
         // find "using namespace" directives in the file
         TokenIdxSet search_scope;
@@ -1701,19 +1703,12 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
 //        Manager::Get()->GetLogManager()->DebugLog(_T("Sending \"%s\" for call-tip"), lineText.c_str());
 
         TokensTree* tokens = m_Parser->GetTokens();
-        Token* token = tokens->at(m_LastFuncTokenIdx);
-        if (token)
-        {
-            token->DeleteAllChildren();
-            m_LastFuncTokenIdx = -1;
-        }
+        RemoveLastFunctionChildren();
 
         TokenIdxSet search_scope;
         ParseUsingNamespace(&searchData, search_scope);
         ParseFunctionArguments(&searchData);
         ParseLocalBlock(&searchData);
-
-        m_GettingCalltips = true;
 
         Token* tk = tokens->at(tokens->TokenExists(lineText, -1, tkPreprocessor));
         if (tk != NULL)
@@ -1740,7 +1735,6 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
     }
     while (false);
 
-    m_GettingCalltips = false;
     m_CallTipCommas = commas;
 
     TRACE(_T("GetCallTips() : m_CallTipCommas=%d"), m_CallTipCommas);
@@ -2044,7 +2038,7 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType, Op
     // and so on and so forth until we return an empty string...
     // NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
 
-    tokenType = pttSearchText;
+    tokenType         = pttSearchText;
     tokenOperatroType = otOperatorUndefine;
     if (line.IsEmpty())
         return wxEmptyString;
@@ -2246,8 +2240,8 @@ size_t NativeParser::BreakUpComponents(const wxString& actual, std::queue<Parser
         wxString tok = GetCCToken(tmp, tokenType, tokenOperatorType);
 
         ParserComponent pc;
-        pc.component = tok;
-        pc.token_type = tokenType;
+        pc.component         = tok;
+        pc.tokenType         = tokenType;
         pc.tokenOperatorType = tokenOperatorType;
         // Debug smart sense: output the component's name and type.
         if (s_DebugSmartSense)
@@ -2378,8 +2372,7 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
 
         // is the token a function or variable (i.e. is not a type)
         if (    !searchtext.IsEmpty()
-             && (parser_component.token_type != pttSearchText)
-             /* || m_GettingCalltips */ // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
+             && (parser_component.tokenType != pttSearchText)
              && !token->m_ActualType.IsEmpty() )
         {
             // the token is not a type
@@ -2676,7 +2669,6 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                                        TokenIdxSet& result, bool caseSense, bool isPrefix)
 {
     m_TemplateMap.clear();
-    static ParserComponent lastComponent;
     if (components.empty())
         return 0;
 
@@ -2754,7 +2746,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
 
                 // TODO: we should deal with operators carefully.
                 // it should work for class::/namespace::
-                if (token->m_IsOperator && (lastComponent.token_type!=pttNamespace))
+                if (token->m_IsOperator && (m_LastComponent.tokenType != pttNamespace))
                     continue;
 
                 //------------------------------
@@ -2770,7 +2762,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     m_TemplateMap = token->m_TemplateMap;
                 // handle it if the token is a function/variable(i.e. is not a type)
                 if (   !searchText.IsEmpty()
-                    && (subComponent.token_type != pttSearchText)
+                    && (subComponent.tokenType != pttSearchText)
                     && !token->m_ActualType.IsEmpty())
                 {
                     TokenIdxSet autualTypeResult;
@@ -2834,8 +2826,8 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
             if (!operatorResult.empty())
                 initialScope = operatorResult;
         }
-        if (subComponent.token_type != pttSearchText)
-            lastComponent = subComponent;
+        if (subComponent.tokenType != pttSearchText)
+            m_LastComponent = subComponent;
     }
 
 
@@ -3051,14 +3043,6 @@ bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
 int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace, wxString* procName,
                                            Token** functionToken, int caretPos)
 {
-    static cbStyledTextCtrl* s_LastControl =  0;
-    static int               s_LastLine    = -1;
-    static int               s_LastResult  = -1;
-    static wxString          s_LastFile;
-    static wxString          s_LastNS;
-    static wxString          s_LastPROC;
-    static Token*            s_LastFunction;
-
     // cache last result for optimization
     int pos = caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos;
     if ((pos < 0) || (pos > searchData->control->GetLength()))
@@ -3070,27 +3054,27 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
     }
 
     int line = searchData->control->LineFromPosition(pos) + 1;
-    if (   (line == s_LastLine)
-        && ( (searchData->control == s_LastControl) && (!searchData->control->GetModify()) )
-        && (searchData->file == s_LastFile) )
+    if (   (line == m_LastLine)
+        && ( (searchData->control == m_LastControl) && (!searchData->control->GetModify()) )
+        && (searchData->file == m_LastFile) )
     {
-        if (nameSpace)     *nameSpace     = s_LastNS;
-        if (procName)      *procName      = s_LastPROC;
-        if (functionToken) *functionToken = s_LastFunction;
+        if (nameSpace)     *nameSpace     = m_LastNamespace;
+        if (procName)      *procName      = m_LastPROC;
+        if (functionToken) *functionToken = m_LastFunction;
 
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Cached namespace='%s', cached proc='%s' (returning %d)"),
-                                                        s_LastNS.wx_str(), s_LastPROC.wx_str(), s_LastResult));
+                                                        m_LastNamespace.wx_str(), m_LastPROC.wx_str(), m_LastResult));
 
-        return s_LastResult;
+        return m_LastResult;
     }
 
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Looking for tokens in '%s'"),
                                                     searchData->file.wx_str()));
-    s_LastFile    = searchData->file;
-    s_LastControl = searchData->control;
-    s_LastLine    = line;
+    m_LastFile    = searchData->file;
+    m_LastControl = searchData->control;
+    m_LastLine    = line;
 
     // we have all the tokens in the current file, then just do a loop on all the tokens, see if the line is in
     // the token's imp.
@@ -3108,17 +3092,17 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
                                                         token->DisplayName().wx_str(),
                                                         token->m_ImplLine));
 
-        s_LastNS       = token->GetNamespace();
-        s_LastPROC     = token->m_Name;
-        s_LastFunction = token;
-        s_LastResult   = searchData->control->PositionFromLine(token->m_ImplLine - 1);
+        m_LastNamespace = token->GetNamespace();
+        m_LastPROC      = token->m_Name;
+        m_LastFunction  = token;
+        m_LastResult    = searchData->control->PositionFromLine(token->m_ImplLine - 1);
 
         // locate function's opening brace
         if (token->m_TokenKind & tkAnyFunction)
         {
-            while (s_LastResult < searchData->control->GetTextLength())
+            while (m_LastResult < searchData->control->GetTextLength())
             {
-                wxChar ch = searchData->control->GetCharAt(s_LastResult);
+                wxChar ch = searchData->control->GetCharAt(m_LastResult);
                 if (ch == _T('{'))
                     break;
                 else if (ch == 0)
@@ -3128,24 +3112,24 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
                     return -1;
                 }
 
-                ++s_LastResult;
+                ++m_LastResult;
             }
         }
 
-        if (nameSpace)     *nameSpace     = s_LastNS;
-        if (procName)      *procName      = s_LastPROC;
+        if (nameSpace)     *nameSpace     = m_LastNamespace;
+        if (procName)      *procName      = m_LastPROC;
         if (functionToken) *functionToken = token;
 
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Namespace='%s', proc='%s' (returning %d)"),
-                                                        s_LastNS.wx_str(), s_LastPROC.wx_str(), s_LastResult));
-        return s_LastResult;
+                                                        m_LastNamespace.wx_str(), m_LastPROC.wx_str(), m_LastResult));
+        return m_LastResult;
     }
 
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("FindCurrentFunctionStart() Can't determine current function..."));
 
-    s_LastResult = -1;
+    m_LastResult = -1;
     return -1;
 }
 
@@ -3361,7 +3345,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
             }
         }
         else
-            parser = &m_TempParser;
+            SetParser(&m_TempParser);
     }
     else if (!project)
     {
@@ -3760,4 +3744,29 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
     }
 
     return classToken;
+}
+
+void NativeParser::InitCCSearchVariables()
+{
+    m_LastControl     = nullptr;
+    m_LastFunction    = nullptr;
+    m_EditorStartWord = -1;
+    m_EditorEndWord   = -1;
+    m_CallTipCommas   = 0;
+    m_LastLine        = -1;
+    m_LastResult      = -1;
+    m_LastComponent.Clear();
+    m_LastFile.Clear();
+    m_LastNamespace.Clear();
+    m_LastPROC.Clear();
+    m_CCItems.Clear();
+    m_CallTips.Clear();
+}
+
+void NativeParser::RemoveLastFunctionChildren()
+{
+    Token* token = m_Parser->GetTokens()->at(m_LastFuncTokenIdx);
+    m_LastFuncTokenIdx = -1;
+    if (token && token->m_TokenKind & tkAnyFunction)
+        token->DeleteAllChildren();
 }

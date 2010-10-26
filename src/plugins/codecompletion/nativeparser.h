@@ -35,10 +35,11 @@ typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 /** divide a statement to several pieces(parser component), each component has a type character*/
 enum ParserTokenType
 {
-    pttSearchText = 0,
+    pttUndefine = 0,
+    pttSearchText,
     pttClass,
     pttNamespace,
-    pttFunction
+    pttFunction,
 };
 
 /** the eliminator separate two Parser Component, See ParserComponent struct for more details */
@@ -72,8 +73,15 @@ enum BrowserViewMode
 struct ParserComponent
 {
     wxString component;
-    ParserTokenType token_type;
+    ParserTokenType tokenType;
     OperatorType tokenOperatorType;
+    ParserComponent() { Clear(); }
+    void Clear()
+    {
+        component         = wxEmptyString;
+        tokenType         = pttUndefine;
+        tokenOperatorType = otOperatorUndefine;
+    }
 };
 
 /** Search structure combining
@@ -528,6 +536,12 @@ private:
      */
     Token* GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine);
 
+    /** Init cc search member variables */
+    void InitCCSearchVariables();
+
+    /** Remove the last function's childrens */
+    void RemoveLastFunctionChildren();
+
 private:
     typedef std::pair<cbProject*, Parser*> ParserPair;
     typedef std::list<ParserPair> ParserList;
@@ -535,29 +549,38 @@ private:
     ParserList                   m_ParserList;
     Parser                       m_TempParser;
     Parser*                      m_Parser;
+
+    /* CC Search Member Variables => START */
     int                          m_EditorStartWord;
     int                          m_EditorEndWord;
-    wxTimer                      m_TimerEditorActivated;
-    wxTimer                      m_TimerReparseAfterClear;
     wxString                     m_CCItems;
     wxArrayString                m_CallTips;
     int                          m_CallTipCommas;
-    ClassBrowser*                m_ClassBrowser;
-    bool                         m_GettingCalltips; // flag while getting calltips
-    bool                         m_ClassBrowserIsFloating;
-
+    int                          m_LastFuncTokenIdx; // saved the function token's index, for remove all local variable
+    ParserComponent              m_LastComponent;
+    cbStyledTextCtrl*            m_LastControl;
+    Token*                       m_LastFunction;
+    int                          m_LastLine;
+    int                          m_LastResult;
+    wxString                     m_LastFile;
+    wxString                     m_LastNamespace;
+    wxString                     m_LastPROC;
     bool                         m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
     wxString                     m_LastAIGlobalSearch; // same case like above, it holds the search string
+    /* CC Search Member Variables => END */
 
+    wxTimer                      m_TimerEditorActivated;
+    wxTimer                      m_TimerReparseAfterClear;
+    ClassBrowser*                m_ClassBrowser;
+    bool                         m_ClassBrowserIsFloating;
     ProjectSearchDirsMap         m_ProjectSearchDirsMap;
     int                          m_HookId; // project loader hook ID
+    wxImageList*                 m_ImageList;
+
+    wxString                     m_LastActivatedFile;
     wxArrayString                m_StandaloneFiles;
 
-    wxImageList*                 m_ImageList;
-    wxString                     m_LastActivatedFile;
-
     std::map<wxString, wxString> m_TemplateMap;
-    int                          m_LastFuncTokenIdx; // saved the function token's index, for remove all local variable
 
     DECLARE_EVENT_TABLE()
 };

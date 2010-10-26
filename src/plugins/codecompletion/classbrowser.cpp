@@ -106,7 +106,6 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBSortByKind, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByScope, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBBottomTree, ClassBrowser::OnCBViewMode)
-
 END_EVENT_TABLE()
 
 // class constructor
