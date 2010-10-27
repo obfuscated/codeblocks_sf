@@ -2617,24 +2617,18 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         if (isImpl)
         {
             if (cbEditor* ed = edMan->Open(token->GetImplFilename()))
-            {
-                ed->GotoLine(token->m_ImplLine - 1);
-            }
+                GotoTokenPosition(ed, target, token->m_ImplLine - 1);
             else
-            {
-                cbMessageBox(wxString::Format(_("Implementation not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
-            }
+                cbMessageBox(wxString::Format(_("Implementation not found: %s"), target.wx_str()),
+                             _("Warning"), wxICON_WARNING);
         }
         else
         {
             if (cbEditor* ed = edMan->Open(token->GetFilename()))
-            {
-                ed->GotoLine(token->m_Line - 1);
-            }
+                GotoTokenPosition(ed, target, token->m_Line - 1);
             else
-            {
-                cbMessageBox(wxString::Format(_("Declaration not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
-            }
+                cbMessageBox(wxString::Format(_("Declaration not found: %s"), target.wx_str()),
+                             _("Warning"), wxICON_WARNING);
         }
     }
     else
@@ -3059,4 +3053,18 @@ void CodeCompletion::OnRealtimeParsing(wxTimerEvent& event)
         return;
     if (m_NativeParser.ReparseFile(project, m_LastFile))
         Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when typing for editor ") + m_LastFile);
+}
+
+void CodeCompletion::GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line)
+{
+    if (!editor)
+        return;
+    cbStyledTextCtrl* control = editor->GetControl();
+    control->GotoLine(line);
+    const int start = control->GetCurrentPos();
+    const int end = start + control->LineLength(line);
+    int tokenPos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, nullptr);
+    if (tokenPos == wxSCI_INVALID_POSITION)
+        tokenPos = start;
+    control->GotoPos(tokenPos);
 }

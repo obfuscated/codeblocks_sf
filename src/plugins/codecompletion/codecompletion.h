@@ -138,6 +138,7 @@ private:
     void EnableToolbarTools(bool enable = true);
     void OnRealtimeParsing(wxTimerEvent& event);
     void OnProjectSavedTimer(wxTimerEvent& event);
+    void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
 
     int                     m_PageIndex;
     bool                    m_InitDone;
