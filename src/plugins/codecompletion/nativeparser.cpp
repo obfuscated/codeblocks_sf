@@ -1389,7 +1389,8 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseFunctionArguments() Parsing arguments: \"%s\""), buffer.wx_str()));
                 }
 
-                if (!buffer.IsEmpty() && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, token))
+                if (   !buffer.IsEmpty()
+                    && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, token, token->m_ImplLine) )
                 {
                     if (s_DebugSmartSense)
                         Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() Error parsing arguments."));
@@ -1438,7 +1439,8 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
 
         wxString buffer = searchData->control->GetTextRange(blockStart, blockEnd);
         buffer.Trim();
-        if (!buffer.IsEmpty() && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, parent))
+        if (   !buffer.IsEmpty()
+            && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, parent, parent->m_ImplLineStart))
         {
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() ERROR parsing block:\n") + buffer);
@@ -1542,7 +1544,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
 
     if (!m_Parser->Done())
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("C++ Parser is still parsing files..."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("The Parser is still parsing files..."));
         return 0;
     }
     else

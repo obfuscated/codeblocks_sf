@@ -393,13 +393,12 @@ void Parser::MarkFileTokensAsLocal(const wxString& filename, bool local, void* u
 }
 
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp,
-                         const wxString& filename, Token* parent)
+                         const wxString& filename, Token* parent, int initLine)
 {
     ParserThreadOptions opts;
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.followLocalIncludes  = m_Options.followLocalIncludes;
-    opts.followGlobalIncludes = m_Options.followGlobalIncludes;
-    opts.parseComplexMacros   = m_Options.parseComplexMacros;
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
     opts.parseComplexMacros   = false;
     opts.useBuffer            = true;
     opts.isTemp               = isTemp;
@@ -407,7 +406,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     opts.handleFunctions      = false;
     opts.fileOfBuffer         = filename;
     opts.parentOfBuffer       = parent;
-
+    opts.initLineOfBuffer     = initLine;
     return Parse(buffer, isLocal, opts);
 }
 

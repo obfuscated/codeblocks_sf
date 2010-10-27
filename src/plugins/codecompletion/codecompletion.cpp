@@ -1048,7 +1048,7 @@ int CodeCompletion::CodeComplete()
 
         if (!m_NativeParser.GetParser().Done())
         {
-            wxString msg = _("C++ Parser is still parsing files...");
+            wxString msg = _("The Parser is still parsing files...");
             ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
         }
     }

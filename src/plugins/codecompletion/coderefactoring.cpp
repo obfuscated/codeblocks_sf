@@ -111,7 +111,7 @@ wxString CodeRefactoring::GetSymbolUnderCursor()
 
     if (!m_NativeParser.GetParser().Done())
     {
-        cbMessageBox(_("C++ Parser is still parsing files..."), _("Code Refactoring"), wxOK | wxICON_WARNING);
+        cbMessageBox(_("The Parser is still parsing files..."), _("Code Refactoring"), wxOK | wxICON_WARNING);
         return wxEmptyString;
     }
 

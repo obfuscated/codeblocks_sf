@@ -184,7 +184,7 @@ public:
     { return sm_ValidParserSet.find(parser) != sm_ValidParserSet.end(); }
 
     bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false, bool isTemp = false,
-                     const wxString& filename = wxEmptyString, Token* parent = nullptr);
+                     const wxString& filename = wxEmptyString, Token* parent = nullptr, int initLine = 0);
     bool ParseBufferForFunctions(const wxString& buffer);
     bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);

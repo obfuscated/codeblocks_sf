@@ -425,12 +425,7 @@ bool ParserThread::InitTokenizer()
             // record filename for buffer parsing
             m_Filename = m_Options.fileOfBuffer;
             m_FileIdx = m_TokensTree->GetFileIndex(m_Filename);
-
-            size_t initLineNumber = 0;
-            if (m_Options.parentOfBuffer)
-                initLineNumber = m_Options.parentOfBuffer->m_ImplLineStart;
-
-            return m_Tokenizer.InitFromBuffer(m_Buffer, m_Filename, initLineNumber);
+            return m_Tokenizer.InitFromBuffer(m_Buffer, m_Filename, m_Options.initLineOfBuffer);
         }
     }
 
