@@ -246,7 +246,7 @@ public:
         m_IncludeDirs(incDirs)
     {
         Create();
-        SetPriority(WXTHREAD_MIN_PRIORITY);
+        SetPriority(60u);
     }
 
     virtual void* Entry()
@@ -264,14 +264,16 @@ public:
             }
         }
 
-        for (size_t i = 0; i < dirs.GetCount() && !TestDestroy(); ++i)
+        for (size_t i = 0; i < dirs.GetCount(); ++i)
         {
             wxDir dir(dirs[i]);
             if (!dir.IsOpened())
                 continue;
 
-            HeaderDirTraverser traverser(m_SystemHeadersMap, dirs[i]);
+            HeaderDirTraverser traverser(this, m_SystemHeadersMap, dirs[i]);
             dir.Traverse(traverser, wxEmptyString, wxDIR_FILES | wxDIR_DIRS);
+            if (TestDestroy())
+                break;
 
             wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_UPDATE);
             evt.SetClientData(this);
@@ -301,7 +303,8 @@ private:
     class HeaderDirTraverser : public wxDirTraverser
     {
     public:
-        HeaderDirTraverser(SystemHeadersMap& headersMap, const wxString& searchDir) :
+        HeaderDirTraverser(wxThread* thread, SystemHeadersMap& headersMap, const wxString& searchDir) :
+            m_Thread(thread),
             m_SystemHeadersMap(headersMap),
             m_SearchDir(searchDir),
             m_Headers(headersMap[searchDir]),
@@ -317,7 +320,7 @@ private:
 
         virtual wxDirTraverseResult OnFile(const wxString& filename)
         {
-            if (!AddLock())
+            if (m_Thread->TestDestroy() || !AddLock())
                 return wxDIR_STOP;
 
             wxFileName fn(filename);
@@ -334,7 +337,7 @@ private:
 
         virtual wxDirTraverseResult OnDir(const wxString& dirname)
         {
-            if (!AddLock())
+            if (m_Thread->TestDestroy() || !AddLock())
                 return wxDIR_STOP;
 
             wxString path(dirname);
@@ -364,9 +367,10 @@ private:
         }
 
     private:
+        wxThread*                m_Thread;
         const SystemHeadersMap&  m_SystemHeadersMap;
         const wxString&          m_SearchDir;
-        StringSet&              m_Headers;
+        StringSet&               m_Headers;
         wxCriticalSectionLocker* m_Locker;
         size_t                   m_HeaderCount;
     };
@@ -408,8 +412,8 @@ CodeCompletion::~CodeCompletion()
     {
         SystemHeadersThread* thread = m_SystemHeadersThread.front();
         m_SystemHeadersThread.pop_front();
-        if (thread->IsAlive())
-            thread->Kill();
+        if (thread->IsAlive() && thread->IsRunning())
+            thread->Delete();
     }
 }
 
