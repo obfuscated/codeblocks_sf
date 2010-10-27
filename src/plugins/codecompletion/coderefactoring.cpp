@@ -322,8 +322,13 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
 
             // do cc search
             const int endOfWord = itList->pos + targetText.Len();
-            control->GotoPos(endOfWord); // TODO (Loaden) why need goto the pos too?
+            control->GotoPos(endOfWord);
             m_NativeParser.MarkItemsByAI(&searchData, result, true, false, true, endOfWord);
+            if (result.empty())
+            {
+                it->second.erase(itList++);
+                continue;
+            }
 
             // verify result
             TokenIdxSet::iterator findIter = targetResult.begin();
@@ -386,7 +391,7 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
             start = pos + lengthFound;
             const int line = control->LineFromPosition(pos);
             wxString text = control->GetLine(line).Trim(true).Trim(false);
-            m_SearchDataMap[file].push_back(crSearchData(pos, line, text));
+            m_SearchDataMap[file].push_back(crSearchData(pos, line + 1, text));
         }
         else
             break;
@@ -402,7 +407,7 @@ void CodeRefactoring::DoFindReferences()
     SearchResultsLog* searchLog = Manager::Get()->GetEditorManager()->GetSearchResultLogger();
 
     const wxString focusFile = editor->GetFilename();
-    const int focusLine = editor->GetControl()->GetCurrentLine();
+    const int focusLine = editor->GetControl()->GetCurrentLine() + 1;
     wxFileName fn(focusFile);
     const wxString basePath(fn.GetPath());
     size_t index = 0;
@@ -422,7 +427,7 @@ void CodeRefactoring::DoFindReferences()
             wxFileName curFn(it->first);
             curFn.MakeRelativeTo(basePath);
             values.Add(curFn.GetFullPath());
-            values.Add(wxString::Format(_T("%d"), itList->line + 1));
+            values.Add(wxString::Format(_T("%d"), itList->line));
             values.Add(itList->text);
             searchLog->Append(values, Logger::info);
 

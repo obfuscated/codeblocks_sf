@@ -3725,7 +3725,7 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
 
             if (   token->m_TokenKind & tkAnyFunction
                 && token->m_ImplFileIdx == fileIdx
-                && token->m_ImplLineStart <= curLine
+                && token->m_ImplLine <= curLine
                 && token->m_ImplLineEnd >= curLine)
             {
                 TRACE2(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
