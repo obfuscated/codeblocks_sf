@@ -1,10 +1,6 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
- *
- * $Revision: 6678 $
- * $Id: expression.cpp 6678 2010-10-08 05:07:32Z loaden $
- * $HeadURL: http://svn.berlios.de/svnroot/repos/codeblocks/branches/codecompletion_refactoring/src/plugins/codecompletion/parser/expression.cpp $
  */
 
 #include <sdk.h>
