@@ -256,9 +256,10 @@ private:
       * eg: if the argument list is like "(const TheClass* the_class, int my_int)"
       * then, the returned argument list is "(const TheClass*,int)"
       * @param args Full argument list
-      * @return Stripped argument list (argument types only)
+      * @param strippedArgs Stripped argument list (argument types only)
+      * @return if faild, will return false, so, it must be a variable
       */
-    wxString GetStrippedArgs(const wxString & args);
+    bool GetStrippedArgs(const wxString & args, wxString& strippedArgs);
 
     /** Get the class name from a macro */
     wxString GetClassFromMacro(const wxString& macro);
