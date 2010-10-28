@@ -3348,7 +3348,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
             }
         }
         else
-            SetParser(&m_TempParser);
+            parser = &m_TempParser; // do *not* instead by SetParser(&m_TempParser)
     }
     else if (!project)
     {
