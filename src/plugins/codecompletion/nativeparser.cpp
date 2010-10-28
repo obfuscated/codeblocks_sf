@@ -3339,7 +3339,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
         if (ft != ftOther && CreateParser(project))
         {
             parser = GetParserByProject(project);
-            if (!project)
+            if (parser && !project)
             {
                 wxFileName file(m_LastActivatedFile);
                 parser->AddIncludeDir(file.GetPath());
@@ -3352,7 +3352,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     }
     else if (!project)
     {
-        if (   !parser->IsFileParsed(m_LastActivatedFile)
+        if (   parser && !parser->IsFileParsed(m_LastActivatedFile)
             && m_StandaloneFiles.Index(m_LastActivatedFile) == wxNOT_FOUND )
         {
             wxFileName file(m_LastActivatedFile);
@@ -3368,7 +3368,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
         SwitchParser(project, parser);
     }
 
-    if (m_ClassBrowser && parser->ClassBrowserOptions().displayFilter == bdfFile)
+    if (m_ClassBrowser && parser && parser->ClassBrowserOptions().displayFilter == bdfFile)
     {
         // check header and implementation file swap, if yes, don't need to rebuild browser tree
         m_ClassBrowser->UpdateView(true);
