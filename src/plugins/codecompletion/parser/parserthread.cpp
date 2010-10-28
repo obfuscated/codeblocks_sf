@@ -1140,7 +1140,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
 
     wxString strippedArgs;
     if (kind & tkAnyFunction)
-        GetStrippedArgs(args, strippedArgs);
+    {
+        if (!GetStrippedArgs(args, strippedArgs))
+            kind = tkVariable;
+    }
 
     Token* localParent = 0;
 
@@ -2452,7 +2455,7 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
         case _T(','): // fall through
         case _T(')'): // fall through
         case _T('('):
-            if (*ptr == _T(','))
+            if (skip && *ptr == _T(','))
                 one = false;
             word = _T(""); // reset
             sym  = true;
@@ -2493,6 +2496,14 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
 
     if (one && strippedArgs.Len() > 2)
     {
+        const wxChar ch = strippedArgs[1];
+        if (   (ch <= _T('9') && ch >= _T('0'))             // number, 0 ~ 9
+            || strippedArgs.Find(_T('"')) != wxNOT_FOUND    // string
+            || strippedArgs.Find(_T('\'')) != wxNOT_FOUND ) // character
+        {
+            return false; // not function, it should be variable
+        }
+
         if (strippedArgs == _T("(void)"))
             strippedArgs = _T("()");
     }
