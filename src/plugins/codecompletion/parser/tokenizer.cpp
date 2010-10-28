@@ -704,8 +704,17 @@ void Tokenizer::ReadParentheses(wxString& str)
             break;
 
         case _T('\r'):
-        case _T('\n'):
         case _T('\t'):
+            break;
+
+        case _T('\n'): // we need keep the \n for records paras correct position
+            if (*(p - 1) == _T(' '))
+                --p;
+            if (*(p - 1) != _T('('))
+            {
+                *p = ch;
+                ++p;
+            }
             break;
 
         default:

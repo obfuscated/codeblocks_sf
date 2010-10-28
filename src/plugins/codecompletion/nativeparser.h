@@ -167,9 +167,9 @@ public:
     // the functions below are handling and managing Parser object
     /** Dynamically allocate a Parser object for the input project
      * @param project C::B project
-     * @return true if success.
+     * @return parser pointer of the project.
      */
-    bool CreateParser(cbProject* project);
+    Parser* CreateParser(cbProject* project);
 
     /** delete the Parser object for the input project
      * @param project C::B project.

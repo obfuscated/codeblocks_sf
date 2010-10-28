@@ -991,19 +991,19 @@ wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
     return it->second;
 }
 
-bool NativeParser::CreateParser(cbProject* project)
+Parser* NativeParser::CreateParser(cbProject* project)
 {
     if (GetParserByProject(project))
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Parser has been in existence!"));
-        return false;
+        return nullptr;
     }
 
     Parser* parser = new(std::nothrow) Parser(this, project);
     if (!parser)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Failed to create parser instances!"));
-        return false;
+        return nullptr;
     }
 
     if (m_Parser == &m_TempParser)
@@ -1020,7 +1020,7 @@ bool NativeParser::CreateParser(cbProject* project)
 
     RemoveObsoleteParsers();
 
-    return true;
+    return parser;
 }
 
 bool NativeParser::DeleteParser(cbProject* project)
@@ -1389,11 +1389,20 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseFunctionArguments() Parsing arguments: \"%s\""), buffer.wx_str()));
                 }
 
-                if (   !buffer.IsEmpty()
-                    && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, token, token->m_ImplLine) )
+                if (!buffer.IsEmpty())
                 {
-                    if (s_DebugSmartSense)
+                    const int textLength= searchData->control->GetLength();
+                    int paraPos = searchData->control->PositionFromLine(token->m_ImplLine - 1);
+                    while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) != _T('('))
+                        ;
+                    while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) < _T(' '))
+                        ;
+                    const int initLine = searchData->control->LineFromPosition(paraPos) + 1;
+                    if (   !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, token, initLine)
+                        && s_DebugSmartSense)
+                    {
                         Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() Error parsing arguments."));
+                    }
                 }
             }
         }
@@ -1728,7 +1737,9 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             if (token->m_Args != _T("()"))
             {
                 wxString s;
-                BreakUpInLines(s, token->m_Args, chars_per_line);
+                wxString args = token->m_Args;
+                args.Replace(_T("\n"), wxEmptyString);
+                BreakUpInLines(s, args, chars_per_line);
                 m_CallTips.Add(s);
             }
             else if (token->m_TokenKind == tkTypedef && token->m_ActualType.Contains(_T("(")))
@@ -3256,10 +3267,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
             std::pair<cbProject*, Parser*> prjParser = GetParserInfoByCurEditor();
             if (prjParser.first && prjParser.first != project && !prjParser.second)
-            {
-                if (CreateParser(prjParser.first))
-                    prjParser.second = GetParserByProject(prjParser.first);
-            }
+                prjParser.second = CreateParser(prjParser.first);
 
             if (prjParser.second && prjParser.second != m_Parser)
             {
@@ -3336,10 +3344,9 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     if (!parser)
     {
         FileType ft = CCFileTypeOf(m_LastActivatedFile);
-        if (ft != ftOther && CreateParser(project))
+        if (ft != ftOther && (parser = CreateParser(project)))
         {
-            parser = GetParserByProject(project);
-            if (parser && !project)
+            if (!project)
             {
                 wxFileName file(m_LastActivatedFile);
                 parser->AddIncludeDir(file.GetPath());
@@ -3352,7 +3359,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     }
     else if (!project)
     {
-        if (   parser && !parser->IsFileParsed(m_LastActivatedFile)
+        if (   !parser->IsFileParsed(m_LastActivatedFile)
             && m_StandaloneFiles.Index(m_LastActivatedFile) == wxNOT_FOUND )
         {
             wxFileName file(m_LastActivatedFile);
@@ -3368,7 +3375,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
         SwitchParser(project, parser);
     }
 
-    if (m_ClassBrowser && parser && parser->ClassBrowserOptions().displayFilter == bdfFile)
+    if (m_ClassBrowser && m_Parser->ClassBrowserOptions().displayFilter == bdfFile)
     {
         // check header and implementation file swap, if yes, don't need to rebuild browser tree
         m_ClassBrowser->UpdateView(true);
