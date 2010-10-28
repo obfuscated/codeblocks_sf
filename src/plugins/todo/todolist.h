@@ -43,6 +43,7 @@ class ToDoList : public cbPlugin
         void OnReparse(CodeBlocksEvent& event);
         void OnReparseCurrent(CodeBlocksEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnUpdateAdd(wxUpdateUIEvent& event);
         void OnStartParsingProjects(wxTimerEvent& event);
         void LoadUsers();
         void SaveUsers();

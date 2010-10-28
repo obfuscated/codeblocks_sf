@@ -49,6 +49,7 @@ const int idStartParsing = wxNewId();
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
     EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
     EVT_MENU(idViewTodo, ToDoList::OnViewList)
+    EVT_UPDATE_UI(idAddTodo, ToDoList::OnUpdateAdd)
     EVT_MENU(idAddTodo, ToDoList::OnAddItem)
 END_EVENT_TABLE()
 
@@ -159,17 +160,29 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
         wxMenu* view = menuBar->GetMenu(idx);
         wxMenuItemList& items = view->GetMenuItems();
         // find the first separator and insert before it
+        bool done = false;
         for (size_t i = 0; i < items.GetCount(); ++i)
         {
             if (items[i]->IsSeparator())
             {
                 view->InsertCheckItem(i, idViewTodo, _("Todo list"), _("Toggle displaying the To-Do list"));
-                return;
+                done = true;
+                break;
             }
         }
         // not found, just append
-        view->AppendCheckItem(idViewTodo, _("Todo list"), _("Toggle displaying the To-Do list"));
+        if ( !done )
+            view->AppendCheckItem(idViewTodo, _("Todo list"), _("Toggle displaying the To-Do list"));
     }
+
+    idx = menuBar->FindMenu(_("&Edit"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* edit = menuBar->GetMenu(idx);
+        edit->AppendSeparator();
+        edit->Append(idAddTodo, _("Add Todo item..."), _("Add Todo item..."));
+    }
+
 }
 
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -268,6 +281,11 @@ void ToDoList::OnAppDoneStartup(CodeBlocksEvent& event)
 void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
 {
     Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog->GetWindow()));
+}
+
+void ToDoList::OnUpdateAdd(wxUpdateUIEvent& event)
+{
+    event.Enable(Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != NULL);
 }
 
 void ToDoList::OnViewList(wxCommandEvent& event)
