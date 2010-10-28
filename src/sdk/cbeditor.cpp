@@ -3069,9 +3069,27 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                             for (size_t i = 0; i < text.Len(); ++i)
                             {
                                 if (text[i] == _T('('))
+                                {
+                                    const int style = control->GetStyleAt(pos - text.Len() + i);
+                                    if (   control->IsString(style)
+                                        || control->IsCharacter(style)
+                                        || control->IsComment(style) )
+                                    {
+                                        continue;
+                                    }
                                     ++level;
+                                }
                                 else if (text[i] == _T(')'))
+                                {
+                                    const int style = control->GetStyleAt(pos - text.Len() + i);
+                                    if (   control->IsString(style)
+                                        || control->IsCharacter(style)
+                                        || control->IsComment(style) )
+                                    {
+                                        continue;
+                                    }
                                     --level;
+                                }
                             }
 
                             if (!level)
