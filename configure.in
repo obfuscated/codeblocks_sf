@@ -298,15 +298,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/plugins/Makefile
 	src/plugins/scriptedwizard/resources/plugins/templates/Makefile
 	src/plugins/scriptedwizard/resources/ppc/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC565/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC565/h/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC565/ld/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC565/src/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/h/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/ld/Makefile
-	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/src/Makefile
 	src/plugins/scriptedwizard/resources/qt4/Makefile
 	src/plugins/scriptedwizard/resources/qt4/files/Makefile
 	src/plugins/scriptedwizard/resources/sdl/Makefile
