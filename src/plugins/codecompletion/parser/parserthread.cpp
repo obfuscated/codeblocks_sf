@@ -2360,6 +2360,10 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
     {
         switch (*ptr)
         {
+        case _T('\n'):
+            while (*ptr <= _T(' '))
+                ++ptr;
+            break;
         case _T(' '):
             // take care of args like:
             // - enum     my_enum the_enum_my_enum
