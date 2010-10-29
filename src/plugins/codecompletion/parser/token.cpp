@@ -164,7 +164,7 @@ wxString Token::DisplayName() const
         if (result.Find('*', true) != wxNOT_FOUND)
         {
             result.RemoveLast();
-            return result << m_Name << _T(")") <<  m_Args;
+            return result << m_Name << _T(")") <<  GetFormattedArgs();
         }
 
         if (!m_TemplateArgument.IsEmpty())
@@ -174,7 +174,7 @@ wxString Token::DisplayName() const
     }
     else if (m_TokenKind == tkPreprocessor)
     {
-        result << _T("#define ") << m_Name << m_Args;
+        result << _T("#define ") << m_Name << GetFormattedArgs();
         if (!m_Type.IsEmpty())
             return result << _T(" ") << m_Type;
     }
@@ -184,9 +184,9 @@ wxString Token::DisplayName() const
         result << m_Type << m_TemplateArgument << _T(" ");
 
     if (m_TokenKind == tkEnumerator)
-        return result << GetNamespace() << m_Name << _T("=") << m_Args;
+        return result << GetNamespace() << m_Name << _T("=") << GetFormattedArgs();
 
-    return result << GetNamespace() << m_Name << m_Args;
+    return result << GetNamespace() << m_Name << GetFormattedArgs();
 }
 
 Token* Token::GetParentToken()
@@ -262,6 +262,13 @@ wxString Token::GetImplFilename() const
     if (!m_TokensTree)
         return wxString(_T(""));
     return m_TokensTree->GetFilename(m_ImplFileIdx);
+}
+
+wxString Token::GetFormattedArgs() const
+{
+    wxString args(m_Args);
+    args.Replace(_T("\n"), wxEmptyString);
+    return args;
 }
 
 bool Token::MatchesFiles(const TokenFilesSet& files)

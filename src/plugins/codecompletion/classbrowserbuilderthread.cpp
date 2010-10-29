@@ -700,7 +700,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
                 || (token->m_TokenKind == tkDestructor)
                 || (token->m_TokenKind == tkMacro)
                 || (token->m_TokenKind == tkClass) )
-                str << token->m_Args;
+                str << token->GetFormattedArgs();
             // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
 //            if (!token->m_ActualType.IsEmpty())
 //                 str = str + _T(" : ") + token->m_ActualType;

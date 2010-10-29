@@ -947,7 +947,7 @@ int CodeCompletion::CodeComplete()
                 items.Add(tmp);
                 if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
                 {
-                    m_SearchItem[token->m_Name] = token->m_Args.size() - 2;
+                    m_SearchItem[token->m_Name] = token->GetFormattedArgs().size() - 2;
                 }
                 if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
                 {
@@ -1556,7 +1556,7 @@ int CodeCompletion::DoAllMethodsImpl()
             }
             if (!type.IsEmpty())
                 str << type << _T(" ");
-            str << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
+            str << token->GetParentName() << _T("::") << token->m_Name << token->GetFormattedArgs();
             if (token->m_IsConst)
                 str << _T(" const");
             str << _T("\n{\n}\n");
@@ -2054,7 +2054,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
                     if (fs.Scope.IsEmpty())
                         fs.Scope = g_GlobalScope;
 					wxString result = token->m_Name;
-					result << token->m_Args;
+					result << token->GetFormattedArgs();
 					if (!token->m_Type.IsEmpty())
 						result << _T(" : ") << token->m_Type;
 					fs.Name = result;

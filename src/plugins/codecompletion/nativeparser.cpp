@@ -1602,7 +1602,7 @@ const wxString& NativeParser::GetCodeCompletionItems()
                 continue;
             if (!m_CCItems.IsEmpty())
                 m_CCItems << _T(";");
-            m_CCItems << token->m_Name << token->m_Args;//" " << token->m_Filename << ":" << token->m_Line;
+            m_CCItems << token->m_Name << token->GetFormattedArgs();//" " << token->m_Filename << ":" << token->m_Line;
         }
     }
 
@@ -1734,12 +1734,10 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             Token* token = tokens->at(*it);
             if (!token)
                 continue;
-            if (token->m_Args != _T("()"))
+            if (token->GetFormattedArgs() != _T("()"))
             {
                 wxString s;
-                wxString args = token->m_Args;
-                args.Replace(_T("\n"), wxEmptyString);
-                BreakUpInLines(s, args, chars_per_line);
+                BreakUpInLines(s, token->GetFormattedArgs(), chars_per_line);
                 m_CallTips.Add(s);
             }
             else if (token->m_TokenKind == tkTypedef && token->m_ActualType.Contains(_T("(")))

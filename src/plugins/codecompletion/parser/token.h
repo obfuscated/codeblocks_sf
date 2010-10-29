@@ -181,6 +181,7 @@ public:
     wxString GetTokenScopeString() const;
     wxString GetFilename() const;
     wxString GetImplFilename() const;
+    wxString GetFormattedArgs() const; // replace '\n' to ''
     size_t GetTicket() const { return m_Ticket; }
     bool MatchesFiles(const TokenFilesSet& files);
 

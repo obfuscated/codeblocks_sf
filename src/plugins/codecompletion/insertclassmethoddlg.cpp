@@ -155,7 +155,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
             // BUG IN WXWIDGETS: wxCheckListBox::Append(string, data) crashes...
             //                   wxCheckListBox::Append(string) does not...
             wxString str;
-            str << token->m_Type << _T(" ") << ns << token->m_Name << token->m_Args;
+            str << token->m_Type << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
             str.Replace(_T("&"), _T("&&"));
             if (clb->FindString(str) == wxNOT_FOUND)
                 clb->Append(str);
