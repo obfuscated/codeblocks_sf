@@ -13,7 +13,7 @@
 				<Option external_deps="../../../devel/libwxsmithlib.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Compiler>
 					<Add option="-Ulinux" />
@@ -38,7 +38,7 @@
 				<Option external_deps="../../../devel/wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="../../../devel/codeblocks.exe" />
 				<Compiler>
 					<Add option="-g" />

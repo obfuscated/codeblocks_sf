@@ -49,7 +49,7 @@
 				<Option external_deps="..\..\..\devel\wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />

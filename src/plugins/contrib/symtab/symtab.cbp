@@ -12,7 +12,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\symtab" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
 					<Add option="-Wall" />

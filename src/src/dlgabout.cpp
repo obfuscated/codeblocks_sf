@@ -103,6 +103,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Martin Halle        : Developer\n"
         "Biplab Modak        : Developer\n"
         "Jens Lody           : Developer\n"
+        "Yuchen Deng         : Developer\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Bartlomiej Swiecki  : wxSmith RAD plugin\n"
         "Jerome Antoine      : ThreadSearch plugin\n"

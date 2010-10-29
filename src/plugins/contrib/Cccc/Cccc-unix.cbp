@@ -11,7 +11,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/Cccc" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option projectCompilerOptionsRelation="0" />
 			</Target>

@@ -22,7 +22,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
