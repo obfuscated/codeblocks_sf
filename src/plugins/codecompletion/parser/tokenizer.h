@@ -23,12 +23,21 @@ public:
         const size_t len = x.length();
         const size_t intWxChar = sizeof(unsigned int) / sizeof(wxChar);
         const size_t shortWxChar = sizeof(unsigned short) / sizeof(wxChar);
+        #if wxCHECK_VERSION(2, 9, 0)
+        if (len >= intWxChar)
+            return size_t((128 ^ len) + *((unsigned int*)(x.fn_str() + len - intWxChar)));
+        else if (len >= shortWxChar)
+            return size_t((256 ^ len) + *((unsigned short*)(x.fn_str() + len - shortWxChar)));
+        else
+            return size_t((512 ^ len) + *(x.fn_str() + len - 1));
+        #else
         if (len >= intWxChar)
             return size_t((128 ^ len) + *((unsigned int*)(x.c_str() + len - intWxChar)));
         else if (len >= shortWxChar)
             return size_t((256 ^ len) + *((unsigned short*)(x.c_str() + len - shortWxChar)));
         else
             return size_t((512 ^ len) + *(x.c_str() + len - 1));
+        #endif
     }
     HashForWxStringMap& operator=(const HashForWxStringMap&) { return *this; }
 };
