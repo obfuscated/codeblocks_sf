@@ -8,19 +8,25 @@
  */
 
 #include <sdk.h>
-#include "classbrowserbuilderthread.h"
-#include <globals.h>
-#include <manager.h>
-#include <projectmanager.h>
-#include <cbproject.h>
 
-#include <wx/settings.h>
-#include <wx/utils.h>
+#ifndef CB_PRECOMP
+    #include <algorithm>
+
+    #include <wx/settings.h>
 #ifdef buildtree_measuring
     #include <wx/stopwatch.h>
 #endif
+    #include <wx/utils.h>
 
-#include <algorithm>
+    #include <cbproject.h>
+    #include <cbstyledtextctrl.h>
+    #include <globals.h>
+    #include <logmanager.h>
+    #include <manager.h>
+    #include <projectmanager.h>
+#endif
+
+#include "classbrowserbuilderthread.h"
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 

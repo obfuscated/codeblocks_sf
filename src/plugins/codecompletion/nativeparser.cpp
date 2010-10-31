@@ -9,32 +9,38 @@
 
 #include <sdk.h>
 
+#ifndef CB_PRECOMP
+    #include <cctype>
+
+    #include <wx/dir.h>
+    #include <wx/log.h> // for wxSafeShowMessage()
+    #include <wx/regex.h>
+    #include <wx/wfstream.h>
+
+    #include <cbeditor.h>
+    #include <cbexception.h>
+    #include <cbproject.h>
+    #include <compilerfactory.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <logmanager.h>
+    #include <macrosmanager.h>
+    #include <manager.h>
+    #include <pluginmanager.h>
+    #include <projectmanager.h>
+    #include <tinyxml/tinyxml.h>
+
+    #include <cbauibook.h>
+#endif
+
+#include <wx/tokenzr.h>
+
+#include <cbstyledtextctrl.h>
+#include <projectloader_hooks.h>
+
 #include "nativeparser.h"
 #include "classbrowser.h"
 #include "parser/parser.h"
-
-#include <manager.h>
-#include <configmanager.h>
-#include <projectmanager.h>
-#include <pluginmanager.h>
-#include <logmanager.h>
-#include <editormanager.h>
-#include <macrosmanager.h>
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <cbexception.h>
-#include <cbstyledtextctrl.h>
-#include <compilerfactory.h>
-#include <projectloader_hooks.h>
-#include <tinyxml/tinyxml.h>
-
-#include "cbauibook.h"
-#include <wx/log.h> // for wxSafeShowMessage()
-#include <wx/regex.h>
-#include <wx/wfstream.h>
-#include <wx/tokenzr.h>
-
-#include <cctype>
 
 #define CC_NATIVEPARSER_DEBUG_OUTPUT 0
 

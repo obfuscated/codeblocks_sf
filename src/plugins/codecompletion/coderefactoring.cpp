@@ -8,14 +8,23 @@
  */
 
 #include <sdk.h>
-#include "coderefactoring.h"
-#include "nativeparser.h"
-#include "cbstyledtextctrl.h"
-#include "cbproject.h"
-#include "encodingdetector.h"
-#include "searchresultslog.h"
+
+#ifndef CB_PRECOMP
+    #include <cbeditor.h>
+    #include <cbproject.h>
+    #include <editorcolourset.h>
+    #include <editormanager.h>
+    #include <logmanager.h>
+#endif
 
 #include <wx/progdlg.h>
+
+#include <cbstyledtextctrl.h>
+#include <encodingdetector.h>
+#include <searchresultslog.h>
+
+#include "coderefactoring.h"
+#include "nativeparser.h"
 
 #define CC_CODEREFACTORING_DEBUG_OUTPUT 0
 

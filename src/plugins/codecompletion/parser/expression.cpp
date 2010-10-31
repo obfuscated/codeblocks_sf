@@ -8,11 +8,16 @@
  */
 
 #include <sdk.h>
-#include "expression.h"
-#include "token.h"
-#include "logmanager.h"
 
 #include <stack>
+
+#ifndef CB_PRECOMP
+    #include <logmanager.h>
+    #include <manager.h>
+#endif
+
+#include "expression.h"
+#include "token.h"
 
 #define CC_EXPRESSION_DEBUG_OUTPUT 0
 

@@ -8,25 +8,32 @@
  */
 
 #include <sdk.h>
-#include <wx/app.h>
-#include <wx/filename.h>
-#include <wx/tokenzr.h>
-#include <wx/intl.h>
-#include <wx/progdlg.h>
+
+#ifndef CB_PRECOMP
+    #include <queue>
+
+    #include <wx/app.h>
+    #include <wx/filename.h>
+    #include <wx/intl.h>
+    #include <wx/progdlg.h>
+    #include <wx/tokenzr.h>
+
+    #include <cbproject.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <globals.h>
+    #include <infowindow.h>
+    #include <logmanager.h>
+    #include <manager.h>
+#endif
+
+#include <cbstyledtextctrl.h>
+
 #include "parser.h"
 
 #include "../classbrowser.h"
 #include "../classbrowserbuilderthread.h"
 
-#include <configmanager.h>
-#include <logmanager.h>
-#include <editormanager.h>
-#include <manager.h>
-#include <globals.h>
-#include <infowindow.h>
-#include <cbproject.h>
-
-#include <queue>
 
 #ifndef CB_PRECOMP
     #include "editorbase.h"

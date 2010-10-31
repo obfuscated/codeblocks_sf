@@ -8,34 +8,38 @@
  */
 
 #include <sdk.h>
-#include "classbrowser.h" // class's header file
-#include "nativeparser.h"
-#include <wx/intl.h>
-#include <wx/treectrl.h>
-#include <wx/listctrl.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/choice.h>
-#include <wx/menu.h>
-#include <wx/splitter.h>
-#include <wx/button.h>
-#include <wx/utils.h> // wxBusyCursor
-#include <wx/xrc/xmlres.h>
-#include <wx/tipwin.h>
-#include <wx/tokenzr.h>
-#include <manager.h>
-#include <configmanager.h>
-#include <pluginmanager.h>
-#include <editormanager.h>
-#include <projectmanager.h>
-#include <cbeditor.h>
-#include <globals.h>
-#include "cbstyledtextctrl.h"
-
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
+    #include <wx/button.h>
+    #include <wx/choice.h>
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
+    #include <wx/treectrl.h>
+    #include <wx/splitter.h>
+    #include <wx/utils.h> // wxBusyCursor
+    #include <wx/tipwin.h>
+    #include <wx/xrc/xmlres.h>
+
+    #include <cbeditor.h>
+    #include <cbproject.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <globals.h>
+    #include <logmanager.h>
+    #include <manager.h>
+    #include <pluginmanager.h>
+    #include <projectmanager.h>
 #endif
+
+#include <wx/tokenzr.h>
+
+#include <cbstyledtextctrl.h>
+
+#include "classbrowser.h" // class's header file
+#include "nativeparser.h"
 
 #include "ccdebuginfo.h"
 

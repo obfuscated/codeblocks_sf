@@ -8,21 +8,45 @@
  */
 
 #include <sdk.h>
-#include "codecompletion.h"
 
-#include <manager.h>
-#include <configmanager.h>
-#include <logmanager.h>
-#include <projectmanager.h>
-#include <editormanager.h>
-#include <editorcolourset.h>
-#include <sdk_events.h>
-#include <incrementalselectlistdlg.h>
-#include <globals.h>
+#ifndef CB_PRECOMP
+    #include <algorithm>
+    #include <iterator>
+    #include <set> // for handling unique items in some places
+
+    #include <wx/choicdlg.h>
+    #include <wx/choice.h>
+    #include <wx/dir.h>
+    #include <wx/filename.h>
+    #include <wx/fs_zip.h>
+    #include <wx/mimetype.h>
+    #include <wx/regex.h>
+    #include <wx/msgdlg.h>
+    #include <wx/tipwin.h>
+    #include <wx/utils.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/wxscintilla.h>
+
+    #include <cbeditor.h>
+    #include <configmanager.h>
+    #include <editorcolourset.h>
+    #include <editormanager.h>
+    #include <globals.h>
+    #include <logmanager.h>
+    #include <macrosmanager.h>
+    #include <manager.h>
+    #include <projectmanager.h>
+    #include <sdk_events.h>
+#endif
+
+#include <wx/tokenzr.h>
+
 #include <cbstyledtextctrl.h>
 #include <editor_hooks.h>
-#include <cbeditor.h>
+#include <incrementalselectlistdlg.h>
 #include <multiselectdlg.h>
+
+#include "codecompletion.h"
 
 #include "insertclassmethoddlg.h"
 #include "ccoptionsdlg.h"
@@ -31,22 +55,6 @@
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
 
-#include <wx/mimetype.h>
-#include <wx/filename.h>
-#include <wx/regex.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/msgdlg.h>
-#include <wx/utils.h>
-#include <wx/choice.h>
-#include <wx/choicdlg.h>
-#include <wx/wxscintilla.h>
-#include <wx/tipwin.h>
-#include <wx/tokenzr.h>
-
-#include <set> // for handling unique items in some places
-#include <algorithm>
-#include <iterator>
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 

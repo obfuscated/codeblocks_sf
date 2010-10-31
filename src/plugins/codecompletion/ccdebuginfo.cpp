@@ -8,19 +8,28 @@
  */
 
 #include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/object.h>
+    #include <wx/string.h>
+    #include <wx/choicdlg.h> // wxGetSingleChoiceIndex
+    #include <wx/file.h>
+    #include <wx/filedlg.h>
+    #include <wx/utils.h>    // wxWindowDisabler
+
+    //(*InternalHeaders(CCDebugInfo)
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    //*)
+
+    #include <logmanager.h>
+#endif
+
+#include <wx/busyinfo.h>
+
 #include "ccdebuginfo.h"
 #include "parser/parser.h"
 
-#include <wx/busyinfo.h>
-#include <wx/choicdlg.h> // wxGetSingleChoiceIndex
-#include <wx/file.h>
-#include <wx/filedlg.h>
-#include <wx/utils.h>    // wxWindowDisabler
-
-//(*InternalHeaders(CCDebugInfo)
-#include <wx/intl.h>
-#include <wx/string.h>
-//*)
 
 //(*IdInit(CCDebugInfo)
 const long CCDebugInfo::ID_STATICTEXT29 = wxNewId();

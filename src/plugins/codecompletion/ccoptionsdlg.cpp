@@ -8,24 +8,32 @@
  */
 
 #include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/colordlg.h>
+    #include <wx/combobox.h>
+    #include <wx/intl.h>
+    #include <wx/listbox.h>
+    #include <wx/regex.h>
+    #include <wx/slider.h>
+    #include <wx/spinctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/treectrl.h>
+    #include <wx/xrc/xmlres.h>
+
+    #include <cbstyledtextctrl.h>
+    #include <configmanager.h>
+    #include <globals.h>
+    #include <logmanager.h>
+    #include <manager.h>
+#endif
+
+#include <editpairdlg.h>
+
 #include "ccoptionsdlg.h"
 #include "codecompletion.h"
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/spinctrl.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/treectrl.h>
-#include <wx/slider.h>
-#include <wx/button.h>
-#include <wx/stattext.h>
-#include <wx/colordlg.h>
-#include <wx/regex.h>
-#include <configmanager.h>
-#include <manager.h>
-#include <editpairdlg.h>
-#include <globals.h>
 
 static const wxString g_SampleClasses =
     _T("class A_class"

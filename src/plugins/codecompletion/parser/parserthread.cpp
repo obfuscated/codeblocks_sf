@@ -8,16 +8,22 @@
  */
 
 #include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <cctype>
+    #include <queue>
+
+    #include <wx/app.h>
+    #include <wx/msgdlg.h>
+
+    #include <globals.h>
+    #include <logmanager.h>
+    #include <manager.h>
+#endif
+
 #include "parserthread.h"
 #include "parser.h"
-#include <wx/app.h>
-#include <wx/msgdlg.h>
-#include <manager.h>
-#include "logmanager.h"
-#include <globals.h>
 
-#include <cctype>
-#include <queue>
 
 #define CC_PARSERTHREAD_DEBUG_OUTPUT 0
 
