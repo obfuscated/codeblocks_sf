@@ -2497,10 +2497,10 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     wxArrayString tokens;
     SearchTree<Token*> tmpsearch;
     tokens.Clear();
-    for(size_t i = 0; i < tmptree->size();i++)
+    for (size_t i = 0; i < tmptree->size(); i++)
     {
         Token* token = tmptree->at(i);
-        if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor))
+        if (token && token->m_TokenKind & tkAnyFunction)
         {
             tokens.Add(token->DisplayName());
             tmpsearch.AddItem(token->DisplayName(), token);

@@ -52,7 +52,7 @@ struct ParserThreadOptions
         handleTypedefs(true),
         parseComplexMacros(true),
         parentOfBuffer(nullptr),
-        initLineOfBuffer(0),
+        initLineOfBuffer(1),
         loader(nullptr)
         {}
 
