@@ -60,7 +60,7 @@ private:
 
 public:
     // functions used for the mainframe:
-    virtual void SetStatusWidths(int n, const int widths[]);
+    virtual void SetStatusWidths(int n, const int* widths);
 private:
     std::vector<int> m_mainswidths;
 
