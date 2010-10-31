@@ -548,10 +548,10 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_EditMenu->AppendSeparator();
 
         const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
-        if (   (   info->Language >= wxLANGUAGE_CHINESE
+        if ( info && ( (   info->Language >= wxLANGUAGE_CHINESE
                 && info->Language <= wxLANGUAGE_CHINESE_TAIWAN )
             || info->Language == wxLANGUAGE_JAPANESE
-            || info->Language == wxLANGUAGE_KOREAN )
+            || info->Language == wxLANGUAGE_KOREAN ) )
         {
             m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tShift-Space"));
         }
