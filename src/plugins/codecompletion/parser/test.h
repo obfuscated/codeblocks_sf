@@ -1,4 +1,5 @@
-const char* str(",");
-const char ch(',');
-int i(8);
-float f(1.0);
+template<typename T> class A{};
+const A<int> var;
+
+class A { const string Test(); };
+const string A::Test() {}

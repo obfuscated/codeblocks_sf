@@ -919,6 +919,9 @@ void ParserThread::DoParse()
                 {
                     // a template, e.g. someclass<void>::memberfunc
                     // we have to skip <>, so we 're left with someclass::memberfunc
+                    // about 'const' handle, e.g.
+                    /* template<typename T> class A{};
+                       const A<int> var; */
                     if (m_Str.IsEmpty() || m_Str.StartsWith(ParserConsts::kw_const))
                         GetTemplateArgs();
                     else
@@ -938,7 +941,7 @@ void ParserThread::DoParse()
                 }
                 else if (peek==ParserConsts::dcolon)
                 {
-                    if (m_Str.IsEmpty() || m_Str.StartsWith(ParserConsts::kw_const))
+                    if (m_Str.IsEmpty())
                         m_EncounteredTypeNamespaces.push(token); // it's a type's namespace
                     else
                         m_EncounteredNamespaces.push(token);
