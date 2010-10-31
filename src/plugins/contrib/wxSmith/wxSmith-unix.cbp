@@ -13,7 +13,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance --multiple-instance -ns" />
+				<Option parameters="--debug-log --multiple-instance -ns" />
 				<Option createStaticLib="1" />
 			</Target>
 			<Target title="wxSmith">
@@ -22,7 +22,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance --multiple-instance -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Linker>
 					<Add library="wxsmithlib" />
