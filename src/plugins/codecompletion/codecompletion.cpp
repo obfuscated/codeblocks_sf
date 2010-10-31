@@ -1367,6 +1367,14 @@ void CodeCompletion::ShowCallTip()
 
     // calculate the size of the calltips window
     int pos = ed->GetControl()->GetCurrentPos();
+    const int style = ed->GetControl()->GetStyleAt(pos);
+    if (   ed->GetControl()->IsString(style)
+        || ed->GetControl()->IsCharacter(style)
+        || ed->GetControl()->IsComment(style) )
+    {
+        return;
+    }
+
     wxPoint p = ed->GetControl()->PointFromPosition(pos); // relative point
     int pixelWidthPerChar = ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
     int maxCalltipLineSizeInChars = (ed->GetSize().x - p.x) / pixelWidthPerChar;
