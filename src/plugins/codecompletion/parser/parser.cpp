@@ -148,7 +148,7 @@ public:
             ProjectFile* pf = m_Project.GetFile(i);
             if (!pf)
                 continue;
-            if (CCFileTypeOf(pf->relativeFilename) != ftOther)
+            if (CCFileTypeOf(pf->relativeFilename) != ccftOther)
                 m_Parser.MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
         }
 

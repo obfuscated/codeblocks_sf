@@ -118,7 +118,15 @@ enum FileParsingStatus
     fpsDone
 };
 
-FileType CCFileTypeOf(const wxString& filename);
+enum CCFileType
+{
+    ccftHeader,
+    ccftCSource,
+    ccftCppSource,
+    ccftOther
+};
+
+CCFileType CCFileTypeOf(const wxString& filename);
 
 WX_DEFINE_ARRAY(Token*, TokensArray);
 

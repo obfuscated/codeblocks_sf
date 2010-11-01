@@ -1075,7 +1075,7 @@ bool NativeParser::SwitchParser(cbProject* project, Parser* parser)
 
 bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
 {
-    if (CCFileTypeOf(filename) == ftOther)
+    if (CCFileTypeOf(filename) == ccftOther)
         return false;
 
     Parser* parser = GetParserByProject(project);
@@ -1087,7 +1087,7 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
 
 bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
 {
-    if (CCFileTypeOf(filename) == ftOther)
+    if (CCFileTypeOf(filename) == ccftOther)
         return false;
 
     Parser* parser = GetParserByProject(project);
@@ -1194,14 +1194,14 @@ bool NativeParser::StartCompleteParsing(cbProject* project, Parser* parser)
         }
     }
 
-    // parse header files first
+    bool needDefineCppMacro = true;
     for (int i = 0; project && i < project->GetFilesCount(); ++i)
     {
         ProjectFile* pf = project->GetFile(i);
         if (!pf)
             continue;
-        FileType ft = CCFileTypeOf(pf->relativeFilename);
-        if (ft == ftHeader) // parse header files
+        CCFileType ft = CCFileTypeOf(pf->relativeFilename);
+        if (ft == ccftHeader) // parse header files
         {
             bool isUpFrontFile = false;
             for (FrontMap::iterator it = frontTempMap.begin(); it != frontTempMap.end(); ++it)
@@ -1218,10 +1218,17 @@ bool NativeParser::StartCompleteParsing(cbProject* project, Parser* parser)
             if (!isUpFrontFile)
                 headers.push_back(pf->file.GetFullPath());
         }
-        else if (ft == ftSource) // parse source files
+        else if (ft == ccftCppSource) // parse c++ source files
         {
             sources.push_back(pf->file.GetFullPath());
+            if (needDefineCppMacro)
+            {
+                needDefineCppMacro = false;
+                parser->AddPredefinedMacros(_T("#define ") _T("__cplusplus") _T("\n"));
+            }
         }
+        else if (ft == ccftCSource) // parse c source files
+            sources.push_back(pf->file.GetFullPath());
     }
 
     for (FrontMap::iterator it = frontMap.begin(); it != frontMap.end(); ++it)
@@ -3371,8 +3378,8 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     Parser* parser = GetParserByProject(project);
     if (!parser)
     {
-        FileType ft = CCFileTypeOf(m_LastActivatedFile);
-        if (ft != ftOther && (parser = CreateParser(project)))
+        CCFileType ft = CCFileTypeOf(m_LastActivatedFile);
+        if (ft != ccftOther && (parser = CreateParser(project)))
         {
             if (!project)
             {
@@ -3512,7 +3519,7 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
-        if (CCFileTypeOf(filename) != ftOther)
+        if (CCFileTypeOf(filename) != ccftOther)
             m_Files.Add(filename);
         return wxDIR_CONTINUE;
     }

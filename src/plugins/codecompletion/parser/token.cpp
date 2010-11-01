@@ -41,7 +41,7 @@ const wxString g_DebugTraceFile = wxEmptyString;
 
 ProfileTimer::ProfileMap ProfileTimer::m_ProfileMap;
 
-FileType CCFileTypeOf(const wxString& filename)
+CCFileType CCFileTypeOf(const wxString& filename)
 {
     const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
     const int pos = file.Find(_T('.'), true);
@@ -54,13 +54,18 @@ FileType CCFileTypeOf(const wxString& filename)
         || ext == _T("hpp")
         || ext == _T("tcc")
         || ext == _T("xpm") )
-        return ftHeader;
-    else if (   ext ==_T("cpp")
-             || ext ==_T("c")
-             || ext ==_T("cxx") )
-        return ftSource;
+    {
+        return ccftHeader;
+    }
+    else if (   ext == _T("cpp")
+             || ext == _T("cxx") )
+    {
+        return ccftCppSource;
+    }
+    else if (ext == _T("c"))
+        return ccftCSource;
     else
-        return ftOther;
+        return ccftOther;
 }
 
 inline void SaveTokenIdxSetToFile(wxOutputStream* f,const TokenIdxSet& data)

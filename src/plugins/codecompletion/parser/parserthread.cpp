@@ -1332,7 +1332,7 @@ void ParserThread::HandleIncludes()
         }
     }
 
-    if (CCFileTypeOf(filename) == ftOther)
+    if (CCFileTypeOf(filename) == ccftOther)
         return;
 
     if (!filename.IsEmpty())

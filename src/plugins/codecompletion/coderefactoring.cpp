@@ -499,8 +499,8 @@ void CodeRefactoring::GetAllProjectFiles(wxArrayString& files, cbProject* projec
         ProjectFile* pf = project->GetFile(i);
         if (!pf)
             continue;
-        FileType ft = CCFileTypeOf(pf->relativeFilename);
-        if (ft != ftOther)
+        CCFileType ft = CCFileTypeOf(pf->relativeFilename);
+        if (ft != ccftOther)
             files.Add(pf->file.GetFullPath());
     }
 }
