@@ -2893,6 +2893,10 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
 
+        // support multi-line call tips
+        else if (ch == _T('\n') && m_ActiveCalltipsNest > 0)
+            ShowCallTip();
+
         // end calltip
         else if (ch == _T(')') || ch == _T(';'))
         {

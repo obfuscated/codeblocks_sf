@@ -1681,6 +1681,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
 {
     m_CallTips.Clear();
     m_CallTipCommas = 0;
+    int commas = 0;
 
     do
     {
@@ -1689,16 +1690,11 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             break;
 
         ccSearchData searchData = { ed->GetControl(), ed->GetFilename() };
-
-        int line = searchData.control->GetCurrentLine();
-        wxString lineText = searchData.control->GetLine(line);
-        const int lineStart = ed->GetControl()->PositionFromLine(line);
-        int end = searchData.control->GetCurrentPos() - lineStart;
+        int pos = searchData.control->GetCurrentPos();
         int nest = 0;
-        while (end > 0)
+        while (--pos > 0)
         {
-            --end;
-            const int style = searchData.control->GetStyleAt(lineStart + end);
+            const int style = searchData.control->GetStyleAt(pos);
             if (   searchData.control->IsString(style)
                 || searchData.control->IsCharacter(style)
                 || searchData.control->IsComment(style) )
@@ -1706,11 +1702,13 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
                 continue;
             }
 
-            const wxChar ch = lineText.GetChar(end);
-            if (ch == _T(','))
+            const wxChar ch = searchData.control->GetCharAt(pos);
+            if (ch == _T(';'))
+                return m_CallTips;
+            else if (ch == _T(','))
             {
                 if (nest == 0)
-                    ++m_CallTipCommas;
+                    ++commas;
             }
             else if (ch == _T(')'))
                 --nest;
@@ -1721,39 +1719,44 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
                     break;
             }
         }
-        if (!end)
-            break;
-        lineText.Remove(end).Trim(false);
-        if (lineText.StartsWith(_T("::")))
-            lineText = lineText.Right(lineText.Length() - 2);
-        TRACE(_T("Sending \"%s\" for call-tip"), lineText.c_str());
 
-        TokensTree* tokens = m_Parser->GetTokens();
-        RemoveLastFunctionChildren();
-
-        TokenIdxSet search_scope;
-        ParseUsingNamespace(&searchData, search_scope);
-        ParseFunctionArguments(&searchData);
-        ParseLocalBlock(&searchData);
-
-        while (true)
+        // strip un-wanted
+        while (--pos > 0)
         {
-            Token* tk = tokens->at(tokens->TokenExists(lineText, -1, tkPreprocessor));
-            if (tk != NULL && lineText != tk->m_Type)
-                lineText = tk->m_Type;
-            else
-                break;
+            if (   searchData.control->GetCharAt(pos) <= _T(' ')
+                || searchData.control->IsComment(searchData.control->GetStyleAt(pos)) )
+            {
+                continue;
+            }
+            break;
         }
 
-        TokenIdxSet result;
-        if (!AI(result, &searchData, lineText, false, true, &search_scope))
-            break;
+        const int start = searchData.control->WordStartPosition(pos, true);
+        const int end = searchData.control->WordEndPosition(pos, true);
+        const wxString target = searchData.control->GetTextRange(start, end);
+        TRACE(_T("Sending \"%s\" for call-tip"), target.c_str());
+        if (target.IsEmpty())
+            return m_CallTips;
 
+        TokenIdxSet result;
+        MarkItemsByAI(result, true, false, true, end);
+
+        TokensTree* tokens = m_Parser->GetTokens();
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* token = tokens->at(*it);
             if (!token)
                 continue;
+
+            while (token->m_TokenKind == tkPreprocessor)
+            {
+                Token* tk = tokens->at(tokens->TokenExists(token->m_Type, -1, tkPreprocessor | tkFunction));
+                if (tk && tk->m_Type != token->m_Name)
+                    token = tk;
+                else
+                    break;
+            }
+
             if (token->GetFormattedArgs() != _T("()"))
             {
                 wxString s;
@@ -1766,6 +1769,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
     }
     while (false);
 
+    m_CallTipCommas = commas;
     TRACE(_T("GetCallTips() : m_CallTipCommas=%d"), m_CallTipCommas);
     return m_CallTips;
 }
