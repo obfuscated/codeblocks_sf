@@ -711,7 +711,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
 //            if (!token->m_ActualType.IsEmpty())
 //                 str = str + _T(" : ") + token->m_ActualType;
             if (!token->m_Type.IsEmpty())
-                 str = str + _T(" : ") + token->m_Type;
+                 str = str + _T(" : ") + token->m_Type + token->m_TemplateArgument;
 
             wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CBTreeData(sfToken, token, tokenKindMask));
 
