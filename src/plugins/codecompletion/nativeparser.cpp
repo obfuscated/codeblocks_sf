@@ -1748,6 +1748,15 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             if (!token)
                 continue;
 
+            // support constructor call tips
+            if (token->m_TokenKind == tkClass)
+            {
+                Token* tk = tokens->at(tokens->TokenExists(token->m_Name, token->GetSelf(), tkConstructor));
+                if (tk)
+                    token = tk;
+            }
+
+            // support macro call tips
             while (token->m_TokenKind == tkPreprocessor)
             {
                 Token* tk = tokens->at(tokens->TokenExists(token->m_Type, -1, tkPreprocessor | tkFunction));
