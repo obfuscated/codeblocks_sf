@@ -667,12 +667,22 @@ bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
         }
         else
         {
-            const int ws = control->WordStartPosition(pos, true);
-            const int we = control->WordEndPosition(pos, true);
-            const wxString txt = control->GetTextRange(ws, we);
-            if (!txt.IsEmpty())
+            int start = control->WordStartPosition(pos, true);
+            const int end = control->WordEndPosition(pos, true);
+            const wxString word = control->GetTextRange(start, end);
+            if (!word.IsEmpty())
             {
-                NameUnderCursor = txt;
+                NameUnderCursor.Clear();
+                while (--start > 0)
+                {
+                    const wxChar ch = control->GetCharAt(start);
+                    if (ch <= _T(' '))
+                        continue;
+                    else if (ch == _T('~'))
+                        NameUnderCursor << _T("~");
+                    break;
+                }
+                NameUnderCursor << word;
                 ReturnValue = true;
                 IsInclude = false;
             }
