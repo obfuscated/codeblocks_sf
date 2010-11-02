@@ -169,7 +169,7 @@ END_EVENT_TABLE();
 
 void ThreadSearchView::OnThreadSearchErrorEvent(const ThreadSearchEvent& event)
 {
-    cbMessageBox(event.GetString(), _("Error"), wxICON_ERROR);
+    Manager::Get()->GetLogManager()->Log(F(_T("ThreadSearch: %s"), event.GetString().wx_str()));
 }
 
 void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &event)
