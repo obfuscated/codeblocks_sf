@@ -402,6 +402,7 @@ CodeCompletion::CodeCompletion() :
     m_ToolbarChanged(true),
     m_CurrentLine(0),
     m_NeedReparse(false),
+    m_CurrentLength(-1),
     m_UseCodeCompletion(true),
     m_CCAutoLaunchChars(3),
     m_CCAutoLaunch(true),
@@ -2902,10 +2903,13 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         int curPos = control->GetCurrentPos();
         int startPos = control->WordStartPosition(curPos, true);
         const int endPos = control->WordEndPosition(curPos, true);
+        bool needReparse = false;
 
         if (control->IsPreprocessor(control->GetStyleAt(curPos)))
         {
             control->DelLineRight();
+            needReparse = true;
+
             int pos = startPos;
             wxChar ch = control->GetCharAt(pos);
             while (ch != _T('<') && ch != _T('"') && ch != _T('#'))
@@ -2953,6 +2957,12 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
             control->ReplaceTarget(itemText);
             control->GotoPos(startPos + itemText.Length());
+
+            if (needReparse)
+            {
+                m_TimerRealtimeParsing.Stop();
+                m_TimerRealtimeParsing.Start(1, wxTIMER_ONE_SHOT);
+            }
         }
     }
 
@@ -3065,6 +3075,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         {
             m_TimerRealtimeParsing.Stop();
             m_TimerRealtimeParsing.Start(REALTIME_PARSING_DELAY, wxTIMER_ONE_SHOT);
+            m_CurrentLength = control->GetLength();
             m_NeedReparse = false;
         }
 
@@ -3161,6 +3172,15 @@ void CodeCompletion::EnableToolbarTools(bool enable)
 
 void CodeCompletion::OnRealtimeParsing(wxTimerEvent& event)
 {
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    const int curLen = editor->GetControl()->GetLength();
+    if (curLen != m_CurrentLength)
+    {
+        m_CurrentLength = curLen;
+        m_TimerRealtimeParsing.Start(REALTIME_PARSING_DELAY, wxTIMER_ONE_SHOT);
+        return;
+    }
+
     cbProject* project = m_NativeParser.GetProjectByFilename(m_LastFile);
     if (project && !project->GetFileByFilename(m_LastFile, false, true))
         return;

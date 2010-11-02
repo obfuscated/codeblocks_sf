@@ -175,6 +175,7 @@ private:
     wxString                m_LastFile;
     bool                    m_LexerKeywordsToInclude[9];
     bool                    m_NeedReparse;
+    int                     m_CurrentLength;
     SystemHeadersMap        m_SystemHeadersMap;
 
     bool                    m_UseCodeCompletion;
