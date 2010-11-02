@@ -576,7 +576,7 @@ void UsrGlblMgrEditDialog::Save()
                     && t.IsEmpty() )
                 || t.Contains(_T('#') + currentVar) ) )
         {
-            if (cbMessageBox(_("Are you sure saved a invalid global variable?"), _("Global variables"),
+            if (cbMessageBox(_("Are you sure you want to save an invalid global variable?"), _("Global variables"),
                              wxYES_NO | wxICON_QUESTION) == wxID_YES)
             {
                 t.assign(_T("(invalid)"));
