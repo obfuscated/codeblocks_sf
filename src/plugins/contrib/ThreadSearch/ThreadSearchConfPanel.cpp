@@ -39,7 +39,6 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 
     // begin wxGlade: ThreadSearchConfPanel::ThreadSearchConfPanel
-    SizerOptions_staticbox = new wxStaticBox(this, -1, _("Options"));
     SizerThreadSearchOptions_staticbox = new wxStaticBox(this, -1, _("Thread search options"));
     SizerThreadSearchLayoutGlobal_staticbox = new wxStaticBox(this, -1, _("Show/Hide"));
     SizerListControlOptions_staticbox = new wxStaticBox(this, -1, _("List control options"));
@@ -294,16 +293,16 @@ void ThreadSearchConfPanel::do_layout()
     wxStaticBoxSizer* SizerListControlOptions = new wxStaticBoxSizer(SizerListControlOptions_staticbox, wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchLayoutGlobal = new wxStaticBoxSizer(SizerThreadSearchLayoutGlobal_staticbox, wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchOptions = new wxStaticBoxSizer(SizerThreadSearchOptions_staticbox, wxVERTICAL);
-    wxStaticBoxSizer* SizerOptions = new wxStaticBoxSizer(SizerOptions_staticbox, wxHORIZONTAL);
     wxStaticBoxSizer* SizerSearchIn = new wxStaticBoxSizer(SizerSearchIn_staticbox, wxVERTICAL);
     SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
     SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
     SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
-    SizerOptions->Add(m_pChkWholeWord, 0, wxALL, 4);
-    SizerOptions->Add(m_pChkStartWord, 0, wxALL, 4);
-    SizerOptions->Add(m_pChkMatchCase, 0, wxALL, 4);
-    SizerOptions->Add(m_pChkRegExp, 0, wxALL, 4);
-    SizerTop->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
+    wxBoxSizer* SizerOptions = new wxBoxSizer(wxHORIZONTAL);
+    SizerOptions->Add(m_pChkWholeWord, 0, wxLEFT | wxRIGHT, 4);
+    SizerOptions->Add(m_pChkStartWord, 0, wxLEFT | wxRIGHT, 4);
+    SizerOptions->Add(m_pChkMatchCase, 0, wxLEFT | wxRIGHT, 4);
+    SizerOptions->Add(m_pChkRegExp, 0, wxLEFT | wxRIGHT, 4);
+    SizerSearchIn->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
     SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
     wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, _("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
