@@ -604,10 +604,10 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
         prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/22x22/");
         m_pToolbar->SetToolBitmapSize(wxSize(22,22));
     }
-    m_pCboSearchExpr               = new wxComboBox    (toolBar, idCboSearchExpr, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
 
+    m_pCboSearchExpr = new wxComboBox(toolBar, idCboSearchExpr, wxEmptyString, wxDefaultPosition,
+                                      wxSize(120, -1), 0, NULL, wxCB_DROPDOWN);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));
-
 
     toolBar->AddControl(m_pCboSearchExpr);
     toolBar->AddTool(idBtnSearch,_(""),wxBitmap(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG),wxBitmap(prefix + wxT("findfdisabled.png"), wxBITMAP_TYPE_PNG),wxITEM_NORMAL,_("Run search")); //Control(pBtnSearch);

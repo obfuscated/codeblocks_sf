@@ -33,7 +33,7 @@
     </object>
     <object class="wxChoice" name="idToolTarget">
       <content/>
-	  <size>160,-1</size>
+	  <size>130,-1</size>
     </object>
   </object>
 </resource>
