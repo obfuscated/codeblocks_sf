@@ -666,6 +666,29 @@ wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     return 0;
 }
 
+wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+{
+    if (!control)
+        return 0;
+
+    const int totalLength = control->GetLength();
+    --position;
+    while (++position < totalLength)
+    {
+        const int style = control->GetStyleAt(position);
+        if (control->IsComment(style))
+            continue;
+
+        const wxChar ch = control->GetCharAt(position);
+        if (ch <= _T(' '))
+            continue;
+
+        return ch;
+    }
+
+    return 0;
+}
+
 // invariant : on return true : NameUnderCursor is NOT empty
 bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
 {
@@ -2602,13 +2625,14 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, end);
 
+    TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+
     // special handle destructor function
     if (target[0] == _T('~'))
     {
         TokenIdxSet tmp = result;
         result.clear();
 
-        TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
         for (TokenIdxSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
         {
             Token* tk = tokens->at(*it);
@@ -2621,13 +2645,42 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
+    // special handle constructor function
+    else
+    {
+        bool isClassOrConstructor = false;
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+        {
+            Token* tk = tokens->at(*it);
+            if (tk && (tk->m_TokenKind == tkClass || tk->m_TokenKind == tkConstructor))
+            {
+                isClassOrConstructor = true;
+                break;
+            }
+        }
+        if (isClassOrConstructor)
+        {
+            const bool isConstructor = (GetNextNonWhitespaceChar(editor->GetControl(), end) == _T('('));
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end();)
+            {
+                Token* tk = tokens->at(*it);
+                if (isConstructor && tk && tk->m_TokenKind == tkClass)
+                    result.erase(it++);
+                else if (!isConstructor && tk && tk->m_TokenKind == tkConstructor)
+                    result.erase(it++);
+                else
+                    ++it;
+            }
+        }
+    }
+
     // one match
     Token* token = NULL;
     if (result.size() == 1)
     {
-        Token* sel = m_NativeParser.GetParser().GetTokens()->at(*(result.begin()));
-        if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
-            (isDecl && !sel->GetFilename().IsEmpty()))
+        Token* sel = tokens->at(*(result.begin()));
+        if (   (isImpl && !sel->GetImplFilename().IsEmpty())
+            || (isDecl && !sel->GetFilename().IsEmpty()) )
         {
             token = sel;
         }
@@ -2641,7 +2694,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            Token* sel = m_NativeParser.GetParser().GetTokens()->at(*it);
+            Token* sel = tokens->at(*it);
             if (sel)
             {
                 // only match tokens that have filename info
@@ -2658,12 +2711,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
             if (sel == wxNOT_FOUND)
                 return;
-            token = m_NativeParser.GetParser().GetTokens()->at(int_selections[sel]);
+            token = tokens->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
         {    // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
-            token = m_NativeParser.GetParser().GetTokens()->at(int_selections[0]);
+            token = tokens->at(int_selections[0]);
         }
     }
 
