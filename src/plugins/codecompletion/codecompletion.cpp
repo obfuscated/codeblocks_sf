@@ -645,6 +645,27 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Project menu!"));
 }
 
+wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+{
+    if (!control)
+        return 0;
+
+    while (--position > 0)
+    {
+        const int style = control->GetStyleAt(position);
+        if (control->IsComment(style))
+            continue;
+
+        const wxChar ch = control->GetCharAt(position);
+        if (ch <= _T(' '))
+            continue;
+
+        return ch;
+    }
+
+    return 0;
+}
+
 // invariant : on return true : NameUnderCursor is NOT empty
 bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
 {
@@ -667,21 +688,14 @@ bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
         }
         else
         {
-            int start = control->WordStartPosition(pos, true);
+            const int start = control->WordStartPosition(pos, true);
             const int end = control->WordEndPosition(pos, true);
             const wxString word = control->GetTextRange(start, end);
             if (!word.IsEmpty())
             {
                 NameUnderCursor.Clear();
-                while (--start > 0)
-                {
-                    const wxChar ch = control->GetCharAt(start);
-                    if (ch <= _T(' '))
-                        continue;
-                    else if (ch == _T('~'))
-                        NameUnderCursor << _T("~");
-                    break;
-                }
+                if (GetLastNonWhitespaceChar(control, start) == _T('~'))
+                    NameUnderCursor << _T('~');
                 NameUnderCursor << word;
                 ReturnValue = true;
                 IsInclude = false;
@@ -2573,7 +2587,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     const int pos = editor->GetControl()->GetCurrentPos();
     const int start = editor->GetControl()->WordStartPosition(pos, true);
     const int end = editor->GetControl()->WordEndPosition(pos, true);
-    const wxString target = editor->GetControl()->GetTextRange(start, end);
+    wxString target;
+    if (GetLastNonWhitespaceChar(editor->GetControl(), start) == _T('~'))
+        target << _T('~');
+    target << editor->GetControl()->GetTextRange(start, end);
+    if (target.IsEmpty())
+        return;
 
     // prepare a boolean filter for declaration/implementation
     bool isDecl = event.GetId() == idGotoDeclaration || event.GetId() == idMenuGotoDeclaration;
@@ -2582,6 +2601,25 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // get the matching set
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, end);
+
+    // special handle destructor function
+    if (target[0] == _T('~'))
+    {
+        TokenIdxSet tmp = result;
+        result.clear();
+
+        TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+        for (TokenIdxSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
+        {
+            Token* tk = tokens->at(*it);
+            if (tk && tk->m_TokenKind == tkClass)
+            {
+                tk = tokens->at(tokens->TokenExists(target, tk->GetSelf(), tkDestructor));
+                if (tk)
+                    result.insert(tk->GetSelf());
+            }
+        }
+    }
 
     // one match
     Token* token = NULL;
