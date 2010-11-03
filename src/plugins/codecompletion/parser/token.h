@@ -189,7 +189,8 @@ public:
     wxString GetTokenScopeString() const;
     wxString GetFilename() const;
     wxString GetImplFilename() const;
-    wxString GetFormattedArgs() const; // replace '\n' to ''
+    wxString GetFormattedArgs() const; // remove all '\n'
+    wxString GetStrippedArgs() const; // remove all default value
     size_t GetTicket() const { return m_Ticket; }
     bool MatchesFiles(const TokenFilesSet& files);
 
@@ -205,7 +206,7 @@ public:
     wxString                     m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
     wxString                     m_Name;
     wxString                     m_Args;
-    wxString                     m_StrippedArgs;
+    wxString                     m_BaseArgs;
     wxString                     m_AncestorsString; // all ancestors comma-separated list
     wxString                     m_TemplateArgument;
     unsigned int                 m_FileIdx;

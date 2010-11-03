@@ -1147,10 +1147,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         m_Str.Clear();
     }
 
-    wxString strippedArgs;
+    wxString baseArgs;
     if (kind & tkAnyFunction)
     {
-        if (!GetStrippedArgs(args, strippedArgs))
+        if (!GetBaseArgs(args, baseArgs))
             kind = tkVariable;
     }
 
@@ -1193,7 +1193,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         && (newToken->m_TemplateArgument == m_TemplateArgument)
         && (   (newTokenArgs == args)
             || (   (kind & tkAnyFunction)
-                && (newToken->m_StrippedArgs == strippedArgs) ) ) )
+                && (newToken->m_BaseArgs == baseArgs) ) ) )
     {
         m_TokensTree->m_Modified = true;
     }
@@ -1214,13 +1214,13 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         if (kind == tkVariable && m_Options.parentOfBuffer)
             finalParent = m_Options.parentOfBuffer;
 
-        newToken->m_ParentIndex  = finalParent ? finalParent->GetSelf() : -1;
-        newToken->m_TokenKind    = kind;
-        newToken->m_Scope        = m_LastScope;
-        newToken->m_StrippedArgs = strippedArgs;
+        newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
+        newToken->m_TokenKind   = kind;
+        newToken->m_Scope       = m_LastScope;
+        newToken->m_BaseArgs    = baseArgs;
 
         if (newToken->m_TokenKind == tkClass)
-            newToken->m_StrippedArgs = args; // save template args
+            newToken->m_BaseArgs = args; // save template args
         else
             newToken->m_Args = args;
 
@@ -2354,7 +2354,7 @@ void ParserThread::ReadClsNames(wxString& ancestor)
     }
 }
 
-bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs)
+bool ParserThread::GetBaseArgs(const wxString & args, wxString& baseArgs)
 {
     const wxChar* ptr = args;  // pointer to current char in args string
     wxString word;             // compiled word of last arg
@@ -2362,7 +2362,8 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
     bool sym  = false;         // current char symbol
     bool one  = true;          // only one argument
 
-    TRACE(_T("GetStrippedArgs() : args='%s'."), args.wx_str());
+    TRACE(_T("GetBaseArgs() : args='%s'."), args.wx_str());
+    baseArgs.Alloc(args.Len() + 1);
 
     // Verify ptr is valid (still within the range of the string)
     while (*ptr != _T('\0'))
@@ -2392,7 +2393,7 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
             // or ((int *, char ***))
             while (*(ptr+1) == _T('*'))
             {
-                strippedArgs += *ptr; // append one more '*' to strippedArgs
+                baseArgs << *ptr; // append one more '*' to baseArgs
                 ptr++; // next char
             }
             // ...and fall through:
@@ -2404,16 +2405,16 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
             // TODO (Morten#5#): Do comment the following even more. It's still not exactly clear to me...
             // verify completeness of last stripped argument (handle nested brackets correctly)
             {
-                // extract last stripped argument from strippedArgs
+                // extract last stripped argument from baseArgs
                 wxString lastStrippedArg;
-                int lastArgComma = strippedArgs.Find(_T(','), true);
-                if (lastArgComma) lastStrippedArg = strippedArgs.Mid(1);
-                else              lastStrippedArg = strippedArgs.Mid(lastArgComma);
+                int lastArgComma = baseArgs.Find(_T(','), true);
+                if (lastArgComma) lastStrippedArg = baseArgs.Mid(1);
+                else              lastStrippedArg = baseArgs.Mid(lastArgComma);
 
                 // No opening brackets in last stripped arg?
                 if ( lastStrippedArg.Find(_T('(')) == wxNOT_FOUND )
                 {
-                    strippedArgs += *ptr; // append to strippedArgs
+                    baseArgs << *ptr; // append to baseArgs
 
                     // find end
                     int brackets = 0;
@@ -2448,7 +2449,7 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
                    && *ptr != _T(']') )
             {
                 if (*ptr != _T(' '))
-                    strippedArgs += *ptr; // append to strippedArgs, skipping spaces
+                    baseArgs << *ptr; // append to baseArgs, skipping spaces
                 ptr++; // next char
             }
             skip = true;
@@ -2459,7 +2460,7 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
                    && *ptr != _T('>') )
             {
                 if (*ptr != _T(' '))
-                    strippedArgs += *ptr; // append to strippedArgs, skipping spaces
+                    baseArgs << *ptr; // append to baseArgs, skipping spaces
                 ptr++; // next char
             }
             skip = true;
@@ -2485,9 +2486,9 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
             // (it's probably a type specifier like 'const' or alike)
             if (*ptr != _T('\0'))
             {
-                strippedArgs += *ptr; // append to strippedArgs
+                baseArgs << *ptr; // append to baseArgs
                 if (wxIsalnum(*ptr) /*|| *ptr != _T('_')*/)
-                    word += *ptr; // append to word
+                    word << *ptr; // append to word
             }
         }
 
@@ -2507,22 +2508,21 @@ bool ParserThread::GetStrippedArgs(const wxString & args, wxString& strippedArgs
         }
     }
 
-    if (one && strippedArgs.Len() > 2)
+    if (one && baseArgs.Len() > 2)
     {
-        const wxChar ch = strippedArgs[1];
+        const wxChar ch = baseArgs[1];
         if (   (ch <= _T('9') && ch >= _T('0'))             // number, 0 ~ 9
-            || strippedArgs.Find(_T('"')) != wxNOT_FOUND    // string
-            || strippedArgs.Find(_T('\'')) != wxNOT_FOUND ) // character
+            || baseArgs.Find(_T('"')) != wxNOT_FOUND    // string
+            || baseArgs.Find(_T('\'')) != wxNOT_FOUND ) // character
         {
             return false; // not function, it should be variable
         }
 
-        if (strippedArgs == _T("(void)"))
-            strippedArgs = _T("()");
+        if (baseArgs == _T("(void)"))
+            baseArgs = _T("()");
     }
 
-    TRACE(_T("GetStrippedArgs() : strippedArgs='%s'."), strippedArgs.wx_str());
-
+    TRACE(_T("GetBaseArgs() : baseArgs='%s'."), baseArgs.wx_str());
     return true;
 }
 

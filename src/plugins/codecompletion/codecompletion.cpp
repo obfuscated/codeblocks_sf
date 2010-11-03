@@ -1600,7 +1600,8 @@ int CodeCompletion::DoAllMethodsImpl()
 
             // actual code generation
             wxString str;
-            str << _T("\n");
+            if (i > 0)
+                str << _T("\n");
             str << ed->GetLineIndentString(line - 1);
             if (addDoxgenComment)
                 str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
@@ -1612,7 +1613,9 @@ int CodeCompletion::DoAllMethodsImpl()
             }
             if (!type.IsEmpty())
                 str << type << _T(" ");
-            str << token->GetParentName() << _T("::") << token->m_Name << token->GetFormattedArgs();
+            if (token->m_ParentIndex != -1)
+                str << token->GetParentName() << _T("::");
+            str << token->m_Name << token->GetStrippedArgs();
             if (token->m_IsConst)
                 str << _T(" const");
             str << _T("\n{\n}\n");

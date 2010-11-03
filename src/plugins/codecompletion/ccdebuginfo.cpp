@@ -344,7 +344,7 @@ void CCDebugInfo::DisplayTokenInfo()
     tokens->RecalcInheritanceChain(m_Token);
 
     wxString args = m_Token->GetFormattedArgs();
-    wxString argsStr = m_Token->m_StrippedArgs;
+    wxString argsStr = m_Token->m_BaseArgs;
     wxString tmplArg = m_Token->m_TemplateArgument;
     wxString ttype = m_Token->m_Type;
 
