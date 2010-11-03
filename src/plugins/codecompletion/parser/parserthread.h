@@ -244,6 +244,9 @@ private:
       */
     Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF);
 
+    /** Support function overloading */
+    Token* TokenExists(const wxString& name, const wxString& baseArgs, Token* parent, TokenKind kind);
+
     /** Before call this function, *MUST* add a locker
       * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
       */

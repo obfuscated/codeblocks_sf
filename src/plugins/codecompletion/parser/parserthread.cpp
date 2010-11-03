@@ -953,10 +953,9 @@ void ParserThread::DoParse()
                         m_EncounteredNamespaces.push(token);
                     m_Tokenizer.GetToken(); // eat ::
                 }
-                else if (   m_TokensTree
-                         && (   (peek==ParserConsts::semicolon)
-                             || (   (m_Options.useBuffer && (peek.GetChar(0) == _T('(')))
-                                 && (!m_Str.Contains(ParserConsts::dcolon)) ) ) )
+                else if (   (peek == ParserConsts::semicolon)
+                         || (   (m_Options.useBuffer && (peek.GetChar(0) == _T('(')))
+                             && (!m_Str.Contains(ParserConsts::dcolon)) ) )
                 {
                     if (!m_Str.IsEmpty() && (wxIsalpha(token.GetChar(0)) || token.GetChar(0) == '_'))
                     {
@@ -996,14 +995,16 @@ void ParserThread::DoParse()
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
-    Token* result;
-    if (!m_TokensTree)
-        return 0;
-    int parentidx = !parent ? -1 : parent->GetSelf();
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    result = m_TokensTree->at(m_TokensTree->TokenExists(name, parentidx, kindMask));
-    return result;
+    return m_TokensTree->at(m_TokensTree->TokenExists(name, parent ? parent->GetSelf() : -1, kindMask));
+}
+
+Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs, Token* parent, TokenKind kind)
+{
+    // no critical section needed here:
+    // all functions that call this, already entered a critical section.
+    return m_TokensTree->at(m_TokensTree->TokenExists(name, baseArgs, parent ? parent->GetSelf() : -1, kind));
 }
 
 wxString ParserThread::GetActualTokenType()
@@ -1163,8 +1164,9 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         // look in m_EncounteredTypeNamespaces
         localParent = FindTokenFromQueue(q, 0, true, m_LastParent);
         if (localParent)
-            newToken = TokenExists(newname, localParent);
-        if (newToken) TRACE(_T("DoAddToken() : Found token (ctor/dtor)."));
+            newToken = TokenExists(newname, baseArgs, localParent, kind);
+        if (newToken)
+            TRACE(_T("DoAddToken() : Found token (ctor/dtor)."));
     }
 
     // check for implementation member function
@@ -1172,28 +1174,26 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     {
         localParent = FindTokenFromQueue(m_EncounteredNamespaces, 0, true, m_LastParent);
         if (localParent)
-            newToken = TokenExists(newname, localParent);
-        if (newToken) TRACE(_T("DoAddToken() : Found token (member function)."));
+            newToken = TokenExists(newname, baseArgs, localParent, kind);
+        if (newToken)
+            TRACE(_T("DoAddToken() : Found token (member function)."));
     }
 
     // none of the above; check for token under parent (but not if we 're parsing a temp buffer)
     if (!newToken && !m_Options.isTemp)
     {
-        newToken = TokenExists(name, m_LastParent, kind);
-        if (newToken) TRACE(_T("DoAddToken() : Found token (parent)."));
+        newToken = TokenExists(newname, baseArgs, localParent, kind);
+        if (newToken)
+            TRACE(_T("DoAddToken() : Found token (parent)."));
     }
 
-    wxString newTokenArgs = (newToken) ? (newToken->m_Args) : _T("");
     // need to check if the current token already exists in the tokenTree
     // token's template argument is checked to support template specialization
     // eg:  template<typename T> class A {...} and template<> class A<int> {...}
     // we record them as different tokens
     if (   newToken
-        && (newToken->m_TokenKind == kind)
-        && (newToken->m_TemplateArgument == m_TemplateArgument)
-        && (   (newTokenArgs == args)
-            || (   (kind & tkAnyFunction)
-                && (newToken->m_BaseArgs == baseArgs) ) ) )
+        && (kind & (tkAnyFunction | tkClass))
+        && (newToken->m_TemplateArgument == m_TemplateArgument) )
     {
         m_TokensTree->m_Modified = true;
     }
@@ -1267,8 +1267,8 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         newToken->m_FileIdx = m_FileIdx;
         newToken->m_Line    = line;
         TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"),
-              name.wx_str(),                   newToken->GetSelf(),                newToken->m_Type.wx_str(),
-              newToken->m_ActualType.wx_str(), newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
+              name.wx_str(), newToken->GetSelf(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
+              newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
     }
     else
     {

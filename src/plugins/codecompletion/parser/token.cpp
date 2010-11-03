@@ -656,6 +656,36 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
     return -1;
 }
 
+int TokensTree::TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind)
+{
+    int idx = m_Tree.GetItemNo(name);
+    if (!idx)
+        return -1;
+
+    TokenIdxSet::iterator it;
+    TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
+    int result = -1;
+    for (it = curList.begin(); it != curList.end(); ++it)
+    {
+        result = *it;
+        if (result < 0 || (size_t)result >= m_Tokens.size())
+            continue;
+
+        Token* curToken = m_Tokens[result];
+        if (!curToken)
+            continue;
+
+        if (   (curToken->m_ParentIndex == parent)
+            && (curToken->m_TokenKind   == kind)
+            && (curToken->m_BaseArgs    == baseArgs) )
+        {
+            return result;
+        }
+    }
+
+    return -1;
+}
+
 size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask)
 {
     result.clear();

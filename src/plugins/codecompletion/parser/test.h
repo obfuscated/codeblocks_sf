@@ -1,5 +1,4 @@
-template<typename T> class A{};
-const A<int> var;
-
-class A { const string Test(); };
-const string A::Test() {}
+void test(int i);
+void test(float f, int i);
+void test(int i) {}
+void test(float f, int i){}
