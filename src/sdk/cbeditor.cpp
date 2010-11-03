@@ -3129,17 +3129,24 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         if (autoIndentStart)
         {
             bool valid = true;
-            int line = control->GetCurrentLine();
-            if (line < autoIndentLine)
+            const int start = control->PositionFromLine(autoIndentLine);
+            const wxString text = control->GetTextRange(start, pos);
+            if (text.Find(_T('{')) != int(text.Len() - 1))
                 valid = false;
             else
             {
-                while (--line > autoIndentLine)
+                int line = control->GetCurrentLine();
+                if (line < autoIndentLine)
+                    valid = false;
+                else
                 {
-                    if (control->GetLineIndentation(line) < autoIndentLineIndent)
+                    while (--line > autoIndentLine)
                     {
-                        valid = false;
-                        break;
+                        if (control->GetLineIndentation(line) < autoIndentLineIndent)
+                        {
+                            valid = false;
+                            break;
+                        }
                     }
                 }
             }
