@@ -1,5 +1,6 @@
 usr/bin/{codeblocks,cb_console_runner,cb_share_config}
 
+usr/lib/codeblocks/plugins/libabbreviations.so
 usr/lib/codeblocks/plugins/libastyle.so
 usr/lib/codeblocks/plugins/libautosave.so
 usr/lib/codeblocks/plugins/libclasswizard.so
