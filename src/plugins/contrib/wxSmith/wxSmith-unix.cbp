@@ -41,7 +41,7 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
-			<Add option="-Wno-attributes" />
+			<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.0.0&quot;)) print(_T(&quot;-Wno-attributes&quot;));]]' />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DwxPG_USE_WXMODULE=0" />
