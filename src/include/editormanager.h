@@ -114,6 +114,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 
         bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
+        bool OpenContainingFolder();
         bool CloseActive(bool dontsave = false);
         bool Close(const wxString& filename, bool dontsave = false);
         bool Close(EditorBase* editor, bool dontsave = false);
@@ -156,6 +157,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnSave(wxCommandEvent& event);
         void OnSaveAll(wxCommandEvent& event);
         void OnSwapHeaderSource(wxCommandEvent& event);
+        void OnOpenContainingFolder(wxCommandEvent& event);
         void OnTabPosition(wxCommandEvent& event);
         void OnProperties(wxCommandEvent& event);
         void OnAddFileToProject(wxCommandEvent& event);

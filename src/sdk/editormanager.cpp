@@ -146,6 +146,7 @@ static const int idNBTabCloseAllOthers = wxNewId();
 static const int idNBTabSave = wxNewId();
 static const int idNBTabSaveAll = wxNewId();
 static const int idNBSwapHeaderSource = wxNewId();
+static const int idNBTabOpenContainingFolder = wxNewId();
 static const int idNBTabTop = wxNewId();
 static const int idNBTabBottom = wxNewId();
 static const int idNBProperties = wxNewId();
@@ -190,6 +191,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabClose, EditorManager::OnClose)
     EVT_MENU(idNBTabCloseAll, EditorManager::OnCloseAll)
     EVT_MENU(idNBTabCloseAllOthers, EditorManager::OnCloseAllOthers)
+    EVT_MENU(idNBTabOpenContainingFolder, EditorManager::OnOpenContainingFolder)
     EVT_MENU(idNBTabSave, EditorManager::OnSave)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
     EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
@@ -1058,6 +1060,30 @@ wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesAr
 
     // may be invalid (empty) file name
     return candidateFile;
+}
+
+// TODO (Loaden#9#) make it configureable!
+bool EditorManager::OpenContainingFolder()
+{
+    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+    if (!ed)
+        return false;
+
+    const wxString& fullPath = ed->GetFilename();
+    wxString cmd;
+#if defined __WXMSW__
+    cmd = _T("explorer /select, ") + fullPath;   // Open folder with the file selected
+#elif defined __WXMAC__
+    cmd = _T("open -R ") + fullPath;             // Open folder with the file selected
+#else
+    //Cant select the file on Linux, so just extract the folder name
+    wxFileName::SplitPath(fullPath, &cmd, NULL, NULL);
+    //Use the xdg-open command
+    cmd = _T("xdg-open ") + cmd;
+#endif
+
+    wxExecute(cmd);
+    return true;
 }
 
 bool EditorManager::SwapActiveHeaderSource()
@@ -2733,6 +2759,7 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     pop->Append(idNBTabSaveAll, _("Save all"));
     pop->AppendSeparator();
     pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
+    pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
     pop->AppendSeparator();
     pop->Append(idNBTabTop, _("Tabs at top"));
     pop->Append(idNBTabBottom, _("Tabs at bottom"));
@@ -2813,6 +2840,11 @@ void EditorManager::OnSaveAll(wxCommandEvent& /*event*/)
 void EditorManager::OnSwapHeaderSource(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
+}
+
+void EditorManager::OnOpenContainingFolder(wxCommandEvent& event)
+{
+    Manager::Get()->GetEditorManager()->OpenContainingFolder();
 }
 
 void EditorManager::OnTabPosition(wxCommandEvent& event)
