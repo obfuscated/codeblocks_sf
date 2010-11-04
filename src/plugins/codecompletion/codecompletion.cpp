@@ -2678,6 +2678,26 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
+    // special handle for function overloading
+    if (result.size() > 1)
+    {
+        const size_t curLine = editor->GetControl()->GetCurrentLine() + 1;
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+        {
+            Token* tk = tokens->at(*it);
+            if (tk)
+            {
+                if (tk->m_Line == curLine || tk->m_ImplLine == curLine)
+                {
+                    const int theOnlyOne = *it;
+                    result.clear();
+                    result.insert(theOnlyOne);
+                    break;
+                }
+            }
+        }
+    }
+
     // one match
     Token* token = NULL;
     if (result.size() == 1)
