@@ -52,7 +52,6 @@ public:
     static const long ID_STATICTEXT2;
     static const long ID_STATICTEXT9;
     static const long ID_STATICTEXT10;
-    static const long ID_STATICTEXT11;
     static const long ID_STATICTEXT12;
     static const long ID_STATICTEXT3;
     static const long ID_STATICTEXT4;

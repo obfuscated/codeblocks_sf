@@ -42,7 +42,6 @@ const long CCDebugInfo::ID_STATICTEXT1 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT2 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT9 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT10 = wxNewId();
-const long CCDebugInfo::ID_STATICTEXT11 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT12 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT3 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT4 = wxNewId();
@@ -138,7 +137,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token) :
     FlexGridSizer1->Add(lblKind, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);
     txtKind = new wxStaticText(Panel1, ID_STATICTEXT10, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
     FlexGridSizer1->Add(txtKind, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);
-    lblScope = new wxStaticText(Panel1, ID_STATICTEXT11, _("Scope:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
+    lblScope = new wxStaticText(Panel1, wxID_ANY, _("Scope:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(lblScope, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);
     txtScope = new wxStaticText(Panel1, ID_STATICTEXT12, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
     FlexGridSizer1->Add(txtScope, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);

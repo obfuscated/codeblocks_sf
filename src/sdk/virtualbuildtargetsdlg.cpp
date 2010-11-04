@@ -30,12 +30,7 @@ BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxScrollingDialog)
     EVT_UPDATE_UI(-1, VirtualBuildTargetsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*/, cbProject* project)
-    : lstTargets(0),
-    btnEdit(0),
-    btnRemove(0),
-    btnAdd(0),
-    lstAliases(0),
+VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*/, cbProject* project) :
     m_pProject(project)
 {
     //(*Initialize(VirtualBuildTargetsDlg)

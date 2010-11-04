@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxPanel" name="GenericSelectPath">
-        <style>wxTAB_TRAVERSAL</style>
-        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticText" name="ID_STATICTEXT1" variable="lblDescr" member="yes">
-                    <label>Please select the location of XXX&#x0A;on your computer. This is the top-level folder where&#x0A;XXX is installed.</label>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticText" name="ID_STATICTEXT2" variable="lblLabel" member="yes">
-                    <label>Location of XXX:</label>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>8</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtFolder" member="yes">
-                            <value>Text</value>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="ID_BUTTON1" variable="btnBrowse" member="yes">
-                            <label>...</label>
-                            <size>22,22</size>
-                        </object>
-                    </object>
-                </object>
-            </object>
-        </object>
-    </object>
+	<object class="wxPanel" name="GenericSelectPath">
+		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblDescr" member="yes">
+					<label>Please select the location of XXX&#x0A;on your computer. This is the top-level folder where&#x0A;XXX is installed.</label>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT2" variable="lblLabel" member="yes">
+					<label>Location of XXX:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtFolder" member="yes">
+							<value>Text</value>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON1" variable="btnBrowse" member="yes">
+							<label>...</label>
+							<size>22,22</size>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </wxsmith>

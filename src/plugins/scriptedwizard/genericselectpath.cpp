@@ -29,18 +29,18 @@ END_EVENT_TABLE()
 GenericSelectPath::GenericSelectPath(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(GenericSelectPath)
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Please select the location of XXX\non your computer. This is the top-level folder where\nXXX is installed."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
-	BoxSizer1->Add(lblDescr,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
-	lblLabel = new wxStaticText(this,ID_STATICTEXT2,_("Location of XXX:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
-	BoxSizer1->Add(lblLabel,0,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	lblDescr = new wxStaticText(this, ID_STATICTEXT1, _("Please select the location of XXX\non your computer. This is the top-level folder where\nXXX is installed."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	BoxSizer1->Add(lblDescr, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 8);
+	lblLabel = new wxStaticText(this, ID_STATICTEXT2, _("Location of XXX:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+	BoxSizer1->Add(lblLabel, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 8);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	txtFolder = new wxTextCtrl(this,ID_TEXTCTRL1,_("Text"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
-	BoxSizer2->Add(txtFolder,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	btnBrowse = new wxButton(this,ID_BUTTON1,_("..."),wxDefaultPosition,wxSize(22,22),0,wxDefaultValidator,_T("ID_BUTTON1"));
-	BoxSizer2->Add(btnBrowse,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	BoxSizer1->Add(BoxSizer2,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	txtFolder = new wxTextCtrl(this, ID_TEXTCTRL1, _("Text"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	BoxSizer2->Add(txtFolder, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	btnBrowse = new wxButton(this, ID_BUTTON1, _("..."), wxDefaultPosition, wxSize(22,22), 0, wxDefaultValidator, _T("ID_BUTTON1"));
+	BoxSizer2->Add(btnBrowse, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	BoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 8);
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);

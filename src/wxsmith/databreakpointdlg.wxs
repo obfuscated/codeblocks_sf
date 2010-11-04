@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxScrollingDialog" name="DataBreakpointDlg">
-        <title>Data breakpoint</title>
-        <centered>1</centered>
-        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
-                    <label>Enabled</label>
-                </object>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <border>8</border>
-            </object>
-            <object class="sizeritem">
-                <object class="wxRadioBox" name="ID_RADIOBOX1" variable="RadioBox1" member="yes">
-                    <label>Condition</label>
-                    <content>
-                        <item>Break on read</item>
-                        <item>Break on write</item>
-                        <item>Break on read or write</item>
-                    </content>
-                    <default>-1</default>
-                </object>
-                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                <border>8</border>
-            </object>
-            <object class="sizeritem">
-                <object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
-                    <object class="button">
-                        <object class="wxButton" name="wxID_OK">
-                            <label></label>
-                        </object>
-                    </object>
-                    <object class="button">
-                        <object class="wxButton" name="wxID_CANCEL">
-                            <label></label>
-                        </object>
-                    </object>
-                </object>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                <border>8</border>
-            </object>
-        </object>
-    </object>
+	<object class="wxScrollingDialog" name="DataBreakpointDlg">
+		<title>Data breakpoint</title>
+		<centered>1</centered>
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
+					<label>Enabled</label>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="ID_RADIOBOX1" variable="RadioBox1" member="yes">
+					<label>Condition</label>
+					<content>
+						<item>Break on read</item>
+						<item>Break on write</item>
+						<item>Break on read or write</item>
+					</content>
+					<default>-1</default>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </wxsmith>

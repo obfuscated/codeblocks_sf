@@ -11,11 +11,11 @@
 #endif
 
 //(*Headers(GenericSelectPath)
-#include <wx/button.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/panel.h>
+#include <wx/button.h>
 //*)
 
 class wxString;
@@ -47,12 +47,12 @@ class GenericSelectPath: public wxPanel
 		//*)
 
 		//(*Declarations(GenericSelectPath)
-		wxBoxSizer* BoxSizer1;
+		wxButton* btnBrowse;
 		wxStaticText* lblDescr;
-		wxStaticText* lblLabel;
 		wxBoxSizer* BoxSizer2;
 		wxTextCtrl* txtFolder;
-		wxButton* btnBrowse;
+		wxBoxSizer* BoxSizer1;
+		wxStaticText* lblLabel;
 		//*)
 
 	private:
