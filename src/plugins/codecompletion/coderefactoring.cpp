@@ -203,7 +203,10 @@ void CodeRefactoring::RenameSymbols()
                                              targetText,
                                              Manager::Get()->GetAppWindow());
     if (!replaceText.IsEmpty() && replaceText != targetText && Parse())
+    {
         DoRenameSymbols(targetText, replaceText);
+        DoFindReferences();
+    }
 }
 
 size_t CodeRefactoring::SearchInFiles(const wxArrayString& files, const wxString& targetText)
@@ -482,6 +485,8 @@ void CodeRefactoring::DoRenameSymbols(const wxString& targetText, const wxString
             control->SetTargetStart(rIter->pos);
             control->SetTargetEnd(rIter->pos + targetText.Len());
             control->ReplaceTarget(replaceText);
+            // for find references
+            rIter->text.Replace(targetText, replaceText);
         }
 
         control->EndUndoAction();

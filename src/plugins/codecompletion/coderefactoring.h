@@ -12,7 +12,7 @@ struct crSearchData
 {
     int pos;
     int line;
-    const wxString text;
+    wxString text;
     crSearchData(int pos, int line, const wxString& text) :
         pos(pos),
         line(line),
