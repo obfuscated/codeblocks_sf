@@ -38,8 +38,6 @@ public:
     void UpdateView(bool checkHeaderSwap = false);
     void UpdateSash();
 
-    void OnSize(wxSizeEvent& event);
-
 private:
     void OnTreeItemDoubleClick(wxTreeEvent& event);
     void OnTreeItemRightClick(wxTreeEvent& event);

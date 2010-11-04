@@ -101,7 +101,6 @@ public:
     /** Tokenizer constructor.
      * @param filename the file to be opened.
      */
-    Tokenizer(const wxString& filename = wxEmptyString);
     Tokenizer(TokensTree* tokensTree, const wxString& filename = wxEmptyString);
 
     /** Tokenizer destructor.*/

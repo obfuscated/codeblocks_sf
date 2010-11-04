@@ -97,7 +97,6 @@ public:
     void Init(NativeParser* nativeParser, CBTreeCtrl* treeTop, CBTreeCtrl* treeBottom,
               const wxString& active_filename, void* user_data/*active project*/,
               const BrowserOptions& options, TokensTree* pTokensTree, bool build_tree);
-    void AbortBuilding();
     void ExpandItem(wxTreeItemId item);
     void CollapseItem(wxTreeItemId item, bool useLock=true);
     void SelectItem(wxTreeItemId item);

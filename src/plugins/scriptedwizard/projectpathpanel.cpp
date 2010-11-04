@@ -31,11 +31,8 @@ BEGIN_EVENT_TABLE(ProjectPathPanel,wxPanel)
 	//*)
 END_EVENT_TABLE()
 
-ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id)
-    : m_LockUpdates(false),
-    txtPrjPath(0),
-    txtPrjName(0),
-    txtFinalDir(0)
+ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id) :
+    m_LockUpdates(false)
 {
 	//(*Initialize(ProjectPathPanel)
 	wxStaticText* StaticText2;
@@ -43,7 +40,7 @@ ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id)
 	wxStaticText* StaticText3;
 	wxStaticText* StaticText5;
 	wxStaticText* StaticText4;
-	
+
 	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Please select the folder where you want the new project\nto be created as well as its title."), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
@@ -71,7 +68,7 @@ ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id)
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OntxtPrjTitleText);
 	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OnFullPathChanged);
 	Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OnFullPathChanged);
