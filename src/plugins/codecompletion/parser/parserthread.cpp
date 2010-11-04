@@ -1182,7 +1182,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     // none of the above; check for token under parent (but not if we 're parsing a temp buffer)
     if (!newToken && !m_Options.isTemp)
     {
-        newToken = TokenExists(newname, baseArgs, localParent, kind);
+        newToken = TokenExists(newname, baseArgs, m_LastParent, kind);
         if (newToken)
             TRACE(_T("DoAddToken() : Found token (parent)."));
     }
@@ -1192,8 +1192,9 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     // eg:  template<typename T> class A {...} and template<> class A<int> {...}
     // we record them as different tokens
     if (   newToken
-        && (kind & (tkAnyFunction | tkClass))
-        && (newToken->m_TemplateArgument == m_TemplateArgument) )
+        && (newToken->m_TemplateArgument == m_TemplateArgument)
+        && (   kind & tkAnyFunction
+            || newToken->m_Args == args ) )
     {
         m_TokensTree->m_Modified = true;
     }
