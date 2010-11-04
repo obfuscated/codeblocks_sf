@@ -248,9 +248,9 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     else
     {
         // project settings
-
-        nb->DeletePage(7); // remove "Other" page
-        nb->DeletePage(4); // remove "Programs" page
+        nb->DeletePage(8); // remove "Other settings" page
+        nb->DeletePage(7); // remove "Build options" page
+        nb->DeletePage(4); // remove "Toolchain executables" page
 
         // remove "Compiler" buttons
         wxWindow* win = XRCCTRL(*this, "btnAddCompiler", wxButton);
