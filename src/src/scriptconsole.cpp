@@ -68,7 +68,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	//(*Initialize(ScriptConsole)
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
-
+	
 	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
@@ -102,7 +102,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnLoadClick);

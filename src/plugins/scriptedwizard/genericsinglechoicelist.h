@@ -11,10 +11,10 @@
 #endif
 
 //(*Headers(GenericSingleChoiceList)
-#include <wx/listbox.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/listbox.h>
+#include <wx/panel.h>
 //*)
 
 class wxArrayString;

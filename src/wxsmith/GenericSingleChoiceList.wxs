@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxPanel" name="GenericSingleChoiceList">
-        <object class="wxBoxSizer" variable="BoxSizer1" member="no">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <object class="wxStaticText" name="ID_STATICTEXT1" variable="lblDescr" member="yes">
-                    <label>Description</label>
-                </object>
-                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                <border>8</border>
-            </object>
-            <object class="sizeritem">
-                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
-                    <label>Please make a selection</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                        <object class="wxListBox" name="ID_LISTBOX1" variable="GenericChoiceList" member="yes">
-                            <style>wxLB_HSCROLL|wxLB_SINGLE</style>
-                            <size>232,131</size>
-                        </object>
-                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                        <border>4</border>
-                        <option>1</option>
-                    </object>
-                </object>
-                <flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                <border>8</border>
-                <option>1</option>
-            </object>
-        </object>
-    </object>
+	<object class="wxPanel" name="GenericSingleChoiceList">
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblDescr" member="yes">
+					<label>Description</label>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+					<label>Please make a selection</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxListBox" name="ID_LISTBOX1" variable="GenericChoiceList" member="yes">
+							<size>232,131</size>
+							<style>wxLB_SINGLE|wxLB_HSCROLL</style>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </wxsmith>

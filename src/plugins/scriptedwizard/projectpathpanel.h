@@ -11,11 +11,11 @@
 #endif
 
 //(*Headers(ProjectPathPanel)
-#include <wx/button.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/panel.h>
+#include <wx/button.h>
 //*)
 
 #include <wx/string.h>
@@ -68,13 +68,13 @@ class ProjectPathPanel: public wxPanel
 		//*)
 
 		//(*Declarations(ProjectPathPanel)
-		wxBoxSizer* BoxSizer1;
-		wxTextCtrl* txtPrjTitle;
-		wxBoxSizer* BoxSizer2;
-		wxTextCtrl* txtPrjPath;
-		wxButton* btnPrjPathBrowse;
 		wxTextCtrl* txtPrjName;
+		wxBoxSizer* BoxSizer2;
+		wxTextCtrl* txtPrjTitle;
+		wxBoxSizer* BoxSizer1;
+		wxButton* btnPrjPathBrowse;
 		wxTextCtrl* txtFinalDir;
+		wxTextCtrl* txtPrjPath;
 		//*)
 
 		DECLARE_EVENT_TABLE()
