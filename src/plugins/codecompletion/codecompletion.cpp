@@ -3196,6 +3196,8 @@ void CodeCompletion::EnableToolbarTools(bool enable)
 void CodeCompletion::OnRealtimeParsing(wxTimerEvent& event)
 {
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!editor)
+        return;
     const int curLen = editor->GetControl()->GetLength();
     if (curLen != m_CurrentLength)
     {
