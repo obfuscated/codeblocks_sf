@@ -327,7 +327,6 @@ void wxsCoder::FlushFile(const wxString& FileName)
             else
             {
                 CodeBlocksEvent event(cbEVT_PROJECT_FILE_CHANGED);
-                event.SetProject(Manager::Get()->GetProjectManager()->GetActiveProject());
                 event.SetString(FileName);
                 Manager::Get()->GetPluginManager()->NotifyPlugins(event);
             }
@@ -565,7 +564,13 @@ wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int 
     {
         switch ( *Code )
         {
-            case _T('\n'): Result << BaseIndentation; break;
+            case _T('\n'):
+                {
+                    while (Result.Last() == _T(' ') || Result.Last() == _T('\t'))
+                        Result.RemoveLast();
+                    Result << BaseIndentation;
+                    break;
+                }
             case _T('\t'): if ( UseTab ) { Result << Tab; break; }
             default:       Result << *Code;
         }
