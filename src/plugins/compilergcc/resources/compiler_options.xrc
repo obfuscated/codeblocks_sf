@@ -1108,7 +1108,6 @@
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>
-													<option>0</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticLine" name="ID_STATICLINE6" />
@@ -1169,7 +1168,7 @@
 													<border>8</border>
 												</object>
 												<object class="sizeritem">
-													<object class="wxStaticLine" name="ID_STATICLINE_IGNORE"/>
+													<object class="wxStaticLine" name="ID_STATICLINE_IGNORE" />
 													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>
 												</object>
@@ -1257,68 +1256,65 @@
 													<border>8</border>
 												</object>
 												<object class="sizeritem">
-													<object class="wxFlexGridSizer">
+													<object class="wxBoxSizer">
 														<object class="sizeritem">
 															<object class="wxBoxSizer">
+																<orient>wxVERTICAL</orient>
 																<object class="sizeritem">
-																	<object class="wxStaticText" name="ID_STATICTEXT27">
+																	<object class="wxStaticText" name="ID_STATICTEXT30">
 																		<label>Compiler output to be ignored:</label>
 																	</object>
-																	<flag>wxBOTTOM|wxEXPAND</flag>
+																	<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	<border>8</border>
 																</object>
 																<object class="sizeritem">
 																	<object class="wxFlexGridSizer">
+																		<cols>2</cols>
+																		<growablecols>0</growablecols>
 																		<object class="sizeritem">
-																			<object class="wxTextCtrl" name="txtIgnore"/>
-																			<option>1</option>
-																			<flag>wxBOTTOM|wxEXPAND</flag>
+																			<object class="wxTextCtrl" name="txtIgnore" />
+																			<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																			<border>8</border>
+																			<option>1</option>
 																		</object>
 																		<object class="sizeritem">
 																			<object class="wxButton" name="btnIgnoreAdd">
 																				<label>Add</label>
 																			</object>
-																			<flag>wxBOTTOM|wxLEFT</flag>
+																			<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																			<border>8</border>
 																		</object>
 																		<object class="spacer">
-																			<flag>wxEXPAND</flag>
+																			<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																		</object>
 																		<object class="sizeritem">
 																			<object class="wxButton" name="btnIgnoreRemove">
 																				<label>Remove</label>
 																			</object>
-																			<flag>wxLEFT</flag>
+																			<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																			<border>8</border>
 																		</object>
-																		<cols>2</cols>
-																		<growablecols>0</growablecols>
 																	</object>
-																	<flag>wxEXPAND</flag>
+																	<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																</object>
-																<orient>wxVERTICAL</orient>
 															</object>
-															<flag>wxEXPAND</flag>
-															<border>0</border>
+															<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>4</border>
 														</object>
 														<object class="sizeritem">
-															<object class="wxListBox" name="lstIgnore"/>
+															<object class="wxListBox" name="lstIgnore" />
+															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>2</border>
 															<option>1</option>
-															<flag>wxLEFT|wxEXPAND</flag>
-															<border>8</border>
 														</object>
-														<cols>2</cols>
-														<growablecols>1</growablecols>
-														<growablerows/>
 													</object>
-													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-													<border>8</border>
+													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>3</option>
 												</object>
 												<object class="spacer">
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>
-													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnAdvanced">
