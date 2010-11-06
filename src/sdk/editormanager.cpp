@@ -1062,27 +1062,33 @@ wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesAr
     return candidateFile;
 }
 
-// TODO (Loaden#9#) make it configureable!
 bool EditorManager::OpenContainingFolder()
 {
     cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
-    const wxString& fullPath = ed->GetFilename();
-    wxString cmd;
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 #if defined __WXMSW__
-    cmd = _T("explorer /select, ") + fullPath;   // Open folder with the file selected
+    const wxString defCmds = _T("explorer.exe /select,");
 #elif defined __WXMAC__
-    cmd = _T("open -R ") + fullPath;             // Open folder with the file selected
+    const wxString defCmds = _T("open -R");
 #else
-    //Cant select the file on Linux, so just extract the folder name
-    wxFileName::SplitPath(fullPath, &cmd, NULL, NULL);
-    //Use the xdg-open command
-    cmd = _T("xdg-open ") + cmd;
+    const wxString defCmds = _T("xdg-open");
 #endif
 
-    wxExecute(cmd);
+    wxString cmds = cfg->Read(_T("open_containing_folder"), defCmds) + _T(" ");
+    const wxString& fullPath = ed->GetFilename();
+#if defined __WXMSW__ || defined __WXMAC__
+    cmds << fullPath;   // Open folder with the file selected
+#else
+    // Cant select the file on Linux, so just extract the folder name
+    wxString splitPath;
+    wxFileName::SplitPath(fullPath, &splitPath, NULL, NULL);
+    cmds << splitPath;
+#endif
+
+    wxExecute(cmds);
     return true;
 }
 

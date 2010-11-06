@@ -128,6 +128,15 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), 0));
     XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
 
+#if defined __WXMSW__
+    const wxString openFolderCmds = _T("explorer.exe /select,");
+#elif defined __WXMAC__
+    const wxString openFolderCmds = _T("open -R");
+#else
+    const wxString openFolderCmds = _T("xdg-open");
+#endif
+    XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->SetValue(cfg->Read(_T("/open_containing_folder"), openFolderCmds));
+
     // Highlight Occurence
     bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
     XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->SetValue(highlightEnabled);
@@ -788,6 +797,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/simplified_home"),                     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
+        cfg->Write(_T("/open_containing_folder"),              XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->GetValue());
         cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection() ? true : false);
         cfg->Write(_T("/highlight_occurrence/enabled"),        XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());

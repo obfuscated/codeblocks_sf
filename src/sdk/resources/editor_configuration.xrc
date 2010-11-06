@@ -246,31 +246,6 @@
 																				</object>
 																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																			</object>
-																			<object class="sizeritem">
-																				<object class="wxBoxSizer">
-																					<object class="sizeritem">
-																						<object class="wxStaticText" name="ID_STATICTEXT3">
-																							<label>Show spaces:</label>
-																						</object>
-																						<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																						<border>4</border>
-																					</object>
-																					<object class="sizeritem">
-																						<object class="wxComboBox" name="cmbViewWS">
-																							<content>
-																								<item>No</item>
-																								<item>Always</item>
-																								<item>Only after indent</item>
-																							</content>
-																							<size>95,24</size>
-																							<style>wxCB_READONLY</style>
-																						</object>
-																						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																						<border>16</border>
-																					</object>
-																				</object>
-																				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																			</object>
 																		</object>
 																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																		<border>4</border>
@@ -473,7 +448,7 @@
 															</object>
 														</object>
 														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-														<border>8</border>
+														<border>5</border>
 													</object>
 													<object class="sizeritem">
 														<object class="wxRadioBox" name="rbTabText">
@@ -486,6 +461,65 @@
 														</object>
 														<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticBoxSizer">
+															<label>Other options</label>
+															<object class="sizeritem">
+																<object class="wxFlexGridSizer">
+																	<cols>2</cols>
+																	<vgap>8</vgap>
+																	<hgap>8</hgap>
+																	<growablecols>1</growablecols>
+																	<growablerows>0</growablerows>
+																	<object class="sizeritem">
+																		<object class="wxStaticText" name="wxID_ANY">
+																			<label>Show spaces in editor:</label>
+																		</object>
+																		<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>5</border>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxComboBox" name="cmbViewWS">
+																			<content>
+																				<item>No</item>
+																				<item>Always</item>
+																				<item>Only after indent</item>
+																			</content>
+																			<size>95,24</size>
+																			<style>wxCB_READONLY</style>
+																		</object>
+																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>5</border>
+																		<option>1</option>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxStaticText" name="wxID_ANY">
+																			<label>Open containing folder:</label>
+																		</object>
+																		<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>5</border>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxTextCtrl" name="txtOpenFolder">
+																			<fg>#8000FF</fg>
+																		</object>
+																		<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>5</border>
+																		<option>1</option>
+																	</object>
+																</object>
+																<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<option>1</option>
+															</object>
+														</object>
+														<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxBoxSizer" />
+														<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													</object>
 												</object>
 											</object>
