@@ -7,18 +7,37 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="lblBigTitle">
-					<label>General settings</label>
-					<fg>#FFFFFF</fg>
+				<object class="wxPanel" name="pnlTitleInfo">
 					<bg>#004080</bg>
-					<font>
-						<size>14</size>
-						<weight>bold</weight>
-						<family>swiss</family>
-					</font>
-					<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
+					<object class="wxBoxSizer">
+						<object class="spacer">
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+						<object class="sizeritem">
+							<object class="wxStaticText" name="lblBigTitle">
+								<label>General settings</label>
+								<fg>#FFFFFF</fg>
+								<bg>#004080</bg>
+								<font>
+									<size>14</size>
+									<weight>bold</weight>
+									<family>swiss</family>
+								</font>
+								<style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+							</object>
+							<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						</object>
+						<object class="spacer">
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE1" />

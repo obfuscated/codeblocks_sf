@@ -290,6 +290,7 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     while (label.Replace(_T(" & "), _T(" && ")))
         ;
     XRCCTRL(*this, "lblBigTitle", wxStaticText)->SetLabel(label);
+    XRCCTRL(*this, "pnlTitleInfo", wxPanel)->Layout();
 }
 
 void EnvironmentSettingsDlg::OnPageChanging(wxListbookEvent& /*event*/)
