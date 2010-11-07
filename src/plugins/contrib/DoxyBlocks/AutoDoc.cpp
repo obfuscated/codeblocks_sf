@@ -70,6 +70,9 @@ void DoxyBlocks::BlockComment(void)
 	GetBlockCommentStrings(iBlockComment, sStartComment, sMidComment, sEndComment);
 	wxString sLine = control->GetLine(control->GetCurrentLine());
 
+    // Make the changes undoable in one step.
+    control->BeginUndoAction();
+
     if(reClass.Matches(sLine)){													// Class MyClass : public ParentClass
 		StartComment(control, iPos, iBlockComment, sStartComment, sMidComment, sTagBrief, sIndent);
 		AddCommentLine(control, iPos, sIndent + sEndComment);
@@ -125,6 +128,7 @@ void DoxyBlocks::BlockComment(void)
 	}
     iPos = control->GetLineEndPosition(line);
     control->GotoPos(iPos);
+    control->EndUndoAction();
 }
 
 /*! \brief Insert an inline comment at the current cursor position.
@@ -160,6 +164,9 @@ void DoxyBlocks::LineComment(void)
             break;
     }
 
+    // Make the changes undoable in one step.
+    control->BeginUndoAction();
+
     control->InsertText(iPos, sComment);
     // Position the cursor at the text entry position.
     int i = 0;
@@ -167,6 +174,7 @@ void DoxyBlocks::LineComment(void)
         control->CharRight();
         i++;
     }
+    control->EndUndoAction();
 }
 
 /*! \brief Initialise the comment structure strings to the selected style.
