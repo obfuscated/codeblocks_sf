@@ -495,7 +495,8 @@ MainFrame::MainFrame(wxWindow* parent)
     // add file filters for supported projects/workspaces
     FileFilters::AddDefaultFileFilters();
 
-    m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    m_SmallToolBar = cfg->ReadBool(_T("/environment/toolbar_size"), true);
     CreateIDE();
 
 #ifdef __WXMSW__
@@ -504,19 +505,14 @@ MainFrame::MainFrame(wxWindow* parent)
     SetIcon(wxIcon(app));
 #endif // __WXMSW__
 
-    DoCreateStatusBar();
-#if wxUSE_STATUSBAR
-    SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
-#endif // wxUSE_STATUSBAR
-
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
     ScanForPlugins();
 
     // save default view
-    wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
+    wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));
     if (deflayout.IsEmpty())
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), gDefaultLayout);
+        cfg->Write(_T("/main_frame/layout/default"), gDefaultLayout);
     DoFixToolbarsLayout();
     gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
     gDefaultMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
@@ -543,6 +539,14 @@ MainFrame::MainFrame(wxWindow* parent)
 //                                                    "the Code::Blocks startup process.\n\n"
 //                                                    "Please review them in the logs...\n\n"), 8000, 1000);
 //    }
+
+    if (cfg->ReadBool(_T("/main_frame/statusbar"), true))
+    {
+        DoCreateStatusBar();
+#if wxUSE_STATUSBAR
+    SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
+#endif // wxUSE_STATUSBAR
+    }
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Initializing plugins..."));
 }
@@ -4076,14 +4080,21 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 {
     wxStatusBar* sb = GetStatusBar();
-    if (!sb) return;
+    if (!sb)
+    {
+        DoCreateStatusBar();
+        sb = GetStatusBar();
+        if (!sb)
+            return;
+    }
 
-    if (sb->IsShown())
-        sb->Hide();
-    else
-        sb->Show();
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    const bool show = !cfg->ReadBool(_T("/main_frame/statusbar"), true);
+    cfg->Write(_T("/main_frame/statusbar"), show);
 
     DoUpdateStatusBar();
+    sb->Show(show);
+
     DoUpdateLayout();
 }
 
