@@ -20,7 +20,7 @@ public:
     CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc);
     virtual ~CCOptionsDlg();
 
-    virtual wxString GetTitle() const { return _("Code-completion and symbols browser"); }
+    virtual wxString GetTitle() const { return _("Code completion"); }
     virtual wxString GetBitmapBaseName() const { return _T("generic-plugin"); }
     virtual void OnApply();
     virtual void OnCancel(){}
