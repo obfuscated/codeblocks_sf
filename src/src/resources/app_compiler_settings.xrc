@@ -1,154 +1,154 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxScrollingDialog" name="dlgCompilerSettings">
-    <title>Compiler and debugger settings</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText" name="lblBigTitle">
-          <label>General settings</label>
-          <style>wxALIGN_CENTRE|wxST_NO_AUTORESIZE</style>
-          <fg>#FFFFFF</fg>
-          <bg>#004080</bg>
-          <font>
-            <size>14</size>
-            <family>default</family>
-            <style>normal</style>
-            <weight>bold</weight>
-            <underlined>0</underlined>
-          </font>
-        </object>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxListbook" name="nbMain">
-          <object class="listbookpage">
-            <label>Batch builds</label>
-            <object class="wxPanel" name="tabBatchBuilds">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <option>0</option>
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="">
-                        <label>Extra command-line arguments for batch-builds through shell extensions:</label>
-                      </object>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="">
-                        <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
-two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot; (windows only).
-The arguments configured here, are used by those two extensions.
-You could specify, for example, a profile/personality to use for batch builds.
-
-The relevant command-line arguments are (all are optional):
-
--na: don't perform any association checks
--nd: don't start a DDE server
--ns: don't display a splash screen while loading
--p : the profile to use: &quot;ask&quot; or &lt;profile-name&gt;
-
---target: work only on &lt;target&gt; for &quot;Build&quot; or &quot;Rebuild (clean)&quot;
---no-batch-window-close: do not auto-close log window when batch build is done
---batch-build-notify: show message when batch build is done</label>
-                      </object>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <option>1</option>
-                  <object class="wxStaticBoxSizer">
-                    <label>Plugins to load in batch-build mode</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxCheckListBox" name="chkBBPlugins">
-                        <style>wxLB_NEEDED_SB</style>
-                        <content/>
-                      </object>
-                      <option>1</option>
-                      <flag>wxALL|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Tip: Ensure you only load what's needed (saves start-up time).</label>
-                        <fg>#800000</fg>
-                      </object>
-                      <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                  </object>
-                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <option>0</option>
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="spacer">
-                      <size>0,0</size>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>For more info on profiles/personalities, read the Code::Blocks WiKi at
-http://wiki.codeblocks.org/index.php?title=Personalities</label>
-                      </object>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label/>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="button">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label/>
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-  </object>
+	<object class="wxScrollingDialog" name="dlgCompilerSettings">
+		<title>Compiler and debugger settings</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxPanel" name="pnlTitleInfo">
+					<bg>#004080</bg>
+					<object class="wxBoxSizer">
+						<object class="spacer">
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+						<object class="sizeritem">
+							<object class="wxStaticText" name="lblBigTitle">
+								<label>General settings</label>
+								<fg>#FFFFFF</fg>
+								<bg>#004080</bg>
+								<font>
+									<size>14</size>
+									<style>normal</style>
+									<weight>bold</weight>
+									<underlined>0</underlined>
+									<family>default</family>
+								</font>
+								<style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+							</object>
+							<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						</object>
+						<object class="spacer">
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+			</object>
+			<object class="sizeritem">
+				<object class="wxListbook" name="nbMain">
+					<object class="listbookpage">
+						<object class="wxPanel" name="tabBatchBuilds">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT1">
+												<label>Extra command-line arguments for batch-builds through shell extensions:</label>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtBatchBuildsCmdLine" />
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT2">
+												<label>If you right-click a Code::Blocks project/workspace in explorer, you will see&#x0D;&#x0A;two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot; (windows only).&#x0D;&#x0A;The arguments configured here, are used by those two extensions.&#x0D;&#x0A;You could specify, for example, a profile/personality to use for batch builds.&#x0D;&#x0A;&#x0D;&#x0A;The relevant command-line arguments are (all are optional):&#x0D;&#x0A;&#x0D;&#x0A;-na: don&apos;t perform any association checks&#x0D;&#x0A;-nd: don&apos;t start a DDE server&#x0D;&#x0A;-ns: don&apos;t display a splash screen while loading&#x0D;&#x0A;-p : the profile to use: &quot;ask&quot; or &lt;profile-name&gt;&#x0D;&#x0A;&#x0D;&#x0A;--target: work only on &lt;target&gt; for &quot;Build&quot; or &quot;Rebuild (clean)&quot;&#x0D;&#x0A;--no-batch-window-close: do not auto-close log window when batch build is done&#x0D;&#x0A;--batch-build-notify: show message when batch build is done</label>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+									</object>
+									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Plugins to load in batch-build mode</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckListBox" name="chkBBPlugins">
+												<style>wxLB_NEEDED_SB</style>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT3">
+												<label>Tip: Ensure you only load what&apos;s needed (saves start-up time).</label>
+												<fg>#800000</fg>
+											</object>
+											<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+									</object>
+									<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<object class="spacer">
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<option>1</option>
+											<size>0,0</size>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT4">
+												<label>For more info on profiles/personalities, read the Code::Blocks WiKi at&#x0D;&#x0A;http://wiki.codeblocks.org/index.php?title=Personalities</label>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+									</object>
+									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								</object>
+							</object>
+						</object>
+						<label>Batch builds</label>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE2" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
