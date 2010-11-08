@@ -1706,11 +1706,23 @@ void MainFrame::DoCreateStatusBar()
     dc.GetTextExtent(_(" Read/Write....."),         &width[num++], &h);
     dc.GetTextExtent(_(" name_of_profile "),        &width[num++], &h);
 
-    CreateStatusBar(num);
-    SetStatusWidths(num, width);
+    wxStatusBar* sb = CreateStatusBar(num);
+    if (sb)
+    {
+        SetStatusWidths(num, width);
+#ifdef __WXGTK__
+        const int fields = sb->GetFieldsCount();
+        int* styles = new int[fields];
+        for (int i = 0; i < fields; ++i)
+            styles[i] = wxSB_FLAT;
+        sb->SetStatusStyles(fields, styles);
+        delete [] styles;
+#endif
+    }
+        // here for later usage
+//        m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
+    }
 
-    // here for later usage
-//    m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
 #endif // wxUSE_STATUSBAR
 }
 
