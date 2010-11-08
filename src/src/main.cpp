@@ -1721,7 +1721,6 @@ void MainFrame::DoCreateStatusBar()
     }
         // here for later usage
 //        m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
-    }
 
 #endif // wxUSE_STATUSBAR
 }
