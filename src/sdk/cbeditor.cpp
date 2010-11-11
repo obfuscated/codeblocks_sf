@@ -1062,6 +1062,15 @@ void cbEditor::Split(cbEditor::SplitType split)
     // the left control and slows down loading of large files a lot.
     InternalSetEditorStyleBeforeFileOpen(m_pControl2);
 
+    // make sure basic settings of indicators (maybe set by plugins) are used for the new control
+    for (int i = 0; i < wxSCI_INDIC_MAX; ++i )
+    {
+        m_pControl2->IndicatorSetStyle(i, m_pControl->IndicatorGetStyle(i));
+        m_pControl2->IndicatorSetUnder(i, m_pControl->IndicatorGetUnder(i));
+        m_pControl2->IndicatorSetForeground(i, m_pControl->IndicatorGetForeground(i));
+
+    }
+
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
     SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
     UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
