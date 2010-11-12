@@ -978,6 +978,13 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 dlg.SetTitle(_("Reload file?"));
                 dlg.GetSizer()->SetSizeHints(&dlg);
                 PlaceWindow(&dlg);
+
+                // Find the window, that actually has the mouse-focus and force a release
+                // prevents crash on windows or hang on wxGTK
+                wxWindow* win = wxWindow::GetCapture();
+                if(win)
+                    win->ReleaseMouse();
+
                 ret = dlg.ShowModal();
                 reloadAll = ret == crAll;
             }
