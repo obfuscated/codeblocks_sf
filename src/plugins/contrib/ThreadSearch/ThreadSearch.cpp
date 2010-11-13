@@ -606,7 +606,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     }
 
     m_pCboSearchExpr = new wxComboBox(toolBar, idCboSearchExpr, wxEmptyString, wxDefaultPosition,
-                                      wxSize(120, -1), 0, NULL, wxCB_DROPDOWN);
+                                      wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
     m_pCboSearchExpr->SetToolTip(_("Text to search"));
 
     toolBar->AddControl(m_pCboSearchExpr);
