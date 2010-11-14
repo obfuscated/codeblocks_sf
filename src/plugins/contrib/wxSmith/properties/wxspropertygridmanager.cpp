@@ -132,7 +132,7 @@ void wxsPropertyGridManager::UnbindAll()
     SetNewMainContainer(0);
 }
 
-void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
+void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC, bool doFreeze)
 {
     if ( PGContainersSet.find(PC) == PGContainersSet.end() )
     {
@@ -147,7 +147,8 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
         return;
     }
 
-    Freeze();
+    if(doFreeze)
+        Freeze();
     for ( size_t i = PGIDs.Count(); i-- > 0; )
     {
         if ( PGContainers[i] == PC )
@@ -163,7 +164,10 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
             PGContainers.RemoveAt(i);
         }
     }
-    Thaw();
+    // in some cases the Thaw leads to a crash, so we have to disable Freeze-Thaw until we find
+    // another workaround or are sure, that we do not need it.
+    if(doFreeze)
+        Thaw();
 
     // If there are no properties, we have unbinded main property container
     if ( !PGIDs.Count() )

@@ -47,7 +47,9 @@ wxsPropertyContainer::~wxsPropertyContainer()
     // Unbinding from grid if there's one associated
     if ( wxsPGRID() )
     {
-        wxsPGRID()->UnbindPropertyContainer(this);
+        // if UnbindPropertyContainer is called from here the Thaw in it leads to a crash, so we have
+        // to disable Freeze-Thaw until we find another workaround or are sure, that we do not need it.
+        wxsPGRID()->UnbindPropertyContainer(this, false);
     }
 
     // Unbinding prom quick properties if there's one

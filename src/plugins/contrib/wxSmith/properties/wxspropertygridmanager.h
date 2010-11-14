@@ -101,7 +101,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
          *
          * \param PC pointer to property container
          */
-        void UnbindPropertyContainer(wxsPropertyContainer* PC);
+        void UnbindPropertyContainer(wxsPropertyContainer* PC, bool doFreeze = true);
 
         /** \brief Function updating content of property grid
          *  \param PC container which changed it's content, if 0, content
