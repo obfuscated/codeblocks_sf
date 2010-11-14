@@ -39,7 +39,6 @@
 				<Linker>
 					<Add option="-enable-auto-import" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="..\..\..\devel" />
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />

@@ -100,7 +100,6 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add library="wxscintilla" />
 			<Add directory="..\..\..\devel" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>

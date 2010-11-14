@@ -20,7 +20,6 @@
 				<Linker>
 					<Add library="codeblocks" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
-					<Add library="wxscintilla" />
 					<Add library="wxcustombutton" />
 					<Add directory="..\..\..\devel" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />

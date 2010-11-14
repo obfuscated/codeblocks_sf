@@ -44,7 +44,6 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
-			<Add library="wxscintilla" />
 			<Add library="wxflatnotebook" />
 			<Add directory="../../../devel" />
 			<Add directory="../../../base/tinyxml" />
