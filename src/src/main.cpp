@@ -505,6 +505,10 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pBatchBuildDialog(0),
        m_pProgressBar(0)
 {
+    cbAuiDockArt* cbDockArt = new(std::nothrow) cbAuiDockArt;
+    if (cbDockArt)
+        m_LayoutManager.SetArtProvider(cbDockArt);
+
     // register event sinks
     RegisterEvents();
 
@@ -541,10 +545,6 @@ MainFrame::MainFrame(wxWindow* parent)
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
     ScanForPlugins();
-
-    cbAuiDockArt* cbDockArt = new(std::nothrow) cbAuiDockArt;
-    if (cbDockArt)
-        m_LayoutManager.SetArtProvider(cbDockArt);
 
     // save default view
     wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));
