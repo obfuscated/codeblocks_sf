@@ -48,6 +48,7 @@ ChkWxDebug <- true; // Adds wxdebug and debug wx lib. By default it's set to Tru
 GuiBuilder <- 0; // Default to None. 0-None, 1-wxSmith, 2-wxFormBuilder
 GuiAppType <- 1; // Default to Dialog. 0-Dialog, 1-Frame
 AddlLibList <- _T(""); // Contains the complete list
+multi_thread_dynamic <- true; //Default to Multi-thread. For MSVC only.
 
 
 function BeginWizard()
@@ -415,6 +416,20 @@ function OnLeave_WxConf(fwd)
                 }
             }
         }
+        
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
+        {
+            local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
+            msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
+            msg = msg + _T("Click No to continue with Multi-threaded Static CRT mode");
+            local thread = Message(msg, _T("wxWidgets Wizard"), wxICON_QUESTION | wxYES_NO);
+            if (thread == wxID_YES)
+                multi_thread_dynamic = true;
+            else
+                multi_thread_dynamic = false;
+        }
     }
 
     return true;
@@ -670,12 +685,11 @@ function SetupProject(project)
             || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
             || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
         {
-            project.AddCompilerOption(_T("/TP"));
-            project.AddCompilerOption(_T("/Gd"));
-            project.AddCompilerOption(_T("/GF"));
-            project.AddCompilerOption(_T("/EHsc"));
+            project.AddCompilerOption(_T("/EHs"));
+            project.AddCompilerOption(_T("/EHc"));
             project.AddCompilerOption(_T("/D_CRT_SECURE_DEPRECATE"));
             project.AddCompilerOption(_T("/D_CRT_NONSTDC_NO_DEPRECATE"));
+            project.AddCompilerOption(_T("/D_CRT_SECURE_NO_WARNINGS"));
             project.AddLinkerOption(_T("/SUBSYSTEM:WINDOWS"));
             project.AddLinkLib(_T("winmm.lib"));
             project.AddLinkLib(_T("rpcrt4.lib"));
@@ -738,7 +752,6 @@ function SetupProject(project)
     {
         project.AddCompilerOption(_T("/FI\"") + PCHFileName + _T("\""));
         project.AddCompilerOption(_T("/Yc\"") + PCHFileName + _T("\""));
-        project.AddCompilerOption(_T("/DWX_PRECOMP"));
     }
 
     // enable compiler warnings (project-wide)
@@ -933,21 +946,37 @@ function SetupTarget(target, is_debug)
         {
             if(WantPCH) // Add support for PCH
                 target.AddCompilerOption(_T("/Fp\"") + obj_output_dir + exe_file_name + _T(".pch\""));
+
             if (is_debug)
             {
-                target.AddCompilerOption(_T("/MDd"));
+                if (multi_thread_dynamic)
+                {
+                    target.AddCompilerOption(_T("/MDd"));
+                    target.AddLinkerOption(_T("/NODEFAULTLIB:libcmtd.lib"));
+                    target.AddLinkerOption(_T("/NODEFAULTLIB:msvcrt.lib"));
+                    target.AddLinkLib(_T("msvcrtd.lib"));
+                }
+                else
+                {
+                    target.AddCompilerOption(_T("/MTd"));
+                }
+                
                 target.AddCompilerOption(_T("/D_DEBUG"));
-                target.AddLinkerOption(_T("/NODEFAULTLIB:libcmtd.lib"));
-                target.AddLinkerOption(_T("/NODEFAULTLIB:msvcrt.lib"));
-                target.AddLinkLib(_T("msvcrtd.lib"));
             }
             else
             {
-                target.AddCompilerOption(_T("/MD"));
+                if (multi_thread_dynamic)
+                {
+                    target.AddCompilerOption(_T("/MD"));
+                    target.AddLinkerOption(_T("/NODEFAULTLIB:libcmt.lib"));
+                    target.AddLinkLib(_T("msvcrt.lib"));
+                }
+                else
+                {
+                    target.AddCompilerOption(_T("/MT"));
+                }
+                
                 target.AddCompilerOption(_T("/O2"));
-                target.AddCompilerOption(_T("/Ob1"));
-                target.AddLinkerOption(_T("/NODEFAULTLIB:libcmt.lib"));
-                target.AddLinkLib(_T("msvcrt.lib"));
             }
         }
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
