@@ -44,7 +44,6 @@
 
 
 #include "compilerMINGW.h"
-#include "compilerMINGWGFORTRAN.h"
 #ifdef __WXGTK__
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
     #include "compilerGNUARM.h"
@@ -381,7 +380,6 @@ void CompilerGCC::OnAttach()
         idMenuSelectTargetOther[i] = wxNewId();
     // register built-in compilers
     CompilerFactory::RegisterCompiler(new CompilerMINGW);
-    CompilerFactory::RegisterCompiler(new CompilerMINGWGFORTRAN);
 #ifdef __WXMSW__
     // can't use platform::windows here due to classes do *not* exist on other platform than windows!
     CompilerFactory::RegisterCompiler(new CompilerMSVC);

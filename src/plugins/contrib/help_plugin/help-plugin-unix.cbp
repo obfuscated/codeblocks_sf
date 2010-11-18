@@ -72,6 +72,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
 			<Add library="sqplus" />
 			<Add library="sqstdlib" />
 			<Add library="squirrel" />

@@ -30,11 +30,10 @@
     <object class="separator"/>
     <object class="wxStaticText" name="idToolTargetLabel">
       <label>Build target:</label>
-      <style>wxTRANSPARENT_WINDOW</style>
     </object>
     <object class="wxChoice" name="idToolTarget">
       <content/>
-	  <size>136,-1</size>
+	  <size>130,-1</size>
     </object>
   </object>
 </resource>

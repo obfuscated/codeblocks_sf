@@ -39,6 +39,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
 			<Add library="wxcustombutton" />
 			<Add directory="../../../devel" />
 		</Linker>

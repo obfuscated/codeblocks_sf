@@ -51,6 +51,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
+			<Add library="wxscintilla" />
 			<Add library="codeblocks" />
 			<Add library="wxpropgrid" />
 			<Add directory="../../../devel" />

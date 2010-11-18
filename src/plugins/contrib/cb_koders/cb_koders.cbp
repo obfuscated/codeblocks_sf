@@ -9,7 +9,7 @@
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\cb_koders.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\cb_koders" />
-				<Option external_deps="..\..\..\devel\libcodeblocks.a;..\..\..\devel\libwxscintilla_cb.a;" />
+				<Option external_deps="..\..\..\devel\libcodeblocks.a;..\..\..\devel\libwxscintilla.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
@@ -55,6 +55,7 @@
 			<Add option="-mthreads" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\..\devel" />
 		</Linker>

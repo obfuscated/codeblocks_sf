@@ -41,6 +41,7 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="libwxscintilla.a" />
 					<Add library="codeblocks" />
 					<Add directory="..\..\..\devel" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />

@@ -74,39 +74,6 @@ private:
     MainFrame* m_frame;
 };
 
-class cbAuiDockArt : public wxAuiDefaultDockArt
-{
-public:
-    cbAuiDockArt() { m_gripper_size = 3; }
-
-    void DrawGripper(wxDC& dc, wxWindow* window, const wxRect& rect, wxAuiPaneInfo& pane)
-    {
-        dc.SetPen(*wxTRANSPARENT_PEN);
-        // we have to clear first
-        dc.SetBrush(*wxWHITE_BRUSH) ;
-        dc.DrawRectangle(rect.x, rect.y, rect.width, rect.height);
-        // drawing a border, only left and bottom
-        dc.SetBrush(m_gripper_brush);
-        dc.DrawRectangle(rect.x, rect.y, 1, rect.height - 2);
-        dc.DrawRectangle(rect.x, rect.y + rect.height - 2, rect.width, 1);
-
-        if (!pane.HasGripperTop())
-        {
-            int y = 5;
-            while (1)
-            {
-                dc.SetPen(m_gripper_pen1);
-                dc.DrawPoint(rect.x + 1, rect.y + y);
-                y += 4;
-                if (y > rect.GetHeight() - 5)
-                    break;
-            }
-        }
-        else
-            wxAuiDefaultDockArt::DrawGripper(dc, window, rect, pane);
-    }
-};
-
 const static wxString gDefaultLayout = _T("Code::Blocks default");
 static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
 static wxString gDefaultMessagePaneLayoutData; // this will keep default layout
@@ -505,10 +472,6 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pBatchBuildDialog(0),
        m_pProgressBar(0)
 {
-    cbAuiDockArt* cbDockArt = new(std::nothrow) cbAuiDockArt;
-    if (cbDockArt)
-        m_LayoutManager.SetArtProvider(cbDockArt);
-
     // register event sinks
     RegisterEvents();
 
@@ -1743,22 +1706,11 @@ void MainFrame::DoCreateStatusBar()
     dc.GetTextExtent(_(" Read/Write....."),         &width[num++], &h);
     dc.GetTextExtent(_(" name_of_profile "),        &width[num++], &h);
 
-    wxStatusBar* sb = CreateStatusBar(num);
-    if (sb)
-    {
-        SetStatusWidths(num, width);
-#ifdef __WXGTK__
-        const int fields = sb->GetFieldsCount();
-        int* styles = new int[fields];
-        for (int i = 0; i < fields; ++i)
-            styles[i] = wxSB_FLAT;
-        sb->SetStatusStyles(fields, styles);
-        delete [] styles;
-#endif
-    }
-        // here for later usage
-//        m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
+    CreateStatusBar(num);
+    SetStatusWidths(num, width);
 
+    // here for later usage
+//    m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
 #endif // wxUSE_STATUSBAR
 }
 

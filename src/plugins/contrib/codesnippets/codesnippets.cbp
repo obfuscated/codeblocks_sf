@@ -68,6 +68,7 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add library="wxscintilla" />
 			<Add library="codeblocks" />
 			<Add directory="..\..\..\devel" />
 			<Add directory="..\..\..\base\tinyxml" />
