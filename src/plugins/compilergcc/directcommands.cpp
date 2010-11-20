@@ -834,8 +834,9 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         time_t timeSrc;
         depsTimeStamp(deps[i].mb_str(), &timeSrc);
         // if external dep doesn't exist, no need to relink
+        // but we have to check other dependencies
         if (!timeSrc)
-            return false;
+            continue;
 
         // let's check the additional output files
         for (size_t x = 0; x < files.GetCount(); ++x)
@@ -856,8 +857,9 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         }
 
         // if no output, probably a commands-only target; nothing to relink
+        // but we have to check other dependencies
         if (buildOutput.IsEmpty())
-            return false;
+            continue;
 
         // now check the target's output
         // this is moved last because, for "commands only" targets,
