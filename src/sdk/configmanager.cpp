@@ -1440,7 +1440,10 @@ void ConfigManager::InitPaths()
             ConfigManager::plugin_path_global = data_path_global;
         else
         {
-            ConfigManager::plugin_path_global = wxStandardPathsBase::Get().GetPluginsDir() + _T("/plugins");
+            // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
+            // because its behaviour has changed on some systems (at least Fedora 14 64-bit).
+            // So we create the pathname manually
+            ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib/codeblocks/plugins");
             // first assume, we use standard-paths
             if(!wxDirExists(ConfigManager::plugin_path_global) && wxIsPlatform64Bit())
             {
