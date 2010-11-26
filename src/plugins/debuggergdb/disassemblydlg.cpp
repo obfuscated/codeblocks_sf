@@ -44,7 +44,7 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDisassembly"));
 //    SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 
-    m_pCode = new wxScintilla(this, wxID_ANY);
+    m_pCode = new wxScintilla(this, wxID_ANY, wxDefaultPosition, wxSize(1,1));
     m_pCode->SetReadOnly(true);
     m_pCode->SetCaretWidth(0);
     m_pCode->SetMarginWidth(0, 0);
