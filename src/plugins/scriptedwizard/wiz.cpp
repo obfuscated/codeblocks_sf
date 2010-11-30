@@ -719,7 +719,7 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     // create the file with the passed contents
     wxFileName::Mkdir(fname.GetPath(),0777,wxPATH_MKDIR_FULL);
     wxFile f(fname.GetFullPath(), wxFile::write);
-    if (cbWrite(f, contents + _T('\n')))
+    if (cbWrite(f, contents + _T('\n'), wxFONTENCODING_UTF8))
         return fname.GetFullPath(); // success
     return wxEmptyString; // failed
 }
