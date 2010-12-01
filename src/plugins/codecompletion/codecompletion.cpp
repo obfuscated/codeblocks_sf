@@ -2925,6 +2925,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     {
         int curPos = control->GetCurrentPos();
         int startPos = control->WordStartPosition(curPos, true);
+        if (startPos > 0 && control->GetCharAt(startPos - 1) == _T('~')) // special handle for dtor
+            --startPos;
         const int endPos = control->WordEndPosition(curPos, true);
         bool needReparse = false;
 
