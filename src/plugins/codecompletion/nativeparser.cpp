@@ -2157,23 +2157,12 @@ size_t NativeParser::AI(TokenIdxSet& result,
     int line = searchData->control->LineFromPosition(pos);
 
     // Get the actual search text, such as "objA.m_aaa.m_bbb"
-    wxString actual_search;
-    int col;
-    wxString tabwidth;
-    tabwidth.Pad(searchData->control->GetTabWidth(), ' ');
-    if (lineText.IsEmpty())
+    wxString actual_search(lineText);
+    if (actual_search.IsEmpty())
     {
-        actual_search = searchData->control->GetLine(line);
-        col = searchData->control->GetColumn(pos);
-        // replace tabs in line by equal-count spaces because col is in spaces!
-        actual_search.Replace(_T("\t"), tabwidth);
-        actual_search.Remove(col);
-        actual_search.Trim();
-    }
-    else
-    {
-        actual_search = lineText;
-        col = actual_search.Length() - 1;
+        // Get the position at the start of current line
+        const int startPos = searchData->control->PositionFromLine(line);
+        actual_search = searchData->control->GetTextRange(startPos, pos).Trim();
     }
 
     // Do the whole job here

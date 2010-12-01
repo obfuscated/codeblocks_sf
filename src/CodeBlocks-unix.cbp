@@ -1283,12 +1283,6 @@
 		<Unit filename="plugins/compilergcc/compilerMINGW.h">
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/compilerMINGWGFORTRAN.cpp">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/compilerMINGWGFORTRAN.h">
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins/compilergcc/compilerMINGWgenerator.cpp">
 			<Option target="Compiler" />
 		</Unit>
