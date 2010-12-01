@@ -37,7 +37,6 @@
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="..\..\devel" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />

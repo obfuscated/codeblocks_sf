@@ -46,7 +46,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="..\..\..\devel" />
 					<Add directory="$(#wx.lib)" />

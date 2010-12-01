@@ -35,7 +35,6 @@
 				<Linker>
 					<Add option="`wx-config --libs`" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>

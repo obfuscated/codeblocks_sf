@@ -35,7 +35,6 @@
 			<Add option="`wx-config --libs`" />
 			<Add library="txml" />
 			<Add library="codeblocks" />
-			<Add library="wxscintilla" />
 			<Add library="wxpropgrid" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel" />

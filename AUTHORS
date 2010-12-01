@@ -6,6 +6,8 @@ Lieven de Cock      : Developer
 Martin Halle        : Developer
 Biplab Modak        : Developer
 Jens Lody           : Developer and debian nightlies
+Yuchen Deng         : Developer
+Ricardo Garcia      : All-hands person
 Paul A. Jimenez     : Help and AStyle plugins
 Bartlomiej Swiecki  : wxSmith RAD plugin
 Jerome Antoine      : ThreadSearch plugin
@@ -15,7 +17,6 @@ Pecan Heber         : Keybinder, BrowseTracker, DragScroll
                       CodeSnippets plugins
 Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)
 Thomas Lorblanchès  : CodeStat and Profiler plugins
-Ricardo Garcia      : All-hands person
 Anders F Björklund  : wxMac compatibility
 
 Contributors (in no special order):

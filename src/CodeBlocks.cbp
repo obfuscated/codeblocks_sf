@@ -103,11 +103,10 @@
 				</Linker>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel\wxscintilla" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel" />
-				<Option type="3" />
+				<Option output="devel\libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-D__WX__" />
 					<Add option="-DWINVER=0x0400" />
@@ -163,6 +162,7 @@
 					<Add option="-DEXPORT_EVENTS" />
 					<Add option="-DWXMAKINGDLL_PROPGRID" />
 					<Add option="-DwxPG_USE_WXMODULE=0" />
+					<Add option="-DWXMAKINGDLL_SCI" />
 					<Add directory="include" />
 					<Add directory="include\tinyxml" />
 					<Add directory="include\scripting\bindings" />
@@ -178,11 +178,12 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add library="shfolder" />
 					<Add library="txml" />
-					<Add library="wxscintilla" />
+					<Add library="wxscintilla_cb" />
 					<Add library="wxpropgrid" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />
+					<Add library="gdi32" />
 					<Add directory="devel" />
 					<Add directory="sdk\scripting\lib" />
 					<Add directory="sdk\propgrid" />
@@ -211,7 +212,6 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxpropgrid" />
 					<Add library="shfolder" />
 					<Add library="kernel32" />
@@ -251,7 +251,6 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -289,7 +288,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="depslib" />
 					<Add directory="devel" />
@@ -316,7 +314,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -340,7 +337,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -363,7 +359,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -408,7 +403,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -433,7 +427,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -457,7 +450,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -480,7 +472,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -551,7 +542,6 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -1443,6 +1433,12 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGW.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWGFORTRAN.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWGFORTRAN.h">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGWgenerator.cpp">
