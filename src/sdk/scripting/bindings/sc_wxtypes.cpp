@@ -162,25 +162,49 @@ namespace ScriptBindings
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        return SqPlus::ReturnCopy(v, self.AfterFirst((wxChar)sa.GetInt(2)));
+        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
+        if ( !search_char ) // Probably it's a wxString
+        {
+            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            search_char = static_cast<SQInteger>( temp.GetChar(0) );
+        }
+        return SqPlus::ReturnCopy( v, self.AfterFirst( static_cast<wxChar>( search_char ) ) );
     }
     SQInteger wxString_AfterLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        return SqPlus::ReturnCopy(v, self.AfterLast((wxChar)sa.GetInt(2)));
+        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
+        if ( !search_char ) // Probably it's a wxString
+        {
+            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            search_char = static_cast<SQInteger>( temp.GetChar(0) );
+        }
+        return SqPlus::ReturnCopy( v, self.AfterLast( static_cast<wxChar>( search_char ) ) );
     }
     SQInteger wxString_BeforeFirst(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        return SqPlus::ReturnCopy(v, self.BeforeFirst((wxChar)sa.GetInt(2)));
+        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
+        if ( !search_char ) // Probably it's a wxString
+        {
+            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            search_char = static_cast<SQInteger>( temp.GetChar(0) );
+        }
+        return SqPlus::ReturnCopy( v, self.BeforeFirst( static_cast<wxChar>( search_char ) ) );
     }
     SQInteger wxString_BeforeLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
         wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
-        return SqPlus::ReturnCopy(v, self.BeforeLast((wxChar)sa.GetInt(2)));
+        SQInteger search_char = static_cast<SQInteger>( sa.GetInt(2) );
+        if ( !search_char ) // Probably it's a wxString
+        {
+            wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            search_char = static_cast<SQInteger>( temp.GetChar(0) );
+        }
+        return SqPlus::ReturnCopy( v, self.BeforeLast( static_cast<wxChar>( search_char ) ) );
     }
     SQInteger wxString_Replace(HSQUIRRELVM v)
     {
