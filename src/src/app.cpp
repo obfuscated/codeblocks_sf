@@ -536,7 +536,7 @@ bool CodeBlocksApp::OnInit()
             // Create a new client
             DDEClient *client = new DDEClient;
             DDEConnection* connection = 0l;
-            connection = (DDEConnection *)client->MakeConnection(_T("localhost"), DDE_SERVICE, DDE_TOPIC);
+            connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().c_str()), DDE_TOPIC);
 
             if(connection)
             {
@@ -601,7 +601,7 @@ bool CodeBlocksApp::OnInit()
         if (m_DDE && !m_Batch)
         {
             g_DDEServer = new DDEServer(0L);
-            g_DDEServer->Create(DDE_SERVICE);
+            g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().c_str()));
         }
         m_pSingleInstance = 0;
         if (   Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true)

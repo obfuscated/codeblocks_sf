@@ -18,7 +18,7 @@
     #endif
     #define DDE_SERVICE    _T("CODEBLOCKS")
 #else
-    #define DDE_SERVICE    _T("/tmp/CODEBLOCKS.socket")
+    #define DDE_SERVICE    _T("/tmp/CODEBLOCKS%s.socket")
 #endif
 #define DDE_TOPIC    _T("CodeBlocksDDEServer")
 #include <wx/ipc.h>
