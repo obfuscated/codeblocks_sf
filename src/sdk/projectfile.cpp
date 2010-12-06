@@ -465,6 +465,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     o_file.MakeAbsolute(prjbase.GetFullPath());
     o_file_flat.MakeAbsolute(prjbase.GetFullPath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    object_dir_flat_native = o_file_flat.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     object_file_absolute_native = o_file.GetFullPath();
     object_file_flat_absolute_native = o_file_flat.GetFullPath();
     tmp.SetExt(_T("depend"));
@@ -489,12 +490,16 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     object_dir = UnixFilename(object_dir_native);
     QuoteStringIfNeeded(object_dir);
 
+    object_dir_flat = UnixFilename(object_dir_flat_native);
+    QuoteStringIfNeeded(object_dir_flat);
+
     dep_dir = UnixFilename(dep_dir_native);
     QuoteStringIfNeeded(dep_dir);
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_flat_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_flat_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_absolute_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_flat_absolute_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_native);
@@ -502,6 +507,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_absolute_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_dir);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_flat);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_flat);

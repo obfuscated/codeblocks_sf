@@ -202,6 +202,7 @@ class pfDetails : public BlockAllocated<pfDetails, 1000>
         wxString object_file;
         wxString dep_file;
         wxString object_dir;
+        wxString object_dir_flat;
         wxString dep_dir;
         wxString object_file_flat;
         // those below, have no UnixFilename() applied, nor QuoteStringIfNeeded()
@@ -209,6 +210,7 @@ class pfDetails : public BlockAllocated<pfDetails, 1000>
         wxString object_file_native;
         wxString dep_file_native;
         wxString object_dir_native;
+        wxString object_dir_flat_native;
         wxString dep_dir_native;
         wxString source_file_absolute_native;
         wxString object_file_absolute_native;
