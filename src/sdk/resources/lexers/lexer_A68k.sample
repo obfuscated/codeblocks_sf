@@ -1,0 +1,23 @@
+        include "kernel.h"
+        xdef    _main
+        xdef    _ti89                           ; \author : 0xF01C0
+
+Foo     macro
+        move.w  \1,\\@
+        bra.s   \\@Plop
+\\@:    dc.w    0
+        endm
+
+\\@Plop:
+
+_main:  movem.l d3-d7/a2-a6,-(sp)
+        move.w  #~$12AB,d0                        ; I don't know why I set this value...
+        move.l  #-%1010,2(pc,a0.w)                ; FIXME: It should crash ?
+        lea     (a0),fp
+        jbsr    \Push
+        dc.b    "Hello world!",0
+\Push:  jsr     tios::ST_helpMsg
+        addq.l  #4,sp
+        movem.l (sp)+,d3-d7/a2-a6
+        move.b  #'a',d0
+        rts

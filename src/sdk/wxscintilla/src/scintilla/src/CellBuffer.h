@@ -204,6 +204,12 @@ private:
 
 	LineVector lv;
 
+	/// Actions without undo
+/* CHANGEBAR begin */
+    void BasicInsertString(int position, const char *s, int insertLength, bool undoing);
+    void BasicDeleteChars(int position, int deleteLength, bool undoing);
+/* CHANGEBAR end */
+
 public:
 
 	CellBuffer();
@@ -213,6 +219,7 @@ public:
 	char CharAt(int position) const;
 	void GetCharRange(char *buffer, int position, int lengthRetrieve) const;
 	char StyleAt(int position) const;
+	void GetStyleRange(unsigned char *buffer, int position, int lengthRetrieve) const;
 	const char *BufferPointer();
 
 	int Length() const;
@@ -248,12 +255,6 @@ public:
     void DeleteChangeCollection();
     int GetChanged(int line) const;
     int GetChangesEdition() const;
-/* CHANGEBAR end */
-
-	/// Actions without undo
-/* CHANGEBAR begin */
-    void BasicInsertString(int position, const char *s, int insertLength, bool undoing);
-    void BasicDeleteChars(int position, int deleteLength, bool undoing);
 /* CHANGEBAR end */
 
 	bool SetUndoCollection(bool collectUndo);

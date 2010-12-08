@@ -181,7 +181,9 @@ private:
 #if wxUSE_DRAG_AND_DROP
     wxSCIDropTarget*    dropTarget;
     wxDragResult        dragResult;
+/* C::B begin */
     bool                dragRectangle;
+/* C::B end */
 #endif
 
     int                 wheelRotation;

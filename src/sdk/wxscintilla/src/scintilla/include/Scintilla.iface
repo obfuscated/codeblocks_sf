@@ -259,7 +259,7 @@ val SC_MARK_CIRCLEPLUSCONNECTED=19
 val SC_MARK_CIRCLEMINUS=20
 val SC_MARK_CIRCLEMINUSCONNECTED=21
 
-# Invisible mark that only sets the line background color.
+# Invisible mark that only sets the line background colour.
 val SC_MARK_BACKGROUND=22
 val SC_MARK_DOTDOTDOT=23
 val SC_MARK_ARROWS=24
@@ -308,7 +308,8 @@ fun void MarkerDeleteAll=2045(int markerNumber,)
 # Get a bit mask of all the markers set on a line.
 fun int MarkerGet=2046(int line,)
 
-# Find the next line after lineStart that includes a marker in mask.
+# Find the next line at or after lineStart that includes a marker in mask.
+# Return -1 when no more lines.
 fun int MarkerNext=2047(int lineStart, int markerMask)
 
 # Find the previous line before lineStart that includes a marker in mask.
@@ -2099,6 +2100,13 @@ fun void SwapMainAnchorCaret=2607(,)
 # there may be a need to redraw.
 fun int ChangeLexerState=2617(position start, position end)
 
+# Find the next line at or after lineStart that is a contracted fold header line.
+# Return -1 when no more lines.
+fun int ContractedFoldNext=2618(int lineStart,)
+
+# Centre current line in window.
+fun void VerticalCentreCaret=2619(,)
+
 # Start notifying the container of all key presses and commands.
 fun void StartRecord=3001(,)
 
@@ -2336,6 +2344,7 @@ val SCLEX_NIMROD=96
 val SCLEX_SML=97
 val SCLEX_MARKDOWN=98
 val SCLEX_TXT2TAGS=99
+val SCLEX_A68K=100
 
 # When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 # value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -3820,6 +3829,27 @@ val SCE_TXT2TAGS_COMMENT=22
 val SCE_TXT2TAGS_OPTION=23
 val SCE_TXT2TAGS_PREPROC=24
 val SCE_TXT2TAGS_POSTPROC=25
+# Lexical states for SCLEX_A68K
+lex A68k=SCLEX_A68K SCE_A68K_
+val SCE_A68K_DEFAULT=0
+val SCE_A68K_COMMENT=1
+val SCE_A68K_NUMBER_DEC=2
+val SCE_A68K_NUMBER_BIN=3
+val SCE_A68K_NUMBER_HEX=4
+val SCE_A68K_STRING1=5
+val SCE_A68K_OPERATOR=6
+val SCE_A68K_CPUINSTRUCTION=7
+val SCE_A68K_EXTINSTRUCTION=8
+val SCE_A68K_REGISTER=9
+val SCE_A68K_DIRECTIVE=10
+val SCE_A68K_MACRO_ARG=11
+val SCE_A68K_LABEL=12
+val SCE_A68K_STRING2=13
+val SCE_A68K_IDENTIFIER=14
+val SCE_A68K_MACRO_DECLARATION=15
+val SCE_A68K_COMMENT_WORD=16
+val SCE_A68K_COMMENT_SPECIAL=17
+val SCE_A68K_COMMENT_DOXYGEN=18
 
 # Events
 
@@ -3850,6 +3880,7 @@ evt void IndicatorClick=2023(int modifiers, int position)
 evt void IndicatorRelease=2024(int modifiers, int position)
 evt void AutoCCancelled=2025(void)
 evt void AutoCCharDeleted=2026(void)
+evt void HotSpotReleaseClick=2027(int modifiers, int position)
 
 cat Deprecated
 

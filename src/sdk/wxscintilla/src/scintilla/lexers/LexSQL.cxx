@@ -2,7 +2,7 @@
 /** @file LexSQL.cxx
  ** Lexer for SQL, including PL/SQL and SQL*Plus.
  **/
-// Copyright 1998-2005 by Neil Hodgson <neilh@scintilla.org>
+// Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <stdlib.h>
@@ -70,6 +70,11 @@ static void ColouriseSQLDoc(unsigned int startPos, int length, int initStyle, Wo
 	bool sqlBackslashEscapes = styler.GetPropertyInt("sql.backslash.escapes", 0) != 0;
 
 	bool sqlBackticksIdentifier = styler.GetPropertyInt("lexer.sql.backticks.identifier", 0) != 0;
+
+	// property lexer.sql.numbersign.comment
+	//  If "lexer.sql.numbersign.comment" property is set to 0 a line beginning with '#' will not be a comment.
+	bool sqlNumbersignComment = styler.GetPropertyInt("lexer.sql.numbersign.comment", 1) != 0;
+
 	int styleBeforeDCKeyword = SCE_SQL_DEFAULT;
 	for (; sc.More(); sc.Forward()) {
 		// Determine if the current state should terminate.
@@ -206,7 +211,7 @@ static void ColouriseSQLDoc(unsigned int startPos, int length, int initStyle, Wo
 				// Perhaps we should enforce that with proper property:
 //~ 			} else if (sc.Match("-- ")) {
 				sc.SetState(SCE_SQL_COMMENTLINE);
-			} else if (sc.ch == '#') {
+			} else if (sc.ch == '#' && sqlNumbersignComment) {
 				sc.SetState(SCE_SQL_COMMENTLINEDOC);
 			} else if (sc.ch == '\'') {
 				sc.SetState(SCE_SQL_CHARACTER);
@@ -234,6 +239,7 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 	bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool foldOnlyBegin = styler.GetPropertyInt("fold.sql.only.begin", 0) != 0;
+	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
 
 	// property fold.sql.exists
 	//	Enables "EXISTS" to end a fold as is started by "IF" in "DROP TABLE IF EXISTS".
@@ -251,6 +257,10 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 	int styleNext = styler.StyleAt(startPos);
 	int style = initStyle;
 	bool endFound = false;
+	bool isUnfoldingIgnored = false;
+	// this statementFound flag avoids to fold when the statement is on only one line by ignoring ELSE or ELSIF
+	// eg. "IF condition1 THEN ... ELSIF condition2 THEN ... ELSE ... END IF;"
+	bool statementFound = false;
 	for (unsigned int i = startPos; i < endPos; i++) {
 		char ch = chNext;
 		chNext = styler.SafeGetCharAt(i + 1);
@@ -258,6 +268,12 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
 		bool atEOL = (ch == '\r' && chNext != '\n') || (ch == '\n');
+		if (atEOL || (ch == ';')) {
+			// set endFound and isUnfoldingIgnored to false if EOL is reached or ';' is found
+			endFound = false;
+			isUnfoldingIgnored = false;
+		}
+
 		if (foldComment && IsStreamCommentStyle(style)) {
 			if (!IsStreamCommentStyle(stylePrev)) {
 				levelNext++;
@@ -302,13 +318,36 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 			} else {
 				s[j] = '\0';
 			}
-			if ((!foldOnlyBegin) && (strcmp(s, "if") == 0 || strcmp(s, "loop") == 0)) {
+			if (strcmp(s, "if") == 0 ||
+				strcmp(s, "loop") == 0 ||
+				strcmp(s, "case") == 0) {
 				if (endFound) {
-					// ignore
 					endFound = false;
-				} else {
+					if (foldOnlyBegin && !isUnfoldingIgnored) {
+						// this end isn't for begin block, but for if block ("end if;")
+						// or loop block ("end loop;") or case block ("end case;")
+						// so ignore previous "end" by increment levelNext.
+						levelNext++;
+					}
+				} else if (!foldOnlyBegin) {
+					statementFound = true;
+					if (levelCurrent > levelNext) {
+						levelCurrent = levelNext;
+					}
 					levelNext++;
+				} else if (levelCurrent > levelNext) {
+					// doesn't include this line into the folding block
+					// because doesn't hide IF, LOOP or CASE (eg "END; IF" or "END; LOOP" or "END; CASE")
+					levelCurrent = levelNext;
 				}
+			} else if ((!foldOnlyBegin) && (
+				// folding for ELSE and ELSIF block only if foldAtElse is set
+				// and IF or CASE aren't on only one line with ELSE or ELSIF (with flag statementFound)
+				foldAtElse && !statementFound && (strcmp(s, "elsif") == 0 || strcmp(s, "else") == 0))) {
+				// prevent also ELSIF and ELSE are on the same line (eg. "ELSIF condition2 THEN ... ELSE ... END IF;")
+				statementFound = true;
+				// we are in same case "} ELSE {" in C language
+				levelCurrent--;
 			} else if (strcmp(s, "begin") == 0) {
 				levelNext++;
 			} else if ((strcmp(s, "end") == 0) ||
@@ -322,6 +361,7 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 				levelNext--;
 				if (levelNext < SC_FOLDLEVELBASE) {
 					levelNext = SC_FOLDLEVELBASE;
+					isUnfoldingIgnored = true;
 				}
 			}
 		}
@@ -338,7 +378,7 @@ static void FoldSQLDoc(unsigned int startPos, int length, int initStyle,
 			lineCurrent++;
 			levelCurrent = levelNext;
 			visibleChars = 0;
-			endFound = false;
+			statementFound = false;
 		}
 		if (!isspacechar(ch)) {
 			visibleChars++;

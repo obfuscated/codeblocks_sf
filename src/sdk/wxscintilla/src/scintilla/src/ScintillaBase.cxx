@@ -380,6 +380,7 @@ void ScintillaBase::AutoCompleteCompleted() {
 		pdoc->InsertCString(firstPos, selected);
 		SetEmptySelection(firstPos + static_cast<int>(strlen(selected)));
 	}
+	SetLastXChosen();
 }
 
 int ScintillaBase::AutoCompleteGetCurrent() {

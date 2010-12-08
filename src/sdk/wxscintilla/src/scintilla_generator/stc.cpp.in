@@ -10,7 +10,7 @@
 // Author:      Robin Dunn
 //
 // Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.cpp.in 64940 2010-07-13 13:29:13Z VZ $
+// RCS-ID:      $Id: stc.cpp.in 65840 2010-10-17 18:17:30Z VZ $
 // Copyright:   (c) 2000 by Total Control Software
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1073,8 +1073,8 @@ wxStyledTextEvent::wxStyledTextEvent(wxEventType commandType, int id)
     m_listType = 0;
     m_x = 0;
     m_y = 0;
-    m_dragAllowMove = false;
 #if wxUSE_DRAG_AND_DROP
+    m_dragFlags = wxDrag_CopyOnly;
     m_dragResult = wxDragNone;
 #endif
 }
@@ -1108,14 +1108,19 @@ wxStyledTextEvent::wxStyledTextEvent(const wxStyledTextEvent& event):
     m_x =            event.m_x;
     m_y =            event.m_y;
 
-    m_dragText =     event.m_dragText;
-    m_dragAllowMove =event.m_dragAllowMove;
 #if wxUSE_DRAG_AND_DROP
+    m_dragText =     event.m_dragText;
+    m_dragFlags =    event.m_dragFlags;
     m_dragResult =   event.m_dragResult;
 #endif
 }
 
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
+
+/*static*/ wxVersionInfo wxStyledTextCtrl::GetLibraryVersionInfo()
+{
+    return wxVersionInfo("Scintilla", 2, 3, 0, "Scintilla 2.03");
+}
 
 #endif // wxUSE_STC

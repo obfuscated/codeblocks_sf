@@ -11,6 +11,7 @@ noinst_LTLIBRARIES = libwxscintilla.la
 libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/ScintillaWX.cpp \
 			src/wxscintilla.cpp \
+			src/scintilla/lexers/LexA68k.cxx \
 			src/scintilla/lexers/LexAPDL.cxx \
 			src/scintilla/lexers/LexASY.cxx \
 			src/scintilla/lexers/LexAU3.cxx \

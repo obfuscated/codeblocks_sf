@@ -20,11 +20,13 @@
 #ifndef __WXSCINTILLA_H__
 #define __WXSCINTILLA_H__
 
-#define wxSCINTILLA_VERSION _T("2.21.0")
+#define wxSCINTILLA_VERSION _T("2.23.0")
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
-
+#if wxCHECK_VERSION(2,9,0)
+#include <wx/versioninfo.h>
+#endif
 
 #ifdef WXMAKINGDLL_SCI
     #define WXDLLIMPEXP_SCI WXEXPORT
@@ -345,7 +347,8 @@
 #define wxSCI_MOD_CHANGEMARGIN 0x10000
 #define wxSCI_MOD_CHANGEANNOTATION 0x20000
 #define wxSCI_MOD_CONTAINER 0x40000
-#define wxSCI_MODEVENTMASKALL 0xFFFF
+#define wxSCI_MOD_LEXERSTATE 0x80000
+#define wxSCI_MODEVENTMASKALL 0xFFFFF
 
 /* C::B begin */
 #define wxSCI_LASTLINEUNDOREDO wxSCI_MULTILINEUNDOREDO
@@ -1973,8 +1976,32 @@
 #define wxSCI_TXT2TAGS_PREPROC 24
 #define wxSCI_TXT2TAGS_POSTPROC 25
 
-//-----------------------------------------
-// Commands that can be bound to keystrokes
+// Lexical states for SCLEX_A68K
+#define wxSCI_A68K_DEFAULT 0
+#define wxSCI_A68K_COMMENT 1
+#define wxSCI_A68K_NUMBER_DEC 2
+#define wxSCI_A68K_NUMBER_BIN 3
+#define wxSCI_A68K_NUMBER_HEX 4
+#define wxSCI_A68K_STRING1 5
+#define wxSCI_A68K_OPERATOR 6
+#define wxSCI_A68K_CPUINSTRUCTION 7
+#define wxSCI_A68K_EXTINSTRUCTION 8
+#define wxSCI_A68K_REGISTER 9
+#define wxSCI_A68K_DIRECTIVE 10
+#define wxSCI_A68K_MACRO_ARG 11
+#define wxSCI_A68K_LABEL 12
+#define wxSCI_A68K_STRING2 13
+#define wxSCI_A68K_IDENTIFIER 14
+#define wxSCI_A68K_MACRO_DECLARATION 15
+#define wxSCI_A68K_COMMENT_WORD 16
+#define wxSCI_A68K_COMMENT_SPECIAL 17
+#define wxSCI_A68K_COMMENT_DOXYGEN 18
+
+//}}}
+//----------------------------------------------------------------------
+
+//----------------------------------------------------------------------
+// Commands that can be bound to keystrokes section {{{
 
 
 // Redoes the next action on the undo history.
@@ -2473,7 +2500,8 @@ public:
     // Get a bit mask of all the markers set on a line.
     int MarkerGet(int line);
 
-    // Find the next line after lineStart that includes a marker in mask.
+    // Find the next line at or after lineStart that includes a marker in mask.
+    // Return -1 when no more lines.
     int MarkerNext(int lineStart, int markerMask);
 
     // Find the previous line before lineStart that includes a marker in mask.
@@ -4032,6 +4060,13 @@ public:
     // there may be a need to redraw.
     int ChangeLexerState(int start, int end);
 
+    // Find the next line at or after lineStart that is a contracted fold header line.
+    // Return -1 when no more lines.
+    int ContractedFoldNext(int lineStart);
+
+    // Centre current line in window.
+    void VerticalCentreCaret();
+
     // Start notifying the container of all key presses and commands.
     void StartRecord();
 
@@ -4074,16 +4109,22 @@ public:
     int PrivateLexerCall(int operation, int pointer);
 
     // Retrieve a '\n' separated list of properties understood by the current lexer.
+/* C::B begin */
     wxString PropertyNames();
+/* C::B end */
 
     // Retrieve the type of a property.
     int PropertyType(const wxString& name);
 
     // Describe a property.
+/* C::B begin */
     wxString DescribeProperty(const wxString& name);
+/* C::B end */
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
+/* C::B begin */
     wxString DescribeKeyWordSets();
+/* C::B end */
 
 /* C::B begin */
     // Retrieve the name of the lexer.
@@ -4173,7 +4214,7 @@ public:
     // NB: this method is not really const as it can modify the control but it
     //     has to be declared as such as it's called from both const and
     //     non-const methods and we can't distinguish between the two
-    wxIntPtr SendMsg(int msg, wxUIntPtr wp=0, wxIntPtr lp=0) const;
+    wxIntPtr SendMsg(unsigned int msg, wxUIntPtr wp=0, wxIntPtr lp=0) const;
 
 
     // Set the vertical scrollbar to use instead of the ont that's built-in.
@@ -4256,6 +4297,10 @@ public:
 //----------------------------------------------------------------------
 
 #ifndef SWIG
+#if wxCHECK_VERSION(2,9,0)
+    static wxVersionInfo GetLibraryVersionInfo();
+#endif
+
 protected:
     virtual wxString DoGetValue() const { return GetText(); }
     virtual wxWindow *GetEditableWindow() { return this; }
@@ -4359,12 +4404,20 @@ public:
     void SetListType(int val)             { m_listType = val; }
     void SetX(int val)                    { m_x = val; }
     void SetY(int val)                    { m_y = val; }
-    void SetDragText(const wxString& val) { m_dragText = val; }
-/* C::B begin */
-    void SetDragAllowMove(int val)        { m_dragAllowMove = val; }
-/* C::B end */
 #ifdef  SCI_USE_DND
+    void SetDragText(const wxString& val) { m_dragText = val; }
+    void SetDragFlags(int flags)          { m_dragFlags = flags; }
     void SetDragResult(wxDragResult val)  { m_dragResult = val; }
+
+    // This method is kept mainly for backwards compatibility, use
+    // SetDragFlags() in the new code.
+    void SetDragAllowMove(bool allow)
+    {
+        if ( allow )
+            m_dragFlags |= wxDrag_AllowMove;
+        else
+            m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
+    }
 #endif
 
     int  GetPosition() const         { return m_position; }
@@ -4384,12 +4437,12 @@ public:
     int  GetListType() const         { return m_listType; }
     int  GetX() const                { return m_x; }
     int  GetY() const                { return m_y; }
-    wxString GetDragText()           { return m_dragText; }
-/* C::B begin */
-    int GetDragAllowMove()           { return m_dragAllowMove; }
-/* C::B end */
 #ifdef SCI_USE_DND
+    wxString GetDragText()           { return m_dragText; }
+    int GetDragFlags()               { return m_dragFlags; }
     wxDragResult GetDragResult()     { return m_dragResult; }
+
+    bool GetDragAllowMove() { return (GetDragFlags() & wxDrag_AllowMove) != 0; }
 #endif
 
     bool GetShift() const;
@@ -4424,13 +4477,10 @@ private:
     int m_x;
     int m_y;
 
-    wxString m_dragText;        // wxEVT_SCI_START_DRAG, wxEVT_SCI_DO_DROP
-/* C::B begin */
-    int     m_dragAllowMove;    // wxEVT_SCI_START_DRAG
-/* C::B end */
-
 #if wxUSE_DRAG_AND_DROP
-    wxDragResult m_dragResult; // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
+    wxString m_dragText;        // wxEVT_SCI_START_DRAG, wxEVT_SCI_DO_DROP
+    int      m_dragFlags;       // wxEVT_SCI_START_DRAG
+    wxDragResult m_dragResult;  // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
 #endif
 #endif
 };

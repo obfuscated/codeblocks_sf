@@ -350,6 +350,16 @@
 	<td>Toby Inkster</td>
 	<td>Eric Forgeot</td>
 	<td>Colomban Wendling</td>
+      </tr><tr>
+	<td>Neo</td>
+	<td>Jordan Russell</td>
+	<td>Farshid Lashkari</td>
+	<td>Sam Rawlins</td>
+      </tr><tr>
+	<td>Michael Mullin</td>
+	<td>Carlos SS</td>
+	<td>vim</td>
+	<td>Martial Demolins</td>
     </tr>
     </table>
     <p>
@@ -360,6 +370,169 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite223.zip?download">Release 2.23</a>
+    </h3>
+    <ul>
+	<li>
+	Released 7 December 2010.
+	</li>
+	<li>
+	On GTK+ version 2.22 and later, drawing is performed with Cairo rather than GDK.
+	This is in preparation for GTK+ 3.0 which will no longer support GDK drawing.
+	The appearance of some elements will be different with Cairo as it is anti-aliased and uses sub-pixel positioning.
+	Cairo may be turned on for GTK+ versions before 2.22 by defining USE_CAIRO although this has not
+	been extensively tested.
+	</li>
+	<li>
+	New lexer a68k for Motorola 68000 assembler.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3101598&group_id=2439">Feature #3101598.</a>
+	</li>
+	<li>
+	Borland C++ is no longer supported for building Scintilla or SciTE on Windows.
+	</li>
+	<li>
+	Performance improved when creating large rectangular selections.
+	</li>
+	<li>
+	PHP folder recognizes #region and #endregion comments.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3101624&group_id=2439">Feature #3101624.</a>
+	</li>
+	<li>
+	SQL lexer has a lexer.sql.numbersign.comment option to turn off use of '#' comments
+	as these are a non-standard feature only available in some implementations.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3098071&group_id=2439">Feature #3098071.</a>
+	</li>
+	<li>
+	SQL folder recognizes case statements and understands the fold.at.else property.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3104091&group_id=2439">Bug #3104091.</a>
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3107362&group_id=2439">Bug #3107362.</a>
+	</li>
+	<li>
+	SQL folder fixes bugs with end statements when fold.sql.only.begin=1.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3104091&group_id=2439">Bug #3104091.</a>
+	</li>
+	<li>
+	SciTE on Windows bug fixed with multi-line tab bar not adjusting correctly when maximizing and demaximizing.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3097517&group_id=2439">Bug #3097517.</a>
+	</li>
+	<li>
+	Crash fixed on GTK+ when Scintilla widget destroyed while it still has an outstanding style idle pending.
+	</li>
+	<li>
+	Bug fixed where searching backwards in DBCS text (code page 936 or similar) failed to find occurrences at the start of the line.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3103936&group_id=2439">Bug #3103936.</a>
+	</li>
+	<li>
+	SciTE on Windows supports Unicode file names when executing help applications with winhelp and htmlhelp subsystems.
+	</li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite222.zip?download">Release 2.22</a>
+    </h3>
+    <ul>
+	<li>
+	Released 27 October 2010.
+	</li>
+	<li>
+	SciTE includes support for integrating with Scintillua which allows lexers to be implemented in Lua as a
+	Parsing Expression Grammar (PEG).
+	</li>
+	<li>
+	Regular expressions allow use of '?' for non-greedy matches or to match 0 or 1 instances of an item.
+	</li>
+	<li>
+	SCI_CONTRACTEDFOLDNEXT added to allow rapid retrieval of folding state.
+	</li>
+	<li>
+	SCN_HOTSPOTRELEASECLICK notification added which is similar to SCN_HOTSPOTCLICK but occurs
+	when the mouse is released.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3082409&group_id=2439">Feature #3082409.</a>
+	</li>
+	<li>
+	Command added for centring current line in window.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3064696&group_id=2439">Feature #3064696.</a>
+	</li>
+	<li>
+	SciTE performance improved by not examining document for line ends when switching buffers and not
+	storing folds when folding turned off.
+	</li>
+	<li>
+	Bug fixed where scrolling to ensure the caret is visible did not take into account all pixels of the line.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3081721&group_id=2439">Bug #3081721.</a>
+	</li>
+	<li>
+	Bug fixed for autocompletion list overlapping text when WS_EX_CLIENTEDGE used.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3079778&group_id=2439">Bug #3079778.</a>
+	</li>
+	<li>
+	After autocompletion, the caret's X is updated.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3079114&group_id=2439">Bug #3079114.</a>
+	</li>
+	<li>
+	On Windows, default to the system caret blink time.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3079784&group_id=2439">Feature #3079784.</a>
+	</li>
+	<li>
+	PgUp/PgDn fixed to allow virtual space.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3077452&group_id=2439">Bug #3077452.</a>
+	</li>
+	<li>
+	Crash fixed when AddMark and AddMarkSet called with negative argument.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3075074&group_id=2439">Bug #3075074.</a>
+	</li>
+	<li>
+	Dwell notifications fixed so that they do not occur when the mouse is outside Scintilla.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3073481&group_id=2439">Bug #3073481.</a>
+	</li>
+	<li>
+	Bash lexer bug fixed for here docs starting with &lt;&lt;-.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3063822&group_id=2439">Bug #3063822.</a>
+	</li>
+	<li>
+	C++ lexer bug fixed for // comments that are continued onto a second line by a \.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3066031&group_id=2439">Bug #3066031.</a>
+	</li>
+	<li>
+	C++ lexer fixes wrong highlighting for float literals containing +/-.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3058924&group_id=2439">Bug #3058924.</a>
+	</li>
+	<li>
+	JavaScript lexer recognize regexes following return keyword.‎
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3062287&group_id=2439">Bug #3062287.</a>
+	</li>
+	<li>
+	Ruby lexer handles % quoting better and treats range dots as operators in 1..2 and 1...2.
+	Ruby folder handles "if" keyword used as a modifier even when it is separated from the modified statement by an escaped new line.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2093767&group_id=2439">Bug #2093767.</a>
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3058496&group_id=2439">Bug #3058496.</a>
+	</li>
+	<li>
+	Bug fixed where upwards search failed with DBCS code pages.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3065912&group_id=2439">Bug #3065912.</a>
+	</li>
+	<li>
+	SciTE has a default Lua startup script name distributed in SciTEGlobal.properties.
+	No error message is displayed if this file does not exist.
+	</li>
+	<li>
+	SciTE on Windows tab control height is calculated better.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2635702&group_id=2439">Bug #2635702.</a>
+	</li>
+	<li>
+	SciTE on Windows uses better themed check buttons in find and replace strips.
+	</li>
+	<li>
+	SciTE on Windows fixes bug with Find strip appearing along with Incremental Find strip.
+	</li>
+	<li>
+	SciTE setting find.close.on.find added to allow preventing the Find dialog from closing.
+	</li>
+	<li>
+	SciTE on Windows attempts to rerun commands that fail by prepending them with "cmd.exe /c".
+	This allows commands built in to the command processor like "dir" to run.
+	</li>
     </ul>
     <h3>
        <a href="http://prdownloads.sourceforge.net/scintilla/scite221.zip?download">Release 2.21</a>

@@ -70,8 +70,7 @@ Palette::Palette() {
 
 Palette::~Palette() {
     Release();
-    delete [] entries;
-    entries = 0;
+    wxDELETEA(entries);
 }
 
 void Palette::Release() {
@@ -284,19 +283,23 @@ bool SurfaceImpl::Initialised() {
 
 
 void SurfaceImpl::PenColour(ColourAllocated fore) {
+/* C::B begin */
     if( fore.AsLong() == -1 ) {
         hdc->SetPen( *wxTRANSPARENT_PEN );
     } else {
         hdc->SetPen(wxPen(wxColourFromCA(fore)));
     }
+/* C::B end */
 }
 
 void SurfaceImpl::BrushColour(ColourAllocated back) {
+/* C::B begin */
     if( back.AsLong() == -1 ) {
         hdc->SetBrush( *wxTRANSPARENT_BRUSH );
     } else {
         hdc->SetBrush(wxBrush(wxColourFromCA(back)));
     }
+/* C::B end */
 }
 
 void SurfaceImpl::SetFont(Font &font_) {
@@ -377,6 +380,8 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     int x, y;
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
+    if(bmp.IsOk() == false)
+        return;
     wxAlphaPixelData pixData(bmp);
     #if !wxCHECK_VERSION(2, 9, 0)
     pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
@@ -407,32 +412,36 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     blue  = cdo.GetBlue();
     for (x=0; x<r.width; x++) {
         p.MoveTo(pixData, x, 0);
-        p.Red()   = wxPy_premultiply(red,   alphaOutline);
-        p.Green() = wxPy_premultiply(green, alphaOutline);
-        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;
-        p.MoveTo(pixData, x, r.height-1);
-        p.Red()   = wxPy_premultiply(red,   alphaOutline);
-        p.Green() = wxPy_premultiply(green, alphaOutline);
-        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;
+        if (p.m_ptr) {
+            p.Red()   = wxPy_premultiply(red,   alphaOutline);
+            p.Green() = wxPy_premultiply(green, alphaOutline);
+            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+            p.Alpha() = alphaOutline;
+            p.MoveTo(pixData, x, r.height-1);
+            p.Red()   = wxPy_premultiply(red,   alphaOutline);
+            p.Green() = wxPy_premultiply(green, alphaOutline);
+            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+            p.Alpha() = alphaOutline;
+        }
     }
-
     for (y=0; y<r.height; y++) {
         p.MoveTo(pixData, 0, y);
-        p.Red()   = wxPy_premultiply(red,   alphaOutline);
-        p.Green() = wxPy_premultiply(green, alphaOutline);
-        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;
-        p.MoveTo(pixData, r.width-1, y);
-        p.Red()   = wxPy_premultiply(red,   alphaOutline);
-        p.Green() = wxPy_premultiply(green, alphaOutline);
-        p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;
+        if (p.m_ptr) {
+            p.Red()   = wxPy_premultiply(red,   alphaOutline);
+            p.Green() = wxPy_premultiply(green, alphaOutline);
+            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+            p.Alpha() = alphaOutline;
+            p.MoveTo(pixData, r.width-1, y);
+            p.Red()   = wxPy_premultiply(red,   alphaOutline);
+            p.Green() = wxPy_premultiply(green, alphaOutline);
+            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+            p.Alpha() = alphaOutline;
+        }
     }
 
     // Draw the bitmap
-    hdc->DrawBitmap(bmp, r.x, r.y, true);
+    if (bmp.IsOk())
+        hdc->DrawBitmap(bmp, r.x, r.y, true);
 
 #else
     wxUnusedVar(cornerSize);
@@ -489,13 +498,21 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, int ybase,
 
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCA(fore));
+    #if wxCHECK_VERSION(2, 9, 0)
+    hdc->SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
+    #else
     hdc->SetBackgroundMode(wxTRANSPARENT);
+    #endif
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
     hdc->DrawText(sci2wx(s, len), rc.left, ybase - font.ascent);
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    hdc->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
+    #else
     hdc->SetBackgroundMode(wxSOLID);
+    #endif
 }
 
 
@@ -736,6 +753,8 @@ PRectangle Window::GetMonitorRect(Point pt) {
     int n = wxDisplay::GetFromPoint(wxPoint(pt.x, pt.y));
     wxDisplay dpy(n == wxNOT_FOUND ? 0 : n);
     rect = dpy.GetGeometry();
+#else
+    wxUnusedVar(pt);
 #endif
     return PRectangleFromwxRect(rect);
 }
@@ -1137,14 +1156,8 @@ ListBoxImpl::ListBoxImpl()
 }
 
 ListBoxImpl::~ListBoxImpl() {
-    if (imgList) {
-        delete imgList;
-        imgList = NULL;
-    }
-    if (imgTypeMap) {
-        delete imgTypeMap;
-        imgTypeMap = NULL;
-    }
+    wxDELETE(imgList);
+    wxDELETE(imgTypeMap);
 }
 
 
@@ -1323,14 +1336,8 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
 }
 
 void ListBoxImpl::ClearRegisteredImages() {
-    if (imgList) {
-        delete imgList;
-        imgList = NULL;
-    }
-    if (imgTypeMap) {
-        delete imgTypeMap;
-        imgTypeMap = NULL;
-    }
+    wxDELETE(imgList);
+    wxDELETE(imgTypeMap);
     if (wid)
         GETLB(wid)->SetImageList(NULL, wxIMAGE_LIST_SMALL);
 }
@@ -1469,7 +1476,7 @@ long Platform::SendScintilla(WindowID w,
                              long lParam) {
 
     wxScintilla* sci = (wxScintilla*)w;
-    return sci->SendMsg(msg, wParam, lParam);
+    return sci->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
 }
 
 long Platform::SendScintillaPointer(WindowID w,
@@ -1478,7 +1485,7 @@ long Platform::SendScintillaPointer(WindowID w,
                                     void *lParam) {
 
     wxScintilla* sci = (wxScintilla*)w;
-    return sci->SendMsg(msg, wParam, (wxIntPtr)lParam);
+    return sci->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
 }
 
 
@@ -1616,6 +1623,7 @@ wxString sci2wx(const char* str, size_t len)
     size_t actualLen = UTF16FromUTF8(str, len, buffer.data(), wclen+1);
     return wxString(buffer.data(), actualLen);
 }
+
 
 
 wxString sci2wx(const char* str)

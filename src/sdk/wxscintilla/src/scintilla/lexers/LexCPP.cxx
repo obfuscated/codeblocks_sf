@@ -15,10 +15,6 @@
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
 #endif
-#ifdef __BORLANDC__
-// Borland C++ displays warnings in vector header without this
-#pragma option -w-ccc -w-rch
-#endif
 
 #include <string>
 #include <vector>
@@ -65,6 +61,29 @@ static bool FollowsPostfixOperator(StyleContext &sc, LexAccessor &styler) {
 		}
 	}
 	return false;
+}
+
+static bool followsReturnKeyword(StyleContext &sc, LexAccessor &styler) {
+	// Don't look at styles, so no need to flush.
+	int pos = (int) sc.currentPos;
+	int currentLine = styler.GetLine(pos);
+	int lineStartPos = styler.LineStart(currentLine);
+	char ch;
+	while (--pos > lineStartPos) {
+		ch = styler.SafeGetCharAt(pos);
+		if (ch != ' ' && ch != '\t') {
+			break;
+		}
+	}
+	const char *retBack = "nruter";
+	const char *s = retBack;
+	while (*s
+		&& pos >= lineStartPos
+		&& styler.SafeGetCharAt(pos) == *s) {
+		s++;
+		pos--;
+	}
+	return !*s;
 }
 
 static std::string GetRestOfLine(LexAccessor &styler, int start, bool allowSpace) {
@@ -195,7 +214,7 @@ struct OptionsCPP {
 	bool foldCompact;
 	bool foldAtElse;
 /* C::B begin */
-  bool foldWxSmith;
+	bool foldWxSmith;
 /* C::B end */
 	OptionsCPP() {
 		stylingWithinPreprocessor = false;
@@ -209,7 +228,7 @@ struct OptionsCPP {
 		foldCompact = false;
 		foldAtElse = false;
 /* C::B begin */
-    foldWxSmith = false;
+		foldWxSmith = false;
 /* C::B end */
 	}
 };
@@ -417,7 +436,9 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 	bool isIncludePreprocessor = false;
 
 	int lineCurrent = styler.GetLine(startPos);
-	if (initStyle == SCE_C_PREPROCESSOR) {
+	if ((initStyle == SCE_C_PREPROCESSOR) ||
+      (initStyle == SCE_C_COMMENTLINE) ||
+      (initStyle == SCE_C_COMMENTLINEDOC)) {
 		// Set continuationLine if last character of previous line is '\'
 		if (lineCurrent > 0) {
 			int chBack = styler.SafeGetCharAt(startPos-1, 0);
@@ -574,12 +595,12 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 				}
 				break;
 			case SCE_C_COMMENTLINE:
-				if (sc.atLineStart) {
+				if (sc.atLineStart && !continuationLine) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				}
 				break;
 			case SCE_C_COMMENTLINEDOC:
-				if (sc.atLineStart) {
+				if (sc.atLineStart && !continuationLine) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
 				} else if (sc.ch == '@' || sc.ch == '\\') { // JavaDoc and Doxygen support
 					// Verify that we have the conditions to mark a comment-doc-keyword
@@ -720,8 +741,11 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 /* C::B end */
 				else
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
-			} else if (sc.ch == '/' && setOKBeforeRE.Contains(chPrevNonWhite) &&
-				(!setCouldBePostOp.Contains(chPrevNonWhite) || !FollowsPostfixOperator(sc, styler))) {
+			} else if (sc.ch == '/'
+				   && (setOKBeforeRE.Contains(chPrevNonWhite)
+				       || followsReturnKeyword(sc, styler))
+				   && (!setCouldBePostOp.Contains(chPrevNonWhite)
+				       || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_C_REGEX|activitySet);	// JavaScript's RegEx
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_C_STRING|activitySet);
