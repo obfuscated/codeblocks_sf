@@ -2923,10 +2923,15 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
+        wxString itemText = event.GetText();
         int curPos = control->GetCurrentPos();
         int startPos = control->WordStartPosition(curPos, true);
-        if (startPos > 0 && control->GetCharAt(startPos - 1) == _T('~')) // special handle for dtor
+        if (   itemText.GetChar(0) == _T('~') // special handle for dtor
+            && startPos > 0
+            && control->GetCharAt(startPos - 1) == _T('~'))
+        {
             --startPos;
+        }
         const int endPos = control->WordEndPosition(curPos, true);
         bool needReparse = false;
 
@@ -2943,7 +2948,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 startPos = pos + 1;
         }
 
-        wxString itemText = event.GetText();
         const wxString alreadyText = control->GetTextRange(curPos, endPos);
         if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
             curPos = endPos;
