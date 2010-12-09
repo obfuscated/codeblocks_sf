@@ -791,6 +791,8 @@ void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strAr
     event.SetString(strArg);
     event.SetX(xArg);
     event.SetY(yArg);
+    if (m_pProjectFile)
+        event.SetProject(m_pProjectFile->GetParentProject());
     //wxPostEvent(Manager::Get()->GetAppWindow(), event);
     Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }

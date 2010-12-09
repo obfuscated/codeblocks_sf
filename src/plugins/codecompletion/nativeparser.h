@@ -139,8 +139,20 @@ public:
      */
     cbProject* GetProjectByFilename(const wxString& filename);
 
+    /** return the C::B project containing the cbEditor pointer
+     * @param editor Any vaild cbEditor pointer
+     * @return project pointer
+     */
+    cbProject* GetProjectByEditor(cbEditor* editor);
+
+    /** Get current project by actived editor or just return actived project */
+    cbProject* GetCurrentProject();
+
     /** Return true if all the parser's batch-parse stage was done, otherwise return false*/
     bool Done();
+
+    /** Return true if use one parser per whole workspace */
+    bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
 
     /** the function list below used to support Symbol browser and codecompletion UI
      *  Image list is used to initialize the symbol browser tree node image.
@@ -315,7 +327,7 @@ protected:
     void RemoveObsoleteParsers();
 
     /** Get cbProject and Parser pointer, according to the current active editor*/
-    std::pair<cbProject*, Parser*> GetParserInfoByCurEditor();
+    std::pair<cbProject*, Parser*> GetParserInfoByCurrentEditor();
 
 private:
     friend class CodeCompletion;
@@ -577,10 +589,12 @@ private:
     int                          m_HookId; // project loader hook ID
     wxImageList*                 m_ImageList;
 
-    wxString                     m_LastActivatedFile;
+    cbEditor*                    m_LastEditor;
     wxArrayString                m_StandaloneFiles;
 
     std::map<wxString, wxString> m_TemplateMap;
+    bool                         m_ParserPerWorkspace;
+    std::set<cbProject*>         m_ParsedProjects;
 
     DECLARE_EVENT_TABLE()
 };

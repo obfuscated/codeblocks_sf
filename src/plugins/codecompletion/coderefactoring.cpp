@@ -160,8 +160,7 @@ bool CodeRefactoring::Parse()
     }
 
     wxArrayString files;
-    cbProject* project = m_NativeParser.GetProjectByFilename(editor->GetFilename());
-
+    cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     if (isLocalVariable || !project)
         files.Add(editor->GetFilename());
     else
@@ -465,8 +464,7 @@ void CodeRefactoring::DoRenameSymbols(const wxString& targetText, const wxString
     if (!editor)
         return;
 
-    cbProject* project = m_NativeParser.GetProjectByFilename(editor->GetFilename());
-
+    cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     for (SearchDataMap::iterator it = m_SearchDataMap.begin(); it != m_SearchDataMap.end(); ++it)
     {
         // check if the file is already opened in built-in editor and do search in it

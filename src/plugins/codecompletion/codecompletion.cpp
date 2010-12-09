@@ -1243,26 +1243,27 @@ void CodeCompletion::CodeCompleteIncludes()
     if (!IsAttached() || !m_InitDone)
         return;
 
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed)
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!editor)
         return;
 
-    const wxString curFile(ed->GetFilename());
+    const wxString curFile(editor->GetFilename());
     const wxString curPath(wxFileName(curFile).GetPath());
     wxArrayString buildTargets;
 
-    cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
+    cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
     if (pf)
         buildTargets = pf->buildTargets;
 
-    FileType ft = FileTypeOf(ed->GetShortName());
+    FileType ft = FileTypeOf(editor->GetShortName());
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return;
 
-    const int pos = ed->GetControl()->GetCurrentPos();
-    const int lineStartPos = ed->GetControl()->PositionFromLine(ed->GetControl()->GetCurrentLine());
-    wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
+    cbStyledTextCtrl* control = editor->GetControl();
+    const int pos = control->GetCurrentPos();
+    const int lineStartPos = control->PositionFromLine(control->GetCurrentLine());
+    wxString line = control->GetLine(control->GetCurrentLine());
     line.Trim();
     if (line.IsEmpty() || !TestIncludeLine(line))
         return;
@@ -1347,17 +1348,17 @@ void CodeCompletion::CodeCompleteIncludes()
     // popup the auto completion window
     if (!files.empty())
     {
-        ed->GetControl()->ClearRegisteredImages();
-        ed->GetControl()->AutoCompSetIgnoreCase(false);
-        ed->GetControl()->AutoCompSetCancelAtStart(true);
-        ed->GetControl()->AutoCompSetFillUps(m_CCFillupChars);
-        ed->GetControl()->AutoCompSetChooseSingle(false);
-        ed->GetControl()->AutoCompSetAutoHide(true);
-        ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
+        control->ClearRegisteredImages();
+        control->AutoCompSetIgnoreCase(false);
+        control->AutoCompSetCancelAtStart(true);
+        control->AutoCompSetFillUps(m_CCFillupChars);
+        control->AutoCompSetChooseSingle(false);
+        control->AutoCompSetAutoHide(true);
+        control->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
         wxString final;
         GetStringFromSet(final, files, _T(" "));
         final.RemoveLast(); // remove last space
-        ed->GetControl()->AutoCompShow(pos - lineStartPos - keyPos, final);
+        control->AutoCompShow(pos - lineStartPos - keyPos, final);
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Get include file count is %d, use time is %d"),
                                                     files.size(), sw.Time()));
     }
@@ -1848,8 +1849,11 @@ void CodeCompletion::OnProjectFileChanged(CodeBlocksEvent& event)
 {
     if (IsAttached() && m_InitDone)
     {
+        // TODO (Loaden#5#) make sure the event.GetProject() is valid.
+        cbProject* project = event.GetProject();
         wxString filename = event.GetString();
-        cbProject* project = m_NativeParser.GetProjectByFilename(filename);
+        if (!project)
+            project = m_NativeParser.GetProjectByFilename(filename);
         if (project && m_NativeParser.ReparseFile(project, filename))
             Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when file changed: ") + filename);
     }
@@ -1874,8 +1878,11 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
         EditorBase* editor = event.GetEditor();
         if (editor)
         {
-            wxString filename = editor->GetFilename();
-            cbProject* project = m_NativeParser.GetProjectByFilename(filename);
+            cbProject* project = event.GetProject();
+            const wxString filename = editor->GetFilename();
+            if (!project)
+                project = m_NativeParser.GetProjectByFilename(filename);
+
             if (project && m_NativeParser.ReparseFile(project, filename))
             {
                 Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing active editor ") + filename);
@@ -2377,16 +2384,22 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorModified(CodeBlocksEvent& event)
 {
-    EditorBase* editor = event.GetEditor();
-    if (editor)
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
-        wxString filename = editor->GetFilename();
-        cbProject* project = m_NativeParser.GetProjectByFilename(filename);
-        if (project && m_NativeParser.ReparseFile(project, filename))
+        EditorBase* editor = event.GetEditor();
+        if (editor)
         {
-            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when editor modified: ") + filename);
-            if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
-                ParseFunctionsAndFillToolbar(true);
+            cbProject* project = event.GetProject();
+            const wxString filename = editor->GetFilename();
+            if (!project)
+                project = m_NativeParser.GetProjectByFilename(filename);
+
+            if (project && m_NativeParser.ReparseFile(project, filename))
+            {
+                Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing when editor modified: ") + filename);
+                if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
+                    ParseFunctionsAndFillToolbar(true);
+            }
         }
     }
 
@@ -2512,8 +2525,8 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
     if (m_ProjectMenu)
     {
-        cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
-        m_ProjectMenu->Enable(idCurrentProjectReparse, !!project);
+        cbProject* project = m_NativeParser.GetCurrentProject();
+        m_ProjectMenu->Enable(idCurrentProjectReparse, project);
     }
 
     // must do...
@@ -2782,9 +2795,10 @@ void CodeCompletion::OnRenameSymbols(wxCommandEvent& event)
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
-    wxString LastIncludeFileFrom;
-    if (const cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
-        LastIncludeFileFrom = ed->GetFilename();
+    wxString lastIncludeFileFrom;
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (editor)
+        lastIncludeFileFrom = editor->GetFilename();
 
     // check one more time because menu entries are enabled only when it makes sense
     // but the shortcut accelerator can always be executed
@@ -2804,12 +2818,12 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 
     // look in the same dir as the source file
     wxFileName fname = NameUnderCursor;
-    NormalizePath(fname, LastIncludeFileFrom);
+    NormalizePath(fname, lastIncludeFileFrom);
     if (wxFileExists(fname.GetFullPath()) )
         foundSet.Add(fname.GetFullPath());
 
     // search for the file in project files
-    cbProject* project = m_NativeParser.GetProjectByParser(&m_NativeParser.GetParser());
+    cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     if (project)
     {
         for (int i = 0; i < project->GetFilesCount(); ++i)
@@ -3157,11 +3171,11 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
         SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, dirs);
         m_SystemHeadersThread.push_back(thread);
 
-        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-        if (editor && editor->GetFilename() != g_StartHereTitle)
+        cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (editor)
         {
             cbProject* project = m_NativeParser.GetProjectByParser(parser);
-            cbProject* edPrj = m_NativeParser.GetProjectByFilename(editor->GetFilename());
+            cbProject* edPrj = m_NativeParser.GetProjectByEditor(editor);
             if (edPrj == project)
                 EnableToolbarTools(false);
         }
@@ -3212,7 +3226,7 @@ void CodeCompletion::OnRealtimeParsing(wxTimerEvent& event)
         return;
     }
 
-    cbProject* project = m_NativeParser.GetProjectByFilename(m_LastFile);
+    cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     if (project && !project->GetFileByFilename(m_LastFile, false, true))
         return;
     if (m_NativeParser.ReparseFile(project, m_LastFile))

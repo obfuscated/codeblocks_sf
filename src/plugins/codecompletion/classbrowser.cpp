@@ -180,10 +180,14 @@ void ClassBrowser::UpdateView(bool checkHeaderSwap)
 
     if (m_Parser && !Manager::IsAppShuttingDown())
     {
-        m_ActiveProject = m_NativeParser->GetProjectByParser(m_Parser);
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-            m_ActiveFilename = ed->GetFilename();
+        cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (editor)
+            m_ActiveFilename = editor->GetFilename();
+
+        if (!m_NativeParser->IsParserPerWorkspace())
+            m_ActiveProject = m_NativeParser->GetProjectByParser(m_Parser);
+        else
+            m_ActiveProject = m_NativeParser->GetCurrentProject();
 
         TRACE(_T("ClassBrowser::UpdateView(), new m_ActiveFilename = %s"), m_ActiveFilename.wx_str());
 
@@ -435,11 +439,16 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
         else
             fname.Assign(ctd->m_Token->GetFilename());
 
-        cbProject* prj = m_NativeParser->GetProjectByParser(m_Parser);
+        cbProject* project = nullptr;
+        if (!m_NativeParser->IsParserPerWorkspace())
+            project = m_NativeParser->GetProjectByParser(m_Parser);
+        else
+            project = m_NativeParser->GetCurrentProject();
+
         wxString base;
-        if (prj)
+        if (project)
         {
-            base = prj->GetBasePath();
+            base = project->GetBasePath();
             NormalizePath(fname, base);
         }
         else
@@ -501,11 +510,16 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
         else
             fname.Assign(ctd->m_Token->GetFilename());
 
-        cbProject* prj = m_NativeParser->GetProjectByParser(m_Parser);
+        cbProject* project = nullptr;
+        if (!m_NativeParser->IsParserPerWorkspace())
+            project = m_NativeParser->GetProjectByParser(m_Parser);
+        else
+            project = m_NativeParser->GetCurrentProject();
+
         wxString base;
-        if (prj)
+        if (project)
         {
-            base = prj->GetBasePath();
+            base = project->GetBasePath();
             NormalizePath(fname, base);
         }
         else
