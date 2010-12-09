@@ -166,7 +166,11 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            #if wxCHECK_VERSION(2, 9, 0)
+            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
+            #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
+            #endif
         }
         return SqPlus::ReturnCopy( v, self.AfterFirst( static_cast<wxChar>( search_char ) ) );
     }
@@ -178,7 +182,11 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            #if wxCHECK_VERSION(2, 9, 0)
+            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
+            #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
+            #endif
         }
         return SqPlus::ReturnCopy( v, self.AfterLast( static_cast<wxChar>( search_char ) ) );
     }
@@ -190,7 +198,11 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            #if wxCHECK_VERSION(2, 9, 0)
+            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
+            #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
+            #endif
         }
         return SqPlus::ReturnCopy( v, self.BeforeFirst( static_cast<wxChar>( search_char ) ) );
     }
@@ -202,7 +214,11 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
+            #if wxCHECK_VERSION(2, 9, 0)
+            search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
+            #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
+            #endif
         }
         return SqPlus::ReturnCopy( v, self.BeforeLast( static_cast<wxChar>( search_char ) ) );
     }
