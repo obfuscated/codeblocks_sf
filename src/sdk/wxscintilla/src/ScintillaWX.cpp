@@ -705,23 +705,21 @@ void ScintillaWX::AddToPopUp(const char *label, int cmd, bool enabled) {
 // For wxGTK we can put this text in the primary selection and then other apps
 // can paste with the middle button.
 void ScintillaWX::ClaimSelection() {
-#if 0
 #ifdef __WXGTK__
     // Put the selected text in the PRIMARY selection
 /* C::B begin */
-    if (SelectionEmpty()) {
+    if (!SelectionEmpty()) {
 /* C::B end */
         SelectionText st;
         CopySelectionRange(&st);
-        wxTheClipboard->UsePrimarySelection(true);
         if (wxTheClipboard->Open()) {
+            wxTheClipboard->UsePrimarySelection(true);
             wxString text = sci2wx(st.s, st.len);
             wxTheClipboard->SetData(new wxTextDataObject(text));
+            wxTheClipboard->UsePrimarySelection(false);
             wxTheClipboard->Close();
         }
-        wxTheClipboard->UsePrimarySelection(false);
     }
-#endif
 #endif
 }
 
