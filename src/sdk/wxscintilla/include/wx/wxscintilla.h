@@ -24,7 +24,9 @@
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
-#if wxCHECK_VERSION(2,9,0)
+// C::B Patch
+#if wxCHECK_VERSION(2,9,2)
+// C::B Patch
 #include <wx/versioninfo.h>
 #endif
 
@@ -2292,9 +2294,8 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 #endif
 
 //----------------------------------------------------------------------
-
-/* C::B begin */
-#if !wxCHECK_VERSION(2, 9, 0)
+/* C::B Begin */
+#if !wxCHECK_VERSION(2, 9, 0) && !defined(_WIN64)
 typedef long wxIntPtr;
 #endif
 
@@ -4297,7 +4298,9 @@ public:
 //----------------------------------------------------------------------
 
 #ifndef SWIG
-#if wxCHECK_VERSION(2,9,0)
+// C::B Patch
+#if wxCHECK_VERSION(2,9,2)
+// C::B Patch
     static wxVersionInfo GetLibraryVersionInfo();
 #endif
 
