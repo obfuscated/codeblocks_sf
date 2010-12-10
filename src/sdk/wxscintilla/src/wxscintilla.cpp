@@ -5041,11 +5041,11 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 
-// C::B Patch
+/* C::B begin */
 #if wxCHECK_VERSION(2,9,2)
-// C::B Patch
 /*static*/ wxVersionInfo wxStyledTextCtrl::GetLibraryVersionInfo()
 {
     return wxVersionInfo("Scintilla", 2, 2, 3, "Scintilla 2.23");
 }
 #endif
+/* C::B end */
