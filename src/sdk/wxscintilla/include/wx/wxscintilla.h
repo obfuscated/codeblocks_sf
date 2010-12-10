@@ -24,11 +24,11 @@
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
-// C::B Patch
+/* C::B begin */
 #if wxCHECK_VERSION(2,9,2)
-// C::B Patch
 #include <wx/versioninfo.h>
 #endif
+/* C::B end */
 
 #ifdef WXMAKINGDLL_SCI
     #define WXDLLIMPEXP_SCI WXEXPORT
@@ -484,8 +484,9 @@
 #define wxSCI_LEX_SML 97
 #define wxSCI_LEX_MARKDOWN 98
 #define wxSCI_LEX_TXT2TAGS 99
+#define wxSCI_LEX_A68K 100
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_TXT2TAGS // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_A68K // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -2294,7 +2295,7 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 #endif
 
 //----------------------------------------------------------------------
-/* C::B Begin */
+/* C::B begin */
 #if !wxCHECK_VERSION(2, 9, 0) && !defined(_WIN64)
 typedef long wxIntPtr;
 #endif
@@ -4298,9 +4299,9 @@ public:
 //----------------------------------------------------------------------
 
 #ifndef SWIG
-// C::B Patch
+/* C::B begin */
 #if wxCHECK_VERSION(2,9,2)
-// C::B Patch
+/* C::B end */
     static wxVersionInfo GetLibraryVersionInfo();
 #endif
 
