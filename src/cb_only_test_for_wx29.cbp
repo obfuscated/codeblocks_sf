@@ -1,0 +1,3410 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Code::Blocks" />
+		<Option pch_mode="2" />
+		<Option default_target="src" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="exchndl">
+				<Option platforms="Windows;" />
+				<Option output="devel\exchndl" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="base\exchndl\include" />
+				</Compiler>
+				<Linker>
+					<Add library="bfd" />
+					<Add library="iberty" />
+					<Add directory="base\exchndl\lib" />
+				</Linker>
+			</Target>
+			<Target title="tinyXML">
+				<Option output="base\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add directory="include\tinyxml" />
+				</Compiler>
+				<Linker>
+					<Add option="-r" />
+				</Linker>
+			</Target>
+			<Target title="AutoRevision">
+				<Option output="build_tools\autorevision\autorevision" prefix_auto="0" extension_auto="1" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="txml" />
+					<Add directory="base\tinyxml" />
+				</Linker>
+			</Target>
+			<Target title="ConsoleRunner">
+				<Option output="tools\ConsoleRunner\cb_console_runner" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="tools\ConsoleRunner" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-Os" />
+				</Compiler>
+			</Target>
+			<Target title="Squirrel">
+				<Option output="sdk\scripting\lib\libsquirrel.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fno-inline" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\squirrel" />
+				</Compiler>
+				<Linker>
+					<Add option="-r" />
+				</Linker>
+			</Target>
+			<Target title="Squirrel std lib">
+				<Option output="sdk\scripting\lib\libsqstdlib.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option external_deps="sdk\scripting\lib\libsquirrel.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fno-inline" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqstdlib" />
+				</Compiler>
+				<Linker>
+					<Add option="-r" />
+				</Linker>
+			</Target>
+			<Target title="SqPlus">
+				<Option output="sdk\scripting\lib\libsqplus.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option external_deps="sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fno-inline" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+				</Compiler>
+				<Linker>
+					<Add option="-r" />
+				</Linker>
+			</Target>
+			<Target title="scintilla">
+				<Option output="devel\libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-D__WX__" />
+					<Add option="-DWINVER=0x0400" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-DWXMAKINGDLL_SCI" />
+					<Add directory="sdk\wxscintilla\src\scintilla\include" />
+					<Add directory="sdk\wxscintilla\src\scintilla\src" />
+					<Add directory="sdk\wxscintilla\src\scintilla\lexlib" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="sdk\wxscintilla\include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="gdi32" />
+				</Linker>
+			</Target>
+			<Target title="sdk">
+				<Option output="devel\codeblocks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel" />
+				<Option external_deps="base\tinyxml\libtxml.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-check-associations --multiple-instance -nd" />
+				<Option createStaticLib="1" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DEXPORT_LIB" />
+					<Add option="-DEXPORT_EVENTS" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add option="-DWXMAKINGDLL_SCI" />
+					<Add directory="include" />
+					<Add directory="include\tinyxml" />
+					<Add directory="include\scripting\bindings" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--export-all-symbols" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="shfolder" />
+					<Add library="txml" />
+					<Add library="wxscintilla_cb" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
+					<Add library="gdi32" />
+					<Add directory="devel" />
+					<Add directory="sdk\scripting\lib" />
+					<Add directory="sdk\propgrid" />
+				</Linker>
+				<ExtraCommands>
+					<Add before="build_tools/autorevision/autorevision +wx +int +t . include/autorevision.h" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Target title="src">
+				<Option output="devel\codeblocks.exe" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="devel" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-check-associations --multiple-instance -ns -nd" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="codeblocks" />
+					<Add library="shfolder" />
+					<Add library="kernel32" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="comdlg32" />
+					<Add library="winspool" />
+					<Add library="winmm" />
+					<Add library="comctl32" />
+					<Add library="odbc32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="uuid" />
+					<Add library="rpcrt4" />
+					<Add library="advapi32" />
+					<Add library="wsock32" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="AStyle">
+				<Option output="devel\share\CodeBlocks\plugins\astyle" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="plugins\astyle\astyle" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Compiler depslib">
+				<Option output="plugins\compilergcc\depslib\libdepslib.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DDEPSLIB_WINDOWS" />
+				</Compiler>
+				<Linker>
+					<Add option="-mthreads" />
+				</Linker>
+			</Target>
+			<Target title="Compiler">
+				<Option output="devel\share\CodeBlocks\plugins\compiler" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="plugins\compilergcc\depslib\src" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="depslib" />
+					<Add directory="devel" />
+					<Add directory="plugins\compilergcc\depslib" />
+				</Linker>
+			</Target>
+			<Target title="Debugger">
+				<Option output="devel\share\CodeBlocks\plugins\debugger" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Code-completion">
+				<Option output="devel\share\CodeBlocks\plugins\codecompletion" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Class wizard">
+				<Option output="devel\share\CodeBlocks\plugins\classwizard" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Default MIME handler">
+				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Open files list">
+				<Option output="devel\share\CodeBlocks\plugins\openfileslist" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\codeblocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Scripted wizard">
+				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="To-do">
+				<Option output="devel\share\CodeBlocks\plugins\todo" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Autosave">
+				<Option output="devel\share\CodeBlocks\plugins\autosave" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="XP look &amp; feel">
+				<Option output="devel\share\CodeBlocks\plugins\xpmanifest" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Projects-workspaces importer">
+				<Option output="devel\share\CodeBlocks\plugins\projectsimporter" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Abbreviations">
+				<Option output="devel\share\CodeBlocks\plugins\abbreviations" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+					<Add directory="include\scripting\bindings" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="29" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Scripted wizard;To-do;Autosave;XP look &amp; feel;Projects-workspaces importer;Abbreviations;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;XP look &amp; feel;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DwxDEBUG_LEVEL=0" />
+			<Add directory="D:\DengYC\PortableCB\sdk\wx\include" />
+			<Add directory="D:\DengYC\PortableCB\sdk\wx\contrib\include" />
+			<Add directory="D:\DengYC\PortableCB\sdk\wx\lib\gcc_dll\mswu" />
+			<Add directory="sdk\wxscintilla\include" />
+			<Add directory="include\tinyxml" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#wx)\contrib\include" />
+			<Add directory="$(#wx)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="base\tinyxml" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="base\exchndl\exchndl.c">
+			<Option compilerVar="CC" />
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\include\coff\internal.h">
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\include\demangle.h">
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\include\libcoff.h">
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\include\libiberty.h">
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\intlimpl.c">
+			<Option compilerVar="CC" />
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinystr.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinywxuni.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxml.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxmlerror.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxmlparser.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="build_tools\autorevision\autorevision.cpp">
+			<Option target="AutoRevision" />
+		</Unit>
+		<Unit filename="include\annoyingdialog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\autodetectcompilers.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\backgroundthread.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\base64.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\blockallocated.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbauibook.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbeditor.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbeditorprintout.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbexception.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbfunctor.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbplugin.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbproject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbstatusbar.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbstyledtextctrl.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbthreadedtask.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbthreadpool.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbthreadpool_extras.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbtool.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbworkspace.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compileoptionsbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compiler.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compilercommandgenerator.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compilerfactory.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compileroptions.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\compiletargetbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\configmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\configurationpanel.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\configuretoolsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\confirmreplacedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\crc32.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editarrayfiledlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editarrayorderdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editarraystringdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editkeywordsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editor_hooks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editorbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editorcolourset.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editorconfigurationdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editorlexerloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editormanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editpairdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\editpathdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\edittooldlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\encodingdetector.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\externaldepsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\filefilters.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\filegroupsandmasks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\filemanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\finddlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\findreplacebase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\genericmultilinenotesdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\ibaseloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\ibaseworkspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\id.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\importers_globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\incrementalselectlistdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\infowindow.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\licenses.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\logger.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\loggers.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\logmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\macrosmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\managedthread.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\manager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\menuitemsmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\CharDistribution.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\JpCntx.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsBig5Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsCodingStateMachine.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsEUCJPProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsEUCKRProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsEUCTWProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsError.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsEscCharsetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsGB2312Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsHebrewProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsLatin1Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsMBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsPkgInt.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsSBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsSBCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsSJISProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsUTF8Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nsUniversalDetector.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\nscore.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\prcpucfg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\prmem.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\mozilla_chardet\prtypes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\multiselectdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\newfromtemplatedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\personalitymanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\pipedprocess.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\pluginmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\pluginsconfigurationdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\prep.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\printing_types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectbuildtarget.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectdepsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectfile.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectfileoptionsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectlayoutloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectloader_hooks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectoptionsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projectsfilemasksdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\projecttemplateloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\replacedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\safedelete.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scripting\bindings\sc_base_types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scripting\bindings\sc_plugin.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scripting\bindings\scriptbindings.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqdbgserver.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqrdbg.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdaux.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdblob.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdio.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdmath.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdstring.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\sqstdsystem.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\include\squirrel.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\SqPlusConst.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\SquirrelBindingsUtils.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\SquirrelBindingsUtilsWin32.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\SquirrelObject.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\SquirrelVM.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\sqplus.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqplus\sqplusWin32.h">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="include\scripting\sqstdlib\sqstdblobimpl.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\sqstdlib\sqstdstream.h">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqarray.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqclass.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqclosure.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqcompiler.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqfuncproto.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqfuncstate.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqlexer.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqobject.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqopcodes.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqpcheader.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqstate.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqstring.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqtable.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\squserdata.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\squtils.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scripting\squirrel\sqvm.h">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="include\scriptingmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scriptsecuritywarningdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\scrollingdialog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\sdk.h">
+			<Option compile="1" />
+			<Option weight="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="include\sdk_common.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\sdk_events.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\sdk_precomp.h">
+			<Option compile="1" />
+			<Option weight="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\searchresultslog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\selecttargetdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\settings.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\templatemanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\tinyxml\tinystr.h">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="include\tinyxml\tinywxuni.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\tinyxml\tinyxml.h">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="include\toolsmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\uservarmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\virtualbuildtargetsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\workspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\xtra_res.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="plugins\Abbreviations\abbreviationsconfigpanel.h">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins\abbreviations\abbreviations.cpp">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins\abbreviations\abbreviations.h">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins\abbreviations\abbreviationsconfigpanel.cpp">
+			<Option target="Abbreviations" />
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASEnhancer.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle_main.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle_main.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyleconfigdlg.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyleconfigdlg.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyleplugin.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyleplugin.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\dlgformattersettings.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\dlgformattersettings.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\formattersettings.cpp">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\formattersettings.h">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\resources\configuration.xrc">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\resources\manifest.xml">
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\autosave\autosave.cpp">
+			<Option target="Autosave" />
+		</Unit>
+		<Unit filename="plugins\autosave\autosave.h">
+			<Option target="Autosave" />
+		</Unit>
+		<Unit filename="plugins\autosave\manifest.xml">
+			<Option target="Autosave" />
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizard.cpp">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizard.h">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizarddlg.cpp">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\classwizard\classwizarddlg.h">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\classwizard\resources\manifest.xml">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\classwizard\resources\new_class.xrc">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccdebuginfo.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccdebuginfo.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsdlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsdlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsprjdlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\ccoptionsprjdlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowserbuilderthread.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\classbrowserbuilderthread.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletion.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletion.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\coderefactoring.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\coderefactoring.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\insertclassmethoddlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\insertclassmethoddlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\expression.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\expression.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthread.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthread.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\searchtree.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\searchtree.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\token.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\token.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenizer.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenizer.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\classbrowser.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\insert_class_method.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\manifest.xml">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\project_settings.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\selectincludefile.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\resources\settings.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\selectincludefile.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\selectincludefile.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerBCC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerBCC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerCYGWIN.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerCYGWIN.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMD.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerDMD.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGDC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGDC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUARM.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUARM.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUAVR.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUAVR.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUMSP430.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUMSP430.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUPOWERPC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUPOWERPC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUTRICORE.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUTRICORE.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerICC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerICC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLCC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLCC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLDC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLDC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGW.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGW.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWgenerator.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWgenerator.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC10.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC10.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC8.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC8.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOW.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOWgenerator.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerOWgenerator.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerSDCC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerSDCC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerTcc.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerTcc.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compiler_defs.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compiler_defs.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilererrors.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilererrors.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilergcc.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilergcc.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilermessages.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilermessages.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compileroptionsdlg.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compileroptionsdlg.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\alloc.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\alloc.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\cache.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\cache.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\depslib.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\depslib.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\filent.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\filesys.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\fileunix.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\hash.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\hash.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\headers.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\headers.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\jam.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\lists.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\lists.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\newstr.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\newstr.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\pathsplit.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\pathsys.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\pathunix.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\regexp.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\regexp.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\search.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\search.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\timestamp.c">
+			<Option compilerVar="CC" />
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\depslib\src\timestamp.h">
+			<Option target="Compiler depslib" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\directcommands.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\directcommands.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\makefilegenerator.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\makefilegenerator.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\advanced_compiler_options.xrc">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_menu.xrc">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_options.xrc">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_toolbar.xrc">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\resources\compiler_toolbar_16x16.xrc">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\backtracedlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\backtracedlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\breakpointsdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\breakpointsdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_commands.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_driver.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cdb_driver.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cpuregistersdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\cpuregistersdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\databreakpointdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\databreakpointdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debugger_defs.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debugger_defs.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerdriver.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerdriver.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggergdb.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggergdb.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsprjdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsprjdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerstate.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggerstate.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggertree.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggertree.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\disassemblydlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\disassemblydlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editbreakpointdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editbreakpointdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchesdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\editwatchesdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\examinememorydlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\examinememorydlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_commands.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_driver.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_driver.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_tipwindow.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_tipwindow.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\remotedebugging.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\backtrace.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\breakpoints.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_menu.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_options_dlg.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_project_options_dlg.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar_16x16.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\disassembly.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\edit_watches_dlg.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\memdump.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\threads.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\threadsdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\threadsdlg.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\EmbeddedHtmlPanel.cpp">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\EmbeddedHtmlPanel.h">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\defaultmimehandler.cpp">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\defaultmimehandler.h">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\editmimetypesdlg.cpp">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\editmimetypesdlg.h">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\mimetypesarray.h">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\resources\edit_files_handling.xrc">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\resources\manifest.xml">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\openfileslist\manifest.xml">
+			<Option target="Open files list" />
+		</Unit>
+		<Unit filename="plugins\openfileslist\openfileslistplugin.cpp">
+			<Option target="Open files list" />
+		</Unit>
+		<Unit filename="plugins\openfileslist\openfileslistplugin.h">
+			<Option target="Open files list" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\devcpploader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\devcpploader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc7loader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc7loader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc7workspaceloader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc7workspaceloader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcloader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcloader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcworkspacebase.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcworkspacebase.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcworkspaceloader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvcworkspaceloader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\projectsimporter.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\projectsimporter.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\buildtargetpanel.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\buildtargetpanel.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\compilerpanel.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\compilerpanel.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\filepathpanel.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\filepathpanel.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\genericselectpath.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\genericselectpath.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\genericsinglechoicelist.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\genericsinglechoicelist.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\infopanel.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\infopanel.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\projectpathpanel.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\projectpathpanel.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\c_file\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\common_functions.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\config.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\console\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\d\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\directx\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\dll\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\empty\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\empty_file\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\fltk\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\glfw\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\glut\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\gtk\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\h_file\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\irrlicht\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\manifest.xml">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\matlab_csf\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\qt4\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\sdl\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\sharedlib\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\smartwin\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\staticlib\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\win32gui\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\wxwidgets\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\wxwidgets\wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wiz.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wiz.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wizpage.cpp">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wizpage.h">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\todo\addtododlg.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\addtododlg.h">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\asktypedlg.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\asktypedlg.h">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\resources\add_todo.xrc">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\resources\ask_type.xrc">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\resources\manifest.xml">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\resources\settings.xrc">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todolist.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todolist.h">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todolistview.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todolistview.h">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.cpp">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\todosettingsdlg.h">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\xpmanifest\windowsxplooknfeel.cpp">
+			<Option target="XP look &amp; feel" />
+		</Unit>
+		<Unit filename="plugins\xpmanifest\windowsxplooknfeel.h">
+			<Option target="XP look &amp; feel" />
+		</Unit>
+		<Unit filename="scripts\gdb_types.script">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="scripts\startup.script">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\annoyingdialog.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\autodetectcompilers.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\base64.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\blockallocated.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbauibook.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbeditor.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbeditorprintout.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbexception.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbplugin.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbproject.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbstatusbar.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbstyledtextctrl.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbthreadpool.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbworkspace.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compileoptionsbase.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compiler.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compilercommandgenerator.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compilerfactory.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compileroptions.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compiletargetbase.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\configmanager-revision.cpp">
+			<Option weight="10" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\configmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\configurationpanel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\configuretoolsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\confirmreplacedlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\crc32.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editarrayfiledlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editarrayorderdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editarraystringdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editkeywordsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editor_hooks.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editorbase.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editorcolourset.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editorconfigurationdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editorlexerloader.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editormanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editpairdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\editpathdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\edittooldlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\encodingdetector.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\externaldepsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\filefilters.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\filegroupsandmasks.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\filemanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\finddlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\genericmultilinenotesdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\importers_globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\incrementalselectlistdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\infowindow.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\loggers.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\logmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\macrosmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\managedthread.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\manager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\menuitemsmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\Big5Freq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\CharDistribution.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\EUCKRFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\EUCTWFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\GB2312Freq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\JISFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\JpCntx.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangBulgarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangCyrillicModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangGreekModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangHebrewModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangHungarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\LangThaiModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsBig5Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsCharSetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsEUCJPProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsEUCKRProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsEUCTWProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsEscCharsetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsEscSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsGB2312Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsHebrewProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsLatin1Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsMBCSGroupProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsMBCSSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsSBCSGroupProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsSBCharSetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsSJISProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsUTF8Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\mozilla_chardet\src\nsUniversalDetector.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\multiselectdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\newfromtemplatedlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\personalitymanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\pipedprocess.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\pluginmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\pluginsconfigurationdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\printing_types.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectbuildtarget.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectdepsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectfile.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectfileoptionsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectlayoutloader.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectloader.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectloader_hooks.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectoptionsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projectsfilemasksdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\projecttemplateloader.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\replacedlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\auto_detect_compilers.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\configure_tools.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\confirm_replace.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\confirm_replace_multiple.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_array_order.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_array_string.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_keywords.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_pair.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_path.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\edit_tool.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\editor_configuration.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\editor_manager.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\external_deps.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\find_dialog.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\generic_multi_select.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\generic_multiline_notes.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\global_uservars.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\incremental_select_list.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreCompositor.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreCompositor.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreMaterial.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreMaterial.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_angelscript.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_angelscript.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_batch.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_batch.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cg.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cg.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cpp.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_cpp.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_css.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_css.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_d.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_d.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_diff.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_diff.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_f77.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_f77.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_glsl.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_glsl.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_gm.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_gm.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_hitasm.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_hitasm.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_html.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_html.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_latex.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_latex.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_lua.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_make.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_make.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_masm.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_masm.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_matlab.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_matlab.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_nsis.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_nsis.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_perl.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_perl.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_prg.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_prg.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_properties.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_properties.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_python.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_python.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_rc.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_rc.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_squirrel.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_squirrel.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_xml.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_xml.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\resources\new_from_template.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\plugins_configuration.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\project_deps.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\project_manager_file_types.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\project_options.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\projectfile_options.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\replace_dialog.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\scripting_security_dlg.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\select_target.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\virtualbuildtargetsdlg.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_consts.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_dialog.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_io.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_plugin.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_progress.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_util_dialogs.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_wxtypes.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\scriptbindings.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SqPlus.cpp">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtils.cpp">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtilsWin32.cpp">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelObject.cpp">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelVM.cpp">
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdaux.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdblob.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdio.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdmath.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdrex.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdstream.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdstring.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdsystem.cpp">
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqapi.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqbaselib.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqclass.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqcompiler.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqdebug.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqfuncstate.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqlexer.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqmem.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqobject.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqstate.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqtable.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqvm.cpp">
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scriptingmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scriptsecuritywarningdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scrollingdialog.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\sdk_events.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\searchresultslog.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\selecttargetdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\templatemanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\toolsmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\uservarmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\virtualbuildtargetsdlg.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\workspaceloader.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\include\wx\wxscintilla.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\PlatWX.cpp">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\PlatWX.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\ScintillaWX.cpp">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\ScintillaWX.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\ILexer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Platform.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\SciLexer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexA68k.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAPDL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexASY.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAU3.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAVE.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAbaqus.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAda.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAsm.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexAsn1.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexBaan.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexBash.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexBasic.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexBullant.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCLW.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCOBOL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCPP.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCSS.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCaml.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCmake.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexConf.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCrontab.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexCsound.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexD.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexEScript.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexEiffel.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexErlang.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexFlagship.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexForth.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexFortran.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexGAP.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexGui4Cli.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexHTML.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexHaskell.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexInno.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexKix.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexLisp.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexLout.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexLua.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMMIXAL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMPT.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMSSQL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMagik.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMarkdown.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMatlab.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMetapost.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMySQL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexNimrod.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexNsis.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexOpal.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexOthers.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPB.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPLM.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPOV.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPS.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPascal.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPerl.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPowerPro.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPowerShell.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexProgress.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPython.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexR.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexRebol.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexRuby.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSML.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSQL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexScriptol.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSmalltalk.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSorcus.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSpecman.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexSpice.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTACL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTADS3.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTAL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTCL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTeX.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexTxt2tags.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexVB.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexVHDL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexVerilog.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexYAML.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\Accessor.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\Accessor.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\CharacterSet.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\CharacterSet.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexAccessor.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerBase.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerBase.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerModule.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerModule.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerNoExceptions.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerNoExceptions.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerSimple.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\LexerSimple.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\OptionSet.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\PropSetSimple.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\PropSetSimple.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\StyleContext.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\StyleContext.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\WordList.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\WordList.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\AutoComplete.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\AutoComplete.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CallTip.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CallTip.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Catalogue.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Catalogue.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CellBuffer.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CellBuffer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CharClassify.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CharClassify.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Decoration.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Decoration.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Document.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Document.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Editor.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Editor.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ExternalLexer.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ExternalLexer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\FontQuality.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Indicator.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Indicator.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\KeyMap.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\KeyMap.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LineMarker.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LineMarker.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Partitioning.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PerLine.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PerLine.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PositionCache.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PositionCache.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RunStyles.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RunStyles.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\SVector.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Selection.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Selection.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\SplitVector.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Style.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Style.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\UniConversion.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\UniConversion.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ViewStyle.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\ViewStyle.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\XPM.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\XPM.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\wxscintilla.cpp">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\xtra_res.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="src\app.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\app.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\appglobals.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\appglobals.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\associations.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\associations.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\batchbuild.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\compilersettingsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\compilersettingsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\crashhandler.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\crashhandler.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\dlgabout.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\dlgabout.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\dlgaboutplugin.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\dlgaboutplugin.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\environmentsettingsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\environmentsettingsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\infopane.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\infopane.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\main.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\main.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\notebookstyles.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\notebookstyles.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\prefix.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\prefix.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\printdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\printdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\app_compiler_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\ask_assocs.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\dlg_about.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\dlg_about_plugin.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\env_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\main_menu.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\main_toolbar.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\main_toolbar_16x16.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\manage_assocs.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\print_dialog.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\resources.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\scripting_settings.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\start_here\start_here.html">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\scriptconsole.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\scriptconsole.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\scriptingsettingsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\scriptingsettingsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\splashscreen.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\splashscreen.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\startherepage.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\startherepage.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\switcherdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\switcherdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="tips.txt">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="tools\ConsoleRunner\main.cpp">
+			<Option target="ConsoleRunner" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<resources>
+					<wxScrollingDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" fwddecl="0" i18n="1" name="VirtualBuildTargetsDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" fwddecl="0" i18n="1" name="DataBreakpointDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/ccdebuginfo.cpp" hdr="plugins/codecompletion/ccdebuginfo.h" fwddecl="0" i18n="1" name="CCDebugInfo" language="CPP" />
+					<wxPanel wxs="wxsmith/ScriptConsole.wxs" src="src/scriptconsole.cpp" hdr="src/scriptconsole.h" fwddecl="0" i18n="1" name="ScriptConsole" language="CPP" />
+					<wxPanel wxs="wxsmith/BuildTargetPanel.wxs" src="plugins/scriptedwizard/buildtargetpanel.cpp" hdr="plugins/scriptedwizard/buildtargetpanel.h" fwddecl="0" i18n="1" name="BuildTargetPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/CompilerPanel.wxs" src="plugins/scriptedwizard/compilerpanel.cpp" hdr="plugins/scriptedwizard/compilerpanel.h" fwddecl="0" i18n="1" name="CompilerPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/FilePathPanel.wxs" src="plugins/scriptedwizard/filepathpanel.cpp" hdr="plugins/scriptedwizard/filepathpanel.h" fwddecl="0" i18n="1" name="FilePathPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/GenericSelectPath.wxs" src="plugins/scriptedwizard/genericselectpath.cpp" hdr="plugins/scriptedwizard/genericselectpath.h" fwddecl="0" i18n="1" name="GenericSelectPath" language="CPP" />
+					<wxPanel wxs="wxsmith/GenericSingleChoiceList.wxs" src="plugins/scriptedwizard/genericsinglechoicelist.cpp" hdr="plugins/scriptedwizard/genericsinglechoicelist.h" fwddecl="0" i18n="1" name="GenericSingleChoiceList" language="CPP" />
+					<wxPanel wxs="wxsmith/InfoPanel.wxs" src="plugins/scriptedwizard/infopanel.cpp" hdr="plugins/scriptedwizard/infopanel.h" fwddecl="0" i18n="1" name="InfoPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/ProjectPathPanel.wxs" src="plugins/scriptedwizard/projectpathpanel.cpp" hdr="plugins/scriptedwizard/projectpathpanel.h" fwddecl="0" i18n="1" name="ProjectPathPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/EmbeddedHtmlPanel.wxs" src="plugins/defaultmimehandler/EmbeddedHtmlPanel.cpp" hdr="plugins/defaultmimehandler/EmbeddedHtmlPanel.h" fwddecl="1" i18n="1" name="EmbeddedHtmlPanel" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
