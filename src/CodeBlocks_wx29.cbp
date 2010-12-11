@@ -549,22 +549,22 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DwxDEBUG_LEVEL=0" />
-			<Add directory="D:\DengYC\PortableCB\sdk\wx\include" />
-			<Add directory="D:\DengYC\PortableCB\sdk\wx\contrib\include" />
-			<Add directory="D:\DengYC\PortableCB\sdk\wx\lib\gcc_dll\mswu" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29)\contrib\include" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="sdk\wxscintilla\include" />
 			<Add directory="include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
-			<Add directory="$(#wx)\contrib\include" />
-			<Add directory="$(#wx)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29)\contrib\include" />
+			<Add directory="$(#WX29)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="base\tinyxml" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="base\exchndl\exchndl.c">
 			<Option compilerVar="CC" />
