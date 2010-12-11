@@ -614,15 +614,11 @@ void Tokenizer::ReadParentheses(wxString& str)
                         p = realBuffer;
                     }
 
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    str.Append(m_Buffer[startIndex], writeLen);
-                    #else
-                    str.Append(&m_Buffer[startIndex], writeLen);
-                    #endif
+                    str.Append((const wxChar*)m_Buffer + startIndex, writeLen);
                 }
                 else
                 {
-                    memcpy(p, &m_Buffer[startIndex], writeLen * sizeof(wxChar));
+                    memcpy(p, (const wxChar*)m_Buffer + startIndex, writeLen * sizeof(wxChar));
                     p += writeLen;
                 }
 
@@ -1172,21 +1168,13 @@ void Tokenizer::MacroReplace(wxString& str)
         while (SkipWhiteSpace() || SkipComment())
             ;
         DoGetToken(); // eat (...)
-        #if wxCHECK_VERSION(2, 9, 0)
-        wxString target = it->second[1];
-        #else
-        wxString target = &it->second[1];
-        #endif
+        wxString target = (const wxChar*)it->second + 1;
         if (target != str && ReplaceBufferForReparse(target, false))
             str = DoGetToken();
     }
     else if (it->second[0] == _T('-'))
     {
-        #if wxCHECK_VERSION(2, 9, 0)
-        wxString end(it->second[1]);
-        #else
-        wxString end(&it->second[1]);
-        #endif
+        wxString end((const wxChar*)it->second + 1);
         if (end.IsEmpty())
             return;
 
@@ -1632,11 +1620,7 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
     wxString buffer(target);
     for (size_t i = 0; i < buffer.Len(); ++i)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
-        switch (buffer[i].GetValue())
-        #else
-        switch (buffer.GetChar(i))
-        #endif
+        switch ((wxChar)buffer.GetChar(i))
         {
         case _T('\\'):
         case _T('\r'):
@@ -1663,13 +1647,9 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
     }
 
     // Replacement back
-    #if wxCHECK_VERSION(2, 9, 0)
-    wxChar* p = const_cast<wxChar*>(m_Buffer.wx_str()) + m_TokenIndex - bufferLen;
-    #else
-    wxChar* p = const_cast<wxChar*>(m_Buffer.GetData()) + m_TokenIndex - bufferLen;
-    #endif
+    wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - bufferLen;
     TRACE(_T("ReplacetargetForReparse() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
-    memcpy(p, target.GetData(), bufferLen * sizeof(wxChar));
+    memcpy(p, (const wxChar*)target, bufferLen * sizeof(wxChar));
 
     // Fix token index
     m_TokenIndex -= bufferLen;
@@ -1771,11 +1751,7 @@ bool Tokenizer::GetActualContextForMacro(Token* tk, wxString& actualContext)
         TRACE(_T("GetActualContextForMacro(): The formal args are '%s' and the actual args are '%s'."),
               formalArgs[i].wx_str(), actualArgs[i].wx_str());
 
-        #if wxCHECK_VERSION(2, 9, 0)
-        wxChar* data = const_cast<wxChar*>(actualContext.wx_str());
-        #else
-        wxChar* data = const_cast<wxChar*>(actualContext.GetData());
-        #endif
+        wxChar* data = const_cast<wxChar*>((const wxChar*)actualContext.GetData());
         const wxChar* dataEnd = data + actualContext.Len();
         const wxChar* target = formalArgs[i].GetData();
         const int targetLen = formalArgs[i].Len();

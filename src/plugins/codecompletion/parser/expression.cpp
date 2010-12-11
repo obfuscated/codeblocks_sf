@@ -171,11 +171,7 @@ bool ExpressionNode::IsUnaryNode(ExpressionNodeType type)
 
 bool ExpressionNode::IsBinaryOperator(wxString first, wxString second)
 {
-#if wxCHECK_VERSION(2, 9, 0)
-    switch (first.GetChar(0).GetValue())
-#else
-    switch (first.GetChar(0))
-#endif
+    switch ((wxChar)first.GetChar(0))
     {
     case _T('&'):
     case _T('|'):

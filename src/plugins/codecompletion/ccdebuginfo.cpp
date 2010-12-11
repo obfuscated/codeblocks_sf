@@ -367,11 +367,7 @@ void CCDebugInfo::DisplayTokenInfo()
     txtIsTemp->SetLabel(m_Token->m_IsTemp ? _("Yes") : _("No"));
     txtIsConst->SetLabel(m_Token->m_IsConst ? _("Yes") : _("No"));
     txtNamespace->SetLabel(m_Token->GetNamespace());
-    #if wxCHECK_VERSION(2, 9, 0)
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _("<Global namespace>").wx_str(), m_Token->m_ParentIndex));
-    #else
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _("<Global namespace>"), m_Token->m_ParentIndex));
-    #endif
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : (const wxChar*)_("<Global namespace>"), m_Token->m_ParentIndex));
 
     FillChildren();
     FillAncestors();
@@ -396,11 +392,7 @@ void CCDebugInfo::FillChildren()
     {
         Token* child = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
-        #if wxCHECK_VERSION(2, 9, 0)
         cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
-        #else
-        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : msgInvalidToken.c_str(), *it));
-        #endif
     }
     cmbChildren->SetSelection(0);
 }
@@ -413,11 +405,7 @@ void CCDebugInfo::FillAncestors()
     {
         Token* ancestor = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
-        #if wxCHECK_VERSION(2, 9, 0)
         cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
-        #else
-        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : msgInvalidToken.c_str(), *it));
-        #endif
     }
     cmbAncestors->SetSelection(0);
 }
@@ -430,11 +418,7 @@ void CCDebugInfo::FillDescendants()
     {
         Token* descendant = tokens->at(*it);
         const wxString msgInvalidToken = _("<invalid token>");
-        #if wxCHECK_VERSION(2, 9, 0)
         cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
-        #else
-        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : msgInvalidToken.c_str(), *it));
-        #endif
     }
     cmbDescendants->SetSelection(0);
 }

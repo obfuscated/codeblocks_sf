@@ -2571,11 +2571,7 @@ void ParserThread::ResolveTemplateFormalArgs(const wxString& templateArgs, wxArr
     int n = args.size();
     for (int i = 0; i<n; ++i)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
-        switch (args[i].GetValue())
-        #else
-        switch (args[i])
-        #endif
+        switch ((wxChar)args.GetChar(i))
         {
         case _T(' '):
             container.Add(word);
@@ -2661,13 +2657,9 @@ void ParserThread::ResolveTemplateActualArgs(const wxString& templateArgs, wxArr
     args.RemoveLast();
     wxArrayString container;
     int n = args.size();
-    for (int i = 0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
-        switch (args[i].GetValue())
-        #else
-        switch (args[i])
-        #endif
+        switch ((wxChar)args.GetChar(i))
         {
         case _T(' '):
             container.Add(word);
