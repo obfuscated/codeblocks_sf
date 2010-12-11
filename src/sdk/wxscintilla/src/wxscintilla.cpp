@@ -26,6 +26,10 @@
 #include <wx/image.h>
 #include <wx/file.h>
 
+#if wxCHECK_VERSION(2,9,2)
+#include <wx/stc/stc.h>
+#endif
+
 #ifdef __WXGTK__
     #include <wx/dcbuffer.h>
 #endif
