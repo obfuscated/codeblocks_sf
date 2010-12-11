@@ -26,10 +26,6 @@
 #include <wx/image.h>
 #include <wx/file.h>
 
-#if wxCHECK_VERSION(2,9,2)
-#include <wx/stc/stc.h>
-#endif
-
 #ifdef __WXGTK__
     #include <wx/dcbuffer.h>
 #endif
@@ -5046,8 +5042,8 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 //----------------------------------------------------------------------
 
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,2)
-/*static*/ wxVersionInfo wxStyledTextCtrl::GetLibraryVersionInfo()
+#if wxCHECK_VERSION(2, 9, 2)
+/*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     return wxVersionInfo("Scintilla", 2, 2, 3, "Scintilla 2.23");
 }

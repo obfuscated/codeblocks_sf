@@ -4300,10 +4300,10 @@ public:
 
 #ifndef SWIG
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,2)
-/* C::B end */
+#if wxCHECK_VERSION(2, 9, 2)
     static wxVersionInfo GetLibraryVersionInfo();
 #endif
+/* C::B end */
 
 protected:
     virtual wxString DoGetValue() const { return GetText(); }
