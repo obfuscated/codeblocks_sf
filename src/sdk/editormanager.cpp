@@ -509,6 +509,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         if (fileLdr)
         {
             ed = new cbEditor(m_pNotebook, fileLdr, fname, m_Theme);
+
             if (ed->IsOK())
                 AddEditorBase(ed);
             else
@@ -553,6 +554,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         if (data)
             ed->SetProjectFile(data,true);
     }
+
 
     // we 're done
     s_CanShutdown = true;
@@ -2758,6 +2760,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 {
     if (event.GetSelection() == -1)
         return;
+
+    // inhibit tab tooltips or they interfere with the context menu, if the mouse is over the tab
+    m_pNotebook->AllowToolTips(false);
     // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
     m_pNotebook->SetSelection(event.GetSelection());
     wxMenu* pop = new wxMenu;
@@ -2822,6 +2827,8 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     pop->Enable(idNBTabSaveAll, any_modified );
 
     m_pNotebook->PopupMenu(pop);
+    // allow tab tooltips again
+    m_pNotebook->AllowToolTips();
     delete pop;
 }
 

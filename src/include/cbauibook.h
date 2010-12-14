@@ -9,27 +9,164 @@
 #include <wx/aui/auibook.h>
 #include <wx/dynarray.h>
 
+class wxTipWindow;
+
 WX_DEFINE_ARRAY_PTR(wxAuiTabCtrl*,cbAuiTabCtrlArray);
 
+/** \brief A notebook class
+  * This class is derived from wxAuiNotebook, to enhance its abilities.
+  * It adds the ability to store (and restore) the visible tab-order, because
+  * auinotebook-tabs can be reordered with drag and drop.
+  * Another added feature is the possibility to add tooltips to the tabs belonging
+  * to added panes.
+ */
 class cbAuiNotebook : public wxAuiNotebook
 {
     public:
+        /** \brief cbAuiNotebook constructor
+         *
+         * \param pParent the parent window, usually the app-window
+         * \param id the notebook id
+         * \param pos the position
+         * \param size the size
+         * \param style the notebook style
+         *
+         */
         cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxAUI_NB_DEFAULT_STYLE);
+        /** cbAuiNotebook destructor  */
+        virtual ~cbAuiNotebook();
 
-        // Advances the selection, generation page selection events
+        /** \brief Advances the selection
+         *
+         * In contrast to the base-classes function, it uses the visible tab-order, not the order
+         * of creation and jumps to the first tab, if the last is reached (and vice versa)
+         * \param forward if false direction is backwards
+         */
         void AdvanceSelection(bool forward = true);
+        /** \brief Save layout of the notebook
+         * \return wxString the serialized layout
+         * @remarks Not used at the moment, because it's not (yet) possible to restore the layout,
+         * due to limitations of the base class.
+         *
+         */
         wxString SavePerspective();
-        bool LoadPerspective(const wxString& layout);
+        /** \brief Loads serialized notebook layout
+         * \param layout the serialized layout
+         * \return bool true if successfull
+         * @remarks Not implemented. Don't use it.
+         *
+         */
+        bool LoadPerspective(const wxString& layout){return false;};
+        /** \brief Get the tab position
+         *
+         * Returns the position of the tab as it is visible.
+         * Starts with 0
+         * \param index the index of the tab in order of creation
+         * \return int the visible position
+         *
+         */
         int GetTabPositionFromIndex(int index);
+        /** \brief Set a tab tooltip
+         *
+         * Sets the tooltip for the tab belonging to win.
+         * Starts the dwell timer and the stopwatch if it is not already done.
+         * \param win the pane that belongs to the tab
+         * \param msg the tooltip
+         * \return void
+         * @remarks Uses the name of the wxWindow to store the message
+         *
+         */
+        void SetTabToolTip(wxWindow* win, wxString msg);
+        /** \brief Allow tooltips
+         *
+         * Allows or forbids tooltips.
+         * Cancels already shown tooltips, if allow is false
+         * \param allow if false toltips are not allowed
+         * \return void
+         *
+         */
+        void AllowToolTips(bool allow = true);
 
     protected:
+        /** \brief Handle the navigation key event
+         *
+         * Tries to handle the navigation key-event and use "our" AdvanceSelection().
+         * \param event
+         * \return void
+         * @remarks Works not reliable, due to OS/wxWidgets-limitations
+         *
+         */
 #if wxCHECK_VERSION(2, 9, 0)
         void OnNavigationKeyNotebook(wxNavigationKeyEvent& event);
 #else
         void OnNavigationKey(wxNavigationKeyEvent& event);
 #endif
+        /** \brief Updates the array, that holds the wxTabCtrls
+         *
+         * \return void
+         *
+         */
         void UpdateTabControlsArray();
+        /** \brief Check whether the mouse is over a tab
+         *
+         * \param event unused
+         * \return void
+         *
+         */
+        void OnDwellTimerTrigger(wxTimerEvent& /*event*/);
+        /** \brief Shows tooltip for win
+         *
+         * \param win
+         * \return void
+         *
+         */
+        void ShowToolTip(wxWindow* win);
+        /** \brief Cancels tooltip
+         *
+         * \return void
+         *
+         */
+        void CancelToolTip();
+        /** \brief Holds the wxTabCtrls used by the notebook
+         * @remarks Should be updated with UpdateTabControlsArray(),
+         * before it's used
+         */
         cbAuiTabCtrlArray m_TabCtrls;
+        /** \brief Stopwatch used to determine how long the mouse has not
+         * been moved over a tab.
+         */
+        wxStopWatch m_StopWatch;
+        /** \brief Timer used to check the mouse-position
+         */
+        wxTimer* m_pDwellTimer;
+        /** \brief The actual shown tooltip or nullptr
+         */
+        wxTipWindow* m_pToolTip;
+        /** \brief Position of the mouse, at last dwell timmer event.
+         *
+         * Used to determine whether the mouse was moved or not.
+         */
+        wxPoint m_LastMousePosition;
+        /** \brief Position of tooltip
+         *
+         * Used to determine, whether a tooltiop is already shown at
+         * the actual mouse-position
+         */
+        wxPoint m_LastShownAt;
+        /** \brief Last time the dwell timer triggered an event
+         *
+         * Used to determione how long the mouse has not been moved over a tab .
+         */
+        long m_LastTime;
+        /** \brief If false, tooltips are forbidden
+         *
+         * Needed to not interfere with context-menus etc.
+         */
+        bool m_AllowToolTips;
+
+        /** \brief Holds the id of the dwell timer
+         */
+        static const long idNoteBookTimer;
 
         DECLARE_EVENT_TABLE()
 };

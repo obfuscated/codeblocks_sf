@@ -8,15 +8,27 @@
  */
 
 
-#include "prep.h"
-#include "cbauibook.h"
-//#include <wx/arrimpl.cpp>
+#include "sdk_precomp.h"
 
-//WX_DEFINE_OBJARRAY(cbAuiTabCtrlArray);
+#ifndef CB_PRECOMP
+    #include "prep.h"
+    #include "cbauibook.h"
+    #include "manager.h"
+#endif
 
+#include <wx/tipwin.h>
 
 const int wxAuiBaseTabCtrlId = 5380;
 
+const long cbAuiNotebook::idNoteBookTimer = wxNewId();
+
+static bool PointClose(wxPoint pt1, wxPoint pt2) {
+    if (abs(pt1.x - pt2.x) > 3)
+        return false;
+    if (abs(pt1.y - pt2.y) > 3)
+        return false;
+    return true;
+}
 
 BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 #if wxCHECK_VERSION(2, 9, 0)
@@ -26,13 +38,26 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 #endif
 END_EVENT_TABLE()
 
+
 cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
-        : wxAuiNotebook(pParent, id, pos, size, style)
+        : wxAuiNotebook(pParent, id, pos, size, style),
+          m_pDwellTimer(nullptr),
+          m_pToolTip(nullptr),
+          m_LastMousePosition(wxPoint(-1,-1)),
+          m_LastShownAt(wxPoint(-1,-1)),
+          m_LastTime(0),
+          m_AllowToolTips(true)
 {
     //ctor
 #ifdef __WXGTK__
     m_mgr.SetFlags((m_mgr.GetFlags() | wxAUI_MGR_VENETIAN_BLINDS_HINT) & ~wxAUI_MGR_TRANSPARENT_HINT);
 #endif  // #ifdef __WXGTK__
+}
+
+cbAuiNotebook::~cbAuiNotebook()
+{
+    wxDELETE(m_pToolTip);
+    wxDELETE(m_pDwellTimer);
 }
 
 void cbAuiNotebook::UpdateTabControlsArray()
@@ -56,6 +81,95 @@ void cbAuiNotebook::UpdateTabControlsArray()
             continue;
         }
     }
+}
+
+void cbAuiNotebook::AllowToolTips(bool allow)
+{
+    m_AllowToolTips = allow;
+    if(!m_AllowToolTips)
+        CancelToolTip();
+}
+
+void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
+{
+    if(!m_AllowToolTips ||
+       !wxTheApp->IsActive())
+    {
+        CancelToolTip();
+        return;
+    }
+
+    if (GetPageCount() < 1)
+    {
+        CancelToolTip();
+        wxDELETE(m_pDwellTimer);
+        m_StopWatch.Pause();
+        return;
+    }
+
+    long curTime = m_StopWatch.Time();
+    UpdateTabControlsArray();
+    wxPoint screenPosition = wxGetMousePosition();
+	wxPoint thePoint;
+    wxWindow* win = 0;
+    bool tabHit = false;
+
+    for(size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
+    {
+        thePoint = screenPosition - m_TabCtrls[i]->GetScreenPosition();
+        if(m_TabCtrls[i]->TabHitTest(thePoint.x, thePoint.y, &win))
+        {
+            tabHit = true;
+            if(PointClose(thePoint, m_LastMousePosition))
+            {
+                if(!PointClose(thePoint, m_LastShownAt))
+                {
+                    if(curTime - m_LastTime > 1000)
+                    {
+                        ShowToolTip(win);
+                        m_LastShownAt = thePoint;
+                    }
+                    m_LastMousePosition = thePoint;
+                    return;
+                }
+                return;
+            }
+            CancelToolTip();
+            m_LastMousePosition = thePoint;
+            m_LastShownAt = wxPoint(-1,-1);
+            m_LastTime = curTime;
+        }
+    }
+    if (!tabHit)
+        CancelToolTip();
+}
+
+void cbAuiNotebook::ShowToolTip(wxWindow* win)
+{
+    CancelToolTip();
+    wxString text = win->GetName();
+    if(!text.IsEmpty())
+        m_pToolTip = new wxTipWindow(Manager::Get()->GetAppWindow(),text, 640, &m_pToolTip);
+}
+
+void cbAuiNotebook::CancelToolTip()
+{
+    if(m_pToolTip != nullptr)
+        m_pToolTip->Destroy();
+}
+
+void cbAuiNotebook::SetTabToolTip(wxWindow* win, wxString msg)
+{
+    if(m_pDwellTimer == nullptr)
+    {
+        m_pDwellTimer = new wxTimer(this, idNoteBookTimer);
+        Connect(idNoteBookTimer,wxEVT_TIMER,(wxObjectEventFunction)&cbAuiNotebook::OnDwellTimerTrigger);
+        m_pDwellTimer->Start(100,false);
+        m_StopWatch.Start();
+    }
+    if(win)
+        win->SetName(msg);
+
 }
 
 int cbAuiNotebook::GetTabPositionFromIndex(int index)
@@ -113,8 +227,8 @@ void cbAuiNotebook::AdvanceSelection(bool forward)
     {
         return;
     }
-
     int currentSelection = GetSelection();
+
 
     wxAuiTabCtrl* tabCtrl = 0;
     int idx = -1;
@@ -155,6 +269,7 @@ void cbAuiNotebook::AdvanceSelection(bool forward)
         SetSelection(currentSelection);
     }
 }
+
 
 #if wxCHECK_VERSION(2, 9, 0)
 void cbAuiNotebook::OnNavigationKeyNotebook(wxNavigationKeyEvent& event)

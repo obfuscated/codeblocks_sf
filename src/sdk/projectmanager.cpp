@@ -2329,6 +2329,26 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             // rebuild tree  only if title has changed
             SetProject(project, backupTitle != project->GetTitle());
         }
+        // if project title has changed, update the appropriate tab tooltips
+        wxString newTitle = project->GetTitle();
+        if(backupTitle != newTitle)
+        {
+            cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+            if(nb)
+            {
+                wxString toolTip;
+                for(size_t i = 0; i < nb->GetPageCount(); ++i)
+                {
+                    toolTip = nb->GetPage(i)->GetName();
+                    if(toolTip.EndsWith(_("Project: ") + backupTitle))
+                    {
+                        toolTip.Replace(_("Project: ") + backupTitle,_("Project: ") + newTitle);
+                        nb->SetTabToolTip(nb->GetPage(i), toolTip);
+                    }
+
+                }
+            }
+        }
     }
     else if (event.GetId() == idMenuTreeFileProperties)
     {
