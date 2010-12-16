@@ -871,6 +871,8 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         {
             firstExecute = false;
             Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+            if(!compiler)
+                return false;
             wxString cmd = compiler->GetMasterPath() + _T("\\bin\\") + compiler->GetPrograms().C;
             Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
 
