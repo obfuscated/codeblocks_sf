@@ -841,9 +841,12 @@ void Parser::TerminateAllThreads()
     }
 }
 
-void Parser::AddIncludeDir(const wxString& file)
+void Parser::AddIncludeDir(const wxString& dir)
 {
-    wxString base = file;
+    if (dir.IsEmpty())
+        return;
+
+    wxString base = dir;
     if (base.Last() == wxFILE_SEP_PATH)
         base.RemoveLast();
 
