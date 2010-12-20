@@ -161,7 +161,17 @@ ClassBrowser::~ClassBrowser()
 
 void ClassBrowser::SetParser(Parser* parser)
 {
+    if (m_Parser == parser)
+        return;
+
     m_Parser = parser;
+    if (m_Parser)
+    {
+        m_Parser->ClassBrowserOptions().displayFilter =
+            (BrowserDisplayFilter)XRCCTRL(*this, "cmbView", wxChoice)->GetSelection();
+        m_Parser->WriteOptions();
+    }
+
     UpdateView();
 }
 

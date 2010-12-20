@@ -67,7 +67,7 @@ int idTimerEditorActivated       = wxNewId();
 int idTimerReparseAfterClear     = wxNewId();
 bool s_DebugSmartSense           = false;
 const wxString g_StartHereTitle  = _("Start here");
-const int g_EditorActivatedDelay = 100;
+const int g_EditorActivatedDelay = 200;
 
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
 //    EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
@@ -201,6 +201,9 @@ NativeParser::~NativeParser()
 
 void NativeParser::SetParser(Parser* parser)
 {
+    if (m_Parser == parser)
+        return;
+
     RemoveLastFunctionChildren();
     InitCCSearchVariables();
 
@@ -594,9 +597,6 @@ void NativeParser::RereadParserOptions()
             return;
         }
     }
-
-    if (m_ClassBrowser)
-        m_ClassBrowser->UpdateView();
 }
 
 void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
@@ -3450,7 +3450,6 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
         if (editor->GetFilename() == g_StartHereTitle)
         {
             SetParser(&m_TempParser);
-            UpdateClassBrowser();
             m_LastEditor = nullptr;
         }
         return;
