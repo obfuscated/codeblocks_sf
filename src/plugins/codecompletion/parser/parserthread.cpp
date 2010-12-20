@@ -1267,9 +1267,6 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     {
         newToken->m_FileIdx = m_FileIdx;
         newToken->m_Line    = line;
-        TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"),
-              name.wx_str(), newToken->GetSelf(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
-              newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
     }
     else
     {
@@ -1279,6 +1276,9 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         newToken->m_ImplLineEnd   = implLineEnd;
         m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->GetSelf());
     }
+    TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
+      name.wx_str(), newToken->GetSelf(), newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
+      newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
@@ -1837,7 +1837,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         {
             // probably a ctor/dtor
             std::queue<wxString> q = m_EncounteredTypeNamespaces; // preserve m_EncounteredTypeNamespaces; needed in DoAddToken()
-            localParent = FindTokenFromQueue(q);
+            localParent = FindTokenFromQueue(q, m_LastParent);
 
             TRACE(_T("HandleFunction() : Ctor/Dtor '%s', m_Str='%s', localParent='%s'"),
                 name.wx_str(),
@@ -1847,7 +1847,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         else
         {
             std::queue<wxString> q = m_EncounteredNamespaces; // preserve m_EncounteredNamespaces; needed in DoAddToken()
-            localParent = FindTokenFromQueue(q);
+            localParent = FindTokenFromQueue(q, m_LastParent);
 
             TRACE(_T("HandleFunction() : !(Ctor/Dtor) '%s', m_Str='%s', localParent='%s'"),
                 name.wx_str(),

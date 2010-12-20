@@ -1,4 +1,10 @@
-void test(int i);
-void test(float f, int i);
-void test(int i) {}
-void test(float f, int i){}
+namespace foo
+{
+  class bar
+  {
+   bar();
+   ~bar();
+  };
+  bar::bar() {}
+  bar::~bar() {}
+}
