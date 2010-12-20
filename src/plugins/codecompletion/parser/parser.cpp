@@ -745,7 +745,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
                 break;
                 if (nonempty_token != 0)
                 {
-                    token = new(std::nothrow) Token(wxEmptyString, 0, 0, ++m_TokensTree->m_TokenTicketCount);
+                    token = new Token(wxEmptyString, 0, 0, ++m_TokensTree->m_TokenTicketCount);
                     if (!token)
                     {
                         --m_TokensTree->m_TokenTicketCount;

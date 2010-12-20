@@ -68,7 +68,7 @@
 typedef std::set<wxString> StringSet;
 typedef std::list<wxString> StringList;
 
-class ClassTreeData : public wxTreeItemData
+class ClassTreeData : public BlockAllocated<ClassTreeData, 1000>, public wxTreeItemData
 {
 public:
     ClassTreeData(Token* token) { m_Token = token; }

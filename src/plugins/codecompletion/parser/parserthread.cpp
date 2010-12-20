@@ -1094,7 +1094,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
 
     if (!result && createIfNotExist)
     {
-        result = new(std::nothrow) Token(ns, m_FileIdx, 0, ++m_TokensTree->m_TokenTicketCount);
+        result = new Token(ns, m_FileIdx, 0, ++m_TokensTree->m_TokenTicketCount);
         if (!result)
         {
             --m_TokensTree->m_TokenTicketCount;
@@ -1202,7 +1202,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     {
         Token* finalParent = localParent ? localParent : m_LastParent;
 
-        newToken = new(std::nothrow) Token(newname, m_FileIdx, line, ++m_TokensTree->m_TokenTicketCount);
+        newToken = new Token(newname, m_FileIdx, line, ++m_TokensTree->m_TokenTicketCount);
         if (newToken)
             TRACE(_T("DoAddToken() : Created token='%s', file_idx=%d, line=%d, ticket="), newname.wx_str(),
                   m_FileIdx, line, m_TokensTree->m_TokenTicketCount);

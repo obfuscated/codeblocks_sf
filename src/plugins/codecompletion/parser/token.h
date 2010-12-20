@@ -14,6 +14,7 @@
 #include <wx/stopwatch.h>
 #include <settings.h>
 
+#include <blockallocated.h>
 #include <globals.h>
 #include "searchtree.h"
 #include <deque>
@@ -172,7 +173,7 @@ enum TokenKind
 };
 
 
-class Token
+class Token : public BlockAllocated<Token, 50000>
 {
 friend class TokensTree;
 public:
