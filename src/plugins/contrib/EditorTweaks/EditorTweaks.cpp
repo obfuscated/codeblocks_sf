@@ -208,7 +208,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
 void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 {
     Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: Building menu"));
-    int i=menuBar->FindMenu(_("Edit"));
+    int i=menuBar->FindMenu(_("&Edit"));
     if(i==wxNOT_FOUND)
     {
         Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: edit menu not found"));
@@ -298,6 +298,10 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 
 void EditorTweaks::UpdateUI()
 {
+    if(!m_tweakmenu)
+    {
+    	return;
+    }
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(!ed || !ed->GetControl())
     {
@@ -306,7 +310,7 @@ void EditorTweaks::UpdateUI()
     }
     m_tweakmenuitem->Enable(true);
 
-    wxMenu *submenu=m_tweakmenu; //_("Editor Tweaks") TODO: Retrieve actual menu
+    wxMenu *submenu = m_tweakmenu; //_("Editor Tweaks") TODO: Retrieve actual menu
 
     submenu->Check(id_et_WordWrap,ed->GetControl()->GetWrapMode()>0);
     submenu->Check(id_et_ShowLineNumbers,ed->GetControl()->GetMarginWidth(0)>0);
@@ -414,7 +418,7 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     //TIP: for consistency, add a separator as the first item...
 
     //make sure we have an editor
-    if(type!=mtEditorManager)
+    if(type != mtEditorManager || !m_tweakmenu)
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(!ed || !ed->GetControl())
