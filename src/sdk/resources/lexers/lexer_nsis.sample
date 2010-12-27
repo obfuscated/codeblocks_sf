@@ -1,0 +1,101 @@
+/*
+ * This is a sample comment box
+ */
+
+;-----------------------------------------
+;Sets Default Compression to lzma
+
+    SetCompressor lzma
+
+;-----------------------------------------
+;Use Modern UI
+
+    !include "MUI.nsh"
+
+;-----------------------------------------
+;General
+
+    XPStyle on
+    Name "Example"
+    OutFile "setup.exe"
+    InstallDir $PROGRAMFILES\Example
+    InstallDirRegKey HKLM "Software\Example" ""
+
+;----------------------------------------
+;Variables
+
+  Var STARTMENU_FOLDER
+
+;-----------------------------------------
+;Interface Settings
+
+    !define MUI_ABORTWARNING
+    !define MUI_UNABORTWARNING
+
+;-----------------------------------------
+;Pages
+
+    !insertmacro MUI_PAGE_WELCOME
+    !insertmacro MUI_PAGE_DIRECTORY
+    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
+    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Example"
+    !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Example"
+    !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+    !insertmacro MUI_PAGE_INSTFILES
+    !define MUI_FINISHPAGE_NOREBOOTSUPPORT
+    !insertmacro MUI_PAGE_FINISH
+
+    !insertmacro MUI_UNPAGE_WELCOME
+    !insertmacro MUI_UNPAGE_CONFIRM
+    !insertmacro MUI_UNPAGE_DIRECTORY
+    !insertmacro MUI_UNPAGE_INSTFILES
+    !insertmacro MUI_UNPAGE_FINISH
+
+;-----------------------------------------
+;Languages
+
+    !insertmacro MUI_LANGUAGE "English"
+
+;-----------------------------------------
+;Installer Section
+
+Section "Install"
+
+    WriteRegStr HKLM "Software\Example" "Install_Dir" $INSTDIR
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "DisplayIcon" $INSTDIR\uninstall.exe,0
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "DisplayName" "Example"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "InstallLocation" $INSTDIR
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "NoModify" 1
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "NoRepair" 1
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "UninstallString" $INSTDIR\uninstall.exe
+
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN "Application"
+
+    CreateDirectory $SMPROGRAMS\$STARTMENU_FOLDER
+    CreateShortCut $SMPROGRAMS\$STARTMENU_FOLDER\Uninstall Example.lnk $INSTDIR\uninstall.exe
+
+    !insertmacro MUI_STARTMENU_WRITE_END
+
+    SetOutPath $INSTDIR
+
+    WriteUninstaller "uninstall.exe"
+
+SectionEnd
+
+;-----------------------------------------
+;Uninstaller Section
+
+Section "Uninstall"
+
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example"
+    DeleteRegKey HKLM "Software\Example"
+
+    !insertmacro MUI_STARTMENU_GETFOLDER "Application" $STARTMENU_FOLDER
+
+    RMDir /r $SMPROGRAMS\$STARTMENU_FOLDER
+
+    Delete $INSTDIR\uninstall.exe
+
+    RMDir $INSTDIR
+
+SectionEnd

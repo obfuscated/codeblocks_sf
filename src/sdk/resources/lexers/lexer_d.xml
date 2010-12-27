@@ -3,53 +3,81 @@
 <CodeBlocks_lexer_properties>
 		<Lexer name="D"
 				index="79"
-				filemasks="*.d,*.dmd,*.di">
+				filemasks="*.d,*.dd,*.di">
 				<Style name="Default"
 						index="0"
 						fg="0,0,0"
-						bg="255,255,255"
+						bg="249,249,249"
 						bold="0"
 						italics="0"
 						underlined="0"/>
-				<Style name="Comment (normal)"
-						index="1,2"
-						fg="160,160,160"/>
+				<Style name="Comment"
+						index="1"
+						fg="0,128,0"/>
+				<Style name="Commentline"
+						index="2"
+						fg="0,128,0"/>
+				<Style name="Comment (doc)"
+						index="3"
+						fg="107,107,107"
+						italics="1"/>
 				<Style name="Comment (nested)"
 						index="4"
-						fg="160,160,160"/>
-				<Style name="Comment (documentation)"
-						index="3,15"
-						fg="128,128,255"
-						bold="1"/>
-				<Style name="Comment keyword (documentation)"
-						index="16"
-						fg="0,128,128"/>
-				<Style name="Comment keyword error (documentation)"
-						index="17"
-						fg="128,0,0"/>
+						fg="107,107,107"
+						italics="1"/>
 				<Style name="Number"
 						index="5"
-						fg="240,0,240"/>
-				<Style name="Keyword"
-						index="6,7"
-						fg="0,0,160"
-						bold="1"/>
-				<Style name="User keyword"
-						index="8"
-						fg="0,160,0"
-						bold="1"/>
-				<Style name="Typedef"
-						index="9"
-						fg="0,160,0"/>
-				<Style name="String"
-						index="10,11"
+						fg="0,100,100"/>
+				<Style name="Keyword 1"
+						index="6"
 						fg="0,0,255"/>
+				<Style name="Keyword 2"
+						index="7"
+						fg="42,130,210"
+						bold="1"/>
+				<Style name="Keyword 3"
+						index="8"
+						fg="0,0,255"/>
+				<Style name="Keyword 4"
+						index="9"
+						fg="0,0,255"/>
+				<Style name="String"
+						index="10,11,18"
+						fg="231,34,34"/>
+				<Style name="Rawstring"
+						index="19"
+						fg="219,0,14"/>
 				<Style name="Character"
 						index="12"
-						fg="224,160,0"/>
+						fg="193,135,0"/>
 				<Style name="Operator"
 						index="13"
-						fg="255,0,0"/>
+						fg="83,40,40"/>
+				<Style name="Identifier"
+						index="14"
+						fg="0,0,0"/>
+				<Style name="Commentline (doc)"
+						index="15"
+						fg="107,107,107"
+						italics="1"/>
+				<Style name="Comment keyword (doc)"
+						index="16"
+						fg="0,128,128"
+						italics="1"/>
+				<Style name="Comment keyword error (doc)"
+						index="17"
+						fg="128,0,0"
+						italics="1"
+						bold="1"/>
+				<Style name="Keyword 5"
+						index="20"
+						fg="0,113,240"/>
+				<Style name="Keyword 6"
+						index="21"
+						fg="0,0,102"/>
+				<Style name="Keyword 7"
+						index="22"
+						fg="153,0,112"/>
 				<Style name="Selection"
 						index="-99"
 						bg="192,192,192"/>
@@ -68,35 +96,20 @@
 				<Style name="Matching brace highlight"
 						index="34"
 						fg="255,0,0"
-						bold="1"
-						underlined="1"/>
+						bold="1"/>
 				<Style name="No matching brace highlight"
 						index="35"
 						bg="255,0,0"/>
 				<Keywords>
-						<Language index="0"
-								value="abstract alias align asm assert auto 
-								body bool break byte 
-								case cast catch cdouble cent cfloat char 
-								class const continue creal 
-								dchar debug default delegate delete 
-								deprecated do double 
-								else enum export extern 
-								false final finally float for foreach foreach_reverse function 
-								goto 
-								idouble if ifloat import in inout int interface invariant ireal is 
-								lazy long 
-								macro mixin module 
-								new null out override 
-								package pragma private protected public 
-								real ref return
-								scope short static struct super switch synchronized
-								template this throw true try typedef typeid typeof 
-								ubyte ucent uint ulong union unittest ushort 
-								version void volatile 
-								wchar while with"/>
-						<User index="1"/>
-						<Documentation index="2"
+						<Set index="0" value="void byte bool ubyte short ushort int uint long ulong cent ucent float double real ifloat
+								idouble ireal cfloat cdouble creal char wchar dchar body asm bool true false function delegate"/>
+						<Set index="1" value="public private protected with extern
+								final abstract override const debug version pragma public private deprecated protected volatile
+								class struct interface enum new this null delete invariant super union template
+								is import module alias typedef with cast package typeof typeid classinfo mixin
+								in out const static inout lazy ref extern export auto align scope pure
+								if for foreach while do assert return unittest try catch else throw switch case break continue default finally goto synchronized"/>
+						<Set index="2"
 								value="a addindex addtogroup anchor arg attention
 								author b brief bug c class code date def defgroup deprecated dontinclude
 								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
@@ -119,6 +132,10 @@
                     BoxCommentStart="/* "
                     BoxCommentMid=" * "
                     BoxCommentEnd=" */"
-                    CaseSensitive="1"/>
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,4,15,17,18"
+                    LexerCharacterStyles="12"
+                    LexerStringStyles="10,11,18,19"
+                    LexerPreprocessorStyles=""/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

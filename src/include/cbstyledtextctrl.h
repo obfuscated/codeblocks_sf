@@ -9,6 +9,9 @@
 #include "wx/wxscintilla.h"
 #include <wx/longlong.h>
 
+#include <map>
+#include <set>
+
 class wxContextMenuEvent;
 class wxFocusEvent;
 class wxMouseEvent;
@@ -27,6 +30,11 @@ class cbStyledTextCtrl : public wxScintilla
         bool IsComment(int style);
         void CallTipCancel();
 
+        static std::map<int, std::set<int> > &GetCharacterLexerStyles();
+        static std::map<int, std::set<int> > &GetStringLexerStyles();
+        static std::map<int, std::set<int> > &GetPreprocessorLexerStyles();
+        static std::map<int, std::set<int> > &GetCommentLexerStyles();
+
     private:
         void OnContextMenu(wxContextMenuEvent& event);
         void OnKillFocus(wxFocusEvent& event);
@@ -44,6 +52,8 @@ class cbStyledTextCtrl : public wxScintilla
         int m_bracePosition;
         int m_lastPosition;
         bool m_tabSmartJump;
+
+        static std::map<int, std::set<int> > CharacterLexerStyles, StringLexerStyles, PreprocessorLexerStyles, CommentLexerStyles;
 
         DECLARE_EVENT_TABLE()
 };

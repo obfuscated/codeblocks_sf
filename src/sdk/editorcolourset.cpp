@@ -852,3 +852,35 @@ bool EditorColourSet::GetCaseSensitivity(HighlightLanguage lang)
         return false;
     return m_Sets[lang].m_CaseSensitive;
 }
+
+void EditorColourSet::SetStringLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+{
+    if ( lang == HL_NONE )
+        return;
+
+   cbStyledTextCtrl::GetStringLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+}
+
+void EditorColourSet::SetCommentLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+{
+    if ( lang == HL_NONE )
+        return;
+
+   cbStyledTextCtrl::GetCommentLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+}
+
+void EditorColourSet::SetCharacterLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+{
+    if ( lang == HL_NONE )
+        return;
+
+   cbStyledTextCtrl::GetCharacterLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+}
+
+void EditorColourSet::SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> &styles)
+{
+    if ( lang == HL_NONE )
+        return;
+
+   cbStyledTextCtrl::GetPreprocessorLexerStyles()[m_Sets[lang].m_Lexers] = styles;
+}

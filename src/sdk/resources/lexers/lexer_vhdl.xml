@@ -124,9 +124,13 @@
         LineComment="--"
         StreamCommentStart=""
         StreamCommentEnd=""
-        BoxCommentStart=""
-        BoxCommentMid=""
-        BoxCommentEnd=""
-        CaseSensitive="0"/>
+        BoxCommentStart="--"
+        BoxCommentMid="--"
+        BoxCommentEnd="--"
+        CaseSensitive="0"
+        LexerCommentStyles="1,2"
+        LexerCharacterStyles=""
+        LexerStringStyles="4,7"
+        LexerPreprocessorStyles=""/>
   </Lexer>
 </CodeBlocks_lexer_properties>

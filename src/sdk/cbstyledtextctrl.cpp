@@ -22,6 +22,11 @@ static const wxString s_leftBrace(_T("([{'\""));
 static const wxString s_rightBrace(_T(")]}'\""));
 static const int s_indicHighlight(20);
 
+std::map<int, std::set<int> > cbStyledTextCtrl::CharacterLexerStyles;
+std::map<int, std::set<int> > cbStyledTextCtrl::StringLexerStyles;
+std::map<int, std::set<int> > cbStyledTextCtrl::PreprocessorLexerStyles;
+std::map<int, std::set<int> > cbStyledTextCtrl::CommentLexerStyles;
+
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
     EVT_KILL_FOCUS  (cbStyledTextCtrl::OnKillFocus)
@@ -247,61 +252,22 @@ void cbStyledTextCtrl::OnMouseLeftUp(wxMouseEvent& event)
 
 bool cbStyledTextCtrl::IsCharacter(int style)
 {
-    switch (GetLexer())
-    {
-    case wxSCI_LEX_CPP:
-        return style == wxSCI_C_CHARACTER;
-    case wxSCI_LEX_D:
-        return style == wxSCI_D_CHARACTER;
-    default:
-        return false;
-    }
-    return false;
+    return CharacterLexerStyles[GetLexer()].find(style) != CharacterLexerStyles[GetLexer()].end();
 }
 
 bool cbStyledTextCtrl::IsString(int style)
 {
-    switch (GetLexer())
-    {
-    case wxSCI_LEX_CPP:
-        return style == wxSCI_C_STRING;
-    case wxSCI_LEX_D:
-        return style == wxSCI_D_STRING;
-    default:
-        return false;
-    }
-    return false;
+    return StringLexerStyles[GetLexer()].find(style) != StringLexerStyles[GetLexer()].end();
 }
 
 bool cbStyledTextCtrl::IsPreprocessor(int style)
 {
-    if (GetLexer() == wxSCI_LEX_CPP)
-        return  style == wxSCI_C_PREPROCESSOR;
-    return false;
+    return PreprocessorLexerStyles[GetLexer()].find(style) != PreprocessorLexerStyles[GetLexer()].end();
 }
 
 bool cbStyledTextCtrl::IsComment(int style)
 {
-    switch (GetLexer())
-    {
-    case wxSCI_LEX_CPP:
-        return  style == wxSCI_C_COMMENT ||
-                style == wxSCI_C_COMMENTLINE ||
-                style == wxSCI_C_COMMENTDOC ||
-                style == wxSCI_C_COMMENTDOCKEYWORD ||
-                style == wxSCI_C_COMMENTDOCKEYWORDERROR ||
-                style == wxSCI_C_COMMENTLINEDOC;
-    case wxSCI_LEX_D:
-        return  style == wxSCI_D_COMMENT ||
-                style == wxSCI_D_COMMENTLINE ||
-                style == wxSCI_D_COMMENTDOC ||
-                style == wxSCI_D_COMMENTDOCKEYWORD ||
-                style == wxSCI_D_COMMENTDOCKEYWORDERROR ||
-                style == wxSCI_D_COMMENTLINEDOC;
-    default:
-        return false;
-    }
-    return false;
+    return CommentLexerStyles[GetLexer()].find(style) != CommentLexerStyles[GetLexer()].end();
 }
 
 void cbStyledTextCtrl::CallTipCancel()
@@ -394,4 +360,24 @@ void cbStyledTextCtrl::EnableTabSmartJump(bool enable)
     m_tabSmartJump = enable;
     m_bracePosition = GetCurrentPos();
     HighlightRightBrace();
+}
+
+std::map<int, std::set<int> > &cbStyledTextCtrl::GetCharacterLexerStyles()
+{
+    return CharacterLexerStyles;
+}
+
+std::map<int, std::set<int> > &cbStyledTextCtrl::GetStringLexerStyles()
+{
+    return StringLexerStyles;
+}
+
+std::map<int, std::set<int> > &cbStyledTextCtrl::GetPreprocessorLexerStyles()
+{
+    return PreprocessorLexerStyles;
+}
+
+std::map<int, std::set<int> > &cbStyledTextCtrl::GetCommentLexerStyles()
+{
+    return CommentLexerStyles;
 }

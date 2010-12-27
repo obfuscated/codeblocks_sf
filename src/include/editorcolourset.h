@@ -13,6 +13,8 @@
 #include "settings.h"
 #include "globals.h" // HighlightLanguage
 
+#include <set>
+
 // forward decls
 class cbEditor;
 class cbStyledTextCtrl;
@@ -113,6 +115,10 @@ class EditorColourSet
         void SetCommentToken(HighlightLanguage lang, CommentToken token);
         bool GetCaseSensitivity(HighlightLanguage lang);
         void SetCaseSensitivity(HighlightLanguage lang, bool CaseSensitive);
+        void SetStringLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
+        void SetCommentLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
+        void SetCharacterLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
+        void SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
 	protected:
 	private:
 		void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColour* option);
