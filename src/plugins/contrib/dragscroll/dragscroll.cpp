@@ -1829,6 +1829,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
             }
             else  // use listCtrl for x scrolling
             if ( scrolly && pEvtObject->IsKindOf(CLASSINFO(wxListCtrl)))
+            {
                 //NOTE: wxListCtrl->ScrollList(x,y) is not supported under Linux
                 // This is here just in case it gets supported by wxWidgets
                 #if defined(LOGGING)
