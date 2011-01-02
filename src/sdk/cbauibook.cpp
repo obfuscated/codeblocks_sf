@@ -16,6 +16,7 @@
     #include "manager.h"
 #endif
 
+#include <wx/app.h>
 #include <wx/tipwin.h>
 
 const int wxAuiBaseTabCtrlId = 5380;
