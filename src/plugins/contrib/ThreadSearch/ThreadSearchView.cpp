@@ -17,6 +17,7 @@
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "editorcolourset.h"
+    #include "logmanager.h"
 #endif
 
 #include "cbstyledtextctrl.h"

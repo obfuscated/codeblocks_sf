@@ -19,6 +19,7 @@
     #include "editormanager.h"
     #include "pluginmanager.h"
     #include "cbproject.h" // FileTreeData
+    #include "projectmanager.h" // ProjectsArray
     #include <wx/wfstream.h>
 #endif
 
