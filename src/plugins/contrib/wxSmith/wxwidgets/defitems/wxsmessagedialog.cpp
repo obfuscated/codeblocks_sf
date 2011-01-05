@@ -78,7 +78,7 @@ void wxsMessageDialog::OnBuildCreatingCode()
     switch(GetLanguage())
     {
         case wxsCPP:
-            AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/msgdlg.h>"), GetInfo().ClassName, 0);
 
 			#if wxCHECK_VERSION(2, 9, 0)
 			Codef(_T("%C(%W, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str());
