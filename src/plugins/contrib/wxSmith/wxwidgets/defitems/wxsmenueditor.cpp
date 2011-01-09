@@ -765,6 +765,7 @@ void wxsMenuEditor::OnButtonNewClick(wxCommandEvent& event)
     MenuItem* NewItem = new MenuItem;
     NewItem->m_Type = wxsMenuItem::Normal;
     NewItem->m_Label = _("New Menu");
+    NewItem->m_IsMember = true;
     NewItem->m_Enabled = true;
     NewItem->m_Checked = false;
     NewItem->m_Child = 0;

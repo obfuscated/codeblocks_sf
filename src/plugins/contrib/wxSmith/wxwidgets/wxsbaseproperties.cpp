@@ -42,7 +42,7 @@ void wxsBaseProperties::OnEnumProperties(long Flags)
     bool PSFilter  = Root && Source;
 
     if ( Flags & flVariable && VISFilter            ) WXS_SHORT_STRING_P (wxsBaseProperties,m_VarName,        _("Var name"),                                                                      _T("var_name"),      _T(""),true,  Priority1);
-    if ( Flags & flVariable && VISFilter && Pointer ) WXS_BOOL_P         (wxsBaseProperties,m_IsMember,       _(" Is member"),                                                                    _T("var_is_member"), true,         Priority1);
+    if ( Flags & flVariable && VISFilter && Pointer ) WXS_BOOL_P         (wxsBaseProperties,m_IsMember,       _("Is member"),                                                                     _T("var_is_member"), true,         Priority1);
     if ( Flags & flId       && VISFilter            ) WXS_SHORT_STRING_P (wxsBaseProperties,m_IdName,         _("Identifier"),                                                                    _T("identifier"),    _T(""),true,  Priority1);
     if ( Flags & flSubclass && VISFilter            ) WXS_SHORT_STRING_P (wxsBaseProperties,m_Subclass,       _("Class name"),                                                                    _T("subclass"),      _T(""),false, Priority1);
     if ( Flags & flPosition                         ) WXS_POSITION_P     (wxsBaseProperties,m_Position,       _("Default pos"),_("X"),_("Y"),_("Pos in dialog units"),                            _T("pos"),                         Priority2);
