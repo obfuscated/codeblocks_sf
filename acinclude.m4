@@ -258,6 +258,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [false])
 	AM_CONDITIONAL([BUILD_PROFILER], [false])
 	AM_CONDITIONAL([BUILD_REGEX], [false])
+	AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
 	AM_CONDITIONAL([BUILD_EXPORTER], [false])
 	AM_CONDITIONAL([BUILD_SYMTAB], [false])
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [false])
@@ -292,6 +293,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
 	AM_CONDITIONAL([BUILD_PROFILER], [true])
 	AM_CONDITIONAL([BUILD_REGEX], [true])
+	AM_CONDITIONAL([BUILD_REOPENEDITOR], [true])
 	AM_CONDITIONAL([BUILD_EXPORTER], [true])
 	AM_CONDITIONAL([BUILD_SYMTAB], [true])
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [true])
@@ -319,8 +321,8 @@ AC_ARG_WITH(contrib-plugins,
   [                        Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,]
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,headerfixup, ]
   [                        		     help,hexeditor,incsearch,keybinder,libfinder,MouseSap, ]
-  [                        		     NassiShneiderman, profiler,regex,exporter,symtab,ThreadSearch,Valgrind,wxsmith, ]
-  [                        		     wxsmithcontrib,wxsmithaui ],
+  [                        		     NassiShneiderman, profiler,regex,ReopenEditor, exporter,symtab,ThreadSearch,Valgrind, ]
+  [                        		     wxsmith, wxsmithcontrib,wxsmithaui ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
@@ -386,6 +388,9 @@ do
 		;;
 	regex)
 		AM_CONDITIONAL([BUILD_REGEX], [true])
+		;;
+	ReopenEditor)
+		AM_CONDITIONAL([BUILD_REOPENEDITOR], [true])
 		;;
 	exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [true])
@@ -480,6 +485,9 @@ do
 	-regex)
 		AM_CONDITIONAL([BUILD_REGEX], [false])
 		;;
+	-ReopenEditor)
+		AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
+		;;
 	-exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [false])
 		;;
@@ -543,6 +551,7 @@ AC_SUBST(BUILD_LIBFINDER)
 AC_SUBST(BUILD_NASSISHNEIDERMAN)
 AC_SUBST(BUILD_PROFILER)
 AC_SUBST(BUILD_REGEX)
+AC_SUBST(BUILD_REOPENEDITOR)
 AC_SUBST(BUILD_EXPORTER)
 AC_SUBST(BUILD_SYMTAB)
 AC_SUBST(BUILD_THREADSEARCH)

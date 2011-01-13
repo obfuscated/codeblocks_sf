@@ -358,6 +358,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/symtab/Makefile
 	src/plugins/contrib/symtab/resources/Makefile
 	src/plugins/contrib/regex_testbed/Makefile
+	src/plugins/contrib/ReopenEditor/Makefile
 	src/plugins/contrib/ThreadSearch/Makefile
 	src/plugins/contrib/ThreadSearch/resources/Makefile
 	src/plugins/contrib/ThreadSearch/resources/images/Makefile

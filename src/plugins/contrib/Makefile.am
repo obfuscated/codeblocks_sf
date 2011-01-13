@@ -70,6 +70,10 @@ if BUILD_REGEX
 MAYBE_REGEX=regex_testbed
 endif
 
+if BUILD_REOPENEDITOR
+MAYBE_REOPENEDITOR=ReopenEditor
+endif
+
 if BUILD_EXPORTER
 MAYBE_EXPORTER=source_exporter
 endif
@@ -141,6 +145,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
 		$(MAYBE_REGEX) \
+		$(MAYBE_REOPENEDITOR) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_VALGRIND) \
 		$(MAYBE_WXSMITH) \
@@ -174,6 +179,7 @@ DIST_SUBDIRS = AutoVersioning \
 		source_exporter \
 		symtab \
 		regex_testbed \
+		ReopenEditor \
 		ThreadSearch \
 		Valgrind \
 		wxSmith \

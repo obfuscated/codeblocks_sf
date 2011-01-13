@@ -126,6 +126,7 @@ Description: contrib plugins for Code::Blocks IDE
     * Symbol table plugin
     * CB koders
     * MouseSap
+    * Reopen last closed editor(s) via menu or hotkey
     * Cccc
     * CppCheck
     * NassiShneiderman

@@ -28,6 +28,7 @@ usr/lib/codeblocks/plugins/libSymTab.so
 usr/lib/codeblocks/plugins/libThreadSearch.so
 usr/lib/codeblocks/plugins/libValgrind.so
 usr/lib/codeblocks/plugins/libMouseSap.so
+usr/lib/codeblocks/plugins/libReopenEditor.so
 usr/lib/codeblocks/plugins/libwxsmith.so
 usr/lib/codeblocks/plugins/libwxsmithcontribitems.so
 usr/lib/codeblocks/plugins/libwxSmithAui.so
