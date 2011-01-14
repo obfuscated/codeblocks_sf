@@ -190,10 +190,11 @@ function SetupProject(project)
             target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 //        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
-        target.AddLinkLib(_T("OgreMain_d"));
-        target.AddLinkLib(_T("OIS_d"));
         if (PLATFORM == PLATFORM_MSW)
         {
+            target.AddLinkLib(_T("OgreMain_d"));
+            target.AddLinkLib(_T("OIS_d"));
+
             target.AddCompilerOption(_T("-D_DEBUG"));
 //            // windows SDK uses STLport
 //            if (!OgreIsSource)
@@ -202,13 +203,18 @@ function SetupProject(project)
 //                target.AddLinkLib(_T("stlportstlg.5.0"));
 //            }
         }
+        else
+        {
+            target.AddLinkLib(_T("OgreMain"));
+            target.AddLinkLib(_T("OIS"));
+        }
+
         if (OgreIsSource)
             target.AddLibDir(OgrePath + _T("/OgreMain/lib/Debug"));
 
         // enable generation of debugging symbols for target
         DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
-
     // Release
     target = project.GetBuildTarget(Wizard.GetReleaseName());
     if (!IsNull(target))
