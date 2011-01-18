@@ -148,6 +148,7 @@ const wxEventType cbEVT_DEBUGGER_FINISHED = wxNewEventType();
 // logger-related events
 const wxEventType cbEVT_ADD_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_REMOVE_LOG_WINDOW = wxNewEventType();
+const wxEventType cbEVT_HIDE_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_SWITCH_TO_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_SHOW_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_HIDE_LOG_MANAGER = wxNewEventType();

@@ -300,10 +300,15 @@ void ToDoList::OnViewList(wxCommandEvent& event)
     {
         if(event.IsChecked())
         {
-                CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-                Manager::Get()->ProcessEvent(evtShow);
-                CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-                Manager::Get()->ProcessEvent(event);
+            CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+            Manager::Get()->ProcessEvent(evtShow);
+            CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(event);
+        }
+        else
+        {
+            CodeBlocksLogEvent event(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(event);
         }
     }
 }

@@ -596,6 +596,7 @@ void MainFrame::RegisterEvents()
 
     pm->RegisterEventSink(cbEVT_ADD_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnAddLogWindow));
     pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
+    pm->RegisterEventSink(cbEVT_HIDE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogWindow));
     pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
     pm->RegisterEventSink(cbEVT_SHOW_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnShowLogManager));
     pm->RegisterEventSink(cbEVT_HIDE_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogManager));
@@ -4410,8 +4411,12 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 
 void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
 {
-    m_LayoutManager.DetachPane(event.pWindow);
-    DoUpdateLayout();
+    wxAuiPaneInfo info = m_LayoutManager.GetPane(event.pWindow);
+    if(info.IsOk())
+    {
+        m_LayoutManager.DetachPane(event.pWindow);
+        DoUpdateLayout();
+    }
 }
 
 void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
@@ -4481,6 +4486,14 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
         m_pInfoPane->RemoveNonLogger(event.window);
     else
         m_pInfoPane->DeleteLogger(event.logger);
+}
+
+void MainFrame::OnHideLogWindow(CodeBlocksLogEvent& event)
+{
+    if (event.window)
+        m_pInfoPane->HideNonLogger(event.window);
+    else if (event.logger)
+        m_pInfoPane->Hide(event.logger);
 }
 
 void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
