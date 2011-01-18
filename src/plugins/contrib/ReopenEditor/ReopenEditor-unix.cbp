@@ -43,14 +43,33 @@
 		</VirtualTargets>
 		<Unit filename="ReopenEditor.cpp" />
 		<Unit filename="ReopenEditor.h" />
+		<Unit filename="ReopenEditorConfDLg.cpp" />
+		<Unit filename="ReopenEditorConfDLg.h" />
+		<Unit filename="ReopenEditorListView.cpp" />
+		<Unit filename="ReopenEditorListView.h" />
 		<Unit filename="manifest.xml">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="wxsmith/ReopenEditorConfDLg.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/ReopenEditorConfDLg.wxs" src="./ReopenEditorConfDLg.cpp" hdr="./ReopenEditorConfDLg.h" xrc="./ReopenEditorConfDLg.xrc" fwddecl="1" i18n="1" name="ReopenEditorConfDLg" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

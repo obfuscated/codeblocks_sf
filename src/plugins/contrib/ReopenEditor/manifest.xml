@@ -3,7 +3,7 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * Copyright: 2010 Jens Lody
+ * Copyright: 2010, 2011 Jens Lody
  *
  * $Revision:$
  * $Id:$
@@ -15,10 +15,10 @@
               release="12" />
   <Plugin name="ReopenEditor">
     <Value title="ReopenEditor" />
-    <Value version="0.1" />
-    <Value description="Reopens a closed editor via hotkey or menu-item." />
+    <Value version="0.5" />
+    <Value description="Reopens a closed editor via hotkey, menu-item or from a list." />
     <Value author="Jens Lody" />
-    <Value authorEmail="debian@jenslody.de" />
+    <Value authorEmail="jens@codeblocks.org" />
     <Value authorWebsite="apt.jenslody.de" />
     <Value thanksTo="The Code::Blocks team" />
     <Value license="GPL" />

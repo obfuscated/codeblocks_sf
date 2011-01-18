@@ -13,27 +13,31 @@
 
 #ifndef CB_PRECOMP
     #include <wx/menu.h>
+    #include <configmanager.h>
     #include <editormanager.h>
+    #include <logmanager.h>
     #include <cbeditor.h>
     #include <cbproject.h>
 #endif
 
 #include "ReopenEditor.h"
-#include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(ReopenEditorArray);
+#include "ReopenEditorConfDLg.h"
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
     PluginRegistrant<ReopenEditor> reg(_T("ReopenEditor"));
-    int idReopenEditor = wxNewId();
+    const int idReopenEditor = wxNewId();
+    const int idReopenEditorView = wxNewId();
 }
 
 
 // events handling
 BEGIN_EVENT_TABLE(ReopenEditor, cbPlugin)
+    EVT_UPDATE_UI(idReopenEditorView, ReopenEditor::OnUpdateUI)
     EVT_MENU(idReopenEditor, ReopenEditor::OnReopenEditor)
+    EVT_MENU(idReopenEditorView, ReopenEditor::OnViewList)
 END_EVENT_TABLE()
 
 // constructor
@@ -64,15 +68,57 @@ void ReopenEditor::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<ReopenEditor, CodeBlocksEvent>(this, &ReopenEditor::OnProjectClosed));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<ReopenEditor, CodeBlocksEvent>(this, &ReopenEditor::OnProjectOpened));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<ReopenEditor, CodeBlocksEvent>(this, &ReopenEditor::OnEditorClosed));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<ReopenEditor, CodeBlocksEvent>(this, &ReopenEditor::OnEditorOpened));
+
+    wxArrayString titles;
+    wxArrayInt widths;
+    titles.Add(_("Editorfile"));
+    titles.Add(_("Project"));
+    titles.Add(_("Projectfile"));
+    widths.Add(350);
+    widths.Add(100);
+    widths.Add(350);
+
+    m_pListLog = new ReopenEditorListView(titles, widths);
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+    m_IsManaged = cfg->ReadBool(_T("/reopen_editor/managed"),true);
+
+    ShowList();
 }
 
-void ReopenEditor::OnRelease(bool /*appShutDown*/)
+void ReopenEditor::OnRelease(bool appShutDown)
 {
     // do de-initialization for your plugin
     // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
+    if(Manager::Get()->GetLogManager() && m_pListLog)
+    {
+        if(m_IsManaged)
+        {
+            CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(evt);
+        }
+        else
+        {
+            CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+            evt.pWindow = m_pListLog;
+            Manager::Get()->ProcessEvent(evt);
+        }
+//        m_pListLog->Destroy();
+    }
+    m_pListLog = nullptr;
+}
+
+cbConfigurationPanel* ReopenEditor::GetConfigurationPanel(wxWindow* parent)
+{
+    if ( !IsAttached() )
+        return NULL;
+
+    ReopenEditorConfDLg* cfg = new ReopenEditorConfDLg(parent);
+    return cfg;
 }
 
 void ReopenEditor::BuildMenu(wxMenuBar* menuBar)
@@ -90,12 +136,24 @@ void ReopenEditor::BuildMenu(wxMenuBar* menuBar)
     {
         wxMenu* menu = menuBar->GetMenu(idx);
         wxMenuItemList& items = menu->GetMenuItems();
-        wxMenuItem* itemTmp = new wxMenuItem(   menu,
-                                                idReopenEditor,
-                                                _("&Reopen last closed editor\tCtrl-Shift-T"),
-                                                _("Reopens the last closed editor") );
-
         size_t i = 0;
+        for (i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                break;
+            }
+        }
+        // if not found, just append with seperator
+        if(i == items.GetCount())
+        {
+            menu->AppendCheckItem(idReopenEditorView, _("Closed file list"), _("Toggle displaying the closed file list"));
+        }
+        else
+        {
+            menu->InsertCheckItem(i, idReopenEditorView, _("Closed file list"), _("Toggle displaying the closed file list"));
+        }
+
         for (i = 0; i < items.GetCount(); ++i)
         {
 #if wxCHECK_VERSION(2,8,5)
@@ -114,25 +172,22 @@ void ReopenEditor::BuildMenu(wxMenuBar* menuBar)
         {
             menu->InsertSeparator(i++);
         }
-        menu->Insert(i, itemTmp);
-        menuBar->Enable(idReopenEditor, (m_PrjEditorList.GetCount() > 0));
+        menu->Insert(i, idReopenEditor, _("&Reopen last closed editor\tCtrl-Shift-T"), _("Reopens the last closed editor"));
+        menuBar->Enable(idReopenEditor, (m_pListLog->GetItemsCount() > 0));
     }
 }
 
 void ReopenEditor::OnReopenEditor(wxCommandEvent& event)
 {
-    if(m_PrjEditorList.GetCount() > 0)
+    if(m_pListLog->GetItemsCount() > 0)
     {
-        PrjEditor pe = m_PrjEditorList.Last();
         EditorManager* em = Manager::Get()->GetEditorManager();
-        if(!em->IsOpen(pe.fname))
+        wxString fname = m_pListLog->GetFilename(0);
+        if(!fname.IsEmpty() && !em->IsOpen(fname))
         {
-            cbEditor* ed = em->Open(pe.fname);
+            em->Open(fname);
         }
-        m_PrjEditorList.RemoveAt(m_PrjEditorList.GetCount()-1);
     }
-    wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    menuBar->Enable(idReopenEditor, (m_PrjEditorList.GetCount() > 0));
 }
 
 void ReopenEditor::OnEditorClosed(CodeBlocksEvent& event)
@@ -156,20 +211,48 @@ void ReopenEditor::OnEditorClosed(CodeBlocksEvent& event)
         }
         if(!prj || (prj && !isPrjClosing))
         {
-            PrjEditor pe(prj, eb->GetFilename());
-            for(size_t i = m_PrjEditorList.GetCount(); i > 0; --i)
+            wxArrayString list;
+            list.Add(eb->GetFilename());
+            if(prj)
             {
-                if(m_PrjEditorList[i-1] == pe)
-                {
-                    m_PrjEditorList.RemoveAt(i-1);
-                    break;
-                }
+                list.Add(prj->GetTitle());
+                list.Add(prj->GetFilename());
             }
-            m_PrjEditorList.Add(pe);
+            else
+            {
+                list.Add(_("<none>"));
+                list.Add(_("<none>"));
+            }
+            m_pListLog->Prepend(list);
+            m_pListLog->SetProject(0, prj);
         }
     }
     wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    menuBar->Enable(idReopenEditor, (m_PrjEditorList.GetCount() > 0));
+    menuBar->Enable(idReopenEditor, (m_pListLog->GetItemsCount() > 0));
+    event.Skip();
+}
+
+void ReopenEditor::OnEditorOpened(CodeBlocksEvent& event)
+{
+    if(m_pListLog->GetItemsCount() > 0)
+    {
+        EditorBase* eb = event.GetEditor();
+
+        if(eb && eb->IsBuiltinEditor())
+        {
+            wxString fname = eb->GetFilename();
+            for(size_t i = m_pListLog->GetItemsCount(); i > 0; --i)
+            {
+                if(fname == m_pListLog->GetFilename(i-1))
+                {
+                    m_pListLog->RemoveAt(i-1);
+                    break;
+                }
+            }
+        }
+    }
+    wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    menuBar->Enable(idReopenEditor, (m_pListLog->GetItemsCount() > 0));
     event.Skip();
 }
 
@@ -187,17 +270,91 @@ void ReopenEditor::OnProjectClosed(CodeBlocksEvent& event)
     cbProject* prj = event.GetProject();
     if(prj)
     {
-        PrjEditor pe(prj, wxEmptyString);
         m_ClosedProjects.Add(prj);
-        for(size_t i = m_PrjEditorList.GetCount(); i > 0; --i)
+        for(int i = m_pListLog->GetItemsCount() - 1; i >= 0; --i)
         {
-            if(m_PrjEditorList[i-1] == pe)
+            if(m_pListLog->GetProject(i) == prj)
             {
-                m_PrjEditorList.RemoveAt(i-1);
+                m_pListLog->RemoveAt(i);
             }
         }
     }
     wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    menuBar->Enable(idReopenEditor, (m_PrjEditorList.GetCount() > 0));
+    menuBar->Enable(idReopenEditor, (m_pListLog->GetItemsCount() > 0));
     event.Skip();
+}
+
+void ReopenEditor::OnViewList(wxCommandEvent& event)
+{
+    if(m_IsManaged)
+    {
+        if(event.IsChecked())
+        {
+                CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+                Manager::Get()->ProcessEvent(evtShow);
+                CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+                Manager::Get()->ProcessEvent(event);
+        }
+        else
+        {
+            CodeBlocksLogEvent event(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(event);
+        }
+    }
+    else
+    {
+        CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+        evt.pWindow = m_pListLog;
+        Manager::Get()->ProcessEvent(evt);
+    }
+}
+
+void ReopenEditor::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idReopenEditorView, IsWindowReallyShown(m_pListLog));
+}
+
+void ReopenEditor::SetManaged(bool managed)
+{
+    m_IsManaged = managed;
+}
+
+void ReopenEditor::ShowList()
+{
+    CodeBlocksLogEvent evt1(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+    Manager::Get()->ProcessEvent(evt1);
+
+    CodeBlocksDockEvent evt2(cbEVT_REMOVE_DOCK_WINDOW);
+    evt2.pWindow = m_pListLog;
+    Manager::Get()->ProcessEvent(evt2);
+
+    if(m_IsManaged)
+    {
+        wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
+        wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("undo.png"), wxBITMAP_TYPE_PNG));
+
+        CodeBlocksLogEvent evt1(cbEVT_ADD_LOG_WINDOW, m_pListLog, _("Closed files list"), bmp);
+        Manager::Get()->ProcessEvent(evt1);
+        CodeBlocksLogEvent evt2(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+        Manager::Get()->ProcessEvent(evt2);
+    }
+    else
+    {
+        m_pListLog->Reparent(Manager::Get()->GetAppFrame());
+        m_pListLog->SetSize(wxSize(800,94));
+        m_pListLog->SetInitialSize(wxSize(800,94));
+
+        CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+        evt.name = _T("ReopenEditorListPane");
+        evt.title = _("Closed file list");
+        evt.pWindow = m_pListLog;
+        evt.dockSide = CodeBlocksDockEvent::dsBottom;
+        evt.shown = true;
+        evt.hideable = true;
+        evt.desiredSize.Set(800, 94);
+        evt.floatingSize.Set(800, 94);
+        evt.minimumSize.Set(350, 94);
+        Manager::Get()->ProcessEvent(evt);
+    }
+
 }

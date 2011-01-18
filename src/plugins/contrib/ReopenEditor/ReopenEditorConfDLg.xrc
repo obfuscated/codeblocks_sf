@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxPanel" name="ReopenEditorConfDLg">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="rbReopenDockOrNot">
+					<label>Closed files list should be</label>
+					<content>
+						<item>a dockable window</item>
+						<item>placed in Logs &amp; others</item>
+					</content>
+					<default>-1</default>
+					<style>wxRA_SPECIFY_COLS</style>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
+</resource>
