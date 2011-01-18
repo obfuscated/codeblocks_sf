@@ -140,6 +140,12 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
             m_LastShownAt = wxPoint(-1,-1);
             m_LastTime = curTime;
         }
+        else
+        {
+            if(m_TabCtrls[i]->HasCapture() && !m_TabCtrls[i]->IsDragging())
+                m_TabCtrls[i]->ReleaseMouse();
+        }
+
     }
     if (!tabHit)
         CancelToolTip();
