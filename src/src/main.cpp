@@ -78,16 +78,31 @@ const static wxString gDefaultLayout = _T("Code::Blocks default");
 static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
 static wxString gDefaultMessagePaneLayoutData; // this will keep default layout
 
-int wxID_FILE10 = wxNewId();
+// In <wx/defs.h> wxFILE_ID[X] exists only from 1..9, so add another few here
+// Index starts with "1"
+int wxID_FILE10 = wxNewId(); // Another few for recent files...
 int wxID_FILE11 = wxNewId();
 int wxID_FILE12 = wxNewId();
 int wxID_FILE13 = wxNewId();
 int wxID_FILE14 = wxNewId();
 int wxID_FILE15 = wxNewId();
 int wxID_FILE16 = wxNewId();
-int wxID_FILE17 = wxNewId();
+int wxID_FILE17 = wxNewId(); // Starting here for recent projects...
 int wxID_FILE18 = wxNewId();
 int wxID_FILE19 = wxNewId();
+int wxID_FILE20 = wxNewId();
+int wxID_FILE21 = wxNewId();
+int wxID_FILE22 = wxNewId();
+int wxID_FILE23 = wxNewId();
+int wxID_FILE24 = wxNewId();
+int wxID_FILE25 = wxNewId();
+int wxID_FILE26 = wxNewId();
+int wxID_FILE27 = wxNewId();
+int wxID_FILE28 = wxNewId();
+int wxID_FILE29 = wxNewId();
+int wxID_FILE30 = wxNewId();
+int wxID_FILE31 = wxNewId();
+int wxID_FILE32 = wxNewId();
 
 int idToolNew = XRCID("idToolNew");
 int idFileNew = XRCID("idFileNew");
@@ -319,8 +334,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
     EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
     EVT_MENU(idFileOpenRecentFileClearHistory, MainFrame::OnFileOpenRecentClearHistory)
-    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnFileReopen)
-    EVT_MENU_RANGE(wxID_FILE10, wxID_FILE19, MainFrame::OnFileReopenProject)
+    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE16, MainFrame::OnFileReopen)
+    EVT_MENU_RANGE(wxID_FILE17, wxID_FILE32, MainFrame::OnFileReopenProject)
     EVT_MENU(idFileImportProjectDevCpp,  MainFrame::OnFileImportProjectDevCpp)
     EVT_MENU(idFileImportProjectMSVC,  MainFrame::OnFileImportProjectMSVC)
     EVT_MENU(idFileImportProjectMSVCWksp,  MainFrame::OnFileImportProjectMSVCWksp)
@@ -544,7 +559,7 @@ MainFrame::MainFrame(wxWindow* parent)
     {
         DoCreateStatusBar();
 #if wxUSE_STATUSBAR
-    SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
+    SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"));
 #endif // wxUSE_STATUSBAR
     }
 
@@ -2069,7 +2084,7 @@ void MainFrame::InitializeRecentFilesHistory()
     int pos = mbar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
     {
-        m_pFilesHistory = new wxFileHistory(9, wxID_FILE1);
+        m_pFilesHistory = new wxFileHistory(16, wxID_FILE1);
 
         wxMenu* menu = mbar->GetMenu(pos);
         if (!menu)
@@ -2100,7 +2115,7 @@ void MainFrame::InitializeRecentFilesHistory()
         menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
         if (recentProjects)
         {
-            m_pProjectsHistory = new wxFileHistory(9, wxID_FILE10);
+            m_pProjectsHistory = new wxFileHistory(16, wxID_FILE17);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
@@ -2113,7 +2128,7 @@ void MainFrame::InitializeRecentFilesHistory()
                 recentProjects->InsertSeparator(0);
                 for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
                 {
-                    recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE10 + i,
+                    recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE17 + i,
                         wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
                 }
             }
@@ -2229,7 +2244,7 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
             recentProjects->InsertSeparator(0);
             for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
             {
-                recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE10 + i,
+                recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE17 + i,
                     wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
             }
         }
@@ -2589,7 +2604,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
-    size_t id = event.GetId() - wxID_FILE10;
+    size_t id = event.GetId() - wxID_FILE17;
     wxString fname = m_pProjectsHistory->GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
