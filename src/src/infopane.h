@@ -76,6 +76,11 @@ public:
     void HideNonLogger(wxWindow* p);
 
     int GetPageIndexByWindow(wxWindow* win);
+    int GetCurrentPage(bool &is_logger);
+
+    Logger* GetLogger(int index);
+    wxWindow* GetWindow(int index);
+
     void UpdateEffectiveTabOrder(); // refreshes the tab effective order, needed, because tabs might have moved with drag and drop
     void LoadTabOrder(wxString layout);
     wxString SaveTabOrder();

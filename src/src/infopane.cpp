@@ -197,6 +197,27 @@ int InfoPane::GetPageIndexByWindow(wxWindow* win)
     return -1;
 }
 
+int InfoPane::GetCurrentPage(bool &is_logger)
+{
+    int i = GetPageIndexByWindow(GetPage(GetSelection()));
+    is_logger = page.Item(i)->islogger;
+    return (is_logger?i:-1);
+}
+
+Logger* InfoPane::GetLogger(int index)
+{
+    if (index < 0 || (size_t)index > page.GetCount())
+        return NULL;
+    return page.Item(index)->islogger ? page.Item(index)->logger : NULL;
+}
+
+wxWindow* InfoPane::GetWindow(int index)
+{
+    if (index < 0 || (size_t)index > page.GetCount())
+        return NULL;
+    return !page.Item(index)->islogger ? page.Item(index)->window : NULL;
+}
+
 void InfoPane::Show(size_t i)
 {
     if(page.Item(i)->window == 0)

@@ -59,7 +59,7 @@ ToDoList::ToDoList() :
     m_StandAlone(true)
 {
     //ctor
-    if(!Manager::LoadResource(_T("todo.zip")))
+    if (!Manager::LoadResource(_T("todo.zip")))
     {
         NotifyMissingFile(_T("todo.zip"));
     }
@@ -92,7 +92,7 @@ void ToDoList::OnAttach()
     bool standalone = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("stand_alone"), true);
     m_StandAlone = standalone;
 
-    if(!standalone)
+    if (!standalone)
     {
         LogManager* msgMan = Manager::Get()->GetLogManager();
         m_ListPageIndex = msgMan->SetLog(m_pListLog);
@@ -136,7 +136,7 @@ void ToDoList::OnAttach()
 
 void ToDoList::OnRelease(bool appShutDown)
 {
-    if(m_StandAlone)
+    if (m_StandAlone)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pListLog->GetWindow();
@@ -223,7 +223,7 @@ void ToDoList::LoadUsers()
 
     Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &m_Users);
 
-    if(m_Users.GetCount() == 0)
+    if (m_Users.GetCount() == 0)
         m_Users.Add(wxGetUserId());
 
     SaveUsers();
@@ -240,7 +240,7 @@ void ToDoList::LoadTypes()
 
     Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("types"), &m_Types);
 
-    if(m_Types.GetCount() == 0)
+    if (m_Types.GetCount() == 0)
     {
         m_Types.Add(_T("TODO"));
         m_Types.Add(_T("@todo"));
@@ -290,7 +290,7 @@ void ToDoList::OnUpdateAdd(wxUpdateUIEvent& event)
 
 void ToDoList::OnViewList(wxCommandEvent& event)
 {
-    if(m_StandAlone)
+    if (m_StandAlone)
     {
         CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
         evt.pWindow = m_pListLog->GetWindow();
@@ -298,7 +298,7 @@ void ToDoList::OnViewList(wxCommandEvent& event)
     }
     else
     {
-        if(event.IsChecked())
+        if (event.IsChecked())
         {
             CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
             Manager::Get()->ProcessEvent(evtShow);
@@ -343,7 +343,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         // is somewhere in the middle of a line of code; this would result
         // in everything after the insertion point to turn into comments
         // let's double check this with the user
-        if(idx != control->GetLineEndPosition(line))
+        if (idx != control->GetLineEndPosition(line))
         {
             // let's ask the user, and present as options
             // keep cpp style at current position, switch to c style, add the todo at the end (keeping cpp style)
@@ -484,7 +484,7 @@ void ToDoList::OnReparseCurrent(CodeBlocksEvent& event)
     bool forced = (event.GetEventType() == cbEVT_EDITOR_OPEN || event.GetEventType() == cbEVT_EDITOR_SAVE);
     if (m_InitDone && m_AutoRefresh && !(ProjectManager::IsBusy()))
     {
-        if(m_ParsePending)
+        if (m_ParsePending)
         {
             m_ParsePending = false;
             Parse();

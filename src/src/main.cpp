@@ -598,6 +598,7 @@ void MainFrame::RegisterEvents()
     pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
     pm->RegisterEventSink(cbEVT_HIDE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogWindow));
     pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
+    pm->RegisterEventSink(cbEVT_GET_ACTIVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnGetActiveLogWindow));
     pm->RegisterEventSink(cbEVT_SHOW_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnShowLogManager));
     pm->RegisterEventSink(cbEVT_HIDE_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogManager));
     pm->RegisterEventSink(cbEVT_LOCK_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnLockLogManager));
@@ -812,6 +813,7 @@ void MainFrame::PluginsUpdated(cbPlugin* /*plugin*/, int /*status*/)
 void MainFrame::RecreateMenuBar()
 {
     Freeze();
+
     wxMenuBar* m = GetMenuBar();
     SetMenuBar(0); // unhook old menubar
     CreateMenubar(); // create new menubar
@@ -1181,7 +1183,7 @@ void MainFrame::SaveWindowState()
 {
     DoCheckCurrentLayoutForChanges(false);
 
-    // first delete all previos layouts, otherwise they might remain
+    // first delete all previous layouts, otherwise they might remain
     // if the new amount of layouts is less than the previous, because only the first layouts will be overwritten
     wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));
     for (size_t i = 0; i < subs.GetCount(); ++i)
@@ -1424,6 +1426,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
             Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
 }
+
 void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
 {
 #if wxUSE_STATUSBAR
@@ -1434,6 +1437,7 @@ void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
     sbar->AdjustFieldsSize();
 #endif
 }
+
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
     wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
@@ -1662,9 +1666,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     if (prj)
     {
         if (addToHistory)
-        {
             AddToRecentProjectsHistory(prj->GetFilename());
-        }
         return true;
     }
     ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
@@ -3364,15 +3366,18 @@ void MainFrame::OnEditStreamCommentSelected(wxCommandEvent& /*event*/)
         {
             int startPos = stc->GetSelectionStart();
             int endPos   = stc->GetSelectionEnd();
-            if ( startPos == endPos ) { // if nothing selected stream comment current *word* first
+            if ( startPos == endPos )
+            {   // if nothing selected stream comment current *word* first
                 startPos = stc->WordStartPosition(stc->GetCurrentPos(), true);
                 endPos   = stc->WordEndPosition  (stc->GetCurrentPos(), true);
-                if ( startPos == endPos ) { // if nothing selected stream comment current line
+                if ( startPos == endPos )
+                {   // if nothing selected stream comment current *line*
                     startPos = stc->PositionFromLine  (stc->LineFromPosition(startPos));
                     endPos   = stc->GetLineEndPosition(stc->LineFromPosition(startPos));
                 }
             }
-            else {
+            else
+            {
                 /**
                     Fix a glitch: when selecting multiple lines and the caret
                     is at the start of the line after the last line selected,
@@ -4412,7 +4417,7 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
 {
     wxAuiPaneInfo info = m_LayoutManager.GetPane(event.pWindow);
-    if(info.IsOk())
+    if (info.IsOk())
     {
         m_LayoutManager.DetachPane(event.pWindow);
         DoUpdateLayout();
@@ -4502,6 +4507,20 @@ void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
         m_pInfoPane->ShowNonLogger(event.window);
     else if (event.logger)
         m_pInfoPane->Show(event.logger);
+}
+
+void MainFrame::OnGetActiveLogWindow(CodeBlocksLogEvent& event)
+{
+    bool is_logger;
+    int page_index = m_pInfoPane->GetCurrentPage(is_logger);
+
+    event.logger = NULL;
+    event.window = NULL;
+
+    if (is_logger)
+        event.logger = m_pInfoPane->GetLogger(page_index);
+    else
+        event.window = m_pInfoPane->GetWindow(page_index);
 }
 
 void MainFrame::OnShowLogManager(CodeBlocksLogEvent& /*event*/)

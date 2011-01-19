@@ -150,6 +150,7 @@ const wxEventType cbEVT_ADD_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_REMOVE_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_HIDE_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_SWITCH_TO_LOG_WINDOW = wxNewEventType();
+const wxEventType cbEVT_GET_ACTIVE_LOG_WINDOW = wxNewEventType();
 const wxEventType cbEVT_SHOW_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_HIDE_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_LOCK_LOG_MANAGER = wxNewEventType();
