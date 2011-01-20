@@ -58,7 +58,9 @@ CCFileType CCFileTypeOf(const wxString& filename)
         return ccftHeader;
     }
     else if (   ext == _T("cpp")
-             || ext == _T("cxx") )
+             || ext == _T("cxx")
+             || ext == _T("cc")
+             || ext == _T("c++") )
     {
         return ccftCppSource;
     }
