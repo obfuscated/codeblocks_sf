@@ -520,6 +520,15 @@ MainFrame::MainFrame(wxWindow* parent)
     SetIcon(wxIcon(app));
 #endif // __WXMSW__
 
+#if wxUSE_STATUSBAR
+    // even it is possible that the statusbar is not visible at the moment, create the statusbar so the plugins can create their own fields on the it:
+    DoCreateStatusBar();
+    SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
+
+    wxStatusBar *sb = GetStatusBar();
+    if (sb)
+        sb->Show(cfg->ReadBool(_T("/main_frame/statusbar"), true));
+#endif // wxUSE_STATUSBAR
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
     ScanForPlugins();
@@ -539,44 +548,15 @@ MainFrame::MainFrame(wxWindow* parent)
     RegisterScriptFunctions();
     RunStartupScripts();
 
-//    m_StartupDone = true;
-//    DoUpdateLayout();
-
-//    if (Manager::Get()->GetLogManager()->HasErrors())
-//    {
-//        InfoWindow::Display(_("Errors logged!"), _("Some errors have been logged during\n"
-//                                                    "the Code::Blocks startup process.\n\n"
-//                                                    "Please review them in the logs...\n\n"), 8000, 1000);
-//    }
-//    else if (Manager::Get()->GetLogManager()->HasWarnings())
-//    {
-//        InfoWindow::Display(_("Warnings logged!"), _("Some warnings have been logged during\n"
-//                                                    "the Code::Blocks startup process.\n\n"
-//                                                    "Please review them in the logs...\n\n"), 8000, 1000);
-//    }
-
-    if (cfg->ReadBool(_T("/main_frame/statusbar"), true))
-    {
-        DoCreateStatusBar();
-#if wxUSE_STATUSBAR
-    SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"));
-#endif // wxUSE_STATUSBAR
-    }
-
     Manager::Get()->GetLogManager()->DebugLog(_T("Initializing plugins..."));
 }
 
 MainFrame::~MainFrame()
 {
-//    if (m_pBatchBuildDialog)
-//        m_pBatchBuildDialog->Destroy();
-//    m_pBatchBuildDialog = 0;
-
     this->SetAcceleratorTable(wxNullAcceleratorTable);
     delete m_pAccel;
 
     DeInitPrinting();
-    //Manager::Get()->Free();
 }
 
 void MainFrame::RegisterEvents()
@@ -891,11 +871,11 @@ void MainFrame::CreateMenubar()
         }
     }
 
-    tmpidx=mbar->FindMenu(_("&Tools"));
+    tmpidx = mbar->FindMenu(_("&Tools"));
     if (tmpidx!=wxNOT_FOUND)
         tools = mbar->GetMenu(tmpidx);
 
-    tmpidx=mbar->FindMenu(_("P&lugins"));
+    tmpidx = mbar->FindMenu(_("P&lugins"));
     if (tmpidx!=wxNOT_FOUND)
         plugs = mbar->GetMenu(tmpidx);
 
@@ -909,7 +889,6 @@ void MainFrame::CreateMenubar()
     // core modules: create menus
     Manager::Get()->GetProjectManager()->CreateMenu(mbar);
     Manager::Get()->GetEditorManager()->CreateMenu(mbar);
-//    Manager::Get()->GetLogManager()->CreateMenu(mbar);
 
     // ask all plugins to rebuild their menus
     PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -975,7 +954,6 @@ void MainFrame::CreateToolbars()
     if (m_pToolbar)
     {
         SetToolBar(0L);
-//        delete m_pToolbar;
         m_pToolbar = 0L;
     }
 
@@ -1106,12 +1084,6 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::AddPluginInSettingsMenu(cbPlugin* /*plugin*/)
 {
-//    if (!plugin)
-//        return;
-//    if (!plugin->GetInfo()->hasConfigure)
-//        return;
-//    AddPluginInMenus(m_SettingsMenu, plugin,
-//                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnPluginSettingsMenu);
 }
 
 void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
@@ -4100,14 +4072,8 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 
 void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 {
-    wxStatusBar* sb = GetStatusBar();
-    if (!sb)
-    {
-        DoCreateStatusBar();
-        sb = GetStatusBar();
-        if (!sb)
-            return;
-    }
+    cbStatusBar* sb = (cbStatusBar*)GetStatusBar();
+    if (!sb) return;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     const bool show = !cfg->ReadBool(_T("/main_frame/statusbar"), true);
@@ -4115,7 +4081,7 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 
     DoUpdateStatusBar();
     sb->Show(show);
-
+    if ( show ) SendSizeEvent();
     DoUpdateLayout();
 }
 
