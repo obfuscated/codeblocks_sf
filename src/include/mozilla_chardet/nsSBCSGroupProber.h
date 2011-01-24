@@ -40,7 +40,7 @@
 #define nsSBCSGroupProber_h__
 
 
-#define NUM_OF_SBCS_PROBERS    16
+#define NUM_OF_SBCS_PROBERS    16 // include latin-2 probers jens 2011-01-20
 
 class nsCharSetProber;
 class nsSBCSGroupProber: public nsCharSetProber {
