@@ -8,7 +8,7 @@ It was exported from svn://svn.berlios.de/codeblocks/trunk.
 The only extra thing performed before debianization, was to run bootstrap to
 generate the autotools build configuration.
 
-Copyright © 2004 - 2010 by Yiannis Mandravellos <mandrav@codeblocks.org>
+Copyright © 2004 - 2011 by Yiannis Mandravellos <mandrav@codeblocks.org>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
