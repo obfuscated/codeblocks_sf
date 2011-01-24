@@ -77,6 +77,9 @@ private:
 const static wxString gDefaultLayout = _T("Code::Blocks default");
 static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
 static wxString gDefaultMessagePaneLayoutData; // this will keep default layout
+const static wxString gMinimalLayout = _T("Code::Blocks minimal");
+static wxString gMinimalLayoutData; // this will keep the "hardcoded" default layout
+static wxString gMinimalMessagePaneLayoutData; // this will keep default layout
 
 // In <wx/defs.h> wxFILE_ID[X] exists only from 1..9, so add another few here
 // Index starts with "1"
@@ -455,6 +458,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idStartHerePageLink, MainFrame::OnStartHereLink)
     EVT_MENU(idStartHerePageVarSubst, MainFrame::OnStartHereVarSubst)
 
+    EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
     /// CloseFullScreen event handling
@@ -541,6 +545,21 @@ MainFrame::MainFrame(wxWindow* parent)
     gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
     gDefaultMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
     SaveViewLayout(gDefaultLayout, gDefaultLayoutData, gDefaultMessagePaneLayoutData);
+
+    // generate default minimal layout
+    wxAuiPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
+    for (size_t i = 0; i < panes.GetCount(); ++i)
+    {
+        wxAuiPaneInfo& info = panes[i];
+        if (!(info.name == _T("MainPane")))
+        {
+            info.Hide();
+        }
+    }
+    gMinimalLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
+    gMinimalMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
+    SaveViewLayout(gMinimalLayout, gMinimalLayoutData, gMinimalMessagePaneLayoutData);
+
     LoadWindowState();
 
     ShowHideStartPage();
@@ -1226,7 +1245,8 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     if (layout.IsEmpty())
     {
         layout = m_LayoutViews[gDefaultLayout];
-        DoSelectLayout(gDefaultLayout);
+        SaveViewLayout(name, layout, layoutMP, false);
+        DoSelectLayout(name);
     }
     else
         DoSelectLayout(name);
@@ -1237,6 +1257,7 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     DoFixToolbarsLayout();
     DoUpdateLayout();
 
+    m_PreviousLayoutName = m_LastLayoutName;
     m_LastLayoutName = name;
     m_LastLayoutData = layout;
     m_LastMessagePaneLayoutData = layoutMP;
@@ -3648,6 +3669,22 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& /*event*/)
         return;
     }
 
+    if (m_LastLayoutName == gMinimalLayout)
+    {
+        if (cbMessageBox(_("The minimal layout cannot be deleted. It can always be reverted to "
+                        "a predefined state though.\nDo you want to revert it now?"),
+                        _("Confirmation"),
+                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+        {
+            wxString tempLayout = m_PreviousLayoutName;
+            m_LayoutViews[gMinimalLayout] = gMinimalLayoutData;
+            m_LayoutMessagePane[gMinimalLayout] = gMinimalMessagePaneLayoutData;
+            LoadViewLayout(gMinimalLayout);
+            m_PreviousLayoutName = tempLayout;
+        }
+        return;
+    }
+
     if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the perspective '%s'?"), m_LastLayoutName.c_str()),
                     _("Confirmation"),
                     wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
@@ -3680,6 +3717,22 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& /*event*/)
         // finally, revert to the default layout
         m_LastLayoutName = gDefaultLayout; // do not ask to save old layout ;)
         LoadViewLayout(gDefaultLayout);
+    }
+}
+
+void MainFrame::OnNotebookDoubleClick(CodeBlocksEvent& /*event*/)
+{
+    if(m_LastLayoutName == gMinimalLayout)
+    {
+        LoadViewLayout(m_PreviousLayoutName.IsEmpty()?Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/environment/view/layout_to_toggle"),gDefaultLayout):m_PreviousLayoutName);
+    }
+    else
+    {
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+        if(cfg->ReadBool(_T("/environment/view/dbl_clk_maximize"), true))
+        {
+            LoadViewLayout(gMinimalLayout);
+        }
     }
 }
 

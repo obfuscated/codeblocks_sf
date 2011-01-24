@@ -241,6 +241,7 @@ class MainFrame : public wxFrame
         void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
         void StartupDone();
+        void OnNotebookDoubleClick(CodeBlocksEvent& /*event*/);
     protected:
         void CreateIDE();
         void CreateMenubar();
@@ -335,6 +336,8 @@ class MainFrame : public wxFrame
         wxString m_LastLayoutData;
         wxString m_LastMessagePaneLayoutData;
         bool m_LastLayoutIsTemp;
+
+        wxString m_PreviousLayoutName;
 
         wxWindow* m_pScriptConsole;
 

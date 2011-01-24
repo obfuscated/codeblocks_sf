@@ -155,3 +155,7 @@ const wxEventType cbEVT_SHOW_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_HIDE_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_LOCK_LOG_MANAGER = wxNewEventType();
 const wxEventType cbEVT_UNLOCK_LOG_MANAGER = wxNewEventType();
+
+//cbAUiNotebook related events
+const wxEventType cbEVT_CBAUIBOOK_LEFT_DCLICK = wxNewEventType();
+

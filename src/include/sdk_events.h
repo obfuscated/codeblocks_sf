@@ -49,6 +49,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<C
 		cbPlugin* GetPlugin() const { return m_pPlugin; }
 		void SetPlugin(cbPlugin* plugin){ m_pPlugin = plugin; }
 
+
 		int GetX() const { return m_X; }
 		void SetX(int x) { m_X = x; }
 
@@ -394,5 +395,10 @@ extern EVTIMPORT const wxEventType cbEVT_LOCK_LOG_MANAGER;
 // "unlock" it (used with auto-hiding functionality)
 extern EVTIMPORT const wxEventType cbEVT_UNLOCK_LOG_MANAGER;
 #define EVT_UNLOCK_LOG_MANAGER(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_UNLOCK_LOG_MANAGER, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+
+//cbAUiNotebook related events
+// left doubleclick on a tab
+extern EVTIMPORT const wxEventType cbEVT_CBAUIBOOK_LEFT_DCLICK;
+#define EVT_CBAUIBOOK_LEFT_DCLICK(winid, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_CBAUIBOOK_LEFT_DCLICK, winid, -1, (wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)&fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H

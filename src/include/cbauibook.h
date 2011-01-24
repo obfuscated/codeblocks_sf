@@ -56,7 +56,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * @remarks Not implemented. Don't use it.
          *
          */
-        bool LoadPerspective(const wxString& layout){return false;};
+        bool LoadPerspective(const wxString& layout){return false;}
         /** \brief Get the tab position
          *
          * Returns the position of the tab as it is visible.
@@ -86,7 +86,15 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void AllowToolTips(bool allow = true);
-
+        /** \brief Move page
+         *
+         * Moves the tab containing page to new_idx
+         * \param page The page to move (e.g. cbEditor*)
+         * \param new_idx The index the page should be moved to
+         * \return true if successfull
+         *
+         */
+        bool MovePage(wxWindow* page, size_t new_idx);
     protected:
         /** \brief Handle the navigation key event
          *
@@ -101,12 +109,6 @@ class cbAuiNotebook : public wxAuiNotebook
 #else
         void OnNavigationKey(wxNavigationKeyEvent& event);
 #endif
-        /** \brief Updates the array, that holds the wxTabCtrls
-         *
-         * \return void
-         *
-         */
-        void UpdateTabControlsArray();
         /** \brief Check whether the mouse is over a tab
          *
          * \param event unused
@@ -114,6 +116,22 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void OnDwellTimerTrigger(wxTimerEvent& /*event*/);
+        /** \brief Catch doubleclick-events from wxTabCtrl
+         *
+         * Sends cbEVT_CBAUIBOOK_LEFT_DCLICK, if doubleclick was on a tab,
+         * event-Id is the notebook-Id, event-object is the pointer to the window the
+         * tab belongs to.
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void OnTabCtrlDblClick(wxMouseEvent& event);
+        /** \brief Updates the array, that holds the wxTabCtrls
+         *
+         * \return void
+         *
+         */
+        void UpdateTabControlsArray();
         /** \brief Shows tooltip for win
          *
          * \param win
@@ -155,7 +173,7 @@ class cbAuiNotebook : public wxAuiNotebook
         wxPoint m_LastShownAt;
         /** \brief Last time the dwell timer triggered an event
          *
-         * Used to determione how long the mouse has not been moved over a tab .
+         * Used to determine how long the mouse has not been moved over a tab .
          */
         long m_LastTime;
         /** \brief If false, tooltips are forbidden
@@ -163,7 +181,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * Needed to not interfere with context-menus etc.
          */
         bool m_AllowToolTips;
-
         /** \brief Holds the id of the dwell timer
          */
         static const long idNoteBookTimer;

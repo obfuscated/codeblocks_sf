@@ -256,6 +256,40 @@
 									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<size>0,16</size>
 								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Toggle layouts</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkDblClkMaximizes">
+												<label>Double-Click on editor tab toggles layout</label>
+												<checked>1</checked>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>3</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT10">
+														<label>Layout to toggle with, if no previous layout can be found</label>
+													</object>
+													<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxChoice" name="choLayoutToToggle" />
+													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								</object>
 								<object class="spacer">
 									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<size>0,8</size>

@@ -73,7 +73,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkAutoHideMessages"), EnvironmentSettingsDlg::OnAutoHide)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
     EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
-
+    EVT_CHECKBOX(XRCID("chkDblClkMaximizes"), EnvironmentSettingsDlg::OnDblClickMaximizes)
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -147,6 +147,35 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
 
     XRCCTRL(*this, "chkSaveSelectionChangeInMP", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/save_selection_change_in_mp"), true));
+
+    en = cfg->ReadBool(_T("/environment/view/dbl_clk_maximize"), true);
+     XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->SetValue(en);
+    int idx = Manager::Get()->GetAppFrame()->GetMenuBar()->FindMenu(_("&View"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* menuView = Manager::Get()->GetAppFrame()->GetMenuBar()->GetMenu(idx);
+        int sub_idx = menuView->FindItem(_("Perspectives"));
+        if (sub_idx != wxNOT_FOUND)
+        {
+            wxMenu* menuLayouts = menuView->FindItem(sub_idx)->GetSubMenu();
+            if(menuLayouts)
+            {
+                wxMenuItemList& items = menuLayouts->GetMenuItems();
+                for (size_t i = 0; i < items.GetCount() && ! items[i]->IsSeparator() ; ++i)
+                {
+#if wxCHECK_VERSION(2,8,5)
+                    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Append(items[i]->GetLabelText(items[i]->GetItemLabelText()));
+#else
+                    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Append(items[i]->GetLabelFromText(items[i]->GetLabel()));
+#endif
+                }
+            }
+        }
+    }
+
+    sel = XRCCTRL(*this, "choLayoutToToggle", wxChoice)->FindString( cfg->Read(_T("/environment/view/layout_to_toggle"),cfg->Read(_T("/main_frame/layout/default"))));
+    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->SetSelection(sel != wxNOT_FOUND ? sel : 0);
+    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Enable(en);
 
     bool i18n=cfg->ReadBool(_T("/locale/enable"), false);
         XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
@@ -368,6 +397,12 @@ void EnvironmentSettingsDlg::OnUseIpcCheck(wxCommandEvent& event)
     XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(event.IsChecked());
 }
 
+void EnvironmentSettingsDlg::OnDblClickMaximizes(wxCommandEvent& event)
+{
+    bool en = XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "choLayoutToToggle", wxCheckBox)->Enable(en);
+}
+
 void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
@@ -388,6 +423,7 @@ void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)event.GetSelection());
 }
+
 
 void EnvironmentSettingsDlg::EndModal(int retCode)
 {
@@ -421,6 +457,9 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         mcfg->Write(_T("/save_selection_change_in_mp"),       (bool) XRCCTRL(*this, "chkSaveSelectionChangeInMP", wxCheckBox)->GetValue());
 
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
+
+        cfg->Write(_T("/environment/view/dbl_clk_maximize"),    (bool)XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/view/layout_to_toggle"),    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->GetStringSelection());
 
         cfg->Write(_T("/locale/enable"),                     (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
         const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetStringSelection());
