@@ -2719,13 +2719,16 @@ void EditorManager::OnPageChanging(wxAuiNotebookEvent& event)
 void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
 {
     int sel = event.GetSelection();
+    bool doClose = false;
+    EditorBase* eb = nullptr;
     if (sel != -1)
     {
-        EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
-        if (!QueryClose(eb))
-            event.Veto();
-        else
+        // veto it in any case, so we can handle the page delete or remove ourselves
+        event.Veto();
+        eb = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
+        if (QueryClose(eb))
         {
+            doClose = true;
             if (m_pNotebook->GetPageCount()<=1)
             {
                 CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, 0, 0, eb);
@@ -2753,7 +2756,12 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         }
     }
 
-    event.Skip(); // allow others to process it too
+    if(doClose && eb != nullptr)
+    {
+        Close(eb);
+    }
+    else
+        event.Skip(); // allow others to process it too
 }
 
 void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)

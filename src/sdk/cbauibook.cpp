@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 #else
     EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKey)
 #endif
+    EVT_SIZE(cbAuiNotebook::OnResize)
     EVT_IDLE(cbAuiNotebook::OnIdle)
 END_EVENT_TABLE()
 
@@ -253,6 +254,12 @@ void cbAuiNotebook::OnTabCtrlDblClick(wxMouseEvent& event)
     }
 }
 
+void cbAuiNotebook::OnResize(wxSizeEvent& event)
+{
+    MinimizeFreeSpace();
+    event.Skip();
+}
+
 void cbAuiNotebook::ShowToolTip(wxWindow* win)
 {
     CancelToolTip();
@@ -285,6 +292,64 @@ void cbAuiNotebook::SetTabToolTip(wxWindow* win, wxString msg)
 
 }
 
+void cbAuiNotebook::MinimizeFreeSpace()
+{
+    if(GetPageCount() < 1)
+        return;
+    wxWindow* win = GetPage(GetSelection());
+    if(!win)
+        return;
+    wxAuiTabCtrl* ctrl = nullptr;
+    int ctrl_idx;
+    if (FindTab(win, &ctrl, &ctrl_idx))
+    {
+        if(ctrl)
+        {
+            wxClientDC dc(win);
+            size_t lastTabIdx = ctrl->GetPageCount() - 1;
+            for (size_t i = lastTabIdx ; i >= 0; --i)
+            {
+                if (ctrl->IsTabVisible(ctrl_idx, i, & dc, win))
+                {
+                    while (i > 0 && ctrl->IsTabVisible(lastTabIdx, i-1, & dc, win))
+                        --i;
+                    ctrl->SetTabOffset(i);
+                    win->Refresh();
+                    break;;
+                }
+            }
+        }
+    }
+}
+
+bool cbAuiNotebook::DeletePage(size_t page)
+{
+#ifdef __WXMSW__
+    if(IsStoredFocus(GetPage(page)))
+    {
+        m_pLastFocused = nullptr;
+        m_LastSelected = wxNOT_FOUND;
+    }
+#endif // #ifdef __WXMSW__
+    bool result = wxAuiNotebook::DeletePage(page);
+    MinimizeFreeSpace();
+    return result;
+}
+
+bool cbAuiNotebook::RemovePage(size_t page)
+{
+#ifdef __WXMSW__
+    if(IsStoredFocus(GetPage(page)))
+    {
+        m_pLastFocused = nullptr;
+        m_LastSelected = wxNOT_FOUND;
+    }
+#endif // #ifdef __WXMSW__
+    bool result = wxAuiNotebook::RemovePage(page);
+    MinimizeFreeSpace();
+    return result;
+}
+
 bool cbAuiNotebook::MovePage(wxWindow* page, size_t new_idx)
 {
     UpdateTabControlsArray();
@@ -293,6 +358,7 @@ bool cbAuiNotebook::MovePage(wxWindow* page, size_t new_idx)
     {
         result = m_TabCtrls[0]->MovePage(page, new_idx);
         Refresh();
+        MinimizeFreeSpace();
     }
     return result;
 }

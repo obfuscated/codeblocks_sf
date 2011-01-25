@@ -100,6 +100,36 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void SetDwellTime(long time = 1000){m_DwellTime = time;}
+        /** \brief Minmize free horizontal page
+         *
+         * Moves the active tab to the rightmost place,
+         * to show as many tabs as possible.
+         * \return void
+         *
+         */
+        void MinimizeFreeSpace();
+        /** \brief Delete Page
+         *
+         * Calls the base-class function and after that
+         * MinmizeFreeSpace(), needed to hook into the close-events.
+         * The system generated close event has to be veto'd, and Close()
+         * has to be called manually, so we can handle it ourselves.
+         * \param The index of the tab to be closed
+         * \return true if successfull
+         *
+         */
+        bool DeletePage(size_t page);
+        /** \brief Remove Page
+         *
+         * Calls the base-class function and after that
+         * MinmizeFreeSpace(), needed to hook into the close-events.
+         * The system generated close event has to be veto'd, and Close()
+         * has to be called manually, so we can handle it ourselves.
+         * \param The index of the tab to be closed
+         * \return true if successfull
+         *
+         */
+        bool RemovePage(size_t page);
         /** \brief Move page
          *
          * Moves the tab containing page to new_idx
@@ -156,6 +186,13 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void OnTabCtrlDblClick(wxMouseEvent& event);
+        /** \brief Catch resize-events and call MinimizeFreeSpace()
+         *
+         * \param event unused
+         * \return void
+         *
+         */
+        void OnResize(wxSizeEvent& event);
         /** \brief Updates the array, that holds the wxTabCtrls
          *
          * \return void
