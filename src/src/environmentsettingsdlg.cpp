@@ -206,6 +206,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkCloseOnAll",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_close_on_all"), 0));
     XRCCTRL(*this, "chkListTabs",                 wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_list"), 0));
     XRCCTRL(*this, "chkStackedBasedTabSwitching", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_stacked_based_switching"), 0));
+    XRCCTRL(*this, "txtMousewheelModifier",       wxTextCtrl)->SetValue(cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl")));
+    XRCCTRL(*this, "txtMousewheelModifier",       wxTextCtrl)->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(EnvironmentSettingsDlg::OnMousewheelModifier));
+    bool modToAdvance = cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false);
+    XRCCTRL(*this, "rbNBModToAdvance",            wxRadioButton)->SetValue(modToAdvance);
+    XRCCTRL(*this, "rbNBModToMove",              wxRadioButton)->SetValue(!modToAdvance);
     bool useToolTips = cfg->ReadBool(_T("/environment/tabs_use_tooltips"),true);
     XRCCTRL(*this, "chkNBUseToolTips",            wxCheckBox)->SetValue(useToolTips);
     XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
@@ -408,6 +413,28 @@ void EnvironmentSettingsDlg::OnDblClickMaximizes(wxCommandEvent& event)
     XRCCTRL(*this, "choLayoutToToggle", wxCheckBox)->Enable(en);
 }
 
+void EnvironmentSettingsDlg::OnMousewheelModifier(wxKeyEvent& event)
+{
+    wxString keys;
+
+    if (wxGetKeyState(WXK_SHIFT))
+        keys += keys.IsEmpty()?wxT("Shift"):wxT("+Shift");
+
+    if (wxGetKeyState(WXK_CONTROL))
+        keys += keys.IsEmpty()?wxT("Ctrl"):wxT("+Ctrl");
+
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    if (wxGetKeyState(WXK_COMMAND))
+        keys += keys.IsEmpty()?wxT("XCtrl"):wxT("+XCtrl");
+#endif
+
+    if (wxGetKeyState(WXK_ALT))
+        keys += keys.IsEmpty()?wxT("Alt"):wxT("+Alt");
+
+    if(!keys.IsEmpty())
+        XRCCTRL(*this, "txtMousewheelModifier", wxTextCtrl)->SetValue(keys);
+}
+
 void EnvironmentSettingsDlg::OnUseTabToolTips(wxCommandEvent& event)
 {
     bool en = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
@@ -496,6 +523,10 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
                 Manager::Get()->GetEditorManager()->DeleteNotebookStack();
         }
         cfg->Write(_T("/environment/tabs_stacked_based_switching"),          tab_switcher_mode);
+
+        wxString key = XRCCTRL(*this, "txtMousewheelModifier", wxTextCtrl)->GetValue();
+        cfg->Write(_T("/environment/tabs_mousewheel_modifier"),             key.IsEmpty()?_T("Ctrl"):key);
+        cfg->Write(_T("/environment/tabs_mousewheel_advance"),        (bool) XRCCTRL(*this, "rbNBModToAdvance", wxRadioButton)->GetValue());
 
         bool useToolTips = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
         cfg->Write(_T("/environment/tabs_use_tooltips"),useToolTips);

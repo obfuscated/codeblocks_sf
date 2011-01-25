@@ -49,6 +49,10 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_LastMousePosition(wxPoint(-1,-1)),
           m_LastShownAt(wxPoint(-1,-1)),
           m_LastTime(0),
+#ifdef __WXMSW__
+          m_LastSelected(wxNOT_FOUND),
+          m_pLastFocused(nullptr),
+#endif
           m_AllowToolTips(true),
           m_SetZoomOnIdle(false)
 {
@@ -72,6 +76,26 @@ cbAuiNotebook::~cbAuiNotebook()
 {
     wxDELETE(m_pToolTip);
     wxDELETE(m_pDwellTimer);
+}
+
+bool cbAuiNotebook::CheckKeyModifier(const wxString &keyModifier)
+{
+    bool result = true;
+    // this search must be case-insensitive
+    wxString str = keyModifier;
+    str.MakeUpper();
+
+    if (result && str.Contains(wxT("ALT")))
+        result = wxGetKeyState(WXK_ALT);
+    if (result && str.Contains(wxT("CTRL")))
+        result = wxGetKeyState(WXK_CONTROL);
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    if (result && str.Contains(wxT("XCTRL")))
+        result = wxGetKeyState(WXK_COMMAND);
+#endif
+    if (result && str.Contains(wxT("SHIFT")))
+        result = wxGetKeyState(WXK_SHIFT);
+    return result;
 }
 
 void cbAuiNotebook::UpdateTabControlsArray()
@@ -114,6 +138,15 @@ void cbAuiNotebook::UpdateTabControlsArray()
         {
             m_TabCtrls[i]->Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
             m_TabCtrls[i]->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
+            m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+            m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+#ifdef __WXMSW__
+        // hack needed on wxMSW, because only focused windows get mousewheel-events
+            m_TabCtrls[i]->Disconnect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
+            m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
+            m_TabCtrls[i]->Disconnect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
+            m_TabCtrls[i]->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
+#endif // #ifdef __WXMSW__
         }
     }
 }
@@ -235,8 +268,94 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
     if (!tabHit)
     {
         CancelToolTip();
+#ifdef __WXMSW__
+        RestoreFocus();
+#endif // #ifdef __WXMSW__
     }
 }
+
+#ifdef __WXMSW__
+// hack needed on wxMSW, because only focused windows get mousewheel-events
+void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
+{
+    if(!wxTheApp->IsActive())
+    {
+        return;
+    }
+
+    wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
+    if(tabCtrl)
+    {
+        cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
+        if(nb)
+        {
+            if((nb->m_pToolTip == nullptr) &&
+               (nb->m_pLastFocused == nullptr) &&
+               (nb->m_LastSelected == wxNOT_FOUND))
+            {
+                nb->StoreFocus();
+                tabCtrl->SetFocus();
+            }
+        }
+    }
+}
+
+void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
+{
+    if(!wxTheApp->IsActive())
+    {
+        return;
+    }
+
+    wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
+    if(tabCtrl)
+    {
+        cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
+        if(nb && nb->m_pToolTip == nullptr)
+            nb->RestoreFocus();
+    }
+
+}
+
+bool cbAuiNotebook::IsFocusStored(wxWindow* page)
+{
+    wxWindow* win = m_pLastFocused;
+    while (win)
+    {
+        if(win == page)
+        {
+            return true;
+            break;
+        }
+        win = win->GetParent();
+    }
+    return false;
+}
+
+void cbAuiNotebook::StoreFocus()
+{
+    // save last focused window and last selected tab
+    m_pLastFocused = wxWindow::FindFocus();
+    m_LastSelected = GetSelection();
+}
+
+void cbAuiNotebook::RestoreFocus()
+{
+    // if selected tab has changed, we set the focus on the window it belongs too
+    if((m_LastSelected != wxNOT_FOUND) &&
+       (GetSelection() != m_LastSelected))
+    {
+        wxWindow* win =GetPage(GetSelection());
+        if (win)
+            win->SetFocus();
+    }
+    // otherwise, we restore the former focus
+    else if(m_pLastFocused != nullptr)
+        m_pLastFocused->SetFocus();
+    m_pLastFocused = nullptr;
+    m_LastSelected = wxNOT_FOUND;
+}
+#endif // #ifdef __WXMSW__
 
 void cbAuiNotebook::OnTabCtrlDblClick(wxMouseEvent& event)
 {
@@ -250,6 +369,49 @@ void cbAuiNotebook::OnTabCtrlDblClick(wxMouseEvent& event)
             CodeBlocksEvent theEvent(cbEVT_CBAUIBOOK_LEFT_DCLICK, GetParent()->GetId());
             theEvent.SetEventObject(win);
             GetParent()->GetEventHandler()->ProcessEvent(theEvent);
+        }
+    }
+}
+
+void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
+{
+    wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
+    if(tabCtrl)
+    {
+        cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
+        if(nb)
+        {
+            nb->CancelToolTip();
+            nb->m_LastTime = nb->m_StopWatch.Time();
+            nb->SetSelection(nb->GetPageIndex(tabCtrl->GetWindowFromIdx(tabCtrl->GetActivePage())));
+
+            ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+            bool modkeys = CheckKeyModifier(cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl")));
+            bool modToAdvance = cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false);
+
+            bool advance = (!modToAdvance && !modkeys) || (modToAdvance &&  modkeys);
+
+            if(advance)
+                nb->AdvanceSelection(event.GetWheelRotation() < 0);
+            else
+            {
+                size_t tabOffset = tabCtrl->GetTabOffset();
+                size_t lastTabIdx = tabCtrl->GetPageCount()-1;
+                wxWindow* win = nb->GetPage(nb->GetSelection());
+                wxClientDC dc(win);
+                if (event.GetWheelRotation() > 0)
+                {
+                    if (!tabCtrl->IsTabVisible(lastTabIdx,tabOffset,&dc,win))
+                        tabOffset++;
+                }
+                else
+                {
+                    if (tabOffset > 0)
+                        tabOffset--;
+                }
+                tabCtrl->SetTabOffset(tabOffset);
+                nb->Refresh();
+            }
         }
     }
 }
@@ -325,7 +487,7 @@ void cbAuiNotebook::MinimizeFreeSpace()
 bool cbAuiNotebook::DeletePage(size_t page)
 {
 #ifdef __WXMSW__
-    if(IsStoredFocus(GetPage(page)))
+    if(IsFocusStored(GetPage(page)))
     {
         m_pLastFocused = nullptr;
         m_LastSelected = wxNOT_FOUND;
@@ -339,7 +501,7 @@ bool cbAuiNotebook::DeletePage(size_t page)
 bool cbAuiNotebook::RemovePage(size_t page)
 {
 #ifdef __WXMSW__
-    if(IsStoredFocus(GetPage(page)))
+    if(IsFocusStored(GetPage(page)))
     {
         m_pLastFocused = nullptr;
         m_LastSelected = wxNOT_FOUND;

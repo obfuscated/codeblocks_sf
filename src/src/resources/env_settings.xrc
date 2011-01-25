@@ -475,6 +475,49 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
+										<label>Scroll with mousewheel</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbNBModToAdvance">
+												<label>Modifier needed to advance through the tabs (changes selection)</label>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbNBModToMove">
+												<label>Modifier needed to move the tabs (if some of them are invisible)</label>
+												<selected>1</selected>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT2">
+														<label>Modifier key (default is Cmd on Mac and Ctrl on other platforms):</label>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtMousewheelModifier" />
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<border>4</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
 										<label>Tooltips on tabs</label>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkNBUseToolTips">

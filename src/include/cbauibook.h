@@ -186,6 +186,16 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void OnTabCtrlDblClick(wxMouseEvent& event);
+        /** \brief Catch mousewheel-events from wxTabCtrl
+         *
+         * Sends cbEVT_CBAUIBOOK_MOUSEWHEEL, if doubleclick was on a tab,
+         * event-Id is the notebook-Id, event-object is the pointer to the window the
+         * tab belongs to.
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void OnTabCtrlMouseWheel(wxMouseEvent& event);
         /** \brief Catch resize-events and call MinimizeFreeSpace()
          *
          * \param event unused
@@ -193,6 +203,51 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void OnResize(wxSizeEvent& event);
+#ifdef __WXMSW__
+        // hack needed on wxMSW, because only focused windows get mousewheel-events
+        /** \brief Catch mouseenter-events from wxTabCtrl
+         *
+         * Set focus on wxTabCtrl
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void OnEnterTabCtrl(wxMouseEvent& event);
+        /** \brief Catch mouseleave-events from wxTabCtrl
+         *
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void OnLeaveTabCtrl(wxMouseEvent& event);
+        /** \brief Checks the old focus
+         *
+         * Checks whether the old focused window or one of it's
+         * parents is the same as page.
+         * If they are equal, we have to reset the stored pointer,
+         * because we get a crash otherwise.
+         * \param page The page to check against
+         * \return bool
+         *
+         */
+        bool IsFocusStored(wxWindow* page);
+        /** \brief Save old focus
+         *
+         * Save old focus and tab-selection,
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void StoreFocus();
+        /** \brief Restore old focus
+         *
+         * Restore old focus or set the focus on the activated tab
+         * \param event holds the wxTabCtrl, that sends the event
+         * \return void
+         *
+         */
+        void RestoreFocus();
+#endif // #ifdef __WXMSW__
         /** \brief Updates the array, that holds the wxTabCtrls
          *
          * \return void
@@ -212,6 +267,15 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void CancelToolTip();
+        /** \brief Check for pressed modifier-keys
+         *
+         * Check whether all modifier keys in keyModifier are pressed
+         * or not
+         * \param keyModifier wxSTring containing the modifier(s) to check for
+         * \return true If all modifier-keys are pressed
+         *
+         */
+        bool CheckKeyModifier(const wxString &keyModifier);
         /** \brief Holds the wxTabCtrls used by the notebook
          * @remarks Should be updated with UpdateTabControlsArray(),
          * before it's used
@@ -251,6 +315,20 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         long m_DwellTime;
+#ifdef __WXMSW__
+        // needed for wxMSW-hack, see above
+        /** \brief Last selected tab
+         *
+         * Used to determine whether the tab-selection has changed btween mouseenter
+         * and mouseleave-event.
+         */
+        int m_LastSelected;
+        /** \brief Last focused window
+         *
+         * Used to restore the focus after a mouseleave-event on wxTabCtrl.
+         */
+        wxWindow* m_pLastFocused;
+#endif // #ifdef __WXMSW__
         /** \brief If false, tooltips are temporary forbidden
          *
          * Needed to not interfere with context-menus etc.
