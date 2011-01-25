@@ -53,7 +53,7 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_LastSelected(wxNOT_FOUND),
           m_pLastFocused(nullptr),
 #endif
-          m_AllowToolTips(true),
+          m_AllowToolTips(false),
           m_SetZoomOnIdle(false)
 {
     //ctor
