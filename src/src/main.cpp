@@ -1587,25 +1587,29 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         //
         case ftCodeBlocksWorkspace:
             // verify that it's not the same as the one already open
-            if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
-                DoCloseCurrentWorkspace())
-            {
-                wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
-                ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
-                bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
-                if (!ret)
-                {
-                    ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
-                }
-                else if (addToHistory)
-                {
-                    AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
-                }
-                return ret;
-            }
+            if (filename == Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename())
+                return true;
             else
             {
-                return false;
+                if(DoCloseCurrentWorkspace())
+                {
+                    wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
+                    ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
+                    bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
+                    if (!ret)
+                    {
+                        ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
+                    }
+                    else if (addToHistory)
+                    {
+                        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
+                    }
+                    return ret;
+                }
+                else
+                {
+                    return false;
+                }
             }
             break;
 
