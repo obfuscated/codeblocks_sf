@@ -95,6 +95,15 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         bool MovePage(wxWindow* page, size_t new_idx);
+        /** \brief Set zoomfactor for builtin editors
+         *
+         * Sets the zoomfactor for all visible builtin
+         * editors.
+         * \param zoom zoomfactor to use
+         * \return void
+         *
+         */
+        void SetZoom(int zoom);
     protected:
         /** \brief Handle the navigation key event
          *
@@ -109,6 +118,13 @@ class cbAuiNotebook : public wxAuiNotebook
 #else
         void OnNavigationKey(wxNavigationKeyEvent& event);
 #endif
+        /** \brief OnIdle
+         *
+         * \param event unused
+         * \return void
+         *
+         */
+        void OnIdle(wxIdleEvent& /*event*/);
         /** \brief Check whether the mouse is over a tab
          *
          * \param event unused
@@ -181,6 +197,11 @@ class cbAuiNotebook : public wxAuiNotebook
          * Needed to not interfere with context-menus etc.
          */
         bool m_AllowToolTips;
+        /** \brief If true, zoom for all editors
+         * is set in next OnIdle-call
+         *
+         */
+        bool m_SetZoomOnIdle;
         /** \brief Holds the id of the dwell timer
          */
         static const long idNoteBookTimer;

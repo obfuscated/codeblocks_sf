@@ -757,7 +757,6 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 //    m_pSizer->SetSizeHints(this);
 
     Thaw();
-    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     m_pSizer->SetItemMinSize(m_pControl, 32, 32);
 
     // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
@@ -877,6 +876,19 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
         m_pControl->GotoPos(m_pProjectFile->editorPos);
         m_pControl->ScrollToLine(m_pProjectFile->editorTopLine);
         m_pControl->ScrollToColumn(0);
+        m_pControl->SetZoom(m_pProjectFile->editorZoom);
+        if(m_pProjectFile->editorSplit != (int)stNoSplit)
+        {
+            Split((SplitType)m_pProjectFile->editorSplit);
+            if(m_pControl2)
+            {
+                m_pSplitter->SetSashPosition(m_pProjectFile->editorSplitPos);
+                m_pControl2->GotoPos(m_pProjectFile->editorPos_2);
+                m_pControl2->ScrollToLine(m_pProjectFile->editorTopLine_2);
+                m_pControl2->ScrollToColumn(0);
+                m_pControl2->SetZoom(m_pProjectFile->editorZoom_2);
+            }
+        }
 
         m_pProjectFile->editorOpen = true;
 
@@ -909,9 +921,21 @@ void cbEditor::UpdateProjectFile()
 {
     if (m_pControl && m_pProjectFile)
     {
+        m_pProjectFile->editorOpen = true;
+        m_pProjectFile->editorSplit = m_SplitType;
         m_pProjectFile->editorPos = m_pControl->GetCurrentPos();
         m_pProjectFile->editorTopLine = m_pControl->GetFirstVisibleLine();
-        m_pProjectFile->editorOpen = true;
+        m_pProjectFile->editorZoom = m_pControl->GetZoom();
+        m_pProjectFile->editorSplitActive = 1;
+        if(m_pControl2)
+        {
+            m_pProjectFile->editorSplitPos = m_pSplitter->GetSashPosition();
+            m_pProjectFile->editorPos_2 = m_pControl2->GetCurrentPos();
+            m_pProjectFile->editorTopLine_2 = m_pControl2->GetFirstVisibleLine();
+            m_pProjectFile->editorZoom_2 = m_pControl2->GetZoom();
+            if(GetControl()==m_pControl2)
+                m_pProjectFile->editorSplitActive = 2;
+        }
     }
 }
 
@@ -1109,7 +1133,8 @@ void cbEditor::Split(cbEditor::SplitType split)
 
     SetEditorStyleAfterFileOpen();
 
-
+    // initial zoom is same as left/top control
+    m_pControl2->SetZoom(m_pControl->GetZoom());
     // make sure the line numbers margin is correct for the new control
     m_pControl2->SetMarginWidth(lineMargin, m_pControl->GetMarginWidth(lineMargin));
 
@@ -1608,9 +1633,6 @@ bool cbEditor::Open(bool detectEncoding)
 
     NotifyPlugins(cbEVT_EDITOR_OPEN);
 
-    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
-    if (m_pControl2)
-        m_pControl2->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
 
     if (m_pData->m_pFileLoader)
     {
@@ -3402,7 +3424,28 @@ void cbEditor::DoUnIndent()
 void cbEditor::OnZoom(wxScintillaEvent& event)
 {
     Manager::Get()->GetEditorManager()->SetZoom(GetControl()->GetZoom());
+    // if all editors should be zoomed, we call cbAuiNotebooks SetZoom()
+    if(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/zoom_all")))
+        Manager::Get()->GetEditorManager()->GetNotebook()->SetZoom(GetControl()->GetZoom());
     OnScintillaEvent(event);
+}
+
+// used to set zoom for both (if splitted) or just the last active control,
+// called from cbAuiNotebook
+void cbEditor::SetZoom(int zoom, bool both)
+{
+    if(both)
+    {
+        if(m_pControl->GetZoom() != zoom)
+            m_pControl->SetZoom(zoom);
+        if(m_pControl2 && (m_pControl2->GetZoom() != zoom))
+            m_pControl2->SetZoom(zoom);
+    }
+    else
+    {
+        if(GetControl()->GetZoom() != zoom)
+            GetControl()->SetZoom(zoom);
+    }
 }
 
 // generic scintilla event handler

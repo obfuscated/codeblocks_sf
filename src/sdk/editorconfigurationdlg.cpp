@@ -124,6 +124,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"), false));
     XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"), false));
     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->SetValue(cfg->ReadBool(_T("/simplified_home"), false));
+    XRCCTRL(*this, "chkResetZoom", wxCheckBox)->SetValue(cfg->ReadBool(_T("/reset_zoom"), false));
+    XRCCTRL(*this, "chkZoomAll", wxCheckBox)->SetValue(cfg->ReadBool(_T("/zoom_all"), false));
     XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
     XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), 0));
     XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
@@ -796,6 +798,21 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/track_preprocessor"),                  XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_caret_line"),                XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
         cfg->Write(_T("/simplified_home"),                     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
+
+        bool resetZoom = XRCCTRL(*this, "chkResetZoom", wxCheckBox)->GetValue();
+        bool zoomAll = XRCCTRL(*this, "chkZoomAll", wxCheckBox)->GetValue();
+        if (zoomAll || resetZoom)
+        {
+            EditorManager* em = Manager::Get()->GetEditorManager();
+            if (resetZoom)
+            {
+                em->SetZoom(0);
+            }
+            em->GetNotebook()->SetZoom(em->GetZoom());
+        }
+        cfg->Write(_T("/reset_zoom"),                          resetZoom);
+        cfg->Write(_T("/zoom_all"),                            zoomAll);
+
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
         cfg->Write(_T("/open_containing_folder"),              XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->GetValue());

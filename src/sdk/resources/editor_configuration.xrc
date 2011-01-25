@@ -83,6 +83,12 @@
 																<border>4</border>
 																<option>1</option>
 															</object>
+															<object class="sizeritem">
+																<object class="wxCheckBox" name="chkResetZoom">
+																	<label>Reset zoom of all editors to default, if leaving dialog</label>
+																</object>
+																<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+															</object>
 														</object>
 														<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>4</border>
@@ -389,6 +395,12 @@
 																			<checked>1</checked>
 																		</object>
 																		<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxCheckBox" name="chkZoomAll">
+																			<label>Zooming resizes all editors</label>
+																		</object>
+																		<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	</object>
 																</object>
 																<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

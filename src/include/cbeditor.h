@@ -286,6 +286,8 @@ class DLLIMPORT cbEditor : public EditorBase
         bool GetUseBom() const;
         void SetUseBom( bool bom );
 
+        void SetZoom(int zoom, bool both = true);
+
         /// Apply the editor defaults to any (possibly foreign) cbStyledTextCtrl.
         static void ApplyStyles(cbStyledTextCtrl* control);
     private:

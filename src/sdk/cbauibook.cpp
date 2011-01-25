@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 #else
     EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKey)
 #endif
+    EVT_IDLE(cbAuiNotebook::OnIdle)
 END_EVENT_TABLE()
 
 
@@ -47,7 +48,8 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_LastMousePosition(wxPoint(-1,-1)),
           m_LastShownAt(wxPoint(-1,-1)),
           m_LastTime(0),
-          m_AllowToolTips(true)
+          m_AllowToolTips(true),
+          m_SetZoomOnIdle(false)
 {
     //ctor
 #ifdef __WXGTK__
@@ -112,6 +114,38 @@ void cbAuiNotebook::UpdateTabControlsArray()
     }
 }
 
+void cbAuiNotebook::SetZoom(int zoom)
+{
+    // we only set zoom-factor for active (visible) tabs,
+    // all others are set if system is idle
+    UpdateTabControlsArray();
+    for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
+    {
+        wxWindow* win = m_TabCtrls[i]->GetWindowFromIdx(m_TabCtrls[i]->GetActivePage());
+        if(win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
+        {
+            static_cast<cbEditor*>(win)->SetZoom(zoom);
+        }
+    }
+    m_SetZoomOnIdle = true;
+}
+
+void cbAuiNotebook::OnIdle(wxIdleEvent& /*event*/)
+{
+    if(m_SetZoomOnIdle)
+    {
+        m_SetZoomOnIdle = false;
+        int zoom = Manager::Get()->GetEditorManager()->GetZoom();
+        for (size_t i = 0; i < GetPageCount(); ++i)
+        {
+            wxWindow* win = GetPage(i);
+            if(win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
+            {
+                static_cast<cbEditor*>(win)->SetZoom(zoom);
+            }
+        }
+    }
+}
 
 void cbAuiNotebook::AllowToolTips(bool allow)
 {

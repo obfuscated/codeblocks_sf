@@ -689,10 +689,10 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
             continue;
         if (pf->GetParentProject() != project)
             continue;
-        pf->editorTopLine = ed->GetControl()->GetFirstVisibleLine();
-        pf->editorPos = ed->GetControl()->GetCurrentPos();
+
         pf->editorTabPos = m_pNotebook->GetTabPositionFromIndex(i) + 1;
-        pf->editorOpen = true;
+
+        ed->UpdateProjectFile();
     }
     return true;
 }

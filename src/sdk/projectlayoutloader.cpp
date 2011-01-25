@@ -97,30 +97,54 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         if (pf)
         {
             pf->editorOpen = false;
+            pf->editorSplit = cbEditor::stNoSplit;
+            pf->editorSplitActive = 1;
+            pf->editorZoom = 0;
             pf->editorPos = 0;
             pf->editorTopLine = 0;
-            int open = 0;
-            int top = 0;
-            int tabpos = 0;
-            if (elem->QueryIntAttribute("open", &open) == TIXML_SUCCESS)
-                pf->editorOpen = open != 0;
-            if (elem->QueryIntAttribute("top", &top) == TIXML_SUCCESS)
+            pf->editorZoom_2 = 0;
+            pf->editorPos_2 = 0;
+            pf->editorTopLine_2 = 0;
+            int getInt = 0; // used to fetch int values
+
+            if (elem->QueryIntAttribute("open", &getInt) == TIXML_SUCCESS)
+                pf->editorOpen = getInt != 0;
+            if (elem->QueryIntAttribute("top", &getInt) == TIXML_SUCCESS)
             {
-                if(top)
+                if(getInt)
                     m_TopProjectFile = pf;
             }
-            if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
-                pf->editorTabPos = tabpos;
+            if (elem->QueryIntAttribute("tabpos", &getInt) == TIXML_SUCCESS)
+                pf->editorTabPos = getInt;
+            if (elem->QueryIntAttribute("split", &getInt) == TIXML_SUCCESS)
+                pf->editorSplit = getInt;
+            if (elem->QueryIntAttribute("active", &getInt) == TIXML_SUCCESS)
+                pf->editorSplitActive = getInt;
+            if (elem->QueryIntAttribute("splitpos", &getInt) == TIXML_SUCCESS)
+                pf->editorSplitPos = getInt;
+            if (elem->QueryIntAttribute("zoom_1", &getInt) == TIXML_SUCCESS)
+                pf->editorZoom = getInt;
+            if (elem->QueryIntAttribute("zoom_2", &getInt) == TIXML_SUCCESS)
+                pf->editorZoom_2 = getInt;
 
             TiXmlElement* cursor = elem->FirstChildElement();
             if (cursor)
             {
-                int pos = 0;
-                int topline = 0;
-                if (cursor->QueryIntAttribute("position", &pos) == TIXML_SUCCESS)
-                    pf->editorPos = pos;
-                if (cursor->QueryIntAttribute("topLine", &topline) == TIXML_SUCCESS)
-                    pf->editorTopLine = topline;
+                if (cursor->QueryIntAttribute("position", &getInt) == TIXML_SUCCESS)
+                    pf->editorPos = getInt;
+                if (cursor->QueryIntAttribute("topLine", &getInt) == TIXML_SUCCESS)
+                    pf->editorTopLine = getInt;
+                if(pf->editorSplit != cbEditor::stNoSplit)
+                {
+                    cursor = cursor->NextSiblingElement();
+                    if (cursor)
+                    {
+                        if (cursor->QueryIntAttribute("position", &getInt) == TIXML_SUCCESS)
+                            pf->editorPos_2 = getInt;
+                        if (cursor->QueryIntAttribute("topLine", &getInt) == TIXML_SUCCESS)
+                            pf->editorTopLine_2 = getInt;
+                    }
+                }
             }
         }
 
@@ -154,17 +178,29 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     {
         ProjectFile* f = m_pProject->GetFile(i);
 
-        if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
+        if (f->editorOpen || f->editorPos || f->editorPos_2 || f->editorTopLine || f->editorTopLine_2 || f->editorTabPos)
         {
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
             node->SetAttribute("top", (f == active));
             node->SetAttribute("tabpos", f->editorTabPos);
+            node->SetAttribute("split", f->editorSplit);
+            node->SetAttribute("active", f->editorSplitActive);
+            node->SetAttribute("splitpos", f->editorSplitPos);
+            node->SetAttribute("zoom_1", f->editorZoom);
+            node->SetAttribute("zoom_2", f->editorZoom_2);
 
-            TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
-            cursor->SetAttribute("position", f->editorPos);
-            cursor->SetAttribute("topLine", f->editorTopLine);
+            TiXmlElement* cursor_1 = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor1")));
+            cursor_1->SetAttribute("position", f->editorPos);
+            cursor_1->SetAttribute("topLine", f->editorTopLine);
+
+            if(f->editorSplit != cbEditor::stNoSplit)
+            {
+                TiXmlElement* cursor_2 = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor2")));
+                cursor_2->SetAttribute("position", f->editorPos_2);
+                cursor_2->SetAttribute("topLine", f->editorTopLine_2);
+            }
         }
     }
     const wxArrayString& en = m_pProject->ExpandedNodes();

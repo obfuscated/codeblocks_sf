@@ -141,11 +141,32 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         /** If true, the file is open inside an editor. */
         bool editorOpen; // layout info
 
-        /** The last known caret position in an editor for this file. */
+        /** Split type of the editor as int. */
+        int editorSplit; // layout info
+
+        /** Last active splitview (1 or 2). */
+        int editorSplitActive; // layout info
+
+        /** Last splitter position. */
+        int editorSplitPos; // layout info
+
+        /** The last known caret position in an editor for this file (left/top control if split). */
         int editorPos; // layout info
 
-        /** The last known caret line in an editor for this file. */
+        /** The last known caret line in an editor for this file (left/top control if split). */
         int editorTopLine; // layout info
+
+        /** The zoom-factor of the editor for this file (left/top control if split). */
+        int editorZoom; // layout info
+
+        /** The last known caret position in an editor for this file (right/bottom control if split). */
+        int editorPos_2; // layout info
+
+        /** The last known caret line in an editor for this file(right/bottom control if split). */
+        int editorTopLine_2; // layout info
+
+        /** The zoom-factor of the editor for this file(right/bottom control if split). */
+        int editorZoom_2; // layout info
 
         /** The position of the editor-tab for this file. */
         int editorTabPos; // layout info
