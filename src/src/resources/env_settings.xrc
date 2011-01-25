@@ -473,6 +473,44 @@
 									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
 								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Tooltips on tabs</label>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkNBUseToolTips">
+												<label>Use tooltips</label>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="wxID_ANY">
+												<label>wait</label>
+											</object>
+											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxSpinCtrl" name="spnNBDwellTime">
+												<value>1000</value>
+												<max>10000</max>
+												<tooltip>Time [ms] before a tooltip kicks in</tooltip>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="wxID_ANY">
+												<label>ms before tooltip is shown</label>
+											</object>
+											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<border>5</border>
+								</object>
 							</object>
 						</object>
 						<label>Notebooks appearance</label>

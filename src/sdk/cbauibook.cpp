@@ -55,6 +55,9 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
 #ifdef __WXGTK__
     m_mgr.SetFlags((m_mgr.GetFlags() | wxAUI_MGR_VENETIAN_BLINDS_HINT) & ~wxAUI_MGR_TRANSPARENT_HINT);
 #endif  // #ifdef __WXGTK__
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    m_UseTabTooltips = cfg->ReadBool(_T("/environment/tabs_use_tooltips"),true);
+    m_DwellTime = cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000);
 
     m_pDwellTimer = new wxTimer(this, idNoteBookTimer);
     if(m_pDwellTimer)
@@ -159,6 +162,13 @@ void cbAuiNotebook::AllowToolTips(bool allow)
         m_StopWatch.Start();
 }
 
+void cbAuiNotebook::UseToolTips(bool use)
+{
+    m_UseTabTooltips = use;
+    if(!m_UseTabTooltips)
+        CancelToolTip();
+}
+
 void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 {
     if(!wxTheApp->IsActive())
@@ -177,7 +187,7 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 
     UpdateTabControlsArray();
 
-    if(!m_AllowToolTips)
+    if(!m_UseTabTooltips || !m_AllowToolTips)
     {
         CancelToolTip();
         return;
@@ -199,7 +209,7 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
             {
                 if(!PointClose(thePoint, m_LastShownAt))
                 {
-                    if(curTime - m_LastTime > 1000)
+                    if(curTime - m_LastTime > m_DwellTime)
                     {
                         ShowToolTip(win);
                         m_LastShownAt = thePoint;

@@ -74,6 +74,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
     EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
     EVT_CHECKBOX(XRCID("chkDblClkMaximizes"), EnvironmentSettingsDlg::OnDblClickMaximizes)
+    EVT_CHECKBOX(XRCID("chkNBUseToolTips"), EnvironmentSettingsDlg::OnUseTabToolTips)
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -205,6 +206,10 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkCloseOnAll",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_close_on_all"), 0));
     XRCCTRL(*this, "chkListTabs",                 wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_list"), 0));
     XRCCTRL(*this, "chkStackedBasedTabSwitching", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_stacked_based_switching"), 0));
+    bool useToolTips = cfg->ReadBool(_T("/environment/tabs_use_tooltips"),true);
+    XRCCTRL(*this, "chkNBUseToolTips",            wxCheckBox)->SetValue(useToolTips);
+    XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
+    XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->Enable(useToolTips);
 
     // tab "Docking"
     XRCCTRL(*this, "spnAuiBorder",                        wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/border_size"), m_pArt->GetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE)));
@@ -403,6 +408,12 @@ void EnvironmentSettingsDlg::OnDblClickMaximizes(wxCommandEvent& event)
     XRCCTRL(*this, "choLayoutToToggle", wxCheckBox)->Enable(en);
 }
 
+void EnvironmentSettingsDlg::OnUseTabToolTips(wxCommandEvent& event)
+{
+    bool en = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "spnNBDwellTime", wxSpinCtrl)->Enable(en);
+}
+
 void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
@@ -485,9 +496,20 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
                 Manager::Get()->GetEditorManager()->DeleteNotebookStack();
         }
         cfg->Write(_T("/environment/tabs_stacked_based_switching"),          tab_switcher_mode);
-        cfg->Write(_T("/environment/aui/border_size"),                  (int)XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/environment/aui/sash_size"),                    (int)XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/environment/aui/caption_size"),                 (int)XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
+
+        bool useToolTips = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
+        cfg->Write(_T("/environment/tabs_use_tooltips"),useToolTips);
+        cfg->Write(_T("/environment/tabs_dwell_time"),                (int)  XRCCTRL(*this, "spnNBDwellTime", wxSpinCtrl)->GetValue());
+        cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+        if(nb)
+        {
+            nb->UseToolTips(useToolTips);
+            nb->SetDwellTime(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
+        }
+
+        cfg->Write(_T("/environment/aui/border_size"),                (int)  XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/environment/aui/sash_size"),                  (int)  XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/environment/aui/caption_size"),               (int)  XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/active_caption_colour"),             XRCCTRL(*this, "btnAuiActiveCaptionColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/active_caption_gradient_colour"),    XRCCTRL(*this, "btnAuiActiveCaptionGradientColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/active_caption_text_colour"),        XRCCTRL(*this, "btnAuiActiveCaptionTextColour", wxButton)->GetBackgroundColour());

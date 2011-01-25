@@ -86,6 +86,20 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void AllowToolTips(bool allow = true);
+        /** \brief Enable or disable tabtooltips globally
+         *
+         * \param use If true tooltips are allowed
+         * \return void
+         *
+         */
+        void UseToolTips(bool use = true);
+        /** \brief Set the time before a tab-tooltip kicks in
+         *
+         * \param time The dwell time
+         * \return void
+         *
+         */
+        void SetDwellTime(long time = 1000){m_DwellTime = time;}
         /** \brief Move page
          *
          * Moves the tab containing page to new_idx
@@ -192,7 +206,15 @@ class cbAuiNotebook : public wxAuiNotebook
          * Used to determine how long the mouse has not been moved over a tab .
          */
         long m_LastTime;
-        /** \brief If false, tooltips are forbidden
+        /** \brief Enable or disable tab tooltips
+         *
+         */
+        bool m_UseTabTooltips;
+        /** \brief Tab tooltip dwell time
+         *
+         */
+        long m_DwellTime;
+        /** \brief If false, tooltips are temporary forbidden
          *
          * Needed to not interfere with context-menus etc.
          */
