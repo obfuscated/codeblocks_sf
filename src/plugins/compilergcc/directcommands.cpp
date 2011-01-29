@@ -171,14 +171,15 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     if (!compiler)
         return ret;
     wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
+    wxString ObjectDir = (compiler->GetSwitches().UseFlatObjects)?pfd.object_dir_flat_native:pfd.object_dir_native;
 
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
 
     // create output dir
-    if (!pfd.object_dir_native.IsEmpty() && !CreateDirRecursively(pfd.object_dir_native, 0755))
+    if (!ObjectDir.IsEmpty() && !CreateDirRecursively(ObjectDir, 0755))
     {
-        cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
+        cbMessageBox(_("Can't create object output directory ") + ObjectDir);
     }
 
     bool isResource = ft == ftResource;

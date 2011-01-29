@@ -374,18 +374,21 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                                     fn.GetName() + _T('.') + compiler->GetSwitches().PCHExtension +
                                     wxFILE_SEP_PATH +
                                     new_gch;
+                object_file_flat_native = object_file_native;
                 break;
             }
 
             case pchObjectDir:
             {
                 object_file_native = objOut + sep + tmp.GetFullPath();
+                object_file_flat_native = objOut + sep + tmp.GetFullName();
                 break;
             }
 
             case pchSourceFile:
             {
                 object_file_native = pf->GetObjName();
+                object_file_flat_native = object_file_native;
                 break;
             }
         }

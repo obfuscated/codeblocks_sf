@@ -55,7 +55,9 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
                 f->compile)
             {
                 // it is a PCH; add it's object dir to includes
-                wxString dir = wxFileName(target->GetObjectOutput() + sep + f->GetObjName()).GetPath();
+                wxFileName fn(f->GetObjName());
+                wxString objName = (compiler->GetSwitches().UseFlatObjects)?fn.GetFullName():fn.GetFullPath();
+                wxString dir = wxFileName(target->GetObjectOutput() + sep + objName).GetPath();
                 if (includedDirs.Index(dir) == wxNOT_FOUND)
                 {
                     includedDirs.Add(dir);
