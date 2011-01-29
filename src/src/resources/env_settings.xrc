@@ -475,24 +475,29 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Scroll with mousewheel</label>
+										<label>Scroll tabs with mousewheel</label>
 										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkNBUseMousewheel">
+												<label>Enable scrolling with mousewheel</label>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+										</object>
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbNBModToAdvance">
 												<label>Modifier needed to advance through the tabs (changes selection)</label>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-											<border>5</border>
-											<option>1</option>
+											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>20</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbNBModToMove">
 												<label>Modifier needed to move the tabs (if some of them are invisible)</label>
 												<selected>1</selected>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-											<border>5</border>
-											<option>1</option>
+											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>20</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
@@ -510,7 +515,8 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>10</border>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>

@@ -75,6 +75,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
     EVT_CHECKBOX(XRCID("chkDblClkMaximizes"), EnvironmentSettingsDlg::OnDblClickMaximizes)
     EVT_CHECKBOX(XRCID("chkNBUseToolTips"), EnvironmentSettingsDlg::OnUseTabToolTips)
+    EVT_CHECKBOX(XRCID("chkNBUseMousewheel"), EnvironmentSettingsDlg::OnUseTabMousewheel)
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -208,9 +209,13 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkStackedBasedTabSwitching", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_stacked_based_switching"), 0));
     XRCCTRL(*this, "txtMousewheelModifier",       wxTextCtrl)->SetValue(cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl")));
     XRCCTRL(*this, "txtMousewheelModifier",       wxTextCtrl)->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(EnvironmentSettingsDlg::OnMousewheelModifier));
+    bool enableTabMousewheel = cfg->ReadBool(_T("/environment/tabs_use_mousewheel"),true);
     bool modToAdvance = cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false);
+    XRCCTRL(*this, "chkNBUseMousewheel",          wxCheckBox)->SetValue(enableTabMousewheel);
     XRCCTRL(*this, "rbNBModToAdvance",            wxRadioButton)->SetValue(modToAdvance);
-    XRCCTRL(*this, "rbNBModToMove",              wxRadioButton)->SetValue(!modToAdvance);
+    XRCCTRL(*this, "rbNBModToMove",               wxRadioButton)->SetValue(!modToAdvance);
+    XRCCTRL(*this, "rbNBModToAdvance",            wxRadioButton)->Enable(enableTabMousewheel);
+    XRCCTRL(*this, "rbNBModToMove",               wxRadioButton)->Enable(enableTabMousewheel);
     bool useToolTips = cfg->ReadBool(_T("/environment/tabs_use_tooltips"),true);
     XRCCTRL(*this, "chkNBUseToolTips",            wxCheckBox)->SetValue(useToolTips);
     XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
@@ -441,6 +446,13 @@ void EnvironmentSettingsDlg::OnUseTabToolTips(wxCommandEvent& event)
     XRCCTRL(*this, "spnNBDwellTime", wxSpinCtrl)->Enable(en);
 }
 
+void EnvironmentSettingsDlg::OnUseTabMousewheel(wxCommandEvent& event)
+{
+    bool en = (bool)XRCCTRL(*this, "chkNBUseMousewheel",wxCheckBox)->GetValue();
+    XRCCTRL(*this, "rbNBModToAdvance", wxRadioButton)->Enable(en);
+    XRCCTRL(*this, "rbNBModToMove", wxRadioButton)->Enable(en);
+}
+
 void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
@@ -524,19 +536,20 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         }
         cfg->Write(_T("/environment/tabs_stacked_based_switching"),          tab_switcher_mode);
 
+        bool enableMousewheel = (bool) XRCCTRL(*this, "chkNBUseMousewheel",wxCheckBox)->GetValue();
+        cfg->Write(_T("/environment/tabs_use_mousewheel"),           enableMousewheel);
         wxString key = XRCCTRL(*this, "txtMousewheelModifier", wxTextCtrl)->GetValue();
-        cfg->Write(_T("/environment/tabs_mousewheel_modifier"),             key.IsEmpty()?_T("Ctrl"):key);
-        cfg->Write(_T("/environment/tabs_mousewheel_advance"),        (bool) XRCCTRL(*this, "rbNBModToAdvance", wxRadioButton)->GetValue());
+        cfg->Write(_T("/environment/tabs_mousewheel_modifier"),      key.IsEmpty()?_T("Ctrl"):key);
+        cfg->Write(_T("/environment/tabs_mousewheel_advance"),       (bool) XRCCTRL(*this, "rbNBModToAdvance", wxRadioButton)->GetValue());
 
         bool useToolTips = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
         cfg->Write(_T("/environment/tabs_use_tooltips"),useToolTips);
         cfg->Write(_T("/environment/tabs_dwell_time"),                (int)  XRCCTRL(*this, "spnNBDwellTime", wxSpinCtrl)->GetValue());
-        cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
-        if(nb)
-        {
-            nb->UseToolTips(useToolTips);
-            nb->SetDwellTime(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
-        }
+        cbAuiNotebook::AllowScrolling(enableMousewheel);
+        cbAuiNotebook::UseToolTips(useToolTips);
+        cbAuiNotebook::SetDwellTime(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
+        cbAuiNotebook::SetModKeys(cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl")));
+        cbAuiNotebook::UseModToAdvance(cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false));
 
         cfg->Write(_T("/environment/aui/border_size"),                (int)  XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/sash_size"),                  (int)  XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());

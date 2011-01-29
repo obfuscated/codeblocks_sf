@@ -10,8 +10,10 @@
 #include <wx/dynarray.h>
 
 class wxTipWindow;
+class cbAuiNotebook;
 
 WX_DEFINE_ARRAY_PTR(wxAuiTabCtrl*,cbAuiTabCtrlArray);
+WX_DEFINE_ARRAY_PTR(cbAuiNotebook*,cbAuiNotebookArray);
 
 /** \brief A notebook class
   * This class is derived from wxAuiNotebook, to enhance its abilities.
@@ -86,20 +88,6 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void AllowToolTips(bool allow = true);
-        /** \brief Enable or disable tabtooltips globally
-         *
-         * \param use If true tooltips are allowed
-         * \return void
-         *
-         */
-        void UseToolTips(bool use = true);
-        /** \brief Set the time before a tab-tooltip kicks in
-         *
-         * \param time The dwell time
-         * \return void
-         *
-         */
-        void SetDwellTime(long time = 1000){m_DwellTime = time;}
         /** \brief Minmize free horizontal page
          *
          * Moves the active tab to the rightmost place,
@@ -196,6 +184,14 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          */
         void OnTabCtrlMouseWheel(wxMouseEvent& event);
+        /** \brief Catch mousewheel-events from tooltipwindow
+         *
+         * Closes Tooltip.
+         * \param event the tipwindow, that sends the event
+         * \return void
+         *
+         */
+        void OnToolTipMouseWheel(wxMouseEvent& event);
         /** \brief Catch resize-events and call MinimizeFreeSpace()
          *
          * \param event unused
@@ -248,6 +244,12 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         void RestoreFocus();
 #endif // #ifdef __WXMSW__
+        /** \brief Reset tabctrl events
+         *
+         * \return void
+         *
+         */
+        void ResetTabCtrlEvents();
         /** \brief Updates the array, that holds the wxTabCtrls
          *
          * \return void
@@ -275,7 +277,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * \return true If all modifier-keys are pressed
          *
          */
-        bool CheckKeyModifier(const wxString &keyModifier);
+        bool CheckKeyModifier();
         /** \brief Holds the wxTabCtrls used by the notebook
          * @remarks Should be updated with UpdateTabControlsArray(),
          * before it's used
@@ -307,14 +309,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * Used to determine how long the mouse has not been moved over a tab .
          */
         long m_LastTime;
-        /** \brief Enable or disable tab tooltips
-         *
-         */
-        bool m_UseTabTooltips;
-        /** \brief Tab tooltip dwell time
-         *
-         */
-        long m_DwellTime;
 #ifdef __WXMSW__
         // needed for wxMSW-hack, see above
         /** \brief Last selected tab
@@ -341,7 +335,66 @@ class cbAuiNotebook : public wxAuiNotebook
         bool m_SetZoomOnIdle;
         /** \brief Holds the id of the dwell timer
          */
-        static const long idNoteBookTimer;
+        long m_IdNoteBookTimer;
+
+//static stuff (common to all cbAuiNotebooks)
+    public:
+        /** \brief Enable or disable tabtooltips globally
+         *
+         * \param use If true tooltips are allowed
+         * \return void
+         *
+         */
+        static void UseToolTips(bool use = true);
+        /** \brief Set the time before a tab-tooltip kicks in
+         *
+         * \param time The dwell time
+         * \return void
+         *
+         */
+        static void SetDwellTime(long time = 1000);
+        /** \brief Enable or disable tab-scrolling with mousewheel
+         *
+         * \param allow If true scrolling is allowed
+         * \return void
+         *
+         */
+        static void AllowScrolling(bool allow = true);
+        /** \brief Setss the modifier keys for scrolling
+         *
+         */
+        static void SetModKeys(wxString keys = _T("Strg"));
+        /** \brief Use modkey to advance through tabs with mousewheel
+         *
+         */
+        static void UseModToAdvance(bool use = false);
+    protected:
+        /** \brief Enable or disable tab tooltips
+         *
+         */
+        static bool s_UseTabTooltips;
+        /** \brief Tab tooltip dwell time
+         *
+         */
+        static long s_DwellTime;
+        /** \brief Enable or disable scrolling tabs with mousewheel
+         *
+         */
+        static bool s_AllowMousewheel;
+        /** \brief Holds an array of all existing cbAuiNotebooks
+         *
+         */
+        static cbAuiNotebookArray s_cbAuiNotebookArray;
+        /** \brief Holds the modifier keys for scrolling
+         *
+         */
+        static wxString s_modKeys;
+        /** \brief Use modkey to advance through tabs with mousewheel
+         *
+         */
+        static bool s_modToAdvance;
+
+
 
         DECLARE_EVENT_TABLE()
 };
