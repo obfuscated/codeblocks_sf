@@ -19,6 +19,7 @@
     #include "pluginmanager.h"
     #include "editormanager.h"
     #include "cbeditor.h"
+    #include "cbauibook.h"
     #include "cbplugin.h" // cgEditor
     #include "globals.h"
     #include <wx/listbook.h>

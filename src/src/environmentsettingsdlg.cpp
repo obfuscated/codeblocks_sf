@@ -10,6 +10,9 @@
 #include <sdk.h>
 #include <wx/aui/aui.h>
 #include <wx/button.h>
+#include <wx/menu.h>
+#include <wx/choice.h>
+#include <wx/radiobut.h>
 #include <wx/xrc/xmlres.h>
 #include <manager.h>
 #include <configmanager.h>
@@ -31,6 +34,7 @@
 #include "appglobals.h"
 #include "globals.h"
 #include "associations.h"
+#include "cbauibook.h"
 
 #include "configurationpanel.h"
 #include "environmentsettingsdlg.h"
