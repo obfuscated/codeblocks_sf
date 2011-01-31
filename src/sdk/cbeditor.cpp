@@ -15,6 +15,7 @@
     #include <wx/wfstream.h>
 
     #include "cbeditor.h" // class's header file
+    #include "cbauibook.h"
     #include "globals.h"
     #include "sdk_events.h"
     #include "cbproject.h"
