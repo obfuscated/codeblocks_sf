@@ -14,6 +14,9 @@
     #include "prep.h"
     #include "cbauibook.h"
     #include "manager.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "cbeditor.h"
     #include <wx/dcclient.h>
     #include <wx/app.h>
 #endif
