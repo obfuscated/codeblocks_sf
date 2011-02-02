@@ -90,7 +90,7 @@ class cbAuiNotebook : public wxAuiNotebook
         void AllowToolTips(bool allow = true);
         /** \brief Minmize free horizontal page
          *
-         * Moves the active tab to the rightmost place,
+         * Moves the active tab of all tabCtrl's to the rightmost place,
          * to show as many tabs as possible.
          * \return void
          *
@@ -137,6 +137,15 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         void SetZoom(int zoom);
     protected:
+        /** \brief Minmize free horizontal page of tabCtrl
+         *
+         * Moves the active tab of tabCtrl to the rightmost place,
+         * to show as many tabs as possible.
+         * \param tabCtrl The tabCtrl to act on
+         * \return void
+         *
+         */
+        void MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl);
         /** \brief Handle the navigation key event
          *
          * Tries to handle the navigation key-event and use "our" AdvanceSelection().

@@ -45,7 +45,6 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
 #else
     EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKey)
 #endif
-    EVT_SIZE(cbAuiNotebook::OnResize)
     EVT_IDLE(cbAuiNotebook::OnIdle)
 END_EVENT_TABLE()
 
@@ -158,6 +157,8 @@ void cbAuiNotebook::ResetTabCtrlEvents()
     {
         m_TabCtrls[i]->Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
         m_TabCtrls[i]->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
+        m_TabCtrls[i]->Disconnect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
+        m_TabCtrls[i]->Connect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
         m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
 #ifdef __WXMSW__
         m_TabCtrls[i]->Disconnect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
@@ -433,7 +434,15 @@ void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
 
 void cbAuiNotebook::OnResize(wxSizeEvent& event)
 {
-    MinimizeFreeSpace();
+    wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
+    if(tabCtrl)
+    {
+        cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
+        if(nb)
+        {
+            nb->MinimizeFreeSpace(tabCtrl);
+        }
+    }
     event.Skip();
 }
 
@@ -486,30 +495,34 @@ void cbAuiNotebook::MinimizeFreeSpace()
 {
     if(GetPageCount() < 1)
         return;
-    wxWindow* win = GetPage(GetSelection());
-    if(!win)
-        return;
-    wxAuiTabCtrl* ctrl = nullptr;
-    int ctrl_idx;
-    if (FindTab(win, &ctrl, &ctrl_idx))
+    for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
     {
-        if(ctrl)
+        MinimizeFreeSpace(m_TabCtrls[i]);
+    }
+}
+
+void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
+{
+    if(!tabCtrl || tabCtrl->GetPageCount() < 1)
+        return;
+    int ctrl_idx = tabCtrl->GetActivePage();
+    wxWindow* win = GetPage(ctrl_idx);
+    if(win)
+    {
+        wxClientDC dc(win);
+        size_t lastTabIdx = tabCtrl->GetPageCount() - 1;
+        for (int i = lastTabIdx ; i >= 0; --i)
         {
-            wxClientDC dc(win);
-            size_t lastTabIdx = ctrl->GetPageCount() - 1;
-            for (size_t i = lastTabIdx ; i >= 0; --i)
+            if (tabCtrl->IsTabVisible(ctrl_idx, i, & dc, win))
             {
-                if (ctrl->IsTabVisible(ctrl_idx, i, & dc, win))
-                {
-                    while (i > 0 && ctrl->IsTabVisible(lastTabIdx, i-1, & dc, win))
-                        --i;
-                    ctrl->SetTabOffset(i);
-                    win->Refresh();
-                    break;;
-                }
+                while (i > 0 && tabCtrl->IsTabVisible(lastTabIdx, i-1, & dc, win))
+                    --i;
+                tabCtrl->SetTabOffset(i);
+                break;
             }
         }
     }
+    tabCtrl->Refresh();
 }
 
 bool cbAuiNotebook::DeletePage(size_t page)
