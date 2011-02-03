@@ -370,7 +370,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 	//Append any items you need in the menu...
 	//NOTE: Be careful in here... The application's menubar is at your disposal.
 	size_t i;
-	int idx = menuBar->FindMenu(wxT("View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
@@ -399,7 +399,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Search"));
+	idx = menuBar->FindMenu(_("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
@@ -433,7 +433,7 @@ void ThreadSearch::RemoveMenuItems()
 {
 	// Removes 'Thread search' item from View and Search menu
 	wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-	int idx = menuBar->FindMenu(wxT("View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
@@ -443,7 +443,7 @@ void ThreadSearch::RemoveMenuItems()
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Search"));
+	idx = menuBar->FindMenu(_("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* searchMenu = menuBar->GetMenu(idx);

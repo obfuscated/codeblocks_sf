@@ -127,7 +127,7 @@ void Abbreviations::BuildMenu(wxMenuBar* menuBar)
     // if not attached, exit
     if (!IsAttached()) return;
 
-    int editmenuPos = menuBar->FindMenu(_T("Edit"));
+    int editmenuPos = menuBar->FindMenu(_("&Edit"));
     if (editmenuPos == wxNOT_FOUND) return;
     wxMenu* editMenu = menuBar->GetMenu(editmenuPos);
 

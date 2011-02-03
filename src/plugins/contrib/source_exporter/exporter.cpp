@@ -75,7 +75,7 @@ void Exporter::OnRelease(bool /*appShutDown*/)
 void Exporter::BuildMenu(wxMenuBar *menuBar)
 {
   // find "File" menu position
-  int fileMenuPos = menuBar->FindMenu(_("File"));
+  int fileMenuPos = menuBar->FindMenu(_("&File"));
 
   if (fileMenuPos == -1)
   {

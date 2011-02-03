@@ -340,7 +340,7 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
     GetConfig()->m_pMenuBar = menuBar;
     bool isSet = false;
 
-	int idx = menuBar->FindMenu(_("View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND) do
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
@@ -1678,9 +1678,9 @@ wxWindow* CodeSnippets::FindOpenFilesListWindow()
 {
     //Find "Open files list" menu item.
     wxFrame* pFrame = Manager::Get()->GetAppFrame();
-    int idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("Open files list"));
+    int idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, _("&View"), _("Open files list"));
     #if defined(__WXGTK__)
-      idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("_Open files list"));
+      idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, _("&View"), _("_Open files list"));
     #endif
     int idWindowOpenFilesList = 0;
     if (idMenuOpenFilesList != wxNOT_FOUND)
