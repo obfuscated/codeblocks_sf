@@ -134,40 +134,40 @@ bool DoxyBlocksConfig::WritePrefsTemplate()
     wxFileConfig *cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, GetCBConfigDir() + sCfgIni, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
 
 	// Comment style.
-	cfgFile->Write(sSectionCommentStyle + sCommentBlock, m_iBlockComment);
-	cfgFile->Write(sSectionCommentStyle + sCommentLine, m_iLineComment);
+	cfgFile->Write(sSectionCommentStyle + sCommentBlock, static_cast<int>(m_iBlockComment));
+	cfgFile->Write(sSectionCommentStyle + sCommentLine, static_cast<int>(m_iLineComment));
 	// Project.
-	cfgFile->Write(sSectionProject + sUseAutoVersion, m_bUseAutoVersion);
+	cfgFile->Write(sSectionProject + sUseAutoVersion, static_cast<int>(m_bUseAutoVersion));
 	cfgFile->Write(sSectionProject + sOutputLanguage, m_sOutputLanguage);
 	// Build.
-	cfgFile->Write(sSectionBuild + sExtractAll, m_bExtractAll);
-	cfgFile->Write(sSectionBuild + sExtractPrivate, m_bExtractPrivate);
-	cfgFile->Write(sSectionBuild + sExtractStatic, m_bExtractStatic);
+	cfgFile->Write(sSectionBuild + sExtractAll, static_cast<int>(m_bExtractAll));
+	cfgFile->Write(sSectionBuild + sExtractPrivate, static_cast<int>(m_bExtractPrivate));
+	cfgFile->Write(sSectionBuild + sExtractStatic, static_cast<int>(m_bExtractStatic));
 	// Warnings.
-	cfgFile->Write(sSectionWarnings + sWarnings, m_bWarnings);
-	cfgFile->Write(sSectionWarnings + sWarnIfDocError, m_bWarnIfDocError);
-	cfgFile->Write(sSectionWarnings + sWarnIfUndocumented, m_bWarnIfUndocumented);
-	cfgFile->Write(sSectionWarnings + sWarnNoParamDoc, m_bWarnNoParamdoc);
+	cfgFile->Write(sSectionWarnings + sWarnings, static_cast<int>(m_bWarnings));
+	cfgFile->Write(sSectionWarnings + sWarnIfDocError, static_cast<int>(m_bWarnIfDocError));
+	cfgFile->Write(sSectionWarnings + sWarnIfUndocumented, static_cast<int>(m_bWarnIfUndocumented));
+	cfgFile->Write(sSectionWarnings + sWarnNoParamDoc, static_cast<int>(m_bWarnNoParamdoc));
 	// Alphabetical class index.
-	cfgFile->Write(sSectionAlphabeticalClassIndex + sAlphabeticalIndex, m_bAlphabeticalIndex);
+	cfgFile->Write(sSectionAlphabeticalClassIndex + sAlphabeticalIndex, static_cast<int>(m_bAlphabeticalIndex));
 	// Output.
-	cfgFile->Write(sSectionOutput + sGenerateHTML, m_bGenerateHTML);
-	cfgFile->Write(sSectionOutput + sGenerateHTMLHelp, m_bGenerateHTMLHelp);
-	cfgFile->Write(sSectionOutput + sGenerateCHI, m_bGenerateCHI);
-	cfgFile->Write(sSectionOutput + sBinaryTOC, m_bBinaryTOC);
-	cfgFile->Write(sSectionOutput + sGenerateLatex, m_bGenerateLatex);
-	cfgFile->Write(sSectionOutput + sGenerateRTF, m_bGenerateRTF);
-	cfgFile->Write(sSectionOutput + sGenerateMan, m_bGenerateMan);
-	cfgFile->Write(sSectionOutput + sGenerateXML, m_bGenerateXML);
-	cfgFile->Write(sSectionOutput + sGenerateAutogenDef, m_bGenerateAutogenDef);
-	cfgFile->Write(sSectionOutput + sGeneratePerlMod, m_bGeneratePerlMod);
+	cfgFile->Write(sSectionOutput + sGenerateHTML, static_cast<int>(m_bGenerateHTML));
+	cfgFile->Write(sSectionOutput + sGenerateHTMLHelp, static_cast<int>(m_bGenerateHTMLHelp));
+	cfgFile->Write(sSectionOutput + sGenerateCHI, static_cast<int>(m_bGenerateCHI));
+	cfgFile->Write(sSectionOutput + sBinaryTOC, static_cast<int>(m_bBinaryTOC));
+	cfgFile->Write(sSectionOutput + sGenerateLatex, static_cast<int>(m_bGenerateLatex));
+	cfgFile->Write(sSectionOutput + sGenerateRTF, static_cast<int>(m_bGenerateRTF));
+	cfgFile->Write(sSectionOutput + sGenerateMan, static_cast<int>(m_bGenerateMan));
+	cfgFile->Write(sSectionOutput + sGenerateXML, static_cast<int>(m_bGenerateXML));
+	cfgFile->Write(sSectionOutput + sGenerateAutogenDef, static_cast<int>(m_bGenerateAutogenDef));
+	cfgFile->Write(sSectionOutput + sGeneratePerlMod, static_cast<int>(m_bGeneratePerlMod));
 	// Pre-processor.
-	cfgFile->Write(sSectionPreProcessor + sEnablePreProcessing, m_bEnablePreprocessing);
+	cfgFile->Write(sSectionPreProcessor + sEnablePreProcessing, static_cast<int>(m_bEnablePreprocessing));
 	// Dot.
-	cfgFile->Write(sSectionDot + sClassDiagrams, m_bClassDiagrams);
-	cfgFile->Write(sSectionDot + sHaveDot, m_bHaveDot);
+	cfgFile->Write(sSectionDot + sClassDiagrams, static_cast<int>(m_bClassDiagrams));
+	cfgFile->Write(sSectionDot + sHaveDot, static_cast<int>(m_bHaveDot));
 	// General.
-	cfgFile->Write(sSectionGeneral + sUseAtInTags, m_bUseAtInTags);
+	cfgFile->Write(sSectionGeneral + sUseAtInTags, static_cast<int>(m_bUseAtInTags));
 
     bool bOK = cfgFile->Flush();
 

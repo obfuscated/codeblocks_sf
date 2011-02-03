@@ -184,7 +184,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
         sText +=  wxString(wxT("# ")) + _("You may change these defaults to suit your purposes") + wxT(".\n");
         sText +=  wxT("#******************************************************************************\n\n");
 
-		sText +=  wxT("# Doxyfile 1.7.1\n");
+		sText +=  wxT("# Doxyfile 1.7.3\n");
 		sText +=  wxT("\n");
 		sText +=  wxT("#---------------------------------------------------------------------------\n");
 		sText +=  wxT("# Project related configuration options\n");
@@ -192,6 +192,8 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("DOXYFILE_ENCODING      = UTF-8\n");
         sText +=  wxT("PROJECT_NAME           = ") + sPrjName + nl;
 		sText +=  wxT("PROJECT_NUMBER         = ") + sPrjNum + nl;
+		sText +=  wxT("PROJECT_BRIEF          =\n");
+		sText +=  wxT("PROJECT_LOGO           =\n");
         sText +=  wxT("OUTPUT_DIRECTORY       =\n");
 		sText +=  wxT("CREATE_SUBDIRS         = NO\n");
 		sText +=  wxT("OUTPUT_LANGUAGE        = ") + sLanguage + nl;
@@ -249,6 +251,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("SORT_MEMBERS_CTORS_1ST = NO\n");
 		sText +=  wxT("SORT_GROUP_NAMES       = NO\n");
 		sText +=  wxT("SORT_BY_SCOPE_NAME     = NO\n");
+		sText +=  wxT("STRICT_PROTO_MATCHING  = NO\n");
 		sText +=  wxT("GENERATE_TODOLIST      = YES\n");
 		sText +=  wxT("GENERATE_TESTLIST      = YES\n");
 		sText +=  wxT("GENERATE_BUGLIST       = YES\n");
@@ -291,6 +294,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("INPUT_FILTER           =\n");
 		sText +=  wxT("FILTER_PATTERNS        =\n");
 		sText +=  wxT("FILTER_SOURCE_FILES    = NO\n");
+		sText +=  wxT("FILTER_SOURCE_PATTERNS =\n");
 
 		sText +=  wxT("#---------------------------------------------------------------------------\n");
 		sText +=  wxT("# configuration options related to source browsing\n");
@@ -361,6 +365,8 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("EXT_LINKS_IN_WINDOW    = NO\n");
 		sText +=  wxT("FORMULA_FONTSIZE       = 10\n");
 		sText +=  wxT("FORMULA_TRANSPARENT    = YES\n");
+		sText +=  wxT("USE_MATHJAX            = NO\n");
+		sText +=  wxT("MATHJAX_RELPATH        = http://www.mathjax.org/mathjax\n");
 		sText +=  wxT("SEARCHENGINE           = YES\n");
 		sText +=  wxT("SERVER_BASED_SEARCH    = NO\n");
 
@@ -372,7 +378,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("LATEX_CMD_NAME         = latex\n");
 		sText +=  wxT("MAKEINDEX_CMD_NAME     = makeindex\n");
 		sText +=  wxT("COMPACT_LATEX          = NO\n");
-		sText +=  wxT("PAPER_TYPE             = a4wide\n");
+		sText +=  wxT("PAPER_TYPE             = a4\n");
 		sText +=  wxT("EXTRA_PACKAGES         =\n");
 		sText +=  wxT("LATEX_HEADER           =\n");
 		sText +=  wxT("PDF_HYPERLINKS         = YES\n");
@@ -451,7 +457,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("HIDE_UNDOC_RELATIONS   = YES\n");
 		sText +=  wxT("HAVE_DOT               = ") + sHaveDot + nl;
 		sText +=  wxT("DOT_NUM_THREADS        = 0\n");
-		sText +=  wxT("DOT_FONTNAME           = FreeSans.ttf\n");
+		sText +=  wxT("DOT_FONTNAME           = Helvetica\n");
 		sText +=  wxT("DOT_FONTSIZE           = 10\n");
 		sText +=  wxT("DOT_FONTPATH           =\n");
 		sText +=  wxT("CLASS_GRAPH            = YES\n");
@@ -473,6 +479,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 			sText +=  wxT("DOT_PATH               =\n");
 		}
 		sText +=  wxT("DOTFILE_DIRS           =\n");
+		sText +=  wxT("MSCFILE_DIRS           =\n");
 		sText +=  wxT("DOT_GRAPH_MAX_NODES    = 50\n");
 		sText +=  wxT("MAX_DOT_GRAPH_DEPTH    = 0\n");
 		sText +=  wxT("DOT_TRANSPARENT        = NO\n");

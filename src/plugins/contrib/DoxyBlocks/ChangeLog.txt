@@ -1,3 +1,9 @@
+02 February 2011
+   released version 1.6.613 of DoxyBlocks
+
+     Change log:
+        -Updated: doxygen support to v1.7.3.
+
 12 July 2010
    released version 1.6.606 of DoxyBlocks
 
