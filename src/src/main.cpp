@@ -2428,6 +2428,10 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         if (!prj && filename.IsEmpty())
             return;
 
+        // Send the new project event
+        CodeBlocksEvent evtNew(cbEVT_PROJECT_NEW, 0, prj);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evtNew);
+
         if (prj)
         {
             prj->Save();
@@ -2443,8 +2447,8 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         }
         if (prj && tot == totProject) // Created project should be parsed
         {
-            CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+            CodeBlocksEvent evtOpen(cbEVT_PROJECT_OPEN, 0, prj);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(evtOpen);
         }
         return;
     }

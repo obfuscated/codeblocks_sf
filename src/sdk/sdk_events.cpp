@@ -87,6 +87,7 @@ const wxEventType cbEVT_EDITOR_BREAKPOINT_EDIT = wxNewEventType();
 const wxEventType cbEVT_EDITOR_BREAKPOINT_DELETE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_UPDATE_UI = wxNewEventType();
 // project events
+const wxEventType cbEVT_PROJECT_NEW = wxNewEventType();
 const wxEventType cbEVT_PROJECT_CLOSE = wxNewEventType();
 const wxEventType cbEVT_PROJECT_OPEN = wxNewEventType();
 const wxEventType cbEVT_PROJECT_SAVE = wxNewEventType();
