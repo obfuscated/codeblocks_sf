@@ -280,11 +280,12 @@ wxString Token::GetFormattedArgs() const
 
 wxString Token::GetStrippedArgs() const
 {
-    wxString args;
     // the argument should have the format (xxxx = y, ....) or just an empty string
     // if it is empty, we just return an empty string
     if (m_Args.IsEmpty())
-        return args;
+        return wxEmptyString;
+
+    wxString args;
     args.Alloc(m_Args.Len() + 1);
     bool skipDefaultValue = false;
     for (size_t i = 0; i < m_Args.Len(); ++i)

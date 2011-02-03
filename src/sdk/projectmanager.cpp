@@ -133,7 +133,7 @@ class PrjTree : public wxTreeCtrl
     protected:
         void OnRightClick(wxMouseEvent& event)
         {
-            if(!this) return;
+            if (!this) return;
             //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
             int flags;
             HitTest(wxPoint(event.GetX(), event.GetY()), flags);
@@ -284,9 +284,9 @@ ProjectManager::~ProjectManager()
 
 void ProjectManager::InitPane()
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
         return;
-    if(m_pTree)
+    if (m_pTree)
         return;
     BuildTree();
     m_pNotebook->AddPage(m_pTree, _("Projects"));
@@ -520,7 +520,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             cbProject* CurProject = Projects->Item(i);
             if (ProjInTree->GetTitle().IsSameAs(CurProject->GetTitle()))
             {
-                if(CurProject->GetCurrentlyCompilingTarget())
+                if (CurProject->GetCurrentlyCompilingTarget())
                 {
                     PopUpMenuOption = false;
                     break;
@@ -602,7 +602,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             openWith->Append(idOpenWithInternal, _("Internal editor"));
             menu.Append(wxID_ANY, _("Open with"), openWith);
 
-            if(pf->GetFileState() == fvsNormal &&  !Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath()))
+            if (pf->GetFileState() == fvsNormal &&  !Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath()))
             {
                 menu.AppendSeparator();
                 menu.Append(idMenuRenameFile, _("Rename file..."));
@@ -714,13 +714,13 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
     for (int i = 0; i < count; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
-        if(project)
+        if (project)
         {
 #ifdef __WXMSW__
             // MS Windows Filenames are case-insensitive, we have to
             // avoid opening the same project if the files are only
             // different in upper/lowercase.
-            if(project->GetFilename().Lower().Matches(realFile.Lower()))
+            if (project->GetFilename().Lower().Matches(realFile.Lower()))
                 return project;
 #else
             if (project->GetFilename().Matches(realFile))
@@ -737,14 +737,14 @@ wxMenu* ProjectManager::GetProjectMenu()
     do
     {
         wxFrame* frame = Manager::Get()->GetAppFrame();
-        if(!frame)
+        if (!frame)
             break;
         wxMenuBar* mb = frame->GetMenuBar();
-        if(!mb)
+        if (!mb)
             break;
         result = mb->GetMenu(mb->FindMenu(_("&Project")));
         break;
-    }while(false);
+    } while (false);
     return result;
 }
 
@@ -800,7 +800,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         }
 
         break;
-    } while(false);
+    }  while (false);
     // we 're done
 
     EndLoadingProject(result);
@@ -854,12 +854,12 @@ bool ProjectManager::QueryCloseAllProjects()
     if (!Manager::Get()->GetEditorManager()->QueryCloseAll())
         return false;
 
-    for(i=0;i<m_pProjects->GetCount();i++)
+    for (i=0; i<m_pProjects->GetCount(); i++)
     {
         // Ask for saving modified projects. However,
         // we already asked to save projects' files;
         // do not ask again
-        if(!QueryCloseProject(m_pProjects->Item(i),true))
+        if (!QueryCloseProject(m_pProjects->Item(i),true))
             return false;
     }
     return true;
@@ -867,13 +867,15 @@ bool ProjectManager::QueryCloseAllProjects()
 
 bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
 {
-    if(!proj)
+    if (!proj)
         return true;
-    if(proj->GetCurrentlyCompilingTarget())
+    if (proj->GetCurrentlyCompilingTarget())
         return false;
-    if(!dontsavefiles)
-        if(!proj->QueryCloseAllFiles())
+    if (!dontsavefiles)
+    {
+        if (!proj->QueryCloseAllFiles())
             return false;
+    }
     if (proj->GetModified() && !Manager::IsBatchBuild())
     {
         wxString msg;
@@ -890,9 +892,11 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
 
 bool ProjectManager::CloseAllProjects(bool dontsave)
 {
-    if(!dontsave)
-        if(!QueryCloseAllProjects())
+    if (!dontsave)
+    {
+        if (!QueryCloseAllProjects())
             return false;
+    }
     FreezeTree();
     m_IsClosingProject = true;
     while (m_pProjects->GetCount() != 0)
@@ -909,7 +913,7 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     if (!Manager::IsAppShuttingDown())
         RebuildTree();
     UnfreezeTree(true);
-    if(!m_InitialDir.IsEmpty())
+    if (!m_InitialDir.IsEmpty())
         wxFileName::SetCwd(m_InitialDir);
     m_IsClosingProject = false;
     WorkspaceChanged();
@@ -920,11 +924,13 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
 {
     if (!project)
         return true;
-    if(project->GetCurrentlyCompilingTarget())
+    if (project->GetCurrentlyCompilingTarget())
         return false;
-    if(!dontsave)
-         if(!QueryCloseProject(project))
+    if (!dontsave)
+    {
+         if (!QueryCloseProject(project))
             return false;
+    }
 
     bool wasActive = project == m_pActiveProject;
     if (wasActive)
@@ -962,7 +968,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     delete project;
 //    if (refresh)
 //        RebuildTree();
-    if(!m_InitialDir.IsEmpty()) // Restore the working directory
+    if (!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
     m_IsClosingProject = isClosingOtherProjects;
     WorkspaceChanged();
@@ -1107,7 +1113,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
         SetProject(m_pProjects->Item(0), false);
 
-return m_pWorkspace && m_pWorkspace->IsOK();
+    return m_pWorkspace && m_pWorkspace->IsOK();
 }
 
 bool ProjectManager::SaveWorkspace()
@@ -1122,7 +1128,7 @@ bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
 
 bool ProjectManager::QueryCloseWorkspace()
 {
-    if(!m_pWorkspace)
+    if (!m_pWorkspace)
         return true;
 
     // don't ask to save the default workspace, if blank workspace is used on app startup
@@ -1143,7 +1149,7 @@ bool ProjectManager::QueryCloseWorkspace()
             default: break;
         }
     }
-    if(!QueryCloseAllProjects())
+    if (!QueryCloseAllProjects())
         return false;
     return true;
 }
@@ -1187,15 +1193,13 @@ bool ProjectManager::CloseWorkspace()
 // This function is static for your convenience :)
 bool ProjectManager::IsBusy()
 {
-    if(Manager::IsAppShuttingDown())
-    {
+    if (Manager::IsAppShuttingDown())
         return true;
-    }
+
     ProjectManager* projman = Manager::Get()->GetProjectManager();
-    if(!projman)
-    {
+    if (!projman)
         return true;
-    }
+
     return projman->IsLoadingOrClosing();
 }
 
@@ -1767,7 +1771,7 @@ void ProjectManager::OnTreeEndDrag(wxTreeEvent& event)
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {
     #ifdef USE_OPENFILES_TREE
-    if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
+    if (!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif
 
@@ -1830,10 +1834,10 @@ void ProjectManager::OnRightClick(wxCommandEvent& /*event*/)
 void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 {
     #ifdef USE_OPENFILES_TREE
-    if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
+    if (!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif
-    if(m_IsLoadingProject)
+    if (m_IsLoadingProject)
     {
         wxBell();
         return;
@@ -2161,19 +2165,15 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 void ProjectManager::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 {
     wxTreeItemId sel = m_pTree->GetSelection();
-    if(FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
+    if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if(cbProject* Project = ftd->GetProject())
+        if (cbProject* Project = ftd->GetProject())
         {
-            //TODO : does it make sense TO not save project file while compiling ??
-            if(m_IsLoadingProject || Project->GetCurrentlyCompilingTarget())
-            {
+            // TODO : does it make sense TO not save project file while compiling ??
+            if (m_IsLoadingProject || Project->GetCurrentlyCompilingTarget())
                 wxBell();
-            }
             else
-            {
                 SaveProject(Project);
-            }
         }
     }
 } // end of OnSaveProject
@@ -2185,12 +2185,10 @@ void ProjectManager::OnCloseProject(wxCommandEvent& WXUNUSED(event))
     cbProject *proj = 0;
     if (ftd)
         proj = ftd->GetProject();
-    if(proj)
+    if (proj)
     {
-        if(m_IsLoadingProject || proj->GetCurrentlyCompilingTarget())
-        {
+        if (m_IsLoadingProject || proj->GetCurrentlyCompilingTarget())
             wxBell();
-        }
         else
             CloseProject(proj);
     }
@@ -2202,14 +2200,12 @@ void ProjectManager::OnCloseProject(wxCommandEvent& WXUNUSED(event))
 void ProjectManager::OnSaveFile(wxCommandEvent& WXUNUSED(event))
 {
     wxTreeItemId sel = m_pTree->GetSelection();
-    if(FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
+    if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if(cbProject* Project = ftd->GetProject())
+        if (cbProject* Project = ftd->GetProject())
         {
-            if(ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
-            {
+            if (ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
                 Manager::Get()->GetEditorManager()->Save(File->file.GetFullPath());
-            }
         }
     }
 } // end of OnSaveFile
@@ -2219,12 +2215,10 @@ void ProjectManager::OnCloseFile(wxCommandEvent& WXUNUSED(event))
     wxTreeItemId sel = m_pTree->GetSelection();
     if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if(cbProject* Project = ftd->GetProject())
+        if (cbProject* Project = ftd->GetProject())
         {
-            if(ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
-            {
+            if (ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
                 Manager::Get()->GetEditorManager()->Close(File->file.GetFullPath());
-            }
         }
     }
 } // end of OnCloseFile
@@ -2296,10 +2290,8 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
 
 void ProjectManager::OnNotes(wxCommandEvent& WXUNUSED(event))
 {
-    if(cbProject* project = GetActiveProject())
-    {
+    if (cbProject* project = GetActiveProject())
         project->ShowNotes(false, true);
-    }
 }
 
 void ProjectManager::OnProperties(wxCommandEvent& event)
@@ -2331,16 +2323,16 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
         }
         // if project title has changed, update the appropriate tab tooltips
         wxString newTitle = project->GetTitle();
-        if(backupTitle != newTitle)
+        if (backupTitle != newTitle)
         {
             cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
-            if(nb)
+            if (nb)
             {
                 wxString toolTip;
-                for(size_t i = 0; i < nb->GetPageCount(); ++i)
+                for (size_t i = 0; i < nb->GetPageCount(); ++i)
                 {
                     toolTip = nb->GetPage(i)->GetName();
-                    if(toolTip.EndsWith(_("Project: ") + backupTitle))
+                    if (toolTip.EndsWith(_("Project: ") + backupTitle))
                     {
                         toolTip.Replace(_("Project: ") + backupTitle,_("Project: ") + newTitle);
                         nb->SetTabToolTip(nb->GetPage(i), toolTip);
@@ -2489,19 +2481,17 @@ wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId item = m_pTree->GetFirstChild(Node, cookie );
-    while( item.IsOk() )
+    while ( item.IsOk() )
     {
-        if( Search.IsSameAs( m_pTree->GetItemText( item ) ) )
+        if ( Search.IsSameAs( m_pTree->GetItemText( item ) ) )
         {
             return item;
         }
-        else if( m_pTree->ItemHasChildren( item ) )
+        else if ( m_pTree->ItemHasChildren( item ) )
         {
             wxTreeItemId SearchId = FindItem( item, Search );
-            if( SearchId.IsOk() )
-            {
+            if ( SearchId.IsOk() )
                 return SearchId;
-            }
         }
 
         item = m_pTree->GetNextChild(Node, cookie);
@@ -2513,13 +2503,13 @@ wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search
 void ProjectManager::OnFindFile(wxCommandEvent& /*event*/)
 {
     wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
-    if( !text.IsEmpty() )
+    if ( !text.IsEmpty() )
     {
         wxTreeItemId sel = m_pTree->GetSelection();
 
         wxTreeItemId found = FindItem( sel, text );
 
-        if( found.IsOk() )
+        if ( found.IsOk() )
         {
             m_pTree->UnselectAll();
             m_pTree->SelectItem( found );
@@ -2647,12 +2637,12 @@ void ProjectManager::OnRenameFile(wxCommandEvent& /*event*/)
 
     wxTextEntryDialog dlg(Manager::Get()->GetAppWindow(), _T("Please enter the new name:"), _T("Rename file"), name, wxOK | wxCANCEL | wxCENTRE);
     PlaceWindow(&dlg);
-    if(dlg.ShowModal() == wxID_OK)
+    if (dlg.ShowModal() == wxID_OK)
     {
         wxFileName fn(dlg.GetValue());
         wxString new_name = fn.GetFullName();
 
-        if(name != new_name)
+        if (name != new_name)
         {
         #ifdef __WXMSW__
             // only overwrite files, if the names are the same, but with different cases
@@ -2677,7 +2667,7 @@ void ProjectManager::WorkspaceChanged()
     // opening or closing a project, we cannot send the event yet.
     // Specifically, *DO NOT* send the event if the application hasn't been
     // initialized yet!!
-    if(!IsBusy() && m_CanSendWorkspaceChanged)
+    if (!IsBusy() && m_CanSendWorkspaceChanged)
     {
         CodeBlocksEvent event(cbEVT_WORKSPACE_CHANGED);
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
@@ -2686,29 +2676,29 @@ void ProjectManager::WorkspaceChanged()
 
 void ProjectManager::CheckForExternallyModifiedProjects()
 {
-    if(m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
+    if (m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
         return;
     m_isCheckingForExternallyModifiedProjects = true;
 
     // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
     // TODO : make sure the same project is the active one again
     ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
-    if( ProjectsArray* Projects = ProjectMgr->GetProjects())
+    if ( ProjectsArray* Projects = ProjectMgr->GetProjects())
     {
         bool reloadAll = false;
         // make a copy of all the pointers before we start messing with closing and opening projects
         // the hash (Projects) could change the order
         std::vector<cbProject*> ProjectPointers;
-        for(unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
+        for (unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
         {
             ProjectPointers.push_back(Projects->Item(idxProject));
         }
-        for(unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
+        for (unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
         {
             cbProject* pProject = ProjectPointers[idxProject];
             wxFileName fname(pProject->GetFilename());
             wxDateTime last = fname.GetModificationTime();
-            if(last.IsLaterThan(pProject->GetLastModificationTime()))
+            if (last.IsLaterThan(pProject->GetLastModificationTime()))
             {    // was modified -> reload
                 int ret = -1;
                 if (!reloadAll)
@@ -2723,20 +2713,16 @@ void ProjectManager::CheckForExternallyModifiedProjects()
                     ret = dlg.ShowModal();
                     reloadAll = ret == crAll;
                 }
-                if(reloadAll || ret == crYes)
+                if (reloadAll || ret == crYes)
                 {
                     wxString ProjectFileName = pProject->GetFilename();
                     ProjectMgr->CloseProject(pProject);
                     ProjectMgr->LoadProject(ProjectFileName);
                 }
                 else if (ret == crCancel)
-                {
                     break;
-                }
                 else if (ret == crNo)
-                {
                     pProject->Touch();
-                }
             }
         } // end for : idx : idxProject
     }
@@ -2847,7 +2833,7 @@ bool ProjectManager::BeginLoadingProject()
     if (m_IsLoadingProject)
         return false;
 
-    if(!Manager::Get()->GetPluginManager()->FindPluginByName(_T("Compiler")))
+    if (!Manager::Get()->GetPluginManager()->FindPluginByName(_T("Compiler")))
     {
         cbMessageBox(_("Deactivating the compiler plugin is most unwise.\n\nIf you intend to open a project, you have to re-activate the compiler plugin first."), _("Error"));
         return false;
@@ -3019,7 +3005,7 @@ void ProjectManager::OnKeyDown(wxTreeEvent& event)
 {
     const wxKeyEvent& key_event = event.GetKeyEvent();
 
-    if( Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0 &&
+    if ( Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0 &&
        (key_event.GetKeyCode() == WXK_DELETE || key_event.GetKeyCode() == WXK_NUMPAD_DELETE))
     {
         wxCommandEvent command(0, idMenuRemoveFilePopup);

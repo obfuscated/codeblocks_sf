@@ -49,7 +49,6 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<C
 		cbPlugin* GetPlugin() const { return m_pPlugin; }
 		void SetPlugin(cbPlugin* plugin){ m_pPlugin = plugin; }
 
-
 		int GetX() const { return m_X; }
 		void SetX(int x) { m_X = x; }
 

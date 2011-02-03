@@ -1183,8 +1183,9 @@ void CodeCompletion::GetAbsolutePath(const wxString& basePath, const wxArrayStri
 {
     for (size_t i = 0; i < targets.GetCount(); ++i)
     {
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(targets[i]);
-        wxFileName fn(targets[i], wxEmptyString);
+        wxString includePath = targets[i];
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(includePath);
+        wxFileName fn(includePath, wxEmptyString);
         if (fn.IsRelative())
         {
             const wxArrayString oldDirs = fn.GetDirs();

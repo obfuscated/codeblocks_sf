@@ -762,10 +762,10 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 
     // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
     // and/or by plugins, that use markers, like browsemarks-plugin
-    m_pControl->SetMarginMask(lineMargin, 0);
-    m_pControl->SetMarginMask(markerMargin, 0);
+    m_pControl->SetMarginMask(lineMargin,      0);
+    m_pControl->SetMarginMask(markerMargin,    0);
     m_pControl->SetMarginMask(changebarMargin, 0);
-    m_pControl->SetMarginMask(foldingMargin, 0);
+    m_pControl->SetMarginMask(foldingMargin,   0);
 
     SetEditorStyleBeforeFileOpen();
     m_IsOK = Open();
@@ -836,9 +836,8 @@ void cbEditor::SetModified(bool modified)
     {
         m_Modified = modified;
         if (!m_Modified)
-        {
             m_pControl->SetSavePoint();
-        }
+
         SetEditorTitle(m_Shortname);
         NotifyPlugins(cbEVT_EDITOR_MODIFIED);
         // visual state
@@ -878,10 +877,10 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
         m_pControl->ScrollToLine(m_pProjectFile->editorTopLine);
         m_pControl->ScrollToColumn(0);
         m_pControl->SetZoom(m_pProjectFile->editorZoom);
-        if(m_pProjectFile->editorSplit != (int)stNoSplit)
+        if (m_pProjectFile->editorSplit != (int)stNoSplit)
         {
             Split((SplitType)m_pProjectFile->editorSplit);
-            if(m_pControl2)
+            if (m_pControl2)
             {
                 m_pSplitter->SetSashPosition(m_pProjectFile->editorSplitPos);
                 m_pControl2->GotoPos(m_pProjectFile->editorPos_2);
@@ -1244,6 +1243,7 @@ void cbEditor::ApplyStyles(cbStyledTextCtrl* control)
 {
     if (!control)
         return;
+
     InternalSetEditorStyleBeforeFileOpen(control);
     InternalSetEditorStyleAfterFileOpen(control);
 
@@ -1404,16 +1404,16 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
-// Interpret #if/#else/#endif to grey out code that is not active
+    // Interpret #if/#else/#endif to grey out code that is not active
     control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), false) ? _T("1") : _T("0"));
 
-// code folding
+    // code folding
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
     {
-        control->SetProperty(_T("fold"), _T("1"));
-        control->SetProperty(_T("fold.html"), mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
-        control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
-        control->SetProperty(_T("fold.compact"), _T("0"));
+        control->SetProperty(_T("fold"),              _T("1"));
+        control->SetProperty(_T("fold.html"),         mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
+        control->SetProperty(_T("fold.comment"),      mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
+        control->SetProperty(_T("fold.compact"),      _T("0"));
         control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
 
         control->Colourise(0, -1);
@@ -1432,7 +1432,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetMarginWidth(foldingMargin, 0);
     }
 
-// line numbering
+    // line numbering
     control->SetMarginType(lineMargin, wxSCI_MARGIN_NUMBER);
 }
 
@@ -1633,7 +1633,6 @@ bool cbEditor::Open(bool detectEncoding)
     SetModified(false);
 
     NotifyPlugins(cbEVT_EDITOR_OPEN);
-
 
     if (m_pData->m_pFileLoader)
     {
@@ -1918,7 +1917,7 @@ bool cbEditor::DoFoldLine(int line, int fold)
 
         // If a fold/unfold request is issued when the block is already
         // folded/unfolded, ignore the request.
-        if (fold == 0 && IsExpanded) return true;
+        if (fold == 0 &&  IsExpanded) return true;
         if (fold == 1 && !IsExpanded) return true;
 
         // Apply the folding level limit only if the current block will be
@@ -2039,9 +2038,14 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
 
     if (centerOnScreen)
     {
-        int onScreen = control->LinesOnScreen() >> 1;
-        control->GotoLine(line - onScreen);
-        control->GotoLine(line + onScreen);
+        int linesOnScreen    = control->LinesOnScreen() >> 1;
+        int firstVisibleLine = control->GetFirstVisibleLine();
+        if (   (line <  firstVisibleLine)
+            || (line > (firstVisibleLine + 2*linesOnScreen)) )
+        {
+            control->GotoLine(line - linesOnScreen);
+            control->GotoLine(line + linesOnScreen);
+        }
     }
     control->GotoLine(line);
 }

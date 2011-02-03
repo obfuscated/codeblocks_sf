@@ -473,7 +473,6 @@ private:
     /** save the Tokenstree data to hard disk*/
     bool SaveCachedData(const wxString& projectFilename);
 
-
     // event handliers
     /** do nothing*/
     void OnThreadStart(wxCommandEvent& event);

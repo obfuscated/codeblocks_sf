@@ -40,7 +40,7 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*
     btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
     btnRemove = (wxButton*)FindWindow(XRCID("ID_BUTTON3"));
     lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLISTBOX1"));
-    
+
     Connect(XRCID("ID_LISTBOX1"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
     Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
     Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);

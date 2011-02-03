@@ -94,14 +94,14 @@ void EditorBase::InitFilename(const wxString& filename)
     for (unsigned int i = 0; i < projects->GetCount(); ++i)
     {
         prj = projects->Item(i);
-        if(prj->GetFileByFilename(toolTip, false))
+        if (prj->GetFileByFilename(toolTip, false))
         {
             toolTip += _("\nProject: ") + prj->GetTitle();
             break;
         }
     }
     cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
-    if(nb)
+    if (nb)
         nb->SetTabToolTip(this, toolTip);
 
     //    Manager::Get()->GetLogManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());

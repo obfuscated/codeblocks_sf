@@ -18,10 +18,10 @@ WX_DEFINE_ARRAY_PTR(cbAuiNotebook*,cbAuiNotebookArray);
 /** \brief A notebook class
   * This class is derived from wxAuiNotebook, to enhance its abilities.
   * It adds the ability to store (and restore) the visible tab-order, because
-  * auinotebook-tabs can be reordered with drag and drop.
+  * wxAuiNotebook-tabs can be reordered with drag and drop.
   * Another added feature is the possibility to add tooltips to the tabs belonging
   * to added panes.
- */
+  */
 class cbAuiNotebook : public wxAuiNotebook
 {
     public:
@@ -32,7 +32,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param pos the position
          * \param size the size
          * \param style the notebook style
-         *
          */
         cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxAUI_NB_DEFAULT_STYLE);
         /** cbAuiNotebook destructor  */
@@ -49,7 +48,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \return wxString the serialized layout
          * @remarks Not used at the moment, because it's not (yet) possible to restore the layout,
          * due to limitations of the base class.
-         *
          */
         wxString SavePerspective();
         /** \brief Loads serialized notebook layout
@@ -58,14 +56,13 @@ class cbAuiNotebook : public wxAuiNotebook
          * @remarks Not implemented. Don't use it.
          *
          */
-        bool LoadPerspective(const wxString& layout){return false;}
+        bool LoadPerspective(const wxString& layout) {return false;};
         /** \brief Get the tab position
          *
          * Returns the position of the tab as it is visible.
          * Starts with 0
          * \param index the index of the tab in order of creation
          * \return int the visible position
-         *
          */
         int GetTabPositionFromIndex(int index);
         /** \brief Set a tab tooltip
@@ -74,9 +71,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * Starts the dwell timer and the stopwatch if it is not already done.
          * \param win the pane that belongs to the tab
          * \param msg the tooltip
-         * \return void
          * @remarks Uses the name of the wxWindow to store the message
-         *
          */
         void SetTabToolTip(wxWindow* win, wxString msg);
         /** \brief Allow tooltips
@@ -84,16 +79,12 @@ class cbAuiNotebook : public wxAuiNotebook
          * Allows or forbids tooltips.
          * Cancels already shown tooltips, if allow is false
          * \param allow if false toltips are not allowed
-         * \return void
-         *
          */
         void AllowToolTips(bool allow = true);
         /** \brief Minmize free horizontal page
          *
          * Moves the active tab of all tabCtrl's to the rightmost place,
          * to show as many tabs as possible.
-         * \return void
-         *
          */
         void MinimizeFreeSpace();
         /** \brief Delete Page
@@ -104,7 +95,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * has to be called manually, so we can handle it ourselves.
          * \param The index of the tab to be closed
          * \return true if successfull
-         *
          */
         bool DeletePage(size_t page);
         /** \brief Remove Page
@@ -115,7 +105,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * has to be called manually, so we can handle it ourselves.
          * \param The index of the tab to be closed
          * \return true if successfull
-         *
          */
         bool RemovePage(size_t page);
         /** \brief Move page
@@ -124,7 +113,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param page The page to move (e.g. cbEditor*)
          * \param new_idx The index the page should be moved to
          * \return true if successfull
-         *
          */
         bool MovePage(wxWindow* page, size_t new_idx);
         /** \brief Set zoomfactor for builtin editors
@@ -132,8 +120,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * Sets the zoomfactor for all visible builtin
          * editors.
          * \param zoom zoomfactor to use
-         * \return void
-         *
          */
         void SetZoom(int zoom);
     protected:
@@ -142,17 +128,13 @@ class cbAuiNotebook : public wxAuiNotebook
          * Moves the active tab of tabCtrl to the rightmost place,
          * to show as many tabs as possible.
          * \param tabCtrl The tabCtrl to act on
-         * \return void
-         *
          */
         void MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl);
         /** \brief Handle the navigation key event
          *
          * Tries to handle the navigation key-event and use "our" AdvanceSelection().
          * \param event
-         * \return void
          * @remarks Works not reliable, due to OS/wxWidgets-limitations
-         *
          */
 #if wxCHECK_VERSION(2, 9, 0)
         void OnNavigationKeyNotebook(wxNavigationKeyEvent& event);
@@ -162,15 +144,11 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief OnIdle
          *
          * \param event unused
-         * \return void
-         *
          */
         void OnIdle(wxIdleEvent& /*event*/);
         /** \brief Check whether the mouse is over a tab
          *
          * \param event unused
-         * \return void
-         *
          */
         void OnDwellTimerTrigger(wxTimerEvent& /*event*/);
         /** \brief Catch doubleclick-events from wxTabCtrl
@@ -179,8 +157,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * event-Id is the notebook-Id, event-object is the pointer to the window the
          * tab belongs to.
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void OnTabCtrlDblClick(wxMouseEvent& event);
         /** \brief Catch mousewheel-events from wxTabCtrl
@@ -189,23 +165,17 @@ class cbAuiNotebook : public wxAuiNotebook
          * event-Id is the notebook-Id, event-object is the pointer to the window the
          * tab belongs to.
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void OnTabCtrlMouseWheel(wxMouseEvent& event);
         /** \brief Catch mousewheel-events from tooltipwindow
          *
          * Closes Tooltip.
          * \param event the tipwindow, that sends the event
-         * \return void
-         *
          */
         void OnToolTipMouseWheel(wxMouseEvent& event);
         /** \brief Catch resize-events and call MinimizeFreeSpace()
          *
          * \param event unused
-         * \return void
-         *
          */
         void OnResize(wxSizeEvent& event);
 #ifdef __WXMSW__
@@ -214,15 +184,11 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          * Set focus on wxTabCtrl
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void OnEnterTabCtrl(wxMouseEvent& event);
         /** \brief Catch mouseleave-events from wxTabCtrl
          *
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void OnLeaveTabCtrl(wxMouseEvent& event);
         /** \brief Checks the old focus
@@ -233,49 +199,33 @@ class cbAuiNotebook : public wxAuiNotebook
          * because we get a crash otherwise.
          * \param page The page to check against
          * \return bool
-         *
          */
         bool IsFocusStored(wxWindow* page);
         /** \brief Save old focus
          *
          * Save old focus and tab-selection,
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void StoreFocus();
         /** \brief Restore old focus
          *
          * Restore old focus or set the focus on the activated tab
          * \param event holds the wxTabCtrl, that sends the event
-         * \return void
-         *
          */
         void RestoreFocus();
 #endif // #ifdef __WXMSW__
         /** \brief Reset tabctrl events
-         *
-         * \return void
-         *
          */
         void ResetTabCtrlEvents();
         /** \brief Updates the array, that holds the wxTabCtrls
-         *
-         * \return void
-         *
          */
         void UpdateTabControlsArray();
         /** \brief Shows tooltip for win
          *
          * \param win
-         * \return void
-         *
          */
         void ShowToolTip(wxWindow* win);
         /** \brief Cancels tooltip
-         *
-         * \return void
-         *
          */
         void CancelToolTip();
         /** \brief Check for pressed modifier-keys
@@ -284,7 +234,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * or not
          * \param keyModifier wxSTring containing the modifier(s) to check for
          * \return true If all modifier-keys are pressed
-         *
          */
         bool CheckKeyModifier();
         /** \brief Holds the wxTabCtrls used by the notebook
@@ -351,59 +300,43 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Enable or disable tabtooltips globally
          *
          * \param use If true tooltips are allowed
-         * \return void
-         *
          */
         static void UseToolTips(bool use = true);
         /** \brief Set the time before a tab-tooltip kicks in
          *
          * \param time The dwell time
-         * \return void
-         *
          */
         static void SetDwellTime(long time = 1000);
         /** \brief Enable or disable tab-scrolling with mousewheel
          *
          * \param allow If true scrolling is allowed
-         * \return void
-         *
          */
         static void AllowScrolling(bool allow = true);
         /** \brief Setss the modifier keys for scrolling
-         *
          */
         static void SetModKeys(wxString keys = _T("Strg"));
         /** \brief Use modkey to advance through tabs with mousewheel
-         *
          */
         static void UseModToAdvance(bool use = false);
     protected:
         /** \brief Enable or disable tab tooltips
-         *
          */
         static bool s_UseTabTooltips;
         /** \brief Tab tooltip dwell time
-         *
          */
         static long s_DwellTime;
         /** \brief Enable or disable scrolling tabs with mousewheel
-         *
          */
         static bool s_AllowMousewheel;
         /** \brief Holds an array of all existing cbAuiNotebooks
-         *
          */
         static cbAuiNotebookArray s_cbAuiNotebookArray;
         /** \brief Holds the modifier keys for scrolling
-         *
          */
         static wxString s_modKeys;
         /** \brief Use modkey to advance through tabs with mousewheel
-         *
          */
         static bool s_modToAdvance;
-
-
 
         DECLARE_EVENT_TABLE()
 };

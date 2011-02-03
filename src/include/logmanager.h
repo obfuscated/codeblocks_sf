@@ -84,8 +84,6 @@ public:
         LogSlot& Slot(int i);
         size_t FindIndex(Logger* l);
 
-
-
         /* ------------------------------------------------------------------------------------------------------
          * Logging functions
          * ------------------------------------------------------------------------------------------------------
@@ -116,16 +114,13 @@ public:
 
         void ClearLog(int i) { ClearLogInternal(i); };
 
-
-
-
         /* ------------------------------------------------------------------------------------------------------
          * Logger registry and RTTI
          * ------------------------------------------------------------------------------------------------------
          * These functions allow to obtain a list of names for all generic Loggers that are presently available
          * and to create a new Logger by name without knowing the type at compile time.
          *
-         *   logptr = LogManager::Get()->New(_T("stdout"));     // does exactly the same as
+         *   logptr = LogManager::Get()->New(_T("stdout"));  // does exactly the same as
          *   logptr = new StdoutLogger();
          *
          * You normally do not need to worry about creating Loggers. Only ever consider using these functions if you
@@ -140,8 +135,6 @@ public:
          */
         void Register(const wxString& name, InstantiatorBase* ins);
 
-
-
         /* ------------------------------------------------------------------------------------------------------
          *  Unless your name is "main.cpp" by any chance, you don't ever need to call this.
          *  If you use it, and your name is not "main.cpp", then you better come up with a good excuse, if someone asks.
@@ -149,7 +142,6 @@ public:
          */
         void NotifyUpdate();
 };
-
 
 #endif
 

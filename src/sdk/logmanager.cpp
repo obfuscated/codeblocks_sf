@@ -50,9 +50,7 @@ Logger* LogSlot::GetLogger() const
     return log;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
-
 
 LogManager::LogManager()
 {
@@ -74,7 +72,6 @@ LogManager::LogManager()
     Register(_T("text"),   new Instantiator<TextCtrlLogger>);
     Register(_T("file"),   new Instantiator<FileLogger, true>);
 }
-
 
 LogManager::~LogManager()
 {
@@ -105,7 +102,6 @@ size_t LogManager::SetLog(Logger* l, int i)
     return index;
 }
 
-
 void LogManager::NotifyUpdate()
 {
     for(size_t i = 0; i < max_logs; ++i)
@@ -133,9 +129,6 @@ size_t LogManager::FindIndex(Logger* l)
     }
     return invalid_log;
 }
-
-
-
 
 wxArrayString LogManager::ListAvailable()
 {
@@ -182,5 +175,3 @@ void LogManager::Panic(const wxString& msg, const wxString& component)
 
     wxSafeShowMessage(title, msg);
 };
-
-

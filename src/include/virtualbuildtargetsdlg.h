@@ -23,41 +23,41 @@ class cbProject;
 
 class VirtualBuildTargetsDlg: public wxScrollingDialog
 {
-	public:
+    public:
 
-		VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project);
-		virtual ~VirtualBuildTargetsDlg();
+        VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project);
+        virtual ~VirtualBuildTargetsDlg();
 
-		//(*Identifiers(VirtualBuildTargetsDlg)
-		//*)
+        //(*Identifiers(VirtualBuildTargetsDlg)
+        //*)
 
-	protected:
+    protected:
 
-		//(*Handlers(VirtualBuildTargetsDlg)
-		void OnAddClick(wxCommandEvent& event);
-		void OnEditClick(wxCommandEvent& event);
-		void OnRemoveClick(wxCommandEvent& event);
-		void OnAliasesSelect(wxCommandEvent& event);
-		void OnTargetsToggled(wxCommandEvent& event);
-		//*)
+        //(*Handlers(VirtualBuildTargetsDlg)
+        void OnAddClick(wxCommandEvent& event);
+        void OnEditClick(wxCommandEvent& event);
+        void OnRemoveClick(wxCommandEvent& event);
+        void OnAliasesSelect(wxCommandEvent& event);
+        void OnTargetsToggled(wxCommandEvent& event);
+        //*)
 
-		void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
 
-		//(*Declarations(VirtualBuildTargetsDlg)
-		wxListBox* lstAliases;
-		wxButton* btnAdd;
-		wxButton* btnRemove;
-		wxButton* btnEdit;
-		wxCheckListBox* lstTargets;
-		//*)
+        //(*Declarations(VirtualBuildTargetsDlg)
+        wxListBox* lstAliases;
+        wxButton* btnAdd;
+        wxButton* btnRemove;
+        wxButton* btnEdit;
+        wxCheckListBox* lstTargets;
+        //*)
 
         void SetVirtualTarget(const wxString& targetName);
         void CheckTargets();
-		cbProject* m_pProject;
+        cbProject* m_pProject;
 
-	private:
+    private:
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

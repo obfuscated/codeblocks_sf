@@ -35,7 +35,7 @@
 			<Add option="-DCC_PARSER_TEST" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll\mswu" />
-			<Add directory="..\..\..\..\src\include" />
+			<Add directory="..\..\..\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -47,7 +47,7 @@
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
-			<Add directory="..\..\..\..\src\devel" />
+			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="expression.cpp" />

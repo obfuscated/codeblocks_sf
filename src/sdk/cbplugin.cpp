@@ -28,7 +28,7 @@ cbPlugin::cbPlugin()
     : m_Type(ptNone),
     m_IsAttached(false)
 {
-	SetEvtHandlerEnabled(false);
+    SetEvtHandlerEnabled(false);
 }
 
 cbPlugin::~cbPlugin()
@@ -37,48 +37,48 @@ cbPlugin::~cbPlugin()
 
 void cbPlugin::Attach()
 {
-	if (m_IsAttached)
-		return;
+    if (m_IsAttached)
+        return;
     wxWindow* window = Manager::Get()->GetAppWindow();
     if (window)
     {
-		// push ourself in the application's event handling chain...
+        // push ourself in the application's event handling chain...
         window->PushEventHandler(this);
     }
     m_IsAttached = true;
-	OnAttach();
-	SetEvtHandlerEnabled(true);
+    OnAttach();
+    SetEvtHandlerEnabled(true);
 
-	CodeBlocksEvent event(cbEVT_PLUGIN_ATTACHED);
-	event.SetPlugin(this);
-	// post event in the host's event queue
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PLUGIN_ATTACHED);
+    event.SetPlugin(this);
+    // post event in the host's event queue
+    Manager::Get()->ProcessEvent(event);
 }
 
 void cbPlugin::Release(bool appShutDown)
 {
-	if (!m_IsAttached)
-		return;
-	m_IsAttached = false;
-	SetEvtHandlerEnabled(false);
-	OnRelease(appShutDown);
+    if (!m_IsAttached)
+        return;
+    m_IsAttached = false;
+    SetEvtHandlerEnabled(false);
+    OnRelease(appShutDown);
 
-	CodeBlocksEvent event(cbEVT_PLUGIN_RELEASED);
-	event.SetPlugin(this);
-	// ask the host to process this event immediately
-	// it must be done this way, because if the host references
-	// us (through event.GetEventObject()), we might not be valid at that time
-	// (while, now, we are...)
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PLUGIN_RELEASED);
+    event.SetPlugin(this);
+    // ask the host to process this event immediately
+    // it must be done this way, because if the host references
+    // us (through event.GetEventObject()), we might not be valid at that time
+    // (while, now, we are...)
+    Manager::Get()->ProcessEvent(event);
 
-	if (appShutDown)
+    if (appShutDown)
         return; // nothing more to do, if the app is shutting down
 
     wxWindow* window = Manager::Get()->GetAppWindow();
     if (window)
     {
-		// remove ourself from the application's event handling chain...
-		window->RemoveEventHandler(this);
+        // remove ourself from the application's event handling chain...
+        window->RemoveEventHandler(this);
     }
 }
 

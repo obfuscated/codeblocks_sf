@@ -81,31 +81,47 @@ const static wxString gMinimalLayout = _T("Code::Blocks minimal");
 static wxString gMinimalLayoutData; // this will keep the "hardcoded" default layout
 static wxString gMinimalMessagePaneLayoutData; // this will keep default layout
 
-// In <wx/defs.h> wxFILE_ID[X] exists only from 1..9, so add another few here
-// Index starts with "1"
-int wxID_FILE10 = wxNewId(); // Another few for recent files...
-int wxID_FILE11 = wxNewId();
-int wxID_FILE12 = wxNewId();
-int wxID_FILE13 = wxNewId();
-int wxID_FILE14 = wxNewId();
-int wxID_FILE15 = wxNewId();
-int wxID_FILE16 = wxNewId();
-int wxID_FILE17 = wxNewId(); // Starting here for recent projects...
-int wxID_FILE18 = wxNewId();
-int wxID_FILE19 = wxNewId();
-int wxID_FILE20 = wxNewId();
-int wxID_FILE21 = wxNewId();
-int wxID_FILE22 = wxNewId();
-int wxID_FILE23 = wxNewId();
-int wxID_FILE24 = wxNewId();
-int wxID_FILE25 = wxNewId();
-int wxID_FILE26 = wxNewId();
-int wxID_FILE27 = wxNewId();
-int wxID_FILE28 = wxNewId();
-int wxID_FILE29 = wxNewId();
-int wxID_FILE30 = wxNewId();
-int wxID_FILE31 = wxNewId();
-int wxID_FILE32 = wxNewId();
+// In <wx/defs.h> wxID_FILE[X] exists only from 1..9,
+// so create our own here with a *continuous* numbering!
+// The wxID_FILE[X] enum usually starts at 5050 until 5059,
+// followed by wxID_OK starting at 5100. (wxWidgets v2.6, v2.8 and v2.9)
+// so we use the space in between starting from 5060
+// and hoping it doesn't change too much in <wx/defs.h> ;-)
+enum
+{
+    wxID_CBFILE01   = 5060, // Recent files...
+    wxID_CBFILE02, // 5061
+    wxID_CBFILE03, // 5062
+    wxID_CBFILE04, // 5063
+    wxID_CBFILE05, // 5064
+    wxID_CBFILE06, // 5065
+    wxID_CBFILE07, // 5066
+    wxID_CBFILE08, // 5067
+    wxID_CBFILE09, // 5068
+    wxID_CBFILE10, // 5069
+    wxID_CBFILE11, // 5070
+    wxID_CBFILE12, // 5071
+    wxID_CBFILE13, // 5072
+    wxID_CBFILE14, // 5073
+    wxID_CBFILE15, // 5074
+    wxID_CBFILE16, // 5075
+    wxID_CBFILE17, // 5076  // Starting here for recent projects...
+    wxID_CBFILE18, // 5077
+    wxID_CBFILE19, // 5078
+    wxID_CBFILE20, // 5079
+    wxID_CBFILE21, // 5080
+    wxID_CBFILE22, // 5081
+    wxID_CBFILE23, // 5082
+    wxID_CBFILE24, // 5083
+    wxID_CBFILE25, // 5084
+    wxID_CBFILE26, // 5085
+    wxID_CBFILE27, // 5086
+    wxID_CBFILE28, // 5087
+    wxID_CBFILE29, // 5088
+    wxID_CBFILE30, // 5089
+    wxID_CBFILE31, // 5090
+    wxID_CBFILE32  // 5091
+};
 
 int idToolNew = XRCID("idToolNew");
 int idFileNew = XRCID("idFileNew");
@@ -337,8 +353,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
     EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
     EVT_MENU(idFileOpenRecentFileClearHistory, MainFrame::OnFileOpenRecentClearHistory)
-    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE16, MainFrame::OnFileReopen)
-    EVT_MENU_RANGE(wxID_FILE17, wxID_FILE32, MainFrame::OnFileReopenProject)
+    EVT_MENU_RANGE(wxID_CBFILE01, wxID_CBFILE16, MainFrame::OnFileReopen)
+    EVT_MENU_RANGE(wxID_CBFILE17, wxID_CBFILE32, MainFrame::OnFileReopenProject)
     EVT_MENU(idFileImportProjectDevCpp,  MainFrame::OnFileImportProjectDevCpp)
     EVT_MENU(idFileImportProjectMSVC,  MainFrame::OnFileImportProjectMSVC)
     EVT_MENU(idFileImportProjectMSVCWksp,  MainFrame::OnFileImportProjectMSVCWksp)
@@ -478,7 +494,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pCloseFullScreenBtn(0L),
        m_pEdMan(0L),
        m_pPrjMan(0L),
-       m_pMsgMan(0L),
+       m_pLogMan(0L),
        m_pInfoPane(0L),
        m_pToolbar(0L),
        m_ToolsMenu(0L),
@@ -499,14 +515,13 @@ MainFrame::MainFrame(wxWindow* parent)
 
     // Accelerator table
     wxAcceleratorEntry entries[7];
-
     entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
-    entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4, idFileCloseAll);
-    entries[2].Set(wxACCEL_CTRL,  (int) 'W', idFileClose);
-    entries[3].Set(wxACCEL_CTRL,  WXK_F4, idFileClose);
-    entries[4].Set(wxACCEL_CTRL,  WXK_F6, idFileNext);
-    entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6, idFilePrev);
-    entries[6].Set(wxACCEL_SHIFT,  WXK_TAB, idShiftTab);
+    entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
+    entries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
+    entries[3].Set(wxACCEL_CTRL,                  WXK_F4,    idFileClose);
+    entries[4].Set(wxACCEL_CTRL,                  WXK_F6,    idFileNext);
+    entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
+    entries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
     m_pAccel = new wxAcceleratorTable(7, entries);
 
     this->SetAcceleratorTable(*m_pAccel);
@@ -552,9 +567,7 @@ MainFrame::MainFrame(wxWindow* parent)
     {
         wxAuiPaneInfo& info = panes[i];
         if (!(info.name == _T("MainPane")))
-        {
             info.Hide();
-        }
     }
     gMinimalLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
     gMinimalMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
@@ -657,9 +670,9 @@ void MainFrame::CreateIDE()
 
     CreateMenubar();
 
-    m_pEdMan = Manager::Get()->GetEditorManager();
+    m_pEdMan  = Manager::Get()->GetEditorManager();
     m_pPrjMan = Manager::Get()->GetProjectManager();
-    m_pMsgMan = Manager::Get()->GetLogManager();
+    m_pLogMan = Manager::Get()->GetLogManager();
 
     CreateToolbars();
     SetToolBar(0);
@@ -1580,7 +1593,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
     wxFileName fname(filename);
     fname.ClearExt();
     fname.SetExt(_T("cbp"));
-    switch(FileTypeOf(filename))
+    switch (FileTypeOf(filename))
     {
         //
         // Workspace
@@ -1591,25 +1604,19 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 return true;
             else
             {
-                if(DoCloseCurrentWorkspace())
+                if (DoCloseCurrentWorkspace())
                 {
                     wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                     ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
                     bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
                     if (!ret)
-                    {
                         ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
-                    }
                     else if (addToHistory)
-                    {
                         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
-                    }
                     return ret;
                 }
                 else
-                {
                     return false;
-                }
             }
             break;
 
@@ -1742,9 +1749,9 @@ void MainFrame::DoUpdateStatusBar()
         int panel = 0;
         int pos = ed->GetControl()->GetCurrentPos();
         wxString msg;
-        msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
         SetStatusText(ed->GetFilename(), panel++);
         SetStatusText(ed->GetEncodingName(), panel++);
+        msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
         #if wxCHECK_VERSION(2, 9, 0)
@@ -2082,7 +2089,7 @@ void MainFrame::InitializeRecentFilesHistory()
     int pos = mbar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
     {
-        m_pFilesHistory = new wxFileHistory(16, wxID_FILE1);
+        m_pFilesHistory = new wxFileHistory(16, wxID_CBFILE01);
 
         wxMenu* menu = mbar->GetMenu(pos);
         if (!menu)
@@ -2104,7 +2111,7 @@ void MainFrame::InitializeRecentFilesHistory()
                 recentFiles->InsertSeparator(0);
                 for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
                 {
-                    recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_FILE1 + i,
+                    recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_CBFILE01 + i,
                         wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
                 }
             }
@@ -2113,7 +2120,7 @@ void MainFrame::InitializeRecentFilesHistory()
         menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
         if (recentProjects)
         {
-            m_pProjectsHistory = new wxFileHistory(16, wxID_FILE17);
+            m_pProjectsHistory = new wxFileHistory(16, wxID_CBFILE17);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
@@ -2126,7 +2133,7 @@ void MainFrame::InitializeRecentFilesHistory()
                 recentProjects->InsertSeparator(0);
                 for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
                 {
-                    recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE17 + i,
+                    recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_CBFILE17 + i,
                         wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
                 }
             }
@@ -2182,7 +2189,7 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
             recentFiles->InsertSeparator(0);
             for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
             {
-                recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_FILE1 + i,
+                recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_CBFILE01 + i,
                     wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
             }
         }
@@ -2242,7 +2249,7 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
             recentProjects->InsertSeparator(0);
             for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
             {
-                recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE17 + i,
+                recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_CBFILE17 + i,
                     wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
             }
         }
@@ -2606,7 +2613,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
-    size_t id = event.GetId() - wxID_FILE17;
+    size_t id = event.GetId() - wxID_CBFILE17;
     wxString fname = m_pProjectsHistory->GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
@@ -2631,7 +2638,7 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFileReopen(wxCommandEvent& event)
 {
-    size_t id = event.GetId() - wxID_FILE1;
+    size_t id = event.GetId() - wxID_CBFILE01;
     wxString fname = m_pFilesHistory->GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
@@ -3731,17 +3738,13 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& /*event*/)
 
 void MainFrame::OnNotebookDoubleClick(CodeBlocksEvent& /*event*/)
 {
-    if(m_LastLayoutName == gMinimalLayout)
-    {
+    if (m_LastLayoutName == gMinimalLayout)
         LoadViewLayout(m_PreviousLayoutName.IsEmpty()?Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/environment/view/layout_to_toggle"),gDefaultLayout):m_PreviousLayoutName);
-    }
     else
     {
         ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-        if(cfg->ReadBool(_T("/environment/view/dbl_clk_maximize"), true))
-        {
+        if (cfg->ReadBool(_T("/environment/view/dbl_clk_maximize"), true))
             LoadViewLayout(gMinimalLayout);
-        }
     }
 }
 
@@ -4149,7 +4152,8 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFocusEditor(wxCommandEvent& /*event*/)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
+    EditorManager* edman = Manager::Get()->GetEditorManager();
+    cbEditor* ed = edman ? edman->GetBuiltinEditor(edman->GetActiveEditor()) : 0;
     if (ed)
         ed->GetControl()->SetFocus();
 }
@@ -4434,12 +4438,12 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
     info.Caption(event.title.IsEmpty() ? name : event.title);
     switch (event.dockSide)
     {
-        case CodeBlocksDockEvent::dsLeft: info.Left(); break;
-        case CodeBlocksDockEvent::dsRight: info.Right(); break;
-        case CodeBlocksDockEvent::dsTop: info.Top(); break;
-        case CodeBlocksDockEvent::dsBottom: info.Bottom(); break;
-        case CodeBlocksDockEvent::dsFloating: info.Float(); break;
-        default: break;
+        case CodeBlocksDockEvent::dsLeft:     info.Left();   break;
+        case CodeBlocksDockEvent::dsRight:    info.Right();  break;
+        case CodeBlocksDockEvent::dsTop:      info.Top();    break;
+        case CodeBlocksDockEvent::dsBottom:   info.Bottom(); break;
+        case CodeBlocksDockEvent::dsFloating: info.Float();  break;
+        default:                                             break;
     }
     info.Show(event.shown);
     info.BestSize(event.desiredSize);

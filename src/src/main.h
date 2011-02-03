@@ -313,10 +313,10 @@ class MainFrame : public wxFrame
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
 
-        EditorManager* m_pEdMan;
+        EditorManager*  m_pEdMan;
         ProjectManager* m_pPrjMan;
-        LogManager* m_pMsgMan;
-        InfoPane *m_pInfoPane;
+        LogManager*     m_pLogMan;
+        InfoPane*       m_pInfoPane;
 
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;
@@ -332,12 +332,11 @@ class MainFrame : public wxFrame
 
         int m_AutoHideLockCounter;
 
+        wxString m_PreviousLayoutName;
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
         wxString m_LastMessagePaneLayoutData;
         bool m_LastLayoutIsTemp;
-
-        wxString m_PreviousLayoutName;
 
         wxWindow* m_pScriptConsole;
 

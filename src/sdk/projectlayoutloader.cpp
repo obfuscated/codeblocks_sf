@@ -111,7 +111,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
                 pf->editorOpen = getInt != 0;
             if (elem->QueryIntAttribute("top", &getInt) == TIXML_SUCCESS)
             {
-                if(getInt)
+                if (getInt)
                     m_TopProjectFile = pf;
             }
             if (elem->QueryIntAttribute("tabpos", &getInt) == TIXML_SUCCESS)
@@ -134,7 +134,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
                     pf->editorPos = getInt;
                 if (cursor->QueryIntAttribute("topLine", &getInt) == TIXML_SUCCESS)
                     pf->editorTopLine = getInt;
-                if(pf->editorSplit != cbEditor::stNoSplit)
+                if (pf->editorSplit != cbEditor::stNoSplit)
                 {
                     cursor = cursor->NextSiblingElement();
                     if (cursor)

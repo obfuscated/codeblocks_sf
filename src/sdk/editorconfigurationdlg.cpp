@@ -511,6 +511,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
         ApplyColours();
     }
 }
+
 void EditorConfigurationDlg::OnCaretStyle(wxCommandEvent& event)
 {
     XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->Enable(XRCCTRL(*this, "lstCaretStyle", wxChoice)->GetSelection() == wxSCI_CARETSTYLE_LINE);
