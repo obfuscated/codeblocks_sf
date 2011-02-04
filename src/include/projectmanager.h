@@ -56,7 +56,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         const FilesGroupsAndMasks* GetFilesGroupsAndMasks() const { return m_pFileGroups; }
 
-        // Can the app shutdown? (actually: is ProjectManager busy at the moment?)
+        /// Can the app shutdown? (actually: is ProjectManager busy at the moment?)
         static bool CanShutdown(){ return s_CanShutdown; }
         /// Application menu creation. Called by the application only.
         static void CreateMenu(wxMenuBar* menuBar);
@@ -309,7 +309,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         cbWorkspace* GetWorkspace();
 
-
         /** @brief Adds a project as a dependency of another project.
           * Projects inside workspaces allow you to set dependencies between them.
           * When project A depends on project B, this means that before building
@@ -348,7 +347,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return True if circular dependency is detected, false if it isn't.
           */
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
-
 
         /// Rebuild the project manager's tree.
         void RebuildTree();

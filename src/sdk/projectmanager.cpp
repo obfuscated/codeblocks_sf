@@ -1027,9 +1027,12 @@ bool ProjectManager::SaveAllProjects()
     for (int i = 0; i < prjCount; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
-        bool isModified = project->GetModified();
-        if (isModified && SaveProject(project))
-            ++count;
+        if (project)
+        {
+            bool isModified = project->GetModified();
+            if (isModified && SaveProject(project))
+                ++count;
+        }
     }
     UnfreezeTree(true);
     return count == prjCount;
@@ -1384,28 +1387,31 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     if (!project)
         project = GetActiveProject();
 
-    project->BeginAddFiles();
-
-    wxArrayString addedFiles; // to know which files were added succesfully
-    for (unsigned int i = 0; i < filelist.GetCount(); ++i)
+    if (project)
     {
-        if (DoAddFileToProject(filelist[i], project, targets) != 0)
-            addedFiles.Add(filelist[i]);
-        progress.Update(i);
-    }
+        project->BeginAddFiles();
 
-    if (addedFiles.GetCount() != 0)
-    {
-        for (unsigned int i = 0; i < addedFiles.GetCount(); ++i)
+        wxArrayString addedFiles; // to know which files were added succesfully
+        for (unsigned int i = 0; i < filelist.GetCount(); ++i)
         {
-            CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
-            event.SetProject(project);
-            event.SetString(addedFiles[i]);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+            if (DoAddFileToProject(filelist[i], project, targets) != 0)
+                addedFiles.Add(filelist[i]);
+            progress.Update(i);
         }
-    }
 
-    project->EndAddFiles();
+        if (addedFiles.GetCount() != 0)
+        {
+            for (unsigned int i = 0; i < addedFiles.GetCount(); ++i)
+            {
+                CodeBlocksEvent event(cbEVT_PROJECT_FILE_ADDED);
+                event.SetProject(project);
+                event.SetString(addedFiles[i]);
+                Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+            }
+        }
+
+        project->EndAddFiles();
+    }
 
     return targets.GetCount();
 }
@@ -2290,7 +2296,8 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
 
 void ProjectManager::OnNotes(wxCommandEvent& WXUNUSED(event))
 {
-    if (cbProject* project = GetActiveProject())
+    cbProject* project = GetActiveProject();
+    if (project)
         project->ShowNotes(false, true);
 }
 
@@ -3005,8 +3012,11 @@ void ProjectManager::OnKeyDown(wxTreeEvent& event)
 {
     const wxKeyEvent& key_event = event.GetKeyEvent();
 
-    if ( Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0 &&
-       (key_event.GetKeyCode() == WXK_DELETE || key_event.GetKeyCode() == WXK_NUMPAD_DELETE))
+    cbProject* project = GetActiveProject();
+    if (    project
+        && (project->GetCurrentlyCompilingTarget() == 0)
+        && (   key_event.GetKeyCode() == WXK_DELETE
+            || key_event.GetKeyCode() == WXK_NUMPAD_DELETE ) )
     {
         wxCommandEvent command(0, idMenuRemoveFilePopup);
         OnRemoveFileFromProject(command);
