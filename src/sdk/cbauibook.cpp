@@ -354,7 +354,7 @@ void cbAuiNotebook::RestoreFocus()
     // if selected tab has changed, we set the focus on the window it belongs too
     if ((m_LastSelected != wxNOT_FOUND) && (GetSelection() != m_LastSelected))
     {
-        wxWindow* win =GetPage(GetSelection());
+        wxWindow* win = GetPage(GetSelection());
         if (win)
             win->SetFocus();
     }
@@ -557,7 +557,7 @@ bool cbAuiNotebook::MovePage(wxWindow* page, size_t new_idx)
 
 int cbAuiNotebook::GetTabPositionFromIndex(int index)
 {
-    if (GetPageCount() <= 1)
+    if (GetPageCount() <= 0)
         return wxNOT_FOUND;
 
     UpdateTabControlsArray();
