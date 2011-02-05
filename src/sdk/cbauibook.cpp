@@ -385,40 +385,42 @@ void cbAuiNotebook::OnTabCtrlDblClick(wxMouseEvent& event)
 void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
 {
     wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
-    if (tabCtrl)
+    if (!tabCtrl)
+        return;
+    cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
+    if (!nb)
+        return;
+
+    nb->CancelToolTip();
+    nb->m_LastTime = nb->m_StopWatch.Time();
+    nb->SetSelection(nb->GetPageIndex(tabCtrl->GetWindowFromIdx(tabCtrl->GetActivePage())));
+
+    bool modkeys = CheckKeyModifier();
+
+    bool advance = (!s_modToAdvance && !modkeys) || (s_modToAdvance &&  modkeys);
+
+    if (advance)
+        nb->AdvanceSelection(event.GetWheelRotation() < 0);
+    else
     {
-        cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
-        if (nb)
+        size_t tabOffset = tabCtrl->GetTabOffset();
+        size_t lastTabIdx = tabCtrl->GetPageCount()-1;
+        wxWindow* win = nb->GetPage(nb->GetSelection());
+        if (win)
         {
-            nb->CancelToolTip();
-            nb->m_LastTime = nb->m_StopWatch.Time();
-            nb->SetSelection(nb->GetPageIndex(tabCtrl->GetWindowFromIdx(tabCtrl->GetActivePage())));
-
-            bool modkeys = CheckKeyModifier();
-
-            bool advance = (!s_modToAdvance && !modkeys) || (s_modToAdvance &&  modkeys);
-
-            if(advance)
-                nb->AdvanceSelection(event.GetWheelRotation() < 0);
+            wxClientDC dc(win);
+            if (event.GetWheelRotation() > 0)
+            {
+                if (!tabCtrl->IsTabVisible(lastTabIdx,tabOffset,&dc,win))
+                    tabOffset++;
+            }
             else
             {
-                size_t tabOffset = tabCtrl->GetTabOffset();
-                size_t lastTabIdx = tabCtrl->GetPageCount()-1;
-                wxWindow* win = nb->GetPage(nb->GetSelection());
-                wxClientDC dc(win);
-                if (event.GetWheelRotation() > 0)
-                {
-                    if (!tabCtrl->IsTabVisible(lastTabIdx,tabOffset,&dc,win))
-                        tabOffset++;
-                }
-                else
-                {
-                    if (tabOffset > 0)
-                        tabOffset--;
-                }
-                tabCtrl->SetTabOffset(tabOffset);
-                nb->Refresh();
+                if (tabOffset > 0)
+                    tabOffset--;
             }
+            tabCtrl->SetTabOffset(tabOffset);
+            nb->Refresh();
         }
     }
 }
