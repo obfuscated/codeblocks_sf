@@ -3,18 +3,18 @@ dnl copied and adapted from Ogre3D (www.ogre3d.org)
 
 AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
 [CODEBLOCKS_PLATFORM=gtk
- AC_ARG_WITH(platform, 
+ AC_ARG_WITH(platform,
              AC_HELP_STRING([--with-platform=PLATFORM],
                             [the platform to build, win32, macosx or gtk(default)]),
              CODEBLOCKS_PLATFORM=$withval,
              CODEBLOCKS_PLATFORM=gtk)
 
- 
+
   PLATFORM_CFLAGS=""
   PLATFORM_LIBS=""
 
   dnl Do the extra checks per type here
-  case $CODEBLOCKS_PLATFORM in 
+  case $CODEBLOCKS_PLATFORM in
     gtk)
       PLATFORM_CFLAGS="-I/usr/X11R6/include"
       PLATFORM_LIBS="-L/usr/X11R6/lib -lX11"
@@ -251,7 +251,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
 	AM_CONDITIONAL([BUILD_EDITORTWEAKS], [false])
 	AM_CONDITIONAL([BUILD_ENVVARS], [false])
-	AM_CONDITIONAL([BUILD_FILEEXPLORER], [false])
+	AM_CONDITIONAL([BUILD_FILEMANAGER], [false])
 	AM_CONDITIONAL([BUILD_HEADERFIXUP], [false])
 	AM_CONDITIONAL([BUILD_HELP], [false])
 	AM_CONDITIONAL([BUILD_KEYBINDER], [false])
