@@ -228,6 +228,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/EditorTweaks.zip
 %{pkgdata}/envvars.zip
 %{pkgdata}/exporter.zip
+%{pkgdata}/FileManager.zip
 %{pkgdata}/headerfixup.zip
 %{pkgdata}/help_plugin.zip
 %{pkgdata}/keybinder.zip
@@ -237,6 +238,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/RegExTestbed.zip
 %{pkgdata}/SymTab.zip
 %{pkgdata}/ThreadSearch.zip
+%{pkgdata}/ToolsPlus.zip
 %{pkgdata}/Valgrind.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
@@ -264,6 +266,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libEditorTweaks.*
 %{pkglib}/plugins/libenvvars.*
 %{pkglib}/plugins/libexporter.*
+%{pkglib}/plugins/libFileManager.*
 %{pkglib}/plugins/libheaderfixup.*
 %{pkglib}/plugins/libhelp_plugin.*
 %{pkglib}/plugins/libHexEditor.*
@@ -275,6 +278,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libRegExTestbed.*
 %{pkglib}/plugins/libSymTab.*
 %{pkglib}/plugins/libThreadSearch.*
+%{pkglib}/plugins/libToolsPlus.*
 %{pkglib}/plugins/libValgrind.*
 %{pkglib}/plugins/libMouseSap.*
 %{pkglib}/plugins/libwxsmith.*

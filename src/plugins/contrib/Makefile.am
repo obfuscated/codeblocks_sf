@@ -30,10 +30,6 @@ if BUILD_CSCOPE
 MAYBE_CSCOPE=Cscope
 endif
 
-if BUILD_EDITORTWEAKS
-MAYBE_EDITORTWEAKS=EditorTweaks
-endif
-
 if BUILD_DOXYBLOCKS
 MAYBE_DOXYBLOCKS=DoxyBlocks
 endif
@@ -42,8 +38,16 @@ if BUILD_DRAGSCROLL
 MAYBE_DRAGSCROLL=dragscroll
 endif
 
+if BUILD_EDITORTWEAKS
+MAYBE_EDITORTWEAKS=EditorTweaks
+endif
+
 if BUILD_ENVVARS
 MAYBE_ENVVARS=envvars
+endif
+
+if BUILD_FILEMANAGER
+MAYBE_FILEMANAGER=FileManager
 endif
 
 if BUILD_HELP
@@ -84,6 +88,10 @@ endif
 
 if BUILD_THREADSEARCH
 MAYBE_THREADSEARCH=wxSmith wxSmithContribItems ThreadSearch
+endif
+
+if BUILD_TOOLSPLUS
+MAYBE_TOOLSPLUS=ToolsPlus
 endif
 
 if BUILD_VALGRIND
@@ -130,66 +138,70 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
 		$(MAYBE_CBKODERS) \
+		$(MAYBE_CCCC) \
 		$(MAYBE_CODESNIPPETS) \
 		$(MAYBE_CODESTAT) \
 		$(MAYBE_COPYSTRINGS) \
+		$(MAYBE_CPPCHECK) \
 		$(MAYBE_CSCOPE) \
 		$(MAYBE_DOXYBLOCKS) \
 		$(MAYBE_DRAGSCROLL) \
 		$(MAYBE_EDITORTWEAKS) \
 		$(MAYBE_ENVVARS) \
-		$(MAYBE_HELP) \
+		$(MAYBE_FILEMANAGER) \
 		$(MAYBE_HEADERFIXUP) \
+		$(MAYBE_HELP) \
+		$(MAYBE_HEXEDITOR) \
+		$(MAYBE_INCSEARCH) \
 		$(MAYBE_KEYBINDER) \
+		$(MAYBE_LIBFINDER) \
+		$(MAYBE_MOUSESAP) \
+		$(MAYBE_NASSISHNEIDERMAN) \
 		$(MAYBE_PROFILER) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_REOPENEDITOR) \
 		$(MAYBE_THREADSEARCH) \
+		$(MAYBE_TOOLSPLUS) \
 		$(MAYBE_VALGRIND) \
 		$(MAYBE_WXSMITH) \
 		$(MAYBE_WXSMITHCONTRIB) \
-		$(MAYBE_WXSMITHAUI) \
-		$(MAYBE_LIBFINDER) \
-		$(MAYBE_HEXEDITOR) \
-		$(MAYBE_INCSEARCH) \
-		$(MAYBE_MOUSESAP) \
-		$(MAYBE_NASSISHNEIDERMAN) \
-		$(MAYBE_CCCC) \
-		$(MAYBE_CPPCHECK)
+		$(MAYBE_WXSMITHAUI)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
 		byogames \
 		cb_koders \
+		Cccc \
 		codesnippets \
 		codestat \
 		copystrings \
+		CppCheck \
 		Cscope \
 		devpak_plugin \
 		DoxyBlocks \
 		dragscroll \
 		EditorTweaks \
 		envvars \
-		help_plugin \
+		FileManager \
 		headerfixup \
+		help_plugin \
+		HexEditor \
 		keybinder \
+		IncrementalSearch \
+		lib_finder \
+		MouseSap \
+		NassiShneiderman \
 		profiler \
 		source_exporter \
 		symtab \
 		regex_testbed \
 		ReopenEditor \
 		ThreadSearch \
+		ToolsPlus \
 		Valgrind \
 		wxSmith \
 		wxSmithContribItems \
-		wxSmithAui \
-		lib_finder \
-		HexEditor \
-		IncrementalSearch \
-		MouseSap \
-		NassiShneiderman \
-		Cccc \
-		CppCheck
+		wxSmithAui
 

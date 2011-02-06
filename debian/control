@@ -98,38 +98,40 @@ Pre-Depends: codeblocks-contrib-common (= ${source:Version})
 Description: contrib plugins for Code::Blocks IDE
  This package extends Code::Blocks functionality a great deal with the included
  plugins. These are:
+    * Autoversioning
+    * BrowseTracker
+    * Cccc
     * Code profiler (based on gprof)
     * Code statistics (SLOCs etc)
+    * Codesnippets
     * Copy strings
+    * CppCheck
     * Cscope
     * DoxyBlocks
     * DragScroll (enhances mouse operations)
     * EditorTweaks
+    * Selection of small games for relaxing between coding sessions! (BYOGames)
     * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF
+    * FileManager
     * Header fixup
     * Help
+    * HexEditor
+    * IncrementalSearch
     * Keyboard shortcuts configuration
+    * CB koders
+    * Library finder
+    * MouseSap
+    * NassiShneiderman
+    * Regular expression testbed
+    * Reopen last closed editor(s) via menu or hotkey
+    * Symbol table plugin
+    * ThreadSearch
+    * ToolsPlus
+    * Valgrind
     * RAD gui-builder for wxWidgets (wxSmith)
     * wxSmith contrib items
     * wxSmith AUI
-    * Selection of small games for relaxing between coding sessions! (BYOGames)
-    * Autoversioning
-    * ThreadSearch
-    * BrowseTracker
-    * Valgrind
-    * HexEditor
-    * IncrementalSearch
-    * Codesnippets
-    * Library finder
-    * Regular expression testbed
-    * Symbol table plugin
-    * CB koders
-    * MouseSap
-    * Reopen last closed editor(s) via menu or hotkey
-    * Cccc
-    * CppCheck
-    * NassiShneiderman
 
 Package: codeblocks-contrib-common
 Architecture: all

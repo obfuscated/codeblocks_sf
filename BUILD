@@ -40,10 +40,10 @@ make install
 "all,-help" compiles all contrib plugins except the help plugin
 By default, no contrib plugins are compiled
 Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,
-                  codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,headerfixup,
-                  help,hexeditor,incsearch,keybinder,libfinder,MouseSap,
-                  NassiShneiderman, profiler,regex,ReopenEditor,exporter,symtab,ThreadSearch,Valgrind,wxsmith,
-                  wxsmithcontrib,wxsmithaui
+		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,
+		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap,
+		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, symtab, ThreadSearch,
+		     ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui
 
 Working on Code::Blocks sources from within Code::Blocks!
 ---------------------------------------------------------

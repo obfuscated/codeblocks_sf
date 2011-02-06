@@ -15,6 +15,7 @@ usr/lib/codeblocks/plugins/libdragscroll.so
 usr/lib/codeblocks/plugins/libEditorTweaks.so
 usr/lib/codeblocks/plugins/libenvvars.so 
 usr/lib/codeblocks/plugins/libexporter.so 
+usr/lib/codeblocks/plugins/libFileManager.so
 usr/lib/codeblocks/plugins/libheaderfixup.so 
 usr/lib/codeblocks/plugins/libhelp_plugin.so
 usr/lib/codeblocks/plugins/libHexEditor.so 
@@ -26,6 +27,7 @@ usr/lib/codeblocks/plugins/libProfiler.so
 usr/lib/codeblocks/plugins/libRegExTestbed.so 
 usr/lib/codeblocks/plugins/libSymTab.so 
 usr/lib/codeblocks/plugins/libThreadSearch.so
+usr/lib/codeblocks/plugins/libToolsPlus.so
 usr/lib/codeblocks/plugins/libValgrind.so
 usr/lib/codeblocks/plugins/libMouseSap.so
 usr/lib/codeblocks/plugins/libReopenEditor.so
