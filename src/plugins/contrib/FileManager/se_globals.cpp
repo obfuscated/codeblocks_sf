@@ -1,6 +1,5 @@
 #include "se_globals.h"
 
-
 wxString GetParentDir(const wxString &path)
 {
     wxString parent=wxFileName(parent).GetPath(0);
@@ -21,7 +20,6 @@ bool DirIsChildOf(const wxString &path, const wxString &child)
     }
     return false;
 }
-
 
 bool WildCardListMatch(wxString list, wxString name, bool strip)
 {
