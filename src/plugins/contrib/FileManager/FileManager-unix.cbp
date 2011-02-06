@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="File Manager Plugin (unix)" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/libFileManager.so" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs/plugins/contrib/FileManager" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-Ulinux" />
+			<Add option="-Uunix" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="`pkg-config --cflags gamin`" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-D__FAM__" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/mozilla_chardet" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add option="`pkg-config --libs gamin`" />
+			<Add library="codeblocks" />
+			<Add directory="../../../devel" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc" />
+		</ExtraCommands>
+		<Unit filename="FileExplorer.cpp" />
+		<Unit filename="FileExplorer.h" />
+		<Unit filename="FileExplorerSettings.cpp" />
+		<Unit filename="FileExplorerSettings.h" />
+		<Unit filename="FileExplorerUpdater.cpp" />
+		<Unit filename="FileExplorerUpdater.h" />
+		<Unit filename="FileManager.cpp" />
+		<Unit filename="FileManager.h" />
+		<Unit filename="Resources/fileexplorersettings.xrc" />
+		<Unit filename="directorymonitor.cpp" />
+		<Unit filename="directorymonitor.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="se_globals.cpp" />
+		<Unit filename="se_globals.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
