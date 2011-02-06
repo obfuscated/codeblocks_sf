@@ -91,7 +91,7 @@ AM_PATH_WXCONFIG(2.8.0, wxWin=1)
 		if test "$WX_VERSION" = "2.8.3"; then
 			AC_MSG_ERROR([
 		wxWidgets version 2.8.3 is known to behave badly with
-		Code::Blocks. Please upgrade to a newer (or downgrade to an 
+		Code::Blocks. Please upgrade to a newer (or downgrade to an
 		earlier) wxWidgets version...
 			])
 		fi
@@ -118,24 +118,43 @@ MACSETFILE="@true"
 
 AC_MSG_CHECKING(for wxWidgets platform)
 WX_BASENAME=`$WX_CONFIG_WITH_ARGS --basename`
-case $WX_BASENAME in 
+case $WX_BASENAME in
     *wx_gtk*)
         AC_MSG_RESULT(wxGTK)
-			dnl
-			dnl pkg-config no longer needed by debugger plugin
-			dnl but seems to be needed by codesnippets...
-			dnl
-        dnl check for pkg-config itself so we don't try the m4 macro without pkg-config
-        AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
-        ifdef([PKG_CHECK_MODULES],[],[
-           define([PKG_CHECK_MODULES],
-           [ echo "You don't have pkg.m4 properly installed" >&2
-             exit 1
-           ])
-        ])
-        if test "x$HAVE_PKG_CONFIG" = "xyes"; then
-            PKG_CHECK_MODULES(GTK2, gtk+-2.0 >= 2.0.0)
-        fi
+		dnl
+		dnl pkg-config no longer needed by debugger plugin
+		dnl but seems to be needed by codesnippets...
+		dnl
+		dnl only do this if it is really needed
+		dnl AM_CONDITIONAL adds _TRUE and _FALSE to the appropriate variables
+		dnl if the condition is true, the *_TRUE variable is empty (!)
+		if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
+				"x$BUILD_FILEMANAGER_TRUE" = "x" -o \
+				"x$BUILD_MOUSESAP_TRUE" = "x" ; then
+
+			AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+			ifdef([PKG_CHECK_MODULES],[],[
+				define([PKG_CHECK_MODULES],
+				[ echo "You don't have pkg.m4 properly installed" >&2
+					exit 1
+				])
+			])
+
+			if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
+					"x$BUILD_MOUSESAP_TRUE" = "x" ; then
+				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+					PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.0.0])
+				fi
+			fi
+			if test "x$BUILD_FILEMANAGER_TRUE" = "x" ; then
+				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+					PKG_CHECK_MODULES([GAMIN], [gamin])
+				fi
+			fi
+    	fi
+
+		CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
+		CB_GAMIN_LIBS="$GAMIN_LIBS"
         WX_GTK2_CFLAGS="$GTK2_CFLAGS"
         WX_GTK2_LIBS="$GTK2_LIBS"
         AC_PATH_XTRA
@@ -155,13 +174,15 @@ case $WX_BASENAME in
         AC_CHECK_PROG(SETFILE, SetFile, SetFile, /Developer/Tools/SetFile)
         MACSETFILE="\$(SETFILE)"
     ;;
-    *) 
+    *)
         AC_MSG_RESULT(other)
     ;;
 esac
 
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
+AC_SUBST(CB_GAMIN_CFLAGS)
+AC_SUBST(CB_GAMIN_LIBS)
 AC_SUBST(WX_X11_CFLAGS)
 AC_SUBST(WX_X11_LIBS)
 
@@ -171,12 +192,12 @@ AC_SUBST(MACSETFILE)
 PLUGIN_WX_LIBS=
 
 AC_MSG_CHECKING(if wxWidgets libraries are needed for plugins)
-case `uname` in 
+case `uname` in
     Darwin)
         AC_MSG_RESULT(yes)
         PLUGIN_WX_LIBS="$WX_LIBS"
     ;;
-    *) 
+    *)
         AC_MSG_RESULT(no)
     ;;
 esac
@@ -186,7 +207,7 @@ AC_SUBST(PLUGIN_WX_LIBS)
 PIC_FLAGS=
 
 AC_MSG_CHECKING(for PIC flags)
-case `uname` in 
+case `uname` in
     Solaris)
         if test "$GCC" = yes; then
             PIC_FLAGS="-fPIC -DPIC"
@@ -194,7 +215,7 @@ case `uname` in
             PIC_FLAGS="-KPIC -DPIC"
         fi
     ;;
-    *) 
+    *)
         PIC_FLAGS="-fPIC -DPIC"
     ;;
 esac

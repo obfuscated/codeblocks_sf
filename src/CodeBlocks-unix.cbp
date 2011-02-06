@@ -228,13 +228,11 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
-					<Add option="`pkg-config --cflags gtk+-2.0`" />
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`pkg-config --libs gtk+-2.0`" />
 					<Add option="-z defs" />
 					<Add option="`wx-config --libs`" />
 					<Add library="codeblocks" />
