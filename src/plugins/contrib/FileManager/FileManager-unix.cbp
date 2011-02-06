@@ -46,6 +46,7 @@
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc" />
+			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="FileExplorer.cpp" />
 		<Unit filename="FileExplorer.h" />

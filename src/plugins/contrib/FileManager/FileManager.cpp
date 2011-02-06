@@ -6,7 +6,7 @@
     #include <projectmanager.h>
 #endif
 //#include <configurationpanel.h>
-  
+
 #include "FileManager.h"
 
 // Register the plugin with Code::Blocks.
@@ -68,7 +68,7 @@ void FileManagerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, con
 
 void FileManagerPlugin::OnOpenProjectInFileBrowser(wxCommandEvent& event)
 {
-    wxAuiNotebook *m_nb=Manager::Get()->GetProjectManager()->GetNotebook();
+    cbAuiNotebook *m_nb=Manager::Get()->GetProjectManager()->GetNotebook();
     m_nb->SetSelection(m_nb->GetPageIndex(m_fe));
     m_fe->SetRootFolder(m_project_selected);
 }
