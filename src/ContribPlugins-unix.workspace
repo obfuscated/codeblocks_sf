@@ -3,11 +3,8 @@
 	<Workspace title="All contrib plugins">
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning-unix.cbp" active="1" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker-unix.cbp" />
-		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
-		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
 		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp" />
 		<Project filename="plugins/contrib/CppCheck/CppCheck-unix.cbp" />
-		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
 		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp" />
 		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />
 		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
@@ -17,10 +14,13 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks-unix.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
+		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor-unix.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch-unix.cbp" />
+		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
+		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp">
 			<Depends filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp" />
 		</Project>
