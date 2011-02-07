@@ -207,7 +207,8 @@ void wxsCorrector::AfterChange(wxsItem* Item)
         }
     }
 
-    if ( Item->GetPropertiesFlags() & flLocal )
+    if ( (Item->GetPropertiesFlags() & flLocal) &&
+         ((Item->GetEvents().GetCount()) <= 0) )
     {
         wxString prefix = s_IdPrefix;
         prefix << Item->GetInfo().DefaultVarName.Upper();
