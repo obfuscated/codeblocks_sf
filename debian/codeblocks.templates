@@ -1,0 +1,26 @@
+Template: codeblocks/plugins_to_use
+Type: multiselect
+Choices: All plugins, ${plugins}
+Choices-C: all, ${plugins-c}
+Default: all
+Description: Plugins to use
+ Core Plugins add of Code::Blocks
+ .
+ Not everybody needs all plugins, so the user can decide which one will
+ be loaded by C::B.
+ It's not the same as disabling plugins from inside C::B, because
+ disabled plugins get loaded, but unchecked plugins will not
+ even be loaded.
+ To change selection just run dpkg-reconfigure on the package.
+ .
+ NOTE: "All plugins" has precedence over single selections !
+ .
+ The compiler plugin can not be disabled !
+
+
+Template: codeblocks/plugins_not_to_use
+Type: multiselect
+Choices: All plugins, ${plugins}
+Description: Plugins not to use
+ Just as dummy to store the "hidden" plugins
+

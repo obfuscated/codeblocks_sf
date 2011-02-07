@@ -1,0 +1,33 @@
+#! /bin/sh
+set -e
+
+# Sanitize environnement
+LC_ALL=C
+LANG=C
+path="/usr/lib/codeblocks/plugins/"
+suffix="do_not_load"
+
+if [ "$1" = configure ]; then
+    # Load debconf
+    . /usr/share/debconf/confmodule
+    db_version 2.0
+
+    db_get  codeblocks-contrib/plugins_to_use && SELECTED_PLUGINS=$RET
+    SELECTED_PLUGINS="$(echo $SELECTED_PLUGINS | sed -e 's/, / /g')"
+
+    db_get  codeblocks-contrib/plugins_not_to_use && DE_SELECTED_PLUGINS=$RET
+    # make only selected plugins available
+    cd $path
+    for plugin in $SELECTED_PLUGINS  ; do
+        if [ -f "$plugin.$suffix" ]; then
+            mv "$plugin.$suffix" "$plugin"
+        fi
+    done
+    for plugin in $DE_SELECTED_PLUGINS ; do
+        if [ -f "$plugin" ]; then
+            mv "$plugin" "$plugin.$suffix"
+        fi
+    done
+fi
+
+exit 0

@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Jens Lody <jens@codeblocks.org>
 Homepage: http://www.codeblocks.org
-Build-Depends: debhelper (>= 7.4.11~), cdbs, automake (>= 1.9), libtool (>= 1.4), libwxgtk2.8-dev, wx-common, zip, libbz2-dev, zlib1g-dev, libgtk2.0-dev, libstdc++6-4.3-dev | libstdc++6-4.4-dev | libstdc++6-4.5-dev, libboost1.40-dev | libboost-dev (>= 1.40)
+Build-Depends: debhelper (>= 7.4.11~), cdbs, automake (>= 1.9), libtool (>= 1.4), libwxgtk2.8-dev, wx-common, zip, libbz2-dev, zlib1g-dev, libgtk2.0-dev, libgamin-dev, libstdc++6-4.3-dev | libstdc++6-4.4-dev | libstdc++6-4.5-dev, libboost1.40-dev | libboost-dev (>= 1.40)
 Standards-Version: 3.9.1
 
 Package: codeblocks
@@ -88,7 +88,7 @@ Description: Code::Blocks debugging libraries
     * Extensible wizard based on scripts
     * Autosave (saves your work in the unfortunate case of a crash)
  .
- This package contains the debugging libraries for the 'codeblocks' and the 
+ This package contains the debugging libraries for the 'codeblocks' and the
  'libcodeblockso' package.
 
 Package: codeblocks-contrib
@@ -256,7 +256,7 @@ Description: wxSmith shared library (Code::Blocks plugin for RAD GUI editing)
     * Extensible wizard based on scripts
     * Autosave (saves your work in the unfortunate case of a crash)
  .
- This package contains the wxSmith shared library. 
+ This package contains the wxSmith shared library.
  wxSmith is included in the codeblocks-contrib package.
 
 Package: libwxsmithlib0-dev
