@@ -64,7 +64,7 @@ class CmdConfigDialog : public wxDialog
         virtual ~CmdConfigDialog() {}
 
         wxString GetTitle() const { return _("User-defined Tools"); }
-        wxString GetBitmapBaseName() const { return _T("ToolsPlus"); }
+        wxString GetBitmapBaseName() const { return _("ToolsPlus"); }
         void OnApply();
         void OnCancel(){}
 

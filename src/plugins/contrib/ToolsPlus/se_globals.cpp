@@ -48,7 +48,7 @@ bool PromptSaveOpenFile(wxString message, wxFileName path)
     if(eb)
     {
         if(eb->GetModified())
-            switch(cbMessageBox(message,_T("Save File?"),wxYES_NO|wxCANCEL))
+            switch(cbMessageBox(message,_("Save File?"),wxYES_NO|wxCANCEL))
             {
                 case wxYES:
                     if(!eb->Save())

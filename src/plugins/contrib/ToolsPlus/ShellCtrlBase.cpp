@@ -14,7 +14,7 @@ int ID_SHELLMGR=wxNewId();
 
 bool ShellRegistry::Register(const wxString &name, fnCreate create, fnFree free) //register/deregister are called by the plugin registrant instance
 {
-    Manager::Get()->GetLogManager()->LogError(wxString::Format(_T("Tools Plus Plugin: Registering shell type %s"),name.c_str()));
+    Manager::Get()->GetLogManager()->LogError(wxString::Format(_("Tools Plus Plugin: Registering shell type %s"),name.c_str()));
     std::map<wxString, ShellRegInfo>::iterator it;
     if(m_reginfo.find(name)!=m_reginfo.end())
         return false;
@@ -113,7 +113,7 @@ long ShellManager::LaunchProcess(const wxString &processcmd, const wxString &nam
     ShellCtrlBase *shell=GlobalShellRegistry.CreateControl(type,this,id,name,this);
     if(!shell)
     {
-        cbMessageBox(wxString::Format(_T("Console type %s not found in registry."),type.c_str()));
+        cbMessageBox(wxString::Format(_("Console type %s not found in registry."),type.c_str()));
         return -1;
     }
     long procid=shell->LaunchProcess(processcmd,options);
@@ -124,7 +124,7 @@ long ShellManager::LaunchProcess(const wxString &processcmd, const wxString &nam
     }
     else
     {
-        cbMessageBox(_T("process launch failed."));
+        cbMessageBox(_("process launch failed."));
         delete shell; //TODO: GlobalShellRegistry.FreeControl() ???
         return -1;
     }
@@ -197,7 +197,7 @@ int ShellManager::NumAlive()
 void ShellManager::OnShellTerminate(ShellCtrlBase *term)
 {
     size_t i=GetTermNum(term);
-    m_nb->SetPageText(i,_T("[DONE]")+m_nb->GetPageText(i));
+    m_nb->SetPageText(i,_("[DONE]")+m_nb->GetPageText(i));
     if(NumAlive()==0)
         m_synctimer.Stop();
 }
