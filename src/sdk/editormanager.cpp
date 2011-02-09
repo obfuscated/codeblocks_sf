@@ -2789,6 +2789,10 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     pop->AppendSeparator();
     pop->Append(idNBTabTop, _("Tabs at top"));
     pop->Append(idNBTabBottom, _("Tabs at bottom"));
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
+    	pop->FindItem(idNBTabBottom)->Enable(false);
+    else
+    	pop->FindItem(idNBTabTop)->Enable(false);
 
     cbEditor* ed = GetBuiltinEditor(event.GetSelection());
     if (ed)

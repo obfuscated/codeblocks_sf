@@ -82,19 +82,17 @@ void InfoPane::LoadTabOrder(wxString layout)
     theLayout.Remove(theLayout.Find('|',true));
     wxStringTokenizer strTok(theLayout, _T(";"));
     wxString title;
-    while(strTok.HasMoreTokens())
+    while (strTok.HasMoreTokens())
     {
         wxString theToken = strTok.GetNextToken();
         title = theToken.BeforeFirst('=');
-        for(size_t j = 0; j < page.GetCount();++j)
+        for (size_t j = 0; j < page.GetCount();++j)
         {
-            if(page.Item(j)->title == title)
+            if (page.Item(j)->title == title)
             {
                 long theIndex;
                 if (theToken.AfterFirst('=').ToLong(&theIndex))
-                {
                     page.Item(j)->indexInNB = theIndex;
-                }
                 break;
             }
         }
@@ -113,24 +111,20 @@ int InfoPane::CompareIndexes(Page **p1, Page **p2)
 void InfoPane::ReorderTabs(CompareFunction cmp_f)
 {
     page.Sort(cmp_f);
-    if(page.GetCount() == 0)
+    if (page.GetCount() == 0)
         return;
 
     wxWindowUpdateLocker noUpdates(GetParent());
     for (size_t i = 0 ; i < page.GetCount(); ++i)
     {
         RemovePage(GetPageIndex(page.Item(i)->window));
-        if(page.Item(i)->indexInNB < 0)
+        if (page.Item(i)->indexInNB < 0)
         {
-            if(page.Item(i)->window)
-            {
+            if (page.Item(i)->window)
                 page.Item(i)->window->Hide();
-            }
         }
         else
-        {
             AddPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon);
-        }
     }
 }
 
@@ -151,13 +145,11 @@ bool InfoPane::InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* i
 
 void InfoPane::UpdateEffectiveTabOrder()
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
         // only update for visible tabs
-        if(page.Item(i)->indexInNB >= 0)
-        {
+        if (page.Item(i)->indexInNB >= 0)
             page.Item(i)->indexInNB = GetTabPositionFromIndex(GetPageIndex(page.Item(i)->window));
-        }
 
     }
 }
@@ -165,9 +157,9 @@ void InfoPane::UpdateEffectiveTabOrder()
 void InfoPane::Toggle(size_t i)
 {
     UpdateEffectiveTabOrder();
-    if(page.Item(i)->indexInNB < 0)
+    if (page.Item(i)->indexInNB < 0)
     {
-        if(InsertPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon, ~page.Item(i)->indexInNB))
+        if (InsertPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon, ~page.Item(i)->indexInNB))
             page.Item(i)->indexInNB = ~page.Item(i)->indexInNB ;
         else
             page.Item(i)->indexInNB = AddPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon);
@@ -176,10 +168,8 @@ void InfoPane::Toggle(size_t i)
     {
         // Hide the window, otherwise the controls remain partly visible on some windows-versions
         // if we toggle the active logger
-        if(page.Item(i)->window)
-        {
+        if (page.Item(i)->window)
             page.Item(i)->window->Hide();
-        }
         RemovePage(GetPageIndex(page.Item(i)->window));
         page.Item(i)->indexInNB = ~page.Item(i)->indexInNB;
     }
@@ -190,9 +180,7 @@ int InfoPane::GetPageIndexByWindow(wxWindow* win)
     for (size_t i=0; i < page.GetCount(); i++)
     {
         if (page.Item(i)->window == win)
-        {
             return i;
-        }
     }
     return -1;
 }
@@ -220,29 +208,23 @@ wxWindow* InfoPane::GetWindow(int index)
 
 void InfoPane::Show(size_t i)
 {
-    if(page.Item(i)->window == 0)
+    if (page.Item(i)->window == 0)
         return;
 
-    if(page.Item(i)->indexInNB < 0)
-    {
+    if (page.Item(i)->indexInNB < 0)
         Toggle(i);
-    }
     else
-    {
         SetSelection(GetPageIndex(page.Item(i)->window));
-    }
 }
 
 void InfoPane::Hide(Logger* logger)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->logger == logger)
+        if (page.Item(i)->logger == logger)
         {
-            if(page.Item(i)->indexInNB >= 0)
-            {
+            if (page.Item(i)->indexInNB >= 0)
                 Toggle(i);
-            }
             return;
         }
     }
@@ -250,18 +232,14 @@ void InfoPane::Hide(Logger* logger)
 
 void InfoPane::Show(Logger* logger)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->logger == logger)
+        if (page.Item(i)->logger == logger)
         {
-            if(page.Item(i)->indexInNB < 0)
-            {
+            if (page.Item(i)->indexInNB < 0)
                 Toggle(i);
-            }
             else
-            {
                 SetSelection(GetPageIndex(page.Item(i)->window));
-            }
             return;
         }
     }
@@ -269,14 +247,12 @@ void InfoPane::Show(Logger* logger)
 
 void InfoPane::HideNonLogger(wxWindow* p)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->window == p)
+        if (page.Item(i)->window == p)
         {
-            if(page.Item(i)->indexInNB >= 0)
-            {
+            if (page.Item(i)->indexInNB >= 0)
                 Toggle(i);
-            }
             return;
         }
     }
@@ -284,18 +260,14 @@ void InfoPane::HideNonLogger(wxWindow* p)
 
 void InfoPane::ShowNonLogger(wxWindow* p)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->window == p)
+        if (page.Item(i)->window == p)
         {
-            if(page.Item(i)->indexInNB < 0)
-            {
+            if (page.Item(i)->indexInNB < 0)
                 Toggle(i);
-            }
             else
-            {
                 SetSelection(GetPageIndex(p));
-            }
             return;
         }
     }
@@ -324,7 +296,7 @@ void InfoPane::OnClear(wxCommandEvent& /*event*/)
 void InfoPane::OnMenu(wxCommandEvent& event)
 {
     int eventID = event.GetId();
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
         if (eventID == page.Item(i)->eventID)
         {
@@ -367,6 +339,10 @@ void InfoPane::DoShowContextMenu()
     wxMenu* view = new wxMenu;
     menu.Append(idNB_TabTop, _("Tabs at top"));
     menu.Append(idNB_TabBottom, _("Tabs at bottom"));
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
+    	menu.FindItem(idNB_TabBottom)->Enable(false);
+    else
+    	menu.FindItem(idNB_TabTop)->Enable(false);
 
     if (page.Item(GetPageIndexByWindow(GetPage(GetSelection())))->islogger)
     {
@@ -376,9 +352,9 @@ void InfoPane::DoShowContextMenu()
         menu.AppendSeparator();
         menu.Append(idClear, _("Clear contents"));
     }
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->window)
+        if (page.Item(i)->window)
         {
             view->Append(page.Item(i)->eventID, page.Item(i)->title, wxEmptyString, wxITEM_CHECK);
             view->Check(page.Item(i)->eventID, page.Item(i)->indexInNB >= 0);
@@ -408,7 +384,7 @@ void InfoPane::OnTabPosition(wxCommandEvent& event)
 
 bool InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon)
 {
-    if(p)
+    if (p)
     {
         Page *tmp=new Page();
         tmp->indexInNB = AddPagePrivate(p, title, icon);
@@ -426,7 +402,7 @@ bool InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxB
 
 bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
 {
-    if(p)
+    if (p)
     {
         p->Reparent(this);
         Page *tmp=new Page();
@@ -446,24 +422,18 @@ bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
 bool InfoPane::DeleteLogger(Logger* l)
 {
     if (!l)
-    {
         return false;
-    }
 
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->logger == l)
+        if (page.Item(i)->logger == l)
         {
             int index = Manager::Get()->GetLogManager()->FindIndex(l);
             if (index >= 0)
-            {
                 Manager::Get()->GetLogManager()->DeleteLog(index);
-            }
 
             if (page.Item(i)->indexInNB >= 0)
-            {
                 DeletePage(GetPageIndex(page.Item(i)->window));
-            }
 
             delete(page.Item(i));
             page.RemoveAt(i);
@@ -476,14 +446,12 @@ bool InfoPane::DeleteLogger(Logger* l)
 
 bool InfoPane::RemoveNonLogger(wxWindow* p)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->window == p)
+        if (page.Item(i)->window == p)
         {
-            if(page.Item(i)->islogger)
-            {
+            if (page.Item(i)->islogger)
                 cbThrow(_T("Bad API usage. Shame on you."));
-            }
 
             RemovePage(GetPageIndex(page.Item(i)->window));
             page.RemoveAt(i);
@@ -496,19 +464,16 @@ bool InfoPane::RemoveNonLogger(wxWindow* p)
 
 bool InfoPane::DeleteNonLogger(wxWindow* p)
 {
-    for(size_t i = 0; i < page.GetCount(); ++i)
+    for (size_t i = 0; i < page.GetCount(); ++i)
     {
-        if(page.Item(i)->window == p)
+        if (page.Item(i)->window == p)
         {
-            if(page.Item(i)->islogger)
-            {
+            if (page.Item(i)->islogger)
                 cbThrow(_T("Bad API usage. Shame on you."));
-            }
 
             if (page.Item(i)->indexInNB >= 0)
-            {
                 DeletePage(GetPageIndex(page.Item(i)->window));
-            }
+
             delete(page.Item(i));
             page.RemoveAt(i);
             return true;
