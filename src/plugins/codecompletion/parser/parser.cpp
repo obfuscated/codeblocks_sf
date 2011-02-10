@@ -956,7 +956,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         {
             wxCriticalSectionLocker locker(s_TokensTreeCritical);
             parseEndLog.Printf(_T("Project '%s' parsing stage done (%d total parsed files, ")
-                               _T("%d tokens in %d minute(s), %d.%03d seconds)."),
+                               _T("%d tokens in %ld minute(s), %ld.%03ld seconds)."),
                                m_Project ? m_Project->GetTitle().wx_str() : _T("*NONE*"),
                                m_TokensTree->m_FilesMap.size(),
                                m_TokensTree->realsize(),

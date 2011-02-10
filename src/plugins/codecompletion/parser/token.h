@@ -88,7 +88,7 @@ public:
         {
             const long totalTime = it->first->m_StopWatch.Time();
             wxString log;
-            log.Printf(_T("\"%s\" used time is %d minute(s), %d.%03d seconds; call times is %d."),
+            log.Printf(_T("\"%s\" used time is %d minute(s), %ld.%03ld seconds; call times is %d."),
                        it->second.wx_str(),
                        (totalTime / 60000),
                        (totalTime / 1000) % 60,

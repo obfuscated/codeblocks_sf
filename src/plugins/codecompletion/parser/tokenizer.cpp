@@ -1278,7 +1278,7 @@ bool Tokenizer::CalcConditionExpression()
         {
             long value;
             if (token.ToLong(&value, 16))
-                exp.AddToInfixExpression(wxString::Format(_T("%d"), value));
+                exp.AddToInfixExpression(wxString::Format(_T("%ld"), value));
             else
                 exp.AddToInfixExpression(_T("0"));
         }
