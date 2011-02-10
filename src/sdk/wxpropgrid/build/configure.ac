@@ -17,7 +17,7 @@
 # NOTE: you'll want to replace the first string in [] brackets with the name of your
 #       component, the second string with its version and third one with your mail
 #       (so that users will be able to contact you in case they have problems)
-AC_INIT([PROPGRID], [1.4.14], [jmsalli@users.sourceforge.net])
+AC_INIT([PROPGRID], [1.4.15], [jmsalli@users.sourceforge.net])
 AC_CONFIG_AUX_DIR(build)        # this is needed, don't touch it
 
 # ENABLES/DISABLES THE DEBUG MODE FOR THIS CONFIGURE SCRIPT

@@ -676,9 +676,12 @@ void wxPGTextCtrlEditor::OnFocus( wxPGProperty* property,
     wxPGTextCtrlEditor_OnFocus(property, tc);
 }
 
-
-wxPGTextCtrlEditor::~wxPGTextCtrlEditor() { }
-
+wxPGTextCtrlEditor::~wxPGTextCtrlEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(TextCtrl) = NULL;
+}
 
 // -----------------------------------------------------------------------
 // wxPGChoiceEditor
@@ -1375,8 +1378,12 @@ bool wxPGChoiceEditor::CanContainCustomImage() const
 }
 
 
-wxPGChoiceEditor::~wxPGChoiceEditor() { }
-
+wxPGChoiceEditor::~wxPGChoiceEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(Choice) = NULL;
+}
 
 // -----------------------------------------------------------------------
 // wxPGComboBoxEditor
@@ -1453,9 +1460,12 @@ void wxPGComboBoxEditor::OnFocus( wxPGProperty* property,
     wxPGTextCtrlEditor_OnFocus(property, cb->GetTextCtrl());
 }
 
-
-wxPGComboBoxEditor::~wxPGComboBoxEditor() { }
-
+wxPGComboBoxEditor::~wxPGComboBoxEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(ComboBox) = NULL;
+}
 
 // -----------------------------------------------------------------------
 // wxPGChoiceAndButtonEditor
@@ -1504,9 +1514,12 @@ wxPGWindowList wxPGChoiceAndButtonEditor::CreateControls( wxPropertyGrid* propGr
     return wxPGWindowList(ch, bt);
 }
 
-
-wxPGChoiceAndButtonEditor::~wxPGChoiceAndButtonEditor() { }
-
+wxPGChoiceAndButtonEditor::~wxPGChoiceAndButtonEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(ChoiceAndButton) = NULL;
+}
 
 // -----------------------------------------------------------------------
 // wxPGTextCtrlAndButtonEditor
@@ -1529,9 +1542,12 @@ wxPGWindowList wxPGTextCtrlAndButtonEditor::CreateControls( wxPropertyGrid* prop
     return wxPGWindowList(wnd, wnd2);
 }
 
-
-wxPGTextCtrlAndButtonEditor::~wxPGTextCtrlAndButtonEditor() { }
-
+wxPGTextCtrlAndButtonEditor::~wxPGTextCtrlAndButtonEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(TextCtrlAndButton) = NULL;
+}
 
 // -----------------------------------------------------------------------
 // wxPGCheckBoxEditor
@@ -1896,9 +1912,12 @@ void wxPGCheckBoxEditor::SetValueToUnspecified( wxPGProperty* WXUNUSED(property)
     ctrl->Refresh();
 }
 
-
-wxPGCheckBoxEditor::~wxPGCheckBoxEditor() { }
-
+wxPGCheckBoxEditor::~wxPGCheckBoxEditor()
+{
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(CheckBox) = NULL;
+}
 
 #endif // wxPG_INCLUDE_CHECKBOX
 

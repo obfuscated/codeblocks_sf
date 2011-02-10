@@ -1,11 +1,43 @@
 
 
-Version 1.4.14 ( ?-?-2010 )
+Version 1.4.15 ( Feb-?-2011 )
 
   Bugs Fixed:
 
+  - Fixed regression which caused text to be pasted twice in
+    text editors under some platforms (atleast wxMSW, bug #3164789).
+
+
+
+Version 1.4.14 ( Dec-22-2010 )
+
+  New Features:
+
+  - Added new action wxPG_ACTION_EDIT. Triggering it will move focus to
+    the selected property's editor. For example, use following code to
+    allow user to focus editor on ENTER keypress:
+
+    propgrid->AddActionTrigger( wxPG_ACTION_EDIT, WXK_RETURN );
+
+
+  Bugs Fixed:
+
+  - It was possible to enter inappropriate characters for wxIntProperty
+    and wxUIntProperty (see wxWidgets tickets #12563 and #12564).
+
+  - Clipboard functionality was not working under wxGTK
+    (fixed by Julian Smart).
+
+  - wxPG_EX_HELP_AS_TOOLTIPS did not work for the selected property.
+
   - wxPython Bindings: Custom properties did not properly support wxRect
     as a value.
+
+  - wxPython Bindings: Custom properties did not support lists of types
+    other than strings and ints (bug #3076717).
+
+  - Fixed crash when global editor pointers were used from an
+    external main loop (bug #3076662).
 
 
 
@@ -86,6 +118,7 @@ Version 1.4.11 ( Mar-21-2010 )
 
   - Much improved Visual Studio project files have now been included, with
     experimental win64 support.
+
 
   Changes:
 

@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.4.13\n"
+"Project-Id-Version: 1.4.14\n"
 "Report-Msgid-Bugs-To: jmsalli@users.sourceforge.net\n"
-"POT-Creation-Date: 2010-08-22 12:30+0300\n"
+"POT-Creation-Date: 2010-09-22 22:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,7 +79,7 @@ msgstr ""
 msgid "You have entered invalid value. Press ESC to cancel editing."
 msgstr ""
 
-#: src/propgrid.cpp:13669
+#: src/propgrid.cpp:13677
 #, c-format
 msgid "Error in resource: %s"
 msgstr ""

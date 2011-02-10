@@ -328,6 +328,80 @@ bool wxPGStringToULongLong(const wxString s, wxULongLong_t* val, int base)
 #endif // !wxHAS_STRTOLL
 
 // -----------------------------------------------------------------------
+// wxNumericPropertyValidator
+// -----------------------------------------------------------------------
+
+#if wxUSE_VALIDATORS
+
+wxNumericPropertyValidator::
+    wxNumericPropertyValidator( NumericType numericType, int base )
+    : wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST)
+{
+    wxArrayString arr;
+    arr.Add(wxT("0"));
+    arr.Add(wxT("1"));
+    arr.Add(wxT("2"));
+    arr.Add(wxT("3"));
+    arr.Add(wxT("4"));
+    arr.Add(wxT("5"));
+    arr.Add(wxT("6"));
+    arr.Add(wxT("7"));
+
+    if ( base >= 10 )
+    {
+        arr.Add(wxT("8"));
+        arr.Add(wxT("9"));
+        if ( base >= 16 )
+        {
+            arr.Add(wxT("a")); arr.Add(wxT("A"));
+            arr.Add(wxT("b")); arr.Add(wxT("B"));
+            arr.Add(wxT("c")); arr.Add(wxT("C"));
+            arr.Add(wxT("d")); arr.Add(wxT("D"));
+            arr.Add(wxT("e")); arr.Add(wxT("E"));
+            arr.Add(wxT("f")); arr.Add(wxT("F"));
+        }
+    }
+
+    if ( numericType == Signed )
+    {
+        arr.Add(wxT("+"));
+        arr.Add(wxT("-"));
+    }
+    else if ( numericType == Float )
+    {
+        arr.Add(wxT("+"));
+        arr.Add(wxT("-"));
+        arr.Add(wxT("e"));
+
+        // Use locale-specific decimal point
+        arr.Add(wxString::Format(wxT("%g"), 1.1)[1]);
+    }
+
+    SetIncludes(arr);
+}
+
+bool wxNumericPropertyValidator::Validate(wxWindow* parent)
+{
+    if ( !wxTextValidator::Validate(parent) )
+        return false;
+
+    wxWindow* wnd = GetWindow();
+    if ( !wnd->IsKindOf(CLASSINFO(wxTextCtrl)) )
+        return true;
+
+    // Do not allow zero-length string
+    wxTextCtrl* tc = static_cast<wxTextCtrl*>(wnd);
+    wxString text = tc->GetValue();
+
+    if ( !text.length() )
+        return false;
+
+    return true;
+}
+
+#endif // wxUSE_VALIDATORS
+
+// -----------------------------------------------------------------------
 // wxIntProperty
 // -----------------------------------------------------------------------
 
@@ -519,9 +593,8 @@ wxValidator* wxIntProperty::GetClassValidator()
 #if wxUSE_VALIDATORS
     WX_PG_DOGETVALIDATOR_ENTRY()
 
-    // Atleast wxPython 2.6.2.1 required that the string argument is given
-    static wxString v;
-    wxTextValidator* validator = new wxTextValidator(wxFILTER_NUMERIC,&v);
+    wxValidator* validator = new wxNumericPropertyValidator(
+                                    wxNumericPropertyValidator::Signed);
 
     WX_PG_DOGETVALIDATOR_EXIT(validator)
 #else
@@ -681,6 +754,21 @@ bool wxUIntProperty::ValidateValue( wxVariant& value, wxPGValidationInfo& valida
         }
     }
     return true;
+}
+
+wxValidator* wxUIntProperty::DoGetValidator() const
+{
+#if wxUSE_VALIDATORS
+    WX_PG_DOGETVALIDATOR_ENTRY()
+
+    wxValidator* validator = new wxNumericPropertyValidator(
+                                    wxNumericPropertyValidator::Unsigned,
+                                    m_realBase);
+
+    WX_PG_DOGETVALIDATOR_EXIT(validator)
+#else
+    return NULL;
+#endif
 }
 
 bool wxUIntProperty::DoSetAttribute( const wxString& name, wxVariant& value )
@@ -893,9 +981,24 @@ bool wxFloatProperty::DoSetAttribute( const wxString& name, wxVariant& value )
     return false;
 }
 
+wxValidator*
+wxFloatProperty::GetClassValidator()
+{
+#if wxUSE_VALIDATORS
+    WX_PG_DOGETVALIDATOR_ENTRY()
+
+    wxValidator* validator = new wxNumericPropertyValidator(
+                                    wxNumericPropertyValidator::Float);
+
+    WX_PG_DOGETVALIDATOR_EXIT(validator)
+#else
+    return NULL;
+#endif
+}
+
 wxValidator* wxFloatProperty::DoGetValidator() const
 {
-    return wxIntProperty::GetClassValidator();
+    return GetClassValidator();
 }
 
 // -----------------------------------------------------------------------

@@ -256,8 +256,10 @@ WX_PG_IMPLEMENT_EDITOR_CLASS(SpinCtrl,wxPGSpinCtrlEditor,wxPGEditor)
 // Trivial destructor.
 wxPGSpinCtrlEditor::~wxPGSpinCtrlEditor()
 {
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(SpinCtrl) = NULL;
 }
-
 
 // Create controls and initialize event handling.
 wxPGWindowList wxPGSpinCtrlEditor::CreateControls( wxPropertyGrid* propgrid, wxPGProperty* property,
@@ -466,6 +468,9 @@ WX_PG_IMPLEMENT_EDITOR_CLASS(DatePickerCtrl,wxPGDatePickerCtrlEditor,wxPGEditor)
 
 wxPGDatePickerCtrlEditor::~wxPGDatePickerCtrlEditor()
 {
+    // Reset the global pointer. Useful when wxPropertyGrid is accessed
+    // from an external main loop.
+    wxPG_EDITOR(DatePickerCtrl) = NULL;
 }
 
 wxPGWindowList wxPGDatePickerCtrlEditor::CreateControls( wxPropertyGrid* propgrid,

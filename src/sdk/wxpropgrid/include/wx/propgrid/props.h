@@ -22,6 +22,7 @@ class WXDLLIMPEXP_PG wxArrayEditorDialog;
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/listbox.h>
+#include <wx/valtext.h>
 
 // -----------------------------------------------------------------------
 
@@ -273,6 +274,30 @@ WX_PG_IMPLEMENT_CUSTOM_COLOUR_PROPERTY_USES_WXCOLOUR2(CLASSNAME,LABELS,VALUES,CO
 
 // -----------------------------------------------------------------------
 
+#if wxUSE_VALIDATORS
+
+/**
+    A more comprehensive numeric validator class.
+*/
+class WXDLLIMPEXP_PG wxNumericPropertyValidator : public wxTextValidator
+{
+public:
+    enum NumericType
+    {
+        Signed = 0,
+        Unsigned,
+        Float
+    };
+
+    wxNumericPropertyValidator( NumericType numericType, int base = 10 );
+    virtual ~wxNumericPropertyValidator() { }
+    virtual bool Validate(wxWindow* parent);
+};
+
+#endif // wxUSE_VALIDATORS
+
+// -----------------------------------------------------------------------
+
 #ifndef SWIG
 
 /** @class wxPGInDialogValidator
@@ -451,6 +476,7 @@ public:
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
     virtual bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const;
     virtual bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const;
+    virtual wxValidator* DoGetValidator() const;
 protected:
     wxByte      m_base;
     wxByte      m_realBase; // translated to 8,16,etc.
@@ -484,6 +510,8 @@ public:
     /** Validation helper.
     */
     static bool DoValidation( const wxPGProperty* property, double& value, wxPGValidationInfo* pValidationInfo, int mode = wxPG_PROPERTY_VALIDATION_ERROR_MESSAGE );
+
+    static wxValidator* GetClassValidator();
 
 protected:
     int m_precision;

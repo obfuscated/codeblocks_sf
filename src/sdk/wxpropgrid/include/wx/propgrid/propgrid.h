@@ -84,7 +84,7 @@
 // for "configure" scripts under unix, use them.
 #define wxPROPGRID_MAJOR          1
 #define wxPROPGRID_MINOR          4
-#define wxPROPGRID_RELEASE        14
+#define wxPROPGRID_RELEASE        15
 
 // For non-Unix systems (i.e. when building without a configure script),
 // users of this component can use the following macro to check if the
@@ -4415,6 +4415,7 @@ enum wxPG_KEYBOARD_ACTIONS
     wxPG_ACTION_COPY,
     wxPG_ACTION_PASTE,
     wxPG_ACTION_SELECT_ALL,
+    wxPG_ACTION_EDIT,
     wxPG_ACTION_MAX
 };
 
@@ -7668,6 +7669,8 @@ public:
     /** Pass this function to Connect calls in propertyclass::CreateEditor.
     */
     void OnCustomEditorEvent( wxCommandEvent &event );
+
+    bool HandleCustomEditorEvent( wxCommandEvent &event );
 
     void IncFrozen() { m_frozen++; }
     void DecFrozen() { m_frozen--; }

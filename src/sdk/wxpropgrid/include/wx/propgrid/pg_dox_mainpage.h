@@ -13,7 +13,7 @@
 #define __WX_PG_DOX_MAINPAGE_H__
 
 /**
-    @mainpage wxPropertyGrid 1.4.14 Overview
+    @mainpage wxPropertyGrid 1.4.15 Overview
 
       wxPropertyGrid is a specialized for editing properties such as strings, numbers,
     flagsets, fonts, and colours. It allows hierarchial, collapsible properties (via

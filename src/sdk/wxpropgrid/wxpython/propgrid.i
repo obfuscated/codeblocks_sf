@@ -60,10 +60,6 @@ properties such as strings, numbers, colours, and string lists."
   #define MySWIGOutputDebugString(A)
 #endif
 
-// Following is necessary for proper wxRect support in property values
-WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataRect, wxRect, WXDLLIMPEXP_PG)
-WX_PG_IMPLEMENT_VARIANT_DATA(wxPGVariantDataRect, wxRect)
-
 #ifndef Py_RETURN_NONE
     #define Py_RETURN_NONE return Py_INCREF(Py_None), Py_None
 #endif
@@ -296,6 +292,76 @@ bool PyObject_to_wxVariant( PyObject* input, wxVariant* v )
         *v = wx_dateTime;
         return true;
     }
+    else if ( PyTuple_CheckExact(input) || PyList_CheckExact(input) )
+    {
+        int len = PySequence_Length(input);
+
+        if ( len )
+        {
+            int i;
+            PyObject* item = PySequence_GetItem(input, 0);
+            bool failed = false;
+            if ( PyString_CheckExact(item) || PyUnicode_CheckExact(item) )
+            {
+                wxArrayString arr;
+                for (i=0; i<len; i++)
+                {
+                    item = PySequence_GetItem(input, i);
+                    wxString* s = wxString_in_helper(item);
+                    if ( PyErr_Occurred() )
+                    {
+                        delete s;
+                        failed = true;
+                        break;
+                    }
+                    arr.Add(*s);
+                    delete s;
+                    Py_DECREF(item);
+                }
+
+                if ( !failed )
+                {
+                    *v = arr;
+                    return true;
+                }
+            }
+            else if ( PyInt_CheckExact(item) || PyLong_CheckExact(item) )
+            {
+                wxArrayInt arr;
+                for (i=0; i<len; i++)
+                {
+                    item = PySequence_GetItem(input, i);
+                    long val;
+                    if ( PyInt_CheckExact(item) )
+                    {
+                        val = PyInt_AS_LONG(item);
+                    }
+                    else if ( PyLong_CheckExact(item) )
+                    {
+                        val = PyLong_AsLong(item);
+                    }
+                    else
+                    {
+                        failed = true;
+                        break;
+                    }
+                    arr.Add(val);
+                    Py_DECREF(item);
+                }
+
+                if ( !failed )
+                {
+                    *v = WXVARIANT(arr);
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            *v = wxArrayString();
+            return true;
+        }
+    }
     else if ( wxPySwigInstance_Check(input) )
     {
         // First try if it is a wxColour
@@ -330,14 +396,6 @@ bool PyObject_to_wxVariant( PyObject* input, wxVariant* v )
             return true;
         }
 
-        // Then wxRect
-        wxRect* rect_ptr;
-        if ( wxPyConvertSwigPtr(input, (void **)&rect_ptr, wxT("wxRect")))
-        {
-            *v << *rect_ptr;
-            return true;
-        }
-
         // Then wxColourPropertyValue
         wxColourPropertyValue* cpv_ptr;
         if ( wxPyConvertSwigPtr(input, (void **)&cpv_ptr,
@@ -346,52 +404,6 @@ bool PyObject_to_wxVariant( PyObject* input, wxVariant* v )
             *v << *cpv_ptr;
             return true;
         }
-    }
-
-    //
-    // Because some of the above types may implement sequence interface
-    // as well, we must check sequences here at the bottom.
-    if ( PySequence_Check(input) )
-    {
-        int len = PySequence_Length(input);
-
-        if ( len )
-        {
-            int i;
-            PyObject* item = PySequence_GetItem(input, 0);
-            if ( PyString_Check(item) || PyUnicode_Check(item) )
-            {
-                wxArrayString arr;
-                for (i=0; i<len; i++)
-                {
-                    PyObject* item = PySequence_GetItem(input, i);
-                    wxString* s = wxString_in_helper(item);
-                    if (PyErr_Occurred()) return false;
-                    arr.Add(*s);
-                    delete s;
-                    Py_DECREF(item);
-                }
-                *v = arr;
-            }
-            else
-            {
-                wxArrayInt arr;
-                for (i=0; i<len; i++)
-                {
-                    PyObject* item = PySequence_GetItem(input, i);
-                    if ( !PyInt_Check(item) )
-                        return false;
-                    arr.Add(PyInt_AS_LONG(item));
-                    Py_DECREF(item);
-                }
-                *v = WXVARIANT(arr);
-            }
-        }
-        else
-        {
-            *v = wxArrayString();
-        }
-        return true;
     }
 
     //Py_TrackObject(input);
@@ -522,13 +534,6 @@ PyObject* wxVariant_to_PyObject( const wxVariant* v )
         font << *v;
         return SWIG_NewPointerObj(SWIG_as_voidptr(new wxFont(font)),
                                   SWIGTYPE_p_wxFont,
-                                  SWIG_POINTER_OWN | 0 );
-    }
-    else if ( variantType == wxT("wxRect") )
-    {
-        const wxRect& rect = wxRectFromVariant(*v);
-        return SWIG_NewPointerObj(SWIG_as_voidptr(new wxRect(rect)),
-                                  SWIGTYPE_p_wxRect,
                                   SWIG_POINTER_OWN | 0 );
     }
     else if ( variantType == wxT("wxColourPropertyValue") )
