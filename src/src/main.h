@@ -145,6 +145,8 @@ class MainFrame : public wxFrame
         void OnEditLinePaste(wxCommandEvent& event);
         void OnEditUpperCase(wxCommandEvent& event);
         void OnEditLowerCase(wxCommandEvent& event);
+        void OnEditInsertNewLine(wxCommandEvent& event);
+        void OnEditGotoLineEnd(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditCommentSelected(wxCommandEvent& event);
         void OnEditUncommentSelected(wxCommandEvent& event);

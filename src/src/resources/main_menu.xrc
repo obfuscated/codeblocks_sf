@@ -430,6 +430,19 @@
             <help>Make selection lowercase</help>
           </object>
         </object>
+        <object class="wxMenu" name="idEditSpecialCommandsOther">
+          <label>Other</label>
+          <object class="wxMenuItem" name="idEditInsertNewLine">
+            <label>Insert new line</label>
+            <accel>Ctrl+Return</accel>
+            <help>Insert line below current line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditGotoLineEnd">
+            <label>Goto line end</label>
+            <accel>Shift+Return</accel>
+            <help>Goto current line end</help>
+          </object>
+        </object>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditSelectAll">

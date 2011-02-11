@@ -224,6 +224,9 @@ int idEditLinePaste = XRCID("idEditLinePaste");
 int idEditSpecialCommandsCase = XRCID("idEditSpecialCommandsCase");
 int idEditUpperCase = XRCID("idEditUpperCase");
 int idEditLowerCase = XRCID("idEditLowerCase");
+int idEditSpecialCommandsOther = XRCID("idEditSpecialCommandsOther");
+int idEditInsertNewLine = XRCID("idEditInsertNewLine");
+int idEditGotoLineEnd = XRCID("idEditGotoLineEnd");
 int idEditSelectAll = XRCID("idEditSelectAll");
 int idEditCommentSelected = XRCID("idEditCommentSelected");
 int idEditUncommentSelected = XRCID("idEditUncommentSelected");
@@ -435,6 +438,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditLinePaste,  MainFrame::OnEditLinePaste)
     EVT_MENU(idEditUpperCase,  MainFrame::OnEditUpperCase)
     EVT_MENU(idEditLowerCase,  MainFrame::OnEditLowerCase)
+    EVT_MENU(idEditInsertNewLine,  MainFrame::OnEditInsertNewLine)
+    EVT_MENU(idEditGotoLineEnd,  MainFrame::OnEditGotoLineEnd)
     EVT_MENU(idEditSelectAll,  MainFrame::OnEditSelectAll)
     EVT_MENU(idEditBookmarksToggle,  MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
@@ -3178,6 +3183,25 @@ void MainFrame::OnEditLowerCase(wxCommandEvent& /*event*/)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->GetControl()->LowerCase();
+}
+
+void MainFrame::OnEditInsertNewLine(wxCommandEvent& event)
+{
+    OnEditGotoLineEnd(event);
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->NewLine();
+}
+
+void MainFrame::OnEditGotoLineEnd(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        cbStyledTextCtrl* control = ed->GetControl();
+        const int pos = control->GetLineEndPosition(control->GetCurrentLine());
+        control->GotoPos(pos);
+    }
 }
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& /*event*/)
