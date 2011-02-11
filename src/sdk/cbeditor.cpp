@@ -2932,6 +2932,10 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     static int autoIndentLine = -1;
     static int autoIndentLineIndent = -1;
 
+    static bool autoUnIndent = false; // for public: / case: / etc..
+    static int autoUnIndentValue = -1;
+    static int autoUnIndentLine = -1;
+
     // indent
     if (ch == _T('\n'))
     {
@@ -3161,6 +3165,21 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                     }
                 }
             }
+
+            // smart un-indent
+            if (autoUnIndent)
+            {
+                if (m_pData->GetLastNonWhitespaceChar() == _T(':'))
+                {
+                    control->SetLineIndentation(autoUnIndentLine, autoUnIndentValue);
+                    control->SetLineIndentation(currLine, autoUnIndentValue);
+                    control->Tab();
+                }
+
+                autoUnIndent = false;
+                autoUnIndentValue = -1;
+                autoUnIndentLine = -1;
+            }
         }
 
         control->EndUndoAction();
@@ -3245,7 +3264,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     else if (ch == _T(':'))
     {
         bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-        if (smartIndent && control->GetLexer() == wxSCI_LEX_CPP)
+        if (smartIndent && control->GetLexer() == wxSCI_LEX_CPP && !autoUnIndent)
         {
             const int curLine = control->GetCurrentLine();
             const int pos = control->GetLineIndentPosition(curLine);
@@ -3293,19 +3312,23 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                     }
                 }
 
-                control->BeginUndoAction();
-
                 if (lastLineIndent != -1)
-                    control->SetLineIndentation(curLine, lastLineIndent);
+                {
+                    autoUnIndent = true;
+                    autoUnIndentValue = lastLineIndent;
+                    autoUnIndentLine = curLine;
+                }
                 else
                 {
                     const int curLineIndent = control->GetLineIndentation(curLine);
                     const int tabWidth = control->GetTabWidth();
                     if (curLineIndent >= tabWidth)
-                        control->SetLineIndentation(curLine, curLineIndent - tabWidth);
+                    {
+                        autoUnIndent = true;
+                        autoUnIndentValue = curLineIndent - tabWidth;
+                        autoUnIndentLine = curLine;
+                    }
                 }
-
-                control->EndUndoAction();
             }
         }
     }
