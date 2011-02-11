@@ -719,7 +719,8 @@ void ParserThread::DoParse()
                 m_Str = m_Tokenizer.GetToken();
                 if (m_Str == ParserConsts::kw_C || m_Str == ParserConsts::kw_CPP)
                 {
-                    m_Tokenizer.GetToken(); // "eat" {
+                    if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
+                        m_Tokenizer.GetToken(); // "eat" {
                     DoParse(); // time for recursion ;)
                 }
                 else
