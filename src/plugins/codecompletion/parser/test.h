@@ -1,10 +1,3 @@
-namespace foo
-{
-  class bar
-  {
-   bar();
-   ~bar();
-  };
-  bar::bar() {}
-  bar::~bar() {}
-}
+#if 1 || 1 && 0
+int main();
+#endif

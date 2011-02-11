@@ -122,32 +122,33 @@ long ExpressionNode::GetNodeTypePriority(ExpressionNodeType type)
     {
     case LParenthesis:
     case RParenthesis:
-        return 9;
+        return 10;
     case Not:
-        return 8;
+        return 9;
     case Mod:
-        return 7;
+        return 8;
     case MultiPly:
     case Divide:
     case Power:
-        return 6;
+        return 7;
     case Plus:
     case Subtract:
-        return 5;
+        return 6;
     case LShift:
     case RShift:
-        return 4;
+        return 5;
     case BitwiseAnd:
     case BitwiseOr:
-        return 3;
+        return 4;
     case Equal:
     case Unequal:
     case GT:
     case LT:
     case GTOrEqual:
     case LTOrEqual:
-        return 2;
+        return 3;
     case And:
+        return 2;
     case Or:
         return 1;
     default:
