@@ -240,6 +240,8 @@ int idViewLogManager = XRCID("idViewLogManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
 int idViewScriptConsole = XRCID("idViewScriptConsole");
 int idViewFocusEditor = XRCID("idViewFocusEditor");
+int idViewFocusManagement = XRCID("idViewFocusManagement");
+int idViewFocusLogsAndOthers = XRCID("idViewFocusLogsAndOthers");
 int idViewSwitchTabs = XRCID("idViewSwitchTabs");
 int idViewFullScreen = XRCID("idViewFullScreen");
 
@@ -267,6 +269,7 @@ int idLeftSash = XRCID("idLeftSash");
 int idBottomSash = XRCID("idBottomSash");
 int idCloseFullScreen = XRCID("idCloseFullScreen");
 int idShiftTab = wxNewId();
+int idCtrlAltTab = wxNewId();
 int idStartHerePageLink = wxNewId();
 int idStartHerePageVarSubst = wxNewId();
 
@@ -340,6 +343,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewScriptConsole, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewFocusManagement, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewFocusLogsAndOthers, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
     EVT_MENU(idFileNewEmpty, MainFrame::OnFileNewWhat)
@@ -458,6 +463,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewScriptConsole, MainFrame::OnViewScriptConsole)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
+    EVT_MENU(idViewFocusManagement, MainFrame::OnFocusManagement)
+    EVT_MENU(idViewFocusLogsAndOthers, MainFrame::OnFocusLogsAndOthers)
     EVT_MENU(idViewSwitchTabs, MainFrame::OnSwitchTabs)
     EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
 
@@ -481,7 +488,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_BUTTON( idCloseFullScreen, MainFrame::OnToggleFullScreen )
 
     /// Shift-Tab bug workaround
-    EVT_MENU(idShiftTab,MainFrame::OnShiftTab)
+    EVT_MENU(idShiftTab, MainFrame::OnShiftTab)
+
+    EVT_MENU(idCtrlAltTab, MainFrame::OnCtrlAltTab)
 
 END_EVENT_TABLE()
 
@@ -502,6 +511,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
        m_AutoHideLockCounter(0),
+       m_LastCtrlAltTabWindow(0),
        m_LastLayoutIsTemp(false),
        m_pScriptConsole(0),
        m_pBatchBuildDialog(0),
@@ -514,7 +524,7 @@ MainFrame::MainFrame(wxWindow* parent)
     SetDropTarget(new wxMyFileDropTarget(this));
 
     // Accelerator table
-    wxAcceleratorEntry entries[7];
+    wxAcceleratorEntry entries[8];
     entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
     entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
     entries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
@@ -522,7 +532,8 @@ MainFrame::MainFrame(wxWindow* parent)
     entries[4].Set(wxACCEL_CTRL,                  WXK_F6,    idFileNext);
     entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
     entries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
-    m_pAccel = new wxAcceleratorTable(7, entries);
+    entries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
+    m_pAccel = new wxAcceleratorTable(8, entries);
 
     this->SetAcceleratorTable(*m_pAccel);
 
@@ -968,7 +979,7 @@ void MainFrame::CreateMenubar()
                     accel = wxT("Alt+Tab");
                 else if (platform::gtk)
                     accel = wxT("Ctrl+,");
-                switch_item->SetItemLabel(wxString(_("S&witch Tabs")) + wxT("\t") + accel);
+                switch_item->SetItemLabel(wxString(_("S&witch tabs")) + wxT("\t") + accel);
             }
         }
     }
@@ -4011,6 +4022,8 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewScriptConsole, m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
+    mbar->Enable(idViewFocusManagement, manVis);
+    mbar->Enable(idViewFocusLogsAndOthers, m_pInfoPane->IsShown());
 
     // toolbars
     mbar->Check(idViewToolMain, m_LayoutManager.GetPane(m_pToolbar).IsShown());
@@ -4156,6 +4169,37 @@ void MainFrame::OnFocusEditor(wxCommandEvent& /*event*/)
     cbEditor* ed = edman ? edman->GetBuiltinEditor(edman->GetActiveEditor()) : 0;
     if (ed)
         ed->GetControl()->SetFocus();
+}
+
+void MainFrame::OnFocusManagement(wxCommandEvent& /*event*/)
+{
+    if (m_pPrjMan && m_pPrjMan->GetNotebook())
+    {
+        cbAuiNotebook* nb = m_pPrjMan->GetNotebook();
+        int sel = nb->GetSelection();
+        if (sel >= 0)
+        {
+            nb->GetPage(static_cast<size_t>(sel));
+            wxWindow* win = nb->GetPage(static_cast<size_t>(sel));
+            if (win)
+                win->SetFocus();
+        }
+    }
+}
+
+void MainFrame::OnFocusLogsAndOthers(wxCommandEvent& /*event*/)
+{
+    if (m_pInfoPane)
+    {
+        int sel = m_pInfoPane->GetSelection();
+        if (sel >= 0)
+        {
+            m_pInfoPane->GetPage(static_cast<size_t>(sel));
+            wxWindow* win = m_pInfoPane->GetPage(static_cast<size_t>(sel));
+            if (win)
+                win->SetFocus();
+        }
+    }
 }
 
 void MainFrame::OnSwitchTabs(wxCommandEvent& /*event*/)
@@ -4416,9 +4460,30 @@ void MainFrame::OnPageChanged(wxNotebookEvent& event)
 
 void MainFrame::OnShiftTab(wxCommandEvent& /*event*/)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
+    // Must make sure it's cbEditor and not EditorBase
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         ed->DoUnIndent();
+}
+
+void MainFrame::OnCtrlAltTab(wxCommandEvent& /*event*/)
+{
+    wxCommandEvent dummy;
+    switch (m_LastCtrlAltTabWindow)
+    {
+      case 1:  // Focus is on the Mgmt. panel -> Cycle to Editor
+        m_LastCtrlAltTabWindow = 2;
+        OnFocusEditor(dummy);
+        break;
+      case 2:  // Focus is on the Editor -> Cycle to Logs & others
+        m_LastCtrlAltTabWindow = 3;
+        OnFocusLogsAndOthers(dummy);
+        break;
+      case 3:  // Focus is on Logs & others -> fall through
+      default: // Focus (cycle to) the Mgmt. panel
+        m_LastCtrlAltTabWindow = 1;
+        OnFocusManagement(dummy);
+    }
 }
 
 void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)

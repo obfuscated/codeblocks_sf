@@ -528,6 +528,15 @@
         <label>Focus editor</label>
         <help>Set focus on the active editor</help>
       </object>
+      <object class="wxMenuItem" name="idViewFocusManagement">
+        <label>Focus management panel</label>
+        <help>Set focus on the management panel</help>
+      </object>
+      <object class="wxMenuItem" name="idViewFocusLogsAndOthers">
+        <label>Focus logs and others</label>
+        <help>Set focus on the logs and others panel</help>
+      </object>
+      <object class="separator"/>
       <object class="wxMenuItem" name="idViewSwitchTabs">
         <label>S&amp;witch tabs</label>
         <accel>Ctrl+Tab</accel>

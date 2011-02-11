@@ -186,6 +186,8 @@ class MainFrame : public wxFrame
         void OnToggleBar(wxCommandEvent& event);
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
+        void OnFocusManagement(wxCommandEvent& event);
+        void OnFocusLogsAndOthers(wxCommandEvent& event);
         void OnSwitchTabs(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);
 
@@ -240,6 +242,7 @@ class MainFrame : public wxFrame
         void OnEditorModified(CodeBlocksEvent& event);
         void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
+        void OnCtrlAltTab(wxCommandEvent& event);
         void StartupDone();
         void OnNotebookDoubleClick(CodeBlocksEvent& /*event*/);
     protected:
@@ -331,6 +334,7 @@ class MainFrame : public wxFrame
         bool m_InitiatedShutdown;
 
         int m_AutoHideLockCounter;
+        int m_LastCtrlAltTabWindow; //!< Last window focussed in the cycle 1 = Mgmt. panel, 2 = Editor, 3 = Logs & others
 
         wxString m_PreviousLayoutName;
         wxString m_LastLayoutName;
