@@ -183,7 +183,9 @@ wxString Token::DisplayName() const
     {
         result << _T("#define ") << m_Name << GetFormattedArgs();
         if (!m_Type.IsEmpty())
-            return result << _T(" ") << m_Type;
+            result << _T(" ") << m_Type;
+
+        return result;
     }
 
     // else
