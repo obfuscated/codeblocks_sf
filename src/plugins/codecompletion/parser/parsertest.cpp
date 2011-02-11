@@ -63,12 +63,12 @@ ParserTest::~ParserTest()
 
 bool ParserTest::Start(const wxString& file)
 {
-    Parser client(NULL,NULL);
+    Parser client(nullptr, nullptr);
     FileLoader* loader = new FileLoader(file);
     (*loader)();
 
     ParserThreadOptions opts;
-    opts.wantPreprocessor = false;
+    opts.wantPreprocessor = true;
     opts.useBuffer = false;
     opts.bufferSkipBlocks = false;
     opts.bufferSkipOuterBlocks = false;
