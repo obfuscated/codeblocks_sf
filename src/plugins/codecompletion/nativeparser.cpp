@@ -3303,12 +3303,6 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
     if (!parser)
         return;
 
-    if (!Parser::IsValidParser(parser))
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("OnParserEnd() : this parser should be deleted!"));
-        return;
-    }
-
     cbProject* project = GetProjectByParser(parser);
     if (project != parser->GetParsingProject())
         return;

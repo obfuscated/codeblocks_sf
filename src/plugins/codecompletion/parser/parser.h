@@ -176,13 +176,6 @@ public:
      */
     cbProject* GetParsingProject() const { return m_Project; }
 
-    /** Check the Parser is valid, will return false if the Parser object is removed.
-     * @param parser Parser pointer to be checked.
-     * @return true if the Parser is valid, false if the Parser is deleted.
-     */
-    static bool IsValidParser(Parser* parser)
-    { return sm_ValidParserSet.find(parser) != sm_ValidParserSet.end(); }
-
     bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false, bool isTemp = false,
                      const wxString& filename = wxEmptyString, Token* parent = nullptr, int initLine = 0);
     bool ParseBufferForFunctions(const wxString& buffer);
@@ -335,9 +328,6 @@ private:
     ParsingType          m_ParsingType;
     /** if true, means all the files contains in the C::B project will be labeled as "local"*/
     bool                 m_NeedMarkFileAsLocal;
-
-    /** Static variable to record all the Parser pointers, used to verify the valid of Parser Pointer*/
-    static std::set<Parser*> sm_ValidParserSet;
 
     DECLARE_EVENT_TABLE()
 };

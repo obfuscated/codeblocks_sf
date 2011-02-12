@@ -69,7 +69,7 @@ int PARSER_END = wxNewId();
 int TIMER_ID = wxNewId();
 int BATCH_TIMER_ID = wxNewId();
 
-static volatile Parser* s_CurrentParser = NULL;
+static volatile Parser* s_CurrentParser = nullptr;
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 END_EVENT_TABLE()
@@ -160,8 +160,6 @@ private:
     cbProject& m_Project;
 };
 
-std::set<Parser*> Parser::sm_ValidParserSet;
-
 Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_Parent(parent),
     m_Project(project),
@@ -180,7 +178,6 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_ParsingType(ptCreateParser),
     m_NeedMarkFileAsLocal(true)
 {
-    sm_ValidParserSet.insert(this);
     m_TokensTree = new(std::nothrow) TokensTree;
     m_TempTokensTree = new(std::nothrow) TokensTree;
     ReadOptions();
@@ -189,28 +186,25 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
 
 Parser::~Parser()
 {
-    // 1. Remove this pointer from set
-    sm_ValidParserSet.erase(this);
-
-    // 2. Disconnect events
+    // 1. Disconnect events
     DisconnectEvents();
 
-    // 3. Let's OnAllThreadsDone can not process event
+    // 2. Let's OnAllThreadsDone can not process event
     m_IgnoreThreadEvents = true;
 
-    // 4. Lock tokens tree
+    // 3. Lock tokens tree
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
 
-    // 5. Abort all thread
+    // 4. Abort all thread
     TerminateAllThreads();
 
-    // 6. Free memory
+    // 5. Free memory
     delete m_TempTokensTree;
     delete m_TokensTree;
 
-    // 7. Reset current parser
+    // 6. Reset current parser
     if (s_CurrentParser == this)
-        s_CurrentParser = NULL;
+        s_CurrentParser = nullptr;
 }
 
 void Parser::ConnectEvents()
@@ -967,7 +961,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         ProcessParserEvent(m_ParsingType, PARSER_END, parseEndLog);
         m_ParsingType = ptUndefined;
-        s_CurrentParser = NULL;
+        s_CurrentParser = nullptr;
     }
 }
 
