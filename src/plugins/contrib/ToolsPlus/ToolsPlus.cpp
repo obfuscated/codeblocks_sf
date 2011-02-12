@@ -602,28 +602,28 @@ void ToolsPlus::UpdateMenu(bool replace_old_tools)
     cfg->Write(_T("HideToolsMenu"),replace_old_tools);
     if(replace_old_tools && m_OldToolMenu==NULL)
     {
-        int pos = m_MenuBar->FindMenu(_("Tools+"));
+        int pos = m_MenuBar->FindMenu(_("T&ools+"));
         if(pos!=wxNOT_FOUND)
         {
             m_MenuBar->Remove(pos);
         }
-        pos = m_MenuBar->FindMenu(_("Tools"));
+        pos = m_MenuBar->FindMenu(_("&Tools"));
         if(pos!=wxNOT_FOUND)
         {
             m_OldToolMenu=m_MenuBar->GetMenu(pos);
             m_MenuBar->Remove(pos);
             m_MenuBar->Insert(pos, m_ToolMenu, _("&Tools"));
-        }            
+        }
     }
     if(!replace_old_tools && m_OldToolMenu!=NULL)
     {
-        int pos = m_MenuBar->FindMenu(_("Tools"));
+        int pos = m_MenuBar->FindMenu(_("&Tools"));
         m_MenuBar->Remove(pos);
         m_MenuBar->Insert(pos, m_OldToolMenu, _("&Tools"));
         m_OldToolMenu=NULL;
-        pos = m_MenuBar->FindMenu(_("Plugins"));
+        pos = m_MenuBar->FindMenu(_("P&lugins"));
         if(pos!=wxNOT_FOUND)
-            m_MenuBar->Insert(pos, m_ToolMenu, _("T&ools+"));            
+            m_MenuBar->Insert(pos, m_ToolMenu, _("T&ools+"));
     }
 
 }
@@ -647,19 +647,19 @@ void ToolsPlus::BuildMenu(wxMenuBar* menuBar)
             m_OldToolMenu=menuBar->GetMenu(pos);
             menuBar->Remove(pos);
             menuBar->Insert(pos, m_ToolMenu, _("&Tools"));
-        }        
+        }
     }
     else
     {
         m_OldToolMenu=NULL;
-        int pos = menuBar->FindMenu(_("Plugins"));
+        int pos = menuBar->FindMenu(_("P&lugins"));
         if(pos!=wxNOT_FOUND)
             menuBar->Insert(pos, m_ToolMenu, _("T&ools+"));
         else
         {
             delete m_ToolMenu;
             m_ToolMenu=0;
-        }        
+        }
     }
 }
 
