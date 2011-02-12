@@ -3317,14 +3317,14 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
                                                    : _T("*NONE*")));
             CC_PROFILE_TIMER_LOG();
 
-            std::pair<cbProject*, Parser*> prjParser = GetParserInfoByCurrentEditor();
-            if (prjParser.first && prjParser.first != project && !prjParser.second)
-                prjParser.second = CreateParser(prjParser.first);
+            std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+            if (info.first && info.first != project && !info.second)
+                info.second = CreateParser(info.first);
 
-            if (prjParser.second && prjParser.second != m_Parser)
+            if (info.second && info.second != m_Parser)
             {
                 Manager::Get()->GetLogManager()->DebugLog(_T("Start switch from OnParserEnd::ptCreateParser"));
-                SwitchParser(prjParser.first, prjParser.second);
+                SwitchParser(info.first, info.second);
             }
         }
         break;
@@ -3341,11 +3341,11 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
                                                     : _T("*NONE*")));
         if (parser != m_Parser)
         {
-            std::pair<cbProject*, Parser*> prjParser = GetParserInfoByCurrentEditor();
-            if (prjParser.second && prjParser.second != m_Parser)
+            std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+            if (info.second && info.second != m_Parser)
             {
                 Manager::Get()->GetLogManager()->DebugLog(_T("Start switch from OnParserEnd::ptReparseFile"));
-                SwitchParser(prjParser.first, prjParser.second);
+                SwitchParser(info.first, info.second);
             }
         }
         break;
@@ -3494,14 +3494,14 @@ void NativeParser::RemoveObsoleteParsers()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     const size_t maxParsers = cfg->ReadInt(_T("/max_parsers"), 5);
     wxArrayString removedProjectNames;
-    std::pair<cbProject*, Parser*> prjParser = GetParserInfoByCurrentEditor();
+    std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
 
     while (m_ParserList.size() > maxParsers)
     {
         bool deleted = false;
         for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
         {
-            if (it->second == prjParser.second)
+            if (it->second == info.second)
                 continue;
 
             wxString prjName = _T("*NONE*");
