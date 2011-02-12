@@ -1702,7 +1702,6 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     {
         if (addToHistory)
             AddToRecentProjectsHistory(prj->GetFilename());
-        Manager::Get()->GetEditorManager()->GetNotebook()->MinimizeFreeSpace();
         return true;
     }
     ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed

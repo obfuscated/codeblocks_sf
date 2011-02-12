@@ -2682,6 +2682,7 @@ void ProjectManager::WorkspaceChanged()
     {
         CodeBlocksEvent event(cbEVT_WORKSPACE_CHANGED);
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+        Manager::Get()->GetEditorManager()->GetNotebook()->MinimizeFreeSpace();
     }
 }
 

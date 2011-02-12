@@ -486,6 +486,7 @@ void cbAuiNotebook::MinimizeFreeSpace()
 {
     if (GetPageCount() < 1)
         return;
+    UpdateTabControlsArray();
     for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
     {
         MinimizeFreeSpace(m_TabCtrls[i]);
@@ -500,6 +501,13 @@ void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
     wxWindow* win = GetPage(ctrl_idx);
     if (win)
     {
+        // If we open a project or a workspace, it can happen, that the tabCtrl is not yet rendered.
+        // in this case IsTabVisible always returns true and does not work correctly therefore.
+        // So we force a paint event here to render the tabCtrl
+        // a little hacky, but it works
+        wxPaintEvent event;
+        tabCtrl->ProcessEvent(event);
+
         wxClientDC dc(win);
         size_t lastTabIdx = tabCtrl->GetPageCount() - 1;
         for (int i = lastTabIdx ; i >= 0; --i)
