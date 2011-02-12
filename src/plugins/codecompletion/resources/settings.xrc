@@ -349,7 +349,26 @@
 													<border>8</border>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="spacer">
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<size>12,12</size>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkParserPerWorkspace">
+														<label>Foced to using one parser per whole workspace</label>
+													</object>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>1</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 										</object>
 									</object>

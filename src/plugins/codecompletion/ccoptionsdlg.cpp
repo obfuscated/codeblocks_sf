@@ -114,6 +114,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
     XRCCTRL(*this, "spnParsersNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_parsers"), 5));
     XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
+    XRCCTRL(*this, "chkParserPerWorkspace", wxCheckBox)->SetValue(m_NativeParsers->IsParserPerWorkspace());
     XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
     XRCCTRL(*this, "chkNoSB", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
     XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"), wxEmptyString));
@@ -350,6 +351,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue());
     cfg->Write(_T("/fillup_chars"), XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->GetValue());
     cfg->Write(_T("/up_front_headers"), XRCCTRL(*this, "txtUpFrontHeaders", wxTextCtrl)->GetValue());
+    cfg->Write(_T("/parser_per_workspace"), XRCCTRL(*this, "chkParserPerWorkspace", wxCheckBox)->GetValue());
     m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().expandNS = XRCCTRL(*this, "chkExpandNS", wxCheckBox)->GetValue();
     m_Parser.ClassBrowserOptions().treeMembers = XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue();

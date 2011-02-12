@@ -104,6 +104,9 @@ NativeParser::NativeParser() :
     ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<NativeParser>(this, &NativeParser::OnProjectLoadingHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
 
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
+
     m_ImageList = new wxImageList(16, 16);
     wxBitmap bmp;
     wxString prefix;
@@ -575,6 +578,9 @@ void NativeParser::RereadParserOptions()
     else if (!cfg->ReadBool(_T("/use_symbols_browser"), true) && m_ClassBrowser)
         RemoveClassBrowser();
 
+    const bool parserPerWorkspace = m_ParserPerWorkspace;
+    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
+
     if (m_Parser == &m_TempParser)
         return;
 
@@ -586,7 +592,8 @@ void NativeParser::RereadParserOptions()
     if (   opts.followLocalIncludes  != m_Parser->Options().followLocalIncludes
         || opts.followGlobalIncludes != m_Parser->Options().followGlobalIncludes
         || opts.wantPreprocessor     != m_Parser->Options().wantPreprocessor
-        || opts.parseComplexMacros   != m_Parser->Options().parseComplexMacros )
+        || opts.parseComplexMacros   != m_Parser->Options().parseComplexMacros
+        || m_ParserPerWorkspace      != parserPerWorkspace )
     {
         // important options changed... flag for reparsing
         if (cbMessageBox(_("You changed some class parser options. Do you want to "
