@@ -509,7 +509,6 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         if (fileLdr)
         {
             ed = new cbEditor(m_pNotebook, fileLdr, fname, m_Theme);
-
             if (ed->IsOK())
                 AddEditorBase(ed);
             else
@@ -984,7 +983,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 // Find the window, that actually has the mouse-focus and force a release
                 // prevents crash on windows or hang on wxGTK
                 wxWindow* win = wxWindow::GetCapture();
-                if(win)
+                if (win)
                     win->ReleaseMouse();
 
                 ret = dlg.ShowModal();
@@ -1028,6 +1027,19 @@ bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFile
         if (    ((ftActive == ftHeader) && (ftTested == ftSource))
              || ((ftActive == ftSource) && (ftTested == ftHeader)) )
         {
+            // Handle the case where two files (in different directories) have the same name:
+            // Example: A project file with three files dir1/file.h dir1/file.cpp dir2/file.h
+            // If you are in dir2/file.h and you want to swap Code::Blocks will first look if there
+            // isn't a file.h in that directory, which is in this case and would then ask the user
+            // to create a new file.cpp in dir2
+            if (candidateFile.GetPath() != activeFile.GetPath()) // Check if we are not in the same Directory
+            {
+                wxArrayString fileArray;
+                wxDir::GetAllFiles(candidateFile.GetPath(wxPATH_GET_VOLUME), &fileArray, candidateFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+                for (unsigned i=0; i<fileArray.GetCount(); i++)                             // if in this directory there is already
+                    if (wxFileName(fileArray[i]).GetFullName() == activeFile.GetFullName()) // a header file (or source file) for our candidate
+                        return false;                                                       // file it can't be our candidate file
+            }
             if (candidateFile.FileExists())
                 return true;
         }
@@ -2756,10 +2768,8 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         }
     }
 
-    if(doClose && eb != nullptr)
-    {
+    if (doClose && eb != nullptr)
         Close(eb);
-    }
     else
         event.Skip(); // allow others to process it too
 }
@@ -2837,6 +2847,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 
     pop->Enable(idNBTabSave, GetEditor(event.GetSelection())->GetModified());
     pop->Enable(idNBTabSaveAll, any_modified );
+
+    // allow plugins to use this menu
+    Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorTab, pop);
 
     m_pNotebook->PopupMenu(pop);
     // allow tab tooltips again
