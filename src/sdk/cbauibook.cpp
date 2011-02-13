@@ -180,27 +180,23 @@ void cbAuiNotebook::SetZoom(int zoom)
     for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
     {
         wxWindow* win = m_TabCtrls[i]->GetWindowFromIdx(m_TabCtrls[i]->GetActivePage());
-        if(win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
-        {
+        if (win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
             static_cast<cbEditor*>(win)->SetZoom(zoom);
-        }
     }
     m_SetZoomOnIdle = true;
 }
 
 void cbAuiNotebook::OnIdle(wxIdleEvent& /*event*/)
 {
-    if(m_SetZoomOnIdle)
+    if (m_SetZoomOnIdle)
     {
         m_SetZoomOnIdle = false;
         int zoom = Manager::Get()->GetEditorManager()->GetZoom();
         for (size_t i = 0; i < GetPageCount(); ++i)
         {
             wxWindow* win = GetPage(i);
-            if(win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
-            {
+            if (win && static_cast<EditorBase*>(win)->IsBuiltinEditor())
                 static_cast<cbEditor*>(win)->SetZoom(zoom);
-            }
         }
     }
 }
@@ -488,15 +484,14 @@ void cbAuiNotebook::MinimizeFreeSpace()
         return;
     UpdateTabControlsArray();
     for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
-    {
         MinimizeFreeSpace(m_TabCtrls[i]);
-    }
 }
 
 void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
 {
-    if(!tabCtrl || tabCtrl->GetPageCount() < 1)
+    if (!tabCtrl || tabCtrl->GetPageCount() < 1)
         return;
+
     int ctrl_idx = tabCtrl->GetActivePage();
     wxWindow* win = GetPage(ctrl_idx);
     if (win)
@@ -774,16 +769,16 @@ wxString cbAuiNotebook::SavePerspective()
 //
 //      // Get list of tab id's and move them to pane
 //      wxString tab_list = tab_part.AfterFirst(wxT('='));
-//      while(1) {
+//      while (1)
+//      {
 //         wxString tab = tab_list.BeforeFirst(wxT(','));
 //         if (tab.empty()) break;
 //         tab_list = tab_list.AfterFirst(wxT(','));
 //
 //         // Check if this page has an 'active' marker
 //         const wxChar c = tab[0];
-//         if (c == wxT('+') || c == wxT('*')) {
+//         if (c == wxT('+') || c == wxT('*'))
 //            tab = tab.Mid(1);
-//         }
 //
 //         const size_t tab_idx = wxAtoi(tab.c_str());
 //         if (tab_idx >= GetPageCount()) continue;
@@ -793,7 +788,7 @@ wxString cbAuiNotebook::SavePerspective()
 //         const size_t newpage_idx = dest_tabs->GetPageCount();
 //         dest_tabs->InsertPage(page.window, page, newpage_idx);
 //
-//         if (c == wxT('+')) dest_tabs->SetActivePage(newpage_idx);
+//         if      ( c == wxT('+')) dest_tabs->SetActivePage(newpage_idx);
 //         else if ( c == wxT('*')) sel_page = tab_idx;
 //      }
 //      dest_tabs->DoShowHide();

@@ -2439,17 +2439,24 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
     class Iterator : public IncrementalSelectIterator
     {
         public:
-            Iterator(ProjectFiles &files) : m_Files(files)
-            { ; }
-            virtual long GetCount() const
-            { return m_Files.size(); }
+            Iterator(ProjectFiles &files, bool showProject) : m_Files(files), m_ShowProject(showProject) {}
+            virtual long GetCount() const { return m_Files.size(); }
             virtual wxString GetItem(long index) const
-            { return m_Files[index]->relativeFilename; }
+            {
+                if (m_ShowProject)
+                {
+                    ProjectFile *f = m_Files[index];
+                    return f->relativeFilename + wxT(" (") + f->GetParentProject()->GetTitle() + wxT(")");
+                }
+                else
+                    return m_Files[index]->relativeFilename;
+            }
         private:
             ProjectFiles &m_Files;
+            bool m_ShowProject;
     };
 
-    Iterator iterator(files);
+    Iterator iterator(files, m_pProjects->GetCount() > 1);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
                                  _("Select file..."), _("Please select file to open:"));
     PlaceWindow(&dlg);
