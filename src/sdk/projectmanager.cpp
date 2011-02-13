@@ -699,6 +699,9 @@ it differs from the block currently in CreateMenu() by the following two IDs */
         menu.Append(idMenuFindFile, _("Find file..."));
         menu.AppendSeparator();
         menu.Append(idMenuTreeCloseWorkspace, _("Close workspace"));
+
+        // ask any plugins to add items in this menu
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, NULL);
     }
 
     if (menu.GetMenuItemCount() != 0)

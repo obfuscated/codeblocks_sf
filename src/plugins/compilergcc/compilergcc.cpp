@@ -624,8 +624,11 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     if (!data || data->GetKind() == FileTreeData::ftdkUndefined)
     {
         // popup menu in empty space in ProjectManager
+        if (menu->GetMenuItemCount() > 0)
+            menu->AppendSeparator();
         menu->Append(idMenuCompileAll, _("Build workspace"));
         menu->Append(idMenuRebuildAll, _("Rebuild workspace"));
+        menu->Append(idMenuCleanAll,   _("Clean workspace"));
     }
     else if (data && data->GetKind() == FileTreeData::ftdkProject)
     {
