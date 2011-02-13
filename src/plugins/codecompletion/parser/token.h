@@ -255,6 +255,7 @@ public:
     void          clear();
     inline Token* operator[](int idx) { return GetTokenAt(idx); }
     inline Token* at(int idx)         { return GetTokenAt(idx); }
+    inline const Token * at(int idx) const { return GetTokenAt(idx); }
     size_t        size();
     size_t        realsize();
     inline bool   empty()             { return size()==0; }
@@ -305,6 +306,7 @@ public:
 
 protected:
     Token* GetTokenAt(int idx);
+    Token const * GetTokenAt(int idx) const;
     int AddToken(Token* newToken, int fileIndex);
 
     void RemoveToken(int idx);

@@ -1361,6 +1361,14 @@ Token* TokensTree::GetTokenAt(int idx)
     return m_Tokens[idx];
 }
 
+const Token* TokensTree::GetTokenAt(int idx) const
+{
+    if (idx < 0 || (size_t)idx >= m_Tokens.size())
+        return 0;
+
+    return m_Tokens[idx];
+}
+
 size_t TokensTree::GetFileIndex(const wxString& filename)
 {
     size_t result = m_FilenamesMap.insert(filename);
