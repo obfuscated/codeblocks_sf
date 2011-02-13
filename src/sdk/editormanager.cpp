@@ -152,6 +152,7 @@ static const int idNBTabBottom = wxNewId();
 static const int idNBProperties = wxNewId();
 static const int idNBAddFileToProject = wxNewId();
 static const int idNBRemoveFileFromProject = wxNewId();
+static const int idNBShowFileInTree = wxNewId();
 
 /** *******************************************************
   * struct EditorManagerInternalData                      *
@@ -198,6 +199,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBProperties, EditorManager::OnProperties)
     EVT_MENU(idNBAddFileToProject, EditorManager::OnAddFileToProject)
     EVT_MENU(idNBRemoveFileFromProject, EditorManager::OnRemoveFileFromProject)
+    EVT_MENU(idNBShowFileInTree, EditorManager::OnShowFileInTree)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 END_EVENT_TABLE()
 
@@ -259,7 +261,7 @@ cbNotebookStack* EditorManager::GetNotebookStack()
                 found = false;
                 for (body = m_pNotebookStackHead->next; body != NULL; body = body->next)
                 {
-                    if(wnd == body->window)
+                    if (wnd == body->window)
                     {
                         found = true;
                         break;
@@ -277,7 +279,7 @@ cbNotebookStack* EditorManager::GetNotebookStack()
         {
             for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != NULL; prev_body = body, body = body->next)
             {
-                if(m_pNotebook->GetPageIndex(body->window) == wxNOT_FOUND)
+                if (m_pNotebook->GetPageIndex(body->window) == wxNOT_FOUND)
                 {
                     prev_body->next = body->next;
                     delete body;
@@ -307,7 +309,7 @@ void EditorManager::DeleteNotebookStack()
 void EditorManager::RebuildNotebookStack()
 {
     DeleteNotebookStack();
-    for(size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         m_pNotebookStackTail->next = new cbNotebookStack(m_pNotebook->GetPage(i));
         m_pNotebookStackTail = m_pNotebookStackTail->next;
@@ -2279,7 +2281,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             int onScreen = control->LinesOnScreen() >> 1;
             int l1 = line - onScreen;
             int l2 = line + onScreen;
-            for(int l=l1; l<=l2;l+=2)       // unfold visible lines on screen
+            for (int l=l1; l<=l2;l+=2)       // unfold visible lines on screen
                 control->EnsureVisible(l);
             control->GotoLine(l1);          // center selection on screen
             control->GotoLine(l2);
@@ -2826,8 +2828,12 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
         {
             pop->AppendSeparator();
 
-            if (ed->GetProjectFile())
+            ProjectFile *projectFile = ed->GetProjectFile();
+            if (projectFile)
+            {
                 pop->Append(idNBRemoveFileFromProject, _("Remove file from project"));
+                pop->Append(idNBShowFileInTree, _("Show file in the project tree"));
+            }
             else
                 pop->Append(idNBAddFileToProject, _("Add file to active project"));
         }
@@ -2835,7 +2841,7 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 
     bool any_modified = false;
 
-    for(int i = 0; i < GetEditorsCount(); ++i)
+    for (int i = 0; i < GetEditorsCount(); ++i)
     {
         EditorBase* ed = GetEditor(i);
         if (ed && ed->GetModified())
@@ -2944,6 +2950,21 @@ void EditorManager::OnRemoveFileFromProject(wxCommandEvent& /*event*/)
         cbProject *project = pf->GetParentProject();
         Manager::Get()->GetProjectManager()->RemoveFileFromProject(pf, project);
         Manager::Get()->GetProjectManager()->RebuildTree();
+    }
+}
+
+void EditorManager::OnShowFileInTree(wxCommandEvent& event)
+{
+    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    if (pf && tree) // should be in any case, otherwise something went wrong between popup menu creation and here
+    {
+        const wxTreeItemId &itemId = pf->GetTreeItemId();
+        if (itemId.IsOk())
+        {
+            tree->EnsureVisible(itemId);
+            tree->SelectItem(itemId, true);
+        }
     }
 }
 

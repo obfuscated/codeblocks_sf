@@ -603,6 +603,7 @@ const int idConfigureEditor = wxNewId();
 const int idProperties = wxNewId();
 const int idAddFileToProject = wxNewId();
 const int idRemoveFileFromProject = wxNewId();
+const int idShowFileInProject = wxNewId();
 
 const int idBookmarkAdd = wxNewId();
 const int idBookmarkRemove = wxNewId();
@@ -641,6 +642,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
     EVT_MENU(idAddFileToProject, cbEditor::OnContextMenuEntry)
     EVT_MENU(idRemoveFileFromProject, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idShowFileInProject, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkAdd, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkRemove, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkRemoveAll, cbEditor::OnContextMenuEntry)
@@ -2601,6 +2603,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             {
                 popup->Append(idRemoveFileFromProject, _("Remove file from project"));
                 popup->Enable(idRemoveFileFromProject, isAddRemoveEnabled);
+                popup->Append(idShowFileInProject,     _("Show file in the project tree"));
             }
             else
             {
@@ -2864,6 +2867,19 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
             cbProject *prj = m_pProjectFile->GetParentProject();
             Manager::Get()->GetProjectManager()->RemoveFileFromProject(m_pProjectFile, prj);
             Manager::Get()->GetProjectManager()->RebuildTree();
+        }
+    }
+    else if (id == idShowFileInProject)
+    {
+        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+        if (m_pProjectFile && tree)
+        {
+            const wxTreeItemId &itemId = m_pProjectFile->GetTreeItemId();
+            if (itemId.IsOk())
+            {
+                tree->EnsureVisible(itemId);
+                tree->SelectItem(itemId, true);
+            }
         }
     }
     else if (id == idBreakpointAdd)

@@ -196,6 +196,9 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 
         /** Auto-generated files when compiling this file */
         ProjectFilesVector generatedFiles;
+
+        /** Returns the wxTreeItemId for the file */
+        const wxTreeItemId& GetTreeItemId() const { return m_TreeItemId; }
     protected:
         friend class cbProject;
 
