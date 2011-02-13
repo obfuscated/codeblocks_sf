@@ -434,12 +434,12 @@
           <label>Other</label>
           <object class="wxMenuItem" name="idEditInsertNewLine">
             <label>Insert new line</label>
-            <accel>Ctrl+Return</accel>
+            <accel>Shift+Return</accel>
             <help>Insert line below current line</help>
           </object>
           <object class="wxMenuItem" name="idEditGotoLineEnd">
             <label>Goto line end</label>
-            <accel>Shift+Return</accel>
+            <accel>Ctrl+Return</accel>
             <help>Goto current line end</help>
           </object>
         </object>
