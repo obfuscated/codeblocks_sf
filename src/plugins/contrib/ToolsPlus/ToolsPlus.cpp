@@ -238,7 +238,8 @@ void ToolsPlus::OnSetMultiTarget(wxCommandEvent& event)
         m_RunTarget=paths[0];
         for(size_t i=1;i<paths.GetCount();i++)
             m_RunTarget+=_T(" ")+paths[i];
-    } else
+    }
+    else
         m_RunTarget=_T("");
     delete fd;
 }
@@ -248,9 +249,8 @@ void ToolsPlus::OnSetDirTarget(wxCommandEvent& event)
 {
     wxDirDialog *dd=new wxDirDialog(NULL,_("Choose the Target Directory"),_T(""));
     if(dd->ShowModal()==wxID_OK)
-    {
         m_RunTarget=dd->GetPath();
-    } else
+    else
         m_RunTarget=_T("");
     delete dd;
 }
@@ -498,7 +498,7 @@ void ToolsPlus::OnRelease(bool appShutDown)
 int ToolsPlus::Configure()
 {
 	//create and display the configuration dialog for your plugin
-	cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("ShellCommand Settings"));
+	cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Tool Output Settings"));
 	cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
 	if (panel)
 	{
@@ -641,7 +641,7 @@ void ToolsPlus::BuildMenu(wxMenuBar* menuBar)
     bool replace_old_tools=cfg->ReadBool(_T("HideToolsMenu"),false);
     if(replace_old_tools)
     {
-        int pos = menuBar->FindMenu(_("Tools"));
+        int pos = menuBar->FindMenu(_("&Tools"));
         if(pos!=wxNOT_FOUND)
         {
             m_OldToolMenu=menuBar->GetMenu(pos);
@@ -682,6 +682,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                 size_t sep_pos=menu->GetMenuItemCount();
                 size_t added=0;
                 for(unsigned int i=0;i<m_ic.interps.size();i++)
+                {
                     if(WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
@@ -697,6 +698,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                             added++;
                         }
                     }
+                }
                 if(added>0)
                     menu->InsertSeparator(sep_pos);
             }
@@ -742,23 +744,25 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
         size_t sep_pos=menu->GetMenuItemCount();
         size_t added=0;
         for(unsigned int i=0;i<m_ic.interps.size();i++)
+        {
             if(WildCardListMatch(m_ic.interps[i].wildcards,name))
             {
                 m_RunTarget=filename;
-                    if(m_ic.interps[i].command.Find(_("$file"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$fname"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$fext"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$path"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
-                        m_ic.interps[i].command.Find(_("$mpaths"))>=0)
-                    {
-                        wxString menutext=m_ic.interps[i].name;
-                        m_contextvec.Add(i);
-                        AddModuleMenuEntry(menu,i,added);
-                        added++;
-                    }
+                if(m_ic.interps[i].command.Find(_("$file"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$fname"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$fext"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$path"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
+                    m_ic.interps[i].command.Find(_("$mpaths"))>=0)
+                {
+                    wxString menutext=m_ic.interps[i].name;
+                    m_contextvec.Add(i);
+                    AddModuleMenuEntry(menu,i,added);
+                    added++;
+                }
             }
+        }
         if(added>0)
             menu->InsertSeparator(sep_pos);
 	}
@@ -773,6 +777,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                 wxString filename=f.GetFullPath();
                 wxString name=f.GetFullName();
                 for(unsigned int i=0;i<m_ic.interps.size();i++)
+                {
                     if(WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
@@ -790,6 +795,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                             added++;
                         }
                     }
+                }
             }
             if(data->GetKind()==FileTreeData::ftdkFolder) //right clicked on folder in file explorer
             {
@@ -797,6 +803,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                 wxString filename=f.GetFullPath();
                 wxString name=f.GetFullName();
                 for(unsigned int i=0;i<m_ic.interps.size();i++)
+                {
                     if(WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
@@ -812,6 +819,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                             added++;
                         }
                     }
+                }
             }
             if(data->GetKind()==FileTreeData::ftdkVirtualGroup) //right clicked on multiple selections in file explorer
             {
@@ -821,7 +829,8 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                     bool match=true; // all selected items must have names that match the wildcard for this grouping
                     wxString pathlist=paths;
                     wxString ipath=paths.BeforeFirst('*'); // '*' separated list
-                    if(m_ic.interps[i].wildcards!=_T(""));
+                    if(m_ic.interps[i].wildcards!=_T(""))
+                    {
                         while(match && pathlist!=_T(""))
                         {
                             wxString name=wxFileName(ipath).GetFullName();
@@ -830,6 +839,7 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                             pathlist=pathlist.AfterFirst('*');
                             ipath=pathlist.BeforeFirst('*');
                         }
+                    }
                     if(match)
                     {
                         m_RunTarget=paths;
@@ -847,6 +857,5 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
             if(added>0)
                 menu->InsertSeparator(sep_pos);
 	    }
-//	NotImplemented(_T("ToolsPlus::BuildModuleMenu()"));
 }
 
