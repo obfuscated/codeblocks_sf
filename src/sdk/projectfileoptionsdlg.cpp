@@ -242,6 +242,8 @@ void ProjectFileOptionsDlg::OnReadOnlyCheck(wxCommandEvent& event)
 
     // Update UI
     XRCCTRL(*this, "chkReadOnly", wxCheckBox)->SetValue(!m_FileName.IsFileWritable());
+
+    Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
 }
 
 void ProjectFileOptionsDlg::OnCompilerCombo(wxCommandEvent& event)
