@@ -1,3 +1,7 @@
-#if 1 || 1 && 0
-int main();
-#endif
+namespace AAA
+{
+    extern "C" void function();
+    int a;
+};
+
+void test();
