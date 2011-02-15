@@ -641,25 +641,25 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
     if (!project)
     {
         Compiler* compiler = CompilerFactory::GetDefaultCompiler();
-        if (!compiler)
-            cbThrow(_T("Default compiler is invalid!"));
-
-        const wxArrayString& dirs = compiler->GetIncludeDirs();
-        for (size_t i = 0; i < dirs.GetCount(); ++i)
+        if (compiler)
         {
-            wxString path = dirs[i];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
-            parser->AddIncludeDir(path);
-        }
-
-        if (compiler->GetID() == _T("gcc"))
-        {
-            const wxArrayString& gccDirs = GetGCCCompilerDirs(compiler->GetPrograms().CPP);
-            TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
-            for (size_t i = 0; i < gccDirs.GetCount(); ++i)
+            const wxArrayString& dirs = compiler->GetIncludeDirs();
+            for (size_t i = 0; i < dirs.GetCount(); ++i)
             {
-                parser->AddIncludeDir(gccDirs[i]);
-                TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
+                wxString path = dirs[i];
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
+                parser->AddIncludeDir(path);
+            }
+
+            if (compiler->GetID() == _T("gcc"))
+            {
+                const wxArrayString& gccDirs = GetGCCCompilerDirs(compiler->GetPrograms().CPP);
+                TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
+                for (size_t i = 0; i < gccDirs.GetCount(); ++i)
+                {
+                    parser->AddIncludeDir(gccDirs[i]);
+                    TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
+                }
             }
         }
 
