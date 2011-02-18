@@ -60,6 +60,7 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_pLastFocused(nullptr),
 #endif
           m_AllowToolTips(false),
+          m_OverTabCtrl(false),
           m_SetZoomOnIdle(false),
           m_IdNoteBookTimer(wxNewId())
 {
@@ -156,18 +157,13 @@ void cbAuiNotebook::ResetTabCtrlEvents()
         m_TabCtrls[i]->Disconnect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
         m_TabCtrls[i]->Connect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
         m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
-#ifdef __WXMSW__
         m_TabCtrls[i]->Disconnect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
         m_TabCtrls[i]->Disconnect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
-#endif // #ifdef __WXMSW__
+        m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
+        m_TabCtrls[i]->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
         if (s_AllowMousewheel)
         {
             m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
-#ifdef __WXMSW__
-            // hack needed on wxMSW, because only focused windows get mousewheel-events
-            m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
-            m_TabCtrls[i]->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
-#endif // #ifdef __WXMSW__
         }
     }
 }
@@ -231,6 +227,9 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 
     UpdateTabControlsArray();
 
+    if((m_pToolTip == nullptr) && !m_OverTabCtrl)
+        return;
+
     if (!s_UseTabTooltips || !m_AllowToolTips)
     {
         CancelToolTip();
@@ -284,8 +283,6 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
     }
 }
 
-#ifdef __WXMSW__
-// hack needed on wxMSW, because only focused windows get mousewheel-events
 void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
 {
     if (!wxTheApp->IsActive())
@@ -297,6 +294,8 @@ void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
         if (nb)
         {
+            nb->m_OverTabCtrl = true;
+#ifdef __WXMSW__
             if (   (nb->m_pToolTip == nullptr)
                 && (nb->m_pLastFocused == nullptr)
                 && (nb->m_LastSelected == wxNOT_FOUND) )
@@ -304,6 +303,7 @@ void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
                 nb->StoreFocus();
                 tabCtrl->SetFocus();
             }
+#endif // #ifdef __WXMSW__
         }
     }
 }
@@ -317,12 +317,19 @@ void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
     if (tabCtrl)
     {
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
-        if (nb && nb->m_pToolTip == nullptr)
-            nb->RestoreFocus();
+        if (nb)
+        {
+            nb->m_OverTabCtrl = false;
+#ifdef __WXMSW__
+            if (nb->m_pToolTip == nullptr)
+                nb->RestoreFocus();
+#endif // #ifdef __WXMSW__
+        }
     }
 
 }
 
+#ifdef __WXMSW__
 bool cbAuiNotebook::IsFocusStored(wxWindow* page)
 {
     wxWindow* win = m_pLastFocused;
