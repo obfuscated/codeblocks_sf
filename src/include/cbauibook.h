@@ -297,6 +297,12 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Holds the id of the dwell timer
          */
         long m_IdNoteBookTimer;
+        /** \brief Holds the size of a tabCtrl after a resize event
+         *
+         * Needed to skip a resize event, if size did not change
+         * it gets triggered on any tab-click
+         */
+        wxSize m_TabCtrlSize;
 
 //static stuff (common to all cbAuiNotebooks)
     public:

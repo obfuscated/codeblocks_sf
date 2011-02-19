@@ -435,7 +435,14 @@ void cbAuiNotebook::OnResize(wxSizeEvent& event)
     {
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
         if (nb)
+        {
+            if(nb->m_TabCtrlSize == wxDefaultSize)
+                nb->m_TabCtrlSize = event.GetSize();
+            if(nb->m_TabCtrlSize == event.GetSize())
+                return;
+            nb->m_TabCtrlSize = event.GetSize();
             nb->MinimizeFreeSpace(tabCtrl);
+        }
     }
     event.Skip();
 }
@@ -509,19 +516,25 @@ void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
         // a little hacky, but it works
         wxPaintEvent event;
         tabCtrl->ProcessEvent(event);
+        int tabOffset = tabCtrl->GetTabOffset();
 
         wxClientDC dc(win);
         size_t lastTabIdx = tabCtrl->GetPageCount() - 1;
-        for (int i = lastTabIdx ; i >= 0; --i)
+
+        if(!tabCtrl->IsTabVisible(ctrl_idx, tabOffset, & dc, win))
         {
-            if (tabCtrl->IsTabVisible(ctrl_idx, i, & dc, win))
+            for (int i = lastTabIdx ; i >= 0; --i)
             {
-                while (i > 0 && tabCtrl->IsTabVisible(lastTabIdx, i-1, & dc, win))
-                    --i;
-                tabCtrl->SetTabOffset(i);
-                break;
+                if (tabCtrl->IsTabVisible(ctrl_idx, i, & dc, win))
+                {
+                    tabOffset = i;
+                    break;
+                }
             }
         }
+        while (tabOffset > 0 && tabCtrl->IsTabVisible(lastTabIdx, tabOffset-1, & dc, win))
+            --tabOffset;
+        tabCtrl->SetTabOffset(tabOffset);
     }
     tabCtrl->Refresh();
 }
