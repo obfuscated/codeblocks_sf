@@ -1147,23 +1147,26 @@ void GetStringFromSet(wxString& str, const StringSet& s, const wxString& separat
         str << *it << separator;
 }
 
-wxArrayString& CodeCompletion::GetSystemIncludeDirs(Parser* parser, bool force)
+wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool force)
 {
-    static Parser* lastParser = NULL;
+    static cbProject* lastProject = nullptr;
     static wxArrayString incDirs;
 
-    if ((!parser || !force) && parser == lastParser)
+    if (!force && project == lastProject)
         return incDirs;
     else
     {
         incDirs.Clear();
-        lastParser = parser;
+        lastProject = project;
     }
 
-    cbProject* project = m_NativeParser.GetProjectByParser(parser);
     wxString prjPath;
     if (project)
         prjPath = project->GetCommonTopLevelPath();
+
+    Parser* parser = m_NativeParser.GetParserByProject(project);
+    if (!parser)
+        return incDirs;
 
     incDirs = parser->GetIncludeDirs();
     for (size_t i = 0; i < incDirs.GetCount();)
@@ -1288,8 +1291,7 @@ void CodeCompletion::CodeCompleteIncludes()
     // #include < or #include "
     {
         wxCriticalSectionLocker locker(s_HeadersCriticalSection);
-        wxArrayString& incDirs = GetSystemIncludeDirs(&m_NativeParser.GetParser(),
-                                                      project ? project->GetModified() : true);
+        wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
         {
             SystemHeadersMap::iterator it = m_SystemHeadersMap.find(incDirs[i]);
@@ -3164,22 +3166,18 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 
 void CodeCompletion::OnParserStart(wxCommandEvent& event)
 {
+    cbProject* project = static_cast<cbProject*>(event.GetClientData());
     ParsingType type = static_cast<ParsingType>(event.GetInt());
+
     if (type == ptCreateParser)
     {
-        Parser* parser = static_cast<Parser*>(event.GetEventObject());
-        wxArrayString& dirs = GetSystemIncludeDirs(parser, true);
+        wxArrayString& dirs = GetSystemIncludeDirs(project, true);
         SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, dirs);
         m_SystemHeadersThread.push_back(thread);
 
         cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (editor)
-        {
-            cbProject* project = m_NativeParser.GetProjectByParser(parser);
-            cbProject* edPrj = m_NativeParser.GetProjectByEditor(editor);
-            if (edPrj == project)
-                EnableToolbarTools(false);
-        }
+        if (m_NativeParser.GetProjectByEditor(editor) == project)
+            EnableToolbarTools(false);
     }
 }
 
@@ -3196,14 +3194,9 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
         }
     }
 
-    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (!editor || editor->GetFilename() == g_StartHereTitle)
-        return;
-
-    if (m_TimerFunctionsParsing.IsRunning())
-        m_TimerFunctionsParsing.Stop();
-
-    ParseFunctionsAndFillToolbar(true);
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (editor)
+        ParseFunctionsAndFillToolbar(true);
 }
 
 void CodeCompletion::EnableToolbarTools(bool enable)

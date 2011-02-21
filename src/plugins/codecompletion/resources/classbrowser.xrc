@@ -25,6 +25,7 @@
 										<content>
 											<item>Current file&apos;s symbols</item>
 											<item>Current project&apos;s symbols</item>
+											<item>All local symbols (workspace)</item>
 											<item>Everything</item>
 										</content>
 										<selection>0</selection>

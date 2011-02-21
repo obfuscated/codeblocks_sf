@@ -72,7 +72,7 @@ public:
     void CodeCompletePreprocessor();
     void CodeCompleteIncludes();
     wxArrayString GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets);
-    wxArrayString& GetSystemIncludeDirs(Parser* parser, bool force);
+    wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
     void GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs);
 
     void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);

@@ -610,7 +610,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
 
     if (parentTokenIdx == -1)
     {
-        if (m_Options.displayFilter == bdfEverything)
+        if (m_Options.displayFilter == bdfWorkspace || m_Options.displayFilter == bdfEverything)
             tokens = &m_TokensTree->m_GlobalNameSpace;
         else
             tokens = &m_CurrentGlobalTokensSet;
@@ -745,7 +745,8 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     if (token->m_IsTemp)
         return false;
 
-    if (m_Options.displayFilter == bdfEverything)
+    if (    m_Options.displayFilter == bdfEverything
+        || (m_Options.displayFilter == bdfWorkspace && token->m_IsLocal) )
         return true;
 
     if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
