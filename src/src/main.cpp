@@ -1718,6 +1718,8 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
     if (ed)
     {
+        // Cryogen 24/3/10 Activate the editor after opening. Partial fix for bug #14087.
+        ed->Activate();
         if (addToHistory)
             AddToRecentFilesHistory(ed->GetFilename());
         return true;
