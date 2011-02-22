@@ -47,8 +47,6 @@ BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
 InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags)
 {
     defaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"), wxBITMAP_TYPE_PNG);
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
-        SetWindowStyleFlag(GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
 }
 
 InfoPane::~InfoPane()
@@ -482,4 +480,3 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
 
    return false;
 }
-
