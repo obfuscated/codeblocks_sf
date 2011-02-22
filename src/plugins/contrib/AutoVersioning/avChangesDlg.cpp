@@ -41,7 +41,7 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     //(*Initialize(avChangesDlg)
     wxBoxSizer* sizerButtons;
     wxBoxSizer* sizerConfirmation;
-
+    
     Create(parent, wxID_ANY, _("AutoVersioning :: Changes Log"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(700,300));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -72,7 +72,7 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     BoxSizer1->Add(sizerConfirmation, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->SetSizeHints(this);
-
+    
     Connect(ID_ADD_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnAddClick);
     Connect(ID_EDIT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnEditClick);
     Connect(ID_DELETE_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnDeleteClick);
@@ -84,7 +84,10 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     grdChanges->CreateGrid(0,2);
     grdChanges->SetColLabelValue(0,_T("Type"));
     grdChanges->SetColLabelValue(1,_T("Description"));
+
     grdChanges->AutoSize();
+	grdChanges->SetColSize(0, 60);
+	grdChanges->SetColSize(1, 645);
 }
 
 avChangesDlg::~avChangesDlg()

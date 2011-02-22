@@ -396,6 +396,15 @@
 													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_UPDATE_MANIFEST" variable="chkUpdateManifest" member="yes">
+														<label>Update manifest.xml</label>
+														<tooltip>Update manifest.xml&apos;s version field with AutoVersion&apos;s&#x0A;values using the format MAJOR.MINOR.BUILD.&#x0A;This setting is mainly useful for plugin developers.</tooltip>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
@@ -421,6 +430,11 @@
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
+												</object>
+												<object class="spacer">
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
 												</object>
 											</object>
 											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -454,7 +468,7 @@
 													<object class="wxBoxSizer" variable="BoxSizer15" member="no">
 														<object class="sizeritem">
 															<object class="wxTextCtrl" name="ID_HEADERPATH_TEXTCTRL" variable="txtHeaderPath" member="yes">
-																<value>verison.h</value>
+																<value>version.h</value>
 																<tooltip>Header path</tooltip>
 															</object>
 															<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -515,7 +529,7 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="ID_SVN_CHECK" variable="chkSvn" member="yes">
-										<label>svn enabled</label>
+										<label>SVN enabled</label>
 										<tooltip>Check this if your project is controlled by svn&#x0A;to generate an SVN__REVISION declaration.</tooltip>
 										<handler function="OnSvnCheck" entry="EVT_CHECKBOX" />
 									</object>

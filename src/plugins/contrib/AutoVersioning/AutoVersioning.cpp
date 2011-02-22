@@ -19,6 +19,8 @@
 #include <projectmanager.h>
 #include <tinyxml/tinyxml.h>
 #endif
+#include <tinyxml/tinywxuni.h>
+#include <wx/textfile.h>
 
 #include "projectloader_hooks.h"
 
@@ -173,6 +175,11 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                 {
                     Config.Settings.DateDeclarations = Help?true:false;
                 }
+                // GJH 03/03/10 Added manifest updating.
+                if(pElem->QueryIntAttribute("update_manifest", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.UpdateManifest = Help?true:false;
+                }
                 if(pElem->QueryIntAttribute("do_auto_increment", &Help) == TIXML_SUCCESS)
                 {
                     Config.Settings.DoAutoIncrement = Help?true:false;
@@ -255,6 +262,8 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
             TiXmlElement Settings("Settings");
             Settings.SetAttribute("autoincrement", NewConfig.Settings.Autoincrement);
             Settings.SetAttribute("date_declarations", NewConfig.Settings.DateDeclarations);
+            // GJH 03/03/10 Added manifest updating.
+            Settings.SetAttribute("update_manifest", NewConfig.Settings.UpdateManifest);
             Settings.SetAttribute("do_auto_increment", NewConfig.Settings.DoAutoIncrement);
             Settings.SetAttribute("ask_to_increment", NewConfig.Settings.AskToIncrement);
             Settings.SetAttribute("language", NewConfig.Settings.Language.c_str());
@@ -478,6 +487,8 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
 
     VersionEditorDialog.SetAuto(GetConfig().Settings.Autoincrement);
     VersionEditorDialog.SetDates(GetConfig().Settings.DateDeclarations);
+	// GJH 03/03/10 Added manifest updating.
+    VersionEditorDialog.SetManifest(GetConfig().Settings.UpdateManifest);
 
     VersionEditorDialog.SetSvn(GetConfig().Settings.Svn);
     VersionEditorDialog.SetSvnDirectory(cbC2U(GetConfig().Settings.SvnDirectory.c_str()));
@@ -513,6 +524,8 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().Scheme.BuildTimesToIncrementMinor = VersionEditorDialog.GetBuildTimesToMinorIncrement();
     GetConfig().Settings.Autoincrement = VersionEditorDialog.GetAuto();
     GetConfig().Settings.DateDeclarations = VersionEditorDialog.GetDates();
+	// GJH 03/03/10 Added manifest updating.
+    GetConfig().Settings.UpdateManifest = VersionEditorDialog.GetManifest();
     GetConfig().Settings.AskToIncrement = VersionEditorDialog.GetCommitAsk();
     GetConfig().Settings.DoAutoIncrement = VersionEditorDialog.GetCommit();
     GetConfig().Settings.Language = cbU2C(VersionEditorDialog.GetLanguage());
@@ -646,7 +659,7 @@ void AutoVersioning::UpdateVersionHeader()
     {
         wxString revision,date;
         if (!QuerySvn(cbC2U(GetConfig().Settings.SvnDirectory.c_str()), revision, date))
-            wxMessageBox(_("Svn configuration files not found.\nVerify the Autoversioning svn directory."),_("Error"),wxICON_ERROR);
+            wxMessageBox(_("Possible Causes:\n-You don't have SVN installed.\n-Incompatible version of SVN.\n-SVN configuration files not found.\n\nVerify the Autoversioning SVN directory."),_("SVN Error"),wxICON_ERROR);
         headerOutput << _T("\t") << _T("\n");
         headerOutput << _T("\t") << _T("//SVN Version") << _T("\n");
         headerOutput << _T("\t") << _T("static const char ") << prefix << _T("SVN_REVISION[] = ") << _T("\"") + revision + _T("\"")<< _T(";\n");
@@ -673,6 +686,59 @@ void AutoVersioning::UpdateVersionHeader()
     versionHeaderFile.Close();
 
     m_timerStatus->Start(1000);
+}
+
+/*! \brief 	Update manifest.xml with the latest version string.
+ * \author 	Gary Harris
+ * \date		03/03/10
+ *
+ * \return void
+ *
+ * This function inserts a new version string into the project's manifest.xml.
+ * It searches for the line containing the XML string "<Value version="X.Y.ZZZ" />"
+ * and builds and inserts a new version string based on the current AutoVersion
+ * values.
+ * \note I first used TinyXML to do the XML work but it trashes some text when rewriting the file,
+ * in particular text in the "thanks to" field that is on lines following the value field. This is usually
+ * done to wrap text onto subsequent lines in the plug-in's About dialogue and is probably not strictly
+ * valid XML. TinyXML seems not to like text on following lines.
+ */
+void AutoVersioning::UpdateManifest()
+{
+	wxFileName fnManifest(Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath() + wxT("manifest.xml"));
+	wxString sPathManifest(fnManifest.GetFullPath());
+	if (wxFile::Exists(sPathManifest))
+	{
+		wxTextFile fileManifest(sPathManifest);
+		fileManifest.Open();
+		if(fileManifest.IsOpened()){
+			fileManifest.GetFirstLine();
+			wxString sLine;
+			size_t i;
+			while(!(sLine = fileManifest.GetNextLine()).IsEmpty())
+			{
+				if(sLine.Find(wxT("<Value version=")) != wxNOT_FOUND)
+				{
+					i = fileManifest.GetCurrentLine();
+					int iFirst, iLast;
+					// Find the first double quote.
+					iFirst = sLine.Find('"');
+					// Find the last double quote.
+					iLast = sLine.Find('"', true);
+					// Create a new version string...
+					wxString sVersion = sLine.SubString(iFirst, iLast);
+					wxString sNewVersion = wxString::Format(wxT("\"%d.%d.%d\""), GetVersionState().Values.Major, GetVersionState().Values.Minor, GetVersionState().Values.Build);
+					// ...and insert it into the XML.
+					sLine.Replace(sVersion, sNewVersion);
+					// Remove the existing line and replace it with the new one.
+					fileManifest.RemoveLine(i);
+					fileManifest.InsertLine(sLine, i);
+					fileManifest.Write();
+					break;
+				}
+			}
+		}
+	}
 }
 
 void AutoVersioning::CommitChanges()
@@ -723,6 +789,12 @@ void AutoVersioning::CommitChanges()
 
             m_Modified = false;
             UpdateVersionHeader();
+			// GJH 03/03/10 Added manifest updating.
+            if(GetConfig().Settings.UpdateManifest)
+            {
+				UpdateManifest();
+            }
+
         }
     }
 }

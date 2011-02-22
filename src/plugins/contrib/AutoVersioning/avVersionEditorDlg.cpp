@@ -55,6 +55,7 @@ const long avVersionEditorDlg::ID_PREFIX_TEXT = wxNewId();
 const long avVersionEditorDlg::ID_CODE_PANEL = wxNewId();
 const long avVersionEditorDlg::ID_AUTO_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_DATES_CHECK = wxNewId();
+const long avVersionEditorDlg::ID_UPDATE_MANIFEST = wxNewId();
 const long avVersionEditorDlg::ID_COMMIT_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_ASKCOMMIT_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_STATICLINE3 = wxNewId();
@@ -101,7 +102,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     wxBoxSizer* BoxSizer11;
     wxBoxSizer* BoxSizer14;
     wxBoxSizer* codeSizer;
-
+    
     Create(parent, wxID_ANY, _("Auto Versioning Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(469,364));
     wxFont thisFont(10,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
@@ -247,6 +248,10 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     chkDates->SetValue(true);
     chkDates->SetToolTip(_("Create variable declarations\nfor date, month and year. And \nalso an ubuntu version style."));
     BoxSizer13->Add(chkDates, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    chkUpdateManifest = new wxCheckBox(pnlSettings, ID_UPDATE_MANIFEST, _("Update manifest.xml"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_UPDATE_MANIFEST"));
+    chkUpdateManifest->SetValue(false);
+    chkUpdateManifest->SetToolTip(_("Update manifest.xml\'s version field with AutoVersion\'s\nvalues using the format MAJOR.MINOR.BUILD.\nThis setting is mainly useful for plugin developers."));
+    BoxSizer13->Add(chkUpdateManifest, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer11->Add(BoxSizer13, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer14 = new wxBoxSizer(wxVERTICAL);
     chkCommit = new wxCheckBox(pnlSettings, ID_COMMIT_CHECK, _("Do Autoincrement"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_COMMIT_CHECK"));
@@ -258,6 +263,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     chkAskCommit->Disable();
     chkAskCommit->SetToolTip(_("Ask you to increment every time\na change has been made to the \nsource code, before the compilation\ntakes effect."));
     BoxSizer14->Add(chkAskCommit, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer14->Add(-1,-1,1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer11->Add(BoxSizer14, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     settingsSizer->Add(BoxSizer11, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticLine3 = new wxStaticLine(pnlSettings, ID_STATICLINE3, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE3"));
@@ -267,7 +273,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     lblHeaderPath = new wxStaticText(pnlSettings, ID_HEADERPATH_LABEL, _("Header Path:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_HEADERPATH_LABEL"));
     BoxSizer7->Add(lblHeaderPath, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
-    txtHeaderPath = new wxTextCtrl(pnlSettings, ID_HEADERPATH_TEXTCTRL, _("verison.h"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_HEADERPATH_TEXTCTRL"));
+    txtHeaderPath = new wxTextCtrl(pnlSettings, ID_HEADERPATH_TEXTCTRL, _("version.h"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_HEADERPATH_TEXTCTRL"));
     txtHeaderPath->SetToolTip(_("Header path"));
     BoxSizer15->Add(txtHeaderPath, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     btnHeaderPath = new wxButton(pnlSettings, ID_HEADERPATH_BUTTON, _("..."), wxDefaultPosition, wxSize(23,26), 0, wxDefaultValidator, _T("ID_HEADERPATH_BUTTON"));
@@ -276,10 +282,10 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     BoxSizer7->Add(BoxSizer15, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5->Add(BoxSizer7, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    wxString __wxRadioBoxChoices_1[2] =
+    wxString __wxRadioBoxChoices_1[2] = 
     {
-        _("C"),
-        _("C++")
+    _("C"),
+    _("C++")
     };
     rbHeaderLanguage = new wxRadioBox(pnlSettings, ID_HEADERLANGUAGE_RADIOBOX, _("Header language"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 2, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_HEADERLANGUAGE_RADIOBOX"));
     rbHeaderLanguage->SetSelection(1);
@@ -289,7 +295,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     settingsSizer->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticLine1 = new wxStaticLine(pnlSettings, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
     settingsSizer->Add(StaticLine1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    chkSvn = new wxCheckBox(pnlSettings, ID_SVN_CHECK, _("svn enabled"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SVN_CHECK"));
+    chkSvn = new wxCheckBox(pnlSettings, ID_SVN_CHECK, _("SVN enabled"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_SVN_CHECK"));
     chkSvn->SetValue(false);
     chkSvn->SetToolTip(_("Check this if your project is controlled by svn\nto generate an SVN_REVISION declaration."));
     settingsSizer->Add(chkSvn, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
@@ -357,7 +363,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     tmrValidateInput.Start(500, false);
     mainSizer->SetSizeHints(this);
     Center();
-
+    
     Connect(ID_STATUS_COMBOBOX,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&avVersionEditorDlg::OnCmbStatusSelect);
     Connect(ID_COMMIT_CHECK,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnChkCommitClick);
     Connect(ID_HEADERPATH_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnHeaderPathClick);
@@ -434,6 +440,13 @@ void avVersionEditorDlg::SetDates(bool value)
 {
 	m_dates = value;
 	chkDates->SetValue(value);
+}
+
+// GJH 03/03/10 Added manifest updating.
+void avVersionEditorDlg::SetManifest(bool value)
+{
+	m_updateManifest = value;
+	chkUpdateManifest->SetValue(value);
 }
 
 void avVersionEditorDlg::SetSvn(bool value)
@@ -621,6 +634,8 @@ void avVersionEditorDlg::OnAcceptClick(wxCommandEvent&)
 
     m_autoMajorMinor = chkAutoIncrement->IsChecked();
     m_dates = chkDates->IsChecked();
+	// GJH 03/03/10 Added manifest updating.
+	m_updateManifest = chkUpdateManifest->IsChecked();
     m_svn = chkSvn->IsChecked();
     m_svnDirectory = txtSvnDir->GetValue();
     m_commit = chkCommit->IsChecked();

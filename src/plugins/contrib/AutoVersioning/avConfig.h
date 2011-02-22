@@ -64,6 +64,8 @@ struct avSettings
 	bool Autoincrement;
 	bool DateDeclarations;
 	bool DoAutoIncrement;
+	// GJH 03/03/10 Added manifest updating.
+	bool UpdateManifest;
 	bool AskToIncrement;
 	std::string Language;
 	bool Svn;
@@ -73,10 +75,11 @@ struct avSettings
         Language("C++"), Svn(false), SvnDirectory(), HeaderPath("version.h") {}
 	bool operator!=(const avSettings& Other) const
 	{
-	    return (Autoincrement != Other.Autoincrement || DateDeclarations != Other.DateDeclarations ||
-                DoAutoIncrement != Other.DoAutoIncrement || AskToIncrement != Other.AskToIncrement ||
-                Language != Other.Language || Svn != Other.Svn ||
-                SvnDirectory != Other.SvnDirectory || HeaderPath != Other.HeaderPath);
+	    return (Autoincrement != Other.Autoincrement || UpdateManifest != Other.UpdateManifest ||
+		DateDeclarations != Other.DateDeclarations || DoAutoIncrement != Other.DoAutoIncrement ||
+		AskToIncrement != Other.AskToIncrement || Language != Other.Language || 
+		Svn != Other.Svn || SvnDirectory != Other.SvnDirectory || 
+		HeaderPath != Other.HeaderPath);
 	}
 };
 

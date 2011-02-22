@@ -14,7 +14,6 @@
 #include <typeinfo>
 
 //(*Headers(avVersionEditorDlg)
-#include "scrollingdialog.h"
 #include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -24,6 +23,7 @@
 #include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/button.h>
+#include "scrollingdialog.h"
 #include <wx/timer.h>
 #include <wx/combobox.h>
 //*)
@@ -40,6 +40,8 @@ private:
     long m_revision;
     bool m_autoMajorMinor;
     bool m_dates;
+	// GJH 03/03/10 Added manifest updating.
+    bool m_updateManifest;
     bool m_svn;
     bool m_commit;
     bool m_askCommit;
@@ -108,6 +110,7 @@ public:
 		static const long ID_CODE_PANEL;
 		static const long ID_AUTO_CHECK;
 		static const long ID_DATES_CHECK;
+		static const long ID_UPDATE_MANIFEST;
 		static const long ID_COMMIT_CHECK;
 		static const long ID_ASKCOMMIT_CHECK;
 		static const long ID_STATICLINE3;
@@ -231,6 +234,7 @@ public:
 		wxStaticText* lblBuild;
 		wxBoxSizer* BoxSizer3;
 		wxTimer tmrValidateInput;
+		wxCheckBox* chkUpdateManifest;
 		wxTextCtrl* txtPrefix;
 		wxTextCtrl* txtRevisionMax;
 		wxCheckBox* chkAskCommit;
@@ -270,6 +274,8 @@ public:
 	void SetSvnDirectory(const wxString& value);
 	void SetAuto(bool value);
 	void SetDates(bool value);
+	// GJH 03/03/10 Added manifest updating.
+	void SetManifest(bool value);
 	void SetCommit(bool value);
 	void SetCommitAsk(bool value);
 	void SetLanguage(const wxString& value);
@@ -289,6 +295,8 @@ public:
 	wxString GetSvnDirectory() const {return m_svnDirectory;}
 	bool GetAuto() const {return m_autoMajorMinor;}
 	bool GetDates() const {return m_dates;}
+	// GJH 03/03/10 Added manifest updating.
+	bool GetManifest() const {return m_updateManifest;}
 	bool GetCommit() const {return m_commit;}
 	bool GetCommitAsk() const {return m_askCommit;}
 	wxString GetLanguage() const {return m_language;}

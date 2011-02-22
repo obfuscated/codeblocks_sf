@@ -31,6 +31,8 @@ public: //Constructor and Destructor
     void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
     bool BuildToolBar(wxToolBar* /*toolBar*/){return false;}
     void UpdateVersionHeader();
+    // GJH 03/03/10 Added manifest updating.
+	void UpdateManifest();
 
     //Events
     void OnAttach();
