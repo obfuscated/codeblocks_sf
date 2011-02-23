@@ -320,6 +320,8 @@ void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
         if (nb)
         {
             nb->m_OverTabCtrl = false;
+            if (tabCtrl->HasCapture() && !tabCtrl->IsDragging())
+                tabCtrl->ReleaseMouse();
 #ifdef __WXMSW__
             if (nb->m_pToolTip == nullptr)
                 nb->RestoreFocus();
