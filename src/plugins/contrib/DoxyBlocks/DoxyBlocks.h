@@ -234,7 +234,7 @@ class DoxyBlocks : public cbPlugin
  *
  *
  * \author 	Gary Harris.
- * \date    	2 February, 2011
+ * \date    	6 February, 2011
  *
  * \section intro Introduction
  * DoxyBlocks is a plugin for Code::Blocks that integrates doxygen into the IDE. It allows you to create documentation, insert comment blocks and run HTML or CHM documents.
@@ -255,13 +255,17 @@ class DoxyBlocks : public cbPlugin
  * \li Thanks for your contribution.
  *
  * \section comments Comments & Feedback
- * Your input is welcome. Please direct all comments, suggestions and feedback to the Code::Blocks forum thread at: http://forums.codeblocks.org/index.php/topic,12052.
+ * Your input is welcomed. Please direct all comments, suggestions and feedback to the Code::Blocks forum thread at: http://forums.codeblocks.org/index.php/topic,12052.
  *
  * \section changes Changes
- * \li Updated:	doxygen support to v1.7.3.
+ * \li Fixed:	Hard coded doxygen directory name.
+ * \li Updated:	Directory creation code.
  *
  *
  * \section history History
+ * Version 1.6.614 - 2 Feb 2011.
+ * \li Updated:	doxygen support to v1.7.3.
+ *
  * Version 1.6.606 - 12 July 2010.
  * \li Fixed:	Fixed some additional inclusions and other minor factors for contrib inclusion.
  *

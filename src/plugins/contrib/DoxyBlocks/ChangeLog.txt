@@ -1,3 +1,10 @@
+06 February 2011
+   released version 1.7.655 of DoxyBlocks
+
+     Change log:
+        -Fixed: Hard coded doxygen directory name.
+        -Updated: Directory creation code.
+
 02 February 2011
    released version 1.6.613 of DoxyBlocks
 

@@ -175,7 +175,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		wxString sHaveDot = BoolToString(m_pConfig->GetHaveDot());
 		wxString sPathDot = pMacMngr->ReplaceMacros(m_pConfig->GetPathDot());
 
-        // Create a full doxygen 1.7.1 config file without comments.
+        // Create a full doxygen 1.7.3 config file without comments.
         wxString sText;
 		wxString nl = wxT("\n");
 		wxString qnl = wxT("\"\n");
@@ -501,7 +501,8 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
  *
  * \param	prj	cbProject*		The project.
  * \return	int	0 on success, -1 on failure.
- *
+ * \todo Revisit the path management code and add support for allowing the docs to be created in a different location
+ * to the doxyfile via the OUTPUT_PATH setting e.g. using something like ../docs.
  */
 int DoxyBlocks::GenerateDocuments(cbProject *prj)
 {
@@ -523,24 +524,26 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
 	wxString sPrjName = fnProject.GetName();
 	wxString sOutputDir = m_pConfig->GetOutputDirectory();
 	wxString sDoxygenDir = wxT("doxygen");
-	// Create the main doxygen dir.
-	if(!wxDirExists(sDoxygenDir)){
-		wxMkdir(sDoxygenDir);
-	}
+	wxString sCfgBaseFile = wxT("doxyfile");
+	wxString sLogFile     = wxT("doxygen.log");
+
 	if(!sOutputDir.IsEmpty()){
 		sDoxygenDir = sOutputDir;
-		// Create the sub-dir.
-		if(!wxDirExists(sDoxygenDir)){
-			wxMkdir(sDoxygenDir);
-		}
 	}
 
-	 wxString sCfgBaseFile = wxT("doxyfile");
-	 wxString sLogFile     = wxT("doxygen.log");
-	 wxFileName fnDoxyfile(sDoxygenDir + wxFileName::GetPathSeparator() + sCfgBaseFile);
-	 wxFileName fnDoxygenLog(sDoxygenDir + wxFileName::GetPathSeparator() + sLogFile);
-	 fnDoxyfile.Normalize();
-	 fnDoxygenLog.Normalize();
+	wxFileName fnOutput(sDoxygenDir, wxT(""));
+	wxFileName fnDoxyfile(sDoxygenDir + wxFileName::GetPathSeparator() + sCfgBaseFile);
+	wxFileName fnDoxygenLog(sDoxygenDir + wxFileName::GetPathSeparator() + sLogFile);
+	fnOutput.Normalize();
+	fnDoxyfile.Normalize();
+	fnDoxygenLog.Normalize();
+
+	if (!fnOutput.Mkdir(wxS_DEFAULT, wxPATH_MKDIR_FULL)){
+		wxString sMsg = _("Failed. ") + fnOutput.GetFullPath() + _(" was not created.");
+		AppendToLog(sMsg, LOG_WARNING);
+		wxSetWorkingDirectory(sOldPath);
+		return -1;
+	}
 
 	// I'm in the project directory, now create the doxygen configuration files
 	WriteConfigFiles(prj, sPrjName, sPrjPath, sDoxygenDir, fnDoxyfile, fnDoxygenLog);
