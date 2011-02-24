@@ -56,24 +56,19 @@
 #include "csutils.h"
 #include "version.h"
 
-#if defined(__WXGTK__)
-    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-    // in newer glib-headers
-    #define GSocket GLibSocket
-    #include <gdk/gdkx.h>
-    #undef GSocket
-    #include "wx/gtk/win_gtk.h"
-#endif
-
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
 
 BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	EVT_TREE_BEGIN_DRAG(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnBeginTreeItemDrag)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnEndTreeItemDrag)
-	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow)
-	EVT_ENTER_WINDOW(                       CodeSnippetsTreeCtrl::OnEnterWindow)
-	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseMotionEvent)
-	EVT_MOUSEWHEEL(                         CodeSnippetsTreeCtrl::OnMouseWheelEvent)
+
+	EVT_LEAVE_WINDOW( CodeSnippetsTreeCtrl::OnLeaveWindow)
+	EVT_ENTER_WINDOW( CodeSnippetsTreeCtrl::OnEnterWindow)
+	//-EVT_MOTION(       CodeSnippetsTreeCtrl::OnMouseMotionEvent)
+	//-EVT_MOUSEWHEEL(   CodeSnippetsTreeCtrl::OnMouseWheelEvent)
+	//-EVT_LEFT_UP(      CodeSnippetsTreeCtrl::OnMouseLeftUpEvent)
+	//-EVT_LEFT_DOWN(    CodeSnippetsTreeCtrl::OnMouseLeftDownEvent)
+
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
 	EVT_TREE_ITEM_RIGHT_CLICK(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnItemRightSelected)
 	//-EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
@@ -93,15 +88,22 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
 	: wxTreeCtrl(parent, id, pos, size, style, wxDefaultValidator, wxT("csTreeCtrl"))
 {
     m_fileChanged = false;
-    m_bMouseLeftWindow = false;
+    m_bMouseExitedWindow = false;
     m_pPropertiesDialog = 0;
     m_bShutDown = false;
     m_mimeDatabase = 0;
-    m_pEvtTreeCtrlBeginDrag = 0;
+    m_bBeginInternalDrag = false;
     m_LastXmlModifiedTime = time_t(0);            //2009/03/15
+    m_itemAtKeyUp = m_itemAtKeyDown = 0;
+
 
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
+
+    m_pDragCursor = new wxCursor(wxCURSOR_HAND);
+    m_bDragCursorOn = false;
+    m_oldCursor = GetCursor();
+
 }
 // ----------------------------------------------------------------------------
 CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
@@ -889,81 +891,151 @@ void CodeSnippetsTreeCtrl::FetchFileModificationTime(wxDateTime savedTime)
         m_LastXmlModifiedTime = fname.GetModificationTime();
     }
 }
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::BeginInternalTreeItemDrag()
+//// ----------------------------------------------------------------------------
+//{
+//    CodeSnippetsTreeCtrl* pTree = this;
+//
+//    if (not m_itemAtKeyDown)
+//        return;
+//    #ifdef LOGGING
+//     LOGIT( _T("TREE_BEGIN_DRAG %p"), pTree );
+//    #endif //LOGGING
+//
+//    m_bBeginInternalDrag = true;
+//    m_TreeItemId = m_itemAtKeyDown;
+//    m_MnuAssociatedItemID = m_TreeItemId;
+//    m_TreeMousePosn = wxPoint(m_MouseUpX, m_MouseUpY);
+//    m_TreeText = pTree->GetSnippet(m_TreeItemId);
+//    if ( IsCategory(m_TreeItemId) )
+//        m_TreeText = GetSnippetLabel(m_TreeItemId);
+//    if (m_TreeText.IsEmpty())
+//        m_bBeginInternalDrag = 0;
+//
+//    return;
+//}//OnBeginInternalTreeItemDrag
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // -----------------------
-    // TREE_BEGIN_DRAG
-    // -----------------------
-    CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
+    CodeSnippetsTreeCtrl* pTree = this;
 
     #ifdef LOGGING
-     LOGIT( _T("TREE_CTRL_BEGIN_DRAG %p"), pTree );
+     LOGIT( _T("TREE_BEGIN_DRAG %p"), pTree );
     #endif //LOGGING
-    // On MSW the current selection may not be the same as the current itemId
-    // If the user just clicks and drags, the two are different
-    m_pEvtTreeCtrlBeginDrag = pTree;
-    m_TreeItemId        = event.GetItem();
-        // At this point we could solve the above problem with
-        // pTree->SelectItem(m_TreeItemId) ; But for now, we'll just
-        // record the actual current itemId.
+
+    m_bBeginInternalDrag = true;
+    m_TreeItemId = event.GetItem();
+    m_itemAtKeyDown = m_TreeItemId;
     m_MnuAssociatedItemID = m_TreeItemId;
-    m_TreeMousePosn       = ::wxGetMousePosition();
-    m_TreeText            = pTree->GetSnippet(m_TreeItemId);
+    m_TreeMousePosn = event.GetPoint();
+    m_TreeText = pTree->GetSnippet(m_TreeItemId);
     if ( IsCategory(m_TreeItemId) )
         m_TreeText = GetSnippetLabel(m_TreeItemId);
     if (m_TreeText.IsEmpty())
-        m_pEvtTreeCtrlBeginDrag = 0;
-    event.Allow();
+        m_bBeginInternalDrag = 0;
 
-    // -----------------------------------------
-    // Do *not* event.Skip() or GTK will break.
-    //event.Skip();
-    // -----------------------------------------
+    event.Allow();
 
     return;
 }//OnBeginTreeItemDrag
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
+//// ----------------------------------------------------------------------------
+//{
+//    // -----------------------
+//    // TREE_END_DRAG
+//    // -----------------------
+//
+//    if (not m_itemAtKeyUp)
+//        return;
+//
+//    #ifdef LOGGING
+//     wxTreeCtrl* pTree = this;
+//     LOGIT( _T("TREE_END_DRAG %p"), pTree );
+//    #endif //LOGGING
+//
+//    wxTreeItemId targetItem = m_itemAtKeyUp;
+//    wxTreeItemId sourceItem = m_itemAtKeyDown;
+//    if ( not sourceItem.IsOk() ){return;}
+//    if ( not targetItem.IsOk() ){return;}
+//    if (not m_bBeginInternalDrag)
+//        return;
+//
+//    // If user dragged item out of the window, FinishExternlDrag()
+//    // will handle it. So just clear the status and return.
+//    if (m_bMouseExitedWindow)
+//        return;
+//
+//    // if source and target are snippets, create a new category and enclose both.
+//    if ( IsSnippet(targetItem) )
+//    {
+//        if ( (targetItem = ConvertSnippetToCategory(targetItem)) )
+//        {;}//ok
+//        else return;
+//        // now targetItem is a category
+//    }
+//
+//
+//    // Save the source item node to a new Xml Document
+//    // Load it into the target item node
+//    // delete the source item node
+//
+//    // create Xml document from source(dragged) tree item
+//    TiXmlDocument* pDoc = CopyTreeNodeToXmlDoc( sourceItem );
+//    if (not pDoc) return;
+//
+//    TiXmlElement* root = pDoc->RootElement();
+//    if (root)
+//    {
+//        // Get the source xml element
+//        TiXmlElement* firstChild = root->FirstChildElement("item");
+//        if (firstChild)
+//        {   // insert into target Tree items from source xml document
+//            LoadItemsFromXmlNode( firstChild, targetItem);
+//        }
+//    }
+//    // remove the old tree item
+//    if (not m_bMouseCtrlKeyDown){
+//            RemoveItem( sourceItem );
+//    }
+//
+//    delete pDoc; pDoc = 0;
+//    m_itemAtKeyDown = 0;
+//    m_itemAtKeyUp = 0;
+//
+//    return;
+//
+//}//OnEndTreeItemDrag
 // ----------------------------------------------------------------------------
-void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
+void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
 // ----------------------------------------------------------------------------
 {
     // -----------------------
     // TREE_END_DRAG
     // -----------------------
 
+    if (not m_itemAtKeyUp)
+        return;
 
     #ifdef LOGGING
-     wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
-     LOGIT( _T("TREE_CTRL_END_DRAG %p"), pTree );
+     wxTreeCtrl* pTree = this;
+     LOGIT( _T("TREE_END_DRAG %p"), pTree );
     #endif //LOGGING
 
-    wxTreeItemId targetItem = (wxTreeItemId)event.GetItem();
-    wxTreeItemId sourceItem = m_MnuAssociatedItemID;
+    wxTreeItemId targetItem = m_itemAtKeyUp;
+    wxTreeItemId sourceItem = m_itemAtKeyDown;
     if ( not sourceItem.IsOk() ){return;}
     if ( not targetItem.IsOk() ){return;}
-    if (not m_pEvtTreeCtrlBeginDrag)
-    {
-        event.Skip(); return;
-    }
-
-    // veto the drag if mouse has moved out of the Tree window
-        // Note: Even if mouse is dragged out of the tree window,
-        //      FindFocus() is returning the Tree window. So the
-        //      following test does not work.
-        //if (pTree == wxWindow::FindFocus() )
-        //    event.Allow();
-        //else return;
-
-    // If user dragged item out of the window, it'll be dropped by the
-    // target application. So just clear the status and return.
-    if (m_bMouseLeftWindow)
-    {   // user dragged item out of the window
-        m_bMouseLeftWindow = false;
+    if (not m_bBeginInternalDrag)
         return;
-    }
 
-    event.Allow();
+    // If user dragged item out of the window, FinishExternlDrag()
+    // will handle it. So just clear the status and return.
+    if (m_bMouseExitedWindow)
+        return;
+
     // if source and target are snippets, create a new category and enclose both.
     if ( IsSnippet(targetItem) )
     {
@@ -993,16 +1065,13 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
         }
     }
     // remove the old tree item
-    if (not m_MouseCtrlKeyDown){
+    if (not m_bMouseCtrlKeyDown){
             RemoveItem( sourceItem );
     }
 
     delete pDoc; pDoc = 0;
-
-    // -----------------------------------------
-    // Do *not* event.Skip() or GTK will break.
-    //event.Skip();
-    // -----------------------------------------
+    m_itemAtKeyDown = 0;
+    m_itemAtKeyUp = 0;
 
     return;
 
@@ -1043,6 +1112,57 @@ void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
 
     event.Skip();
 }
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    // -----------------------
+//    // LEAVE_WINDOW
+//    // -----------------------
+//
+//    // User has dragged mouse out of source window.
+//    // if us is dragging mouse, save the source item for later use
+//    // in FinishDrag()
+//
+//    #ifdef LOGGING
+//     //LOGIT( _T("CodeSnippetsTreeCtrl::OnLeaveWindow") );
+//    #endif //LOGGING
+//
+//  #if defined(__WXMSW__)
+//    m_bBeginInternalDrag = false; //This is not an internal drag
+//    // Left mouse key must be down (dragging)
+//    if (not m_bMouseLeftKeyDown ) {event.Skip();return;}
+//    if (not m_bMouseIsDragging ) {event.Skip();return;}
+//    // check if data is available
+//    if (not m_itemAtKeyDown) {event.Skip();return;}
+//
+//    CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
+//    m_TreeText = pTree->GetSnippet(m_itemAtKeyDown);
+//    if ( IsCategory(m_itemAtKeyDown) )
+//        m_TreeText = GetSnippetLabel(m_itemAtKeyDown);
+//    if ( m_TreeText.IsEmpty()) {event.Skip();return;}
+//
+//    #ifdef LOGGING
+//     LOGIT( _T("TreeCtrl LEAVE_WINDOW %p"), event.GetEventObject() );
+//    #endif //LOGGING
+//
+//    // when user drags an item out of the window, this routine is called
+//    // OnMouseKeyUpEvent will clear this flag
+//    m_bMouseExitedWindow = true;
+//    CaptureMouse();
+//  #endif //__WXMSW__
+//
+//  #if defined(__WXGTK__)
+//    if (m_bDragCursorOn)
+//    {
+//        SetCursor(m_oldCursor);
+//        m_bDragCursorOn = false;
+//    }
+//  #endif //__WXGTK__
+//
+//    event.Skip();
+//    return;
+//}//OnLeaveWindow
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
@@ -1052,32 +1172,58 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // -----------------------
 
     // User has dragged mouse out of source window.
-    // if EVT_TREE_BEGIN_DRAG is pending, create a drag source to be used
-    // in the destination window.
+    // if us is dragging mouse, save the source item for later use
+    // in FinishDrag()
 
     #ifdef LOGGING
      //LOGIT( _T("CodeSnippetsTreeCtrl::OnLeaveWindow") );
     #endif //LOGGING
 
+    m_bBeginInternalDrag = false; //This is not an internal drag
+
     // Left mouse key must be down (dragging)
-    if (not event.LeftIsDown() ) {event.Skip();return;}
     // check if data is available
-    if ( m_TreeText.IsEmpty()) {event.Skip();return;}
-    if (not m_pEvtTreeCtrlBeginDrag) {event.Skip(); return;}
+    if ( m_TreeText.IsEmpty()) return;
+
+    //-CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
+    //-m_TreeText = pTree->GetSnippet(m_itemAtKeyDown);
+    //-if ( IsCategory(m_itemAtKeyDown) )
+    //-    m_TreeText = GetSnippetLabel(m_itemAtKeyDown);
+    //-if ( m_TreeText.IsEmpty()) {event.Skip();return;}
 
     #ifdef LOGGING
-     LOGIT( _T("LEAVE_WINDOW %p"), event.GetEventObject() );
+     LOGIT( _T("TreeCtrl LEAVE_WINDOW %p"), event.GetEventObject() );
     #endif //LOGGING
 
     // when user drags an item out of the window, this routine is called
-    // before EVT_END_DRAG, who will clear this flag
-    m_bMouseLeftWindow = true;
+    // OnMouseKeyUpEvent will clear this flag
+    m_bMouseExitedWindow = true;
+
+    #if defined(__WXMSW__)
+    if (m_bMouseExitedWindow
+        and (not  m_TreeText.IsEmpty()))
+    {
+        FinishExternalDrag();
+        SendMouseLeftUp(this, m_TreeMousePosn.x, m_TreeMousePosn.y);
+    }
+    #endif //__WXMSW__
+
+    return;
+}//OnLeaveWindow
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::FinishExternalDrag()
+// ----------------------------------------------------------------------------
+{//asm("int3"); /*trap*/
+    m_bMouseExitedWindow = false;
+
+    if ( m_TreeText.IsEmpty())
+        return;
 
     // we now have data; create both a simple text and filename drop source
     wxTextDataObject* textData = new wxTextDataObject();
     wxFileDataObject* fileData = new wxFileDataObject();
         // fill text and file sources with snippet
-    wxString textStr = GetSnippet(m_MnuAssociatedItemID) ;
+    wxString textStr = GetSnippet(m_itemAtKeyDown) ;
     //-#if defined(BUILDING_PLUGIN)
         // substitute any $(macro) text
         static const wxString delim(_T("$%["));
@@ -1086,11 +1232,11 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         //-LOGIT( _T("SnippetsTreeCtrl OnLeaveWindow $macros text[%s]"),textStr.c_str() );
     //-#endif
 
-    wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
+    wxDropSource textSource( *textData, this );
     textData->SetText( textStr );
 
-    wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
-    wxString fileName = GetSnippetFileLink(m_MnuAssociatedItemID);
+    wxDropSource fileSource( *fileData, this );
+    wxString fileName = GetSnippetFileLink(m_itemAtKeyDown);
     if (not ::wxFileExists(fileName) ) fileName = wxEmptyString;
     // If no filename, but text is URL/URI, pass it as a file (esp. for browsers)
     if ( fileName.IsEmpty())
@@ -1101,7 +1247,8 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         // Remove anything pass the first \n or \r {v1.3.92}
         fileName = fileName.BeforeFirst('\n');
         fileName = fileName.BeforeFirst('\r');
-        textData->SetText( fileName );
+        if (not fileName.IsEmpty())
+            textData->SetText( fileName );
     }
     fileData->AddFile( (fileName.Len() > 128) ? wxString(wxEmptyString) : fileName );
 
@@ -1110,7 +1257,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     data->Add( (wxDataObjectSimple*)textData );
     data->Add( (wxDataObjectSimple*)fileData, true ); // set file data as preferred
         // create the drop source containing both data types
-    wxDropSource source( *data, (wxWindow*)event.GetEventObject()  );
+    wxDropSource source( *data, this  );
 
     #ifdef LOGGING
      LOGIT( _T("DropSource Text[%s], File[%s]"),
@@ -1122,6 +1269,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     flags |= wxDrag_AllowMove;
     // do the dragNdrop
     wxDragResult result = source.DoDragDrop(flags);
+
     // report the results
     #if LOGGING
         wxString pc;
@@ -1135,111 +1283,216 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
             case wxDragCancel:  pc = _T("Cancelled"); break;
             default:            pc = _T("Huh?");      break;
         }
-        LOGIT( wxT("OnLeaveWindow::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
+        LOGIT( wxT("DoDragDrop returned[%s]"),pc.GetData() );
     #else
         wxUnusedVar(result);
     #endif
 
-    // ---WORKAROUNG --------------------------------------------------
-    // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
-    // pending, WX will not send the EVT_TREE_DRAG_END from a
-    // mouse_key_up event unless the user re-clicks inside the tree control.
-    // The mouse is still captured and the tree exibits very bad behavior.
-    // Hack:
-    // To solve this, send a mouse_key_up to the tree control so it
-    // releases the mouse and receives an EVT_TREE_DRAG_END event.
-
-    if ( m_pEvtTreeCtrlBeginDrag )
-    {
-        //send Mouse LeftKeyUp to Tree Control window
-        #ifdef LOGGING
-         LOGIT( _T("Sending Mouse LeftKeyUp") );
-        #endif //LOGGING
-
-        // remember current mouse position to restore
-        wxPoint CurrentMousePosn = ::wxGetMousePosition();
-
-        // move mouse into the Tree control
-      #if defined(__WXMSW__)
-        MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
-        m_pEvtTreeCtrlBeginDrag->SetFocus();
-        // send mouse LeftKeyUp
-        INPUT    Input={0};
-        Input.type          = INPUT_MOUSE;
-        Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
-        ::SendInput(1,&Input,sizeof(INPUT));
-        // put mouse back in pre-moved "dropped" position
-        MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
-      #endif //(__WXMSW__)
-
-      #if defined(__WXGTK__)
-        // move cursor to source window and send a left button up event
-        XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
-                None,              /* not source window -> move from anywhere */
-                GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
-                0, 0, 0, 0,        /* not source window -> move from anywhere */
-                m_TreeMousePosn.x, m_TreeMousePosn.y );
-        // send LeftMouseRelease key
-        m_pEvtTreeCtrlBeginDrag->SetFocus();
-        GdkDisplay* display = gdk_display_get_default ();
-        int xx=0,yy=0;
-        GdkWindow* pGdkWindow = gdk_display_get_window_at_pointer( display, &xx, &yy);
-        // LOGIT(wxT("Tree[%p][%d %d]"), m_pEvtTreeCtrlBeginDrag,m_TreeMousePosn.x, m_TreeMousePosn.y);
-        // LOGIT(wxT("gdk [%p][%d %d]"), pWindow, xx, yy);
-        GdkEventButton evb;
-        memset(&evb, 0, sizeof(evb));
-        evb.type = GDK_BUTTON_RELEASE;
-        evb.window = pGdkWindow;
-        evb.x = xx;
-        evb.y = yy;
-        evb.state = GDK_BUTTON1_MASK;
-        evb.button = 1;
-        // gdk display put event, namely mouse release
-        gdk_display_put_event( display, (GdkEvent*)&evb);
-        // put mouse back in pre-moved "dropped" position
-        XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
-                None,              /* not source window -> move from anywhere */
-                GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
-                0, 0, 0, 0,        /* not source window -> move from anywhere */
-                CurrentMousePosn.x, CurrentMousePosn.y );
-      #endif//(__WXGTK__)
-
-    }//if
-
     delete textData; //wxTextDataObject
     delete fileData; //wxFileDataObject
-    m_pEvtTreeCtrlBeginDrag = 0;
     m_TreeText = wxEmptyString;
-
-    event.Skip();
-    return;
-}//OnLeaveWindow
-// ----------------------------------------------------------------------------
-void CodeSnippetsTreeCtrl::OnMouseMotionEvent(wxMouseEvent& event)
-// ----------------------------------------------------------------------------
-{
-    //remember event window pointer
-    //wxObject* m_pEvtObject = event.GetEventObject();
-
-    // memorize position of the mouse ctrl key as copy/delete flag
-    m_MouseCtrlKeyDown = event.ControlDown();
-    #ifdef LOGGING
-     //LOGIT(wxT("MouseCtrlKeyDown[%s]"), m_MouseCtrlKeyDown?wxT("Down"):wxT("UP") );
-    #endif
-    event.Skip();
+    m_itemAtKeyDown = 0;
+    m_itemAtKeyUp = 0;
 
 }
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::OnMouseMotionEvent(wxMouseEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    // memorize position of the mouse ctrl key as copy/delete flag
+//    m_bMouseCtrlKeyDown = event.ControlDown();
+//    m_bMouseLeftKeyDown = event.LeftIsDown();
+//    m_bMouseIsDragging  = event.Dragging();
+//
+//    // If dragging an item, show drag cursor
+//    if (m_bMouseIsDragging and m_bMouseLeftKeyDown
+//        and (not m_bDragCursorOn) and m_itemAtKeyDown)
+//    {
+//        m_oldCursor = GetCursor();
+//        SetCursor(*m_pDragCursor);
+//        m_bDragCursorOn = true;
+//    }
+//    else    //restore regular cursor
+//    if (m_bDragCursorOn)
+//    {
+//        SetCursor(m_oldCursor);
+//        m_bDragCursorOn = false;
+//    }
+//
+//    #ifdef LOGGING
+//     //LOGIT(wxT("MouseCtrlKeyDown[%s]"), m_bMouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+//    #endif
+//    event.Skip();
+//}
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::OnMouseLeftDownEvent(wxMouseEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    // memorize position of the mouse
+//    m_bMouseLeftKeyDown = true;
+//    m_MouseDownX = event.GetX();
+//    m_MouseDownY = event.GetY();
+//
+//    m_itemAtKeyDown = 0;
+//    m_itemAtKeyUp = 0;
+//    int hitFlags = 0;
+//    wxTreeItemId id = HitTest(wxPoint(m_MouseDownX, m_MouseDownY), hitFlags);
+//    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+//        m_itemAtKeyDown = id;
+//
+//    #ifdef LOGGING
+//     //LOGIT(wxT("MouseCtrlKeyDown[%s]"), m_bMouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+//    #endif
+//    event.Skip();
+//}
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::OnMouseLeftUpEvent(wxMouseEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    event.Skip();
+//
+//    // memorize position of the mouse
+//    m_bMouseLeftKeyDown = false;
+//    m_MouseUpX = event.GetX();
+//    m_MouseUpY = event.GetY();
+//
+//    m_itemAtKeyUp = 0;
+//    int hitFlags = 0;
+//    wxTreeItemId id = HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
+//    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+//        m_itemAtKeyUp = id;
+//
+//    #ifdef LOGGING
+//     //LOGIT(wxT("OnMouseLeftUp id[%d]"), id.IsOk() );
+//    #endif
+//
+//    if (m_bMouseExitedWindow and m_bMouseIsDragging and m_itemAtKeyDown
+//        and (not  m_TreeText.IsEmpty()))
+//    {
+//        FinishExternalDrag();
+//    }
+//    else
+//    if ( (not m_bMouseExitedWindow) and m_bMouseIsDragging
+//         and m_itemAtKeyDown and m_itemAtKeyUp
+//         and (m_itemAtKeyDown not_eq m_itemAtKeyUp ))
+//    {
+//        BeginInternalTreeItemDrag();
+//        EndInternalTreeItemDrag();
+//    }
+//    // Do not release the mouse until after the drag has finished
+//    // else the drag will not complete.
+//    if (HasCapture() and m_bMouseExitedWindow)
+//        ReleaseMouse();
+//
+//    m_bMouseExitedWindow = false;
+//    m_bMouseIsDragging = false;
+//
+//    if (m_bDragCursorOn)
+//    {
+//        SetCursor(m_oldCursor);
+//        m_bDragCursorOn = false;
+//    }
+//
+//}//OnMouseLeftUpEvent
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
+// ----------------------------------------------------------------------------
+{//asm("int3"); /*trap*/
+
+    // memorize position of the mouse
+    m_MouseUpX = event.GetPoint().x;
+    m_MouseUpY = event.GetPoint().y;
+
+    m_itemAtKeyUp = 0;
+    int hitFlags = 0;
+    wxTreeItemId id = HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
+    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+        m_itemAtKeyUp = id;
+
+    #ifdef LOGGING
+     //LOGIT(wxT("OnMouseLeftUp id[%d]"), id.IsOk() );
+    #endif
+
+    if (m_bMouseExitedWindow
+        and (not  m_TreeText.IsEmpty()))
+    {
+        #if defined(__WXMSW__)
+        //-FinishExternalDrag(); Hangs when called fron here
+        #endif
+    }
+    else
+    if ( (not m_bMouseExitedWindow)
+         and m_itemAtKeyDown and m_itemAtKeyUp
+         and (m_itemAtKeyDown not_eq m_itemAtKeyUp ))
+    {
+        //-BeginInternalTreeItemDrag();
+        EndInternalTreeItemDrag();
+    }
+
+    m_bMouseExitedWindow = false;
+    m_bMouseIsDragging = false;
+
+}//OnMouseLeftUpEvent
+//// ----------------------------------------------------------------------------
+//void CodeSnippetsTreeCtrl::OnMouseLeftUpEvent(wxMouseEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    event.Skip();
+//
+//    // memorize position of the mouse
+//    m_bMouseLeftKeyDown = false;
+//    m_MouseUpX = event.GetX();
+//    m_MouseUpY = event.GetY();
+//
+//    m_itemAtKeyUp = 0;
+//    int hitFlags = 0;
+//    wxTreeItemId id = HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
+//    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+//        m_itemAtKeyUp = id;
+//
+//    #ifdef LOGGING
+//     //LOGIT(wxT("OnMouseLeftUp id[%d]"), id.IsOk() );
+//    #endif
+//
+//    if (m_bMouseExitedWindow and m_bMouseIsDragging and m_itemAtKeyDown
+//        and (not  m_TreeText.IsEmpty()))
+//    {
+//        FinishExternalDrag();
+//    }
+//    else
+//    if ( (not m_bMouseExitedWindow) and m_bMouseIsDragging
+//         and m_itemAtKeyDown and m_itemAtKeyUp
+//         and (m_itemAtKeyDown not_eq m_itemAtKeyUp ))
+//    {
+//        BeginInternalTreeItemDrag();
+//        EndInternalTreeItemDrag();
+//    }
+//    // Do not release the mouse until after the drag has finished
+//    // else the drag will not complete.
+//    if (HasCapture() and m_bMouseExitedWindow)
+//        ReleaseMouse();
+//
+//    m_bMouseExitedWindow = false;
+//    m_bMouseIsDragging = false;
+//
+//    if (m_bDragCursorOn)
+//    {
+//        SetCursor(m_oldCursor);
+//        m_bDragCursorOn = false;
+//    }
+//
+//}//OnMouseLeftUpEvent
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnMouseWheelEvent(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Ctrl-MouseWheel rotation changes treeCtrl font
 
-    m_MouseCtrlKeyDown = event.ControlDown();
+    m_bMouseCtrlKeyDown = event.ControlDown();
     #ifdef LOGGING
-     //LOGIT(wxT("treeCtrl:OnMouseWheel[%s]"), m_MouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+     //LOGIT(wxT("treeCtrl:OnMouseWheel[%s]"), m_bMouseCtrlKeyDown?wxT("Down"):wxT("UP") );
     #endif
-    if (not m_MouseCtrlKeyDown) {event.Skip(); return;}
+    if (not m_bMouseCtrlKeyDown) {event.Skip(); return;}
 
     int nRotation = event.GetWheelRotation();
     wxFont ctrlFont = GetFont();
@@ -1252,27 +1505,6 @@ void CodeSnippetsTreeCtrl::OnMouseWheelEvent(wxMouseEvent& event)
     SetFont(ctrlFont);
     return;
 }
-// ----------------------------------------------------------------------------
-#if defined(__WXMSW__)
-void CodeSnippetsTreeCtrl::MSW_MouseMove(int x, int y )
-// ----------------------------------------------------------------------------
-{
-    // Move mouse uses a very strange coordinate system.
-    // It uses screen positions with a range of 0 to 65535
-
-    // Move the MSW mouse to absolute screen coords x,y
-      double fScreenWidth   = ::GetSystemMetrics( SM_CXSCREEN )-1;
-      double fScreenHeight  = ::GetSystemMetrics( SM_CYSCREEN )-1;
-      double fx = x*(65535.0f/fScreenWidth);
-      double fy = y*(65535.0f/fScreenHeight);
-      INPUT  Input={0};
-      Input.type      = INPUT_MOUSE;
-      Input.mi.dwFlags  = MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE;
-      Input.mi.dx = (LONG)fx;
-      Input.mi.dy = (LONG)fy;
-      ::SendInput(1,&Input,sizeof(INPUT));
-}
-#endif
 // ----------------------------------------------------------------------------
 wxTreeItemId CodeSnippetsTreeCtrl::ConvertSnippetToCategory(wxTreeItemId itemId)
 // ----------------------------------------------------------------------------
@@ -1745,9 +1977,9 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
     // just focus any already open snippet items
 
     Utils utils;
-    int knt = m_aDlgRetcodes.GetCount();
+    int knt = aEdFrameRetcodes.GetCount();
     for (int i = 0; i<knt ; ++i )
-    {   EditSnippetFrame* pesf = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
+    {   EditSnippetFrame* pesf = (EditSnippetFrame*)m_aEdFramePtrs.Item(i);
         if (not pesf) continue;
         if (not utils.WinExists(pesf))
             continue;
@@ -1755,12 +1987,12 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
         if ( pesf->GetSnippetId() == GetAssociatedItemID() )
     	{
     	    // if return code has been set, this frame is set to terminate
-    	    if ( (int)m_aDlgRetcodes.GetCount() < i)
+    	    if ( (int)aEdFrameRetcodes.GetCount() < i)
                 continue;
-            if ( m_aDlgRetcodes.Item(i) not_eq 0)
+            if ( aEdFrameRetcodes.Item(i) not_eq 0)
                 continue;
-    	    m_aDlgPtrs.Item(i)->Iconize(false);
-    	    m_aDlgPtrs.Item(i)->SetFocus();
+    	    m_aEdFramePtrs.Item(i)->Iconize(false);
+    	    m_aEdFramePtrs.Item(i)->SetFocus();
             return;
     	}
     }//for
@@ -1769,29 +2001,29 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
     if (SnippetItemData* itemData = (SnippetItemData*)( GetItemData(GetAssociatedItemID() )))
     {
         wxString snippetText = itemData->GetSnippet();
-        m_aDlgRetcodes.Add(0);          // new slot for return code
-        int* pRetcode = &m_aDlgRetcodes.Last();
+        aEdFrameRetcodes.Add(0);          // new slot for return code
+        int* pRetcode = &aEdFrameRetcodes.Last();
 
-        EditSnippetFrame* pdlg = new EditSnippetFrame( GetAssociatedItemID(), pRetcode );
+        EditSnippetFrame* pEdFrame = new EditSnippetFrame( GetAssociatedItemID(), pRetcode );
 
         // cascade multiple editors
-        int knt = m_aDlgPtrs.GetCount();
-        if (pdlg && (knt > 0) ){
+        int knt = m_aEdFramePtrs.GetCount();
+        if (pEdFrame && (knt > 0) ){
             int x,y;
-            pdlg->GetPosition(&x, &y );
+            pEdFrame->GetPosition(&x, &y );
              if (0 == x){
-                pdlg->ClientToScreen(&x, &y );
+                pEdFrame->ClientToScreen(&x, &y );
              }
             knt = knt<<5;
-            pdlg->Move(x+knt,y+knt);
+            pEdFrame->Move(x+knt,y+knt);
         }
 
-        if ( pdlg->Show() )
+        if ( pEdFrame->Show() )
         {
-            m_aDlgPtrs.Add((wxScrollingDialog*)pdlg);
+            m_aEdFramePtrs.Add((wxScrollingDialog*)pEdFrame);
         }
         else
-            m_aDlgRetcodes.RemoveAt(m_aDlgRetcodes.GetCount());
+            aEdFrameRetcodes.RemoveAt(aEdFrameRetcodes.GetCount());
 
 	}//if
 }//EditSnippet
@@ -1974,75 +2206,91 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& wa
         return retcode;
 }
 // ----------------------------------------------------------------------------
-void CodeSnippetsTreeCtrl::SaveDataAndCloseEditorFrame()
+void CodeSnippetsTreeCtrl::SaveEditorsXmlData(EditSnippetFrame* pEdFrame)
 // ----------------------------------------------------------------------------
 {
-    // This routine is invoked from EditSnippetFrame::OnCloseWindow()
+    SnippetItemData* pSnippetItemData = (SnippetItemData*)(GetItemData(pEdFrame->GetSnippetId()));
+    pSnippetItemData->SetSnippet(pEdFrame->GetText());
+    SetItemText(pEdFrame->GetSnippetId(), pEdFrame->GetName());
+    SetFileChanged(true);
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::SaveDataAndCloseEditorFrame(EditSnippetFrame* pEdFrame)
+// ----------------------------------------------------------------------------
+{
+    // This routine is invoked from EditSnippetFrame::OnCloseFrameOrWindow()
     // check to see if an editor has been posted & finish.
 
-    for (size_t i = 0; i < this->m_aDlgRetcodes.GetCount(); ++i )
+    // if parm is valid, set it's return code = 0
+    if (pEdFrame )
+    {
+        int index = m_aEdFramePtrs.Index((wxScrollingDialog*)pEdFrame);
+        if (index not_eq wxNOT_FOUND)
+            aEdFrameRetcodes[index] = wxID_OK;
+    }
+
+    for (size_t i = 0; i < this->aEdFrameRetcodes.GetCount(); ++i )
     {
         // if we have a return code, this editor is done
-        if ( m_aDlgRetcodes.Item(i) == 0)
+        if ( aEdFrameRetcodes.Item(i) == 0)
             continue;
 
         // else an edit frame is done, save any changed data
-        int retcode = m_aDlgRetcodes.Item(i);
-        EditSnippetFrame* pdlg = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
-        pdlg->MakeModal(false);
+        int retcode = aEdFrameRetcodes.Item(i);
+        EditSnippetFrame* pEdFrame = (EditSnippetFrame*)m_aEdFramePtrs.Item(i);
+        pEdFrame->MakeModal(false);
 		if (retcode == wxID_OK)
 		{
             // If XML text snippet, just save back to XML file
-            if (pdlg->GetFileName().IsEmpty())
+            if (pEdFrame->GetFileName().IsEmpty())
             {
-                SnippetItemData* pSnippetItemData = (SnippetItemData*)(GetItemData(pdlg->GetSnippetId()));
-                pSnippetItemData->SetSnippet(pdlg->GetText());
-                SetItemText(pdlg->GetSnippetId(), pdlg->GetName());
+                SaveEditorsXmlData(pEdFrame);
             }
             else //This was an external file
             {
                 ;// Modified external files already saved by editor
             }
             // if text item type changed to link, set corrected icon
-            if ( pdlg->GetSnippetId().IsOk() )
-            {   SetSnippetImage(pdlg->GetSnippetId());
+            if ( pEdFrame->GetSnippetId().IsOk() )
+            {
+                SetSnippetImage(pEdFrame->GetSnippetId());
                 #if defined(LOGGING)
-                LOGIT( _T("CodeSnippetsTreeCtrl::OnIdle() saved XML"));
+                LOGIT( _T("CodeSnippetsTreeCtrl saved XML"));
                 #endif
             }
 			//-SetFileChanged(true);
 			// Save the XML file
 			SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
-		}//if
+		}//if wxID_OK
 
-		if (pdlg && (not m_bShutDown) )
+		if (pEdFrame && (not m_bShutDown) )
         {
             // If a pgm is started after CodeBlocks, it'll get the focus
             // when we destroy this editor frame *and* the frame was initiated by
             // a context menu item. So, here, we raise and focus CodeBlocks
             // if this is the last editor frame.
-            if ( 1 == this->m_aDlgRetcodes.GetCount() )
+            if ( 1 == this->aEdFrameRetcodes.GetCount() )
             {   wxWindow* pWin = (wxWindow*)(GetConfig()->GetMainFrame());
                 pWin->Raise();
                 pWin->SetFocus();
             }
-            pdlg->Destroy();
+            pEdFrame->Destroy();
         }
 
         // retcode set by return frame
-        //-retcode = pdlg->GetReturnCode();
-        m_aDlgRetcodes.Item(i) = 0;
-        m_aDlgPtrs.Item(i) = 0;
+        //-retcode = pEdFrame->GetReturnCode();
+        aEdFrameRetcodes.Item(i) = 0;
+        m_aEdFramePtrs.Item(i) = 0;
     }//for
 
     // when all editors terminate, free array storage
     size_t editorsOpen = 0 ;
-    size_t knt = m_aDlgPtrs.GetCount();
+    size_t knt = m_aEdFramePtrs.GetCount();
     for (size_t i = 0; i < knt; ++i )
-    	editorsOpen += (size_t)m_aDlgPtrs.Item(i)?1:0;
+    	editorsOpen += (size_t)m_aEdFramePtrs.Item(i)?1:0;
     if ( knt && (not editorsOpen) )
-    {   m_aDlgRetcodes.Clear();
-        m_aDlgPtrs.Clear();
+    {   aEdFrameRetcodes.Clear();
+        m_aEdFramePtrs.Clear();
     }
 
 }//SaveAndCloseFrame
@@ -2061,7 +2309,8 @@ void CodeSnippetsTreeCtrl::OnIdle()
     // Edit the root node's title so that the user sees file name
     if ( GetConfig()->GetSnippetsSearchCtrl()
         && GetConfig()->GetSnippetsSearchCtrl()->GetValue().IsEmpty() )
-    {   wxString nameOnly;
+    {
+        wxString nameOnly;
         wxFileName::SplitPath( GetConfig()->SettingsSnippetsXmlPath, 0, &nameOnly, 0);
         // avoid excessive refresh
         wxString currentValue = GetItemText(GetRootItem());
@@ -2320,4 +2569,56 @@ void CodeSnippetsTreeCtrl::CreateDirLevels(const wxString& pathNameIn)
     // FileImport Traverser will create any missing directories
     FileImportTraverser fit(_T("dummy"), pathNameIn);
     return;
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY)
+// ----------------------------------------------------------------------------
+{
+    // ---MSW WORKAROUNG --------------------------------------------------
+    // Since we dragged outside the tree control with a mouse_left_down,
+    // Wx will *not* send us a mouse_key_up event until the user explcitly
+    // re-clicks inside the tree control. The tree exibits very bad behavior.
+
+    // Send an mouse_key_up to the tree control so it releases the
+    // mouse and behaves correctly.
+  #if defined(__WXMSW__)
+    if ( pWin )
+    {
+        //send Mouse LeftKeyUp to Tree Control window
+        #ifdef LOGGING
+         LOGIT( _T("Sending Mouse LeftKeyUp"));
+        #endif //LOGGING
+        // Remember current mouse position
+        wxPoint CurrentMousePosn = ::wxGetMousePosition();
+        // Get absolute location of mouse x and y
+        wxPoint fullScreen = pWin->ClientToScreen(wxPoint(mouseX,mouseY));
+        // move mouse into the window
+        MSW_MouseMove( fullScreen.x, fullScreen.y );
+        // send mouse LeftKeyUp
+        INPUT Input         = {0};
+        Input.type          = INPUT_MOUSE;
+        Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
+        ::SendInput(1,&Input,sizeof(INPUT));
+        // put mouse back in drag-end position
+        MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
+    }
+  #endif //(__WXMSW__)
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::MSW_MouseMove(int x, int y )
+// ----------------------------------------------------------------------------
+{
+   #if defined(__WXMSW__)
+    // Move the MSW mouse to absolute screen coords x,y
+      double fScreenWidth   = ::GetSystemMetrics( SM_CXSCREEN )-1;
+      double fScreenHeight  = ::GetSystemMetrics( SM_CYSCREEN )-1;
+      double fx = x*(65535.0f/fScreenWidth);
+      double fy = y*(65535.0f/fScreenHeight);
+      INPUT  Input={0};
+      Input.type      = INPUT_MOUSE;
+      Input.mi.dwFlags  = MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE;
+      Input.mi.dx = (LONG)fx;
+      Input.mi.dy = (LONG)fy;
+      ::SendInput(1,&Input,sizeof(INPUT));
+   #endif
 }

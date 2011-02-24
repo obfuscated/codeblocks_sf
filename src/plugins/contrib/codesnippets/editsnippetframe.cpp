@@ -32,6 +32,7 @@
 #include "version.h"
 
 #include "sdk.h"
+#include "sdk_events.h"
 #include "configmanager.h"
 #include "cbstyledtextctrl.h"
 //-#include "wxscintilla/include/wx/wxscintilla.h"  //svn5785
@@ -133,6 +134,8 @@ BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
     // help
     EVT_MENU (wxID_ABOUT,            EditSnippetFrame::OnAbout)
 
+    EVT_EDITOR_SAVE(               EditSnippetFrame::On_cbEditorSaveEvent)
+
 END_EVENT_TABLE ()
 // ----------------------------------------------------------------------------
 class EditFrameDropTextTarget : public wxTextDropTarget
@@ -192,8 +195,6 @@ bool EditFrameDropFileTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayStr
 // ----------------------------------------------------------------------------
 EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode )
 // ----------------------------------------------------------------------------
-	//-: wxFrame( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
-		//-wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT)
 {
     // If EditorsStayOnTop options, force stay-on-top editors for full-screen programmers
     long windowStyle = wxDEFAULT_FRAME_STYLE;
@@ -204,6 +205,8 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 		wxDefaultPosition, wxDefaultSize, windowStyle );
 
     InitEditSnippetFrame(TreeItemId, pRetcode );
+    m_bEditorSaveEvent = 0;
+
 }
 // ----------------------------------------------------------------------------
 void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode )
@@ -238,7 +241,6 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
 
     // Snippet label becomes frame title
     m_EditSnippetLabel = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetLabel(TreeItemId);
-    m_pReturnCode = pRetcode;
     *pRetcode = 0;
     m_nReturnCode = wxID_CANCEL;
 
@@ -311,7 +313,7 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
                      NULL, this);
 
     // wxEVT_DESTROY won't work for us because the window is already deleted and
-    // therefore don't get to save any file changes.
+    // therefore doesn't get to save any file changes.
 ////    m_pScbEditor->Connect( wxEVT_DESTROY,
 ////                    (wxObjectEventFunction) (wxEventFunction)
 ////                    (wxCommandEventFunction) &EditSnippetFrame::OnWindowDestroy,
@@ -364,7 +366,7 @@ EditSnippetFrame::~EditSnippetFrame()
     }
 }
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
+void EditSnippetFrame::SaveSnippetFramePosn()
 // ----------------------------------------------------------------------------
 {
     // Called from close routines or OnClose
@@ -387,14 +389,6 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
     #endif
     cfgFile.Write( wxT("EditDlgMaximized"),  false );
     cfgFile.Flush();
-
-    // If this was an external file, it's already been saved by FileClose().
-    // XML data is in m_pEditSnippetText and will be obtained by the
-    // parent via the GetText() call below.
-
-
-    // If parent is waiting on us, post we're finished
-	*m_pReturnCode = (wxID_OKorCANCEL);
 }
 // ----------------------------------------------------------------------------
 wxString EditSnippetFrame::GetName()
@@ -416,7 +410,7 @@ wxString EditSnippetFrame::GetText()
 ////// ----------------------------------------------------------------------------
 ////{
 ////    // This routine not called, because EditSnippetFrame is no longer a dialog
-////    End_SnippetFrame(wxID_OK);
+////    SaveSnippetFramePosn(wxID_OK);
 ////	//-EndModal(wxID_OK);
 ////}
 ////
@@ -425,7 +419,7 @@ wxString EditSnippetFrame::GetText()
 ////// ----------------------------------------------------------------------------
 ////{
 ////    // This routine not called, because EditSnippetFrame is no longer a dialog
-////    End_SnippetFrame(wxID_CANCEL);
+////    SaveSnippetFramePosn(wxID_CANCEL);
 ////	//-EndModal(wxID_CANCEL);
 ////}
 // ----------------------------------------------------------------------------
@@ -510,21 +504,27 @@ void EditSnippetFrame::OnFileOpen (wxCommandEvent &WXUNUSED(event))
     GetEditorManager()->Open( fname );
 }
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnFileSave (wxCommandEvent &WXUNUSED(event))
+void EditSnippetFrame::On_cbEditorSaveEvent (CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    //-if (!m_pScbEditor) return;
-    if ( ! GetEditorManager()) return;
+    // This event can be entered multiple times
+    // Set a guard to avoid a loop
+    ++m_bEditorSaveEvent;
+    if (m_bEditorSaveEvent > 1) return;
+    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, wxID_SAVE);
+    OnFileSave(evt);
+    m_bEditorSaveEvent = 0;
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OnFileSave (wxCommandEvent& WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
 
-    //if (!m_pScbEditor->GetModified()) {
-    //    messageBox (_("There are no changes to save!"), _("Save file"),
-    //                  wxOK | wxICON_EXCLAMATION);
-    //    return;
-    //}
+    if ( not GetEditorManager()) return;
 
     if ( not m_EditFileName.IsEmpty())
     {   //physical file
-        //-m_pScbEditor->Save();
         GetEditorManager()->SaveActive();
     }
     else if (GetEditorManager()->GetActiveEditor() == m_pScbEditor)
@@ -533,9 +533,9 @@ void EditSnippetFrame::OnFileSave (wxCommandEvent &WXUNUSED(event))
         // we just transfered the data, set wxID_OK.
         m_nReturnCode = wxID_OK;
         m_pScbEditor->SetModified(false);
+        GetConfig()->GetSnippetsTreeCtrl()->SaveEditorsXmlData(this);
     }
 }
-
 // ----------------------------------------------------------------------------
 void EditSnippetFrame::OnFileSaveAs (wxCommandEvent &WXUNUSED(event))
 // ----------------------------------------------------------------------------
@@ -613,33 +613,39 @@ void EditSnippetFrame::OnCloseFrameOrWindow(wxCloseEvent &event)
     LOGIT( _T("EditSnippetFrame::OnCloseFrameOrWindow"));
     #endif
 
-    if ( event.GetEventObject() == this)
-    {   // frame is closing
-    	#if defined(LOGGING)
-    	LOGIT( _T("Frame is closing"));
-    	#endif
-        SEditorBase* eb = GetEditorManager()->GetActiveEditor();
-        if (eb)
-            GetEditorManager()->CloseAll();
-        // Allow all events to clear before frame destroy
-        Manager::Yield();
-        Destroy();
-        return;
-    }
     // Set guard! Loop can occur here from OnPageClose call!
     if (m_OncloseWindowEntries++)
         return;
 
-    int knt = m_pEditorManager->GetEditorsCount();
-    if (not knt)
-    {
-        End_SnippetFrame(m_nReturnCode);
-        Show(false);
-        // Ask SnippetsTreeCtrl to Save and Destroy the editor frame
-        GetConfig()->GetSnippetsTreeCtrl()->SaveDataAndCloseEditorFrame();
-    }
+////    int knt = m_pEditorManager->GetEditorsCount();
+////    //if (not knt)
+////    if (knt)
+////    {
+////        Show(false);
+////        // Ask SnippetsTreeCtrl to Save and Destroy the editor frame
+////    }
+
+    SaveSnippetFramePosn();
+    GetConfig()->GetSnippetsTreeCtrl()->SaveDataAndCloseEditorFrame(this);
+
+////    else //destroy any frame with no editors
+////        if ( event.GetEventObject() == this)
+////        {   // frame is closing
+////            #if defined(LOGGING)
+////            LOGIT( _T("Frame is closing"));
+////            #endif
+////            SEditorBase* eb = GetEditorManager()->GetActiveEditor();
+////            if (eb)
+////                GetEditorManager()->CloseAll();
+////            SaveSnippetFramePosn();
+////            // Allow all events to clear before frame destroy
+////            Manager::Yield();
+////            Destroy();
+////            return;
+////        }
 
     m_OncloseWindowEntries = (m_OncloseWindowEntries<1)? 0 : --m_OncloseWindowEntries;
+
 }
 //// ----------------------------------------------------------------------------
 //void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)

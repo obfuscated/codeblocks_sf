@@ -92,6 +92,8 @@ class EditSnippetFrame : public wxFrame
         void OnEditEvent (wxCommandEvent &event);
         void OnEditEventUI (wxUpdateUIEvent& event);
 
+        void On_cbEditorSaveEvent(CodeBlocksEvent& event);
+
     private:
         void InitEditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
 		void EndSnippetDlg(int wxID_OKorCANCEL);
@@ -103,7 +105,7 @@ class EditSnippetFrame : public wxFrame
         wxRect DeterminePrintSize ();
         void OnFrameActivated(wxActivateEvent& event);
 
-        void End_SnippetFrame(int wxID_OKorCANCEL);
+        void SaveSnippetFramePosn();
         void CreateMenu ();
         void OnConvertEOL (wxCommandEvent &event);
         void OnEditHighlightMode(wxCommandEvent& event);
@@ -117,9 +119,6 @@ class EditSnippetFrame : public wxFrame
         wxString        m_EditSnippetLabel;
         wxString        m_EditSnippetText;
 
-        // pointer to parents return code storage area
-		int*            m_pReturnCode;
-
 		// our return code to be placed in m_pReturnCode;
 		int             m_nReturnCode;
 		wxTreeItemId    m_SnippetItemId;
@@ -131,6 +130,8 @@ class EditSnippetFrame : public wxFrame
         int             m_ActiveEventId;
         int             m_OncloseWindowEntries;
         int             m_bOnActivateBusy;
+
+        int             m_bEditorSaveEvent;
 
         DECLARE_EVENT_TABLE()
 };

@@ -15,6 +15,7 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
+					<Add option="-g" />
 					<Add option="-DWXMAKINGDLL_PROPGRID" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DwxPG_USE_WXMODULE=0" />
@@ -29,6 +30,9 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\app\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />

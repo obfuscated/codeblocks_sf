@@ -35,13 +35,7 @@ class TiXmlElement;
 #include "codesnippetsevent.h"
 #include "snippetsconfig.h"
 
-//#if defined(__WXGTK__)
-//    #include <X11/Xlibint.h>
-//    #include <X11/keysymdef.h>
-//    #include <X11/keysym.h>
-//    #include <X11/extensions/XTest.h>
-//    #undef Absolute //wx Layout.h and STC conflicts
-//#endif
+class EditSnippetFrame;
 
 WX_DEFINE_ARRAY(wxScrollingDialog*, DlgPtrArray);
 //-WX_DEFINE_ARRAY(int, DlgRetcodeArray); //(stahta01 2007/4/21 for wxGTK2.8)
@@ -78,7 +72,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void        EditSnippetAsText();
         void        EditSnippetWithMIME();
 
-        void SaveDataAndCloseEditorFrame();
+        void SaveDataAndCloseEditorFrame(EditSnippetFrame*);
+        void SaveEditorsXmlData(EditSnippetFrame* pEdFrame);
 
         // This OnIdle() is driven from the plugin|app OnIdle routines
         void OnIdle();
@@ -197,37 +192,52 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 
 	    bool                    m_fileChanged;
    		wxDateTime              m_LastXmlModifiedTime;
-		wxTreeCtrl*             m_pEvtTreeCtrlBeginDrag;
+		bool                    m_bBeginInternalDrag;
         wxTreeItemId            m_TreeItemId;
         wxPoint                 m_TreeMousePosn;
         wxString                m_TreeText;
-        bool                    m_MouseCtrlKeyDown;
+
+        bool                    m_bMouseCtrlKeyDown;
+        bool                    m_bMouseLeftKeyDown;
+        bool                    m_bMouseIsDragging;
+        int                     m_MouseDownX, m_MouseDownY;
+        int                     m_MouseUpX, m_MouseUpY;
+        wxTreeItemId            m_itemAtKeyUp, m_itemAtKeyDown;
+
+        bool                    m_bDragCursorOn;
+        wxCursor*               m_pDragCursor;
+        wxCursor                m_oldCursor;
+
    		wxTreeItemId            m_MnuAssociatedItemID;
-   		bool                    m_bMouseLeftWindow;
-        wxScrollingDialog*               m_pPropertiesDialog;
+   		bool                    m_bMouseExitedWindow;
+        wxScrollingDialog*      m_pPropertiesDialog;
    		CodeSnippetsTreeCtrl*   m_pSnippetsTreeCtrl;
    		// Snippet Window Parent could be floating wxAUI window or CodeBlocks.
    		wxWindow*               m_pSnippetWindowParent;
    		bool                    m_bShutDown;
-   		DlgPtrArray             m_aDlgPtrs;
-   		DlgRetcodeArray         m_aDlgRetcodes;
+   		DlgPtrArray             m_aEdFramePtrs;
+   		DlgRetcodeArray         aEdFrameRetcodes;
    		wxMimeTypesManager*     m_mimeDatabase;
 
-       #if defined(__WXMSW__)
-        void MSW_MouseMove(int x, int y );
-       #endif
-
         void EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName=wxEmptyString);
+
+        void BeginInternalTreeItemDrag();
+        void EndInternalTreeItemDrag();
 
         void OnBeginTreeItemDrag(wxTreeEvent& event);
         void OnEndTreeItemDrag(wxTreeEvent& event);
    		void OnLeaveWindow(wxMouseEvent& event);
    		void OnEnterWindow(wxMouseEvent& event);
-        void OnMouseMotionEvent(wxMouseEvent& event);
+        //void OnMouseMotionEvent(wxMouseEvent& event);
         void OnMouseWheelEvent(wxMouseEvent& event);
+        //void OnMouseLeftDownEvent(wxMouseEvent& event);
+        //void OnMouseLeftUpEvent(wxMouseEvent& event);
         void OnShutdown(wxCloseEvent& event);
         //-void OnIdle(wxIdleEvent& event);
         void CreateDirLevels(const wxString& pathNameIn);
+        void FinishExternalDrag();
+        void SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY);
+        void MSW_MouseMove(int x, int y );
 
 		// Must use this so overridden OnCompareItems() works on MSW,
 		// see wxWidgets Samples -> TreeCtrl sample

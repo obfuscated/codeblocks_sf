@@ -49,6 +49,7 @@
 #include <mach-o/dyld.h>
 #endif
 
+#include "xtra_res.h"
 #include "configmanager.h"
 #include "seditormanager.h"
 
@@ -832,7 +833,7 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
     if ( m_bOnActivateBusy ) {event.Skip();return;}
     ++m_bOnActivateBusy;
     #if defined(LOGGING)
-    LOGIT( _T("CodeSnippetsAppFrame::OnActivate[%d]"), m_bOnActivateBusy);
+    //LOGIT( _T("CodeSnippetsAppFrame::OnActivate[%d]"), m_bOnActivateBusy);
     #endif
     do{ //only once
         // Check that it's us that got activated
@@ -1157,6 +1158,7 @@ bool CodeSnippetsAppFrame::InitializeSDK()
     //-wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
     wxInitAllImageHandlers();
     wxXmlResource::Get()->InitAllHandlers();
+    wxXmlResource::Get()->InsertHandler(new wxScrollingDialogXmlHandler);
 
     // ---------------------
     // sdk initialization
@@ -1290,6 +1292,8 @@ wxString CodeSnippetsAppFrame::GetAppPath()
 bool CodeSnippetsAppFrame::InitXRCStuff()
 // ----------------------------------------------------------------------------
 {
+    // This seems to be loaded by Manager::Get(this)-> above
+    //-Manager::LoadResource(_T("manager_resources.zip"));
     if (!Manager::LoadResource(_T("resources.zip")))
 	{
 		ComplainBadInstall();

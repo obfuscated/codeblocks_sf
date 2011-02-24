@@ -52,6 +52,7 @@
 #include "cbauibook.h"
 #include "dragscrollevent.h"
 
+//FIXME: This does not work without (apt-get) libgtk2.0-dev and libxtst-dev
 #if defined(__WXGTK__)
     // hack to avoid name-conflict between wxWidgets GSocket and the one defined
     // in newer glib-headers
@@ -98,8 +99,19 @@ END_EVENT_TABLE()
 CodeSnippets::CodeSnippets()
 // ----------------------------------------------------------------------------
 {
-}
+    m_bMouseCtrlKeyDown = false;
+    m_bMouseLeftKeyDown = false;
+    m_bMouseIsDragging = false;
+    m_bDragCursorOn = false;
+    m_pDragCursor = false;
+    m_MouseDownX = m_MouseDownY = 0;
+    m_MouseUpX = m_MouseUpY = 0;
+    m_prjTreeItemAtKeyUp = m_prjTreeItemAtKeyDown= 0;
+    m_bMouseExitedWindow = false;
+    m_bBeginInternalDrag = false;
+    m_pDragCursor = new wxCursor(wxCURSOR_HAND);
 
+}
 // ----------------------------------------------------------------------------
 CodeSnippets::~CodeSnippets()
 // ----------------------------------------------------------------------------
@@ -213,7 +225,9 @@ void CodeSnippets::OnAttach()
 
     //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug
     #if defined(__WXMSW__)
-        SetTreeCtrlHandler( m_pProjectMgr->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
+        wxTreeCtrl* pPrjTree = m_pProjectMgr->GetTree();
+        m_oldCursor = pPrjTree->GetCursor();
+        SetTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
     #endif
     GetConfig()->SetOpenFilesList( FindOpenFilesListWindow() );
     if (GetConfig()->GetOpenFilesList() )
@@ -310,6 +324,11 @@ void CodeSnippets::OnRelease(bool appShutDown)
 
     Disconnect(wxEVT_IDLE,
             wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
+    #if defined(__WXMSW__)
+    wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetTree();
+    RemoveTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    RemoveTreeCtrlHandler( GetConfig()->GetOpenFilesList(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    #endif
 
     //  On Linux, the following causes CB to crash when the snippet window is floating
     ////    if (GetSnippetsWindow())
@@ -340,7 +359,7 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
     GetConfig()->m_pMenuBar = menuBar;
     bool isSet = false;
 
-	int idx = menuBar->FindMenu(_("&View"));
+	int idx = menuBar->FindMenu(_("View"));
 	if (idx != wxNOT_FOUND) do
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
@@ -912,7 +931,7 @@ bool CodeSnippets::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     return bRC;
 }
 // ----------------------------------------------------------------------------
-bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxTreeItemId itemID, wxString& selString)
+bool CodeSnippets::GetTreeSelectionData(const wxTreeCtrl* pTree, const wxTreeItemId itemID, wxString& selString)
 // ----------------------------------------------------------------------------
 {
     selString = wxEmptyString;
@@ -925,14 +944,17 @@ bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxTreeItemId itemID, 
     else{ return false; }
 
     #ifdef LOGGING
-     LOGIT( _T("Focused Tree:%p item[%p]"),pTree, itemID.IsOk()?itemID.m_pItem:0 );
+     //LOGIT( _T("Focused Tree:%p item[%p]"),pTree, itemID.IsOk()?itemID.m_pItem:0 );
     #endif //LOGGING
 
     // check for a file selection in the treeCtrl
     // note: the following gets the wrong item when we're called from a tree event
-    wxTreeItemId sel = pTree->GetSelection();
+    //-wxTreeItemId sel = pTree->GetSelection(); This is wrong for Project Tree(use previous hit data)
+    wxTreeItemId sel = itemID;
     if ( itemID.IsOk()) sel = itemID;
-    if (not sel) {return false;}
+    else return false;
+    if (not sel)
+        return false;
     #ifdef LOGGING
      LOGIT( _T("Selection:%p"), sel.m_pItem);
     #endif //LOGGING
@@ -1164,221 +1186,312 @@ void DropTargets::OnLeave()
 // ----------------------------------------------------------------------------
 //   Events and Event support routines
 // ----------------------------------------------------------------------------
-void CodeSnippets::OnTreeDragEvent(wxTreeEvent& event)
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnPrjTreeMouseMotionEvent(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Drag event.
+    // Drag event from the Project Tree Window
     // When user drags left mouse key out of the Projects/Files tree,
     // create a dropSource from the focused treeCtrl item
 
-    if (not m_IsAttached) {event.Skip(); return;}
-
-    // Events enabled from OnInit() by:
-    // SetTreeCtrlHandler(m_pProjectMgr->GetTree(), wxEVT_TREE_DRAG_BEGIN );
-
-    // allow all others to process first
+    // EVT_MOTION
+    // allow all other user to see event
     event.Skip();
 
+    if (not m_IsAttached) return;
+
+    // memorize position of the mouse ctrl key as copy/delete flag
+    m_bMouseCtrlKeyDown = event.ControlDown();
+    m_bMouseLeftKeyDown = event.LeftIsDown();
+    m_bMouseIsDragging  = event.Dragging();
+
+    // If dragging an item, show drag cursor
     wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
-    wxTreeItemId treeItemID = event.GetItem();
+    if (m_bMouseIsDragging and m_bMouseLeftKeyDown
+        and (not m_bDragCursorOn) and m_prjTreeItemAtKeyDown)
+    {
+        m_oldCursor = pTree->GetCursor();
+        pTree->SetCursor(*m_pDragCursor);
+        m_bDragCursorOn = true;
+    }
+    else    //restore regular cursor
+    if (m_bDragCursorOn)
+    {
+        pTree->SetCursor(m_oldCursor);
+        m_bDragCursorOn = false;
+    }
+}
+
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnPrjTreeMouseLeftDownEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+   // wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
 
     #ifdef LOGGING
-    	 //LOGIT( wxT("CodeSnippets::OnTreeDragEvent %p"), pTree );
+     //LOGIT(wxT("OnMouseLeftDown") );
+    #endif
+
+    event.Skip();
+    if (not m_IsAttached) return;
+
+    // memorize position of the mouse
+    m_bMouseLeftKeyDown = true;
+    m_MouseDownX = event.GetX();
+    m_MouseDownY = event.GetY();
+
+    m_prjTreeItemAtKeyDown = 0;
+    m_prjTreeItemAtKeyUp = 0;
+    int hitFlags = 0;
+
+    wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
+    wxTreeItemId id = pTree->HitTest(wxPoint(m_MouseDownX, m_MouseDownY), hitFlags);
+    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+        m_prjTreeItemAtKeyDown = id;
+
+    #ifdef LOGGING
+     //LOGIT(wxT("MouseCtrlKeyDown[%s]"), m_bMouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+    #endif
+}//OnPrjTreeMouseUpEvent
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnPrjTreeMouseLeftUpEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // EVT_LEFT_UP
+
+    event.Skip();
+    if (not m_IsAttached) return;
+
+    #ifdef LOGGING
+     //LOGIT(wxT("OnMouseLeftUp") );
+    #endif
+    // memorize position of the mouse
+    m_bMouseLeftKeyDown = false;
+    m_MouseUpX = event.GetX();
+    m_MouseUpY = event.GetY();
+
+    m_prjTreeItemAtKeyUp = 0;
+    int hitFlags = 0;
+
+    wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
+    wxTreeItemId id = pTree->HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
+    if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
+        m_prjTreeItemAtKeyUp = id;
+
+    if (m_bMouseExitedWindow and m_bMouseIsDragging and m_prjTreeItemAtKeyDown)
+    {   //Doesnt work for leaf items; never receive Evt_Left_Up; moved to OnLeaveWindow
+        //DoPrjTreeExternalDrag(pTree);
+    }
+    // We don't do internalitem-to-item dragging for the project Tree
+    //else
+    //if ( (not m_bMouseExitedWindow) and m_bMouseIsDragging
+    //     and m_prjTreeItemAtKeyDown and m_prjTreeItemAtKeyUp
+    //     and (m_itemAtKeyDown not_eq m_itemAtKeyUp ))
+    //{
+    //    DoPrjTreeItemDrag(pTree);
+    //}
+
+    // Do not release the mouse until after the drag has finished
+    // else the drag will not complete.
+    if (m_bMouseExitedWindow)
+    {
+        if (pTree->HasCapture())
+        {
+            pTree->ReleaseMouse();
+            #if defined(LOGGING)
+            LOGIT( _T("Mouse Released"));
+            #endif
+        }
+        else
+        {
+            #if defined(LOGGING)
+            LOGIT( _T("Lost Mouse capture"));
+            #endif
+        }
+    }
+
+    m_bMouseExitedWindow = false;
+    m_bMouseIsDragging = false;
+
+    if (m_bDragCursorOn)
+    {
+        pTree->SetCursor(m_oldCursor);
+        m_bDragCursorOn = false;
+    }
+
+}//OnPrjTreeMouseLeftUpEvent
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnPrjTreeMouseLeaveWindowEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // -----------------------
+    // EVT_LEAVE_WINDOW
+    // -----------------------
+    event.Skip();
+
+    // User has dragged mouse out of project window.
+    // if us is dragging mouse, save the source item for later use
+    // in DoTreeExternalDrag()
+
+    m_bBeginInternalDrag = false; //This is not an internal drag
+
+    // Left mouse key must be down (dragging)
+    if (not m_bMouseLeftKeyDown ) return;
+    if (not m_bMouseIsDragging ) return;
+    // check if data is available
+    if (not m_prjTreeItemAtKeyDown) return;
+
+    wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
+
+    #ifdef LOGGING
+     //LOGIT( _T("EVT_LEAVE_WINDOW %p"), pTree );
     #endif //LOGGING
 
-    // -----------------------
-    // TREE_BEGIN_DRAG
-    // -----------------------
-    if (event.GetEventType() == wxEVT_COMMAND_TREE_BEGIN_DRAG)
+    // when user drags an item out of the window, this routine is called
+    // OnMouseKeyUpEvent will clear this flag
+    m_bMouseExitedWindow = true;
+    //pTree->CaptureMouse(); //this does no good. DoDragDrop will cancel it.
+    #if defined(LOGGING)
+      //LOGIT( _T("Mouse Captured"));
+    #endif
+
+    if (m_bMouseExitedWindow and m_bMouseIsDragging and m_prjTreeItemAtKeyDown)
     {
-        #ifdef LOGGING
-         LOGIT( _T("Plugin_TREE_BEGIN_DRAG [%p][%s] itemID[%p]"),
-            pTree, pTree->GetName().c_str(),
-            treeItemID.m_pItem  );
-        #endif //LOGGING
-
-        if (pTree == (wxTreeCtrl*)m_pProjectMgr->GetTree())
-        {
-            m_pMgtTreeBeginDrag = pTree;
-            m_TreeMousePosn = ::wxGetMousePosition();
-            m_TreeItemId    =   event.GetItem();
-            pTree->SelectItem(m_TreeItemId);
-        }
-        else m_pMgtTreeBeginDrag = 0;
-
-        m_TreeText = wxEmptyString;
-        if (not GetTreeSelectionData(pTree, treeItemID, m_TreeText))
-        {
-            m_TreeText = wxEmptyString;
-            m_pMgtTreeBeginDrag = 0;
-        }
-        return;
-    }//fi
-    // -----------------------
-    // TREE_END_DRAG
-    // -----------------------
-    if (event.GetEventType() == wxEVT_COMMAND_TREE_END_DRAG)
-    {
-        #ifdef LOGGING
-         LOGIT( _T("Plugin_TREE_END_DRAG [%p][%s]"), pTree, pTree->GetName().c_str() );
-        #endif //LOGGING
-
-        m_TreeText = wxEmptyString;
-        if (pTree == (wxTreeCtrl*)m_pProjectMgr->GetTree())
-           m_pMgtTreeBeginDrag = 0;
-        return;
+        DoPrjTreeExternalDrag(pTree);
     }
-    // -----------------------
-    // LEAVE_WINDOW
-    // -----------------------
-    if (event.GetEventType() == wxEVT_LEAVE_WINDOW)
-    {
-        //user has dragged mouse out of Management/File window
-        #ifdef LOGGING
-         //LOGIT( _T("MOUSE EVT_LEAVE_WINDOW") );
-        #endif //LOGGING
-
-        // Left mouse key must be down (dragging)
-        if (not ((wxMouseEvent&)event).LeftIsDown() ) return;
-        // check if data is available
-        if ( m_TreeText.IsEmpty()) return;
-
-        #ifdef LOGGING
-         LOGIT( _T("TREE_LEAVE_WINDOW [%p][%s]"), pTree, pTree->GetName().c_str() );
-        #endif //LOGGING
-
-        //-#if defined(BUILDING_PLUGIN)
-            // substitute any $(macro) text
-            static const wxString delim(_T("$%["));
-            if( m_TreeText.find_first_of(delim) != wxString::npos )
-                Manager::Get()->GetMacrosManager()->ReplaceMacros(m_TreeText);
-            #if defined(LOGGING)
-            LOGIT( _T("$macros substitute[%s]"),m_TreeText.c_str() );
-            #endif
-        //-#endif
-
-        // we now have data, create both a simple text and filename drop source
-        wxTextDataObject* textData = new wxTextDataObject();
-        wxFileDataObject* fileData = new wxFileDataObject();
-            // fill text and file sources with snippet
-        wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
-        textData->SetText( m_TreeText );
-        wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
-        fileData->AddFile( m_TreeText );
-            // set composite data object to contain both text and file data
-        wxDataObjectComposite *data = new wxDataObjectComposite();
-        data->Add( (wxDataObjectSimple*)textData );
-        data->Add( (wxDataObjectSimple*)fileData, true ); // set file data as preferred
-            // create the drop source containing both data types
-        wxDropSource source( *data, (wxWindow*)event.GetEventObject()  );
-        #ifdef LOGGING
-         LOGIT( _T("DropSource Text[%s],File[%s]"),
-                    textData->GetText().GetData(),
-                    fileData->GetFilenames().Item(0).GetData() );
-        #endif //LOGGING
-
-        // allow both copy and move
-        int flags = 0;
-        flags |= wxDrag_AllowMove;
-
-        wxDragResult result = source.DoDragDrop(flags);
-
-        #if LOGGING
-            wxString pc;
-            switch ( result )
-            {
-                case wxDragError:   pc = _T("Error!");    break;
-                case wxDragNone:    pc = _T("Nothing");   break;
-                case wxDragCopy:    pc = _T("Copied");    break;
-                case wxDragMove:    pc = _T("Moved");     break;
-                case wxDragCancel:  pc = _T("Cancelled"); break;
-                default:            pc = _T("Huh?");      break;
-            }
-            #if defined(LOGGING)
-            LOGIT( wxT("CodeSnippets::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
-            #endif
-        #else
-            wxUnusedVar(result);
-        #endif
-
-        // ---MSW WORKAROUNG --------------------------------------------------
-        // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
-        // pending, Wx will *not* send the EVT_TREE_DRAG_END from a
-        // mouse key up event until the user re-clicks inside the tree control.
-        // The mouse is still captured and the tree exibits very bad behavior.
-
-        // Send an mouse_key_up to the tree control so it releases the
-        // mouse and and receives a EVT_TREE_DRAG_END event.
-        if ( m_pMgtTreeBeginDrag )
-        {
-            //send Mouse LeftKeyUp to Tree Control window
-            #ifdef LOGGING
-             LOGIT( _T("Sending Mouse LeftKeyUp[%p][%s]"), m_pMgtTreeBeginDrag, m_pMgtTreeBeginDrag->GetName().c_str() );
-            #endif //LOGGING
-
-            // move mouse into the Tree control
-            wxPoint CurrentMousePosn = ::wxGetMousePosition();
-            #if defined(__WXMSW__)
-                MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
-
-                // send mouse LeftKeyUp
-                INPUT Input         = {0};
-                Input.type          = INPUT_MOUSE;
-                Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
-                ::SendInput(1,&Input,sizeof(INPUT));
-
-                // put mouse back in drag-end position
-                MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
-            #endif //(__WXMSW__)
-            #if defined(__WXGTK__)
-                // move cursor to source window and send a left button up event
-                XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
-                        None,              /* not source window -> move from anywhere */
-                        GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
-                        0, 0, 0, 0,        /* not source window -> move from anywhere */
-                        m_TreeMousePosn.x, m_TreeMousePosn.y );
-                // send LeftMouseRelease key
-                m_pMgtTreeBeginDrag->SetFocus();
-                GdkDisplay* display = gdk_display_get_default ();
-                int xx=0,yy=0;
-                GdkWindow* pGdkWindow = gdk_display_get_window_at_pointer( display, &xx, &yy);
-                // LOGIT(wxT("Tree[%p][%d %d]"), m_pEvtTreeCtrlBeginDrag,m_TreeMousePosn.x, m_TreeMousePosn.y);
-                // LOGIT(wxT("gdk [%p][%d %d]"), pWindow, xx, yy);
-                GdkEventButton evb;
-                memset(&evb, 0, sizeof(evb));
-                evb.type = GDK_BUTTON_RELEASE;
-                evb.window = pGdkWindow;
-                evb.x = xx;
-                evb.y = yy;
-                evb.state = GDK_BUTTON1_MASK;
-                evb.button = 1;
-                // gdk display put event, namely mouse release
-                gdk_display_put_event( display, (GdkEvent*)&evb);
-                // put mouse back in pre-moved "dropped" position
-                XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
-                        None,              /* not source window -> move from anywhere */
-                        GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
-                        0, 0, 0, 0,        /* not source window -> move from anywhere */
-                        CurrentMousePosn.x, CurrentMousePosn.y );
-            #endif//(__WXGTK__)
-
-        }
-
-        delete textData ;
-        delete fileData ;
-
-        m_pMgtTreeBeginDrag = 0;
-        m_TreeText = wxEmptyString;
-    }//fi event.GetEventType()
 
     return;
-
-}//OnTreeDragEvent
+}//OnLeaveWindow
 // ----------------------------------------------------------------------------
-#if defined(__WXMSW__)
+void CodeSnippets::DoPrjTreeExternalDrag(wxTreeCtrl* pTree)
+// ----------------------------------------------------------------------------
+{
+    if ( not m_prjTreeItemAtKeyDown)
+        return;
+
+    // we now have data; create both a simple text and filename drop source
+    wxTextDataObject* textData = new wxTextDataObject();
+    wxFileDataObject* fileData = new wxFileDataObject();
+    // fill text and file sources with data
+    wxString m_prjTreeText;
+    if (not GetTreeSelectionData(pTree, m_prjTreeItemAtKeyDown, m_prjTreeText))
+    {
+        m_prjTreeText = wxEmptyString;
+        return;
+    }
+
+    static const wxString delim(_T("$%["));
+    if( m_prjTreeText.find_first_of(delim) != wxString::npos )
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(m_prjTreeText);
+
+    wxDropSource textSource( *textData, pTree );
+    textData->SetText( m_prjTreeText );
+
+    wxDropSource fileSource( *fileData, pTree );
+    wxString fileName = m_prjTreeText;
+
+    if (not ::wxFileExists(fileName) ) fileName = wxEmptyString;
+    // If no filename, but text is URL/URI, pass it as a file (esp. for browsers)
+    if ( fileName.IsEmpty())
+    {   if (m_prjTreeText.StartsWith(_T("http://")))
+            fileName = m_prjTreeText;
+        if (m_prjTreeText.StartsWith(_T("file://")))
+            fileName = m_prjTreeText;
+        // Remove anything pass the first \n or \r {v1.3.92}
+        fileName = fileName.BeforeFirst('\n');
+        fileName = fileName.BeforeFirst('\r');
+        if (not fileName.IsEmpty())
+            textData->SetText( fileName );
+    }
+    fileData->AddFile( (fileName.Len() > 128) ? wxString(wxEmptyString) : fileName );
+
+    // set composite data object to contain both text and file data
+    wxDataObjectComposite* data = new wxDataObjectComposite();
+    data->Add( (wxDataObjectSimple*)textData );
+    data->Add( (wxDataObjectSimple*)fileData, true ); // set file data as preferred
+
+    // create the drop source containing both data types
+    wxDropSource source( *data, pTree  );
+
+    #ifdef LOGGING
+     LOGIT( _T("PrjTree DropSource Text[%s], File[%s]"),
+                textData->GetText().c_str(),
+                fileData->GetFilenames().Item(0).c_str() );
+    #endif //LOGGING
+
+    // allow both copy and move
+    int flags = 0;
+    flags |= wxDrag_AllowMove;
+    // do the dragNdrop
+    wxDragResult result = source.DoDragDrop(flags);
+
+    // report the results
+    #if LOGGING
+        wxString pc;
+        switch ( result )
+        {
+            case wxDragError:   pc = _T("Error!");    break;
+            case wxDragNone:    pc = _T("Nothing");   break;
+            case wxDragCopy:    pc = _T("Copied");    break;
+            case wxDragMove:    pc = _T("Moved");     break;
+            case wxDragLink:    pc = _T("Linked");    break;
+            case wxDragCancel:  pc = _T("Cancelled"); break;
+            default:            pc = _T("Huh?");      break;
+        }
+        LOGIT( wxT("DoDragDrop returned[%s]"),pc.GetData() );
+    #else
+        wxUnusedVar(result);
+    #endif
+
+    delete textData; //wxTextDataObject
+    delete fileData; //wxFileDataObject
+    m_TreeText = wxEmptyString;
+    m_prjTreeItemAtKeyDown = 0;
+    m_prjTreeItemAtKeyUp = 0;
+
+    // correct for treeCtrl bug
+    SendMouseLeftUp(pTree, m_MouseDownX, m_MouseDownY);
+
+}//DoPrjTreeExternalDrag
+// ----------------------------------------------------------------------------
+void CodeSnippets::SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY)
+// ----------------------------------------------------------------------------
+{
+    // ---MSW WORKAROUNG --------------------------------------------------
+    // Since we dragged outside the tree control with a mouse_left_down,
+    // Wx will *not* send us a mouse_key_up event until the user explcitly
+    // re-clicks inside the tree control. The tree exibits very bad behavior.
+
+    // Send an mouse_key_up to the tree control so it releases the
+    // mouse and behaves correctly.
+  #if defined(__WXMSW__)
+    if ( pWin )
+    {
+        //send Mouse LeftKeyUp to Tree Control window
+        #ifdef LOGGING
+         LOGIT( _T("Sending Mouse LeftKeyUp"));
+        #endif //LOGGING
+        // Remember current mouse position
+        wxPoint CurrentMousePosn = ::wxGetMousePosition();
+        // Get absolute location of mouse x and y
+        wxPoint fullScreen = pWin->ClientToScreen(wxPoint(mouseX,mouseY));
+        // move mouse into the window
+        MSW_MouseMove( fullScreen.x, fullScreen.y );
+        // send mouse LeftKeyUp
+        INPUT Input         = {0};
+        Input.type          = INPUT_MOUSE;
+        Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
+        ::SendInput(1,&Input,sizeof(INPUT));
+        // put mouse back in drag-end position
+        MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
+    }
+  #endif //(__WXMSW__)
+}
+// ----------------------------------------------------------------------------
 void CodeSnippets::MSW_MouseMove(int x, int y )
 // ----------------------------------------------------------------------------
 {
+   #if defined(__WXMSW__)
     // Move the MSW mouse to absolute screen coords x,y
       double fScreenWidth   = ::GetSystemMetrics( SM_CXSCREEN )-1;
       double fScreenHeight  = ::GetSystemMetrics( SM_CYSCREEN )-1;
@@ -1390,8 +1503,8 @@ void CodeSnippets::MSW_MouseMove(int x, int y )
       Input.mi.dx = (LONG)fx;
       Input.mi.dy = (LONG)fy;
       ::SendInput(1,&Input,sizeof(INPUT));
+   #endif
 }
-#endif
 // ----------------------------------------------------------------------------
 void CodeSnippets::SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
 // ----------------------------------------------------------------------------
@@ -1402,14 +1515,27 @@ void CodeSnippets::SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
 	 LOGIT(wxT("CodeSnippets::SetTreeCtrlHandler[%s] %p"), p->GetName().c_str(),p);
     #endif //LOGGING
 
-    p->Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////    p->Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+////    p->Connect(wxEVT_COMMAND_TREE_END_DRAG,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+////    p->Connect(wxEVT_LEAVE_WINDOW,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+
+    p->Connect(wxEVT_LEFT_UP,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeftUpEvent),
                      NULL, this);
-    p->Connect(wxEVT_COMMAND_TREE_END_DRAG,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+    p->Connect(wxEVT_LEFT_DOWN,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeftDownEvent),
+                     NULL, this);
+    p->Connect(wxEVT_MOTION,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseMotionEvent),
                      NULL, this);
     p->Connect(wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeaveWindowEvent),
                      NULL, this);
 }
 // ----------------------------------------------------------------------------
@@ -1422,14 +1548,26 @@ void CodeSnippets::RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
 	 LOGIT(wxT("CodeSnippets::Detach - detaching to [%s] %p"), p->GetName().c_str(),p);
     #endif //LOGGING
 
-    p->Disconnect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////    p->Disconnect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+////    p->Disconnect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+////    p->Disconnect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
+////                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+////                     NULL, this);
+    p->Disconnect(wxEVT_LEFT_UP,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeftUpEvent),
                      NULL, this);
-    p->Disconnect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+    p->Disconnect(wxEVT_LEFT_DOWN,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeftDownEvent),
                      NULL, this);
-    p->Disconnect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
+    p->Disconnect(wxEVT_MOTION,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseMotionEvent),
+                     NULL, this);
+    p->Disconnect(wxEVT_LEAVE_WINDOW,
+                     wxMouseEventHandler(CodeSnippets::OnPrjTreeMouseLeaveWindowEvent),
                      NULL, this);
 }
 // ----------------------------------------------------------------------------
@@ -1678,9 +1816,9 @@ wxWindow* CodeSnippets::FindOpenFilesListWindow()
 {
     //Find "Open files list" menu item.
     wxFrame* pFrame = Manager::Get()->GetAppFrame();
-    int idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, _("&View"), _("Open files list"));
+    int idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("Open files list"));
     #if defined(__WXGTK__)
-      idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, _("&View"), _("_Open files list"));
+      idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("_Open files list"));
     #endif
     int idWindowOpenFilesList = 0;
     if (idMenuOpenFilesList != wxNOT_FOUND)

@@ -953,7 +953,8 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
     // append the next number onto the XML file name
     // copy the XML Index to the new file name
 
-    if (GetFileChanged() ) OnMnuSaveSnippets(event);
+    if (GetFileChanged() )
+        OnMnuSaveSnippets(event);
     const wxString IndexFile = GetConfig()->SettingsSnippetsXmlPath;
     wxString bkupName = wxEmptyString;
     unsigned i = 0;

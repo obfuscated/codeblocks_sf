@@ -137,14 +137,15 @@ class CodeSnippets : public cbPlugin
 		// ---
 		void SetSnippetsWindow(CodeSnippetsWindow* p);
 		CodeSnippetsWindow*  GetSnippetsWindow(){return GetConfig()->GetSnippetsWindow();}
-        void OnTreeDragEvent(wxTreeEvent& event);
+        //-void OnTreeDragEvent(wxTreeEvent& event); 2011/01/9
+        void OnPrjTreeDragEvent(wxMouseEvent& event);
 
 	private:
 
         void CreateSnippetWindow();
         void SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
         void RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
-        bool GetTreeSelectionData(wxTreeCtrl* pTree, wxTreeItemId itemID, wxString& selString);
+        bool GetTreeSelectionData(const wxTreeCtrl* pTree, const wxTreeItemId itemID, wxString& selString);
         wxArrayString* TextToFilenames(const wxString& string);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
@@ -154,11 +155,6 @@ class CodeSnippets : public cbPlugin
         bool TellExternalSnippetsToTerminate();
         void CloseDockWindow();
         wxWindow* FindOpenFilesListWindow();
-
-
-        #if defined(__WXMSW__)
-            void MSW_MouseMove(int x, int y );
-        #endif
 
 		void OnViewSnippets(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
@@ -174,6 +170,14 @@ class CodeSnippets : public cbPlugin
         void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
         void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
 
+        void OnPrjTreeMouseMotionEvent(wxMouseEvent& event);
+        void OnPrjTreeMouseLeftDownEvent(wxMouseEvent& event);
+        void OnPrjTreeMouseLeftUpEvent(wxMouseEvent& event);
+        void DoPrjTreeExternalDrag(wxTreeCtrl* pTree);
+        void OnPrjTreeMouseLeaveWindowEvent(wxMouseEvent& event);
+        void SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY);
+        void MSW_MouseMove(int x, int y );
+
         cbDragScroll* FindDragScroll();
         wxString      GetCBConfigFile();
         wxString      GetCBConfigDir();
@@ -181,7 +185,7 @@ class CodeSnippets : public cbPlugin
 		wxWindow*       m_pAppWin;
         ProjectManager* m_pProjectMgr;
         wxTreeCtrl*     m_pMgtTreeBeginDrag;
-        wxPoint         m_TreeMousePosn;
+        //-wxPoint         m_TreeMousePosn;
         wxTreeItemId    m_TreeItemId;
         wxString        m_TreeText;
         int             m_nOnActivateBusy;
@@ -189,6 +193,18 @@ class CodeSnippets : public cbPlugin
         wxString        m_KeepAliveFileName;
         wxFile          m_PidTmpFile;
         long            m_nDragScrollEventId;
+
+        bool            m_bMouseCtrlKeyDown;
+        bool            m_bMouseLeftKeyDown;
+        bool            m_bMouseIsDragging;
+        bool            m_bDragCursorOn;
+        wxCursor*       m_pDragCursor;
+        wxCursor        m_oldCursor;
+        int             m_MouseDownX, m_MouseDownY;
+        int             m_MouseUpX, m_MouseUpY;
+        wxTreeItemId    m_prjTreeItemAtKeyUp, m_prjTreeItemAtKeyDown;
+   		bool            m_bMouseExitedWindow;
+        bool            m_bBeginInternalDrag;
 
 		DECLARE_EVENT_TABLE();
 

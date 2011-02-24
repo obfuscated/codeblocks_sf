@@ -519,7 +519,7 @@ AppVersion::~AppVersion()
 //          117) Fix erroneous double entry into "Save Index As" routine
 //          118) Fix crash in SEditorManager::CheckForExternallyModifiedFiles();
 // ----------------------------------------------------------------------------
-//  Commit 1.3.120 2010/02/11
+//  Commit 1.3.120 2011/02/11
 //          119) Fix crash when double clicking previously opened snippet
 //          120) Copy fixes 5995 & 6000 from CB EditorManager to SEditormanager
 // ----------------------------------------------------------------------------
