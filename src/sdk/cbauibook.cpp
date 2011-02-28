@@ -844,7 +844,10 @@ void cbAuiNotebook::AllowScrolling(bool allow)
 {
     s_AllowMousewheel = allow;
     for (size_t i = 0; i < s_cbAuiNotebookArray.GetCount(); ++i)
+    {
+        s_cbAuiNotebookArray[i]->UpdateTabControlsArray();
         s_cbAuiNotebookArray[i]->ResetTabCtrlEvents();
+    }
 }
 
 void cbAuiNotebook::SetModKeys(wxString keys)
