@@ -1213,6 +1213,9 @@
 		<Unit filename="plugins\autosave\autosave.h">
 			<Option target="Autosave" />
 		</Unit>
+		<Unit filename="plugins\autosave\autosave.xrc">
+			<Option target="Autosave" />
+		</Unit>
 		<Unit filename="plugins\autosave\manifest.xml">
 			<Option target="Autosave" />
 		</Unit>
