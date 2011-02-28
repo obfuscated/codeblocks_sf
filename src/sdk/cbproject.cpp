@@ -829,6 +829,11 @@ int filesSort(const ProjectFile** arg1, const ProjectFile** arg2)
     return (*arg1)->file.GetFullPath().CompareTo((*arg2)->file.GetFullPath());
 }
 
+int filesSortNameOnly(const ProjectFile** arg1, const ProjectFile** arg2)
+{
+    return (*arg1)->file.GetFullName().CompareTo((*arg2)->file.GetFullName());
+}
+
 void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
 {
     if (!tree)
