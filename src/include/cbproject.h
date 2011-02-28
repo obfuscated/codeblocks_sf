@@ -105,11 +105,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** (Re)build the project tree.
           * @param tree The wxTreeCtrl to use.
           * @param root The tree item to use as root. The project is built as a child of this item.
-          * @param categorize If true, use virtual folders like "Sources", "Headers", etc.
-          * @param useFolders If true, create folders as needed. If false, the list is flat.
+          * @param ptvs The visual style of the project tree
           * @param fgam If not NULL, use these file groups and masks for virtual folders.
           */
-        void BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categorize, bool useFolders, FilesGroupsAndMasks* fgam = 0L);
+        void BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam = 0L);
 
         /** This resets the project to a clear state. Like it's just been new'ed. */
         void ClearAllProperties();
@@ -367,7 +366,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * This sequence of function calls ensures proper events dispatching.
           * This function broadcasts the cbEVT_PROJECT_BEGIN_ADD_FILES event.
           */
-		void BeginAddFiles();
+        void BeginAddFiles();
 
         /** Notify that file(s) addition finished.
           * This function should be called when done calling AddFile() as many times as needed.
@@ -376,7 +375,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * This function broadcasts the cbEVT_PROJECT_END_ADD_FILES event.
           * @see BeginAddFiles().
           */
-		void EndAddFiles();
+        void EndAddFiles();
 
         /** Notify that file(s) will be removed shortly.
           * This function should be called before calling RemoveFile().
@@ -386,7 +385,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * This sequence of function calls ensures proper events dispatching.
           * This function broadcasts the cbEVT_PROJECT_BEGIN_REMOVE_FILES event.
           */
-		void BeginRemoveFiles();
+        void BeginRemoveFiles();
 
         /** Notify that file(s) removal finished.
           * This function should be called when done calling RemoveFile() as many times as needed.
@@ -395,7 +394,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * This function broadcasts the cbEVT_PROJECT_END_REMOVE_FILES event.
           * @see BeginRemoveFiles().
           */
-		void EndRemoveFiles();
+        void EndRemoveFiles();
 
         /** Add a file to the project.
           * This variation, takes a target name as first parameter.
@@ -478,7 +477,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @return While the project is being built, this function returns the currently building
           * target. For all other times, NULL is returned.
           */
-        ProjectBuildTarget* GetCurrentlyCompilingTarget(){ return m_CurrentlyCompilingTarget; }
+        ProjectBuildTarget* GetCurrentlyCompilingTarget() { return m_CurrentlyCompilingTarget; }
 
         /** Set the currently compiling target.
           * @note This function is for internal use by compilers only.

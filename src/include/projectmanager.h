@@ -57,9 +57,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         const FilesGroupsAndMasks* GetFilesGroupsAndMasks() const { return m_pFileGroups; }
 
         /// Can the app shutdown? (actually: is ProjectManager busy at the moment?)
-        static bool CanShutdown(){ return s_CanShutdown; }
+        static bool CanShutdown() { return s_CanShutdown; }
         /// Application menu creation. Called by the application only.
-        static void CreateMenu(wxMenuBar* menuBar);
+        void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
         void ReleaseMenu(wxMenuBar* menuBar);
         /** Retrieve the default path for new projects.
@@ -106,6 +106,12 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * is returned. Else the return value is NULL.
           */
         cbProject* LoadProject(const wxString& filename, bool activateIt = true);
+
+        /** Reloads a project and tries to keep everything the same (project order, dependencies, active project)
+          * @param project the project that will be reloaded, the pointer will be invalid after the call.
+          */
+        void ReloadProject(cbProject *project);
+
         /** Save a project to disk.
           * @param project A pointer to the project to save.
           * @return True if saving was succesful, false if not.
@@ -422,9 +428,10 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         ProjectManager& operator=(const ProjectManager& /*rhs*/) // prevent assignment operator
         {
-        	cbThrow(_T("Can't assign a ProjectManager* !!!"));
-        	return *this;
-		}
+            cbThrow(_T("Can't assign a ProjectManager* !!!"));
+            return *this;
+        }
+
     private:
         ProjectManager(const ProjectManager& /*rhs*/); // prevent copy construction
 
@@ -442,6 +449,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         void InitPane();
         void BuildTree();
+        void CreateMenuTreeProps(wxMenu* menu, bool popup);
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
         void OnTabContextMenu(wxAuiNotebookEvent& event);
         void OnTabPosition(wxCommandEvent& event);
@@ -472,6 +480,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnGotoFile(wxCommandEvent& event);
         void OnViewCategorize(wxCommandEvent& event);
         void OnViewUseFolders(wxCommandEvent& event);
+        void OnViewHideFolderName(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
         void OnFindFile(wxCommandEvent& event);
         wxTreeItemId FindItem(wxTreeItemId Node, const wxString& Search) const;
@@ -499,8 +508,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         ProjectsArray* m_pProjects;
         DepsMap m_ProjectDeps;
         cbWorkspace* m_pWorkspace;
-        bool m_TreeCategorize;
-        bool m_TreeUseFolders;
+        int m_TreeVisualState;
         FilesGroupsAndMasks* m_pFileGroups;
         int m_TreeFreezeCounter;
         bool m_IsLoadingProject;

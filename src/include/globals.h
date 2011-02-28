@@ -104,6 +104,18 @@ enum FileVisualState
     fvsLast
 };
 
+/** These are valid values for the visual style of the project tree.
+    They can be OR'ed to modify the representation of the project tree.
+*/
+enum ProjectTreeVisualState
+{
+    ptvsNone           = 0x00, //!< The default style: All "off"
+    ptvsCategorize     = 0x01, //!< If true, use virtual folders like "Sources", "Headers", etc.
+    ptvsUseFolders     = 0x02, //!< If true, create folders as needed. If false, the list is flat (not compatible with "hie folder name")
+    ptvsHideFolderName = 0x04, //!< If true, the folder name will be hidden and only the file name will be shown (not compatible with "use folders")
+    ptvsDefault        = 0x03  //!< Just here for convenience, "categorise" + "use folders" ON
+};
+
 /** Template output types. */
 enum TemplateOutputType
 {
