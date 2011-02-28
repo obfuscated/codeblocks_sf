@@ -1145,6 +1145,9 @@
 		<Unit filename="plugins\abbreviations\abbreviationsconfigpanel.cpp">
 			<Option target="Abbreviations" />
 		</Unit>
+		<Unit filename="plugins\abbreviations\resources\abbreviationsconfigpanel.xrc">
+			<Option target="Abbreviations" />
+		</Unit>
 		<Unit filename="plugins\astyle\asstreamiterator.cpp">
 			<Option target="AStyle" />
 		</Unit>
