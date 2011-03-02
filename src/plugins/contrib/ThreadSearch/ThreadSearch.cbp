@@ -3,10 +3,9 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="ThreadSearch" />
-		<Option default_target="App - Win32" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="ThreadSearch - Win32">
+			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\ThreadSearch.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\ThreadSearch" />
 				<Option external_deps="..\..\..\devel\wxcustombutton.dll;" />
@@ -22,7 +21,7 @@
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="wxcustombutton" />
 					<Add directory="..\..\..\devel" />
-					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Environment>
@@ -31,7 +30,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="ThreadSearch - Win32;" />
+			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -54,8 +53,8 @@
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
-			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#wx.include)" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\wxSmithContribItems\wxthings\wxthings\include" />
 		</Compiler>
 		<Linker>

@@ -42,7 +42,7 @@
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 $(#cb)\devel\share\CodeBlocks\headerguard.zip manifest.xml" />
+					<Add after="zip -j9 ..\..\devel\share\CodeBlocks\headerguard.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
