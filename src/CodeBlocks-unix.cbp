@@ -3264,6 +3264,8 @@
 		</Unit>
 		<Unit filename="src/resources/resources.rc">
 			<Option compilerVar="WINDRES" />
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/scripting_settings.xrc">
