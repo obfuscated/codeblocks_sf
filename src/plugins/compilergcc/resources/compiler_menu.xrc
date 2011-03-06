@@ -35,15 +35,15 @@
       <help>Clean current project</help>
     </object>
     <object class="separator"/>
-    <object class="wxMenuItem" name="idCompilerMenuCompileAll">
+    <object class="wxMenuItem" name="idCompilerMenuBuildWorkspace">
       <label>Build &amp;workspace</label>
       <help>Build all projects in workspace</help>
     </object>
-    <object class="wxMenuItem" name="idCompilerMenuRebuildAll">
+    <object class="wxMenuItem" name="idCompilerMenuRebuildWorkspace">
       <label>Reb&amp;uild workspace</label>
       <help>Rebuild all projects in workspace</help>
     </object>
-    <object class="wxMenuItem" name="idCompilerMenuCleanAll">
+    <object class="wxMenuItem" name="idCompilerMenuCleanWorkspace">
       <label>Clean workspace</label>
       <help>Clean current project (dependencies too)</help>
     </object>
