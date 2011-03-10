@@ -9,7 +9,7 @@ using std::string;
 class HTMLExporter : public BaseExporter
 {
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
   private:
     static const char *HTMLHeaderBEG;
@@ -19,7 +19,7 @@ class HTMLExporter : public BaseExporter
     static const char *HTMLStyleEND;
     static const char *HTMLHeaderEND;
     static const char *HTMLBodyBEG;
-    static string HTMLBody(const wxMemoryBuffer &styled_text, int lineCount);
+    static string HTMLBody(const wxMemoryBuffer &styled_text, int lineCount, int tabWidth);
     static const char *HTMLBodyEND;
 };
 

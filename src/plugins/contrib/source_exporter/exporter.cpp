@@ -202,7 +202,9 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
     lineCount = cb->GetControl()->GetLineCount();
   }
 
+  int tabWidth = cb->GetControl()->GetTabWidth();
+
   EditorColourSet *ecs = cb->GetColourSet();
 
-  exp->Export(filename, cb->GetFilename(), mb, ecs, lineCount);
+  exp->Export(filename, cb->GetFilename(), mb, ecs, lineCount, tabWidth);
 }

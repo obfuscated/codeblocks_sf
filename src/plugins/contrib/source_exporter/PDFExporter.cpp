@@ -129,12 +129,11 @@ void PDFExporter::PDFGetStyles(const EditorColourSet *c_color_set, HighlightLang
   }
 }
 
-void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text, int lineCount)
+void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text, int lineCount, int tabWidth)
 {
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
   bool fill = false;
-  int tabsize_in_spaces = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
   int lineno = 1;
   int width = calcWidth(lineCount);
   std::string text;
@@ -199,7 +198,9 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
     }
   }
 
-  for (size_t i = 0; i < buffer_size; i += 2)
+  int charLinePos = 0;
+
+  for (size_t i = 0; i < buffer_size; i += 2, ++charLinePos)
   {
     if (buffer[i + 1] != current_style)
     {
@@ -256,6 +257,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
     switch (buffer[i])
     {
       case '\r':
+      	--charLinePos; // account for auto-increment
         break;
 
       case '\n':
@@ -274,10 +276,16 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
           current_style = defStyleIdx;
           ++lineno;
         }
+
+        charLinePos = -1; // account for auto-increment
         break;
 
       case '\t':
-        text.append(' ', tabsize_in_spaces);
+        {
+            const int extraSpaces = tabWidth - charLinePos % tabWidth;
+            text += std::string(extraSpaces, ' ');
+            charLinePos += extraSpaces - 1; // account for auto-increment
+        }
         break;
 
       default:
@@ -289,14 +297,14 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
   PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
 }
 
-void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount)
+void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth)
 {
   wxPdfDocument pdf;
   HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   PDFSetFont(pdf);
   PDFGetStyles(color_set, lang);
-  PDFBody(pdf, styled_text, lineCount);
+  PDFBody(pdf, styled_text, lineCount, tabWidth);
 
   pdf.SaveAsFile(filename);
 }

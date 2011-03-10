@@ -24,7 +24,7 @@ class RTFExporter : public BaseExporter
     };
 
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth);
 
   private:
     vector<Style> m_styles;
@@ -34,7 +34,7 @@ class RTFExporter : public BaseExporter
     string RTFColorTable(const EditorColourSet *c_color_set, HighlightLanguage lang);
     static const char *RTFInfo;
     static const char *RTFTitle;
-    string RTFBody(const wxMemoryBuffer &styled_text, int pt, int lineCount);
+    string RTFBody(const wxMemoryBuffer &styled_text, int pt, int lineCount, int tabWidth);
     static const char *RTFEnd;
 };
 

@@ -305,7 +305,7 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColou
   zout.Write(ODTStylesFileEND, strlen(ODTStylesFileEND));
 }
 
-void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text, int lineCount)
+void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text, int lineCount, int tabWidth)
 {
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
@@ -346,7 +346,9 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
       content += string("<text:span text:style-name=\"style") + to_string(current_style) + string("\">");
     }
 
-    for (size_t i = first; i < buffer_size; i += 2)
+    int charLinePos = 0;
+
+    for (size_t i = first; i < buffer_size; i += 2, ++charLinePos)
     {
       if (buffer[i + 1] != current_style)
       {
@@ -393,10 +395,17 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
           break;
 
         case '\t':
-          content += string("<text:tab/>");
+          {
+            const int extraSpaces = tabWidth - charLinePos % tabWidth;
+            size_t dummy = 0;
+            const std::string extraSpacesStr(extraSpaces * 2, ' '); // imitates buffer (char + style)
+            content += fix_spaces(extraSpacesStr.c_str(), &dummy, extraSpacesStr.size());
+            charLinePos += extraSpaces - 1; // account for auto-increment
+          }
           break;
 
         case '\r':
+          --charLinePos; // account for auto-increment
           break;
 
         case '\n':
@@ -429,6 +438,7 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
             content += fix_spaces(buffer, &i, buffer_size, true);
           }
 
+          charLinePos = -1; // account for auto-increment
           break;
 
         default:
@@ -450,7 +460,7 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
   zout.Write(ODTContentFileEND, strlen(ODTContentFileEND));
 }
 
-void ODTExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount)
+void ODTExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth)
 {
   HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
@@ -460,5 +470,5 @@ void ODTExporter::Export(const wxString &filename, const wxString &title, const 
   ODTCreateDirectoryStructure(zout);
   ODTCreateCommonFiles(zout);
   ODTCreateStylesFile(zout, color_set, lang);
-  ODTCreateContentFile(zout, styled_text, lineCount);
+  ODTCreateContentFile(zout, styled_text, lineCount, tabWidth);
 }
