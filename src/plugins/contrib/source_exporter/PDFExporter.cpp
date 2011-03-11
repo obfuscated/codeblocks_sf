@@ -61,7 +61,7 @@ namespace
       pdf.WriteCell(4., text, wxPDF_BORDER_NONE, fill);
     }
   }
-};
+}
 
 bool PDFExporter::Style::operator == (int aValue)
 {
@@ -71,9 +71,11 @@ bool PDFExporter::Style::operator == (int aValue)
 void PDFExporter::PDFSetFont(wxPdfDocument &pdf)
 {
   wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
-  wxString faceName(_T("Courier"));
-  pdf.SetFont(faceName); // Set Courier as default
-  int pt = 8; // Default point size
+  wxString faceNameDefault(_T("Courier"));
+  wxString faceName(faceNameDefault);
+  double   fontSize = 8; // Default point size
+
+  pdf.SetFont(faceNameDefault);
 
   if (!fontstring.IsEmpty())
   {
@@ -82,12 +84,15 @@ void PDFExporter::PDFSetFont(wxPdfDocument &pdf)
     nfi.FromString(fontstring);
     tmpFont.SetNativeFontInfo(nfi);
 
-    pt = tmpFont.GetPointSize();
+    fontSize = tmpFont.GetPointSize();
     faceName = tmpFont.GetFaceName();
   }
 
-  pdf.SetFont(faceName); // Try to set the new font, if it fails it'll use the default one
-  pdf.SetFontSize(pt);
+  // Try to set the new font, if it fails it'll use the default one
+  if (!pdf.SetFont(faceName))
+      pdf.SetFont(faceNameDefault);
+
+  pdf.SetFontSize(fontSize);
 }
 
 void PDFExporter::PDFGetStyles(const EditorColourSet *c_color_set, HighlightLanguage lang)
@@ -148,7 +153,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
   if (lineCount != -1)
   {
     pdf.SetFont(wxEmptyString);
-    pdf.SetTextColor(*wxBLACK);
+    pdf.SetTextColour(*wxBLACK);
     text += to_string(lineno, width);
     text += "  ";
     PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), false);
@@ -184,11 +189,11 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
       }
 
       pdf.SetFont(wxEmptyString, style);
-      pdf.SetTextColor(i->fore);
+      pdf.SetTextColour(i->fore);
 
       if (i->back.Ok())
       {
-        pdf.SetFillColor(i->back);
+        pdf.SetFillColour(i->back);
         fill = true;
       }
       else
@@ -233,11 +238,11 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
           }
 
           pdf.SetFont(wxEmptyString, style);
-          pdf.SetTextColor(newStyle->fore);
+          pdf.SetTextColour(newStyle->fore);
 
           if (newStyle->back.Ok())
           {
-            pdf.SetFillColor(newStyle->back);
+            pdf.SetFillColour(newStyle->back);
             fill = true;
           }
           else
@@ -248,7 +253,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
         else if (defStyleIdx != -1)
         {
           pdf.SetFont(wxEmptyString);
-          pdf.SetTextColor(*wxBLACK);
+          pdf.SetTextColour(*wxBLACK);
           fill = false;
         }
       }
@@ -268,7 +273,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
         if (lineCount != -1)
         {
           pdf.SetFont(wxEmptyString);
-          pdf.SetTextColor(*wxBLACK);
+          pdf.SetTextColour(*wxBLACK);
           text += to_string(lineno, width);
           text += "  ";
           PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), false);
@@ -291,7 +296,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
       default:
         text += buffer[i];
         break;
-    };
+    }
   }
 
   PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
@@ -300,6 +305,8 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text,
 void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount, int tabWidth)
 {
   wxPdfDocument pdf;
+  pdf.SetCompression(false);
+
   HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   PDFSetFont(pdf);

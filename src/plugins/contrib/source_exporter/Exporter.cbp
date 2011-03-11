@@ -8,26 +8,82 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxPdfDocument">
-				<Option output="libwxPdfDocument.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
-				<Option type="2" />
+				<Option output="..\..\..\devel\wxPdfDocument" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\wxPdfDocument" />
+				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-fPIC" />
+					<Add option="-DPIC" />
+				</Compiler>
+				<Linker>
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="gdi32" />
+				</Linker>
+			</Target>
+			<Target title="makefont">
+				<Option output="wxPdfDocument\makefont\makefont" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="wxPdfDocument\makefont" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\makefont" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Linker>
+					<Add library="wxPdfDocument" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
+			</Target>
+			<Target title="minimal">
+				<Option output="wxPdfDocument\samples\minimal\minimal" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="wxPdfDocument\samples\minimal" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\minimal" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Linker>
+					<Add library="wxPdfDocument" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
+			</Target>
+			<Target title="pdfdc">
+				<Option output="wxPdfDocument\samples\pdfdcl\pdfdc" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="wxPdfDocument\samples\pdfdc" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\pdfdc" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Linker>
+					<Add library="wxPdfDocument" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
 			</Target>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter" prefix_auto="0" extension_auto="1" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
+				</Compiler>
 				<Linker>
-					<Add library="libwxPdfDocument.a" />
-					<Add directory="." />
+					<Add library="codeblocks" />
+					<Add library="wxPdfDocument" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add directory="..\..\..\devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\Exporter.zip manifest.xml" />
@@ -40,7 +96,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxPdfDocument;default;" />
+			<Add alias="All" targets="wxPdfDocument;makefont;minimal;pdfdc;default;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -48,21 +104,15 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-mthreads" />
 			<Add option="-fexceptions" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DCB_PRECOMP" />
-			<Add option="-DWX_PRECOMP" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
+			<Add option="-DWX_PRECOMP" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-DWXMAKINGLIB_WXPDFDOC" />
-			<Add option="-DWXMAKINGDLL_PROPGRID" />
-			<Add option="-DwxPG_USE_WXMODULE=0" />
+			<Add option="-DWXMAKINGDLL_PDFDOC" />
+			<Add option="-DwxPDF_USE_WXMODULE=0" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="wxPdfDocument\include" />
 		</Compiler>
 		<ResourceCompiler>
@@ -70,10 +120,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add library="codeblocks" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
 			<Option target="default" />
@@ -114,7 +161,46 @@
 		<Unit filename="manifest.xml">
 			<Option target="default" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfannotation.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfarraydouble.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfarraytypes.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfbarcode.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfbookmark.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcffdecoder.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcffindex.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcjkfontdata.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcolour.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcoonspatchmesh.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfcorefontdata.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdc.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdc28.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdc29.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfdoc.h">
@@ -123,13 +209,73 @@
 		<Unit filename="wxPdfDocument\include\wx\pdfdocdef.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfdocument.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfencoding.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfencrypt.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdffont.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdata.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdatacore.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdataopentype.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdatatruetype.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdatatype0.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdatatype1.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdescription.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontdetails.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontextended.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontmacosx.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontmanager.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontparser.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontparsertruetype.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontparsertype1.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontsubsetcff.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontsubsettruetype.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdffontvolt.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfform.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfgradient.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfgraphics.h">
@@ -138,10 +284,25 @@
 		<Unit filename="wxPdfDocument\include\wx\pdfimage.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfinfo.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdflayer.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdflinestyle.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdflinks.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfobjects.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfparser.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfpattern.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfproperties.h">
@@ -150,14 +311,137 @@
 		<Unit filename="wxPdfDocument\include\wx\pdfrijndael.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfshape.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfspotcolour.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdftemplate.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdftruetype.h">
+		<Unit filename="wxPdfDocument\include\wx\pdfutility.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfxml.h">
 			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\makefont\makefont.cpp">
+			<Option target="makefont" />
+		</Unit>
+		<Unit filename="wxPdfDocument\makefont\makefont.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="makefont" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\barcodes.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\bookmark.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\charting.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\cjktest.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\clipping.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\drawing.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\glyphwriting.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\gradients.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\indicfonts.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\jsform.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\kerning.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\labels.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\layers.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\minimal.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\minimal.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\protection.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\rotation.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\templates.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\transformation.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\transparency.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial1.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial2.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial3.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial4.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial5.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial6.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\tutorial7.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\wmf.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\minimal\xmlwrite.cpp">
+			<Option target="minimal" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\mondrian.ico">
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\mondrian.xpm">
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\printing.cpp">
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\printing.h">
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\printing.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\smile.jpg">
+			<Option target="pdfdc" />
+		</Unit>
+		<Unit filename="wxPdfDocument\samples\pdfdc\up.gif">
+			<Option target="pdfdc" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfannotation.cpp">
 			<Option target="wxPdfDocument" />
@@ -165,13 +449,49 @@
 		<Unit filename="wxPdfDocument\src\pdfbarcode.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfcolor.cpp">
+		<Unit filename="wxPdfDocument\src\pdfcffdecoder.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcffindex.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcjkfontdata.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcmapdata.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcodepagedata.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcolour.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcolourdata.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcorefontdata.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcorefontkerning.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfdc.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfdc28.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfdc29.inc">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfdecode.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfdoc.cpp">
+		<Unit filename="wxPdfDocument\src\pdfdocument.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfencoding.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfencrypt.cpp">
@@ -180,10 +500,61 @@
 		<Unit filename="wxPdfDocument\src\pdffont.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdffontdata.inc">
+		<Unit filename="wxPdfDocument\src\pdffontdata.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdatacore.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdataopentype.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdatatruetype.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdatatype0.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdatatype1.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdescription.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontdetails.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontextended.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontmanager.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontparser.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontparsertruetype.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontparsertype1.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontsubsetcff.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontsubsettruetype.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdffontvolt.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfform.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfglyphnames.inc">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfgradient.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfgraphics.cpp">
@@ -195,10 +566,19 @@
 		<Unit filename="wxPdfDocument\src\pdfkernel.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\src\pdflayer.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfobjects.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfocg.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfparser.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfpattern.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfrijndael.cpp">
@@ -207,10 +587,13 @@
 		<Unit filename="wxPdfDocument\src\pdftemplate.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdftruetype.cpp">
+		<Unit filename="wxPdfDocument\src\pdfutility.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfxml.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\wxmemdbg.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Extensions>

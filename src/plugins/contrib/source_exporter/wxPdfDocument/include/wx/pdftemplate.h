@@ -10,14 +10,20 @@
 
 /// \file pdftemplate.h Interface of the wxPdfTemplate class
 
-#ifndef _PDFTEMPLATE_H_
-#define _PDFTEMPLATE_H_
+#ifndef _PDF_TEMPLATE_H_
+#define _PDF_TEMPLATE_H_
 
 // wxWidgets headers
-#include "wx/pdfdocdef.h"
+#include <wx/mstream.h>
 
-#include "wx/pdfdoc.h"
-#include "wx/pdfparser.h"
+// wxPdfDocument headers
+#include "wx/pdfdocdef.h"
+#include "wx/pdfdocument.h"
+
+class WXDLLIMPEXP_FWD_PDFDOC wxPdfDocument;
+class WXDLLIMPEXP_FWD_PDFDOC wxPdfObject;
+class WXDLLIMPEXP_FWD_PDFDOC wxPdfParser;
+class WXDLLIMPEXP_FWD_PDFDOC wxPdfTemplate;
 
 /// Class representing a template (For internal use only)
 class WXDLLIMPEXP_PDFDOC wxPdfTemplate
@@ -79,6 +85,7 @@ private:
   wxPdfParser*         m_parser;            ///< Associated parser
   wxPdfObject*         m_resources;         ///< Array of page resource objects
 
+  int                  m_stateSave;         ///< Saved document state
   double               m_xSave;             ///< Saved X position
   double               m_ySave;             ///< Saved Y position
   bool                 m_autoPageBreakSave; ///< State of auto page break

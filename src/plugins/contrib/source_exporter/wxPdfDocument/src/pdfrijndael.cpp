@@ -1136,7 +1136,7 @@ int wxPdfRijndael::blockEncrypt(const UINT8 *input,int inputLen,UINT8 *outBuffer
           iv[3][0] = (UINT8) ((iv[3][0] << 1) | (iv[3][1] >> 7));
           iv[3][1] = (UINT8) ((iv[3][1] << 1) | (iv[3][2] >> 7));
           iv[3][2] = (UINT8) ((iv[3][2] << 1) | (iv[3][3] >> 7));
-          iv[3][3] = (UINT8) ((iv[3][3] << 1) | (outBuffer[k/8] >> (7-(k&7))) & 1);
+          iv[3][3] = (UINT8) ((iv[3][3] << 1) | ((outBuffer[k/8] >> (7-(k&7))) & 1));
         }
       }
     break;
@@ -1290,7 +1290,7 @@ int wxPdfRijndael::blockDecrypt(const UINT8 *input, int inputLen, UINT8 *outBuff
           iv[3][0] = (UINT8) ((iv[3][0] << 1) | (iv[3][1] >> 7));
           iv[3][1] = (UINT8) ((iv[3][1] << 1) | (iv[3][2] >> 7));
           iv[3][2] = (UINT8) ((iv[3][2] << 1) | (iv[3][3] >> 7));
-          iv[3][3] = (UINT8) ((iv[3][3] << 1) | (input[k/8] >> (7-(k&7))) & 1);
+          iv[3][3] = (UINT8) ((iv[3][3] << 1) | ((input[k/8] >> (7-(k&7))) & 1));
           outBuffer[k/8] ^= (block[0] & 0x80) >> (k & 7);
         }
       }
@@ -1626,4 +1626,3 @@ void wxPdfRijndael::decrypt(const UINT8 a[16], UINT8 b[16])
   *((UINT32*)(b+ 8)) ^= *((UINT32*)m_expandedKey[0][2]);
   *((UINT32*)(b+12)) ^= *((UINT32*)m_expandedKey[0][3]);
 }
-

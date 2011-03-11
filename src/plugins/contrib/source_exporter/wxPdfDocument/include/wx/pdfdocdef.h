@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfdocdef.h
-// Purpose:
+// Purpose:     
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2005-08-04
@@ -26,20 +26,21 @@ license</b>. This means you may use it for any kind of usage and modify it to su
 wxPdfDocument offers all advantages of \b FPDF.  Several add-on PHP scripts found on the
 FPDF web site are incorporated into wxPdfDocument. The main features are:
 
-- Choice of measure unit, page format and margins
-- Page header and footer management
-- Automatic page break
-- Automatic line break and text justification
-- Image support (GIF, JPEG, PNG and WMF)
-- Colors (Grayscale, RGB, CMYK, Spot colors)
+- Choice of measure unit, page format and margins 
+- Page header and footer management 
+- Automatic page break 
+- Automatic line break and text justification 
+- Image support (GIF, JPEG, PNG and WMF) 
+- Colours (Grayscale, RGB, CMYK, Spot colours)
 - Links (internal and external)
 - 14 Adobe standard fonts
 - TrueType and Type1 fonts (with or without embedding) and encoding support
 - TrueType Unicode and Type0 fonts (for Chinese, Japanese and Korean) support in the Unicode build
-- Page compression
+- OpenType Unicode fonts support in the Unicode build
+- Page compression 
 - Graphics primitives for the creation of simple drawings
 - Definition of clipping areas
-- Bookmarks for outlining the document
+- Bookmarks for outlining the document 
 - Rotation
 - Protecting the document by passwords and/or access permissions
 - Text annotations
@@ -47,6 +48,8 @@ FPDF web site are incorporated into wxPdfDocument. The main features are:
 - JavaScript
 - Fill gradients
 - Templates
+- Layers (optional content groups)
+- Simple bitmap patterns as draw and fill colours
 
 The class can produce documents in many languages other than the Western European ones:
 Central European, Cyrillic, Greek, Baltic and Thai, provided you own TrueType or Type1
@@ -55,22 +58,129 @@ are supported, too.
 
 A \ref overview showing all available methods in alphabetical order is provided.
 A sample application including more than 20 examples demonstrates the different features.
-A separate detailed description is available for the \ref makefont. The chapter \ref writexml
-describes the supported tags of the simple XML markup language used by the method wxPdfDocument::WriteXml.
+Separate detailed descriptions are available for the \ref makefont and the \ref showfont.
+The chapter \ref writexml describes the supported tags of the simple XML markup language
+used by the method wxPdfDocument::WriteXml.
 
 wxPdfDocument is hosted as a component of <a href="http://wxcode.sourceforge.net"><b>wxCode</b></a>.
 For any remark, question or problem, you can leave a message on the appropriate \b wxCode
 tracker accessible from the <a href="http://wxcode.sourceforge.net/support.php"> wxCode support</a>
-page. Or you can send a mail to me
+page. Or you can send a mail to me 
 <a href="&#109;&#97;&#105;&#108;&#116;&#111;:&#117;&#108;&#114;&#105;&#99;&#104;&#46;&#116;&#101;&#108;&#108;&#101;&#64;&#103;&#109;&#120;&#46;&#100;&#101;">directly</a>.
 
 \section version Version history
 
-\todo Although all features were thoroughly tested individually, not all possible combinations were
-verified to function properly. This means: wxPdfDocument still needs intensive testing.
-<b>If you find bugs please report them to the author!</b>
-
 <dl>
+<dt><b>0.9.1</b> - <i>January 2011</i></dt>
+<dd>
+wxPdfDocument is compatible with wxWidgets version 2.8.11 and version 2.9.1. 
+Compatibility with older wxWidgets versions is not guaranteed, but it should
+now work with all 2.8.x versions.
+
+Added features:<br>
+- added support for Apple Unicode TrueType fonts
+- added the \ref showfont
+
+General changes:<br>
+- optimized the processing speed of VOLT rules
+- modified the code for wxMac support
+- modified the sample tutorial7 to test the new wxMac font loading code
+- added check for valid 'cmap' table in wxPdfFontParserTrueType
+- added call to method wc_str for wxString parameters in calls to FromWChar
+- implemented method RegisterSystemFonts for wxMac
+- samples changed to set the executable path as the current working directory
+
+Fixed bugs:<br>
+- fixed a memory leak on registering a font identified by a wxFont object
+- fixed a bug in method ShowGlyph
+- fixed several wxMac compile time bugs (missing includes, some typos)
+- changed the wxMac print dialog includes in the printing sample
+
+</dd>
+
+<dt><b>0.9.0</b> - <i>December 2010</i></dt>
+<dd>
+wxPdfDocument is compatible with wxWidgets version 2.8.11 and version 2.9.1. 
+Compatibility with older wxWidgets versions is not guaranteed.
+
+This is the first release of wxPdfDocument containing a <b>PDF drawing context</b> (wxPdfDC).
+There are implementations for wxWidgets 2.8.x and 2.9.x; the matching implementation
+is selected automatically at compile time. Please report your experiences with wxPdfDC
+to the author of wxPdfDocument, be it bug reports, contributions or feature requests.
+
+\b Note: A <b>PDF graphics context</b> is planned for one of the next releases of wxPdfDocument.
+Most likely only wxWidgets 2.9.x will be supported since the internals of the base class
+wxGraphicsContext differ considerably between wxWidgets 2.8.x and 2.9.x.
+
+Added features:<br>
+- methods to draw Bezier splines through a list of points;
+the drawing sample has been extended to show the new functionality
+- PDF drawing context (wxPdfDC); not yet all methods are implemented
+- support for fonts with VOLT (Visual Ordering and Layout Tables) data
+(currently visual ordering only, preprocessing of the fonts required);
+fonts for 9 Indic scripts are included to demonstrate this feature
+
+General changes:<br>
+- increased output speed for method SaveAsFile (if large graphics files are involved)
+- all currently supported CJK font families are now registered automatically at startup of the font manager
+- MS CJK fonts aren't automatically registered as Type0 fonts,
+since this conflicts with registering these fonts as TrueType Unicode fonts
+- handling of image masks has been improved
+
+Fixed bugs:<br>
+- opening font files could fail if the file path contained non-latin characters
+Now wxFileSystem::FileNameToURL is used to create valid file names for use in method OpenFile of wxFileSystem
+- invalid format codes in method wxPdfUtility::Double2String could cause problems in MinGW environment
+- registering half-width CJK fonts didn't work
+- bug in page size handling
+- no file was written when Close was called before SaveAsFile
+- bug in the handling of transparency for image masks
+- uninitialized member variables in layer objects possibly causing invisibility of layers
+- cleaned up output formatting codes for building on 64-bit systems
+- compile time bugs for wxWidgets built with wxUSE_STL
+- several minor bugs
+
+</dd>
+
+<dt><b>0.8.5</b> - <i>October 2009</i></dt>
+<dd>
+wxPdfDocument is compatible with wxWidgets version 2.8.10. Some preparations were done
+to make wxPdfDocument compatible with version 2.9.x and above, too.
+
+Added features in <b>all</b> builds:<br>
+- support for individual page sizes
+- support for setting fill rule to <i>odd/even</i> or <i>winding</i>
+- support for setting the text render mode
+- support for layers (optional content groups)
+- support for patterns as draw and fill colours
+- support for Code 128 barcodes
+
+Added features in <b>Unicode</b> build:<br>
+- support for kerning
+- support for different encodings for Type1 and TrueType fonts
+- support for using TrueType and OpenType fonts loaded directly from .ttf or .otf file
+- support for using Type1 fonts loaded directly from .pfb and .afm file
+- support for using TrueType and OpenType fonts defined by a wxFont object
+- font subsetting for OpenType Unicode fonts (experimental, currently non-CID fonts only)
+- direct positioning and writing of glyph numbers for TrueType/OpenType Unicode fonts<br>
+this may be used in conjunction with tools for writing complex scripts like ICU
+
+Added features in <b>ANSI</b> build:<br>
+- support for fonts defined by a wxFont object (mapped by family, weight and style to the Adobe core fonts)
+
+General changes:<br>
+- coordinate transformation (location of origin and y axis orientation)
+is now done directly in PDF. This was a prerequisite to add wxGraphicsContext support
+in an upcoming version. User unit scaling is done programmatically.
+- unified the naming of all methods manipulating colours. Now always the
+British spelling is used, i.e. <i>colour</i> instead of <i>color</i>.
+
+Fixed bugs:<br>
+- line style measurements did not use user units
+- encryption support for big endian platforms.
+- method wxPdfDocument::ClippingText.
+</dd>
+
 <dt><b>0.8.0</b> - <i>December 2006</i></dt>
 <dd>
 Added features:<br>
@@ -122,7 +232,7 @@ Added or enhanced features:<br>
 - support for polygon and shape clipping
 - support for printing text along a path
 - extended support for fill gradients (<b>API changed!</b>)
-- internal color management reworked
+- internal colour management reworked
 
 Fixed some minor bugs
 </dd>
@@ -130,9 +240,9 @@ Fixed some minor bugs
 <dt><b>0.7</b> - <i>April 2006</i></dt>
 <dd>
 Added features:<br>
-- support for CMYK and spot colors
-- support for named colors (486 predefined names for RGB colors) (wxPdfColour)
-- support for color names in HTML notation (\#rrggbb) (wxPdfColour)
+- support for CMYK and spot colours
+- support for named colours (486 predefined names for RGB colours) (wxPdfColour)
+- support for colour names in HTML notation (\#rrggbb) (wxPdfColour)
 - text annotations
 - additional font decorations: overline, strikeout
 - PDF forms
@@ -153,8 +263,8 @@ Added features:
 - barcodes<br>
 - \ref makefont<br>
 
-Changed API of graphics primitives: line style and fill color parameters deleted,
-line style and fill color have to be set using wxPdfDocument::SetLineStyle and wxPdfDocument::SetFillColor.
+Changed API of graphics primitives: line style and fill colour parameters deleted,
+line style and fill colour have to be set using wxPdfDocument::SetLineStyle and wxPdfDocument::SetFillColour.
 </dd>
 
   <dt><b>0.5</b> - <i>September 2005</i></dt>
@@ -187,10 +297,27 @@ Planning and basic PDF features implemented
 
 \section issues Known issues
 
-\section acknowledgement Acknowledgement
+Currently there are no known issues regarding the functionality of the wxPdfDocument component.
+All features were thoroughly tested individually, but it's almost impossible to check all
+potential combinations. <b>If you find bugs please report them to the author!</b>
+
+\section acknowledgement Acknowledgements
+
+I'm very grateful to <b>Bruno Lowagie</b>, the main author of the <b>iText Java library</b>
+(http://www.lowagie.com/iText), for allowing to take lots of ideas and inspirations
+from this great Java PDF library. Especially the font handling and font subsetting
+was influenced in that way.
+
+Many thanks go to <b>Ben Moores</b> who provided code for layers and patterns he wrote for
+his PDF extension for <b>Mapnik</b> (http://www.mapnik.org). This code has been extended
+based on ideas from the <b>iText Java library</b> and was incorporated into wxPdfDocument.
+
+Support for Indic scripts is based on the efforts of <b>Ian Back</b>, creator of the PHP library \b mPDF
+(http://mpdf.bpm1.com); special thanks to <b>K Vinod Kumar</b> of the Centre for Development of Advanced
+Computing, Mumbai (http://www.cdacmumbai.in), for clearing license issues of the Raghu font series.
 
 Since wxPdfDocument is based on the great \b FPDF PHP class and several of the contributions to it
-found on the <a href="http://www.fpdf.org"><b>FPDF website</b></a> I would like to thank
+found on the <a href="http://www.fpdf.org"><b>FPDF website</b></a> I would like to thank 
 
 - Olivier Plathey (FPDF, Barcodes, Bookmarks, Rotation),
 - Maxime Delorme (Sector)
@@ -224,12 +351,17 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::AcceptPageBreak - accept or not automatic page break
 \li wxPdfDocument::AddFont - add a new font
 \li wxPdfDocument::AddFontCJK - add a CJK (Chinese, Japanese or Korean) font
-\li wxPdfDocument::AppendJavascript - add document level JavaScript
+\li wxPdfDocument::AddLayer - add a layer (optional content group)
+\li wxPdfDocument::AddLayerTitle - add a layer title
+\li wxPdfDocument::AddLayerMembership - add a layer group
+\li wxPdfDocument::AddLayerRadioGroup - add a layer radio group
 \li wxPdfDocument::AddLink - create an internal link
 \li wxPdfDocument::AddPage - add a new page
-\li wxPdfDocument::AddSpotColor - add a spot color
+\li wxPdfDocument::AddPattern - add a simple pattern
+\li wxPdfDocument::AddSpotColour - add a spot colour
 \li wxPdfDocument::AliasNbPages - define an alias for number of pages
 \li wxPdfDocument::Annotate - add a text annotation
+\li wxPdfDocument::AppendJavascript - add document level JavaScript
 \li wxPdfDocument::Arrow - draw an arrow
 \li wxPdfDocument::AxialGradient - define axial gradient shading
 
@@ -255,26 +387,37 @@ of a specific method the following alphabetical list shows all available methods
 
 \li wxPdfDocument::Ellipse - draw an ellipse
 \li wxPdfDocument::EndTemplate - end template creation
+\li wxPdfDocument::EnterLayer - enter a layer
 
 \li wxPdfDocument::Footer - page footer.
 
 \li wxPdfDocument::GetBreakMargin - get the page break margin
 \li wxPdfDocument::GetCellMargin - get the cell margin
+\li wxPdfDocument::GetDrawColour - get current draw colour
+\li wxPdfDocument::GetFillColour - get current fill colour
+\li wxPdfDocument::GetFillingRule - get current filling rule
 \li wxPdfDocument::GetFontDescription - get description of current font
 \li wxPdfDocument::GetFontFamily - get current font family
-\li wxPdfDocument::GetFontPath - get current default path for font files
 \li wxPdfDocument::GetFontSize - get current font size in points
 \li wxPdfDocument::GetFontStyle - get current font style
+\li wxPdfDocument::GetFontStyles - get current font styles
 \li wxPdfDocument::GetFontSubsetting - get font embedding mode
 \li wxPdfDocument::GetImageScale - get image scale
 \li wxPdfDocument::GetLeftMargin - get the left margin
-\li wxPdfDocument::GetPageWidth - get page width
+\li wxPdfDocument::GetLineHeight - get line height
+\li wxPdfDocument::GetLineStyle - get current line style
+\li wxPdfDocument::GetLineWidth - get current line width
 \li wxPdfDocument::GetPageHeight - get page height
+\li wxPdfDocument::GetPageWidth - get page width
+\li wxPdfDocument::GetPatternColour - get pattern as colour
 \li wxPdfDocument::GetRightMargin - get the right margin
 \li wxPdfDocument::GetScaleFactor - get scale factor
+\li wxPdfDocument::GetSourceInfo - get info dictionary of external document
 \li wxPdfDocument::GetStringWidth - compute string length
-\li wxPdfDocument::GetTemplateSize - get size of template
 \li wxPdfDocument::GetTemplateBBox - get bounding box of template
+\li wxPdfDocument::GetTemplateSize - get size of template
+\li wxPdfDocument::GetTextColour - get current text colour
+\li wxPdfDocument::GetTextRenderMode - get current text render mode
 \li wxPdfDocument::GetTopMargin - get the top margin
 \li wxPdfDocument::GetX - get current x position
 \li wxPdfDocument::GetY - get current y position
@@ -286,12 +429,14 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::ImportPage - import page of external document for use as template
 \li wxPdfDocument::IsInFooter - check whether footer output is in progress
 
+\li wxPdfDocument::LeaveLayer - leave layer
 \li wxPdfDocument::Line - draw a line
 \li wxPdfDocument::LinearGradient - define linear gradient shading
 \li wxPdfDocument::LineCount - count the number of lines a text would occupy
 \li wxPdfDocument::LineTo - append straight line segment to a clipping path
 \li wxPdfDocument::Link - put a link
 \li wxPdfDocument::Ln - line break
+\li wxPdfDocument::LockLayer - lock a layer
 
 \li wxPdfDocument::Marker - draw a marker symbol
 \li wxPdfDocument::MidAxialGradient - define mid axial gradient shading
@@ -329,18 +474,22 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetCompression - turn compression on or off
 \li wxPdfDocument::SetCreator - set document creator
 \li wxPdfDocument::SetDisplayMode - set display mode
-\li wxPdfDocument::SetDrawColor - set drawing color
-\li wxPdfDocument::SetFillColor - set filling color
+\li wxPdfDocument::SetDrawColour - set drawing colour
+\li wxPdfDocument::SetDrawPattern - set draw colour pattern
+\li wxPdfDocument::SetFillColour - set filling colour
 \li wxPdfDocument::SetFillGradient - paint a rectangular area using a fill gradient
+\li wxPdfDocument::SetFillingRule - set filling rule
+\li wxPdfDocument::SetFillPattern - set fill colour pattern
 \li wxPdfDocument::SetFont - set font
-\li wxPdfDocument::SetFontPath - set default path for font files
 \li wxPdfDocument::SetFontSize - set font size
 \li wxPdfDocument::SetFontSubsetting - set font embedding mode
 \li wxPdfDocument::SetFormBorderStyle - set form field border style
-\li wxPdfDocument::SetFormColors - set form field colors (border, background, text)
+\li wxPdfDocument::SetFormColours - set form field colours (border, background, text)
 \li wxPdfDocument::SetImageScale - set image scale
+\li wxPdfDocument::SetKerning - set kerning mode
 \li wxPdfDocument::SetKeywords - associate keywords with document
 \li wxPdfDocument::SetLeftMargin - set left margin
+\li wxPdfDocument::SetLineHeight - set line height
 \li wxPdfDocument::SetLineStyle - set line style
 \li wxPdfDocument::SetLineWidth - set line width
 \li wxPdfDocument::SetLink - set internal link destination
@@ -350,7 +499,9 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetSourceFile - set source file of external template document
 \li wxPdfDocument::SetSubject - set document subject
 \li wxPdfDocument::SetTemplateBBox - set bounding box of template
-\li wxPdfDocument::SetTextColor - set text color
+\li wxPdfDocument::SetTextColour - set text colour
+\li wxPdfDocument::SetTextPattern - set text colour pattern
+\li wxPdfDocument::SetTextRenderMode - set text render mode
 \li wxPdfDocument::SetTitle - set document title
 \li wxPdfDocument::SetTopMargin - set top margin
 \li wxPdfDocument::SetViewerPreferences - set viewer preferences
@@ -369,23 +520,51 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::Text - print a string
 \li wxPdfDocument::TextBox - print a string horizontally and vertically aligned in a box
 \li wxPdfDocument::TextField - add a text field to a form
-\li wxPdfDocument::Translate - move the origin
+\li wxPdfDocument::Transform - set transformation matrix
+\li wxPdfDocument::Translate - move the origin 
 \li wxPdfDocument::TranslateX - move the X origin only
 \li wxPdfDocument::TranslateY - move the Y origin only
 
-\li wxPdfDocument::UseTemplate - use template
 \li wxPdfDocument::UnsetClipping - remove clipping area
+\li wxPdfDocument::UseTemplate - use template
 
 \li wxPdfDocument::Write - print flowing text
 \li wxPdfDocument::WriteCell - print flowing text with cell attributes
+\li wxPdfDocument::WriteGlyphArray - print array of glyphs
 \li wxPdfDocument::WriteXml - print flowing text containing simple XML markup
 
 \li wxPdfDocument::wxPdfDocument - constructor
+\li wxPdfDocument::~wxPdfDocument - destructor
 
+\section refpdffontmanager wxPdfFontManager
+
+\li wxPdfFontManager::AddSearchPath - add path entries to the font search path list
+
+\li wxPdfFontManager::GetDefaultEmbed - get the default embedding mode
+\li wxPdfFontManager::GetDefaultSubset - get the default subsetting mode
+\li wxPdfFontManager::GetFont - get a font by name and style or index
+\li wxPdfFontManager::GetFontCount - get the number of registered fonts
+\li wxPdfFontManager::GetFontManager - get the font manager
+
+\li wxPdfFontManager::InitializeFontData - initialize the font data of a font
+
+\li wxPdfFontManager::RegisterFont - register a font
+\li wxPdfFontManager::RegisterFontCJK - register a CJK font family
+\li wxPdfFontManager::RegisterFontCollection - register a font collection
+\li wxPdfFontManager::RegisterFontDirectory - register all fonts located in a directory
+\li wxPdfFontManager::RegisterSystemFonts - register the fonts known to the operating system
+
+\li wxPdfFontManager::SetDefaultEmbed - set the default embedding mode
+\li wxPdfFontManager::SetDefaultSubset - set the default subsetting mode
 
 \section refpdfbarcode wxPdfBarCodeCreator
 
+\li wxPdfBarCodeCreator::Code128
+\li wxPdfBarCodeCreator::Code128A
+\li wxPdfBarCodeCreator::Code128B
+\li wxPdfBarCodeCreator::Code128C
 \li wxPdfBarCodeCreator::Code39
+\li wxPdfBarCodeCreator::EAN128
 \li wxPdfBarCodeCreator::EAN13
 \li wxPdfBarCodeCreator::UPC_A
 \li wxPdfBarCodeCreator::I25
@@ -399,20 +578,20 @@ of a specific method the following alphabetical list shows all available methods
 This section explains how to use \b TrueType or \b Type1 fonts so that you are not
 limited to the standard fonts any more. The other interest is that you can
 choose the font encoding, which allows you to use other languages than the
-Western ones (the standard fonts having too few available characters).
-
+Western ones (the standard fonts having too few available characters). 
+ 
 There are two ways to use a new font: embedding it in the PDF or not. When a
 font is not embedded, it is sought in the system. The advantage is that the
 PDF file is lighter; on the other hand, if it is not available, a substitution
 font is used. So it is preferable to ensure that the needed font is installed
 on the client systems. If the file is to be viewed by a large audience, it is
-better to embed the fonts.
+better to embed the fonts. 
+ 
+Adding a new font requires three steps for \b TrueType fonts: 
 
-Adding a new font requires three steps for \b TrueType fonts:
-
-\li Generation of the metric file (.afm)
-\li Generation of the font definition file (.xml)
-\li Declaration of the font in the program
+\li Generation of the metric file (.afm) 
+\li Generation of the font definition file (.xml) 
+\li Declaration of the font in the program 
 
 For \b Type1, the first one is theoretically not necessary because the AFM file is
 usually shipped with the font. In case you have only a metric file in PFM format,
@@ -420,21 +599,24 @@ it must be converted to AFM first.
 
 \section mkfontgen1 Generation of the metric file
 
-The first step for a \b TrueType font consists in generating the AFM file (or UFM file in case of a
+The first step for a \b TrueType font consists in generating the AFM file (or UFM file in case of a 
 <b>Unicode TrueType</b> font). A utility exists to do this task: <tt>ttf2ufm</tt> - a special version of
 <tt>ttf2pt1</tt> - allowing to create AFM and/or UFM files. <tt>ttf2ufm</tt> has been modified to
 generate AFM and UFM files containing all the information which is required by the utility program
 \b makefont. An archive containing the modified source code of <tt>ttf2ufm</tt> and a Windows executable can be
 downloaded from <b><a href="http://wxcode.sourceforge.net/docs/wxpdfdoc/ttf2ufm.zip">here</a></b>.
-The command line to use is the following:
-
+The command line to use is the following: 
+ 
 <tt>ttf2ufm -a font.ttf font </tt>
-
-For example, for Comic Sans MS Regular:
-
+ 
+For example, for Comic Sans MS Regular: 
+ 
 <tt>ttf2ufm -a c:/windows/fonts/comic.ttf comic </tt>
+ 
+Two files are created; the one we are interested in is comic.afm. 
 
-Two files are created; the one we are interested in is comic.afm.
+\remark Starting with wxPdfDocument version 0.8.5 this step may be ommitted for
+TrueType and OpenType fonts.
 
 \section mkfontgen2 Generation of the font definition file
 
@@ -442,47 +624,48 @@ The second step consists in generating a wxPdfDocument font metrics XML file con
 all the information needed by wxPdfDocument; in addition, the font file is compressed.
 To do this, a utility program, \b makefont, is provided.
 
-<tt>makefont {-a font.afm | -u font.ufm } [-f font.{ttf|pfb}] [-e encoding] [-p patch] [-t {ttf|otf|t1}]</tt>
+<tt>makefont {-a font.afm | -u font.ufm | -i } [-f font.{ttf|pfb}] [-e encoding] [-p patch] [-t {ttf|otf|t1}]</tt>
 
 <table border=0>
 <tr><td><tt>-a font.afm</tt></td><td>AFM font metric file for \b TrueType or \b Type1 fonts</td></tr>
 <tr><td><tt>-u font.ufm</tt></td><td>UFM font metric file for <b>TrueType Unicode</b> or <b>OpenType Unicode</b> fonts</td></tr>
+<tr><td><tt>-i</tt></td><td>Extract font metrics directly from <b>TrueType Unicode</b> or <b>OpenType Unicode</b> fonts</td></tr>
 <tr><td valign="top"><tt>-f font.{ttf|otf|pfb}</tt></td><td>font file (<tt>.ttf</tt> = TrueType, <tt>.otf</tt> = OpenType, <tt>.pfb</tt> = Type1).
 <br>If you own a Type1 font in ASCII format (<tt>.pfa</tt>), you can convert it to binary format with
 <a href="http://www.lcdf.org/~eddietwo/type/#t1utils">t1utils</a>.
-<br>If you don't want to embed the font, omit this parameter. In this case, type is given by the type parameter.
+<br>If you don't want to embed the font, omit this parameter. In this case, type is given by the type parameter. 
 </td></tr>
 <tr><td valign="top"><tt>-e encoding</tt></td><td>font encoding, i.e. cp1252. Omit this parameter for a symbolic font.like <i>Symbol</i>
 or <i>ZapfDingBats</i>.
 
 The encoding defines the association between a code (from 0 to 255) and a character.
 The first 128 are fixed and correspond to ASCII; the following are variable.
-The encodings are stored in .map files. Those available are:
+The encodings are stored in .map files. Those available are: 
 
-\li cp1250 (Central Europe)
-\li cp1251 (Cyrillic)
-\li cp1252 (Western Europe)
-\li cp1253 (Greek)
-\li cp1254 (Turkish)
-\li cp1255 (Hebrew)
-\li cp1257 (Baltic)
-\li cp1258 (Vietnamese)
-\li cp874 (Thai)
-\li iso-8859-1 (Western Europe)
-\li iso-8859-2 (Central Europe)
-\li iso-8859-4 (Baltic)
-\li iso-8859-5 (Cyrillic)
-\li iso-8859-7 (Greek)
-\li iso-8859-9 (Turkish)
-\li iso-8859-11 (Thai)
-\li iso-8859-15 (Western Europe)
-\li iso-8859-16 (Central Europe)
-\li koi8-r (Russian)
-\li koi8-u (Ukrainian)
+\li cp1250 (Central Europe) 
+\li cp1251 (Cyrillic) 
+\li cp1252 (Western Europe) 
+\li cp1253 (Greek) 
+\li cp1254 (Turkish) 
+\li cp1255 (Hebrew) 
+\li cp1257 (Baltic) 
+\li cp1258 (Vietnamese) 
+\li cp874 (Thai) 
+\li iso-8859-1 (Western Europe) 
+\li iso-8859-2 (Central Europe) 
+\li iso-8859-4 (Baltic) 
+\li iso-8859-5 (Cyrillic) 
+\li iso-8859-7 (Greek) 
+\li iso-8859-9 (Turkish) 
+\li iso-8859-11 (Thai) 
+\li iso-8859-15 (Western Europe) 
+\li iso-8859-16 (Central Europe) 
+\li koi8-r (Russian) 
+\li koi8-u (Ukrainian) 
 
-Of course, the font must contain the characters corresponding to the chosen encoding.
-The encodings which begin with cp are those used by Windows; Linux systems usually use ISO.
-Remark: the standard fonts use cp1252.
+Of course, the font must contain the characters corresponding to the chosen encoding. 
+The encodings which begin with cp are those used by Windows; Linux systems usually use ISO. 
+Remark: the standard fonts use cp1252. 
 
 \b Note: For TrueType Unicode and OpenType Unicode fonts this parameter is ignored.
 </td></tr>
@@ -500,7 +683,7 @@ For TrueType Unicode and OpenType Unicode fonts this parameter is ignored.
 </table>
 
 \b Note: in the case of a font with the same name as a standard one, for instance arial.ttf,
-it is mandatory to embed. If you don't, Acrobat will use its own font.
+it is mandatory to embed. If you don't, Acrobat will use its own font. 
 
 Executing <tt>makefont</tt> generates an .xml file, with the same name as the
 <tt>.afm</tt> file resp. <tt>.ufm</tt> file. You may rename it if you wish. In case of
@@ -513,44 +696,141 @@ You have to copy the generated file(s) to the font directory.
 
 \section mkfontdecl Declaration of the font in the script
 
-The last step is the most simple. You just need to call the AddFont() method. For instance:
-
-<tt>pdf.AddFont(_T("Comic"),_T(""),_T("comic.xml"));</tt>
-
-or simply:
-
-<tt>pdf.AddFont(_T("Comic"));</tt>
-
+The last step is the most simple. You just need to call the AddFont() method. For instance: 
+ 
+<tt>pdf.AddFont(wxT("Comic"),wxT(""),wxT("comic.xml"));</tt>
+  
+or simply: 
+ 
+<tt>pdf.AddFont(wxT("Comic"));</tt>
+  
 And the font is now available (in regular and underlined styles), usable like the others.
-If we had worked with Comic Sans MS Bold (comicbd.ttf), we would have put:
-
-<tt>pdf.AddFont(_T("Comic"),_T("B"),_T("comicbd.xml"));</tt>
-
+If we had worked with Comic Sans MS Bold (comicbd.ttf), we would have put: 
+ 
+<tt>pdf.AddFont(wxT("Comic"),wxT("B"),wxT("comicbd.xml"));</tt>
+  
 \section mkfontreduce Reducing the size of TrueType fonts
 
 Font files are often quite voluminous; this is due to the
 fact that they contain the characters corresponding to many encodings. zlib compression
 reduces them but they remain fairly big. A technique exists to reduce them further.
 It consists in converting the font to the \b Type1 format with <tt>ttf2pt1</tt> by specifying the
-encoding you are interested in; all other characters will be discarded.
+encoding you are interested in; all other characters will be discarded. 
 For instance, the arial.ttf font shipped with Windows 98 is 267KB (it contains 1296
 characters). After compression it gives 147. Let's convert it to \b Type1 by keeping
-only cp1250 characters:
-
+only cp1250 characters: 
+ 
 <tt>ttf2ufm -b -L cp1250.map c:/windows/fonts/arial.ttf arial </tt>
-
+ 
 The <tt>.map</tt> files are located in the <tt>makefont</tt> directory.
 The command produces arial.pfb and arial.afm. The arial.pfb file is only 35KB,
-and 30KB after compression.
-
+and 30KB after compression. 
+ 
 It is possible to go even further. If you are interested only in a subset of the
 encoding (you probably don't need all 217 characters), you can open the .map file
 and remove the lines you are not interested in. This will reduce the file size
-accordingly.
+accordingly. 
 
 Since wxPdfDocument version 0.8.0 automatic font subsetting is supported for
-TrueType und TrueType Unicode fonts. <b>Note</b>: The font license must allow embedding and
+TrueType und TrueType Unicode fonts. Since version 0.8.5 subsetting of OpenType Unicode
+fonts is supported as well. <b>Note</b>: The font license must allow embedding and
 subsetting.
+*/
+
+/** \page showfont ShowFont Utility
+
+\b ShowFont can be used to generate font samples in PDF form showing the Unicode
+coverage of the font similar in appearance to the Unicode charts. The concept of
+this application is based on <a href="http://fntsample.sourceforge.net">FntSample</a>,
+developed by Eugeniy Meshcheryakov for use with <a href="http://dejavu-fonts.org">DejaVu Fonts</a>
+project, but the code is written from scratch in C++ using <a href="http://www.wxwidgets.org">wxWidgets</a>
+and wxPdfDocument.
+
+\section useshowfont Usage
+
+<tt>showfont -f FONTFILE -o OUTPUTFILE [-n FONTINDEX] [-e ENCODING] [-i RANGES] [-x RANGES]</tt>
+
+<tt>showfont { -h | --help }</tt>
+
+<table border=0>
+<tr><td valign="top"><tt>-f&nbsp;FONTFILE</tt></td><td>The font file for which a sample should be generated.
+It can be the name of a \b TrueType, \b OpenType or \b Type1 font file, but wxPdfDocument's
+font description files are supported, too.</td></tr>
+<tr><td valign="top"><tt>-o&nbsp;OUTFILE</tt></td><td>The name of the file to which the PDF output is written.
+\note It should have the extension \b .pdf.</td></tr>
+<tr><td valign="top"><tt>-n&nbsp;INDEX</tt></td><td>The index of the font within the FONTFILE in case of
+TrueType Collections (.ttc) which contain multiple fonts. By default font with index 0 is used.</td></tr>
+
+<tr><td valign="top"><tt>-e&nbsp;ENCODING</tt></td><td>the font encoding of the font.
+\note This option is required only for \b Type1 fonts and is ignored for other font types.
+
+The encoding defines the association between a code (from 0 to 255) and an Unicode character.
+The first 128 are fixed and correspond to ASCII; the next 128 are variable. The following
+encodings are supported by \b ShowFont: 
+
+<table border="0">
+<tr bgcolor="#6699dd"><td><b>Encoding</b></td><td><b>Description</b></td><td>&nbsp;</td><td><b>Encoding</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>standard</tt></td><td>Adobe standard Latin encoding</td><td>&nbsp;</td><td><tt>iso-8859-1</tt></td><td>Western European / Latin-1</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>winansi</tt></td><td>Windows ANSI aka Windows Code Page 1252</td><td>&nbsp;</td><td><tt>iso-8859-2</tt></td><td>Central European / Latin-2</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>macroman</tt></td><td>Mac OS encoding for Latin</td><td>&nbsp;</td><td><tt>iso-8859-3</tt></td><td>South European / Latin-3</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>symbol</tt></td><td>Symbol set encoding</td><td>&nbsp;</td><td><tt>iso-8859-4</tt></td><td>Baltic</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>zapfdingbats</tt></td><td>ZapfDingbats encoding</td><td>&nbsp;</td><td><tt>iso-8859-5</tt></td><td>Cyrillic</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-1250</tt></td><td>Central and East European Latin</td><td>&nbsp;</td><td><tt>iso-8859-6</tt></td><td>Arabic</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-1251</tt></td><td>Cyrillic</td><td>&nbsp;</td><td><tt>iso-8859-7</tt></td><td>Greek</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-1252</tt></td><td>Western European Latin</td><td>&nbsp;</td><td><tt>iso-8859-8</tt></td><td>Hebrew</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-1253</tt></td><td>Greek</td><td>&nbsp;</td><td><tt>iso-8859-9</tt></td><td>Turkish</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-1254</tt></td><td>Turkish</td><td>&nbsp;</td><td><tt>iso-8859-10</tt></td><td>Nordic</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-1255</tt></td><td>Hebrew</td><td>&nbsp;</td><td><tt>iso-8859-11</tt></td><td>Thai</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-1256</tt></td><td>Arabic</td><td>&nbsp;</td><td><tt>iso-8859-13</tt></td><td>Baltic Rim</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-1257</tt></td><td>Baltic</td><td>&nbsp;</td><td><tt>iso-8859-14</tt></td><td>Celtic</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-1258</tt></td><td>Vietnamese</td><td>&nbsp;</td><td><tt>iso-8859-15</tt></td><td>Western European / Latin-9</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-874</tt></td><td>Thai</td><td>&nbsp;</td><td><tt>iso-8859-16</tt></td><td>South Eastern European / Latin-10</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-932</tt></td><td>Japanese</td><td>&nbsp;</td><td><tt>koi8-r</tt></td><td>Russian</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-936</tt></td><td>Simplified Chinese</td><td>&nbsp;</td><td><tt>koi8-u</tt></td><td>Ukrainian</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>cp-949</tt></td><td>Korean</td><td>&nbsp;</td><td></td><td></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>cp-950</tt></td><td>Traditional Chinese</td><td>&nbsp;</td><td></td><td></td></tr>
+</table>
+
+</td></tr>
+
+<tr><td valign="top"><tt>-i RANGES</tt></td><td>Show character codes in RANGES. (see \ref showfontranges)</td></tr>
+<tr><td valign="top"><tt>-x RANGES</tt></td><td>Don't show character codes in RANGES. (see \ref showfontranges)</td></tr>
+
+<tr><td valign="top"><tt>-h | --help</tt></td><td>Display a usage information and exit.</td></tr>
+</table>
+
+\section showfontranges Ranges
+
+The parameter RANGES for \b -i (--include-range) and \b -x (--exclude-range) can be given
+as a list of one or more ranges delimited by a comma (,). 
+
+Each range can be given as a single integer or a pair of integers delimited by minus sign (-).
+
+Integers can be specified in decimal, hexadecimal (0x...) or octal (0...) format.
+
+One integer of a pair can be omitted (-N specifies all characters with codes less or equal
+to N, and N- all characters with codes greater or equal to N).
+
+\section showfontcolour Colours
+
+Character code cells can have one of several background colours:
+
+\li <tt>white</tt> = the character code is present in the font,
+\li <tt>light grey</tt> = the character code is defined in Unicode but not present in the font,
+\li <tt>blue-grey</tt> = the character code is a control character,
+\li <tt>dark grey</tt> = the character code is not defined in Unicode.
+
+\section showfontexample Examples
+
+Show all character codes of myfont.ttf in output file myfont.pdf:
+
+<tt>showfont -f myfont.ttf -o myfont.pdf</tt>
+
+Show all character codes of myfont.ttf less than or equal to U+05FF
+but exclude U+0300-U+036F in output file myfont.pdf:
+
+<tt>showfont -f myfont.ttf -o myfont.pdf -i -0x05FF -x 0x0300-0x036F</tt>
+
 */
 
 /** \page writexml Styling text using a simple markup language
@@ -561,7 +841,7 @@ This allows for example to change font attributes within a cell, which is not su
 methods like wxPdfDocument::WriteCell or wxPdfDocument::MultiCell. The supported markup
 language consists of a small subset of HTML. Although the subset might be extended in future
 versions of \b wxPdfDocument, it is not the goal of this method to allow to convert
-full fledged HTML pages to PDF.
+full fledged HTML pages to PDF. 
 
 \b Important! The XML dialect used is very strict. Each tag must have a corresponding closing tag
 and all attribute values must be enclosed in double quotes.
@@ -715,7 +995,7 @@ the characters following <b>#</b> are used as the name of the anchor.</td></tr>
 \subsection fonttag Font specification
 
 This tag allows to specify several font attributes for the embedded content. Font family,
-font size and color can be set. Attributes not given retain their previous value.
+font size and colour can be set. Attributes not given retain their previous value.
 
 <table border="0">
 <tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
@@ -724,8 +1004,8 @@ font size and color can be set. Attributes not given retain their previous value
 <tr bgcolor="#eeeeee"><td valign="top"><tt>face="<i>fontfamily</i>"</tt></td><td>The name of the font family. It can be the name of one of the
 14 core fonts or the name of a font previously added by wxPdfDocument::AddFont.</td></tr>
 <tr bgcolor="#ddeeff"><td><tt>size="<i>fontsize</i>"</tt></td><td>The font size in points</td></tr>
-<tr bgcolor="#eeeeee"><td><tt>color="<i>fontcolor</i>"</tt></td><td>The font color in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
-or as a named color, i.e. <b><i>red</i></b>.</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>color="<i>fontcolour</i>"</tt></td><td>The font colour in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named colour, i.e. <b><i>red</i></b>.</td></tr>
 </table>
 
 \subsection msgtag Translatable text
@@ -769,11 +1049,11 @@ by using a specific kind of HTML table syntax. The structure is as follows:
       &lt;/colgroup&gt;
       &lt;thead&gt;
         &lt;tr&gt;&lt;td&gt; ... &lt;/td&gt;&lt;/tr&gt;
-        ...
+        ...      
       &lt;/thead&gt;
       &lt;tbody&gt;
         &lt;tr&gt;&lt;td&gt; ... &lt;/td&gt;&lt;/tr&gt;
-        ...
+        ...      
       &lt;/tbody&gt;
     &lt;/table&gt;
 </pre>
@@ -814,22 +1094,22 @@ The supported tags and their attributes are shown in the following tables:
 <tr bgcolor="#ddeeff"><td><tt>&lt;col width="<i>width</i>" span="<i>number</i>"&gt; ... &lt;/col&gt;</tt></td><td>
 Defines the <i>width</i> of one or more columns. <i>number</i> specifies for how many columns the width is specified, default is 1.
 </td></tr>
-<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;thead odd="<i>background color for odd numbered rows</i>" even="<i>background color for even numbered rows</i>"&gt; ... &lt;/thead&gt;</tt></td>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;thead odd="<i>background colour for odd numbered rows</i>" even="<i>background colour for even numbered rows</i>"&gt; ... &lt;/thead&gt;</tt></td>
 <td>Defines a group of table header rows.
 Contains one or more &lt;tr&gt; tags. If a table does not fit on a single page these rows are repeated on each page.
 The attributes <b><tt>odd</tt></b> and <b><tt>even</tt></b> are optional.
 </td></tr>
-<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;tbody odd="<i>background color for odd numbered rows</i>" even="<i>background color for even numbered rows</i>"&gt; ... &lt;/tbody&gt;</tt></td>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;tbody odd="<i>background colour for odd numbered rows</i>" even="<i>background colour for even numbered rows</i>"&gt; ... &lt;/tbody&gt;</tt></td>
 <td>Defines a group of table body rows. Contains one or more &lt;tr&gt; tags.
 The attributes <b><tt>odd</tt></b> and <b><tt>even</tt></b> are optional.
 </td></tr>
-<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;tr bgcolor="<i>background color</i>" height="<i>height</i>"&gt; ... &lt;/tr&gt;</tt></td>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;tr bgcolor="<i>background colour</i>" height="<i>height</i>"&gt; ... &lt;/tr&gt;</tt></td>
 <td>Defines a table row. Contains one or more &lt;td&gt; tags.
-<p>The <i>background color</i> may be specified in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
-or as a named color, i.e. <b><i>red</i></b>. If no background color is given the background is transparent.</p>
+<p>The <i>background colour</i> may be specified in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named colour, i.e. <b><i>red</i></b>. If no background colour is given the background is transparent.</p>
 <p>Usually the height of the highest cell in a row is used as the row height, but a minimal row <i>height</i> may be specified, too</p>
 </td></tr>
-<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;td&gt; ... &lt;/td&gt;</tt></td><td>Defines a table cell.
+<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;td&gt; ... &lt;/td&gt;</tt></td><td>Defines a table cell. 
 <p>The available attributes are described in section \ref tdtag.</p></td></tr>
 </table>
 
@@ -842,7 +1122,7 @@ A table cell can have several attributes:
 <tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;td&gt;</b></td></tr>
 <tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
 <tr bgcolor="#eeeeee"><td valign="top"><tt>border="LTBR"</tt></td><td>A cell may have a border on each side.
-This attribute overrides the border specification in the &lt;table&gt; tag. The attribute value consists of
+This attribute overrides the border specification in the &lt;table&gt; tag. The attribute value consists of 
 the combination of up to 4 letters:
 <p>\b L - border on the left side of the cell<br>
 \b T - border on the top side of the cell<br>
@@ -851,9 +1131,9 @@ the combination of up to 4 letters:
 .</td></tr>
 <tr bgcolor="#ddeeff"><td valign="top"><tt>align="left|right|center"</tt></td><td>Defines the horizontal alignment of the cell content. Default is <i>left</i>.</td></tr>
 <tr bgcolor="#eeeeee"><td><tt>valign="top|middle|bottom"</tt></td><td>Defines the vertical alignment of the cell content. Default is <i>top</i>.</td></tr>
-<tr bgcolor="#ddeeff"><td valign="top"><tt>bgcolor="<i>background color</i>"</tt></td><td>The background color of the cell in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
-or as a named color, i.e. <b><i>red</i></b>. This attribute overrides the background color specification of the row.
-If neither a row nor a cell background color is specified the background is transparent.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>bgcolor="<i>background colour</i>"</tt></td><td>The background colour of the cell in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named colour, i.e. <b><i>red</i></b>. This attribute overrides the background colour specification of the row.
+If neither a row nor a cell background colour is specified the background is transparent.</td></tr>
 <tr bgcolor="#eeeeee"><td valign="top"><tt>rowspan="<i>number</i>"</tt></td><td><i>Number</i> of rows this cell should span. Default is 1.</td></tr>
 <tr bgcolor="#ddeeff"><td valign="top"><tt>colspan="<i>number</i>"</tt></td><td><i>Number</i> of columns this cell should span. Default is 1.</td></tr>
 </table>
@@ -863,15 +1143,30 @@ If neither a row nor a cell background color is specified the background is tran
 #ifndef _PDFDOC_DEF_H_
 #define _PDFDOC_DEF_H_
 
-#ifdef WXMAKINGLIB_WXPDFDOC
-    #define WXDLLIMPEXP_PDFDOC
-#elif WXMAKINGDLL_WXPDFDOC
-    #define WXDLLIMPEXP_PDFDOC WXEXPORT
+#if defined(WXMAKINGLIB_PDFDOC)
+  #define WXDLLIMPEXP_PDFDOC
+  #define WXDLLIMPEXP_DATA_PDFDOC(type) type
+#elif defined(WXMAKINGDLL_PDFDOC)
+  #define WXDLLIMPEXP_PDFDOC WXEXPORT
+  #define WXDLLIMPEXP_DATA_PDFDOC(type) WXEXPORT type
 #elif defined(WXUSINGDLL)
-    #define WXDLLIMPEXP_PDFDOC WXIMPORT
+  #define WXDLLIMPEXP_PDFDOC WXIMPORT
+  #define WXDLLIMPEXP_DATA_PDFDOC(type) WXIMPORT type
 #else // not making nor using DLL
-    #define WXDLLIMPEXP_PDFDOC
+  #define WXDLLIMPEXP_PDFDOC
+  #define WXDLLIMPEXP_DATA_PDFDOC(type) type
+#endif
+
+/*
+  GCC warns about using __declspec on forward declarations
+  while MSVC complains about forward declarations without
+  __declspec for the classes later declared with it. To hide this
+  difference a separate macro for forward declarations is defined:
+ */
+#if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
+  #define WXDLLIMPEXP_FWD_PDFDOC
+#else
+  #define WXDLLIMPEXP_FWD_PDFDOC WXDLLIMPEXP_PDFDOC
 #endif
 
 #endif // _PDFDOC_DEF_H_
-
