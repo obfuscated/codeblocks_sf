@@ -113,10 +113,8 @@ EditorTweaks::EditorTweaks()
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("EditorTweaks.zip")))
-    {
+    if (!Manager::LoadResource(_T("EditorTweaks.zip")))
         NotifyMissingFile(_T("EditorTweaks.zip"));
-    }
 }
 
 // destructor
@@ -145,10 +143,10 @@ void EditorTweaks::OnAttach()
     m_tweakmenu=NULL;
 
     EditorManager* em = Manager::Get()->GetEditorManager();
-    for(int i=0;i<em->GetEditorsCount();i++)
+    for (int i=0;i<em->GetEditorsCount();i++)
     {
         cbEditor* ed=em->GetBuiltinEditor(i);
-        if(ed && ed->GetControl())
+        if (ed && ed->GetControl())
         {
             ed->GetControl()->SetOvertype(false);
             ed->GetControl()->Connect(wxEVT_KEY_DOWN,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress,NULL,this);
@@ -160,7 +158,7 @@ void EditorTweaks::OnAttach()
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));
 
-    for(int i = 0 ; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
+    for (int i = 0 ; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
     {
         e.MenuName = cfg->Read(wxString::Format(_T("AlignerFirstName%d"),i),defaultNames[i]);
         e.ArgumentString = cfg->Read(wxString::Format(_T("AlignerFirstArgumentString%d"),i) ,defaultStrings[i]);
@@ -178,10 +176,10 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
 
 //    EditorHooks::UnregisterHook(m_EditorHookId, true);
     EditorManager* em = Manager::Get()->GetEditorManager();
-    for(int i=0;i<em->GetEditorsCount();i++)
+    for (int i=0;i<em->GetEditorsCount();i++)
     {
         cbEditor* ed=em->GetBuiltinEditor(i);
-        if(ed && ed->GetControl())
+        if (ed && ed->GetControl())
             ed->GetControl()->Disconnect(wxEVT_NULL,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress);
     }
 
@@ -191,17 +189,15 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     std::sort (AlignerMenuEntries.begin(), AlignerMenuEntries.end(),CompareAlignerMenuEntryObject);
     std::reverse( AlignerMenuEntries.begin(), AlignerMenuEntries.end());
     int i = 0;
-    for(; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
+    for (; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
     {
         cfg->Write(wxString::Format(_T("AlignerFirstName%d"),i),AlignerMenuEntries[i].MenuName);
         cfg->Write(wxString::Format(_T("AlignerFirstArgumentString%d"),i) ,AlignerMenuEntries[i].ArgumentString);
 
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
-    for(; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
-    {
+    for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
-    }
     cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
 }
 
@@ -209,21 +205,21 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 {
     Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: Building menu"));
     int i=menuBar->FindMenu(_("&Edit"));
-    if(i==wxNOT_FOUND)
+    if (i==wxNOT_FOUND)
     {
         Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: edit menu not found"));
         return;
     }
     wxMenu *menu=menuBar->GetMenu(i);
-    for(i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
+    for (i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
     {
         wxMenuItem *mm=menu->FindItemByPosition(i);
-        if(mm->GetLabel()==_("End-of-line mode"))
+        if (mm->GetLabel()==_("End-of-line mode"))
             menu->Remove(mm);
-        if(mm->GetLabel()==_("Special commands"))
+        if (mm->GetLabel()==_("Special commands"))
             break;
     }
-    if(i == static_cast<int>(menu->GetMenuItemCount()))
+    if (i == static_cast<int>(menu->GetMenuItemCount()))
     {
         Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: Special commands menu not found"));
         return;
@@ -260,16 +256,16 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 
 
     wxMenu *foldmenu = 0;
-    for(i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
+    for (i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
     {
-        wxMenuItem *mm=menu->FindItemByPosition(i);
-        if(mm->GetLabel()==_("Folding"))
+        wxMenuItem *mm = menu->FindItemByPosition(i);
+        if (mm->GetLabel()==_("Folding"))
         {
             foldmenu=mm->GetSubMenu();
             break;
         }
     }
-    if(!foldmenu)
+    if (!foldmenu)
     {
         Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: Folding menu"));
         return;
@@ -298,15 +294,14 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 
 void EditorTweaks::UpdateUI()
 {
-    if(!m_tweakmenu)
-    {
+    if (!m_tweakmenu)
     	return;
-    }
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
     {
         m_tweakmenuitem->Enable(false);
-         return;
+        return;
     }
     m_tweakmenuitem->Enable(true);
 
@@ -330,7 +325,7 @@ void EditorTweaks::UpdateUI()
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Update UI")));
-    if(!m_IsAttached || !m_tweakmenu)
+    if (!m_IsAttached || !m_tweakmenu)
         return;
     return;
     UpdateUI();
@@ -344,9 +339,9 @@ void EditorTweaks::OnUpdateUI(wxUpdateUIEvent &/*event*/)
 void EditorTweaks::OnEditorActivate(CodeBlocksEvent& event)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Activate")));
-    if(!m_IsAttached || !m_tweakmenu)
+    if (!m_IsAttached || !m_tweakmenu)
         return;
-    if(event.GetEditor() && event.GetEditor()->IsBuiltinEditor())
+    if (event.GetEditor() && event.GetEditor()->IsBuiltinEditor())
     {
         m_tweakmenuitem->Enable(true);
         UpdateUI();
@@ -358,7 +353,7 @@ void EditorTweaks::OnEditorActivate(CodeBlocksEvent& event)
 void EditorTweaks::OnEditorDeactivate(CodeBlocksEvent& /*event*/)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Deactivate")));
-    if(!m_IsAttached || !m_tweakmenu)
+    if (!m_IsAttached || !m_tweakmenu)
         return;
     m_tweakmenuitem->Enable(false);
 }
@@ -368,7 +363,7 @@ void EditorTweaks::OnEditorOpen(CodeBlocksEvent& /*event*/)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Open")));
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(ed && ed->GetControl())
+    if (ed && ed->GetControl())
     {
         ed->GetControl()->SetOvertype(false);
         ed->GetControl()->Connect(wxEVT_KEY_DOWN,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress,NULL,this);
@@ -379,26 +374,20 @@ void EditorTweaks::OnEditorOpen(CodeBlocksEvent& /*event*/)
 void EditorTweaks::OnEditorClose(CodeBlocksEvent& /*event*/)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Close")));
-    if(!m_IsAttached || !m_tweakmenu)
+    if (!m_IsAttached || !m_tweakmenu)
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(ed && ed->GetControl())
-    {
+    if (ed && ed->GetControl())
         return;
-    }
     m_tweakmenuitem->Enable(false);
 }
 
 void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 {
-    if(m_suppress_insert && event.GetKeyCode()==WXK_INSERT && event.GetModifiers()==wxMOD_NONE)
-    {
+    if (m_suppress_insert && event.GetKeyCode()==WXK_INSERT && event.GetModifiers()==wxMOD_NONE)
         event.Skip(false);
-    }
     else
-    {
         event.Skip(true);
-    }
 }
 
 void EditorTweaks::OnSuppressInsert(wxCommandEvent& event)
@@ -418,10 +407,11 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     //TIP: for consistency, add a separator as the first item...
 
     //make sure we have an editor
-    if(type != mtEditorManager || !m_tweakmenu)
+    if (type != mtEditorManager || !m_tweakmenu)
         return;
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
     {
         m_tweakmenuitem->Enable(false);
         return;
@@ -443,7 +433,7 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     menu->AppendSeparator();
     menu->Append(wxID_ANY, _T("Aligner"), alignerMenu);
 
-    return; //DISABLED ALL OF THE STUFF BELOW (IT IS ALREADY IN THE MAIN MENU BAR)
+    return; // DISABLED ALL OF THE STUFF BELOW (IT IS ALREADY IN THE MAIN MENU BAR)
 
     // build "editor tweaks" menu
     wxMenu *submenu=new wxMenu(); //_("Editor Tweaks")
@@ -451,35 +441,35 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     menu->Append(id_et,_("Editor Tweaks"),submenu);
 
     submenu->AppendCheckItem( id_et_WordWrap, _( "Word wrap" ), _( "Wrap text" ) );
-    if(ed->GetControl()->GetWrapMode()>0)
+    if (ed->GetControl()->GetWrapMode()>0)
         submenu->Check(id_et_WordWrap,true);
 
     submenu->AppendCheckItem( id_et_ShowLineNumbers, _( "Show Line Numbers" ), _( "Show Line Numbers" ) );
-    if(ed->GetControl()->GetMarginWidth(0)>0)
+    if (ed->GetControl()->GetMarginWidth(0)>0)
         submenu->Check(id_et_ShowLineNumbers,true);
 
     submenu->AppendSeparator();
 
     submenu->AppendCheckItem( id_et_TabChar, _( "Use Tab Character" ), _( "Use Tab Character" ) );
-    if(ed->GetControl()->GetUseTabs())
+    if (ed->GetControl()->GetUseTabs())
         submenu->Check(id_et_TabChar,true);
 
     submenu->AppendCheckItem( id_et_TabIndent, _( "Tab Indents" ), _( "Tab Indents" ) );
-    if(ed->GetControl()->GetTabIndents())
+    if (ed->GetControl()->GetTabIndents())
         submenu->Check(id_et_TabIndent,true);
 
     wxMenu *tabsizemenu=new wxMenu();
     tabsizemenu->AppendRadioItem( id_et_TabSize2, _( "2" ), _( "Tab Width of 2" ) );
-    if(ed->GetControl()->GetTabWidth()==2)
+    if (ed->GetControl()->GetTabWidth()==2)
         tabsizemenu->Check(id_et_TabSize2,true);
     tabsizemenu->AppendRadioItem( id_et_TabSize4, _( "4" ), _( "Tab Width of 4" ) );
-    if(ed->GetControl()->GetTabWidth()==4)
+    if (ed->GetControl()->GetTabWidth()==4)
         tabsizemenu->Check(id_et_TabSize4,true);
     tabsizemenu->AppendRadioItem( id_et_TabSize6, _( "6" ), _( "Tab Width of 6" ) );
-    if(ed->GetControl()->GetTabWidth()==6)
+    if (ed->GetControl()->GetTabWidth()==6)
         tabsizemenu->Check(id_et_TabSize6,true);
     tabsizemenu->AppendRadioItem( id_et_TabSize8, _( "8" ), _( "Tab Width of 8" ) );
-    if(ed->GetControl()->GetTabWidth()==8)
+    if (ed->GetControl()->GetTabWidth()==8)
         tabsizemenu->Check(id_et_TabSize8,true);
     submenu->Append(wxID_ANY,_("Tab Size"),tabsizemenu);
 
@@ -487,18 +477,18 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
 
     wxMenu *eolmenu=new wxMenu();
     eolmenu->AppendRadioItem( id_et_EOLCRLF, _( "CR LF" ), _( "Carriage Return - Line Feed (Windows Default)" ) );
-    if(ed->GetControl()->GetEOLMode()==wxSCI_EOL_CRLF)
+    if (ed->GetControl()->GetEOLMode()==wxSCI_EOL_CRLF)
         eolmenu->Check(id_et_EOLCRLF,true);
     eolmenu->AppendRadioItem( id_et_EOLCR, _( "CR" ), _( "Carriage Return (Mac Default)" ) );
-    if(ed->GetControl()->GetEOLMode()==wxSCI_EOL_CR)
+    if (ed->GetControl()->GetEOLMode()==wxSCI_EOL_CR)
         eolmenu->Check(id_et_EOLCR,true);
     eolmenu->AppendRadioItem( id_et_EOLLF, _( "LF" ), _( "Line Feed (Unix Default)" ) );
-    if(ed->GetControl()->GetEOLMode()==wxSCI_EOL_LF)
+    if (ed->GetControl()->GetEOLMode()==wxSCI_EOL_LF)
         eolmenu->Check(id_et_EOLLF,true);
     submenu->Append(wxID_ANY,_("End-of-Line Mode"),eolmenu);
 
     submenu->AppendCheckItem( id_et_ShowEOL, _( "Show EOL Chars" ), _( "Show End-of-Line Characters" ) );
-    if(ed->GetControl()->GetViewEOL())
+    if (ed->GetControl()->GetViewEOL())
         submenu->Check(id_et_ShowEOL,true);
 
     submenu->Append( id_et_StripTrailingBlanks, _( "Strip Trailing Blanks Now" ), _( "Strip trailing blanks from each line" ) );
@@ -512,12 +502,12 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
 void EditorTweaks::OnWordWrap(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     bool enabled=ed->GetControl()->GetWrapMode()>0;
 
-    if(enabled)
+    if (enabled)
         ed->GetControl()->SetWrapMode(wxSCI_WRAP_NONE);
     else
         ed->GetControl()->SetWrapMode(wxSCI_WRAP_WORD);
@@ -528,7 +518,7 @@ void EditorTweaks::OnWordWrap(wxCommandEvent &/*event*/)
 void EditorTweaks::OnShowLineNumbers(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     bool enabled=ed->GetControl()->GetMarginWidth(0)>0;
@@ -538,16 +528,14 @@ void EditorTweaks::OnShowLineNumbers(wxCommandEvent &/*event*/)
 //    ed->SetEditorStyleAfterFileOpen();
 //    mgr->Write(_T("/show_line_numbers"), old_state);
 
-    if(enabled)
-    {
+    if (enabled)
         ed->GetControl()->SetMarginWidth(0, 0);
-    }
     else
     {
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
         int pixelWidth = ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
 
-        if(cfg->ReadBool(_T("/margin/dynamic_width"), false))
+        if (cfg->ReadBool(_T("/margin/dynamic_width"), false))
         {
             int lineNumWidth = 1;
             int lineCount = ed->GetControl()->GetLineCount();
@@ -561,16 +549,14 @@ void EditorTweaks::OnShowLineNumbers(wxCommandEvent &/*event*/)
             ed->GetControl()->SetMarginWidth(0, 6 + lineNumWidth * pixelWidth);
         }
         else
-        {
             ed->GetControl()->SetMarginWidth(0, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
-        }
     }
 }
 
 void EditorTweaks::OnTabChar(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetUseTabs(!ed->GetControl()->GetUseTabs());
@@ -579,7 +565,7 @@ void EditorTweaks::OnTabChar(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabIndent(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetTabIndents(!ed->GetControl()->GetTabIndents());
@@ -588,7 +574,7 @@ void EditorTweaks::OnTabIndent(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize2(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetTabWidth(2);
@@ -597,7 +583,7 @@ void EditorTweaks::OnTabSize2(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize4(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetTabWidth(4);
@@ -606,7 +592,7 @@ void EditorTweaks::OnTabSize4(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize6(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetTabWidth(6);
@@ -615,7 +601,7 @@ void EditorTweaks::OnTabSize6(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize8(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetTabWidth(8);
@@ -624,7 +610,7 @@ void EditorTweaks::OnTabSize8(wxCommandEvent &/*event*/)
 void EditorTweaks::OnShowEOL(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetViewEOL(!ed->GetControl()->GetViewEOL());
@@ -633,7 +619,7 @@ void EditorTweaks::OnShowEOL(wxCommandEvent &/*event*/)
 void EditorTweaks::OnStripTrailingBlanks(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     wxMessageBox(_("Not Implemented"));
@@ -642,7 +628,7 @@ void EditorTweaks::OnStripTrailingBlanks(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEnsureConsistentEOL(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->ConvertEOLs(ed->GetControl()->GetEOLMode());
@@ -651,7 +637,7 @@ void EditorTweaks::OnEnsureConsistentEOL(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLCRLF(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_CRLF);
@@ -660,7 +646,7 @@ void EditorTweaks::OnEOLCRLF(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLCR(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_CR);
@@ -669,7 +655,7 @@ void EditorTweaks::OnEOLCR(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLLF(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_LF);
@@ -699,7 +685,7 @@ void EditorTweaks::OnUnfold(wxCommandEvent &event)
 void EditorTweaks::DoFoldAboveLevel(int level, int fold)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl())
         return;
 
     level+=wxSCI_FOLDLEVELBASE;
@@ -719,19 +705,15 @@ void EditorTweaks::DoFoldAboveLevel(int level, int fold)
 
         // If a fold/unfold request is issued when the block is already
         // folded/unfolded, ignore the request.
-        if(line_level<=level)
+        if (line_level<=level)
         {
-            if(IsExpanded)
-            {
+            if (IsExpanded)
                 continue;
-            }
         }
         else
         {
-            if((fold==0 && IsExpanded) || (fold ==1 && !IsExpanded))
-            {
+            if ((fold==0 && IsExpanded) || (fold ==1 && !IsExpanded))
                 continue;
-            }
         }
         ed->GetControl()->ToggleFold(line);
     }
@@ -741,12 +723,14 @@ void EditorTweaks::OnAlign(wxCommandEvent& event)
 {
     int id = event.GetId();
     for ( unsigned int i = 0 ; i < AlignerMenuEntries.size(); i++)
+    {
         if ( AlignerMenuEntries[i].id == id )
         {
             AlignToString(AlignerMenuEntries[i].ArgumentString);
             AlignerMenuEntries[i].UsageCount ++;
             break;
         }
+    }
 }
 
 void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
@@ -759,20 +743,20 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
     const wxString MessageArgumentString = _T("Insert a new character");
     const wxString CaptionArgumentString = _T("New character");
     NewAlignmentString = wxGetTextFromUser( MessageArgumentString, CaptionArgumentString );
-    if(NewAlignmentString !=_T(""))
+    if (NewAlignmentString !=_T(""))
     {
         // check if the new character is equal as an exist
         unsigned int i;
         for ( i = 0 ; i < AlignerMenuEntries.size(); i++)
         {
-            if(AlignerMenuEntries[i].ArgumentString == NewAlignmentString)
+            if (AlignerMenuEntries[i].ArgumentString == NewAlignmentString)
             {
                 NewCharacter = false;
                 break;
             }
         }
 
-        if(NewCharacter)
+        if (NewCharacter)
         {
             AlignerMenuEntry e;
             e.UsageCount = 0;
@@ -786,7 +770,7 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
         const wxString MessageName = _T("Insert a name for the (new) character");
         const wxString CaptionName = NewAlignmentString;
         NewAlignmentStringName = wxGetTextFromUser( MessageName, CaptionName , AlignerMenuEntries[i].MenuName);
-        if(NewAlignmentStringName != _T(""))
+        if (NewAlignmentStringName != _T(""))
             AlignerMenuEntries[i].MenuName = NewAlignmentStringName;
 
         AlignToString(AlignerMenuEntries[i].ArgumentString);
@@ -817,9 +801,7 @@ void EditorTweaks::AlignToString(const wxString AlignmentString)
                 {
                 	matches++;
 					if ((int) find_position > (int) max_position)
-					{
 						max_position = find_position;
-					}
                 }
 			}
 
@@ -880,9 +862,7 @@ wxString EditorTweaks::GetPadding(const wxString& Padding, const int Count)
 {
 	wxString padding = _T("");
 	for (int i=0;i<Count;i++)
-	{
 		padding += Padding;
-	}
 	return padding;
 }
 
@@ -912,5 +892,4 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
     // done
     return found_lines;
 }
-
 

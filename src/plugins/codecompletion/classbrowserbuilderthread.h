@@ -98,7 +98,9 @@ public:
               const wxString& active_filename, void* user_data/*active project*/,
               const BrowserOptions& options, TokensTree* pTokensTree, bool build_tree);
     void ExpandItem(wxTreeItemId item);
+#ifndef CC_NO_COLLAPSE_ITEM
     void CollapseItem(wxTreeItemId item, bool useLock=true);
+#endif // CC_NO_COLLAPSE_ITEM
     void SelectItem(wxTreeItemId item);
 
 protected:

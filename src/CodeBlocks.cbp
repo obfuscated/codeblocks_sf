@@ -573,7 +573,7 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#wx)\contrib\include" />
+			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="sdk\wxscintilla\include" />
 			<Add directory="sdk\wxpropgrid\include" />
@@ -581,8 +581,8 @@
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#wx)\contrib\include" />
-			<Add directory="$(#wx)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#WX)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />

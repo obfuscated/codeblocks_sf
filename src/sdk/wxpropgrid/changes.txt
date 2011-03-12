@@ -1,11 +1,14 @@
 
 
-Version 1.4.15 ( Feb-?-2011 )
+Version 1.4.15 ( Feb-27-2011 )
 
   Bugs Fixed:
 
   - Fixed regression which caused text to be pasted twice in
     text editors under some platforms (atleast wxMSW, bug #3164789).
+
+  - wxPGProperty::SetValueImage() didn't work properly with
+    images that had transparent background (bug #3187182).
 
 
 

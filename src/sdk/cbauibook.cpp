@@ -162,9 +162,7 @@ void cbAuiNotebook::ResetTabCtrlEvents()
         m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
         m_TabCtrls[i]->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
         if (s_AllowMousewheel)
-        {
             m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
-        }
     }
 }
 
@@ -227,7 +225,7 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 
     UpdateTabControlsArray();
 
-    if((m_pToolTip == nullptr) && !m_OverTabCtrl)
+    if ((m_pToolTip == nullptr) && !m_OverTabCtrl)
         return;
 
     if (!s_UseTabTooltips || !m_AllowToolTips)

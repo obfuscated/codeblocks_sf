@@ -38,37 +38,37 @@
 /** \brief The regex for a class declaration.
 */
 wxRegEx reClass(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
+	"^[[:space:]]*"					// Space at the beginning of the line.
 	"class[[:space:]]+"				// The word class, followed by some space (at least one).
-	"([^[:space:]\\:]+)"					// The class name (made of no space and no colon).
+	"([^[:space:]\\:]+)"			// The class name (made of no space and no colon).
 	));
 
 /** \brief The regex for a struct declaration.
 */
 wxRegEx reStruct(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
-	"(typedef"							// Maybe a typedef declaration.
-	"[[:space:]]+)?"						// Followed by at least one space.
-	"struct[[:space:]]+"				// The word struct, followed by some space (at least one).
-	"([^[:space:]\\:\\{\\;]+)"			// The struct name (made of no space, no colon, no bracket, no semicolon).
+	"^[[:space:]]*"					// Space at the beginning of the line.
+	"(typedef"						// Maybe a typedef declaration.
+	"[[:space:]]+)?"				// Followed by at least one space.
+	"struct[[:space:]]+"			// The word struct, followed by some space (at least one).
+	"([^[:space:]\\:\\{\\;]+)"		// The struct name (made of no space, no colon, no bracket, no semicolon).
 	));
 
 
 /** \brief The regex for a typedef declaration.
 */
 wxRegEx reTypedef(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
+	"^[[:space:]]*"					// Space at the beginning of the line.
 	"typedef[[:space:]]+"			// The typedef word followed by at least one space.
-	"(.+)[[:space:]]+"					// The original type, followed by at least one space.
-	"([^\\{[:space:];]+)"					// The new type, not made of any space nor braces, nor semicolon.
+	"(.+)[[:space:]]+"				// The original type, followed by at least one space.
+	"([^\\{[:space:];]+)"			// The new type, not made of any space nor braces, nor semicolon.
 	));
 
 /** \brief The regex for an enum declaration.
 */
 wxRegEx reEnum(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
+	"^[[:space:]]*"					// Space at the beginning of the line.
 	"enum[[:space:]]+"				// The word class, followed by some space (at least one).
-	"([^[:space:]\\:]+)"					// The class name (made of no space and no colon).
+	"([^[:space:]\\:]+)"			// The class name (made of no space and no colon).
 	));
 
 /** \brief The regex for a function declaration.
@@ -77,12 +77,12 @@ wxRegEx reEnum(wxT(
  * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reFunction(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
-	"((.+)[[:space:]])"					// The return type of the function.
-	"([[:space:]]*)"						// Possibly some space after the name.
-	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"									// The function's parameters.
-	"\\)"											// The closing parenthesis.
+	"^[[:space:]]*"					// Space at the beginning of the line.
+	"((.+)[[:space:]])"				// The return type of the function.
+	"([[:space:]]*)"				// Possibly some space after the name.
+	"([^[:space:]]+)\\("			// The name of the function, followed by a "(".
+	"([^)]*)?"						// The function's parameters.
+	"\\)"							// The closing parenthesis.
 	),
 	wxRE_ADVANCED);
 
@@ -92,13 +92,13 @@ wxRegEx reFunction(wxT(
  * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reClassFunction(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
-	"((.+)[[:space:]])"					// The return type of the function.
-	"([[:space:]]*)"						// Some space after the return type.
-	"([^[:space:]]+)\\::"					// The class name followed by "::".
-	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"									// The function's parameters.
-	"\\)"											// The closing parenthesis.
+	"^[[:space:]]*"					// Space at the beginning of the line.
+	"((.+)[[:space:]])"				// The return type of the function.
+	"([[:space:]]*)"				// Some space after the return type.
+	"([^[:space:]]+)\\::"			// The class name followed by "::".
+	"([^[:space:]]+)\\("			// The name of the function, followed by a "(".
+	"([^)]*)?"						// The function's parameters.
+	"\\)"							// The closing parenthesis.
 	),
 	wxRE_ADVANCED);
 
@@ -108,11 +108,11 @@ wxRegEx reClassFunction(wxT(
  * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reClassFunctionNoRet(wxT(
-	"^[[:space:]]*"						// Space at the beginning of the line.
-	"([^[:space:]]+)\\::"					// The class name followed by "::".
-	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"									// The function's parameters.
-	"\\)"											// The closing parenthesis.
+	"^[[:space:]]*"					// Space at the beginning of the line.
+	"([^[:space:]]+)\\::"			// The class name followed by "::".
+	"([^[:space:]]+)\\("			// The name of the function, followed by a "(".
+	"([^)]*)?"						// The function's parameters.
+	"\\)"							// The closing parenthesis.
 	));
 
 

@@ -62,7 +62,9 @@ private:
 
     void OnTreeItemSelected(wxTreeEvent& event);
     void OnTreeItemExpanding(wxTreeEvent& event);
+#ifndef CC_NO_COLLAPSE_ITEM
     void OnTreeItemCollapsing(wxTreeEvent& event);
+#endif // CC_NO_COLLAPSE_ITEM
 
 private:
     NativeParser*              m_NativeParser;
@@ -83,4 +85,3 @@ private:
 };
 
 #endif // CLASSBROWSER_H
-

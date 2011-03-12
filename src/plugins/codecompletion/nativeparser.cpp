@@ -1749,7 +1749,10 @@ int NativeParser::CountCommas(const wxString& lineText, int start)
 
 bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &tokens, bool root = true)
 {
-    if (token.m_ParentIndex != -1)
+    // if the token has parents and the token is a container or a function,
+    // then pretty print the parent of the token.
+    if (   (token.m_ParentIndex != -1)
+        && (token.m_TokenKind & (tkAnyContainer | tkAnyFunction)) )
     {
         if (!PrettyPrintToken(result, *tokens.at(token.m_ParentIndex), tokens, false))
             return false;

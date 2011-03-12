@@ -493,11 +493,6 @@ bool ThreadSearchFrame::InitXRCStuff()
 		ComplainBadInstall();
 		return false;
 	}
-    if (!Manager::LoadResource(_T("resources.zip")))
-	{
-		ComplainBadInstall();
-		return false;
-	}
     return true;
 }
 // ----------------------------------------------------------------------------

@@ -72,6 +72,7 @@
 
 #include "wx/timer.h"
 #include "wx/dcbuffer.h"
+#include "wx/image.h"
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 
@@ -1960,6 +1961,18 @@ void wxPGProperty::SetValueImage( wxBitmap& bmp )
 
         if ( imSz.y > maxSz.y )
         {
+        #if wxUSE_IMAGE
+            // Here we use high-quality wxImage scaling functions available
+            // in wxWidgets 2.8
+            wxImage img = bmp.ConvertToImage();
+            double scaleY = (double)maxSz.y / (double)imSz.y;
+            img.Rescale(((double)bmp.GetWidth())*scaleY,
+                        ((double)bmp.GetHeight())*scaleY,
+                        wxIMAGE_QUALITY_HIGH);
+            wxBitmap* bmpNew = new wxBitmap(img, 32);
+        #else
+            // This is the old, deprecated method of scaling the image, but
+            // should be more compatible with older versions of wx
             // Create a memory DC
             wxBitmap* bmpNew = new wxBitmap(maxSz.x,maxSz.y,bmp.GetDepth());
 
@@ -1967,12 +1980,12 @@ void wxPGProperty::SetValueImage( wxBitmap& bmp )
             dc.SelectObject(*bmpNew);
 
             // Scale
-            // FIXME: This is ugly - use image or wait for scaling patch.
             double scaleY = (double)maxSz.y / (double)imSz.y;
 
             dc.SetUserScale(scaleY, scaleY);
 
             dc.DrawBitmap(bmp, 0, 0);
+        #endif
 
             m_valueBitmap = bmpNew;
         }

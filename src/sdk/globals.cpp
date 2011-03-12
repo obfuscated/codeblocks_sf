@@ -98,7 +98,7 @@ wxString GetStringFromPlatforms(int platforms, bool forceSeparate)
     The method has been extended with a bool to specify if the seperator should be appended at the end.
     Ultimate goal : every client gives as a value : false.
     Why : well a seperator should separate, there's nothing to separate at the end (like nothing to separate
-    at the begining, we don't put one there ...), but some client code is having problems when the separator is
+    at the beginning, we don't put one there ...), but some client code is having problems when the separator is
     not present at the end. So for compatibility issues we have as default value for the new argument true, so the
     old code has the same behaviour as before [TODO: make those clients no longer dependent on this stupid final separator behaviour]
     New code will specify false as the bool value, so hoping rather soon a search on this method will have all hits showing
@@ -112,12 +112,10 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
     {
         out << array[i];
         if(i < array.GetCount() - 1 || SeparatorAtEnd)
-        {
             out << separator;
-        }
     }
     return out;
-} // end of GetStringFromArray
+}
 
 wxArrayString GetArrayFromString(const wxString& text, const wxString& separator, bool trimSpaces)
 {
@@ -558,7 +556,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     delete [] buff;
 
     return true;
-} // end of cbRead
+}
 
 wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
 {

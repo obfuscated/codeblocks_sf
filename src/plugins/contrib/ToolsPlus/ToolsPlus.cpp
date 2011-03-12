@@ -159,10 +159,8 @@ void ToolsPlus::OnConfigure(wxCommandEvent& event)
     // Open the configuration dialog (global settings/add+remove tools)
     CmdConfigDialog *dlg = new CmdConfigDialog(NULL, this);
     int result=dlg->ShowModal();
-    if(result==wxID_OK)
-    {
+    if (result==wxID_OK)
         dlg->OnApply();
-    }
     dlg->Destroy();
 }
 
@@ -191,14 +189,14 @@ void ToolsPlus::OnSettings(wxCommandEvent& event)
 void ToolsPlus::OnSubMenuSelect(wxUpdateUIEvent& event)
 {
 //    int num=event.GetId()-ID_Menu_0;
-//    if(num>=0 && num<=9)
+//    if (num>=0 && num<=9)
 //    {
 //        m_interpnum=num;
-//        if(num==1)
+//        if (num==1)
 //        {
-//        wxString a;
-//        a<<_T("Sub menu")<<m_interpnum<<_T(" opened");
-//        cbMessageBox(a);
+//            wxString a;
+//            a<<_T("Sub menu")<<m_interpnum<<_T(" opened");
+//            cbMessageBox(a);
 //        }
 //    }
 }
@@ -206,17 +204,16 @@ void ToolsPlus::OnSubMenuSelect(wxUpdateUIEvent& event)
 void ToolsPlus::OnSetTarget(wxCommandEvent& event)
 {
     wxString wild(m_wildcard);
-    if(wild==_T(""))
+    if (wild==_T(""))
 #ifdef __WXMSW__
         wild=_T("*.*");
 #else
         wild=_T("*");
 #endif
     wxFileDialog *fd=new wxFileDialog(NULL,_("Choose the Command Target"),_T(""),_T(""),wild,wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-    if(fd->ShowModal()==wxID_OK)
-    {
+    if (fd->ShowModal()==wxID_OK)
         m_RunTarget=fd->GetPath();
-    } else
+    else
         m_RunTarget=_T("");
     delete fd;
 }
@@ -224,19 +221,19 @@ void ToolsPlus::OnSetTarget(wxCommandEvent& event)
 void ToolsPlus::OnSetMultiTarget(wxCommandEvent& event)
 {
     wxString wild(m_wildcard);
-    if(wild==_T(""))
+    if (wild==_T(""))
 #ifdef __WXMSW__
         wild=_T("*.*");
 #else
         wild=_T("*");
 #endif
     wxFileDialog *fd=new wxFileDialog(NULL,_("Choose the Command Targets"),_T(""),_T(""),wild,wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_MULTIPLE);
-    if(fd->ShowModal()==wxID_OK)
+    if (fd->ShowModal()==wxID_OK)
     {
         wxArrayString paths;
         fd->GetPaths(paths);
         m_RunTarget=paths[0];
-        for(size_t i=1;i<paths.GetCount();i++)
+        for (size_t i=1;i<paths.GetCount();i++)
             m_RunTarget+=_T(" ")+paths[i];
     }
     else
@@ -248,7 +245,7 @@ void ToolsPlus::OnSetMultiTarget(wxCommandEvent& event)
 void ToolsPlus::OnSetDirTarget(wxCommandEvent& event)
 {
     wxDirDialog *dd=new wxDirDialog(NULL,_("Choose the Target Directory"),_T(""));
-    if(dd->ShowModal()==wxID_OK)
+    if (dd->ShowModal()==wxID_OK)
         m_RunTarget=dd->GetPath();
     else
         m_RunTarget=_T("");
@@ -263,7 +260,7 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
     wxString workingdir;
     bool windowed=false;
     bool console=false;
-    if(ID>=ID_ContextMenu_0&&ID<=ID_ContextMenu_49)
+    if (ID>=ID_ContextMenu_0&&ID<=ID_ContextMenu_49)
     {
         m_interpnum=m_contextvec[ID-ID_ContextMenu_0];
         commandstr=m_ic.interps[m_interpnum].command;
@@ -271,8 +268,8 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
         windowed=(m_ic.interps[m_interpnum].mode==_("W"));
         console=(m_ic.interps[m_interpnum].mode==_("C"));
         workingdir=m_ic.interps[m_interpnum].wdir;
-    } else
-    if(ID>=ID_SubMenu_0&&ID<=ID_SubMenu_49)
+    }
+    else if (ID>=ID_SubMenu_0&&ID<=ID_SubMenu_49)
     {
         m_interpnum=ID-ID_SubMenu_0;
         commandstr=m_ic.interps[m_interpnum].command;
@@ -281,42 +278,42 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
         console=(m_ic.interps[m_interpnum].mode==_("C"));
         workingdir=m_ic.interps[m_interpnum].wdir;
         m_wildcard=m_ic.interps[m_interpnum].wildcards;
-        if(m_ic.interps[m_interpnum].command.Find(_("$file"))>0 ||
+        if (m_ic.interps[m_interpnum].command.Find(_("$file"))>0 ||
             m_ic.interps[m_interpnum].command.Find(_("$path"))>0)
         {
             m_RunTarget=wxEmptyString;
             EditorManager* edMan = Manager::Get()->GetEditorManager();
-            if(edMan && edMan->GetActiveEditor() && edMan->GetActiveEditor()->GetFilename())
+            if (edMan && edMan->GetActiveEditor() && edMan->GetActiveEditor()->GetFilename())
             {
                 wxFileName activefile(edMan->GetActiveEditor()->GetFilename());
                 wxString filename=activefile.GetFullPath();
                 wxString name=activefile.GetFullName();
-                if(WildCardListMatch(m_ic.interps[m_interpnum].wildcards,name))
+                if (WildCardListMatch(m_ic.interps[m_interpnum].wildcards,name))
                     m_RunTarget=filename;
             }
-            if(m_RunTarget==wxEmptyString)
+            if (m_RunTarget==wxEmptyString)
                 OnSetTarget(event);
-            if(!wxFileName::FileExists(m_RunTarget))
+            if (!wxFileName::FileExists(m_RunTarget))
             {
                 LogMessage(_("Tools Plus plugin: ")+m_RunTarget+_(" not found"));
                 return;
             }
         }
-        if(m_ic.interps[m_interpnum].command.Find(_("$dir"))>0)
+        if (m_ic.interps[m_interpnum].command.Find(_("$dir"))>0)
         {
             OnSetDirTarget(event);
-            if(!wxFileName::DirExists(m_RunTarget))
+            if (!wxFileName::DirExists(m_RunTarget))
             {
                 LogMessage(_("Tools Plus plugin: ")+m_RunTarget+_(" not found"));
                 return;
             }
-            if(m_RunTarget==_T(""))
+            if (m_RunTarget==_T(""))
                 return;
         }
-        if(m_ic.interps[m_interpnum].command.Find(_("$mpaths"))>0)
+        if (m_ic.interps[m_interpnum].command.Find(_("$mpaths"))>0)
         {
             OnSetMultiTarget(event);
-            if(m_RunTarget==_T(""))
+            if (m_RunTarget==_T(""))
                 return;
         }
     }
@@ -337,16 +334,16 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
     commandstr.Replace(_("$reldir"),wxFileName(m_RunTarget).GetFullName());
     commandstr.Replace(_("$path"),wxFileName(m_RunTarget).GetShortPath());
     commandstr.Replace(_("$relpath"),wxFileName(m_RunTarget).GetFullPath());
-    if(commandstr.Replace(_("$mpaths"),m_RunTarget)>0)
+    if (commandstr.Replace(_("$mpaths"),m_RunTarget)>0)
         setdir=false;
 
     // substitute user prompted values in the format: $inputstr{Enter your message}
     int promptind=commandstr.Find(_("$inputstr{"));
     wxString substitution;
-    while(promptind>=0)
+    while (promptind>=0)
     {
         int promptend=commandstr.Mid(promptind+10).Find(_("}"));
-        if(promptend<=0)
+        if (promptend<=0)
         {
             cbMessageBox(_("Malformed $inputstr in command line -- no closing '}' found: ")+commandstr);
             return;
@@ -354,13 +351,13 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
         else
             promptend++;
         wxTextEntryDialog ted(NULL,commandstr.Mid(promptind+10,promptend-1),consolename,_T(""),wxOK|wxCANCEL);
-        if(ted.ShowModal()==wxID_OK)
+        if (ted.ShowModal()==wxID_OK)
             substitution=ted.GetValue();
         else
             return;
         commandstr=commandstr.Left(promptind)+substitution+commandstr.Mid(promptind+10+promptend);
         int nextind=commandstr.Mid(promptind+substitution.Len()).Find(_("$inputstr"));
-        if(nextind>=0)
+        if (nextind>=0)
             promptind+=nextind+substitution.Len();
         else
             promptind=-1;
@@ -368,19 +365,19 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
 
     commandstr.Replace(_("$interpreter"),wxFileName(m_ic.interps[m_interpnum].command).GetShortPath());
     workingdir.Replace(_("$parentdir"),wxFileName(m_RunTarget).GetPath());
-    if(wxFileName::DirExists(m_RunTarget))
+    if (wxFileName::DirExists(m_RunTarget))
         workingdir.Replace(_("$dir"),wxFileName(m_RunTarget).GetFullPath());
 
-    if(Manager::Get()->GetMacrosManager())
+    if (Manager::Get()->GetMacrosManager())
     {
         Manager::Get()->GetMacrosManager()->RecalcVars(0, 0, 0); // hack to force-update macros
         Manager::Get()->GetMacrosManager()->ReplaceMacros(commandstr);
         Manager::Get()->GetMacrosManager()->ReplaceMacros(workingdir);
     }
     wxString olddir=wxGetCwd();
-    if(setdir && workingdir!=_T(""))
+    if (setdir && workingdir!=_T(""))
     {
-        if(!wxSetWorkingDirectory(workingdir))
+        if (!wxSetWorkingDirectory(workingdir))
         {
             LogMessage(_("Tools Plus Plugin: Can't change to working directory to ")+workingdir);
             return;
@@ -389,7 +386,7 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
 
     LogMessage(wxString::Format(_("Launching '%s': %s (in %s)"), consolename.c_str(), commandstr.c_str(), workingdir.c_str()));
 
-    if(windowed)
+    if (windowed)
     {
         wxArrayString astr;
         m_shellmgr->LaunchProcess(commandstr,consolename,_("Piped Process Control"),astr);
@@ -411,11 +408,12 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
             cmdline << baseDir << wxT("/" CONSOLE_RUNNER " ");
         cmdline<<commandstr;
 
-        if(!wxExecute(cmdline))
+        if (!wxExecute(cmdline))
             cbMessageBox(_("Command Launch Failed: ")+commandstr);
-    } else
+    }
+    else
     {
-        if(!wxExecute(commandstr))
+        if (!wxExecute(commandstr))
             cbMessageBox(_("Command Launch Failed: ")+commandstr);
     }
     wxSetWorkingDirectory(olddir);
@@ -428,10 +426,8 @@ ToolsPlus::ToolsPlus()
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(_T("ToolsPlus.zip")))
-    {
+    if (!Manager::LoadResource(_T("ToolsPlus.zip")))
         NotifyMissingFile(_T("ToolsPlus.zip"));
-    }
 }
 
 cbConfigurationPanel* ToolsPlus::GetConfigurationPanel(wxWindow* parent)
@@ -512,10 +508,10 @@ int ToolsPlus::Configure()
 void ToolsPlus::CreateMenu()
 {
     unsigned int i;
-    for(i=0;i<m_ic.interps.size();i++)
+    for (i=0;i<m_ic.interps.size();i++)
     {
         wxString tail;
-        if(m_ic.interps[i].command.Find(_("$file"))>0||
+        if (m_ic.interps[i].command.Find(_("$file"))>0||
             m_ic.interps[i].command.Find(_("$relfile"))>0||
             m_ic.interps[i].command.Find(_("$dir"))>0||
             m_ic.interps[i].command.Find(_("$dir"))>0||
@@ -527,18 +523,18 @@ void ToolsPlus::CreateMenu()
             m_ic.interps[i].command.Find(_("$mpaths"))>0)
             tail=_T("...");
         wxString menuloc=m_ic.interps[i].menu;
-        if(menuloc.StartsWith(_T(".")))
+        if (menuloc.StartsWith(_T(".")))
             continue;
         wxString newmenutext=menuloc.BeforeFirst('/');
         wxMenu *menu=m_ToolMenu;
-        while(menuloc.Find('/')!=wxNOT_FOUND)
+        while (menuloc.Find('/')!=wxNOT_FOUND)
         {
             menuloc=menuloc.AfterFirst('/');
             wxMenu *submenu=NULL;
             wxMenuItem *mi=menu->FindItem(menu->FindItem(newmenutext));
-            if(mi)
+            if (mi)
                 submenu=mi->GetSubMenu();
-            if(!submenu)
+            if (!submenu)
             {
                 submenu=new wxMenu();
                 menu->Append(wxID_ANY,newmenutext,submenu); //TODO: insert into correct position determined by priority
@@ -546,13 +542,13 @@ void ToolsPlus::CreateMenu()
             menu=submenu;
             newmenutext=menuloc.BeforeFirst('/');
         }
-        if(menuloc.IsEmpty())
+        if (menuloc.IsEmpty())
             menu->Append(ID_SubMenu_0+i,m_ic.interps[i].name);
         else
             menu->Append(ID_SubMenu_0+i,menuloc);
     }
     //m_ToolMenu->Append(ID_LaunchPythonProcess,_T("Launch Python Interpreter"),_T(""));
-    if(i>0)
+    if (i>0)
         m_ToolMenu->AppendSeparator();
     m_ToolMenu->Append(ID_ToolMenu_ShowConsole,_("&Toggle Tool Output Window"),_T(""),wxITEM_CHECK);
     m_ToolMenu->Append(ID_ToolMenu_RemoveTerminated,_("Close &Inactive Tool Pages"),_T(""));
@@ -562,18 +558,18 @@ void ToolsPlus::CreateMenu()
 void ToolsPlus::AddModuleMenuEntry(wxMenu *modmenu,int entrynum, int idref)
 {
     wxString menuloc=m_ic.interps[entrynum].cmenu;
-    if(menuloc==_T("."))
+    if (menuloc==_T("."))
         return;
     wxString newmenutext=menuloc.BeforeFirst('/');
     wxMenu *menu=modmenu;
-    while(menuloc.Find('/')!=wxNOT_FOUND)
+    while (menuloc.Find('/')!=wxNOT_FOUND)
     {
         menuloc=menuloc.AfterFirst('/');
         wxMenu *submenu=NULL;
         wxMenuItem *mi=menu->FindItem(menu->FindItem(newmenutext));
-        if(mi)
+        if (mi)
             submenu=mi->GetSubMenu();
-        if(!submenu)
+        if (!submenu)
         {
             submenu=new wxMenu();
             menu->Append(wxID_ANY,newmenutext,submenu); //TODO: insert into correct position determined by priority
@@ -581,7 +577,7 @@ void ToolsPlus::AddModuleMenuEntry(wxMenu *modmenu,int entrynum, int idref)
         menu=submenu;
         newmenutext=menuloc.BeforeFirst('/');
     }
-    if(menuloc.IsEmpty())
+    if (menuloc.IsEmpty())
         menu->Append(ID_ContextMenu_0+idref,m_ic.interps[entrynum].name);
     else
         menu->Append(ID_ContextMenu_0+idref,menuloc);
@@ -591,38 +587,36 @@ void ToolsPlus::AddModuleMenuEntry(wxMenu *modmenu,int entrynum, int idref)
 void ToolsPlus::UpdateMenu(bool replace_old_tools)
 {
     //delete the old menu items
-    if(!m_ToolMenu)
+    if (!m_ToolMenu)
         return;
     size_t count=m_ToolMenu->GetMenuItemCount();
-    for(size_t i=0;i<count;i++)
+    for (size_t i=0;i<count;i++)
         m_ToolMenu->Destroy(m_ToolMenu->FindItemByPosition(0));
     CreateMenu();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
     cfg->Write(_T("HideToolsMenu"),replace_old_tools);
-    if(replace_old_tools && m_OldToolMenu==NULL)
+    if (replace_old_tools && m_OldToolMenu==NULL)
     {
         int pos = m_MenuBar->FindMenu(_("T&ools+"));
-        if(pos!=wxNOT_FOUND)
-        {
+        if (pos!=wxNOT_FOUND)
             m_MenuBar->Remove(pos);
-        }
         pos = m_MenuBar->FindMenu(_("&Tools"));
-        if(pos!=wxNOT_FOUND)
+        if (pos!=wxNOT_FOUND)
         {
             m_OldToolMenu=m_MenuBar->GetMenu(pos);
             m_MenuBar->Remove(pos);
             m_MenuBar->Insert(pos, m_ToolMenu, _("&Tools"));
         }
     }
-    if(!replace_old_tools && m_OldToolMenu!=NULL)
+    if (!replace_old_tools && m_OldToolMenu!=NULL)
     {
         int pos = m_MenuBar->FindMenu(_("&Tools"));
         m_MenuBar->Remove(pos);
         m_MenuBar->Insert(pos, m_OldToolMenu, _("&Tools"));
         m_OldToolMenu=NULL;
         pos = m_MenuBar->FindMenu(_("P&lugins"));
-        if(pos!=wxNOT_FOUND)
+        if (pos!=wxNOT_FOUND)
             m_MenuBar->Insert(pos, m_ToolMenu, _("T&ools+"));
     }
 
@@ -639,10 +633,10 @@ void ToolsPlus::BuildMenu(wxMenuBar* menuBar)
 	CreateMenu();
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
     bool replace_old_tools=cfg->ReadBool(_T("HideToolsMenu"),false);
-    if(replace_old_tools)
+    if (replace_old_tools)
     {
         int pos = menuBar->FindMenu(_("&Tools"));
-        if(pos!=wxNOT_FOUND)
+        if (pos!=wxNOT_FOUND)
         {
             m_OldToolMenu=menuBar->GetMenu(pos);
             menuBar->Remove(pos);
@@ -653,7 +647,7 @@ void ToolsPlus::BuildMenu(wxMenuBar* menuBar)
     {
         m_OldToolMenu=NULL;
         int pos = menuBar->FindMenu(_("P&lugins"));
-        if(pos!=wxNOT_FOUND)
+        if (pos!=wxNOT_FOUND)
             menuBar->Insert(pos, m_ToolMenu, _("T&ools+"));
         else
         {
@@ -670,23 +664,23 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 	//and append any items you need in the menu...
 	//TIP: for consistency, add a separator as the first item...
 	m_contextvec.Empty();
-	if(type==mtProjectManager)
+	if (type==mtProjectManager)
 	{
-	    if(data)
+	    if (data)
 	    {
-            if(data->GetKind()==FileTreeData::ftdkProject)
+            if (data->GetKind()==FileTreeData::ftdkProject)
             {
                 cbProject* prj = data->GetProject();
                 wxString filename=wxFileName(prj->GetFilename()).GetPath();
                 wxString name=_T("");
                 size_t sep_pos=menu->GetMenuItemCount();
                 size_t added=0;
-                for(unsigned int i=0;i<m_ic.interps.size();i++)
+                for (unsigned int i=0;i<m_ic.interps.size();i++)
                 {
-                    if(WildCardListMatch(m_ic.interps[i].wildcards,name))
+                    if (WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
-                        if(m_ic.interps[i].command.Find(_("$dir"))>=0 ||
+                        if (m_ic.interps[i].command.Find(_("$dir"))>=0 ||
                             m_ic.interps[i].command.Find(_("$reldir"))>=0 ||
                             m_ic.interps[i].command.Find(_("$path"))>=0 ||
                             m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
@@ -699,23 +693,24 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                         }
                     }
                 }
-                if(added>0)
+                if (added>0)
                     menu->InsertSeparator(sep_pos);
             }
-            if(data->GetKind()==FileTreeData::ftdkFile)
+            if (data->GetKind()==FileTreeData::ftdkFile)
             {
                 ProjectFile *f=data->GetProjectFile();
-                if(f)
+                if (f)
                 {
                     wxString filename=f->file.GetFullPath();
                     wxString name=f->file.GetFullName();
                     size_t sep_pos=menu->GetMenuItemCount();
                     size_t added=0;
-                    for(unsigned int i=0;i<m_ic.interps.size();i++)
-                        if(WildCardListMatch(m_ic.interps[i].wildcards,name))
+                    for (unsigned int i=0;i<m_ic.interps.size();i++)
+                    {
+                        if (WildCardListMatch(m_ic.interps[i].wildcards,name))
                         {
                             m_RunTarget=filename;
-                            if(m_ic.interps[i].command.Find(_("$file"))>=0 ||
+                            if (m_ic.interps[i].command.Find(_("$file"))>=0 ||
                                 m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
                                 m_ic.interps[i].command.Find(_("$fname"))>=0 ||
                                 m_ic.interps[i].command.Find(_("$fext"))>=0 ||
@@ -729,13 +724,14 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                                 added++;
                             }
                         }
-                    if(added>0)
+                    }
+                    if (added>0)
                         menu->InsertSeparator(sep_pos);
                 }
             }
 	    }
 	}
-	if(type==mtEditorManager) // also type==mtOpenFilesList - not sure how to find out which file has been right clicked.
+	if (type==mtEditorManager) // also type==mtOpenFilesList - not sure how to find out which file has been right clicked.
 	{
         EditorManager* edMan = Manager::Get()->GetEditorManager();
         wxFileName activefile(edMan->GetActiveEditor()->GetFilename());
@@ -743,45 +739,46 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
         wxString name=activefile.GetFullName();
         size_t sep_pos=menu->GetMenuItemCount();
         size_t added=0;
-        for(unsigned int i=0;i<m_ic.interps.size();i++)
+        for (unsigned int i=0;i<m_ic.interps.size();i++)
         {
-            if(WildCardListMatch(m_ic.interps[i].wildcards,name))
+            if (WildCardListMatch(m_ic.interps[i].wildcards,name))
             {
                 m_RunTarget=filename;
-                if(m_ic.interps[i].command.Find(_("$file"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$fname"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$fext"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$path"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
-                    m_ic.interps[i].command.Find(_("$mpaths"))>=0)
-                {
-                    wxString menutext=m_ic.interps[i].name;
-                    m_contextvec.Add(i);
-                    AddModuleMenuEntry(menu,i,added);
-                    added++;
-                }
+                    if (m_ic.interps[i].command.Find(_("$file"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$fname"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$fext"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$path"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
+                        m_ic.interps[i].command.Find(_("$mpaths"))>=0)
+                    {
+                        wxString menutext=m_ic.interps[i].name;
+                        m_contextvec.Add(i);
+                        AddModuleMenuEntry(menu,i,added);
+                        added++;
+                    }
             }
         }
-        if(added>0)
+        if (added>0)
             menu->InsertSeparator(sep_pos);
 	}
-    if(type==mtUnknown) //Assuming file explorer -- fileexplorer fills the filetreedata with ftdkFile or ftdkFolder as "kind", the folder is the full path of the entry
-	    if(data)
+    if (type==mtUnknown) //Assuming file explorer -- fileexplorer fills the filetreedata with ftdkFile or ftdkFolder as "kind", the folder is the full path of the entry
+    {
+	    if (data)
 	    {
             size_t sep_pos=menu->GetMenuItemCount();
             size_t added=0;
-            if(data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
+            if (data->GetKind()==FileTreeData::ftdkFile)  //right clicked on folder in file explorer
             {
                 wxFileName f(data->GetFolder());
                 wxString filename=f.GetFullPath();
                 wxString name=f.GetFullName();
-                for(unsigned int i=0;i<m_ic.interps.size();i++)
+                for (unsigned int i=0;i<m_ic.interps.size();i++)
                 {
-                    if(WildCardListMatch(m_ic.interps[i].wildcards,name))
+                    if (WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
-                        if(m_ic.interps[i].command.Find(_("$file"))>=0 ||
+                        if (m_ic.interps[i].command.Find(_("$file"))>=0 ||
                             m_ic.interps[i].command.Find(_("$relfile"))>=0 ||
                             m_ic.interps[i].command.Find(_("$fname"))>=0 ||
                             m_ic.interps[i].command.Find(_("$fext"))>=0 ||
@@ -797,17 +794,17 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                     }
                 }
             }
-            if(data->GetKind()==FileTreeData::ftdkFolder) //right clicked on folder in file explorer
+            if (data->GetKind()==FileTreeData::ftdkFolder) //right clicked on folder in file explorer
             {
                 wxFileName f(data->GetFolder());
                 wxString filename=f.GetFullPath();
                 wxString name=f.GetFullName();
-                for(unsigned int i=0;i<m_ic.interps.size();i++)
+                for (unsigned int i=0;i<m_ic.interps.size();i++)
                 {
-                    if(WildCardListMatch(m_ic.interps[i].wildcards,name))
+                    if (WildCardListMatch(m_ic.interps[i].wildcards,name))
                     {
                         m_RunTarget=filename;
-                        if(m_ic.interps[i].command.Find(_("$dir"))>=0 ||
+                        if (m_ic.interps[i].command.Find(_("$dir"))>=0 ||
                             m_ic.interps[i].command.Find(_("$reldir"))>=0 ||
                             m_ic.interps[i].command.Find(_("$path"))>=0 ||
                             m_ic.interps[i].command.Find(_("$relpath"))>=0 ||
@@ -821,30 +818,30 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                     }
                 }
             }
-            if(data->GetKind()==FileTreeData::ftdkVirtualGroup) //right clicked on multiple selections in file explorer
+            if (data->GetKind()==FileTreeData::ftdkVirtualGroup) //right clicked on multiple selections in file explorer
             {
                 wxString paths=data->GetFolder(); //get folder contains a space separated list of the files/directories selected
-                for(unsigned int i=0;i<m_ic.interps.size();i++)
+                for (unsigned int i=0;i<m_ic.interps.size();i++)
                 {
                     bool match=true; // all selected items must have names that match the wildcard for this grouping
                     wxString pathlist=paths;
                     wxString ipath=paths.BeforeFirst('*'); // '*' separated list
-                    if(m_ic.interps[i].wildcards!=_T(""))
+                    if (m_ic.interps[i].wildcards!=_T(""))
                     {
-                        while(match && pathlist!=_T(""))
+                        while (match && pathlist!=_T(""))
                         {
                             wxString name=wxFileName(ipath).GetFullName();
-                            if(ipath!=_T("") && !WildCardListMatch(m_ic.interps[i].wildcards,ipath))
+                            if (ipath!=_T("") && !WildCardListMatch(m_ic.interps[i].wildcards,ipath))
                                 match=false;
                             pathlist=pathlist.AfterFirst('*');
                             ipath=pathlist.BeforeFirst('*');
                         }
                     }
-                    if(match)
+                    if (match)
                     {
                         m_RunTarget=paths;
                         //TODO: need a m_TargetParent to allow the FileExplorer to define the parent of a selection (usually the root of the fileexplorer view?)
-                        if(m_ic.interps[i].command.Find(_("$mpaths"))>=0)
+                        if (m_ic.interps[i].command.Find(_("$mpaths"))>=0)
                         {
                             wxString menutext=m_ic.interps[i].name;
                             m_contextvec.Add(i);
@@ -854,8 +851,9 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                     }
                 }
             }
-            if(added>0)
+            if (added>0)
                 menu->InsertSeparator(sep_pos);
 	    }
+    }
 }
 

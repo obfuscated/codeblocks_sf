@@ -2295,6 +2295,7 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 #endif
 
 //----------------------------------------------------------------------
+
 /* C::B begin */
 #if !wxCHECK_VERSION(2, 9, 0) && !defined(_WIN64)
 typedef long wxIntPtr;

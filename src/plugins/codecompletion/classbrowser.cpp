@@ -88,7 +88,9 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED  (XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeAll"), ClassBrowser::OnTreeItemRightClick)
     EVT_TREE_ITEM_EXPANDING  (XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
+#ifndef CC_NO_COLLAPSE_ITEM
     EVT_TREE_ITEM_COLLAPSING (XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
+#endif // CC_NO_COLLAPSE_ITEM
     EVT_TREE_SEL_CHANGED     (XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
 
     EVT_TEXT_ENTER(XRCID("cmbSearch"), ClassBrowser::OnSearch)
@@ -791,19 +793,25 @@ void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
 {
     if (m_BuilderThread)
         m_BuilderThread->ExpandItem(event.GetItem());
+#ifndef CC_NO_COLLAPSE_ITEM
     event.Allow();
+#endif // CC_NO_COLLAPSE_ITEM
 }
 
+#ifndef CC_NO_COLLAPSE_ITEM
 void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
 {
     if (m_BuilderThread)
         m_BuilderThread->CollapseItem(event.GetItem());
     event.Allow();
 }
+#endif // CC_NO_COLLAPSE_ITEM
 
 void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
 {
     if (m_BuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
         m_BuilderThread->SelectItem(event.GetItem());
+#ifndef CC_NO_COLLAPSE_ITEM
     event.Allow();
+#endif // CC_NO_COLLAPSE_ITEM
 }
