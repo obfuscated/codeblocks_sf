@@ -10,6 +10,8 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libexporter.la
 
+libexporter_la_CPPFLAGS = -DwxPDF_USE_WXMODULE=0
+
 libexporter_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libexporter_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
