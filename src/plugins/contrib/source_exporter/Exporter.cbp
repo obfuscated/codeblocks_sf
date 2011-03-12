@@ -20,7 +20,6 @@
 				</Compiler>
 			</Target>
 			<Target title="makefont">
-				<Option platforms="" />
 				<Option output="wxPdfDocument\makefont\makefont" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\makefont" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\makefont" />
@@ -33,7 +32,6 @@
 				</Linker>
 			</Target>
 			<Target title="minimal">
-				<Option platforms="" />
 				<Option output="wxPdfDocument\samples\minimal\minimal" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\minimal" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\minimal" />
@@ -46,7 +44,6 @@
 				</Linker>
 			</Target>
 			<Target title="pdfdc">
-				<Option platforms="" />
 				<Option output="wxPdfDocument\samples\pdfdcl\pdfdc" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\pdfdc" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\pdfdc" />
@@ -94,7 +91,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxPdfDocument;makefont;minimal;pdfdc;default;" />
+			<Add alias="All" targets="wxPdfDocument;default;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
