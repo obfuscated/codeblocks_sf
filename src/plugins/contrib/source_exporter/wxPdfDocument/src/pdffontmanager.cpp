@@ -1654,6 +1654,7 @@ wxPdfFontManagerBase::AddFont(wxPdfFontData* fontData, wxPdfFont& font)
 
 // --- wxPdfFontManager
 
+/* C::B begin */
 #ifndef wxPDF_USE_WXMODULE
   #define wxPDF_USE_WXMODULE 1
 #endif
@@ -1663,6 +1664,7 @@ wxPdfFontManager* wxPdfFontManager::ms_fontManager = NULL;
 #else
 wxPdfFontManager* wxPdfFontManager::ms_fontManager = new wxPdfFontManager();
 #endif // wxPDF_USE_WXMODULE
+/* C::B end */
 
 wxPdfFontManager::wxPdfFontManager()
 {
@@ -1672,6 +1674,7 @@ wxPdfFontManager::wxPdfFontManager()
 wxPdfFontManager::~wxPdfFontManager()
 {
   delete m_fontManagerBase;
+/* C::B begin */
 #if !wxPDF_USE_WXMODULE
   if ( ms_fontManager )
   {
@@ -1679,6 +1682,7 @@ wxPdfFontManager::~wxPdfFontManager()
     ms_fontManager = NULL;
   }
 #endif // !wxPDF_USE_WXMODULE
+/* C::B end */
 }
 
 wxPdfFontManager*
@@ -1831,9 +1835,11 @@ wxPdfFontManager::GetEncoding(const wxString& encodingName)
 // A module to allow initialization/cleanup of wxPdfDocument
 // singletons without calling these functions from app.cpp.
 
+/* C::B begin */
 #if wxPDF_USE_WXMODULE
 
 #include <wx/module.h>
+/* C::B end */
 
 class WXDLLIMPEXP_PDFDOC wxPdfDocumentModule : public wxModule
 {
@@ -1862,4 +1868,6 @@ void wxPdfDocumentModule::OnExit()
   wxPdfFontManager::ms_fontManager = NULL;
 }
 
+/* C::B begin */
 #endif // wxPDF_USE_WXMODULE
+/* C::B end */

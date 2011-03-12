@@ -37,6 +37,7 @@
 #include "wx/image.h"
 #include "wx/accel.h"
 #include "wx/pdfdc.h"
+#include "wx/pdffontmanager.h"
 
 #if wxTEST_POSTSCRIPT_IN_MSW
 #include "wx/generic/printps.h"
@@ -84,10 +85,19 @@ bool WritePageHeader(wxPrintout *printout, wxDC *dc, const wxChar *text, float m
 
 bool MyApp::OnInit(void)
 {
-    wxInitAllImageHandlers();
+  wxInitAllImageHandlers();
 
-    wxFileName exePath = wxStandardPaths::Get().GetExecutablePath();
-    wxSetWorkingDirectory(exePath.GetPath());
+  // Set the font path and working directory
+  wxFileName exePath = wxStandardPaths::Get().GetExecutablePath();
+#ifdef __WXMAC__
+  wxString fontPath = exePath.GetPathWithSep() + wxT("../../../../../lib/fonts");
+  wxString cwdPath  = exePath.GetPathWithSep() + wxT("../../..");
+#else
+  wxString fontPath = exePath.GetPathWithSep() + wxT("../../lib/fonts");
+  wxString cwdPath  = exePath.GetPath();
+#endif
+  wxPdfFontManager::GetFontManager()->AddSearchPath(fontPath);
+  wxSetWorkingDirectory(cwdPath);
 
 #if wxCHECK_VERSION(2,9,0)
     m_testFont.Create(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -211,16 +221,24 @@ END_EVENT_TABLE()
 MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, const wxSize& size):
 wxFrame(frame, wxID_ANY, title, pos, size)
 {
+#ifdef __WXMAC__
+    wxString rscPath = wxStandardPaths::Get().GetResourcesDir() + wxFileName::GetPathSeparator();
+#else
+    wxString rscPath = wxEmptyString;
+#endif
     canvas = NULL;
     m_angle = 30;
-    wxImage image( wxT("smile.jpg") );
-    image.SetAlpha();
-    int i,j;
-    for (i = 0; i < image.GetWidth(); i++)
-       for (j = 0; j < image.GetHeight(); j++)
+    wxImage image(rscPath + wxT("smile.jpg"));
+    if (image.IsOk())
+    {
+      image.SetAlpha();
+      int i,j;
+      for (i = 0; i < image.GetWidth(); i++)
+        for (j = 0; j < image.GetHeight(); j++)
           image.SetAlpha( i, j, 50 );
-    m_bitmap = wxBitmap(image);
-    m_imgUp.LoadFile(wxT("up.gif"));
+      m_bitmap = wxBitmap(image);
+      m_imgUp.LoadFile(rscPath + wxT("up.gif"));
+    }
 }
 
 void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
