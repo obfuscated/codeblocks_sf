@@ -8,24 +8,19 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxPdfDocument">
-				<Option output="..\..\..\devel\wxPdfDocument" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
+				<Option output="wxPdfDocument\lib\libwxPdfDocument" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\wxPdfDocument" />
-				<Option type="3" />
+				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-fPIC" />
-					<Add option="-DPIC" />
+					<Add option="-DWXMAKINGLIB_PDFDOC" />
 				</Compiler>
-				<Linker>
-					<Add library="wxmsw28$(WX_SUFFIX)" />
-					<Add library="gdi32" />
-				</Linker>
 			</Target>
 			<Target title="makefont">
+				<Option platforms="" />
 				<Option output="wxPdfDocument\makefont\makefont" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\makefont" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\makefont" />
@@ -38,6 +33,7 @@
 				</Linker>
 			</Target>
 			<Target title="minimal">
+				<Option platforms="" />
 				<Option output="wxPdfDocument\samples\minimal\minimal" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\minimal" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\minimal" />
@@ -50,6 +46,7 @@
 				</Linker>
 			</Target>
 			<Target title="pdfdc">
+				<Option platforms="" />
 				<Option output="wxPdfDocument\samples\pdfdcl\pdfdc" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\pdfdc" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\pdfdc" />
@@ -69,7 +66,6 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
-				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -83,7 +79,9 @@
 					<Add library="codeblocks" />
 					<Add library="wxPdfDocument" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="gdi32" />
 					<Add directory="..\..\..\devel" />
+					<Add directory="wxPdfDocument\lib" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\Exporter.zip manifest.xml" />
