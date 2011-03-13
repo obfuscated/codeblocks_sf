@@ -165,6 +165,27 @@ void cbAuiNotebook::ResetTabCtrlEvents()
             m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
     }
 }
+void cbAuiNotebook::FocusActiveTabCtrl()
+{
+    UpdateTabControlsArray();
+    int sel = GetSelection();
+    if (sel < 0)
+        return;
+
+    wxWindow* wnd = GetPage(static_cast<size_t>(sel));
+    if (!wnd)
+        return;
+
+    for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
+    {
+        wxWindow* win = m_TabCtrls[i]->GetWindowFromIdx(m_TabCtrls[i]->GetActivePage());
+        if (win && (win == wnd) )
+        {
+            m_TabCtrls[i]->SetFocus();
+            break;
+        }
+    }
+}
 
 void cbAuiNotebook::SetZoom(int zoom)
 {

@@ -122,6 +122,9 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param zoom zoomfactor to use
          */
         void SetZoom(int zoom);
+        /** \brief Set Focus on the tabCtrl belonging to the active tab
+         */
+        void FocusActiveTabCtrl();
     protected:
         /** \brief Minmize free horizontal page of tabCtrl
          *

@@ -4196,40 +4196,22 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
 void MainFrame::OnFocusEditor(wxCommandEvent& /*event*/)
 {
     EditorManager* edman = Manager::Get()->GetEditorManager();
-    cbEditor* ed = edman ? edman->GetBuiltinEditor(edman->GetActiveEditor()) : 0;
-    if (ed)
-        ed->GetControl()->SetFocus();
+    cbAuiNotebook* nb = edman?edman->GetNotebook():nullptr;
+    if (nb)
+        nb->FocusActiveTabCtrl();
 }
 
 void MainFrame::OnFocusManagement(wxCommandEvent& /*event*/)
 {
-    if (m_pPrjMan && m_pPrjMan->GetNotebook())
-    {
-        cbAuiNotebook* nb = m_pPrjMan->GetNotebook();
-        int sel = nb->GetSelection();
-        if (sel >= 0)
-        {
-            nb->GetPage(static_cast<size_t>(sel));
-            wxWindow* win = nb->GetPage(static_cast<size_t>(sel));
-            if (win)
-                win->SetFocus();
-        }
-    }
+    cbAuiNotebook* nb = m_pPrjMan ? m_pPrjMan->GetNotebook():nullptr;
+    if(nb)
+        nb->FocusActiveTabCtrl();
 }
 
 void MainFrame::OnFocusLogsAndOthers(wxCommandEvent& /*event*/)
 {
     if (m_pInfoPane)
-    {
-        int sel = m_pInfoPane->GetSelection();
-        if (sel >= 0)
-        {
-            m_pInfoPane->GetPage(static_cast<size_t>(sel));
-            wxWindow* win = m_pInfoPane->GetPage(static_cast<size_t>(sel));
-            if (win)
-                win->SetFocus();
-        }
-    }
+        m_pInfoPane->FocusActiveTabCtrl();
 }
 
 void MainFrame::OnSwitchTabs(wxCommandEvent& /*event*/)
