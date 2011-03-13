@@ -1808,7 +1808,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
         return;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    target->SetTabCtrlHeight(-1);
+    target->SetTabCtrlHeight(0);
 
     long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
@@ -1829,6 +1829,8 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
             target->SetArtProvider(new wxAuiDefaultTabArt());
             break;
     }
+
+    target->SetTabCtrlHeight(-1);
 
     nbstyle = defaultStyle;
     if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
