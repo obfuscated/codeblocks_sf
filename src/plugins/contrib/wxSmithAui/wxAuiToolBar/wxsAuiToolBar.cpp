@@ -171,6 +171,8 @@ wxObject* wxsAuiToolBar::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 {
     UpdateCurrentSelection();
     wxsAuiManager* AuiManager = (wxsAuiManager*) GetParent();
+    if (!AuiManager)
+        return nullptr;
     wxsAuiPaneInfoExtra* PaneInfo = (wxsAuiPaneInfoExtra*) AuiManager->GetChildExtra(AuiManager->GetChildIndex(this));
     wxSmithAuiToolBar* AuiToolBar;
 
