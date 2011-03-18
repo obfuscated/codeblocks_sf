@@ -708,11 +708,13 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
         menu.AppendSeparator();
         menu.Append(idMenuFindFile,            _("Find file..."));
-        menu.AppendSeparator();
-        menu.Append(idMenuTreeCloseWorkspace,  _("Close workspace"));
 
         // ask any plugins to add items in this menu
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, NULL);
+
+        // this menu items should be always the last one
+        menu.AppendSeparator();
+        menu.Append(idMenuTreeCloseWorkspace,  _("Close workspace"));
     }
 
     if (menu.GetMenuItemCount() != 0)
