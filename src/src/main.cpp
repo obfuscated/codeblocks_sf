@@ -2022,8 +2022,9 @@ void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool can
         query << question;
     }
 
-
-    if (cbMessageBox(query, _("Question"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
+    AnnoyingDialog dialog(_("Question"), query, wxART_QUESTION);
+    PlaceWindow(&dialog);
+    if (dialog.ShowModal() == wxID_YES)
     {
         hist->RemoveFileFromHistory(id);
         // update start here page
