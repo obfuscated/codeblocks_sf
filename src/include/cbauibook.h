@@ -278,11 +278,11 @@ class cbAuiNotebook : public wxAuiNotebook
          * and mouseleave-event.
          */
         int m_LastSelected;
-        /** \brief Last focused window
+        /** \brief Id of last focused window
          *
          * Used to restore the focus after a mouseleave-event on wxTabCtrl.
          */
-        wxWindow* m_pLastFocused;
+        long m_LastId;
 #endif // #ifdef __WXMSW__
         /** \brief If false, tooltips are temporary forbidden
          *

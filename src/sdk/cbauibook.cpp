@@ -57,7 +57,7 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_LastTime(0),
 #ifdef __WXMSW__
           m_LastSelected(wxNOT_FOUND),
-          m_pLastFocused(nullptr),
+          m_LastId(0),
 #endif
           m_AllowToolTips(false),
           m_OverTabCtrl(false),
@@ -316,8 +316,8 @@ void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
             nb->m_OverTabCtrl = true;
 #ifdef __WXMSW__
             if (   (nb->m_pToolTip == nullptr)
-                && (nb->m_pLastFocused == nullptr)
-                && (nb->m_LastSelected == wxNOT_FOUND) )
+                && (nb->m_LastSelected == wxNOT_FOUND)
+                && (nb->m_LastId == 0) )
             {
                 nb->StoreFocus();
                 tabCtrl->SetFocus();
@@ -353,7 +353,7 @@ void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
 #ifdef __WXMSW__
 bool cbAuiNotebook::IsFocusStored(wxWindow* page)
 {
-    wxWindow* win = m_pLastFocused;
+    wxWindow* win = FindWindowById(m_LastId);
     while (win)
     {
         if (win == page)
@@ -368,8 +368,12 @@ bool cbAuiNotebook::IsFocusStored(wxWindow* page)
 
 void cbAuiNotebook::StoreFocus()
 {
-    // save last focused window and last selected tab
-    m_pLastFocused = wxWindow::FindFocus();
+    // save Id of last focused window and last selected tab
+    wxWindow* win = wxWindow::FindFocus();
+    if(win)
+        m_LastId = win->GetId();
+    else
+        m_LastId = 0;
     m_LastSelected = GetSelection();
 }
 
@@ -382,11 +386,16 @@ void cbAuiNotebook::RestoreFocus()
         if (win)
             win->SetFocus();
     }
-    // otherwise, we restore the former focus
-    else if (m_pLastFocused != nullptr)
-        m_pLastFocused->SetFocus();
-    m_pLastFocused = nullptr;
+    // otherwise, we restore the former focus, if the window
+    // with the saved Id still exists
+    else if (m_LastId != 0)
+    {
+        wxWindow* win = FindWindowById(m_LastId);
+        if (win)
+            win->SetFocus();
+    }
     m_LastSelected = wxNOT_FOUND;
+    m_LastId = 0;
 }
 #endif // #ifdef __WXMSW__
 
@@ -565,8 +574,8 @@ bool cbAuiNotebook::DeletePage(size_t page)
 #ifdef __WXMSW__
     if (IsFocusStored(GetPage(page)))
     {
-        m_pLastFocused = nullptr;
         m_LastSelected = wxNOT_FOUND;
+        m_LastId = 0;
     }
 #endif // #ifdef __WXMSW__
     bool result = wxAuiNotebook::DeletePage(page);
@@ -579,8 +588,8 @@ bool cbAuiNotebook::RemovePage(size_t page)
 #ifdef __WXMSW__
     if (IsFocusStored(GetPage(page)))
     {
-        m_pLastFocused = nullptr;
         m_LastSelected = wxNOT_FOUND;
+        m_LastId = 0;
     }
 #endif // #ifdef __WXMSW__
     bool result = wxAuiNotebook::RemovePage(page);
