@@ -4207,7 +4207,7 @@ void MainFrame::OnFocusEditor(wxCommandEvent& /*event*/)
 void MainFrame::OnFocusManagement(wxCommandEvent& /*event*/)
 {
     cbAuiNotebook* nb = m_pPrjMan ? m_pPrjMan->GetNotebook():nullptr;
-    if(nb)
+    if (nb)
         nb->FocusActiveTabCtrl();
 }
 

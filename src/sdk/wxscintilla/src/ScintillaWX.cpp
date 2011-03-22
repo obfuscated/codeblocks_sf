@@ -243,6 +243,7 @@ static wxTextFileType wxConvertEOLMode(int scintillaMode)
 #endif // wxUSE_DATAOBJ
 
 
+/* C::B begin */
 static int wxCountLines(const char* text, int scintillaMode)
 {
     char eolchar;
@@ -270,6 +271,7 @@ static int wxCountLines(const char* text, int scintillaMode)
 
     return count;
 }
+/* C::B end */
 
 //----------------------------------------------------------------------
 // Constructor/Destructor
@@ -625,7 +627,7 @@ void ScintillaWX::Paste() {
 }
 
 
-void ScintillaWX::CopyToClipboard (const SelectionText& st) {
+void ScintillaWX::CopyToClipboard(const SelectionText& st) {
 #if wxUSE_CLIPBOARD
     if ( !st.len )
         return;

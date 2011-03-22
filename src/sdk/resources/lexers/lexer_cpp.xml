@@ -82,7 +82,7 @@
 						bg="255,0,0"
 						bold="1"/>
 				<Style name="wxSmith-generated code"
-						index="20"
+						index="99"
 						fg="64,64,128"
 						bg="255,255,255"
 						italics="1"/>

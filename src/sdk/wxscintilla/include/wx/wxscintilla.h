@@ -20,7 +20,7 @@
 #ifndef __WXSCINTILLA_H__
 #define __WXSCINTILLA_H__
 
-#define wxSCINTILLA_VERSION _T("2.23.0")
+#define wxSCINTILLA_VERSION _T("2.25.0")
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
@@ -258,7 +258,9 @@
 #define wxSCI_STATUS_FAILURE 1
 #define wxSCI_STATUS_BADALLOC 2
 #define wxSCI_CURSORNORMAL -1
+#define wxSCI_CURSORARROW 2
 #define wxSCI_CURSORWAIT 4
+#define wxSCI_CURSORREVERSEARROW 7
 
 // Constants for use with SetVisiblePolicy, similar to SetCaretPolicy.
 #define wxSCI_VISIBLE_SLOP 0x01
@@ -351,6 +353,11 @@
 #define wxSCI_MOD_CONTAINER 0x40000
 #define wxSCI_MOD_LEXERSTATE 0x80000
 #define wxSCI_MODEVENTMASKALL 0xFFFFF
+
+#define wxSCI_UPDATE_CONTENT 0x1
+#define wxSCI_UPDATE_SELECTION 0x2
+#define wxSCI_UPDATE_V_SCROLL 0x4
+#define wxSCI_UPDATE_H_SCROLL 0x8
 
 /* C::B begin */
 #define wxSCI_LASTLINEUNDOREDO wxSCI_MULTILINEUNDOREDO
@@ -485,8 +492,9 @@
 #define wxSCI_LEX_MARKDOWN 98
 #define wxSCI_LEX_TXT2TAGS 99
 #define wxSCI_LEX_A68K 100
+#define wxSCI_LEX_MODULA 101
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_A68K // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_MODULA // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -532,8 +540,10 @@
 #define wxSCI_C_COMMENTDOCKEYWORD 17
 #define wxSCI_C_COMMENTDOCKEYWORDERROR 18
 #define wxSCI_C_GLOBALCLASS 19
+#define wxSCI_C_STRINGRAW 20
+#define wxSCI_C_TRIPLEVERBATIM 21
 /* C::B begin */
-#define wxSCI_C_WXSMITH 20
+#define wxSCI_C_WXSMITH 99
 /* C::B end */
 
 // Lexical states for SCLEX_D
@@ -1061,6 +1071,7 @@
 #define wxSCI_ASM_CHARACTER 12
 #define wxSCI_ASM_STRINGEOL 13
 #define wxSCI_ASM_EXTINSTRUCTION 14
+#define wxSCI_ASM_COMMENTDIRECTIVE 15
 
 // Lexical states for SCLEX_FORTRAN
 #define wxSCI_F_DEFAULT 0
@@ -2000,6 +2011,26 @@
 #define wxSCI_A68K_COMMENT_SPECIAL 17
 #define wxSCI_A68K_COMMENT_DOXYGEN 18
 
+// Lexical states for SCLEX_MODULA
+#define wxSCI_MODULA_DEFAULT 0
+#define wxSCI_MODULA_COMMENT 1
+#define wxSCI_MODULA_DOXYCOMM 2
+#define wxSCI_MODULA_DOXYKEY 3
+#define wxSCI_MODULA_KEYWORD 4
+#define wxSCI_MODULA_RESERVED 5
+#define wxSCI_MODULA_NUMBER 6
+#define wxSCI_MODULA_BASENUM 7
+#define wxSCI_MODULA_FLOAT 8
+#define wxSCI_MODULA_STRING 9
+#define wxSCI_MODULA_STRSPEC 10
+#define wxSCI_MODULA_CHAR 11
+#define wxSCI_MODULA_CHARSPEC 12
+#define wxSCI_MODULA_PROC 13
+#define wxSCI_MODULA_PRAGMA 14
+#define wxSCI_MODULA_PRGKEY 15
+#define wxSCI_MODULA_OPERATOR 16
+#define wxSCI_MODULA_BADSTR 17
+
 //}}}
 //----------------------------------------------------------------------
 
@@ -2542,6 +2573,12 @@ public:
 
     // Retrieve the mouse click sensitivity of a margin.
     bool GetMarginSensitive(int margin) const;
+
+    // Set the cursor shown when the mouse is inside a margin.
+    void SetMarginCursorN(int margin, int cursor);
+
+    // Retrieve the cursor shown in a margin.
+    int GetMarginCursorN(int margin) const;
 
     // Clear all the styles and make equivalent to the global default style.
     void StyleClearAll();
@@ -4189,16 +4226,6 @@ public:
     // Set the left and right margin in the edit area, measured in pixels.
     void SetMargins(int left, int right);
 
-/* C::B begin */
-    // Retrieve the start and end positions of the current selection.
-#ifdef SWIG
-    void GetSelection (long* OUTPUT, long* OUTPUT);
-#else
-    void GetSelection (long *from, long *to);
-    // kept for compatibility only
-//    void GetSelection(int *from, int *to)
-#endif
-/* C::B end */
 
     // Retrieve the point in the window where a position is displayed.
     wxPoint PointFromPosition(int pos);
@@ -4217,7 +4244,9 @@ public:
     // NB: this method is not really const as it can modify the control but it
     //     has to be declared as such as it's called from both const and
     //     non-const methods and we can't distinguish between the two
+/* C::B begin */
     wxIntPtr SendMsg(unsigned int msg, wxUIntPtr wp=0, wxIntPtr lp=0) const;
+/* C::B end */
 
 
     // Set the vertical scrollbar to use instead of the ont that's built-in.
@@ -4297,9 +4326,36 @@ public:
 #endif
 
 
-//----------------------------------------------------------------------
 
-#ifndef SWIG
+#ifdef SWIG
+    void GetSelection(long* OUTPUT, long* OUTPUT) const;
+#else
+    // Retrieve the start and end positions of the current selection.
+    virtual void GetSelection(long *from, long *to) const
+    {
+        if ( from )
+            *from = GetSelectionStart();
+        if ( to )
+            *to = GetSelectionEnd();
+    }
+
+/* C::B begin */
+    // kept for compatibility only
+    //void GetSelection(int *from, int *to)
+    //{
+    //    long f, t;
+    //    GetSelection(&f, &t);
+    //    if ( from )
+    //        *from = f;
+    //    if ( to )
+    //        *to = t;
+    //}
+/* C::B end */
+#endif
+
+    virtual bool IsEditable() const { return !GetReadOnly(); }
+    virtual void SetEditable(bool editable) { SetReadOnly(!editable); }
+
 /* C::B begin */
 #if wxCHECK_VERSION(2, 9, 2)
     static wxVersionInfo GetLibraryVersionInfo();
@@ -4309,6 +4365,8 @@ public:
 protected:
     virtual wxString DoGetValue() const { return GetText(); }
     virtual wxWindow *GetEditableWindow() { return this; }
+
+#ifndef SWIG
 
     // Event handlers
     void OnPaint(wxPaintEvent& evt);
@@ -4629,6 +4687,7 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 
 #endif
 
+/* C::B begin */
 //----------------------------------------------------------------------
 // Utility functions used within wxScintilla
 
@@ -4664,6 +4723,7 @@ inline const wxWX2MBbuf wx2sci (const wxString& str)
     return str.mbc_str();
 }
 #endif
+/* C::B end */
 
 #endif
 

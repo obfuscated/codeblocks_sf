@@ -6,9 +6,9 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id: gen_iface.py 63792 2010-03-30 03:50:06Z RD $
+# RCS-ID:       $Id: gen_iface.py 64940 2010-07-13 13:29:13Z VZ $
 # Copyright:    (c) 2000 by Total Control Software
-# Licence:      wxWindows license
+# Licence:      wxWindows licence
 #----------------------------------------------------------------------------
 
 

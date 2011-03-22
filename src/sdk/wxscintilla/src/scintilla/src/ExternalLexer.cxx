@@ -40,7 +40,6 @@ LexerManager *LexerManager::theInstance = NULL;
 void ExternalLexerModule::SetExternal(GetLexerFactoryFunction fFactory, int index) {
 	fneFactory = fFactory;
 	fnFactory = fFactory(index);
-	externalLanguage = index;
 }
 
 //------------------------------------------

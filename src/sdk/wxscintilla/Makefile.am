@@ -56,6 +56,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexMarkdown.cxx \
 			src/scintilla/lexers/LexMatlab.cxx \
 			src/scintilla/lexers/LexMetapost.cxx \
+			src/scintilla/lexers/LexModula.cxx \
 			src/scintilla/lexers/LexMySQL.cxx \
 			src/scintilla/lexers/LexNimrod.cxx \
 			src/scintilla/lexers/LexNsis.cxx \
@@ -140,6 +141,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/lexlib/LexerSimple.h \
 			src/scintilla/lexlib/OptionSet.h \
 			src/scintilla/lexlib/PropSetSimple.h \
+			src/scintilla/lexlib/SparseState.h \
 			src/scintilla/lexlib/StyleContext.h \
 			src/scintilla/lexlib/WordList.h \
 			src/scintilla/src/AutoComplete.h \

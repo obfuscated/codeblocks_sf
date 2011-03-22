@@ -241,7 +241,9 @@ wxScintilla::~wxScintilla()
 
 //----------------------------------------------------------------------
 // Send message to Scintilla
+/* C::B begin */
 wxIntPtr wxScintilla::SendMsg (unsigned int msg, wxUIntPtr wp, wxIntPtr lp) const
+/* C::B end */
 {
     return m_swx->WndProc(msg, wp, lp);
 }
@@ -708,6 +710,18 @@ void wxScintilla::SetMarginSensitive (int margin, bool sensitive)
 bool wxScintilla::GetMarginSensitive (int margin) const
 {
     return SendMsg(SCI_GETMARGINSENSITIVEN, margin, 0) != 0;
+}
+
+// Set the cursor shown when the mouse is inside a margin.
+void wxScintilla::SetMarginCursorN(int margin, int cursor)
+{
+    SendMsg(SCI_SETMARGINCURSORN, margin, cursor);
+}
+
+// Retrieve the cursor shown in a margin.
+int wxScintilla::GetMarginCursorN(int margin) const
+{
+    return SendMsg(SCI_GETMARGINCURSORN, margin, 0);
 }
 
 // Clear all the styles and make equivalent to the global default style.
@@ -4316,28 +4330,6 @@ wxPoint wxScintilla::PointFromPosition(int pos)
     return wxPoint(x, y);
 }
 
-/* C::B begin */
-// Retrieve the start and end positions of the current selection.
-void wxScintilla::GetSelection (long *from, long *to)
-{
-    if ( from )
-        *from = GetSelectionStart();
-    if ( to )
-        *to = GetSelectionEnd();
-}
-
-// kept for compatibility only
-//void wxScintilla::GetSelection(int *from, int *to)
-//{
-//    long f, t;
-//    GetSelection(&f, &t);
-//    if ( from )
-//        *from = f;
-//    if ( to )
-//        *to = t;
-//}
-/* C::B end */
-
 // Scroll enough to make the given line visible
 void wxScintilla::ScrollToLine (int line)
 {
@@ -4359,19 +4351,20 @@ bool wxScintilla::SaveFile (const wxString& filename)
     if (!file.IsOpened())
         return false;
 
-    bool success = file.Write(GetText(), *wxConvCurrent);
+    bool ok = file.Write(GetText(), *wxConvCurrent);
 
     file.Close();
 
-    if (success)
+    if (ok)
+    {
         SetSavePoint();
-
-    return success;
+    }
+    return ok;
 }
 
 bool wxScintilla::LoadFile (const wxString& filename)
 {
-    bool success = false;
+    bool ok = false;
     wxFile file(filename, wxFile::read);
 
     if (file.IsOpened())
@@ -4384,28 +4377,28 @@ bool wxScintilla::LoadFile (const wxString& filename)
         {
 #if wxUSE_UNICODE
             wxMemoryBuffer buffer(len+1);
-            success = (file.Read(buffer.GetData(), len) == len);
-            if (success) {
+            ok = (file.Read(buffer.GetData(), len) == len);
+            if (ok) {
                 ((char*)buffer.GetData())[len] = 0;
                 contents = wxString(buffer, *wxConvCurrent, len);
             }
 #else
             wxString buffer;
-            success = (file.Read(wxStringBuffer(buffer, len), len) == len);
+            ok = (file.Read(wxStringBuffer(buffer, len), len) == len);
             contents = buffer;
 #endif
         }
         else
         {
             if (len == 0)
-                success = true;  // empty file is ok
+                ok = true;  // empty file is ok
             else
-                success = false; // len == wxInvalidOffset
+                ok = false; // len == wxInvalidOffset
         }
 
         file.Close();
 
-        if (success)
+        if (ok)
         {
             SetText(contents);
             EmptyUndoBuffer();
@@ -4413,7 +4406,7 @@ bool wxScintilla::LoadFile (const wxString& filename)
         }
     }
 
-    return success;
+    return ok;
 }
 
 
@@ -4429,6 +4422,7 @@ bool wxScintilla::DoDropText (long x, long y, const wxString& data)
     return m_swx->DoDropText(x, y, data);
 }
 
+/* C::B begin */
 wxDragResult wxScintilla::DoDragEnter (wxCoord x, wxCoord y, wxDragResult def)
 {
     return m_swx->DoDragOver (x, y, def);
@@ -4438,6 +4432,7 @@ void wxScintilla::DoDragLeave ()
 {
     m_swx->DoDragLeave ();
 }
+/* C::B end */
 #endif
 
 
@@ -5045,7 +5040,7 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 2, 2, 3, "Scintilla 2.23");
+    return wxVersionInfo("Scintilla", 2, 2, 5, "Scintilla 2.25");
 }
 #endif
 /* C::B end */

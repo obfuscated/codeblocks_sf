@@ -59,6 +59,14 @@ wxColour wxColourFromCA(const ColourAllocated& ca) {
                     (unsigned char)cd.GetBlue());
 }
 
+wxColour wxColourFromCAandAlpha(const ColourAllocated& ca, int alpha) {
+    ColourDesired cd(ca.AsLong());
+    return wxColour((unsigned char)cd.GetRed(),
+                    (unsigned char)cd.GetGreen(),
+                    (unsigned char)cd.GetBlue(),
+                    (unsigned char)alpha);
+}
+
 //----------------------------------------------------------------------
 
 Palette::Palette() {
@@ -380,12 +388,16 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     int x, y;
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
-    if(bmp.IsOk() == false)
+/* C::B begin */
+    if (bmp.IsOk() == false)
         return;
+/* C::B end */
     wxAlphaPixelData pixData(bmp);
+/* C::B begin */
     #if !wxCHECK_VERSION(2, 9, 0)
     pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
     #endif
+/* C::B end */
 
     // Set the fill pixels
     ColourDesired cdf(fill.AsLong());
@@ -412,6 +424,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     blue  = cdo.GetBlue();
     for (x=0; x<r.width; x++) {
         p.MoveTo(pixData, x, 0);
+/* C::B begin */
         if (p.m_ptr) {
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
@@ -423,9 +436,11 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
             p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
             p.Alpha() = alphaOutline;
         }
+/* C::B end */
     }
     for (y=0; y<r.height; y++) {
         p.MoveTo(pixData, 0, y);
+/* C::B begin */
         if (p.m_ptr) {
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
@@ -437,11 +452,14 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
             p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
             p.Alpha() = alphaOutline;
         }
+/* C::B end */
     }
 
     // Draw the bitmap
+/* C::B begin */
     if (bmp.IsOk())
         hdc->DrawBitmap(bmp, r.x, r.y, true);
+/* C::B end */
 
 #else
     wxUnusedVar(cornerSize);
@@ -498,21 +516,25 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, int ybase,
 
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCA(fore));
+/* C::B begin */
     #if wxCHECK_VERSION(2, 9, 0)
     hdc->SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
     #else
     hdc->SetBackgroundMode(wxTRANSPARENT);
     #endif
+/* C::B end */
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
     hdc->DrawText(sci2wx(s, len), rc.left, ybase - font.ascent);
 
+/* C::B begin */
     #if wxCHECK_VERSION(2, 9, 0)
     hdc->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
     #else
     hdc->SetBackgroundMode(wxSOLID);
     #endif
+/* C::B end */
 }
 
 
@@ -844,7 +866,9 @@ public:
         wxPopupWindow(parent, wxBORDER_NONE)
     {
 
-        SetBackgroundColour(*wxBLACK);  // for our simple border
+/* C::B begin */
+        SetBackgroundColour(*wxBLACK); // for our simple border
+/* C::B end */
 
         lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
@@ -1173,7 +1197,7 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     maxStrWidth = 0;
     wid = new wxSCIListBoxWin (GETWIN(parent.GetID()), ctrlID, location_);
     if (imgList != NULL)
-        GETLB(wid)->SetImageList (imgList, wxIMAGE_LIST_SMALL);
+        GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
 }
 
 
@@ -1286,7 +1310,9 @@ void ListBoxImpl::Select(int n) {
         select = false;
     }
     GETLB(wid)->EnsureVisible(n);
+/* C::B begin */
     GETLB(wid)->Focus(n);
+/* C::B end */
     GETLB(wid)->Select(n, select);
 }
 
@@ -1381,6 +1407,7 @@ void Menu::Show(Point pt, Window &w) {
 
 //----------------------------------------------------------------------
 
+/* C::B begin */
 class DynamicLibraryImpl : public DynamicLibrary {
 public:
     DynamicLibraryImpl(const wxString& modulePath);
@@ -1433,6 +1460,7 @@ bool DynamicLibraryImpl::IsValid()
     if( lexModule != NULL && lexModule->IsLoaded() ) return true;
     return false;
 }
+/* C::B end */
 
 //----------------------------------------------------------------------
 
@@ -1474,18 +1502,20 @@ long Platform::SendScintilla(WindowID w,
                              unsigned int msg,
                              unsigned long wParam,
                              long lParam) {
-
+/* C::B begin */
     wxScintilla* sci = (wxScintilla*)w;
     return sci->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
+/* C::B end */
 }
 
 long Platform::SendScintillaPointer(WindowID w,
                                     unsigned int msg,
                                     unsigned long wParam,
                                     void *lParam) {
-
+/* C::B begin */
     wxScintilla* sci = (wxScintilla*)w;
     return sci->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
+/* C::B end */
 }
 
 

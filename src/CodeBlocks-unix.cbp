@@ -2828,6 +2828,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexMetapost.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexModula.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexMySQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2979,6 +2982,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/PropSetSimple.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/SparseState.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/StyleContext.cxx">

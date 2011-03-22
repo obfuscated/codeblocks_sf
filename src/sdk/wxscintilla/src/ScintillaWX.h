@@ -54,6 +54,7 @@
 
 //----------------------------------------------------------------------
 
+/* C::B begin */
 #ifdef WXMAKINGDLL_SCI
     #define WXDLLIMPEXP_SCI WXEXPORT
 #elif defined(WXUSINGDLL)
@@ -61,6 +62,7 @@
 #else // not making nor using DLL
     #define WXDLLIMPEXP_SCI
 #endif
+/* C::B end */
 
 //----------------------------------------------------------------------
 
@@ -97,8 +99,10 @@ public:
     ScintillaWX(wxScintilla* win);
     ~ScintillaWX();
 
+/* C::B begin */
     static sptr_t DirectFunction( ScintillaWX *wxsci, unsigned int iMessage,
                                   uptr_t wParam, sptr_t lParam);
+/* C::B end */
 
     // base class virtuals
     virtual void Initialise();
@@ -127,7 +131,9 @@ public:
                            uptr_t wParam,
                            sptr_t lParam);
 
+/* C::B begin */
     virtual void NotifyFocus(bool focus);
+/* C::B end */
     virtual void NotifyChange();
     virtual void NotifyParent(SCNotification scn);
 

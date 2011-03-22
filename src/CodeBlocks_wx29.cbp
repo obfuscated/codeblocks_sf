@@ -529,8 +529,8 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Scripted wizard;To-do;Autosave;XP look &amp; feel;Projects-workspaces importer;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;XP look &amp; feel;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -2911,6 +2911,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMetapost.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexModula.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexMySQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3062,6 +3065,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\PropSetSimple.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\SparseState.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexlib\StyleContext.cxx">

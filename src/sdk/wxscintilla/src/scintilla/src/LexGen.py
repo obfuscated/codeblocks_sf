@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # LexGen.py - implemented 2002 by Neil Hodgson neilh@scintilla.org
 # Released to the public domain.
 
@@ -219,8 +220,6 @@ def FindPropertyDocumentation(lexFile):
                     documents[name] += " "
                 documents[name] += l[2:].strip()
             elif l.startswith("\""):
-                if documents[name]:
-                    documents[name] += " "
                 l = l[1:].strip()
                 if l.endswith(";"):
                     l = l[:-1].strip()
