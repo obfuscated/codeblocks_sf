@@ -7,7 +7,8 @@
 #include <sdk.h>
 #ifndef CB_PRECOMP
     #include <wx/dnd.h>
- 
+    #include <wx/imaglist.h>
+	
     #include <cbproject.h>
     #include <configmanager.h>
     #include <projectmanager.h>
