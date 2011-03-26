@@ -965,7 +965,7 @@ bool CodeSnippets::GetTreeSelectionData(const wxTreeCtrl* pTree, const wxTreeIte
     {   //-selString = pTree->GetTreeItemFilename( sel );
         //-EditorBase* ed = static_cast<EditorBase*>(static_cast<OpenFilesListData*>(pTree->GetItemData(event.GetItem()))->GetEditor());
         EditorBase* ed = static_cast<EditorBase*>(static_cast<OpenFilesListData*>(pTree->GetItemData(sel))->GetEditor());
-        selString = (ed ? ed->GetFilename() : wxEmptyString);
+        selString = (ed ? ed->GetFilename() : wxT(""));
     }
 
     // -------------------------
