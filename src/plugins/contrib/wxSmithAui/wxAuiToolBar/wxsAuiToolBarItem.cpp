@@ -54,7 +54,8 @@ namespace
 
 wxsAuiToolBarItem::wxsAuiToolBarItem(wxsItemResData* Data):
     wxsAuiToolBarItemBase(Data,&Reg.Info,flVariable|flId,wxsAuiToolBarItemEvents,0),
-    m_ItemKind(wxITEM_NORMAL)
+    m_ItemKind(wxITEM_NORMAL),
+    m_DropDown(false)
 {}
 
 void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
