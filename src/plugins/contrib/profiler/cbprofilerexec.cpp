@@ -109,7 +109,8 @@ void CBProfilerExecDlg::ShowOutput(const wxArrayString& msg, bool error)
             ParseFlatProfile(msg, progress, maxcount, count);
 
         // Parsing Call Graph
-        if (msg[count].Find(_T("Call graph"))   != -1)
+        if ((count < maxcount) &&
+            (msg[count].Find(_T("Call graph"))   != -1))
             ParseCallGraph(msg, progress, maxcount, count);
 
         // The rest of the lines, if any, is printed in the Misc tab
