@@ -610,6 +610,8 @@ void UsrGlblMgrEditDialog::UpdateChoices()
 
     wxArrayString sets = cfg->EnumerateSubPaths(cSets);
     wxArrayString vars = cfg->EnumerateSubPaths(cSets + currentSet + _T("/"));
+    sets.Sort();
+    vars.Sort();
 
     selSet->Clear();
     selSet->Append(sets);
