@@ -181,7 +181,7 @@ private:
     bool                    m_UseCodeCompletion;
     int                     m_CCAutoLaunchChars;
     bool                    m_CCAutoLaunch;
-    bool                    m_CCLaunchDelay;
+    int                     m_CCLaunchDelay;
     size_t                  m_CCMaxMatches;
     bool                    m_CCAutoAddParentheses;
     wxString                m_CCFillupChars;
