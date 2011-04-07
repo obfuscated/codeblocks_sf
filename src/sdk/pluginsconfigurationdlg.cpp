@@ -412,7 +412,7 @@ void PluginsConfigurationDlg::OnSelect(wxListEvent& /*event*/)
 
 void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    static bool lastSelection = -2;
+    static long lastSelection = -2;
     static bool lastSelectionMultiple = false;
     event.Skip();
 
