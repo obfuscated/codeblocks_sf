@@ -85,7 +85,6 @@ NativeParser::NativeParser() :
     m_Parser(&m_TempParser),
     m_EditorStartWord(-1),
     m_EditorEndWord(-1),
-    m_CallTipCommas(0),
     m_LastFuncTokenIdx(-1),
     m_LastControl(nullptr),
     m_LastFunction(nullptr),
@@ -1685,13 +1684,37 @@ const wxString& NativeParser::GetCodeCompletionItems()
     return m_CCItems;
 }
 
-// set start and end to the calltip highlight region, based on m_CallTipCommas (calculated in GetCallTips())
-void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int* end)
+namespace
 {
-    int pos = 1; // skip opening parenthesis
+// Finds the position of the opening parenthesis marking the beginning of the params.
+int FindFunctionOpenParenthesis(const wxString& calltip)
+{
+    int nest = 0;
+    for (size_t ii = calltip.length(); ii > 0; --ii)
+    {
+        wxChar c = calltip[ii - 1];
+        if (c == wxT('('))
+        {
+            --nest;
+            if (nest == 0)
+            return ii - 1;
+        }
+        else if (c == wxT(')'))
+            ++nest;
+    }
+    return -1;
+}
+
+}
+
+// Set start and end for the calltip highlight region.
+void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas)
+{
+    int pos = 0;
+    int paramsCloseBracket = calltip.length() - 1;
     int nest = 0;
     int commas = 0;
-    *start = 0;
+    *start = FindFunctionOpenParenthesis(calltip) + 1;
     *end = 0;
     while (true)
     {
@@ -1701,30 +1724,24 @@ void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int*
         else if (c == '(')
             ++nest;
         else if (c == ')')
+        {
             --nest;
-        else if (c == ',' && nest == 0)
+            if (nest == 0)
+                paramsCloseBracket = pos - 1;
+        }
+        else if (c == ',' && nest == 1)
         {
             ++commas;
-            if (commas == m_CallTipCommas)
+            if (commas == typedCommas + 1)
             {
-                if (m_CallTipCommas == 0)
-                {
-                    *start = 1;
-                    *end = pos - 1;
-                    break;
-                }
-                else
-                    *start = pos;
+                *end = pos - 1;
+                return;
             }
-            else if (commas == m_CallTipCommas + 1)
-            {
-                *end = pos; // already incremented
-                break;
-            }
+            *start = pos;
         }
     }
     if (*end == 0)
-        *end = calltip.Length() - 1;
+        *end = paramsCloseBracket;
 }
 
 // count commas in lineText (nesting parentheses)
@@ -1741,7 +1758,7 @@ int NativeParser::CountCommas(const wxString& lineText, int start)
             ++nest;
         else if (c == ')')
             --nest;
-        else if (c == ',' && nest == 0)
+        else if (c == ',' && nest == 1)
             ++commas;
     }
     return commas;
@@ -1783,17 +1800,20 @@ bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &to
     return true;
 }
 
-const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
+void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &typedCommas)
 {
-    m_CallTips.Clear();
-    m_CallTipCommas = 0;
+    items.Clear();
+    typedCommas = 0;
     int commas = 0;
 
     do
     {
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (!ed || !m_Parser->Done())
+        {
+            items.Add(wxT("Parsing at the moment..."));
             break;
+        }
 
         ccSearchData searchData = { ed->GetControl(), ed->GetFilename() };
         int pos = searchData.control->GetCurrentPos();
@@ -1810,7 +1830,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
 
             const wxChar ch = searchData.control->GetCharAt(pos);
             if (ch == _T(';'))
-                return m_CallTips;
+                return;
             else if (ch == _T(','))
             {
                 if (nest == 0)
@@ -1842,7 +1862,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
         const wxString target = searchData.control->GetTextRange(start, end);
         TRACE(_T("Sending \"%s\" for call-tip"), target.c_str());
         if (target.IsEmpty())
-            return m_CallTips;
+            return;
 
         TokenIdxSet result;
         MarkItemsByAI(result, true, false, true, end);
@@ -1873,7 +1893,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             }
 
             if (token->m_TokenKind == tkTypedef && token->m_ActualType.Contains(_T("(")))
-                m_CallTips.Add(token->m_ActualType); // typedef'd function pointer
+                items.Add(token->m_ActualType); // typedef'd function pointer
             else
             {
                 wxString s;
@@ -1881,15 +1901,15 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
                 if(!PrettyPrintToken(full, *token, *tokens))
                     full = wxT("Error while pretty printing token!");
                 BreakUpInLines(s, full, chars_per_line);
-                m_CallTips.Add(s);
+                items.Add(s);
             }
         }
     }
     while (false);
 
-    m_CallTipCommas = commas;
-    TRACE(_T("GetCallTips() : m_CallTipCommas=%d"), m_CallTipCommas);
-    return m_CallTips;
+    typedCommas = commas;
+    TRACE(_T("GetCallTips() : typedCommas=%d"), typedCommas);
+    items.Sort();
 }
 
 // helper funcs
@@ -3926,7 +3946,6 @@ void NativeParser::InitCCSearchVariables()
     m_LastFunction    = nullptr;
     m_EditorStartWord = -1;
     m_EditorEndWord   = -1;
-    m_CallTipCommas   = 0;
     m_LastLine        = -1;
     m_LastResult      = -1;
     m_LastComponent.Clear();
@@ -3934,7 +3953,6 @@ void NativeParser::InitCCSearchVariables()
     m_LastNamespace.Clear();
     m_LastPROC.Clear();
     m_CCItems.Clear();
-    m_CallTips.Clear();
 }
 
 void NativeParser::RemoveLastFunctionChildren()

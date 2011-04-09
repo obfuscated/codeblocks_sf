@@ -65,7 +65,9 @@ public:
     virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
     virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
     virtual bool BuildToolBar(wxToolBar* toolBar);
-    virtual wxArrayString GetCallTips();
+
+    // unused, should be removed probably
+    virtual wxArrayString GetCallTips() { return wxArrayString(); }
     virtual int CodeComplete();
     virtual void ShowCallTip();
 

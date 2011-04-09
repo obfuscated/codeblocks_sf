@@ -1403,16 +1403,6 @@ void CodeCompletion::CodeCompletePreprocessor()
     ed->GetControl()->AutoCompShow(end - start, GetStringFromArray(tokens, _T(" ")));
 }
 
-wxArrayString CodeCompletion::GetCallTips()
-{
-    if (!IsAttached() || !m_InitDone)
-    {
-        wxArrayString items;
-        return items;
-    }
-    return m_NativeParser.GetCallTips(-1);
-}
-
 void CodeCompletion::ShowCallTip()
 {
     if (!IsAttached() || !m_InitDone)
@@ -1443,11 +1433,10 @@ void CodeCompletion::ShowCallTip()
         // else, out of range
     }
 
-    int start = 0;
-    int end = 0;
-    int count = 0;
-    int commas = m_NativeParser.GetCallTipCommas(); // how many commas has the user typed so far?
-    wxArrayString items = m_NativeParser.GetCallTips(maxCalltipLineSizeInChars);
+    int start = 0, end = 0, count = 0, typedCommas = 0;
+
+    wxArrayString items;
+    m_NativeParser.GetCallTips(maxCalltipLineSizeInChars, items, typedCommas);
     std::set< wxString, std::less<wxString> > unique_tips; // check against this before inserting a new tip in the list
     wxString definition;
     for (unsigned int i = 0; i < items.GetCount(); ++i)
@@ -1455,21 +1444,24 @@ void CodeCompletion::ShowCallTip()
         // allow only unique, non-empty items with equal or more commas than what the user has already typed
         if (unique_tips.find(items[i]) == unique_tips.end() && // unique
             !items[i].IsEmpty() && // non-empty
-            commas <= m_NativeParser.CountCommas(items[i], 1)) // commas satisfied
+            typedCommas <= m_NativeParser.CountCommas(items[i], 0)) // commas satisfied
         {
             unique_tips.insert(items[i]);
             if (count != 0)
                 definition << _T('\n'); // add new-line, except for the first line
             definition << items[i];
-            m_NativeParser.GetCallTipHighlight(items[i], &start, &end);
+            if (start == 0)
+                m_NativeParser.GetCallTipHighlight(items[i], &start, &end, typedCommas);
             ++count;
         }
     }
-    if (!definition.IsEmpty())
-        ed->GetControl()->CallTipShow(pos, definition);
-//    Manager::Get()->GetLogManager()->DebugLog(_T("start=%d, end=%d"), start, end);
-    // only highlight current argument if only one calltip (scintilla doesn't support multiple highlighting ranges in calltips)
-    ed->GetControl()->CallTipSetHighlight(count == 1 ? start : 0, count == 1 ? end : 0);
+
+    if (definition.empty())
+        return;
+
+    ed->GetControl()->CallTipShow(pos, definition);
+    if (start != 0 && end > start)
+        ed->GetControl()->CallTipSetHighlight(start, end);
 }
 
 int CodeCompletion::DoClassMethodDeclImpl()

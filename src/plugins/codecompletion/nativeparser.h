@@ -240,26 +240,23 @@ public:
     /** Collect the suggestion list items, internally it call MarkItemsByAI() */
     const wxString& GetCodeCompletionItems();
 
-    /** set call tip window size.
-     * specify the start and end of the calltip highlight region, based on m_CallTipCommas (calculated in GetCallTips())
-     */
-    void GetCallTipHighlight(const wxString& calltip, int* start, int* end);
+    /** Returns the start and end of the calltip highlight region. */
+    void GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas);
 
     /** count commas in lineText (nesting parentheses)*/
     int CountCommas(const wxString& calltip, int start);
 
-    /** Call tips are when you mouse pointer hover some statement, and show the information of statement below caret.
+    /** Call tips are when you mouse pointer hover some statement and show the information of statement below caret.
      * these tips information could be:
      * the prototypes information of the current function,
      * the type information of the variable...
      *
      * @param chars_per_line specify the char number per one line of the calltip window, so it can restrict the width.
-     * @return all the results were stored in a wxArrayString
+     * @param items array to store result in.
+     * @param typedCommas how much comma characters the user has typed in the current line before the cursor.
      */
-    const wxArrayString& GetCallTips(int chars_per_line);
+    void GetCallTips(int chars_per_line, wxArrayString& items, int &typedCommas);
 
-    /** TODO ? */
-    int GetCallTipCommas() const { return m_CallTipCommas; }
 
     /** Word start position in the editor
      * @return position index
@@ -607,8 +604,6 @@ private:
     int                          m_EditorStartWord;
     int                          m_EditorEndWord;
     wxString                     m_CCItems;
-    wxArrayString                m_CallTips;
-    int                          m_CallTipCommas;
     int                          m_LastFuncTokenIdx;      /// saved the function token's index, for remove all local variable
     ParserComponent              m_LastComponent;
     cbStyledTextCtrl*            m_LastControl;
