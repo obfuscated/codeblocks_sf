@@ -1001,6 +1001,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // action time  (everything shows up on the error stream
     wxArrayString Output, Errors;
     wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
+    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+    if ( Manager::IsAppShuttingDown() )
+        return gcc_compiler_dirs;
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
@@ -1023,7 +1026,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         if (!fname.DirExists())
             break;
 
-        Manager::Get()->GetLogManager()->DebugLog(_T("Caching GCC dir: ") + fname.GetPath());
+        if (!Manager::IsAppShuttingDown())
+            Manager::Get()->GetLogManager()->DebugLog(_T("Caching GCC dir: ") + fname.GetPath());
+
         gcc_compiler_dirs.Add(fname.GetPath());
     }
 
