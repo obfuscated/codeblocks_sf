@@ -12,7 +12,7 @@
 							<label>Alias</label>
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
-								<object class="wxListBox" name="ID_LISTBOX1" />
+								<object class="wxListBox" name="ID_LST_ALIASES" />
 								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>
 								<option>1</option>
@@ -20,27 +20,27 @@
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
 									<object class="sizeritem">
-										<object class="wxButton" name="ID_BUTTON1">
+										<object class="wxButton" name="ID_BTN_ADD">
 											<label>&amp;Add</label>
 										</object>
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									</object>
 									<object class="sizeritem">
-										<object class="wxButton" name="ID_BUTTON2">
+										<object class="wxButton" name="ID_BTN_EDIT">
 											<label>&amp;Edit</label>
 										</object>
 										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
-										<object class="wxButton" name="ID_BUTTON3">
+										<object class="wxButton" name="ID_BTN_REMOVE">
 											<label>&amp;Remove</label>
 										</object>
 										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 						</object>
@@ -50,7 +50,7 @@
 						<object class="wxStaticBoxSizer">
 							<label>Build targets contained</label>
 							<object class="sizeritem">
-								<object class="wxCheckListBox" name="ID_CHECKLISTBOX1">
+								<object class="wxCheckListBox" name="ID_LST_TARGETS">
 									<size>212,207</size>
 								</object>
 								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -68,7 +68,7 @@
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStaticLine" name="ID_STATICLINE1">
+				<object class="wxStaticLine" name="ID_STATIC_LINE">
 					<size>10,-1</size>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

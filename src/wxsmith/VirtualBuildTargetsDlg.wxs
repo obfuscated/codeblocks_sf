@@ -2,21 +2,21 @@
 <wxsmith>
 	<resource_extra>
 		<object root="1" />
-		<object name="ID_LISTBOX1" class="wxListBox" variable="lstAliases" member="yes">
+		<object name="ID_LST_ALIASES" class="wxListBox" variable="lstAliases" member="yes">
 			<handler function="OnAliasesSelect" entry="EVT_LISTBOX" />
 		</object>
-		<object name="ID_BUTTON1" class="wxButton" variable="btnAdd" member="yes">
+		<object name="ID_BTN_ADD" class="wxButton" variable="btnAdd" member="yes">
 			<handler function="OnAddClick" entry="EVT_BUTTON" />
 		</object>
-		<object name="ID_BUTTON2" class="wxButton" variable="btnEdit" member="yes">
+		<object name="ID_BTN_EDIT" class="wxButton" variable="btnEdit" member="yes">
 			<handler function="OnEditClick" entry="EVT_BUTTON" />
 		</object>
-		<object name="ID_BUTTON3" class="wxButton" variable="btnRemove" member="yes">
+		<object name="ID_BTN_REMOVE" class="wxButton" variable="btnRemove" member="yes">
 			<handler function="OnRemoveClick" entry="EVT_BUTTON" />
 		</object>
-		<object name="ID_CHECKLISTBOX1" class="wxCheckListBox" variable="lstTargets" member="yes">
+		<object name="ID_LST_TARGETS" class="wxCheckListBox" variable="lstTargets" member="yes">
 			<handler function="OnTargetsToggled" entry="EVT_CHECKLISTBOX" />
 		</object>
-		<object name="ID_STATICLINE1" class="wxStaticLine" variable="StaticLine1" member="no" />
+		<object name="ID_STATIC_LINE" class="wxStaticLine" variable="StaticLine" member="no" />
 	</resource_extra>
 </wxsmith>

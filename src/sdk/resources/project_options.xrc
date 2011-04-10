@@ -113,8 +113,8 @@
 															<object class="wxTextCtrl" name="txtExecutionDir">
 																<size>402,25</size>
 																<enabled>0</enabled>
-											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>2</border>
 															<option>1</option>
 														</object>
@@ -128,9 +128,9 @@
 														</object>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
-											<option>1</option>
-										</object>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
 											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>2</border>

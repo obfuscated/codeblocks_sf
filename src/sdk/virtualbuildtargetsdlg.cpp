@@ -35,17 +35,17 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*
 {
     //(*Initialize(VirtualBuildTargetsDlg)
     wxXmlResource::Get()->LoadObject(this,parent,_T("VirtualBuildTargetsDlg"),_T("wxScrollingDialog"));
-    lstAliases = (wxListBox*)FindWindow(XRCID("ID_LISTBOX1"));
-    btnAdd = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
-    btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
-    btnRemove = (wxButton*)FindWindow(XRCID("ID_BUTTON3"));
-    lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLISTBOX1"));
+    lstAliases = (wxListBox*)FindWindow(XRCID("ID_LST_ALIASES"));
+    btnAdd = (wxButton*)FindWindow(XRCID("ID_BTN_ADD"));
+    btnEdit = (wxButton*)FindWindow(XRCID("ID_BTN_EDIT"));
+    btnRemove = (wxButton*)FindWindow(XRCID("ID_BTN_REMOVE"));
+    lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_LST_TARGETS"));
 
-    Connect(XRCID("ID_LISTBOX1"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
-    Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
-    Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
-    Connect(XRCID("ID_BUTTON3"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnRemoveClick);
-    Connect(XRCID("ID_CHECKLISTBOX1"),wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnTargetsToggled);
+    Connect(XRCID("ID_LST_ALIASES"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
+    Connect(XRCID("ID_BTN_ADD"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
+    Connect(XRCID("ID_BTN_EDIT"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
+    Connect(XRCID("ID_BTN_REMOVE"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnRemoveClick);
+    Connect(XRCID("ID_LST_TARGETS"),wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnTargetsToggled);
     //*)
 
     // fill aliases
@@ -67,8 +67,9 @@ VirtualBuildTargetsDlg::~VirtualBuildTargetsDlg()
 
 void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
 {
-    if (!lstTargets->IsEnabled())
+    if (!lstTargets->IsEnabled() || lstTargets->IsEmpty())
         return;
+
     wxArrayString checked;
     for (int i = 0; i < (int)lstTargets->GetCount(); ++i)
     {
@@ -76,17 +77,23 @@ void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
             checked.Add(lstTargets->GetString(i));
     }
 
-    if (checked.GetCount() > 0)
+    if (checked.GetCount() == 0)
     {
-        if (!m_pProject->DefineVirtualBuildTarget(targetName, checked))
+        cbMessageBox(_("This virtual build target is invalid.\n"
+                       "A virtual target must have at least one active target.\n"
+                       "Did you want to remove the virtual build target?"), _("Error"), wxICON_ERROR, this);
+    }
+    else if (checked.GetCount() > 0)
+    {
+        if ( !m_pProject->DefineVirtualBuildTarget(targetName, checked) )
             cbMessageBox(_("Failed to setup this virtual build target.\n"
-                            "Check the debug log for more info..."), _("Error"), wxICON_ERROR, this);
+                           "Check the debug log for more info..."), _("Error"), wxICON_ERROR, this);
     }
 }
 
 void VirtualBuildTargetsDlg::CheckTargets()
 {
-    const wxArrayString& group = m_pProject->GetVirtualBuildTargetGroup(lstAliases->GetStringSelection());
+    const wxArrayString& group = m_pProject->GetVirtualBuildTargetGroup( lstAliases->GetStringSelection() );
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
     {
         wxString tgtName = m_pProject->GetBuildTarget(i)->GetTitle();
