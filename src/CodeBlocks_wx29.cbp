@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="exchndl">
 				<Option platforms="Windows;" />
-				<Option output="devel\exchndl" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\exchndl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -19,11 +19,12 @@
 				<Linker>
 					<Add library="bfd" />
 					<Add library="iberty" />
+					<Add library="intl" />
 					<Add directory="base\exchndl\lib" />
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
+				<Option output="base\tinyxml\txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -35,7 +36,7 @@
 				</Linker>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools\autorevision\autorevision" prefix_auto="0" extension_auto="1" />
+				<Option output="build_tools\autorevision\autorevision" prefix_auto="1" extension_auto="1" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -49,7 +50,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools\ConsoleRunner\cb_console_runner" prefix_auto="0" extension_auto="1" />
+				<Option output="tools\ConsoleRunner\cb_console_runner" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -59,7 +60,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk\scripting\lib\libsquirrel.a" prefix_auto="0" extension_auto="0" />
+				<Option output="sdk\scripting\lib\squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -73,7 +74,7 @@
 				</Linker>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk\scripting\lib\libsqstdlib.a" prefix_auto="0" extension_auto="0" />
+				<Option output="sdk\scripting\lib\sqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;" />
 				<Option type="2" />
@@ -88,7 +89,7 @@
 				</Linker>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk\scripting\lib\libsqplus.a" prefix_auto="0" extension_auto="0" />
+				<Option output="sdk\scripting\lib\sqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;" />
 				<Option type="2" />
@@ -103,7 +104,7 @@
 				</Linker>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel\libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel\wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -171,8 +172,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="src">
-				<Option output="devel\codeblocks.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations --multiple-instance -ns -nd" />
@@ -207,9 +209,35 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
-			<Target title="AStyle">
-				<Option output="devel\share\CodeBlocks\plugins\astyle" prefix_auto="0" extension_auto="1" />
+			<Target title="Abbreviations">
+				<Option output="devel\share\CodeBlocks\plugins\abbreviations" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\scripting\include" />
+					<Add directory="include\scripting\sqplus" />
+					<Add directory="include\scripting\bindings" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="AStyle">
+				<Option output="devel\share\CodeBlocks\plugins\astyle" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -230,8 +258,31 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
+			<Target title="Autosave">
+				<Option output="devel\share\CodeBlocks\plugins\autosave" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins\compilergcc\depslib\libdepslib.a" prefix_auto="0" extension_auto="0" />
+				<Option output="plugins\compilergcc\depslib\depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -243,9 +294,9 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel\share\CodeBlocks\plugins\compiler" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
-				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
+				<Option external_deps="devel\libcodeblocks.a;plugins\compilergcc\depslib\libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -271,8 +322,9 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel\share\CodeBlocks\plugins\debugger" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -295,8 +347,9 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel\share\CodeBlocks\plugins\codecompletion" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -318,8 +371,9 @@
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel\share\CodeBlocks\plugins\classwizard" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -340,8 +394,9 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -362,8 +417,9 @@
 				</Linker>
 			</Target>
 			<Target title="Open files list">
-				<Option output="devel\share\CodeBlocks\plugins\openfileslist" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\codeblocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -383,9 +439,34 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
-			<Target title="Scripted wizard">
-				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard" prefix_auto="0" extension_auto="1" />
+			<Target title="Projects-workspaces importer">
+				<Option output="devel\share\CodeBlocks\plugins\projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=1" />
+					<Add directory="include" />
+					<Add directory="include\mozilla_chardet" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
+			<Target title="Scripted wizard">
+				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -408,8 +489,9 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel\share\CodeBlocks\plugins\todo" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -419,28 +501,6 @@
 					<Add option="-DwxPG_USE_WXMODULE=1" />
 					<Add directory="include" />
 					<Add directory="include\mozilla_chardet" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel" />
-				</Linker>
-			</Target>
-			<Target title="Autosave">
-				<Option output="devel\share\CodeBlocks\plugins\autosave" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="devel\share\CodeBlocks\plugins" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option projectLinkerOptionsRelation="1" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=1" />
-					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -453,8 +513,9 @@
 				</Linker>
 			</Target>
 			<Target title="XP look &amp; feel">
-				<Option output="devel\share\CodeBlocks\plugins\xpmanifest" prefix_auto="0" extension_auto="1" />
+				<Option output="devel\share\CodeBlocks\plugins\xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -463,54 +524,6 @@
 					<Add option="-DWXMAKINGDLL_PROPGRID" />
 					<Add option="-DwxPG_USE_WXMODULE=1" />
 					<Add directory="include" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel" />
-				</Linker>
-			</Target>
-			<Target title="Projects-workspaces importer">
-				<Option output="devel\share\CodeBlocks\plugins\projectsimporter" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="devel\share\CodeBlocks\plugins" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option projectLinkerOptionsRelation="1" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=1" />
-					<Add directory="include" />
-					<Add directory="include\mozilla_chardet" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add option="-Wl,--enable-auto-import" />
-					<Add option="-mthreads" />
-					<Add library="codeblocks" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel" />
-				</Linker>
-			</Target>
-			<Target title="Abbreviations">
-				<Option output="devel\share\CodeBlocks\plugins\abbreviations" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="devel\share\CodeBlocks\plugins" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option projectLinkerOptionsRelation="1" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=1" />
-					<Add directory="include" />
-					<Add directory="include\scripting\include" />
-					<Add directory="include\scripting\sqplus" />
-					<Add directory="include\scripting\bindings" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -580,10 +593,6 @@
 			<Option target="exchndl" />
 		</Unit>
 		<Unit filename="base\exchndl\include\libiberty.h">
-			<Option target="exchndl" />
-		</Unit>
-		<Unit filename="base\exchndl\intlimpl.c">
-			<Option compilerVar="CC" />
 			<Option target="exchndl" />
 		</Unit>
 		<Unit filename="base\tinyxml\tinystr.cpp">
