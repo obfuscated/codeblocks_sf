@@ -99,7 +99,10 @@ bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
         if ( m_Ids.find(IdName)!=m_Ids.end() )
         {
             Ret = true;
-            Item->SetIdName(wxEmptyString);
+			if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
+			{
+				Item->SetIdName(wxEmptyString);
+			}
         }
         else
         {
@@ -196,10 +199,13 @@ void wxsCorrector::AfterChange(wxsItem* Item)
             Item->SetIdName(IdName);
         }
 
-        if ( m_Ids.find(IdName) != m_Ids.end() )
-        {
-            SetNewIdName(Item);
-        }
+		if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
+		{
+			if ( m_Ids.find(IdName) != m_Ids.end() )
+			{
+				SetNewIdName(Item);
+			}
+		}
 
         if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
         {

@@ -59,26 +59,40 @@ protected:
 
 private:
     //(*Identifiers(wxsSettings)
+    static const long ID_STATICTEXT14;
+    static const long ID_CHECKBOX11;
     static const long ID_STATICTEXT10;
     static const long ID_CHOICE2;
+    static const long ID_STATICTEXT1;
+    static const long ID_STATICTEXT2;
     static const long ID_COMBOBOX1;
+    static const long ID_STATICTEXT3;
     static const long ID_BUTTON1;
+    static const long ID_STATICTEXT4;
     static const long ID_BUTTON2;
     static const long ID_CHECKBOX7;
     static const long ID_SPINCTRL1;
+    static const long ID_STATICTEXT5;
     static const long ID_CHECKBOX9;
+    static const long ID_STATICTEXT6;
     static const long ID_RADIOBUTTON1;
     static const long ID_RADIOBUTTON2;
+    static const long ID_STATICTEXT7;
     static const long ID_RADIOBUTTON3;
     static const long ID_RADIOBUTTON4;
+    static const long ID_STATICTEXT8;
     static const long ID_SPINCTRL2;
+    static const long ID_STATICTEXT9;
     static const long ID_CHECKBOX1;
     static const long ID_CHECKBOX2;
     static const long ID_CHECKBOX3;
     static const long ID_CHECKBOX4;
+    static const long ID_STATICTEXT11;
     static const long ID_CHECKBOX5;
     static const long ID_CHECKBOX6;
+    static const long ID_STATICTEXT12;
     static const long ID_CHOICE1;
+    static const long ID_STATICTEXT13;
     static const long ID_SPINCTRL3;
     static const long ID_CHECKBOX8;
     static const long ID_CHECKBOX10;
@@ -92,7 +106,9 @@ private:
     wxCheckBox* chkLeft;
     wxCheckBox* m_RemovePrefix;
     wxRadioButton* m_Icons32;
+    wxCheckBox* m_UniqueIDsOnly;
     wxChoice* choicePlacement;
+    wxStaticText* StaticText14;
     wxFlexGridSizer* FlexGridSizer3;
     wxCheckBox* chkTop;
     wxStaticText* StaticText6;

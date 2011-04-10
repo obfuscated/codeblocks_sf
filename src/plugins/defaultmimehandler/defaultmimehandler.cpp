@@ -301,10 +301,10 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
         ShellExecute(0, wxString(_T("open")).c_str(), filename.c_str(), 0, 0, SW_SHOW);
         #endif
         #ifdef __WXGTK__
-        wxExecute(wxString::Format(_T("xdg-open %s"), filename.c_str()));
+        wxExecute(wxString::Format(_T("xdg-open \"%s\""), filename.c_str()));
         #endif
         #ifdef __WXMAC__
-        wxExecute(wxString::Format(_T("open %s"), filename.c_str()));
+        wxExecute(wxString::Format(_T("open \"%s\""), filename.c_str()));
         #endif
         return 0;
     }
@@ -318,6 +318,8 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
             external.Replace(_T("$(FILE)"), filename);
         else
             external << _T(" \"") << filename << _T("\""); // file args wrapped in quotes (bug #1187231)
+		
+        Manager::Get()->GetLogManager()->Log(_T("Launching command: ") + external);
 
         // launch external program
         int ret = 0;
