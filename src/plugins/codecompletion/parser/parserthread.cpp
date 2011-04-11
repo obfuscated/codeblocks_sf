@@ -510,77 +510,110 @@ void ParserThread::DoParse()
         switch (token.Length())
         {
             case 1:
-            if (token == ParserConsts::semicolon)
+            switch (token[0])
             {
-                m_Str.Clear();
-                m_PointerOrRef.Clear();
-                // Notice: clears the queue "m_EncounteredTypeNamespaces"
-                while (!m_EncounteredTypeNamespaces.empty())
-                    m_EncounteredTypeNamespaces.pop();
-                m_TemplateArgument.Clear();
-            }
-            else if (token == ParserConsts::dot
-                     || (token == ParserConsts::gt && m_LastToken == ParserConsts::dash))
-            {
-                m_Str.Clear();
-                SkipToOneOfChars(ParserConsts::semicolonclbrace);
-            }
-            else if (token == ParserConsts::opbrace)
-            {
-                if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
-                    SkipBlock();
-                m_Str.Clear();
-            }
-            else if (token == ParserConsts::clbrace)
-            {
-                m_LastParent = 0L;
-                m_LastScope = tsUndefined;
-                m_Str.Clear();
-                // the only time we get to find a } is when recursively called by e.g. HandleClass
-                // we have to return now...
-                if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
+            case _T(';'):
                 {
-                    m_Tokenizer.SetState(oldState);
-                    return;
+                    m_Str.Clear();
+                    m_PointerOrRef.Clear();
+                    // Notice: clears the queue "m_EncounteredTypeNamespaces"
+                    while (!m_EncounteredTypeNamespaces.empty())
+                        m_EncounteredTypeNamespaces.pop();
+                    m_TemplateArgument.Clear();
                 }
-            }
-            else if (token == ParserConsts::colon)
-            {
-                if (m_LastToken == ParserConsts::kw_public)
-                    m_LastScope = tsPublic;
-                else if (m_LastToken == ParserConsts::kw_protected)
-                    m_LastScope = tsProtected;
-                else if (m_LastToken == ParserConsts::kw_private)
-                    m_LastScope = tsPrivate;
-                m_Str.Clear();
-            }
-            else if (token == ParserConsts::hash)
-            {
-                TokenizerState oldState = m_Tokenizer.GetState();
-                m_Tokenizer.SetState(tsSkipNone);
+                break;
 
-                token = m_Tokenizer.GetToken();
-                if (token == ParserConsts::kw_include)
-                    HandleIncludes();
-                else if (token == ParserConsts::kw_define)
-                    HandleDefines();
-                else if (token == ParserConsts::kw_undef)
-                    HandleUndefs();
-                else
-                    m_Tokenizer.SkipToEOL(false);
+            case _T('.'):
+                {
+                    m_Str.Clear();
+                    SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                }
+                break;
 
-                m_Str.Clear();
-                m_Tokenizer.SetState(oldState);
-            }
-            else if (token == ParserConsts::asterisk)
-                m_PointerOrRef << token;
-            else if (token == ParserConsts::plus)
-            {
-                m_Str.Clear();
-                SkipToOneOfChars(ParserConsts::semicolonclbrace);
-            }
-            else
+            case _T('>'):
+                {
+                    if (m_LastToken == ParserConsts::dash)
+                    {
+                        m_Str.Clear();
+                        SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                    }
+                    else
+                        switchHandled = false;
+                }
+                break;
+
+            case _T('{'):
+                {
+                    if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
+                        SkipBlock();
+                    m_Str.Clear();
+                }
+                break;
+
+            case _T('}'):
+                {
+                    m_LastParent = 0L;
+                    m_LastScope = tsUndefined;
+                    m_Str.Clear();
+                    // the only time we get to find a } is when recursively called by e.g. HandleClass
+                    // we have to return now...
+                    if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
+                    {
+                        m_Tokenizer.SetState(oldState);
+                        return;
+                    }
+                }
+                break;
+
+            case _T(':'):
+                {
+                    if (m_LastToken == ParserConsts::kw_public)
+                        m_LastScope = tsPublic;
+                    else if (m_LastToken == ParserConsts::kw_protected)
+                        m_LastScope = tsProtected;
+                    else if (m_LastToken == ParserConsts::kw_private)
+                        m_LastScope = tsPrivate;
+                    m_Str.Clear();
+                }
+                break;
+
+            case _T('#'):
+                {
+                    TokenizerState oldState = m_Tokenizer.GetState();
+                    m_Tokenizer.SetState(tsSkipNone);
+
+                    token = m_Tokenizer.GetToken();
+                    if (token == ParserConsts::kw_include)
+                        HandleIncludes();
+                    else if (token == ParserConsts::kw_define)
+                        HandleDefines();
+                    else if (token == ParserConsts::kw_undef)
+                        HandleUndefs();
+                    else
+                        m_Tokenizer.SkipToEOL(false);
+
+                    m_Str.Clear();
+                    m_Tokenizer.SetState(oldState);
+                }
+                break;
+
+            case _T('*'):
+                {
+                    m_PointerOrRef << token;
+                }
+                break;
+
+            case _T('+'):
+                {
+                    m_Str.Clear();
+                    SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                }
+                break;
+
+            default:
                 switchHandled = false;
+                break;
+            }
             break;
 
             case 2:
