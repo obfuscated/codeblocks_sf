@@ -9,19 +9,22 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/filename.h>
-#include <wx/fs_zip.h>
-#include "globals.h"
-#include <wx/intl.h>
-#include <wx/utils.h>
-#include <wx/xrc/xmlres.h>
-#include "cbeditor.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "manager.h"
+    #include <wx/filename.h>
+    #include <wx/fs_zip.h>
+    #include "globals.h"
+    #include <wx/intl.h>
+    #include <wx/utils.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbeditor.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "logmanager.h"
+    #include "manager.h"
 #endif
+
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
+
 #include "EmbeddedHtmlPanel.h"
 #include "defaultmimehandler.h"
 #include "editmimetypesdlg.h"
@@ -93,26 +96,26 @@ void DefaultMimeHandler::OnAttach()
 
     m_Html = new EmbeddedHtmlPanel(Manager::Get()->GetAppWindow());
 
-	CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-	evt.pWindow = m_Html;
+    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+    evt.pWindow = m_Html;
     evt.name = _T("DefMimeHandler_HTMLViewer");
-	evt.title = _("HTML viewer");
+    evt.title = _("HTML viewer");
     evt.dockSide = CodeBlocksDockEvent::dsFloating;
     evt.desiredSize.Set(350, 250);
     evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
     evt.shown = false;
-	Manager::Get()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 
 void DefaultMimeHandler::OnRelease(bool appShutDown)
 {
-	CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-	evt.pWindow = m_Html;
-	Manager::Get()->ProcessEvent(evt);
-	m_Html->Destroy();
-	m_Html = 0;
+    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    evt.pWindow = m_Html;
+    Manager::Get()->ProcessEvent(evt);
+    m_Html->Destroy();
+    m_Html = 0;
 
     // save configuration
     ConfigManager* conf = Manager::Get()->GetConfigManager(_T("mime_types"));
@@ -167,16 +170,16 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
     cbMimeType* mt = FindMimeTypeFor(filename);
     if (mt)
         return DoOpenFile(mt, filename);
-	else if (the_file.GetExt().CmpNoCase(_T("htm")) == 0 ||
-			the_file.GetExt().CmpNoCase(_T("html")) == 0)
-	{
-		// embedded help viewer (unless the user has added an explicit association manually)
-		m_Html->Open(filename);
-		CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
-		evt.pWindow = m_Html;
-		Manager::Get()->ProcessEvent(evt);
-		return 0;
-	}
+    else if (the_file.GetExt().CmpNoCase(_T("htm")) == 0 ||
+            the_file.GetExt().CmpNoCase(_T("html")) == 0)
+    {
+        // embedded help viewer (unless the user has added an explicit association manually)
+        m_Html->Open(filename);
+        CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+        evt.pWindow = m_Html;
+        Manager::Get()->ProcessEvent(evt);
+        return 0;
+    }
     else
     {
         // not yet supported. ask the user how to open it.
@@ -268,10 +271,10 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
 {
     wxFileDialog dlg(0,
                      _("Select program"),
-					wxEmptyString,
-					wxEmptyString,
-					FileFilters::GetFilterAll(),
-					wxFD_OPEN | compatibility::wxHideReadonly);
+                    wxEmptyString,
+                    wxEmptyString,
+                    FileFilters::GetFilterAll(),
+                    wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         return dlg.GetPath();

@@ -11,13 +11,13 @@
 #include "EmbeddedHtmlPanel.h"
 
 #ifndef CB_PRECOMP
-	//(*InternalHeadersPCH(EmbeddedHtmlPanel)
-	#include <wx/sizer.h>
-	#include <wx/stattext.h>
-	#include <wx/bmpbuttn.h>
-	#include <wx/intl.h>
-	#include <wx/string.h>
-	//*)
+    //(*InternalHeadersPCH(EmbeddedHtmlPanel)
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
+    #include <wx/bmpbuttn.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    //*)
 #endif
 //(*InternalHeaders(EmbeddedHtmlPanel)
 #include <wx/artprov.h>
@@ -64,53 +64,53 @@ int wxGetDefaultHTMLFontSize()
 }
 
 BEGIN_EVENT_TABLE(EmbeddedHtmlPanel,wxPanel)
-	//(*EventTable(EmbeddedHtmlPanel)
-	//*)
-	EVT_UPDATE_UI(-1, EmbeddedHtmlPanel::OnUpdateUI)
+    //(*EventTable(EmbeddedHtmlPanel)
+    //*)
+    EVT_UPDATE_UI(-1, EmbeddedHtmlPanel::OnUpdateUI)
     EVT_HTML_LINK_CLICKED(ID_HTMLWINDOW1, EmbeddedHtmlPanel::OnLinkClicked)
 END_EVENT_TABLE()
 
 EmbeddedHtmlPanel::EmbeddedHtmlPanel(wxWindow* parent)
 {
-	//(*Initialize(EmbeddedHtmlPanel)
-	wxBoxSizer* BoxSizer2;
-	wxBoxSizer* BoxSizer1;
+    //(*Initialize(EmbeddedHtmlPanel)
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer1;
 
-	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	btnBack = new wxBitmapButton(Panel1, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_BACK")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
-	BoxSizer2->Add(btnBack, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	btnForward = new wxBitmapButton(Panel1, ID_BITMAPBUTTON3, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_FORWARD")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON3"));
-	BoxSizer2->Add(btnForward, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	lblStatus = new wxStaticText(Panel1, ID_STATICTEXT1, _("Label"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	BoxSizer2->Add(lblStatus, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	Panel1->SetSizer(BoxSizer2);
-	BoxSizer2->Fit(Panel1);
-	BoxSizer2->SetSizeHints(Panel1);
-	BoxSizer1->Add(Panel1, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	winHtml = new wxHtmlWindow(this, ID_HTMLWINDOW1, wxDefaultPosition, wxSize(340,180), wxHW_SCROLLBAR_AUTO, _T("ID_HTMLWINDOW1"));
-	BoxSizer1->Add(winHtml, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
+    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    btnBack = new wxBitmapButton(Panel1, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_BACK")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
+    BoxSizer2->Add(btnBack, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    btnForward = new wxBitmapButton(Panel1, ID_BITMAPBUTTON3, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_FORWARD")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON3"));
+    BoxSizer2->Add(btnForward, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    lblStatus = new wxStaticText(Panel1, ID_STATICTEXT1, _("Label"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    BoxSizer2->Add(lblStatus, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    Panel1->SetSizer(BoxSizer2);
+    BoxSizer2->Fit(Panel1);
+    BoxSizer2->SetSizeHints(Panel1);
+    BoxSizer1->Add(Panel1, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    winHtml = new wxHtmlWindow(this, ID_HTMLWINDOW1, wxDefaultPosition, wxSize(340,180), wxHW_SCROLLBAR_AUTO, _T("ID_HTMLWINDOW1"));
+    BoxSizer1->Add(winHtml, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(BoxSizer1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
-	Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&EmbeddedHtmlPanel::OnbtnBackClick);
-	Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&EmbeddedHtmlPanel::OnbtnForwardClick);
-	//*)
+    Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&EmbeddedHtmlPanel::OnbtnBackClick);
+    Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&EmbeddedHtmlPanel::OnbtnForwardClick);
+    //*)
 
-	int sizes[7] = {};
+    int sizes[7] = {};
     wxBuildFontSizes(sizes, wxGetDefaultHTMLFontSize());
-	winHtml->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+    winHtml->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
 
-	lblStatus->SetLabel(wxEmptyString);
+    lblStatus->SetLabel(wxEmptyString);
 }
 
 EmbeddedHtmlPanel::~EmbeddedHtmlPanel()
 {
-	//(*Destroy(EmbeddedHtmlPanel)
-	//*)
+    //(*Destroy(EmbeddedHtmlPanel)
+    //*)
 }
 
 void EmbeddedHtmlPanel::OnLinkClicked(wxHtmlLinkEvent &event)
