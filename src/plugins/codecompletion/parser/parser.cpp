@@ -955,8 +955,8 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
             parseEndLog.Printf(_T("Project '%s' parsing stage done (%d total parsed files, ")
                                _T("%d tokens in %ld minute(s), %ld.%03ld seconds)."),
                                m_Project    ? m_Project->GetTitle().wx_str()  : _T("*NONE*"),
-                               m_TokensTree ? m_TokensTree->m_FilesMap.size() : _T("*NULL*"),
-                               m_TokensTree ? m_TokensTree->realsize          : _T("*NULL*"),
+                               m_TokensTree ? m_TokensTree->m_FilesMap.size() : 0,
+                               m_TokensTree ? m_TokensTree->realsize()        : 0,
                                (m_LastStopWatchTime / 60000),
                                (m_LastStopWatchTime / 1000) % 60,
                                (m_LastStopWatchTime % 1000) );
