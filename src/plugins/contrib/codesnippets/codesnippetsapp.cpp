@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 103 2007-10-30 19:17:39Z Pecan $
+// RCS-ID: $Id$
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"

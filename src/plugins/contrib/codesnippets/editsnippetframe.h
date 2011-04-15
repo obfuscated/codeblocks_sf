@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.h 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id$
 
 #ifndef EDITSNIPPETFRAME_H
 #define EDITSNIPPETFRAME_H

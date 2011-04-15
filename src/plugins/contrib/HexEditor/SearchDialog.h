@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 5445 $
-* $Id: FileContentDisk.cpp 5445 2009-02-07 00:35:09Z byo $
-* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/HexEditor/FileContentDisk.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef SEARCHDIALOG_H

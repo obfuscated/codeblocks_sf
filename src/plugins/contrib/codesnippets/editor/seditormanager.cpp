@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 5057 $
- * $Id: editormanager.cpp 5057 2008-05-13 17:01:32Z biplab $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/editormanager.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 //warning: ...trunk/src/include/sdk_precomp.h.gch: not used because `EXPORT_LIB' not defined|

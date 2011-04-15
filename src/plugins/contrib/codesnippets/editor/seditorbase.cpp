@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 4909 $
- * $Id: editorbase.cpp 4909 2008-02-27 13:15:26Z mortenmacfly $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/editorbase.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 // Get rid of some precompile warnings when using sdk

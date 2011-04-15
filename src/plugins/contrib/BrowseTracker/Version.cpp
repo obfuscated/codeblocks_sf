@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 26 2008-01-03 17:34:18Z Pecan $
+// RCS-ID: $Id$
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"

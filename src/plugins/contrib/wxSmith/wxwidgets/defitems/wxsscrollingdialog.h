@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 4850 $
-* $Id: wxsdialog.h 4850 2008-01-29 21:45:49Z byo $
-* $HeadURL: svn+ssh://jenslody@svn.berlios.de/svnroot/repos/codeblocks/branches/wxpropgrid_debugger/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsdialog.h $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef WXSSCROLLINGDIALOG_H

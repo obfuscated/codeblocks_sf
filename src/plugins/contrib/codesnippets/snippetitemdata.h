@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: snippetitemdata.h 102 2007-10-29 21:16:50Z Pecan $
+// RCS-ID: $Id$
 
 #ifndef SNIPPETITEMDATA_H
 #define SNIPPETITEMDATA_H

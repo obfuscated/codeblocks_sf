@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with HexEditor plugin. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: $
-* $Id: $
-* $HeadURL: $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef TESTCASESHELPER_H

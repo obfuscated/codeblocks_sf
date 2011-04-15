@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 4909 $
- * $Id: printdlg.cpp 4909 2008-02-27 13:15:26Z mortenmacfly $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/src/printdlg.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #if defined(CB_PRECOMP)

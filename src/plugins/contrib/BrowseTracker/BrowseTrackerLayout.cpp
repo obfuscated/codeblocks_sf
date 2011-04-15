@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: BrowseTrackerLayout.cpp 24 2008-01-02 15:19:04Z Pecan $
+// RCS-ID: $Id$
 
 /*
 * This file is part of Code::Bocks, an open-source cross-platform IDE
@@ -26,9 +26,9 @@
 * This program is distributed under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 *
-* $Revision: 4606 $
-* $Id: BrowseTrackerLayout.cpp 24 2008-01-02 15:19:04Z Pecan $
-* $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/BrowseTrackerLayout.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "sdk_precomp.h"

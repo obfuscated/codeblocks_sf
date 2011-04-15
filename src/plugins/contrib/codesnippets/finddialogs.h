@@ -3,7 +3,7 @@
 // Purpose:     Find/Replace, Goto dialogs
 // Maintainer:  Otto Wyss
 // Created:     2003-01-20
-// RCS-ID:      $Id: finddialogs.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2005 wyoGuide
 // Licence:     wxWindows
 //////////////////////////////////////////////////////////////////////////////
@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: finddialogs.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id$
 
 #ifndef _DIALOGS_H_
 #define _DIALOGS_H_

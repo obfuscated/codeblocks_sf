@@ -32,7 +32,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: prefs.h 106 2007-12-01 18:31:55Z Pecan $
+// RCS-ID: $Id$
 
 
 //----------------------------------------------------------------------------

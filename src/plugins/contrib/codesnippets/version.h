@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // ----------------------------------------------------------------------------
-// RCS-ID: $Id: version.h 113 2008-01-14 18:31:17Z Pecan $
+// RCS-ID: $Id$
 
 #ifndef VERSION_H
 #define VERSION_H

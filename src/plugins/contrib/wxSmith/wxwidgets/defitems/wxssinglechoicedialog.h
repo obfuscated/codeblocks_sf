@@ -16,9 +16,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 4504 $
-* $Id: wxstimer.h 4504 2007-10-02 21:52:30Z byo $
-* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstimer.h $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef WXSSINGLECHOICEDIALOG_H

@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision: 5795 $
-* $Id: wxsdialog.cpp 5795 2009-09-16 10:10:30Z mortenmacfly $
-* $HeadURL: svn+ssh://jenslody@svn.berlios.de/svnroot/repos/codeblocks/branches/wxpropgrid_debugger/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsdialog.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include <wx/app.h>		// wxTheApp

@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
  *
- * $Revision: 5024 $
- * $Id: editorcolourset.cpp 5024 2008-04-30 22:22:21Z killerbot $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/editorcolourset.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 // Stop following warning:

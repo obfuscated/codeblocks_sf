@@ -16,9 +16,9 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 4504 $
-* $Id: wxsmithpluginregistrants.cpp 4504 2007-10-02 21:52:30Z byo $
-* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/plugin/wxsmithpluginregistrants.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef LIB_AUTO_CONF_H

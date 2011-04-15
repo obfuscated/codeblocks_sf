@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: defsext.h 100 2007-08-24 23:11:03Z Pecan $
+// RCS-ID: $Id$
 
 #ifndef _WX_DEFSEXT_H_
 #define _WX_DEFSEXT_H_
