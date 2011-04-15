@@ -257,7 +257,6 @@ public:
      */
     void GetCallTips(int chars_per_line, wxArrayString& items, int &typedCommas);
 
-
     /** Word start position in the editor
      * @return position index
      */

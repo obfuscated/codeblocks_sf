@@ -26,9 +26,9 @@ extern const wxString g_UnnamedSymbol;
 
 struct NameSpace
 {
-	wxString Name;
-	int StartLine;
-	int EndLine;
+    wxString Name;
+    int StartLine;
+    int EndLine;
 };
 
 typedef std::vector<NameSpace> NameSpaceVec;

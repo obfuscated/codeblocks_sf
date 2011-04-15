@@ -259,82 +259,82 @@ void ParserThread::SkipAngleBraces()
 bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
     wxCriticalSectionLocker locker(g_ParserThreadCritical);
-	m_Tokenizer.InitFromBuffer(buffer);
-	if (!m_Tokenizer.IsOK())
-		return false;
+    m_Tokenizer.InitFromBuffer(buffer);
+    if (!m_Tokenizer.IsOK())
+        return false;
 
-	result.clear();
+    result.clear();
 
-	wxArrayString nsStack;
-	nsStack.Alloc(4);
+    wxArrayString nsStack;
+    nsStack.Alloc(4);
 
-	m_Tokenizer.SetState(tsSkipUnWanted);
-	m_ParsingTypedef = false;
+    m_Tokenizer.SetState(tsSkipUnWanted);
+    m_ParsingTypedef = false;
 
-	while (m_Tokenizer.NotEOF() && IS_ALIVE)
-	{
+    while (m_Tokenizer.NotEOF() && IS_ALIVE)
+    {
         wxString token = m_Tokenizer.GetToken();
         if (token.IsEmpty())
             continue;
 
-		if (token == ParserConsts::kw_using)
-		{
-			SkipToOneOfChars(ParserConsts::semicolonclbrace);
-		}
-		else if (token == ParserConsts::opbrace)
-		{
-			SkipBlock();
-		}
-		else if (token == ParserConsts::kw_namespace)
-		{
-			wxString name = m_Tokenizer.GetToken();
-			if (name == ParserConsts::opbrace)
-			{
-				name = wxEmptyString; // anonymous namespace
-			}
-			else
-			{
-				m_Tokenizer.SetState(tsSkipNone);
-				wxString next = m_Tokenizer.PeekToken();
-				m_Tokenizer.SetState(tsSkipUnWanted);
-				if (next == ParserConsts::equals)
-				{
-					SkipToOneOfChars(ParserConsts::semicolonclbrace);
-					continue;
-				}
-				else if (next == ParserConsts::opbrace) {
-					m_Tokenizer.GetToken();
-					name += _T("::");
-				}
-			}
+        if (token == ParserConsts::kw_using)
+        {
+            SkipToOneOfChars(ParserConsts::semicolonclbrace);
+        }
+        else if (token == ParserConsts::opbrace)
+        {
+            SkipBlock();
+        }
+        else if (token == ParserConsts::kw_namespace)
+        {
+            wxString name = m_Tokenizer.GetToken();
+            if (name == ParserConsts::opbrace)
+            {
+                name = wxEmptyString; // anonymous namespace
+            }
+            else
+            {
+                m_Tokenizer.SetState(tsSkipNone);
+                wxString next = m_Tokenizer.PeekToken();
+                m_Tokenizer.SetState(tsSkipUnWanted);
+                if (next == ParserConsts::equals)
+                {
+                    SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                    continue;
+                }
+                else if (next == ParserConsts::opbrace) {
+                    m_Tokenizer.GetToken();
+                    name += _T("::");
+                }
+            }
 
-			nsStack.Add(name);
-			NameSpace ns;
-			for (size_t i = 0; i < nsStack.Count(); ++i)
-				ns.Name << nsStack[i];
-			ns.StartLine = m_Tokenizer.GetLineNumber() - 1;
-			ns.EndLine = -1;
+            nsStack.Add(name);
+            NameSpace ns;
+            for (size_t i = 0; i < nsStack.Count(); ++i)
+                ns.Name << nsStack[i];
+            ns.StartLine = m_Tokenizer.GetLineNumber() - 1;
+            ns.EndLine = -1;
 
-			result.push_back(ns);
-		}
-		else if (token == ParserConsts::clbrace)
-		{
-			NameSpaceVec::reverse_iterator it = result.rbegin();
-			for ( ; it != result.rend(); ++it)
-			{
-				NameSpace& ns = *it;
-				if (ns.EndLine == -1)
-				{
-					ns.EndLine = m_Tokenizer.GetLineNumber() - 1;
-					break;
-				}
-			}
+            result.push_back(ns);
+        }
+        else if (token == ParserConsts::clbrace)
+        {
+            NameSpaceVec::reverse_iterator it = result.rbegin();
+            for ( ; it != result.rend(); ++it)
+            {
+                NameSpace& ns = *it;
+                if (ns.EndLine == -1)
+                {
+                    ns.EndLine = m_Tokenizer.GetLineNumber() - 1;
+                    break;
+                }
+            }
 
-			if (!nsStack.IsEmpty())
-				nsStack.RemoveAt(nsStack.GetCount() - 1);
-		}
-	}
-	return true;
+            if (!nsStack.IsEmpty())
+                nsStack.RemoveAt(nsStack.GetCount() - 1);
+        }
+    }
+    return true;
 }
 
 bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
@@ -607,6 +607,16 @@ void ParserThread::DoParse()
                 {
                     m_Str.Clear();
                     SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                }
+                break;
+
+            case _T('-'):
+                {
+                    if (m_LastToken == ParserConsts::dash)
+                    {
+                        m_Str.Clear();
+                        SkipToOneOfChars(ParserConsts::semicolonclbrace);
+                    }
                 }
                 break;
 
@@ -1548,7 +1558,7 @@ void ParserThread::HandleNamespace()
             // }
             // namespace abi = __cxxabiv1; <-- we 're in this case now
 
-			m_Tokenizer.GetToken(); // eat '='
+            m_Tokenizer.GetToken(); // eat '='
             m_Tokenizer.SetState(tsSkipUnWanted);
 
             Token* lastParent = m_LastParent;
@@ -2072,9 +2082,9 @@ void ParserThread::HandleEnum()
         }
     }
 
-	newEnum->m_ImplLine = lineNr;
-	newEnum->m_ImplLineStart = lineStart;
-	newEnum->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
+    newEnum->m_ImplLine = lineNr;
+    newEnum->m_ImplLineStart = lineStart;
+    newEnum->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
 //    // skip to ;
 //    SkipToOneOfChars(ParserConsts::semicolon);
 }
