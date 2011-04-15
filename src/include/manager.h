@@ -16,6 +16,7 @@
 #endif
 #include <wx/event.h>
 #include <wx/cmdline.h>
+
 #include "settings.h"
 #include "sdk_events.h"
 #include "cbfunctor.h"
@@ -46,7 +47,8 @@ class DLLIMPORT Manager
     static bool blockYields;
     static bool isBatch;
     static wxCmdLineParser m_CmdLineParser;
-    Manager();
+
+     Manager();
     ~Manager();
 
     void OnMenu(wxCommandEvent& event);
@@ -54,27 +56,28 @@ class DLLIMPORT Manager
 public:
     static void SetBatchBuild(bool is_batch);
     static bool IsBatchBuild(){ return isBatch; }
-    /// Blocks/unblocks Manager::Yield(). Be carefull when using it. Actually, do *not* use it ;)
+    /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
     static void Yield();
     static void ProcessPendingEvents();
     static void Shutdown();
 
-    bool ProcessEvent(CodeBlocksEvent& event);
-    bool ProcessEvent(CodeBlocksDockEvent& event);
+    bool ProcessEvent(CodeBlocksEvent&       event);
+    bool ProcessEvent(CodeBlocksDockEvent&   event);
     bool ProcessEvent(CodeBlocksLayoutEvent& event);
-    bool ProcessEvent(CodeBlocksLogEvent& event);
+    bool ProcessEvent(CodeBlocksLogEvent&    event);
 
 
     /** Use Manager::Get() to get a pointer to its instance
      * Manager::Get() is guaranteed to never return an invalid pointer.
      */
     static Manager* Get();
+
     /** Never, EVER, call this function! It is the last function called on shutdown.... */
     static void Free();
 
-    wxFrame* GetAppFrame() const;
+    wxFrame*  GetAppFrame()  const;
     wxWindow* GetAppWindow() const;
 
     static bool IsAppShuttingDown();
@@ -90,28 +93,27 @@ public:
      * The order of destruction is:
      * ----------------------------
      *   ToolsManager,       TemplateManager, PluginManager,
-	 *   ScriptingManager,   ProjectManager,  EditorManager,
-	 *   PersonalityManager, MacrosManager,   UserVariableManager,
-	 *   LogManager
-	 *   The ConfigManager is destroyed immediately before the applicaton terminates, so it can be
-	 *   considered being omnipresent.
+     *   ScriptingManager,   ProjectManager,  EditorManager,
+     *   PersonalityManager, MacrosManager,   UserVariableManager,
+     *   LogManager
+     *   The ConfigManager is destroyed immediately before the applicaton terminates, so it can be
+     *   considered being omnipresent.
      *
      * For plugin developers, this means that most managers (except for the ones you probably don't use anyway)
      * will be available throughout the entire lifetime of your plugins.
      */
 
-    ProjectManager* GetProjectManager() const;
-    EditorManager* GetEditorManager() const;
-    LogManager* GetLogManager() const;
-    PluginManager* GetPluginManager() const;
-    ToolsManager* GetToolsManager() const;
-    MacrosManager* GetMacrosManager() const;
-    PersonalityManager* GetPersonalityManager() const;
+    ProjectManager*      GetProjectManager() const;
+    EditorManager*       GetEditorManager() const;
+    LogManager*          GetLogManager() const;
+    PluginManager*       GetPluginManager() const;
+    ToolsManager*        GetToolsManager() const;
+    MacrosManager*       GetMacrosManager() const;
+    PersonalityManager*  GetPersonalityManager() const;
     UserVariableManager* GetUserVariableManager() const;
-    ScriptingManager* GetScriptingManager() const;
-    ConfigManager* GetConfigManager(const wxString& name_space) const;
-    FileManager* GetFileManager() const;
-
+    ScriptingManager*    GetScriptingManager() const;
+    ConfigManager*       GetConfigManager(const wxString& name_space) const;
+    FileManager*         GetFileManager() const;
 
 
     /////// XML Resource functions ///////
@@ -122,12 +124,11 @@ public:
     static bool LoadResource(const wxString& file);
 
     /// Loads Menubar from XRC
-    static wxMenuBar* LoadMenuBar(wxString resid,bool createonfailure=false);
+    static wxMenuBar* LoadMenuBar(wxString resid, bool createonfailure = false);
     /// Loads Menu from XRC
-    static wxMenu* LoadMenu(wxString menu_id,bool createonfailure=false);
+    static wxMenu*    LoadMenu(wxString menu_id, bool createonfailure = false);
     /// Loads ToolBar from XRC
-    static wxToolBar *LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall=true);
-    /// Loads ToolBarAddOn from XRC into existing Toolbar
+    static wxToolBar *LoadToolBar(wxFrame *parent, wxString resid, bool defaultsmall = true);
 
     // Do not use this, use Get()
     static Manager* Get(wxFrame* appWindow);
@@ -137,49 +138,49 @@ public:
 
     static wxCmdLineParser* GetCmdLineParser();
 
-	// event sinks
-	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>* functor);
-	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor);
-	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
-	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>* functor);
-	void RemoveAllEventSinksFor(void* owner);
+    // event sinks
+    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>*       functor);
+    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>*   functor);
+    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
+    void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>*    functor);
+    void RemoveAllEventSinksFor(void* owner);
 
 private:
-	// event sinks
-	typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* > EventSinksArray;
-	typedef std::map< wxEventType, EventSinksArray > EventSinksMap;
-	typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* > DockEventSinksArray;
-	typedef std::map< wxEventType, DockEventSinksArray > DockEventSinksMap;
-	typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
-	typedef std::map< wxEventType, LayoutEventSinksArray > LayoutEventSinksMap;
-	typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* > LogEventSinksArray;
-	typedef std::map< wxEventType, LogEventSinksArray > LogEventSinksMap;
+    // event sinks
+    typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* >       EventSinksArray;
+    typedef std::map< wxEventType, EventSinksArray >                 EventSinksMap;
+    typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* >   DockEventSinksArray;
+    typedef std::map< wxEventType, DockEventSinksArray >             DockEventSinksMap;
+    typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
+    typedef std::map< wxEventType, LayoutEventSinksArray >           LayoutEventSinksMap;
+    typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* >    LogEventSinksArray;
+    typedef std::map< wxEventType, LogEventSinksArray >              LogEventSinksMap;
 
-	EventSinksMap m_EventSinks;
-	DockEventSinksMap m_DockEventSinks;
-	LayoutEventSinksMap m_LayoutEventSinks;
-	LogEventSinksMap m_LogEventSinks;
+    EventSinksMap       m_EventSinks;
+    DockEventSinksMap   m_DockEventSinks;
+    LayoutEventSinksMap m_LayoutEventSinks;
+    LogEventSinksMap    m_LogEventSinks;
 };
 
 template <class MgrT> class Mgr
 {
     static MgrT *instance;
     static bool isShutdown;
-    explicit Mgr(const Mgr<MgrT>&){};
-    Mgr<MgrT>& operator=(Mgr<MgrT> const&){};
+    explicit Mgr(const Mgr<MgrT>&)         { ; };
+    Mgr<MgrT>& operator=(Mgr<MgrT> const&) { ; };
 
 protected:
 
-    Mgr(){assert(Mgr<MgrT>::instance == 0);}
-    virtual ~Mgr(){Mgr<MgrT>::instance = 0;}
+    Mgr()          { assert(Mgr<MgrT>::instance == 0); }
+    virtual ~Mgr() { Mgr<MgrT>::instance = 0; }
 
 public:
 
-    static inline bool Valid(){return instance;}
+    static inline bool Valid() { return instance; }
 
     static inline MgrT* Get()
     {
-        if(instance == 0 && isShutdown == false)
+        if (instance == 0 && isShutdown == false)
             instance = new MgrT();
 
         return instance;
