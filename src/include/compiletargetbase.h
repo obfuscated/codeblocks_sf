@@ -114,6 +114,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual const wxString& GetTitle() const; ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename
+        virtual void SetImportLibraryFilename(const wxString& filename); ///< Set the target's import library filename
+        virtual void SetDefinitionFileFilename(const wxString& filename); ///< Set the target's definition file filename
         virtual void SetWorkingDir(const wxString& dirname); ///< Set the target's working dir on execution (valid only for executable targets)
         virtual void SetObjectOutput(const wxString& dirname); ///< Set the target's objects output dir
         virtual void SetDepsOutput(const wxString& dirname); ///< Set the target's dependencies output dir
@@ -126,6 +128,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual wxString SuggestOutputFilename(); ///< Suggest a filename based on the target's type
         virtual wxString GetExecutableFilename() const; ///< Read the target's executable filename (produced if target type is ttExecutable)
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
+        virtual wxString GetDynamicLibImportFilename(); ///< Read the target's dynamic library import filename (produced if target type is ttDynamicLib)
         virtual wxString GetDynamicLibDefFilename(); ///< Read the target's dynamic library definition file filename (produced if target type is ttDynamicLib)
         virtual wxString GetStaticLibFilename(); ///< Read the target's static library filename (produced if target type is ttStaticLib)
         virtual wxString GetNativeFilename(); ///< Read the target's native filename (produced if target type is ttNative)
@@ -147,6 +150,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_Filename;
         wxString m_Title;
         mutable wxString m_OutputFilename;
+        wxString m_ImportLibraryFilename;
+        wxString m_DefinitionFileFilename;
         wxString m_WorkingDir;
         wxString m_ObjectOutput;
         wxString m_DepsOutput;

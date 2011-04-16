@@ -125,7 +125,7 @@ enum CommandType
     ctLinkDynamicCmd,       ///< Link dynamic (dll) lib command, e.g. "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $libs -o $dynamic_output"
     ctLinkStaticCmd,        ///< Link static lib command, e.g. "ar -r $output $link_objects\n\tranlib $static_output"
     ctLinkNativeCmd,        ///< Link native binary command
-    
+
     ctCount,				///< Do NOT use
 };
 
@@ -197,7 +197,7 @@ struct CompilerTool
 	{}
 	bool operator==(const CompilerTool& rhs) const { return command == rhs.command && extensions == rhs.extensions && generatedFiles == rhs.generatedFiles; }
 	bool operator!=(const CompilerTool& rhs) const { return !(*this == rhs); }
-	
+
 	wxString command; ///< command to execute
 	wxArrayString extensions; ///< file extensions for which the command will be invoked (no leading dot)
 	wxArrayString generatedFiles; ///< the native language files this command generates that should be further compiled

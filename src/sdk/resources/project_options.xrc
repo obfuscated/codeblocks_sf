@@ -3,7 +3,7 @@
 	<object class="wxScrollingDialog" name="dlgProjectOptions">
 		<title>Project/targets options</title>
 		<centered>1</centered>
-		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
@@ -458,6 +458,54 @@
 																</object>
 																<object class="sizeritem">
 																	<object class="wxButton" name="btnBrowseOutputFilename">
+																		<label>...</label>
+																		<size>24,24</size>
+																	</object>
+																	<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																</object>
+															</object>
+															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														</object>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT20">
+																<label>Import library filename:</label>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<option>1</option>
+														</object>
+														<object class="sizeritem">
+															<object class="wxBoxSizer">
+																<object class="sizeritem">
+																	<object class="wxTextCtrl" name="txtImportLibraryFilename" />
+																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<option>1</option>
+																</object>
+																<object class="sizeritem">
+																	<object class="wxButton" name="btnBrowseImportLibraryFilename">
+																		<label>...</label>
+																		<size>24,24</size>
+																	</object>
+																	<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																</object>
+															</object>
+															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														</object>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT21">
+																<label>Definition file filename:</label>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<option>1</option>
+														</object>
+														<object class="sizeritem">
+															<object class="wxBoxSizer">
+																<object class="sizeritem">
+																	<object class="wxTextCtrl" name="txtDefinitionFileFilename" />
+																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<option>1</option>
+																</object>
+																<object class="sizeritem">
+																	<object class="wxButton" name="btnBrowseDefinitionFileFilename">
 																		<label>...</label>
 																		<size>24,24</size>
 																	</object>

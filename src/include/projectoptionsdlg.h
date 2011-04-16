@@ -35,6 +35,8 @@ class ProjectOptionsDlg : public wxScrollingDialog
         void OnCopyBuildTargetClick(wxCommandEvent& event);
         void OnRemoveBuildTargetClick(wxCommandEvent& event);
         void OnBrowseOutputFilenameClick(wxCommandEvent& event);
+        void OnBrowseImportLibraryFilenameClick(wxCommandEvent& event);
+        void OnBrowseDefinitionFileFilenameClick(wxCommandEvent& event);
         void OnBrowseDirClick(wxCommandEvent& event);
         void OnVirtualTargets(wxCommandEvent& event);
         void OnEditDepsClick(wxCommandEvent& event);
@@ -46,6 +48,8 @@ class ProjectOptionsDlg : public wxScrollingDialog
         void OnPlatform(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnOK(wxCommandEvent& event);
+        void OnCreateDefFileClick(wxCommandEvent& event);
+        void OnCreateImportFileClick(wxCommandEvent& event);
 
         void OnScriptsOverviewSelChanged(wxTreeEvent& event);
         void OnCheckScripts(wxCommandEvent& event);

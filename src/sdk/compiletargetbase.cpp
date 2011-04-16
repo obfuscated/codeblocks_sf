@@ -94,6 +94,34 @@ void CompileTargetBase::SetOutputFilename(const wxString& filename)
     SetModified(true);
 }
 
+void CompileTargetBase::SetImportLibraryFilename(const wxString& filename)
+{
+    if (filename.IsEmpty())
+    {
+        m_ImportLibraryFilename = _T("$(TARGET_NAME)");
+        SetModified(true);
+        return;
+    }
+    else if (m_ImportLibraryFilename == filename)
+        return;
+
+    m_ImportLibraryFilename = UnixFilename(filename);
+}
+
+void CompileTargetBase::SetDefinitionFileFilename(const wxString& filename)
+{
+    if (filename.IsEmpty())
+    {
+        m_DefinitionFileFilename = _T("$(TARGET_NAME)");
+        SetModified(true);
+        return;
+    }
+    else if (m_DefinitionFileFilename == filename)
+        return;
+
+    m_DefinitionFileFilename = UnixFilename(filename);
+}
+
 void CompileTargetBase::SetWorkingDir(const wxString& dirname)
 {
     if (m_WorkingDir == dirname)
@@ -336,30 +364,27 @@ wxString CompileTargetBase::GetDynamicLibFilename()
     return fname.GetFullPath();
 }
 
+wxString CompileTargetBase::GetDynamicLibImportFilename()
+{
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
+    if (m_ImportLibraryFilename.IsEmpty())
+        m_ImportLibraryFilename = _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
+
+    wxFileName fname(m_ImportLibraryFilename);
+
+    return fname.GetFullPath();
+}
+
 wxString CompileTargetBase::GetDynamicLibDefFilename()
 {
     if (m_TargetType == ttCommandsOnly)
         return wxEmptyString;
-    if (m_Filename.IsEmpty())
-        m_Filename = m_OutputFilename;
+    if (m_DefinitionFileFilename.IsEmpty())
+        m_DefinitionFileFilename = _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
 
-    if (m_PrefixGenerationPolicy != tgfpNone || m_ExtensionGenerationPolicy != tgfpNone)
-    {
-        wxString out = m_Filename;
-        GenerateTargetFilename(out);
-        return out;
-    }
+    wxFileName fname(m_DefinitionFileFilename);
 
-    wxFileName fname(m_Filename);
-
-    wxString prefix = _T("lib");
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-    if (compiler)
-    {
-        prefix = compiler->GetSwitches().libPrefix;
-    }
-    fname.SetName(prefix + fname.GetName());
-    fname.SetExt(_T("def"));
     return fname.GetFullPath();
 }
 

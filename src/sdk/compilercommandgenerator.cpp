@@ -454,46 +454,106 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
     FixPathSeparators(compiler, result);
     m_Output[target] = result;
 
-    // Replace Variables FIRST to address the $(VARIABLE)libfoo.a problem
-    // if $(VARIABLE) expands to /bar/ then wxFileName will still consider $(VARIABLE)libfoo.a a filename,
-    // not a fully qualified path, so we will prepend lib to /bar/libfoo.a incorrectly
-    // NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
-    wxString fnameString(target->GetOutputFilename());
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, target);
-    wxFileName fname(fnameString);
-
-    TargetFilenameGenerationPolicy PrefixPolicy;
-    TargetFilenameGenerationPolicy ExtensionPolicy;
-    target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
-    if ((PrefixPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
+    // static/import library name
+    switch (target->GetTargetType())
     {
-        if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
-        {
-            fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
-        }
-    }
-    if ((ExtensionPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
-    {
-        wxString current_ext   = fname.GetExt();
-        wxString requested_ext = compiler->GetSwitches().libExtension;
-        if      (   (platform::windows && !current_ext.IsSameAs(requested_ext, false))
-                 || (!current_ext.IsSameAs(requested_ext)) )
-        {
-            // Note: Do not use SetExt here to handle libs like e.g. System.Core correctly.
-            // Otherwise SetExt would result in System.dll instead of System.Core.dll
-            fname.SetFullName(fname.GetFullName()+wxFILE_SEP_EXT+requested_ext);
-        }
-    }
-    result = UnixFilename(fname.GetFullPath());
-    QuoteStringIfNeeded(result);
-    FixPathSeparators(compiler, result);
-    m_StaticOutput[target] = result;
+        case ttDynamicLib:
+            {
+                TargetFilenameGenerationPolicy PrefixPolicy;
+                TargetFilenameGenerationPolicy ExtensionPolicy;
+                target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
 
-    // def
-    fname.SetExt(_T("def"));
-    result = UnixFilename(fname.GetFullPath());
-    QuoteStringIfNeeded(result); // NOTE (thomas#1#): Do we really need to call QuoteStringIfNeeded that often? ReplaceMacros already does it, and we do it twice again without ever possibly adding whitespace
-    FixPathSeparators(compiler, result);
+                wxString importLibraryFileNameString(target->GetDynamicLibImportFilename());
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(importLibraryFileNameString, target);
+                wxFileName importLibraryFileName(importLibraryFileNameString);
+
+                // apply prefix if needed
+                if (   (PrefixPolicy == tgfpPlatformDefault)
+                    && !importLibraryFileName.GetName().StartsWith(compiler->GetSwitches().libPrefix) )
+                    importLibraryFileName.SetName(compiler->GetSwitches().libPrefix + importLibraryFileName.GetName());
+
+                // apply extension if needed
+                if (ExtensionPolicy == tgfpPlatformDefault)
+                {
+                    wxString current_ext   = importLibraryFileName.GetExt();
+                    wxString requested_ext = compiler->GetSwitches().libExtension;
+
+                    if (!current_ext.IsSameAs(requested_ext, false))
+                        importLibraryFileName.SetFullName(importLibraryFileName.GetFullName() + wxFILE_SEP_EXT + requested_ext);
+                }
+                result = UnixFilename(importLibraryFileName.GetFullPath());
+                QuoteStringIfNeeded(result);
+                FixPathSeparators(compiler, result);
+                m_StaticOutput[target] = result;
+
+
+                wxString definitionFileFileNameString(target->GetDynamicLibDefFilename());
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(definitionFileFileNameString, target);
+                wxFileName definitionFileFileName(definitionFileFileNameString);
+
+                // apply prefix if needed
+                if (   (PrefixPolicy == tgfpPlatformDefault)
+                    && !definitionFileFileName.GetName().StartsWith(compiler->GetSwitches().libPrefix) )
+                    definitionFileFileName.SetName(compiler->GetSwitches().libPrefix + definitionFileFileName.GetName());
+
+                // apply extension if needed
+                if (ExtensionPolicy == tgfpPlatformDefault)
+                {
+                    wxString current_ext   = definitionFileFileName.GetExt();
+                    wxString requested_ext = _T("def");
+
+                    if (!current_ext.IsSameAs(requested_ext, false))
+                        definitionFileFileName.SetFullName(definitionFileFileName.GetFullName() + wxFILE_SEP_EXT + requested_ext);
+                }
+                result = UnixFilename(definitionFileFileName.GetFullPath());
+                QuoteStringIfNeeded(result);
+                FixPathSeparators(compiler, result);
+            }
+            break;
+
+        default:
+            {
+                // Replace Variables FIRST to address the $(VARIABLE)libfoo.a problem
+                // if $(VARIABLE) expands to /bar/ then wxFileName will still consider $(VARIABLE)libfoo.a a filename,
+                // not a fully qualified path, so we will prepend lib to /bar/libfoo.a incorrectly
+                // NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
+                wxString fnameString(target->GetOutputFilename());
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, target);
+                wxFileName fname(fnameString);
+
+                TargetFilenameGenerationPolicy PrefixPolicy;
+                TargetFilenameGenerationPolicy ExtensionPolicy;
+                target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
+                if ((PrefixPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
+                {
+                    if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
+                        fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
+                }
+                if ((ExtensionPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
+                {
+                    wxString current_ext   = fname.GetExt();
+                    wxString requested_ext = compiler->GetSwitches().libExtension;
+                    if      (   (platform::windows && !current_ext.IsSameAs(requested_ext, false))
+                             || (!current_ext.IsSameAs(requested_ext)) )
+                    {
+                        // Note: Do not use SetExt here to handle libs like e.g. System.Core correctly.
+                        // Otherwise SetExt would result in System.dll instead of System.Core.dll
+                        fname.SetFullName(fname.GetFullName()+wxFILE_SEP_EXT+requested_ext);
+                    }
+                }
+                result = UnixFilename(fname.GetFullPath());
+                QuoteStringIfNeeded(result);
+                FixPathSeparators(compiler, result);
+                m_StaticOutput[target] = result;
+
+                // def
+                fname.SetExt(_T("def"));
+                result = UnixFilename(fname.GetFullPath());
+                QuoteStringIfNeeded(result); // NOTE (thomas#1#): Do we really need to call QuoteStringIfNeeded that often? ReplaceMacros already does it, and we do it twice again without ever possibly adding whitespace
+                FixPathSeparators(compiler, result);
+            }
+            break;
+    }
 
     return result;
 }
