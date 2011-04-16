@@ -4482,6 +4482,7 @@ public:
             m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
     }
 #endif
+    void SetUpdateType(int update)   { m_update = update; }
 
     int  GetPosition() const         { return m_position; }
     int  GetKey()  const             { return m_key; }
@@ -4507,6 +4508,7 @@ public:
 
     bool GetDragAllowMove() { return (GetDragFlags() & wxDrag_AllowMove) != 0; }
 #endif
+    int GetUpdateType()              { return m_update; }
 
     bool GetShift() const;
     bool GetControl() const;
@@ -4545,6 +4547,8 @@ private:
     int      m_dragFlags;       // wxEVT_SCI_START_DRAG
     wxDragResult m_dragResult;  // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
 #endif
+
+    int m_update;
 #endif
 };
 

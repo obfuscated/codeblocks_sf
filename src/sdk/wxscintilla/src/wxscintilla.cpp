@@ -4863,6 +4863,7 @@ void wxScintilla::NotifyParent (SCNotification* _scn)
 
     case SCN_UPDATEUI:
         evt.SetEventType (wxEVT_SCI_UPDATEUI);
+        evt.SetUpdateType(scn.updated);
         break;
 
     case SCN_MODIFIED:
