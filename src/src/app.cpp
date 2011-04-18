@@ -1253,7 +1253,10 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     if (!Manager::Get())
         return;
 
-    if (Manager::Get()->GetEditorManager() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+    // fix for bug #18007: In batch build mode the following is not needed
+    if (  !m_Batch
+        && Manager::Get()->GetEditorManager()
+        && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
     {
         // for some reason a mouse up event doen's make it into scintilla (scintilla bug)
         // therefor the workaournd is not to directly call the editorManager, but
