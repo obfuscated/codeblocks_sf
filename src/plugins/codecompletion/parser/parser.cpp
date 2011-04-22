@@ -178,19 +178,19 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_ParsingType(ptCreateParser),
     m_NeedMarkFileAsLocal(true)
 {
-    m_TokensTree = new(std::nothrow) TokensTree;
-    m_TempTokensTree = new(std::nothrow) TokensTree;
+    m_TokensTree = new TokensTree;
+    m_TempTokensTree = new TokensTree;
     ReadOptions();
     ConnectEvents();
 }
 
 Parser::~Parser()
 {
-    // 1. Disconnect events
-    DisconnectEvents();
-
-    // 2. Let's OnAllThreadsDone can not process event
+    // 1. Let's OnAllThreadsDone can not process event
     m_IgnoreThreadEvents = true;
+
+    // 2. Disconnect events
+    DisconnectEvents();
 
     // 3. Lock tokens tree
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -494,10 +494,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
         }
 
         TRACE(_T("Parse() : Creating task for: %s"), bufferOrFilename.wx_str());
-        ParserThread* thread = new(std::nothrow) ParserThread(this, bufferOrFilename, isLocal, opts, m_TokensTree);
-        if (!thread)
-            break;
-
+        ParserThread* thread = new ParserThread(this, bufferOrFilename, isLocal, opts, m_TokensTree);
         bool doParseNow = opts.useBuffer;
 #if CC_PARSER_PROFILE_TEST
         doParseNow = true;
@@ -743,11 +740,6 @@ bool Parser::ReadFromCache(wxInputStream* f)
                 if (nonempty_token != 0)
                 {
                     token = new Token(wxEmptyString, 0, 0, ++m_TokensTree->m_TokenTicketCount);
-                    if (!token)
-                    {
-                        --m_TokensTree->m_TokenTicketCount;
-                        return false;
-                    }
                     if (!token->SerializeIn(f))
                     {
                         delete token;
@@ -829,6 +821,7 @@ void Parser::TerminateAllThreads()
     while (!m_Pool.Done())
         wxMilliSleep(10);
 
+    wxMilliSleep(10);
     while (!m_PoolTask.empty())
     {
         PTVector& v = m_PoolTask.front();
@@ -901,6 +894,9 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
     if (m_IgnoreThreadEvents || !m_IsParsing)
         return;
+
+    if (!m_TokensTree)
+        cbThrow(_T("m_TokensTree should not been nullptr."));
 
     // Do next task
     if (   !m_PoolTask.empty()
@@ -1063,10 +1059,6 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
             if (s_CurrentParser && s_CurrentParser != this)
                 break;
 
-            AddParseThread* thread = new(std::nothrow) AddParseThread(*this);
-            if (!thread)
-                break;
-
             // Have not any batch parsing
             if (!s_CurrentParser)
             {
@@ -1075,6 +1067,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
                 ProcessParserEvent(m_ParsingType, PARSER_START);
             }
 
+            AddParseThread* thread = new AddParseThread(*this);
             m_Pool.AddTask(thread, true);
             return;
         }

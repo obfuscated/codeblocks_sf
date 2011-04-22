@@ -316,11 +316,11 @@ private:
             m_SystemHeadersMap(headersMap),
             m_SearchDir(searchDir),
             m_Headers(headersMap[searchDir]),
-            m_Locker(NULL),
-            m_HeaderCount(0)
+            m_Locker(nullptr),
+            m_Count(0)
         {}
 
-        ~HeaderDirTraverser()
+        virtual ~HeaderDirTraverser()
         {
             if (m_Locker)
                 delete m_Locker;
@@ -359,19 +359,18 @@ private:
 
         bool AddLock()
         {
-            if (++m_HeaderCount % 100 == 1)
+            if (++m_Count % 100 == 1)
             {
                 if (m_Locker)
                 {
                     delete m_Locker;
-                    m_Locker = NULL;
+                    m_Locker = nullptr;
+                    wxMilliSleep(1);
                 }
-
-                wxMilliSleep(1);
-                m_Locker = new(std::nothrow) wxCriticalSectionLocker(s_HeadersCriticalSection);
+                if (!m_Locker)
+                    m_Locker = new wxCriticalSectionLocker(s_HeadersCriticalSection);
             }
-
-            return m_Locker != NULL;
+            return m_Locker != nullptr;
         }
 
     private:
@@ -380,7 +379,7 @@ private:
         const wxString&          m_SearchDir;
         StringSet&               m_Headers;
         wxCriticalSectionLocker* m_Locker;
-        size_t                   m_HeaderCount;
+        size_t                   m_Count;
     };
 };
 

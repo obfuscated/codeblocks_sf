@@ -695,10 +695,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
 
     // alloc array for target's compilers and project compiler
     int nCompilers = 1 + project->GetBuildTargetsCount();
-    Compiler** Compilers = new(std::nothrow) Compiler* [nCompilers];
-    if (!Compilers)
-        return false;
-
+    Compiler** Compilers = new Compiler* [nCompilers];
     memset(Compilers, 0, sizeof(Compiler*) * nCompilers);
     nCompilers = 0; // reset , use as insert index in the next for loop
 
@@ -1055,13 +1052,7 @@ Parser* NativeParser::CreateParser(cbProject* project)
 
     if (!m_ParserPerWorkspace || m_ParsedProjects.empty())
     {
-        Parser* parser = new(std::nothrow) Parser(this, project);
-        if (!parser)
-        {
-            Manager::Get()->GetLogManager()->DebugLog(_T("Failed to create parser instances!"));
-            return nullptr;
-        }
-
+        Parser* parser = new Parser(this, project);
         if (m_Parser == &m_TempParser)
             SetParser(parser);
 

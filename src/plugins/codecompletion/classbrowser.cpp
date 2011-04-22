@@ -764,9 +764,7 @@ void ClassBrowser::BuildTree()
     // create the thread if needed
     if (!m_BuilderThread)
     {
-        m_BuilderThread = new(std::nothrow) ClassBrowserBuilderThread(m_Semaphore, &m_BuilderThread);
-        if (!m_BuilderThread)
-            return;
+        m_BuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_BuilderThread);
         m_BuilderThread->Create();
         m_BuilderThread->Run();
         create_tree = true; // new builder thread - need to create new tree

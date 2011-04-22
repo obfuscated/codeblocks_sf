@@ -68,7 +68,7 @@
 typedef std::set<wxString> StringSet;
 typedef std::list<wxString> StringList;
 
-class ClassTreeData : public BlockAllocated<ClassTreeData, 1000>, public wxTreeItemData
+class ClassTreeData : public wxTreeItemData
 {
 public:
     ClassTreeData(Token* token) { m_Token = token; }
@@ -149,7 +149,7 @@ public:
      */
     Parser(wxEvtHandler* parent, cbProject* project);
     /** destructor */
-    ~Parser();
+    virtual ~Parser();
 
     /** Add the UpFront header files, there files will be parsed with the sequence as they added.
      * @param filename input UpFront file name

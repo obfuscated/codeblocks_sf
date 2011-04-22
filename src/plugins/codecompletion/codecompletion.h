@@ -54,7 +54,7 @@ public:
 	typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
     CodeCompletion();
-    ~CodeCompletion();
+    virtual ~CodeCompletion();
 
     virtual void OnAttach();
     virtual void OnRelease(bool appShutDown);

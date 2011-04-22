@@ -151,6 +151,8 @@ ParserThread::ParserThread(Parser* parent,
     m_Buffer(bufferOrFilename)
 {
     m_Tokenizer.SetTokenizerOption(parserThreadOptions.wantPreprocessor);
+    if (!m_TokensTree)
+        cbThrow(_T("m_TokensTree should not been nullptr."));
 }
 
 ParserThread::~ParserThread()
@@ -453,7 +455,7 @@ bool ParserThread::Parse()
 
     do
     {
-        if (!m_TokensTree || !m_Tokenizer.IsOK())
+        if (!m_Tokenizer.IsOK())
             break;
 
         if (!m_Options.useBuffer) // Parse a file
@@ -1141,12 +1143,6 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
     if (!result && createIfNotExist)
     {
         result = new Token(ns, m_FileIdx, 0, ++m_TokensTree->m_TokenTicketCount);
-        if (!result)
-        {
-            --m_TokensTree->m_TokenTicketCount;
-            return NULL;
-        }
-
         result->m_TokenKind = q.empty() ? tkClass : tkNamespace;
         result->m_IsLocal = m_IsLocal;
         result->m_ParentIndex = parentIfCreated ? parentIfCreated->GetSelf() : -1;
@@ -1246,18 +1242,11 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     }
     else
     {
-        Token* finalParent = localParent ? localParent : m_LastParent;
-
         newToken = new Token(newname, m_FileIdx, line, ++m_TokensTree->m_TokenTicketCount);
-        if (newToken)
-            TRACE(_T("DoAddToken() : Created token='%s', file_idx=%d, line=%d, ticket="), newname.wx_str(),
-                  m_FileIdx, line, m_TokensTree->m_TokenTicketCount);
-        else
-        {
-            --m_TokensTree->m_TokenTicketCount;
-            return 0;
-        }
+        TRACE(_T("DoAddToken() : Created token='%s', file_idx=%d, line=%d, ticket="), newname.wx_str(),
+              m_FileIdx, line, m_TokensTree->m_TokenTicketCount);
 
+        Token* finalParent = localParent ? localParent : m_LastParent;
         if (kind == tkVariable && m_Options.parentOfBuffer)
             finalParent = m_Options.parentOfBuffer;
 

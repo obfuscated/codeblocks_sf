@@ -30,7 +30,7 @@ public:
     // class constructor
     ClassBrowser(wxWindow* parent, NativeParser* np);
     // class destructor
-    ~ClassBrowser();
+    virtual ~ClassBrowser();
     const wxTreeCtrl* GetTree() { return m_Tree; }
     void SetParser(Parser* parser);
     const Parser& GetParser(){ return *m_Parser; }
