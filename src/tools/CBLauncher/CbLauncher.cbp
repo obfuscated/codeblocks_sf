@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CbLauncher" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\devel\CbLauncher" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\.objs\tools\CBLauncher" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\devel\CbLauncher" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\.objs\tools\CBLauncher" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Linker>
+					<Add option="-s" />
+					<Add option="-mwindows" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Os" />
+			<Add option="-pedantic" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-D_UNICODE" />
+			<Add option="-DUNICODE" />
+			<Add option="-DWINVER=0x0500" />
+		</Compiler>
+		<Linker>
+			<Add library="Gdi32" />
+			<Add library="oleaut32" />
+		</Linker>
+		<Unit filename="doc\CBicon.png" />
+		<Unit filename="doc\README.txt" />
+		<Unit filename="doc\doxyfile" />
+		<Unit filename="doc\gpl-3.0.txt" />
+		<Unit filename="doc\html\bc_s.png" />
+		<Unit filename="doc\html\closed.png" />
+		<Unit filename="doc\html\doxygen.css" />
+		<Unit filename="doc\html\doxygen.png" />
+		<Unit filename="doc\html\files.html" />
+		<Unit filename="doc\html\ftv2blank.png" />
+		<Unit filename="doc\html\ftv2doc.png" />
+		<Unit filename="doc\html\ftv2folderclosed.png" />
+		<Unit filename="doc\html\ftv2folderopen.png" />
+		<Unit filename="doc\html\ftv2lastnode.png" />
+		<Unit filename="doc\html\ftv2link.png" />
+		<Unit filename="doc\html\ftv2mlastnode.png" />
+		<Unit filename="doc\html\ftv2mnode.png" />
+		<Unit filename="doc\html\ftv2node.png" />
+		<Unit filename="doc\html\ftv2plastnode.png" />
+		<Unit filename="doc\html\ftv2pnode.png" />
+		<Unit filename="doc\html\ftv2vertline.png" />
+		<Unit filename="doc\html\globals.html" />
+		<Unit filename="doc\html\globals_func.html" />
+		<Unit filename="doc\html\index.html" />
+		<Unit filename="doc\html\installdox" />
+		<Unit filename="doc\html\launcher_8cpp.html" />
+		<Unit filename="doc\html\main.html" />
+		<Unit filename="doc\html\mainpage_8h_source.html" />
+		<Unit filename="doc\html\nav_f.png" />
+		<Unit filename="doc\html\nav_h.png" />
+		<Unit filename="doc\html\open.png" />
+		<Unit filename="doc\html\pages.html" />
+		<Unit filename="doc\html\tab_a.png" />
+		<Unit filename="doc\html\tab_b.png" />
+		<Unit filename="doc\html\tab_h.png" />
+		<Unit filename="doc\html\tab_s.png" />
+		<Unit filename="doc\html\tabs.css" />
+		<Unit filename="doc\html\todo.html" />
+		<Unit filename="doc\html\tree.html" />
+		<Unit filename="fonts\Inconsolata-sq.ttf" />
+		<Unit filename="fonts\OFL.txt" />
+		<Unit filename="fonts\README-4-fonts.txt" />
+		<Unit filename="icon.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="icons\README_4_icon.txt" />
+		<Unit filename="icons\hires.ico" />
+		<Unit filename="icons\launcher.ico" />
+		<Unit filename="icons\lores.ico" />
+		<Unit filename="launcher.cpp" />
+		<Unit filename="mainpage.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project project_number="1.0" output_directory="doc" />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot have_dot="1" />
+				<general use_at_in_tags="1" />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
