@@ -1,1 +1,1 @@
-SUBDIRS = cb_share_config ConsoleRunner
+SUBDIRS = cb_share_config ConsoleRunner CBLauncher
