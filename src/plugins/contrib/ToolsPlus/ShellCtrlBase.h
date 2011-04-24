@@ -49,7 +49,7 @@ private:
     std::map<wxString, ShellRegInfo> m_reginfo;
 };
 
-extern ShellRegistry GlobalShellRegistry; //defined in shellctrlbase.cpp, but accessible to all linking libraries
+extern ShellRegistry& GlobalShellRegistry(); //defined in shellctrlbase.cpp, but accessible to all linking libraries
 
 // every library that creates a new shell control must create an instance of this class with the type of their control as the template paramater T. This will add the new class to the registry of shell controls and the needed functions to create new instances
 template<class T> class ShellCtrlRegistrant
@@ -59,11 +59,11 @@ template<class T> class ShellCtrlRegistrant
         ShellCtrlRegistrant(const wxString& name)
         {
             m_name=name;
-            GlobalShellRegistry.Register(name, &Create, &Free);
+            GlobalShellRegistry().Register(name, &Create, &Free);
         }
         ~ShellCtrlRegistrant()
         {
-            GlobalShellRegistry.Deregister(m_name);
+            GlobalShellRegistry().Deregister(m_name);
         }
         static ShellCtrlBase* Create(wxWindow* parent, int id, const wxString &windowname, ShellManager *shellmgr=NULL) //allocates new shell control object on heap
         {

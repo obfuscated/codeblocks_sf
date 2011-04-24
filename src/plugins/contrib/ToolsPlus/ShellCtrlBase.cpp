@@ -5,7 +5,11 @@
 #include <globals.h>
 
 // The global instance of the shell registry
-ShellRegistry GlobalShellRegistry;
+ShellRegistry& GlobalShellRegistry()
+{
+   static ShellRegistry* theRegistry = new ShellRegistry();
+   return *theRegistry;
+}
 
 // Unique IDs for Timer and Shell Manager messages
 int ID_SHELLPOLLTIMER=wxNewId();
@@ -110,7 +114,7 @@ bool ShellManager::QueryClose(ShellCtrlBase* sh)
 long ShellManager::LaunchProcess(const wxString &processcmd, const wxString &name, const wxString &type, const wxArrayString &options)
 {
     int id=wxNewId();
-    ShellCtrlBase *shell=GlobalShellRegistry.CreateControl(type,this,id,name,this);
+    ShellCtrlBase *shell=GlobalShellRegistry().CreateControl(type,this,id,name,this);
     if(!shell)
     {
         cbMessageBox(wxString::Format(_("Console type %s not found in registry."),type.c_str()));
