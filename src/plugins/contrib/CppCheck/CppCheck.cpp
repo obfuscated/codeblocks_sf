@@ -22,6 +22,7 @@
 #include "logmanager.h"
 #include "pluginmanager.h"
 #include "projectmanager.h"
+#include "macrosmanager.h"
 #endif
 #include <wx/busyinfo.h>
 #include <wx/filedlg.h>
@@ -224,12 +225,24 @@ int CppCheck::Execute()
         Input.Write(pf->relativeFilename + _T("\n"));
     }
     Input.Close();
-
+    // project include dirs
     wxString IncludeList;
     const wxArrayString& IncludeDirs = Project->GetIncludeDirs();
+    MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
+    ProjectBuildTarget* target = Project->GetBuildTarget(Project->GetActiveBuildTarget());
     for (unsigned int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
     {
-    	IncludeList += _T("-I\"") + IncludeDirs[Dir] + _T("\" ");
+        wxString IncludeDir(IncludeDirs[Dir]);
+        MacrosMgr->ReplaceMacros(IncludeDir, target);
+        IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
+    }
+    //target include dirs
+    const wxArrayString& targetIncludeDirs = target->GetIncludeDirs();
+    for (unsigned int Dir = 0; Dir < targetIncludeDirs.GetCount(); ++Dir)
+    {
+        wxString IncludeDir(targetIncludeDirs[Dir]);
+        MacrosMgr->ReplaceMacros(IncludeDir, target);
+        IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
     }
 
     wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
