@@ -233,16 +233,22 @@ int CppCheck::Execute()
     for (unsigned int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
     {
         wxString IncludeDir(IncludeDirs[Dir]);
-        MacrosMgr->ReplaceMacros(IncludeDir, target);
+        if(target)
+        {
+            MacrosMgr->ReplaceMacros(IncludeDir, target);
+        }
         IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
     }
-    //target include dirs
-    const wxArrayString& targetIncludeDirs = target->GetIncludeDirs();
-    for (unsigned int Dir = 0; Dir < targetIncludeDirs.GetCount(); ++Dir)
+    if(target)
     {
-        wxString IncludeDir(targetIncludeDirs[Dir]);
-        MacrosMgr->ReplaceMacros(IncludeDir, target);
-        IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
+        //target include dirs
+        const wxArrayString& targetIncludeDirs = target->GetIncludeDirs();
+        for (unsigned int Dir = 0; Dir < targetIncludeDirs.GetCount(); ++Dir)
+        {
+            wxString IncludeDir(targetIncludeDirs[Dir]);
+            MacrosMgr->ReplaceMacros(IncludeDir, target);
+            IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
+        }
     }
 
     wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
