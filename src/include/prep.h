@@ -10,8 +10,7 @@
 #include <wx/version.h>
 #endif
 
-#if (  __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 6) ) \
-    && !defined __GXX_EXPERIMENTAL_CXX0X__
+#if !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__)
 // it is a const object...
 const class nullptr_t
 {
