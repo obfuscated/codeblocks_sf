@@ -52,7 +52,7 @@ class cbException
         #define DIE() exit(1)
     #else
         #include <csignal>
-        #define DIE() kill(0, SIGTERM)
+        #define DIE() kill(getpid(), SIGTERM)
     #endif
 
     #if wxUSE_UNICODE
