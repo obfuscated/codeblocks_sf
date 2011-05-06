@@ -1032,8 +1032,15 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* ba
     const StringHash& v = base->GetAllVars();
     if (v.empty())
         return;
-    TiXmlElement* node = AddElement(parent, "Environment");
+
+    // explicitly sort the keys
+    typedef std::map<wxString, wxString> SortedMap;
+    SortedMap map;
     for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
+        map[it->first] = it->second;
+
+    TiXmlElement* node = AddElement(parent, "Environment");
+    for (SortedMap::const_iterator it = map.begin(); it != map.end(); ++it)
     {
         TiXmlElement* elem = AddElement(node, "Variable", "name", it->first);
         elem->SetAttribute("value", cbU2C(it->second));
