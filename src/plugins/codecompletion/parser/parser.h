@@ -131,11 +131,11 @@ static wxCriticalSection s_ParserCritical;
 
 /** @brief Parser class holds all the tokens of a C::B project
   *
-  * Parser class contains the TokensTree which is a Trie structure to recored Token information.
-  * For compact Trie, see more details in http://en.wikipedia.org/wiki/Trie
-  * Parser class controls the several ParserThread Pool, which hold ParserThread objects for each source file.
-  * Batch Parse Mode means We have a lot of files to be parsed, so a lot of Parserthread was generated and
-  * Add to the ThreadPool, and lately, the ParserThread was executed by ThreadPool.
+  * Parser class contains the TokensTree which is a trie structure to record the token information.
+  * For details about trie, see http://en.wikipedia.org/wiki/Trie
+  * The parser class controls ParserThreads in a pool, which holds ParserThread objects for each source file.
+  * Batch parse mode means we have a lot of files to be parsed, so a lot of ParserThreads were generated and
+  * added to the ThreadPool, and finally, the ParserThread was executed by ThreadPool.
   */
 class Parser : public wxEvtHandler
 {
@@ -151,16 +151,16 @@ public:
     /** destructor */
     virtual ~Parser();
 
-    /** Add the UpFront header files, there files will be parsed with the sequence as they added.
+    /** Add the UpFront header files, these files will be parsed with the sequence as they added.
      * @param filename input UpFront file name
      * @param systemHeaderFile true if it is a system header file
      * @param delay true if it use predefined delay time, otherwise it use 1 ms delay
      */
     void AddUpFrontHeaders(const wxString& filename, bool systemHeaderFile, bool delay = true);
 
-    /** Add files to Batch Parse mode, internally, The files added were parsed sequentially.
-     * Not that when some "#include" files were added to the Batch Parse, their parsing sequence
-     * May be random.
+    /** Add files to batch parse mode, internally. The files will be parsed sequentially.
+     * Note that when some "#include" files were added to the batch parse,
+     * their parsing sequence may be random.
      * @param filenames input files name array
      * @param delay true if it use predefined delay time, otherwise it use 1 ms delay.
      */
@@ -220,13 +220,13 @@ public:
     bool Done();
     void LinkInheritance(bool tempsOnly = false);
 
-    /** Before call this function, *MUST* add a locker
-      * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    /** Before calling this function, you *MUST* add a locker
+      * i.e. wxCriticalSectionLocker locker(s_TokensTreeCritical);
       */
     void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
 
-    /** Node: Currently, the Max concurrent Parserthread number should be ONE, CC does not support
-     * Multiply threads Parsing.
+    /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
+     * multiply threads parsing.
      */
     unsigned int GetMaxThreads() const { return m_Pool.GetConcurrentThreads(); }
 
@@ -243,11 +243,11 @@ protected:
     bool ReparseModifiedFiles();
     void TerminateAllThreads();
 
-    /** When a ThreadPool batch Parse stage is done, it will receive cbEVT_THREADTASK_ALLDONE Message.
-     * Some situations we will receive this Message, such as:
-     * After UpFront header Parsing.
-     * Batch Parsing for general(normal) source files.
-     * System header files Parsing.
+    /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
+     * In some situations this event will be triggered, such as:
+     * - after "UpFront" header parsing
+     * - batch parsing for general (normal) source files
+     * - system header files parsing
      */
     void OnAllThreadsDone(CodeBlocksEvent& event);
 
@@ -270,21 +270,21 @@ private:
 protected:
     // the following three members are used to detect changes between
     // in-memory data and cache
-    bool                 m_UsingCache; // true if loaded from cache
+    bool                 m_UsingCache; //!< true if loaded from cache
 
     typedef std::vector<ParserThread*> PTVector;
 
-    /** Thread Queue, these Thread Tasks will be executed FIFO mode as they added */
+    /** Thread Queue, these thread tasks will be executed in FIFO mode as they are added */
     std::queue<PTVector> m_PoolTask;
 
-    /** Thread Pool, Manage all the ParserThread, used in Batch Parse Mode. The thread pool can
-     * add/remove/execute the Parserthread Tasks.
+    /** Thread Pool, manages all the ParserThread, used in batch parse mode. The thread pool can
+     * add/remove/execute the Parserthread tasks.
      */
     cbThreadPool         m_Pool;
 
-    /** determine whether we need a UpFront Header Parsing, if Yes, The added file will be parsed when they
-     * added. Otherwise, added file will be parsed by thread pool(batch parse mode), thus the sequence
-     * of the parsed files were not confirmed
+    /** determine whether we need an UpFront header parsing, if yes, the added file will be parsed accordingly.
+     * Otherwise, added file will be parsed by thread pool (batch parse mode), thus the sequence
+     * of the parsed files is not important
      */
     bool                 m_IsUpFront;
 
@@ -307,9 +307,9 @@ protected:
       */
     bool                 m_NeedsReparse;
 
-    /** Batch Parse mode flag. Normal files( Non-UpFront files) stage will set this flag. */
+    /** batch Parse mode flag. Normal files (not in the parse "UpFront" files stage) will set this flag. */
     bool                 m_IsFirstBatch;
-    /** flag variable if true, which means Parser are busy running Parsing, false if all the parse stage finishes*/
+    /** true, if the parser is still busy with parsing, false if the parsing stage has finished */
     bool                 m_IsParsing;
 
 private:
@@ -324,10 +324,10 @@ private:
     StringList           m_SystemUpFrontHeaders;  // Only system up-front headers, for reparse
     StringList           m_BatchParseFiles;       // All other batch parse files
     wxString             m_PredefinedMacros;      // Pre-defined macros
-    /** used to measure Batch Parse time*/
+    /** used to measure batch parse time*/
     bool                 m_IsBatchParseDone;
     ParsingType          m_ParsingType;
-    /** if true, means all the files contains in the C::B project will be labeled as "local"*/
+    /** if true, all the files of the current project will be labelled as "local" */
     bool                 m_NeedMarkFileAsLocal;
 
     DECLARE_EVENT_TABLE()

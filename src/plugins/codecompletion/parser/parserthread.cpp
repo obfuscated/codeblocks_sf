@@ -16,6 +16,7 @@
     #include <wx/app.h>
     #include <wx/msgdlg.h>
 
+    #include <cbexception.h>
     #include <globals.h>
     #include <logmanager.h>
     #include <manager.h>
@@ -152,7 +153,7 @@ ParserThread::ParserThread(Parser* parent,
 {
     m_Tokenizer.SetTokenizerOption(parserThreadOptions.wantPreprocessor);
     if (!m_TokensTree)
-        cbThrow(_T("m_TokensTree should not been nullptr."));
+        cbThrow(_T("m_TokensTree is a nullptr?!"));
 }
 
 ParserThread::~ParserThread()
@@ -455,7 +456,7 @@ bool ParserThread::Parse()
 
     do
     {
-        if (!m_Tokenizer.IsOK())
+        if (!m_TokensTree || !m_Tokenizer.IsOK())
             break;
 
         if (!m_Options.useBuffer) // Parse a file

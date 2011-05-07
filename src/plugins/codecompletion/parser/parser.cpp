@@ -60,13 +60,13 @@
     #define TRACE2(format, args...)
 #endif
 
-static const char CACHE_MAGIC[] = "CCCACHE_1_3";
-static const int batch_timer_delay = 300;
+static const char CACHE_MAGIC[]      = "CCCACHE_1_4";
+static const int batch_timer_delay   = 300;
 static const int reparse_timer_delay = 100;
 
-int PARSER_START = wxNewId();
-int PARSER_END = wxNewId();
-int TIMER_ID = wxNewId();
+int PARSER_START   = wxNewId();
+int PARSER_END     = wxNewId();
+int TIMER_ID       = wxNewId();
 int BATCH_TIMER_ID = wxNewId();
 
 static volatile Parser* s_CurrentParser = nullptr;
@@ -235,47 +235,59 @@ void Parser::ReadOptions()
     bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
     if (force_all_on)
     {
-        cfg->Write(_T("/parser_defaults_changed"), (bool)true);
+        cfg->Write(_T("/parser_defaults_changed"),       true);
 
-        cfg->Write(_T("/parser_follow_local_includes"), true);
+        cfg->Write(_T("/parser_follow_local_includes"),  true);
         cfg->Write(_T("/parser_follow_global_includes"), true);
-        cfg->Write(_T("/want_preprocessor"), true);
-        cfg->Write(_T("/parse_complex_macros"), true);
+        cfg->Write(_T("/want_preprocessor"),             true);
+        cfg->Write(_T("/parse_complex_macros"),          true);
     }
 
     //m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile
 
-    m_Options.followLocalIncludes  = cfg->ReadBool(_T("/parser_follow_local_includes"), true);
-    m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
-    m_Options.caseSensitive        = cfg->ReadBool(_T("/case_sensitive"), false);
-    m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"), true);
-    m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"), true);
-    m_Options.wantPreprocessor     = cfg->ReadBool(_T("/want_preprocessor"), true);
-    m_Options.parseComplexMacros   = cfg->ReadBool(_T("/parse_complex_macros"), true);
+    // Page "Code Completion"
+    m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"),                true);
+    m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"),                  true);
+    m_Options.caseSensitive        = cfg->ReadBool(_T("/case_sensitive"),                false);
 
-    m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
-    m_BrowserOptions.expandNS        = cfg->ReadBool(_T("/browser_expand_ns"), false);
-    m_BrowserOptions.treeMembers     = cfg->ReadBool(_T("/browser_tree_members"), true);
+    // Page "C / C++ parser"
+    m_Options.followLocalIncludes  = cfg->ReadBool(_T("/parser_follow_local_includes"),  true);
+    m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
+    m_Options.wantPreprocessor     = cfg->ReadBool(_T("/want_preprocessor"),             true);
+    m_Options.parseComplexMacros   = cfg->ReadBool(_T("/parse_complex_macros"),          true);
+
+    // Page "Symbol browser"
+    m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"),    false);
+    m_BrowserOptions.expandNS        = cfg->ReadBool(_T("/browser_expand_ns"),           false);
+    m_BrowserOptions.treeMembers     = cfg->ReadBool(_T("/browser_tree_members"),        true);
+
+    // Token tree
     m_BrowserOptions.displayFilter   = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
-    m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"), bstKind);
+    m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
 }
 
 void Parser::WriteOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    cfg->Write(_T("/max_threads"),                   (int)GetMaxThreads());
-    cfg->Write(_T("/parser_follow_local_includes"),  m_Options.followLocalIncludes);
-    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
-    cfg->Write(_T("/case_sensitive"),                m_Options.caseSensitive);
+    // Page "Code Completion"
     cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
     cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
+    cfg->Write(_T("/case_sensitive"),                m_Options.caseSensitive);
+
+    // Page "C / C++ parser"
+    cfg->Write(_T("/parser_follow_local_includes"),  m_Options.followLocalIncludes);
+    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
     cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
     cfg->Write(_T("/parse_complex_macros"),          m_Options.parseComplexMacros);
+    cfg->Write(_T("/max_threads"),              (int)GetMaxThreads());
 
+    // Page "Symbol browser"
     cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
     cfg->Write(_T("/browser_expand_ns"),             m_BrowserOptions.expandNS);
     cfg->Write(_T("/browser_tree_members"),          m_BrowserOptions.treeMembers);
+
+    // Token tree
     cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
     cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
 }
@@ -397,6 +409,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
                          const wxString& filename, Token* parent, int initLine)
 {
     ParserThreadOptions opts;
+
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.followLocalIncludes  = false;
     opts.followGlobalIncludes = false;
@@ -896,7 +909,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         return;
 
     if (!m_TokensTree)
-        cbThrow(_T("m_TokensTree should not been nullptr."));
+        cbThrow(_T("m_TokensTree is a nullptr?!"));
 
     // Do next task
     if (   !m_PoolTask.empty()
@@ -1059,7 +1072,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
             if (s_CurrentParser && s_CurrentParser != this)
                 break;
 
-            // Have not any batch parsing
+            // Have not done any batch parsing
             if (!s_CurrentParser)
             {
                 s_CurrentParser = this;

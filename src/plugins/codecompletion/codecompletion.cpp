@@ -367,8 +367,7 @@ private:
                     m_Locker = nullptr;
                     wxMilliSleep(1);
                 }
-                if (!m_Locker)
-                    m_Locker = new wxCriticalSectionLocker(s_HeadersCriticalSection);
+                m_Locker = new wxCriticalSectionLocker(s_HeadersCriticalSection);
             }
             return m_Locker != nullptr;
         }
