@@ -1,5 +1,4 @@
 #include "Addr2LineUIApp.h"
-#include "wx_pch.h"
 
 //(*AppHeaders
 #include "Addr2LineUIMain.h"

@@ -1,5 +1,4 @@
 #include "Addr2LineUIMain.h"
-#include "wx_pch.h"
 
 //(*InternalHeaders(Addr2LineUIDialog)
 #include <wx/settings.h>
