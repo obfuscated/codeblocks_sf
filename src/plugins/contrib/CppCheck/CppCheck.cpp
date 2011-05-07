@@ -233,13 +233,11 @@ int CppCheck::Execute()
     for (unsigned int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
     {
         wxString IncludeDir(IncludeDirs[Dir]);
-        if(target)
-        {
+        if (target)
             MacrosMgr->ReplaceMacros(IncludeDir, target);
-        }
         IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
     }
-    if(target)
+    if (target)
     {
         //target include dirs
         const wxArrayString& targetIncludeDirs = target->GetIncludeDirs();

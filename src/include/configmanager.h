@@ -111,9 +111,9 @@ class DLLIMPORT ConfigManager
     static wxString home_folder;
     static wxString data_path_user;
     static wxString data_path_global;
-#ifdef CB_AUTOCONF 
-    static wxString plugin_path_global; 
-#endif 
+#ifdef CB_AUTOCONF
+    static wxString plugin_path_global;
+#endif
     static wxString app_path;
     static wxString temp_folder;
     static bool relo;

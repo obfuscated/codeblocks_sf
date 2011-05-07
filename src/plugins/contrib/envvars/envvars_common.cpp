@@ -361,7 +361,7 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
       _("Unsetting environment variable '%s' failed."),
       #if wxCHECK_VERSION(2, 9, 0)
       the_key.wx_str())
-      #else 
+      #else
       the_key.c_str())
       #endif
     );

@@ -310,7 +310,7 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
-void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
 {
 }
 

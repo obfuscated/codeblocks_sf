@@ -173,11 +173,11 @@ wxString CompileTargetBase::SuggestOutputFilename()
     wxString suggestion;
     switch (m_TargetType)
     {
-        case ttConsoleOnly:
-        case ttExecutable: suggestion = GetExecutableFilename(); break;
-        case ttDynamicLib: suggestion = GetDynamicLibFilename(); break;
-        case ttStaticLib: suggestion = GetStaticLibFilename(); break;
-        case ttNative: suggestion = GetNativeFilename(); break;
+        case ttConsoleOnly: // fall through
+        case ttExecutable:  suggestion = GetExecutableFilename(); break;
+        case ttDynamicLib:  suggestion = GetDynamicLibFilename(); break;
+        case ttStaticLib:   suggestion = GetStaticLibFilename();  break;
+        case ttNative:      suggestion = GetNativeFilename();     break;
         default:
             suggestion.Clear();
             break;
@@ -280,9 +280,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 wxString prefix = compiler ? compiler->GetSwitches().libPrefix : _T("");
                 // avoid adding the prefix, if already there
                 if (!prefix.IsEmpty() && !fname.GetName().StartsWith(prefix))
-                {
                     filename << prefix;
-                }
             }
             if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
             {
@@ -397,8 +395,9 @@ wxString CompileTargetBase::GetStaticLibFilename()
 
     /* NOTE: There is no need to check for Generation policy for import library
        if target type is ttDynamicLib. */
-    if ((m_TargetType == ttStaticLib) &&
-        (m_PrefixGenerationPolicy != tgfpNone || m_ExtensionGenerationPolicy != tgfpNone))
+    if (   (m_TargetType == ttStaticLib)
+        && (   m_PrefixGenerationPolicy    != tgfpNone
+            || m_ExtensionGenerationPolicy != tgfpNone) )
     {
         wxString out = m_Filename;
         GenerateTargetFilename(out);

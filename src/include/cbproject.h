@@ -203,7 +203,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void SetDefaultExecuteTarget(const wxString& name);
 
         /** @return The number of build targets this project contains. */
-        int GetBuildTargetsCount(){ return m_Targets.GetCount(); }
+        int GetBuildTargetsCount() { return m_Targets.GetCount(); }
 
         /** Access a build target.
           * @param index The build target index. Must be greater or equal to zero and less than GetBuildTargetsCount().

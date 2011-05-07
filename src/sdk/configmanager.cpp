@@ -1461,7 +1461,7 @@ void ConfigManager::InitPaths()
     CreateDir(ConfigManager::data_path_user   + _T("/scripts/"));
 
     ConfigManager::temp_folder = wxStandardPathsBase::Get().GetTempDir();
-};
+}
 
 
 
