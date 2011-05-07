@@ -71,13 +71,13 @@ void CompilerCommandGenerator::Init(cbProject* project)
     if (!project)
     {
         m_DefOutput[0] = SetupOutputFilenames(compiler, 0);
-        m_Inc[0] = SetupIncludeDirs(compiler, 0);
-        m_Lib[0] = SetupLibrariesDirs(compiler, 0);
-        m_RC[0] = SetupResourceIncludeDirs(compiler, 0);
-        m_CFlags[0] = SetupCompilerOptions(compiler, 0);
-        m_LDFlags[0] = SetupLinkerOptions(compiler, 0);
-        m_LDAdd[0] = SetupLinkLibraries(compiler, 0);
-        m_RCFlags[0] = SetupResourceCompilerOptions(compiler, 0);
+        m_Inc[0]       = SetupIncludeDirs(compiler, 0);
+        m_Lib[0]       = SetupLibrariesDirs(compiler, 0);
+        m_RC[0]        = SetupResourceIncludeDirs(compiler, 0);
+        m_CFlags[0]    = SetupCompilerOptions(compiler, 0);
+        m_LDFlags[0]   = SetupLinkerOptions(compiler, 0);
+        m_LDAdd[0]     = SetupLinkLibraries(compiler, 0);
+        m_RCFlags[0]   = SetupResourceCompilerOptions(compiler, 0);
         return;
     }
     else
@@ -123,16 +123,16 @@ void CompilerCommandGenerator::Init(cbProject* project)
         // just add stub entries so that indices keep in sync
         if (!compiler || target->GetTargetType() == ttCommandsOnly || !target->SupportsCurrentPlatform())
         {
-            m_Output[target] = wxEmptyString;
+            m_Output[target]       = wxEmptyString;
             m_StaticOutput[target] = wxEmptyString;
-            m_DefOutput[target] = wxEmptyString;
-            m_Inc[target] = wxEmptyString;
-            m_Lib[target] = wxEmptyString;
-            m_RC[target] = wxEmptyString;
-            m_CFlags[target] = wxEmptyString;
-            m_LDFlags[target] = wxEmptyString;
-            m_LDAdd[target] = wxEmptyString;
-            m_RCFlags[target] = wxEmptyString;
+            m_DefOutput[target]    = wxEmptyString;
+            m_Inc[target]          = wxEmptyString;
+            m_Lib[target]          = wxEmptyString;
+            m_RC[target]           = wxEmptyString;
+            m_CFlags[target]       = wxEmptyString;
+            m_LDFlags[target]      = wxEmptyString;
+            m_LDAdd[target]        = wxEmptyString;
+            m_RCFlags[target]      = wxEmptyString;
             // continue with next target
             continue;
         }
@@ -149,13 +149,13 @@ void CompilerCommandGenerator::Init(cbProject* project)
         DoBuildScripts(project, target, _T("SetBuildOptions"));
 
         m_DefOutput[target] = SetupOutputFilenames(compiler, target);
-        m_Inc[target] = SetupIncludeDirs(compiler, target);
-        m_Lib[target] = SetupLibrariesDirs(compiler, target);
-        m_RC[target] = SetupResourceIncludeDirs(compiler, target);
-        m_CFlags[target] = SetupCompilerOptions(compiler, target);
-        m_LDFlags[target] = SetupLinkerOptions(compiler, target);
-        m_LDAdd[target] = SetupLinkLibraries(compiler, target);
-        m_RCFlags[target] = SetupResourceCompilerOptions(compiler, target);
+        m_Inc[target]       = SetupIncludeDirs(compiler, target);
+        m_Lib[target]       = SetupLibrariesDirs(compiler, target);
+        m_RC[target]        = SetupResourceIncludeDirs(compiler, target);
+        m_CFlags[target]    = SetupCompilerOptions(compiler, target);
+        m_LDFlags[target]   = SetupLinkerOptions(compiler, target);
+        m_LDAdd[target]     = SetupLinkLibraries(compiler, target);
+        m_RCFlags[target]   = SetupResourceCompilerOptions(compiler, target);
 
         // restore target settings
         *(CompileTargetBase*)target = backuptarget;
@@ -198,13 +198,13 @@ void CompilerCommandGenerator::Init(cbProject* project)
     }
 }
 
-void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
-                                                    ProjectBuildTarget* target,
-                                                    ProjectFile* pf,
-                                                    const wxString& file,
-                                                    const wxString& object,
-                                                    const wxString& FlatObject,
-                                                    const wxString& deps)
+void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
+                                                   ProjectBuildTarget* target,
+                                                   ProjectFile*        pf,
+                                                   const wxString&     file,
+                                                   const wxString&     object,
+                                                   const wxString&     flat_object,
+                                                   const wxString&     deps)
 {
     if (target && !target->SupportsCurrentPlatform())
     {
@@ -213,8 +213,8 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
 
     Compiler* compiler = target
-                            ? CompilerFactory::GetCompiler(target->GetCompilerID())
-                            : CompilerFactory::GetDefaultCompiler();
+                       ? CompilerFactory::GetCompiler(target->GetCompilerID())
+                       : CompilerFactory::GetDefaultCompiler();
     if (!compiler)
     {
         macro.Clear();
@@ -224,7 +224,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     wxString compilerStr;
     if (pf)
     {
-        if (pf->compilerVar.Matches(_T("CPP")))
+        if      (pf->compilerVar.Matches(_T("CPP")))
             compilerStr = compiler->GetPrograms().CPP;
         else if (pf->compilerVar.Matches(_T("CC")))
             compilerStr = compiler->GetPrograms().C;
@@ -242,15 +242,15 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
 
     // check that we have valid compiler/linker program names (and are indeed needed by the macro)
-    if ((compilerStr.IsEmpty() && macro.Contains(_T("$compiler"))) ||
-        (compiler->GetPrograms().LD.IsEmpty() && macro.Contains(_T("$linker"))) ||
-        (compiler->GetPrograms().LIB.IsEmpty() && macro.Contains(_T("$lib_linker"))) ||
-        (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))))
+    if (   (compilerStr.IsEmpty()                     && macro.Contains(_T("$compiler")))
+        || (compiler->GetPrograms().LD.IsEmpty()      && macro.Contains(_T("$linker")))
+        || (compiler->GetPrograms().LIB.IsEmpty()     && macro.Contains(_T("$lib_linker")))
+        || (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))) )
     {
         #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: no executable found! (file=%s)"), file.wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."), file.wx_str()));
         #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: no executable found! (file=%s)"), file.c_str()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."), file.c_str()));
         #endif
         macro.Clear();
         return;
@@ -275,6 +275,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
             fileInc.Prepend(compiler->GetSwitches().includeDirs);
         }
     }
+
     if (Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false))
     {
         // Because C::B doesn't compile each file by running in the same directory with it,
@@ -287,12 +288,12 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
     FixPathSeparators(compiler, fileInc);
 
-    wxString tmp;
-    wxString tmpFile = file;
-    wxString tmpDeps = deps;
-    wxString tmpObject = object;
-    wxString tmpFlatObject = FlatObject;
-    wxFileName tmpFname = tmpFile;
+    wxString   tmp;
+    wxString   tmpFile       = file;
+    wxString   tmpDeps       = deps;
+    wxString   tmpObject     = object;
+    wxString   tmpFlatObject = flat_object;
+    wxFileName tmpFname      = tmpFile;
     wxFileName tmpOutFname;
 
     FixPathSeparators(compiler, tmpFile);
@@ -300,22 +301,22 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     FixPathSeparators(compiler, tmpObject);
     FixPathSeparators(compiler, tmpFlatObject);
 
-    macro.Replace(_T("$compiler"), compilerStr);
-    macro.Replace(_T("$linker"), compiler->GetPrograms().LD);
-    macro.Replace(_T("$lib_linker"), compiler->GetPrograms().LIB);
-    macro.Replace(_T("$rescomp"), compiler->GetPrograms().WINDRES);
-    macro.Replace(_T("$options"), m_CFlags[target]);
-    macro.Replace(_T("$link_options"), m_LDFlags[target]);
-    macro.Replace(_T("$includes"), m_Inc[target] + fileInc);
-    macro.Replace(_T("$res_includes"), m_RC[target] + fileInc);
-    macro.Replace(_T("$libdirs"), m_Lib[target]);
-    macro.Replace(_T("$libs"), m_LDAdd[target]);
+    macro.Replace(_T("$compiler"),      compilerStr);
+    macro.Replace(_T("$linker"),        compiler->GetPrograms().LD);
+    macro.Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
+    macro.Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
+    macro.Replace(_T("$options"),       m_CFlags[target]);
+    macro.Replace(_T("$link_options"),  m_LDFlags[target]);
+    macro.Replace(_T("$includes"),      m_Inc[target] + fileInc);
+    macro.Replace(_T("$res_includes"),  m_RC[target]  + fileInc);
+    macro.Replace(_T("$libdirs"),       m_Lib[target]);
+    macro.Replace(_T("$libs"),          m_LDAdd[target]);
     macro.Replace(_T("$file_basename"), tmpFname.GetName()); // old way - remove later
-    macro.Replace(_T("$file_name"), tmpFname.GetName());
-    macro.Replace(_T("$file_dir"), tmpFname.GetPath());
-    macro.Replace(_T("$file_ext"), tmpFname.GetExt());
-    macro.Replace(_T("$file"), tmpFile);
-    macro.Replace(_T("$dep_object"), tmpDeps);
+    macro.Replace(_T("$file_name"),     tmpFname.GetName());
+    macro.Replace(_T("$file_dir"),      tmpFname.GetPath());
+    macro.Replace(_T("$file_ext"),      tmpFname.GetExt());
+    macro.Replace(_T("$file"),          tmpFile);
+    macro.Replace(_T("$dep_object"),    tmpDeps);
     if (target)
     {  // this one has to come before $object, otherwise $object would go first
        // leaving nothing to replace for this $objects_output_dir,
@@ -324,13 +325,13 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         FixPathSeparators(compiler, tmp);
         macro.Replace(_T("$objects_output_dir"), tmp);
     }
-    macro.Replace(_T("$object"), tmpObject);
+    macro.Replace(_T("$object"),          tmpObject);
     macro.Replace(_T("$resource_output"), tmpObject);
     if (!target)
     {
         // single file compilation, probably
         wxString object_unquoted(object);
-        if (!object_unquoted.IsEmpty() && object_unquoted.GetChar(0) == '"')
+        if (!object_unquoted.IsEmpty() && (object_unquoted.GetChar(0) == '"'))
             object_unquoted.Replace(_T("\""), _T(""));
         wxFileName fname(object_unquoted);
         fname.SetExt(FileFilters::EXECUTABLE_EXT);
@@ -345,23 +346,26 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         macro.Replace(_T("$exe_output"), m_Output[target]);
         tmpOutFname.Assign(m_Output[target]);
     }
-    macro.Replace(_T("$exe_name"), tmpOutFname.GetName());
-    macro.Replace(_T("$exe_dir"), tmpOutFname.GetPath());
-    macro.Replace(_T("$exe_ext"), tmpOutFname.GetExt());
+    macro.Replace(_T("$exe_name"),          tmpOutFname.GetName());
+    macro.Replace(_T("$exe_dir"),           tmpOutFname.GetPath());
+    macro.Replace(_T("$exe_ext"),           tmpOutFname.GetExt());
 
-    macro.Replace(_T("$link_resobjects"), tmpDeps);
-    macro.Replace(_T("$link_objects"), tmpObject);
+    macro.Replace(_T("$link_resobjects"),   tmpDeps);
+    macro.Replace(_T("$link_objects"),      tmpObject);
     macro.Replace(_T("$link_flat_objects"), tmpFlatObject);
     // the following were added to support the QUICK HACK in compiler plugin:
     // DirectCommands::GetTargetLinkCommands()
-    macro.Replace(_T("$+link_objects"), tmpObject);
-    macro.Replace(_T("$-link_objects"), tmpObject);
-    macro.Replace(_T("$-+link_objects"), tmpObject);
-    macro.Replace(_T("$+-link_objects"), tmpObject);
+    macro.Replace(_T("$+link_objects"),     tmpObject);
+    macro.Replace(_T("$-link_objects"),     tmpObject);
+    macro.Replace(_T("$-+link_objects"),    tmpObject);
+    macro.Replace(_T("$+-link_objects"),    tmpObject);
 
-    if (target && (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib))
+    if (   target
+        && (   (target->GetTargetType() == ttStaticLib)
+            || (target->GetTargetType() == ttDynamicLib) ) )
     {
-        if (target->GetTargetType() == ttStaticLib || target->GetCreateStaticLib())
+        if (   (target->GetTargetType() == ttStaticLib)
+            || (target->GetCreateStaticLib()) )
             macro.Replace(_T("$static_output"), m_StaticOutput[target]);
         else
         {
@@ -524,12 +528,14 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
                 TargetFilenameGenerationPolicy PrefixPolicy;
                 TargetFilenameGenerationPolicy ExtensionPolicy;
                 target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
-                if ((PrefixPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
+                if (   (PrefixPolicy == tgfpPlatformDefault)
+                    || (target->GetTargetType() == ttDynamicLib) )
                 {
                     if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
                         fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
                 }
-                if ((ExtensionPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
+                if (   (ExtensionPolicy == tgfpPlatformDefault)
+                    || (target->GetTargetType() == ttDynamicLib) )
                 {
                     wxString current_ext   = fname.GetExt();
                     wxString requested_ext = compiler->GetSwitches().libExtension;
@@ -538,7 +544,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
                     {
                         // Note: Do not use SetExt here to handle libs like e.g. System.Core correctly.
                         // Otherwise SetExt would result in System.dll instead of System.Core.dll
-                        fname.SetFullName(fname.GetFullName()+wxFILE_SEP_EXT+requested_ext);
+                        fname.SetFullName(fname.GetFullName() + wxFILE_SEP_EXT + requested_ext);
                     }
                 }
                 result = UnixFilename(fname.GetFullPath());

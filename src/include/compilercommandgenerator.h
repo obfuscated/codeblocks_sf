@@ -38,33 +38,33 @@ class DLLIMPORT CompilerCommandGenerator
         virtual void Init(cbProject* project);
 
         /** Get the command line to compile/link the specific file. */
-        virtual void GenerateCommandLine(wxString& macro,
-                                        ProjectBuildTarget* target,
-                                        ProjectFile* pf,
-                                        const wxString& file,
-                                        const wxString& object,
-                                        const wxString& FlatObject,
-                                        const wxString& deps);
+        virtual void GenerateCommandLine(wxString&          macro,
+                                         ProjectBuildTarget* target,
+                                         ProjectFile*        pf,
+                                         const wxString&     file,
+                                         const wxString&     object,
+                                         const wxString&     flat_object,
+                                         const wxString&     deps);
 
-		/** @brief Get the full include dirs used in the actual command line.
-		  *
-		  * These are the actual include dirs that will be used for building
-		  * and might be different than target->GetIncludeDirs(). This is
-		  * because it's the sum of target include dirs + project include dirs +
-		  * build-script include dirs.
-		  * @note This is only valid after Init() has been called.
-		  */
-		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
-		
-		/** @brief Get the full linker dirs used in the actual command line.
-		  *
-		  * These are the actual linker dirs that will be used for building
-		  * and might be different than target->GetLibDirs(). This is
-		  * because it's the sum of target linker dirs + project linker dirs +
-		  * build-script linker dirs.
-		  * @note This is only valid after Init() has been called.
-		  */
-		virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
+        /** @brief Get the full include dirs used in the actual command line.
+          *
+          * These are the actual include dirs that will be used for building
+          * and might be different than target->GetIncludeDirs(). This is
+          * because it's the sum of target include dirs + project include dirs +
+          * build-script include dirs.
+          * @note This is only valid after Init() has been called.
+          */
+        virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
+
+        /** @brief Get the full linker dirs used in the actual command line.
+          *
+          * These are the actual linker dirs that will be used for building
+          * and might be different than target->GetLibDirs(). This is
+          * because it's the sum of target linker dirs + project linker dirs +
+          * build-script linker dirs.
+          * @note This is only valid after Init() has been called.
+          */
+        virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
     protected:
         virtual void DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName);
         virtual wxString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
@@ -93,11 +93,11 @@ class DLLIMPORT CompilerCommandGenerator
 
         wxString m_PrjIncPath; ///< directive to add the project's top-level path in compiler search dirs (ready for the command line)
 
-		SearchDirsMap m_CompilerSearchDirs; ///< array of final compiler search dirs, per-target
-		SearchDirsMap m_LinkerSearchDirs; ///< array of final linker search dirs, per-target
+        SearchDirsMap m_CompilerSearchDirs; ///< array of final compiler search dirs, per-target
+        SearchDirsMap m_LinkerSearchDirs; ///< array of final linker search dirs, per-target
     private:
         wxString ExpandBackticks(wxString& str);
-		void SearchDirsFromBackticks(Compiler* compiler, ProjectBuildTarget* target, const wxString& btOutput);
+        void SearchDirsFromBackticks(Compiler* compiler, ProjectBuildTarget* target, const wxString& btOutput);
         BackticksMap m_Backticks;
         wxArrayString m_NotLoadedScripts;
         wxArrayString m_ScriptsWithErrors;
