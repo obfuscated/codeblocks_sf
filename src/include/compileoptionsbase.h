@@ -27,87 +27,87 @@ WX_DECLARE_STRING_HASH_MAP(wxString, StringHash);
   */
 class DLLIMPORT CompileOptionsBase
 {
-	public:
-		CompileOptionsBase();
-		virtual ~CompileOptionsBase();
+    public:
+        CompileOptionsBase();
+        virtual ~CompileOptionsBase();
 
-		virtual void AddPlatform(int platform);
-		virtual void RemovePlatform(int platform);
-		virtual void SetPlatforms(int platforms);
-		virtual int GetPlatforms() const;
-		virtual bool SupportsCurrentPlatform() const;
+        virtual void AddPlatform(int platform);
+        virtual void RemovePlatform(int platform);
+        virtual void SetPlatforms(int platforms);
+        virtual int GetPlatforms() const;
+        virtual bool SupportsCurrentPlatform() const;
 
-		virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
-		virtual const wxArrayString& GetLinkerOptions() const;
+        virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
+        virtual const wxArrayString& GetLinkerOptions() const;
         virtual void AddLinkerOption(const wxString& option);
         virtual void RemoveLinkerOption(const wxString& option);
 
-		virtual void SetLinkLibs(const wxArrayString& linkLibs);
-		virtual const wxArrayString& GetLinkLibs() const;
+        virtual void SetLinkLibs(const wxArrayString& linkLibs);
+        virtual const wxArrayString& GetLinkLibs() const;
         virtual void AddLinkLib(const wxString& lib);
         virtual void RemoveLinkLib(const wxString& lib);
 
-		virtual void SetCompilerOptions(const wxArrayString& compilerOpts);
-		virtual const wxArrayString& GetCompilerOptions() const;
+        virtual void SetCompilerOptions(const wxArrayString& compilerOpts);
+        virtual const wxArrayString& GetCompilerOptions() const;
         virtual void AddCompilerOption(const wxString& option);
         virtual void RemoveCompilerOption(const wxString& option);
 
-		virtual void SetIncludeDirs(const wxArrayString& includeDirs);
-		virtual const wxArrayString& GetIncludeDirs() const;
+        virtual void SetIncludeDirs(const wxArrayString& includeDirs);
+        virtual const wxArrayString& GetIncludeDirs() const;
         virtual void AddIncludeDir(const wxString& option);
         virtual void RemoveIncludeDir(const wxString& option);
 
-		virtual void SetResourceIncludeDirs(const wxArrayString& resIncludeDirs);
-		virtual const wxArrayString& GetResourceIncludeDirs() const;
+        virtual void SetResourceIncludeDirs(const wxArrayString& resIncludeDirs);
+        virtual const wxArrayString& GetResourceIncludeDirs() const;
         virtual void AddResourceIncludeDir(const wxString& option);
         virtual void RemoveResourceIncludeDir(const wxString& option);
 
-		virtual void SetLibDirs(const wxArrayString& libDirs);
-		virtual const wxArrayString& GetLibDirs() const;
+        virtual void SetLibDirs(const wxArrayString& libDirs);
+        virtual const wxArrayString& GetLibDirs() const;
         virtual void AddLibDir(const wxString& option);
         virtual void RemoveLibDir(const wxString& option);
 
-		virtual void SetCommandsBeforeBuild(const wxArrayString& commands);
-		virtual const wxArrayString& GetCommandsBeforeBuild() const;
-		virtual void AddCommandsBeforeBuild(const wxString& command);
-		virtual void RemoveCommandsBeforeBuild(const wxString& command);
+        virtual void SetCommandsBeforeBuild(const wxArrayString& commands);
+        virtual const wxArrayString& GetCommandsBeforeBuild() const;
+        virtual void AddCommandsBeforeBuild(const wxString& command);
+        virtual void RemoveCommandsBeforeBuild(const wxString& command);
 
-		virtual void SetCommandsAfterBuild(const wxArrayString& commands);
-		virtual const wxArrayString& GetCommandsAfterBuild() const;
-		virtual void AddCommandsAfterBuild(const wxString& command);
-		virtual void RemoveCommandsAfterBuild(const wxString& command);
+        virtual void SetCommandsAfterBuild(const wxArrayString& commands);
+        virtual const wxArrayString& GetCommandsAfterBuild() const;
+        virtual void AddCommandsAfterBuild(const wxString& command);
+        virtual void RemoveCommandsAfterBuild(const wxString& command);
 
         virtual void SetBuildScripts(const wxArrayString& scripts);
         virtual const wxArrayString& GetBuildScripts() const;
         virtual void AddBuildScript(const wxString& script);
         virtual void RemoveBuildScript(const wxString& script);
 
-		virtual bool GetModified() const;
-		virtual void SetModified(bool modified);
+        virtual bool GetModified() const;
+        virtual void SetModified(bool modified);
 
-		virtual bool GetAlwaysRunPostBuildSteps() const;
-		virtual void SetAlwaysRunPostBuildSteps(bool always);
+        virtual bool GetAlwaysRunPostBuildSteps() const;
+        virtual void SetAlwaysRunPostBuildSteps(bool always);
 
-		virtual bool SetVar(const wxString& key, const wxString& value, bool onlyIfExists = false);
-		virtual bool UnsetVar(const wxString& key);
-		virtual void UnsetAllVars();
-		virtual const wxString& GetVar(const wxString& key) const;
-		virtual const StringHash& GetAllVars() const;
-	protected:
-		int m_Platform;
-		wxArrayString m_LinkerOptions;
-		wxArrayString m_LinkLibs;
-		wxArrayString m_CompilerOptions;
-		wxArrayString m_IncludeDirs;
-		wxArrayString m_ResIncludeDirs;
-		wxArrayString m_LibDirs;
-		wxArrayString m_CmdsBefore;
-		wxArrayString m_CmdsAfter;
-		wxArrayString m_Scripts;
-		bool m_Modified;
-		bool m_AlwaysRunPostCmds;
-		StringHash m_Vars;
-	private:
+        virtual bool SetVar(const wxString& key, const wxString& value, bool onlyIfExists = false);
+        virtual bool UnsetVar(const wxString& key);
+        virtual void UnsetAllVars();
+        virtual const wxString& GetVar(const wxString& key) const;
+        virtual const StringHash& GetAllVars() const;
+    protected:
+        int m_Platform;
+        wxArrayString m_LinkerOptions;
+        wxArrayString m_LinkLibs;
+        wxArrayString m_CompilerOptions;
+        wxArrayString m_IncludeDirs;
+        wxArrayString m_ResIncludeDirs;
+        wxArrayString m_LibDirs;
+        wxArrayString m_CmdsBefore;
+        wxArrayString m_CmdsAfter;
+        wxArrayString m_Scripts;
+        bool m_Modified;
+        bool m_AlwaysRunPostCmds;
+        StringHash m_Vars;
+    private:
 };
 
 #endif // COMPILEOPTIONSBASE_H

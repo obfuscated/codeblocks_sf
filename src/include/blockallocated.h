@@ -66,10 +66,10 @@ public:
 
     BlockAllocator() : first(0), ref_count(0), max_refs(0), total_refs(0)
     {
-	#if defined(__GNUC__)
+    #if defined(__GNUC__)
         assert(__builtin_constant_p(debug));
     #endif
-	};
+    };
 
     ~BlockAllocator()
     {
