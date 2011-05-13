@@ -40,18 +40,18 @@
 
 namespace
 {
-    int idList = wxNewId();
-    int idSource = wxNewId();
-    int idUser = wxNewId();
+    int idList          = wxNewId();
+    int idSource        = wxNewId();
+    int idUser          = wxNewId();
     int idButtonRefresh = wxNewId();
-    int idButtonTypes = wxNewId();
+    int idButtonTypes   = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(ToDoListView, wxEvtHandler)
-    EVT_COMBOBOX(idSource, ToDoListView::OnComboChange)
-    EVT_COMBOBOX(idUser, ToDoListView::OnComboChange)
-    EVT_BUTTON(idButtonRefresh, ToDoListView::OnButtonRefresh)
-    EVT_BUTTON(idButtonTypes, ToDoListView::OnButtonTypes)
+    EVT_COMBOBOX(idSource,        ToDoListView::OnComboChange)
+    EVT_COMBOBOX(idUser,          ToDoListView::OnComboChange)
+    EVT_BUTTON  (idButtonRefresh, ToDoListView::OnButtonRefresh)
+    EVT_BUTTON  (idButtonTypes,   ToDoListView::OnButtonTypes)
 END_EVENT_TABLE()
 
 ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& m_Types) :
@@ -59,7 +59,6 @@ ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths
     m_pPanel(0),
     m_pSource(0L),
     m_pUser(0L),
-    m_pRefresh(0L),
     m_Types(m_Types),
     m_LastFile(wxEmptyString),
     m_Ignore(false),
@@ -117,11 +116,11 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     m_pUser->SetSelection(0);
     hbs->Add(m_pUser, 0, wxLEFT, 4);
 
-    m_pRefresh = new wxButton(m_pPanel, idButtonRefresh, _("Refresh"));
-    hbs->Add(m_pRefresh, 0, wxLEFT, 4);
+    wxButton* pRefresh = new wxButton(m_pPanel, idButtonRefresh, _("Refresh"));
+    hbs->Add(pRefresh, 0, wxLEFT, 4);
 
-    m_pAllowedTypes = new wxButton(m_pPanel, idButtonTypes, _("Types"));
-    hbs->Add(m_pAllowedTypes, 0, wxLEFT, 4);
+    wxButton* pAllowedTypes = new wxButton(m_pPanel, idButtonTypes, _("Types"));
+    hbs->Add(pAllowedTypes, 0, wxLEFT, 4);
 
     bs->Add(hbs, 0, wxGROW | wxALL, 4);
     m_pPanel->SetSizer(bs);
@@ -137,7 +136,7 @@ void ToDoListView::Parse()
 {
 //    wxBusyCursor busy;
     // based on user prefs, parse files for todo items
-    if(m_Ignore || (m_pPanel && !m_pPanel->IsShownOnScreen()) )
+    if (m_Ignore || (m_pPanel && !m_pPanel->IsShownOnScreen()) )
         return; // Reentrancy
 
     Clear();
@@ -199,13 +198,13 @@ void ToDoListView::Parse()
 
 void ToDoListView::ParseCurrent(bool forced)
 {
-    if(m_Ignore)
+    if (m_Ignore)
         return; // Reentrancy
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
-    if(ed)
+    if (ed)
     {
         wxString filename = ed->GetFilename();
-        if(forced || filename != m_LastFile)
+        if (forced || filename != m_LastFile)
         {
             m_LastFile = filename;
             m_Items.Clear();
@@ -249,25 +248,21 @@ void ToDoListView::FillList()
 
     TodoItemsMap::iterator it;
 
-    if(m_pSource->GetSelection()==0) // Single file
+    if (m_pSource->GetSelection()==0) // Single file
     {
         wxString filename(wxEmptyString);
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
-        if(ed)
+        if (ed)
             filename = ed->GetFilename();
-        for(unsigned int i = 0; i < m_ItemsMap[filename].size(); i++)
-        {
+        for (unsigned int i = 0; i < m_ItemsMap[filename].size(); i++)
             m_Items.Add(m_ItemsMap[filename][i]);
-        }
     }
     else
     {
-        for(it = m_ItemsMap.begin();it != m_ItemsMap.end();++it)
+        for (it = m_ItemsMap.begin();it != m_ItemsMap.end();++it)
         {
-            for(unsigned int i = 0; i < it->second.size(); i++)
-            {
+            for (unsigned int i = 0; i < it->second.size(); i++)
                 m_Items.Add(it->second[i]);
-            }
         }
     }
 
@@ -386,36 +381,34 @@ void ToDoListView::ParseFile(const wxString& filename)
         }
     }
     else
-    {
         return;
-    }
 
     delete fileBuffer;
 }
 
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
-
     // this is the actual workhorse...
 
     m_ItemsMap[filename].clear();
 
-    //initialize one Comment class and reuse it
+    // initialize one Comment class and reuse it
     Comment current;
 
     wxArrayString allowedTypes;
-    size_t t = 0;
-    while(t < m_Types.Count())
+    for (size_t t=0; t<m_Types.Count(); t++)
     {
-        if(m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
-        {
+        if (m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
             allowedTypes.Add(m_Types.Item(t));
-        }
-        t++;
+    }
+    if (allowedTypes.IsEmpty())
+    {
+        Manager::Get()->GetLogManager()->Log(_T("ToDoList: Warning: No to-do types selected to search for, nothing to do."));
+        return;
     }
 
     //find parse for comments
-    while (FindNextComment(buffer, &current))
+    while ( FindNextComment(buffer, &current) )
     {
 
         // ok, we look for two basic kinds of todo entries in the text
@@ -424,7 +417,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
         // and a generic version...
         // TODO: Implement code to do this and the other...
 
-        for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
+        for (unsigned int i=0; i<allowedTypes.GetCount(); ++i)
         {
             //Manager::Get()->GetLogManager()->DebugLog(allowedTypes.Item(i));
 
@@ -436,7 +429,6 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 int idx = pos;
 
                 //#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
-
 
                 //Manager::Get()->GetLogManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", m_isC ? "C" : "C++", allowedTypes[i].c_str(), pos);
 
@@ -544,7 +536,6 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
             }
 
         }
-
         //current.logFile.Write();
     }
 }
@@ -592,10 +583,8 @@ bool ToDoListView::FindNextComment(const wxString& buffer, Comment * previous)
                 Str = _("\n");
                 previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
                 if (previous->m_posEnd == -1)
-                {
-                    //file ended without newline
-                    previous->m_posEnd = buffer.Len() - 2;
-                }
+                    previous->m_posEnd = buffer.Len() - 2; //file ended without newline
+
                 previous->m_isC = false;
                 valid = true;
             }
@@ -609,10 +598,8 @@ bool ToDoListView::FindNextComment(const wxString& buffer, Comment * previous)
                     Str = _("*/");
                     previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
                     if (previous->m_posEnd == -1)
-                    {
-                        //comment end not found
-                        return false;
-                    }
+                        return false; //comment end not found
+
                     previous->m_isC = true;
                     previous->m_posEnd = previous->m_posEnd + 1;
                     valid = true;
@@ -626,9 +613,7 @@ bool ToDoListView::FindNextComment(const wxString& buffer, Comment * previous)
             }
         }
         else
-        {
             return false;
-        }
 
     }
     previous->m_comment = buffer.Mid(previous->m_posBegin, (previous->m_posEnd - previous->m_posBegin) + 1);
@@ -663,7 +648,7 @@ void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
     Parse();
 }
 
-void ToDoListView::OnDoubleClick( wxCommandEvent& event )
+void ToDoListView::OnDoubleClick(wxCommandEvent& event)
 {    // pecan 1/2/2006 12PM : Switched with OnListItemSelected by Rick 20/07/2007
     long item = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
@@ -691,7 +676,7 @@ void ToDoListView::OnDoubleClick( wxCommandEvent& event )
     }
 }
 
-void ToDoListView::OnColClick( wxListEvent& event )
+void ToDoListView::OnColClick(wxListEvent& event)
 {
     if (event.GetColumn() != m_SortColumn)
         m_SortAscending = true;
@@ -703,31 +688,37 @@ void ToDoListView::OnColClick( wxListEvent& event )
 }
 
 
-CheckListDialog::CheckListDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+CheckListDialog::CheckListDialog(wxWindow*       parent,
+                                 wxWindowID      id,
+                                 const wxString& title,
+                                 const wxPoint&  pos,
+                                 const wxSize&   size,
+                                 long            style)
+  : wxDialog(parent, id, title, pos, size, style)
 {
-    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer* bSizer122;
-    bSizer122 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* boxSizer;
+    boxSizer = new wxBoxSizer( wxVERTICAL );
 
     wxArrayString m_checkList1Choices;
-    m_checkList1 = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkList1Choices, 0 );
-    bSizer122->Add( m_checkList1, 1, wxEXPAND, 5 );
+    m_checkList = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkList1Choices, 0 );
+    boxSizer->Add( m_checkList, 1, wxEXPAND, 5 );
 
-    m_okBtn = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    bSizer122->Add( m_okBtn, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
+    m_okBtn = new wxButton(this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0);
+    boxSizer->Add( m_okBtn, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
 
-    this->SetSizer( bSizer122 );
-    this->Layout();
+    SetSizer( boxSizer );
+    Layout();
 
     // Connect Events
-    m_okBtn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this );
+    m_okBtn->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this);
 }
 
 CheckListDialog::~CheckListDialog()
 {
     // Disconnect Events
-    m_okBtn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this );
+    m_okBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this);
 }
 
 void CheckListDialog::OkOnButtonClick(wxCommandEvent& event)
@@ -738,19 +729,17 @@ void CheckListDialog::OkOnButtonClick(wxCommandEvent& event)
 
 bool CheckListDialog::IsChecked(wxString item)
 {
-    return m_checkList1->IsChecked(m_checkList1->FindString(item, true));
+    return m_checkList->IsChecked(m_checkList->FindString(item, true));
 }
 
 wxArrayString CheckListDialog::GetChecked()
 {
     size_t item = 0;
     wxArrayString items;
-    while(item < m_checkList1->GetCount())
+    while(item < m_checkList->GetCount())
     {
-        if(m_checkList1->IsChecked(item))
-        {
-            items.Add(m_checkList1->GetString(item));
-        }
+        if (m_checkList->IsChecked(item))
+            items.Add(m_checkList->GetString(item));
         item++;
     }
     return items;
@@ -758,11 +747,10 @@ wxArrayString CheckListDialog::GetChecked()
 
 void CheckListDialog::SetChecked(wxArrayString items)
 {
-
     size_t item = 0;
     while(item < items.GetCount())
     {
-        m_checkList1->Check(m_checkList1->FindString(items.Item(item), true));
+        m_checkList->Check(m_checkList->FindString(items.Item(item), true));
         item++;
     }
 }

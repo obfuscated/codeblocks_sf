@@ -54,19 +54,29 @@ typedef map<wxString,vector<ToDoItem> > TodoItemsMap;
 WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 class CheckListDialog : public wxDialog
 {
-    private:
-    protected:
-        wxCheckListBox* m_checkList1;
-        wxButton* m_okBtn;
     public:
-        virtual void OkOnButtonClick( wxCommandEvent& event );
-        CheckListDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 150,180 ), long style = 0 );
+        CheckListDialog( wxWindow*       parent,
+                         wxWindowID      id    = wxID_ANY,
+                         const wxString& title = wxEmptyString,
+                         const wxPoint&  pos   = wxDefaultPosition,
+                         const wxSize&   size  = wxSize(150,180),
+                         long            style = 0 );
         ~CheckListDialog();
-        bool IsChecked(wxString item);
-        void AddItem(const wxArrayString& items) {m_checkList1->InsertItems(items, 0);}
-        void Clear(){m_checkList1->Clear();}
-        void SetChecked(wxArrayString items);
+
+        virtual void OkOnButtonClick( wxCommandEvent& event );
+
+        void AddItem(const wxArrayString& items) { m_checkList->InsertItems(items, 0); }
+        void Clear()                             { m_checkList->Clear();               }
+
+        bool          IsChecked(wxString item);
         wxArrayString GetChecked();
+        void          SetChecked(wxArrayString items);
+
+    protected:
+        wxCheckListBox* m_checkList;
+        wxButton*       m_okBtn;
+
+    private:
 };
 
 class ToDoListView : public ListCtrlLogger, public wxEvtHandler
@@ -78,7 +88,7 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
 
         void Parse();
         void ParseCurrent(bool forced);
-        wxWindow* GetWindow(){ return m_pPanel; }
+        wxWindow* GetWindow() { return m_pPanel; }
 
         CheckListDialog * m_pAllowedTypesDlg;
     private:
@@ -100,18 +110,16 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
         void OnDoubleClick( wxCommandEvent& event );
         void OnColClick( wxListEvent& event );
 
-        wxWindow* m_pPanel;
-        TodoItemsMap m_ItemsMap;
-        ToDoItems m_Items;
-        wxComboBox* m_pSource;
-        wxComboBox* m_pUser;
-        wxButton* m_pRefresh;
-        wxButton* m_pAllowedTypes;
+        wxWindow*            m_pPanel;
+        TodoItemsMap         m_ItemsMap;
+        ToDoItems            m_Items;
+        wxComboBox*          m_pSource;
+        wxComboBox*          m_pUser;
         const wxArrayString& m_Types;
-        wxString m_LastFile;
-        bool m_Ignore;
-        bool m_SortAscending;
-        int m_SortColumn;
+        wxString             m_LastFile;
+        bool                 m_Ignore;
+        bool                 m_SortAscending;
+        int                  m_SortColumn;
 
         DECLARE_EVENT_TABLE()
 };
