@@ -15,7 +15,7 @@ function BeginWizard()
                        "or Matlab LCC compiler.\n\n" +
                        "For GCC you must have converted the Matlab DLL's into\n" +
                        "GCC compatible libraries using the DLLTOOL before.\n" +
-                       "This wizard expects the GCC libraries at the location:\n" +
+                       "On Windows, this wizard expects the GCC libraries at the location:\n" +
                        "[MATLAB]/extern/lib/win32/gcc\n\n" +
                        "When you're ready to proceed, please click \"Next\"...");
 
@@ -84,24 +84,30 @@ function OnLeave_MatlabPath(fwd)
                      "/sys/lcc/include"));
         return false;
       }
-      // Verify LCC libraries
-      if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/lcc")))
+      if (PLATFORM == PLATFORM_MSW)
       {
-        ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
-                     "can't locate the LCC library path in the sub-directory\n" +
-                     "/extern/lib/win32/lcc"));
-        return false;
+        // Verify LCC libraries
+        if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/lcc")))
+        {
+          ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                       "can't locate the LCC library path in the sub-directory\n" +
+                       "/extern/lib/win32/lcc"));
+          return false;
+        }
       }
     }
     else if (Wizard.GetCompilerID().Matches(_T("gcc")))
     {
-      // Verify GCC libraries
-      if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/gcc")))
+      if (PLATFORM == PLATFORM_MSW)
       {
-        ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
-                     "can't locate the GCC library path in the sub-directory\n" +
-                     "/extern/lib/win32/gcc"));
-        return false;
+        // Verify GCC libraries
+        if (!IO.DirectoryExists(dir_nomacro + _T("/extern/lib/win32/gcc")))
+        {
+          ShowError(_T("The Matlab path you entered seems valid, but this wizard\n" +
+                       "can't locate the GCC library path in the sub-directory\n" +
+                       "/extern/lib/win32/gcc"));
+          return false;
+        }
       }
     }
 
@@ -141,8 +147,11 @@ function SetupProject(project)
 
     project.AddLinkerOption(_T("-s"));
     project.AddLinkerOption(_T("-tmpdir \".\""));
-    project.AddLinkerOption(_T("-libpath ") + MatlabPath + _T("\\extern\\lib\\win32\\lcc"));
-    project.AddLinkerOption(MatlabPath + _T("\\extern\\lib\\win32\\lcc\\mexFunction.def"));
+    if (PLATFORM == PLATFORM_MSW)
+    {
+      project.AddLinkerOption(_T("-libpath ") + MatlabPath + _T("\\extern\\lib\\win32\\lcc"));
+      project.AddLinkerOption(MatlabPath + _T("\\extern\\lib\\win32\\lcc\\mexFunction.def"));
+    }
   }
   else if (Wizard.GetCompilerID().Matches(_T("gcc")))
   {
@@ -153,7 +162,10 @@ function SetupProject(project)
 
     project.AddLinkerOption(_T("-shared"));
     project.AddLinkerOption(_T("-Wl,--out-implib=sfuntmpl")+DOT_EXT_STATICLIB);
-    project.AddLibDir(MatlabPath + _T("/extern/lib/win32/gcc"));
+    if (PLATFORM == PLATFORM_MSW)
+    {
+      project.AddLibDir(MatlabPath + _T("/extern/lib/win32/gcc"));
+    }
   }
   else
   {
