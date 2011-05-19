@@ -291,12 +291,6 @@ wxPGWindowList wxPGSpinCtrlEditor::CreateControls( wxPropertyGrid* propgrid, wxP
     wnd2->SetRange( INT_MIN, INT_MAX );
     wnd2->SetValue( 0 );
 
-    propgrid->Connect( wxPG_SUBID2, wxEVT_SCROLL_LINEUP,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                       &wxPropertyGrid::OnCustomEditorEvent, NULL, propgrid );
-    propgrid->Connect( wxPG_SUBID2, wxEVT_SCROLL_LINEDOWN,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                       &wxPropertyGrid::OnCustomEditorEvent, NULL, propgrid );
     propgrid->Connect( wxPG_SUBID1, wxEVT_KEY_DOWN,
                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                        &wxPropertyGrid::OnCustomEditorEvent, NULL, propgrid );

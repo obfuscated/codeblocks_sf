@@ -2384,6 +2384,25 @@ void wxPGProperty::DeleteChildren()
     }
 }
 
+bool wxPGProperty::IsChildSelected( const bool recursive ) const
+{
+    size_t i;
+    for ( i = 0; i < GetChildCount(); i++ )
+    {
+        wxPGProperty* child = Item(i);
+
+        // Test child
+        if ( m_parentState->DoIsPropertySelected( child ) )
+            return true;
+
+        // Test sub-childs
+        if ( recursive && child->IsChildSelected( recursive ) )
+            return true;
+    }
+
+    return false;
+}
+
 void wxPGProperty::ChildChanged( wxVariant& WXUNUSED(thisValue),
                                  int WXUNUSED(childIndex),
                                  wxVariant& WXUNUSED(childValue) ) const
@@ -6023,7 +6042,7 @@ void wxPropertyGrid::DrawItems( const wxPGProperty* p1, const wxPGProperty* p2 )
 
 void wxPropertyGrid::RefreshProperty( wxPGProperty* p )
 {
-    if ( m_pState->DoIsPropertySelected(p) )
+    if ( m_pState->DoIsPropertySelected(p) || p->IsChildSelected(true) )
     {
         // NB: We must copy the selection.
         wxArrayPGProperty selection = m_pState->m_selection;
