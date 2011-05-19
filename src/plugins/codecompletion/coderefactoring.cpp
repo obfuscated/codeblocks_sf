@@ -26,7 +26,10 @@
 #include "coderefactoring.h"
 #include "nativeparser.h"
 
-#define CC_CODEREFACTORING_DEBUG_OUTPUT 0
+// #define CC_CODEREFACTORING_DEBUG_OUTPUT 0
+#if (CC_GLOBAL_DEBUG_OUTPUT)
+  #define CC_CODEREFACTORING_DEBUG_OUTPUT 1
+#endif
 
 #if CC_CODEREFACTORING_DEBUG_OUTPUT == 1
     #define TRACE(format, args...) \
