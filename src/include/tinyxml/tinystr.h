@@ -96,14 +96,12 @@ class TiXmlString
 
 	TiXmlString& operator = (const char * copy)
 	{
-		assign( copy, (size_type)strlen(copy));
-		return *this;
+		return assign( copy, (size_type)strlen(copy));
 	}
 
 	TiXmlString& operator = (const TiXmlString & copy)
 	{
-		assign(copy.start(), copy.length());
-		return *this;
+		return assign(copy.start(), copy.length());
 	}
 
 
@@ -240,7 +238,7 @@ class TiXmlString
 
 	void quit()
 	{
-		if (rep_ && rep_ != &nullrep_)
+		if (rep_ != &nullrep_)
 		{
 			// The rep_ is really an array of ints. (see the allocator, above).
 			// Cast it back before delete, so the compiler won't incorrectly call destructors.
