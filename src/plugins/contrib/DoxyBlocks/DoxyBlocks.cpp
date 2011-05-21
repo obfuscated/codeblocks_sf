@@ -3,7 +3,7 @@
  * \author      Gary Harris
  * \date        01-02-2010
  *
- * DoxyBlocks - doxygen integration for Code::Blocks.                    \n
+ * DoxyBlocks - doxygen integration for Code::Blocks. \n
  * Copyright (C) 2010 Gary Harris.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,29 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *****************************************************************************/
-#include <sdk.h> // Code::Blocks SDK
-#include <configurationpanel.h>
 #include "DoxyBlocks.h"
 
+#include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     #include <wx/process.h>
     #include <wx/xrc/xmlres.h>
+
+    #include <cbeditor.h>
+    #include <cbproject.h>
     #include <configmanager.h>
     #include <editormanager.h>
-    #include <cbeditor.h>
     #include <logmanager.h>
-    #include <projectmanager.h>
-    #include <cbproject.h>
     #include <macrosmanager.h>
+    #include <projectmanager.h>
 #endif
-#include "projectloader_hooks.h"
 #include <cbstyledtextctrl.h>
+#include <configurationpanel.h>
+#include <projectloader_hooks.h>
+#include <tinyxml/tinywxuni.h>
+
 #include <wx/tokenzr.h>
 #include <wx/textfile.h>
-#include "tinyxml/tinywxuni.h"
+
 #include "ConfigPanel.h"
 #include "DoxyBlocksLogger.h"
-
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
@@ -55,7 +57,7 @@ namespace
 BEGIN_EVENT_TABLE(DoxyBlocks, cbPlugin)
     // add any events you want to handle here
     EVT_UPDATE_UI_RANGE(ID_TB_WIZARD, ID_MENU_CONFIG,    DoxyBlocks::OnUpdateUI)
-    EVT_TEXT_URL(ID_LOG_DOXYBLOCKS,                                    DoxyBlocks::OnTextURL)
+    EVT_TEXT_URL(ID_LOG_DOXYBLOCKS,                      DoxyBlocks::OnTextURL)
 END_EVENT_TABLE()
 
 // constructor
@@ -73,7 +75,6 @@ DoxyBlocks::DoxyBlocks() :
     }
 
     m_pConfig = new DoxyBlocksConfig;
-
 }
 
 // destructor
@@ -574,14 +575,14 @@ bool DoxyBlocks::RunDoxywizard(void)
 
 /*! \brief Append a message to DoxyBlocks' log window.
  *
- * \param    sText                wxString&    The text to display.
- * \param    flag                    int            A flag controlling the entry's style. Defaults to LOG_NORMAL.
- * \param    bReturnFocus    bool            Whether to return the focus to the editor window after logging.
+ * \param    sText           wxString&    The text to display.
+ * \param    flag            int          A flag controlling the entry's style. Defaults to LOG_NORMAL.
+ * \param    bReturnFocus    bool         Whether to return the focus to the editor window after logging.
  *
  * The style flags are:
- *     \li LOG_NORMAL        - normal text
+ *     \li LOG_NORMAL     - normal text
  *     \li LOG_WARNING    - italic text
- *     \li LOG_ERROR        - bold red text
+ *     \li LOG_ERROR      - bold red text
  */
 void DoxyBlocks::AppendToLog(const wxString &sText, int flag /*  = LOG_NORMAL */, bool bReturnFocus /* = true */) const
 {
@@ -775,7 +776,7 @@ wxString DoxyBlocks::GetDocPath() const
     }
     else
     {
-    	sDoxygenDir = sDoxygenDir + wxT("doxygen");
+        sDoxygenDir = sDoxygenDir + wxT("doxygen");
     }
     sDoxygenDir = sDoxygenDir + wxFileName::GetPathSeparator();
     wxFileName fnDoxygenDir(sDoxygenDir);

@@ -1,9 +1,9 @@
 /**************************************************************************//**
- * \file		DoxyBlocksLogger.cpp
- * \author	Gary Harris
- * \date		27/3/10
+ * \file      DoxyBlocksLogger.cpp
+ * \author    Gary Harris
+ * \date      27/3/10
  *
- * DoxyBlocks - doxygen integration for Code::Blocks.					\n
+ * DoxyBlocks - doxygen integration for Code::Blocks. \n
  * Copyright (C) 2010 Gary Harris.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,10 +21,12 @@
  *
  *****************************************************************************/
 #include "DoxyBlocksLogger.h"
-#include <prep.h>
-#include <pluginmanager.h>
-#include <cbplugin.h>
 
+#include <cbplugin.h>
+#include <pluginmanager.h>
+#include <prep.h>
+
+#include <wx/sizer.h>
 
 /*! \brief Update the window's settings.
  *
@@ -33,51 +35,51 @@
  */
 void DoxyBlocksLogger::UpdateSettings()
 {
-	TextCtrlLogger::UpdateSettings();
+    TextCtrlLogger::UpdateSettings();
 }
 
 /*! \brief Create the control and assign a known ID.
  *
- * \param parent wxWindow*	The parent window.
- * \return virtual wxWindow*	The newly created log window.
+ * \param parent wxWindow*    The parent window.
+ * \return virtual wxWindow*    The newly created log window.
  *
  */
 wxWindow* DoxyBlocksLogger::CreateControl(wxWindow* parent)
 {
-	panel = new wxPanel(parent);
+    panel = new wxPanel(parent);
 
-	TextCtrlLogger::CreateControl(panel);
-	control->SetId(ID_LOG_DOXYBLOCKS);
+    TextCtrlLogger::CreateControl(panel);
+    control->SetId(ID_LOG_DOXYBLOCKS);
 
-	sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(control, 1, wxEXPAND, 0);
-	panel->SetSizer(sizer);
+    sizer = new wxBoxSizer(wxVERTICAL);
+    sizer->Add(control, 1, wxEXPAND, 0);
+    panel->SetSizer(sizer);
 
-	return panel;
+    return panel;
 }
 
 /*! \brief Open a URL that was clicked in the log window.
  *
- * \param urlStart 					long	The starting position of the URL string in the line of text.
- * \param urlEnd 					long	The ending position of the URL string in the line of text.
- * \param bUseInternalViewer 	bool	Whether to use the internal HTML viewer.
+ * \param urlStart               long    The starting position of the URL string in the line of text.
+ * \param urlEnd                 long    The ending position of the URL string in the line of text.
+ * \param bUseInternalViewer     bool    Whether to use the internal HTML viewer.
  * \return void
  *
  */
 void DoxyBlocksLogger::OpenLink(long urlStart, long urlEnd, bool bUseInternalViewer)
 {
-	if(!control){
-		return;
-	}
-	wxString url = control->GetRange(urlStart, urlEnd);
-	if (platform::windows && url.StartsWith(_T("file://"))){
-		url.Remove(0, 7);
-	}
-	if(bUseInternalViewer){
-		cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
-		p->OpenFile(url);
-	}
-	else{
-		wxLaunchDefaultBrowser(url);
-	}
+    if(!control){
+        return;
+    }
+    wxString url = control->GetRange(urlStart, urlEnd);
+    if (platform::windows && url.StartsWith(_T("file://"))){
+        url.Remove(0, 7);
+    }
+    if(bUseInternalViewer){
+        cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
+        p->OpenFile(url);
+    }
+    else{
+        wxLaunchDefaultBrowser(url);
+    }
 }
