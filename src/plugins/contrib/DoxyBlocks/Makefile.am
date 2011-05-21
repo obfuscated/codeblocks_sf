@@ -24,8 +24,7 @@ noinst_HEADERS = Config.h \
 		ConfigPanel.h \
 		DoxyBlocks.h \
 		Expressions.h \
-		DoxyBlocksLogger.h \
-		pch.h
+		DoxyBlocksLogger.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		$(srcdir)/wxsmith/ConfigPanel.wxs \
