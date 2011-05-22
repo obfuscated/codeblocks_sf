@@ -128,7 +128,12 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkGlobals",               wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
     XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
     XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->SetValue(m_Parser.Options().parseComplexMacros);
-    XRCCTRL(*this, "txtUpFrontHeaders",        wxTextCtrl)->SetValue(cfg->Read(_T("/up_front_headers"), _T("<cstddef>, <wx/defs.h>, <wx/dlimpexp.h>, <wx/toplevel.h>, <boost/config.hpp>, <boost/filesystem/config.hpp>, \"pch.h\", \"sdk.h\", \"stdafx.h\"")));
+    // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and nativeparser.cpp
+    XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->SetValue(cfg->Read(_T("/priority_headers"),
+        _T("<cstddef>, <w32api.h>, ")
+        _T("<wx/defs.h>, <wx/dlimpexp.h>, <wx/toplevel.h>, ")
+        _T("<boost/config.hpp>, <boost/filesystem/config.hpp>, ")
+        _T("\"pch.h\", \"sdk.h\", \"stdafx.h\"")));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->Enable(false);
     XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->SetValue( m_NativeParsers->IsParserPerWorkspace() );
@@ -203,7 +208,7 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().wantPreprocessor     = XRCCTRL(*this, "chkPreprocessor",               wxCheckBox)->GetValue();
     m_Parser.Options().parseComplexMacros   = XRCCTRL(*this, "chkComplexMacros",              wxCheckBox)->GetValue();
 
-    cfg->Write(_T("/up_front_headers"),            XRCCTRL(*this, "txtUpFrontHeaders",        wxTextCtrl)->GetValue());
+    cfg->Write(_T("/priority_headers"),            XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->GetValue());
     cfg->Write(_T("/parser_per_workspace"), (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
     cfg->Write(_T("/max_parsers"),          (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
 
@@ -338,7 +343,7 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "sldCCDelay",            wxSlider)->Enable(en);
 
     // Page "C / C++ parser"
-    XRCCTRL(*this, "txtUpFrontHeaders",     wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtPriorityHeaders",    wxTextCtrl)->Enable(en);
     int sel = XRCCTRL(*this, "lstRepl",     wxListBox)->GetSelection();
     XRCCTRL(*this, "btnEditRepl",           wxButton)->Enable(sel != -1);
     XRCCTRL(*this, "btnDelRepl",            wxButton)->Enable(sel != -1);

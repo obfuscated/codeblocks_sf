@@ -6,11 +6,43 @@
 		<bg>wxSYS_COLOUR_MENUBAR</bg>
 		<parent_arg>0</parent_arg>
 		<id_arg>0</id_arg>
-		<object class="wxBoxSizer" variable="sizer" member="no">
+		<object class="wxBoxSizer" variable="bszMain" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bszInclude" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblInclude" member="no">
+							<label>Add include directories to search for files here (one directory per line):</label>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="wxID_ANY" variable="m_IncludeCtrl" member="yes">
+							<value>C:\\Devel\\wxWidgets\\lib\\gcc__dll\\mswu&#x0A;C:\\Devel\\wxWidgets\\include&#x0A;</value>
+							<size>-1,60</size>
+							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE</style>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblLog" member="no">
+					<label>The parser&apos;s log output:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
-					<size>900,550</size>
-					<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2</style>
+					<size>640,480</size>
+					<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>

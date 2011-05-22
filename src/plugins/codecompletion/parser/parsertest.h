@@ -22,7 +22,7 @@ private:
     void PrintTokenTree(Token* token);
 
 private:
-    TokensTree* m_tokensTree;
+    TokensTree*   m_tokensTree;
 };
 
 #endif // PARSERTEST_H

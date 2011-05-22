@@ -30,28 +30,28 @@ typedef std::map<wxString, StringSet> SystemHeadersMap;
 class CodeCompletion : public cbCodeCompletionPlugin
 {
 public:
-	struct FunctionScope
-	{
-		FunctionScope() {}
-		FunctionScope(const NameSpace& ns): StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
+    struct FunctionScope
+    {
+        FunctionScope() {}
+        FunctionScope(const NameSpace& ns): StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
 
-		int StartLine;
-		int EndLine;
-		wxString Name;
-		wxString Scope;	// class or namespace
-	};
+        int StartLine;
+        int EndLine;
+        wxString Name;
+        wxString Scope;    // class or namespace
+    };
 
-	typedef std::vector<FunctionScope> FunctionsScopeVec;
-	typedef std::vector<int> ScopeMarksVec;
+    typedef std::vector<FunctionScope> FunctionsScopeVec;
+    typedef std::vector<int> ScopeMarksVec;
 
-	struct FunctionsScopePerFile
-	{
-		FunctionsScopeVec m_FunctionsScope;
-		NameSpaceVec m_NameSpaces;
-		bool parsed;
-	};
+    struct FunctionsScopePerFile
+    {
+        FunctionsScopeVec m_FunctionsScope;
+        NameSpaceVec m_NameSpaces;
+        bool parsed;
+    };
 
-	typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
+    typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
     CodeCompletion();
     virtual ~CodeCompletion();
@@ -168,7 +168,7 @@ private:
     wxChoice*               m_Scope;
     FunctionsScopeVec       m_FunctionsScope;
     NameSpaceVec            m_NameSpaces;
-    ScopeMarksVec	        m_ScopeMarks;
+    ScopeMarksVec           m_ScopeMarks;
     FunctionsScopeMap       m_AllFunctionsScopes;
     bool                    m_ToolbarChanged;
 

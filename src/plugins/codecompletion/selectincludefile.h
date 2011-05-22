@@ -8,20 +8,14 @@
 
 #include <wx/wxprec.h>
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
 #include "scrollingdialog.h"
 
 #ifndef WX_PRECOMP
-	//(*Headers(SelectIncludeFile)
-	#include <wx/button.h>
-	#include <wx/intl.h>
-	#include <wx/listbox.h>
-	#include <wx/sizer.h>
-	#include <wx/xrc/xmlres.h>
-	//*)
+    #include <wx/button.h>
+    #include <wx/intl.h>
+    #include <wx/listbox.h>
+    #include <wx/sizer.h>
+    #include <wx/xrc/xmlres.h>
 #endif
 
 class SelectIncludeFile: public wxScrollingDialog
@@ -29,21 +23,15 @@ class SelectIncludeFile: public wxScrollingDialog
 public:
     SelectIncludeFile(wxWindow* parent,wxWindowID id = -1);
     virtual ~SelectIncludeFile();
-    void AddListEntries(const wxArrayString& IncludeFile);
-    wxString GetIncludeFile() const {return m_SelectedIncludeFile;}
 
-    //(*Identifiers(SelectIncludeFile)
-    //*)
+    void AddListEntries(const wxArrayString& IncludeFile);
+    wxString GetIncludeFile() const { return m_SelectedIncludeFile; }
 
 private:
-    //(*Handlers(SelectIncludeFile)
     void OnOk(wxCommandEvent& event);
     void OnCancel(wxCommandEvent& event);
-    //*)
 
-    //(*Declarations(SelectIncludeFile)
-    wxListBox* ListBox1;
-    //*)
+    wxListBox* LstIncludeFiles;
 
     wxString m_SelectedIncludeFile;
 

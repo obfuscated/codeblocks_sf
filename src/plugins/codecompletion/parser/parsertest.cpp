@@ -16,6 +16,7 @@
 #include <wx/app.h>
 #include <wx/filename.h>
 #endif
+#include <wx/thread.h>
 
 #include "parsertest.h"
 
@@ -68,16 +69,18 @@ bool ParserTest::Start(const wxString& file)
     (*loader)();
 
     ParserThreadOptions opts;
-    opts.wantPreprocessor = true;
-    opts.useBuffer = false;
-    opts.bufferSkipBlocks = false;
+    opts.wantPreprocessor      = true;
+    opts.useBuffer             = false;
+    opts.bufferSkipBlocks      = false;
     opts.bufferSkipOuterBlocks = false;
-    opts.followLocalIncludes = false;
-    opts.followGlobalIncludes = false;
-    opts.loader = loader;
+    opts.followLocalIncludes   = true;
+    opts.followGlobalIncludes  = true;
+    opts.loader                = loader;
+
     ParserThread* ph = new ParserThread(&client, file, true, opts, m_tokensTree);
     bool b = ph->Parse();
     delete ph;
+
     return b;
 }
 
@@ -92,9 +95,7 @@ void ParserTest::PrintTree()
     for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
     {
         if ((*it)->GetParentToken() == 0)
-        {
             PrintTokenTree(*it);
-        }
     }
 }
 

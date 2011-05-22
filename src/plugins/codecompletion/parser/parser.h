@@ -151,12 +151,12 @@ public:
     /** destructor */
     virtual ~Parser();
 
-    /** Add the UpFront header files, these files will be parsed with the sequence as they added.
-     * @param filename input UpFront file name
+    /** Add the priority header files, these files will be parsed with the sequence as they added.
+     * @param filename input priority header file name
      * @param systemHeaderFile true if it is a system header file
      * @param delay true if it use predefined delay time, otherwise it use 1 ms delay
      */
-    void AddUpFrontHeaders(const wxString& filename, bool systemHeaderFile, bool delay = true);
+    void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay = true);
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * Note that when some "#include" files were added to the batch parse,
@@ -245,7 +245,7 @@ protected:
 
     /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
      * In some situations this event will be triggered, such as:
-     * - after "UpFront" header parsing
+     * - after "Priority" header parsing
      * - batch parsing for general (normal) source files
      * - system header files parsing
      */
@@ -278,15 +278,15 @@ protected:
     std::queue<PTVector> m_PoolTask;
 
     /** Thread Pool, manages all the ParserThread, used in batch parse mode. The thread pool can
-     * add/remove/execute the Parserthread tasks.
+     * add/remove/execute the ParserThread tasks.
      */
     cbThreadPool         m_Pool;
 
-    /** determine whether we need an UpFront header parsing, if yes, the added file will be parsed accordingly.
+    /** Determine whether a Priority header parsing is needed. If yes, the added file will be parsed accordingly.
      * Otherwise, added file will be parsed by thread pool (batch parse mode), thus the sequence
      * of the parsed files is not important
      */
-    bool                 m_IsUpFront;
+    bool                 m_IsPriority;
 
     /** each Parser class contains a TokensTree object which used to record tokens per project
       * this tree will be created in the constructor and destroyed in destructor.
@@ -307,7 +307,7 @@ protected:
       */
     bool                 m_NeedsReparse;
 
-    /** batch Parse mode flag. Normal files (not in the parse "UpFront" files stage) will set this flag. */
+    /** batch Parse mode flag. Normal files (not in the parse "Priority" files stage) will set this flag. */
     bool                 m_IsFirstBatch;
     /** true, if the parser is still busy with parsing, false if the parsing stage has finished */
     bool                 m_IsParsing;
@@ -320,10 +320,10 @@ private:
     long                 m_LastStopWatchTime;
     bool                 m_IgnoreThreadEvents;
 
-    StringList           m_UpFrontHeaders;        // All up-front headers
-    StringList           m_SystemUpFrontHeaders;  // Only system up-front headers, for reparse
-    StringList           m_BatchParseFiles;       // All other batch parse files
-    wxString             m_PredefinedMacros;      // Pre-defined macros
+    StringList           m_PriorityHeaders;       //!< All priority headers
+    StringList           m_SystemPriorityHeaders; //!< Only system priority headers, for reparse
+    StringList           m_BatchParseFiles;       //!< All other batch parse files
+    wxString             m_PredefinedMacros;      //!< Pre-defined macros
     /** used to measure batch parse time*/
     bool                 m_IsBatchParseDone;
     ParsingType          m_ParsingType;

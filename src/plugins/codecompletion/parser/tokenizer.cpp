@@ -355,11 +355,11 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool 
             switch (CurrentChar())
             {
                 case '#':
-					if (skipPreprocessor)
-						SkipToEOL(true);
-					else
-						done = true;
-					break;
+                    if (skipPreprocessor)
+                        SkipToEOL(true);
+                    else
+                        done = true;
+                    break;
                 case '{': SkipBlock('{'); break;
                 case '(': SkipBlock('('); break;
                 case '[': SkipBlock('['); break;

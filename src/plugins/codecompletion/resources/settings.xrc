@@ -288,14 +288,17 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
-												<label>Headers to parse initially (i.e. before project):</label>
+												<label>Headers to parse with high priority (i.e. initially, before project):</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
-											<object class="wxTextCtrl" name="txtUpFrontHeaders">
-												<value>&lt;cstddef&gt;, &lt;wx/defs.h&gt;, &lt;wx/dlimpexp.h&gt;, &lt;wx/toplevel.h&gt;, &lt;boost/config.hpp&gt;, &lt; boost/filesystem/config.hpp&gt;, &quot;pch.h&quot;, &quot;sdk.h&quot;, &quot;stdafx.h&quot;</value>
+											<object class="wxTextCtrl" name="txtPriorityHeaders">
+												<value>&lt;cstddef&gt;, &lt;w32api.h&gt;,
+												       &lt;wx/defs.h&gt;, &lt;wx/dlimpexp.h&gt;, &lt;wx/toplevel.h&gt;,
+												       &lt;boost/config.hpp&gt;, &lt; boost/filesystem/config.hpp&gt;,
+												       &quot;pch.h&quot;, &quot;sdk.h&quot;, &quot;stdafx.h&quot;</value>
 												<size>-1,50</size>
 												<style>wxTE_MULTILINE</style>
 											</object>

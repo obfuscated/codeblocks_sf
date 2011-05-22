@@ -10,18 +10,16 @@
 #include <wx/event.h>
 #include <wx/string.h>
 #include <wx/dynarray.h>
-#include "tokenizer.h"
-#include "token.h"
-#include <cbthreadpool.h>
-#include <filemanager.h>
 
 #include <queue>
 #include <vector>
 
-//extern int THREAD_START;
-//extern int THREAD_END;
-extern int NEW_TOKEN;
-extern int FILE_NEEDS_PARSING;
+#include <cbthreadpool.h>
+#include <filemanager.h>
+
+#include "tokenizer.h"
+#include "token.h"
+
 extern const wxString g_UnnamedSymbol;
 
 struct NameSpace
@@ -234,9 +232,6 @@ private:
     /** initialize the m_Buffer, load from local file or use a buffer in memory */
     bool InitTokenizer();
 
-    /** no usage atm */
-    void Log(const wxString& log);
-
     /** if parent is 0, then global namespace will be used, all tokens under parent scope are searched
       * @param name the search key string
       * @param parent parent token pointer, we only search under the parent token scope
@@ -272,6 +267,7 @@ private:
 
     void GetTemplateArgs();
     void ResolveTemplateArgs(Token* newToken);
+    wxArrayString GetTemplateArgArray(const wxString& templateArgs, bool remove_gt_lt, bool add_last);
     void ResolveTemplateFormalArgs(const wxString& templateArgs, wxArrayString& formals);
     void ResolveTemplateActualArgs(const wxString& templateArgs, wxArrayString& actuals);
     bool ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,

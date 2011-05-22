@@ -307,7 +307,7 @@ public:
 
 protected:
     /** When a Parser is created, we need a full parsing stage including:
-     * 1, parse the up-front header files firstly.
+     * 1, parse the priority header files firstly.
      * 2, parse all the other project files.
      */
     bool StartCompleteParsing(cbProject* project, Parser* parser);
@@ -592,8 +592,8 @@ private:
     void RemoveProjectFromParser(cbProject* project);
 
 private:
-    typedef std::pair<cbProject*, Parser*> ParserPair;
-    typedef std::list<ParserPair> ParserList;
+    typedef std::pair<cbProject*, Parser*> ProjectParserPair;
+    typedef std::list<ProjectParserPair> ParserList;
 
     ParserList                   m_ParserList;
     Parser                       m_TempParser;

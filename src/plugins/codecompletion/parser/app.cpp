@@ -20,7 +20,16 @@
 #include <wx/image.h>
 //*)
 
+#include <wx/arrstr.h>
+#include <wx/busyinfo.h>
+#include <wx/thread.h>
+
 #include "frame.h"
+
+// global variable to ease handling of include directories
+wxArrayString     s_includeDirs;
+wxArrayString     s_filesParsed;
+wxBusyInfo*       s_busyInfo;
 
 class TestApp : public wxApp
 {
@@ -74,4 +83,3 @@ void ParserTrace(const wxChar* format, ...)
 
     wxGetApp().GetFrame()->Log(log);
 }
-

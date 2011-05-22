@@ -26,10 +26,17 @@
 #include <wx/string.h>
 //*)
 
+#include <wx/arrstr.h>
+#include <wx/busyinfo.h>
 #include <wx/filename.h>
+#include <wx/tokenzr.h>
 
 //(*IdInit(Frame)
 //*)
+
+extern wxArrayString     s_includeDirs;
+extern wxArrayString     s_filesParsed;
+extern wxBusyInfo*       s_busyInfo;
 
 BEGIN_EVENT_TABLE(Frame, wxFrame)
     //(*EventTable(Frame)
@@ -44,24 +51,35 @@ END_EVENT_TABLE()
 Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
 {
     //(*Initialize(Frame)
+    wxBoxSizer* bszMain;
+    wxStaticText* lblLog;
     wxMenuItem* MenuItem5;
     wxMenuItem* MenuItem2;
     wxMenu* Menu3;
-    wxBoxSizer* sizer;
     wxMenuItem* MenuItem1;
     wxMenuItem* MenuItem4;
+    wxStaticText* lblInclude;
     wxMenu* Menu1;
     wxMenuItem* MenuItem3;
     wxMenuItem* MenuItem6;
+    wxBoxSizer* bszInclude;
     wxMenuBar* MenuBar1;
     wxMenu* Menu2;
 
     Create(0, wxID_ANY, _("Parser Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
-    sizer = new wxBoxSizer(wxHORIZONTAL);
-    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(900,550), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxTE_RICH2, wxDefaultValidator, _T("wxID_ANY"));
-    sizer->Add(m_LogCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    SetSizer(sizer);
+    bszMain = new wxBoxSizer(wxVERTICAL);
+    bszInclude = new wxBoxSizer(wxVERTICAL);
+    lblInclude = new wxStaticText(this, wxID_ANY, _("Add include directories to search for files here (one directory per line):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    bszInclude->Add(lblInclude, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_IncludeCtrl = new wxTextCtrl(this, wxID_ANY, _("C:\\Devel\\wxWidgets\\lib\\gcc_dll\\mswu\nC:\\Devel\\wxWidgets\\include\n"), wxDefaultPosition, wxSize(-1,60), wxTE_AUTO_SCROLL|wxTE_MULTILINE, wxDefaultValidator, _T("wxID_ANY"));
+    bszInclude->Add(m_IncludeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bszMain->Add(bszInclude, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    lblLog = new wxStaticText(this, wxID_ANY, _("The parser\'s log output:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    bszMain->Add(lblLog, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(640,480), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    bszMain->Add(m_LogCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(bszMain);
     MenuBar1 = new wxMenuBar();
     Menu2 = new wxMenu();
     MenuItem3 = new wxMenuItem(Menu2, wxID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
@@ -92,8 +110,8 @@ Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
     SetStatusBar(m_StatuBar);
     m_OpenFile = new wxFileDialog(this, _("Select Test Source File"), _("."), wxEmptyString, _("*.cpp;*.h"), wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     m_SaveFile = new wxFileDialog(this, _("Select file"), _("."), _("log.txt"), _("*.txt"), wxFD_DEFAULT_STYLE|wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    sizer->Fit(this);
-    sizer->SetSizeHints(this);
+    bszMain->Fit(this);
+    bszMain->SetSizeHints(this);
     Center();
 
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuOpenSelected);
@@ -122,12 +140,27 @@ void Frame::Start(const wxString& file)
     if (!wxFileName::FileExists(file))
         return;
 
+    s_busyInfo = new wxBusyInfo(wxT("Please wait, operating '")+file+wxT("'..."));
+
+    s_filesParsed.Clear();
+    wxString          includes_ctrl = m_IncludeCtrl->GetValue();
+    wxStringTokenizer tkz(includes_ctrl, wxT("\r\n"));
+    s_includeDirs.Clear();
+    while ( tkz.HasMoreTokens() )
+    {
+        wxString include = tkz.GetNextToken().Trim(true).Trim(false);
+        if (!include.IsEmpty())
+            s_includeDirs.Add(include);
+    }
     m_LastFile = file;
     m_LogCount = 0;
     m_Log.Clear();
     m_LogCtrl->Clear();
     m_ParserTest.Clear();
+
     DoStart();
+
+    if (s_busyInfo) { delete s_busyInfo; s_busyInfo = 0; }
 }
 
 void Frame::DoStart()
@@ -139,6 +172,7 @@ void Frame::DoStart()
     m_ParserTest.PrintTree();
     m_Log += _T("\r\n\r\n--------------L-i-s-t--L-o-g--------------\r\n\r\n");
     m_ParserTest.PrintList();
+
     ShowLog();
 }
 
@@ -172,9 +206,11 @@ void Frame::OnMenuAboutSelected(wxCommandEvent& event)
 
 void Frame::OnMenuSaveSelected(wxCommandEvent& event)
 {
-    m_SaveFile->ShowModal();
-    wxFile file(m_SaveFile->GetPath(), wxFile::write);
-    file.Write(m_Log);
+    if (m_SaveFile->ShowModal() == wxID_OK)
+    {
+        wxFile file(m_SaveFile->GetPath(), wxFile::write);
+        file.Write(m_Log);
+    }
 }
 
 void Frame::OnMenuOpenSelected(wxCommandEvent& event)

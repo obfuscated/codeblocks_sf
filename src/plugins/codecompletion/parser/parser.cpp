@@ -103,15 +103,15 @@ public:
             m_Parser.m_PredefinedMacros.Clear();
         }
 
-        // Add up-front headers
-        if (!m_Parser.m_UpFrontHeaders.empty())
+        // Add priority headers
+        if (!m_Parser.m_PriorityHeaders.empty())
         {
-            m_Parser.m_IsUpFront = true;
-            StringList::iterator it = m_Parser.m_UpFrontHeaders.begin();
-            for (; it != m_Parser.m_UpFrontHeaders.end(); ++it)
+            m_Parser.m_IsPriority = true;
+            StringList::iterator it = m_Parser.m_PriorityHeaders.begin();
+            for (; it != m_Parser.m_PriorityHeaders.end(); ++it)
                 m_Parser.Parse(*it);
-            m_Parser.m_IsUpFront = false;
-            m_Parser.m_UpFrontHeaders.clear();
+            m_Parser.m_IsPriority = false;
+            m_Parser.m_PriorityHeaders.clear();
         }
 
         // Add all other files
@@ -168,7 +168,7 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_Project(project),
     m_UsingCache(false),
     m_Pool(this, wxNewId(), 1), // in the meanwhile it'll have to be forced to 1
-    m_IsUpFront(false),
+    m_IsPriority(false),
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
     m_IsParsing(false),
@@ -226,8 +226,8 @@ void Parser::ConnectEvents()
 void Parser::DisconnectEvents()
 {
     Disconnect(-1, BATCH_TIMER_ID, wxEVT_TIMER);
-    Disconnect(-1, TIMER_ID, wxEVT_TIMER);
-    Disconnect(-1, -1, cbEVT_THREADTASK_ALLDONE);
+    Disconnect(-1, TIMER_ID,       wxEVT_TIMER);
+    Disconnect(-1, -1,             cbEVT_THREADTASK_ALLDONE);
 }
 
 void Parser::ReadOptions()
@@ -314,13 +314,15 @@ unsigned int Parser::GetFilesCount()
 bool Parser::Done()
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
-    bool done =    m_UpFrontHeaders.empty()
-                && m_SystemUpFrontHeaders.empty()
+
+    bool done =    m_PriorityHeaders.empty()
+                && m_SystemPriorityHeaders.empty()
                 && m_BatchParseFiles.empty()
                 && m_PredefinedMacros.IsEmpty()
                 && !m_NeedMarkFileAsLocal
                 && m_PoolTask.empty()
                 && m_Pool.Done();
+
     return done;
 }
 
@@ -424,22 +426,23 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     opts.fileOfBuffer         = filename;
     opts.parentOfBuffer       = parent;
     opts.initLineOfBuffer     = initLine;
+
     return Parse(buffer, isLocal, opts);
 }
 
-void Parser::AddUpFrontHeaders(const wxString& filename, bool systemHeaderFile, bool delay)
+void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay)
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
 
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
-    // Do up-front parse in sub thread
-    m_UpFrontHeaders.push_back(filename);
+    // Do priority parse in sub thread
+    m_PriorityHeaders.push_back(filename);
 
-    // Save system up-front headers, when all task is over, we need reparse it!
+    // Save system priority headers, when all task is over, we need reparse it!
     if (systemHeaderFile)
-        m_SystemUpFrontHeaders.push_back(filename);
+        m_SystemPriorityHeaders.push_back(filename);
 
     m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
 }
@@ -515,10 +518,11 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 #if CC_PARSER_PROFILE_TEST
         doParseNow = true;
 #endif
-        //if we are parsing a memory buffer or Parser is under Profile (CC_PARSER_PROFILE_TEST is defined as 1),
-        // then just call Parse() directly and thread pool is NOT used.
-        // other wise, we are parsing a local file, the thread pool is used, the Parserthread generated was pushed
-        // to the memory pool.
+        //if we are parsing a memory buffer or Parser is under Profile
+        // CC_PARSER_PROFILE_TEST is defined as 1), then just call Parse()
+        // directly and thread pool is NOT used.
+        // Otherwise, we are parsing a local file, so the thread pool is used.
+        // The ParserThread generated was pushed to the memory pool.
 
         if (doParseNow)
         {
@@ -530,7 +534,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 
         TRACE(_T("Parse() : Parsing %s"), bufferOrFilename.wx_str());
 
-        if (!m_IsUpFront)
+        if (!m_IsPriority)
         {
             TRACE(_T("Parse() : Parallel Parsing %s"), bufferOrFilename.wx_str());
 
@@ -546,18 +550,18 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             else
                 m_PoolTask.back().push_back(thread);
         }
-        else if (m_IsUpFront)
+        else if (m_IsPriority)
         {
-            if (isLocal) // Parsing up-front files
+            if (isLocal) // Parsing priority files
             {
-                TRACE(_T("Parse() : Parsing up-front header, %s"), bufferOrFilename.wx_str());
+                TRACE(_T("Parse() : Parsing priority header, %s"), bufferOrFilename.wx_str());
                 result = thread->Parse();
                 delete thread;
                 break;
             }
-            else // Add task when parsing up-front files
+            else // Add task when parsing priority files
             {
-                TRACE(_T("Parse() : Add task for up-front header, %s"), bufferOrFilename.wx_str());
+                TRACE(_T("Parse() : Add task for priority header, %s"), bufferOrFilename.wx_str());
                 m_PoolTask.push(PTVector());
                 m_PoolTask.back().push_back(thread);
             }
@@ -584,36 +588,39 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
                         false,
                         opts,
                         m_TempTokensTree);
+
     return thread.Parse();
 }
 
 bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
-	ParserThreadOptions opts;
-	opts.useBuffer          = true;
-	opts.wantPreprocessor   = m_Options.wantPreprocessor;
-	opts.parseComplexMacros = false;
+    ParserThreadOptions opts;
+    opts.useBuffer          = true;
+    opts.wantPreprocessor   = m_Options.wantPreprocessor;
+    opts.parseComplexMacros = false;
 
-	ParserThread thread(this,
-						wxEmptyString,
-						true,
-						opts,
-						m_TempTokensTree);
-	return thread.ParseBufferForNamespaces(buffer, result);
+    ParserThread thread(this,
+                        wxEmptyString,
+                        true,
+                        opts,
+                        m_TempTokensTree);
+
+    return thread.ParseBufferForNamespaces(buffer, result);
 }
 
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
     ParserThreadOptions opts;
     opts.useBuffer          = true;
-	opts.wantPreprocessor   = m_Options.wantPreprocessor;
-	opts.parseComplexMacros = false;
+    opts.wantPreprocessor   = m_Options.wantPreprocessor;
+    opts.parseComplexMacros = false;
 
     ParserThread thread(this,
                         wxEmptyString,
                         false,
                         opts,
                         m_TempTokensTree);
+
     return thread.ParseBufferForUsingNamespace(buffer, result);
 }
 
@@ -834,6 +841,7 @@ void Parser::TerminateAllThreads()
 {
     m_Pool.AbortAllTasks();
     wxMilliSleep(10);
+
     while (!m_Pool.Done())
         wxMilliSleep(10);
 
@@ -855,6 +863,11 @@ void Parser::AddIncludeDir(const wxString& dir)
     wxString base = dir;
     if (base.Last() == wxFILE_SEP_PATH)
         base.RemoveLast();
+    if (!wxDir::Exists(base))
+    {
+        TRACE(_T("AddIncludeDir() : Directory %s does not exist?!"), base.wx_str());
+        return;
+    }
 
     if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
     {
@@ -917,28 +930,28 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     // Do next task
     if (   !m_PoolTask.empty()
         || !m_BatchParseFiles.empty()
-        || !m_UpFrontHeaders.empty()
+        || !m_PriorityHeaders.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
         m_BatchTimer.Start(1, wxTIMER_ONE_SHOT);
     }
 
 #if !CC_PARSER_PROFILE_TEST
-    // Reparse system up-front headers
-    else if (!m_SystemUpFrontHeaders.empty())
+    // Reparse system priority headers
+    else if (!m_SystemPriorityHeaders.empty())
     {
         // Part.1 Set m_IsParsing to false
         m_IsParsing = false;
 
-        // Part.2 Remove all up-front headers in token tree
-        for (StringList::iterator it = m_SystemUpFrontHeaders.begin(); it != m_SystemUpFrontHeaders.end(); ++it)
+        // Part.2 Remove all priority headers in token tree
+        for (StringList::iterator it = m_SystemPriorityHeaders.begin(); it != m_SystemPriorityHeaders.end(); ++it)
             RemoveFile(*it);
 
-        // Part.3 Reparse system up-front headers
-        AddBatchParse(m_SystemUpFrontHeaders, false);
+        // Part.3 Reparse system priority headers
+        AddBatchParse(m_SystemPriorityHeaders, false);
 
         // Part.4 Clear
-        m_SystemUpFrontHeaders.clear();
+        m_SystemPriorityHeaders.clear();
     }
     else if (   (m_ParsingType == ptCreateParser || m_ParsingType == ptAddFileToParser)
              && m_NeedMarkFileAsLocal
@@ -950,15 +963,16 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     }
 #endif
 
-    // Finish all task, then we need post a Parse_END event
+    // Finish all task, then we need post a PARSER_END event
     else
     {
         if (!m_Project)
             m_NeedMarkFileAsLocal = false;
 
-        m_NeedsReparse = false;
-        m_IsParsing = false;
+        m_NeedsReparse     = false;
+        m_IsParsing        = false;
         m_IsBatchParseDone = true;
+
         EndStopWatch();
 
         wxString parseEndLog;
@@ -1067,7 +1081,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
         StartStopWatch();
 
     // Add parse by child thread
-    if (!m_UpFrontHeaders.empty() || !m_BatchParseFiles.empty() || !m_PredefinedMacros.IsEmpty())
+    if (!m_PriorityHeaders.empty() || !m_BatchParseFiles.empty() || !m_PredefinedMacros.IsEmpty())
     {
         do
         {

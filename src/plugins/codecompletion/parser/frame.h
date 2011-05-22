@@ -11,6 +11,7 @@
 
 //(*Headers(Frame)
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/filedlg.h>
@@ -52,6 +53,7 @@ private:
     wxFileDialog* m_SaveFile;
     wxStatusBar* m_StatuBar;
     wxTextCtrl* m_LogCtrl;
+    wxTextCtrl* m_IncludeCtrl;
     wxFileDialog* m_OpenFile;
     //*)
 
