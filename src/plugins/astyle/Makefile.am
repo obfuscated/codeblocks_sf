@@ -20,19 +20,35 @@ libastyle_la_SOURCES = asstreamiterator.cpp \
                        formattersettings.cpp \
                        astyle/ASBeautifier.cpp \
                        astyle/ASFormatter.cpp \
+                       astyle/ASLocalizer.cpp \
                        astyle/ASEnhancer.cpp \
                        astyle/ASResource.cpp
 
 noinst_HEADERS = asstreamiterator.h \
                  astyleconfigdlg.h \
                  astyleplugin.h \
-                 formattersettings.h \
+                 astylepredefinedstyles.h \
                  dlgformattersettings.h \
-                 astyle/astyle.h \
-                 astylepredefinedstyles.h
+                 formattersettings.h \
+                 astyle/astyle.h
 
 EXTRA_DIST = astyle/astyle.html \
              astyle/astyle_main.cpp \
-             astyle/notes.html \
+             astyle/astyle_main.h \
+             astyle/index.html \
              astyle/install.html \
-             astyle/license.html
+             astyle/license.html \
+             astyle/links.html \
+             astyle/news.html \
+             astyle/notes.html \
+             astyle/redirect.html \
+             astyle/scripts.html \
+             astyle/styles.css \
+             astyle/subversion.css \
+             astyle/styles.css \
+             astyle/subversion.css \
+             astyle/styles.css \
+             astyle/subversion.css \
+             astyle/SurveyGeneralInfo.html \
+             astyle/SurveyOptions.html \
+             astyle/vsinstall.html

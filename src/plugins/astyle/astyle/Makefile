@@ -6,6 +6,7 @@ SRC = astyle_main.cpp \
       ASBeautifier.cpp \
       ASFormatter.cpp \
       ASEnhancer.cpp \
+	  ASLocalizer.cpp \
       ASResource.cpp
 
 # source directories
@@ -15,35 +16,52 @@ vpath %.h   ../src
 # NOTE for java compiles the environment variable $JAVA_HOME must be set
 # example: export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.00
 ifndef JAVA_HOME
-    JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.16
+    JAVA_HOME = /usr/lib/jvm/default-java
 endif
 
 # set prefix if not defined on the command line
 ifndef prefix
     prefix=/usr
 endif
-SYSCONF_PATH=$(prefix)/share/astyle
+SYSCONF_PATH=$(prefix)/share/doc/astyle
+# the path was changed in release 2.01
+# SYSCONF_PATH_OLD may be removed at the appropriate time
+SYSCONF_PATH_OLD=$(prefix)/share/astyle
 
 # define macros
 bindir = bin
 objdir = obj
 ipath=$(prefix)/bin
 CBASEFLAGS = -W -Wall -fno-rtti -fno-exceptions
-JAVAINCS   = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+JAVAINCS   = -I$(JAVA_HOME)/include
 CXX = g++
 INSTALL=install -o $(USER) -g $(USER)
 
 ##################################################
 
 # define compile options for each build
-CFLAGS   = -DNDEBUG -O3 $(CBASEFLAGS)
-CFLAGSd  = -g $(CBASEFLAGS)
-CFLAGSs  = -DNDEBUG -DASTYLE_LIB -O3 -fpic $(CBASEFLAGS)
-CFLAGSsd = -DASTYLE_LIB -g -fpic $(CBASEFLAGS)
-CFLAGSa  = -DNDEBUG -DASTYLE_LIB -O3 $(CBASEFLAGS)
-CFLAGSad = -DASTYLE_LIB -g $(CBASEFLAGS)
-CFLAGSsj  = -DNDEBUG -DASTYLE_JNI -O3 -fpic $(CBASEFLAGS) $(JAVAINCS)
-CFLAGSsjd = -DASTYLE_JNI -g -fpic $(CBASEFLAGS) $(JAVAINCS)
+ifdef CFLAGS
+    CFLAGSr   = -DNDEBUG $(CBASEFLAGS) $(CFLAGS)
+    CFLAGSd   = -g $(CBASEFLAGS) $(CFLAGS)
+else 
+    CFLAGSr   = -DNDEBUG -O3 $(CBASEFLAGS)
+    CFLAGSd   = -g $(CBASEFLAGS)
+endif
+CFLAGSs   = -DASTYLE_LIB -fpic $(CFLAGSr)
+CFLAGSsd  = -DASTYLE_LIB -fpic $(CFLAGSd)
+CFLAGSa   = -DASTYLE_LIB $(CFLAGSr)
+CFLAGSad  = -DASTYLE_LIB $(CFLAGSd)
+CFLAGSsj  = -DASTYLE_JNI -fpic $(CFLAGSr) $(JAVAINCS)
+CFLAGSsjd = -DASTYLE_JNI -fpic $(CFLAGSd) $(JAVAINCS)
+
+# define link options
+ifdef LDFLAGS
+    LDFLAGSr   = $(LDFLAGS)
+    LDFLAGSd   = $(LDFLAGS)
+else
+    LDFLAGSr   = -s
+    LDFLAGSd   =
+endif
 
 # object files are built from the source list $(SRC)
 # a suffix is added for each build
@@ -61,7 +79,7 @@ OBJsjd = $(patsubst %.cpp,$(objdir)/%_sjd.o,$(SRC))
 # OBJ
 $(objdir)/%.o:  %.cpp  astyle.h  astyle_main.h
 	@ mkdir -p $(objdir)
-	$(CXX) $(CFLAGS) -c -o $@ $<
+	$(CXX) $(CFLAGSr) -c -o $@ $<
 
 # OBJd
 $(objdir)/%_d.o:  %.cpp  astyle.h  astyle_main.h
@@ -104,25 +122,25 @@ $(objdir)/%_sjd.o:  %.cpp  astyle.h
 release:  astyle
 astyle:  $(OBJ)
 	@ mkdir -p $(bindir)
-	$(CXX) -s -o $(bindir)/$@ $^
+	$(CXX) $(LDFLAGSr) -o $(bindir)/$@ $^
 	@ echo
 
 debug:  astyled
 astyled:  $(OBJd)
 	@ mkdir -p $(bindir)
-	$(CXX) -o $(bindir)/$@ $^
+	$(CXX) $(LDFLAGSd) -o $(bindir)/$@ $^
 	@ echo
 
 shared:  libastyle.so
 libastyle.so:  $(OBJs)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared -s -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/$@ $^
 	@ echo
 
 shareddebug:  libastyled.so
 libastyled.so:  $(OBJsd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/$@ $^
 	@ echo
 
 static:  libastyle.a
@@ -140,13 +158,13 @@ libastyled.a:  $(OBJad)
 java:  libastylej.so
 libastylej.so:  $(OBJsj)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared -s -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/$@ $^
 	@ echo
 
 javadebug:  libastylejd.so
 libastylejd.so:  $(OBJsjd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/$@ $^
 	@ echo
 
 all:  release debug shared shareddebug static staticdebug
@@ -158,17 +176,24 @@ clean:
 
 cleanobj:
 	rm -f $(objdir)/*.o
-	
+
 install:
 	$(INSTALL) -m 755 -d $(ipath)
 	@$(INSTALL) -m 755 $(bindir)/astyle  $(ipath)
 
 	$(INSTALL) -m 755 -d $(SYSCONF_PATH)
+	@mkdir -p $(SYSCONF_PATH)/html;
 	@for files in ../../doc/*.html  ../../doc/*.css; \
 	do \
-		$(INSTALL)  -m 644  $$files  $(SYSCONF_PATH); \
+		$(INSTALL)  -m 644  $$files  $(SYSCONF_PATH)/html; \
 	done
+	@if [ -d $(SYSCONF_PATH_OLD) ];  then \
+		rm -rf $(SYSCONF_PATH_OLD); \
+	fi
 
 uninstall:
 	rm -f $(ipath)/astyle
 	rm -rf $(SYSCONF_PATH)
+	@if [ -d $(SYSCONF_PATH_OLD) ];  then \
+		rm -rf $(SYSCONF_PATH_OLD); \
+	fi

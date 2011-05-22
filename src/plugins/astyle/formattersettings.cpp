@@ -116,19 +116,19 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
       if (pointerAlign == _T("Type"))
       {
-        formatter.setPointerAlignment(astyle::ALIGN_TYPE);
+        formatter.setPointerAlignment(astyle::PTR_ALIGN_TYPE);
       }
       else if (pointerAlign == _T("Middle"))
       {
-        formatter.setPointerAlignment(astyle::ALIGN_MIDDLE);
+        formatter.setPointerAlignment(astyle::PTR_ALIGN_MIDDLE);
       }
       else if (pointerAlign == _T("Name"))
       {
-        formatter.setPointerAlignment(astyle::ALIGN_NAME);
+        formatter.setPointerAlignment(astyle::PTR_ALIGN_NAME);
       }
       else
       {
-        formatter.setPointerAlignment(astyle::ALIGN_NONE);
+        formatter.setPointerAlignment(astyle::PTR_ALIGN_NONE);
       }
 
       formatter.setBreakClosingHeaderBracketsMode(cfg->ReadBool(_T("/break_closing")));
