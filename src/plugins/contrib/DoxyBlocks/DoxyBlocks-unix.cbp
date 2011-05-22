@@ -63,7 +63,6 @@
 		<Unit filename="Expressions.h" />
 		<Unit filename="ExtractDocs.cpp" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="pch.h" />
 		<Unit filename="update" />
 		<Unit filename="update.bat" />
 		<Unit filename="version.h" />
@@ -73,13 +72,13 @@
 			<debugger />
 			<AutoVersioning>
 				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
-				<Settings autoincrement="1" date_declarations="1" do_auto_increment="1" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
-				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Settings autoincrement="1" date_declarations="1" update_manifest="1" do_auto_increment="1" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangeLog.txt" />
 				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix="" />
 			</AutoVersioning>
 			<DoxyBlocks>
 				<comment_style block="3" line="1" />
-				<doxyfile_project project_number="1.6.614" use_auto_version="1" />
+				<doxyfile_project project_number="1.7.655" use_auto_version="1" />
 				<doxyfile_build extract_private="1" extract_static="1" />
 				<doxyfile_warnings warn_if_undocumented="1" />
 				<doxyfile_output html_help="1" />
