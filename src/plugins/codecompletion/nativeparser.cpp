@@ -656,9 +656,12 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
                 parser->AddIncludeDir(path);
             }
 
-            if (compiler->GetID() == _T("gcc"))
+            if (compiler->GetID().Contains(_T("gcc")))
             {
-                const wxArrayString& gccDirs = GetGCCCompilerDirs(compiler->GetPrograms().CPP);
+                wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
+                fn.SetPath(compiler->GetMasterPath());
+                fn.AppendDir(_T("bin"));
+                const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
                 TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
                 for (size_t i = 0; i < gccDirs.GetCount(); ++i)
                 {
@@ -783,9 +786,12 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
         // to find it's internal include paths
         // but do only once per C::B session, thus cache for later calls
         wxString CompilerID = (Compilers[idxCompiler])->GetID();
-        if (CompilerID == _T("gcc"))
+        if (CompilerID.Contains(_T("gcc")))
         {
-            const wxArrayString& gccDirs = GetGCCCompilerDirs(((Compilers[idxCompiler])->GetPrograms()).CPP);
+            wxFileName fn(wxEmptyString, ((Compilers[idxCompiler])->GetPrograms()).CPP);
+            fn.SetPath((Compilers[idxCompiler])->GetMasterPath());
+            fn.AppendDir(_T("bin"));
+            const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
             TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
             for (size_t i = 0; i < gccDirs.GetCount(); ++i)
             {
@@ -818,7 +824,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         compilerId = CompilerFactory::GetDefaultCompilerID(); // for single file parser (non project)
 
     // gcc
-    if (compilerId == _T("gcc"))
+    if (compilerId.Contains(_T("gcc")))
     {
         static wxString gccDefs;
         static bool firstExecute = true;
@@ -931,7 +937,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, Parser* parser)
 
     wxString compilerId = project->GetCompilerID();
     wxString param;
-    if (compilerId == _T("gcc"))
+    if (compilerId.Contains(_T("gcc")))
         param = _T("-D");
     else if (compilerId.StartsWith(_T("msvc")))
         param = _T("/D");
@@ -973,12 +979,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
 {
     // keep the gcc compiler path's once if found accross C::B session
     // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
-    static wxArrayString gcc_compiler_dirs;
-    static bool firstExecute = true;
-    if (!firstExecute)
-        return gcc_compiler_dirs;
-    else
-        firstExecute = false;
+    static std::map<wxString, wxArrayString> dirs;
+    if (!dirs[cpp_compiler].IsEmpty())
+        return dirs[cpp_compiler];
 
     // for starters , only do this for gnu compiler
     //Manager::Get()->GetLogManager()->DebugLog(_T("CompilerID ") + CompilerID);
@@ -1003,7 +1006,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
     // wxExecute can be a long action and C::B might have been shutdown in the meantime...
     if ( Manager::IsAppShuttingDown() )
-        return gcc_compiler_dirs;
+        return dirs[cpp_compiler];
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
@@ -1029,10 +1032,10 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         if (!Manager::IsAppShuttingDown())
             Manager::Get()->GetLogManager()->DebugLog(_T("Caching GCC dir: ") + fname.GetPath());
 
-        gcc_compiler_dirs.Add(fname.GetPath());
+        dirs[cpp_compiler].Add(fname.GetPath());
     }
 
-    return gcc_compiler_dirs;
+    return dirs[cpp_compiler];
 }
 
 wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
