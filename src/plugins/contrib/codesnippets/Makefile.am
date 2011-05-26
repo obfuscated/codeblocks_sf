@@ -117,7 +117,7 @@ noinst_HEADERS =  	codesnippets.h \
 		snippetpropertyform.h \
 		snippetsconfig.h \
 		snippetsimages.h \
-        FileImport.h \
+		FileImport.h \
 		version.h \
 		wx_pch.h
 

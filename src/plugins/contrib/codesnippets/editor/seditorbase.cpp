@@ -20,22 +20,23 @@
     #include <wx/filename.h>
     #include <wx/notebook.h>
     #include <wx/menu.h>
+    #include <wx/textdlg.h> // wxGetTextFromUser
+    #include <wx/wfstream.h>
+
     #include "manager.h"
     #include "seditorbase.h"
     #include "scbeditor.h"
     #include "seditormanager.h"
     #include "pluginmanager.h"
     #include "cbproject.h" // FileTreeData
-    #include <wx/wfstream.h>
 #endif
 
-    #include <wx/xrc/xmlres.h>
-    #include "scbeditor.h"
-    #include "seditorbase.h"
-    #include "seditormanager.h"
+#include <wx/xrc/xmlres.h>
 
+#include "scbeditor.h"
+#include "seditorbase.h"
+#include "seditormanager.h"
 #include "cbstyledtextctrl.h"
-
 #include "cbauibook.h"
 #include "snippetsconfig.h"
 // ----------------------------------------------------------------------------

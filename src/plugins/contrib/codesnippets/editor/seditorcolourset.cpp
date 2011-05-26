@@ -22,7 +22,9 @@
     #include "logmanager.h"
     #include "filemanager.h"
     #include "manager.h"
+
     #include <wx/dir.h>
+    #include <wx/settings.h> // wxSystemSettings
 #endif
 #include "cbstyledtextctrl.h"
 

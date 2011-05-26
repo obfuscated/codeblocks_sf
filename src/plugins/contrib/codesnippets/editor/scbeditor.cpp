@@ -17,8 +17,12 @@
 
 #ifndef CB_PRECOMP
     #include <wx/filename.h>
+    #include <wx/filedlg.h>
+    #include <wx/textdlg.h> // wxGetTextFromUser
+    #include <wx/menu.h>
     #include <wx/notebook.h>
     #include <wx/wfstream.h>
+    #include <wx/sizer.h>
 
     #include "scbeditor.h" // class's header file
     #include "globals.h"
