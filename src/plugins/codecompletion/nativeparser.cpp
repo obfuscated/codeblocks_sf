@@ -826,15 +826,23 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
     // gcc
     if (compilerId.Contains(_T("gcc")))
     {
-        static wxString gccDefs;
-        static bool firstExecute = true;
-        if (firstExecute)
+        Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+        if (!compiler)
+            return false;
+
+        wxFileName fn(wxEmptyString, _T("cpp"));
+        fn.SetPath(compiler->GetMasterPath());
+        fn.AppendDir(_T("bin"));
+        Manager::Get()->GetLogManager()->DebugLog(fn.GetFullPath());
+
+        static std::map<wxString, wxString> defsMap;
+        const wxString cpp_compiler(fn.GetFullPath());
+        if (defsMap[cpp_compiler].IsEmpty())
         {
-            firstExecute = false;
 #ifdef __WXMSW__
-            wxString cmd(_T("cpp -dM -E nul"));
+            const wxString args(_T(" -dM -E nul"));
 #else
-            wxString cmd(_T("cpp -dM -E /dev/null"));
+            const wxString args(_T(" -dM -E /dev/null"));
 #endif
 
             // wxExecute can be a long action and C::B might have been shutdown in the meantime...
@@ -842,9 +850,10 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
                 return false;
 
             wxArrayString output;
-            if (wxExecute(cmd, output, wxEXEC_SYNC) == -1)
+            if (wxExecute(cpp_compiler + args, output, wxEXEC_SYNC) == -1)
                 return false;
 
+            wxString& gccDefs = defsMap[cpp_compiler];
             for (size_t i = 0; i < output.Count(); ++i)
                 gccDefs += output[i] + _T("\n");
         }
@@ -877,9 +886,9 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         }
 
         if (useCxx0x)
-            defs = gccDefs + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1 \n");
+            defs = defsMap[cpp_compiler] + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1 \n");
         else
-            defs = gccDefs;
+            defs = defsMap[cpp_compiler];
     }
 
     // vc
