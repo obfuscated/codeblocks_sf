@@ -611,7 +611,10 @@ void Tokenizer::ReadParentheses(wxString& str)
                 if (usedLen + writeLen > maxBufferLen)
                 {
                     if (writeLen > maxBufferLen)
+                    {
+                        TRACE(_T("ReadParentheses, Catch Exception 1: %d"), writeLen);
                         return;
+                    }
 
                     if (p != realBuffer)
                     {
@@ -745,6 +748,8 @@ void Tokenizer::ReadParentheses(wxString& str)
     if (p > realBuffer)
         str.Append(realBuffer, p - realBuffer);
     TRACE(_T("ReadParentheses(): %s, line=%d"), str.wx_str(), m_LineNumber);
+    if (str.Len() > 512)
+        TRACE(_T("ReadParentheses: Catch Exception 2?: %d"), str.Len());
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)
@@ -1701,6 +1706,17 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
 {
     if (!text || !pattern || pattern[0] == _T('\0') || text[0] == _T('\0'))
         return -1;
+
+    if (patternLen > 1024)
+    {
+        if (patternLen < 5012)
+            TRACE(_T("KMP_Find() : %s - %s"), text, pattern);
+        else
+        {
+            TRACE(_T("KMP_Find: The plan buffer is too big, %d"), patternLen);
+            return -2;
+        }
+    }
 
     int next[patternLen];
     KMP_GetNextVal(pattern, next);
