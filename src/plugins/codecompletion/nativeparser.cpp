@@ -836,8 +836,13 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
 #else
             wxString cmd(_T("cpp -dM -E /dev/null"));
 #endif
+
+            // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+            if (Manager::IsAppShuttingDown())
+                return false;
+
             wxArrayString output;
-            if (wxExecute(cmd, output, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
+            if (wxExecute(cmd, output, wxEXEC_SYNC) == -1)
                 return false;
 
             for (size_t i = 0; i < output.Count(); ++i)
@@ -891,8 +896,12 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
             wxString cmd = compiler->GetMasterPath() + _T("\\bin\\") + compiler->GetPrograms().C;
             Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
 
+            // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+            if (Manager::IsAppShuttingDown())
+                return false;
+
             wxArrayString output, error;
-            if (wxExecute(cmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 || error.IsEmpty())
+            if (wxExecute(cmd, output, error, wxEXEC_SYNC) == -1 || error.IsEmpty())
                 return false;
 
             wxString str = error[0];
@@ -1001,12 +1010,13 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     wxString Command = cpp_compiler + _T(" -v -E -x c++ /dev/null");
 #endif
 
+    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+    if (Manager::IsAppShuttingDown())
+        return dirs[cpp_compiler];
+
     // action time  (everything shows up on the error stream
     wxArrayString Output, Errors;
-    wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
-    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-    if ( Manager::IsAppShuttingDown() )
-        return dirs[cpp_compiler];
+    wxExecute(Command, Output, Errors, wxEXEC_SYNC);
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
@@ -1059,6 +1069,14 @@ Parser* NativeParser::CreateParser(cbProject* project)
     if (!m_ParserPerWorkspace || m_ParsedProjects.empty())
     {
         Parser* parser = new Parser(this, project);
+        if (!StartCompleteParsing(project, parser))
+        {
+            if (!Manager::IsAppShuttingDown())
+                Manager::Get()->GetLogManager()->DebugLog(_T("Complete parsing failed!"));
+            delete parser;
+            return nullptr;
+        }
+
         if (m_Parser == &m_TempParser)
             SetParser(parser);
 
@@ -1066,7 +1084,6 @@ Parser* NativeParser::CreateParser(cbProject* project)
             m_ParsedProjects.insert(project);
 
         m_ParserList.push_back(std::make_pair(project, parser));
-        StartCompleteParsing(project, parser);
 
         wxString log(F(_("Create new parser for project '%s'"), project
                        ? project->GetTitle().wx_str()
@@ -1175,9 +1192,23 @@ bool NativeParser::StartCompleteParsing(cbProject* project, Parser* parser)
     if (!parser)
         return false;
 
-    AddCompilerDirs(project, parser);
-    AddCompilerPredefinedMacros(project, parser);
-    AddProjectDefinedMacros(project, parser);
+    if (!AddCompilerDirs(project, parser))
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs failed!"));
+        return false;
+    }
+
+    if (!AddCompilerPredefinedMacros(project, parser))
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerPredefinedMacros failed!"));
+        return false;
+    }
+
+    if (!AddProjectDefinedMacros(project, parser))
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddProjectDefinedMacros failed!"));
+        return false;
+    }
 
     // add per-project dirs
     if (project)
