@@ -25,9 +25,11 @@
 #include "parserthread.h"
 #include "parser.h"
 
-// #define CC_PARSERTHREAD_DEBUG_OUTPUT 0
+#define CC_PARSERTHREAD_DEBUG_OUTPUT 0
+
 #if (CC_GLOBAL_DEBUG_OUTPUT)
-  #define CC_PARSERTHREAD_DEBUG_OUTPUT 1
+    #undef CC_PARSERTHREAD_DEBUG_OUTPUT
+    #define CC_PARSERTHREAD_DEBUG_OUTPUT 1
 #endif
 
 #ifdef CC_PARSER_TEST

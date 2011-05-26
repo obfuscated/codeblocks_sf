@@ -39,9 +39,11 @@
     #include "editorbase.h"
 #endif
 
-// #define CC_PARSER_DEBUG_OUTPUT 0
+#define CC_PARSER_DEBUG_OUTPUT 0
+
 #if (CC_GLOBAL_DEBUG_OUTPUT)
-  #define CC_PARSER_DEBUG_OUTPUT 1
+    #undef CC_PARSER_DEBUG_OUTPUT
+    #define CC_PARSER_DEBUG_OUTPUT 1
 #endif
 
 #if CC_PARSER_DEBUG_OUTPUT == 1
