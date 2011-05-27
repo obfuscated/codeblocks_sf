@@ -814,8 +814,11 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
 
 bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parser)
 {
-    if (!parser || !parser->Options().wantPreprocessor)
+    if (!parser)
         return false;
+
+    if (!parser->Options().wantPreprocessor)
+        return true;
 
     wxString defs;
     wxString compilerId;
@@ -853,7 +856,10 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
 
             wxArrayString output;
             if (wxExecute(cpp_compiler + args, output, wxEXEC_SYNC) == -1)
+            {
+                TRACE("AddCompilerPredefinedMacros::wxExecute failed!")
                 return false;
+            }
 
             wxString& gccDefs = defsMap[cpp_compiler];
             for (size_t i = 0; i < output.Count(); ++i)
@@ -912,8 +918,16 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
                 return false;
 
             wxArrayString output, error;
-            if (wxExecute(cmd, output, error, wxEXEC_SYNC) == -1 || error.IsEmpty())
+            if (wxExecute(cmd, output, error, wxEXEC_SYNC) == -1)
+            {
+                TRACE("AddCompilerPredefinedMacros::wxExecute failed!")
                 return false;
+            }
+            if (error.IsEmpty())
+            {
+                TRACE("AddCompilerPredefinedMacros:: Can't get pre-defined macros for MSVC.")
+                return false;
+            }
 
             wxString str = error[0];
             wxString tmp(_T("Microsoft (R) "));
@@ -952,8 +966,11 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
 
 bool NativeParser::AddProjectDefinedMacros(cbProject* project, Parser* parser)
 {
-    if (!project || !parser)
+    if (!parser)
         return false;
+
+    if (!project)
+        return true;
 
     wxString compilerId = project->GetCompilerID();
     wxString param;
@@ -963,7 +980,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, Parser* parser)
         param = _T("/D");
 
     if (param.IsEmpty())
-        return false;
+        return true;
 
     wxString defs;
     wxArrayString opts = project->GetCompilerOptions();
@@ -1027,7 +1044,11 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
 
     // action time  (everything shows up on the error stream
     wxArrayString Output, Errors;
-    wxExecute(Command, Output, Errors, wxEXEC_SYNC);
+    if (wxExecute(Command, Output, Errors, wxEXEC_SYNC) == -1)
+    {
+        TRACE("GetGCCCompilerDirs::wxExecute failed!")
+        return dirs[cpp_compiler];
+    }
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
