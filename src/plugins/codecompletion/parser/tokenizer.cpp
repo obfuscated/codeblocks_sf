@@ -20,7 +20,7 @@
 #include "manager.h"
 #include "tokenizer.h"
 
-#define CC_TOKENIZER_DEBUG_OUTPUT 1
+#define CC_TOKENIZER_DEBUG_OUTPUT 0
 
 #if (CC_GLOBAL_DEBUG_OUTPUT)
     #undef CC_TOKENIZER_DEBUG_OUTPUT
