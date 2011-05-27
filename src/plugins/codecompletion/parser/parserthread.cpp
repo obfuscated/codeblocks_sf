@@ -65,7 +65,6 @@
 #define IS_ALIVE !TestDestroy()
 #endif
 
-static wxCriticalSection g_ParserThreadCritical;
 const wxString g_UnnamedSymbol = _T("__Unnamed");
 
 namespace ParserConsts
@@ -280,7 +279,6 @@ void ParserThread::SkipAngleBraces()
 
 bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
-    wxCriticalSectionLocker locker(g_ParserThreadCritical);
     m_Tokenizer.InitFromBuffer(buffer);
     if (!m_Tokenizer.IsOK())
         return false;
@@ -359,7 +357,6 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
 
 bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
-    wxCriticalSectionLocker locker(g_ParserThreadCritical);
     m_Tokenizer.InitFromBuffer(buffer);
     if (!m_Tokenizer.IsOK())
         return false;
@@ -461,8 +458,6 @@ bool ParserThread::InitTokenizer()
 
 bool ParserThread::Parse()
 {
-    wxCriticalSectionLocker locker(g_ParserThreadCritical);
-
     if (!IS_ALIVE || !InitTokenizer())
         return false;
 
