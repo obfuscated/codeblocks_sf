@@ -838,7 +838,6 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         wxFileName fn(wxEmptyString, _T("cpp"));
         fn.SetPath(compiler->GetMasterPath());
         fn.AppendDir(_T("bin"));
-        Manager::Get()->GetLogManager()->DebugLog(fn.GetFullPath());
 
         static std::map<wxString, wxString> defsMap;
         const wxString cpp_compiler(fn.GetFullPath());
@@ -1101,10 +1100,10 @@ Parser* NativeParser::CreateParser(cbProject* project)
     if (!m_ParserPerWorkspace || m_ParsedProjects.empty())
     {
         Parser* parser = new Parser(this, project);
-        if (!StartCompleteParsing(project, parser))
+        if (!DoFullParsing(project, parser))
         {
             if (!Manager::IsAppShuttingDown())
-                Manager::Get()->GetLogManager()->DebugLog(_T("Complete parsing failed!"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Full parsing failed!"));
             delete parser;
             return nullptr;
         }
@@ -1219,7 +1218,7 @@ bool NativeParser::RemoveFileFromParser(cbProject* project, const wxString& file
     return parser->RemoveFile(filename);
 }
 
-bool NativeParser::StartCompleteParsing(cbProject* project, Parser* parser)
+bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
 {
     if (!parser)
         return false;

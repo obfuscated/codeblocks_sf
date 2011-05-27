@@ -310,7 +310,7 @@ protected:
      * 1, parse the priority header files firstly.
      * 2, parse all the other project files.
      */
-    bool StartCompleteParsing(cbProject* project, Parser* parser);
+    bool DoFullParsing(cbProject* project, Parser* parser);
 
     /** Switch parser object according the current active editor and filename */
     bool SwitchParser(cbProject* project, Parser* parser);
