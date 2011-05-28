@@ -84,6 +84,7 @@ void MacrosManager::Reset()
     m_RE_If.Compile(_T("\\$if\\(([^)]*)\\)[::space::]*(\\{([^}]*)\\})(\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_IfSp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_ToFullPath.Compile(_T("\\$TO_ABSOLUTE_PATH{(.*)}"), wxRE_ADVANCED);
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_RE_Unix.IsValid());
@@ -432,6 +433,16 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(search, replace, false);
     }
 
+    while (m_RE_ToFullPath.Matches(buffer))
+    {
+        search = m_RE_ToFullPath.GetMatch(buffer, 0);
+        const wxString relativePath = m_RE_ToFullPath.GetMatch(buffer, 1);
+        wxFileName fn(relativePath);
+        fn.MakeAbsolute();
+        replace = fn.GetFullPath();
+        buffer.Replace(search, replace, false);
+    }
+
     while (m_RE_Unix.Matches(buffer))
     {
         replace.Empty();
@@ -493,7 +504,6 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
 
         buffer.Replace(search, replace, false);
     }
-
 
     if (!subrequest)
     {
