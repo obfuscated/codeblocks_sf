@@ -1037,8 +1037,9 @@ void ParserThread::DoParse()
                             if (newToken && !m_TemplateArgument.IsEmpty())
                                 ResolveTemplateArgs(newToken);
                         }
-                        else
-                            SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
+                        // After add a variable token, we should skip to semicolon
+                        SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
+                        m_Str.Clear();
                     }
                 }
                 else if (!m_EncounteredNamespaces.empty())
