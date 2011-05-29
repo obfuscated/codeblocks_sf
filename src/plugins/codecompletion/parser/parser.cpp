@@ -536,23 +536,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 
         TRACE(_T("Parse() : Parsing %s"), bufferOrFilename.wx_str());
 
-        if (!m_IsPriority)
-        {
-            TRACE(_T("Parse() : Parallel Parsing %s"), bufferOrFilename.wx_str());
-
-            // Add a task for all project files
-            if (m_IsFirstBatch)
-            {
-                m_IsFirstBatch = false;
-                m_PoolTask.push(PTVector());
-            }
-
-            if (m_IsParsing)
-                m_Pool.AddTask(thread, true);
-            else
-                m_PoolTask.back().push_back(thread);
-        }
-        else if (m_IsPriority)
+        if (m_IsPriority)
         {
             if (isLocal) // Parsing priority files
             {
@@ -567,6 +551,22 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
                 m_PoolTask.push(PTVector());
                 m_PoolTask.back().push_back(thread);
             }
+        }
+        else
+        {
+            TRACE(_T("Parse() : Parallel Parsing %s"), bufferOrFilename.wx_str());
+
+            // Add a task for all project files
+            if (m_IsFirstBatch)
+            {
+                m_IsFirstBatch = false;
+                m_PoolTask.push(PTVector());
+            }
+
+            if (m_IsParsing)
+                m_Pool.AddTask(thread, true);
+            else
+                m_PoolTask.back().push_back(thread);
         }
 
         result = true;

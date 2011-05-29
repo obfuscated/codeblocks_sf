@@ -466,8 +466,6 @@ private:
 
     /** bool variable specifies the buffer is ok */
     bool                 m_IsOK;
-    /** bool variable specifies whether the previous token is a "operator" */
-    bool                 m_IsOperator;
     /** Tokeniser state specifies the skipping option */
     TokenizerState       m_State;
     /** File loader pointer */

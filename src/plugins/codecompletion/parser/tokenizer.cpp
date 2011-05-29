@@ -93,7 +93,6 @@ Tokenizer::Tokenizer(TokensTree* tokensTree, const wxString& filename) :
     m_PeekLineNumber(0),
     m_PeekNestLevel(0),
     m_IsOK(false),
-    m_IsOperator(false),
     m_State(tsSkipUnWanted),
     m_Loader(0),
     m_IsReplaceParsing(false),
@@ -178,7 +177,6 @@ void Tokenizer::BaseInit()
     m_PeekLineNumber       = 0;
     m_PeekNestLevel        = 0;
     m_IsOK                 = false;
-    m_IsOperator           = false;
     m_IsReplaceParsing     = false;
     m_FirstRemainingLength = 0;
     m_RepeatReplaceCount   = 0;
@@ -1061,7 +1059,6 @@ wxString Tokenizer::DoGetToken()
             return wxEmptyString;
 
         str = m_Buffer.Mid(start, m_TokenIndex - start);
-        m_IsOperator = false;
     }
     else if ( (c == '"') || (c == '\'') )
     {
@@ -1101,8 +1098,6 @@ wxString Tokenizer::DoGetToken()
     }
     else if (c == '(')
     {
-        m_IsOperator = false;
-
         if (m_State & tsReadRawExpression)
         {
             str = c;
