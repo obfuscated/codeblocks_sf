@@ -972,7 +972,6 @@ void ParserThread::DoParse()
 
                     m_Tokenizer.GetToken(); // skip colon
                     m_Tokenizer.GetToken(); // skip bitfield
-                    m_Tokenizer.GetToken(); // skip comma
                 }
                 else if (peek==ParserConsts::comma)
                 {

@@ -1,7 +1,5 @@
-namespace AAA
+struct A
 {
-    extern "C" void function();
-    int a;
+    int a:1;
+    int b:1;
 };
-
-void test();
