@@ -84,7 +84,7 @@ void MacrosManager::Reset()
     m_RE_If.Compile(_T("\\$if\\(([^)]*)\\)[::space::]*(\\{([^}]*)\\})(\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_IfSp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_ToFullPath.Compile(_T("\\$TO_ABSOLUTE_PATH{(.*)}"), wxRE_ADVANCED);
+    m_RE_ToFullPath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"), wxRE_ADVANCED);
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_RE_Unix.IsValid());
