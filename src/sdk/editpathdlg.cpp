@@ -60,6 +60,7 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
 	m_Filter = filter;
 	m_AskMakeRelative = true;
 	m_ShowCreateDirButton = false;
+	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
 }
 
 EditPathDlg::~EditPathDlg()
