@@ -20,6 +20,8 @@
 #include "tokenizer.h"
 #include "token.h"
 
+static wxMutex s_ParserThreadMutex;
+
 extern const wxString g_UnnamedSymbol;
 
 struct NameSpace
@@ -132,7 +134,11 @@ protected:
       * often happens when user open a project. Every parserthread task will firstly be added to the thread pool, later
       * called automatically from the thread pool.
       */
-    int Execute() { return Parse() ? 0 : 1; }
+    int Execute()
+    {
+        wxMutexLocker locker(s_ParserThreadMutex);
+        return Parse() ? 0 : 1;
+    }
 
     /** skip until we meet one of the characters in the wxString
       * @param chars wxString specifies all the ending characters

@@ -88,6 +88,7 @@ public:
     int Execute()
     {
         wxCriticalSectionLocker locker(s_ParserCritical);
+        wxMutexLocker locker2(s_ParserThreadMutex);
 
         // Pre-defined macros
         if (!m_Parser.m_PredefinedMacros.IsEmpty())
@@ -590,7 +591,7 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
                         false,
                         opts,
                         m_TempTokensTree);
-
+    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.Parse();
 }
 
@@ -606,7 +607,7 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
                         true,
                         opts,
                         m_TempTokensTree);
-
+    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForNamespaces(buffer, result);
 }
 
@@ -622,7 +623,7 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
                         false,
                         opts,
                         m_TempTokensTree);
-
+    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForUsingNamespace(buffer, result);
 }
 
