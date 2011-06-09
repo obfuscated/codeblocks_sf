@@ -1504,10 +1504,15 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
     TokenIdxSet proc_result;
     if (FindCurrentFunctionToken(searchData, proc_result, caretPos) != 0)
     {
+        const int pos = caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos;
+        const unsigned int curLine = searchData->control->LineFromPosition(pos) + 1;
+
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
             Token* token = m_Parser->GetTokens()->at(*it);
             if (!token)
+                continue;
+            if (curLine < token->m_ImplLine || curLine > token->m_ImplLineEnd)
                 continue;
 
             if (s_DebugSmartSense)

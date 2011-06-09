@@ -1,5 +1,9 @@
-struct A
+bool Parse(bool bTest)
 {
-    int a:1;
-    int b:1;
-};
+    return !bTest;
+}
+
+bool Parse(int nTest, bool bTest)
+{
+    return !bTest;
+}
