@@ -430,6 +430,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     opts.parentOfBuffer       = parent;
     opts.initLineOfBuffer     = initLine;
 
+    wxMutexLocker locker(s_ParserThreadMutex);
     return Parse(buffer, isLocal, opts);
 }
 
@@ -591,6 +592,7 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
                         false,
                         opts,
                         m_TempTokensTree);
+
     wxMutexLocker locker(s_ParserThreadMutex);
     return thread.Parse();
 }
@@ -607,6 +609,7 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
                         true,
                         opts,
                         m_TempTokensTree);
+
     wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForNamespaces(buffer, result);
 }
@@ -623,6 +626,7 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
                         false,
                         opts,
                         m_TempTokensTree);
+
     wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForUsingNamespace(buffer, result);
 }
