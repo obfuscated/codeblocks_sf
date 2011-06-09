@@ -13,6 +13,7 @@
     #include <queue>
 
     #include <wx/app.h>
+    #include <wx/dir.h>
     #include <wx/filename.h>
     #include <wx/intl.h>
     #include <wx/progdlg.h>
