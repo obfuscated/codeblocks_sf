@@ -127,8 +127,6 @@ enum ParsingType
     ptUndefined       = 4,
 };
 
-static wxCriticalSection s_ParserCritical;
-
 /** @brief Parser class holds all the tokens of a C::B project
   *
   * Parser class contains the TokensTree which is a trie structure to record the token information.
@@ -177,6 +175,9 @@ public:
      */
     cbProject* GetParsingProject() const { return m_Project; }
 
+    /** Must add a locker before call all named ParseBufferXXX fuctions
+     * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
+     */
     bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false, bool isTemp = false,
                      const wxString& filename = wxEmptyString, Token* parent = nullptr, int initLine = 0);
     bool ParseBufferForFunctions(const wxString& buffer);
@@ -216,14 +217,7 @@ public:
     TokensTree* GetTokens() { return m_TokensTree; }
     TokensTree* GetTempTokens() { return m_TempTokensTree; }
     unsigned int GetFilesCount();
-
     bool Done();
-    void LinkInheritance(bool tempsOnly = false);
-
-    /** Before calling this function, you *MUST* add a locker
-      * i.e. wxCriticalSectionLocker locker(s_TokensTreeCritical);
-      */
-    void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
 
     /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
      * multiply threads parsing.

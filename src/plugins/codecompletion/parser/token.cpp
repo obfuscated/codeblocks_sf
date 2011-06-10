@@ -145,16 +145,11 @@ Token::~Token()
 
 wxString Token::GetParentName()
 {
-    wxString parentname;
-    wxCriticalSectionLocker* locker = 0;
-    if (m_TokensTree)
-        locker = new wxCriticalSectionLocker(s_TokensTreeCritical);
     Token* parent = GetParentToken();
     if (parent)
-        parentname = parent->m_Name;
-    if (locker)
-        delete locker;
-    return parentname;
+        return parent->m_Name;
+    else
+        return wxEmptyString;
 }
 
 wxString Token::DisplayName() const

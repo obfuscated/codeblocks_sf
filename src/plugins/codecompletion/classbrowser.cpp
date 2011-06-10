@@ -654,6 +654,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     if (search.IsEmpty() || !m_Parser)
         return;
 
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     Token* token = 0;
     TokenIdxSet result;
     size_t count = m_Parser->GetTokens()->FindMatches(search, result, false, true);

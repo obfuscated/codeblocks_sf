@@ -78,6 +78,8 @@ void InsertClassMethodDlg::FillClasses()
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
+
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     TokensTree* tree = m_Parser->GetTokens();
     for (size_t i = 0; i < tree->size(); ++i)
     {

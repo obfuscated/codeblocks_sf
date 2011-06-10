@@ -473,7 +473,6 @@ bool ParserThread::Parse()
 
         if (!m_Options.useBuffer) // Parse a file
         {
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
             m_FileIdx = m_TokensTree->ReserveFileForParsing(m_Filename);
             if (!m_FileIdx)
                 break;
@@ -482,10 +481,7 @@ bool ParserThread::Parse()
         DoParse();
 
         if (!m_Options.useBuffer) // Parsing a file
-        {
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
             m_TokensTree->FlagFileAsParsed(m_Filename);
-        }
 
         result = true;
     }
@@ -1142,8 +1138,6 @@ wxString ParserThread::GetActualTokenType()
     return m_Str; // token ends at start of phrase
 }
 
-// Before call this function, *MUST* add a locker
-// e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
 Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, bool createIfNotExist,
                                         Token* parentIfCreated)
 {
@@ -1198,8 +1192,6 @@ Token* ParserThread::DoAddToken(TokenKind kind,
 {
     if (name.IsEmpty())
         return 0; // oops!
-
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
 
     Token* newToken = 0;
     wxString newname(name);
@@ -1416,23 +1408,14 @@ void ParserThread::HandleIncludes()
                 break; // File not found, do nothing.
             }
 
+            if (m_TokensTree->IsFileParsed(real_filename))
             {
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                if (m_TokensTree->IsFileParsed(real_filename))
-                {
-                    TRACE(_T("HandleIncludes() : File '%s' is already being parsed, skipping"), real_filename.wx_str());
-                    break; // Already being parsed elsewhere
-                }
+                TRACE(_T("HandleIncludes() : File '%s' is already being parsed, skipping"), real_filename.wx_str());
+                break; // Already being parsed elsewhere
             }
 
             TRACE(_T("HandleIncludes() : Adding include file '%s'"), real_filename.wx_str());
-
-            wxCriticalSectionLocker* locker = NULL;
-            if (m_Parent->m_IsParsing)
-                locker = new wxCriticalSectionLocker(s_ParserCritical);
             m_Parent->DoParseFile(real_filename, isGlobal);
-            if (locker)
-                delete locker;
         }
         while (false);
     }

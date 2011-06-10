@@ -981,43 +981,47 @@ int CodeCompletion::CodeComplete()
             int start = ed->GetControl()->WordStartPosition(pos, true);
             wxArrayInt already_registered;
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
-            TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+
             m_SearchItem.clear();
-            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                Token* token = tokens->at(*it);
-                if (!token || token->m_Name.IsEmpty())
-                    continue;
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                {
+                    Token* token = tokens->at(*it);
+                    if (!token || token->m_Name.IsEmpty())
+                        continue;
 
-                // check hashmap for unique_strings
-                if (unique_strings.find(token->m_Name) != unique_strings.end())
-                    continue;
+                    // check hashmap for unique_strings
+                    if (unique_strings.find(token->m_Name) != unique_strings.end())
+                        continue;
 
-                unique_strings.insert(token->m_Name);
-                int iidx = m_NativeParser.GetTokenKindImage(token);
-                if (already_registered.Index(iidx) == wxNOT_FOUND)
-                {
-                    ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
-                    already_registered.Add(iidx);
-                }
-                wxString tmp;
-                tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
-                items.Add(tmp);
-                if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
-                {
-                    m_SearchItem[token->m_Name] = token->GetFormattedArgs().size() - 2;
-                }
-                if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
-                {
-                    for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                    unique_strings.insert(token->m_Name);
+                    int iidx = m_NativeParser.GetTokenKindImage(token);
+                    if (already_registered.Index(iidx) == wxNOT_FOUND)
                     {
-                        if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
-                            continue;
+                        ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
+                        already_registered.Add(iidx);
+                    }
+                    wxString tmp;
+                    tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
+                    items.Add(tmp);
+                    if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
+                    {
+                        m_SearchItem[token->m_Name] = token->GetFormattedArgs().size() - 2;
+                    }
+                    if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
+                    {
+                        for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                        {
+                            if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
+                                continue;
 
-                        unique_strings.insert(token->m_Aliases[i]);
-                        wxString tmp;
-                        tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
-                        items.Add(tmp);
+                            unique_strings.insert(token->m_Aliases[i]);
+                            wxString tmp;
+                            tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
+                            items.Add(tmp);
+                        }
                     }
                 }
             }
@@ -1522,6 +1526,7 @@ int CodeCompletion::DoAllMethodsImpl()
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return -4;
 
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     TokensTree* tree = m_NativeParser.GetParser().GetTokens();
 
     // get all filenames' indices matching our mask
@@ -2094,6 +2099,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         funcdata->m_NameSpaces.clear();
 
         TokenIdxSet result;
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
         TokensTree* tmptree = m_NativeParser.GetParser().GetTokens();
         m_NativeParser.GetParser().FindTokensInFile(filename, result, tkAnyFunction | tkEnum | tkClass | tkNamespace);
 
@@ -2458,6 +2464,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
         if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
         {
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
             wxString msg;
             int count = 0;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -2553,6 +2560,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     if (!ed)
         return;
 
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     m_NativeParser.GetTempParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
     wxArrayString funcs;
@@ -2639,6 +2647,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, end);
 
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
 
     // special handle destructor function

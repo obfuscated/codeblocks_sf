@@ -18,6 +18,9 @@
 #include "searchtree.h"
 #include <deque>
 
+// Make sure already entered a critical section if TokensTree related!
+static wxCriticalSection s_TokensTreeCritical;
+
 extern bool g_EnableDebugTrace;
 extern const wxString g_DebugTraceFile;
 
@@ -107,8 +110,6 @@ private:
 
 class Token;
 class TokensTree;
-
-static wxCriticalSection s_TokensTreeCritical;
 
 enum FileParsingStatus
 {

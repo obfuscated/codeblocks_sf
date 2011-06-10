@@ -76,6 +76,7 @@ int TIMER_ID       = wxNewId();
 int BATCH_TIMER_ID = wxNewId();
 
 static volatile Parser* s_CurrentParser = nullptr;
+static wxCriticalSection s_ParserCritical;
 
 BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 END_EVENT_TABLE()
@@ -88,8 +89,8 @@ public:
 
     int Execute()
     {
-        wxCriticalSectionLocker locker(s_ParserCritical);
-        wxMutexLocker locker2(s_ParserThreadMutex);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker2(s_ParserCritical);
 
         // Pre-defined macros
         if (!m_Parser.m_PredefinedMacros.IsEmpty())
@@ -156,7 +157,7 @@ public:
             if (!pf)
                 continue;
             if (CCFileTypeOf(pf->relativeFilename) != ccftOther)
-                m_Parser.MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
+                m_Parser.GetTokens()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
         }
 
         return 0;
@@ -199,15 +200,17 @@ Parser::~Parser()
     // 2. Disconnect events
     DisconnectEvents();
 
-    // 3. Lock tokens tree
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-
-    // 4. Abort all thread
+    // 3. Abort all thread
     TerminateAllThreads();
+
+    // 4. Lock tokens tree
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
 
     // 5. Free memory
     delete m_TempTokensTree;
+    m_TempTokensTree = nullptr;
     delete m_TokensTree;
+    m_TokensTree = nullptr;
 
     // 6. Reset current parser
     if (s_CurrentParser == this)
@@ -342,35 +345,36 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
     if (!parent)
         return FindTokenByName(name, false, kindMask);
 
-    Token* result = 0;
-    {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        result = m_TokensTree->at(m_TokensTree->TokenExists(name, parent->GetSelf(), kindMask));
-    }
-
+    wxCriticalSectionLocker* locker = new wxCriticalSectionLocker(s_TokensTreeCritical);
+    Token* result = m_TokensTree->at(m_TokensTree->TokenExists(name, parent->GetSelf(), kindMask));
     if (!result && useInheritance)
     {
-        // no reason for a critical section here:
-        // it will only recurse to itself.
-        // the critical section above is sufficient
         TokenIdxSet::iterator it;
         m_TokensTree->RecalcInheritanceChain(parent);
         for (it = parent->m_DirectAncestors.begin(); it != parent->m_DirectAncestors.end(); ++it)
         {
             Token* ancestor = m_TokensTree->at(*it);
+            if (locker)
+            {
+                delete locker;
+                locker = nullptr;
+            }
             result = FindChildTokenByName(ancestor, name, true, kindMask);
+            locker = new wxCriticalSectionLocker(s_TokensTreeCritical);
             if (result)
                 break;
         }
     }
+    if (locker)
+        delete locker;
     return result;
 }
 
 size_t Parser::FindMatches(const wxString& s, TokenList& result, bool caseSensitive, bool is_prefix)
 {
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     result.clear();
     TokenIdxSet tmpresult;
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     if (!m_TokensTree->FindMatches(s, tmpresult, caseSensitive, is_prefix))
         return 0;
 
@@ -386,9 +390,9 @@ size_t Parser::FindMatches(const wxString& s, TokenList& result, bool caseSensit
 
 size_t Parser::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix)
 {
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     result.clear();
     TokenIdxSet tmpresult;
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     if (!m_TokensTree->FindMatches(s, tmpresult, caseSensitive, is_prefix))
         return 0;
 
@@ -403,17 +407,8 @@ size_t Parser::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSens
     return result.size();
 }
 
-void Parser::LinkInheritance(bool tempsOnly)
-{
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    (tempsOnly ? m_TempTokensTree :  m_TokensTree)->RecalcData();
-}
-
-void Parser::MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData)
-{
-    m_TokensTree->MarkFileTokensAsLocal(filename, local, userData);
-}
-
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp,
                          const wxString& filename, Token* parent, int initLine)
 {
@@ -431,7 +426,6 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     opts.parentOfBuffer       = parent;
     opts.initLineOfBuffer     = initLine;
 
-    wxMutexLocker locker(s_ParserThreadMutex);
     return Parse(buffer, isLocal, opts);
 }
 
@@ -493,6 +487,8 @@ bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
     return Parse(UnixFilename(filename), isLocal, opts);
 }
 
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
 {
     bool result = false;
@@ -500,8 +496,6 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
     {
         if (!opts.useBuffer)
         {
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-
             bool canparse = !m_TokensTree->IsFileParsed(bufferOrFilename);
             if (canparse)
                 canparse = m_TokensTree->ReserveFileForParsing(bufferOrFilename, true) != 0;
@@ -532,7 +526,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
         if (doParseNow)
         {
             result = thread->Parse();
-            LinkInheritance(true);
+            m_TempTokensTree->RecalcData();
             delete thread;
             break;
         }
@@ -579,6 +573,8 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
     return result;
 }
 
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 bool Parser::ParseBufferForFunctions(const wxString& buffer)
 {
     ParserThreadOptions opts;
@@ -594,10 +590,11 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
                         opts,
                         m_TempTokensTree);
 
-    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.Parse();
 }
 
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
     ParserThreadOptions opts;
@@ -611,10 +608,11 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
                         opts,
                         m_TempTokensTree);
 
-    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForNamespaces(buffer, result);
 }
 
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
     ParserThreadOptions opts;
@@ -628,7 +626,6 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
                         opts,
                         m_TempTokensTree);
 
-    wxMutexLocker locker(s_ParserThreadMutex);
     return thread.ParseBufferForUsingNamespace(buffer, result);
 }
 
@@ -637,19 +634,15 @@ bool Parser::RemoveFile(const wxString& filename)
     if (!Done())
         return false; // Can't alter the tokens tree if parsing has not finished
 
-    bool result = false;
-    wxString file = UnixFilename(filename);
-    {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        size_t index = m_TokensTree->GetFileIndex(file);
-        result = m_TokensTree->m_FilesStatus.count(index);
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    size_t index = m_TokensTree->GetFileIndex(UnixFilename(filename));
+    const bool result = m_TokensTree->m_FilesStatus.count(index);
 
-        m_TokensTree->RemoveFile(filename);
-        m_TokensTree->m_FilesMap.erase(index);
-        m_TokensTree->m_FilesStatus.erase(index);
-        m_TokensTree->m_FilesToBeReparsed.erase(index);
-        m_TokensTree->m_Modified = true;
-    }
+    m_TokensTree->RemoveFile(filename);
+    m_TokensTree->m_FilesMap.erase(index);
+    m_TokensTree->m_FilesStatus.erase(index);
+    m_TokensTree->m_FilesToBeReparsed.erase(index);
+    m_TokensTree->m_Modified = true;
 
     return result;
 }
@@ -1052,7 +1045,12 @@ void Parser::DoParseFile(const wxString& filename, bool isGlobal)
     if (filename.IsEmpty())
         return;
 
+    wxCriticalSectionLocker* locker = nullptr;
+    if (m_IsParsing)
+        locker = new wxCriticalSectionLocker(s_ParserCritical);
     Parse(filename, !isGlobal);
+    if (locker)
+        delete locker;
 }
 
 void Parser::StartStopWatch()

@@ -156,12 +156,16 @@ bool CodeRefactoring::Parse()
 
     // handle local variables
     bool isLocalVariable = false;
-    Token* token = m_NativeParser.GetParser().GetTokens()->at(*targetResult.begin());
-    if (token)
+    Token* token = nullptr;
     {
-        Token* parent = token->GetParentToken();
-        if (parent && parent->m_TokenKind == tkFunction)
-            isLocalVariable = true;
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        token = m_NativeParser.GetParser().GetTokens()->at(*targetResult.begin());
+        if (token)
+        {
+            Token* parent = token->GetParentToken();
+            if (parent && parent->m_TokenKind == tkFunction)
+                isLocalVariable = true;
+        }
     }
 
     wxArrayString files;
@@ -269,6 +273,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
     Token* parentOfLocalVariable = nullptr;
     if (isLocalVariable)
     {
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
         Token* token = m_NativeParser.GetParser().GetTokens()->at(*targetResult.begin());
         parentOfLocalVariable = token->GetParentToken();
     }
@@ -361,6 +366,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                 // handle for local variable
                 if (isLocalVariable)
                 {
+                    wxCriticalSectionLocker locker(s_TokensTreeCritical);
                     Token* token = m_NativeParser.GetParser().GetTokens()->at(*findIter);
                     if (token)
                     {
