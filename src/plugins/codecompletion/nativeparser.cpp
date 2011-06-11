@@ -214,9 +214,12 @@ void NativeParser::SetParser(Parser* parser)
     if (m_Parser == parser)
         return;
 
-    RemoveLastFunctionChildren();
-    InitCCSearchVariables();
+    {
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        RemoveLastFunctionChildren();
+    }
 
+    InitCCSearchVariables();
     m_Parser = parser;
 
     if (m_ClassBrowser)
