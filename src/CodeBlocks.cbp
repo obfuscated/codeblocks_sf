@@ -562,9 +562,9 @@
 				</Linker>
 			</Target>
 			<Environment>
+				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="28" />
-				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -1988,10 +1988,16 @@
 		<Unit filename="plugins\scriptedwizard\resources\matlab_csf\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\matlab_csf\wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\qt4\wizard.script">
