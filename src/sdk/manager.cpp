@@ -38,7 +38,6 @@
 #include <wx/fs_mem.h>
 
 static Manager* instance = 0;
-static Manager* isShutdown = false;
 
 Manager::Manager() : m_pAppWindow(0)
 {
