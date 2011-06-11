@@ -190,7 +190,8 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
 
-    wxCriticalSectionLocker* locker = new wxCriticalSectionLocker(s_TokensTreeCritical);
+    s_TokensTreeCritical.Enter();
+
     TokensTree* tree = m_NativeParser->GetParser().GetTokens();
     // fill filter set for current-file-filter
     if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
@@ -245,8 +246,7 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
         }
     }
 
-    if (locker)
-        delete locker;
+    s_TokensTreeCritical.Leave();
 
     if (build_tree)
     {

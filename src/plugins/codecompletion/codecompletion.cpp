@@ -320,21 +320,22 @@ private:
             m_SystemHeadersMap(headersMap),
             m_SearchDir(searchDir),
             m_Headers(headersMap[searchDir]),
-            m_Locker(nullptr),
+            m_Locked(false),
             m_Count(0)
         {}
 
         virtual ~HeaderDirTraverser()
         {
-            if (m_Locker)
-                delete m_Locker;
+            if (m_Locked)
+                 s_HeadersCriticalSection.Leave();
         }
 
         virtual wxDirTraverseResult OnFile(const wxString& filename)
         {
-            if (m_Thread->TestDestroy() || !AddLock())
+            if (m_Thread->TestDestroy())
                 return wxDIR_STOP;
 
+            AddLock();
             wxFileName fn(filename);
             if (!fn.HasExt() || fn.GetExt().GetChar(0) == _T('h'))
             {
@@ -349,9 +350,10 @@ private:
 
         virtual wxDirTraverseResult OnDir(const wxString& dirname)
         {
-            if (m_Thread->TestDestroy() || !AddLock())
+            if (m_Thread->TestDestroy())
                 return wxDIR_STOP;
 
+            AddLock();
             wxString path(dirname);
             if (path.Last() != wxFILE_SEP_PATH)
                 path.Append(wxFILE_SEP_PATH);
@@ -361,28 +363,30 @@ private:
             return wxDIR_CONTINUE;
         }
 
-        bool AddLock()
+        void AddLock()
         {
             if (++m_Count % 100 == 1)
             {
-                if (m_Locker)
+                if (m_Locked)
                 {
-                    delete m_Locker;
-                    m_Locker = nullptr;
-                    wxMilliSleep(1);
+                    s_HeadersCriticalSection.Leave();
+                    m_Locked = false;
                 }
-                m_Locker = new wxCriticalSectionLocker(s_HeadersCriticalSection);
+                if (!m_Locked)
+                {
+                    s_HeadersCriticalSection.Enter();
+                    m_Locked = true;
+                }
             }
-            return m_Locker != nullptr;
         }
 
     private:
-        wxThread*                m_Thread;
-        const SystemHeadersMap&  m_SystemHeadersMap;
-        const wxString&          m_SearchDir;
-        StringSet&               m_Headers;
-        wxCriticalSectionLocker* m_Locker;
-        size_t                   m_Count;
+        wxThread*               m_Thread;
+        const SystemHeadersMap& m_SystemHeadersMap;
+        const wxString&         m_SearchDir;
+        StringSet&              m_Headers;
+        bool                    m_Locked;
+        size_t                  m_Count;
     };
 };
 

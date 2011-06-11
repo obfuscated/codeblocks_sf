@@ -451,7 +451,7 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
-    wxCriticalSectionLocker *locker = new wxCriticalSectionLocker(s_TokensTreeCritical);
+    s_TokensTreeCritical.Enter();
     TokensTree* tokens = m_Parser->GetTokens();
     wxString search = txtFilter->GetValue();
 
@@ -498,9 +498,7 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
         }
     }
 
-    if (locker)
-        delete locker;
-
+    s_TokensTreeCritical.Leave();
     DisplayTokenInfo();
 }
 
