@@ -7,22 +7,26 @@
  * $HeadURL$
  */
 
+#include "sdk.h"
+
+#ifndef CB_PRECOMP
+    #include <manager.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <projectmanager.h>
+    #include <logmanager.h>
+    #include <editorbase.h>
+    #include <sdk_events.h>
+    #include <misctreeitemdata.h>
+
+    #include <wx/window.h>
+    #include <wx/treectrl.h>
+    #include <wx/bitmap.h>
+    #include <wx/imaglist.h>
+    #include <wx/menu.h>
+#endif
+
 #include "openfileslistplugin.h"
-
-#include <manager.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <projectmanager.h>
-#include <logmanager.h>
-#include <editorbase.h>
-#include <sdk_events.h>
-#include <misctreeitemdata.h>
-
-#include <wx/window.h>
-#include <wx/treectrl.h>
-#include <wx/bitmap.h>
-#include <wx/imaglist.h>
-#include <wx/menu.h>
 
 namespace compatibility
 {
