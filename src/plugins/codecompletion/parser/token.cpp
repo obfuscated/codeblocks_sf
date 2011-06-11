@@ -1120,6 +1120,7 @@ void TokensTree::RecalcInheritanceChain(Token* token)
     }
 
 #if CC_TOKEN_DEBUG_OUTPUT
+    wxStopWatch sw;
     TRACE(_T("RecalcInheritanceChain() : First iteration took : %ld ms"), sw.Time());
     sw.Start();
 #endif

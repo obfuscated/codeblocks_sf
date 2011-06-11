@@ -6,11 +6,13 @@
  * $HeadURL$
  */
 
+#include <sdk.h>
 #include "parser.h"
 #include "parsertest.h"
 
 #ifndef WX_PRECOMP
-#include <wx/app.h>
+    #include <wx/wx.h>
+    #include <wx/app.h>
 #endif
 
 #include <wx/arrstr.h>

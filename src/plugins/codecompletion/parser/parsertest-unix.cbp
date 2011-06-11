@@ -37,6 +37,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
+			<Add library="wxpropgrid" />
 			<Add directory="../../../devel" />
 		</Linker>
 		<Unit filename="app.cpp" />

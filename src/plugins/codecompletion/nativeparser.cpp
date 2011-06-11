@@ -859,7 +859,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
             wxArrayString output;
             if (wxExecute(cpp_compiler + args, output, wxEXEC_SYNC) == -1)
             {
-                TRACE("AddCompilerPredefinedMacros::wxExecute failed!")
+                TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
                 return false;
             }
 
@@ -922,12 +922,12 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
             wxArrayString output, error;
             if (wxExecute(cmd, output, error, wxEXEC_SYNC) == -1)
             {
-                TRACE("AddCompilerPredefinedMacros::wxExecute failed!")
+                TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
                 return false;
             }
             if (error.IsEmpty())
             {
-                TRACE("AddCompilerPredefinedMacros:: Can't get pre-defined macros for MSVC.")
+                TRACE(_T("AddCompilerPredefinedMacros:: Can't get pre-defined macros for MSVC."));
                 return false;
             }
 
@@ -1048,7 +1048,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     wxArrayString Output, Errors;
     if (wxExecute(Command, Output, Errors, wxEXEC_SYNC) == -1)
     {
-        TRACE("GetGCCCompilerDirs::wxExecute failed!")
+        TRACE(_T("GetGCCCompilerDirs::wxExecute failed!"));
         return dirs[cpp_compiler];
     }
 

@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+#include <sdk.h>
 #include "searchtree.h"
 
 // *** SearchTreeIterator ***

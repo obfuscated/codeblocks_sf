@@ -6,7 +6,7 @@
  * $HeadURL$
  */
 
-#include <wx/wxprec.h>
+#include <sdk.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
