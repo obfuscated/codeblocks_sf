@@ -27,9 +27,10 @@ class ProjectsFileMasksDlg : public wxScrollingDialog
         void ListChange();
 
         virtual void EndModal(int retCode);
-        FilesGroupsAndMasks m_FileGroups;
-        FilesGroupsAndMasks* m_pOrigFileGroups;
-        int m_LastListSelection;
+
+        FilesGroupsAndMasks  m_FileGroupsAndMasksCopy;
+        FilesGroupsAndMasks* m_pFileGroupsAndMasks;
+        int                  m_LastListSelection;
 
         DECLARE_EVENT_TABLE();
 };

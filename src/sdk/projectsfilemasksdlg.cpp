@@ -31,9 +31,9 @@ BEGIN_EVENT_TABLE(ProjectsFileMasksDlg, wxScrollingDialog)
     EVT_LISTBOX(XRCID("lstCategories"), ProjectsFileMasksDlg::OnListChanged)
 END_EVENT_TABLE()
 
-ProjectsFileMasksDlg::ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam)
-    : m_FileGroups(*fgam), // store a local copy, so if we press "Cancel", we can revert to the original...
-    m_pOrigFileGroups(fgam),
+ProjectsFileMasksDlg::ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam) :
+    m_FileGroupsAndMasksCopy(*fgam), // store a local copy, so if we press "Cancel", we can revert to the original...
+    m_pFileGroupsAndMasks(fgam),
     m_LastListSelection(0)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectsFileMasks"),_T("wxScrollingDialog"));
@@ -50,10 +50,9 @@ void ProjectsFileMasksDlg::RebuildList()
 {
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     pList->Clear();
-    for (unsigned int i = 0; i < m_FileGroups.GetGroupsCount(); ++i)
-    {
-        pList->Append(m_FileGroups.GetGroupName(i));
-    }
+    for (unsigned int i = 0; i < m_FileGroupsAndMasksCopy.GetGroupsCount(); ++i)
+        pList->Append(m_FileGroupsAndMasksCopy.GetGroupName(i));
+
     if (pList->GetCount() != 0)
     {
         pList->SetSelection(m_LastListSelection);
@@ -69,11 +68,11 @@ void ProjectsFileMasksDlg::ListChange()
     if (sel != m_LastListSelection)
     {
         // switching group; see if the user changed the masks...
-        if (pText->GetValue() != m_FileGroups.GetFileMasks(m_LastListSelection))
-            m_FileGroups.SetFileMasks(m_LastListSelection, pText->GetValue());
+        if (pText->GetValue() != m_FileGroupsAndMasksCopy.GetFileMasks(m_LastListSelection))
+            m_FileGroupsAndMasksCopy.SetFileMasks(m_LastListSelection, pText->GetValue());
     }
 
-    pText->SetValue(m_FileGroups.GetFileMasks(sel));
+    pText->SetValue(m_FileGroupsAndMasksCopy.GetFileMasks(sel));
     m_LastListSelection = sel;
 }
 
@@ -91,7 +90,7 @@ void ProjectsFileMasksDlg::OnAdd(wxCommandEvent& /*event*/)
                                             _("New group"));
     if (groupName.IsEmpty())
         return;
-    m_FileGroups.AddGroup(groupName);
+    m_FileGroupsAndMasksCopy.AddGroup(groupName);
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     pList->Append(groupName);
     pList->SetSelection(pList->GetCount() - 1);
@@ -107,7 +106,7 @@ void ProjectsFileMasksDlg::OnEdit(wxCommandEvent& /*event*/)
                                             _("Edit group"), oldName);
     if (!groupName.IsEmpty() && groupName != oldName)
     {
-        m_FileGroups.RenameGroup(pList->GetSelection(), groupName);
+        m_FileGroupsAndMasksCopy.RenameGroup(pList->GetSelection(), groupName);
         pList->SetString(pList->GetSelection(), groupName);
     }
 }
@@ -120,13 +119,13 @@ void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& /*event*/)
     caption.Printf(_("Are you sure you want to delete the group \"%s\"?"), name.c_str());
     if (cbMessageBox(caption, _("Confirmation"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION, this) == wxID_NO)
         return;
-    m_FileGroups.DeleteGroup(pList->GetSelection());
+    m_FileGroupsAndMasksCopy.DeleteGroup(pList->GetSelection());
     RebuildList();
 }
 
 void ProjectsFileMasksDlg::OnSetDefault(wxCommandEvent& /*event*/)
 {
-    m_FileGroups.SetDefault();
+    m_FileGroupsAndMasksCopy.SetDefault();
     RebuildList();
 }
 
@@ -140,10 +139,10 @@ void ProjectsFileMasksDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
         wxTextCtrl* pText = XRCCTRL(*this, "txtFileMasks", wxTextCtrl);
-        if (pText->GetValue() != m_FileGroups.GetFileMasks(m_LastListSelection))
-            m_FileGroups.SetFileMasks(m_LastListSelection, pText->GetValue());
+        if (pText->GetValue() != m_FileGroupsAndMasksCopy.GetFileMasks(m_LastListSelection))
+            m_FileGroupsAndMasksCopy.SetFileMasks(m_LastListSelection, pText->GetValue());
 
-        m_pOrigFileGroups->CopyFrom(m_FileGroups);
+        m_pFileGroupsAndMasks->CopyFrom(m_FileGroupsAndMasksCopy);
     }
 
     wxScrollingDialog::EndModal(retCode);
