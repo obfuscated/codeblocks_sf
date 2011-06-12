@@ -73,6 +73,7 @@ const wxEventType cbEVT_PLUGIN_ATTACHED = wxNewEventType();
 const wxEventType cbEVT_PLUGIN_RELEASED = wxNewEventType();
 const wxEventType cbEVT_PLUGIN_INSTALLED = wxNewEventType();
 const wxEventType cbEVT_PLUGIN_UNINSTALLED = wxNewEventType();
+const wxEventType cbEVT_PLUGIN_LOADING_COMPLETE = wxNewEventType();
 // editor events
 const wxEventType cbEVT_EDITOR_CLOSE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_OPEN = wxNewEventType();

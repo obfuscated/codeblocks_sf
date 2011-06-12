@@ -222,6 +222,8 @@ extern EVTIMPORT const wxEventType cbEVT_PLUGIN_INSTALLED;
 #define EVT_PLUGIN_INSTALLED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_INSTALLED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PLUGIN_UNINSTALLED;
 #define EVT_PLUGIN_UNINSTALLED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_UNINSTALLED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PLUGIN_LOADING_COMPLETE;
+#define EVT_PLUGIN_LOADING_COMPLETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_LOADING_COMPLETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // editor events
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_CLOSE;

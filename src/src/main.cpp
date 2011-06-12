@@ -946,9 +946,7 @@ void MainFrame::CreateMenubar()
         if (plug && plug->IsAttached())
         {
             if (plug->GetType() == ptTool)
-            {
                 DoAddPlugin(plug);
-            }
             else
             {
                 AddPluginInSettingsMenu(plug);
@@ -1070,6 +1068,9 @@ void MainFrame::ScanForPlugins()
         Manager::Get()->GetLogManager()->Log(_("Loading:"));
         m_PluginManager->LoadAllPlugins();
     }
+
+    CodeBlocksEvent event(cbEVT_PLUGIN_LOADING_COMPLETE);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
 wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos, bool checkable)
