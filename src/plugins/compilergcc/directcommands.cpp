@@ -200,14 +200,14 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                         : tool.command;
         wxString source_file;
         if (compiler->GetSwitches().UseFullSourcePaths)
-        {
             source_file = UnixFilename(pfd.source_file_absolute_native);
-            // for resource files, use short from if path because if windres bug with spaces-in-paths
-            if (isResource)
-                source_file = pf->file.GetShortPath();
-        }
         else
             source_file = pfd.source_file;
+
+        // for resource files, use short from if path because if windres bug with spaces-in-paths
+        if (isResource && (compiler->GetSwitches().UseFullSourcePaths || compiler->GetSwitches().Use83Paths))
+            source_file = pf->file.GetShortPath();
+
         QuoteStringIfNeeded(source_file);
         compiler->GenerateCommandLine(compilerCmd,
                                          target,

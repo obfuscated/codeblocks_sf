@@ -73,14 +73,14 @@ struct RegExStruct
     {
         memcpy(msg, rhs.msg, sizeof(msg));
     }
-    RegExStruct(const wxString& _desc,
+    RegExStruct(const wxString&  _desc,
                 CompilerLineType _lt,
-                const wxString& _regex,
-                int _msg,
-                int _filename = 0,
-                int _line = 0,
-                int _msg2 = 0,
-                int _msg3 = 0)
+                const wxString&  _regex,
+                int              _msg,
+                int              _filename = 0,
+                int              _line     = 0,
+                int              _msg2     = 0,
+                int              _msg3     = 0)
         : desc(_desc), lt(_lt), regex(_regex), filename(_filename), line(_line)
     {
         msg[0] = _msg;
@@ -93,21 +93,21 @@ struct RegExStruct
     }
     bool operator==(const RegExStruct& other)
     {
-        return desc == other.desc &&
-                lt == other.lt &&
-                regex == other.regex &&
-                msg[0] == other.msg[0] &&
-                msg[1] == other.msg[1] &&
-                msg[2] == other.msg[2] &&
-                filename == other.filename &&
-                line == other.line;
+        return (   desc     == other.desc
+                && lt       == other.lt
+                && regex    == other.regex
+                && msg[0]   == other.msg[0]
+                && msg[1]   == other.msg[1]
+                && msg[2]   == other.msg[2]
+                && filename == other.filename
+                && line     == other.line );
     }
-    wxString desc; // title of this regex
-    CompilerLineType lt; // classify the line, if regex matches
-    wxString regex; // the regex to match
-    int msg[3]; // up-to 3 sub-expression nr for warning/error message
-    int filename; // sub-expression nr for filename
-    int line; // sub-expression nr for line number
+    wxString         desc;     // title of this regex
+    CompilerLineType lt;       // classify the line, if regex matches
+    wxString         regex;    // the regex to match
+    int              msg[3];   // up-to 3 sub-expression nr for warning/error message
+    int              filename; // sub-expression nr for filename
+    int              line;     // sub-expression nr for line number
     // if more than one sub-expressions are entered for msg,
     // they are appended to each other, with one space in between.
     // Appending takes place in the same order...
@@ -126,7 +126,7 @@ enum CommandType
     ctLinkStaticCmd,        ///< Link static lib command, e.g. "ar -r $output $link_objects\n\tranlib $static_output"
     ctLinkNativeCmd,        ///< Link native binary command
 
-    ctCount,				///< Do NOT use
+    ctCount                 ///< Do NOT use
 };
 
 
@@ -148,59 +148,64 @@ enum AutoDetectResult
 /// Struct to keep programs
 struct CompilerPrograms
 {
-    wxString C; // C compiler
-    wxString CPP; // C++ compiler
-    wxString LD; // dynamic libs linker
-    wxString LIB; // static libs linker
-    wxString WINDRES; // resource compiler
-    wxString MAKE; // make
-    wxString DBG; // debugger
+    wxString C;         // C compiler
+    wxString CPP;       // C++ compiler
+    wxString LD;        // dynamic libs linker
+    wxString LIB;       // static libs linker
+    wxString WINDRES;   // resource compiler
+    wxString MAKE;      // make
+    wxString DBG;       // debugger
 };
 
 /// Struct to keep switches
 struct CompilerSwitches
 {
-    wxString includeDirs;   // -I
-    wxString libDirs;       // -L
-    wxString linkLibs;      // -l
-    wxString defines;       // -D
-    wxString genericSwitch; // -
-    wxString objectExtension; // o
-    bool forceFwdSlashes; // force use forward slashes in file/path names (used by CompilerCommandGenerator)
-    bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
-    bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
-    bool needDependencies; // true
-    CompilerLoggingType logging; // clogFull
-    wxString libPrefix; // lib
-    wxString libExtension; // a
-    bool linkerNeedsLibPrefix; // when adding a link library, linker needs prefix?
+    wxString includeDirs;         // -I
+    wxString libDirs;             // -L
+    wxString linkLibs;            // -l
+    wxString defines;             // -D
+    wxString genericSwitch;       // -
+    wxString objectExtension;     // o
+    bool forceFwdSlashes;         // force use forward slashes in file/path names (used by CompilerCommandGenerator)
+    bool forceLinkerUseQuotes;    // use quotes for filenames in linker command line (needed or not)?
+    bool forceCompilerUseQuotes;  // use quotes for filenames in compiler command line (needed or not)?
+    bool needDependencies;        // true
+    CompilerLoggingType logging;  // clogFull
+    wxString libPrefix;           // lib
+    wxString libExtension;        // a
+    bool linkerNeedsLibPrefix;    // when adding a link library, linker needs prefix?
     bool linkerNeedsLibExtension; // when adding a link library, linker needs extension?
-    bool supportsPCH; // supports precompiled headers?
-    wxString PCHExtension; // precompiled headers extension
-    bool UseFlatObjects; // Use Flat object file names (no extra subdirs)?
-    bool UseFullSourcePaths; // This is mainly a workaround for the GDB debugger, apparantly I doesn't deal
-            // well with relative paths, therefor for GCC it is better to specify the source full to the compiler in
-            // a full path notation, for all other compilers it is suggested to keep this switch at false
-    CompilerSwitches();     // constructor initializing the members, specific compilers should overrule if needed
+    bool supportsPCH;             // supports pre-compiled headers?
+    wxString PCHExtension;        // pre-compiled headers extension
+    bool UseFlatObjects;          // Use Flat object file names (no extra subdirs)?
+    bool UseFullSourcePaths;      // This is mainly a workaround for the GDB debugger, apparently I doesn't deal
+                                  // well with relative paths, therefore for GCC it is better to specify the source
+                                  // full to the compiler in a full path notation, for all other compilers it is
+                                  // suggested to keep this switch at false
+    bool Use83Paths;              // This is mainly a workaround for the resource compiler under Windows, apparently
+                                  // it doesn't deal well with spaces in the (include) path even if the path is quoted,
+                                  // therefore use 8.3 notation without spaces on Windows.
+
+    CompilerSwitches(); // constructor initializing the members, specific compilers should overrule if needed
 };
 
 /// Struct for compiler/linker commands
 struct CompilerTool
 {
-	// extensions string will be converted to array by GetArrayFromString using DEFAULT_ARRAY_SEP (;)
-	// as separator
-	CompilerTool(const wxString& command = wxEmptyString, const wxString& extensions = wxEmptyString)
-		: command(command), extensions(GetArrayFromString(extensions))
-	{}
-	CompilerTool(const CompilerTool& rhs)
-		: command(rhs.command), extensions(rhs.extensions), generatedFiles(rhs.generatedFiles)
-	{}
-	bool operator==(const CompilerTool& rhs) const { return command == rhs.command && extensions == rhs.extensions && generatedFiles == rhs.generatedFiles; }
-	bool operator!=(const CompilerTool& rhs) const { return !(*this == rhs); }
+    // extensions string will be converted to array by GetArrayFromString using DEFAULT_ARRAY_SEP (;)
+    // as separator
+    CompilerTool(const wxString& command = wxEmptyString, const wxString& extensions = wxEmptyString)
+        : command(command), extensions(GetArrayFromString(extensions))
+    {}
+    CompilerTool(const CompilerTool& rhs)
+        : command(rhs.command), extensions(rhs.extensions), generatedFiles(rhs.generatedFiles)
+    {}
+    bool operator==(const CompilerTool& rhs) const { return command == rhs.command && extensions == rhs.extensions && generatedFiles == rhs.generatedFiles; }
+    bool operator!=(const CompilerTool& rhs) const { return !(*this == rhs); }
 
-	wxString command; ///< command to execute
-	wxArrayString extensions; ///< file extensions for which the command will be invoked (no leading dot)
-	wxArrayString generatedFiles; ///< the native language files this command generates that should be further compiled
+    wxString      command;        ///< command to execute
+    wxArrayString extensions;     ///< file extensions for which the command will be invoked (no leading dot)
+    wxArrayString generatedFiles; ///< the native language files this command generates that should be further compiled
 };
 
 typedef std::vector<CompilerTool> CompilerToolsVector;
@@ -351,18 +356,18 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         void MirrorCurrentSettings();
 
         // set the following members in your class
-        wxString m_Name;
-        wxString m_MasterPath;
-        wxArrayString m_ExtraPaths;
+        wxString            m_Name;
+        wxString            m_MasterPath;
+        wxArrayString       m_ExtraPaths;
         CompilerToolsVector m_Commands[ctCount];
-        CompilerPrograms m_Programs;
-        CompilerSwitches m_Switches;
-        CompilerOptions m_Options;
-        RegExArray m_RegExes;
-        wxString m_ErrorFilename;
-        wxString m_ErrorLine;
-        wxString m_Error;
-        wxString m_VersionString;
+        CompilerPrograms    m_Programs;
+        CompilerSwitches    m_Switches;
+        CompilerOptions     m_Options;
+        RegExArray          m_RegExes;
+        wxString            m_ErrorFilename;
+        wxString            m_ErrorLine;
+        wxString            m_Error;
+        wxString            m_VersionString;
     private:
         wxString m_ID;
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
@@ -374,9 +379,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         // "mirror" default settings for comparing when saving (to save only those that differ from defaults)
         struct MirrorSettings
         {
-            wxString Name;
-            wxString MasterPath;
-            wxArrayString ExtraPaths;
+            wxString         Name;
+            wxString         MasterPath;
+            wxArrayString    ExtraPaths;
             CompilerPrograms Programs;
 
             // these are the CompileOptionsBase settings that each compiler keeps on a global level
@@ -391,12 +396,12 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
             // below are the settings that the user is asked to revert to defaults (if defaults have changed)
             CompilerToolsVector Commands[ctCount];
-            CompilerSwitches Switches;
-            CompilerOptions Options;
-            RegExArray RegExes;
+            CompilerSwitches    Switches;
+            CompilerOptions     Options;
+            RegExArray          RegExes;
         };
         MirrorSettings m_Mirror;
-        bool m_Mirrored; // flag to only mirror the settings once
+        bool           m_Mirrored; // flag to only mirror the settings once
 };
 
 #endif // COMPILER_H
