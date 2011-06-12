@@ -177,6 +177,10 @@ void MainFrame::OnBtnFileDstClick(wxCommandEvent& /*event*/)
 
   if (!LoadConfig(filename, &mCfgDst) || !mCfgDst)
   {
+    wxMessageBox(wxT("Hint: To backup (export) your configuration use the \"Export\" button,\n"
+                     "to transfer to an existing (valid Code::Blocks) configuration file,\n"
+                     "use the \"Transfer\" button."),
+                 wxT("Information"), wxICON_INFORMATION | wxOK);
     mCfgDstValid = false;
     return;
   }
@@ -446,7 +450,7 @@ bool MainFrame::LoadConfig(const wxString& filename, TiXmlDocument** doc)
   if (*doc) delete *doc;
   *doc = new TiXmlDocument();
 
-  if(!TiXmlLoadDocument(filename, *doc))
+  if (!TiXmlLoadDocument(filename, *doc))
   {
     wxMessageBox(wxT("Error accessing configuration file!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);
@@ -462,7 +466,7 @@ bool MainFrame::LoadConfig(const wxString& filename, TiXmlDocument** doc)
     return false;
 
   const char *vers = docroot->Attribute("version");
-  if(!vers || atoi(vers) != 1)
+  if (!vers || atoi(vers) != 1)
   {
     wxMessageBox(wxT("Unknown config file version encountered!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);
@@ -519,7 +523,12 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
 {
   wxString section((*node)->Value(), wxConvLocal);
 
-  if      (section.MakeLower().Matches(wxT("code_completion"))) // code completion plugin token replacements
+  if      (section.MakeLower().Matches(wxT("auto_complete"))) // auto complete (abbreviations)
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+  else if (section.MakeLower().Matches(wxT("code_completion"))) // code completion plugin token replacements
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -565,6 +574,11 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
       if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
         OfferNode(&child, listbox, nodes, wxT("<editor>")); // recursive call
     }
+  }
+  else if (section.MakeLower().Matches(wxT("mime_types")))  // mime types
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
   }
   else if (section.MakeLower().Matches(wxT("project_manager"))) // file groups
   {
@@ -633,6 +647,16 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // ------------------------------------------
   else if (   prefix.Matches(wxT("<editor>"))
            && section.MakeLower().Matches(wxT("colour_sets")))// colour sets
+  {
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+
+  // -------------------------------------------
+  // 1st recursion level: editor -> default code
+  // -------------------------------------------
+  else if (   prefix.Matches(wxT("<editor>"))
+           && section.MakeLower().Matches(wxT("default_code")))// default code
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -751,7 +775,7 @@ wxArrayString MainFrame::PathToArray(const wxString& path)
 
 bool MainFrame::TiXmlLoadDocument(const wxString& filename, TiXmlDocument*doc)
 {
-  if(!doc || !wxFile::Access(filename, wxFile::read))
+  if (!doc || !wxFile::Access(filename, wxFile::read))
     return false;
 
   wxFile file(filename);
@@ -778,8 +802,8 @@ bool MainFrame::TiXmlSaveDocument(const wxString& filename, TiXmlDocument* doc)
   doc->Accept(&printer);
 
   wxTempFile file(filename);
-  if(file.IsOpened())
-    if(file.Write(printer.CStr(), printer.Size()) && file.Commit())
+  if (file.IsOpened())
+    if (file.Write(printer.CStr(), printer.Size()) && file.Commit())
       return true;
 
   return false;
@@ -789,7 +813,7 @@ bool MainFrame::TiXmlSaveDocument(const wxString& filename, TiXmlDocument* doc)
 
 bool MainFrame::TiXmlSuccess(TiXmlDocument* doc)
 {
-  if(doc->ErrorId())
+  if (doc->ErrorId())
   {
     wxMessageBox(wxT("TinyXML error: ") +
 #if wxUSE_UNICODE
