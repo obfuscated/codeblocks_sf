@@ -856,12 +856,19 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
             if (Manager::IsAppShuttingDown())
                 return false;
 
+            static bool flag = false;
+            if (flag)
+                return false;
+
             wxArrayString output;
-            if (wxExecute(cpp_compiler + args, output, wxEXEC_SYNC) == -1)
+            flag = true;
+            if (wxExecute(cpp_compiler + args, output, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
             {
                 TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
+                flag = false;
                 return false;
             }
+            flag = false;
 
             wxString& gccDefs = defsMap[cpp_compiler];
             for (size_t i = 0; i < output.Count(); ++i)
@@ -919,12 +926,19 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
             if (Manager::IsAppShuttingDown())
                 return false;
 
+            static bool flag = false;
+            if (flag)
+                return false;
+
             wxArrayString output, error;
-            if (wxExecute(cmd, output, error, wxEXEC_SYNC) == -1)
+            flag = true;
+            if (wxExecute(cmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
             {
                 TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
+                flag = false;
                 return false;
             }
+            flag = false;
             if (error.IsEmpty())
             {
                 TRACE(_T("AddCompilerPredefinedMacros:: Can't get pre-defined macros for MSVC."));
@@ -1044,13 +1058,20 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     if (Manager::IsAppShuttingDown())
         return dirs[cpp_compiler];
 
+    static bool flag = false;
+    if (flag)
+        return dirs[cpp_compiler];
+
     // action time  (everything shows up on the error stream
     wxArrayString Output, Errors;
-    if (wxExecute(Command, Output, Errors, wxEXEC_SYNC) == -1)
+    flag = true;
+    if (wxExecute(Command, Output, Errors, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
     {
         TRACE(_T("GetGCCCompilerDirs::wxExecute failed!"));
+        flag = false;
         return dirs[cpp_compiler];
     }
+    flag = false;
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
