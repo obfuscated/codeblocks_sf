@@ -8,18 +8,18 @@
 
 #include "scrollingdialog.h"
 #include <wx/string.h>
-#include "compiler.h"	// RegExArray, COMPILER_COMMAND_TYPES_COUNT
+#include "compiler.h" // RegExArray, COMPILER_COMMAND_TYPES_COUNT
 
 class wxCommandEvent;
 class wxSpinEvent;
 
 class AdvancedCompilerOptionsDlg : public wxScrollingDialog
 {
-	public:
-		AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);
-		virtual ~AdvancedCompilerOptionsDlg();
-		bool IsDirty() const {return m_bDirty;}
-	private:
+    public:
+        AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);
+        virtual ~AdvancedCompilerOptionsDlg();
+        bool IsDirty() const {return m_bDirty;}
+    private:
         void OnCommandsChange(wxCommandEvent& event);
         void OnExtChange(wxCommandEvent& event);
         void OnAddExt(wxCommandEvent& event);
@@ -51,7 +51,7 @@ class AdvancedCompilerOptionsDlg : public wxScrollingDialog
         int m_LastExtIndex;
         RegExArray m_Regexes;
         int m_SelectedRegex;
-        bool m_bDirty;		//!< Have changes being made to settings in the dialog
+        bool m_bDirty; //!< Have changes being made to settings in the dialog
         CompilerToolsVector m_Commands[ctCount];
         DECLARE_EVENT_TABLE();
 };
