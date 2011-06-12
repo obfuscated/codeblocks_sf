@@ -1937,6 +1937,15 @@
 		<Unit filename="plugins\scriptedwizard\projectpathpanel.h">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\arm\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\avr\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\avr\wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\c_file\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -1967,6 +1976,18 @@
 		<Unit filename="plugins\scriptedwizard\resources\fltk\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\fortran\app\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\fortran\dll\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\fortran\file\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\fortran\lib\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\glfw\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -1982,6 +2003,12 @@
 		<Unit filename="plugins\scriptedwizard\resources\irrlicht\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\lf\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\lf\wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\manifest.xml">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -1994,16 +2021,25 @@
 		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\opengl\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\ppc\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\qt4\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\sdl\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\sfml\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\sharedlib\wizard.script">
@@ -2013,6 +2049,18 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\staticlib\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\stlport\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\sys\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\tricore\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\tricore\wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\win32gui\wizard.script">
@@ -2813,6 +2861,9 @@
 		</Unit>
 		<Unit filename="sdk\wxpropgrid\include\wx\propgrid\xh_propgrid.h">
 			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk\wxpropgrid\samples\sample.xrc">
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\wxpropgrid\src\advprops.cpp">
 			<Option target="wxpropgrid" />
