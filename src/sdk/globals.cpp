@@ -111,7 +111,7 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
         out << array[i];
-        if(i < array.GetCount() - 1 || SeparatorAtEnd)
+        if (i < array.GetCount() - 1 || SeparatorAtEnd)
             out << separator;
     }
     return out;
@@ -149,19 +149,36 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
+wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
+{
+    wxArrayString out;
+    for (unsigned int i = 0; i < array.GetCount(); ++i)
+    {
+        if (caseSens)
+        {
+          if (out.Index(array[i]) == wxNOT_FOUND)
+              out.Add(array[i]);
+        }
+        else
+        {
+          if (out.Index(array[i].Lower()) == wxNOT_FOUND)
+              out.Add(array[i].Lower()); // append only lower-case for the moment
+        }
+    }
+    return out;
+}
+
 void AppendArray(const wxArrayString& from, wxArrayString& to)
 {
     for (unsigned int i = 0; i < from.GetCount(); ++i)
-    {
         to.Add(from[i]);
-    }
 }
 
 wxString UnixFilename(const wxString& filename)
 {
     wxString result = filename;
 
-    if(platform::windows)
+    if (platform::windows)
     {
         bool unc_name = result.StartsWith(_T("\\\\"));
 
@@ -347,11 +364,11 @@ void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxStri
 
         while (item.IsOk())
         {
-            if(tree->GetItemText(item) != folder)
+            if (tree->GetItemText(item) != folder)
                 item = tree->GetNextSibling(item);
             else
             {
-                if(pos < 0)
+                if (pos < 0)
                 {
                     tree->SelectItem(item);
                     break;
@@ -470,7 +487,7 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 
 bool CreateDirRecursively(const wxString& full_path, int perms)
 {
-    if(wxDirExists(full_path)) // early out
+    if (wxDirExists(full_path)) // early out
         return true;
 
     wxArrayString dirs;
@@ -536,7 +553,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     if (!file.IsOpened())
         return false;
     int len = file.Length();
-    if(!len)
+    if (!len)
     {
         file.Close();
         return true;
@@ -573,7 +590,7 @@ bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
     {
         wxCSConv conv(encoding);
         result = file.Write(buff,conv);
-        if(result)
+        if (result)
             file.Flush();
         file.Close();
     }
@@ -606,7 +623,7 @@ wxString cbC2U(const char* str)
 // Return multibyte (C string) representation of the string
 const wxWX2MBbuf cbU2C(const wxString& str)
 {
-    if(platform::unicode)
+    if (platform::unicode)
         return str.mb_str(wxConvUTF8);
     else
         return str.mb_str();
@@ -620,7 +637,7 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
     wxFontEncoding encoding = possibleEncoding;
     strOut.Clear();
 
-    if(platform::unicode)
+    if (platform::unicode)
     {
         if (possibleEncoding != wxFONTENCODING_UTF16 &&
             possibleEncoding != wxFONTENCODING_UTF16LE &&
@@ -680,13 +697,15 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
     for(unsigned int i = 0; i < str.length(); ++i)
     {
         wxChar c = str[i];
-        if(   (c >= _T('A') && c <= _T('Z'))
+        if (  (c >= _T('A') && c <= _T('Z'))
            || (c >= _T('a') && c <= _T('z'))
            || (c >= _T('0') && c <= _T('9'))
-           ||  c == _T('.') || c == _T('-') || c == _T('_') )
+           || (c == _T('.'))
+           || (c == _T('-'))
+           || (c == _T('_')) )
 
             ret.Append(c);
-        else if(c == _T(' '))
+        else if (c == _T(' '))
             ret.Append(_T('+'));
         else
         {
@@ -711,7 +730,7 @@ bool IsWindowReallyShown(wxWindow* win)
 bool NormalizePath(wxFileName& f,const wxString& base)
 {
     bool result = true;
-//    if(!f.IsAbsolute())
+//    if (!f.IsAbsolute())
     {
         f.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         result = f.IsOk();
@@ -741,37 +760,27 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
     int j = pathDirArray.GetCount() - 1;
     for (int i = suffixDirArray.GetCount() - 1; i >= 0; i--)
     {
+        // skip paths like /./././ and ////
         if (suffixDirArray[i] == _T(".") || suffixDirArray[i] == _T(""))
-        {
-            // skip paths like /./././ and ////
             continue;
-        }
 
+        // suffix has more directories than path - cannot represent the same path
         if (j < 0)
-        {
-            // suffix has more directories than path - cannot represent the same path
             return false;
-        }
 
+        // suffix contains ".." - from now on we cannot precisely determine
+        // whether suffix and path match - we assume that they do
         if (suffixDirArray[i] == _T(".."))
-        {
-            // suffix contains ".." - from now on we cannot precisely determine
-            // whether suffix and path match - we assume that they do
             return true;
-        }
+        // the corresponding directories of the two paths differ
         else if (suffixDirArray[i] != pathDirArray[j])
-        {
-            // the corresponding directories of the two paths differ
             return false;
-        }
 
         j--;
     }
 
     if (suffix.IsAbsolute() && (j >= 0 || suffix.GetVolume() != path.GetVolume()))
-    {
         return false;
-    }
 
     // 'suffix' is a suffix of 'path'
     return true;
@@ -788,7 +797,7 @@ bool UsesCommonControls6()
     HINSTANCE hinstDll;
     DWORD dwVersion = 0;
     hinstDll = LoadLibrary(_T("comctl32.dll"));
-    if(hinstDll)
+    if (hinstDll)
     {
         DLLGETVERSIONPROC pDllGetVersion;
         pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
@@ -882,21 +891,21 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
     int the_mode;
 
-    if(!w)
+    if (!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
     wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
 
-    if(!referenceWindow)    // no application window available, so this is as good as we can get
+    if (!referenceWindow)    // no application window available, so this is as good as we can get
         referenceWindow = w;
 
     wxRect windowRect = w->GetRect();
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if(!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
+    if (!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
         return;
 
-    if(mode == pdlBest)
+    if (mode == pdlBest)
         the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
     else
         the_mode = (int) mode;
@@ -950,7 +959,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
             int y1 = windowRect.y;
             int y2 = windowRect.y + windowRect.height;
 
-            if(windowRect.width > monitorWidth) // cannot place without clipping, so centre it
+            if (windowRect.width > monitorWidth) // cannot place without clipping, so centre it
             {
                 x1 = r.left + (monitorWidth  - windowRect.width)/2;
                 x2 = x1 + windowRect.width;
@@ -961,7 +970,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
                 x1 = std::max(x2 - windowRect.width, (int) r.left);
                 x2 = x1 + windowRect.width;
             }
-            if(windowRect.height > monitorHeight) // cannot place without clipping, so centre it
+            if (windowRect.height > monitorHeight) // cannot place without clipping, so centre it
             {
                 y1 = r.top + (monitorHeight  - windowRect.height)/2;
                 y2 = y1 + windowRect.height;
@@ -1009,24 +1018,24 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     int the_mode;
 
     wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
-    if(!referenceWindow) // let's not crash on shutdown
+    if (!referenceWindow) // let's not crash on shutdown
         return;
 
-    if(!w)
+    if (!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if(!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
+    if (!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
         return;
 
-    if(mode == pdlBest)
+    if (mode == pdlBest)
         the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
     else
         the_mode = (int) mode;
 
 
-    if(the_mode == pdlCentre || the_mode == pdlHead)
+    if (the_mode == pdlCentre || the_mode == pdlHead)
     {
         w->CentreOnScreen();
         return;
@@ -1080,7 +1089,7 @@ namespace platform
 {
     windows_version_t cb_get_os()
     {
-        if(!platform::windows)
+        if (!platform::windows)
         {
             return winver_NotWindows;
         }
@@ -1091,20 +1100,28 @@ namespace platform
             int famWinNT = wxOS_WINDOWS_NT;
 
             int Major = 0;
-            int family = wxGetOsVersion(&Major, NULL);
+            int Minor = 0;
+            int family = wxGetOsVersion(&Major, &Minor);
 
-            if(family == famWin95)
+            if (family == famWin95)
                  return winver_Windows9598ME;
 
-            if(family == famWinNT)
+            if (family == famWinNT)
             {
-                if(Major == 5)
+                if (Major == 5 && Minor == 0)
+                    return winver_WindowsNT2000;
+
+                if (Major == 5 && Minor == 1)
                     return winver_WindowsXP;
 
-                if(Major == 6) // just guessing here, not sure if this is right
-                    return winver_Vista;
+                if (Major == 5 && Minor == 2)
+                    return winver_WindowsServer2003;
 
-                return winver_WindowsNT2000;
+                if (Major == 6 && Minor == 0)
+                    return winver_WindowsVista;
+
+                if (Major == 6 && Minor == 1)
+                    return winver_Windows7;
             }
 
             return winver_UnknownWindows;
