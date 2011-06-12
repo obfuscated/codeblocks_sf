@@ -13,12 +13,10 @@
 
 #ifndef CB_PRECOMP
     #include <wx/wx.h>
-    #include <logmanager.h>
-    #include <manager.h>
 #endif
 
 #include <logmanager.h>
-    #include <manager.h>
+#include <manager.h>
 
 #include "expression.h"
 #include "token.h"

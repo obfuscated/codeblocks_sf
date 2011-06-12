@@ -410,7 +410,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     if (m_Mirror.MasterPath != m_MasterPath)
         cfg->Write(tmp + _T("/master_path"),     m_MasterPath,         true);
     if (m_Mirror.ExtraPaths != m_ExtraPaths)
-        cfg->Write(tmp + _T("/extra_paths"),     GetStringFromArray(m_ExtraPaths, _T(";")), true);
+        cfg->Write(tmp + _T("/extra_paths"),     GetStringFromArray( MakeUniqueArray(m_ExtraPaths, true), _T(";") ), true);
     if (m_Mirror.Programs.C != m_Programs.C)
         cfg->Write(tmp + _T("/c_compiler"),      m_Programs.C,         true);
     if (m_Mirror.Programs.CPP != m_Programs.CPP)
@@ -557,7 +557,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Name = cfg->Read(tmp + _T("/name"), m_Name);
 
     m_MasterPath         = cfg->Read(tmp + _T("/master_path"),     m_MasterPath);
-    m_ExtraPaths         = GetArrayFromString(cfg->Read(tmp + _T("/extra_paths"), _T("")), _T(";"));
+    m_ExtraPaths         = MakeUniqueArray(GetArrayFromString(cfg->Read(tmp + _T("/extra_paths"), _T("")), _T(";")), true);
     m_Programs.C         = cfg->Read(tmp + _T("/c_compiler"),      m_Programs.C);
     m_Programs.CPP       = cfg->Read(tmp + _T("/cpp_compiler"),    m_Programs.CPP);
     m_Programs.LD        = cfg->Read(tmp + _T("/linker"),          m_Programs.LD);

@@ -116,7 +116,8 @@ void FilesGroupsAndMasks::Save()
 
         key.Clear();
         key << _T("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("mask");
-        conf->Write(key, GetStringFromArray(CleanUpDoublets(fg->fileMasks), _T(";")));
+        // Clean-up file masks that appear twice or more
+        conf->Write(key, GetStringFromArray( MakeUniqueArray(fg->fileMasks, false), _T(";") ));
     }
 }
 
@@ -164,7 +165,8 @@ void FilesGroupsAndMasks::SetFileMasks(unsigned int group, const wxString& masks
         return;
 
     FileGroups* fg = m_Groups[group];
-    fg->fileMasks = CleanUpDoublets( GetArrayFromString(masks, _T(";")) );
+    // Clean-up file masks that appear twice or more
+    fg->fileMasks = MakeUniqueArray( GetArrayFromString(masks, _T(";")), false );
 }
 
 unsigned int FilesGroupsAndMasks::GetGroupsCount() const
@@ -186,7 +188,8 @@ wxString FilesGroupsAndMasks::GetFileMasks(unsigned int group) const
         return wxEmptyString;
     const FileGroups* fg = m_Groups[group];
 
-    return GetStringFromArray( CleanUpDoublets(fg->fileMasks) );
+    // Clean-up file masks that appear twice or more
+    return GetStringFromArray( MakeUniqueArray(fg->fileMasks, false) );
 }
 
 bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group) const
@@ -200,15 +203,4 @@ bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group) c
             return true;
     }
     return false;
-}
-
-wxArrayString FilesGroupsAndMasks::CleanUpDoublets(const wxArrayString& masks) const
-{
-    wxArrayString masks_cleaned_up;
-    for (unsigned int i = 0; i < masks.GetCount(); ++i)
-    {
-        if (masks_cleaned_up.Index(masks[i].Lower()) == wxNOT_FOUND)
-            masks_cleaned_up.Add(masks[i].Lower());
-    }
-    return masks_cleaned_up;
 }

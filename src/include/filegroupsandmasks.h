@@ -70,8 +70,6 @@ class DLLIMPORT FilesGroupsAndMasks
     private:
         /** Load groups/masks from config */
         void Load();
-        /** Clean-up file masks that appear twice or more */
-        wxArrayString CleanUpDoublets(const wxArrayString& masks) const;
 
         FileGroupsArray m_Groups; //!< Internal storage for file groups ans masks
 };
