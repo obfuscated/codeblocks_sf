@@ -203,16 +203,13 @@ Parser::~Parser()
     // 3. Abort all thread
     TerminateAllThreads();
 
-    // 4. Lock tokens tree
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-
-    // 5. Free memory
+    // 4. Free memory
     delete m_TempTokensTree;
     m_TempTokensTree = nullptr;
     delete m_TokensTree;
     m_TokensTree = nullptr;
 
-    // 6. Reset current parser
+    // 5. Reset current parser
     if (s_CurrentParser == this)
         s_CurrentParser = nullptr;
 }
