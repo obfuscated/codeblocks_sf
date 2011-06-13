@@ -23,6 +23,7 @@
     #include "sdk_events.h"
 #endif
 
+#include "prep.h"
 #include "cbstyledtextctrl.h"
 #include "ThreadSearch.h"
 #include "ThreadSearchView.h"
