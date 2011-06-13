@@ -172,7 +172,7 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_Parent(parent),
     m_Project(project),
     m_UsingCache(false),
-    m_Pool(this, wxNewId(), 1), // in the meanwhile it'll have to be forced to 1
+    m_Pool(this, wxNewId(), 1, 2 * 1024 * 1024), // in the meanwhile it'll have to be forced to 1
     m_IsPriority(false),
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
