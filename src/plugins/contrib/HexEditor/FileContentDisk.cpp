@@ -22,6 +22,7 @@
 
 #include "FileContentDisk.h"
 #include "TestCasesHelper.h"
+#include "globals.h"
 
 #include <wx/utils.h>
 #include <wx/progdlg.h>

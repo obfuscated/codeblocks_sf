@@ -7,6 +7,7 @@
 #define SDK_EVENTS_H
 
 #include <wx/event.h>
+#include <wx/intl.h>
 #include "settings.h"
 
 class cbProject;

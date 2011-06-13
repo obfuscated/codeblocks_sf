@@ -49,6 +49,7 @@
 #include <mach-o/dyld.h>
 #endif
 
+#include "prep.h"
 #include "xtra_res.h"
 #include "configmanager.h"
 #include "seditormanager.h"

@@ -9,6 +9,7 @@
 #include <wx/list.h>
 #include <wx/treectrl.h>
 #include <wx/hashmap.h>
+#include <wx/filename.h>
 
 #include "settings.h"
 #include "manager.h"
@@ -16,9 +17,7 @@
 
 #include "printing_types.h"
 
-#ifndef CB_PRECOMP
-    #include "globals.h" // cbC2U
-#endif
+#include "globals.h" // cbC2U, FileType
 
 DLLIMPORT extern int ID_NBEditorManager;
 DLLIMPORT extern int ID_EditorManager;

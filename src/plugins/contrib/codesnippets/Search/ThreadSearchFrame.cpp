@@ -23,6 +23,7 @@
 #include <wx/utils.h>
 #include "cbauibook.h"
 
+#include "prep.h"
 
 #include <filefilters.h>
 #include <cbworkspace.h>

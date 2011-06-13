@@ -52,6 +52,7 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include <logmanager.h>
+#include "prep.h"
 
 namespace
 {

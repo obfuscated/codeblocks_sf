@@ -33,6 +33,7 @@
 
 #include <wx/xrc/xmlres.h>
 
+#include "prep.h"
 #include "scbeditor.h"
 #include "seditorbase.h"
 #include "seditormanager.h"

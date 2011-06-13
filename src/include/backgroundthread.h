@@ -16,6 +16,7 @@
 #include <wx/timer.h> // wxMilliSleep
 #include "wx/thread.h"
 #include "manager.h"
+#include "blockallocated.h"
 
 /*
 * BackgroundThread is a lightweight single background worker thread implementation for situations in which
