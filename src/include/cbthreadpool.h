@@ -41,7 +41,7 @@ class DLLIMPORT cbThreadPool
       * @param id Used with the events
       * @param concurrentThreads Number of threads in the pool. -1 means current CPU count
       */
-    cbThreadPool(wxEvtHandler *owner, int id = -1, int concurrentThreads = -1);
+    cbThreadPool(wxEvtHandler *owner, int id = -1, int concurrentThreads = -1, unsigned int stackSize = 0);
 
     /// cbThreadPool dtor
     ~cbThreadPool();
@@ -132,6 +132,7 @@ class DLLIMPORT cbThreadPool
     bool m_batching;
 
     int m_concurrentThreads; // current number of concurrent threads
+    unsigned int m_stackSize; // stack size for every threads
     int m_concurrentThreadsSchedule; // if we cannot apply the new value of concurrent threads, keep it here
     WorkerThreadsArray m_threads; // the working threads are stored here
     TasksQueue m_tasksQueue; // and the pending tasks here
@@ -175,11 +176,12 @@ class DLLIMPORT cbThreadPool
 /* **************** INLINE MEMBERS **************** */
 /* ************************************************ */
 
-inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThreads)
+inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThreads, unsigned int stackSize)
 : m_pOwner(owner),
   m_ID(id),
   m_batching(false),
   m_concurrentThreads(-1),
+  m_stackSize(stackSize),
   m_concurrentThreadsSchedule(0),
   m_workingThreads(0),
   m_semaphore(new wxSemaphore)

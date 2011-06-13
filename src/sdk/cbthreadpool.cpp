@@ -68,7 +68,7 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
     for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads); ++i)
     {
       m_threads.push_back(new cbWorkerThread(this, m_semaphore));
-      m_threads.back()->Create();
+      m_threads.back()->Create(m_stackSize);
       m_threads.back()->Run();
     }
 
