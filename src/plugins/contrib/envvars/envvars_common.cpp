@@ -267,10 +267,10 @@ bool nsEnvVars::EnvvarSetExists(const wxString& set_name)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-bool nsEnvVars::EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars, int sel)
+bool nsEnvVars::EnvvarVetoUI(const wxString& key, wxCheckListBox* lstEnvVars, int sel)
 {
 #if TRACE_ENVVARS
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarVeto")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarVetoUI")));
 #endif
 
   if (wxGetEnv(key, NULL))
@@ -295,15 +295,17 @@ bool nsEnvVars::EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars, int 
   }// if
 
   return false;
-}// EnvvarVeto
+}// EnvvarVetoUI
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-bool nsEnvVars::EnvvarsClear(wxCheckListBox* lstEnvVars)
+bool nsEnvVars::EnvvarsClearUI(wxCheckListBox* lstEnvVars)
 {
 #if TRACE_ENVVARS
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarsClear")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarsClearUI")));
 #endif
+
+  if (!lstEnvVars) return false;
 
   wxString envsNotUnSet(wxEmptyString);
 
@@ -341,7 +343,7 @@ bool nsEnvVars::EnvvarsClear(wxCheckListBox* lstEnvVars)
   }
 
   return true;
-}// EnvvarsClear
+}// EnvvarsClearUI
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -366,11 +368,11 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
       #endif
     );
     EV_DBGLOG(_T("EnvVars: Unsetting environment variable '%s' failed."),
-      #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(2, 9, 0)
       the_key.wx_str());
-      #else
+    #else
       the_key.c_str());
-      #endif
+    #endif
     return false;
   }
 
@@ -379,8 +381,7 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
-                            wxCheckListBox* lstEnvVars, int sel)
+bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value)
 {
 #if TRACE_ENVVARS
   Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarApply")));
@@ -408,13 +409,11 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
       if (value_set.Contains(recursion))
       {
         EV_DBGLOG(_T("EnvVars: Setting environment variable '%s' failed "
-          #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(2, 9, 0)
                      "due to unsresolvable recursion."), the_key.wx_str());
-          #else
+        #else
                      "due to unsresolvable recursion."), the_key.c_str());
-          #endif
-        if (lstEnvVars && (sel>=0))
-          lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
+        #endif
         return false;
       }
       the_value.Replace(recursion.c_str(), value_set.c_str());
@@ -434,8 +433,6 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
     #else
     EV_DBGLOG(_T("EnvVars: Setting environment variable '%s' failed."), the_key.c_str());
     #endif
-    if (lstEnvVars && (sel>=0))
-      lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
     return false;
   }
 
@@ -448,7 +445,7 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
                                  wxCheckListBox* lstEnvVars)
 {
 #if TRACE_ENVVARS
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarApply")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarArrayApply")));
 #endif
 
   if (envvar.GetCount() == 3)
@@ -461,7 +458,7 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
     key.Trim(true).Trim(false);
     value.Trim(true).Trim(false);
 
-    int sel = 0;
+    int sel = -1;
     if (lstEnvVars)
     {
       sel = lstEnvVars->Append(key + _T(" = ") + value);
@@ -470,15 +467,18 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
 
     if (bCheck)
     {
-      if (EnvvarApply(key, value, lstEnvVars, sel))
-        return true;
+      bool success = EnvvarApply(key, value);
+      if (!success && lstEnvVars && sel>=0)
+        lstEnvVars->Check(sel, false); // Unset on UI to mark it's NOT set
+
+      return success;
     }
     else
       return true; // No need to apply -> success, too.
   }// if
 
   return false;
-}// EnvvarApply
+}// EnvvarArrayApply
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -504,23 +504,24 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name, bool even_if_active)
   if (!even_if_active && set_to_apply.IsSameAs(last_set_applied))
   {
     EV_DBGLOG(_T("EnvVars: Set '%s' will not be applied (already active)."),
-      #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(2, 9, 0)
       set_to_apply.wx_str());
-      #else
+    #else
       set_to_apply.c_str());
-      #endif
+    #endif
     return;
   }
 
   // Show currently activated set in debug log (for reference)
   wxString set_path = nsEnvVars::GetSetPathByName(set_to_apply);
   EV_DBGLOG(_T("EnvVars: Active envvar set is '%s', config path '%s'."),
-    #if wxCHECK_VERSION(2, 9, 0)
+  #if wxCHECK_VERSION(2, 9, 0)
     set_to_apply.wx_str(), set_path.wx_str());
-    #else
+  #else
     set_to_apply.c_str(), set_path.c_str());
-    #endif
+  #endif
 
+  // NOTE: Keep this in sync with EnvVarsConfigDlg::LoadSettings
   // Read and apply all envvars from currently active set in config
   wxArrayString vars     = nsEnvVars::GetEnvvarsBySetPath(set_path);
   size_t envvars_total   = vars.GetCount();
@@ -534,11 +535,11 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name, bool even_if_active)
     else
     {
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
-        #if wxCHECK_VERSION(2, 9, 0)
+      #if wxCHECK_VERSION(2, 9, 0)
         set_path.wx_str(), i);
-        #else
+      #else
         set_path.c_str(), i);
-        #endif
+      #endif
     }
   }// for
 
@@ -594,11 +595,11 @@ void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
     else
     {
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
-        #if wxCHECK_VERSION(2, 9, 0)
+      #if wxCHECK_VERSION(2, 9, 0)
         set_path.wx_str(), i);
-        #else
+      #else
         set_path.c_str(), i);
-        #endif
+      #endif
     }
   }// for
 

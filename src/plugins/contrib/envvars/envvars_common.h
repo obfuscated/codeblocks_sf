@@ -63,27 +63,23 @@ namespace nsEnvVars
     * \param sel Selection in the check listbox to update
     * \return Has the user vetoed to update the envvar?
     */
-  bool          EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars = NULL,
-                           int sel = -1);
+  bool          EnvvarVetoUI(const wxString& key, wxCheckListBox* lstEnvVars, int sel);
   /** Clears all envvars of a checklist box
     * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
     * \return Has the check listbox been updated successfully?
     */
-  bool          EnvvarsClear(wxCheckListBox* lstEnvVars);
+  bool          EnvvarsClearUI(wxCheckListBox* lstEnvVars);
   /** Discards an envvar
     * \param key envvar to discard (erase)
     * \return Has the envvar been discarded successfully?
     */
   bool          EnvvarDiscard(const wxString& key);
-  /** Applies a specific envvar (and sets the check in a checklist box accordingly)
+  /** Applies a specific envvar
     * \param key envvar key to set
     * \param value envvar value to set (value of the key)
-    * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
-    * \param sel Selection in the check listbox to update
     * \return Has the envvar been applied successfully?
     */
-  bool          EnvvarApply(const wxString& key, const wxString& value,
-                            wxCheckListBox* lstEnvVars = NULL, int sel = -1);
+  bool          EnvvarApply(const wxString& key, const wxString& value);
   /** Applies a specific envvar array (and appends (checks) the envvar in a checklist box accordingly)
     * \param envvar Set of 1..n envvars to apply
     * \param lstEnvVars Pointer to a check-listbox to update (envvar settings dialog)
@@ -95,12 +91,11 @@ namespace nsEnvVars
     * \param set_name Name of the set to apply (maps to a path in the config)
     * \param even_if_active Apply the envvar set even if it is active (it might have changed!)
     */
-  void          EnvvarSetApply(const wxString& set_name = wxEmptyString,
-                               bool even_if_active = true);
+  void          EnvvarSetApply(const wxString& set_name, bool even_if_active);
   /** Discards a specific envvar set from the config (without UI interaction)
     * \param set_name envvar set to discard completely
     */
-  void          EnvvarSetDiscard(const wxString& set_name = wxEmptyString);
+  void          EnvvarSetDiscard(const wxString& set_name);
 }// nsEnvVars
 
 #endif // ENVVARS_COMMON_H

@@ -33,8 +33,8 @@
 				</Compiler>
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -53,6 +53,9 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\scripting\include" />
+			<Add directory="..\..\..\include\scripting\sqplus" />
+			<Add directory="..\..\..\include\scripting\bindings" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="$(#WX.INCLUDE)" />
 			<Add directory="$(#WX)\contrib\include" />

@@ -159,6 +159,7 @@ void EnvVarsConfigDlg::LoadSettings()
     active_set.c_str(), active_set_idx, active_set_path.c_str());
   #endif
 
+  // NOTE: Keep this in sync with nsEnvVars::EnvvarSetApply
   // Read and show all envvars from currently active set in listbox
   wxArrayString vars     = nsEnvVars::GetEnvvarsBySetPath(active_set_path);
   size_t envvars_total   = vars.GetCount();
@@ -170,17 +171,21 @@ void EnvVarsConfigDlg::LoadSettings()
     if (nsEnvVars::EnvvarArrayApply(var_array, lstEnvVars))
       envvars_applied++;
     else
+    {
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
       #if wxCHECK_VERSION(2, 9, 0)
         active_set_path.wx_str(), i);
       #else
         active_set_path.c_str(), i);
       #endif
+    }
   }// for
 
   if (envvars_total>0)
+  {
     EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
+  }
 }// LoadSettings
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -311,7 +316,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
   #else
     choSet->GetString(choSet->GetCurrentSelection()).c_str());
   #endif
-  nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
+  nsEnvVars::EnvvarsClearUI(lstEnvVars); // Don't care about return value
   lstEnvVars->Clear();
 
   int idx = choSet->Append(set.MakeLower());
@@ -391,7 +396,7 @@ void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& WXUNUSED(event))
     #else
     EV_DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."), active_set.c_str());
     #endif
-    nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
+    nsEnvVars::EnvvarsClearUI(lstEnvVars); // Don't care about return value
 
     // Remove envvars set from config
     wxString active_set_path = nsEnvVars::GetSetPathByName(active_set, false);
@@ -442,7 +447,8 @@ void EnvVarsConfigDlg::OnToggleEnvVarClick(wxCommandEvent& event)
   {
     // Is has been toggled ON -> set envvar now
     wxString value = lstEnvVars->GetString(sel).AfterFirst(_T('=')).Trim(true).Trim(false);
-    nsEnvVars::EnvvarApply(key, value, lstEnvVars, sel); // Don't care about return value
+    if (!nsEnvVars::EnvvarApply(key, value))
+      lstEnvVars->Check(sel, false); // Unset on UI to mark it's NOT set
   }
   else
   {
@@ -473,12 +479,13 @@ void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
     key.Trim(true).Trim(false);
     value.Trim(true).Trim(false);
 
-    if (nsEnvVars::EnvvarVeto(key))
+    if (nsEnvVars::EnvvarVetoUI(key, NULL, -1))
       return;
 
-    int sel = lstEnvVars->Append(key + _T(" = ") + value);
-    if (nsEnvVars::EnvvarApply(key, value, lstEnvVars, sel))
-      lstEnvVars->Check(sel, true);
+    int  sel     = lstEnvVars->Append(key + _T(" = ") + value);
+    bool success = nsEnvVars::EnvvarApply(key, value);
+    if (sel>=0)
+      lstEnvVars->Check(sel, success);
   }
 }// OnAddEnvVarClick
 
@@ -532,12 +539,13 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
     if (key != old_key)
     {
       nsEnvVars::EnvvarDiscard(old_key); // Don't care about return value
-      if (nsEnvVars::EnvvarVeto(key, lstEnvVars, sel))
+      if (nsEnvVars::EnvvarVetoUI(key, lstEnvVars, sel))
         return;
     }
 
     // set the new envvar
-    nsEnvVars::EnvvarApply(key, value, lstEnvVars, sel); // Don't care about return value
+    if (!nsEnvVars::EnvvarApply(key, value))
+      lstEnvVars->Check(sel, false); // Unset on UI to mark it's NOT set
   }
 
   // update the GUI to the (new/updated/same) key/value pair anyway
@@ -592,7 +600,7 @@ void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
                    wxYES | wxNO | wxICON_QUESTION) != wxID_YES)
     return;
 
-  nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
+  nsEnvVars::EnvvarsClearUI(lstEnvVars); // Don't care about return value
 }// OnClearEnvVarsClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -627,6 +635,8 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
       {
         if (!nsEnvVars::EnvvarApply(key, value))
         {
+          lstEnvVars->Check(i, false); // Unset on UI to mark it's NOT set
+
           // Setting envvar failed. Remember this key to report later.
           if (envsNotSet.IsEmpty())
             envsNotSet << key;
