@@ -56,7 +56,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * @remarks Not implemented. Don't use it.
          *
          */
-        bool LoadPerspective(const wxString& layout) {return false;};
+        bool LoadPerspective(const wxString& /*layout*/) {return false;};
         /** \brief Get the tab position
          *
          * Returns the position of the tab as it is visible.
