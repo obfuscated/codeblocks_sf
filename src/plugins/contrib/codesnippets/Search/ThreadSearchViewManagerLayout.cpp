@@ -18,6 +18,7 @@
 	#include "manager.h"
 	#include "sdk_events.h"
 #endif
+#include "globals.h"
 
 #include "ThreadSearchViewManagerLayout.h"
 
