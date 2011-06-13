@@ -8,7 +8,6 @@
 
 #include <wx/event.h>
 #include "settings.h"
-#include "blockallocated.h"
 
 class cbProject;
 class EditorBase;
@@ -16,7 +15,7 @@ class cbPlugin;
 class Logger;
 
 /** A generic Code::Blocks event. */
-class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<CodeBlocksEvent, 75>
+class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 {
 	public:
 		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = 0L, EditorBase* editor = 0L, cbPlugin* plugin = 0L, EditorBase* old_editor = 0L)
@@ -79,7 +78,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<C
 typedef void (wxEvtHandler::*CodeBlocksEventFunction)(CodeBlocksEvent&);
 
 /** Event used to request from the main app to add a window to the docking system. */
-class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<CodeBlocksDockEvent, 75>
+class EVTIMPORT CodeBlocksDockEvent : public wxEvent
 {
     public:
         enum DockSide
@@ -154,7 +153,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
 typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent&);
 
 /** Event used to request from the main app to manage the view layouts. */
-class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<CodeBlocksLayoutEvent, 75>
+class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent
 {
     public:
         CodeBlocksLayoutEvent(wxEventType commandType = wxEVT_NULL, const wxString& layout_name = wxEmptyString)
@@ -178,7 +177,7 @@ typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEven
   * By adding a wxWindow*, the ownership is not touched and you should delete the window after calling
   * cbEVT_REMOVE_LOG_WINDOW for it.
   */
-class EVTIMPORT CodeBlocksLogEvent : public wxEvent, public BlockAllocated<CodeBlocksEvent, 75>
+class EVTIMPORT CodeBlocksLogEvent : public wxEvent
 {
     public:
         CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger* logger = 0, const wxString& title = wxEmptyString, wxBitmap *icon = 0);

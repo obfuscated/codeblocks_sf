@@ -15,15 +15,13 @@
 #include <wx/list.h>
 #include <wx/treectrl.h>
 
-#include "blockallocated.h"
-
 class cbProject;
 class ProjectBuildTarget;
 
 WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 
 /** Represents a Code::Blocks project build target. */
-class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1000>, public CompileTargetBase
+class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 {
 	public:
 		/// Constructor

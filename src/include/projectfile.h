@@ -15,8 +15,6 @@
 #include <wx/list.h>
 #include <wx/treectrl.h>
 
-#include "blockallocated.h"
-
 class cbProject;
 class ProjectBuildTarget;
 class pfDetails;
@@ -35,7 +33,7 @@ class ProjectFile;
 typedef std::vector<ProjectFile*> ProjectFilesVector;
 
 /** Represents a file in a Code::Blocks project. */
-class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
+class ProjectFile
 {
     public:
         /// Constructor
@@ -216,7 +214,7 @@ WX_DECLARE_LIST(ProjectFile, FilesList);
   * relative and absolute versions of the above, etc.
   * Mainly used by the compiler...
   */
-class pfDetails : public BlockAllocated<pfDetails, 1000>
+class pfDetails
 {
     public:
         pfDetails(ProjectBuildTarget* target, ProjectFile* pf);
