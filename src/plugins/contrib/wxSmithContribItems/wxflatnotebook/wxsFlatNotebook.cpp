@@ -30,6 +30,8 @@
 #include <wx/textdlg.h>
 #include <wxwidgets/wxsflags.h>
 
+#include "prep.h" // killerbot : not sure if it this one (all other includes seem to be independent of CB sdk ...)
+
 using namespace wxsFlags;
 
 //(*Headers(wxsNotebookParentQP)
