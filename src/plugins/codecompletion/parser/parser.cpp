@@ -981,7 +981,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
                                (m_LastStopWatchTime % 1000) );
         }
 
-        ProcessParserEvent(m_ParsingType, PARSER_END, parseEndLog);
+        PostParserEvent(m_ParsingType, PARSER_END, parseEndLog);
         m_ParsingType = ptUndefined;
         s_CurrentParser = nullptr;
     }
@@ -1095,7 +1095,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
             {
                 s_CurrentParser = this;
                 m_StopWatch.Start(); // reset timer
-                ProcessParserEvent(m_ParsingType, PARSER_START);
+                PostParserEvent(m_ParsingType, PARSER_START);
             }
 
             AddParseThread* thread = new AddParseThread(*this);
@@ -1125,7 +1125,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
     }
     else
     {
-        ProcessParserEvent(ptUndefined, PARSER_START, _T("No files for batch parsing"));
+        PostParserEvent(ptUndefined, PARSER_START, _T("No files for batch parsing"));
         CodeBlocksEvent evt;
         evt.SetEventObject(this);
         OnAllThreadsDone(evt);
@@ -1217,12 +1217,12 @@ bool Parser::IsFileParsed(const wxString& filename)
     return isParsed;
 }
 
-void Parser::ProcessParserEvent(ParsingType type, int id, const wxString& info)
+void Parser::PostParserEvent(ParsingType type, int id, const wxString& info)
 {
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
     evt.SetEventObject(this);       // Parser*
     evt.SetClientData(m_Project);   // cbProject*
     evt.SetInt(type);
     evt.SetString(info);
-    m_Parent->ProcessEvent(evt);
+    wxPostEvent(m_Parent, evt);
 }
