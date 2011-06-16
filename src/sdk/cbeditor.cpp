@@ -2934,6 +2934,52 @@ void cbEditor::OnEditorChange(wxScintillaEvent& event)
     OnScintillaEvent(event);
 }
 
+bool BraceIndent(wxString &indent, cbStyledTextCtrl* control, cbEditorInternalData *data)
+{
+    ConfigManager* configManager = Manager::Get()->GetConfigManager(_T("editor"));
+    bool braceIndent = configManager->ReadBool(_T("/brace_smart_indent"), true);
+    if (braceIndent)
+    {
+        int style = 0;
+        switch(control->GetLexer())
+        {
+        case wxSCI_LEX_CPP:
+            style = wxSCI_C_STRING;
+            break;
+        case wxSCI_LEX_D:
+            style = wxSCI_D_STRING;
+            break;
+        case wxSCI_LEX_LUA:
+            style = wxSCI_LUA_STRING;
+            break;
+        default:
+            return false;
+        }
+
+        int brace_position = data->GetFirstBraceInLine(style);
+        if (brace_position >= 0)
+        {
+            if (control->GetUseTabs())
+            {
+                brace_position /= control->GetTabWidth();
+                indent = wxString(_T('\t'), brace_position);
+            }
+            else
+                indent = wxString(_T(' '), brace_position); // n spaces
+            return true;
+        }
+    }
+    return false;
+}
+
+void Indent(wxString &indent, cbStyledTextCtrl *control)
+{
+    if (control->GetUseTabs())
+        indent << _T('\t'); // 1 tab
+    else
+        indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+}
+
 void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 {
     // if message manager is auto-hiding, this will close it if not needed open
@@ -2963,41 +3009,19 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         if (autoIndent && currLine > 0)
         {
             wxString indent = GetLineIndentString(currLine - 1);
-            if (   smartIndent
-                && (   (control->GetLexer() == wxSCI_LEX_CPP)
-                    || (control->GetLexer() == wxSCI_LEX_D)
-                    || (control->GetLexer() == wxSCI_LEX_PYTHON) ) )
+            if (smartIndent)
             {
-                // if the last entered char before newline was an opening curly brace,
-                // increase indentation level (the closing brace is handled in another block)
-
+                wxChar b;
                 // SMART INDENTING - THIS IS LANGUAGE SPECIFIC, BUT CURRENTLY ONLY IMPLEMENTED FOR C/C++ AND PYTHON
-                wxChar b = m_pData->GetLastNonWhitespaceChar();
                 switch(control->GetLexer())
                 {
                     case wxSCI_LEX_CPP:
                     case wxSCI_LEX_D:
-                        {
-                            ConfigManager* configManager = Manager::Get()->GetConfigManager(_T("editor"));
-                            bool braceIndent = configManager->ReadBool(_T("/brace_smart_indent"), true);
-                            if (braceIndent)
-                            {
-                                int style = control->GetLexer() == wxSCI_LEX_CPP ? wxSCI_C_STRING : wxSCI_D_STRING;
-
-                                int brace_position = m_pData->GetFirstBraceInLine(style);
-                                if (brace_position >= 0)
-                                {
-                                    if (control->GetUseTabs())
-                                    {
-                                        brace_position /= control->GetTabWidth();
-                                        indent = wxString(_T('\t'), brace_position);
-                                    }
-                                    else
-                                        indent = wxString(_T(' '), brace_position); // n spaces
-                                    break;
-                                }
-                            }
-                        }
+                        // if the last entered char before newline was an opening curly brace,
+                        // increase indentation level (the closing brace is handled in another block)
+                        b = m_pData->GetLastNonWhitespaceChar();
+                        if (BraceIndent(indent, control, m_pData))
+                            break;
 
                         if (b == _T('{'))
                         {
@@ -3005,12 +3029,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                             wxChar c = m_pData->GetNextNonWhitespaceCharOfLine(pos, &nonblankpos);
 
                             if ( c != _T('}') )
-                            {
-                                if (control->GetUseTabs())
-                                    indent << _T('\t'); // 1 tab
-                                else
-                                    indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
-                            }
+                                Indent(indent, control);
                             else
                             {
                                 if ( pos != nonblankpos )
@@ -3021,22 +3040,17 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                             }
                         }
                         else if (b == _T(':'))
-                        {
-                            if (control->GetUseTabs())
-                                indent << _T('\t'); // 1 tab
-                            else
-                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
-                        }
+                            Indent(indent, control);
                         break;
 
                     case wxSCI_LEX_PYTHON:
+                        b = m_pData->GetLastNonWhitespaceChar();
                         if (b == _T(':'))
-                        {
-                            if (control->GetUseTabs())
-                                indent << _T('\t'); // 1 tab
-                            else
-                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
-                        }
+                            Indent(indent, control);
+                        break;
+
+                    case wxSCI_LEX_LUA:
+                        BraceIndent(indent, control, m_pData);
                         break;
                  }
             }
