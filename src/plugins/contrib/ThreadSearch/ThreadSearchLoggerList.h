@@ -64,6 +64,8 @@ public:
     /** Double click event handler */
     void OnLoggerListDoubleClick(wxListEvent& event);
 
+    /** Clicked in the header of the list control */
+    void OnColumnClick(wxListEvent& event);
 protected:
     /** SetListColumns
       * The SimpleListLog constructor does not set the provided columns on Linux.
@@ -110,8 +112,11 @@ protected:
     /** Deletes all items from the List */
     void DeleteListItems();
 
+private:
     wxListCtrl* m_pListLog;
     long        m_IndexOffset;
+    int         m_SortColumn;
+    bool        m_Ascending;
 };
 
 #endif // THREAD_SEARCH_LOGGER_LIST_H
