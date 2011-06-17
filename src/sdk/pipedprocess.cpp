@@ -13,6 +13,7 @@
     #include <wx/app.h>         // wxWakeUpIdle
     #include "pipedprocess.h" // class' header file
     #include "sdk_events.h"
+    #include "globals.h"
 #endif
 
 
