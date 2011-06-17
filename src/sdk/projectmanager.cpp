@@ -412,6 +412,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
             menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
             menu->Append(idMenuRemoveFile,          _("Remove files..."),          _("Remove files from the project"));
 
+            menu->AppendSeparator();
             CreateMenuTreeProps(menu, false);
 
             menu->Append(idMenuExecParams,        _("Set &programs' arguments..."), _("Set execution parameters for the targets of this project"));
@@ -423,8 +424,6 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 
 void ProjectManager::CreateMenuTreeProps(wxMenu* menu, bool popup)
 {
-    menu->AppendSeparator();
-
     wxMenu* treeprops = new wxMenu;
     treeprops->Append(idMenuProjectUp,   _("Move project up\tCtrl-Shift-Up"),
                      _("Move project up in project tree"));
@@ -584,6 +583,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuFindFile,                 _("Find file..."));
             menu.Enable(idMenuFindFile, PopUpMenuOption);
             menu.AppendSeparator();
+            CreateMenuTreeProps(&menu, true);
             menu.Append(idMenuAddVirtualFolder,         _("Add new virtual folder..."));
             if (is_vfolder)
                 menu.Append(idMenuDeleteVirtualFolder,  _("Delete this virtual folder..."));
@@ -687,8 +687,6 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         // more project options
         if (ftd->GetKind() == FileTreeData::ftdkProject)
         {
-            CreateMenuTreeProps(&menu, true);
-
             menu.Append(idMenuTreeProjectProperties, _("Properties..."));
             menu.Enable(idMenuTreeProjectProperties, PopUpMenuOption);
         }
