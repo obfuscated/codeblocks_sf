@@ -3376,10 +3376,28 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
 {
+    if (!wxTheApp->IsActive())
+        return;
+        
     cbStyledTextCtrl* control = GetControl();
-    int pos = control->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
+    
+    wxRect screenRect = control->GetScreenRect();
+    wxPoint ptEvent(event.GetX(), event.GetY());
+    ptEvent = control->ClientToScreen(ptEvent);
+    wxPoint ptScreen = wxGetMousePosition();
+    wxPoint ptClient = control->ScreenToClient(ptScreen);
+
+    double distance = sqrt((ptScreen.x - ptEvent.x) * (ptScreen.x - ptEvent.x) 
+                           + (ptScreen.y - ptEvent.y) * (ptScreen.y - ptEvent.y));
+    if (!screenRect.Contains(ptScreen) || distance > 10)
+        return;
+    
+    int pos = control->PositionFromPoint(ptClient);
     int style = control->GetStyleAt(pos);
-    NotifyPlugins(cbEVT_EDITOR_TOOLTIP, style, wxEmptyString, event.GetX(), event.GetY());
+    NotifyPlugins(cbEVT_EDITOR_TOOLTIP, style, wxEmptyString, ptClient.x, ptClient.y);
+    wxScintillaEvent newEvent(event);
+    newEvent.SetX(ptClient.x);
+    newEvent.SetY(ptClient.y);
     OnScintillaEvent(event);
 }
 
