@@ -605,6 +605,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                 {
                     wxListItem item;
                     item.SetId(ii);
+                    item.SetMask(wxLIST_MASK_TEXT);
                     item.SetColumn(2);
                     m_pListLog->GetItem(item);
 
@@ -648,6 +649,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                 {
                     wxListItem item;
                     item.SetId(ii);
+                    item.SetMask(wxLIST_MASK_TEXT);
                     item.SetColumn(0);
                     m_pListLog->GetItem(item);
 
@@ -697,6 +699,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                 {
                     wxListItem item;
                     item.SetId(ii);
+                    item.SetMask(wxLIST_MASK_TEXT);
                     item.SetColumn(3);
                     m_pListLog->GetItem(item);
 
