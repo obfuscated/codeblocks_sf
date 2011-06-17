@@ -430,7 +430,7 @@ struct ItemLine
     bool searchHeader;
 };
 
-int SortLineAscending(long item1, long item2, long data)
+int wxCALLBACK SortLineAscending(long item1, long item2, long data)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -444,7 +444,7 @@ int SortLineAscending(long item1, long item2, long data)
     return Compare(i1.line, i2.line);
 }
 
-int SortLineDescending(long item1, long item2, long data)
+int wxCALLBACK SortLineDescending(long item1, long item2, long data)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -487,7 +487,7 @@ struct Item
     }
 };
 
-int SortDirectoryAscending(long item1, long item2, long data)
+int wxCALLBACK SortDirectoryAscending(long item1, long item2, long data)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -501,7 +501,7 @@ int SortDirectoryAscending(long item1, long item2, long data)
     return i1.CompareDirectory(i2);
 }
 
-int SortDirectoryDescending(long item1, long item2, long data)
+int wxCALLBACK SortDirectoryDescending(long item1, long item2, long data)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -515,7 +515,7 @@ int SortDirectoryDescending(long item1, long item2, long data)
     return i2.CompareDirectory(i1);
 }
 
-int SortFilenameAscending(long item1, long item2, long data)
+int wxCALLBACK SortFilenameAscending(long item1, long item2, long data)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -529,7 +529,7 @@ int SortFilenameAscending(long item1, long item2, long data)
     return i1.CompareFile(i2);
 }
 
-int SortFilenameDescending(long item1, long item2, long data)
+int wxCALLBACK SortFilenameDescending(long item1, long item2, long data)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -551,7 +551,7 @@ struct ItemText
     bool searchHeader;
 };
 
-int SortTextAscending(long item1, long item2, long data)
+int wxCALLBACK SortTextAscending(long item1, long item2, long data)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
@@ -565,7 +565,7 @@ int SortTextAscending(long item1, long item2, long data)
     return i1.text.CompareTo(i2.text);
 }
 
-int SortTextDescending(long item1, long item2, long data)
+int wxCALLBACK SortTextDescending(long item1, long item2, long data)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
