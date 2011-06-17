@@ -604,6 +604,14 @@ void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression)
 }
 
 
+void ThreadSearchView::FocusSearchCombo(const wxString &searchWord)
+{
+    if (!searchWord.empty())
+        m_pCboSearchExpr->SetValue(searchWord);
+    m_pCboSearchExpr->SetFocus();
+}
+
+
 void ThreadSearchView::Update()
 {
     ThreadSearchFindData findData;

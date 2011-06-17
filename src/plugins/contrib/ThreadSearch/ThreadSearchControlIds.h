@@ -21,6 +21,7 @@ enum eControlIds
     idBtnSearch,
     idBtnOptions,
     idMenuViewThreadSearch,
+    idMenuViewFocusThreadSearch,
     idMenuSearchThreadSearch,
     idMenuCtxThreadSearch,
     idMenuCtxDeleteItem,

@@ -70,6 +70,8 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     // add any events you want to handle here
     EVT_UPDATE_UI (idMenuViewThreadSearch,   ThreadSearch::OnMnuViewThreadSearchUpdateUI)
     EVT_MENU      (idMenuViewThreadSearch,   ThreadSearch::OnMnuViewThreadSearch)
+    EVT_UPDATE_UI (idMenuViewFocusThreadSearch,   ThreadSearch::OnMnuViewFocusThreadSearchUpdateUI)
+    EVT_MENU      (idMenuViewFocusThreadSearch,   ThreadSearch::OnMnuViewFocusThreadSearch)
     EVT_UPDATE_UI (idMenuSearchThreadSearch, ThreadSearch::OnMnuSearchThreadSearchUpdateUI)
     EVT_MENU      (idMenuSearchThreadSearch, ThreadSearch::OnMnuSearchThreadSearch)
     EVT_MENU      (idMenuCtxThreadSearch,    ThreadSearch::OnCtxThreadSearch)
@@ -297,6 +299,9 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
             menu->AppendCheckItem(idMenuViewThreadSearch, _("Thread search"),
                                   _("Toggle displaying the 'Thread search' panel"));
         }
+
+        menu->Append(idMenuViewFocusThreadSearch, _("Focus Thread Search"),
+                     _("Makes the search box of the Thread search panel the focused control"));
     }
 
     idx = menuBar->FindMenu(_("Sea&rch"));
@@ -380,6 +385,17 @@ void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& event)
     }
 }
 
+void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& event)
+{
+    if ( !IsAttached() )
+        return;
+
+    GetCursorWord(m_SearchedWord);
+
+    m_pViewManager->ShowView(true);
+    m_pThreadSearchView->FocusSearchCombo(m_SearchedWord);
+}
+
 
 void ThreadSearch::OnCtxThreadSearch(wxCommandEvent& event)
 {
@@ -401,6 +417,14 @@ void ThreadSearch::OnMnuViewThreadSearchUpdateUI(wxUpdateUIEvent& event)
 
 
 void ThreadSearch::OnMnuSearchThreadSearchUpdateUI(wxUpdateUIEvent& event)
+{
+    if ( !IsAttached() )
+        return;
+
+    event.Enable(m_pThreadSearchView->IsSearchRunning() == false);
+}
+
+void ThreadSearch::OnMnuViewFocusThreadSearchUpdateUI(wxUpdateUIEvent& event)
 {
     if ( !IsAttached() )
         return;
@@ -735,6 +759,23 @@ bool ThreadSearch::GetCursorWord(wxString& sWord)
     if ( ed != NULL )
     {
         cbStyledTextCtrl* control = ed->GetControl();
+
+        sWord = control->GetSelectedText();
+        if (sWord != wxEmptyString)
+        {
+            sWord.Trim(true);
+            sWord.Trim(false);
+
+            wxString::size_type pos = sWord.find(wxT('\n'));
+            if (pos != wxString::npos)
+            {
+                sWord.Remove(pos, sWord.length() - pos);
+                sWord.Trim(true);
+                sWord.Trim(false);
+            }
+
+            return sWord;
+        }
 
         // Gets word under cursor
         int pos = control->GetCurrentPos();

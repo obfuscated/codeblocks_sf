@@ -235,6 +235,11 @@ private:
       */
     void OnMnuSearchThreadSearch(wxCommandEvent& event);
 
+    /** Event handler called when user clicks on the 'Focus Thread Search'
+      * item of the 'View' menu.
+      */
+    void OnMnuViewFocusThreadSearch(wxCommandEvent& event);
+
     /** Event handler called when user clicks on the 'Find occurrences of'
       * item of the contextual menu.
       */
@@ -250,6 +255,8 @@ private:
       * item of the 'Search' menu.
       */
     void OnMnuSearchThreadSearchUpdateUI(wxUpdateUIEvent& event);
+
+    void OnMnuViewFocusThreadSearchUpdateUI(wxUpdateUIEvent& event);
 
     // Toolbar controls events management
     void OnBtnOptionsClick(wxCommandEvent& event);
