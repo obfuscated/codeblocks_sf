@@ -847,9 +847,9 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         if (defsMap[cpp_compiler].IsEmpty())
         {
 #ifdef __WXMSW__
-            const wxString args(_T(" -dM -E nul"));
+            const wxString args(_T(" -dM -E -< nul"));
 #else
-            const wxString args(_T(" -dM -E /dev/null"));
+            const wxString args(_T(" -dM -E -< /dev/null"));
 #endif
 
             // wxExecute can be a long action and C::B might have been shutdown in the meantime...
