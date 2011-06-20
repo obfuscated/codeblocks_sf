@@ -1248,22 +1248,13 @@ bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
         return false;
 
     if (!AddCompilerDirs(project, parser))
-    {
         Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs failed!"));
-        return false;
-    }
 
     if (!AddCompilerPredefinedMacros(project, parser))
-    {
         Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerPredefinedMacros failed!"));
-        return false;
-    }
 
     if (!AddProjectDefinedMacros(project, parser))
-    {
         Manager::Get()->GetLogManager()->DebugLog(_T("AddProjectDefinedMacros failed!"));
-        return false;
-    }
 
     // add per-project dirs
     if (project)
