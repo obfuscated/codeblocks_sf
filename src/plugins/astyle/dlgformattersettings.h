@@ -10,17 +10,18 @@
 #ifndef DLGFORMATTERSETTINGS_H
 #define DLGFORMATTERSETTINGS_H
 
-#include "./astyle/astyle.h"
-#include "scrollingdialog.h"
+#include "astyle/astyle.h"
 
-class dlgFormatterSettings
+class wxWindow;
+
+class DlgFormatterSettings
 {
   private:
     wxWindow *m_dlg;
 
 	public:
-		dlgFormatterSettings(wxWindow *dlg);
-		virtual ~dlgFormatterSettings();
+		DlgFormatterSettings(wxWindow *dlg);
+		virtual ~DlgFormatterSettings();
 
 		void ApplyTo(astyle::ASFormatter& formatter);
 };

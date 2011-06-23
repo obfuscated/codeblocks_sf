@@ -17,6 +17,9 @@ enum AStylePredefinedStyle
   aspsGnu,
   aspsLinux,
   aspsHorstmann,
+  asps1TBS,
+  aspsPico,
+  aspsLisp,
   aspsCustom
 };
 

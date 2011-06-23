@@ -10,7 +10,7 @@
 							<object class="wxBoxSizer">
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Styles</label>
+										<label>Bracket style</label>
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbAllman">
@@ -71,6 +71,27 @@
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbHorstmann">
 												<label>Horstmann</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rb1TBS">
+												<label>1TBS</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbPico">
+												<label>Pico</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbLisp">
+												<label>Lisp</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
@@ -212,6 +233,13 @@
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
 										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentCol1Comments">
+												<label>Indent column one comments</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
@@ -228,33 +256,6 @@
 								<object class="sizeritem">
 									<object class="wxBoxSizer">
 										<orient>wxVERTICAL</orient>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT1">
-														<label>Bracket format mode:</label>
-													</object>
-													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-													<border>4</border>
-												</object>
-												<object class="sizeritem">
-													<object class="wxComboBox" name="cmbBracketFormatMode">
-														<content>
-															<item>None</item>
-															<item>Attach</item>
-															<item>Break</item>
-															<item>Linux</item>
-															<item>Stroupstrup</item>
-														</content>
-														<selection>0</selection>
-														<style>wxCB_DROPDOWN</style>
-													</object>
-													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-													<border>8</border>
-												</object>
-											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
@@ -279,7 +280,7 @@
 													<border>8</border>
 												</object>
 											</object>
-											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
@@ -374,18 +375,15 @@
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
-											<option>0</option>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP|wxTOP</flag>
-											<border>8</border>
 											<object class="wxCheckBox" name="chkAddBrackets">
 												<label>Add brackets to unbracketed one line conditional statements</label>
-												<checked>0</checked>
 											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
-									<option>1</option>
 								</object>
 							</object>
 						</object>

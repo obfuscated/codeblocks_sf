@@ -10,7 +10,7 @@
 #include <wx/string.h>
 #include <cbeditor.h>
 #include <vector>
-#include "./astyle/astyle.h"
+#include "astyle/astyle.h"
 
 class ASStreamIterator : public astyle::ASSourceIterator
 {

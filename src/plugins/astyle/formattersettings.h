@@ -6,7 +6,7 @@
 #ifndef FORMATTERSETTINGS_H
 #define FORMATTERSETTINGS_H
 
-#include "./astyle/astyle.h"
+#include "astyle/astyle.h"
 
 class FormatterSettings
 {

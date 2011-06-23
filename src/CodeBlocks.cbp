@@ -1200,6 +1200,9 @@
 		<Unit filename="plugins\astyle\astyleplugin.h">
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\astylepredefinedstyles.h">
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\dlgformattersettings.cpp">
 			<Option target="AStyle" />
 		</Unit>
