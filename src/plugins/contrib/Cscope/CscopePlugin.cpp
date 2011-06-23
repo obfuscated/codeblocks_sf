@@ -380,7 +380,7 @@ void CscopePlugin::OnFind(wxCommandEvent &event)
 //        endMsg += _T("find C symbol '") + WordAtCaret + _T("'");
 //    }
 
-    cmd += WordAtCaret + _T(" -i ") + list_file;
+    cmd += WordAtCaret + _T(" -i \"") + list_file + _T("\"");
     DoCscopeCommand(cmd, endMsg);
 }
 wxString CscopePlugin::GetCscopeBinaryName()
