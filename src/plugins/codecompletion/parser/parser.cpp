@@ -914,8 +914,14 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file, bool firstonly
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
-    if (m_IgnoreThreadEvents || !m_IsParsing)
+    if (m_IgnoreThreadEvents)
         return;
+
+    if (!m_IsParsing)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("m_IsParsing is false?"));
+        return;
+    }
 
     if (!m_TokensTree)
         cbThrow(_T("m_TokensTree is a nullptr?!"));
