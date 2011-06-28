@@ -1037,17 +1037,12 @@ void TokensTree::RecalcInheritanceChain(Token* token)
     token->m_DirectAncestors.clear();
     token->m_Ancestors.clear();
 
+    wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
     TRACE(_T("RecalcInheritanceChain() : Token %s, Ancestors %s"), token->m_Name.wx_str(),
           token->m_AncestorsString.wx_str());
+    TRACE(_T("RecalcInheritanceChain() : Removing ancestor string from %s"), token->m_Name.wx_str());
+    token->m_AncestorsString.Clear();
 
-    // TODO (MortenMacFly#5#): Can we safely ignore local tokens here?
-//    if (!token->m_IsLocal) // global symbols are linked once
-//    {
-        TRACE(_T("RecalcInheritanceChain() : Removing ancestor string from %s"), token->m_Name.wx_str());
-        token->m_AncestorsString.Clear();
-//    }
-
-    wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
     while (tkz.HasMoreTokens())
     {
         wxString ancestor = tkz.GetNextToken();
@@ -1115,7 +1110,6 @@ void TokensTree::RecalcInheritanceChain(Token* token)
         }
 
         // Now, we have calc all the direct ancestors
-
         token->m_DirectAncestors = token->m_Ancestors;
     }
 
@@ -1182,18 +1176,16 @@ void TokensTree::RecalcData()
             continue;
         if (token->m_AncestorsString.IsEmpty())
             continue;
-        // only local symbols might change inheritance
-//        if (!token->m_IsLocal)
-//            continue;
 
         token->m_DirectAncestors.clear();
         token->m_Ancestors.clear();
 
-        TRACE(_T("RecalcData() : Token %s, Ancestors %s"),
-              token->m_Name.wx_str(),
-              token->m_AncestorsString.wx_str());
-
         wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
+        TRACE(_T("RecalcData() : Token %s, Ancestors %s"), token->m_Name.wx_str(),
+              token->m_AncestorsString.wx_str());
+        TRACE(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.wx_str());
+        token->m_AncestorsString.Clear();
+
         while (tkz.HasMoreTokens())
         {
             wxString ancestor = tkz.GetNextToken();
@@ -1260,12 +1252,6 @@ void TokensTree::RecalcData()
         }
 
         token->m_DirectAncestors = token->m_Ancestors;
-
-        if (!token->m_IsLocal) // global symbols are linked once
-        {
-            TRACE(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.wx_str());
-            token->m_AncestorsString.Clear();
-        }
     }
 
 #if CC_TOKEN_DEBUG_OUTPUT
