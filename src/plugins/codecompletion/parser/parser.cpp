@@ -92,6 +92,8 @@ public:
         wxCriticalSectionLocker locker1(s_TokensTreeCritical);
         wxCriticalSectionLocker locker2(s_ParserCritical);
 
+        m_Parser.m_IsParsing = false;
+
         // Pre-defined macros
         if (!m_Parser.m_PredefinedMacros.IsEmpty())
         {
