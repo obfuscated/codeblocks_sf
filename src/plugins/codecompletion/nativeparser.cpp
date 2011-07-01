@@ -1115,7 +1115,7 @@ wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
 
 Parser* NativeParser::CreateParser(cbProject* project)
 {
-    if ( GetParserByProject(project) )
+    if (GetParserByProject(project))
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Parser for this project already exists!"));
         return nullptr;
@@ -1151,7 +1151,6 @@ Parser* NativeParser::CreateParser(cbProject* project)
     }
     else
     {
-        AddProjectToParser(project);
         return m_ParserList.begin()->second;
     }
 }
@@ -3558,25 +3557,36 @@ void NativeParser::OnReparseAfterClearTimer(wxTimerEvent& event)
 void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 {
     std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
-    if (info.first && !info.second)
+    if (m_ParserPerWorkspace)
+    {
+        if (info.first && !info.second)
+            AddProjectToParser(info.first);
+        else
+        {
+            cbProject* activeProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+            if (m_ParsedProjects.find(activeProject) == m_ParsedProjects.end())
+                AddProjectToParser(activeProject);
+            else
+            {
+                ProjectsArray* projs = Manager::Get()->GetProjectManager()->GetProjects();
+                for (size_t i = 0; i < projs->GetCount(); ++i)
+                {
+                    if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
+                    {
+                        AddProjectToParser(projs->Item(i));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    else if (info.first && !info.second)
     {
         info.second = CreateParser(info.first);
         if (info.second && info.second != m_Parser)
         {
             Manager::Get()->GetLogManager()->DebugLog(_T("Start switch from OnParserEnd::ptCreateParser"));
             SwitchParser(info.first, info.second);
-        }
-    }
-    else if (m_ParserPerWorkspace)
-    {
-        ProjectsArray* projs = Manager::Get()->GetProjectManager()->GetProjects();
-        for (size_t i = 0; i < projs->GetCount(); ++i)
-        {
-            if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
-            {
-                CreateParser(projs->Item(i));
-                break;
-            }
         }
     }
 }
