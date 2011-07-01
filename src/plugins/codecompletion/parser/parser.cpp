@@ -181,7 +181,7 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_BatchTimer(this, BATCH_TIMER_ID),
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
-    m_IgnoreThreadEvents(false),
+    m_IgnoreThreadEvents(true),
     m_IsBatchParseDone(false),
     m_ParsingType(ptCreateParser),
     m_NeedMarkFileAsLocal(true)
@@ -194,22 +194,26 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
 
 Parser::~Parser()
 {
-    // 1. Let's OnAllThreadsDone can not process event
+    // 1. Stop all timers
+    m_Timer.Stop();
+    m_BatchTimer.Stop();
+
+    // 2. Let's OnAllThreadsDone can not process event
     m_IgnoreThreadEvents = true;
 
-    // 2. Disconnect events
+    // 3. Disconnect events
     DisconnectEvents();
 
-    // 3. Abort all thread
+    // 4. Abort all thread
     TerminateAllThreads();
 
-    // 4. Free memory
+    // 5. Free memory
     delete m_TempTokensTree;
     m_TempTokensTree = nullptr;
     delete m_TokensTree;
     m_TokensTree = nullptr;
 
-    // 5. Reset current parser
+    // 6. Reset current parser
     if (s_CurrentParser == this)
         s_CurrentParser = nullptr;
 }
@@ -917,6 +921,9 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     if (m_IgnoreThreadEvents)
         return;
 
+    if (Manager::IsAppShuttingDown())
+        return;
+
     if (!m_IsParsing)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("m_IsParsing is false?"));
@@ -1084,6 +1091,9 @@ void Parser::OnTimer(wxTimerEvent& event)
 
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
+    if (Manager::IsAppShuttingDown())
+        return;
+
     if (!m_StopWatchRunning)
         StartStopWatch();
 
@@ -1104,6 +1114,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
                 PostParserEvent(m_ParsingType, PARSER_START);
             }
 
+            m_IgnoreThreadEvents = false;
             AddParseThread* thread = new AddParseThread(*this);
             m_Pool.AddTask(thread, true);
             return;
