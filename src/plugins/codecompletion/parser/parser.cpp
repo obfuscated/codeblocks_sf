@@ -429,7 +429,7 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile,
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
 
-    if (m_BatchTimer.IsRunning())
+    if (!m_IsParsing && m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
     // Do priority parse in sub thread
@@ -439,14 +439,15 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile,
     if (systemHeaderFile)
         m_SystemPriorityHeaders.push_back(filename);
 
-    m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
+    if (!m_IsParsing)
+        m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
 }
 
 void Parser::AddBatchParse(const StringList& filenames, bool delay)
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
 
-    if (m_BatchTimer.IsRunning())
+    if (!m_IsParsing && m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
     if (m_BatchParseFiles.empty())
@@ -454,18 +455,21 @@ void Parser::AddBatchParse(const StringList& filenames, bool delay)
     else
         std::copy(filenames.begin(), filenames.end(), std::back_inserter(m_BatchParseFiles));
 
-    m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
+    if (!m_IsParsing)
+        m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
 }
 
 void Parser::AddParse(const wxString& filename, bool delay)
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
 
-    if (m_BatchTimer.IsRunning())
+    if (!m_IsParsing && m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
     m_BatchParseFiles.push_back(filename);
-    m_BatchTimer.Start(delay ? batch_timer_delay : 10, wxTIMER_ONE_SHOT);
+
+    if (!m_IsParsing)
+        m_BatchTimer.Start(delay ? batch_timer_delay : 10, wxTIMER_ONE_SHOT);
 }
 
 bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
@@ -1097,8 +1101,21 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
     if (!m_StopWatchRunning)
         StartStopWatch();
 
-    // Add parse by child thread
-    if (!m_PriorityHeaders.empty() || !m_BatchParseFiles.empty() || !m_PredefinedMacros.IsEmpty())
+    if (!m_PoolTask.empty())
+    {
+        m_Pool.BatchBegin();
+
+        PTVector& v = m_PoolTask.front();
+        for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
+            m_Pool.AddTask(*it, true);
+        m_PoolTask.pop();
+
+        m_Pool.BatchEnd();
+        return;
+    }
+    else if (   !m_PriorityHeaders.empty()
+             || !m_BatchParseFiles.empty()
+             || !m_PredefinedMacros.IsEmpty() )
     {
         do
         {
@@ -1125,28 +1142,10 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
         return;
     }
 
-    // Setting parse flag when all task added
-    else if (!m_IsParsing)
-        m_IsParsing = true;
-
-    if (!m_PoolTask.empty())
-    {
-        m_Pool.BatchBegin();
-
-        PTVector& v = m_PoolTask.front();
-        for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
-            m_Pool.AddTask(*it, true);
-        m_PoolTask.pop();
-
-        m_Pool.BatchEnd();
-    }
-    else
-    {
-        PostParserEvent(ptUndefined, PARSER_START, _T("No files for batch parsing"));
-        CodeBlocksEvent evt;
-        evt.SetEventObject(this);
-        OnAllThreadsDone(evt);
-    }
+    PostParserEvent(ptUndefined, PARSER_START, _T("No files for batch parsing"));
+    CodeBlocksEvent evt;
+    evt.SetEventObject(this);
+    OnAllThreadsDone(evt);
 }
 
 bool Parser::ReparseModifiedFiles()
