@@ -9,6 +9,10 @@
 
 #include "sdk_precomp.h"
 
+#ifndef WX_PRECOMP
+#include <wx/bitmap.h>
+#endif
+
 #ifndef CB_PRECOMP
 #include <wx/log.h>
 #endif
