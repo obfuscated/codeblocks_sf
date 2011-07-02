@@ -651,6 +651,9 @@ bool Parser::RemoveFile(const wxString& filename)
 
 bool Parser::AddFile(const wxString& filename, cbProject* project, bool isLocal)
 {
+    if (project != m_Project)
+        return false;
+
     wxString file = UnixFilename(filename);
     if (IsFileParsed(file))
         return false;
@@ -660,10 +663,7 @@ bool Parser::AddFile(const wxString& filename, cbProject* project, bool isLocal)
 
     AddParse(file);
     if (project)
-    {
         m_NeedMarkFileAsLocal = true;
-        m_Project = project;
-    }
 
     return true;
 }

@@ -1169,7 +1169,9 @@ bool NativeParser::DeleteParser(cbProject* project)
 
     if (it == m_ParserList.end())
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Deleted parser does not exist!"));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), project
+                                                    ? project->GetTitle().wx_str()
+                                                    : _T("*NONE*")));
         return false;
     }
 
@@ -1220,14 +1222,17 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
     return parser->Reparse(filename);
 }
 
-bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
+bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename, Parser* parser)
 {
     if (CCFileTypeOf(filename) == ccftOther)
         return false;
 
-    Parser* parser = GetParserByProject(project);
     if (!parser)
-        return false;
+    {
+        parser = GetParserByProject(project);
+        if (!parser)
+            return false;
+    }
 
     return parser->AddFile(filename, project);
 }
@@ -3559,7 +3564,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
     std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
     if (m_ParserPerWorkspace)
     {
-        if (info.first && !info.second)
+        if (!info.second && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
             AddProjectToParser(info.first);
         else
         {
@@ -3618,12 +3623,13 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
         CCFileType ft = CCFileTypeOf(lastFile);
         if (ft != ccftOther && (parser = CreateParser(project)))
         {
-            if (!project)
+            if (   !project
+                && parser->SetParsingProject(project)
+                && AddFileToParser(project, lastFile, parser) )
             {
                 wxFileName file(lastFile);
                 parser->AddIncludeDir(file.GetPath());
                 m_StandaloneFiles.Add(lastFile);
-                parser->AddFile(lastFile, project);
             }
         }
         else
@@ -3632,12 +3638,13 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     else if (!project)
     {
         if (   !parser->IsFileParsed(lastFile)
-            && m_StandaloneFiles.Index(lastFile) == wxNOT_FOUND )
+            && m_StandaloneFiles.Index(lastFile) == wxNOT_FOUND
+            && parser->SetParsingProject(project)
+            && AddFileToParser(project, lastFile, parser) )
         {
             wxFileName file(lastFile);
             parser->AddIncludeDir(file.GetPath());
             m_StandaloneFiles.Add(lastFile);
-            AddFileToParser(project, lastFile);
         }
     }
 
@@ -3747,7 +3754,7 @@ void NativeParser::RemoveObsoleteParsers()
 
 std::pair<cbProject*, Parser*> NativeParser::GetParserInfoByCurrentEditor()
 {
-    std::pair<cbProject*, Parser*> info;
+    std::pair<cbProject*, Parser*> info(nullptr, nullptr);
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor && editor->GetFilename() != g_StartHereTitle)
     {
@@ -4103,11 +4110,18 @@ void NativeParser::AddProjectToParser(cbProject* project)
     if (parser)
         return;
 
-    // Add the cbProject to set
-    m_ParsedProjects.insert(project);
-
-    if (!project || m_ParsedProjects.empty())
+    if (m_ParsedProjects.empty())
         return;
+
+    m_ParsedProjects.insert(project);
+    parser = GetParserByProject(project);
+    if (!parser)
+        return;
+    else if (!parser->SetParsingProject(project))
+    {
+        m_ParsedProjects.erase(project);
+        return;
+    }
 
     wxString log(F(_("Add project (%s) to parser"), project
                    ? project->GetTitle().wx_str()
@@ -4115,31 +4129,38 @@ void NativeParser::AddProjectToParser(cbProject* project)
     Manager::Get()->GetLogManager()->Log(log);
     Manager::Get()->GetLogManager()->DebugLog(log);
 
-    AddCompilerDirs(project, parser);
-    AddCompilerPredefinedMacros(project, parser);
-    AddProjectDefinedMacros(project, parser);
+    if (!AddCompilerDirs(project, parser))
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs failed!"));
 
-    for (int i = 0; i < project->GetFilesCount(); ++i)
+    if (!AddCompilerPredefinedMacros(project, parser))
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerPredefinedMacros failed!"));
+
+    if (!AddProjectDefinedMacros(project, parser))
+        Manager::Get()->GetLogManager()->DebugLog(_T("AddProjectDefinedMacros failed!"));
+
+    if (project)
     {
-        ProjectFile* pf = project->GetFile(i);
-        if (!pf)
-            continue;
-        if (   FileTypeOf(pf->relativeFilename) == ftHeader
-            && CCFileTypeOf(pf->relativeFilename) != ccftOther)
+        for (int i = 0; i < project->GetFilesCount(); ++i)
         {
-            AddFileToParser(project, pf->file.GetFullPath());
+            ProjectFile* pf = project->GetFile(i);
+            if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
+                AddFileToParser(project, pf->file.GetFullPath(), parser);
+        }
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
+            if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
+                AddFileToParser(project, pf->file.GetFullPath(), parser);
         }
     }
-
-    for (int i = 0; i < project->GetFilesCount(); ++i)
+    else
     {
-        ProjectFile* pf = project->GetFile(i);
-        if (!pf)
-            continue;
-        if (   FileTypeOf(pf->relativeFilename) == ftSource
-            && CCFileTypeOf(pf->relativeFilename) != ccftOther)
+        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+        if (editor && AddFileToParser(project, editor->GetFilename(), parser))
         {
-            AddFileToParser(project, pf->file.GetFullPath());
+            wxFileName file(editor->GetFilename());
+            parser->AddIncludeDir(file.GetPath());
+            m_StandaloneFiles.Add(editor->GetFilename());
         }
     }
 }
