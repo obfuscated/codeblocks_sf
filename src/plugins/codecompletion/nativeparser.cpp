@@ -78,11 +78,11 @@ const int g_EditorActivatedDelay = 200;
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
 //    EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
 //    EVT_MENU(THREAD_END, NativeParser::OnThreadEnd)
-    EVT_MENU(PARSER_START, NativeParser::OnParserStart)
-    EVT_MENU(PARSER_END, NativeParser::OnParserEnd)
-    EVT_TIMER(idTimerEditorActivated, NativeParser::OnEditorActivatedTimer)
+    EVT_MENU(PARSER_START,              NativeParser::OnParserStart           )
+    EVT_MENU(PARSER_END,                NativeParser::OnParserEnd             )
+    EVT_TIMER(idTimerEditorActivated,   NativeParser::OnEditorActivatedTimer  )
     EVT_TIMER(idTimerReparseAfterClear, NativeParser::OnReparseAfterClearTimer)
-    EVT_TIMER(idTimerParsingOneByOne, NativeParser::OnParsingOneByOneTimer)
+    EVT_TIMER(idTimerParsingOneByOne,   NativeParser::OnParsingOneByOneTimer  )
 END_EVENT_TABLE()
 
 NativeParser::NativeParser() :
@@ -236,16 +236,17 @@ Parser* NativeParser::GetParserByProject(cbProject* project)
         std::set<cbProject*>::iterator it = m_ParsedProjects.find(project);
         if (it != m_ParsedProjects.end())
             return m_ParserList.begin()->second;
-        else
-            return nullptr;
     }
-
-    for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+    else
     {
-        if (it->first == project)
-            return it->second;
+        for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+        {
+            if (it->first == project)
+                return it->second;
+        }
     }
 
+    TRACE2(_T("GetProjectByParser() : Returning nullptr."));
     return nullptr;
 }
 
@@ -263,6 +264,7 @@ cbProject* NativeParser::GetProjectByParser(Parser* parser)
             return it->first;
     }
 
+    TRACE2(_T("GetProjectByParser() : Returning NULL."));
     return NULL;
 }
 
@@ -633,8 +635,7 @@ void NativeParser::ClearParsers()
         if (!Manager::IsAppShuttingDown())
         {
             wxString log(F(_("Delete parser for project '%s'!"), it->first
-                           ? it->first->GetTitle().wx_str()
-                           : _T("*NONE*")));
+                           ? it->first->GetTitle().wx_str() : _T("*NONE*")));
             Manager::Get()->GetLogManager()->Log(log);
             Manager::Get()->GetLogManager()->DebugLog(log);
         }
@@ -1141,8 +1142,7 @@ Parser* NativeParser::CreateParser(cbProject* project)
         m_ParserList.push_back(std::make_pair(project, parser));
 
         wxString log(F(_("Create new parser for project '%s'"), project
-                       ? project->GetTitle().wx_str()
-                       : _T("*NONE*")));
+                       ? project->GetTitle().wx_str() : _T("*NONE*")));
         Manager::Get()->GetLogManager()->Log(log);
         Manager::Get()->GetLogManager()->DebugLog(log);
 
@@ -1170,8 +1170,7 @@ bool NativeParser::DeleteParser(cbProject* project)
     if (it == m_ParserList.end())
     {
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), project
-                                                    ? project->GetTitle().wx_str()
-                                                    : _T("*NONE*")));
+                                                  ? project->GetTitle().wx_str() : _T("*NONE*")));
         return false;
     }
 
@@ -1187,8 +1186,7 @@ bool NativeParser::DeleteParser(cbProject* project)
         m_ParserList.erase(it);
 
         wxString log(F(_("Delete parser for project '%s'!"), project
-                   ? project->GetTitle().wx_str()
-                   : _T("*NONE*")));
+                     ? project->GetTitle().wx_str() : _T("*NONE*")));
         Manager::Get()->GetLogManager()->Log(log);
         Manager::Get()->GetLogManager()->DebugLog(log);
     }
@@ -1203,8 +1201,7 @@ bool NativeParser::SwitchParser(cbProject* project, Parser* parser)
 
     SetParser(parser);
     wxString log(F(_("Switch parser to project '%s'"), project
-                   ? project->GetTitle().wx_str()
-                   : _T("*NONE*")));
+                   ? project->GetTitle().wx_str() : _T("*NONE*")));
     Manager::Get()->GetLogManager()->Log(log);
     Manager::Get()->GetLogManager()->DebugLog(log);
     return true;
@@ -1405,9 +1402,9 @@ bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
 
     if (!headers.empty() || !sources.empty())
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Add batch-parsing %d file(s) for project '%s'..."),
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d file(s) for project '%s' to batch-parser..."),
                                                     headers.size() + sources.size(),
-                                                    project->GetTitle().wx_str()));
+                                                    project ? project->GetTitle().wx_str() : _T("*NONE*")));
         parser->AddBatchParse(headers);
         parser->AddBatchParse(sources, false);
     }
@@ -1448,71 +1445,6 @@ void NativeParser::ReparseSelectedProject()
             CreateParser(project);
         }
     }
-}
-
-// UNUSED
-bool NativeParser::LoadCachedData(cbProject* project)
-{
-    if (!project || !m_Parser)
-        return false;
-
-    wxFileName projectCache = project->GetFilename();
-    projectCache.SetExt(_T("cbCache"));
-
-    wxFile f(projectCache.GetFullPath(), wxFile::read);
-    if (!f.IsOpened())
-        return false;
-
-    // read cache file
-    Manager::Get()->GetLogManager()->DebugLog(_T("Using parser's existing cache: ") + projectCache.GetFullPath());
-    bool ret = false;
-    try
-    {
-        wxFileInputStream fs(f);
-        wxBufferedInputStream fb(fs);
-
-        ret = m_Parser->ReadFromCache(&fb);
-    }
-    catch (cbException& ex)
-    {
-        ex.ShowErrorMessage(true);
-        ret = false;
-    }
-    catch (...)
-    {
-        // eat it
-        wxSafeShowMessage(_("Exception thrown!"),_("ERROR"));
-        ret = false;
-    }
-    if (!ret)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Error reading Cache! Re-parsing from scratch."));
-    return ret;
-}
-
-// UNUSED
-bool NativeParser::SaveCachedData(const wxString& projectFilename)
-{
-    bool result = false;
-
-    wxFileName projectCache = projectFilename;
-    projectCache.SetExt(_T("cbCache"));
-
-    wxFile f(projectCache.GetFullPath(), wxFile::write);
-    if (!f.IsOpened())
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Failed updating parser's cache: ") + projectCache.GetFullPath());
-        return false;
-    }
-
-    Manager::Get()->GetLogManager()->DebugLog(_T("Updating parser's cache: ") + projectCache.GetFullPath());
-
-    // write cache file
-    wxFileOutputStream fs(f);
-    {
-        wxBufferedOutputStream fb(fs);
-        result = m_Parser->WriteToCache(&fb);
-    }
-    return result;
 }
 
 // No critical section needed here:
@@ -3464,8 +3396,7 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
     {
     case ptCreateParser:
         Manager::Get()->GetLogManager()->DebugLog(F(_("Starting batch parsing for project '%s'..."), project
-                                                    ? project->GetTitle().wx_str()
-                                                    : _T("*NONE*")));
+                                                    ? project->GetTitle().wx_str() : _T("*NONE*")));
         {
             std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
             if (info.second && m_Parser != info.second)
@@ -3499,6 +3430,9 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
 
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
+    if (!Manager::IsAppShuttingDown())
+        Manager::Get()->GetLogManager()->Log(_("NativeParser received parser end event."));
+
     Parser* parser = static_cast<Parser*>(event.GetEventObject());
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
     const ParsingType type = static_cast<ParsingType>(event.GetInt());
@@ -3564,33 +3498,48 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
     std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
     if (m_ParserPerWorkspace)
     {
+        bool project_added = false;
+        // If there is no parser and an active editor file can be obtained, parse the file according the active project
         if (!info.second && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+        {
             AddProjectToParser(info.first);
+            project_added = true;
+        }
+        // Otherwise, there is a parser already present
         else
         {
+            // First: try to parse the active project (if any)
             cbProject* activeProject = Manager::Get()->GetProjectManager()->GetActiveProject();
             if (m_ParsedProjects.find(activeProject) == m_ParsedProjects.end())
+            {
                 AddProjectToParser(activeProject);
+                project_added = true;
+            }
+            // Else: add remaining projects one-by-one (if any)
             else
             {
                 ProjectsArray* projs = Manager::Get()->GetProjectManager()->GetProjects();
                 for (size_t i = 0; i < projs->GetCount(); ++i)
                 {
+                    // Only add, if the project is not already parsed
                     if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
                     {
                         AddProjectToParser(projs->Item(i));
+                        project_added = true;
                         break;
                     }
                 }
             }
         }
+        if (!project_added)
+            Manager::Get()->GetLogManager()->DebugLog(_T("No more projects to add to parser."));
     }
     else if (info.first && !info.second)
     {
         info.second = CreateParser(info.first);
         if (info.second && info.second != m_Parser)
         {
-            Manager::Get()->GetLogManager()->DebugLog(_T("Start switch from OnParserEnd::ptCreateParser"));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Start switch from OnParsingOneByOneTimer"));
             SwitchParser(info.first, info.second);
         }
     }
@@ -3758,7 +3707,7 @@ std::pair<cbProject*, Parser*> NativeParser::GetParserInfoByCurrentEditor()
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor && editor->GetFilename() != g_StartHereTitle)
     {
-        info.first = GetProjectByEditor(editor);
+        info.first  = GetProjectByEditor(editor);
         info.second = GetParserByProject(info.first);
     }
 
@@ -4124,8 +4073,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
     }
 
     wxString log(F(_("Add project (%s) to parser"), project
-                   ? project->GetTitle().wx_str()
-                   : _T("*NONE*")));
+                   ? project->GetTitle().wx_str() : _T("*NONE*")));
     Manager::Get()->GetLogManager()->Log(log);
     Manager::Get()->GetLogManager()->DebugLog(log);
 
@@ -4140,18 +4088,29 @@ void NativeParser::AddProjectToParser(cbProject* project)
 
     if (project)
     {
+        size_t num_files = 0;
         for (int i = 0; i < project->GetFilesCount(); ++i)
         {
             ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
+            {
                 AddFileToParser(project, pf->file.GetFullPath(), parser);
+                num_files++;
+            }
         }
         for (int i = 0; i < project->GetFilesCount(); ++i)
         {
             ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
+            {
                 AddFileToParser(project, pf->file.GetFullPath(), parser);
+                num_files++;
+            }
         }
+
+        wxString log(F(_("Done adding %d files of project (%s) to parser."), num_files,
+                       project ? project->GetTitle().wx_str() : _T("*NONE*")));
+        Manager::Get()->GetLogManager()->DebugLog(log);
     }
     else
     {
@@ -4161,6 +4120,10 @@ void NativeParser::AddProjectToParser(cbProject* project)
             wxFileName file(editor->GetFilename());
             parser->AddIncludeDir(file.GetPath());
             m_StandaloneFiles.Add(editor->GetFilename());
+
+            wxString log(F(_("Done adding stand-alone file (%s) of editor to parser."),
+                           editor->GetFilename().wx_str()));
+            Manager::Get()->GetLogManager()->DebugLog(log);
         }
     }
 }
@@ -4178,8 +4141,7 @@ void NativeParser::RemoveProjectFromParser(cbProject* project)
         return;
 
     wxString log(F(_("Remove project (%s) from parser"), project
-                   ? project->GetTitle().wx_str()
-                   : _T("*NONE*")));
+                   ? project->GetTitle().wx_str() : _T("*NONE*")));
     Manager::Get()->GetLogManager()->Log(log);
     Manager::Get()->GetLogManager()->DebugLog(log);
 

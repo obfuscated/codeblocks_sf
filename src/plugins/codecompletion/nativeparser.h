@@ -463,12 +463,6 @@ private:
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
 
-    /** Load the cashed Tokenstree data from hard disk*/
-    bool LoadCachedData(cbProject* project);
-
-    /** save the Tokenstree data to hard disk*/
-    bool SaveCachedData(const wxString& projectFilename);
-
     // event handliers
     /** do nothing*/
     void OnThreadStart(wxCommandEvent& event);

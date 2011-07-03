@@ -122,6 +122,7 @@ private:
     void OnValueTooltip(CodeBlocksEvent& event);
     void OnThreadUpdate(wxCommandEvent& event);
     void OnThreadCompletion(wxCommandEvent& event);
+    void OnThreadError(wxCommandEvent& event);
 
     void DoCodeComplete();
     void DoInsertCodeCompleteToken(wxString tokName);

@@ -205,6 +205,7 @@ int idProjectSavedTimer         = wxNewId();
 
 int THREAD_UPDATE               = wxNewId();
 int THREAD_COMPLETED            = wxNewId();
+int THREAD_ERROR                = wxNewId();
 
 // milliseconds
 #define REALTIME_PARSING_DELAY      500
@@ -213,40 +214,42 @@ int THREAD_COMPLETED            = wxNewId();
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
 
-    EVT_MENU(idMenuCodeComplete, CodeCompletion::OnCodeComplete)
-    EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
-    EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
-    EVT_MENU(idMenuGotoPrevFunction, CodeCompletion::OnGotoPrevFunction)
-    EVT_MENU(idMenuGotoNextFunction, CodeCompletion::OnGotoNextFunction)
-    EVT_MENU(idMenuGotoDeclaration, CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idMenuGotoImplementation, CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idMenuFindReferences, CodeCompletion::OnFindReferences)
-    EVT_MENU(idMenuRenameSymbols, CodeCompletion::OnRenameSymbols)
-    EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
+    EVT_MENU(idMenuCodeComplete,          CodeCompletion::OnCodeComplete             )
+    EVT_MENU(idMenuShowCallTip,           CodeCompletion::OnShowCallTip              )
+    EVT_MENU(idMenuGotoFunction,          CodeCompletion::OnGotoFunction             )
+    EVT_MENU(idMenuGotoPrevFunction,      CodeCompletion::OnGotoPrevFunction         )
+    EVT_MENU(idMenuGotoNextFunction,      CodeCompletion::OnGotoNextFunction         )
+    EVT_MENU(idMenuGotoDeclaration,       CodeCompletion::OnGotoDeclaration          )
+    EVT_MENU(idMenuGotoImplementation,    CodeCompletion::OnGotoDeclaration          )
+    EVT_MENU(idMenuFindReferences,        CodeCompletion::OnFindReferences           )
+    EVT_MENU(idMenuRenameSymbols,         CodeCompletion::OnRenameSymbols            )
+    EVT_MENU(idClassMethod,               CodeCompletion::OnClassMethod              )
     EVT_MENU(idUnimplementedClassMethods, CodeCompletion::OnUnimplementedClassMethods)
-    EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
-    EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
-    EVT_MENU(idMenuOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
+    EVT_MENU(idGotoDeclaration,           CodeCompletion::OnGotoDeclaration          )
+    EVT_MENU(idGotoImplementation,        CodeCompletion::OnGotoDeclaration          )
+    EVT_MENU(idOpenIncludeFile,           CodeCompletion::OnOpenIncludeFile          )
+    EVT_MENU(idMenuOpenIncludeFile,       CodeCompletion::OnOpenIncludeFile          )
 
-    EVT_MENU(idViewClassBrowser, CodeCompletion::OnViewClassBrowser)
-    EVT_MENU(idCurrentProjectReparse, CodeCompletion::OnCurrentProjectReparse)
+    EVT_MENU(idViewClassBrowser,       CodeCompletion::OnViewClassBrowser      )
+    EVT_MENU(idCurrentProjectReparse,  CodeCompletion::OnCurrentProjectReparse )
     EVT_MENU(idSelectedProjectReparse, CodeCompletion::OnSelectedProjectReparse)
-    EVT_MENU(idSelectedFileReparse, CodeCompletion::OnSelectedFileReparse)
+    EVT_MENU(idSelectedFileReparse,    CodeCompletion::OnSelectedFileReparse   )
 
-    EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
+    EVT_TIMER(idCodeCompleteTimer,     CodeCompletion::OnCodeCompleteTimer    )
     EVT_TIMER(idFunctionsParsingTimer, CodeCompletion::OnStartParsingFunctions)
-    EVT_TIMER(idRealtimeParsingTimer, CodeCompletion::OnRealtimeParsing)
-    EVT_TIMER(idToolbarTimer, CodeCompletion::OnStartParsingFunctions)
-    EVT_TIMER(idProjectSavedTimer, CodeCompletion::OnProjectSavedTimer)
+    EVT_TIMER(idRealtimeParsingTimer,  CodeCompletion::OnRealtimeParsing      )
+    EVT_TIMER(idToolbarTimer,          CodeCompletion::OnStartParsingFunctions)
+    EVT_TIMER(idProjectSavedTimer,     CodeCompletion::OnProjectSavedTimer    )
 
-    EVT_CHOICE(XRCID("chcCodeCompletionScope"),  CodeCompletion::OnScope)
-    EVT_CHOICE(XRCID("chcCodeCompletionFunction"),  CodeCompletion::OnFunction)
+    EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope   )
+    EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
 
-    EVT_MENU(PARSER_END, CodeCompletion::OnParserEnd)
-    EVT_MENU(PARSER_START, CodeCompletion::OnParserStart)
-    EVT_MENU(THREAD_UPDATE, CodeCompletion::OnThreadUpdate)
+    EVT_MENU(PARSER_END,       CodeCompletion::OnParserEnd       )
+    EVT_MENU(PARSER_START,     CodeCompletion::OnParserStart     )
+
+    EVT_MENU(THREAD_UPDATE,    CodeCompletion::OnThreadUpdate    )
     EVT_MENU(THREAD_COMPLETED, CodeCompletion::OnThreadCompletion)
+    EVT_MENU(THREAD_ERROR,     CodeCompletion::OnThreadError     )
 END_EVENT_TABLE()
 
 class SystemHeadersThread : public wxThread
@@ -279,27 +282,33 @@ public:
         for (size_t i = 0; i < dirs.GetCount(); ++i)
         {
             wxDir dir(dirs[i]);
-            if (!dir.IsOpened())
+            if ( !dir.IsOpened() )
+            {
+                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_ERROR);
+                evt.SetClientData(this);
+                evt.SetString(wxString::Format(_T("SystemHeadersThread: Unable to open: %s"), dirs[i].wx_str()));
+                wxPostEvent(m_Parent, evt);
                 continue;
+            }
 
             HeaderDirTraverser traverser(this, m_SystemHeadersMap, dirs[i]);
             dir.Traverse(traverser, wxEmptyString, wxDIR_FILES | wxDIR_DIRS);
-            if (TestDestroy())
+            if ( TestDestroy() )
                 break;
 
             wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_UPDATE);
             evt.SetClientData(this);
-            evt.SetString(wxString::Format(_T("Get Headers: %s , %d"), dirs[i].wx_str(),
+            evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %d"), dirs[i].wx_str(),
                                            m_SystemHeadersMap[dirs[i]].size()));
             wxPostEvent(m_Parent, evt);
         }
 
-        if (!TestDestroy())
+        if ( !TestDestroy() )
         {
             wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_COMPLETED);
             evt.SetClientData(this);
             if (!dirs.IsEmpty())
-                evt.SetString(wxString::Format(_T("Get the system header file path: %d"), dirs.GetCount()));
+                evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %d"), dirs.GetCount()));
             wxPostEvent(m_Parent, evt);
         }
 
@@ -1940,6 +1949,16 @@ void CodeCompletion::OnThreadCompletion(wxCommandEvent& event)
     }
 }
 
+void CodeCompletion::OnThreadError(wxCommandEvent& event)
+{
+    if (!m_SystemHeadersThread.empty())
+    {
+        SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
+        if (thread == m_SystemHeadersThread.front())
+            Manager::Get()->GetLogManager()->DebugLog(event.GetString());
+    }
+}
+
 // compare method for the sort algorithm for our FunctionScope struct
 bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
 {
@@ -3198,6 +3217,9 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
+    if (!Manager::IsAppShuttingDown())
+        Manager::Get()->GetLogManager()->Log(_("CodeCompletion received parser end event."));
+
     ParsingType type = static_cast<ParsingType>(event.GetInt());
     if (type == ptCreateParser)
     {
@@ -3212,6 +3234,8 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor)
         ParseFunctionsAndFillToolbar(true);
+
+    event.Skip();
 }
 
 void CodeCompletion::EnableToolbarTools(bool enable)
