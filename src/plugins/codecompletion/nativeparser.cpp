@@ -628,17 +628,27 @@ void NativeParser::ClearParsers()
 {
     SetParser(&m_TempParser);
 
+    wxArrayString projects;
     for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
     {
-        delete it->second;
-
-        if (!Manager::IsAppShuttingDown())
+        // Remember the projects deleted just for logging...
+        if ( !Manager::IsAppShuttingDown() )
         {
-            wxString log(F(_("Delete parser for project '%s'!"), it->first
-                         ? it->first->GetTitle().wx_str() : _T("*NONE*")));
-            Manager::Get()->GetLogManager()->Log(log);
-            Manager::Get()->GetLogManager()->DebugLog(log);
+            cbProject* project = it->first;
+            projects.Add(project ? project->GetTitle().wx_str() : _T("*NONE*"));
         }
+
+        delete it->second; // do the actual work
+    }
+
+    if ( !Manager::IsAppShuttingDown() )
+    {
+      for (size_t i=0; i<projects.Count(); i++)
+      {
+          wxString log(F(_("Deleted parser for project '%s'."), projects.Item(i).wx_str()));
+          Manager::Get()->GetLogManager()->Log(log);
+          Manager::Get()->GetLogManager()->DebugLog(log);
+      }
     }
 
     m_ParserList.clear();
@@ -1024,7 +1034,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, Parser* parser)
         defs += _T("#define ") + def + _T("\n");
     }
 
-    TRACE(_T("Add project and current buildtarget defined preprocessor macros:\n%s"), defs.wx_str());
+    TRACE(_T("Add project and current build target defined preprocessor macros:\n%s"), defs.wx_str());
     parser->AddPredefinedMacros(defs);
     return true;
 }
@@ -3487,6 +3497,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 void NativeParser::OnReparseAfterClearTimer(wxTimerEvent& event)
 {
     Manager::Get()->GetLogManager()->DebugLog(_T("Clear all parsers, and reparsing current project."));
+
     cbProject* project = GetCurrentProject();
     ClearParsers();
     CreateParser(project);
