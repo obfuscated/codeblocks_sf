@@ -336,6 +336,29 @@ bool Parser::Done()
     return done;
 }
 
+wxString Parser::NotDoneReason()
+{
+    wxCriticalSectionLocker locker(s_ParserCritical);
+
+    wxString reason = _T(" > Reasons:");
+    if (!m_PriorityHeaders.empty())
+      reason += _T("\n- still priority headers to parse");
+    if (!m_SystemPriorityHeaders.empty())
+      reason += _T("\n- still system priority headers to parse");
+    if (!m_BatchParseFiles.empty())
+      reason += _T("\n- still batch parse files to parse");
+    if (!m_PredefinedMacros.IsEmpty())
+      reason += _T("\n- still pre-defined macros to operate");
+    if (m_NeedMarkFileAsLocal)
+      reason += _T("\n- still need to mark files as local");
+    if (!m_PoolTask.empty())
+      reason += _T("\n- still parser threads (tasks) in the pool");
+    if (!m_Pool.Done())
+      reason += _T("\n- thread pool is not done yet");
+
+    return reason;
+}
+
 Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
 {
     wxCriticalSectionLocker locker(s_TokensTreeCritical);

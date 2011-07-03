@@ -229,7 +229,9 @@ public:
     TokensTree* GetTokens() { return m_TokensTree; }
     TokensTree* GetTempTokens() { return m_TempTokensTree; }
     unsigned int GetFilesCount();
-    bool Done();
+
+    bool     Done();
+    wxString NotDoneReason();
 
     /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
      * multiply threads parsing.

@@ -1131,8 +1131,10 @@ int CodeCompletion::CodeComplete()
 
         if (!m_NativeParser.GetParser().Done())
         {
-            wxString msg = _("The Parser is still parsing files...");
+            wxString msg = _("The Parser is still parsing files.");
             ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+            msg += m_NativeParser.GetParser().NotDoneReason();
+            Manager::Get()->GetLogManager()->DebugLog(msg);
         }
     }
 
@@ -3218,7 +3220,7 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
     if (!Manager::IsAppShuttingDown())
-        Manager::Get()->GetLogManager()->Log(_("CodeCompletion received parser end event."));
+        Manager::Get()->GetLogManager()->DebugLog(_("CodeCompletion received parser end event."));
 
     ParsingType type = static_cast<ParsingType>(event.GetInt());
     if (type == ptCreateParser)
