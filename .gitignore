@@ -1,0 +1,13 @@
+.objs
+devel
+output
+debug
+release
+*.gch
+*.layout
+*.depend
+*.patch
+lib
+autorevision.h
+*.a
+*.exe
