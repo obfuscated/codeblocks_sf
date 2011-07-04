@@ -187,6 +187,20 @@ public:
         }
     }
 
+    /** Force start parsing if needed */
+    bool ForceStartParsing()
+    {
+        if (!m_IsParsing && !m_BatchTimer.IsRunning() && !Done())
+        {
+            m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
+            if (m_ParsingType == ptUndefined)
+                m_ParsingType = ptAddFileToParser;
+            return true;
+        }
+        else
+            return false;
+    }
+
     /** Must add a locker before call all named ParseBufferXXX fuctions
      * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
      */

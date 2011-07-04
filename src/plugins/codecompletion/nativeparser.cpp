@@ -4118,6 +4118,9 @@ void NativeParser::AddProjectToParser(cbProject* project)
             }
         }
 
+        if (parser->ForceStartParsing())
+            Manager::Get()->GetLogManager()->DebugLog(_T("Force start parsing done!"));
+
         wxString log(F(_("Done adding %d files of project (%s) to parser."), num_files,
                      project ? project->GetTitle().wx_str() : _T("*NONE*")));
         Manager::Get()->GetLogManager()->DebugLog(log);
