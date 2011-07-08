@@ -849,7 +849,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         if (!compiler)
             return false;
 
-        wxFileName fn(wxEmptyString, _T("cpp"));
+        wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
         fn.SetPath(compiler->GetMasterPath());
         fn.AppendDir(_T("bin"));
 
@@ -858,9 +858,9 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
         if (defsMap[cpp_compiler].IsEmpty())
         {
 #ifdef __WXMSW__
-            const wxString args(_T(" -dM -E -< nul"));
+            const wxString args(_T(" -E -dM -x c++ nul"));
 #else
-            const wxString args(_T(" -dM -E -< /dev/null"));
+            const wxString args(_T(" -E -dM -x c++ /dev/null"));
 #endif
 
             // wxExecute can be a long action and C::B might have been shutdown in the meantime...
@@ -1050,8 +1050,8 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // for starters , only do this for gnu compiler
     //Manager::Get()->GetLogManager()->DebugLog(_T("CompilerID ") + CompilerID);
     //
-    //   windows: mingw32-g++ -v -E -x c++ -< nul
-    //   linux  : g++ -v -E -x c++ -< /dev/null
+    //   windows: mingw32-g++ -v -E -x c++ nul
+    //   linux  : g++ -v -E -x c++ /dev/null
     // do the trick only for c++, not needed then for C (since this is a subset of C++)
 
 
@@ -1060,9 +1060,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // both works fine in Windows and linux
 
 #ifdef __WXMSW__
-    wxString Command = cpp_compiler + _T(" -v -E -x c++ -< nul");
+    wxString Command = cpp_compiler + _T(" -v -E -x c++ nul");
 #else
-    wxString Command = cpp_compiler + _T(" -v -E -x c++ -< /dev/null");
+    wxString Command = cpp_compiler + _T(" -v -E -x c++ /dev/null");
 #endif
 
     // wxExecute can be a long action and C::B might have been shutdown in the meantime...
@@ -1349,7 +1349,6 @@ bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
         }
     }
 
-    bool needDefineCppMacro = true;
     for (int i = 0; project && i < project->GetFilesCount(); ++i)
     {
         ProjectFile* pf = project->GetFile(i);
@@ -1373,17 +1372,10 @@ bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
             if (!isPriorityFile)
                 headers.push_back(pf->file.GetFullPath());
         }
-        else if (ft == ccftCppSource) // parse c++ source files
+        else if (ft == ccftSource) // parse source files
         {
             sources.push_back(pf->file.GetFullPath());
-            if (needDefineCppMacro)
-            {
-                needDefineCppMacro = false;
-                parser->AddPredefinedMacros(_T("#define ") _T("__cplusplus") _T("\n"));
-            }
         }
-        else if (ft == ccftCSource) // parse c source files
-            sources.push_back(pf->file.GetFullPath());
     }
 
     for (PriorityMap::iterator it = priorityMap.begin(); it != priorityMap.end(); ++it)

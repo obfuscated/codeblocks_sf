@@ -122,8 +122,7 @@ enum FileParsingStatus
 enum CCFileType
 {
     ccftHeader,
-    ccftCSource,
-    ccftCppSource,
+    ccftSource,
     ccftOther
 };
 
