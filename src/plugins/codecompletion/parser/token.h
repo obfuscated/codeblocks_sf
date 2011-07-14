@@ -19,7 +19,7 @@
 #include <deque>
 
 // Make sure already entered a critical section if TokensTree related!
-static wxCriticalSection s_TokensTreeCritical;
+extern wxCriticalSection s_TokensTreeCritical;
 
 extern bool g_EnableDebugTrace;
 extern const wxString g_DebugTraceFile;

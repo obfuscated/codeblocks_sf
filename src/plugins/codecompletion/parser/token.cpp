@@ -15,6 +15,7 @@
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
 
+wxCriticalSection s_TokensTreeCritical;
 bool g_EnableDebugTrace = false;
 const wxString g_DebugTraceFile = wxEmptyString;
 
