@@ -1220,13 +1220,14 @@ bool Parser::ReparseModifiedFiles()
     return true;
 }
 
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 size_t Parser::FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask)
 {
     result.clear();
     wxString file = UnixFilename(fileName);
     TokenIdxSet tmpresult;
 
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), file.wx_str());
     if ( !m_TokensTree->FindTokensInFile(file, tmpresult, kindMask) )
         return 0;

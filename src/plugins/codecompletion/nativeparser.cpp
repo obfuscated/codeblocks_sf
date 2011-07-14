@@ -3247,6 +3247,8 @@ bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
 }
 
 // returns current function's position (not line) in the editor
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
 int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace, wxString* procName,
                                            Token** functionToken, int caretPos)
 {
