@@ -11,3 +11,6 @@ lib
 autorevision.h
 *.a
 *.exe
+autorevision
+cb_console_runner
+

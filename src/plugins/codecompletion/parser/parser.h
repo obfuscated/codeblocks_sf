@@ -226,7 +226,6 @@ public:
 
     Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF);
     Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF);
-    size_t FindMatches(const wxString& s, TokenList&   result, bool caseSensitive = true, bool is_prefix = true);
     size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive = true, bool is_prefix = true);
     size_t FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask);
     ParserOptions& Options() { return m_Options; }
