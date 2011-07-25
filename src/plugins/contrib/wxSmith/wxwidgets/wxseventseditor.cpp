@@ -25,6 +25,8 @@
 #include "wxsitemresdata.h"
 #include "../wxscoder.h"
 
+#include <wx/textdlg.h>
+
 #include <editormanager.h>
 #include "cbstyledtextctrl.h"
 
