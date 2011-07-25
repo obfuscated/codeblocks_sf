@@ -180,8 +180,9 @@ public:
             GetParent()->ClientToScreen(NULL, &y);
         }
         wxSCICallTipBase::DoSetSize(x, y, width, height, sizeFlags);
-
+/* C::B begin */
         m_content->SetSize(0, 0, width, height, sizeFlags);
+/* C::B end */
     }
 
 #if wxUSE_POPUPWIN

@@ -14,21 +14,20 @@
 // Copyright:   (c) 2004 wxCode
 // Licence:     wxWindows
 /////////////////////////////////////////////////////////////////////////////
-#include <limits>
+
 #include <ctype.h>
+#include <limits>
 
-#include "ScintillaWX.h"
-#include "wx/wxscintilla.h"
-
-#include <wx/wx.h>
 #include <wx/tokenzr.h>
 #include <wx/mstream.h>
 #include <wx/image.h>
 #include <wx/file.h>
-
 #ifdef __WXGTK__
     #include <wx/dcbuffer.h>
 #endif
+
+#include "ScintillaWX.h"
+#include "wx/wxscintilla.h"
 
 //----------------------------------------------------------------------
 
@@ -272,9 +271,8 @@ void wxScintilla::SetHScrollBar (wxScrollBar* bar)
 }
 
 //----------------------------------------------------------------------
-// BEGIN generated section.  The following code is automatically generated
-//       by gen_iface.py from the contents of Scintilla.iface.  Do not edit
-//       this file.  Edit wxscintilla.cpp.in or gen_iface.py instead and regenerate.
+// Generated methods implementation section {{{
+
 
 // Add text to the document at current position.
 void wxScintilla::AddText (const wxString& text)
@@ -599,6 +597,18 @@ void wxScintilla::MarkerSetBackground (int markerNumber, const wxColour& back)
     SendMsg(SCI_MARKERSETBACK, markerNumber, wxColourAsLong(back));
 }
 
+// Set the background colour used for a particular marker number when its folding block is selected.
+void wxScintilla::MarkerSetBackSelected(int markerNumber, const wxColour& back)
+{
+    SendMsg(SCI_MARKERSETBACKSELECTED, markerNumber, wxColourAsLong(back));
+}
+
+// Enable/disable highlight for current folding bloc (smallest one that contains the caret)
+void wxScintilla::MarkerEnableHighlight(bool enabled)
+{
+    SendMsg(SCI_MARKERENABLEHIGHLIGHT, enabled, 0);
+}
+
 // Add a marker to a line, returning an ID which can be used to find or delete the marker.
 int wxScintilla::MarkerAdd (int line, int markerNumber)
 {
@@ -623,7 +633,8 @@ int wxScintilla::MarkerGet (int line)
     return SendMsg(SCI_MARKERGET, line, 0);
 }
 
-// Find the next line after lineStart that includes a marker in mask.
+// Find the next line at or after lineStart that includes a marker in mask.
+// Return -1 when no more lines.
 int wxScintilla::MarkerNext (int lineStart, int markerMask)
 {
     return SendMsg(SCI_MARKERNEXT, lineStart, markerMask);
@@ -1449,6 +1460,12 @@ void wxScintilla::SetSelectionEnd(int pos)
 int wxScintilla::GetSelectionEnd() const
 {
     return SendMsg(SCI_GETSELECTIONEND, 0, 0);
+}
+
+// Set caret to a position, while removing any existing selection.
+void wxScintilla::SetEmptySelection(int pos)
+{
+    SendMsg(SCI_SETEMPTYSELECTION, pos, 0);
 }
 
 // Sets the print magnification added to the point size of each style for printing.
@@ -2640,10 +2657,22 @@ void wxScintilla::BraceHighlight (int pos1, int pos2)
     SendMsg(SCI_BRACEHIGHLIGHT, pos1, pos2);
 }
 
+// Use specified indicator to highlight matching braces instead of changing their style.
+void wxScintilla::BraceHighlightIndicator(bool useBraceHighlightIndicator, int indicator)
+{
+    SendMsg(SCI_BRACEHIGHLIGHTINDICATOR, useBraceHighlightIndicator, indicator);
+}
+
 // Highlight the character at a position indicating there is no matching brace.
 void wxScintilla::BraceBadLight (int pos)
 {
     SendMsg(SCI_BRACEBADLIGHT, pos, 0);
+}
+
+// Use specified indicator to highlight non matching brace instead of changing its style.
+void wxScintilla::BraceBadLightIndicator(bool useBraceBadLightIndicator, int indicator)
+{
+    SendMsg(SCI_BRACEBADLIGHTINDICATOR, useBraceBadLightIndicator, indicator);
 }
 
 // Find the position of a matching brace or INVALID_POSITION if no match.
@@ -3401,6 +3430,18 @@ int wxScintilla::IndicGetAlpha(int indicator) const
     return SendMsg(SCI_INDICGETALPHA, indicator, 0);
 }
 
+// Set the alpha outline colour of the given indicator.
+void wxScintilla::IndicSetOutlineAlpha(int indicator, int alpha)
+{
+    SendMsg(SCI_INDICSETOUTLINEALPHA, indicator, alpha);
+}
+
+// Get the alpha outline colour of the given indicator.
+int wxScintilla::IndicGetOutlineAlpha(int indicator) const
+{
+    return SendMsg(SCI_INDICGETOUTLINEALPHA, indicator, 0);
+}
+
 // Set extra ascent for each line
 void wxScintilla::SetExtraAscent(int extraAscent)
 {
@@ -3499,6 +3540,18 @@ void wxScintilla::MarginSetStyleOffset(int style)
 int wxScintilla::MarginGetStyleOffset() const
 {
     return SendMsg(SCI_MARGINGETSTYLEOFFSET, 0, 0);
+}
+
+// Set the margin options.
+void wxScintilla::SetMarginOptions(int marginOptions)
+{
+    SendMsg(SCI_SETMARGINOPTIONS, marginOptions, 0);
+}
+
+// Get the margin options.
+int wxScintilla::GetMarginOptions() const
+{
+    return SendMsg(SCI_GETMARGINOPTIONS, 0, 0);
 }
 
 // Set the annotation text for a line
@@ -3882,6 +3935,56 @@ void wxScintilla::VerticalCentreCaret()
     SendMsg(SCI_VERTICALCENTRECARET, 0, 0);
 }
 
+// Move the selected lines up one line, shifting the line above after the selection
+void wxScintilla::MoveSelectedLinesUp()
+{
+    SendMsg(SCI_MOVESELECTEDLINESUP, 0, 0);
+}
+
+// Move the selected lines down one line, shifting the line below before the selection
+void wxScintilla::MoveSelectedLinesDown()
+{
+    SendMsg(SCI_MOVESELECTEDLINESDOWN, 0, 0);
+}
+
+// Set the identifier reported as idFrom in notification messages.
+void wxScintilla::SetIdentifier(int identifier)
+{
+    SendMsg(SCI_SETIDENTIFIER, identifier, 0);
+}
+
+// Get the identifier.
+int wxScintilla::GetIdentifier() const
+{
+    return SendMsg(SCI_GETIDENTIFIER, 0, 0);
+}
+
+// Set the width for future RGBA image data.
+void wxScintilla::RGBAImageSetWidth(int width)
+{
+    SendMsg(SCI_RGBAIMAGESETWIDTH, width, 0);
+}
+
+// Set the height for future RGBA image data.
+void wxScintilla::RGBAImageSetHeight(int height)
+{
+    SendMsg(SCI_RGBAIMAGESETHEIGHT, height, 0);
+}
+
+// Define a marker from RGBA data.
+// It has the width and height from RGBAImageSetWidth/Height
+void wxScintilla::MarkerDefineRGBAImage(int markerNumber, const wxString& pixels)
+{
+    SendMsg(SCI_MARKERDEFINERGBAIMAGE, markerNumber, (uptr_t)(const char*)wx2sci(pixels));
+}
+
+// Register an RGBA image for use in autocompletion lists.
+// It has the width and height from RGBAImageSetWidth/Height
+void wxScintilla::RegisterRGBAImage(int type, const wxString& pixels)
+{
+    SendMsg(SCI_REGISTERRGBAIMAGE, type, (uptr_t)(const char*)wx2sci(pixels));
+}
+
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord ()
 {
@@ -4080,7 +4183,6 @@ wxString wxScintilla::GetLexerLanguage() const
 }
 /* C::B end */
 
-// END of generated section
 //----------------------------------------------------------------------
 
 
@@ -4863,7 +4965,9 @@ void wxScintilla::NotifyParent (SCNotification* _scn)
 
     case SCN_UPDATEUI:
         evt.SetEventType (wxEVT_SCI_UPDATEUI);
+/* C::B begin */
         evt.SetUpdateType(scn.updated);
+/* C::B end */
         break;
 
     case SCN_MODIFIED:
@@ -5041,7 +5145,7 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 2, 2, 5, "Scintilla 2.25");
+    return wxVersionInfo("Scintilla", 2, 2, 7, "Scintilla 2.27");
 }
 #endif
 /* C::B end */

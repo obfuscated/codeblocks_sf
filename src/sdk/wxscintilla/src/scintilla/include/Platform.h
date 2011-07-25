@@ -306,8 +306,11 @@ public:
 	FontID GetID() { return fid; }
 	// Alias another font - caller guarantees not to Release
 	void SetID(FontID fid_) { fid = fid_; }
+#if PLAT_WX
+	void SetAscent(int ascent_) { ascent = ascent_; }
+#endif
 	friend class Surface;
-        friend class SurfaceImpl;
+	friend class SurfaceImpl;
 };
 
 /**
@@ -341,6 +344,9 @@ public:
 	virtual void RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAllocated back)=0;
 	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill,
 		ColourAllocated outline, int alphaOutline, int flags)=0;
+/* C::B begin */
+//	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage)=0;
+/* C::B end */
 	virtual void Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back)=0;
 	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
@@ -416,8 +422,8 @@ public:
 	void SetTitle(const char *s);
 	PRectangle GetMonitorRect(Point pt);
 #if PLAT_MACOSX
-	void SetWindow(void *ref) { windowRef = ref; };
-	void SetControl(void *_control) { control = _control; };
+	void SetWindow(void *ref) { windowRef = ref; }
+	void SetControl(void *_control) { control = _control; }
 #endif
 private:
 	Cursor cursorLast;
@@ -448,6 +454,9 @@ public:
 	virtual int Find(const char *prefix)=0;
 	virtual void GetValue(int n, char *value, int len)=0;
 	virtual void RegisterImage(int type, const char *xpm_data)=0;
+/* C::B begin */
+//	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
+/* C::B end */
 	virtual void ClearRegisteredImages()=0;
 	virtual void SetDoubleClickAction(CallBackAction, void *)=0;
 	virtual void SetList(const char* list, char separator, char typesep)=0;
