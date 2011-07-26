@@ -224,6 +224,8 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkNBUseToolTips",            wxCheckBox)->SetValue(useToolTips);
     XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
     XRCCTRL(*this, "spnNBDwellTime",              wxSpinCtrl)->Enable(useToolTips);
+    bool invertScrolling = cfg->ReadBool(_T("/environment/tabs_invert_scrolling"),false);
+    XRCCTRL(*this, "chkNBInvertScrolling",        wxCheckBox)->SetValue(invertScrolling);
 
     // tab "Docking"
     XRCCTRL(*this, "spnAuiBorder",                        wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/border_size"), m_pArt->GetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE)));
@@ -548,11 +550,14 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         bool useToolTips = (bool)XRCCTRL(*this, "chkNBUseToolTips", wxCheckBox)->GetValue();
         cfg->Write(_T("/environment/tabs_use_tooltips"),useToolTips);
         cfg->Write(_T("/environment/tabs_dwell_time"),                (int)  XRCCTRL(*this, "spnNBDwellTime", wxSpinCtrl)->GetValue());
+        bool invertScrolling = (bool) XRCCTRL(*this, "chkNBInvertScrolling", wxCheckBox)->GetValue();
+        cfg->Write(_T("/environment/tabs_invert_scrolling"), invertScrolling);
         cbAuiNotebook::AllowScrolling(enableMousewheel);
         cbAuiNotebook::UseToolTips(useToolTips);
         cbAuiNotebook::SetDwellTime(cfg->ReadInt(_T("/environment/tabs_dwell_time"), 1000));
         cbAuiNotebook::SetModKeys(cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl")));
         cbAuiNotebook::UseModToAdvance(cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false));
+        cbAuiNotebook::InvertScrollDirection(cfg->ReadBool(_T("/environment/tabs_invert_scrolling"),false));
 
         cfg->Write(_T("/environment/aui/border_size"),                (int)  XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/sash_size"),                  (int)  XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());

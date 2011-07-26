@@ -30,6 +30,7 @@ bool cbAuiNotebook::s_AllowMousewheel = true;
 cbAuiNotebookArray cbAuiNotebook::s_cbAuiNotebookArray;
 wxString cbAuiNotebook::s_modKeys = _T("Ctrl");
 bool cbAuiNotebook::s_modToAdvance = false;
+int cbAuiNotebook::s_scrollDirection = 1;
 
 static bool PointClose(wxPoint pt1, wxPoint pt2)
 {
@@ -443,7 +444,7 @@ void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
         if (win)
         {
             wxClientDC dc(win);
-            if (event.GetWheelRotation() > 0)
+            if (event.GetWheelRotation() * s_scrollDirection > 0)
             {
                 if (!tabCtrl->IsTabVisible(lastTabIdx,tabOffset,&dc,win))
                     tabOffset++;
@@ -887,4 +888,9 @@ void cbAuiNotebook::SetModKeys(wxString keys)
 void cbAuiNotebook::UseModToAdvance(bool use)
 {
     s_modToAdvance = use;
+}
+
+void cbAuiNotebook::InvertScrollDirection(bool invert)
+{
+    s_scrollDirection=invert ? -1 : 1;
 }

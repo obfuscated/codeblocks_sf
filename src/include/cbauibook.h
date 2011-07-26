@@ -330,6 +330,8 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Use modkey to advance through tabs with mousewheel
          */
         static void UseModToAdvance(bool use = false);
+
+        static void InvertScrollDirection(bool invert);
     protected:
         /** \brief Enable or disable tab tooltips
          */
@@ -349,6 +351,8 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Use modkey to advance through tabs with mousewheel
          */
         static bool s_modToAdvance;
+
+        static int s_scrollDirection;
 
         DECLARE_EVENT_TABLE()
 };
