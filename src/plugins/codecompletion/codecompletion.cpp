@@ -19,10 +19,12 @@
     #include <wx/dir.h>
     #include <wx/filename.h>
     #include <wx/fs_zip.h>
+    #include <wx/menu.h>
     #include <wx/mimetype.h>
-    #include <wx/regex.h>
     #include <wx/msgdlg.h>
+    #include <wx/regex.h>
     #include <wx/tipwin.h>
+    #include <wx/toolbar.h>
     #include <wx/utils.h>
     #include <wx/xrc/xmlres.h>
     #include <wx/wxscintilla.h>

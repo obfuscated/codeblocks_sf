@@ -9,12 +9,14 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
+  #include <wx/button.h>
   #include <wx/checkbox.h>
   #include <wx/combobox.h>
   #include <wx/event.h>
   #include <wx/file.h>
   #include <wx/filename.h>
   #include <wx/intl.h>
+  #include <wx/listbox.h>
   #include <wx/textctrl.h>
   #include <wx/xrc/xmlres.h>
 

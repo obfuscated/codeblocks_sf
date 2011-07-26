@@ -54,7 +54,14 @@
 #endif
 
 #ifndef CB_PRECOMP
+    #include <wx/app.h>
+    #include <wx/bmpbuttn.h>
+    #include <wx/combobox.h>
+    #include <wx/filedlg.h>
     #include <wx/frame.h> // GetMenuBar
+    #include <wx/menu.h>
+    #include <wx/stattext.h>
+    #include <wx/textdlg.h>
     #include "cbproject.h"
 #endif
 

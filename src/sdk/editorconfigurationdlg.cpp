@@ -10,10 +10,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/spinctrl.h>
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/choice.h>
     #include <wx/combobox.h>
-
+    #include <wx/settings.h>
+    #include <wx/slider.h>
+    #include <wx/spinctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/textdlg.h>
+    #include <wx/xrc/xmlres.h>
+    
     #include "manager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"

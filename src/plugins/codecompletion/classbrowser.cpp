@@ -12,12 +12,14 @@
 #ifndef CB_PRECOMP
     #include <wx/button.h>
     #include <wx/choice.h>
+    #include <wx/choicdlg.h>
     #include <wx/intl.h>
     #include <wx/listctrl.h>
     #include <wx/menu.h>
     #include <wx/sizer.h>
     #include <wx/stattext.h>
     #include <wx/treectrl.h>
+    #include <wx/settings.h>
     #include <wx/splitter.h>
     #include <wx/utils.h> // wxBusyCursor
     #include <wx/tipwin.h>

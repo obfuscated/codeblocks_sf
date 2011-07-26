@@ -10,6 +10,8 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/dc.h>
+
     #include "manager.h"
     #include "logmanager.h"
     #include "cbeditor.h"

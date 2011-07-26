@@ -10,6 +10,13 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
+    #include <wx/image.h>
+    #include <wx/sizer.h>
+    #include <wx/statbmp.h>
+    #include <wx/stattext.h>
+    #include <wx/textdlg.h>
+
     #include <cbeditor.h>
     #include <cbproject.h>
     #include <editorcolourset.h>

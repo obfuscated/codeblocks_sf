@@ -10,13 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/dir.h>
+    #include <wx/settings.h>
+
     #include "globals.h"
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "logmanager.h"
     #include "filemanager.h"
     #include "manager.h"
-    #include <wx/dir.h>
 #endif
 #include "cbstyledtextctrl.h"
 

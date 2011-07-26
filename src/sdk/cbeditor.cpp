@@ -10,7 +10,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/app.h>
+    #include <wx/filedlg.h>
     #include <wx/filename.h>
+    #include <wx/menu.h>
     #include <wx/notebook.h>
     #include <wx/wfstream.h>
 

@@ -10,6 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/choice.h>
     #include <wx/imaglist.h>
     #include <wx/intl.h>
@@ -17,7 +18,9 @@
     #include <wx/listctrl.h>
     #include <wx/menu.h>
     #include <wx/string.h>
+    #include <wx/settings.h>
     #include <wx/xrc/xmlres.h>
+
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "editormanager.h"

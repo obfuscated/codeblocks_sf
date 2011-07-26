@@ -21,6 +21,12 @@
 #include <wx/utils.h>
 #include <wx/uri.h>
 
+#ifndef CB_PRECOMP
+    #include <wx/app.h>
+    #include <wx/textdlg.h>
+    #include <wx/toolbar.h>
+#endif
+
 #include <prep.h>
 #include <manager.h>
 #include <sdk_events.h>
