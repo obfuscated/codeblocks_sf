@@ -1,4 +1,4 @@
-SUBDIRS = base build_tools include mime sdk src plugins tools templates scripts wxsmith
+SUBDIRS = include base build_tools mime sdk src plugins tools templates scripts wxsmith
 
 dist_pkgdata_DATA = tips.txt
 

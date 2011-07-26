@@ -1094,7 +1094,7 @@
 		</Unit>
 		<Unit filename="include\sdk.h">
 			<Option compile="1" />
-			<Option weight="0" />
+			<Option weight="1" />
 			<Option target="src" />
 		</Unit>
 		<Unit filename="include\sdk_common.h">
