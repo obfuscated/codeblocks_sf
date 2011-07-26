@@ -9,6 +9,8 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip])
 AC_CONFIG_HEADER([src/include/config.h])
 
+CODEBLOCKS_CHECK_DEBUG
+
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_CPP

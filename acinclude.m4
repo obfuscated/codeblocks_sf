@@ -59,8 +59,8 @@ AM_CONDITIONAL(CODEBLOCKS_LINUX, test x$linux = xtrue)
 AM_CONDITIONAL(CODEBLOCKS_DARWIN, test x$darwin = xtrue )
 ])
 
-dnl check what settings to enable
-AC_DEFUN([CODEBLOCKS_ENABLE_SETTINGS],
+dnl check whether to enable debugging
+AC_DEFUN([CODEBLOCKS_CHECK_DEBUG],
 [
 AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
@@ -75,7 +75,11 @@ else
 	CXXFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CXXFLAGS"
 	AC_MSG_RESULT(no)
 fi
-
+])
+ 
+dnl check what settings to enable
+AC_DEFUN([CODEBLOCKS_ENABLE_SETTINGS],
+[
 AC_MSG_CHECKING(whether to build the source formatter plugin)
 astyle_default="yes"
 AC_ARG_ENABLE(source-formatter, [AC_HELP_STRING([--enable-source-formatter], [build the source formatter plugin (default YES)])],,
