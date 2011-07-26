@@ -11,6 +11,7 @@
 #ifndef CB_PRECOMP
     #include <wx/arrstr.h>
     #include <wx/button.h>
+    #include <wx/checklst.h>
     #include <wx/combobox.h>
     #include <wx/event.h>
     #include <wx/file.h>

@@ -24,7 +24,9 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
+    #include <wx/menu.h>
     #include <wx/process.h>
+    #include <wx/toolbar.h>
     #include <wx/xrc/xmlres.h>
 
     #include <cbeditor.h>

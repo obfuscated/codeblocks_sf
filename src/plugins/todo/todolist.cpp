@@ -9,6 +9,7 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
+  #include <wx/checklst.h>
   #include <wx/event.h>
   #include <wx/frame.h> // GetMenuBar
   #include <wx/fs_zip.h>

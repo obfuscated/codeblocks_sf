@@ -3,6 +3,12 @@
 #include <configurationpanel.h>
 #include "EditorTweaks.h"
 
+#ifndef CB_PRECOMP
+    #include <wx/menu.h>
+    #include <wx/textdlg.h>
+    #include <wx/toolbar.h>
+#endif
+
 
 #include <manager.h>
 #include <configmanager.h>

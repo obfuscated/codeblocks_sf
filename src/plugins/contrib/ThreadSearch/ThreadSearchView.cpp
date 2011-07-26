@@ -13,7 +13,14 @@
 #include <wx/bmpbuttn.h>
 #include <wx/statline.h>
 #ifndef CB_PRECOMP
+    #include <wx/combobox.h>
+    #include <wx/sizer.h>
     #include <wx/splitter.h>
+    #include <wx/statbox.h>
+    #include <wx/stattext.h>
+    #include <wx/settings.h>
+    #include <wx/toolbar.h>
+
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "editorcolourset.h"

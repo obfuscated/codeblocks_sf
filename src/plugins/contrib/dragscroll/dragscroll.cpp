@@ -13,6 +13,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
+    #include <wx/app.h>
 	#include <wx/intl.h>
 	#include <wx/listctrl.h>
 	#include "configmanager.h"

@@ -16,16 +16,19 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/dynarray.h>
-#include <wx/intl.h>
-#include <wx/log.h>
-#include "cbeditor.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "manager.h"
-#include "pluginmanager.h"
-#include "personalitymanager.h"
+    #include <wx/dynarray.h>
+    #include <wx/intl.h>
+    #include <wx/log.h>
+    #include <wx/sizer.h>
+
+    #include "cbeditor.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "manager.h"
+    #include "pluginmanager.h"
+    #include "personalitymanager.h"
 #endif
+
 #include "wx/fileconf.h"
 #include "cbstyledtextctrl.h"
 

@@ -12,7 +12,11 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/menu.h>
+    #include <wx/settings.h>
+    #include <wx/toolbar.h>
     #include <wx/xrc/xmlres.h>
+
     #include <configmanager.h>
     #include <editormanager.h>
     #include <cbeditor.h>

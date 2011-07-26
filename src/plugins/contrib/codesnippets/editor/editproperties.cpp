@@ -4,6 +4,12 @@
 #include <wx/wxscintilla.h>  // scintilla edit control
 
 #include "sdk.h"
+#ifndef CB_PRECOMP
+    #include <wx/button.h>
+    #include <wx/sizer.h>
+    #include <wx/statbox.h>
+    #include <wx/stattext.h>
+#endif
 #include "scrollingdialog.h"
 #include "editproperties.h"
 #include "scbeditor.h"

@@ -10,6 +10,7 @@
 #include "sdk.h" // Code::Blocks SDK
 #ifndef CB_PRECOMP
   #include <wx/intl.h>
+  #include <wx/menu.h>
   #include <wx/string.h>
   #include <wx/utils.h> // wxLaunchDefaultBrowser
   #include "globals.h"

@@ -11,6 +11,7 @@
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     // Required extra includes
+    #include <configmanager.h>
 #endif
 
 #include <wx/listctrl.h>
