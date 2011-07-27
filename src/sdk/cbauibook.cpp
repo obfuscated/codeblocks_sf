@@ -30,7 +30,8 @@ bool cbAuiNotebook::s_AllowMousewheel = true;
 cbAuiNotebookArray cbAuiNotebook::s_cbAuiNotebookArray;
 wxString cbAuiNotebook::s_modKeys = _T("Ctrl");
 bool cbAuiNotebook::s_modToAdvance = false;
-int cbAuiNotebook::s_scrollDirection = 1;
+int cbAuiNotebook::s_advanceDirection = 1;
+int cbAuiNotebook::s_moveDirection = 1;
 
 static bool PointClose(wxPoint pt1, wxPoint pt2)
 {
@@ -75,6 +76,8 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
     s_AllowMousewheel = cfg->ReadBool(_T("/environment/tabs_use_mousewheel"),true);
     s_modKeys = cfg->Read(_T("/environment/tabs_mousewheel_modifier"),_T("Ctrl"));
     s_modToAdvance = cfg->ReadBool(_T("/environment/tabs_mousewheel_advance"),false);
+    cbAuiNotebook::InvertAdvanceDirection(cfg->ReadBool(_T("/environment/tabs_invert_advance"),false));
+    cbAuiNotebook::InvertMoveDirection(cfg->ReadBool(_T("/environment/tabs_invert_move"),false));
 
     m_pDwellTimer = new wxTimer(this, m_IdNoteBookTimer);
     if (m_pDwellTimer)
@@ -435,7 +438,7 @@ void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
     bool advance = (!s_modToAdvance && !modkeys) || (s_modToAdvance &&  modkeys);
 
     if (advance)
-        nb->AdvanceSelection(event.GetWheelRotation() < 0);
+        nb->AdvanceSelection((event.GetWheelRotation() * s_advanceDirection) < 0);
     else
     {
         size_t tabOffset = tabCtrl->GetTabOffset();
@@ -444,7 +447,7 @@ void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
         if (win)
         {
             wxClientDC dc(win);
-            if (event.GetWheelRotation() * s_scrollDirection > 0)
+            if ((event.GetWheelRotation() * s_moveDirection) > 0)
             {
                 if (!tabCtrl->IsTabVisible(lastTabIdx,tabOffset,&dc,win))
                     tabOffset++;
@@ -890,7 +893,12 @@ void cbAuiNotebook::UseModToAdvance(bool use)
     s_modToAdvance = use;
 }
 
-void cbAuiNotebook::InvertScrollDirection(bool invert)
+void cbAuiNotebook::InvertAdvanceDirection(bool invert)
 {
-    s_scrollDirection=invert ? -1 : 1;
+    s_advanceDirection=invert ? -1 : 1;
+}
+
+void cbAuiNotebook::InvertMoveDirection(bool invert)
+{
+    s_moveDirection=invert ? -1 : 1;
 }
