@@ -751,7 +751,7 @@ void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& /*event*/)
     if (dlg.ShowModal() == wxID_YES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
-            cbMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION, this);
+            cbMessageBox(_("New project created successfully!"), _("Information"), wxICON_INFORMATION, this);
     }
 }
 

@@ -218,21 +218,21 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_Makefile        = wxEmptyString;
         m_LastProject     = 0;
         ClearProjectKeys();
+        m_Macros[_T("PROJECTFILE")]          = wxEmptyString;
         m_Macros[_T("PROJECT_FILE")]         = wxEmptyString;
+        m_Macros[_T("PROJECTFILENAME")]      = wxEmptyString;
         m_Macros[_T("PROJECT_FILENAME")]     = wxEmptyString;
         m_Macros[_T("PROJECT_FILE_NAME")]    = wxEmptyString;
-        m_Macros[_T("PROJECTFILE")]          = wxEmptyString;
-        m_Macros[_T("PROJECTFILENAME")]      = wxEmptyString;
-        m_Macros[_T("PROJECT_NAME")]         = wxEmptyString;
         m_Macros[_T("PROJECTNAME")]          = wxEmptyString;
-        m_Macros[_T("PROJECT_DIR")]          = wxEmptyString;
-        m_Macros[_T("PROJECT_DIRECTORY")]    = wxEmptyString;
+        m_Macros[_T("PROJECT_NAME")]         = wxEmptyString;
         m_Macros[_T("PROJECTDIR")]           = wxEmptyString;
+        m_Macros[_T("PROJECT_DIR")]          = wxEmptyString;
         m_Macros[_T("PROJECTDIRECTORY")]     = wxEmptyString;
-        m_Macros[_T("PROJECT_TOPDIR")]       = wxEmptyString;
-        m_Macros[_T("PROJECT_TOPDIRECTORY")] = wxEmptyString;
+        m_Macros[_T("PROJECT_DIRECTORY")]    = wxEmptyString;
         m_Macros[_T("PROJECTTOPDIR")]        = wxEmptyString;
+        m_Macros[_T("PROJECT_TOPDIR")]       = wxEmptyString;
         m_Macros[_T("PROJECTTOPDIRECTORY")]  = wxEmptyString;
+        m_Macros[_T("PROJECT_TOPDIRECTORY")] = wxEmptyString;
         m_Macros[_T("MAKEFILE")]             = wxEmptyString;
         m_Macros[_T("ALL_PROJECT_FILES")]    = wxEmptyString;
     }
@@ -256,21 +256,21 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         }
 
         ClearProjectKeys();
+        m_Macros[_T("PROJECTFILE")]          = m_ProjectFilename;
         m_Macros[_T("PROJECT_FILE")]         = m_ProjectFilename;
+        m_Macros[_T("PROJECTFILENAME")]      = m_ProjectFilename;
         m_Macros[_T("PROJECT_FILENAME")]     = m_ProjectFilename;
         m_Macros[_T("PROJECT_FILE_NAME")]    = m_ProjectFilename;
-        m_Macros[_T("PROJECTFILE")]          = m_ProjectFilename;
-        m_Macros[_T("PROJECTFILENAME")]      = m_ProjectFilename;
         m_Macros[_T("PROJECTNAME")]          = m_ProjectName;
         m_Macros[_T("PROJECT_NAME")]         = m_ProjectName;
-        m_Macros[_T("PROJECT_DIR")]          = m_ProjectDir;
-        m_Macros[_T("PROJECT_DIRECTORY")]    = m_ProjectDir;
         m_Macros[_T("PROJECTDIR")]           = m_ProjectDir;
+        m_Macros[_T("PROJECT_DIR")]          = m_ProjectDir;
         m_Macros[_T("PROJECTDIRECTORY")]     = m_ProjectDir;
-        m_Macros[_T("PROJECT_TOPDIR")]       = m_ProjectTopDir;
-        m_Macros[_T("PROJECT_TOPDIRECTORY")] = m_ProjectTopDir;
+        m_Macros[_T("PROJECT_DIRECTORY")]    = m_ProjectDir;
         m_Macros[_T("PROJECTTOPDIR")]        = m_ProjectTopDir;
+        m_Macros[_T("PROJECT_TOPDIR")]       = m_ProjectTopDir;
         m_Macros[_T("PROJECTTOPDIRECTORY")]  = m_ProjectTopDir;
+        m_Macros[_T("PROJECT_TOPDIRECTORY")] = m_ProjectTopDir;
         m_Macros[_T("MAKEFILE")]             = m_Makefile;
         m_Macros[_T("ALL_PROJECT_FILES")]    = m_ProjectFiles;
 
