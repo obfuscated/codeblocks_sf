@@ -1073,7 +1073,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
         return;
 
     if (useLock)
-        wxMutexLocker lock(m_BuildMutex);
+        m_BuildMutex.Lock();
 #ifndef __WXGTK__
     m_TreeTop->CollapseAndReset(item); // this freezes gtk
 #else
@@ -1081,6 +1081,8 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
 #endif
     m_TreeTop->SetItemHasChildren(item);
 //    Manager::Get()->GetLogManager()->DebugLog(F(_("C: %d items"), m_TreeTop->GetCount()));
+    if (useLock)
+        m_BuildMutex.Unlock();
 }
 #endif // CC_NO_COLLAPSE_ITEM
 
