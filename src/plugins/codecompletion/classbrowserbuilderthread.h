@@ -99,14 +99,14 @@ public:
               const BrowserOptions& options, TokensTree* pTokensTree, bool build_tree);
     void ExpandItem(wxTreeItemId item);
 #ifndef CC_NO_COLLAPSE_ITEM
-    void CollapseItem(wxTreeItemId item, bool useLock=true);
+    void CollapseItem(wxTreeItemId item);
 #endif // CC_NO_COLLAPSE_ITEM
     void SelectItem(wxTreeItemId item);
 
 protected:
     virtual void* Entry();
 
-    void BuildTree(bool useLock=true);
+    void BuildTree();
     void RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent);
     wxTreeItemId AddNodeIfNotThere(CBTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0);
     bool AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask = 0xffff, int tokenScopeMask = 0);
@@ -145,6 +145,7 @@ protected:
 private:
     ExpandedItemVect m_ExpandedVect;
     SelectedItemPath m_SelectedPath;
+    bool             m_initDone;
 };
 
 #endif // CLASSBROWSERBUILDERTHREAD_H

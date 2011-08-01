@@ -158,7 +158,8 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrow
     m_UserData(0),
     m_Options(),
     m_TokensTree(0),
-    m_ThreadVar(threadVar)
+    m_ThreadVar(threadVar),
+    m_initDone(false)
 {
     //ctor
 }
@@ -248,9 +249,9 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
     s_TokensTreeCritical.Leave();
 
     if (build_tree)
-    {
-        BuildTree(false);
-    }
+        BuildTree();
+
+    m_initDone = true;
 }
 
 void* ClassBrowserBuilderThread::Entry()
@@ -320,7 +321,7 @@ void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
     }
 }
 
-void ClassBrowserBuilderThread::BuildTree(bool useLock)
+void ClassBrowserBuilderThread::BuildTree()
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
@@ -396,7 +397,7 @@ void ClassBrowserBuilderThread::BuildTree(bool useLock)
     // has very minimum memory overhead since it contains as few items as possible.
     // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
 
-    CollapseItem(root, useLock);
+    CollapseItem(root);
 #ifdef CC_BUILDTREE_MEASURING
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
     sw.Start();
@@ -995,7 +996,9 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
-    //wxMutexLocker lock(m_BuildMutex);
+    if (m_initDone)
+        m_BuildMutex.Lock();
+
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
 
 #ifdef CC_BUILDTREE_MEASURING
@@ -1059,15 +1062,18 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     Manager::Get()->GetLogManager()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms"),sw.Time()));
 #endif
 //    Manager::Get()->GetLogManager()->DebugLog(F(_("E: %d items"), m_TreeTop->GetCount()));
+
+    if (m_initDone)
+        m_BuildMutex.Unlock();
 }
 
 #ifndef CC_NO_COLLAPSE_ITEM
-void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
+void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
-    if (useLock)
+    if (m_initDone)
         m_BuildMutex.Lock();
 #ifndef __WXGTK__
     m_TreeTop->CollapseAndReset(item); // this freezes gtk
@@ -1076,7 +1082,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
 #endif
     m_TreeTop->SetItemHasChildren(item);
 //    Manager::Get()->GetLogManager()->DebugLog(F(_("C: %d items"), m_TreeTop->GetCount()));
-    if (useLock)
+    if (m_initDone)
         m_BuildMutex.Unlock();
 }
 #endif // CC_NO_COLLAPSE_ITEM
