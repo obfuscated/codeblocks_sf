@@ -67,7 +67,6 @@ void CBTreeCtrl::SetCompareFunction(const BrowserSortType type)
 int CBTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
 {
     return Compare((CBTreeData*)GetItemData(item1), (CBTreeData*)GetItemData(item2));
-
 }
 
 int CBTreeCtrl::CBAlphabetCompare (CBTreeData* lhs, CBTreeData* rhs)
@@ -179,13 +178,13 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
                                     bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
-    m_NativeParser  = nativeParser;
-    m_TreeTop       = treeTop;
-    m_TreeBottom    = treeBottom;
+    m_NativeParser   = nativeParser;
+    m_TreeTop        = treeTop;
+    m_TreeBottom     = treeBottom;
     m_ActiveFilename = active_filename;
-    m_UserData      = user_data;
+    m_UserData       = user_data;
     m_Options        = options;
-    m_TokensTree    = pTokensTree;
+    m_TokensTree     = pTokensTree;
 
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
@@ -339,7 +338,6 @@ void ClassBrowserBuilderThread::BuildTree(bool useLock)
         root = m_TreeTop->AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER, PARSER_IMG_SYMBOLS_FOLDER, new CBTreeData(sfRoot));
         m_TreeTop->SetItemHasChildren(root);
     }
-
 
     m_TreeTop->SetCompareFunction(m_Options.sortType);
     m_TreeBottom->SetCompareFunction(m_Options.sortType);
@@ -648,14 +646,11 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId pa
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = nullptr;
-    {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        Token* token = m_TokensTree->at(tokenIdx);
-        if (!token)
-            return false;
+    Token* token = m_TokensTree->at(tokenIdx);
+    if (!token)
+        return false;
+    else
         m_TokensTree->RecalcInheritanceChain(token);
-    }
 
     return AddNodes(tree, parent, token->m_DirectAncestors, tkClass | tkTypedef, 0, true);
 }
@@ -665,14 +660,11 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId 
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = nullptr;
-    {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        m_TokensTree->at(tokenIdx);
-        if (!token)
-            return false;
+    Token* token = m_TokensTree->at(tokenIdx);
+    if (!token)
+        return false;
+    else
         m_TokensTree->RecalcInheritanceChain(token);
-    }
 
     bool inh = m_Options.showInheritance;
     m_Options.showInheritance = allowInheritance;
