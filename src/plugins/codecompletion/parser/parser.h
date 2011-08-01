@@ -239,8 +239,8 @@ public:
     wxString FindFirstFileInIncludeDirs(const wxString& file);
     wxArrayString FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
 
-    TokensTree* GetTokens() { return m_TokensTree; }
-    TokensTree* GetTempTokens() { return m_TempTokensTree; }
+    TokensTree* GetTokensTree()     { return m_TokensTree;     }
+    TokensTree* GetTempTokensTree() { return m_TempTokensTree; }
     unsigned int GetFilesCount();
 
     bool     Done();

@@ -1008,7 +1008,7 @@ int CodeCompletion::CodeComplete()
             m_SearchItem.clear();
             {
                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+                TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
                 for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
                 {
                     Token* token = tokens->at(*it);
@@ -1552,7 +1552,7 @@ int CodeCompletion::DoAllMethodsImpl()
         return -4;
 
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    TokensTree* tree = m_NativeParser.GetParser().GetTokens();
+    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
     // get all filenames' indices matching our mask
     TokenFilesSet result;
@@ -2135,7 +2135,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 
         TokenIdxSet result;
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        TokensTree* tmptree = m_NativeParser.GetParser().GetTokens();
+        TokensTree* tmptree = m_NativeParser.GetParser().GetTokensTree();
         m_NativeParser.GetParser().FindTokensInFile(filename, result, tkAnyFunction | tkEnum | tkClass | tkNamespace);
 
         if (!result.empty())
@@ -2145,7 +2145,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            unsigned int fileIdx = m_NativeParser.GetParser().GetTokens()->GetFileIndex(filename);
+            unsigned int fileIdx = m_NativeParser.GetParser().GetTokensTree()->GetFileIndex(filename);
             const Token* token = tmptree->at(*it);
             if (token && token->m_ImplLine != 0)
             {
@@ -2504,7 +2504,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
             int count = 0;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                Token* token = m_NativeParser.GetParser().GetTokens()->at(*it);
+                Token* token = m_NativeParser.GetParser().GetTokensTree()->at(*it);
                 if (token)
                 {
                     msg << token->DisplayName() << _T("\n");
@@ -2599,7 +2599,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     m_NativeParser.GetTempParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
     wxArrayString funcs;
-    TokensTree* tmptree = m_NativeParser.GetTempParser().GetTempTokens();
+    TokensTree* tmptree = m_NativeParser.GetTempParser().GetTempTokensTree();
     if (tmptree->empty())
     {
         cbMessageBox(_("No functions parsed in this file..."));
@@ -2683,7 +2683,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     m_NativeParser.MarkItemsByAI(result, true, false, true, end);
 
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    TokensTree* tokens = m_NativeParser.GetParser().GetTokens();
+    TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
 
     // special handle destructor function
     if (target[0] == _T('~'))

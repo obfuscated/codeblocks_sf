@@ -659,7 +659,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
     Token* token = 0;
     TokenIdxSet result;
-    size_t count = m_Parser->GetTokens()->FindMatches(search, result, false, true);
+    size_t count = m_Parser->GetTokensTree()->FindMatches(search, result, false, true);
     if (count == 0)
     {
         cbMessageBox(_("No matches were found: ") + search, _("Search failed"));
@@ -667,7 +667,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     }
     else if (count == 1)
     {
-        token = m_Parser->GetTokens()->at(*result.begin());
+        token = m_Parser->GetTokensTree()->at(*result.begin());
     }
     else if (count > 1)
     {
@@ -675,7 +675,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            Token* sel = m_Parser->GetTokens()->at(*it);
+            Token* sel = m_Parser->GetTokensTree()->at(*it);
             if (sel)
             {
                 selections.Add(sel->DisplayName());
@@ -687,12 +687,12 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
             if (sel == -1)
                 return;
-            token = m_Parser->GetTokens()->at(int_selections[sel]);
+            token = m_Parser->GetTokensTree()->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
         {   // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
-            token = m_Parser->GetTokens()->at(int_selections[0]);
+            token = m_Parser->GetTokensTree()->at(int_selections[0]);
         }
     }
 
@@ -784,7 +784,7 @@ void ClassBrowser::BuildTree()
                           m_ActiveFilename,
                           m_ActiveProject,
                           m_Parser->ClassBrowserOptions(),
-                          m_Parser->GetTokens(),
+                          m_Parser->GetTokensTree(),
                           create_tree);
 
     // and launch it

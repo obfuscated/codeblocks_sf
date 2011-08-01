@@ -80,7 +80,7 @@ void InsertClassMethodDlg::FillClasses()
     lb->Clear();
 
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
     for (size_t i = 0; i < tree->size(); ++i)
     {
         Token* token = tree->at(i);

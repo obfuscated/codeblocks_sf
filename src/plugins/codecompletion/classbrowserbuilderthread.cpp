@@ -192,7 +192,7 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
 
     s_TokensTreeCritical.Enter();
 
-    TokensTree* tree = m_NativeParser->GetParser().GetTokens();
+    TokensTree* tree = m_NativeParser->GetParser().GetTokensTree();
     // fill filter set for current-file-filter
     if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
     {
@@ -947,7 +947,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
     bool hasGM = false;
 
     // loop all tokens in global namespace and see if we have matches
-    TokensTree* tt = m_NativeParser->GetParser().GetTokens();
+    TokensTree* tt = m_NativeParser->GetParser().GetTokensTree();
     for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
     {
         Token* token = tt->at(*it);

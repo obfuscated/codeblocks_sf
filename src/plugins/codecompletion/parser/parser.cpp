@@ -159,7 +159,7 @@ public:
             if (!pf)
                 continue;
             if (CCFileTypeOf(pf->relativeFilename) != ccftOther)
-                m_Parser.GetTokens()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
+                m_Parser.GetTokensTree()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
         }
 
         return 0;

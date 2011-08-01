@@ -1464,7 +1464,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
 
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
-            Token* token = m_Parser->GetTokens()->at(*it);
+            Token* token = m_Parser->GetTokensTree()->at(*it);
             if (!token)
                 continue;
             if (curLine < token->m_ImplLine || curLine > token->m_ImplLineEnd)
@@ -1564,9 +1564,9 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
             {
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseLocalBlock() Block:\n%s"), buffer.wx_str()));
                 Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() Local tokens:"));
-                for (size_t i = 0; i < m_Parser->GetTokens()->size(); ++i)
+                for (size_t i = 0; i < m_Parser->GetTokensTree()->size(); ++i)
                 {
-                    Token* t = m_Parser->GetTokens()->at(i);
+                    Token* t = m_Parser->GetTokensTree()->at(i);
                     if (t && t->m_IsTemp)
                     {
                        Manager::Get()->GetLogManager()->DebugLog(
@@ -1590,7 +1590,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
 // All functions that call this, already entered a critical section.
 bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos)
 {
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
 
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("ParseUsingNamespace() Parse file scope for \"using namespace\""));
@@ -1671,7 +1671,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
     else
     {
         // remove old temporaries
-        m_Parser->GetTempTokens()->Clear();
+        m_Parser->GetTempTokensTree()->Clear();
         RemoveLastFunctionChildren();
 
         // find "using namespace" directives in the file
@@ -1687,7 +1687,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
         if (!reallyUseAI)
         {
             // all tokens, no AI whatsoever
-            TokensTree* tokens = m_Parser->GetTokens();
+            TokensTree* tokens = m_Parser->GetTokensTree();
             for (size_t i = 0; i < tokens->size(); ++i)
                 result.insert(i);
             return result.size();
@@ -1707,7 +1707,7 @@ const wxString& NativeParser::GetCodeCompletionItems()
     if (count)
     {
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        TokensTree* tokens = m_Parser->GetTokens();
+        TokensTree* tokens = m_Parser->GetTokensTree();
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* token = tokens->at(*it);
@@ -1906,7 +1906,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &ty
         MarkItemsByAI(result, true, false, true, end);
 
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        TokensTree* tokens = m_Parser->GetTokens();
+        TokensTree* tokens = m_Parser->GetTokensTree();
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* token = tokens->at(*it);
@@ -2343,7 +2343,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     {
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
-            Token* token = m_Parser->GetTokens()->at(*it);
+            Token* token = m_Parser->GetTokensTree()->at(*it);
             if (!token)
                 continue;
 
@@ -2358,7 +2358,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
 
             if (s_DebugSmartSense)
             {
-                Token* parent = m_Parser->GetTokens()->at(token->m_ParentIndex);
+                Token* parent = m_Parser->GetTokensTree()->at(token->m_ParentIndex);
                 Manager::Get()->GetLogManager()->DebugLog(_T("AI() Adding search namespace: ") + (parent ? parent->m_Name : _T("Global namespace")));
             }
         }
@@ -2383,7 +2383,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     }
 
     // remove non-namespace/class tokens
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
     for (TokenIdxSet::iterator it = search_scope->begin(); it != search_scope->end();)
     {
         Token* token = tree->at(*it);
@@ -2504,7 +2504,7 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - enter -----"));
 
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
 
     // pop top component
     ParserComponent parser_component = components.front();
@@ -2879,7 +2879,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
     if (components.empty())
         return 0;
 
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
     if (!tree)
         return 0;
 
@@ -3050,7 +3050,7 @@ size_t NativeParser::GenerateResultSet(const wxString&    search,
                                        bool               isPrefix,
                                        short int          kindMask)
 {
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
     if (!tree)
         return 0;
 
@@ -3059,13 +3059,13 @@ size_t NativeParser::GenerateResultSet(const wxString&    search,
         for (TokenIdxSet::iterator ptr = ptrParentID.begin(); ptr != ptrParentID.end(); ++ptr)
         {
             size_t parentIdx = (*ptr);
-            Token* parent = m_Parser->GetTokens()->at(parentIdx);
+            Token* parent = m_Parser->GetTokensTree()->at(parentIdx);
             if (!parent)
                 continue;
 
             for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
             {
-                Token* token = m_Parser->GetTokens()->at(*it);
+                Token* token = m_Parser->GetTokensTree()->at(*it);
                 if (!token)
                     continue;
                 if (!AddChildrenOfUnnamed(token, result))
@@ -3076,12 +3076,12 @@ size_t NativeParser::GenerateResultSet(const wxString&    search,
 
             for (TokenIdxSet::iterator it = parent->m_Ancestors.begin(); it != parent->m_Ancestors.end(); ++it)
             {
-                Token* ancestor = m_Parser->GetTokens()->at(*it);
+                Token* ancestor = m_Parser->GetTokensTree()->at(*it);
                 if (!ancestor)
                     continue;
                 for (TokenIdxSet::iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
                 {
-                    Token* token = m_Parser->GetTokens()->at(*it2);
+                    Token* token = m_Parser->GetTokensTree()->at(*it2);
                     if (!token)
                         continue;
                     if (!AddChildrenOfUnnamed(token, result))
@@ -3174,7 +3174,7 @@ bool NativeParser::AddChildrenOfUnnamed(Token* parent, TokenIdxSet& result)
         // add all its children
         for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
         {
-            Token* tokenChild = m_Parser->GetTokens()->at(*it);
+            Token* tokenChild = m_Parser->GetTokensTree()->at(*it);
             if (tokenChild)
                 result.insert(*it);
         }
@@ -3292,7 +3292,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Found %d results"), num_results));
 
-    size_t fileIdx = m_Parser->GetTokens()->GetFileIndex(searchData->file);
+    size_t fileIdx = m_Parser->GetTokensTree()->GetFileIndex(searchData->file);
     Token* token = GetTokenFromCurrentLine(result, curLine, fileIdx);
     if (token)
     {
@@ -3376,7 +3376,7 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
 
     for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
     {
-        GenerateResultSet(m_Parser->GetTokens(), procName, *it, result, true, false, tkAnyFunction | tkClass);
+        GenerateResultSet(m_Parser->GetTokensTree(), procName, *it, result, true, false, tkAnyFunction | tkClass);
     }
 
     return result.size();
@@ -3974,7 +3974,7 @@ void NativeParser::ResolveOpeartor(const OperatorType& tokenOperatorType, const 
 // All functions that call this, already entered a critical section.
 Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx)
 {
-    TokensTree* tree = m_Parser->GetTokens();
+    TokensTree* tree = m_Parser->GetTokensTree();
     if (!tree)
         return nullptr;
 
@@ -4048,7 +4048,7 @@ void NativeParser::InitCCSearchVariables()
 // All functions that call this, already entered a critical section.
 void NativeParser::RemoveLastFunctionChildren()
 {
-    Token* token = m_Parser->GetTokens()->at(m_LastFuncTokenIdx);
+    Token* token = m_Parser->GetTokensTree()->at(m_LastFuncTokenIdx);
     if (token)
     {
         m_LastFuncTokenIdx = -1;
