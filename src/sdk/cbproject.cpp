@@ -20,6 +20,8 @@
 #include <wx/textdlg.h>
 
 #ifndef CB_PRECOMP
+	#include <wx/dir.h>
+	
     #include "cbproject.h" // class's header file
     #include "compiler.h" // GetSwitches
     #include "sdk_events.h"
