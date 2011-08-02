@@ -70,6 +70,13 @@
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkEnableHeaders">
+												<label>Enable headers code-completion</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
 											<object class="wxFlexGridSizer">
 												<cols>2</cols>
 												<vgap>8</vgap>

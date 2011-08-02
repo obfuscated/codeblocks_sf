@@ -245,6 +245,7 @@ private:
     bool                    m_CCAutoAddParentheses;
     wxString                m_CCFillupChars;
     bool                    m_CCAutoSelectOne;
+    bool                    m_CCEnableHeaders;
 
     /** thread to collect header file names */
     std::list<SystemHeadersThread*> m_SystemHeadersThread;

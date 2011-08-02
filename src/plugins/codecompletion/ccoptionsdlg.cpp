@@ -104,6 +104,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
     XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"), false));
+    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"), false));
     XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
     XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 3));
     XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));
@@ -185,6 +186,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/auto_select_one"),      (bool) XRCCTRL(*this, "chkAutoSelectOne",         wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses",    wxCheckBox)->GetValue());
     cfg->Write(_T("/add_doxgen_comment"),   (bool) XRCCTRL(*this, "chkAddDoxgenComment",      wxCheckBox)->GetValue());
+    cfg->Write(_T("/enable_headers"),       (bool) XRCCTRL(*this, "chkEnableHeaders",         wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_launch"),          (bool) XRCCTRL(*this, "chkAutoLaunch",            wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_launch_chars"),    (int)  XRCCTRL(*this, "spnAutoLaunchChars",       wxSpinCtrl)->GetValue());
     cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",            wxSpinCtrl)->GetValue());
@@ -334,6 +336,7 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->Enable(en);
     XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->Enable(en && al);
     XRCCTRL(*this, "lblMaxMatches",         wxStaticText)->Enable(en);

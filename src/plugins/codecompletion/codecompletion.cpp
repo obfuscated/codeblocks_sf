@@ -426,7 +426,8 @@ CodeCompletion::CodeCompletion() :
     m_CCLaunchDelay(300),
     m_CCMaxMatches(16384),
     m_CCAutoAddParentheses(true),
-    m_CCAutoSelectOne(false)
+    m_CCAutoSelectOne(false),
+    m_CCEnableHeaders(false)
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
         NotifyMissingFile(_T("codecompletion.zip"));
@@ -529,6 +530,7 @@ void CodeCompletion::RereadOptions()
     m_CCAutoAddParentheses = cfg->ReadBool(_T("/auto_add_parentheses"), true);
     m_CCFillupChars        = cfg->Read(_T("/fillup_chars"), wxEmptyString);
     m_CCAutoSelectOne      = cfg->ReadBool(_T("/auto_select_one"), false);
+    m_CCEnableHeaders      = cfg->ReadBool(_T("/enable_headers"), false);
 
     if (m_ToolBar)
     {
@@ -1273,10 +1275,10 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
 // #include "| or #include <|
 void CodeCompletion::CodeCompleteIncludes()
 {
-    wxStopWatch sw;
-
-    if (!IsAttached() || !m_InitDone)
+    if (!m_CCEnableHeaders || !IsAttached() || !m_InitDone)
         return;
+
+    wxStopWatch sw;
 
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!editor)
@@ -1944,7 +1946,8 @@ void CodeCompletion::OnThreadCompletion(wxCommandEvent& event)
             m_SystemHeadersThread.pop_front();
         }
 
-        if (   !m_SystemHeadersThread.empty()
+        if (   m_CCEnableHeaders
+            && !m_SystemHeadersThread.empty()
             && !m_SystemHeadersThread.front()->IsRunning()
             && m_NativeParser.Done() )
         {
@@ -3209,9 +3212,12 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 
     if (type == ptCreateParser)
     {
-        wxArrayString& dirs = GetSystemIncludeDirs(project, true);
-        SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, dirs);
-        m_SystemHeadersThread.push_back(thread);
+        if (m_CCEnableHeaders)
+        {
+            wxArrayString& dirs = GetSystemIncludeDirs(project, true);
+            SystemHeadersThread* thread = new SystemHeadersThread(this, m_SystemHeadersMap, dirs);
+            m_SystemHeadersThread.push_back(thread);
+        }
 
         cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (m_NativeParser.GetProjectByEditor(editor) == project)
@@ -3227,7 +3233,8 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
     ParsingType type = static_cast<ParsingType>(event.GetInt());
     if (type == ptCreateParser)
     {
-        if (   !m_SystemHeadersThread.empty()
+        if (   m_CCEnableHeaders
+            && !m_SystemHeadersThread.empty()
             && !m_SystemHeadersThread.front()->IsRunning()
             && m_NativeParser.Done() )
         {
