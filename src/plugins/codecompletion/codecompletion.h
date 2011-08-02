@@ -27,9 +27,18 @@ class SystemHeadersThread;
 
 typedef std::map<wxString, StringSet> SystemHeadersMap;
 
+/** code completion plugin can show function tip, give automaticall suggestion
+ *  list while entering code, browse all global declaration and symbols of the
+ *  source files.
+ *
+ *  We later use "CC" as an abbreviation of Code Completion plugin.
+ * See the general achitecture of code completion plugin on wiki page
+ *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
+ */
 class CodeCompletion : public cbCodeCompletionPlugin
 {
 public:
+    /** the underline data structure of the second wxChoice of CC's toolbar*/
     struct FunctionScope
     {
         FunctionScope() {}
@@ -41,7 +50,9 @@ public:
         wxString Scope;    // class or namespace
     };
 
+    /** each file contains on such vector, containing all the function infos in the file */
     typedef std::vector<FunctionScope> FunctionsScopeVec;
+    /** helper class to support FunctionsScopeVec*/
     typedef std::vector<int> ScopeMarksVec;
 
     struct FunctionsScopePerFile
@@ -50,12 +61,15 @@ public:
         NameSpaceVec m_NameSpaces;
         bool parsed;
     };
-
+    /** filename -> FunctionsScopePerFile map, contains all the opened documents scope info*/
     typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
+    /** Constructor */
     CodeCompletion();
+    /** Destructor */
     virtual ~CodeCompletion();
 
+    // the function below were virtual functions from the base class
     virtual void OnAttach();
     virtual void OnRelease(bool appShutDown);
     virtual int GetConfigurationGroup() const { return cgEditor; }
@@ -66,18 +80,35 @@ public:
     virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
     virtual bool BuildToolBar(wxToolBar* toolBar);
 
-    // unused, should be removed probably
+    // TODO unused, should be removed probably
     virtual wxArrayString GetCallTips() { return wxArrayString(); }
     virtual int CodeComplete();
     virtual void ShowCallTip();
 
+    /** give auto suggestions on preprocessor directives*/
     void CodeCompletePreprocessor();
+    /** give auto suggestions after #include */
     void CodeCompleteIncludes();
+
+    /** get the include paths setting by the project
+     * @param project project info
+     * @param buildTargets target info
+     * @return the local include paths
+     */
     wxArrayString GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets);
+
+    /** the defualt compilers search paths
+     * @param force if false, then it just return a static wxArrayString to optimize the performance
+     */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
+
+    /** search target file names (mostly relative names) under basePath, then return the absolute dirs*/
     void GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs);
 
+    /** handle all the editor event*/
     void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
+
+    /** read CC's options, mostly happens the user change some setting and press APPLY*/
     void RereadOptions(); // called by the configuration panel
 
 private:
@@ -150,10 +181,15 @@ private:
     wxMenu*                 m_SearchMenu;
     wxMenu*                 m_ViewMenu;
     wxMenu*                 m_ProjectMenu;
+
+    /** this member will actually manage the many Parser objects*/
     NativeParser            m_NativeParser;
+    /** code refectoring tool*/
     CodeRefactoring         m_CodeRefactoring;
+
     int                     m_EditorHookId;
     int                     m_LastPosForCodeCompletion;
+
     wxTimer                 m_TimerCodeCompletion;
     wxTimer                 m_TimerFunctionsParsing;
     wxTimer                 m_TimerRealtimeParsing;
@@ -163,24 +199,44 @@ private:
     int                     m_ActiveCalltipsNest;
 
     bool                    m_IsAutoPopup;
-
+    // The variables below were related to CC's toolbar
+    /** the CC's toolbar */
     wxToolBar*              m_ToolBar;
+    /** function choice control of CC's toolbar, it is the second choice */
     wxChoice*               m_Function;
+    /** namespace/scope choise control, it is the first choice control*/
     wxChoice*               m_Scope;
+    /** current active file's function body info*/
     FunctionsScopeVec       m_FunctionsScope;
+    /** current active file's namespace/scope info */
     NameSpaceVec            m_NameSpaces;
+    /** current active file's line info, helper member to access function scopes*/
     ScopeMarksVec           m_ScopeMarks;
+    /** this is a "filename->info" map containing all the opening files choice info*/
     FunctionsScopeMap       m_AllFunctionsScopes;
+    /** indicate whether the CC's toolbar need a refresh */
     bool                    m_ToolbarChanged;
 
+    /** current caret line */
     int                     m_CurrentLine;
+    /** TODO */
     std::map<wxString, int> m_SearchItem;
+
+    /** the file updating the toolbar info*/
     wxString                m_LastFile;
+
+    /** indicate whether the predefined keywords set should be added in the suggetion list*/
     bool                    m_LexerKeywordsToInclude[9];
+
+    /** indicate the editor has modifled by the user and a real-time parse should be start*/
     bool                    m_NeedReparse;
+
+    /** remember the number of bytes in the current editor/document */
     int                     m_CurrentLength;
+    /** collected header file names to support autocompletion after #include*/
     SystemHeadersMap        m_SystemHeadersMap;
 
+    //options on code completion plugins
     bool                    m_UseCodeCompletion;
     int                     m_CCAutoLaunchChars;
     bool                    m_CCAutoLaunch;
@@ -190,6 +246,7 @@ private:
     wxString                m_CCFillupChars;
     bool                    m_CCAutoSelectOne;
 
+    /** thread to collect header file names */
     std::list<SystemHeadersThread*> m_SystemHeadersThread;
 
     DECLARE_EVENT_TABLE()
