@@ -175,8 +175,10 @@ void ClassBrowser::SetParser(Parser* parser)
     m_Parser = parser;
     if (m_Parser)
     {
-        m_Parser->ClassBrowserOptions().displayFilter =
-            (BrowserDisplayFilter)XRCCTRL(*this, "cmbView", wxChoice)->GetSelection();
+        BrowserDisplayFilter filter = (BrowserDisplayFilter)XRCCTRL(*this, "cmbView", wxChoice)->GetSelection();
+        if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
+            filter = bdfProject;
+        m_Parser->ClassBrowserOptions().displayFilter = filter;
         m_Parser->WriteOptions();
     }
 
@@ -616,7 +618,15 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
 {
     if (m_Parser)
     {
-        m_Parser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
+        BrowserDisplayFilter filter = (BrowserDisplayFilter)event.GetSelection();
+        if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
+        {
+            cbMessageBox(_("Unsupported when one parser per project!"));
+            filter = bdfProject;
+            XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
+        }
+
+        m_Parser->ClassBrowserOptions().displayFilter = filter;
         m_Parser->WriteOptions();
         UpdateView();
     }
