@@ -622,7 +622,7 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
         if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
         {
             cbMessageBox(_("This feature is not supported in combination with\n"
-                           "the option \"one parser per whole worspace\"".),
+                           "the option \"one parser per whole worspace\"."),
                          _("Information"), wxICON_INFORMATION);
             filter = bdfProject;
             XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
