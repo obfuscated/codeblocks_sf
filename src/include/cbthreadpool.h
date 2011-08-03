@@ -61,6 +61,9 @@ class DLLIMPORT cbThreadPool
       */
     int GetConcurrentThreads() const;
 
+    /** return the pool ID */
+    int GetId() const { return m_ID; }
+
     /** Adds a new task to the pool
       *
       * @param task The task to execute
