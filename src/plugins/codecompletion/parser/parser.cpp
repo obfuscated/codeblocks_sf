@@ -70,10 +70,8 @@ static const char CACHE_MAGIC[]      = "CCCACHE_1_4";
 static const int batch_timer_delay   = 300;
 static const int reparse_timer_delay = 100;
 
-int idParserStart     = wxNewId();
-int idParserEnd       = wxNewId();
-int idTimerParse      = wxNewId();
-int idTimerBatchParse = wxNewId();
+int idParserStart = wxNewId();
+int idParserEnd   = wxNewId();
 
 static volatile Parser* s_CurrentParser = nullptr;
 static wxCriticalSection s_ParserCritical;
@@ -176,8 +174,8 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
     m_IsParsing(false),
-    m_Timer(this, idTimerParse),
-    m_BatchTimer(this, idTimerBatchParse),
+    m_Timer(this, wxNewId()),
+    m_BatchTimer(this, wxNewId()),
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
     m_IgnoreThreadEvents(true),
@@ -219,18 +217,18 @@ Parser::~Parser()
 
 void Parser::ConnectEvents()
 {
-    Connect(-1, -1, cbEVT_THREADTASK_ALLDONE,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
-            &Parser::OnAllThreadsDone);
-    Connect(idTimerParse, wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
-    Connect(idTimerBatchParse, wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+    Connect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
+    Connect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Connect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
 void Parser::DisconnectEvents()
 {
-    Disconnect(idTimerParse, wxTimerEventHandler(Parser::OnTimer));
-    Disconnect(idTimerBatchParse, wxTimerEventHandler(Parser::OnBatchTimer));
-    Disconnect(-1, -1,             cbEVT_THREADTASK_ALLDONE);
+    Disconnect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+               (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
+    Disconnect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
 void Parser::ReadOptions()
@@ -923,15 +921,18 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file, bool firstonly
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
-    if (m_IgnoreThreadEvents)
-        return;
-
-    if (Manager::IsAppShuttingDown())
+    if (m_IgnoreThreadEvents || Manager::IsAppShuttingDown())
         return;
 
     if (!m_IsParsing)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("m_IsParsing is false?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Why m_IsParsing is false?"));
+        return;
+    }
+
+    if (event.GetId() != m_Pool.GetId())
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Why event.GetId() not equal m_Pool.GetId()?"));
         return;
     }
 
