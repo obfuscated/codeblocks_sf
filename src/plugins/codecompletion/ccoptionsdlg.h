@@ -26,8 +26,6 @@ public:
     virtual void OnCancel()                    { ; }
 
 protected:
-    void OnParserPerWorkspace(wxCommandEvent& event);
-    void OnParserPerProject(wxCommandEvent& event);
     void OnAddRepl(wxCommandEvent& event);
     void OnEditRepl(wxCommandEvent& event);
     void OnDelRepl(wxCommandEvent& event);

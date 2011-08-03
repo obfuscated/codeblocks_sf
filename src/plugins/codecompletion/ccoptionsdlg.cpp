@@ -77,8 +77,6 @@ static const wxString g_SampleClasses =
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1,                                  CCOptionsDlg::OnUpdateUI)
-    EVT_RADIOBUTTON(XRCID("rdoOneParserPerWorkspace"), CCOptionsDlg::OnParserPerWorkspace)
-    EVT_RADIOBUTTON(XRCID("rdoOneParserPerProject"),   CCOptionsDlg::OnParserPerProject)
     EVT_BUTTON(XRCID("btnAddRepl"),                    CCOptionsDlg::OnAddRepl)
     EVT_BUTTON(XRCID("btnEditRepl"),                   CCOptionsDlg::OnEditRepl)
     EVT_BUTTON(XRCID("btnDelRepl"),                    CCOptionsDlg::OnDelRepl)
@@ -228,22 +226,6 @@ void CCOptionsDlg::OnApply()
     m_CodeCompletion->RereadOptions();
 }
 
-void CCOptionsDlg::OnParserPerWorkspace(wxCommandEvent& event)
-{
-    bool en = event.IsChecked();
-    XRCCTRL(*this, "rdoOneParserPerProject",   wxRadioButton)->SetValue( !en );
-    XRCCTRL(*this, "lblParsersNum",            wxStaticText)->Enable(!en);
-    XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->Enable(!en);
-}
-
-void CCOptionsDlg::OnParserPerProject(wxCommandEvent& event)
-{
-    bool en = event.IsChecked();
-    XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->SetValue( !en );
-    XRCCTRL(*this, "lblParsersNum",            wxStaticText)->Enable(en);
-    XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->Enable(en);
-}
-
 void CCOptionsDlg::OnAddRepl(wxCommandEvent& /*event*/)
 {
     wxString key;
@@ -325,39 +307,42 @@ void CCOptionsDlg::OnCCDelayScroll(wxScrollEvent& /*event*/)
 
 void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
-    bool en = !XRCCTRL(*this, "chkNoCC",       wxCheckBox)->GetValue();
-    bool al =  XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->GetValue();
+    bool en = !XRCCTRL(*this, "chkNoCC",            wxCheckBox)->GetValue();
+    bool al =  XRCCTRL(*this, "chkAutoLaunch",      wxCheckBox)->GetValue();
 
     // Page "Code Completion"
-    XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkCaseSensitive",      wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->Enable(en && al);
-    XRCCTRL(*this, "lblMaxMatches",         wxStaticText)->Enable(en);
-    XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->Enable(en);
-    XRCCTRL(*this, "lblFillupChars",        wxStaticText)->Enable(en);
-    XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->Enable(en);
-    XRCCTRL(*this, "sldCCDelay",            wxSlider)->Enable(en);
+    XRCCTRL(*this, "chkUseSmartSense",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkWhileTyping",                wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkCaseSensitive",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkEvalTooltip",                wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoSelectOne",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoAddParentheses",         wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAddDoxgenComment",           wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkEnableHeaders",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoLaunch",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "spnAutoLaunchChars",            wxSpinCtrl)->Enable(en && al);
+    XRCCTRL(*this, "lblMaxMatches",                 wxStaticText)->Enable(en);
+    XRCCTRL(*this, "spnMaxMatches",                 wxSpinCtrl)->Enable(en);
+    XRCCTRL(*this, "lblFillupChars",                wxStaticText)->Enable(en);
+    XRCCTRL(*this, "txtFillupChars",                wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "sldCCDelay",                    wxSlider)->Enable(en);
 
     // Page "C / C++ parser"
-    XRCCTRL(*this, "txtPriorityHeaders",    wxTextCtrl)->Enable(en);
-    int sel = XRCCTRL(*this, "lstRepl",     wxListBox)->GetSelection();
-    XRCCTRL(*this, "btnEditRepl",           wxButton)->Enable(sel != -1);
-    XRCCTRL(*this, "btnDelRepl",            wxButton)->Enable(sel != -1);
+    XRCCTRL(*this, "txtPriorityHeaders",            wxTextCtrl)->Enable(en);
+    int sel = XRCCTRL(*this, "lstRepl",             wxListBox)->GetSelection();
+    XRCCTRL(*this, "btnEditRepl",                   wxButton)->Enable(sel != -1);
+    XRCCTRL(*this, "btnDelRepl",                    wxButton)->Enable(sel != -1);
+    en = XRCCTRL(*this, "rdoOneParserPerWorkspace", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "lblParsersNum",                 wxStaticText)->Enable(!en);
+    XRCCTRL(*this, "spnParsersNum",                 wxSpinCtrl)->Enable(!en);
 
     // Page "Symbol browser"
-    en = !XRCCTRL(*this, "chkNoSB",         wxCheckBox)->GetValue();
-    XRCCTRL(*this, "chkInheritance",        wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkExpandNS",           wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkFloatCB",            wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkTreeMembers",        wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkScopeFilter",        wxCheckBox)->Enable(en);
+    en = !XRCCTRL(*this, "chkNoSB",                 wxCheckBox)->GetValue();
+    XRCCTRL(*this, "chkInheritance",                wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkExpandNS",                   wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkFloatCB",                    wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkTreeMembers",                wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkScopeFilter",                wxCheckBox)->Enable(en);
 }
 
 void CCOptionsDlg::UpdateCCDelayLabel()
