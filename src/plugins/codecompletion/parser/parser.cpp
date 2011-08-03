@@ -70,16 +70,13 @@ static const char CACHE_MAGIC[]      = "CCCACHE_1_4";
 static const int batch_timer_delay   = 300;
 static const int reparse_timer_delay = 100;
 
-int PARSER_START   = wxNewId();
-int PARSER_END     = wxNewId();
-int TIMER_ID       = wxNewId();
-int BATCH_TIMER_ID = wxNewId();
+int idParserStart     = wxNewId();
+int idParserEnd       = wxNewId();
+int idTimerParse      = wxNewId();
+int idTimerBatchParse = wxNewId();
 
 static volatile Parser* s_CurrentParser = nullptr;
 static wxCriticalSection s_ParserCritical;
-
-BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
-END_EVENT_TABLE()
 
 class AddParseThread : public cbThreadedTask
 {
@@ -179,8 +176,8 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
     m_IsParsing(false),
-    m_Timer(this, TIMER_ID),
-    m_BatchTimer(this, BATCH_TIMER_ID),
+    m_Timer(this, idTimerParse),
+    m_BatchTimer(this, idTimerBatchParse),
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
     m_IgnoreThreadEvents(true),
@@ -225,18 +222,14 @@ void Parser::ConnectEvents()
     Connect(-1, -1, cbEVT_THREADTASK_ALLDONE,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &Parser::OnAllThreadsDone);
-    Connect(TIMER_ID, -1, wxEVT_TIMER,
-            (wxObjectEventFunction)(wxEventFunction)(wxTimerEventFunction)
-            &Parser::OnTimer);
-    Connect(BATCH_TIMER_ID, -1, wxEVT_TIMER,
-            (wxObjectEventFunction)(wxEventFunction)(wxTimerEventFunction)
-            &Parser::OnBatchTimer);
+    Connect(idTimerParse, wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Connect(idTimerBatchParse, wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
 void Parser::DisconnectEvents()
 {
-    Disconnect(-1, BATCH_TIMER_ID, wxEVT_TIMER);
-    Disconnect(-1, TIMER_ID,       wxEVT_TIMER);
+    Disconnect(idTimerParse, wxTimerEventHandler(Parser::OnTimer));
+    Disconnect(idTimerBatchParse, wxTimerEventHandler(Parser::OnBatchTimer));
     Disconnect(-1, -1,             cbEVT_THREADTASK_ALLDONE);
 }
 
@@ -1006,7 +999,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
                                (m_LastStopWatchTime % 1000) );
         }
 
-        PostParserEvent(m_ParsingType, PARSER_END, parseEndLog);
+        PostParserEvent(m_ParsingType, idParserEnd, parseEndLog);
         m_ParsingType = ptUndefined;
         s_CurrentParser = nullptr;
     }
@@ -1136,7 +1129,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
             {
                 s_CurrentParser = this;
                 m_StopWatch.Start(); // reset timer
-                PostParserEvent(m_ParsingType, PARSER_START);
+                PostParserEvent(m_ParsingType, idParserStart);
             }
 
             m_IgnoreThreadEvents = false;
@@ -1150,7 +1143,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
         return;
     }
 
-    PostParserEvent(ptUndefined, PARSER_START, _T("No files for batch parsing"));
+    PostParserEvent(ptUndefined, idParserStart, _T("No files for batch parsing"));
     CodeBlocksEvent evt;
     evt.SetEventObject(this);
     OnAllThreadsDone(evt);

@@ -463,13 +463,6 @@ private:
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
 
-    // event handliers
-    /** do nothing*/
-    void OnThreadStart(wxCommandEvent& event);
-
-    /** do nothing*/
-    void OnThreadEnd(wxCommandEvent& event);
-
     /** Event handler when the batch parse starts, print some log information */
     void OnParserStart(wxCommandEvent& event);
 
@@ -625,8 +618,6 @@ private:
     std::map<wxString, wxString> m_TemplateMap;
     bool                         m_ParserPerWorkspace;
     std::set<cbProject*>         m_ParsedProjects;
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif // NATIVEPARSER_H

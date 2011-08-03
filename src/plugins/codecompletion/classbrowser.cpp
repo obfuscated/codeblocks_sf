@@ -86,7 +86,6 @@ int idCBSortByKind             = wxNewId();
 int idCBSortByScope            = wxNewId();
 int idCBBottomTree             = wxNewId();
 
-
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED  (XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeMembers"), ClassBrowser::OnTreeItemRightClick)

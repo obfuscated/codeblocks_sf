@@ -205,9 +205,9 @@ int idRealtimeParsingTimer      = wxNewId();
 int idToolbarTimer              = wxNewId();
 int idProjectSavedTimer         = wxNewId();
 
-int THREAD_UPDATE               = wxNewId();
-int THREAD_COMPLETED            = wxNewId();
-int THREAD_ERROR                = wxNewId();
+int idThreadUpdate              = wxNewId();
+int idThreadCompleted           = wxNewId();
+int idThreadError               = wxNewId();
 
 // milliseconds
 #define REALTIME_PARSING_DELAY      500
@@ -246,12 +246,9 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope   )
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
 
-    EVT_MENU(PARSER_END,       CodeCompletion::OnParserEnd       )
-    EVT_MENU(PARSER_START,     CodeCompletion::OnParserStart     )
-
-    EVT_MENU(THREAD_UPDATE,    CodeCompletion::OnThreadUpdate    )
-    EVT_MENU(THREAD_COMPLETED, CodeCompletion::OnThreadCompletion)
-    EVT_MENU(THREAD_ERROR,     CodeCompletion::OnThreadError     )
+    EVT_MENU(idThreadUpdate,    CodeCompletion::OnThreadUpdate    )
+    EVT_MENU(idThreadCompleted, CodeCompletion::OnThreadCompletion)
+    EVT_MENU(idThreadError,     CodeCompletion::OnThreadError     )
 END_EVENT_TABLE()
 
 class SystemHeadersThread : public wxThread
@@ -286,7 +283,7 @@ public:
             wxDir dir(dirs[i]);
             if ( !dir.IsOpened() )
             {
-                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_ERROR);
+                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idThreadError);
                 evt.SetClientData(this);
                 evt.SetString(wxString::Format(_T("SystemHeadersThread: Unable to open: %s"), dirs[i].wx_str()));
                 wxPostEvent(m_Parent, evt);
@@ -298,7 +295,7 @@ public:
             if ( TestDestroy() )
                 break;
 
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_UPDATE);
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idThreadUpdate);
             evt.SetClientData(this);
             evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %d"), dirs[i].wx_str(),
                                            m_SystemHeadersMap[dirs[i]].size()));
@@ -307,7 +304,7 @@ public:
 
         if ( !TestDestroy() )
         {
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, THREAD_COMPLETED);
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idThreadCompleted);
             evt.SetClientData(this);
             if (!dirs.IsEmpty())
                 evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %d"), dirs.GetCount()));
@@ -431,10 +428,16 @@ CodeCompletion::CodeCompletion() :
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
         NotifyMissingFile(_T("codecompletion.zip"));
+
+    Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart));
+    Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserEnd));
 }
 
 CodeCompletion::~CodeCompletion()
 {
+    Disconnect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart));
+    Disconnect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserEnd));
+
     while (!m_SystemHeadersThread.empty())
     {
         SystemHeadersThread* thread = m_SystemHeadersThread.front();

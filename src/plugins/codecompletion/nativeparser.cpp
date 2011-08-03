@@ -75,16 +75,6 @@ bool s_DebugSmartSense           = false;
 const wxString g_StartHereTitle  = _("Start here");
 const int g_EditorActivatedDelay = 200;
 
-BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
-//    EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
-//    EVT_MENU(THREAD_END, NativeParser::OnThreadEnd)
-    EVT_MENU(PARSER_START,              NativeParser::OnParserStart           )
-    EVT_MENU(PARSER_END,                NativeParser::OnParserEnd             )
-    EVT_TIMER(idTimerEditorActivated,   NativeParser::OnEditorActivatedTimer  )
-    EVT_TIMER(idTimerReparseAfterClear, NativeParser::OnReparseAfterClearTimer)
-    EVT_TIMER(idTimerParsingOneByOne,   NativeParser::OnParsingOneByOneTimer  )
-END_EVENT_TABLE()
-
 NativeParser::NativeParser() :
     m_TempParser(this, nullptr),
     m_Parser(&m_TempParser),
@@ -199,10 +189,21 @@ NativeParser::NativeParser() :
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_PUBLIC
     bmp = cbLoadBitmap(prefix + _T("macro_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_FOLDER
+
+    Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
+    Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
+    Connect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
+    Connect(idTimerReparseAfterClear, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnReparseAfterClearTimer));
+    Connect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
 }
 
 NativeParser::~NativeParser()
 {
+    Disconnect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
+    Disconnect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
+    Disconnect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
+    Disconnect(idTimerReparseAfterClear, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnReparseAfterClearTimer));
+    Disconnect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
     ClearParsers();
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
@@ -3380,18 +3381,6 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
     }
 
     return result.size();
-}
-
-// events
-
-void NativeParser::OnThreadStart(wxCommandEvent& event)
-{
-//     nothing for now
-}
-
-void NativeParser::OnThreadEnd(wxCommandEvent& event)
-{
-//     nothing for now
 }
 
 void NativeParser::OnParserStart(wxCommandEvent& event)

@@ -116,8 +116,8 @@ struct BrowserOptions
 
 class ClassBrowser;
 
-extern int PARSER_START;
-extern int PARSER_END;
+extern int idParserStart;
+extern int idParserEnd;
 
 enum ParsingType
 {
@@ -350,8 +350,6 @@ private:
     ParsingType          m_ParsingType;
     /** if true, all the files of the current project will be labelled as "local" */
     bool                 m_NeedMarkFileAsLocal;
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif // PARSER_H
