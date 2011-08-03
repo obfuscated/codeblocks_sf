@@ -3607,10 +3607,12 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
         SwitchParser(project, parser);
     }
 
-    if (m_ClassBrowser && m_Parser->ClassBrowserOptions().displayFilter == bdfFile)
+    if (m_ClassBrowser)
     {
-        // check header and implementation file swap, if yes, don't need to rebuild browser tree
-        m_ClassBrowser->UpdateView(true);
+        if (m_Parser->ClassBrowserOptions().displayFilter == bdfFile)
+            m_ClassBrowser->UpdateView(true); // check header and implementation file swap
+        else if (m_ParserPerWorkspace && m_Parser->ClassBrowserOptions().displayFilter == bdfProject)
+            m_ClassBrowser->UpdateView();
     }
 }
 
