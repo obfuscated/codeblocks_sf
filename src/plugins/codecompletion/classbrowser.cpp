@@ -621,7 +621,9 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
         BrowserDisplayFilter filter = (BrowserDisplayFilter)event.GetSelection();
         if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
         {
-            cbMessageBox(_("Unsupported when one parser per project!"));
+            cbMessageBox(_("This feature is not supported in combination with\n"
+                           "the option \"one parser per whole worspace\"".),
+                         _("Information"), wxICON_INFORMATION);
             filter = bdfProject;
             XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
         }
@@ -674,7 +676,8 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         const size_t count = tokensTree->FindMatches(search, result, false, true);
         if (count == 0)
         {
-            cbMessageBox(_("No matches were found: ") + search, _("Search failed"));
+            cbMessageBox(_("No matches were found: ") + search,
+                         _("Search failed"), wxICON_INFORMATION);
             return;
         }
         else if (count == 1)
