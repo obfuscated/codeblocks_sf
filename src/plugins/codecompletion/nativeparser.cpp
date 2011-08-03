@@ -68,9 +68,9 @@
     #define TRACE2(format, args...)
 #endif
 
-int idTimerEditorActivated       = wxNewId();
-int idTimerReparseAfterClear     = wxNewId();
-int idTimerParsingOneByOne       = wxNewId();
+int idTimerEditorActivated = wxNewId();
+int idTimerParsingOneByOne = wxNewId();
+
 bool s_DebugSmartSense           = false;
 const wxString g_StartHereTitle  = _("Start here");
 const int g_EditorActivatedDelay = 200;
@@ -87,7 +87,6 @@ NativeParser::NativeParser() :
     m_LastResult(-1),
     m_LastAISearchWasGlobal(false),
     m_TimerEditorActivated(this, idTimerEditorActivated),
-    m_TimerReparseAfterClear(this, idTimerReparseAfterClear),
     m_TimerParsingOneByOne(this, idTimerParsingOneByOne),
     m_ClassBrowser(nullptr),
     m_ClassBrowserIsFloating(false),
@@ -193,7 +192,6 @@ NativeParser::NativeParser() :
     Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Connect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
-    Connect(idTimerReparseAfterClear, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnReparseAfterClearTimer));
     Connect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
 }
 
@@ -202,7 +200,6 @@ NativeParser::~NativeParser()
     Disconnect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Disconnect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Disconnect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
-    Disconnect(idTimerReparseAfterClear, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnReparseAfterClearTimer));
     Disconnect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
     ClearParsers();
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
@@ -591,17 +588,20 @@ void NativeParser::RereadParserOptions()
     else if (!cfg->ReadBool(_T("/use_symbols_browser"), true) && m_ClassBrowser)
         RemoveClassBrowser();
 
-    const bool parserPerWorkspace = m_ParserPerWorkspace;
-    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
-
+    const bool parserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
     if (m_Parser == &m_TempParser)
+    {
+        m_ParserPerWorkspace = parserPerWorkspace;
         return;
+    }
 
     RemoveObsoleteParsers();
 
     // reparse if settings changed
     ParserOptions opts = m_Parser->Options();
     m_Parser->ReadOptions();
+    bool reparse = false;
+    cbProject* project = GetCurrentProject();
     if (   opts.followLocalIncludes  != m_Parser->Options().followLocalIncludes
         || opts.followGlobalIncludes != m_Parser->Options().followGlobalIncludes
         || opts.wantPreprocessor     != m_Parser->Options().wantPreprocessor
@@ -613,10 +613,17 @@ void NativeParser::RereadParserOptions()
                            "reparse your projects now, using the new options?"),
                          _("Reparse?"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
         {
-            m_TimerReparseAfterClear.Start(100, wxTIMER_ONE_SHOT);
-            return;
+            reparse = true;
         }
     }
+
+    if (reparse)
+        ClearParsers();
+
+    m_ParserPerWorkspace = parserPerWorkspace;
+
+    if (reparse)
+        CreateParser(project);
 }
 
 void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
@@ -627,32 +634,16 @@ void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
 
 void NativeParser::ClearParsers()
 {
-    SetParser(&m_TempParser);
-
-    wxArrayString projects;
-    for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+    if (m_ParserPerWorkspace)
     {
-        // Remember the projects deleted just for logging...
-        if ( !Manager::IsAppShuttingDown() )
-        {
-            cbProject* project = it->first;
-            projects.Add(project ? project->GetTitle().wx_str() : _T("*NONE*"));
-        }
-
-        delete it->second; // do the actual work
+        while (!m_ParsedProjects.empty())
+            DeleteParser(*m_ParsedProjects.begin());
     }
-
-    if ( !Manager::IsAppShuttingDown() )
+    else
     {
-      for (size_t i=0; i<projects.Count(); i++)
-      {
-          wxString log(F(_("Deleted parser for project '%s'."), projects.Item(i).wx_str()));
-          Manager::Get()->GetLogManager()->Log(log);
-          Manager::Get()->GetLogManager()->DebugLog(log);
-      }
+        while (!m_ParserList.empty())
+            DeleteParser(m_ParserList.begin()->first);
     }
-
-    m_ParserList.clear();
 }
 
 bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
@@ -1180,8 +1171,11 @@ bool NativeParser::DeleteParser(cbProject* project)
 
     if (it == m_ParserList.end())
     {
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), project
-                                                  ? project->GetTitle().wx_str() : _T("*NONE*")));
+        if (!Manager::IsAppShuttingDown())
+        {
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), project?
+                                                        project->GetTitle().wx_str() : _T("*NONE*")));
+        }
         return false;
     }
 
@@ -1196,10 +1190,13 @@ bool NativeParser::DeleteParser(cbProject* project)
         delete it->second;
         m_ParserList.erase(it);
 
-        wxString log(F(_("Delete parser for project '%s'!"), project
-                     ? project->GetTitle().wx_str() : _T("*NONE*")));
-        Manager::Get()->GetLogManager()->Log(log);
-        Manager::Get()->GetLogManager()->DebugLog(log);
+        if (!Manager::IsAppShuttingDown())
+        {
+            wxString log(F(_("Delete parser for project '%s'!"), project
+                           ? project->GetTitle().wx_str() : _T("*NONE*")));
+            Manager::Get()->GetLogManager()->Log(log);
+            Manager::Get()->GetLogManager()->DebugLog(log);
+        }
     }
 
     return true;
@@ -3477,15 +3474,6 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
     event.Skip();
 }
 
-void NativeParser::OnReparseAfterClearTimer(wxTimerEvent& event)
-{
-    Manager::Get()->GetLogManager()->DebugLog(_T("Clear all parsers, and reparsing current project."));
-
-    cbProject* project = GetCurrentProject();
-    ClearParsers();
-    CreateParser(project);
-}
-
 void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 {
     std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
@@ -3688,11 +3676,14 @@ void NativeParser::RemoveObsoleteParsers()
             break;
     }
 
-    for (size_t i = 0; i < removedProjectNames.GetCount(); ++i)
+    if (!Manager::IsAppShuttingDown())
     {
-        wxString log(F(_("Removed obsolete parser of '%s'"), removedProjectNames[i].wx_str()));
-        Manager::Get()->GetLogManager()->Log(log);
-        Manager::Get()->GetLogManager()->DebugLog(log);
+        for (size_t i = 0; i < removedProjectNames.GetCount(); ++i)
+        {
+            wxString log(F(_("Removed obsolete parser of '%s'"), removedProjectNames[i].wx_str()));
+            Manager::Get()->GetLogManager()->Log(log);
+            Manager::Get()->GetLogManager()->DebugLog(log);
+        }
     }
 }
 
@@ -4138,10 +4129,13 @@ void NativeParser::RemoveProjectFromParser(cbProject* project)
     if (!project || m_ParsedProjects.empty())
         return;
 
-    wxString log(F(_("Remove project (%s) from parser"), project
-                 ? project->GetTitle().wx_str() : _T("*NONE*")));
-    Manager::Get()->GetLogManager()->Log(log);
-    Manager::Get()->GetLogManager()->DebugLog(log);
+    if (!Manager::IsAppShuttingDown())
+    {
+        wxString log(F(_("Remove project (%s) from parser"), project
+                     ? project->GetTitle().wx_str() : _T("*NONE*")));
+        Manager::Get()->GetLogManager()->Log(log);
+        Manager::Get()->GetLogManager()->DebugLog(log);
+    }
 
     for (int i = 0; i < project->GetFilesCount(); ++i)
     {

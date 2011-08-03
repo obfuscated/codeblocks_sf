@@ -476,9 +476,6 @@ private:
      */
     void OnEditorActivatedTimer(wxTimerEvent& event);
 
-    /** Event handler when clear all parsers, and reparse current project */
-    void OnReparseAfterClearTimer(wxTimerEvent& event);
-
     /** If use one parser per whole workspace, we need parse all project one by one */
     void OnParsingOneByOneTimer(wxTimerEvent& event);
 
@@ -604,7 +601,6 @@ private:
     /* CC Search Member Variables => END */
 
     wxTimer                      m_TimerEditorActivated;
-    wxTimer                      m_TimerReparseAfterClear;
     wxTimer                      m_TimerParsingOneByOne;
     ClassBrowser*                m_ClassBrowser;
     bool                         m_ClassBrowserIsFloating;
