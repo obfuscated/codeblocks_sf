@@ -332,7 +332,7 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     int sel = XRCCTRL(*this, "lstRepl",             wxListBox)->GetSelection();
     XRCCTRL(*this, "btnEditRepl",                   wxButton)->Enable(sel != -1);
     XRCCTRL(*this, "btnDelRepl",                    wxButton)->Enable(sel != -1);
-    en = XRCCTRL(*this, "rdoOneParserPerWorkspace", wxCheckBox)->GetValue();
+    en = XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue();
     XRCCTRL(*this, "lblParsersNum",                 wxStaticText)->Enable(!en);
     XRCCTRL(*this, "spnParsersNum",                 wxSpinCtrl)->Enable(!en);
 
