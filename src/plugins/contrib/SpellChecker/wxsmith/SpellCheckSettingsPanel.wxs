@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<resource_extra>
+		<object root="1" />
+		<object name="ID_CHECKBOX1" class="wxCheckBox" variable="m_checkEnableOnlineSpellChecker" member="yes" />
+		<object name="ID_STATICTEXT3" class="wxStaticText" variable="StaticText3" member="yes" />
+		<object name="ID_CHOICE3" class="wxChoice" variable="m_choiceDictionary" member="yes" />
+		<object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText1" member="yes" />
+		<object name="ID_STATICTEXT2" class="wxStaticText" variable="StaticText2" member="yes" />
+		<object name="ID_STATICTEXT4" class="wxStaticText" variable="StaticText4" member="yes" />
+		<object name="ID_TEXTCTRL1" class="wxTextCtrl" variable="m_TextDictPath" member="yes" />
+		<object name="ID_TEXTCTRL2" class="wxTextCtrl" variable="m_TextThPath" member="yes" />
+		<object name="ID_TEXTCTRL3" class="wxTextCtrl" variable="m_TextBitmapPath" member="yes" />
+		<object name="ID_BUTTON_DICTIONARIES" class="wxButton" variable="Button1" member="yes">
+			<handler function="OnChooseDirectory" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_BUTTON_THESAURI" class="wxButton" variable="Button2" member="yes">
+			<handler function="OnChooseDirectory" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_BUTTON_BITMAPS" class="wxButton" variable="Button3" member="yes">
+			<handler function="OnChooseDirectory" entry="EVT_BUTTON" />
+		</object>
+		<object name="ID_HYPERLINKCTRL1" class="wxHyperlinkCtrl" variable="HyperlinkCtrl1" member="yes" />
+	</resource_extra>
+</wxsmith>

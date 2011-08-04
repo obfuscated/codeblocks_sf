@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwindows.org/wxxrc">
+    <object class="wxDialog" name="AbiwordLike">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
+        <size>400,300</size>
+        <title>Spell Checker</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>Not in dictionary:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="StaticMisspelledWord">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label></label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+                <object class="wxTextCtrl" name="TextContext">
+                    <size>400,100</size>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2</style>
+                    <value></value>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>Change to:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <option>1</option>
+                        <object class="wxTextCtrl" name="TextReplaceWith">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <value></value>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxListBox" name="ListBoxSuggestions">
+                    <size>-1,100</size>
+                    <style>wxLB_SINGLE</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonClose">
+                            <size>-1,-1</size>
+                            <tooltip>Close this dialog</tooltip>
+                            <style></style>
+                            <label>&amp;Cancel</label>
+                            <default>1</default>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonReplaceWord">
+                            <size>-1,-1</size>
+                            <tooltip>Change this word</tooltip>
+                            <style></style>
+                            <label>Change</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonReplaceAll">
+                            <size>-1,-1</size>
+                            <tooltip>Change all occurences of this word</tooltip>
+                            <style></style>
+                            <label>Change All</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonIgnoreWord">
+                            <size>-1,-1</size>
+                            <tooltip>Ignore this word</tooltip>
+                            <style></style>
+                            <label>Ignore</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonIgnoreAll">
+                            <size>-1,-1</size>
+                            <tooltip>Ignore all occurences of this word</tooltip>
+                            <style></style>
+                            <label>Ignore All</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonAddWord">
+                            <size>-1,-1</size>
+                            <tooltip>Add this word to your personal dictionary</tooltip>
+                            <style></style>
+                            <label>&amp;Add</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+    <object class="wxDialog" name="PersonalDictionary">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
+        <size>400,300</size>
+        <title>Personal Dictionary</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxLEFT|wxRIGHT|wxTOP</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>&amp;New Word:</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
+                        <border>5</border>
+                        <option>1</option>
+                        <object class="wxTextCtrl" name="TextNewPersonalWord">
+                            <size>200,-1</size>
+                            <style></style>
+                            <value></value>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="ButtonAddToDict">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>&amp;Add</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="spacer">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <size>5,5</size>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>&amp;Words in dictionary:</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                <border>5</border>
+                <option>1</option>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                        <border>5</border>
+                        <option>1</option>
+                        <object class="wxListBox" name="ListPersonalWords">
+                            <size>200,150</size>
+                            <style>wxLB_SINGLE|wxLB_SORT</style>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALL</flag>
+                        <border>0</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="ButtonReplaceInDict">
+                                    <size>-1,-1</size>
+                                    <style></style>
+                                    <label>&amp;Replace</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="ButtonRemoveFromDict">
+                                    <size>-1,-1</size>
+                                    <style></style>
+                                    <label>Re&amp;move</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="ButtonClose">
+                                    <size>-1,-1</size>
+                                    <style></style>
+                                    <label>&amp;Close</label>
+                                    <default>1</default>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+    <object class="wxDialog" name="OutlookLike">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
+        <size>400,300</size>
+        <title>Spell Checker</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+                <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <vgap>0</vgap>
+                    <hgap>0</hgap>
+                    <growablecols>1</growablecols>
+                    <growablerows>2</growablerows>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>Not in Dictionary:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxTextCtrl" name="TextMisspelledWord">
+                            <size>-1,-1</size>
+                            <style>wxTE_READONLY</style>
+                            <value></value>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>Change to:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxTextCtrl" name="TextReplaceWith">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <value></value>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALIGN_TOP|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <size>-1,-1</size>
+                            <style></style>
+                            <label>Suggestions:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxGROW|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                <border>5</border>
+                                <option>1</option>
+                                <object class="wxListBox" name="ListBoxSuggestions">
+                                    <size>200,75</size>
+                                    <style>wxLB_SINGLE</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_TOP|wxLEFT|wxTOP|wxBOTTOM</flag>
+                                <border>5</border>
+                                <object class="wxFlexGridSizer">
+                                    <cols>2</cols>
+                                    <rows>2</rows>
+                                    <vgap>0</vgap>
+                                    <hgap>0</hgap>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonIgnoreWord">
+                                            <size>-1,-1</size>
+                                            <tooltip>Ignore this word</tooltip>
+                                            <style></style>
+                                            <label>Ignore</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonIgnoreAll">
+                                            <size>-1,-1</size>
+                                            <tooltip>Ignore all occurences of this word</tooltip>
+                                            <style></style>
+                                            <label>Ignore All</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonReplaceWord">
+                                            <size>-1,-1</size>
+                                            <tooltip>Change this word</tooltip>
+                                            <style></style>
+                                            <label>Change</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonReplaceAll">
+                                            <size>-1,-1</size>
+                                            <tooltip>Change all occurences of this word</tooltip>
+                                            <style></style>
+                                            <label>Change All</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonAddWord">
+                                            <size>-1,-1</size>
+                                            <tooltip>Add this word to your personal dictionary</tooltip>
+                                            <style></style>
+                                            <label>Add</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonCheckWord">
+                                            <size>-1,-1</size>
+                                            <tooltip>Get suggestions for the current "Change to" word</tooltip>
+                                            <style></style>
+                                            <label>Suggest</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonOptions">
+                                            <size>-1,-1</size>
+                                            <tooltip>Show the options for the spell checker</tooltip>
+                                            <style></style>
+                                            <label>Options...</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>3</border>
+                                        <object class="wxButton" name="ButtonClose">
+                                            <size>-1,-1</size>
+                                            <tooltip>Close this dialog</tooltip>
+                                            <style></style>
+                                            <label>Close</label>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+    <object class="wxDialog" name="SentryLike">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
+        <size>400,300</size>
+        <title>Spell Checker</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>0</border>
+                <option>1</option>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALL</flag>
+                        <border>5</border>
+                        <option>1</option>
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL</flag>
+                                <border>0</border>
+                                <object class="wxBoxSizer">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_BOTTOM|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <object class="wxStaticText" name="wxID_STATIC">
+                                            <size>-1,-1</size>
+                                            <style></style>
+                                            <label>Not in Dictionary:</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_BOTTOM|wxLEFT|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <object class="wxStaticText" name="StaticMisspelledWord">
+                                            <size>-1,-1</size>
+                                            <style></style>
+                                            <label></label>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="TextReplaceWith">
+                                    <size>300,-1</size>
+                                    <style></style>
+                                    <value></value>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="wxID_STATIC">
+                                    <size>-1,-1</size>
+                                    <style></style>
+                                    <label>Suggestions:</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                                <object class="wxListBox" name="ListBoxSuggestions">
+                                    <size>200,75</size>
+                                    <style>wxLB_SINGLE</style>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_TOP|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonIgnoreWord">
+                                    <size>-1,-1</size>
+                                    <tooltip>Ignore this word</tooltip>
+                                    <style></style>
+                                    <label>Ignore</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonIgnoreAll">
+                                    <size>-1,-1</size>
+                                    <tooltip>Ignore all occurences of this word</tooltip>
+                                    <style></style>
+                                    <label>Ignore All</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonAddToDict">
+                                    <size>-1,-1</size>
+                                    <tooltip>Add this word to your personal dictionary</tooltip>
+                                    <style></style>
+                                    <label>Add Word</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonReplaceWord">
+                                    <size>-1,-1</size>
+                                    <tooltip>Replace this word</tooltip>
+                                    <style></style>
+                                    <label>Replace</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonReplaceAll">
+                                    <size>-1,-1</size>
+                                    <tooltip>Replace all occurences of this word</tooltip>
+                                    <style></style>
+                                    <label>Replace All</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonCheckWord">
+                                    <size>-1,-1</size>
+                                    <tooltip>Get suggestions for the current word</tooltip>
+                                    <style></style>
+                                    <label>Check Word</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>3</border>
+                                <object class="wxButton" name="ButtonClose">
+                                    <size>-1,-1</size>
+                                    <tooltip>Close this dialog</tooltip>
+                                    <style></style>
+                                    <label>Cancel</label>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>10</border>
+                <object class="wxTextCtrl" name="TextContext">
+                    <size>-1,75</size>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2</style>
+                    <value></value>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

@@ -31,6 +31,7 @@
 		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
 		<Project filename="plugins\contrib\regex_testbed\RegExTestbed.cbp" />
 		<Project filename="plugins\contrib\ReopenEditor\ReopenEditor.cbp" />
+		<Project filename="plugins\contrib\Spellchecker\SpellChecker.cbp" />
 		<Project filename="plugins\contrib\symtab\symtab.cbp" />
 		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch.cbp">
 			<Depends filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems.cbp" />

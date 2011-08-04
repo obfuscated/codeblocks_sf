@@ -1,0 +1,174 @@
+<?xml version="1.0" ?>
+
+<!-- RCS-ID: $Id: wxspellchecker.bkl,v 1.5 2005/10/15 04:38:39 jblough Exp $ -->
+
+<makefile>
+
+	<!-- Some defaults for the variables used by wxCode bakefiles -->
+	<set var="WXCODE_BAKEFILEDIR">../../../build/bakefiles</set>
+	<include file="$(WXCODE_BAKEFILEDIR)/defaults.bkl"/>
+	
+
+	<!-- Settings for this component -->
+	<!-- =========================== -->
+
+	<!-- this is the name of the folder which contains this component and thus
+	     should always be in lowercase -->
+	<set var="COMP_NAME">wxspellchecker</set>
+	
+	<!-- COMP_SRC must list the component's sources with path relative to ../src -->
+	<!-- COMP_HDR must list the component's headers with path relative to ../include -->
+	<set var="COMP_SRC">SpellCheckCmdLineInterface.cpp SpellCheckDialogInterface.cpp SpellCheckEngineInterface.cpp SpellCheckUserInterface.cpp XmlSpellCheckDialog.cpp SpellCheckEngineOption.cpp SpellCheckerOptionsDialog.cpp PersonalDictionary.cpp XmlPersonalDictionaryDialog.cpp</set>
+	<set var="COMP_HDR">SpellCheckCmdLineInterface.h SpellCheckDialogInterface.h SpellCheckEngineInterface.h SpellCheckUserInterface.h XmlSpellCheckDialog.h SpellCheckEngineOption.h SpellCheckerOptionsDialog.h PersonalDictionary.h XmlPersonalDictionaryDialog.h</set>
+
+  <set var="MYSPELL_SRC">$(COMP_BASEPATH)/MySpell/affentry.cxx $(COMP_BASEPATH)/MySpell/affixmgr.cxx $(COMP_BASEPATH)/MySpell/csutil.cxx $(COMP_BASEPATH)/MySpell/dictmgr.cxx $(COMP_BASEPATH)/MySpell/hashmgr.cxx $(COMP_BASEPATH)/MySpell/myspell.cxx $(COMP_BASEPATH)/MySpell/suggestmgr.cxx</set>
+   <set var="MYSPELL_HDR">$(COMP_BASEPATH)/MySpell/affentry.hxx $(COMP_BASEPATH)/MySpell/affixmgr.hxx $(COMP_BASEPATH)/MySpell/csutil.hxx $(COMP_BASEPATH)/MySpell/dictmgr.hxx $(COMP_BASEPATH)/MySpell/hashmgr.hxx $(COMP_BASEPATH)/MySpell/myspell.hxx $(COMP_BASEPATH)/MySpell/suggestmgr.hxx</set>
+
+   <set var="MYSPELL_ENGINE_SRC">../src/MySpellInterface.cpp</set>
+   <set var="MYSPELL_ENGINE_HDR">../include/MySpellInterface.h</set>
+
+   <set var="ASPELL_ENGINE_SRC">../src/AspellInterface.cpp ../src/AspellWrapper.cpp</set>
+   <set var="ASPELL_ENGINE_HDR">../include/AspellInterface.h ../include/AspellWrapper.h</set>
+
+	<!-- the folder where component sample sources and headers are kept.
+	     NOTE: *never* use something like "../samples" since some formats (like autoconf)
+	           have makefiles which are not placed in the "build" subfolder but directly
+	           in the component root folder; to refer to the component's root folder use
+			   $(COMP_BASE_PATH) which is set to ".." for win32 makefiles and "." for 
+			   autoconf -->
+	<set var="COMP_SAMPLE_DIR">$(COMP_BASEPATH)/samples</set>
+	
+	<!-- both the COMP_SAMPLE_SRC and COMP_SAMPLE_HDR must list the sample's files with
+         path relative to COMP_SAMPLE_DIR -->
+	<set var="COMP_SAMPLE_SRC">wxWidgets/MySpellCheckDialog.cpp wxWidgets/wxSpellCheckerDemo.cpp</set>
+	<set var="COMP_SAMPLE_HDR">wxWidgets/MySpellCheckDialog.h wxWidgets/wxSpellCheckerDemo.h wxWidgets/resource.h</set>
+
+
+	<!-- The wxCode bakefile to include after the definition of the COMP_XXXX variables... -->
+	<include file="$(WXCODE_BAKEFILEDIR)/wxcode.bkl"/>
+
+  <template id="aspell_template">
+    <libname>wxspellchecker_aspell</libname>
+    <include>$(COMP_BASEPATH)</include>
+
+    <sources>$(ASPELL_ENGINE_SRC)</sources>
+    <headers>$(ASPELL_ENGINE_HDR)</headers>
+  </template>
+
+  <template id="myspell_template">
+    <libname>wxspellchecker_myspell</libname>
+    <include>$(COMP_BASEPATH)</include>
+    <sources>$(MYSPELL_SRC)</sources>
+    <headers>$(MYSPELL_HDR)</headers>
+
+    <sources>$(MYSPELL_ENGINE_SRC)</sources>
+    <headers>$(MYSPELL_ENGINE_HDR)</headers>
+  </template>
+
+  <template id="combined_template">
+    <libname>wxspellchecker</libname>
+    <include>$(COMP_BASEPATH)</include>
+    <sources>$(MYSPELL_SRC)</sources>
+    <headers>$(MYSPELL_HDR)</headers>
+
+    <sources>$(ASPELL_ENGINE_SRC)</sources>
+    <headers>$(ASPELL_ENGINE_HDR)</headers>
+
+    <sources>$(MYSPELL_ENGINE_SRC)</sources>
+    <headers>$(MYSPELL_ENGINE_HDR)</headers>
+  </template>
+
+	<!-- The real target: wxcode.bkl does not declare a real target but a template called
+    "complib". In this way modifications are allowed to the basic template. -->
+  <lib id="wxspellchecker_aspell_lib" template="complib,aspell_template" cond="WX_SHARED=='0'">
+  </lib>
+
+  <lib id="wxspellchecker_myspell_lib" template="complib,myspell_template" cond="WX_SHARED=='0'">
+  </lib>
+
+  <lib id="wxspellchecker_lib" template="complib,combined_template" cond="WX_SHARED=='0'">
+  </lib>
+
+  <dll id="wxspellchecker_aspell_dll" template="compdll,aspell_template" cond="WX_SHARED=='1'">
+    <!-- remove the libraries which are not required by your project -->
+    <wx-lib>adv</wx-lib>
+    <wx-lib>html</wx-lib>
+    <wx-lib>xrc</wx-lib>
+    <wx-lib>xml</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
+  </dll>
+
+  <dll id="wxspellchecker_myspell_dll" template="compdll,myspell_template" cond="WX_SHARED=='1'">
+    <!-- remove the libraries which are not required by your project -->
+    <wx-lib>adv</wx-lib>
+    <wx-lib>html</wx-lib>
+    <wx-lib>xrc</wx-lib>
+    <wx-lib>xml</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
+  </dll>
+
+	<dll id="wxspellchecker_dll" template="compdll,combined_template" cond="WX_SHARED=='1'">
+    <!-- remove the libraries which are not required by your project -->
+    <wx-lib>adv</wx-lib>
+    <wx-lib>html</wx-lib>
+    <wx-lib>xrc</wx-lib>
+    <wx-lib>xml</wx-lib>
+    <wx-lib>net</wx-lib>
+    <wx-lib>core</wx-lib>
+    <wx-lib>base</wx-lib>
+  </dll>
+	
+	<!-- this makes the MSVC6 project files much nicer... -->
+	<set var="MSVC6PRJ_MERGED_TARGETS">
+    wxspellchecker=wxspellchecker_lib+wxspellchecker_dll
+    wxspellchecker_aspell=wxspellchecker_aspell_lib+wxspellchecker_aspell_dll
+    wxspellchecker_myspell=wxspellchecker_myspell_lib+wxspellchecker_myspell_dll
+  </set>
+
+
+
+	<!-- Samples for this component -->
+	<!-- ========================== -->
+
+	<!-- The sample of the component: as for the LIB target, this exe derives from a 
+	     template contained in wxcode.bkl which can be modified here -->
+	<exe id="wxspellchecker_demo" template="compsample">
+    <exename>wxSpellCheckerDemo</exename>
+    <dirname>$(COMP_BASEPATH)/bin</dirname>
+    <include>$(COMP_BASEPATH)</include>
+
+		<library>wxspellchecker_lib</library>
+
+		<!-- remove the libraries which are not required by your project -->
+		<wx-lib>adv</wx-lib>
+		<wx-lib>html</wx-lib>
+		<wx-lib>xrc</wx-lib>
+		<wx-lib>xml</wx-lib>
+		<wx-lib>net</wx-lib>
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+	</exe>
+
+<!-- Convenience targets -->
+  <phony id="aspell">
+    <depends>wxspellchecker_aspell_lib</depends>
+  </phony>
+
+  <phony id="myspell">
+    <depends>wxspellchecker_myspell_lib</depends>
+  </phony>
+
+  <phony id="wxspellchecker">
+    <depends>wxspellchecker_lib</depends>
+  </phony>
+
+  <phony id="demo">
+    <depends>wxspellchecker_demo</depends>
+  </phony>
+
+</makefile>
+

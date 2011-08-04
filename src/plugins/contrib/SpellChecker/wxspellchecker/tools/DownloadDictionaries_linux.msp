@@ -1,0 +1,94 @@
+[Project]
+name=DownloadDictionaries
+type=5
+defaultConfig=0
+
+[Debug]
+// compiler 
+workingDirectory=../bin
+arguments=
+intermediateFilesDirectory=Debug
+outputFilesDirectory=Debug
+compilerPreprocessor=
+extraCompilerOptions=`${WXSTABLE}/bin/wxgtkd-2.4-config --cxxflags`
+compilerIncludeDirectory=../include
+noWarning=0
+defaultWarning=0
+allWarning=1
+extraWarning=0
+isoWarning=0
+warningsAsErrors=0
+debugType=1
+debugLevel=2
+exceptionEnabled=0
+runtimeTypeEnabled=0
+optimizeLevel=0
+
+// linker
+libraryPath=
+outputFilename=../bin/DownloadDictionariesD
+libraries=
+extraLinkerOptions=./lib_bzipstreamd.a ../lib/libwx_spellcheckd.a `${WXSTABLE}/bin/wxgtkd-2.4-config --libs`
+ignoreStartupFile=0
+ignoreDefaultLibs=0
+stripExecutableFile=0
+
+// archive
+extraArchiveOptions=
+
+//resource
+resourcePreprocessor=
+resourceIncludeDirectory=
+extraResourceOptions=
+
+[Release]
+// compiler 
+workingDirectory=../bin
+arguments=
+intermediateFilesDirectory=Release
+outputFilesDirectory=Release
+compilerPreprocessor=
+extraCompilerOptions=`${WXSTABLE}/bin/wxgtk-2.4-config --cxxflags`
+compilerIncludeDirectory=../include
+noWarning=0
+defaultWarning=0
+allWarning=1
+extraWarning=0
+isoWarning=0
+warningsAsErrors=0
+debugType=0
+debugLevel=1
+exceptionEnabled=0
+runtimeTypeEnabled=0
+optimizeLevel=2
+
+// linker
+libraryPath=
+outputFilename=../bin/DownloadDictionaries
+libraries=
+extraLinkerOptions=./lib_bzipstream.a ../lib/libwx_spellcheck.a `${WXSTABLE}/bin/wxgtk-2.4-config --libs`
+ignoreStartupFile=0
+ignoreDefaultLibs=0
+stripExecutableFile=1
+
+// archive
+extraArchiveOptions=
+
+//resource
+resourcePreprocessor=
+resourceIncludeDirectory=
+extraResourceOptions=
+
+[Source]
+1=DictionaryWizard.cpp
+2=wizard.cpp
+3=AspellDictionaryDownloader.cpp
+[Header]
+1=DictionaryWizard.h
+2=AspellDictionaryDownloader.h
+3=EngineDictionaryDownloader.h
+4=MySpellDictionaryDownloader.h
+[Resource]
+[Other]
+1=wiztest.xpm
+[History]

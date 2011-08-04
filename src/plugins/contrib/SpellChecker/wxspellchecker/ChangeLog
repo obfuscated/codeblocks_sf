@@ -1,0 +1,48 @@
+2005-12-03 : SpellCheckEngineInterface should now use the correct character encoding for the selected dictionary
+
+2005-11-25 : wxSpellChecker should now compile with Unicode support
+             Replaced usage of wxMessageBox and wxPrintf with wxMessageOutput for better command-line support
+             
+2005-11-05 : Added back the ability to use the "affix-file" and "dict-file" options as an alternative to the "dictionary-path" and "language" options
+
+2005-10-15 : Applied patches contributed by Julian SmarApplied patches contributed by Julian Smart
+             Based on user feedback, removed option saving/loading from the spell check libraries.  This is best left in the application code
+             Sample spell check engine option saving/loading code added to the demo application
+             MySpell options changed from "affix-file" and "dict-file" to "dictionary-path" and "language" (making it easier to specify the dictionary path and let the user specify the language)
+             SpellCheckEngineOption now supports relative paths
+             Added SpellCheckEngineInterface::IsInitialized() function to check whether the engine was able to initialize with the options specified
+             Fixed an issue where FILE and DIR options were accidentally changed to STRING options if changed on the options dialog
+             Options dialog now sorts combo boxes
+             PersonalDictionary file names can now be relative paths
+             Added OpenPersonalDictionary function to MySpell and Aspell interfaces for setting the personal dictionary file name
+             Changed compile system over to bakefiles
+             The build targets were split out to aspell, myspell, and wxspellchecker (combined) so that you don't have to compile Aspell or MySpell if you don't use it
+             
+2005-07-01 : Verified that wxSpellChecker compiles with wxWidget 2.6.1 and Aspell 0.60.3
+             Aspell and MySpell engines now verify that library directories exist at startup
+             Fixed highlighted context for text less than 50 characters
+             Applied patch contributed by Bryan Petty to work around a bug in the wxWidgets' string tokenizer
+
+2005-03-20 : Changed makefiles to use the first wx-config in the path.
+             (Aspell) Upgraded Aspell library to 0.60.2
+             (wxWidgets) Upgraded to wxWidgets 2.5.4
+             Fixed some segmentation faults when trying to use an unintialized Aspell engine
+             wxWidgets sample now disables unintialized spell check engines
+
+2004-05-13 : Moved the DictionaryWizard into the tools directory to try and keep the library size down
+
+2004-05-11 : Added DictionaryWizard to help download available dictionaries for the spell check engine
+
+2004-04-11 : (Sample) Removed Outlook-like and Sentry-like dialog classes and made XML resource replacements.  The Mozilla-like dialog class was kept as an example of deriving from wxSpellCheckDialogInterface.
+             Sample now allows directly presenting the personal dictionary dialog
+             Sample now allows for saving the wxTextCtrl contents to a file
+
+2004-04-11 : (Aspell) Aspell engine now uses the generic PersonalDictionary class.  This will probably change to Aspell's internal personal dictionary support if/when Aspell's API includes a way to remove words from the personal dictionary.
+
+2004-04-09 : (MySpell) Added personal dictionary support to MySpell engine
+
+2004-04-04 : (Options) The spell check engine options dialog now retrieves and sets user options
+
+2004-04-01 : (ALL) MSVC project files added
+
+2004-03-30 : (ALL) Added wxSpellChecker to the wxCode repository
