@@ -25,6 +25,7 @@ usr/share/codeblocks/NassiShneiderman.zip
 usr/share/codeblocks/Profiler.zip
 usr/share/codeblocks/RegExTestbed.zip
 usr/share/codeblocks/ReopenEditor.zip
+usr/share/codeblocks/SpellChecker.zip
 usr/share/codeblocks/SymTab.zip
 usr/share/codeblocks/ThreadSearch.zip
 usr/share/codeblocks/ToolsPlus.zip
@@ -37,5 +38,6 @@ usr/share/codeblocks/images/DoxyBlocks*
 usr/share/codeblocks/images/ThreadSearch*
 usr/share/codeblocks/images/wxsmith*
 usr/share/codeblocks/lib_finder/*
+usr/share/codeblocks/SpellChecker/*
 usr/share/man/man1/*snippets*
 usr/include/wxSmithContribItems/ usr/include/

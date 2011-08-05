@@ -132,9 +132,11 @@ case $WX_BASENAME in
 		dnl if the condition is true, the *_TRUE variable is empty (!)
 		if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
 				"x$BUILD_FILEMANAGER_TRUE" = "x" -o \
+				"x$BUILD_SPELLCHECKER_TRUE" = "x" -o \
 				"x$BUILD_MOUSESAP_TRUE" = "x" ; then
 
 			AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+
 			ifdef([PKG_CHECK_MODULES],[],[
 				define([PKG_CHECK_MODULES],
 				[ echo "You don't have pkg.m4 properly installed" >&2
@@ -142,19 +144,27 @@ case $WX_BASENAME in
 				])
 			])
 
+			if test "x$BUILD_SPELLCHECKER_TRUE" = "x" ; then
+				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+					PKG_CHECK_MODULES([HUNSPELL], [hunspell])
+				fi
+			fi
+
 			if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
 					"x$BUILD_MOUSESAP_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 					PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.0.0])
 				fi
 			fi
+
 			if test "x$BUILD_FILEMANAGER_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 					PKG_CHECK_MODULES([GAMIN], [gamin])
 				fi
 			fi
+
     	fi
-		
+
 		dnl
 		dnl Check whether the necessary boost-headers are installed
 		dnl a little hacky, but it seems there is no common macro-library
@@ -169,6 +179,8 @@ case $WX_BASENAME in
 
 		CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
 		CB_GAMIN_LIBS="$GAMIN_LIBS"
+		CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
+		CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
         WX_GTK2_CFLAGS="$GTK2_CFLAGS"
         WX_GTK2_LIBS="$GTK2_LIBS"
         AC_PATH_XTRA
@@ -197,6 +209,8 @@ AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
 AC_SUBST(CB_GAMIN_CFLAGS)
 AC_SUBST(CB_GAMIN_LIBS)
+AC_SUBST(CB_HUNSPELL_CFLAGS)
+AC_SUBST(CB_HUNSPELL_LIBS)
 AC_SUBST(WX_X11_CFLAGS)
 AC_SUBST(WX_X11_LIBS)
 
@@ -391,6 +405,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/profiler/resources/Makefile
 	src/plugins/contrib/source_exporter/Makefile
 	src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
+	src/plugins/contrib/SpellChecker/Makefile
+	src/plugins/contrib/SpellChecker/wxspellchecker/Makefile
 	src/plugins/contrib/symtab/Makefile
 	src/plugins/contrib/symtab/resources/Makefile
 	src/plugins/contrib/regex_testbed/Makefile

@@ -1,0 +1,22 @@
+#! /bin/sh
+#
+# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+# http://www.gnu.org/licenses/gpl-3.0.html
+#
+# Copyright: 2011 Jens Lody
+#
+# $Revision:$
+# $Id:$
+# $HeadURL:$
+#
+
+mkdir -p "../../../devel/share/codeblocks/SpellChecker"
+mkdir -p "../../../output/share/codeblocks/SpellChecker"
+cp *.png "../../../devel/share/codeblocks/images/settings/"
+cp *.png "../../../output/share/codeblocks/images/settings/"
+cp OnlineSpellChecking.xml  "../../../devel/share/codeblocks/SpellChecker/"
+cp OnlineSpellChecking.xml  "../../../output/share/codeblocks/SpellChecker/"
+cp rc/*.png "../../../devel/share/codeblocks/SpellChecker/"
+cp rc/*.png "../../../output/share/codeblocks/SpellChecker/"
+exit 0
+

@@ -82,6 +82,10 @@ if BUILD_EXPORTER
 MAYBE_EXPORTER=source_exporter
 endif
 
+if BUILD_SPELLCHECKER
+MAYBE_SPELLCHECKER=SpellChecker
+endif
+
 if BUILD_SYMTAB
 MAYBE_SYMTAB=symtab
 endif
@@ -160,6 +164,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_PROFILER) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
+		$(MAYBE_SPELLCHECKER) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_REOPENEDITOR) \
 		$(MAYBE_THREADSEARCH) \
@@ -195,6 +200,7 @@ DIST_SUBDIRS = AutoVersioning \
 		NassiShneiderman \
 		profiler \
 		source_exporter \
+		SpellChecker \
 		symtab \
 		regex_testbed \
 		ReopenEditor \

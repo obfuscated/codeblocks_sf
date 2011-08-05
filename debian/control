@@ -125,6 +125,7 @@ Description: contrib plugins for Code::Blocks IDE
     * NassiShneiderman
     * Regular expression testbed
     * Reopen last closed editor(s) via menu or hotkey
+    * Spellchecker plugin
     * Symbol table plugin
     * ThreadSearch
     * ToolsPlus
@@ -176,6 +177,8 @@ Description: Debugging libraries for the Code::Blocks contrib plugins
     * Codesnippets
     * Library finder
     * Regular expression testbed
+    * Reopen last closed editor(s) via menu or hotkey
+    * Spellchecker plugin
     * Symbol table plugin
     * CB koders
     * MouseSap

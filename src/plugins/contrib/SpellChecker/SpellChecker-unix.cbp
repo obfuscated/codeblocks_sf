@@ -28,11 +28,9 @@
 					<Add option="-fPIC" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWX_PRECOMP" />
 					<Add option="-DHUNSPELL_STATIC" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="wxspellchecker/include" />
-					<Add directory="hunspell/src/hunspell" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -60,11 +58,9 @@
 					<Add option="-fPIC" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="." />
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="wxspellchecker/include" />
-					<Add directory="MyThes-1.0" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -76,14 +72,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel/share/codeblocks/SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
-					<Add after='mkdir -p &quot;../../../devel/share/codeblocks/SpellChecker&quot;' />
-					<Add after='mkdir -p &quot;../../../output/share/codeblocks/SpellChecker&quot;' />
-					<Add after='cp *.png &quot;../../../devel/share/codeblocks/images/settings/&quot;' />
-					<Add after='cp OnlineSpellChecking.xml  &quot;../../../devel/share/codeblocks/SpellChecker/&quot;' />
-					<Add after='cp rc/*.png &quot;../../../devel/share/codeblocks/SpellChecker/&quot;' />
-					<Add after='cp *.png &quot;../../../output/share/codeblocks/images/settings/&quot;' />
-					<Add after='cp OnlineSpellChecking.xml  &quot;../../../output/share/codeblocks/SpellChecker/&quot;' />
-					<Add after='cp rc/*.png &quot;../../../output/share/codeblocks/SpellChecker/&quot;' />
+					<Add after="./update" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

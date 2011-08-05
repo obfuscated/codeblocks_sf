@@ -76,7 +76,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 ])
- 
+
 dnl check what settings to enable
 AC_DEFUN([CODEBLOCKS_ENABLE_SETTINGS],
 [
@@ -265,6 +265,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_REGEX], [false])
 	AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
 	AM_CONDITIONAL([BUILD_EXPORTER], [false])
+	AM_CONDITIONAL([BUILD_SPELLCHECKER], [false])
 	AM_CONDITIONAL([BUILD_SYMTAB], [false])
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [false])
 	AM_CONDITIONAL([BUILD_TOOLSPLUS], [false])
@@ -302,6 +303,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_REGEX], [true])
 	AM_CONDITIONAL([BUILD_REOPENEDITOR], [true])
 	AM_CONDITIONAL([BUILD_EXPORTER], [true])
+	AM_CONDITIONAL([BUILD_SPELLCHECKER], [true])
 	AM_CONDITIONAL([BUILD_SYMTAB], [true])
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [true])
 	AM_CONDITIONAL([BUILD_TOOLSPLUS], [true])
@@ -329,8 +331,8 @@ AC_ARG_WITH(contrib-plugins,
   [                        Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets, ]
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
-  [                        		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, symtab, ThreadSearch, ]
-  [                        		     ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui ],
+  [                        		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, spellchecker, symtab, ]
+  [                        		     ThreadSearch, ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
@@ -405,6 +407,9 @@ do
 		;;
 	exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [true])
+		;;
+	spellchecker)
+		AM_CONDITIONAL([BUILD_SPELLCHECKER], [true])
 		;;
 	symtab)
 		AM_CONDITIONAL([BUILD_SYMTAB], [true])
@@ -508,6 +513,9 @@ do
 	-exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [false])
 		;;
+	-spellchecker)
+		AM_CONDITIONAL([BUILD_SPELLCHECKER], [false])
+		;;
 	-symtab)
 		AM_CONDITIONAL([BUILD_SYMTAB], [false])
 		;;
@@ -580,6 +588,7 @@ AC_SUBST(BUILD_REGEX)
 AC_SUBST(BUILD_REOPENEDITOR)
 AC_SUBST(BUILD_EXPORTER)
 AC_SUBST(BUILD_SYMTAB)
+AC_SUBST(BUILD_SPELLCHECKER)
 AC_SUBST(BUILD_THREADSEARCH)
 AC_SUBST(BUILD_TOOLSPLUS)
 AC_SUBST(BUILD_VALGRIND)
