@@ -5,9 +5,9 @@
 #
 # Copyright: 2011 Jens Lody
 #
-# $Revision:$
-# $Id:$
-# $HeadURL:$
+# $Revision$
+# $Id$
+# $HeadURL$
 #
 
 mkdir -p "../../../devel/share/codeblocks/SpellChecker"

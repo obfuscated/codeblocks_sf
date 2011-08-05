@@ -4,7 +4,7 @@
 // Author:      Ryan Norton
 // Modified by:
 // Created:     09/05/03
-// RCS-ID:      $Id: bzipstream.h,v 1.1 2004/05/19 02:50:57 jblough Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) Ryan Norton
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
