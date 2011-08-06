@@ -573,7 +573,7 @@ private:
     void AddProjectToParser(cbProject* project);
 
     /** Remove all project files from parser */
-    void RemoveProjectFromParser(cbProject* project);
+    bool RemoveProjectFromParser(cbProject* project);
 
 private:
     typedef std::pair<cbProject*, Parser*> ProjectParserPair;

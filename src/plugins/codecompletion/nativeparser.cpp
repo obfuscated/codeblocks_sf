@@ -201,9 +201,9 @@ NativeParser::~NativeParser()
     Disconnect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Disconnect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
     Disconnect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
-    ClearParsers();
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
+    ClearParsers();
     delete m_ImageList;
 }
 
@@ -636,13 +636,13 @@ void NativeParser::ClearParsers()
 {
     if (m_ParserPerWorkspace)
     {
-        while (!m_ParsedProjects.empty())
-            DeleteParser(*m_ParsedProjects.begin());
+        while (!m_ParsedProjects.empty() && DeleteParser(*m_ParsedProjects.begin()))
+            ;
     }
     else
     {
-        while (!m_ParserList.empty())
-            DeleteParser(m_ParserList.begin()->first);
+        while (!m_ParserList.empty() && DeleteParser(m_ParserList.begin()->first))
+            ;
     }
 }
 
@@ -1179,8 +1179,9 @@ bool NativeParser::DeleteParser(cbProject* project)
         return false;
     }
 
+    bool removeProjectFromParser = false;
     if (m_ParserPerWorkspace)
-        RemoveProjectFromParser(project);
+        removeProjectFromParser = RemoveProjectFromParser(project);
 
     if (m_ParsedProjects.empty() && it->second == m_Parser)
         SetParser(&m_TempParser);
@@ -1197,9 +1198,16 @@ bool NativeParser::DeleteParser(cbProject* project)
             Manager::Get()->GetLogManager()->Log(log);
             Manager::Get()->GetLogManager()->DebugLog(log);
         }
+        return true;
     }
 
-    return true;
+    if (removeProjectFromParser)
+        return true;
+
+    if (!Manager::IsAppShuttingDown())
+        Manager::Get()->GetLogManager()->DebugLog(_T("Delete parser failed!"));
+
+    return false;
 }
 
 bool NativeParser::SwitchParser(cbProject* project, Parser* parser)
@@ -4117,17 +4125,17 @@ void NativeParser::AddProjectToParser(cbProject* project)
     }
 }
 
-void NativeParser::RemoveProjectFromParser(cbProject* project)
+bool NativeParser::RemoveProjectFromParser(cbProject* project)
 {
     Parser* parser = GetParserByProject(project);
     if (!parser)
-        return;
+        return false;
 
     // Remove from the cbProject set
     m_ParsedProjects.erase(project);
 
     if (!project || m_ParsedProjects.empty())
-        return;
+        return true;
 
     if (!Manager::IsAppShuttingDown())
     {
@@ -4143,4 +4151,6 @@ void NativeParser::RemoveProjectFromParser(cbProject* project)
         if (pf && CCFileTypeOf(pf->relativeFilename) != ccftOther)
             RemoveFileFromParser(project, pf->file.GetFullPath());
     }
+
+    return true;
 }
