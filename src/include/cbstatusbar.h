@@ -7,7 +7,7 @@
 #define CBSTATUSBAR_H
 
 #include <vector>
-
+#include <wx/statusbr.h>
 #include "settings.h"
 
 
