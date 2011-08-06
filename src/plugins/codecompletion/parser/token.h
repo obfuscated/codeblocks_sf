@@ -265,7 +265,6 @@ public:
 
     // Token specific functions
     void   RecalcFreeList();
-    void   RecalcData();
     void   RecalcInheritanceChain(Token* token);
     int    TokenExists(const wxString& name, int parent, short int kindMask);
     int    TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind);

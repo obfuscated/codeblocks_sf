@@ -528,7 +528,6 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
         if (doParseNow)
         {
             result = thread->Parse();
-            m_TempTokensTree->RecalcData();
             delete thread;
             break;
         }
