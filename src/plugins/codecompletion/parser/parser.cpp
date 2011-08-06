@@ -87,8 +87,6 @@ public:
         wxCriticalSectionLocker locker1(s_TokensTreeCritical);
         wxCriticalSectionLocker locker2(s_ParserCritical);
 
-        m_Parser.m_IsParsing = false;
-
         // Pre-defined macros
         if (!m_Parser.m_PredefinedMacros.IsEmpty())
         {
@@ -119,14 +117,19 @@ public:
         // Add all other files
         if (!m_Parser.m_BatchParseFiles.empty())
         {
-            m_Parser.m_IsFirstBatch = true;
+            if (m_Parser.m_IgnoreThreadEvents)
+                m_Parser.m_IsFirstBatch = true;
             StringList::iterator it = m_Parser.m_BatchParseFiles.begin();
             for (; it != m_Parser.m_BatchParseFiles.end(); ++it)
                 m_Parser.Parse(*it);
             m_Parser.m_BatchParseFiles.clear();
         }
 
-        m_Parser.m_IsParsing = true;
+        if (m_Parser.m_IgnoreThreadEvents)
+        {
+            m_Parser.m_IgnoreThreadEvents = false;
+            m_Parser.m_IsParsing = true;
+        }
 
         return 0;
     }
@@ -630,9 +633,6 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
 
 bool Parser::RemoveFile(const wxString& filename)
 {
-    if (!Done())
-        return false; // Can't alter the tokens tree if parsing has not finished
-
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
     size_t index = m_TokensTree->GetFileIndex(UnixFilename(filename));
     const bool result = m_TokensTree->m_FilesStatus.count(index);
@@ -924,12 +924,6 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     if (m_IgnoreThreadEvents || Manager::IsAppShuttingDown())
         return;
 
-    if (!m_IsParsing)
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Why m_IsParsing is false?"));
-        return;
-    }
-
     if (event.GetId() != m_Pool.GetId())
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Why event.GetId() not equal m_Pool.GetId()?"));
@@ -938,6 +932,12 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (!m_TokensTree)
         cbThrow(_T("m_TokensTree is a nullptr?!"));
+
+    if (!m_IsParsing)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Why m_IsParsing is false?"));
+        return;
+    }
 
     // Do next task
     if (   !m_PoolTask.empty()
@@ -952,18 +952,18 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     // Reparse system priority headers
     else if (!m_SystemPriorityHeaders.empty())
     {
-        // Part.1 Set m_IsParsing to false
-        m_IsParsing = false;
-
-        // Part.2 Remove all priority headers in token tree
+        // 1. Remove all priority headers in token tree
         for (StringList::iterator it = m_SystemPriorityHeaders.begin(); it != m_SystemPriorityHeaders.end(); ++it)
             RemoveFile(*it);
 
-        // Part.3 Reparse system priority headers
-        AddBatchParse(m_SystemPriorityHeaders, false);
+        // 2. Reparse system priority headers
+        AddBatchParse(m_SystemPriorityHeaders, true);
 
-        // Part.4 Clear
+        // 3. Clear
         m_SystemPriorityHeaders.clear();
+
+        // 4. Begin batch parsing
+        m_BatchTimer.Start(1, wxTIMER_ONE_SHOT);
     }
     else if (   (m_ParsingType == ptCreateParser || m_ParsingType == ptAddFileToParser)
              && m_NeedMarkFileAsLocal
@@ -981,9 +981,10 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         if (!m_Project)
             m_NeedMarkFileAsLocal = false;
 
-        m_NeedsReparse     = false;
-        m_IsParsing        = false;
-        m_IsBatchParseDone = true;
+        m_IgnoreThreadEvents = true;
+        m_NeedsReparse       = false;
+        m_IsParsing          = false;
+        m_IsBatchParseDone   = true;
 
         EndStopWatch();
 
@@ -1046,9 +1047,6 @@ wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool 
 
 void Parser::DoParseFile(const wxString& filename, bool isGlobal)
 {
-    if (m_IgnoreThreadEvents)
-        return;
-
     if (   (!isGlobal && !m_Options.followLocalIncludes)
         || ( isGlobal && !m_Options.followGlobalIncludes) )
         return;
@@ -1133,7 +1131,6 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
                 PostParserEvent(m_ParsingType, idParserStart);
             }
 
-            m_IgnoreThreadEvents = false;
             AddParseThread* thread = new AddParseThread(*this);
             m_Pool.AddTask(thread, true);
             return;
