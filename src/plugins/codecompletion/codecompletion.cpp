@@ -2147,9 +2147,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         funcdata->m_FunctionsScope.clear();
         funcdata->m_NameSpaces.clear();
 
-        TokenIdxSet result;
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        TokensTree* tmptree = m_NativeParser.GetParser().GetTokensTree();
+
+        TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+        TokenIdxSet result;
         m_NativeParser.GetParser().FindTokensInFile(filename, result, tkAnyFunction | tkEnum | tkClass | tkNamespace);
 
         if (!result.empty())
@@ -2159,13 +2160,13 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            unsigned int fileIdx = m_NativeParser.GetParser().GetTokensTree()->GetFileIndex(filename);
-            const Token* token = tmptree->at(*it);
+            const Token* token = tree->at(*it);
             if (token && token->m_ImplLine != 0)
             {
                 FunctionScope fs;
                 fs.StartLine = token->m_ImplLine - 1;
                 fs.EndLine = token->m_ImplLineEnd - 1;
+                const size_t fileIdx = tree->GetFileIndex(filename);
                 if (token->m_TokenKind & tkAnyFunction && fileIdx == token->m_ImplFileIdx)
                 {
                     fs.Scope = token->GetNamespace();

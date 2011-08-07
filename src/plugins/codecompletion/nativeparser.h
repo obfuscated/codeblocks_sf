@@ -109,7 +109,7 @@ public:
     /** return a reference to the currently active Parser object */
     Parser& GetParser() { return *m_Parser; }
     /** return a reference to the temporary Parser object*/
-    Parser& GetTempParser() { return m_TempParser; }
+    Parser& GetTempParser() { return *m_TempParser; }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
@@ -582,7 +582,7 @@ private:
     typedef std::list<ProjectParserPair> ParserList;
 
     ParserList                   m_ParserList;
-    Parser                       m_TempParser;
+    Parser*                      m_TempParser;
     Parser*                      m_Parser;
 
     /* CC Search Member Variables => START */

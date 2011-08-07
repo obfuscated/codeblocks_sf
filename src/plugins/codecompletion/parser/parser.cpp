@@ -194,26 +194,12 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
 
 Parser::~Parser()
 {
-    // 1. Stop all timers
-    m_Timer.Stop();
-    m_BatchTimer.Stop();
-
-    // 2. Let's OnAllThreadsDone can not process event
-    m_IgnoreThreadEvents = true;
-
-    // 3. Disconnect events
     DisconnectEvents();
-
-    // 4. Abort all thread
     TerminateAllThreads();
 
-    // 5. Free memory
-    delete m_TempTokensTree;
-    m_TempTokensTree = nullptr;
-    delete m_TokensTree;
-    m_TokensTree = nullptr;
+    Delete(m_TokensTree);
+    Delete(m_TempTokensTree);
 
-    // 6. Reset current parser
     if (s_CurrentParser == this)
         s_CurrentParser = nullptr;
 }
@@ -564,7 +550,15 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             if (m_IsParsing)
                 m_Pool.AddTask(thread, true);
             else
-                m_PoolTask.back().push_back(thread);
+            {
+                if (!m_PoolTask.empty())
+                    m_PoolTask.back().push_back(thread);
+                else
+                {
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Why m_PoolTask is empty?"));
+                    return false;
+                }
+            }
         }
 
         result = true;
@@ -838,20 +832,17 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
 void Parser::TerminateAllThreads()
 {
-    m_Pool.AbortAllTasks();
-    wxMilliSleep(10);
-
-    while (!m_Pool.Done())
-        wxMilliSleep(10);
-
-    wxMilliSleep(10);
     while (!m_PoolTask.empty())
     {
         PTVector& v = m_PoolTask.front();
-        for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
+        for (PTVector::iterator it = v.begin(); it != v.end(); ++it)
             delete *it;
         m_PoolTask.pop();
     }
+
+    m_Pool.AbortAllTasks();
+    while (!m_Pool.Done())
+        wxMilliSleep(1);
 }
 
 void Parser::AddIncludeDir(const wxString& dir)

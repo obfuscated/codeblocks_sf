@@ -76,8 +76,6 @@ const wxString g_StartHereTitle  = _("Start here");
 const int g_EditorActivatedDelay = 200;
 
 NativeParser::NativeParser() :
-    m_TempParser(this, nullptr),
-    m_Parser(&m_TempParser),
     m_EditorStartWord(-1),
     m_EditorEndWord(-1),
     m_LastFuncTokenIdx(-1),
@@ -94,14 +92,8 @@ NativeParser::NativeParser() :
     m_LastEditor(nullptr),
     m_ParserPerWorkspace(false)
 {
-    m_TemplateMap.clear();
-
-    // hook to project loading procedure
-    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<NativeParser>(this, &NativeParser::OnProjectLoadingHook);
-    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
-
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
+    m_TempParser = new Parser(this, nullptr);
+    m_Parser = m_TempParser;
 
     m_ImageList = new wxImageList(16, 16);
     wxBitmap bmp;
@@ -189,6 +181,13 @@ NativeParser::NativeParser() :
     bmp = cbLoadBitmap(prefix + _T("macro_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_FOLDER
 
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
+
+    // hook to project loading procedure
+    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<NativeParser>(this, &NativeParser::OnProjectLoadingHook);
+    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
+
     Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
     Connect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
@@ -204,7 +203,8 @@ NativeParser::~NativeParser()
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
     ClearParsers();
-    delete m_ImageList;
+    Delete(m_ImageList);
+    Delete(m_TempParser);
 }
 
 void NativeParser::SetParser(Parser* parser)
@@ -589,7 +589,7 @@ void NativeParser::RereadParserOptions()
         RemoveClassBrowser();
 
     const bool parserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
-    if (m_Parser == &m_TempParser)
+    if (m_Parser == m_TempParser)
     {
         m_ParserPerWorkspace = parserPerWorkspace;
         return;
@@ -1131,7 +1131,7 @@ Parser* NativeParser::CreateParser(cbProject* project)
             return nullptr;
         }
 
-        if (m_Parser == &m_TempParser)
+        if (m_Parser == m_TempParser)
             SetParser(parser);
 
         if (m_ParserPerWorkspace)
@@ -1177,7 +1177,7 @@ bool NativeParser::DeleteParser(cbProject* project)
         removeProjectFromParser = RemoveProjectFromParser(project);
 
     if (m_ParsedProjects.empty() && it->second == m_Parser)
-        SetParser(&m_TempParser);
+        SetParser(m_TempParser);
 
     if (m_ParsedProjects.empty())
     {
@@ -3533,7 +3533,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
             }
         }
         else
-            parser = &m_TempParser; // do *not* instead by SetParser(&m_TempParser)
+            parser = m_TempParser; // do *not* instead by SetParser(m_TempParser)
     }
     else if (!project)
     {
@@ -3570,7 +3570,7 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     {
         if (editor->GetFilename() == g_StartHereTitle)
         {
-            SetParser(&m_TempParser);
+            SetParser(m_TempParser);
             m_LastEditor = nullptr;
         }
         return;
