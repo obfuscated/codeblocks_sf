@@ -148,6 +148,8 @@ private:
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
     void OnEditorModified(CodeBlocksEvent& event);
+    void OnCCLogger(wxCommandEvent& event);
+    void OnCCDebugLogger(wxCommandEvent& event);
     void OnParserEnd(wxCommandEvent& event);
     void OnParserStart(wxCommandEvent& event);
     void OnValueTooltip(CodeBlocksEvent& event);

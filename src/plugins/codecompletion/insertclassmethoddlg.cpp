@@ -84,7 +84,7 @@ void InsertClassMethodDlg::FillClasses()
     for (size_t i = 0; i < tree->size(); ++i)
     {
         Token* token = tree->at(i);
-        //Manager::Get()->GetLogManager()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
+        //CCLogger::Get()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
         if (token && (token->m_TokenKind & (tkClass | tkTypedef))) //&&
             //token->m_Filename == UnixFilename(m_Filename))
             // TODO: check against file's pair too
@@ -134,7 +134,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
     TokensTree* tree = parentToken->GetTree();
     if (!tree)
         return;
-    //Manager::Get()->GetLogManager()->DebugLog("Fill methods for %s", parentToken->m_DisplayName.c_str());
+    //CCLogger::Get()->DebugLog("Fill methods for %s", parentToken->m_DisplayName.c_str());
 
     // loop ascending the inheritance tree
     tree->RecalcInheritanceChain(parentToken);
@@ -146,14 +146,14 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
         if (!token)
             continue;
 
-        //Manager::Get()->GetLogManager()->DebugLog("Evaluating %s", token->m_DisplayName.c_str());
+        //CCLogger::Get()->DebugLog("Evaluating %s", token->m_DisplayName.c_str());
         bool valid = token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor) &&
                 ((includePrivate && token->m_Scope == tsPrivate) ||
                 (includeProtected && token->m_Scope == tsProtected) ||
                 (includePublic && token->m_Scope == tsPublic));
         if (valid)
         {
-            //Manager::Get()->GetLogManager()->DebugLog("Adding %s", token->m_DisplayName.c_str());
+            //CCLogger::Get()->DebugLog("Adding %s", token->m_DisplayName.c_str());
             // BUG IN WXWIDGETS: wxCheckListBox::Append(string, data) crashes...
             //                   wxCheckListBox::Append(string) does not...
             wxString str;

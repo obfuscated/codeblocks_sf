@@ -49,18 +49,18 @@
 
 #if CC_PARSER_DEBUG_OUTPUT == 1
     #define TRACE(format, args...) \
-        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+        CCLogger::Get()->DebugLog(F(format, ##args))
     #define TRACE2(format, args...)
 #elif CC_PARSER_DEBUG_OUTPUT == 2
     #define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
-                Manager::Get()->GetLogManager()->DebugLog(F(format, ##args));   \
+                CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
     #define TRACE2(format, args...) \
-        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+        CCLogger::Get()->DebugLog(F(format, ##args))
 #else
     #define TRACE(format, args...)
     #define TRACE2(format, args...)
@@ -505,7 +505,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             if (!canparse)
             {
                if (opts.loader) // if a loader is already open at this point, the caller must clean it up
-                   Manager::Get()->GetLogManager()->DebugLog(_T("Parse() : CodeCompletion Plugin: FileLoader memory leak likely while loading file ")+bufferOrFilename);
+                   CCLogger::Get()->DebugLog(_T("Parse() : CodeCompletion Plugin: FileLoader memory leak likely while loading file ")+bufferOrFilename);
                break;
             }
 
@@ -925,7 +925,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (event.GetId() != m_Pool.GetId())
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Why event.GetId() not equal m_Pool.GetId()?"));
+        CCLogger::Get()->DebugLog(_T("Why event.GetId() not equal m_Pool.GetId()?"));
         return;
     }
 
@@ -934,7 +934,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (!m_IsParsing)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Why m_IsParsing is false?"));
+        CCLogger::Get()->DebugLog(_T("Why m_IsParsing is false?"));
         return;
     }
 

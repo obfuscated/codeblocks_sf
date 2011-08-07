@@ -26,8 +26,6 @@
 #include "tokenizer.h"
 #include "parser.h"
 
-extern void ParserTrace(const wxChar* format, ...);
-
 wxCriticalSection g_ParserCritical;
 
 ParserTest::ParserTest()
@@ -108,7 +106,7 @@ void ParserTest::PrintTokenTree(Token* token)
     else
         log << token->DisplayName() << _T("\t");
     log << _T("[") << token->m_Line << _T(",") << token->m_ImplLine << _T("]");
-    ParserTrace(log);
+    CCLogger::Get()->Log(log);
 
     TokenIdxSet& ids = token->m_Children;
     for (TokenIdxSet::iterator it = ids.begin(); it != ids.end(); it++)
@@ -126,6 +124,6 @@ void ParserTest::PrintList()
         wxString log;
         log << (*it)->GetTokenKindString() << _T(" ") << (*it)->DisplayName() << _T("\t[") << (*it)->m_Line;
         log << _T(",") << (*it)->m_ImplLine << _T("]");
-        ParserTrace(log);
+        CCLogger::Get()->Log(log);
     }
 }

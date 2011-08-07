@@ -19,6 +19,7 @@
 
 #include "frame.h"
 #include "finddlg.h"
+#include "token.h"
 
 //(*InternalHeaders(Frame)
 #include <wx/settings.h>
@@ -38,6 +39,8 @@ extern wxArrayString     s_includeDirs;
 extern wxArrayString     s_filesParsed;
 extern wxBusyInfo*       s_busyInfo;
 
+int idCCLogger = wxNewId();
+
 BEGIN_EVENT_TABLE(Frame, wxFrame)
     //(*EventTable(Frame)
     //*)
@@ -46,6 +49,7 @@ BEGIN_EVENT_TABLE(Frame, wxFrame)
     EVT_FIND_REPLACE(wxID_ANY, Frame::OnFindDialog)
     EVT_FIND_REPLACE_ALL(wxID_ANY, Frame::OnFindDialog)
     EVT_FIND_CLOSE(wxID_ANY, Frame::OnFindDialog)
+    EVT_MENU(idCCLogger, Frame::OnCCLogger)
 END_EVENT_TABLE()
 
 Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
@@ -122,6 +126,7 @@ Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
     Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
     //*)
 
+    CCLogger::Get()->Init(this, idCCLogger, idCCLogger);
     m_StatuBar->SetStatusText(_("Ready!"));
 }
 
@@ -317,4 +322,24 @@ void Frame::OnFindDialog(wxFindDialogEvent& event)
 void Frame::OnMenuReloadSelected(wxCommandEvent& event)
 {
     Start(m_LastFile);
+}
+
+void Frame::OnCCLogger(wxCommandEvent& event)
+{
+    wxString log(event.GetString());
+    for (size_t i = 0; i < log.Len(); ++i) // Convert '\r' to "\r", '\n' to "\n"
+    {
+        if (log.GetChar(i) == _T('\r'))
+        {
+            log.SetChar(i, _T('\\'));
+            log.insert(++i, 1, _T('r'));
+        }
+        else if (log.GetChar(i) == _T('\n'))
+        {
+            log.SetChar(i, _T('\\'));
+            log.insert(++i, 1, _T('n'));
+        }
+    }
+
+    Log(log);
 }

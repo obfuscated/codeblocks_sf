@@ -47,6 +47,7 @@ private:
     void OnMenuReloadSelected(wxCommandEvent& event);
     //*)
     void OnFindDialog(wxFindDialogEvent& event);
+    void OnCCLogger(wxCommandEvent& event);
 
 private:
     //(*Declarations(Frame)

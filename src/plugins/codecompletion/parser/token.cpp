@@ -19,6 +19,8 @@ wxCriticalSection s_TokensTreeCritical;
 bool g_EnableDebugTrace = false;
 const wxString g_DebugTraceFile = wxEmptyString;
 
+std::auto_ptr<CCLogger> CCLogger::s_Inst;
+
 #define CC_TOKEN_DEBUG_OUTPUT 0
 
 #if (CC_GLOBAL_DEBUG_OUTPUT)
@@ -28,18 +30,18 @@ const wxString g_DebugTraceFile = wxEmptyString;
 
 #if CC_TOKEN_DEBUG_OUTPUT == 1
     #define TRACE(format, args...) \
-        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+        CCLogger::Get()->DebugLog(F(format, ##args))
     #define TRACE2(format, args...)
 #elif CC_TOKEN_DEBUG_OUTPUT == 2
     #define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
-                Manager::Get()->GetLogManager()->DebugLog(F(format, ##args));   \
+                CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
     #define TRACE2(format, args...) \
-        Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+        CCLogger::Get()->DebugLog(F(format, ##args))
 #else
     #define TRACE(format, args...)
     #define TRACE2(format, args...)
@@ -844,7 +846,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     {
         if (*it == idx) // that should not happen, we can not be our own descendant, but in fact that can happen with boost
         {
-            Manager::Get()->GetLogManager()->DebugLog(_T("Break out the loop to remove descendants, to avoid a crash. We can not be our own descendant!"));
+            CCLogger::Get()->DebugLog(_T("Break out the loop to remove descendants, to avoid a crash. We can not be our own descendant!"));
             break;
         }
         RemoveToken(*it);

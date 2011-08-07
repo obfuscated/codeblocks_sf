@@ -29,24 +29,25 @@
 #endif
 
 #ifdef CC_PARSER_TEST
-    extern void ParserTrace(const wxChar* format, ...);
-    #define TRACE(format, args...) ParserTrace(format , ##args)
-    #define TRACE2(format, args...)
+    #define TRACE(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
+    #define TRACE2(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
 #else
     #if CC_EXPRESSION_DEBUG_OUTPUT == 1
         #define TRACE(format, args...) \
-            Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+            CCLogger::Get()->DebugLog(F(format, ##args))
         #define TRACE2(format, args...)
     #elif CC_EXPRESSION_DEBUG_OUTPUT == 2
     #define TRACE(format, args...)                                              \
         do                                                                      \
         {                                                                       \
             if (g_EnableDebugTrace)                                             \
-                Manager::Get()->GetLogManager()->DebugLog(F(format, ##args));   \
+                CCLogger::Get()->DebugLog(F(format, ##args));                   \
         }                                                                       \
         while (false)
         #define TRACE2(format, args...) \
-            Manager::Get()->GetLogManager()->DebugLog(F(format, ##args))
+            CCLogger::Get()->DebugLog(F(format, ##args))
     #else
         #define TRACE(format, args...)
         #define TRACE2(format, args...)

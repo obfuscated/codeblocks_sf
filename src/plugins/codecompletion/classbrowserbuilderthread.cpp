@@ -144,7 +144,7 @@ void CBTreeCtrl::RemoveDoubles(const wxTreeItemId& parent)
             existing = GetPrevSibling(existing);
     }
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("RemoveDoubles took : %ld"), sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("RemoveDoubles took : %ld"), sw.Time()));
 #endif
 }
 
@@ -260,7 +260,7 @@ void* ClassBrowserBuilderThread::Entry()
     {
         // wait until the classbrowser signals
         m_Semaphore.Wait();
-//        Manager::Get()->GetLogManager()->DebugLog(F(_T(" - - - - - -")));
+//        CCLogger::Get()->DebugLog(F(_T(" - - - - - -")));
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
@@ -312,7 +312,7 @@ void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
         CBTreeData* data = (CBTreeData*)m_TreeTop->GetItemData(existing);
         if (data && data->m_Token && data->m_Token->m_TokenKind == tkNamespace)
         {
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Auto-expanding: ") + data->m_Token->m_Name));
+//            CCLogger::Get()->DebugLog(F(_T("Auto-expanding: ") + data->m_Token->m_Name));
             m_TreeTop->Expand(existing);
             ExpandNamespaces(existing); // recurse
         }
@@ -346,13 +346,13 @@ void ClassBrowserBuilderThread::BuildTree()
     m_ExpandedVect.clear();
     SaveExpandedItems(m_TreeTop, root, 0);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 
     SaveSelectedItem();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 
@@ -365,19 +365,19 @@ void ClassBrowserBuilderThread::BuildTree()
     m_TreeTop->Freeze();
 
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     RemoveInvalidNodes(m_TreeTop, root);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     if (m_Options.treeMembers)
     {
         RemoveInvalidNodes(m_TreeBottom, m_TreeBottom->GetRootItem());
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     }
@@ -385,7 +385,7 @@ void ClassBrowserBuilderThread::BuildTree()
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 
@@ -399,13 +399,13 @@ void ClassBrowserBuilderThread::BuildTree()
 
     CollapseItem(root);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     // Bottleneck: Takes ~4 secs on C::B workspace:
     m_TreeTop->Expand(root);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 #endif // CC_NO_COLLAPSE_ITEM
@@ -414,18 +414,18 @@ void ClassBrowserBuilderThread::BuildTree()
     if (platform::gtk)
         ExpandItem(root);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     ExpandSavedItems(m_TreeTop, root, 0);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     // Bottleneck: Takes ~4 secs on C::B workspace:
     SelectSavedItem();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 
@@ -433,32 +433,32 @@ void ClassBrowserBuilderThread::BuildTree()
     {
         m_TreeBottom->Thaw();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
         m_TreeBottom->Show();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     }
 
     ExpandNamespaces(m_TreeTop->GetRootItem());
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
 
     m_TreeTop->Thaw();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
     // Bottleneck: Takes ~4 secs on C::B workspace:
     m_TreeTop->Show();
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("BuildTree took : %ld ms in total"),sw_total.Time()));
+    CCLogger::Get()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("BuildTree took : %ld ms in total"),sw_total.Time()));
 #endif
 }
 
@@ -564,7 +564,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
                 }
                 else
                 {
-//                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
+//                    CCLogger::Get()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
                     wxTreeItemId next = tree->GetPrevSibling(existing);
                     tree->Delete(existing);
                     existing = next;
@@ -630,7 +630,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
         parentToken = m_TokensTree->at(parentTokenIdx);
         if (!parentToken)
         {
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Token not found?!?")));
+//            CCLogger::Get()->DebugLog(F(_T("Token not found?!?")));
             return false;
         }
         tokens = &parentToken->m_Children;
@@ -749,7 +749,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
     tree->SortChildren(parent);
 //    tree->RemoveDoubles(parent);
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d nodes"), count));
+    CCLogger::Get()->DebugLog(F(_T("Added %d nodes"), count));
 #endif
     return count != 0;
 }
@@ -822,17 +822,17 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
 #endif
         tree->Freeze();
 #ifdef CC_BUILDTREE_MEASURING
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->Freeze() took : %ld ms"),sw.Time()));
+        CCLogger::Get()->DebugLog(F(_T("tree->Freeze() took : %ld ms"),sw.Time()));
         sw.Start();
 #endif
         tree->DeleteAllItems();
 #ifdef CC_BUILDTREE_MEASURING
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->DeleteAllItems() took : %ld ms"),sw.Time()));
+        CCLogger::Get()->DebugLog(F(_T("tree->DeleteAllItems() took : %ld ms"),sw.Time()));
         sw.Start();
 #endif
         node = tree->AddRoot(_T("Members")); // not visible, so don't translate
 #ifdef CC_BUILDTREE_MEASURING
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->AddRoot() took : %ld ms"),sw.Time()));
+        CCLogger::Get()->DebugLog(F(_T("tree->AddRoot() took : %ld ms"),sw.Time()));
 #endif
     }
 
@@ -1059,9 +1059,9 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
         AddMembersOf(m_TreeTop, item);
     }
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms"),sw.Time()));
 #endif
-//    Manager::Get()->GetLogManager()->DebugLog(F(_("E: %d items"), m_TreeTop->GetCount()));
+//    CCLogger::Get()->DebugLog(F(_("E: %d items"), m_TreeTop->GetCount()));
 
     if (m_initDone)
         m_BuildMutex.Unlock();
@@ -1081,7 +1081,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
     m_TreeTop->DeleteChildren(item);
 #endif
     m_TreeTop->SetItemHasChildren(item);
-//    Manager::Get()->GetLogManager()->DebugLog(F(_("C: %d items"), m_TreeTop->GetCount()));
+//    CCLogger::Get()->DebugLog(F(_("C: %d items"), m_TreeTop->GetCount()));
     if (m_initDone)
         m_BuildMutex.Unlock();
 }
@@ -1102,9 +1102,9 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     CBTreeCtrl* tree = (m_Options.treeMembers) ? m_TreeBottom : m_TreeTop;
     if ( !(m_Options.displayFilter == bdfFile && m_ActiveFilename.IsEmpty()))
         AddMembersOf(tree, item);
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Select ") + m_TreeTop->GetItemText(item)));
+//    CCLogger::Get()->DebugLog(F(_T("Select ") + m_TreeTop->GetItemText(item)));
 #ifdef CC_BUILDTREE_MEASURING
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("SelectItem (internally) took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("SelectItem (internally) took : %ld ms"),sw.Time()));
 #endif
 }
 
