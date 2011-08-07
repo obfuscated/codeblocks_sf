@@ -1704,30 +1704,6 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
     }
 }
 
-const wxString& NativeParser::GetCodeCompletionItems()
-{
-    m_CCItems.Clear();
-
-    TokenIdxSet result;
-    int count = MarkItemsByAI(result);
-    if (count)
-    {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        TokensTree* tokens = m_Parser->GetTokensTree();
-        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
-        {
-            Token* token = tokens->at(*it);
-            if (!token)
-                continue;
-            if (!m_CCItems.IsEmpty())
-                m_CCItems << _T(";");
-            m_CCItems << token->m_Name << token->GetFormattedArgs();//" " << token->m_Filename << ":" << token->m_Line;
-        }
-    }
-
-    return m_CCItems;
-}
-
 namespace
 {
 // Finds the position of the opening parenthesis marking the beginning of the params.

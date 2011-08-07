@@ -154,14 +154,11 @@ public:
     /** Return true if use one Parser per whole workspace */
     bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
 
-    /** the function list below used to support Symbol browser and codecompletion UI
+    /** Used to support Symbol browser and codecompletion UI
      *  Image list is used to initialize the symbol browser tree node image.
      */
     wxImageList* GetImageList() { return m_ImageList; }
     int GetTokenKindImage(Token* token);
-    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
-    void SetTokenKindImage(int kind, const wxIcon& icon);
 
     /** Get the implementation file path if the input is a header file. or Get the header file path
      * if the input is an implementation file.
@@ -237,9 +234,6 @@ public:
     size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool isPrefix = true,
                          bool caseSensitive = false, int caretPos = -1);
 
-    /** Collect the suggestion list items, internally it call MarkItemsByAI() */
-    const wxString& GetCodeCompletionItems();
-
     /** Returns the start and end of the calltip highlight region. */
     void GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas);
 
@@ -270,26 +264,6 @@ public:
     /** project search path is used for auto completion for #include <> */
     wxArrayString& GetProjectSearchDirs(cbProject* project);
 
-    /** returns the editor's position where the current function scope starts.
-     * optionally, returns the function's namespace (ends in double-colon ::) and name and token
-     * @param searchData search data struct pointer
-     * @param nameSpace get the namespace modifier
-     * @param procName get the function name
-     * @param functionToken get the token of current function
-     * @param caretPos caret position in cbeditor
-     * @return current function line number
-     */
-    int FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace = 0L, wxString* procName = 0L,
-                                 Token** functionToken = 0L, int caretPos = -1);
-
-    /** return all the tokens matching the current function(hopefully, just one)
-     * @param editor editor pointer
-     * @param result output result containing all the Token index
-     * @param caretPos -1 if the current caret position is used.
-     * @return number of result Tokens
-     */
-    size_t FindCurrentFunctionToken(ccSearchData* searchData, TokenIdxSet& result, int caretPos = -1);
-
     // The function below is used to manage symbols browser
     /** return active class browser pointer*/
     ClassBrowser* GetClassBrowser() const { return m_ClassBrowser; }
@@ -299,11 +273,6 @@ public:
     void RemoveClassBrowser(bool appShutDown = false);
     /** update the class browser tree*/
     void UpdateClassBrowser();
-    /** set the class browser view mode*/
-    void SetCBViewMode(const BrowserViewMode& mode);
-
-    /** Read project CC options when a C::B project is loading */
-    void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
 protected:
     /** When a Parser is created, we need a full parsing stage including:
@@ -334,8 +303,41 @@ protected:
     /** Get cbProject and Parser pointer, according to the current active editor*/
     std::pair<cbProject*, Parser*> GetParserInfoByCurrentEditor();
 
+    /** Used to support Symbol browser and codecompletion UI
+     *  Image list is used to initialize the symbol browser tree node image.
+     */
+    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
+    void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
+    void SetTokenKindImage(int kind, const wxIcon& icon);
+
+    /** returns the editor's position where the current function scope starts.
+     * optionally, returns the function's namespace (ends in double-colon ::) and name and token
+     * @param searchData search data struct pointer
+     * @param nameSpace get the namespace modifier
+     * @param procName get the function name
+     * @param functionToken get the token of current function
+     * @param caretPos caret position in cbeditor
+     * @return current function line number
+     */
+    int FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace = 0L, wxString* procName = 0L,
+                                 Token** functionToken = 0L, int caretPos = -1);
+
+    /** return all the tokens matching the current function(hopefully, just one)
+     * @param editor editor pointer
+     * @param result output result containing all the Token index
+     * @param caretPos -1 if the current caret position is used.
+     * @return number of result Tokens
+     */
+    size_t FindCurrentFunctionToken(ccSearchData* searchData, TokenIdxSet& result, int caretPos = -1);
+
+    /** set the class browser view mode*/
+    void SetCBViewMode(const BrowserViewMode& mode);
+
 private:
     friend class CodeCompletion;
+
+    /** Read project CC options when a C::B project is loading */
+    void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
     /** Start an Artificial Intelligence search algorithm to gather all the matching tokens.
      * The actual AI is in FindAIMatches() below.
