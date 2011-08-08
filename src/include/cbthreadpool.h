@@ -139,6 +139,7 @@ class DLLIMPORT cbThreadPool
     int m_concurrentThreadsSchedule; // if we cannot apply the new value of concurrent threads, keep it here
     WorkerThreadsArray m_threads; // the working threads are stored here
     TasksQueue m_tasksQueue; // and the pending tasks here
+    bool m_taskAdded; // true if any task added
 
     int m_workingThreads; // how many working threads are running a task
 
@@ -186,6 +187,7 @@ inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThr
   m_concurrentThreads(-1),
   m_stackSize(stackSize),
   m_concurrentThreadsSchedule(0),
+  m_taskAdded(false),
   m_workingThreads(0),
   m_semaphore(new wxSemaphore)
 {
