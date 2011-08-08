@@ -558,7 +558,10 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 
 void NativeParser::UpdateClassBrowser()
 {
-    if (m_ClassBrowser && m_Parser->Done() && !Manager::IsAppShuttingDown())
+    if (   m_ClassBrowser
+        && m_Parser != m_TempParser
+        && m_Parser->Done()
+        && !Manager::IsAppShuttingDown())
     {
         CCLogger::Get()->DebugLog(_T("Updating class browser..."));
         m_ClassBrowser->UpdateView();
