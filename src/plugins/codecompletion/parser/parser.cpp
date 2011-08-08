@@ -168,59 +168,27 @@ private:
     cbProject& m_Project;
 };
 
-Parser::Parser(wxEvtHandler* parent, cbProject* project) :
-    m_Parent(parent),
-    m_Project(project),
-    m_UsingCache(false),
-    m_Pool(this, wxNewId(), 1, 2 * 1024 * 1024), // in the meanwhile it'll have to be forced to 1
-    m_IsPriority(false),
-    m_NeedsReparse(false),
-    m_IsFirstBatch(false),
-    m_IsParsing(false),
-    m_Timer(this, wxNewId()),
-    m_BatchTimer(this, wxNewId()),
-    m_StopWatchRunning(false),
-    m_LastStopWatchTime(0),
-    m_IgnoreThreadEvents(true),
-    m_IsBatchParseDone(false),
-    m_ParsingType(ptCreateParser),
-    m_NeedMarkFileAsLocal(true)
+ParserBase::ParserBase()
 {
     m_TokensTree = new TokensTree;
     m_TempTokensTree = new TokensTree;
     ReadOptions();
-    ConnectEvents();
 }
 
-Parser::~Parser()
+ParserBase::~ParserBase()
 {
-    DisconnectEvents();
-    TerminateAllThreads();
-
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
     Delete(m_TokensTree);
     Delete(m_TempTokensTree);
-
-    if (s_CurrentParser == this)
-        s_CurrentParser = nullptr;
 }
 
-void Parser::ConnectEvents()
+size_t ParserBase::GetFilesCount()
 {
-    Connect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
-            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
-    Connect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
-    Connect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    return m_TokensTree->m_FilesMap.size();
 }
 
-void Parser::DisconnectEvents()
-{
-    Disconnect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
-               (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
-    Disconnect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
-    Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
-}
-
-void Parser::ReadOptions()
+void ParserBase::ReadOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -235,8 +203,6 @@ void Parser::ReadOptions()
         cfg->Write(_T("/want_preprocessor"),             true);
         cfg->Write(_T("/parse_complex_macros"),          true);
     }
-
-    //m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile
 
     // Page "Code Completion"
     m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"),                true);
@@ -259,7 +225,7 @@ void Parser::ReadOptions()
     m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
 }
 
-void Parser::WriteOptions()
+void ParserBase::WriteOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -273,7 +239,6 @@ void Parser::WriteOptions()
     cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
     cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
     cfg->Write(_T("/parse_complex_macros"),          m_Options.parseComplexMacros);
-    cfg->Write(_T("/max_threads"),              (int)GetMaxThreads());
 
     // Page "Symbol browser"
     cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
@@ -285,6 +250,225 @@ void Parser::WriteOptions()
     cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
 }
 
+void ParserBase::AddIncludeDir(const wxString& dir)
+{
+    if (dir.IsEmpty())
+        return;
+
+    wxString base = dir;
+    if (base.Last() == wxFILE_SEP_PATH)
+        base.RemoveLast();
+    if (!wxDir::Exists(base))
+    {
+        TRACE(_T("AddIncludeDir() : Directory %s does not exist?!"), base.wx_str());
+        return;
+    }
+
+    if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
+    {
+        TRACE(_T("AddIncludeDir() : Adding %s"), base.wx_str());
+        m_IncludeDirs.Add(base);
+    }
+}
+
+wxString ParserBase::FindFirstFileInIncludeDirs(const wxString& file)
+{
+    wxString FirstFound = m_GlobalIncludes.GetItem(file);
+    if (FirstFound.IsEmpty())
+    {
+        wxArrayString FoundSet = FindFileInIncludeDirs(file,true);
+        if (FoundSet.GetCount())
+        {
+            FirstFound = UnixFilename(FoundSet[0]);
+            m_GlobalIncludes.AddItem(file, FirstFound);
+        }
+    }
+    return FirstFound;
+}
+
+wxArrayString ParserBase::FindFileInIncludeDirs(const wxString& file, bool firstonly)
+{
+    wxArrayString FoundSet;
+    for (size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
+    {
+        wxString base = m_IncludeDirs[idxSearch];
+        wxFileName tmp = file;
+        NormalizePath(tmp,base);
+        wxString fullname = tmp.GetFullPath();
+        if (wxFileExists(fullname))
+        {
+            FoundSet.Add(fullname);
+            if (firstonly)
+                break;
+        }
+    }
+
+    TRACE(_T("FindFileInIncludeDirs() : Searching %s"), file.wx_str());
+    TRACE(_T("FindFileInIncludeDirs() : Found %d"), FoundSet.GetCount());
+
+    return FoundSet;
+}
+
+wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
+{
+    wxString fullname;
+    if (isGlobal)
+    {
+        fullname = FindFirstFileInIncludeDirs(tgt);
+        if (fullname.IsEmpty())
+        {
+            // not found; check this case:
+            //
+            // we had entered the previous file like this: #include <gl/gl.h>
+            // and it now does this: #include "glext.h"
+            // glext.h was correctly not found above but we can now search
+            // for gl/glext.h.
+            // if we still not find it, it's not there. A compilation error
+            // is imminent (well, almost - I guess the compiler knows a little better ;).
+            wxString base = wxFileName(src).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            fullname = FindFirstFileInIncludeDirs(base + tgt);
+        }
+    }
+
+    // NOTE: isGlobal is always true. The following code never executes...
+
+    else // local files are more tricky, since they depend on two filenames
+    {
+        wxFileName fname(tgt);
+        wxFileName source(src);
+        if (NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
+        {
+            fullname = fname.GetFullPath();
+            if (!wxFileExists(fullname))
+                fullname.Clear();
+        }
+    }
+
+    return fullname;
+}
+
+
+Token* ParserBase::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
+{
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    int result = m_TokensTree->TokenExists(name, -1, kindMask);
+    return m_TokensTree->at(result);
+}
+
+Token* ParserBase::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask)
+{
+    if (!parent)
+        return FindTokenByName(name, false, kindMask);
+
+    s_TokensTreeCritical.Enter();
+    Token* result = m_TokensTree->at(m_TokensTree->TokenExists(name, parent->GetSelf(), kindMask));
+    if (!result && useInheritance)
+    {
+        TokenIdxSet::iterator it;
+        m_TokensTree->RecalcInheritanceChain(parent);
+        for (it = parent->m_DirectAncestors.begin(); it != parent->m_DirectAncestors.end(); ++it)
+        {
+            Token* ancestor = m_TokensTree->at(*it);
+            s_TokensTreeCritical.Leave();
+            result = FindChildTokenByName(ancestor, name, true, kindMask);
+            s_TokensTreeCritical.Enter();
+            if (result)
+                break;
+        }
+    }
+    s_TokensTreeCritical.Leave();
+    return result;
+}
+
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
+size_t ParserBase::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix)
+{
+    result.clear();
+    TokenIdxSet tmpresult;
+    if (!m_TokensTree->FindMatches(s, tmpresult, caseSensitive, is_prefix))
+        return 0;
+
+    TokenIdxSet::iterator it;
+    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
+    {
+        Token* token = m_TokensTree->at(*it);
+        if (token)
+        //result.push_back(token);
+        result.insert(*it);
+    }
+    return result.size();
+}
+
+// No critical section needed here:
+// All functions that call this, already entered a critical section.
+size_t ParserBase::FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask)
+{
+    result.clear();
+    wxString file = UnixFilename(fileName);
+    TokenIdxSet tmpresult;
+
+    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), file.wx_str());
+    if ( !m_TokensTree->FindTokensInFile(file, tmpresult, kindMask) )
+        return 0;
+
+    for (TokenIdxSet::iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
+    {
+        Token* token = m_TokensTree->at(*it);
+        if (token)
+            result.insert(*it);
+    }
+    return result.size();
+}
+
+Parser::Parser(wxEvtHandler* parent, cbProject* project) :
+    m_Parent(parent),
+    m_Project(project),
+    m_UsingCache(false),
+    m_Pool(this, wxNewId(), 1, 2 * 1024 * 1024), // in the meanwhile it'll have to be forced to 1
+    m_IsParsing(false),
+    m_IsPriority(false),
+    m_NeedsReparse(false),
+    m_IsFirstBatch(false),
+    m_Timer(this, wxNewId()),
+    m_BatchTimer(this, wxNewId()),
+    m_StopWatchRunning(false),
+    m_LastStopWatchTime(0),
+    m_IgnoreThreadEvents(true),
+    m_IsBatchParseDone(false),
+    m_ParsingType(ptCreateParser),
+    m_NeedMarkFileAsLocal(true)
+{
+    ConnectEvents();
+}
+
+Parser::~Parser()
+{
+    wxCriticalSectionLocker locker(s_ParserCritical);
+
+    DisconnectEvents();
+    TerminateAllThreads();
+
+    if (s_CurrentParser == this)
+        s_CurrentParser = nullptr;
+}
+
+void Parser::ConnectEvents()
+{
+    Connect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+            (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
+    Connect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Connect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+}
+
+void Parser::DisconnectEvents()
+{
+    Disconnect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+               (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
+    Disconnect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+}
+
 bool Parser::CacheNeedsUpdate()
 {
     if (m_UsingCache)
@@ -293,12 +477,6 @@ bool Parser::CacheNeedsUpdate()
         return m_TokensTree->m_Modified;
     }
     return true;
-}
-
-unsigned int Parser::GetFilesCount()
-{
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    return m_TokensTree->m_FilesMap.size();
 }
 
 bool Parser::Done()
@@ -337,58 +515,6 @@ wxString Parser::NotDoneReason()
       reason += _T("\n- thread pool is not done yet");
 
     return reason;
-}
-
-Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
-{
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    int result = m_TokensTree->TokenExists(name, -1, kindMask);
-    return m_TokensTree->at(result);
-}
-
-Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask)
-{
-    if (!parent)
-        return FindTokenByName(name, false, kindMask);
-
-    s_TokensTreeCritical.Enter();
-    Token* result = m_TokensTree->at(m_TokensTree->TokenExists(name, parent->GetSelf(), kindMask));
-    if (!result && useInheritance)
-    {
-        TokenIdxSet::iterator it;
-        m_TokensTree->RecalcInheritanceChain(parent);
-        for (it = parent->m_DirectAncestors.begin(); it != parent->m_DirectAncestors.end(); ++it)
-        {
-            Token* ancestor = m_TokensTree->at(*it);
-            s_TokensTreeCritical.Leave();
-            result = FindChildTokenByName(ancestor, name, true, kindMask);
-            s_TokensTreeCritical.Enter();
-            if (result)
-                break;
-        }
-    }
-    s_TokensTreeCritical.Leave();
-    return result;
-}
-
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
-size_t Parser::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix)
-{
-    result.clear();
-    TokenIdxSet tmpresult;
-    if (!m_TokensTree->FindMatches(s, tmpresult, caseSensitive, is_prefix))
-        return 0;
-
-    TokenIdxSet::iterator it;
-    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
-    {
-        Token* token = m_TokensTree->at(*it);
-        if (token)
-        //result.push_back(token);
-        result.insert(*it);
-    }
-    return result.size();
 }
 
 // No critical section needed here:
@@ -845,68 +971,33 @@ void Parser::TerminateAllThreads()
         wxMilliSleep(1);
 }
 
-void Parser::AddIncludeDir(const wxString& dir)
-{
-    if (dir.IsEmpty())
-        return;
-
-    wxString base = dir;
-    if (base.Last() == wxFILE_SEP_PATH)
-        base.RemoveLast();
-    if (!wxDir::Exists(base))
-    {
-        TRACE(_T("AddIncludeDir() : Directory %s does not exist?!"), base.wx_str());
-        return;
-    }
-
-    if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
-    {
-        TRACE(_T("AddIncludeDir() : Adding %s"), base.wx_str());
-        m_IncludeDirs.Add(base);
-    }
-}
-
 void Parser::AddPredefinedMacros(const wxString& defs)
 {
     m_PredefinedMacros << defs;
 }
 
-wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
+bool Parser::ForceStartParsing()
 {
-    wxString FirstFound = m_GlobalIncludes.GetItem(file);
-    if (FirstFound.IsEmpty())
+    if (!m_IsParsing && !m_BatchTimer.IsRunning() && !Done())
     {
-        wxArrayString FoundSet = FindFileInIncludeDirs(file,true);
-        if (FoundSet.GetCount())
-        {
-            FirstFound = UnixFilename(FoundSet[0]);
-            m_GlobalIncludes.AddItem(file, FirstFound);
-        }
+        m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
+        if (m_ParsingType == ptUndefined)
+            m_ParsingType = ptAddFileToParser;
+        return true;
     }
-    return FirstFound;
+    else
+        return false;
 }
 
-wxArrayString Parser::FindFileInIncludeDirs(const wxString& file, bool firstonly)
+bool Parser::SetParsingProject(cbProject* project)
 {
-    wxArrayString FoundSet;
-    for (size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
+    if (m_IsParsing)
+        return false;
+    else
     {
-        wxString base = m_IncludeDirs[idxSearch];
-        wxFileName tmp = file;
-        NormalizePath(tmp,base);
-        wxString fullname = tmp.GetFullPath();
-        if (wxFileExists(fullname))
-        {
-            FoundSet.Add(fullname);
-            if (firstonly)
-                break;
-        }
+        m_Project = project;
+        return true;
     }
-
-    TRACE(_T("FindFileInIncludeDirs() : Searching %s"), file.wx_str());
-    TRACE(_T("FindFileInIncludeDirs() : Found %d"), FoundSet.GetCount());
-
-    return FoundSet;
 }
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
@@ -995,44 +1086,6 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_ParsingType = ptUndefined;
         s_CurrentParser = nullptr;
     }
-}
-
-wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
-{
-    wxString fullname;
-    if (isGlobal)
-    {
-        fullname = FindFirstFileInIncludeDirs(tgt);
-        if (fullname.IsEmpty())
-        {
-            // not found; check this case:
-            //
-            // we had entered the previous file like this: #include <gl/gl.h>
-            // and it now does this: #include "glext.h"
-            // glext.h was correctly not found above but we can now search
-            // for gl/glext.h.
-            // if we still not find it, it's not there. A compilation error
-            // is imminent (well, almost - I guess the compiler knows a little better ;).
-            wxString base = wxFileName(src).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            fullname = FindFirstFileInIncludeDirs(base + tgt);
-        }
-    }
-
-    // NOTE: isGlobal is always true. The following code never executes...
-
-    else // local files are more tricky, since they depend on two filenames
-    {
-        wxFileName fname(tgt);
-        wxFileName source(src);
-        if (NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
-        {
-            fullname = fname.GetFullPath();
-            if (!wxFileExists(fullname))
-                fullname.Clear();
-        }
-    }
-
-    return fullname;
 }
 
 void Parser::DoParseFile(const wxString& filename, bool isGlobal)
@@ -1182,27 +1235,6 @@ bool Parser::ReparseModifiedFiles()
         m_ParsingType = ptReparseFile;
 
     return true;
-}
-
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
-size_t Parser::FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask)
-{
-    result.clear();
-    wxString file = UnixFilename(fileName);
-    TokenIdxSet tmpresult;
-
-    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), file.wx_str());
-    if ( !m_TokensTree->FindTokensInFile(file, tmpresult, kindMask) )
-        return 0;
-
-    for (TokenIdxSet::iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
-    {
-        Token* token = m_TokensTree->at(*it);
-        if (token)
-            result.insert(*it);
-    }
-    return result.size();
 }
 
 bool Parser::IsFileParsed(const wxString& filename)

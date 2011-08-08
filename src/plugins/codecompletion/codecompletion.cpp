@@ -1208,7 +1208,7 @@ wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool for
     if (project)
         prjPath = project->GetCommonTopLevelPath();
 
-    Parser* parser = m_NativeParser.GetParserByProject(project);
+    ParserBase* parser = m_NativeParser.GetParserByProject(project);
     if (!parser)
         return incDirs;
 

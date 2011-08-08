@@ -27,7 +27,7 @@ class cbProject;
 class ClassBrowser;
 class Token;
 
-WX_DECLARE_HASH_MAP(cbProject*, Parser*, wxPointerHash, wxPointerEqual, ParsersMap);
+WX_DECLARE_HASH_MAP(cbProject*, ParserBase*, wxPointerHash, wxPointerEqual, ParsersMap);
 WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, ParsersFilenameMap);
 
 typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
@@ -107,15 +107,15 @@ public:
     ~NativeParser();
 
     /** return a reference to the currently active Parser object */
-    Parser& GetParser() { return *m_Parser; }
+    ParserBase& GetParser() { return *m_Parser; }
     /** return a reference to the temporary Parser object*/
-    Parser& GetTempParser() { return *m_TempParser; }
+    ParserBase& GetTempParser() { return *m_TempParser; }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
      * @return a pointer to parser object
      */
-    Parser* GetParserByProject(cbProject* project);
+    ParserBase* GetParserByProject(cbProject* project);
 
     /** return the Parser pointer associated with the input file
      * Internally this function first find the project containing the input file,
@@ -123,13 +123,13 @@ public:
      * @param filename filename with full path.
      * @return Parser pointer
      */
-    Parser* GetParserByFilename(const wxString& filename);
+    ParserBase* GetParserByFilename(const wxString& filename);
 
     /** return the C::B project associated with Parser pointer
      * @param parser Parser pointer
      * @return C::B Project pointer
      */
-    cbProject* GetProjectByParser(Parser* parser);
+    cbProject* GetProjectByParser(ParserBase* parser);
 
     /** return the C::B project containing the filename
      * The function first try to match the filename in the active project, next to match other
@@ -178,7 +178,7 @@ public:
      * @param project C::B project
      * @return Parser pointer of the project.
      */
-    Parser* CreateParser(cbProject* project);
+    ParserBase* CreateParser(cbProject* project);
 
     /** delete the Parser object for the input project
      * @param project C::B project.
@@ -197,7 +197,7 @@ public:
      * @param project C::B project
      * @param filename filename with full path in the C::B project
      */
-    bool AddFileToParser(cbProject* project, const wxString& filename, Parser* parser = nullptr);
+    bool AddFileToParser(cbProject* project, const wxString& filename, ParserBase* parser = nullptr);
 
     /** remove a file from C::B project and Parser
      * @param project C::B project
@@ -279,17 +279,17 @@ protected:
      * 1, parse the priority header files firstly.
      * 2, parse all the other project files.
      */
-    bool DoFullParsing(cbProject* project, Parser* parser);
+    bool DoFullParsing(cbProject* project, ParserBase* parser);
 
     /** Switch parser object according the current active editor and filename */
-    bool SwitchParser(cbProject* project, Parser* parser);
+    bool SwitchParser(cbProject* project, ParserBase* parser);
 
     /** Set a new Parser as the active Parser
      * Set the active parser pointer (m_Parser member variable)
      * update the ClassBrowser's Parser pointer
      * re-fresh the symbol browser tree.
      */
-    void SetParser(Parser* parser);
+    void SetParser(ParserBase* parser);
 
     /** Clear all Parser object*/
     void ClearParsers();
@@ -301,7 +301,7 @@ protected:
     void RemoveObsoleteParsers();
 
     /** Get cbProject and Parser pointer, according to the current active editor*/
-    std::pair<cbProject*, Parser*> GetParserInfoByCurrentEditor();
+    std::pair<cbProject*, ParserBase*> GetParserInfoByCurrentEditor();
 
     /** Used to support Symbol browser and codecompletion UI
      *  Image list is used to initialize the symbol browser tree node image.
@@ -454,13 +454,13 @@ private:
     void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
 
     /** collect the compiler default header file search directories */
-    bool AddCompilerDirs(cbProject* project, Parser* parser);
+    bool AddCompilerDirs(cbProject* project, ParserBase* parser);
 
     /** collect compiler predefined preprocessor definition */
-    bool AddCompilerPredefinedMacros(cbProject* project, Parser* parser);
+    bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
 
     /** collect project (user) defined preprocessor definition*/
-    bool AddProjectDefinedMacros(cbProject* project, Parser* parser);
+    bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
@@ -578,12 +578,12 @@ private:
     bool RemoveProjectFromParser(cbProject* project);
 
 private:
-    typedef std::pair<cbProject*, Parser*> ProjectParserPair;
+    typedef std::pair<cbProject*, ParserBase*> ProjectParserPair;
     typedef std::list<ProjectParserPair> ParserList;
 
     ParserList                   m_ParserList;
-    Parser*                      m_TempParser;
-    Parser*                      m_Parser;
+    ParserBase*                  m_TempParser;
+    ParserBase*                  m_Parser;
 
     /* CC Search Member Variables => START */
     int                          m_EditorStartWord;

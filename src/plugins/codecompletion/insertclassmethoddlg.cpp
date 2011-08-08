@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkPublic"), InsertClassMethodDlg::OnFilterChange)
 END_EVENT_TABLE()
 
-InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename) :
+InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, ParserBase* parser, const wxString& filename) :
     m_Parser(parser),
     m_Decl(true),
     m_Filename(filename)

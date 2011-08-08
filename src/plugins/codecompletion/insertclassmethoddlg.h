@@ -18,7 +18,7 @@ class wxCommandEvent;
 class InsertClassMethodDlg : public wxScrollingDialog
 {
 public:
-    InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename);
+    InsertClassMethodDlg(wxWindow* parent, ParserBase* parser, const wxString& filename);
     virtual ~InsertClassMethodDlg();
 
     wxArrayString GetCode() const; // return an array of checked methods
@@ -36,9 +36,9 @@ private:
     void OnCodeChange(wxCommandEvent& event);
     void OnFilterChange(wxCommandEvent& event);
 
-    Parser*  m_Parser;
-    bool     m_Decl;
-    wxString m_Filename;
+    ParserBase* m_Parser;
+    bool        m_Decl;
+    wxString    m_Filename;
 
     DECLARE_EVENT_TABLE();
 };

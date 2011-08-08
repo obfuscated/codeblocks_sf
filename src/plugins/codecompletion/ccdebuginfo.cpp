@@ -97,7 +97,7 @@ BEGIN_EVENT_TABLE(CCDebugInfo,wxScrollingDialog)
     //*)
 END_EVENT_TABLE()
 
-CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token) :
+CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     m_Parser(parser),
     m_Token(token)
 {

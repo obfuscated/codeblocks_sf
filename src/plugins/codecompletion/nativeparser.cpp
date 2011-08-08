@@ -92,7 +92,7 @@ NativeParser::NativeParser() :
     m_LastEditor(nullptr),
     m_ParserPerWorkspace(false)
 {
-    m_TempParser = new Parser(this, nullptr);
+    m_TempParser = new ParserBase;
     m_Parser = m_TempParser;
 
     m_ImageList = new wxImageList(16, 16);
@@ -207,7 +207,7 @@ NativeParser::~NativeParser()
     Delete(m_TempParser);
 }
 
-void NativeParser::SetParser(Parser* parser)
+void NativeParser::SetParser(ParserBase* parser)
 {
     if (m_Parser == parser)
         return;
@@ -227,7 +227,7 @@ void NativeParser::SetParser(Parser* parser)
     }
 }
 
-Parser* NativeParser::GetParserByProject(cbProject* project)
+ParserBase* NativeParser::GetParserByProject(cbProject* project)
 {
     if (m_ParserPerWorkspace)
     {
@@ -248,13 +248,13 @@ Parser* NativeParser::GetParserByProject(cbProject* project)
     return nullptr;
 }
 
-Parser* NativeParser::GetParserByFilename(const wxString& filename)
+ParserBase* NativeParser::GetParserByFilename(const wxString& filename)
 {
     cbProject* project = GetProjectByFilename(filename);
     return GetParserByProject(project);
 }
 
-cbProject* NativeParser::GetProjectByParser(Parser* parser)
+cbProject* NativeParser::GetProjectByParser(ParserBase* parser)
 {
     for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
     {
@@ -272,7 +272,7 @@ cbProject* NativeParser::GetProjectByFilename(const wxString& filename)
     cbProject* activeProject = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (activeProject)
     {
-        Parser* parser = GetParserByProject(activeProject);
+        ParserBase* parser = GetParserByProject(activeProject);
         if (   (   parser
                 && parser->IsFileParsed(filename) )
             || activeProject->GetFileByFilename(filename, false, true) )
@@ -646,7 +646,7 @@ void NativeParser::ClearParsers()
     }
 }
 
-bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
+bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
 {
     if (!parser)
         return false;
@@ -817,7 +817,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, Parser* parser)
     return true;
 }
 
-bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parser)
+bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser)
 {
     if (!parser)
         return false;
@@ -982,7 +982,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, Parser* parse
     return true;
 }
 
-bool NativeParser::AddProjectDefinedMacros(cbProject* project, Parser* parser)
+bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parser)
 {
     if (!parser)
         return false;
@@ -1113,7 +1113,7 @@ wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
     return it->second;
 }
 
-Parser* NativeParser::CreateParser(cbProject* project)
+ParserBase* NativeParser::CreateParser(cbProject* project)
 {
     if (GetParserByProject(project))
     {
@@ -1123,7 +1123,7 @@ Parser* NativeParser::CreateParser(cbProject* project)
 
     if (!m_ParserPerWorkspace || m_ParsedProjects.empty())
     {
-        Parser* parser = new Parser(this, project);
+        ParserBase* parser = new Parser(this, project);
         if (!DoFullParsing(project, parser))
         {
             CCLogger::Get()->DebugLog(_T("Full parsing failed!"));
@@ -1199,7 +1199,7 @@ bool NativeParser::DeleteParser(cbProject* project)
     return false;
 }
 
-bool NativeParser::SwitchParser(cbProject* project, Parser* parser)
+bool NativeParser::SwitchParser(cbProject* project, ParserBase* parser)
 {
     if (!parser || parser == m_Parser || GetParserByProject(project) != parser)
         return false;
@@ -1217,14 +1217,14 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
     if (CCFileTypeOf(filename) == ccftOther)
         return false;
 
-    Parser* parser = GetParserByProject(project);
+    ParserBase* parser = GetParserByProject(project);
     if (!parser)
         return false;
 
     return parser->Reparse(filename);
 }
 
-bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename, Parser* parser)
+bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename, ParserBase* parser)
 {
     if (CCFileTypeOf(filename) == ccftOther)
         return false;
@@ -1241,14 +1241,14 @@ bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename,
 
 bool NativeParser::RemoveFileFromParser(cbProject* project, const wxString& filename)
 {
-    Parser* parser = GetParserByProject(project);
+    ParserBase* parser = GetParserByProject(project);
     if (!parser)
         return false;
 
     return parser->RemoveFile(filename);
 }
 
-bool NativeParser::DoFullParsing(cbProject* project, Parser* parser)
+bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
 {
     if (!parser)
         return false;
@@ -3362,7 +3362,7 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
         CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), project
                                     ? project->GetTitle().wx_str() : _T("*NONE*")));
         {
-            std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+            std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
             if (info.second && m_Parser != info.second)
             {
                 CCLogger::Get()->DebugLog(_T("Start switch from OnParserStart::ptCreateParser"));
@@ -3394,7 +3394,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
     CCLogger::Get()->DebugLog(_("NativeParser received parser end event."));
 
-    Parser* parser = static_cast<Parser*>(event.GetEventObject());
+    ParserBase* parser = reinterpret_cast<ParserBase*>(event.GetEventObject());
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
     const ParsingType type = static_cast<ParsingType>(event.GetInt());
 
@@ -3420,7 +3420,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
                                     ? project->GetTitle().wx_str() : _T("*NONE*")));
         if (parser != m_Parser)
         {
-            std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+            std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
             if (info.second && info.second != m_Parser)
             {
                 CCLogger::Get()->DebugLog(_T("Start switch from OnParserEnd::ptReparseFile"));
@@ -3446,7 +3446,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
 void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 {
-    std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+    std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
     if (m_ParserPerWorkspace)
     {
         bool project_added = false;
@@ -3517,7 +3517,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
             RemoveFileFromParser(NULL, lastFile);
     }
 
-    Parser* parser = GetParserByProject(project);
+    ParserBase* parser = GetParserByProject(project);
     if (!parser)
     {
         CCFileType ft = CCFileTypeOf(lastFile);
@@ -3621,7 +3621,7 @@ void NativeParser::RemoveObsoleteParsers()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     const size_t maxParsers = cfg->ReadInt(_T("/max_parsers"), 5);
     wxArrayString removedProjectNames;
-    std::pair<cbProject*, Parser*> info = GetParserInfoByCurrentEditor();
+    std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
 
     while (m_ParserList.size() > maxParsers)
     {
@@ -3654,9 +3654,9 @@ void NativeParser::RemoveObsoleteParsers()
     }
 }
 
-std::pair<cbProject*, Parser*> NativeParser::GetParserInfoByCurrentEditor()
+std::pair<cbProject*, ParserBase*> NativeParser::GetParserInfoByCurrentEditor()
 {
-    std::pair<cbProject*, Parser*> info(nullptr, nullptr);
+    std::pair<cbProject*, ParserBase*> info(nullptr, nullptr);
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor && editor->GetFilename() != g_StartHereTitle)
     {
@@ -4008,7 +4008,7 @@ void NativeParser::RemoveLastFunctionChildren()
 
 void NativeParser::AddProjectToParser(cbProject* project)
 {
-    Parser* parser = GetParserByProject(project);
+    ParserBase* parser = GetParserByProject(project);
     if (parser)
         return;
 
@@ -4086,7 +4086,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
 
 bool NativeParser::RemoveProjectFromParser(cbProject* project)
 {
-    Parser* parser = GetParserByProject(project);
+    ParserBase* parser = GetParserByProject(project);
     if (!parser)
         return false;
 

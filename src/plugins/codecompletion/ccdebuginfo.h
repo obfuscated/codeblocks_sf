@@ -25,13 +25,13 @@
 #include <wx/combobox.h>
 //*)
 
-class Parser;
+class ParserBase;
 class Token;
 
 class CCDebugInfo: public wxScrollingDialog
 {
 public:
-    CCDebugInfo(wxWindow* parent, Parser* parser, Token* token);
+    CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token);
     virtual ~CCDebugInfo();
 
     void FillFiles();
@@ -184,8 +184,8 @@ protected:
     //*)
 
 private:
-    Parser* m_Parser;
-    Token*  m_Token;
+    ParserBase* m_Parser;
+    Token*      m_Token;
 
     DECLARE_EVENT_TABLE()
 };

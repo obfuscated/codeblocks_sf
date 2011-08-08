@@ -34,7 +34,7 @@ protected:
 private:
     cbProject*    m_Project;
     NativeParser* m_NativeParser;
-    Parser*       m_Parser;
+    ParserBase*   m_Parser;
     wxArrayString m_OldPaths;
 
     DECLARE_EVENT_TABLE()

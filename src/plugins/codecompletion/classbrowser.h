@@ -32,9 +32,9 @@ public:
     // class destructor
     virtual ~ClassBrowser();
     const wxTreeCtrl* GetTree() { return m_Tree; }
-    void SetParser(Parser* parser);
-    const Parser& GetParser(){ return *m_Parser; }
-    const Parser* GetParserPtr() { return m_Parser; }
+    void SetParser(ParserBase* parser);
+    const ParserBase& GetParser(){ return *m_Parser; }
+    const ParserBase* GetParserPtr() { return m_Parser; }
     void UpdateView(bool checkHeaderSwap = false);
     void UpdateSash();
 
@@ -72,7 +72,7 @@ private:
     CBTreeCtrl*                m_TreeBottom;
     wxComboBox*                m_Search;
     wxTreeCtrl*                m_TreeForPopupMenu;
-    Parser*                    m_Parser;
+    ParserBase*                m_Parser;
 
     // filtering
     wxString                   m_ActiveFilename;

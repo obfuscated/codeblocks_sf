@@ -166,7 +166,7 @@ ClassBrowser::~ClassBrowser()
     }
 }
 
-void ClassBrowser::SetParser(Parser* parser)
+void ClassBrowser::SetParser(ParserBase* parser)
 {
     if (m_Parser == parser)
         return;
