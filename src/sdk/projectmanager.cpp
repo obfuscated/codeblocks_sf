@@ -1479,7 +1479,7 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     {
         project->BeginAddFiles();
 
-        wxArrayString addedFiles; // to know which files were added succesfully
+        wxArrayString addedFiles; // to know which files were added successfully
         for (unsigned int i = 0; i < filelist.GetCount(); ++i)
         {
             if (DoAddFileToProject(filelist[i], project, targets) != 0)

@@ -311,7 +311,10 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             filename.Clear();
             break;
     }
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateTargetFilename: input '%s', output '%s'"), fname.GetFullPath().c_str(), filename.c_str()));
+
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GenerateTargetFilename got %s and returns: '%s'"), fname.GetFullPath().wx_str(), filename.wx_str()));
+#endif
 }
 
 wxString CompileTargetBase::GetExecutableFilename() const
@@ -368,12 +371,19 @@ wxString CompileTargetBase::GetDynamicLibFilename()
     {
         wxString out = m_Filename;
         GenerateTargetFilename(out);
+#ifdef command_line_generation
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetDynamicLibFilename [0] returns: '%s'"), out.wx_str()));
+#endif
         return out;
     }
 
     wxFileName fname(m_Filename);
     fname.SetName(fname.GetName());
     fname.SetExt(FileFilters::DYNAMICLIB_EXT);
+
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetDynamicLibFilename [1] returns: '%s'"), fname.GetFullPath().wx_str()));
+#endif
     return fname.GetFullPath();
 }
 
@@ -387,6 +397,9 @@ wxString CompileTargetBase::GetDynamicLibImportFilename()
 
     wxFileName fname(m_ImportLibraryFilename);
 
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetDynamicLibImportFilename returns: '%s'"), fname.GetFullPath().wx_str()));
+#endif
     return fname.GetFullPath();
 }
 
@@ -400,6 +413,9 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
 
     wxFileName fname(m_DefinitionFileFilename);
 
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetDynamicLibDefFilename returns: '%s'"), fname.GetFullPath().wx_str()));
+#endif
     return fname.GetFullPath();
 }
 
@@ -419,6 +435,9 @@ wxString CompileTargetBase::GetStaticLibFilename()
     {
         wxString out = m_Filename;
         GenerateTargetFilename(out);
+#ifdef command_line_generation
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetStaticLibFilename [0] returns: '%s'"), out.wx_str()));
+#endif
         return out;
     }
 
@@ -435,6 +454,10 @@ wxString CompileTargetBase::GetStaticLibFilename()
     if (!fname.GetName().StartsWith(prefix))
         fname.SetName(prefix + fname.GetName());
     fname.SetExt(suffix);
+
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("CompileTargetBase::GetStaticLibFilename [1] returns: '%s'"), fname.GetFullPath().wx_str()));
+#endif
     return fname.GetFullPath();
 }
 

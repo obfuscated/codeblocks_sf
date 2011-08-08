@@ -77,9 +77,9 @@ class cbWorkspace
           */
         virtual void SetTitle(const wxString& title);
 
-        /** @brief Was this workspace loaded succesfully?
+        /** @brief Was this workspace loaded successfully?
           *
-          * @return True if the workspace was loaded succesfully, false if not.
+          * @return True if the workspace was loaded successfully, false if not.
           * @note Because the only way to load a workspace is through its
           * constructor, and because we don't use exceptions, this is the only
           * way to know if loading succeeded.

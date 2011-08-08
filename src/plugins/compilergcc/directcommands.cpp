@@ -155,109 +155,138 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
 {
     wxArrayString ret;
-    wxArrayString retGenerated;
+    wxArrayString ret_generated;
 
     // is it compilable?
     if (!pf->compile || pf->compilerVar.IsEmpty())
         return ret;
 
-    const pfDetails& pfd = pf->GetFileDetails(target);
-    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    Compiler* compiler = target
+                       ? CompilerFactory::GetCompiler(target->GetCompilerID())
+                       : m_pCompiler;
     if (!compiler)
         return ret;
-    wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
-    wxString ObjectDir = (compiler->GetSwitches().UseFlatObjects)?pfd.object_dir_flat_native:pfd.object_dir_native;
+
+    const pfDetails& pfd = pf->GetFileDetails(target);
+    wxString object     = (compiler->GetSwitches().UseFlatObjects)
+                        ? pfd.object_file_flat : pfd.object_file;
+    wxString object_dir = (compiler->GetSwitches().UseFlatObjects)
+                        ? pfd.object_dir_flat_native : pfd.object_dir_native;
+    // create output dir
+    if (!object_dir.IsEmpty() && !CreateDirRecursively(object_dir, 0755))
+        cbMessageBox(_("Can't create object output directory:\n") + object_dir);
 
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
 
     // create output dir
-    if (!ObjectDir.IsEmpty() && !CreateDirRecursively(ObjectDir, 0755))
-        cbMessageBox(_("Can't create object output directory ") + ObjectDir);
+    if (!object_dir.IsEmpty() && !CreateDirRecursively(object_dir, 0755))
+        cbMessageBox(_("Can't create object output directory:\n") + object_dir);
 
-    bool isResource = ft == ftResource;
-    bool isHeader = ft == ftHeader;
+    bool is_resource = ft == ftResource;
+    bool is_header   = ft == ftHeader;
 
     // allowed resources under all platforms: makes sense when cross-compiling for
     // windows under linux.
     // and anyway, if the user is dumb enough to try to compile resources without
     // having a resource compiler, (s)he deserves the upcoming build error ;)
 
-    wxString compilerCmd;
-    if (!isHeader || compiler->GetSwitches().supportsPCH)
+    wxString compiler_cmd;
+    if (!is_header || compiler->GetSwitches().supportsPCH)
     {
-        const CompilerTool& tool = compiler->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, pf->file.GetExt());
+        const CompilerTool& tool = compiler->GetCompilerTool(is_resource ? ctCompileResourceCmd : ctCompileObjectCmd, pf->file.GetExt());
 
         // does it generate other files to compile?
         for (size_t i = 0; i < pf->generatedFiles.size(); ++i)
-        {
-            AppendArray(GetCompileFileCommand(target, pf->generatedFiles[i]), retGenerated); // recurse
-        }
+            AppendArray(GetCompileFileCommand(target, pf->generatedFiles[i]), ret_generated); // recurse
 
         pfCustomBuild& pcfb = pf->customBuild[compiler->GetID()];
-        compilerCmd = pcfb.useCustomBuildCommand
-                        ? pcfb.buildCommand
-                        : tool.command;
+        compiler_cmd = pcfb.useCustomBuildCommand
+                     ? pcfb.buildCommand : tool.command;
+
         wxString source_file;
         if (compiler->GetSwitches().UseFullSourcePaths)
             source_file = UnixFilename(pfd.source_file_absolute_native);
         else
             source_file = pfd.source_file;
 
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCompileFileCommand[1]: compiler_cmd='%s', source_file='%s', object='%s', object_dir='%s'."),
+                                                compiler_cmd.wx_str(), source_file.wx_str(), object.wx_str(), object_dir.wx_str()));
+#endif
+
         // for resource files, use short from if path because if windres bug with spaces-in-paths
-        if (isResource && (compiler->GetSwitches().UseFullSourcePaths || compiler->GetSwitches().Use83Paths))
+        if (is_resource && compiler->GetSwitches().UseFullSourcePaths)
             source_file = pf->file.GetShortPath();
 
         QuoteStringIfNeeded(source_file);
-        compiler->GenerateCommandLine(compilerCmd,
-                                         target,
-                                         pf,
-                                         source_file,
-                                         Object,
-                                         pfd.object_file_flat,
-                                         pfd.dep_file);
+
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCompileFileCommand[1]: source_file='%s'."),
+                                                source_file.wx_str()));
+#endif
+
+        compiler->GenerateCommandLine(compiler_cmd,
+                                      target,
+                                      pf,
+                                      source_file,
+                                      object,
+                                      pfd.object_file_flat,
+                                      pfd.dep_file);
     }
 
-    if (!compilerCmd.IsEmpty())
+    if (!compiler_cmd.IsEmpty())
     {
         switch (compiler->GetSwitches().logging)
         {
             case clogFull:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compiler_cmd);
                 break;
 
             case clogSimple:
-                if (isHeader)
-                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Precompiling header: ") + pfd.source_file_native);
+                if (is_header)
+                    ret.Add(  wxString(COMPILER_SIMPLE_LOG)
+                            + _("Precompiling header: ")
+                            + pfd.source_file_native );
                 else
-                    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + pfd.source_file_native);
+                    ret.Add(  wxString(COMPILER_SIMPLE_LOG)
+                            + _("Compiling: ")
+                            + pfd.source_file_native );
                 break;
 
             default:
                 break;
         }
-        AddCommandsToArray(compilerCmd, ret);
-        if (isHeader)
+
+        AddCommandsToArray(compiler_cmd, ret);
+
+        if (is_header)
             ret.Add(wxString(COMPILER_WAIT));
-        if (retGenerated.GetCount())
+
+        if (ret_generated.GetCount())
         {
             // not only append commands for (any) generated files to be compiled
             // but also insert a "pause" to allow this file to generate its files first
-            if (!isHeader) // if isHeader, the "pause" has already been added
+            if (!is_header) // if is_header, the "pause" has already been added
                 ret.Add(wxString(COMPILER_WAIT));
-            AppendArray(retGenerated, ret);
+            AppendArray(ret_generated, ret);
         }
 
         // if it's a PCH, delete the previously generated PCH to avoid problems
         // (it 'll be recreated anyway)
         if (FileTypeOf(pf->relativeFilename) == ftHeader && pf->compile)
         {
-            wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
-            wxRemoveFile(ObjectAbs);
+            wxString object_abs = (compiler->GetSwitches().UseFlatObjects)
+                                ? pfd.object_file_flat_absolute_native
+                                : pfd.object_file_absolute_native;
+            wxRemoveFile(object_abs);
         }
     }
     else
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping file (no compiler program set): ") + pfd.source_file_native);
+        ret.Add(  wxString(COMPILER_SIMPLE_LOG)
+                + _("Skipping file (no compiler program set): ")
+                + pfd.source_file_native );
+
     return ret;
 }
 

@@ -123,8 +123,9 @@ Compiler::Compiler(const Compiler& other) :
     m_Programs        = other.m_Programs;
     m_Switches        = other.m_Switches;
     m_Options         = other.m_Options;
-    m_IncludeDirs     = other.m_IncludeDirs;
-    m_LibDirs         = other.m_LibDirs;
+    m_IncludeDirs     = MakeUniqueArray(other.m_IncludeDirs,    true);
+    m_ResIncludeDirs  = MakeUniqueArray(other.m_ResIncludeDirs, true);
+    m_LibDirs         = MakeUniqueArray(other.m_LibDirs,        true);
     m_CompilerOptions = other.m_CompilerOptions;
     m_LinkerOptions   = other.m_LinkerOptions;
     m_LinkLibs        = other.m_LinkLibs;
@@ -338,9 +339,9 @@ void Compiler::MirrorCurrentSettings()
 
     m_Mirror.CompilerOptions_ = m_CompilerOptions;
     m_Mirror.LinkerOptions    = m_LinkerOptions;
-    m_Mirror.IncludeDirs      = m_IncludeDirs;
-    m_Mirror.ResIncludeDirs   = m_ResIncludeDirs;
-    m_Mirror.LibDirs          = m_LibDirs;
+    m_Mirror.IncludeDirs      = MakeUniqueArray(m_IncludeDirs,    true);
+    m_Mirror.ResIncludeDirs   = MakeUniqueArray(m_ResIncludeDirs, true);
+    m_Mirror.LibDirs          = MakeUniqueArray(m_LibDirs,        true);
     m_Mirror.LinkLibs         = m_LinkLibs;
     m_Mirror.CmdsBefore       = m_CmdsBefore;
     m_Mirror.CmdsAfter        = m_CmdsAfter;
@@ -378,17 +379,17 @@ void Compiler::SaveSettings(const wxString& baseKey)
     }
     if (m_Mirror.IncludeDirs != m_IncludeDirs)
     {
-        wxString key = GetStringFromArray(m_IncludeDirs);
+        wxString key = GetStringFromArray( MakeUniqueArray(m_IncludeDirs, true) );
         cfg->Write(tmp + _T("/include_dirs"),     key, false);
     }
     if (m_Mirror.ResIncludeDirs != m_ResIncludeDirs)
     {
-        wxString key = GetStringFromArray(m_ResIncludeDirs);
+        wxString key = GetStringFromArray( MakeUniqueArray(m_ResIncludeDirs, true) );
         cfg->Write(tmp + _T("/res_include_dirs"), key, false);
     }
     if (m_Mirror.LibDirs != m_LibDirs)
     {
-        wxString key = GetStringFromArray(m_LibDirs);
+        wxString key = GetStringFromArray( MakeUniqueArray(m_LibDirs, true) );
         cfg->Write(tmp + _T("/library_dirs"),     key, false);
     }
     if (m_Mirror.LinkLibs != m_LinkLibs)

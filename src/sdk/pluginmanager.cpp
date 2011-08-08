@@ -816,7 +816,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 //        return false;
 //    }
 
-    // if no plugin name specified, we 're done here (succesfully)
+    // if no plugin name specified, we 're done here (successfully)
     if (pluginName.IsEmpty() || !infoOut)
         return true;
 

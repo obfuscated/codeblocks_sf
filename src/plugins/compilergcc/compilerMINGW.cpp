@@ -90,7 +90,6 @@ void CompilerMINGW::Reset()
     m_Switches.supportsPCH             = true;
     m_Switches.PCHExtension            = _T("h.gch");
     m_Switches.UseFullSourcePaths      = true; // use the GDB workaround !!!!!!!!
-    m_Switches.Use83Paths              = true; // use the windres workaround !!!!!!!!
 
     // Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
 
@@ -173,7 +172,7 @@ void CompilerMINGW::Reset()
 
     m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -o $object")));
     m_Commands[(int)ctGenDependenciesCmd].push_back(CompilerTool(_T("$compiler -MM $options -MF $dep_object -MT $object $includes $file")));
-    m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp -i $file -J rc -o $resource_output -O coff $res_includes")));
+    m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp $res_includes -J rc -O coff -i $file -o $resource_output")));
     m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs")));
     if (platform::windows)
     {

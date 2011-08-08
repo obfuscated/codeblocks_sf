@@ -622,7 +622,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT38">
-												<label>Use 8.3 path notation for resource compiler (Win):</label>
+												<label>Use 8.3 notation for all include paths (Win):</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>4</border>

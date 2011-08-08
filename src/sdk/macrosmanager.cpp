@@ -467,8 +467,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while (m_RE_To83Path.Matches(buffer))
     {
         search = m_RE_To83Path.GetMatch(buffer, 0);
-        const wxString relativePath = m_RE_To83Path.GetMatch(buffer, 1);
-        wxFileName fn(relativePath);
+        const wxString path = m_RE_To83Path.GetMatch(buffer, 1);
+        wxFileName fn(path);
         fn.MakeAbsolute(); // make absolute before translating to 8.3 notation
         replace = fn.GetShortPath();
         buffer.Replace(search, replace, false);
