@@ -883,7 +883,7 @@ void CodeCompletion::OnAttach()
     LoadTokenReplacements();
     RereadOptions();
 
-    m_LastPosForCodeCompletion = wxNOT_FOUND;
+    m_LastPosForCodeCompletion = -1;
     m_NativeParser.SetNextHandler(this);
 
     m_NativeParser.CreateClassBrowser();
@@ -2017,8 +2017,8 @@ bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
 // help method in finding the namespace position in the vector for the namespace containing the current line
 int CodeCompletion::NameSpacePosition() const
 {
-    int retValue = wxNOT_FOUND;
-    int startLine = wxNOT_FOUND;
+    int retValue = -1;
+    int startLine = -1;
     for (unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
     {
         const NameSpace& Ns = m_NameSpaces[idxNs];
@@ -2037,8 +2037,8 @@ int CodeCompletion::NameSpacePosition() const
 // help method in finding the function position in the vector for the function containing the current line
 void CodeCompletion::FunctionPosition(int &scopeItem, int &functionItem) const
 {
-    scopeItem = wxNOT_FOUND;
-    functionItem = wxNOT_FOUND;
+    scopeItem = -1;
+    functionItem = -1;
 
     for (unsigned int idxSc = 0; idxSc < m_ScopeMarks.size(); ++idxSc)
     {
@@ -2066,7 +2066,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
     int current_line = ed->GetControl()->GetCurrentLine();
 
     // search previous/next function from current line, default: previous
-    int line = wxNOT_FOUND;
+    int line = -1;
     if (m_FunctionsScope.size())
     {
         unsigned int best_func = 0;
@@ -2107,7 +2107,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
         { line = m_FunctionsScope[best_func].StartLine; }
     }
 
-    if (line != wxNOT_FOUND)
+    if (line != -1)
     {
         ed->GotoLine(line);
         ed->SetFocus();
@@ -2291,6 +2291,9 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 
 void CodeCompletion::FindFunctionAndUpdate(int currentLine)
 {
+    if (currentLine == -1)
+        return;
+
     m_CurrentLine = currentLine;
 
     int selSc, selFn;
@@ -2298,37 +2301,37 @@ void CodeCompletion::FindFunctionAndUpdate(int currentLine)
 
     if (m_Scope)
     {
-        if (selSc != wxNOT_FOUND && selSc != m_Scope->GetSelection())
+        if (selSc != -1 && selSc != m_Scope->GetSelection())
         {
             m_Scope->SetSelection(selSc);
             UpdateFunctions(selSc);
         }
-        else if (selSc == wxNOT_FOUND)
+        else if (selSc == -1)
         {
-            m_Scope->SetSelection(wxNOT_FOUND);
+            m_Scope->SetSelection(-1);
         }
     }
 
-    if (selFn != wxNOT_FOUND && selFn != m_Function->GetSelection())
+    if (selFn != -1 && selFn != m_Function->GetSelection())
     {
         m_Function->SetSelection(selFn);
     }
-    else if (selFn == wxNOT_FOUND)
+    else if (selFn == -1)
     {
-        m_Function->SetSelection(wxNOT_FOUND);
+        m_Function->SetSelection(-1);
 
         wxChoice* choice = (m_Scope) ? m_Scope : m_Function;
 
         int NsSel = NameSpacePosition();
-        if (NsSel != wxNOT_FOUND)
+        if (NsSel != -1)
             choice->SetStringSelection(m_NameSpaces[NsSel].Name);
         else if (!m_Scope)
-            choice->SetSelection(wxNOT_FOUND);
+            choice->SetSelection(-1);
         else
         {
             choice->SetStringSelection(g_GlobalScope);
-            wxCommandEvent evt;
-            OnScope(evt);
+            wxCommandEvent evt(wxEVT_COMMAND_CHOICE_SELECTED, XRCID("chcCodeCompletionScope"));
+            wxPostEvent(this, evt);
         }
     }
 }
@@ -2802,7 +2805,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         if (selections.GetCount() > 1)
         {
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
-            if (sel == wxNOT_FOUND)
+            if (sel == -1)
                 return;
             token = tokens->at(int_selections[sel]);
         }
@@ -3193,7 +3196,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 void CodeCompletion::OnScope(wxCommandEvent&)
 {
     int sel = m_Scope->GetSelection();
-    if (sel != wxNOT_FOUND && sel < static_cast<int>(m_ScopeMarks.size()))
+    if (sel != -1 && sel < static_cast<int>(m_ScopeMarks.size()))
     {
         UpdateFunctions(sel);
     }
@@ -3202,10 +3205,10 @@ void CodeCompletion::OnScope(wxCommandEvent&)
 void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 {
     int selSc = (m_Scope) ? m_Scope->GetSelection() : 0;
-    if (selSc != wxNOT_FOUND && selSc < static_cast<int>(m_ScopeMarks.size()))
+    if (selSc != -1 && selSc < static_cast<int>(m_ScopeMarks.size()))
     {
         int idxFn = m_ScopeMarks[selSc] + m_Function->GetSelection();
-        if (idxFn != wxNOT_FOUND && idxFn < static_cast<int>(m_FunctionsScope.size()))
+        if (idxFn != -1 && idxFn < static_cast<int>(m_FunctionsScope.size()))
         {
             int Line = m_FunctionsScope[idxFn].StartLine;
             cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
