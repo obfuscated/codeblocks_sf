@@ -699,11 +699,13 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 bool Parser::ParseBufferForFunctions(const wxString& buffer)
 {
     ParserThreadOptions opts;
-    opts.wantPreprocessor   = m_Options.wantPreprocessor;
-    opts.parseComplexMacros = m_Options.parseComplexMacros;
-    opts.useBuffer          = true;
-    opts.bufferSkipBlocks   = true;
-    opts.handleFunctions    = true;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = m_Options.parseComplexMacros;
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
+    opts.useBuffer            = true;
+    opts.bufferSkipBlocks     = true;
+    opts.handleFunctions      = true;
 
     ParserThread thread(this,
                         buffer,
@@ -719,9 +721,11 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
     ParserThreadOptions opts;
-    opts.useBuffer          = true;
-    opts.wantPreprocessor   = m_Options.wantPreprocessor;
-    opts.parseComplexMacros = false;
+    opts.useBuffer            = true;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = false;
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
 
     ParserThread thread(this,
                         wxEmptyString,
@@ -737,9 +741,11 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
     ParserThreadOptions opts;
-    opts.useBuffer          = true;
-    opts.wantPreprocessor   = m_Options.wantPreprocessor;
-    opts.parseComplexMacros = false;
+    opts.useBuffer            = true;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = false;
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
 
     ParserThread thread(this,
                         wxEmptyString,
