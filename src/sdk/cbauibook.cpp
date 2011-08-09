@@ -320,7 +320,8 @@ void cbAuiNotebook::OnEnterTabCtrl(wxMouseEvent& event)
         {
             nb->m_OverTabCtrl = true;
 #ifdef __WXMSW__
-            if (   (nb->m_pToolTip == nullptr)
+            if (   s_AllowMousewheel
+                && (nb->m_pToolTip == nullptr)
                 && (nb->m_LastSelected == wxNOT_FOUND)
                 && (nb->m_LastId == 0) )
             {
