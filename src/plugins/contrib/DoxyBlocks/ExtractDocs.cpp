@@ -539,7 +539,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     fnDoxyfile.Normalize();
     fnDoxygenLog.Normalize();
 
-    if (!fnOutput.Mkdir(wxS_DEFAULT, wxPATH_MKDIR_FULL)){
+    if (!fnOutput.Mkdir(0777, wxPATH_MKDIR_FULL)){
         wxString sMsg = _("Failed. ") + fnOutput.GetFullPath() + _(" was not created.");
         AppendToLog(sMsg, LOG_WARNING);
         wxSetWorkingDirectory(sOldPath);
