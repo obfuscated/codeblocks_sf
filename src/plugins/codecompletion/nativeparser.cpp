@@ -1464,7 +1464,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
             Token* token = m_Parser->GetTokensTree()->at(*it);
             if (!token)
                 continue;
-            if (curLine < token->m_ImplLine || curLine > token->m_ImplLineEnd)
+            if (curLine < token->m_ImplLineStart || curLine > token->m_ImplLineEnd)
                 continue;
 
             if (s_DebugSmartSense)
@@ -1662,7 +1662,6 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
         wxString msg(_("The Parser is still parsing files."));
         msg += m_Parser->NotDoneReason();
         CCLogger::Get()->DebugLog(msg);
-
         return 0;
     }
     else
