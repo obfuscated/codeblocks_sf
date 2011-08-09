@@ -1796,7 +1796,9 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
             m_NativeParser.CreateParser(project);
 
         // Update the Function toolbar
-        ParseFunctionsAndFillToolbar();
+        if (m_TimerFunctionsParsing.IsRunning())
+            m_TimerFunctionsParsing.Stop();
+        m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
 
         // Update the class browser
         if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfProject)
@@ -2391,7 +2393,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
         if (m_TimerFunctionsParsing.IsRunning())
             m_TimerFunctionsParsing.Stop();
 
-        m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 50, wxTIMER_ONE_SHOT);
+        m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();

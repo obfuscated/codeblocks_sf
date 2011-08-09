@@ -3501,7 +3501,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
 {
     cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (curEditor != m_LastEditor || !m_LastEditor)
+    if (!curEditor || curEditor != m_LastEditor || !m_LastEditor)
     {
         m_LastEditor = nullptr;
         return;
