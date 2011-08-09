@@ -1540,7 +1540,10 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
         if (blockEnd < 0 || blockEnd > searchData->control->GetLength())
         {
             if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(F(_T("ParseLocalBlock() ERROR blockEnd=%d and edLength=%d?!"), blockEnd, searchData->control->GetLength()));
+            {
+                CCLogger::Get()->DebugLog(F(_T("ParseLocalBlock() ERROR blockEnd=%d and edLength=%d?!"),
+                                            blockEnd, searchData->control->GetLength()));
+            }
             return false;
         }
 
@@ -1550,7 +1553,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
         wxString buffer = searchData->control->GetTextRange(blockStart, blockEnd);
         buffer.Trim();
         if (   !buffer.IsEmpty()
-            && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, parent, parent->m_ImplLineStart))
+            && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, parent, parent->m_ImplLineStart) )
         {
             if (s_DebugSmartSense)
                 CCLogger::Get()->DebugLog(_T("ParseLocalBlock() ERROR parsing block:\n") + buffer);
@@ -1566,10 +1569,9 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
                     Token* t = m_Parser->GetTokensTree()->at(i);
                     if (t && t->m_IsTemp)
                     {
-                       CCLogger::Get()->DebugLog(
-                            _T("ParseLocalBlock() + ") + t->DisplayName() + _T(" parent = ") + t->GetParentName()  );
+                       CCLogger::Get()->DebugLog(_T("ParseLocalBlock() + ") + t->DisplayName() +
+                                                 _T(" parent = ") + t->GetParentName());
                     }
-
                 }
             }
             return true;
@@ -3509,6 +3511,7 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
 
     cbProject* project = GetProjectByEditor(curEditor);
     const wxString& lastFile = curEditor->GetFilename();
+    TRACE(_T("Activated timer file is %s"), lastFile.wx_str());
     const int pos = m_StandaloneFiles.Index(lastFile);
     if (project && pos != wxNOT_FOUND)
     {
@@ -3589,6 +3592,7 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
 
     m_LastEditor = curEditor;
     m_TimerEditorActivated.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
+    TRACE(_T("Activated editor's file is %s"), m_LastEditor->GetFilename().wx_str());
 }
 
 void NativeParser::OnEditorClosed(EditorBase* editor)
@@ -3601,6 +3605,7 @@ void NativeParser::OnEditorClosed(EditorBase* editor)
     }
 
     wxString filename = editor->GetFilename();
+    TRACE(_T("Closed editor's file is %s"), filename.wx_str());
     if (filename == g_StartHereTitle)
     {
         m_LastEditor = nullptr;

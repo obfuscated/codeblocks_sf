@@ -2251,6 +2251,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         // Update the last editor and changed flag...
         m_ToolbarChanged = false;
         m_LastFile = filename;
+        TRACE(_T("ParseFunctionsAndFillToolbar() : Update last file is %s"), filename.wx_str());
 
         // ...and refresh the toolbars.
         m_Function->Clear();
@@ -2375,6 +2376,8 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
+    TRACE(_T("CodeCompletion::OnEditorActivated() : %d, %s, %s"), ProjectManager::IsBusy(),
+          m_LastFile.wx_str(), event.GetEditor() ? event.GetEditor()->GetFilename().wx_str() : _T("NULL"));
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
         EditorBase* editor = event.GetEditor();

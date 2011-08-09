@@ -155,9 +155,7 @@ bool Tokenizer::InitFromBuffer(const wxString& buffer, const wxString& fileOfBuf
 {
     BaseInit();
     m_BufferLen = buffer.Length();
-    m_Buffer.Alloc(m_BufferLen + 1); // + 1 => sentinel
-    m_Buffer = buffer;
-    m_Buffer += _T(' ');
+    m_Buffer = buffer + _T(" "); // + 1 => sentinel
     m_IsOK = true;
     m_Filename = fileOfBuffer;
     m_LineNumber = initLineNumber;
