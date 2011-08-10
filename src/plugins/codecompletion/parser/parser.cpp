@@ -1001,8 +1001,7 @@ bool Parser::ForceStartParsing()
 
 bool Parser::SetParsingProject(cbProject* project)
 {
-    wxCriticalSectionLocker locker(s_ParserCritical);
-    if (m_IsParsing)
+    if (!Done())
         return false;
     else
     {

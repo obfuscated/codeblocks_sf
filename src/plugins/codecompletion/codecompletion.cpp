@@ -1890,7 +1890,7 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
         ReparsingMap::iterator it = m_ReparsingMap.begin();
-        if (it != m_ReparsingMap.end())
+        if (it != m_ReparsingMap.end() && m_NativeParser.Done())
         {
             cbProject* project = it->first;
             wxArrayString& files = it->second;
@@ -1909,6 +1909,11 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
                         EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
                         if (editor && editor->GetFilename() == filename)
                             ParseFunctionsAndFillToolbar(true);
+                    }
+                    else
+                    {
+                        m_TimerReparsing.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
+                        return;
                     }
                 }
                 CCLogger::Get()->DebugLog(F(_T("Be re-parse file number: %d"), files.GetCount()));

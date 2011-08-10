@@ -1218,6 +1218,9 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
     if (!parser)
         return false;
 
+    if (!parser->SetParsingProject(project))
+        return false;
+
     return parser->Reparse(filename);
 }
 
@@ -1232,6 +1235,9 @@ bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename,
         if (!parser)
             return false;
     }
+
+    if (!parser->SetParsingProject(project))
+        return false;
 
     return parser->AddFile(filename, project);
 }
@@ -3527,9 +3533,7 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
         CCFileType ft = CCFileTypeOf(lastFile);
         if (ft != ccftOther && (parser = CreateParser(project)))
         {
-            if (   !project
-                && parser->SetParsingProject(project)
-                && AddFileToParser(project, lastFile, parser) )
+            if (!project && AddFileToParser(project, lastFile, parser) )
             {
                 wxFileName file(lastFile);
                 parser->AddIncludeDir(file.GetPath());
@@ -3543,7 +3547,6 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     {
         if (   !parser->IsFileParsed(lastFile)
             && m_StandaloneFiles.Index(lastFile) == wxNOT_FOUND
-            && parser->SetParsingProject(project)
             && AddFileToParser(project, lastFile, parser) )
         {
             wxFileName file(lastFile);
