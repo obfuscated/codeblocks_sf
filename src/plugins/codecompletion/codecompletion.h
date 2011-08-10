@@ -76,8 +76,11 @@ public:
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
     virtual int Configure();
-    virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
+    /** offer for menu space by host */
+    virtual void BuildMenu(wxMenuBar* menuBar);
+    /** offer for Context menu */
     virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+    /** offer for the Toolbar */
     virtual bool BuildToolBar(wxToolBar* toolBar);
 
     // TODO unused, should be removed probably
@@ -112,29 +115,53 @@ public:
     void RereadOptions(); // called by the configuration panel
 
 private:
+
+    /** Update CC's ToolBar*/
     void UpdateToolBar();
 
+    /** Token replacement map is used for Tokenizer, this function load it from configure file*/
     void LoadTokenReplacements();
+    /** write the Token replacement map to the configure file */
     void SaveTokenReplacements();
 
+    /** event handler for updating UI*/
     void OnUpdateUI(wxUpdateUIEvent& event);
     void OnViewClassBrowser(wxCommandEvent& event);
+    /** event handler to list the suggestion, when a user press CTRL+space(by default)*/
     void OnCodeComplete(wxCommandEvent& event);
+    /** event handler to show the call tip, when user press Ctrl-Shift-Space */
     void OnShowCallTip(wxCommandEvent& event);
+
     void OnGotoFunction(wxCommandEvent& event);
+
+    /** navigate to the previous function body*/
     void OnGotoPrevFunction(wxCommandEvent& event);
+    /** navigate to the next function body*/
     void OnGotoNextFunction(wxCommandEvent& event);
+    /** handle CC's context menu->insert */
     void OnClassMethod(wxCommandEvent& event);
+    /** handle CC's context menu->insert */
     void OnUnimplementedClassMethods(wxCommandEvent& event);
+
+    /** handle both goto decleration and implementation event */
     void OnGotoDeclaration(wxCommandEvent& event);
+
+    /** CC's refactoring function, find all the reference place*/
     void OnFindReferences(wxCommandEvent& event);
+    /** CC's refactoring function, rename a symbol */
     void OnRenameSymbols(wxCommandEvent& event);
+    /** open the include file under the caret position */
     void OnOpenIncludeFile(wxCommandEvent& event);
+
     void OnCurrentProjectReparse(wxCommandEvent& event);
     void OnSelectedProjectReparse(wxCommandEvent& event);
     void OnSelectedFileReparse(wxCommandEvent& event);
+    /** TODO */
     void OnAppDoneStartup(CodeBlocksEvent& event);
+
     void OnCodeCompleteTimer(wxTimerEvent& event);
+
+    /** event handlers for the standard events sent from sdk core*/
     void OnWorkspaceChanged(CodeBlocksEvent& event);
     void OnProjectActivated(CodeBlocksEvent& event);
     void OnProjectClosed(CodeBlocksEvent& event);
@@ -142,45 +169,87 @@ private:
     void OnProjectFileAdded(CodeBlocksEvent& event);
     void OnProjectFileRemoved(CodeBlocksEvent& event);
     void OnProjectFileChanged(CodeBlocksEvent& event);
+    /** Not used*/
     void OnUserListSelection(CodeBlocksEvent& event);
+    /** handle the save/modify event from the sdk*/
     void OnEditorSaveOrModified(CodeBlocksEvent& event);
+    /** handle editor open event from sdk*/
     void OnEditorOpen(CodeBlocksEvent& event);
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
+
+    /** CC's own loger, to handle event sent from other thread or itself*/
     void OnCCLogger(wxCommandEvent& event);
+    /** CC's own debug loger, to handle event sent from other thread ot itself*/
     void OnCCDebugLogger(wxCommandEvent& event);
+
+    /** batch parsing end event*/
     void OnParserEnd(wxCommandEvent& event);
+    /** batch parsing start event*/
     void OnParserStart(wxCommandEvent& event);
+
+    /** mouse hover event*/
     void OnValueTooltip(CodeBlocksEvent& event);
+
+    /** receive event from System HeadersThread */
     void OnThreadUpdate(wxCommandEvent& event);
     void OnThreadCompletion(wxCommandEvent& event);
     void OnThreadError(wxCommandEvent& event);
 
+    /** show code suggestion list*/
     void DoCodeComplete();
+
+    /** Not used*/
     void DoInsertCodeCompleteToken(wxString tokName);
+
+    /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();
+    /** ContextMenu->Insert-> All class methods*/
     int DoAllMethodsImpl();
+
+    //CC's toolbar related functions
+    /** help method in finding the function position in the vector for the function containing the current line*/
     void FunctionPosition(int &scopeItem, int &functionItem) const;
+    /** navigate between function bodies*/
     void GotoFunctionPrevNext(bool next = false);
+    /** help method in finding the namespace position in the vector for the namespace containing the current line*/
     int NameSpacePosition() const;
+    /** TODO*/
     void OnStartParsingFunctions(wxTimerEvent& event);
     void OnFindFunctionAndUpdate(wxTimerEvent& event);
+    /** Toolbar select event */
     void OnScope(wxCommandEvent& event);
+    /** Toolbar select event */
     void OnFunction(wxCommandEvent& event);
+
     void ParseFunctionsAndFillToolbar(bool force = false);
     void FindFunctionAndUpdate(int currentLine);
     void UpdateFunctions(unsigned int scopeItem);
     void EnableToolbarTools(bool enable = true);
+
+    /** event fired from the editoevent hook function to indicate parsing while editing*/
     void OnRealtimeParsing(wxTimerEvent& event);
+
+    /** delayed running after saving project, while many projects' saving */
     void OnProjectSavedTimer(wxTimerEvent& event);
+
     void OnReparsingTimer(wxTimerEvent& event);
+    /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
 
+    /** goto another place of the editor
+     * @param editor specify the target editor
+     * @param target target text string
+     * @param line target line
+     */
     void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
 
+    /** Not used*/
     int                     m_PageIndex;
+    /** Indicates CC's initilization is done*/
     bool                    m_InitDone;
 
+    /** menu pointers to the frame's main menu*/
     wxMenu*                 m_EditMenu;
     wxMenu*                 m_SearchMenu;
     wxMenu*                 m_ViewMenu;
@@ -194,13 +263,22 @@ private:
     int                     m_EditorHookId;
     int                     m_LastPosForCodeCompletion;
 
+    /** delay for showing the suggesting list*/
     wxTimer                 m_TimerCodeCompletion;
+    /** timer for toolbar*/
     wxTimer                 m_TimerFunctionsParsing;
+    /** timer triggered by editor hook function to delay the realtime parse*/
     wxTimer                 m_TimerRealtimeParsing;
+    /** time delay after wxEVT_SCI_UPDATEUI event to update the toolbar*/
     wxTimer                 m_TimerToolbar;
+    /** delay after project saved event*/
     wxTimer                 m_TimerProjectSaved;
+    /** delay after receive a project save/modified event*/
     wxTimer                 m_TimerReparsing;
+    /** delay after receive editor activated event*/
     wxTimer                 m_TimerEditorActivated;
+
+
     cbEditor*               m_LastEditor;
     int                     m_ActiveCalltipsNest;
 
