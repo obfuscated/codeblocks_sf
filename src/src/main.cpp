@@ -739,7 +739,7 @@ void MainFrame::SetupGUILogging()
     }
     else
     {
-        m_pBatchBuildDialog = new BatchLogWindow(this, _("Batch build"));
+        m_pBatchBuildDialog = new BatchLogWindow(this, _("Code::Blocks - Batch build"));
         wxSizer* s = new wxBoxSizer(wxVERTICAL);
         m_pInfoPane = new InfoPane(m_pBatchBuildDialog);
         s->Add(m_pInfoPane, 1, wxEXPAND);
