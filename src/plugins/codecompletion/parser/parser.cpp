@@ -522,6 +522,7 @@ wxString Parser::NotDoneReason()
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp,
                          const wxString& filename, Token* parent, int initLine)
 {
+    wxCriticalSectionLocker locker(s_ParserCritical);
     ParserThreadOptions opts;
 
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
@@ -979,11 +980,13 @@ void Parser::TerminateAllThreads()
 
 void Parser::AddPredefinedMacros(const wxString& defs)
 {
+    wxCriticalSectionLocker locker(s_ParserCritical);
     m_PredefinedMacros << defs;
 }
 
 bool Parser::ForceStartParsing()
 {
+    wxCriticalSectionLocker locker(s_ParserCritical);
     if (!m_IsParsing && !m_BatchTimer.IsRunning() && !Done())
     {
         m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
@@ -997,6 +1000,7 @@ bool Parser::ForceStartParsing()
 
 bool Parser::SetParsingProject(cbProject* project)
 {
+    wxCriticalSectionLocker locker(s_ParserCritical);
     if (m_IsParsing)
         return false;
     else
@@ -1144,6 +1148,8 @@ void Parser::OnTimer(wxTimerEvent& event)
 
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
+    wxCriticalSectionLocker locker(s_ParserCritical);
+
     if (Manager::IsAppShuttingDown())
         return;
 
