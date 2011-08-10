@@ -143,7 +143,7 @@ private:
     void OnProjectFileRemoved(CodeBlocksEvent& event);
     void OnProjectFileChanged(CodeBlocksEvent& event);
     void OnUserListSelection(CodeBlocksEvent& event);
-    void OnReparseActiveEditor(CodeBlocksEvent& event);
+    void OnEditorSave(CodeBlocksEvent& event);
     void OnEditorOpen(CodeBlocksEvent& event);
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
