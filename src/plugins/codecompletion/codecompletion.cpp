@@ -1899,27 +1899,31 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
 
             if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
             {
-                for (size_t i = 0; i < files.GetCount(); ++i)
+                wxString curFile;
+                EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+                if (editor)
+                    curFile = editor->GetFilename();
+
+                size_t reparseCount = 0;
+                while (!files.IsEmpty())
                 {
-                    const wxString& filename = files[i];
-                    if (m_NativeParser.ReparseFile(project, filename))
+                    if (m_NativeParser.ReparseFile(project, files.Last()))
                     {
-                        CCLogger::Get()->DebugLog(_T("Reparsing file : ") + filename);
-                        Manager::Yield();
-                        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-                        if (editor && editor->GetFilename() == filename)
+                        ++reparseCount;
+                        TRACE(_T("Reparsing file : ") + files.Last());
+                        if (files.Last() == curFile)
                             ParseFunctionsAndFillToolbar(true);
                     }
-                    else
-                    {
-                        m_TimerReparsing.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
-                        return;
-                    }
+
+                    files.RemoveAt(files.GetCount() - 1);
                 }
-                CCLogger::Get()->DebugLog(F(_T("Be re-parse file number: %d"), files.GetCount()));
+
+                if (reparseCount)
+                    CCLogger::Get()->DebugLog(F(_T("Be re-parse file number: %d"), reparseCount));
             }
 
-            m_ReparsingMap.erase(it);
+            if (files.IsEmpty())
+                m_ReparsingMap.erase(it);
         }
 
         if (!m_ReparsingMap.empty())
@@ -2402,7 +2406,7 @@ void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
         if (it->second.Index(filename) == wxNOT_FOUND)
             it->second.Add(filename);
 
-        m_TimerReparsing.Start(g_EditorActivatedDelay + it->second.GetCount(), wxTIMER_ONE_SHOT);
+        m_TimerReparsing.Start(g_EditorActivatedDelay + it->second.GetCount() * 10, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();
@@ -3015,7 +3019,7 @@ void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
         if (pf && m_NativeParser.ReparseFile(project, pf->file.GetFullPath()))
         {
              CCLogger::Get()->DebugLog(_T("Reparsing the selected file ") +
-                                                          pf->file.GetFullPath());
+                                       pf->file.GetFullPath());
         }
     }
 

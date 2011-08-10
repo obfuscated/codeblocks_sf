@@ -84,49 +84,61 @@ public:
 
     int Execute()
     {
-        wxCriticalSectionLocker locker1(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker2(s_ParserCritical);
-
         // Pre-defined macros
-        if (!m_Parser.m_PredefinedMacros.IsEmpty())
         {
-            ParserThreadOptions opts;
-            opts.wantPreprocessor     = m_Parser.m_Options.wantPreprocessor;
-            opts.parseComplexMacros   = m_Parser.m_Options.parseComplexMacros;
-            opts.followLocalIncludes  = m_Parser.m_Options.followLocalIncludes;
-            opts.followGlobalIncludes = m_Parser.m_Options.followGlobalIncludes;
-            opts.useBuffer            = true;
-            opts.isTemp               = false;
-            opts.bufferSkipBlocks     = false;
-            opts.handleFunctions      = false;
-            m_Parser.Parse(m_Parser.m_PredefinedMacros, false, opts);
-            m_Parser.m_PredefinedMacros.Clear();
+            wxCriticalSectionLocker locker(s_ParserCritical);
+            if (!m_Parser.m_PredefinedMacros.IsEmpty())
+            {
+                ParserThreadOptions opts;
+                opts.wantPreprocessor     = m_Parser.m_Options.wantPreprocessor;
+                opts.parseComplexMacros   = m_Parser.m_Options.parseComplexMacros;
+                opts.followLocalIncludes  = m_Parser.m_Options.followLocalIncludes;
+                opts.followGlobalIncludes = m_Parser.m_Options.followGlobalIncludes;
+                opts.useBuffer            = true;
+                opts.isTemp               = false;
+                opts.bufferSkipBlocks     = false;
+                opts.handleFunctions      = false;
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                m_Parser.Parse(m_Parser.m_PredefinedMacros, false, opts);
+                m_Parser.m_PredefinedMacros.Clear();
+            }
         }
 
         // Add priority headers
-        if (!m_Parser.m_PriorityHeaders.empty())
         {
+            s_ParserCritical.Enter();
             m_Parser.m_IsPriority = true;
             while (!m_Parser.m_PriorityHeaders.empty())
             {
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
                 m_Parser.Parse(m_Parser.m_PriorityHeaders.front());
                 m_Parser.m_PriorityHeaders.pop_front();
+                s_ParserCritical.Leave();
+                wxMilliSleep(1);
+                s_ParserCritical.Enter();
             }
             m_Parser.m_IsPriority = false;
+            s_ParserCritical.Leave();
         }
 
         // Add all other files
-        if (!m_Parser.m_BatchParseFiles.empty())
         {
+            s_ParserCritical.Enter();
             if (m_Parser.m_IgnoreThreadEvents)
                 m_Parser.m_IsFirstBatch = true;
             while (!m_Parser.m_BatchParseFiles.empty())
             {
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
                 m_Parser.Parse(m_Parser.m_BatchParseFiles.front());
                 m_Parser.m_BatchParseFiles.pop_front();
+                s_ParserCritical.Leave();
+                wxMilliSleep(1);
+                s_ParserCritical.Enter();
             }
+            s_ParserCritical.Leave();
         }
 
+        wxCriticalSectionLocker locker(s_ParserCritical);
         if (m_Parser.m_IgnoreThreadEvents)
         {
             m_Parser.m_IgnoreThreadEvents = false;
@@ -150,16 +162,18 @@ public:
 
     int Execute()
     {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-
         // mark all project files as local
         for (int i = 0; i < m_Project.GetFilesCount(); ++i)
         {
             ProjectFile* pf = m_Project.GetFile(i);
             if (!pf)
                 continue;
+
             if (CCFileTypeOf(pf->relativeFilename) != ccftOther)
+            {
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
                 m_Parser.GetTokensTree()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, &m_Project);
+            }
         }
 
         return 0;
@@ -502,19 +516,19 @@ wxString Parser::NotDoneReason()
 
     wxString reason = _T(" > Reasons:");
     if (!m_PriorityHeaders.empty())
-      reason += _T("\n- still priority headers to parse");
+        reason += _T("\n- still priority headers to parse");
     if (!m_SystemPriorityHeaders.empty())
-      reason += _T("\n- still system priority headers to parse");
+        reason += _T("\n- still system priority headers to parse");
     if (!m_BatchParseFiles.empty())
-      reason += _T("\n- still batch parse files to parse");
+        reason += _T("\n- still batch parse files to parse");
     if (!m_PredefinedMacros.IsEmpty())
-      reason += _T("\n- still pre-defined macros to operate");
+        reason += _T("\n- still pre-defined macros to operate");
     if (m_NeedMarkFileAsLocal)
-      reason += _T("\n- still need to mark files as local");
+        reason += _T("\n- still need to mark files as local");
     if (!m_PoolTask.empty())
-      reason += _T("\n- still parser threads (tasks) in the pool");
+        reason += _T("\n- still parser threads (tasks) in the pool");
     if (!m_Pool.Done())
-      reason += _T("\n- thread pool is not done yet");
+        reason += _T("\n- thread pool is not done yet");
 
     return reason;
 }
@@ -1150,6 +1164,13 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
 {
     wxCriticalSectionLocker locker(s_ParserCritical);
 
+    // Current batch parser is already exists
+    if (s_CurrentParser && s_CurrentParser != this)
+    {
+        m_BatchTimer.Start(1000, wxTIMER_ONE_SHOT);
+        return;
+    }
+
     if (Manager::IsAppShuttingDown())
         return;
 
@@ -1172,27 +1193,16 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
              || !m_BatchParseFiles.empty()
              || !m_PredefinedMacros.IsEmpty() )
     {
-        do
+        // Have not done any batch parsing
+        if (!s_CurrentParser)
         {
-            // Current batch parser is already exists
-            if (s_CurrentParser && s_CurrentParser != this)
-                break;
-
-            // Have not done any batch parsing
-            if (!s_CurrentParser)
-            {
-                s_CurrentParser = this;
-                m_StopWatch.Start(); // reset timer
-                ProcessParserEvent(m_ParsingType, idParserStart);
-            }
-
-            AddParseThread* thread = new AddParseThread(*this);
-            m_Pool.AddTask(thread, true);
-            return;
+            s_CurrentParser = this;
+            m_StopWatch.Start(); // reset timer
+            ProcessParserEvent(m_ParsingType, idParserStart);
         }
-        while (false);
 
-        m_BatchTimer.Start(1000, wxTIMER_ONE_SHOT);
+        AddParseThread* thread = new AddParseThread(*this);
+        m_Pool.AddTask(thread, true);
         return;
     }
 
