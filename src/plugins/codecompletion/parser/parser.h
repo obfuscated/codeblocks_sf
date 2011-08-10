@@ -286,7 +286,7 @@ protected:
     void DoParseFile(const wxString& filename, bool isGlobal);
     // *MUST* end--<
 
-    bool ReparseModifiedFiles();
+    void ReparseModifiedFiles();
     void TerminateAllThreads();
 
     /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
@@ -297,7 +297,7 @@ protected:
      */
     void OnAllThreadsDone(CodeBlocksEvent& event);
 
-    void OnTimer(wxTimerEvent& event);
+    void OnReparseTimer(wxTimerEvent& event);
     void OnBatchTimer(wxTimerEvent& event);
 
     void PostParserEvent(ParsingType type, int id, const wxString& info = wxEmptyString);
@@ -345,7 +345,7 @@ protected:
     bool                 m_IsFirstBatch;
 
 private:
-    wxTimer              m_Timer;
+    wxTimer              m_ReparseTimer;
     wxTimer              m_BatchTimer;
     wxStopWatch          m_StopWatch;
     bool                 m_StopWatchRunning;

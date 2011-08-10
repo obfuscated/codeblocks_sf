@@ -85,7 +85,7 @@
 
 static wxCriticalSection s_HeadersCriticalSection;
 static wxString g_GlobalScope(_T("<global>"));
-const int g_EditorActivatedDelay = 200;
+const int g_EditorActivatedDelay = 300;
 
 // this auto-registers the plugin
 namespace
@@ -1893,22 +1893,25 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
         if (it != m_ReparsingMap.end())
         {
             cbProject* project = it->first;
+            wxArrayString& files = it->second;
             if (!project)
-                project = m_NativeParser.GetProjectByFilename(it->second[0]);
+                project = m_NativeParser.GetProjectByFilename(files[0]);
 
             if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
             {
-                for (size_t i = 0; i < it->second.GetCount(); ++i)
+                for (size_t i = 0; i < files.GetCount(); ++i)
                 {
-                    const wxString& filename = it->second[i];
+                    const wxString& filename = files[i];
                     if (m_NativeParser.ReparseFile(project, filename))
                     {
                         CCLogger::Get()->DebugLog(_T("Reparsing file : ") + filename);
+                        Manager::Yield();
                         EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
                         if (editor && editor->GetFilename() == filename)
                             ParseFunctionsAndFillToolbar(true);
                     }
                 }
+                CCLogger::Get()->DebugLog(F(_T("Be re-parse file number: %d"), files.GetCount()));
             }
 
             m_ReparsingMap.erase(it);
@@ -2394,7 +2397,7 @@ void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
         if (it->second.Index(filename) == wxNOT_FOUND)
             it->second.Add(filename);
 
-        m_TimerReparsing.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
+        m_TimerReparsing.Start(g_EditorActivatedDelay + it->second.GetCount(), wxTIMER_ONE_SHOT);
     }
 
     event.Skip();

@@ -107,11 +107,12 @@ public:
         if (!m_Parser.m_PriorityHeaders.empty())
         {
             m_Parser.m_IsPriority = true;
-            StringList::iterator it = m_Parser.m_PriorityHeaders.begin();
-            for (; it != m_Parser.m_PriorityHeaders.end(); ++it)
-                m_Parser.Parse(*it);
+            while (!m_Parser.m_PriorityHeaders.empty())
+            {
+                m_Parser.Parse(m_Parser.m_PriorityHeaders.front());
+                m_Parser.m_PriorityHeaders.pop_front();
+            }
             m_Parser.m_IsPriority = false;
-            m_Parser.m_PriorityHeaders.clear();
         }
 
         // Add all other files
@@ -119,10 +120,11 @@ public:
         {
             if (m_Parser.m_IgnoreThreadEvents)
                 m_Parser.m_IsFirstBatch = true;
-            StringList::iterator it = m_Parser.m_BatchParseFiles.begin();
-            for (; it != m_Parser.m_BatchParseFiles.end(); ++it)
-                m_Parser.Parse(*it);
-            m_Parser.m_BatchParseFiles.clear();
+            while (!m_Parser.m_BatchParseFiles.empty())
+            {
+                m_Parser.Parse(m_Parser.m_BatchParseFiles.front());
+                m_Parser.m_BatchParseFiles.pop_front();
+            }
         }
 
         if (m_Parser.m_IgnoreThreadEvents)
@@ -430,7 +432,7 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_IsPriority(false),
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
-    m_Timer(this, wxNewId()),
+    m_ReparseTimer(this, wxNewId()),
     m_BatchTimer(this, wxNewId()),
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
@@ -457,7 +459,7 @@ void Parser::ConnectEvents()
 {
     Connect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
-    Connect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Connect(m_ReparseTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnReparseTimer));
     Connect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
@@ -465,7 +467,7 @@ void Parser::DisconnectEvents()
 {
     Disconnect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
                (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
-    Disconnect(m_Timer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnTimer));
+    Disconnect(m_ReparseTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnReparseTimer));
     Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
@@ -795,8 +797,8 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     if (!Done())
         return false; // if still parsing, exit with error
 
-    if (m_Timer.IsRunning())
-        m_Timer.Stop();
+    if (m_ReparseTimer.IsRunning())
+        m_ReparseTimer.Stop();
 
     wxString file = UnixFilename(filename);
     if (isLocal)
@@ -810,7 +812,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     }
 
     m_NeedsReparse = true;
-    m_Timer.Start(reparse_timer_delay, wxTIMER_ONE_SHOT);
+    m_ReparseTimer.Start(reparse_timer_delay, wxTIMER_ONE_SHOT);
 
     return true;
 }
@@ -1139,7 +1141,7 @@ void Parser::EndStopWatch()
     }
 }
 
-void Parser::OnTimer(wxTimerEvent& event)
+void Parser::OnReparseTimer(wxTimerEvent& event)
 {
     ReparseModifiedFiles();
     event.Skip();
@@ -1201,13 +1203,16 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
     OnAllThreadsDone(evt);
 }
 
-bool Parser::ReparseModifiedFiles()
+void Parser::ReparseModifiedFiles()
 {
-    if (!m_NeedsReparse || !Done())
+    if (!Done())
     {
-        m_NeedsReparse = false;
-        return false;
+        m_ReparseTimer.Start(reparse_timer_delay, wxTIMER_ONE_SHOT);
+        return;
     }
+
+    if (!m_NeedsReparse)
+        m_NeedsReparse = true;
 
     std::queue<wxString> files_list;
     {
@@ -1235,17 +1240,16 @@ bool Parser::ReparseModifiedFiles()
         }
     }
 
+    if (!files_list.empty() && m_ParsingType == ptUndefined)
+        m_ParsingType = ptReparseFile;
+    else
+        m_NeedsReparse = false;
+
     while (!files_list.empty())
     {
-        wxString& filename = files_list.front();
-        AddParse(filename);
+        AddParse(files_list.front());
         files_list.pop();
     }
-
-    if (m_ParsingType == ptUndefined)
-        m_ParsingType = ptReparseFile;
-
-    return true;
 }
 
 bool Parser::IsFileParsed(const wxString& filename)
