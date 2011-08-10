@@ -542,10 +542,10 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 
 void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay)
 {
-    wxCriticalSectionLocker locker(s_ParserCritical);
-
-    if (!m_IsParsing && m_BatchTimer.IsRunning())
+    if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
+
+    wxCriticalSectionLocker locker(s_ParserCritical);
 
     // Do priority parse in sub thread
     m_PriorityHeaders.push_back(filename);
@@ -560,10 +560,10 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile,
 
 void Parser::AddBatchParse(const StringList& filenames, bool delay)
 {
-    wxCriticalSectionLocker locker(s_ParserCritical);
-
-    if (!m_IsParsing && m_BatchTimer.IsRunning())
+    if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
+
+    wxCriticalSectionLocker locker(s_ParserCritical);
 
     if (m_BatchParseFiles.empty())
         m_BatchParseFiles = filenames;
@@ -576,11 +576,10 @@ void Parser::AddBatchParse(const StringList& filenames, bool delay)
 
 void Parser::AddParse(const wxString& filename, bool delay)
 {
-    wxCriticalSectionLocker locker(s_ParserCritical);
-
-    if (!m_IsParsing && m_BatchTimer.IsRunning())
+    if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
+    wxCriticalSectionLocker locker(s_ParserCritical);
     m_BatchParseFiles.push_back(filename);
 
     if (!m_IsParsing)

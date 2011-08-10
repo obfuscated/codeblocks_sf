@@ -3587,9 +3587,6 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     if (!wxFile::Exists(editor->GetFilename()))
         return;
 
-    if (m_TimerEditorActivated.IsRunning())
-        m_TimerEditorActivated.Stop();
-
     m_LastEditor = curEditor;
     m_TimerEditorActivated.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
     TRACE(_T("Activated editor's file is %s"), m_LastEditor->GetFilename().wx_str());

@@ -1796,8 +1796,6 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
             m_NativeParser.CreateParser(project);
 
         // Update the Function toolbar
-        if (m_TimerFunctionsParsing.IsRunning())
-            m_TimerFunctionsParsing.Stop();
         m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
 
         // Update the class browser
@@ -1842,9 +1840,6 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 void CodeCompletion::OnProjectSaved(CodeBlocksEvent& event)
 {
     // reparse project (compiler search dirs might have changed)
-    if (m_TimerProjectSaved.IsRunning())
-        m_TimerProjectSaved.Stop();
-
     m_TimerProjectSaved.SetClientData(event.GetProject());
     // we need more time for waiting wxExecute in NativeParser::AddCompilerPredefinedMacros
     m_TimerProjectSaved.Start(200, wxTIMER_ONE_SHOT);
@@ -2394,10 +2389,6 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
         }
 
         m_NativeParser.OnEditorActivated(editor);
-
-        if (m_TimerFunctionsParsing.IsRunning())
-            m_TimerFunctionsParsing.Stop();
-
         m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
     }
 
@@ -3068,10 +3059,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             control->GotoPos(startPos + itemText.Length());
 
             if (needReparse)
-            {
-                m_TimerRealtimeParsing.Stop();
                 m_TimerRealtimeParsing.Start(1, wxTIMER_ONE_SHOT);
-            }
         }
     }
 
@@ -3182,18 +3170,13 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     {
         if (m_NeedReparse)
         {
-            m_TimerRealtimeParsing.Stop();
             m_TimerRealtimeParsing.Start(REALTIME_PARSING_DELAY, wxTIMER_ONE_SHOT);
             m_CurrentLength = control->GetLength();
             m_NeedReparse = false;
         }
 
         if (event.GetEventType() == wxEVT_SCI_UPDATEUI)
-        {
-            if (m_TimerToolbar.IsRunning())
-                m_TimerToolbar.Stop();
             m_TimerToolbar.Start(EDITOR_AND_LINE_INTERVAL, wxTIMER_ONE_SHOT);
-        }
     }
 
     // allow others to handle this event
