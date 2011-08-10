@@ -138,6 +138,8 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
                 if(ed && fileName == ed->GetFilename())
                 {
+                    if (!ed->GetModified())
+                        break;
                     EditorReuser *nl = new EditorReuser(file, ed->GetControl()->GetText());
                     return nl;
                 }
@@ -450,6 +452,6 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
 
     // For ANSI builds, dump the char* to file.
     return f.Write(data.c_str(), data.Length()) == data.Length();
-    
-#endif    
+
+#endif
 }
