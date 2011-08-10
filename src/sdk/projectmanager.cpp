@@ -1342,7 +1342,7 @@ void ProjectManager::UnfreezeTree(bool /*force*/)
 
 void ProjectManager::RebuildTree()
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown() || Manager::IsBatchBuild()) // saves a lot of time at startup for large projects
         return;
 
     FreezeTree();
