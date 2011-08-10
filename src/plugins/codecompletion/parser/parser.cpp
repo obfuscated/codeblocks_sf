@@ -540,7 +540,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     return Parse(buffer, isLocal, opts);
 }
 
-void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay)
+void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
 {
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
@@ -555,10 +555,10 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile,
         m_SystemPriorityHeaders.push_back(filename);
 
     if (!m_IsParsing)
-        m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
 }
 
-void Parser::AddBatchParse(const StringList& filenames, bool delay)
+void Parser::AddBatchParse(const StringList& filenames)
 {
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
@@ -571,10 +571,10 @@ void Parser::AddBatchParse(const StringList& filenames, bool delay)
         std::copy(filenames.begin(), filenames.end(), std::back_inserter(m_BatchParseFiles));
 
     if (!m_IsParsing)
-        m_BatchTimer.Start(delay ? batch_timer_delay : 1, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
 }
 
-void Parser::AddParse(const wxString& filename, bool delay)
+void Parser::AddParse(const wxString& filename)
 {
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
@@ -583,7 +583,7 @@ void Parser::AddParse(const wxString& filename, bool delay)
     m_BatchParseFiles.push_back(filename);
 
     if (!m_IsParsing)
-        m_BatchTimer.Start(delay ? batch_timer_delay : 10, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
 }
 
 bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
@@ -1035,7 +1035,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         || !m_PriorityHeaders.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
-        m_BatchTimer.Start(1, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
     }
 
 #if !CC_PARSER_PROFILE_TEST
@@ -1047,13 +1047,13 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
             RemoveFile(*it);
 
         // 2. Reparse system priority headers
-        AddBatchParse(m_SystemPriorityHeaders, true);
+        AddBatchParse(m_SystemPriorityHeaders);
 
         // 3. Clear
         m_SystemPriorityHeaders.clear();
 
         // 4. Begin batch parsing
-        m_BatchTimer.Start(1, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
     }
     else if (   (m_ParsingType == ptCreateParser || m_ParsingType == ptAddFileToParser)
              && m_NeedMarkFileAsLocal
@@ -1238,7 +1238,7 @@ bool Parser::ReparseModifiedFiles()
     while (!files_list.empty())
     {
         wxString& filename = files_list.front();
-        AddParse(filename, false);
+        AddParse(filename);
         files_list.pop();
     }
 

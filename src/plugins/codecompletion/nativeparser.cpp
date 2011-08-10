@@ -1399,7 +1399,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
                                     headers.size() + sources.size(),
                                     project ? project->GetTitle().wx_str() : _T("*NONE*")));
         parser->AddBatchParse(headers);
-        parser->AddBatchParse(sources, false);
+        parser->AddBatchParse(sources);
     }
 
     return true;

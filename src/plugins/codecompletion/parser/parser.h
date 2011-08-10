@@ -133,9 +133,9 @@ public:
     ParserBase();
     virtual ~ParserBase();
 
-    virtual void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay = true) {}
-    virtual void AddBatchParse(const StringList& filenames, bool delay = true) {}
-    virtual void AddParse(const wxString& filename, bool delay = true) {}
+    virtual void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile) {}
+    virtual void AddBatchParse(const StringList& filenames) {}
+    virtual void AddParse(const wxString& filename) {}
     virtual void AddPredefinedMacros(const wxString& defs) {}
 
     virtual bool ForceStartParsing() { return false; }
@@ -224,23 +224,20 @@ public:
     /** Add the priority header files, these files will be parsed with the sequence as they added.
      * @param filename input priority header file name
      * @param systemHeaderFile true if it is a system header file
-     * @param delay true if it use predefined delay time, otherwise it use 1 ms delay
      */
-    virtual void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile, bool delay = true);
+    virtual void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile);
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * Note that when some "#include" files were added to the batch parse,
      * their parsing sequence may be random.
      * @param filenames input files name array
-     * @param delay true if it use predefined delay time, otherwise it use 1 ms delay.
      */
-    virtual void AddBatchParse(const StringList& filenames, bool delay = true);
+    virtual void AddBatchParse(const StringList& filenames);
 
     /** Add one file to Batch mode Parsing
      * @param filenames input file name
-     * @param delay true if it use predefined delay time, otherwise it use 1 ms delay.
      */
-    virtual void AddParse(const wxString& filename, bool delay = true);
+    virtual void AddParse(const wxString& filename);
 
     virtual void AddPredefinedMacros(const wxString& defs);
 
