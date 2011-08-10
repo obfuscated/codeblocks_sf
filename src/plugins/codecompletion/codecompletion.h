@@ -143,11 +143,10 @@ private:
     void OnProjectFileRemoved(CodeBlocksEvent& event);
     void OnProjectFileChanged(CodeBlocksEvent& event);
     void OnUserListSelection(CodeBlocksEvent& event);
-    void OnEditorSave(CodeBlocksEvent& event);
+    void OnEditorSaveOrModified(CodeBlocksEvent& event);
     void OnEditorOpen(CodeBlocksEvent& event);
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
-    void OnEditorModified(CodeBlocksEvent& event);
     void OnCCLogger(wxCommandEvent& event);
     void OnCCDebugLogger(wxCommandEvent& event);
     void OnParserEnd(wxCommandEvent& event);
@@ -174,6 +173,9 @@ private:
     void EnableToolbarTools(bool enable = true);
     void OnRealtimeParsing(wxTimerEvent& event);
     void OnProjectSavedTimer(wxTimerEvent& event);
+    void OnReparsingTimer(wxTimerEvent& event);
+    void OnEditorActivatedTimer(wxTimerEvent& event);
+
     void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
 
     int                     m_PageIndex;
@@ -197,6 +199,8 @@ private:
     wxTimer                 m_TimerRealtimeParsing;
     wxTimer                 m_TimerToolbar;
     wxTimer                 m_TimerProjectSaved;
+    wxTimer                 m_TimerReparsing;
+    wxTimer                 m_TimerEditorActivated;
     cbEditor*               m_LastEditor;
     int                     m_ActiveCalltipsNest;
 
@@ -251,6 +255,10 @@ private:
 
     /** thread to collect header file names */
     std::list<SystemHeadersThread*> m_SystemHeadersThread;
+
+    /** map to collect all reparsing files */
+    typedef std::map<cbProject*, wxArrayString> ReparsingMap;
+    ReparsingMap m_ReparsingMap;
 
     DECLARE_EVENT_TABLE()
 };

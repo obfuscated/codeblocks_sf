@@ -85,6 +85,7 @@
 
 static wxCriticalSection s_HeadersCriticalSection;
 static wxString g_GlobalScope(_T("<global>"));
+const int g_EditorActivatedDelay = 200;
 
 // this auto-registers the plugin
 namespace
@@ -204,6 +205,8 @@ int idFunctionsParsingTimer     = wxNewId();
 int idRealtimeParsingTimer      = wxNewId();
 int idToolbarTimer              = wxNewId();
 int idProjectSavedTimer         = wxNewId();
+int idReparsingTimer            = wxNewId();
+int idTimerEditorActivated      = wxNewId();
 
 int idThreadUpdate              = wxNewId();
 int idThreadCompleted           = wxNewId();
@@ -244,6 +247,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_TIMER(idRealtimeParsingTimer,  CodeCompletion::OnRealtimeParsing      )
     EVT_TIMER(idToolbarTimer,          CodeCompletion::OnStartParsingFunctions)
     EVT_TIMER(idProjectSavedTimer,     CodeCompletion::OnProjectSavedTimer    )
+    EVT_TIMER(idReparsingTimer,        CodeCompletion::OnReparsingTimer       )
+    EVT_TIMER(idTimerEditorActivated,  CodeCompletion::OnEditorActivatedTimer )
 
     EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope   )
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
@@ -409,6 +414,8 @@ CodeCompletion::CodeCompletion() :
     m_TimerRealtimeParsing(this, idRealtimeParsingTimer),
     m_TimerToolbar(this, idToolbarTimer),
     m_TimerProjectSaved(this, idProjectSavedTimer),
+    m_TimerReparsing(this, idReparsingTimer),
+    m_TimerEditorActivated(this, idTimerEditorActivated),
     m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
@@ -895,12 +902,12 @@ void CodeCompletion::OnAttach()
     // register event sinks
     Manager* pm = Manager::Get();
 
-    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSave));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSaveOrModified));
+    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSaveOrModified));
     pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
     pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,       new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnValueTooltip));
     pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
-    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorModified));
 
     pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
     pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
@@ -1775,7 +1782,7 @@ void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
         return; // editor is invalid (probably closed already)
 
     // ask for code-completion *only* if the editor is still after the "." or "->" operator
-    if (m_LastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
+    if (m_LastEditor && m_LastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
     {
         DoCodeComplete();
         m_LastPosForCodeCompletion = -1; // reset it
@@ -1832,7 +1839,13 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
     {
         cbProject* project = event.GetProject();
         if (project && m_NativeParser.GetParserByProject(project))
+        {
+            ReparsingMap::iterator it = m_ReparsingMap.find(project);
+            if (it != m_ReparsingMap.end())
+                m_ReparsingMap.erase(it);
+
             m_NativeParser.DeleteParser(project);
+        }
     }
     event.Skip();
 }
@@ -1858,13 +1871,56 @@ void CodeCompletion::OnProjectSavedTimer(wxTimerEvent& event)
 
     if (IsAttached() && m_InitDone && project)
     {
-        if (   m_NativeParser.GetParserByProject(project)
-            && m_NativeParser.DeleteParser(project) )
+        if (project &&  m_NativeParser.GetParserByProject(project))
         {
-            CCLogger::Get()->DebugLog(_T("Reparsing project."));
+            ReparsingMap::iterator it = m_ReparsingMap.find(project);
+            if (it != m_ReparsingMap.end())
+                m_ReparsingMap.erase(it);
+            if (m_NativeParser.DeleteParser(project))
+            {
+                CCLogger::Get()->DebugLog(_T("Reparsing project."));
+                m_NativeParser.CreateParser(project);
+            }
+        }
+    }
+}
+
+void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
+{
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+    {
+        ReparsingMap::iterator it = m_ReparsingMap.begin();
+        if (it != m_ReparsingMap.end())
+        {
+            cbProject* project = it->first;
+            if (!project)
+                project = m_NativeParser.GetProjectByFilename(it->second[0]);
+
+            if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
+            {
+                for (size_t i = 0; i < it->second.GetCount(); ++i)
+                {
+                    const wxString& filename = it->second[i];
+                    if (m_NativeParser.ReparseFile(project, filename))
+                    {
+                        CCLogger::Get()->DebugLog(_T("Reparsing file : ") + filename);
+                        EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+                        if (editor && editor->GetFilename() == filename)
+                            ParseFunctionsAndFillToolbar(true);
+                    }
+                }
+            }
+
+            m_ReparsingMap.erase(it);
         }
 
-        m_NativeParser.CreateParser(project);
+        if (!m_ReparsingMap.empty())
+            m_TimerReparsing.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
+    }
+    else
+    {
+        m_ReparsingMap.clear();
+        CCLogger::Get()->DebugLog(_T("Reparsing files failed!"));
     }
 }
 
@@ -2325,25 +2381,20 @@ void CodeCompletion::UpdateFunctions(unsigned int scopeItem)
     m_Function->Thaw();
 }
 
-void CodeCompletion::OnEditorSave(CodeBlocksEvent& event)
+void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
 {
-    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
-        EditorBase* editor = event.GetEditor();
-        if (editor)
-        {
-            cbProject* project = event.GetProject();
-            const wxString filename = editor->GetFilename();
-            if (!project)
-                project = m_NativeParser.GetProjectByFilename(filename);
+        cbProject* project = event.GetProject();
+        ReparsingMap::iterator it = m_ReparsingMap.find(project);
+        if (it == m_ReparsingMap.end())
+            it = m_ReparsingMap.insert(std::make_pair(project, wxArrayString())).first;
 
-            if (project && m_NativeParser.ReparseFile(project, filename))
-            {
-                CCLogger::Get()->DebugLog(_T("Reparsing active editor ") + filename);
-                if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
-                    ParseFunctionsAndFillToolbar(true);
-            }
-        }
+        const wxString& filename = event.GetEditor()->GetFilename();
+        if (it->second.Index(filename) == wxNOT_FOUND)
+            it->second.Add(filename);
+
+        m_TimerReparsing.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();
@@ -2351,19 +2402,12 @@ void CodeCompletion::OnEditorSave(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 {
-    return;
-
     if (!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
     {
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
-        wxString filename;
         if (ed)
         {
-            filename = ed->GetFilename();
-            // wxString s_tmplog = _T("CC: OnEditorOpen... Filename: ");
-            // s_tmplog = s_tmplog + filename;
-            // CCLogger::Get()->DebugLog(s_tmplog);
-            FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
+            FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[ed->GetFilename()]);
             funcdata->parsed = false;
         }
     }
@@ -2371,25 +2415,39 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
     event.Skip();
 }
 
+void CodeCompletion::OnEditorActivatedTimer(wxTimerEvent& event)
+{
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (!editor || editor != m_LastEditor || editor->GetFilename().IsEmpty())
+    {
+        m_LastEditor = nullptr;
+        return;
+    }
+
+    if (   !m_LastFile.IsEmpty()
+        && m_LastFile != g_StartHereTitle
+        && m_LastFile == editor->GetFilename() )
+    {
+        return;
+    }
+
+    m_NativeParser.OnEditorActivated(editor);
+    m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
+}
+
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
     TRACE(_T("CodeCompletion::OnEditorActivated() : %d, %s, %s"), ProjectManager::IsBusy(),
           m_LastFile.wx_str(), event.GetEditor() ? event.GetEditor()->GetFilename().wx_str() : _T("NULL"));
-    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
-        EditorBase* editor = event.GetEditor();
-        if (!editor || editor->GetFilename().IsEmpty())
-            return;
+        if (event.GetEditor()->GetFilename() == g_StartHereTitle)
+            m_LastEditor = nullptr;
+        else
+            m_LastEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
 
-        if (   !m_LastFile.IsEmpty()
-            && m_LastFile != g_StartHereTitle
-            && m_LastFile == editor->GetFilename() )
-        {
-            return;
-        }
-
-        m_NativeParser.OnEditorActivated(editor);
-        m_TimerFunctionsParsing.Start(g_EditorActivatedDelay + 100, wxTIMER_ONE_SHOT);
+        m_TimerEditorActivated.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
     }
 
     event.Skip();
@@ -2397,12 +2455,22 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 {
+    if (m_LastEditor == event.GetEditor())
+    {
+        m_LastEditor = nullptr;
+        if (m_TimerEditorActivated.IsRunning())
+            m_TimerEditorActivated.Stop();
+    }
+
     m_NativeParser.OnEditorClosed(event.GetEditor());
     m_LastFile.Clear();
 
     EditorManager* edm = Manager::Get()->GetEditorManager();
     if (!edm)
+    {
+        event.Skip();
         return;
+    }
 
     wxString activeFile;
     EditorBase* eb = edm->GetActiveEditor();
@@ -2431,30 +2499,6 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
         m_AllFunctionsScopes[filename].parsed = false;
         if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfFile)
             m_NativeParser.UpdateClassBrowser();
-    }
-
-    event.Skip();
-}
-
-void CodeCompletion::OnEditorModified(CodeBlocksEvent& event)
-{
-    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
-    {
-        EditorBase* editor = event.GetEditor();
-        if (editor)
-        {
-            cbProject* project = event.GetProject();
-            const wxString filename = editor->GetFilename();
-            if (!project)
-                project = m_NativeParser.GetProjectByFilename(filename);
-
-            if (project && m_NativeParser.ReparseFile(project, filename))
-            {
-                CCLogger::Get()->DebugLog(_T("Reparsing when editor modified: ") + filename);
-                if (editor == Manager::Get()->GetEditorManager()->GetActiveEditor())
-                    ParseFunctionsAndFillToolbar(true);
-            }
-        }
     }
 
     event.Skip();

@@ -68,12 +68,10 @@
     #define TRACE2(format, args...)
 #endif
 
-int idTimerEditorActivated = wxNewId();
 int idTimerParsingOneByOne = wxNewId();
 
 bool s_DebugSmartSense           = false;
 const wxString g_StartHereTitle  = _("Start here");
-const int g_EditorActivatedDelay = 200;
 
 NativeParser::NativeParser() :
     m_EditorStartWord(-1),
@@ -84,12 +82,10 @@ NativeParser::NativeParser() :
     m_LastLine(-1),
     m_LastResult(-1),
     m_LastAISearchWasGlobal(false),
-    m_TimerEditorActivated(this, idTimerEditorActivated),
     m_TimerParsingOneByOne(this, idTimerParsingOneByOne),
     m_ClassBrowser(nullptr),
     m_ClassBrowserIsFloating(false),
     m_ImageList(nullptr),
-    m_LastEditor(nullptr),
     m_ParserPerWorkspace(false)
 {
     m_TempParser = new ParserBase;
@@ -190,7 +186,6 @@ NativeParser::NativeParser() :
 
     Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
-    Connect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
     Connect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
 }
 
@@ -198,7 +193,6 @@ NativeParser::~NativeParser()
 {
     Disconnect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserStart));
     Disconnect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NativeParser::OnParserEnd));
-    Disconnect(idTimerEditorActivated, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnEditorActivatedTimer));
     Disconnect(idTimerParsingOneByOne, wxEVT_TIMER, wxTimerEventHandler(NativeParser::OnParsingOneByOneTimer));
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
     RemoveClassBrowser();
@@ -3500,18 +3494,25 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
     }
 }
 
-void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
+void NativeParser::OnEditorActivated(EditorBase* editor)
 {
     cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!curEditor || curEditor != m_LastEditor || !m_LastEditor)
+    if (!curEditor)
     {
-        m_LastEditor = nullptr;
+        if (editor->GetFilename() == g_StartHereTitle)
+            SetParser(m_TempParser);
         return;
     }
 
+    if (curEditor != editor)
+        return;
+
+    if (!wxFile::Exists(editor->GetFilename()))
+        return;
+
     cbProject* project = GetProjectByEditor(curEditor);
     const wxString& lastFile = curEditor->GetFilename();
-    TRACE(_T("Activated timer file is %s"), lastFile.wx_str());
+    TRACE(_T("Activated editor's file is %s"), lastFile.wx_str());
     const int pos = m_StandaloneFiles.Index(lastFile);
     if (project && pos != wxNOT_FOUND)
     {
@@ -3568,46 +3569,12 @@ void NativeParser::OnEditorActivatedTimer(wxTimerEvent& event)
     }
 }
 
-void NativeParser::OnEditorActivated(EditorBase* editor)
-{
-    cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!curEditor)
-    {
-        if (editor->GetFilename() == g_StartHereTitle)
-        {
-            SetParser(m_TempParser);
-            m_LastEditor = nullptr;
-        }
-        return;
-    }
-
-    if (curEditor != editor || curEditor == m_LastEditor)
-        return;
-
-    if (!wxFile::Exists(editor->GetFilename()))
-        return;
-
-    m_LastEditor = curEditor;
-    m_TimerEditorActivated.Start(g_EditorActivatedDelay, wxTIMER_ONE_SHOT);
-    TRACE(_T("Activated editor's file is %s"), m_LastEditor->GetFilename().wx_str());
-}
-
 void NativeParser::OnEditorClosed(EditorBase* editor)
 {
-    if (m_LastEditor == editor)
-    {
-        m_LastEditor = nullptr;
-        if (m_TimerEditorActivated.IsRunning())
-            m_TimerEditorActivated.Stop();
-    }
-
     wxString filename = editor->GetFilename();
     TRACE(_T("Closed editor's file is %s"), filename.wx_str());
     if (filename == g_StartHereTitle)
-    {
-        m_LastEditor = nullptr;
         return;
-    }
 
     const int pos = m_StandaloneFiles.Index(filename);
     if (pos != wxNOT_FOUND)

@@ -473,11 +473,6 @@ private:
      */
     void OnParserEnd(wxCommandEvent& event);
 
-    /** Event handler when an editor activates, use a delayed timer event to avoid performance issue when
-     * user click "close all" menu item
-     */
-    void OnEditorActivatedTimer(wxTimerEvent& event);
-
     /** If use one parser per whole workspace, we need parse all project one by one */
     void OnParsingOneByOneTimer(wxTimerEvent& event);
 
@@ -602,7 +597,6 @@ private:
     wxString                     m_LastAIGlobalSearch;    /// same case like above, it holds the search string
     /* CC Search Member Variables => END */
 
-    wxTimer                      m_TimerEditorActivated;
     wxTimer                      m_TimerParsingOneByOne;
     ClassBrowser*                m_ClassBrowser;
     bool                         m_ClassBrowserIsFloating;
@@ -610,9 +604,7 @@ private:
     int                          m_HookId;               /// project loader hook ID
     wxImageList*                 m_ImageList;
 
-    cbEditor*                    m_LastEditor;
     wxArrayString                m_StandaloneFiles;
-
     std::map<wxString, wxString> m_TemplateMap;
     bool                         m_ParserPerWorkspace;
     std::set<cbProject*>         m_ParsedProjects;
