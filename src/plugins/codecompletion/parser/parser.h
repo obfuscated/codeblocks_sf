@@ -300,7 +300,7 @@ protected:
     void OnReparseTimer(wxTimerEvent& event);
     void OnBatchTimer(wxTimerEvent& event);
 
-    void PostParserEvent(ParsingType type, int id, const wxString& info = wxEmptyString);
+    void ProcessParserEvent(ParsingType type, int id, const wxString& info = wxEmptyString);
 
 private:
     void ConnectEvents();

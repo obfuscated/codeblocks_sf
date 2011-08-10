@@ -3370,9 +3370,13 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
         break;
 
     case ptAddFileToParser:
+        CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), project
+                                    ? project->GetTitle().wx_str() : _T("*NONE*")));
         break;
 
     case ptReparseFile:
+        CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), project
+                                    ? project->GetTitle().wx_str() : _T("*NONE*")));
         break;
 
     case ptUndefined:
@@ -3390,8 +3394,6 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
 
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
-    CCLogger::Get()->DebugLog(_("NativeParser received parser end event."));
-
     ParserBase* parser = reinterpret_cast<ParserBase*>(event.GetEventObject());
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
     const ParsingType type = static_cast<ParsingType>(event.GetInt());
@@ -3409,13 +3411,9 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
         break;
 
     case ptAddFileToParser:
-        CCLogger::Get()->DebugLog(F(_T("Add files to parser for project '%s'"), project
-                                    ? project->GetTitle().wx_str() : _T("*NONE*")));
         break;
 
     case ptReparseFile:
-        CCLogger::Get()->DebugLog(F(_T("Reparsing modified files for project '%s'"), project
-                                    ? project->GetTitle().wx_str() : _T("*NONE*")));
         if (parser != m_Parser)
         {
             std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();

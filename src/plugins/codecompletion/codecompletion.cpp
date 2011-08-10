@@ -3291,8 +3291,6 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
-    CCLogger::Get()->DebugLog(_("CodeCompletion received parser end event."));
-
     ParsingType type = static_cast<ParsingType>(event.GetInt());
     if (type == ptCreateParser)
     {
