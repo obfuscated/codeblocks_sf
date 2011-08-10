@@ -1001,12 +1001,14 @@ void Parser::AddPredefinedMacros(const wxString& defs)
 
 bool Parser::ForceStartParsing()
 {
-    wxCriticalSectionLocker locker(s_ParserCritical);
     if (!m_IsParsing && !m_BatchTimer.IsRunning() && !Done())
     {
-        m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
         if (m_ParsingType == ptUndefined)
+        {
+            wxCriticalSectionLocker locker(s_ParserCritical);
             m_ParsingType = ptAddFileToParser;
+        }
+        m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
         return true;
     }
     else
