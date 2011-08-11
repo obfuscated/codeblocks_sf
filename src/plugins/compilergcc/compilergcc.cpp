@@ -3438,7 +3438,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
                     AskForActiveProject();
                     project = m_Project;
                 }
-                last_error_file = project->GetExecutionDir() + last_error_file.GetFullPath();
+                last_error_file = project->GetExecutionDir() + wxFileName::GetPathSeparator() + last_error_file.GetFullPath();
                 last_error_file.MakeRelativeTo(project->GetBasePath());
                 last_error_filename = last_error_file.GetFullPath();
             }
