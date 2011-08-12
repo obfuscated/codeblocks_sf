@@ -144,6 +144,13 @@ case $WX_BASENAME in
 				])
 			])
 
+            dnl acoording to pkg-config's manpage this call is bsolutely needed:
+            dnl
+            dnl "Note that if there is a possibility the first call to
+            dnl PKG_CHECK_MODULES might not happen, you should be sure
+            dnl to include an explicit call to PKG_PROG_PKG_CONFIG"
+			PKG_PROG_PKG_CONFIG
+
 			if test "x$BUILD_SPELLCHECKER_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 					PKG_CHECK_MODULES([HUNSPELL], [hunspell])
