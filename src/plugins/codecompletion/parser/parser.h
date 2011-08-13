@@ -137,9 +137,7 @@ public:
     virtual void AddBatchParse(const StringList& filenames) {}
     virtual void AddParse(const wxString& filename) {}
     virtual void AddPredefinedMacros(const wxString& defs) {}
-
-    virtual bool ForceStartParsing() { return false; }
-    virtual bool SetParsingProject(cbProject* project) { return false; }
+    virtual bool UpdateParsingProject(cbProject* project) { return false; }
 
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,
@@ -241,11 +239,8 @@ public:
 
     virtual void AddPredefinedMacros(const wxString& defs);
 
-    /** Force start parsing if needed */
-    virtual bool ForceStartParsing();
-
     /** set the associated C::B project pointer. (only used by one parser for whole workspace) */
-    virtual bool SetParsingProject(cbProject* project);
+    virtual bool UpdateParsingProject(cbProject* project);
 
     /** Must add a locker before call all named ParseBufferXXX fuctions
      * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);

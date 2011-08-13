@@ -809,7 +809,12 @@ bool Parser::AddFile(const wxString& filename, cbProject* project, bool isLocal)
 bool Parser::Reparse(const wxString& filename, bool isLocal)
 {
     if (!Done())
-        return false; // if still parsing, exit with error
+    {
+        wxString msg(_T("Parser::Reparse : The Parser is not done."));
+        msg += NotDoneReason();
+        CCLogger::Get()->DebugLog(msg);
+        return false;
+    }
 
     if (m_ReparseTimer.IsRunning())
         m_ReparseTimer.Stop();
@@ -999,26 +1004,17 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     m_PredefinedMacros << defs;
 }
 
-bool Parser::ForceStartParsing()
+bool Parser::UpdateParsingProject(cbProject* project)
 {
-    if (!m_IsParsing && !m_BatchTimer.IsRunning() && !Done())
-    {
-        if (m_ParsingType == ptUndefined)
-        {
-            wxCriticalSectionLocker locker(s_ParserCritical);
-            m_ParsingType = ptAddFileToParser;
-        }
-        m_BatchTimer.Start(100, wxTIMER_ONE_SHOT);
+    if (m_Project == project)
         return true;
+    else if (!Done())
+    {
+        wxString msg(_T("Parser::UpdateParsingProject : The Parser is not done."));
+        msg += NotDoneReason();
+        CCLogger::Get()->DebugLog(msg);
+        return false;
     }
-    else
-        return false;
-}
-
-bool Parser::SetParsingProject(cbProject* project)
-{
-    if (!Done())
-        return false;
     else
     {
         m_Project = project;
@@ -1218,6 +1214,9 @@ void Parser::ReparseModifiedFiles()
 {
     if (!Done())
     {
+        wxString msg(_T("Parser::ReparseModifiedFiles : The Parser is not done."));
+        msg += NotDoneReason();
+        CCLogger::Get()->DebugLog(msg);
         m_ReparseTimer.Start(reparse_timer_delay, wxTIMER_ONE_SHOT);
         return;
     }

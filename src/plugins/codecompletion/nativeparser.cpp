@@ -1218,7 +1218,7 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
     if (!parser)
         return false;
 
-    if (!parser->SetParsingProject(project))
+    if (!parser->UpdateParsingProject(project))
         return false;
 
     return parser->Reparse(filename);
@@ -1236,7 +1236,7 @@ bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename,
             return false;
     }
 
-    if (!parser->SetParsingProject(project))
+    if (!parser->UpdateParsingProject(project))
         return false;
 
     return parser->AddFile(filename, project);
@@ -3451,12 +3451,11 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
     std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
     if (m_ParserPerWorkspace)
     {
-        bool project_added = false;
         // If there is no parser and an active editor file can be obtained, parse the file according the active project
         if (!info.second && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
         {
             AddProjectToParser(info.first);
-            project_added = true;
+            CCLogger::Get()->DebugLog(_T("Add active editor's project to parser."));
         }
         // Otherwise, there is a parser already present
         else
@@ -3466,7 +3465,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
             if (m_ParsedProjects.find(activeProject) == m_ParsedProjects.end())
             {
                 AddProjectToParser(activeProject);
-                project_added = true;
+                CCLogger::Get()->DebugLog(_T("Add active project to parser."));
             }
             // Else: add remaining projects one-by-one (if any)
             else
@@ -3478,14 +3477,12 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
                     if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
                     {
                         AddProjectToParser(projs->Item(i));
-                        project_added = true;
+                        CCLogger::Get()->DebugLog(_T("Add next project to parser."));
                         break;
                     }
                 }
             }
         }
-        if (!project_added)
-            CCLogger::Get()->DebugLog(_T("No more projects to add to parser."));
     }
     else if (info.first && !info.second)
     {
@@ -3991,7 +3988,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
     parser = GetParserByProject(project);
     if (!parser)
         return;
-    else if (!parser->SetParsingProject(project))
+    else if (!parser->UpdateParsingProject(project))
     {
         m_ParsedProjects.erase(project);
         return;
@@ -4013,14 +4010,14 @@ void NativeParser::AddProjectToParser(cbProject* project)
 
     if (project)
     {
-        size_t num_files = 0;
+        size_t fileCount = 0;
         for (int i = 0; i < project->GetFilesCount(); ++i)
         {
             ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
-                AddFileToParser(project, pf->file.GetFullPath(), parser);
-                num_files++;
+                if (AddFileToParser(project, pf->file.GetFullPath(), parser))
+                    ++fileCount;
             }
         }
         for (int i = 0; i < project->GetFilesCount(); ++i)
@@ -4028,15 +4025,12 @@ void NativeParser::AddProjectToParser(cbProject* project)
             ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
             {
-                AddFileToParser(project, pf->file.GetFullPath(), parser);
-                num_files++;
+                if (AddFileToParser(project, pf->file.GetFullPath(), parser))
+                    fileCount++;
             }
         }
 
-        if (parser->ForceStartParsing())
-            CCLogger::Get()->DebugLog(_T("Force start parsing done!"));
-
-        wxString log(F(_("Done adding %d files of project (%s) to parser."), num_files,
+        wxString log(F(_("Done adding %d files of project (%s) to parser."), fileCount,
                      project ? project->GetTitle().wx_str() : _T("*NONE*")));
         CCLogger::Get()->DebugLog(log);
     }
