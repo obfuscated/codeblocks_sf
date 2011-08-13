@@ -395,7 +395,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
             buffer << _T("// ");
             break;
         case tdctDoxygenC:
-            buffer << _T(" * ");
+            buffer << _T("/** ");
             break;
         case tdctDoxygenCPP:
             buffer << _T("/// ");
@@ -419,7 +419,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
 
     wxString text = dlg.GetText();
-    if (CmtType != tdctC)
+    if ( (CmtType != tdctC) && (CmtType != tdctDoxygenC) )
     {
         // make sure that multi-line notes, don't break the todo
         if (text.Replace(_T("\r\n"), _T("\\\r\n")) == 0)
@@ -432,10 +432,10 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     // add the actual text
     buffer << text;
 
-    if (CmtType == tdctWarning || CmtType == tdctError)
+    if ( (CmtType == tdctWarning) || (CmtType == tdctError) )
         buffer << _T("");
 
-    else if (CmtType == tdctC)
+    else if ( (CmtType == tdctC) || (CmtType == tdctDoxygenC) )
         buffer << _T(" */");
 
     // add newline char(s), only if dlg.GetPosition() != tdpCurrent
