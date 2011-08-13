@@ -25,7 +25,7 @@ extern wxArrayString     s_includeDirs;
 extern wxArrayString     s_filesParsed;
 extern wxBusyInfo*       s_busyInfo;
 
-wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
+wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
 {
     wxString log;
     log.Printf(wxT("ParserDummy() : GetFullFileName() : Querying full file name for source '%s', target '%s' (isGlobal=%s)."),
@@ -56,20 +56,8 @@ wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool 
     return wxEmptyString;
 }
 
-void Parser::DoParseFile(const wxString& filename, bool isGlobal)
-{
-    wxString log;
-    log.Printf(wxT("ParserDummy() : DoParseFile() : Parse file request for file name '%s' (isGlobal=%s)"),
-               filename.wx_str(), (isGlobal ? wxT("true") : wxT("false")));
-    CCLogger::Get()->Log(log);
 
-    if (filename.IsEmpty())
-        return;
-
-    Parse(filename, !isGlobal);
-}
-
-bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
+bool Parse(const wxString& filename, bool isLocal)
 {
     wxString log;
     log.Printf(wxT("ParserDummy() : Parse() : Parsing file '%s' (isLocal=%s)."),
@@ -109,12 +97,25 @@ bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
     return true;
 }
 
-Parser::Parser(wxEvtHandler* pEvt, cbProject* project) : m_Pool(NULL, 0, 0)
+bool ParserBase::ParseFile(const wxString& filename, bool isGlobal)
 {
-    CCLogger::Get()->Log(wxT("ParserDummy() : Parser() : Instantiation of Parser object."));
+    wxString log;
+    log.Printf(wxT("ParserDummy() : DoParseFile() : Parse file request for file name '%s' (isGlobal=%s)"),
+               filename.wx_str(), (isGlobal ? wxT("true") : wxT("false")));
+    CCLogger::Get()->Log(log);
+
+    if (filename.IsEmpty())
+        return false;
+
+    return Parse(filename, !isGlobal);
 }
 
-Parser::~Parser()
+ParserBase::ParserBase()
 {
-    CCLogger::Get()->Log(wxT("ParserDummy() : ~Parser() : Destruction of Parser object."));
+    CCLogger::Get()->Log(wxT("ParserDummy() : ParserBase() : Instantiation of Parser object."));
+}
+
+ParserBase::~ParserBase()
+{
+    CCLogger::Get()->Log(wxT("ParserDummy() : ~ParserBase() : Destruction of Parser object."));
 }
