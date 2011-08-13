@@ -163,7 +163,7 @@ namespace ParserConsts
     const wxString kw_protected    (_T("protected"));
 };
 
-ParserThread::ParserThread(Parser* parent,
+ParserThread::ParserThread(ParserBase* parent,
                            const wxString& bufferOrFilename,
                            bool isLocal,
                            ParserThreadOptions& parserThreadOptions,
@@ -1416,7 +1416,7 @@ void ParserThread::HandleIncludes()
             }
 
             TRACE(_T("HandleIncludes() : Adding include file '%s'"), real_filename.wx_str());
-            m_Parent->DoParseFile(real_filename, isGlobal);
+            m_Parent->ParseFile(real_filename, isGlobal);
         }
         while (false);
     }

@@ -31,7 +31,7 @@ struct NameSpace
 
 typedef std::vector<NameSpace> NameSpaceVec;
 
-class Parser;
+class ParserBase;
 
 struct ParserThreadOptions
 {
@@ -97,7 +97,7 @@ public:
       * @param parserThreadOptions parser thread options, see ParserThreadOptions Class for details.
       * @param tokensTree it is the tree structure holding all the tokens, ParserThread will add every token when it parsed.
       */
-    ParserThread(Parser* parent,
+    ParserThread(ParserBase* parent,
                  const wxString& bufferOrFilename,
                  bool isLocal,
                  ParserThreadOptions& parserThreadOptions,
@@ -290,7 +290,7 @@ private:
     Tokenizer            m_Tokenizer;
 
     /** a pointer to its parent Parser object */
-    Parser*              m_Parent;
+    ParserBase*          m_Parent;
 
     /** a pointer to the token tree, all the tokens will be added to that tree structure */
     TokensTree*          m_TokensTree;

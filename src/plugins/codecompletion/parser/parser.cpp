@@ -198,6 +198,11 @@ ParserBase::~ParserBase()
     Delete(m_TempTokensTree);
 }
 
+bool ParserBase::ParseFile(const wxString& filename, bool isGlobal)
+{
+    return false;
+}
+
 size_t ParserBase::GetFilesCount()
 {
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -1110,14 +1115,14 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     }
 }
 
-void Parser::DoParseFile(const wxString& filename, bool isGlobal)
+bool Parser::ParseFile(const wxString& filename, bool isGlobal)
 {
     if (   (!isGlobal && !m_Options.followLocalIncludes)
         || ( isGlobal && !m_Options.followGlobalIncludes) )
-        return;
+        return false;
 
     if (filename.IsEmpty())
-        return;
+        return false;
 
     bool locked = false;
     if (m_IsParsing)
@@ -1125,9 +1130,10 @@ void Parser::DoParseFile(const wxString& filename, bool isGlobal)
         s_ParserCritical.Enter();
         locked = true;
     }
-    Parse(filename, !isGlobal);
+    const bool ret = Parse(filename, !isGlobal);
     if (locked)
         s_ParserCritical.Leave();
+    return ret;
 }
 
 void Parser::StartStopWatch()
