@@ -115,7 +115,6 @@ public:
     void RereadOptions(); // called by the configuration panel
 
 private:
-
     /** Update CC's ToolBar*/
     void UpdateToolBar();
 
@@ -156,10 +155,7 @@ private:
     void OnCurrentProjectReparse(wxCommandEvent& event);
     void OnSelectedProjectReparse(wxCommandEvent& event);
     void OnSelectedFileReparse(wxCommandEvent& event);
-    /** TODO */
     void OnAppDoneStartup(CodeBlocksEvent& event);
-
-    void OnCodeCompleteTimer(wxTimerEvent& event);
 
     /** event handlers for the standard events sent from sdk core*/
     void OnWorkspaceChanged(CodeBlocksEvent& event);
@@ -169,8 +165,6 @@ private:
     void OnProjectFileAdded(CodeBlocksEvent& event);
     void OnProjectFileRemoved(CodeBlocksEvent& event);
     void OnProjectFileChanged(CodeBlocksEvent& event);
-    /** Not used*/
-    void OnUserListSelection(CodeBlocksEvent& event);
     /** handle the save/modify event from the sdk*/
     void OnEditorSaveOrModified(CodeBlocksEvent& event);
     /** handle editor open event from sdk*/
@@ -199,9 +193,6 @@ private:
     /** show code suggestion list*/
     void DoCodeComplete();
 
-    /** Not used*/
-    void DoInsertCodeCompleteToken(wxString tokName);
-
     /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();
     /** ContextMenu->Insert-> All class methods*/
@@ -214,9 +205,7 @@ private:
     void GotoFunctionPrevNext(bool next = false);
     /** help method in finding the namespace position in the vector for the namespace containing the current line*/
     int NameSpacePosition() const;
-    /** TODO*/
-    void OnStartParsingFunctions(wxTimerEvent& event);
-    void OnFindFunctionAndUpdate(wxTimerEvent& event);
+
     /** Toolbar select event */
     void OnScope(wxCommandEvent& event);
     /** Toolbar select event */
@@ -227,13 +216,21 @@ private:
     void UpdateFunctions(unsigned int scopeItem);
     void EnableToolbarTools(bool enable = true);
 
+    /** delayed for code completion */
+    void OnCodeCompleteTimer(wxTimerEvent& event);
+
+    /** delayed for toolbar update */
+    void OnToolbarTimer(wxTimerEvent& event);
+
     /** event fired from the editoevent hook function to indicate parsing while editing*/
-    void OnRealtimeParsing(wxTimerEvent& event);
+    void OnRealtimeParsingTimer(wxTimerEvent& event);
 
     /** delayed running after saving project, while many projects' saving */
     void OnProjectSavedTimer(wxTimerEvent& event);
 
+    /** delayed for reparsing */
     void OnReparsingTimer(wxTimerEvent& event);
+
     /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
 
@@ -265,11 +262,9 @@ private:
 
     /** delay for showing the suggesting list*/
     wxTimer                 m_TimerCodeCompletion;
-    /** timer for toolbar*/
-    wxTimer                 m_TimerFunctionsParsing;
     /** timer triggered by editor hook function to delay the realtime parse*/
     wxTimer                 m_TimerRealtimeParsing;
-    /** time delay after wxEVT_SCI_UPDATEUI event to update the toolbar*/
+    /** timer for toolbar*/
     wxTimer                 m_TimerToolbar;
     /** delay after project saved event*/
     wxTimer                 m_TimerProjectSaved;
@@ -299,7 +294,9 @@ private:
     /** this is a "filename->info" map containing all the opening files choice info*/
     FunctionsScopeMap       m_AllFunctionsScopes;
     /** indicate whether the CC's toolbar need a refresh */
-    bool                    m_ToolbarChanged;
+    bool                    m_ToolbarNeedRefresh;
+    /** force update toolbar */
+    bool                    m_ForceUpdateToolbar;
 
     /** current caret line */
     int                     m_CurrentLine;
