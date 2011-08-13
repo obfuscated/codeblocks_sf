@@ -2040,6 +2040,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
+
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
     if (compiler)
         compiler->Init(m_Project);
@@ -2934,6 +2935,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 //        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if (!pf)]-----"));
         Manager::Get()->GetMacrosManager()->Reset();
+
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
         if (compiler)
             compiler->Init(0);
@@ -2968,11 +2970,11 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
         if (compiler)
             compiler->Init(m_Project);
 
-        DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_Project, m_PageIndex);
+        DirectCommands dc(this, compiler, m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         AddToCommandQueue(compile);
     }
