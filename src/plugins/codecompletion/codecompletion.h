@@ -211,7 +211,7 @@ private:
     /** Toolbar select event */
     void OnFunction(wxCommandEvent& event);
 
-    void ParseFunctionsAndFillToolbar(bool force = false);
+    void ParseFunctionsAndFillToolbar();
     void FindFunctionAndUpdate(int currentLine);
     void UpdateFunctions(unsigned int scopeItem);
     void EnableToolbarTools(bool enable = true);
@@ -296,7 +296,7 @@ private:
     /** indicate whether the CC's toolbar need a refresh */
     bool                    m_ToolbarNeedRefresh;
     /** force update toolbar */
-    bool                    m_ForceUpdateToolbar;
+    bool                    m_ToolbarNeedReparse;
 
     /** current caret line */
     int                     m_CurrentLine;
