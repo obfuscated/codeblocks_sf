@@ -3497,23 +3497,21 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 
 void NativeParser::OnEditorActivated(EditorBase* editor)
 {
-    cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!curEditor)
+    const wxString& lastFile = editor->GetFilename();
+    if (lastFile == g_StartHereTitle)
     {
-        if (editor->GetFilename() == g_StartHereTitle)
-            SetParser(m_TempParser);
+        SetParser(m_TempParser);
         return;
     }
 
-    if (curEditor != editor)
+    cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(editor);
+    if (!curEditor)
         return;
 
-    if (!wxFile::Exists(editor->GetFilename()))
+    if (!wxFile::Exists(lastFile))
         return;
 
     cbProject* project = GetProjectByEditor(curEditor);
-    const wxString& lastFile = curEditor->GetFilename();
-    TRACE(_T("Activated editor's file is %s"), lastFile.wx_str());
     const int pos = m_StandaloneFiles.Index(lastFile);
     if (project && pos != wxNOT_FOUND)
     {
@@ -3570,7 +3568,6 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
 void NativeParser::OnEditorClosed(EditorBase* editor)
 {
     wxString filename = editor->GetFilename();
-    TRACE(_T("Closed editor's file is %s"), filename.wx_str());
     if (filename == g_StartHereTitle)
         return;
 

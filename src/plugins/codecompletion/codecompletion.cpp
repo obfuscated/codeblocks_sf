@@ -57,7 +57,7 @@
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
 
-#define CC_CODECOMPLETION_DEBUG_OUTPUT 0
+#define CC_CODECOMPLETION_DEBUG_OUTPUT 1
 
 #if (CC_GLOBAL_DEBUG_OUTPUT)
     #undef CC_CODECOMPLETION_DEBUG_OUTPUT
@@ -2411,7 +2411,8 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 void CodeCompletion::OnEditorActivatedTimer(wxTimerEvent& event)
 {
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (!editor || editor != m_LastEditor || editor->GetFilename().IsEmpty())
+    const wxString& curFile = editor->GetFilename();
+    if (!editor || editor != m_LastEditor || curFile.IsEmpty())
     {
         m_LastEditor = nullptr;
         return;
@@ -2419,13 +2420,15 @@ void CodeCompletion::OnEditorActivatedTimer(wxTimerEvent& event)
 
     if (   !m_LastFile.IsEmpty()
         && m_LastFile != g_StartHereTitle
-        && m_LastFile == editor->GetFilename() )
+        && m_LastFile == curFile )
     {
+        TRACE(_T("Last activated file is %s"), curFile.wx_str());
         return;
     }
 
     m_NativeParser.OnEditorActivated(editor);
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+    TRACE(_T("Current activated file is %s"), curFile.wx_str());
 }
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
@@ -2438,6 +2441,9 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
             m_LastEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
 
         m_TimerEditorActivated.Start(EDITOR_ACTIVATED_DELAY, wxTIMER_ONE_SHOT);
+
+        if (m_TimerToolbar.IsRunning())
+            m_TimerToolbar.Stop();
     }
 
     event.Skip();
@@ -2445,16 +2451,6 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 {
-    if (m_LastEditor == event.GetEditor())
-    {
-        m_LastEditor = nullptr;
-        if (m_TimerEditorActivated.IsRunning())
-            m_TimerEditorActivated.Stop();
-    }
-
-    m_NativeParser.OnEditorClosed(event.GetEditor());
-    m_LastFile.Clear();
-
     EditorManager* edm = Manager::Get()->GetEditorManager();
     if (!edm)
     {
@@ -2466,6 +2462,18 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
     EditorBase* eb = edm->GetActiveEditor();
     if (eb)
         activeFile = eb->GetFilename();
+
+    TRACE(_T("Closed editor's file is %s"), activeFile.wx_str());
+
+    if (m_LastEditor == event.GetEditor())
+    {
+        m_LastEditor = nullptr;
+        if (m_TimerEditorActivated.IsRunning())
+            m_TimerEditorActivated.Stop();
+    }
+
+    m_NativeParser.OnEditorClosed(event.GetEditor());
+    m_LastFile.Clear();
 
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
@@ -3203,7 +3211,10 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         if (event.GetEventType() == wxEVT_SCI_UPDATEUI)
         {
             m_ToolbarNeedRefresh = true;
-            m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+            if (m_TimerEditorActivated.IsRunning())
+                m_TimerToolbar.Start(EDITOR_ACTIVATED_DELAY + 1, wxTIMER_ONE_SHOT);
+            else
+                m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
         }
     }
 
