@@ -561,6 +561,18 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     return Parse(buffer, isLocal, opts);
 }
 
+void Parser::AddPredefinedMacros(const wxString& defs)
+{
+    if (m_BatchTimer.IsRunning())
+        m_BatchTimer.Stop();
+
+    wxCriticalSectionLocker locker(s_ParserCritical);
+    m_PredefinedMacros << defs;
+
+    if (!m_IsParsing)
+        m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
+}
+
 void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
 {
     if (m_BatchTimer.IsRunning())
@@ -1001,12 +1013,6 @@ void Parser::TerminateAllThreads()
     m_Pool.AbortAllTasks();
     while (!m_Pool.Done())
         wxMilliSleep(1);
-}
-
-void Parser::AddPredefinedMacros(const wxString& defs)
-{
-    wxCriticalSectionLocker locker(s_ParserCritical);
-    m_PredefinedMacros << defs;
 }
 
 bool Parser::UpdateParsingProject(cbProject* project)

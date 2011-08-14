@@ -57,7 +57,7 @@
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
 
-#define CC_CODECOMPLETION_DEBUG_OUTPUT 1
+#define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 
 #if (CC_GLOBAL_DEBUG_OUTPUT)
     #undef CC_CODECOMPLETION_DEBUG_OUTPUT
