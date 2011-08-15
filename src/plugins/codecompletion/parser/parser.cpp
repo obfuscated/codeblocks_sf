@@ -569,6 +569,9 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     wxCriticalSectionLocker locker(s_ParserCritical);
     m_PredefinedMacros << defs;
 
+    if (m_ParsingType == ptUndefined)
+        m_ParsingType = ptCreateParser;
+
     if (!m_IsParsing)
         m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
 }
@@ -587,6 +590,9 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
     if (systemHeaderFile)
         m_SystemPriorityHeaders.push_back(filename);
 
+    if (m_ParsingType == ptUndefined)
+        m_ParsingType = ptCreateParser;
+
     if (!m_IsParsing)
         m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
 }
@@ -602,6 +608,9 @@ void Parser::AddBatchParse(const StringList& filenames)
         m_BatchParseFiles = filenames;
     else
         std::copy(filenames.begin(), filenames.end(), std::back_inserter(m_BatchParseFiles));
+
+    if (m_ParsingType == ptUndefined)
+        m_ParsingType = ptCreateParser;
 
     if (!m_IsParsing)
         m_BatchTimer.Start(batch_timer_delay, wxTIMER_ONE_SHOT);
