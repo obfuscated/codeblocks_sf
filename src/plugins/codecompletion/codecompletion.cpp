@@ -2645,10 +2645,10 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         return;
 
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    m_NativeParser.GetTempParser().ParseBufferForFunctions(ed->GetControl()->GetText());
+    m_NativeParser.GetParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
     wxArrayString funcs;
-    TokensTree* tmptree = m_NativeParser.GetTempParser().GetTempTokensTree();
+    TokensTree* tmptree = m_NativeParser.GetParser().GetTempTokensTree();
     if (tmptree->empty())
     {
         cbMessageBox(_("No functions parsed in this file..."));
@@ -2678,7 +2678,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         Token* token = tmpsearch.GetItem(sel);
         if (token)
         {
-            CCLogger::Get()->DebugLog(F(_T("Token found at line %d"), token->m_Line));
+            TRACE(F(_T("Token found at line %d"), token->m_Line));
             ed->GotoLine(token->m_Line - 1);
         }
     }

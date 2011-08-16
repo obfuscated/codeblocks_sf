@@ -87,7 +87,7 @@ END_EVENT_TABLE()
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc) :
     m_NativeParsers(np),
     m_CodeCompletion(cc),
-    m_Parser(np->GetTempParser())
+    m_Parser(np->GetParser())
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 

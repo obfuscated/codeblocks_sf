@@ -108,8 +108,6 @@ public:
 
     /** return a reference to the currently active Parser object */
     ParserBase& GetParser() { return *m_Parser; }
-    /** return a reference to the temporary Parser object*/
-    ParserBase& GetTempParser() { return *m_TempParser; }
 
     /** return the Parser pointer corresponding to the input C::B project
      * @param project input C::B project pointer
