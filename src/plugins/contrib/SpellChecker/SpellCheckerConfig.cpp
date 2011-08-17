@@ -95,6 +95,11 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
             cont = dir.GetNext(&strfilename);
         }
     }
+    // disable online checker if there are no dictionaries found
+    if (m_dictionaries.empty())
+    {
+      m_EnableOnlineChecker = false;
+    }
 }
 const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
 {
