@@ -403,6 +403,21 @@ private:
     };
 };
 
+void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line)
+{
+    if (!editor)
+        return;
+    cbStyledTextCtrl* control = editor->GetControl();
+    control->GotoLine(line);
+    const int start = control->GetCurrentPos();
+    const int end = start + control->LineLength(line);
+    int tokenPos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, nullptr);
+    if (tokenPos != wxSCI_INVALID_POSITION)
+        control->SetSelectionInt(tokenPos, tokenPos + target.Len());
+    else
+        control->GotoPos(start);
+}
+
 CodeCompletion::CodeCompletion() :
     m_InitDone(false),
     m_CodeRefactoring(m_NativeParser),
@@ -2190,6 +2205,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
                     if (fs.Scope.IsEmpty())
                         fs.Scope = g_GlobalScope;
                     wxString result = token->m_Name;
+                    fs.ShortName = result;
                     result << token->GetFormattedArgs();
                     if (!token->m_Type.IsEmpty())
                         result << _T(" : ") << token->m_Type;
@@ -2512,17 +2528,22 @@ void CodeCompletion::OnToolbarTimer(wxTimerEvent& event)
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
-    event.Skip();
 
     if (IsAttached() && m_InitDone)
     {
         if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
+        {
+            event.Skip();
             return;
+        }
 
         EditorBase* base = event.GetEditor();
         cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
         if (!ed || ed->IsContextMenuOpened())
+        {
+            event.Skip();
             return;
+        }
 
         if (ed->GetControl()->CallTipActive())
             ed->GetControl()->CallTipCancel();
@@ -2531,18 +2552,27 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         *       The solution may not the best one and it requires the editor
         *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
         if (wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()))
+        {
+            event.Skip();
             return;
+        }
 
         // ignore comments, strings, preprocesor, etc
         int style = event.GetInt();
         if (   (style != wxSCI_C_DEFAULT)
             && (style != wxSCI_C_OPERATOR)
             && (style != wxSCI_C_IDENTIFIER) )
+        {
+            event.Skip();
             return;
+        }
 
         int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
         if (pos < 0 || pos >= ed->GetControl()->GetLength())
+        {
+            event.Skip();
             return;
+        }
 
         TokenIdxSet result;
         int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
@@ -2569,10 +2599,12 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
             {
                 msg.RemoveLast(); // last \n
                 ed->GetControl()->CallTipShow(pos, msg);
-//                    CCLogger::Get()->DebugLog(F(msg));
+                TRACE(msg);
             }
         }
     }
+
+    event.Skip();
 }
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
@@ -2679,7 +2711,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         if (token)
         {
             TRACE(F(_T("Token found at line %d"), token->m_Line));
-            ed->GotoLine(token->m_Line - 1);
+            GotoTokenPosition(ed, token->m_Name, token->m_Line - 1);
         }
     }
 
@@ -3239,12 +3271,10 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
         int idxFn = m_ScopeMarks[selSc] + m_Function->GetSelection();
         if (idxFn != -1 && idxFn < static_cast<int>(m_FunctionsScope.size()))
         {
-            int Line = m_FunctionsScope[idxFn].StartLine;
             cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
             if (!ed)
                 return;
-            ed->GotoLine(Line);
-            ed->SetFocus();
+            GotoTokenPosition(ed, m_FunctionsScope[idxFn].ShortName, m_FunctionsScope[idxFn].StartLine);
         }
     }
 }
@@ -3331,18 +3361,4 @@ void CodeCompletion::OnRealtimeParsingTimer(wxTimerEvent& event)
         return;
     if (m_NativeParser.ReparseFile(project, m_LastFile))
         CCLogger::Get()->DebugLog(_T("Reparsing when typing for editor ") + m_LastFile);
-}
-
-void CodeCompletion::GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line)
-{
-    if (!editor)
-        return;
-    cbStyledTextCtrl* control = editor->GetControl();
-    control->GotoLine(line);
-    const int start = control->GetCurrentPos();
-    const int end = start + control->LineLength(line);
-    int tokenPos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, nullptr);
-    if (tokenPos == wxSCI_INVALID_POSITION)
-        tokenPos = start;
-    control->GotoPos(tokenPos);
 }

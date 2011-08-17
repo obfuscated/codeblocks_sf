@@ -71,6 +71,8 @@
     #define TRACE2(format, args...)
 #endif
 
+extern void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
+
 int idMenuJumpToDeclaration    = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
 int idMenuRefreshTree          = wxNewId();
@@ -488,7 +490,8 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
                 line = ctd->m_Token->m_ImplLine - 1;
             else
                 line = ctd->m_Token->m_Line - 1;
-            ed->GotoLine(line);
+
+            GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
         }
     }
 }
@@ -559,7 +562,8 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
                 line = ctd->m_Token->m_ImplLine - 1;
             else
                 line = ctd->m_Token->m_Line - 1;
-            ed->GotoLine(line);
+
+            GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
 
             wxFocusEvent ev(wxEVT_SET_FOCUS);
             ev.SetWindow(this);

@@ -46,6 +46,7 @@ public:
 
         int StartLine;
         int EndLine;
+        wxString ShortName;
         wxString Name;
         wxString Scope;    // class or namespace
     };
@@ -233,13 +234,6 @@ private:
 
     /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
-
-    /** goto another place of the editor
-     * @param editor specify the target editor
-     * @param target target text string
-     * @param line target line
-     */
-    void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
 
     /** Not used*/
     int                     m_PageIndex;
