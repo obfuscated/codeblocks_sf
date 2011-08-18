@@ -53,7 +53,7 @@ void SpellCheckerConfig::SetEnableOnlineChecker(bool val)
 {
     m_EnableOnlineChecker = val;
 }
-wxString SpellCheckerConfig::GetDictionaryName()
+const wxString SpellCheckerConfig::GetDictionaryName()const
 {
     return m_strDictionaryName;
 }
@@ -113,6 +113,13 @@ void SpellCheckerConfig::SetDictionaryPath(const wxString &path){m_DictPath = pa
 void SpellCheckerConfig::SetThesaurusPath(const wxString &path){m_ThesPath = path;}
 void SpellCheckerConfig::SetBitmapPath(const wxString &path){m_BitmPath = path;}
 
+const wxString SpellCheckerConfig::GetPersonalDictionaryFilename()const
+{
+    wxString dfile = ConfigManager::LocateDataFile(GetDictionaryName() + _T("_personaldictionary.dic"), sdConfig );
+    if (dfile == _T(""))
+        dfile = ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + GetDictionaryName() + _T("_personaldictionary.dic");
+    return dfile;
+}
 void SpellCheckerConfig::Load()
 {
     m_EnableOnlineChecker = true;

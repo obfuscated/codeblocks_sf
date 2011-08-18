@@ -136,11 +136,12 @@ void SpellCheckerPlugin::OnAttach()
     Connect(idThesaurus,       wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnThesaurus));
     Connect(idThesaurus,       wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateThesaurus));
 
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<SpellCheckerPlugin, CodeBlocksEvent>(this, &SpellCheckerPlugin::OnEditorSaved));
 }
 #ifdef wxUSE_STATUSBAR
 void SpellCheckerPlugin::CreateStatusField(cbStatusBar *bar)
 {
-    m_fld = new SpellCheckerStatusField(bar, m_sccfg);
+    m_fld = new SpellCheckerStatusField(bar, this, m_sccfg);
     bar->AddField(this, m_fld, 60);
 }
 #endif
@@ -176,12 +177,7 @@ void SpellCheckerPlugin::ConfigurePersonalDictionary()
     // Set the personal dictionary file
     HunspellInterface *hsi = dynamic_cast<HunspellInterface *>(m_pSpellChecker);
     if (hsi)
-    {
-        wxString dfile = ConfigManager::LocateDataFile(m_sccfg->GetDictionaryName() + _T("_personaldictionary.dic"), sdConfig );
-        if (dfile == _T(""))
-            dfile = ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName() + _T("_personaldictionary.dic");
-        hsi->OpenPersonalDictionary(dfile);
-    }
+        hsi->OpenPersonalDictionary(m_sccfg->GetPersonalDictionaryFilename());
 }
 
 void SpellCheckerPlugin::OnRelease(bool appShutDown)
@@ -512,4 +508,26 @@ void SpellCheckerPlugin::OnAddToPersonalDictionary(wxCommandEvent &event)
         m_pOnlineChecker->DoSetIndications(ed);
     }
 }
+void SpellCheckerPlugin::EditPersonalDictionary()
+{
+    SavePersonalDictionary();
+    Manager::Get()->GetEditorManager()->Open(m_sccfg->GetPersonalDictionaryFilename());
+}
+void SpellCheckerPlugin::OnEditorSaved(CodeBlocksEvent& event)
+{
+    EditorBase *eb = event.GetEditor();
+    if ( !eb )
+        return;
 
+    // the personal dictionary (with the current language gets saved ->
+    // reload its content into SpellChecker
+    if ( eb->GetFilename() == m_sccfg->GetPersonalDictionaryFilename() )
+    {
+        ConfigurePersonalDictionary();
+
+        // redo on line checks:
+        m_pOnlineChecker->EnableOnlineChecks(m_sccfg->GetEnableOnlineChecker());
+    }
+
+
+}

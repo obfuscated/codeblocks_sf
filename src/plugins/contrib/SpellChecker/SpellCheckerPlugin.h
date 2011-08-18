@@ -157,8 +157,11 @@ class SpellCheckerPlugin : public cbPlugin
         void ConfigureThesaurus();
         void ConfigurePersonalDictionary();
         void SavePersonalDictionary();
-
+        void OnEditorSaved(CodeBlocksEvent& event);
         //void OnRightUpOverStatus(wxMouseEvent &event);
+
+    public:
+        void EditPersonalDictionary();
 
     private:
         int m_FunctorId;

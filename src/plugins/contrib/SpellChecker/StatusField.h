@@ -7,11 +7,12 @@
 class wxStaticBitmap;
 class wxStaticText;
 class SpellCheckerConfig;
+class SpellCheckerPlugin;
 
 class SpellCheckerStatusField : public wxPanel
 {
     public:
-        SpellCheckerStatusField(wxWindow* parent, SpellCheckerConfig *sccfg);
+        SpellCheckerStatusField(wxWindow* parent, SpellCheckerPlugin *plugin, SpellCheckerConfig *sccfg);
         virtual ~SpellCheckerStatusField();
 
         //void SetLanguage(const wxString &lang);
@@ -20,11 +21,13 @@ class SpellCheckerStatusField : public wxPanel
         wxStaticBitmap *m_bitmap;
         wxStaticText   *m_text;
         SpellCheckerConfig *m_sccfg;
+        SpellCheckerPlugin *m_plugin;
 
     private:
         void OnSize(wxSizeEvent &event);
         void OnRightUp(wxMouseEvent &event);
         void OnSelect(wxCommandEvent &event);
+        void OnEditPersonalDictionary(wxCommandEvent &event);
 
         void DoSize();
 };

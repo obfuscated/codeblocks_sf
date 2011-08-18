@@ -32,7 +32,7 @@ class SpellCheckerConfig
 
         bool GetEnableOnlineChecker();
         void SetEnableOnlineChecker(bool val);
-        wxString GetDictionaryName();
+        const wxString GetDictionaryName()const;
         void SetDictionaryName(wxString val);
         void Load();
         void Save();
@@ -45,6 +45,7 @@ class SpellCheckerConfig
 
         const wxString GetDictionaryPath()const;
         const wxString GetThesaurusPath()const;
+        const wxString GetPersonalDictionaryFilename()const;
         const wxString GetBitmapPath()const;
         void SetDictionaryPath(const wxString &path);
         void SetThesaurusPath(const wxString &path);

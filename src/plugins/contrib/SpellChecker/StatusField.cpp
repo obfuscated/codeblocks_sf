@@ -9,16 +9,19 @@
 #include <vector>
 
 #include "SpellCheckerConfig.h"
+#include "SpellCheckerPlugin.h"
 #define LANGS 10
 namespace
 {
     const int idCommand[LANGS]  = {wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),
                                    wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId()};
+    const int idEditPersonalDictionary = wxNewId();
 };
 
-SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerConfig *sccfg)
+SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerPlugin *plugin, SpellCheckerConfig *sccfg)
     :wxPanel(parent, wxID_ANY),
-    m_sccfg(sccfg)
+    m_sccfg(sccfg),
+    m_plugin(plugin)
 {
     //ctor
     m_text = new wxStaticText(this, wxID_ANY, m_sccfg->GetDictionaryName());
@@ -33,6 +36,7 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerC
 
     Connect(wxEVT_SIZE, wxSizeEventHandler(SpellCheckerStatusField::OnSize), NULL, this);
     Connect(idCommand[0],idCommand[LANGS-1], wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnSelect), NULL, this);
+    Connect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
     m_text->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     m_bitmap->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
@@ -44,6 +48,7 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
     //dtor
     Disconnect(wxEVT_SIZE, wxSizeEventHandler(SpellCheckerStatusField::OnSize), NULL, this);
     Disconnect(idCommand[0],idCommand[LANGS-1], wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnSelect), NULL, this);
+    Disconnect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
     m_text->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
     m_bitmap->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
@@ -90,6 +95,10 @@ void SpellCheckerStatusField::OnRightUp(wxMouseEvent &event)
     std::vector<wxString> dicts = m_sccfg->GetPossibleDictionaries();
     for ( unsigned int i = 0 ; i < dicts.size()&& i < LANGS ; i++ )
         popup->Append( idCommand[i], dicts[i], _T(""), wxITEM_CHECK)->Check(dicts[i] == m_sccfg->GetDictionaryName() );
+    popup->AppendSeparator();
+    wxMenuItem *mnuItm = popup->Append( idEditPersonalDictionary, _T("Edit personal dictionary"), _T(""));
+    mnuItm->Enable( wxFile::Exists(m_sccfg->GetPersonalDictionaryFilename()) );
+
     PopupMenu(popup);
     delete popup;
 }
@@ -108,4 +117,8 @@ void SpellCheckerStatusField::OnSelect(wxCommandEvent &event)
         m_sccfg->Save(); // save it
     }
 
+}
+void SpellCheckerStatusField::OnEditPersonalDictionary(wxCommandEvent &event)
+{
+    m_plugin->EditPersonalDictionary();
 }

@@ -96,8 +96,9 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
         //find recheck range start:
         if (start > 0) start--;
 		for (; start > 0; ) {
+            wxString lang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ctrl->GetLanguage() );
             wxChar ch = stc->GetCharAt(start - 1);
-            if ( SpellCheckHelper::IsWhiteSpace(ch) )
+            if ( SpellCheckHelper::IsWhiteSpace(ch) && !SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(start-1) ) )
                 break;
             start--;
         }
@@ -186,11 +187,13 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
                 wxString lang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ctrl->GetLanguage() );
                 wxChar ch = stc->GetCharAt(pos);
                 // treat chars which don't have the correct style as whitespace:
-                if ( SpellCheckHelper::IsWhiteSpace(ch) || !m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(pos)))
+                bool isEscape = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(pos));
+                if ( isEscape || SpellCheckHelper::IsWhiteSpace(ch) || !m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(pos)))
                 {
                     if (wordstart != wordend)
                         DissectWordAndCheck(stc, wordstart, wordend);
                     pos++;
+                    if ( isEscape ) pos++;
                     wordstart = pos;
                     wordend = pos;
                 }
