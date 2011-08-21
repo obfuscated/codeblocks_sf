@@ -792,6 +792,8 @@ void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& event)
             // We stop the timer to spare resources
             m_Timer.Stop();
 
+            m_pLogger->OnSearchEnd();
+
             // Restores label and enables all search params graphical widgets.
             UpdateSearchButtons(true, search);
             EnableControls(true);

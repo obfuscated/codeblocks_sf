@@ -41,7 +41,7 @@ ThreadSearchLoggerList::ThreadSearchLoggerList(ThreadSearchView& threadSearchVie
     int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
     wxFont default_font(size, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_pListLog->SetFont(default_font);
-    
+
     SetListColumns();
 
     // Events are managed dynamically to be able to stop/start management when required.
@@ -198,6 +198,8 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
     const wxFileName&    filename(event.GetString());
     bool                 setFocus(false);
 
+    m_TotalLinesFound += event.GetNumberOfMatches();
+
     wxASSERT((words.GetCount() % 2) == 0);
 
     // Use of Freeze Thaw to enhance speed and limit blink effect
@@ -232,6 +234,20 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
         }
         index++;
     }
+    size_t countPerPage = std::max<size_t>(m_pListLog->GetCountPerPage() - 1, 0);
+    size_t markerLine = m_IndexOffset - 1;
+    if (m_TotalLinesFound <= countPerPage)
+    {
+        m_pListLog->EnsureVisible(markerLine + m_TotalLinesFound);
+    }
+    else if (m_TotalLinesFound > countPerPage && !m_MadeVisible)
+    {
+        m_pListLog->EnsureVisible(markerLine + countPerPage);
+        if (static_cast<size_t>(m_pListLog->GetTopItem()) != markerLine)
+            m_pListLog->EnsureVisible(markerLine);
+        m_MadeVisible = true;
+    }
+
     m_pListLog->Thaw();
 
     if ( setFocus == true )
@@ -402,6 +418,9 @@ void ThreadSearchLoggerList::Clear()
 
 void ThreadSearchLoggerList::OnSearchBegin(const ThreadSearchFindData& findData)
 {
+    m_TotalLinesFound = 0;
+    m_MadeVisible = false;
+
     if ( m_ThreadSearchPlugin.GetDeletePreviousResults() )
     {
         Clear();
@@ -416,11 +435,30 @@ void ThreadSearchLoggerList::OnSearchBegin(const ThreadSearchFindData& findData)
         m_pListLog->SetItem(index, 2, _("==="));
         m_pListLog->SetItem(index, 3, _("============"));
         m_pListLog->SetItemData(index, 1);
+
+        wxListItem info;
+        info.SetStateMask(wxLIST_MASK_STATE);
+        info.SetId(index);
+        info.SetState(wxLIST_STATE_SELECTED);
+        m_pListLog->SetItem(info);
+
         m_IndexOffset = m_pListLog->GetItemCount();
     }
 
     m_SortColumn = -1;
     m_Ascending = true;
+}
+
+void ThreadSearchLoggerList::OnSearchEnd()
+{
+    wxString message = wxString::Format(_("%lu matches found."), static_cast<unsigned long>(m_TotalLinesFound));
+    long index = m_pListLog->GetItemCount();
+    m_pListLog->InsertItem(index, _("=> Search complete. "));
+    m_pListLog->SetItem(index, 1, message);
+    m_pListLog->SetItemData(index, 2);
+
+    if (m_TotalLinesFound > static_cast<size_t>(m_pListLog->GetCountPerPage()))
+        InfoWindow::Display(_("Search finished"), message);
 }
 
 int Compare(long a, long b)
@@ -432,7 +470,7 @@ struct ItemLine
 {
     long line;
     long searchIndex;
-    bool searchHeader;
+    int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
 int wxCALLBACK SortLineAscending(long item1, long item2, long data)
@@ -443,8 +481,9 @@ int wxCALLBACK SortLineAscending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return Compare(i1.line, i2.line);
 }
@@ -457,8 +496,9 @@ int wxCALLBACK SortLineDescending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return Compare(i2.line, i1.line);
 }
@@ -469,7 +509,7 @@ struct Item
     wxString directory, filename;
     long line;
     long searchIndex;
-    bool searchHeader;
+    int type; //(0 - header, 1 - normal item, 2 - footer)
 
     int CompareDirectory(Item const &item) const
     {
@@ -500,8 +540,9 @@ int wxCALLBACK SortDirectoryAscending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i1.CompareDirectory(i2);
 }
@@ -514,8 +555,9 @@ int wxCALLBACK SortDirectoryDescending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i2.CompareDirectory(i1);
 }
@@ -528,8 +570,9 @@ int wxCALLBACK SortFilenameAscending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i1.CompareFile(i2);
 }
@@ -542,8 +585,9 @@ int wxCALLBACK SortFilenameDescending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i2.CompareFile(i1);
 }
@@ -553,7 +597,7 @@ struct ItemText
 {
     wxString text;
     long searchIndex;
-    bool searchHeader;
+    int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
 int wxCALLBACK SortTextAscending(long item1, long item2, long data)
@@ -564,8 +608,9 @@ int wxCALLBACK SortTextAscending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i1.text.CompareTo(i2.text);
 }
@@ -578,10 +623,49 @@ int wxCALLBACK SortTextDescending(long item1, long item2, long data)
     int c = Compare(i1.searchIndex, i2.searchIndex);
     if (c)
         return c;
-    if (i1.searchHeader != i2.searchHeader)
-        return i1.searchHeader ? -1 : 1;
+    c = Compare(i1.type, i2.type);
+    if (c)
+        return c;
 
     return i2.text.CompareTo(i1.text);
+}
+
+template <typename Item>
+void SetItemType(Item &item, wxListCtrl &list, long index, long &searchIndex)
+{
+    switch (list.GetItemData(index))
+    {
+        case 0:
+            item.type = 1;
+            break;
+        case 1:
+            item.type = 0;
+            ++searchIndex;
+            break;
+        case 2:
+        default:
+            item.type = 2;
+    }
+}
+
+template <typename Item>
+void RestoreItemData(wxListCtrl &list, const Item *items, long count)
+{
+    for (int ii = 0; ii < count; ++ii)
+    {
+        switch (items[ii].type)
+        {
+            case 0:
+                list.SetItemData(ii, 1);
+                break;
+            case 1:
+                list.SetItemData(ii, 0);
+                break;
+            case 2:
+            default:
+                list.SetItemData(ii, 2);
+        }
+    }
 }
 
 void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
@@ -622,23 +706,14 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                     else
                         items[ii].line = -1;
 
-                    if (m_pListLog->GetItemData(ii) == 1)
-                    {
-                        searchIndex++;
-                        items[ii].searchHeader = true;
-                    }
-                    else
-                        items[ii].searchHeader = false;
+                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
                     items[ii].searchIndex = searchIndex;
 
                     m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items + ii));
                 }
                 m_pListLog->SortItems(m_Ascending ? SortLineAscending : SortLineDescending, 0);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    m_pListLog->SetItemData(ii, items[ii].searchHeader ? 1 : 0);
-                }
+                RestoreItemData(*m_pListLog, items, count);
 
                 delete [] items;
             }
@@ -670,13 +745,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                     items[ii].line = -1;
                     item.GetText().ToLong(&items[ii].line);
 
-                    if (m_pListLog->GetItemData(ii) == 1)
-                    {
-                        searchIndex++;
-                        items[ii].searchHeader = true;
-                    }
-                    else
-                        items[ii].searchHeader = false;
+                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
                     items[ii].searchIndex = searchIndex;
 
                     m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items + ii));
@@ -687,10 +756,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                 else
                     m_pListLog->SortItems(m_Ascending ? SortFilenameAscending : SortFilenameDescending, 0);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    m_pListLog->SetItemData(ii, items[ii].searchHeader ? 1 : 0);
-                }
+                RestoreItemData(*m_pListLog, items, count);
 
                 delete [] items;
             }
@@ -709,13 +775,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
                     m_pListLog->GetItem(item);
 
                     items[ii].text = item.GetText();
-                    if (m_pListLog->GetItemData(ii) == 1)
-                    {
-                        searchIndex++;
-                        items[ii].searchHeader = true;
-                    }
-                    else
-                        items[ii].searchHeader = false;
+                    SetItemType(items[ii], *m_pListLog, ii, searchIndex);
                     items[ii].searchIndex = searchIndex;
 
                     m_pListLog->SetItemPtrData(ii, reinterpret_cast<wxUIntPtr>(items + ii));
@@ -723,10 +783,7 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
 
                 m_pListLog->SortItems(m_Ascending ? SortTextAscending : SortTextDescending, 0);
 
-                for (int ii = 0; ii < count; ++ii)
-                {
-                    m_pListLog->SetItemData(ii, items[ii].searchHeader ? 1 : 0);
-                }
+                RestoreItemData(*m_pListLog, items, count);
 
                 delete [] items;
             }
