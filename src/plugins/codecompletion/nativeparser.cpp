@@ -210,6 +210,7 @@ void NativeParser::SetParser(ParserBase* parser)
         return;
 
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         RemoveLastFunctionChildren();
     }
@@ -1659,6 +1660,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool i
 size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result, bool reallyUseAI, bool isPrefix,
                                    bool caseSensitive, int caretPos)
 {
+    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
     result.clear();
 
@@ -1882,6 +1884,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &ty
         TokenIdxSet result;
         MarkItemsByAI(result, true, false, true, end);
 
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         TokensTree* tokens = m_Parser->GetTokensTree();
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)

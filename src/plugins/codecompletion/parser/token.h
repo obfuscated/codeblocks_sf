@@ -171,6 +171,42 @@ private:
     int m_debugLogId;
 };
 
+
+#ifdef CC_ENABLE_LOCKER_TRACK
+    #define TRACK_THREAD_LOCKER(NAME) \
+        CCLockerTrack NAME##Track(wxString(#NAME, wxConvUTF8), \
+                                  wxString(__FUNCTION__, wxConvUTF8), \
+                                  wxString(__FILE__, wxConvUTF8), \
+                                  __LINE__);
+#else
+    #define TRACK_THREAD_LOCKER(NAME)
+#endif
+
+class CCLockerTrack
+{
+public:
+    CCLockerTrack(const wxString& locker, const wxString& func, const wxString& file, int line) :
+        m_LockerName(locker),
+        m_FuncName(func),
+        m_FileName(file),
+        m_Line(line)
+    {
+        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %s, %d"), m_LockerName.wx_str(),
+                                    m_FuncName.wx_str(), m_FileName.wx_str(), m_Line));
+    }
+    ~CCLockerTrack()
+    {
+        CCLogger::Get()->DebugLog(F(_T("%s.UnLock() : %s(), %s, %d"), m_LockerName.wx_str(),
+                                    m_FuncName.wx_str(), m_FileName.wx_str(), m_Line));
+    }
+
+private:
+    wxString m_LockerName;
+    wxString m_FuncName;
+    wxString m_FileName;
+    int      m_Line;
+};
+
 class Token;
 class TokensTree;
 

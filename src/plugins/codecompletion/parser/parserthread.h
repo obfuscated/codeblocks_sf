@@ -139,6 +139,7 @@ protected:
       */
     int Execute()
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         return Parse() ? 0 : 1;
     }
