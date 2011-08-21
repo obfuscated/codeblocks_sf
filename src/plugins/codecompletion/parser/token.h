@@ -187,7 +187,7 @@ private:
                                     __LINE__))
 #else
     #define TRACK_THREAD_LOCKER(NAME)
-    #define THREAD_LOCKER_DONE(NAME)
+    #define THREAD_LOCKER_SUCCESS(NAME)
 #endif
 
 class CCLockerTrack
