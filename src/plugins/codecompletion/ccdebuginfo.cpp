@@ -451,54 +451,56 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
-    s_TokensTreeCritical.Enter();
-    TokensTree* tokens = m_Parser->GetTokensTree();
-    wxString search = txtFilter->GetValue();
-
-    m_Token = 0;
-
-    // first determine if the user entered an ID or a search mask
-    long unsigned id;
-    if (search.ToULong(&id, 10))
     {
-        // easy; ID
-        m_Token = tokens->at(id);
-    }
-    else
-    {
-        // find all matching tokens
-        TokenIdxSet result;
-        for (size_t i = 0; i < tokens->size(); ++i)
-        {
-            Token* token = tokens->at(i);
-            if (token && token->m_Name.Matches(search))
-                result.insert(i);
-        }
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        TokensTree* tokens = m_Parser->GetTokensTree();
+        wxString search = txtFilter->GetValue();
 
-        // a single result?
-        if (result.size() == 1)
+        m_Token = 0;
+
+        // first determine if the user entered an ID or a search mask
+        long unsigned id;
+        if (search.ToULong(&id, 10))
         {
-            m_Token = tokens->at(*(result.begin()));
+            // easy; ID
+            m_Token = tokens->at(id);
         }
         else
         {
-            // fill a list and ask the user which token to display
-            wxArrayString arr;
-            wxArrayInt intarr;
-            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+            // find all matching tokens
+            TokenIdxSet result;
+            for (size_t i = 0; i < tokens->size(); ++i)
             {
-                Token* token = tokens->at(*it);
-                arr.Add(token->DisplayName());
-                intarr.Add(*it);
+                Token* token = tokens->at(i);
+                if (token && token->m_Name.Matches(search))
+                    result.insert(i);
             }
-            int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), arr, this);
-            if (sel == -1)
-                return;
-            m_Token = tokens->at(intarr[sel]);
+
+            // a single result?
+            if (result.size() == 1)
+            {
+                m_Token = tokens->at(*(result.begin()));
+            }
+            else
+            {
+                // fill a list and ask the user which token to display
+                wxArrayString arr;
+                wxArrayInt intarr;
+                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                {
+                    Token* token = tokens->at(*it);
+                    arr.Add(token->DisplayName());
+                    intarr.Add(*it);
+                }
+                int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), arr, this);
+                if (sel == -1)
+                    return;
+
+                m_Token = tokens->at(intarr[sel]);
+            }
         }
     }
 
-    s_TokensTreeCritical.Leave();
     DisplayTokenInfo();
 }
 
