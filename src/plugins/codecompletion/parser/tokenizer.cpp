@@ -22,9 +22,12 @@
 
 #define CC_TOKENIZER_DEBUG_OUTPUT 0
 
-#if (CC_GLOBAL_DEBUG_OUTPUT)
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
     #undef CC_TOKENIZER_DEBUG_OUTPUT
     #define CC_TOKENIZER_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+    #undef CC_TOKENIZER_DEBUG_OUTPUT
+    #define CC_TOKENIZER_DEBUG_OUTPUT 2
 #endif
 
 #ifdef CC_PARSER_TEST
@@ -125,8 +128,10 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
     {
         m_Filename = filename;
         TRACE(_T("Init() : m_Filename='%s'"), m_Filename.wx_str());
+#ifdef CC_PARSER_TEST
         TRACE2_SET_FLAG(filename);
         TRACE2(filename);
+#endif
     }
 
     if (!wxFileExists(m_Filename))

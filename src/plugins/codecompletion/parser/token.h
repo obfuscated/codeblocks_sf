@@ -109,6 +109,15 @@ private:
     static ProfileMap m_ProfileMap;
 };
 
+#ifndef CC_LOG_SYNC_SEND
+    #define CC_LOG_SYNC_SEND 0
+#endif
+
+#ifdef CC_PARSER_TEST
+    #undef CC_LOG_SYNC_SEND
+    #define CC_LOG_SYNC_SEND 1
+#endif
+
 class CCLogger
 {
 public:
@@ -130,10 +139,10 @@ public:
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
         evt.SetString(msg);
-#ifndef CC_PARSER_TEST
-        wxPostEvent(m_Parent, evt);
-#else
+#if CC_LOG_SYNC_SEND
         m_Parent->ProcessEvent(evt);
+#else
+        wxPostEvent(m_Parent, evt);
 #endif
     }
 
@@ -141,10 +150,10 @@ public:
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_debugLogId);
         evt.SetString(msg);
-#ifndef CC_PARSER_TEST
-        wxPostEvent(m_Parent, evt);
-#else
+#if CC_LOG_SYNC_SEND
         m_Parent->ProcessEvent(evt);
+#else
+        wxPostEvent(m_Parent, evt);
 #endif
     }
 

@@ -23,9 +23,12 @@ std::auto_ptr<CCLogger> CCLogger::s_Inst;
 
 #define CC_TOKEN_DEBUG_OUTPUT 0
 
-#if (CC_GLOBAL_DEBUG_OUTPUT)
+#if CC_GLOBAL_DEBUG_OUTPUT == 1
     #undef CC_TOKEN_DEBUG_OUTPUT
     #define CC_TOKEN_DEBUG_OUTPUT 1
+#elif CC_GLOBAL_DEBUG_OUTPUT == 2
+    #undef CC_TOKEN_DEBUG_OUTPUT
+    #define CC_TOKEN_DEBUG_OUTPUT 2
 #endif
 
 #if CC_TOKEN_DEBUG_OUTPUT == 1
