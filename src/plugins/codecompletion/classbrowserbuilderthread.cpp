@@ -209,6 +209,8 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
 {
     TRACK_THREAD_LOCKER(m_BuildMutex);
     wxMutexLocker lock(m_BuildMutex);
+    THREAD_LOCKER_SUCCESS(m_BuildMutex);
+
     m_NativeParser   = nativeParser;
     m_TreeTop        = treeTop;
     m_TreeBottom     = treeBottom;
@@ -223,6 +225,7 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         TokensTree* tree = m_NativeParser->GetParser().GetTokensTree();
         // fill filter set for current-file-filter
@@ -518,6 +521,8 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         {
             TRACK_THREAD_LOCKER(s_TokensTreeCritical);
             wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             Token* token = m_TokensTree->at(data->m_TokenIndex);
             if (token != data->m_Token ||
                 (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket()) ||
@@ -1033,6 +1038,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     {
         TRACK_THREAD_LOCKER(m_BuildMutex);
         m_BuildMutex.Lock();
+        THREAD_LOCKER_SUCCESS(m_BuildMutex);
         locked = true;
     }
 
@@ -1116,6 +1122,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
     {
         TRACK_THREAD_LOCKER(m_BuildMutex);
         m_BuildMutex.Lock();
+        THREAD_LOCKER_SUCCESS(m_BuildMutex);
         locked = true;
     }
 
@@ -1138,8 +1145,11 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 
     TRACK_THREAD_LOCKER(m_BuildMutex);
     wxMutexLocker lock(m_BuildMutex);
+    THREAD_LOCKER_SUCCESS(m_BuildMutex);
+
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
 #ifdef CC_BUILDTREE_MEASURING
     wxStopWatch sw;

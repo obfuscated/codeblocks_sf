@@ -173,31 +173,41 @@ private:
 
 
 #ifdef CC_ENABLE_LOCKER_TRACK
-    #define TRACK_THREAD_LOCKER(NAME) \
-        CCLockerTrack NAME##Track(wxString(#NAME, wxConvUTF8), \
-                                  wxString(__FUNCTION__, wxConvUTF8), \
-                                  wxString(__FILE__, wxConvUTF8), \
-                                  __LINE__);
+    #define TRACK_THREAD_LOCKER(NAME)                                                               \
+        CCLockerTrack NAME##Track(wxString(#NAME, wxConvUTF8),                                      \
+                                  wxString(__FUNCTION__, wxConvUTF8),                               \
+                                  wxString(__FILE__, wxConvUTF8),                                   \
+                                  __LINE__,                                                         \
+                                  wxIsMainThread())
+    #define THREAD_LOCKER_SUCCESS(NAME)                                                             \
+        CCLogger::Get()->DebugLog(F(_T("%s.Success() : %s(), %s, %d"),                              \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),                           \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(),                    \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),                        \
+                                    __LINE__))
 #else
     #define TRACK_THREAD_LOCKER(NAME)
+    #define THREAD_LOCKER_DONE(NAME)
 #endif
 
 class CCLockerTrack
 {
 public:
-    CCLockerTrack(const wxString& locker, const wxString& func, const wxString& file, int line) :
+    CCLockerTrack(const wxString& locker, const wxString& func, const wxString& file, int line,
+                  bool mainThread) :
         m_LockerName(locker),
         m_FuncName(func),
         m_FileName(file),
-        m_Line(line)
+        m_Line(line),
+        m_MainThread(mainThread)
     {
-        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_FileName.wx_str(), m_Line));
+        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
+                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
     }
     ~CCLockerTrack()
     {
-        CCLogger::Get()->DebugLog(F(_T("%s.UnLock() : %s(), %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_FileName.wx_str(), m_Line));
+        CCLogger::Get()->DebugLog(F(_T("%s.UnLock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
+                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
     }
 
 private:
@@ -205,6 +215,7 @@ private:
     wxString m_FuncName;
     wxString m_FileName;
     int      m_Line;
+    bool     m_MainThread;
 };
 
 class Token;

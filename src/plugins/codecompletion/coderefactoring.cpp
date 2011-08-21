@@ -174,6 +174,8 @@ bool CodeRefactoring::Parse()
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         token = m_NativeParser.GetParser().GetTokensTree()->at(*targetResult.begin());
         if (token)
         {
@@ -290,6 +292,8 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         Token* token = m_NativeParser.GetParser().GetTokensTree()->at(*targetResult.begin());
         parentOfLocalVariable = token->GetParentToken();
     }
@@ -384,6 +388,8 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                 {
                     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                     wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                     Token* token = m_NativeParser.GetParser().GetTokensTree()->at(*findIter);
                     if (token)
                     {

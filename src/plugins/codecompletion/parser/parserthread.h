@@ -141,6 +141,8 @@ protected:
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         return Parse() ? 0 : 1;
     }
 

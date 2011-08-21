@@ -1046,6 +1046,8 @@ int CodeCompletion::CodeComplete()
             {
                 TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                 TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
                 for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
                 {
@@ -1591,6 +1593,8 @@ int CodeCompletion::DoAllMethodsImpl()
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
     // get all filenames' indices matching our mask
@@ -2186,6 +2190,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
         TokenIdxSet result;
@@ -2586,6 +2591,8 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         {
             TRACK_THREAD_LOCKER(s_TokensTreeCritical);
             wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             wxString msg;
             int count = 0;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -2685,6 +2692,8 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
     m_NativeParser.GetParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
     wxArrayString funcs;
@@ -2773,6 +2782,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
     TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
 
     // special handle destructor function
