@@ -727,7 +727,7 @@ void AutoVersioning::UpdateManifest()
 					iLast = sLine.Find('"', true);
 					// Create a new version string...
 					wxString sVersion = sLine.SubString(iFirst, iLast);
-					wxString sNewVersion = wxString::Format(wxT("\"%d.%d.%d\""), GetVersionState().Values.Major, GetVersionState().Values.Minor, GetVersionState().Values.Build);
+					wxString sNewVersion = wxString::Format(wxT("\"%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor, GetVersionState().Values.Build);
 					// ...and insert it into the XML.
 					sLine.Replace(sVersion, sNewVersion);
 					// Remove the existing line and replace it with the new one.
