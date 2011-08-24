@@ -85,6 +85,8 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     EVT_TOOL      (idBtnSearch,              ThreadSearch::OnBtnSearchClick)
     EVT_TEXT_ENTER(idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
     EVT_TEXT      (idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idTxtSearchDirPath,       ThreadSearch::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idTxtSearchMask,          ThreadSearch::OnCboSearchExprEnter)
 // ---------------------------------------------------------------------------
     // CodeBlocks main.cpp managers all the following UI entires in ONE routine.
     // So if only one changes, all may change.
