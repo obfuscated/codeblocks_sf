@@ -1188,6 +1188,23 @@ void cbEditor::SetEditorStyle()
     SetEditorStyleAfterFileOpen();
 }
 
+void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
+{
+    if (!control)
+        return;
+    // override the use tab setting for Python files and Makefiles
+    int lexer = control->GetLexer();
+    switch (lexer)
+    {
+        case wxSCI_LEX_PYTHON:
+            control->SetUseTabs(false);
+            break;
+        case wxSCI_LEX_MAKEFILE:
+            control->SetUseTabs(true);
+            break;
+    }
+}
+
 void cbEditor::SetEditorStyleBeforeFileOpen()
 {
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
@@ -1219,6 +1236,9 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
     SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
 
     SetLanguage( HL_AUTO );
+
+    OverrideUseTabsPerLanguage(m_pControl);
+    OverrideUseTabsPerLanguage(m_pControl2);
 }
 
 void cbEditor::SetEditorStyleAfterFileOpen()
