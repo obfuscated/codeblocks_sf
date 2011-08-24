@@ -443,6 +443,7 @@ void ThreadSearchLoggerList::OnSearchBegin(const ThreadSearchFindData& findData)
         m_pListLog->SetItem(info);
 
         m_IndexOffset = m_pListLog->GetItemCount();
+        m_pListLog->EnsureVisible(index);
     }
 
     m_SortColumn = -1;
