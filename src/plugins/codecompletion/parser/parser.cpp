@@ -1271,9 +1271,8 @@ void Parser::OnReparseTimer(wxTimerEvent& event)
 
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
-    TRACK_THREAD_LOCKER(s_ParserCritical);
-    wxCriticalSectionLocker locker(s_ParserCritical);
-    THREAD_LOCKER_SUCCESS(s_ParserCritical);
+    if (Manager::IsAppShuttingDown())
+        return;
 
     // Current batch parser is already exists
     if (s_CurrentParser && s_CurrentParser != this)
@@ -1282,45 +1281,50 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
         return;
     }
 
-    if (Manager::IsAppShuttingDown())
-        return;
-
-    if (!m_StopWatchRunning)
-        StartStopWatch();
-
-    if (!m_PoolTask.empty())
+    bool sendStartParseEvent = false;
+    do
     {
-        m_Pool.BatchBegin();
+        TRACK_THREAD_LOCKER(s_ParserCritical);
+        wxCriticalSectionLocker locker(s_ParserCritical);
+        THREAD_LOCKER_SUCCESS(s_ParserCritical);
 
-        PTVector& v = m_PoolTask.front();
-        for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
-            m_Pool.AddTask(*it, true);
-        m_PoolTask.pop();
+        if (!m_StopWatchRunning)
+            StartStopWatch();
 
-        m_Pool.BatchEnd();
-        return;
-    }
-    else if (   !m_PriorityHeaders.empty()
-             || !m_BatchParseFiles.empty()
-             || !m_PredefinedMacros.IsEmpty() )
-    {
-        // Have not done any batch parsing
-        if (!s_CurrentParser)
+        if (!m_PoolTask.empty())
         {
-            s_CurrentParser = this;
-            m_StopWatch.Start(); // reset timer
-            ProcessParserEvent(m_ParsingType, idParserStart);
+            m_Pool.BatchBegin();
+
+            PTVector& v = m_PoolTask.front();
+            for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
+                m_Pool.AddTask(*it, true);
+            m_PoolTask.pop();
+
+            m_Pool.BatchEnd();
+            return;
         }
+        else if (   !m_PriorityHeaders.empty()
+                 || !m_BatchParseFiles.empty()
+                 || !m_PredefinedMacros.IsEmpty() )
+        {
+            AddParseThread* thread = new AddParseThread(*this);
+            m_Pool.AddTask(thread, true);
+            // Have not done any batch parsing
+            if (s_CurrentParser)
+                return;
+            else
+            {
+                s_CurrentParser = this;
+                m_StopWatch.Start(); // reset timer
+                sendStartParseEvent = true;
+            }
+        }
+    } while (false);
 
-        AddParseThread* thread = new AddParseThread(*this);
-        m_Pool.AddTask(thread, true);
-        return;
-    }
-
-    ProcessParserEvent(ptUndefined, idParserStart, _T("No files for batch parsing"));
-    CodeBlocksEvent evt;
-    evt.SetEventObject(this);
-    OnAllThreadsDone(evt);
+    if (sendStartParseEvent)
+        ProcessParserEvent(m_ParsingType, idParserStart);
+    else
+        ProcessParserEvent(ptUndefined, idParserStart, _T("Unexpected behavior!"));
 }
 
 void Parser::ReparseModifiedFiles()
