@@ -392,6 +392,12 @@ string RTFExporter::RTFBody(const wxMemoryBuffer &styled_text, int pt, int lineC
         }
         break;
 
+      case '\\':
+        {
+            rtf_body += string("\\\\");
+        }
+        break;
+
       case '\n':
         rtf_body += "\n\\par ";
 
