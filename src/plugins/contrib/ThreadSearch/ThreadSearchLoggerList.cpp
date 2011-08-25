@@ -12,6 +12,7 @@
 #ifndef CB_PRECOMP
     // Required extra includes
     #include <configmanager.h>
+    #include <infowindow.h>
 #endif
 
 #include <wx/listctrl.h>

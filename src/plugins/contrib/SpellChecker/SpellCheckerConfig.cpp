@@ -18,12 +18,13 @@
 */
 #include "SpellCheckerConfig.h"
 #include "SpellCheckerPlugin.h"
-#include "sdk.h" // Code::Blocks SDK
+#include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
+    #include <macrosmanager.h>
 #endif
 
-#include "configmanager.h"
+#include <configmanager.h>
 
 #define CFG_SPELLCHECK_ENABLE_ONLINE_CHECK _T("/SpellChecker/EnableOnlineChecker")
 #define CFG_SPELLCHECK_DICTIONARY_NAME     _T("/SpellChecker/Dictionary")
