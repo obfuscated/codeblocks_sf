@@ -222,61 +222,67 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
 
+    TokensTree* tree = m_NativeParser->GetParser().GetTokensTree();
+
+    // fill filter set for current-file-filter
+    if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
+    {
+        // m_ActiveFilename is the full filename up to the extension dot. No extension though.
+        // get all filenames' indices matching our mask
+        wxArrayString paths = m_NativeParser->GetAllPathsByFilename(m_ActiveFilename);
+
+        // Should add locker after called m_NativeParser->GetAllPathsByFilename
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        TokenFilesSet tmp;
+        for (size_t i = 0; i < paths.GetCount(); ++i)
+        {
+            tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
+            for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
+                m_CurrentFileSet.insert(*it);
+        }
+    }
+    else if (m_Options.displayFilter == bdfProject && (user_data != 0))
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-        TokensTree* tree = m_NativeParser->GetParser().GetTokensTree();
-        // fill filter set for current-file-filter
-        if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
+        cbProject* prj = (cbProject*)user_data;
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
-            // m_ActiveFilename is the full filename up to the extension dot. No extension though.
-            // get all filenames' indices matching our mask
-            wxArrayString paths = m_NativeParser->GetAllPathsByFilename(m_ActiveFilename);
-            TokenFilesSet tmp;
-            for (size_t i = 0; i < paths.GetCount(); ++i)
-            {
-                tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
-                for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
-                    m_CurrentFileSet.insert(*it);
-            }
+            ProjectFile* curfile = prj->GetFile(i);
+            if (!curfile)
+                continue;
+
+            wxString filename = curfile->file.GetFullPath();
+            size_t fileIdx = tree->m_FilenamesMap.GetItemNo(filename);
+            if (fileIdx)
+                m_CurrentFileSet.insert(fileIdx);
         }
+    }
 
-        if (m_Options.displayFilter == bdfProject && (user_data != 0))
+    if (!m_CurrentFileSet.empty())
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        m_CurrentTokenSet.clear();
+        m_CurrentGlobalTokensSet.clear();
+        for (TokenFilesSet::iterator it = m_CurrentFileSet.begin();it != m_CurrentFileSet.end(); ++it)
         {
-            cbProject* prj = (cbProject*)user_data;
-            for (int i = 0; i < prj->GetFilesCount(); ++i)
+            TokenIdxSet* curset = &(tree->m_FilesMap[*it]);
+            for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
             {
-                ProjectFile* curfile = prj->GetFile(i);
-                if (!curfile)
-                    continue;
-
-                wxString filename = curfile->file.GetFullPath();
-                size_t fileIdx = tree->m_FilenamesMap.GetItemNo(filename);
-                if (fileIdx)
+                Token* curtoken = tree->at(*it2);
+                if (curtoken)
                 {
-                    m_CurrentFileSet.insert(fileIdx);
-                }
-            }
-        }
-
-        if (!m_CurrentFileSet.empty())
-        {
-            m_CurrentTokenSet.clear();
-            m_CurrentGlobalTokensSet.clear();
-            for (TokenFilesSet::iterator it = m_CurrentFileSet.begin();it != m_CurrentFileSet.end(); ++it)
-            {
-                TokenIdxSet* curset = &(tree->m_FilesMap[*it]);
-                for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
-                {
-                    Token* curtoken = tree->at(*it2);
-                    if (curtoken)
-                    {
-                        m_CurrentTokenSet.insert(*it2);
-                        if (curtoken->m_ParentIndex == -1)
-                            m_CurrentGlobalTokensSet.insert(*it2);
-                    }
+                    m_CurrentTokenSet.insert(*it2);
+                    if (curtoken->m_ParentIndex == -1)
+                        m_CurrentGlobalTokensSet.insert(*it2);
                 }
             }
         }
