@@ -21,6 +21,7 @@
 #include "SpellCheckerConfig.h"
 #include <configmanager.h>
 #include <logmanager.h>
+#include <macrosmanager.h>
 
 #include <wx/dir.h>
 #include <wx/dirdlg.h>
@@ -58,7 +59,7 @@ SpellCheckSettingsPanel::SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerC
     Button2 = (wxButton*)FindWindow(XRCID("ID_BUTTON_THESAURI"));
     Button3 = (wxButton*)FindWindow(XRCID("ID_BUTTON_BITMAPS"));
     HyperlinkCtrl1 = (wxHyperlinkCtrl*)FindWindow(XRCID("ID_HYPERLINKCTRL1"));
-    
+
     Connect(XRCID("ID_BUTTON_DICTIONARIES"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SpellCheckSettingsPanel::OnChooseDirectory);
     Connect(XRCID("ID_BUTTON_THESAURI"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SpellCheckSettingsPanel::OnChooseDirectory);
     Connect(XRCID("ID_BUTTON_BITMAPS"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SpellCheckSettingsPanel::OnChooseDirectory);
@@ -66,9 +67,9 @@ SpellCheckSettingsPanel::SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerC
 
     Connect(XRCID("ID_TEXTCTRL1"), wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&SpellCheckSettingsPanel::OnChangeDictPathText);
 
-    m_TextDictPath->SetValue(m_sccfg->GetDictionaryPath());
-    m_TextThPath->SetValue(m_sccfg->GetThesaurusPath());
-    m_TextBitmapPath->SetValue(m_sccfg->GetBitmapPath());
+    m_TextDictPath->SetValue(m_sccfg->GetRawDictionaryPath());
+    m_TextThPath->SetValue(m_sccfg->GetRawThesaurusPath());
+    m_TextBitmapPath->SetValue(m_sccfg->GetRawBitmapPath());
 
     InitDictionaryChoice();
 
@@ -173,7 +174,9 @@ void SpellCheckSettingsPanel::OnChooseDirectory(wxCommandEvent& event)
         message += _T("the bitmaps");
         textctrl = m_TextBitmapPath;
     }
-    wxDirDialog dlg(this, message, textctrl->GetValue(), wxDD_DIR_MUST_EXIST);
+    wxString path = textctrl->GetValue();
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);
+    wxDirDialog dlg(this, message, path, wxDD_DIR_MUST_EXIST);
     PlaceWindow(&dlg);
     if ( dlg.ShowModal() == wxID_OK )
     {
@@ -198,12 +201,13 @@ void SpellCheckSettingsPanel::OnChooseDirectory(wxCommandEvent& event)
     }
 }
 
-
 void SpellCheckSettingsPanel::OnChangeDictPathText( wxCommandEvent &event)
 {
-    if ( wxDir::Exists( m_TextDictPath->GetValue() ) )
+    wxString path = m_TextDictPath->GetValue();
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);
+    if ( wxDir::Exists( path ) )
     {
-        m_sccfg->ScanForDictionaries(m_TextDictPath->GetValue());
+        m_sccfg->ScanForDictionaries( path );
         std::vector<wxString> dics = m_sccfg->GetPossibleDictionaries();
         int sel = m_sccfg->GetSelectedDictionaryNumber();
 

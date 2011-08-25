@@ -105,10 +105,28 @@ const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
 {
     return m_dictionaries;
 }
+const wxString SpellCheckerConfig::GetDictionaryPath()const
+{
+    wxString dictPath = m_DictPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dictPath);
+    return dictPath;
+}
+const wxString SpellCheckerConfig::GetThesaurusPath()const
+{
+    wxString thesPath = m_ThesPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(thesPath);
+    return thesPath;
+}
+const wxString SpellCheckerConfig::GetBitmapPath()const
+{
+    wxString bitmPath = m_BitmPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
+    return bitmPath;
+}
 
-const wxString SpellCheckerConfig::GetDictionaryPath()const{return m_DictPath;}
-const wxString SpellCheckerConfig::GetThesaurusPath()const{return m_ThesPath;}
-const wxString SpellCheckerConfig::GetBitmapPath()const{return m_BitmPath;}
+const wxString SpellCheckerConfig::GetRawDictionaryPath()const{return m_DictPath;}
+const wxString SpellCheckerConfig::GetRawThesaurusPath()const{return m_ThesPath;}
+const wxString SpellCheckerConfig::GetRawBitmapPath()const{return m_BitmPath;}
 void SpellCheckerConfig::SetDictionaryPath(const wxString &path){m_DictPath = path;}
 void SpellCheckerConfig::SetThesaurusPath(const wxString &path){m_ThesPath = path;}
 void SpellCheckerConfig::SetBitmapPath(const wxString &path){m_BitmPath = path;}

@@ -38,18 +38,23 @@ class SpellCheckerConfig
         void Save();
 
         void ScanForDictionaries();
-        void ScanForDictionaries(const wxString &path);
 
         const std::vector<wxString> &GetPossibleDictionaries()const;
         int GetSelectedDictionaryNumber()const;
 
         const wxString GetDictionaryPath()const;
         const wxString GetThesaurusPath()const;
-        const wxString GetPersonalDictionaryFilename()const;
         const wxString GetBitmapPath()const;
         void SetDictionaryPath(const wxString &path);
         void SetThesaurusPath(const wxString &path);
         void SetBitmapPath(const wxString &path);
+        const wxString GetPersonalDictionaryFilename()const;
+    private:
+        friend class SpellCheckSettingsPanel;
+        const wxString GetRawDictionaryPath()const;
+        const wxString GetRawThesaurusPath()const;
+        const wxString GetRawBitmapPath()const;
+        void ScanForDictionaries(const wxString &path);
     protected:
     private:
         wxString m_DictPath;
