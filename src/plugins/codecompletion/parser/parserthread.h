@@ -107,8 +107,6 @@ public:
     virtual ~ParserThread();
 
     /** Do the main job (syntax analysis) here
-      * No critical section needed here:
-      * All functions that call this, already entered a critical section.
       */
     bool Parse();
 

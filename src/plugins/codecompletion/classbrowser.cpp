@@ -677,9 +677,16 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     TokenIdxSet result;
     Token* token = 0;
     {
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
         TokensTree* tokensTree = m_Parser->GetTokensTree();
-        const size_t count = tokensTree->FindMatches(search, result, false, true);
+        size_t count = 0;
+        {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+            count = tokensTree->FindMatches(search, result, false, true);
+        }
+
         if (count == 0)
         {
             cbMessageBox(_("No matches were found: ") + search,
@@ -688,6 +695,10 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         }
         else if (count == 1)
         {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             token = tokensTree->at(*result.begin());
         }
         else if (count > 1)
@@ -696,6 +707,10 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             wxArrayInt int_selections;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                 Token* sel = tokensTree->at(*it);
                 if (sel)
                 {
@@ -708,10 +723,19 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                 int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
                 if (sel == -1)
                     return;
+
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                 token = tokensTree->at(int_selections[sel]);
             }
             else if (selections.GetCount() == 1)
             {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                 // number of selections can be < result.size() due to the if tests, so in case we fall
                 // back on 1 entry no need to show a selection
                 token = tokensTree->at(int_selections[0]);

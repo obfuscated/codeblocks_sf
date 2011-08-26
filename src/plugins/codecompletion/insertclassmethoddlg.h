@@ -26,12 +26,6 @@ public:
 private:
     void FillClasses();
     void FillMethods();
-    void DoFillMethodsFor(wxCheckListBox* clb,
-                          Token* parentToken,
-                          const wxString& ns,
-                          bool includePrivate,
-                          bool includeProtected,
-                          bool includePublic);
     void OnClassesChange(wxCommandEvent& event);
     void OnCodeChange(wxCommandEvent& event);
     void OnFilterChange(wxCommandEvent& event);

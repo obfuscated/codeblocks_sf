@@ -12,10 +12,13 @@
 #include <wx/thread.h>
 #include <wx/stream.h>
 #include <wx/stopwatch.h>
-#include <settings.h>
 
+#include <settings.h>
+#include <logmanager.h>
 #include <globals.h>
+
 #include "searchtree.h"
+
 #include <deque>
 #include <memory>
 

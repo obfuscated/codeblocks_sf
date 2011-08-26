@@ -114,7 +114,7 @@ protected:
     bool AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance = true);
     bool AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, short int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
     void AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node);
-    bool TokenMatchesFilter(Token* token);
+    bool TokenMatchesFilter(Token* token, bool locked = false);
     bool TokenContainsChildrenOfKind(Token* token, int kind);
     bool CreateSpecialFolders(CBTreeCtrl* tree, wxTreeItemId parent);
     void ExpandNamespaces(wxTreeItemId node);

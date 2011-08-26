@@ -502,7 +502,6 @@ void ClassBrowserBuilderThread::BuildTree()
 #endif
 }
 
-#if 1
 void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
@@ -525,11 +524,14 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         }
         else if (data && data->m_Token)
         {
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+            Token* token = nullptr;
+            {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-            Token* token = m_TokensTree->at(data->m_TokenIndex);
+                token = m_TokensTree->at(data->m_TokenIndex);
+            }
             if (token != data->m_Token ||
                 (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket()) ||
                 !TokenMatchesFilter(data->m_Token))
@@ -571,60 +573,6 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
             existing = tree->GetPrevSibling(existing);
     }
 }
-#else
-void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent)
-{
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
-        return;
-
-    // recursively enters all existing nodes and deletes the node if the token it references
-    // is invalid (i.e. m_TokensTree->at() != token_in_data)
-
-    // we 'll loop backwards so we can delete nodes without problems
-    wxTreeItemId existing = tree->GetLastChild(parent);
-    while (existing.IsOk())
-    {
-        // recurse
-        if (tree->ItemHasChildren(existing))
-            RemoveInvalidNodes(tree, existing);
-
-        CBTreeData* data = (CBTreeData*)tree->GetItemData(existing);
-        if (data && data->m_Token)
-        {
-            if (m_TokensTree->at(data->m_TokenIndex) != data->m_Token ||
-                data->m_TokenKind != data->m_Token->m_TokenKind || // need to compare kinds: the token index might have been reused...
-                data->m_TokenName != data->m_Token->m_Name || // same for the token name
-                !TokenMatchesFilter(data->m_Token))
-            {
-                // keep parent and set flag if this is the last child of parent
-                wxTreeItemId parent = tree->GetItemParent(existing);
-                bool isLastChild = tree->GetChildrenCount(parent) == 1;
-                // we have to do this in two steps: first collapse and then set haschildren to false
-                if (isLastChild && parent.IsOk() && tree == m_TreeTop)
-                {
-                    CollapseItem(parent);
-                    return;
-                }
-                else
-                {
-//                    CCLogger::Get()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
-                    wxTreeItemId next = tree->GetPrevSibling(existing);
-                    tree->Delete(existing);
-                    existing = next;
-                }
-
-                // if this was the last child of its parent, collapse the parent
-//                if (isLastChild)
-//                    tree->SetItemHasChildren(parent, false);
-
-                continue;
-            }
-        }
-
-        existing = tree->GetPrevSibling(existing);
-    }
-}
-#endif
 
 wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CBTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data)
 {
@@ -651,8 +599,6 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CBTreeCtrl* tree, wxTr
         return tree->AppendItem(parent, name, imgIndex, imgIndex, data);
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask, int tokenScopeMask)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
@@ -663,6 +609,10 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
 
     if (parentTokenIdx == -1)
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         if (m_Options.displayFilter == bdfWorkspace || m_Options.displayFilter == bdfEverything)
             tokens = &m_TokensTree->m_GlobalNameSpace;
         else
@@ -670,10 +620,14 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
     }
     else
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         parentToken = m_TokensTree->at(parentTokenIdx);
         if (!parentToken)
         {
-//            CCLogger::Get()->DebugLog(F(_T("Token not found?!?")));
+            TRACE(_T("Token not found?!?"));
             return false;
         }
         tokens = &parentToken->m_Children;
@@ -682,34 +636,58 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
     return AddNodes(tree, parent, *tokens, tokenKindMask, tokenScopeMask, m_Options.displayFilter == bdfEverything);
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 bool ClassBrowserBuilderThread::AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = m_TokensTree->at(tokenIdx);
+    Token* token = nullptr;
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        token = m_TokensTree->at(tokenIdx);
+    }
+
     if (!token)
         return false;
     else
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         m_TokensTree->RecalcInheritanceChain(token);
+    }
 
     return AddNodes(tree, parent, token->m_DirectAncestors, tkClass | tkTypedef, 0, true);
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = m_TokensTree->at(tokenIdx);
+    Token* token = nullptr;
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        token = m_TokensTree->at(tokenIdx);
+    }
+
     if (!token)
         return false;
     else
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         m_TokensTree->RecalcInheritanceChain(token);
+    }
 
     bool inh = m_Options.showInheritance;
     m_Options.showInheritance = allowInheritance;
@@ -720,9 +698,8 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId 
     return ret;
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
-bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
+bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens,
+                                         short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
 {
     int count = 0;
     std::set<unsigned long, std::less<unsigned long> > tickets;
@@ -745,7 +722,15 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
     TokenIdxSet::iterator end = tokens.end();
     for (TokenIdxSet::iterator start = tokens.begin(); start != end; ++start)
     {
-        Token* token = m_TokensTree->at(*start);
+        Token* token = nullptr;
+        {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+            token = m_TokensTree->at(*start);
+        }
+
         if (token &&
             (token->m_TokenKind & tokenKindMask) &&
             (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask) &&
@@ -797,9 +782,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
     return count != 0;
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
-bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
+bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
 {
     if (token->m_IsTemp)
         return false;
@@ -817,10 +800,22 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
         // to see if any of them matches the filter...
         for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
         {
+            if (!locked)
+            {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                s_TokensTreeCritical.Enter();
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+            }
+
             Token* token = m_TokensTree->at(*it);
+
+            if (!locked)
+                s_TokensTreeCritical.Leave();
+
             if (!token)
                 break;
-            if (TokenMatchesFilter(token))
+
+            if (TokenMatchesFilter(token, locked))
                 return true;
         }
     }
@@ -832,12 +827,15 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     return false;
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int kind)
 {
     if (!token)
         return false;
+
+    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
     TokensTree* tt = token->GetTree();
     for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
     {
@@ -848,8 +846,6 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
     return false;
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node)
 {
    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || !node.IsOk())
@@ -976,8 +972,6 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
 }
 
 // checks if there are respective children and colors the nodes
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
 bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeItemId parent)
 {
     bool hasGF = false;
@@ -988,25 +982,31 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
 
     // loop all tokens in global namespace and see if we have matches
     TokensTree* tt = m_NativeParser->GetParser().GetTokensTree();
-    for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
     {
-        Token* token = tt->at(*it);
-        if (token && token->m_IsLocal && TokenMatchesFilter(token))
-        {
-            if      (!hasGF && token->m_TokenKind == tkFunction)
-                hasGF = true;
-            else if (!hasGM && token->m_TokenKind == tkMacro)
-                hasGM = true;
-            else if (!hasGV && token->m_TokenKind == tkVariable)
-                hasGV = true;
-            else if (!hasGP && token->m_TokenKind == tkPreprocessor)
-                hasGP = true;
-            else if (!hasTD && token->m_TokenKind == tkTypedef)
-                hasTD = true;
-        }
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-        if (hasGF && hasGV && hasGP && hasTD && hasGM)
-            break; // we have everything, stop iterating...
+        for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
+        {
+            Token* token = tt->at(*it);
+            if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
+            {
+                if      (!hasGF && token->m_TokenKind == tkFunction)
+                    hasGF = true;
+                else if (!hasGM && token->m_TokenKind == tkMacro)
+                    hasGM = true;
+                else if (!hasGV && token->m_TokenKind == tkVariable)
+                    hasGV = true;
+                else if (!hasGP && token->m_TokenKind == tkPreprocessor)
+                    hasGP = true;
+                else if (!hasTD && token->m_TokenKind == tkTypedef)
+                    hasTD = true;
+            }
+
+            if (hasGF && hasGV && hasGP && hasTD && hasGM)
+                break; // we have everything, stop iterating...
+        }
     }
 
     wxTreeItemId gfuncs  = AddNodeIfNotThere(m_TreeTop, parent, _("Global functions"),     PARSER_IMG_FUNCS_FOLDER,   new CBTreeData(sfGFuncs, 0, tkFunction, -1));
@@ -1048,16 +1048,18 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
         locked = true;
     }
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
 #ifdef CC_BUILDTREE_MEASURING
     wxStopWatch sw;
 #endif
 
     CBTreeData* data = (CBTreeData*)m_TreeTop->GetItemData(item);
-    m_TokensTree->RecalcInheritanceChain(data->m_Token);
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        m_TokensTree->RecalcInheritanceChain(data->m_Token);
+    }
 
     if (data)
     {
@@ -1153,10 +1155,6 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     TRACK_THREAD_LOCKER(m_BuildMutex);
     wxMutexLocker lock(m_BuildMutex);
     THREAD_LOCKER_SUCCESS(m_BuildMutex);
-
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
 #ifdef CC_BUILDTREE_MEASURING
     wxStopWatch sw;

@@ -129,6 +129,8 @@ enum ParsingType
 
 class ParserBase : public wxEvtHandler
 {
+    friend class ParserThread;
+
 public:
     ParserBase();
     virtual ~ParserBase();
@@ -145,7 +147,6 @@ public:
     virtual bool ParseBufferForFunctions(const wxString& buffer) { return false; }
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result) { return false; }
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result) { return false; }
-    virtual bool ParseFile(const wxString& filename, bool isGlobal);
 
     virtual bool Reparse(const wxString& filename, bool isLocal = true) { return false; }
     virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true) { return false; }
@@ -172,10 +173,10 @@ public:
     Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF);
     Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false,
                                 short int kindMask = 0xFFFF);
-    size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive = true, bool is_prefix = true);
     size_t FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask);
 
 private:
+    virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     wxString FindFirstFileInIncludeDirs(const wxString& file);
 
 protected:
@@ -251,7 +252,6 @@ public:
     virtual bool ParseBufferForFunctions(const wxString& buffer);
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
-    virtual bool ParseFile(const wxString& filename, bool isGlobal);
 
     virtual bool Reparse(const wxString& filename, bool isLocal = true);
     virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true);
@@ -276,8 +276,7 @@ protected:
     /** Not used, because the ThreadPool only support running ONE ParserThread concurrently */
     void SetMaxThreads(unsigned int max) { m_Pool.SetConcurrentThreads(max); }
 
-    bool Parse(const wxString& filename, bool isLocal = true, LoaderBase* loader = NULL);
-    bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
+    bool Parse(const wxString& filename, bool isLocal = true, bool locked = false, LoaderBase* loader = NULL);
     void ReparseModifiedFiles();
     void TerminateAllThreads();
 
@@ -295,6 +294,7 @@ protected:
     void ProcessParserEvent(ParsingType type, int id, const wxString& info = wxEmptyString);
 
 private:
+    virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     void ConnectEvents();
     void DisconnectEvents();
 

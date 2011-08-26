@@ -1419,7 +1419,7 @@ void ParserThread::HandleIncludes()
             }
 
             TRACE(_T("HandleIncludes() : Adding include file '%s'"), real_filename.wx_str());
-            m_Parent->ParseFile(real_filename, isGlobal);
+            m_Parent->ParseFile(real_filename, isGlobal, true);
         }
         while (false);
     }

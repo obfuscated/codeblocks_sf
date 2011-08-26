@@ -358,6 +358,9 @@ private:
 
     /**@brief Artificial Intelligence Matching
     *
+    * All functions that call this recursive function, should already entered a critical section.
+    * Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    *
     * match (consume) the ParserComponent queue from left to right,
     * the output result becomes the search scope of the next match.
     * finally, give the result matching the last ParserComponent.
@@ -386,15 +389,19 @@ private:
     bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
 
     /** Generate the matching results under the Parent Token index set
+     *
+     * All functions that call this recursive function, should already entered a critical section.
+     * Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
+     *
      * @param tree TokensTree pointer
-     * @param Search Scope (defined in TokenIdxSet)
+     * @param target Scope (defined in TokenIdxSet)
      * @param result result token index set
      * @param isPrefix whether a full match is used or only do a prefix match
      * @param kindMask define the result tokens filter, such as only class type is OK
      * @return result token set number
      */
     size_t GenerateResultSet(TokensTree* tree,
-                             const wxString& search,
+                             const wxString& target,
                              int parentIdx,
                              TokenIdxSet& result,
                              bool caseSens = true,
@@ -403,16 +410,17 @@ private:
 
     /** This function is just like the one above, especially that no Tokentree information is used
      * So, it use the current parser's Tokenstree.
+     *
+     * All functions that call this recursive function, should already entered a critical section.
+     * Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
+     *
      */
-    size_t GenerateResultSet(const wxString& search,
+    size_t GenerateResultSet(const wxString& target,
                              const TokenIdxSet& ptrParentID,
                              TokenIdxSet& result,
                              bool caseSens = true,
                              bool isPrefix = false,
                              short int kindMask = 0xFFFF);
-
-    /** Add all children tokens of unnamed union/struct/class */
-    bool AddChildrenOfUnnamed(Token* parent, TokenIdxSet& result);
 
     /** used in CodeCompletion suggestion list to boost the performance, we use a caches*/
     bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }

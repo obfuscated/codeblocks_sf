@@ -97,7 +97,7 @@ bool Parse(const wxString& filename, bool isLocal)
     return true;
 }
 
-bool ParserBase::ParseFile(const wxString& filename, bool isGlobal)
+bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
 {
     wxString log;
     log.Printf(wxT("ParserDummy() : DoParseFile() : Parse file request for file name '%s' (isGlobal=%s)"),

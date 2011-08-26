@@ -1041,50 +1041,52 @@ int CodeCompletion::CodeComplete()
             int start = ed->GetControl()->WordStartPosition(pos, true);
             wxArrayInt already_registered;
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
-
             m_SearchItem.clear();
+            TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
+
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-                TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
-                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                Token* token = nullptr;
                 {
-                    Token* token = tokens->at(*it);
-                    if (!token || token->m_Name.IsEmpty())
-                        continue;
+                    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                    // check hashmap for unique_strings
-                    if (unique_strings.find(token->m_Name) != unique_strings.end())
-                        continue;
+                    token = tokens->at(*it);
+                }
 
-                    unique_strings.insert(token->m_Name);
-                    int iidx = m_NativeParser.GetTokenKindImage(token);
-                    if (already_registered.Index(iidx) == wxNOT_FOUND)
-                    {
-                        ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
-                        already_registered.Add(iidx);
-                    }
-                    wxString tmp;
-                    tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
-                    items.Add(tmp);
-                    if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
-                    {
-                        m_SearchItem[token->m_Name] = token->GetFormattedArgs().size() - 2;
-                    }
-                    if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
-                    {
-                        for (size_t i = 0; i < token->m_Aliases.size(); ++i)
-                        {
-                            if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
-                                continue;
+                if (!token || token->m_Name.IsEmpty())
+                    continue;
 
-                            unique_strings.insert(token->m_Aliases[i]);
-                            wxString tmp;
-                            tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
-                            items.Add(tmp);
-                        }
+                // check hashmap for unique_strings
+                if (unique_strings.find(token->m_Name) != unique_strings.end())
+                    continue;
+
+                unique_strings.insert(token->m_Name);
+                int iidx = m_NativeParser.GetTokenKindImage(token);
+                if (already_registered.Index(iidx) == wxNOT_FOUND)
+                {
+                    ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
+                    already_registered.Add(iidx);
+                }
+                wxString tmp;
+                tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
+                items.Add(tmp);
+                if (m_CCAutoAddParentheses && token->m_TokenKind == tkFunction)
+                {
+                    m_SearchItem[token->m_Name] = token->GetFormattedArgs().size() - 2;
+                }
+                if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
+                {
+                    for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                    {
+                        if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
+                            continue;
+
+                        unique_strings.insert(token->m_Aliases[i]);
+                        wxString tmp;
+                        tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
+                        items.Add(tmp);
                     }
                 }
             }
@@ -1591,18 +1593,18 @@ int CodeCompletion::DoAllMethodsImpl()
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return -4;
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
+    wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
     // get all filenames' indices matching our mask
     TokenFilesSet result;
-    TokenFilesSet tmp;
-    wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        TokenFilesSet tmp;
         tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
         for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
             result.insert(*it);
@@ -1621,6 +1623,10 @@ int CodeCompletion::DoAllMethodsImpl()
     ImplMap im;
     for (TokenFilesSet::iterator itf = result.begin(); itf != result.end(); ++itf)
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         TokenIdxSet& tokens = tree->m_FilesMap[*itf];
         // loop tokens in file
         for (TokenIdxSet::iterator its = tokens.begin(); its != tokens.end(); ++its)
@@ -1662,7 +1668,14 @@ int CodeCompletion::DoAllMethodsImpl()
         wxArrayInt indices = dlg.GetSelectedIndices();
         for (size_t i = 0; i < indices.GetCount(); ++i)
         {
-            Token* token = tree->at(arrint[indices[i]]);
+            Token* token = nullptr;
+            {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+                token = tree->at(arrint[indices[i]]);
+            }
             if (!token)
                 continue;
 
@@ -2188,45 +2201,47 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         funcdata->m_FunctionsScope.clear();
         funcdata->m_NameSpaces.clear();
 
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
         TokenIdxSet result;
-        m_NativeParser.GetParser().FindTokensInFile(filename, result, tkAnyFunction | tkEnum | tkClass | tkNamespace);
-
+        m_NativeParser.GetParser().FindTokensInFile(filename, result,
+                                                    tkAnyFunction | tkEnum | tkClass | tkNamespace);
         if (!result.empty())
             funcdata->parsed = true;
         else
             fileParseFinished = false;
 
-        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            const Token* token = tree->at(*it);
-            if (token && token->m_ImplLine != 0)
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                FunctionScope fs;
-                fs.StartLine = token->m_ImplLine - 1;
-                fs.EndLine = token->m_ImplLineEnd - 1;
-                const size_t fileIdx = tree->GetFileIndex(filename);
-                if (token->m_TokenKind & tkAnyFunction && fileIdx == token->m_ImplFileIdx)
+                const Token* token = tree->at(*it);
+                if (token && token->m_ImplLine != 0)
                 {
-                    fs.Scope = token->GetNamespace();
-                    if (fs.Scope.IsEmpty())
-                        fs.Scope = g_GlobalScope;
-                    wxString result = token->m_Name;
-                    fs.ShortName = result;
-                    result << token->GetFormattedArgs();
-                    if (!token->m_Type.IsEmpty())
-                        result << _T(" : ") << token->m_Type;
-                    fs.Name = result;
-                    funcdata->m_FunctionsScope.push_back(fs);
-                }
-                else if (token->m_TokenKind & (tkEnum | tkClass | tkNamespace))
-                {
-                    fs.Scope = token->GetNamespace() + token->m_Name + _T("::");
-                    funcdata->m_FunctionsScope.push_back(fs);
+                    FunctionScope fs;
+                    fs.StartLine = token->m_ImplLine - 1;
+                    fs.EndLine = token->m_ImplLineEnd - 1;
+                    const size_t fileIdx = tree->GetFileIndex(filename);
+                    if (token->m_TokenKind & tkAnyFunction && fileIdx == token->m_ImplFileIdx)
+                    {
+                        fs.Scope = token->GetNamespace();
+                        if (fs.Scope.IsEmpty())
+                            fs.Scope = g_GlobalScope;
+                        wxString result = token->m_Name;
+                        fs.ShortName = result;
+                        result << token->GetFormattedArgs();
+                        if (!token->m_Type.IsEmpty())
+                            result << _T(" : ") << token->m_Type;
+                        fs.Name = result;
+                        funcdata->m_FunctionsScope.push_back(fs);
+                    }
+                    else if (token->m_TokenKind & (tkEnum | tkClass | tkNamespace))
+                    {
+                        fs.Scope = token->GetNamespace() + token->m_Name + _T("::");
+                        funcdata->m_FunctionsScope.push_back(fs);
+                    }
                 }
             }
         }
@@ -2589,14 +2604,14 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
         if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
         {
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
             wxString msg;
             int count = 0;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
+                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                 Token* token = m_NativeParser.GetParser().GetTokensTree()->at(*it);
                 if (token)
                 {
@@ -2690,31 +2705,43 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     if (!ed)
         return;
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
     m_NativeParser.GetParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
-    wxArrayString funcs;
+    wxArrayString tokens;
+    SearchTree<Token*> tmpsearch;
     TokensTree* tmptree = m_NativeParser.GetParser().GetTempTokensTree();
-    if (tmptree->empty())
+
+    bool isEmptyTree = false;
+    {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        isEmptyTree = tmptree->empty();
+    }
+
+    if (isEmptyTree)
     {
         cbMessageBox(_("No functions parsed in this file..."));
         return;
     }
 
-    wxArrayString tokens;
-    SearchTree<Token*> tmpsearch;
-    tokens.Clear();
-    for (size_t i = 0; i < tmptree->size(); i++)
     {
-        Token* token = tmptree->at(i);
-        if (token && token->m_TokenKind & tkAnyFunction)
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+        for (size_t i = 0; i < tmptree->size(); i++)
         {
-            tokens.Add(token->DisplayName());
-            tmpsearch.AddItem(token->DisplayName(), token);
+            Token* token = tmptree->at(i);
+            if (token && token->m_TokenKind & tkAnyFunction)
+            {
+                tokens.Add(token->DisplayName());
+                tmpsearch.AddItem(token->DisplayName(), token);
+            }
         }
+
+        tmptree->clear();
     }
 
     IncrementalSelectIteratorStringArray iterator(tokens);
@@ -2731,8 +2758,6 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             GotoTokenPosition(ed, token->m_Name, token->m_Line - 1);
         }
     }
-
-    tmptree->clear();
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
@@ -2780,10 +2805,6 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, end);
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
     TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
 
     // special handle destructor function
@@ -2791,6 +2812,10 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
         TokenIdxSet tmp = result;
         result.clear();
+
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         for (TokenIdxSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
         {
@@ -2807,6 +2832,10 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // special handle constructor function
     else
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         bool isClassOrConstructor = false;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
@@ -2837,6 +2866,11 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     if (result.size() > 1)
     {
         const size_t curLine = editor->GetControl()->GetCurrentLine() + 1;
+
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* tk = tokens->at(*it);
@@ -2857,6 +2891,10 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     Token* token = NULL;
     if (result.size() == 1)
     {
+        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
         Token* sel = tokens->at(*(result.begin()));
         if (   (isImpl && !sel->GetImplFilename().IsEmpty())
             || (isDecl && !sel->GetFilename().IsEmpty()) )
@@ -2873,6 +2911,10 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             Token* sel = tokens->at(*it);
             if (sel)
             {
@@ -2890,10 +2932,20 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
             if (sel == -1)
                 return;
+
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             token = tokens->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
-        {    // number of selections can be < result.size() due to the if tests, so in case we fall
+        {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+            // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
             token = tokens->at(int_selections[0]);
         }
