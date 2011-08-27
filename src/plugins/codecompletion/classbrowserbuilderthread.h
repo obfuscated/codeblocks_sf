@@ -33,7 +33,7 @@ public:
         m_Token(token),
         m_KindMask(kindMask),
         m_SpecialFolder(sf),
-        m_TokenIndex(token ? token->GetSelf() : -1),
+        m_TokenIndex(token ? token->m_Index : -1),
         m_TokenKind(token ? token->m_TokenKind : tkUndefined),
         m_TokenName(token ? token->m_Name : _T("")),
         m_ParentIndex(parentIdx),

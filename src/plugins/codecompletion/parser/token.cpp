@@ -132,10 +132,10 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line, size_t 
     m_IsOperator(false),
     m_IsLocal(false),
     m_IsTemp(false),
+    m_Index(-1),
     m_ParentIndex(-1),
     m_UserData(0),
     m_TokensTree(0),
-    m_Self(-1),
     m_Ticket(ticket)
 {
     //ctor
@@ -146,15 +146,6 @@ Token::~Token()
     //dtor
     m_TemplateMap.clear();
     m_TemplateType.clear();
-}
-
-wxString Token::GetParentName()
-{
-    Token* parent = GetParentToken();
-    if (parent)
-        return parent->m_Name;
-    else
-        return wxEmptyString;
 }
 
 wxString Token::DisplayName() const
@@ -201,15 +192,6 @@ wxString Token::DisplayName() const
         return result << GetNamespace() << m_Name << _T("=") << GetFormattedArgs();
 
     return result << GetNamespace() << m_Name << GetStrippedArgs();
-}
-
-Token* Token::GetParentToken()
-{
-    Token* the_token = 0;
-    if (!m_TokensTree)
-        return 0;
-    the_token = m_TokensTree->at(m_ParentIndex);
-    return the_token;
 }
 
 bool Token::IsValidAncestor(const wxString& ancestor)
@@ -341,7 +323,7 @@ wxString Token::GetNamespace() const
     {
         res.Prepend(dcolon);
         res.Prepend(parentToken->m_Name);
-        parentToken = parentToken->GetParentToken();
+        parentToken = m_TokensTree->at(parentToken->m_ParentIndex);
     }
     return res;
 }
@@ -426,7 +408,7 @@ bool Token::SerializeIn(wxInputStream* f)
     bool result = true;
     do
     {
-        if (!LoadIntFromFile(f, (int*)&m_Self))
+        if (!LoadIntFromFile(f, (int*)&m_Index))
         {
             result = false;
             break;
@@ -525,7 +507,7 @@ bool Token::SerializeIn(wxInputStream* f)
 
 bool Token::SerializeOut(wxOutputStream* f)
 {
-    SaveIntToFile(f, m_Self);
+    SaveIntToFile(f, m_Index);
     SaveIntToFile(f, m_ParentIndex);
     SaveStringToFile(f, m_Type);
     SaveStringToFile(f, m_ActualType);
@@ -802,7 +784,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     if (!oldToken)
         return;
 
-    int idx = oldToken->m_Self;
+    int idx = oldToken->m_Index;
     if (m_Tokens[idx]!=oldToken)
         return;
 
@@ -911,7 +893,7 @@ int TokensTree::AddTokenToList(Token* newToken, int forceidx)
     }
 
     newToken->m_TokensTree = this;
-    newToken->m_Self = result;
+    newToken->m_Index = result;
     // Clean up extra string memory
 
     newToken->m_Type.Shrink();
@@ -1066,7 +1048,7 @@ void TokensTree::RecalcInheritanceChain(Token* token)
                 wxString ns = anctkz.GetNextToken();
                 if (!ns.IsEmpty())
                 {
-                    int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->GetSelf() : -1,
+                    int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->m_Index : -1,
                                                   tkNamespace | tkClass | tkTypedef);
                     ancestorToken = at(ancestorIdx);
                     if (!ancestorToken) // unresolved
@@ -1079,8 +1061,8 @@ void TokensTree::RecalcInheritanceChain(Token* token)
             {
                 TRACE(_T("RecalcInheritanceChain() : Resolved to %s"), ancestorToken->m_Name.wx_str());
                 RecalcInheritanceChain(ancestorToken);
-                token->m_Ancestors.insert(ancestorToken->GetSelf());
-                ancestorToken->m_Descendants.insert(token->GetSelf());
+                token->m_Ancestors.insert(ancestorToken->m_Index);
+                ancestorToken->m_Descendants.insert(token->m_Index);
                 TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
             }
             else
@@ -1104,7 +1086,7 @@ void TokensTree::RecalcInheritanceChain(Token* token)
                 {
                     RecalcInheritanceChain(ancestorToken);
                     token->m_Ancestors.insert(*it);
-                    ancestorToken->m_Descendants.insert(token->GetSelf());
+                    ancestorToken->m_Descendants.insert(token->m_Index);
                     TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
                 }
             }
@@ -1136,7 +1118,7 @@ void TokensTree::RecalcInheritanceChain(Token* token)
         if (ancestor)
         {
             token->m_Ancestors.insert(*it);
-            ancestor->m_Descendants.insert(token->GetSelf());
+            ancestor->m_Descendants.insert(token->m_Index);
         }
     }
 

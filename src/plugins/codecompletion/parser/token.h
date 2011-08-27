@@ -309,9 +309,7 @@ public:
 
     bool SerializeIn(wxInputStream* f);
     bool SerializeOut(wxOutputStream* f);
-    int GetSelf()         { return m_Self; } // current index in the tree
-    wxString GetParentName();
-    Token* GetParentToken();
+
     TokensTree* GetTree() { return m_TokensTree; }
     bool IsValidAncestor(const wxString& ancestor);
 
@@ -335,6 +333,7 @@ public:
     bool                         m_IsTemp;        // local variable
     bool                         m_IsConst;       // the member method is const (yes/no)
 
+    int                          m_Index;         // current index in the tree
     int                          m_ParentIndex;
     TokenIdxSet                  m_Children;
     TokenIdxSet                  m_Ancestors;
@@ -351,7 +350,6 @@ public:
 
 protected:
     TokensTree*                  m_TokensTree;
-    int                          m_Self; // current index in the tree
     size_t                       m_Ticket;
 };
 

@@ -793,7 +793,7 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
 
     if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
     {
-        if (m_CurrentTokenSet.find(token->GetSelf()) != m_CurrentTokenSet.end())
+        if (m_CurrentTokenSet.find(token->m_Index) != m_CurrentTokenSet.end())
             return true;
 
         // we got to check all children of this token (recursively)
@@ -898,11 +898,11 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                         wxTreeItemId rootMacro    = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_FOLDER);
                         wxTreeItemId rootOthers   = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 
-                        AddChildrenOf(tree, rootCtorDtor, data->m_Token->GetSelf(), tkConstructor | tkDestructor);
-                        AddChildrenOf(tree, rootFuncs,    data->m_Token->GetSelf(), tkFunction);
-                        AddChildrenOf(tree, rootVars,     data->m_Token->GetSelf(), tkVariable);
-                        AddChildrenOf(tree, rootMacro,    data->m_Token->GetSelf(), tkMacro);
-                        AddChildrenOf(tree, rootOthers,   data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacro));
+                        AddChildrenOf(tree, rootCtorDtor, data->m_Token->m_Index, tkConstructor | tkDestructor);
+                        AddChildrenOf(tree, rootFuncs,    data->m_Token->m_Index, tkFunction);
+                        AddChildrenOf(tree, rootVars,     data->m_Token->m_Index, tkVariable);
+                        AddChildrenOf(tree, rootMacro,    data->m_Token->m_Index, tkMacro);
+                        AddChildrenOf(tree, rootOthers,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacro));
 
                         firstItem = rootCtorDtor;
                     }
@@ -912,15 +912,15 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                         wxTreeItemId rootProtected = tree->AppendItem(node, _("Protected"), PARSER_IMG_FUNCS_FOLDER);
                         wxTreeItemId rootPrivate   = tree->AppendItem(node, _("Private"), PARSER_IMG_VARS_FOLDER);
 
-                        AddChildrenOf(tree, rootPublic,    data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsPublic);
-                        AddChildrenOf(tree, rootProtected, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsProtected);
-                        AddChildrenOf(tree, rootPrivate,   data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsPrivate);
+                        AddChildrenOf(tree, rootPublic,    data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPublic);
+                        AddChildrenOf(tree, rootProtected, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsProtected);
+                        AddChildrenOf(tree, rootPrivate,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum), tsPrivate);
 
                         firstItem = rootPublic;
                     }
                     else
                     {
-                        AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+                        AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
                         break;
                     }
 
@@ -949,7 +949,7 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                     }
                 }
                 else
-                    AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+                    AddChildrenOf(tree, node, data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum));
 
                 // add all children, except containers
                 // AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
@@ -1072,8 +1072,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                     AddChildrenOf(m_TreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
                 break;
             }
-            case sfBase: AddAncestorsOf(m_TreeTop, item, data->m_Token->GetSelf()); break;
-            case sfDerived: AddDescendantsOf(m_TreeTop, item, data->m_Token->GetSelf(), false); break;
+            case sfBase: AddAncestorsOf(m_TreeTop, item, data->m_Token->m_Index); break;
+            case sfDerived: AddDescendantsOf(m_TreeTop, item, data->m_Token->m_Index, false); break;
             case sfToken:
             {
                 short int kind = 0;
@@ -1084,10 +1084,10 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                         // add base and derived classes folders
                         if (m_Options.showInheritance)
                         {
-                            wxTreeItemId base = m_TreeTop->AppendItem(item, _("Base classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfBase, data->m_Token, tkClass, data->m_Token->GetSelf()));
+                            wxTreeItemId base = m_TreeTop->AppendItem(item, _("Base classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfBase, data->m_Token, tkClass, data->m_Token->m_Index));
                             if (!data->m_Token->m_DirectAncestors.empty())
                                 m_TreeTop->SetItemHasChildren(base);
-                            wxTreeItemId derived = m_TreeTop->AppendItem(item, _("Derived classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfDerived, data->m_Token, tkClass, data->m_Token->GetSelf()));
+                            wxTreeItemId derived = m_TreeTop->AppendItem(item, _("Derived classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfDerived, data->m_Token, tkClass, data->m_Token->m_Index));
                             if (!data->m_Token->m_Descendants.empty())
                                 m_TreeTop->SetItemHasChildren(derived);
                         }
@@ -1101,7 +1101,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                         break;
                 }
                 if (kind != 0)
-                    AddChildrenOf(m_TreeTop, item, data->m_Token->GetSelf(), kind);
+                    AddChildrenOf(m_TreeTop, item, data->m_Token->m_Index, kind);
                 break;
             }
             default: break;

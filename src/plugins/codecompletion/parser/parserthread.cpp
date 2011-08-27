@@ -723,7 +723,7 @@ void ParserThread::DoParse()
                     }
                     if (    !m_Str.IsEmpty()
                          && m_LastParent != 0L
-                         && m_LastParent->GetSelf() != -1
+                         && m_LastParent->m_Index != -1
                          && m_LastParent->m_TokenKind == tkNamespace )
                     {
                         if (m_LastParent->m_AncestorsString.IsEmpty())
@@ -1066,14 +1066,14 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int 
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    return m_TokensTree->at(m_TokensTree->TokenExists(name, parent ? parent->GetSelf() : -1, kindMask));
+    return m_TokensTree->at(m_TokensTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask));
 }
 
 Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs, Token* parent, TokenKind kind)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    return m_TokensTree->at(m_TokensTree->TokenExists(name, baseArgs, parent ? parent->GetSelf() : -1, kind));
+    return m_TokensTree->at(m_TokensTree->TokenExists(name, baseArgs, parent ? parent->m_Index : -1, kind));
 }
 
 wxString ParserThread::GetActualTokenType()
@@ -1164,7 +1164,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
         result = new Token(ns, m_FileIdx, 0, ++m_TokensTree->m_TokenTicketCount);
         result->m_TokenKind = q.empty() ? tkClass : tkNamespace;
         result->m_IsLocal = m_IsLocal;
-        result->m_ParentIndex = parentIfCreated ? parentIfCreated->GetSelf() : -1;
+        result->m_ParentIndex = parentIfCreated ? parentIfCreated->m_Index : -1;
         int newidx = m_TokensTree->insert(result);
         if (parentIfCreated)
             parentIfCreated->AddChild(newidx);
@@ -1173,7 +1173,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
               ns.wx_str(),
               newidx,
               parent ? parent->m_Name.wx_str() : _T("<globals>"),
-              parent ? parent->GetSelf() : -1);
+              parent ? parent->m_Index : -1);
     }
 
     if (q.empty())
@@ -1267,7 +1267,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         if (kind == tkVariable && m_Options.parentIdxOfBuffer != -1)
             finalParent = m_TokensTree->at(m_Options.parentIdxOfBuffer);
 
-        newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
+        newToken->m_ParentIndex = finalParent ? finalParent->m_Index : -1;
         newToken->m_TokenKind   = kind;
         newToken->m_Scope       = m_LastScope;
         newToken->m_BaseArgs    = baseArgs;
@@ -1326,10 +1326,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         newToken->m_ImplLine      = line;
         newToken->m_ImplLineStart = implLineStart;
         newToken->m_ImplLineEnd   = implLineEnd;
-        m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->GetSelf());
+        m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->m_Index);
     }
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
-      name.wx_str(), newToken->GetSelf(), newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
+      name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
       newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"

@@ -397,7 +397,7 @@ void CCDebugInfo::DisplayTokenInfo()
     tmplArg.Replace(_T("&"), _T("&&"), true);
     ttype.Replace(_T("&"), _T("&&"), true);
 
-    txtID->SetLabel(wxString::Format(_T("%d"), m_Token->GetSelf()));
+    txtID->SetLabel(wxString::Format(_T("%d"), m_Token->m_Index));
     txtName->SetLabel(m_Token->m_Name);
     txtKind->SetLabel(m_Token->GetTokenKindString());
     txtScope->SetLabel(m_Token->GetTokenScopeString());

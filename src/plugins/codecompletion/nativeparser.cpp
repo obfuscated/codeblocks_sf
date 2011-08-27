@@ -1510,7 +1510,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
                         initLine = searchData->control->LineFromPosition(paraPos) + 1;
                         if (initLine == -1)
                             continue;
-                        tokenIdx = token->GetSelf();
+                        tokenIdx = token->m_Index;
                     }
                 }
             }
@@ -1544,7 +1544,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
     {
         if (!(parent->m_TokenKind & tkAnyFunction))
             return false;
-        m_LastFuncTokenIdx = parent->GetSelf();
+        m_LastFuncTokenIdx = parent->m_Index;
         initLine = parent->m_ImplLineStart;
     }
 
@@ -1586,13 +1586,17 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
                 THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                for (size_t i = 0; i < m_Parser->GetTokensTree()->size(); ++i)
+                TokensTree* tree = m_Parser->GetTokensTree();
+                for (size_t i = 0; i < tree->size(); ++i)
                 {
-                    Token* t = m_Parser->GetTokensTree()->at(i);
-                    if (t && t->m_IsTemp)
+                    Token* token = tree->at(i);
+                    if (token && token->m_IsTemp)
                     {
-                       CCLogger::Get()->DebugLog(_T("ParseLocalBlock() + ") + t->DisplayName() +
-                                                 _T(" parent = ") + t->GetParentName());
+                        wxString log(_T("ParseLocalBlock() + ") + token->DisplayName());
+                        Token* parent = tree->at(token->m_ParentIndex);
+                        if (parent)
+                            log += _T(" Parent = ") + parent->m_Name;
+                        CCLogger::Get()->DebugLog(log);
                     }
                 }
             }
@@ -1946,7 +1950,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &ty
                 // support constructor call tips
                 if (token->m_TokenKind == tkClass)
                 {
-                    Token* tk = tokens->at(tokens->TokenExists(token->m_Name, token->GetSelf(), tkConstructor));
+                    Token* tk = tokens->at(tokens->TokenExists(token->m_Name, token->m_Index, tkConstructor));
                     if (tk)
                         token = tk;
                 }
@@ -2644,12 +2648,16 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
             // the parent's namespace too
             if (parentTokenIdx != -1)
             {
-                Token* parent = tree->at(parentTokenIdx);
-                if (parent && parent->GetParentToken())
+                Token* token = tree->at(parentTokenIdx);
+                if (token)
                 {
-                    temp_search_scope.insert(parent->GetParentToken()->GetSelf());
-                    if (s_DebugSmartSense)
-                        CCLogger::Get()->DebugLog(_T("FindAIMatches() Implicit search scope added:") + parent->GetParentToken()->m_Name);
+                    Token* parent = tree->at(token->m_ParentIndex);
+                    if (parent)
+                    {
+                        temp_search_scope.insert(parent->m_Index);
+                        if (s_DebugSmartSense)
+                            CCLogger::Get()->DebugLog(_T("FindAIMatches() Implicit search scope added:") + parent->m_Name);
+                    }
                 }
             }
 
@@ -2672,7 +2680,7 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
                     // types are searched as whole words, case sensitive and only classes/namespaces
                     if (FindAIMatches(type_components,
                                       type_result,
-                                      parent ? parent->GetSelf() : -1,
+                                      parent ? parent->m_Index : -1,
                                       true,
                                       false,
                                       false,
@@ -2769,7 +2777,7 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
 #else
                                     parent ? parent->m_Name.wx_str() : _("Global namespace"),
 #endif
-                                    parent ? parent->GetSelf() : 0,
+                                    parent ? parent->m_Index : 0,
                                     parent ? parent->GetTokenKindString().wx_str():0,
                                     isPrefix ? 1 : 0));
 
@@ -2841,20 +2849,20 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
                 if (token && MatchType(token->m_TokenKind, kindMask))
                 {
                     if (MatchText(token->m_Name, target, caseSens, isPrefix))
-                        result.insert(token->GetSelf());
+                        result.insert(token->m_Index);
                     else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
                     {
                         for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                         {
                             if (MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
                             {
-                                result.insert(token->GetSelf());
+                                result.insert(token->m_Index);
                                 // break; ?
                             }
                         }
                     }
                     else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
-                        GenerateResultSet(tree, target, token->GetSelf(), result, caseSens, isPrefix, kindMask);
+                        GenerateResultSet(tree, target, token->m_Index, result, caseSens, isPrefix, kindMask);
                 }
             }
         }
@@ -3052,14 +3060,19 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     {
                         //now collect the search scope for actual type of function/variable.
                         CollectSS(searchScope, actualTypeScope, tree);
+
+                        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+                        wxCriticalSectionLocker locker(s_TokensTreeCritical);
+                        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
                         //now add the current token's parent scope;
-                        Token* currentTokenParent = token->GetParentToken();
+                        Token* currentTokenParent = tree->at(token->m_ParentIndex);
                         while(true)
                         {
                             if (!currentTokenParent)
                                 break;
-                            actualTypeScope.insert(currentTokenParent->GetSelf());
-                            currentTokenParent = currentTokenParent->GetParentToken();
+                            actualTypeScope.insert(currentTokenParent->m_Index);
+                            currentTokenParent = tree->at(currentTokenParent->m_ParentIndex);
                         }
                     }
 
@@ -3267,7 +3280,7 @@ size_t NativeParser::GenerateResultSet(const wxString&    target,
                         {
                             if (token->m_Aliases[i] == target)
                             {
-                                result.insert(token->GetSelf());
+                                result.insert(token->m_Index);
                                 // break; ?
                             }
                         }
@@ -3896,14 +3909,16 @@ void NativeParser::CollectSS(const TokenIdxSet& searchScope, TokenIdxSet& actual
         //we need to pScope's parent scope too.
         if ((*pScope) != -1)
         {
-            Token* parent = tree->at(*pScope)->GetParentToken();
+            Token* token = tree->at(*pScope);
+            if (!token)
+                continue;
+            Token* parent = tree->at(token->m_ParentIndex);
             while(true)
             {
                 if (!parent)
                     break;
-                actualTypeScope.insert(parent->GetSelf());
-                parent = parent->GetParentToken();
-
+                actualTypeScope.insert(parent->m_Index);
+                parent = tree->at(parent->m_ParentIndex);
             }
         }
     }

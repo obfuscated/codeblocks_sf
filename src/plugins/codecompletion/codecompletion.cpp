@@ -1698,7 +1698,11 @@ int CodeCompletion::DoAllMethodsImpl()
             if (!type.IsEmpty())
                 str << type << _T(" ");
             if (token->m_ParentIndex != -1)
-                str << token->GetParentName() << _T("::");
+            {
+                Token* parent = tree->at(token->m_ParentIndex);
+                if (parent)
+                    str << parent->m_Name << _T("::");
+            }
             str << token->m_Name << token->GetStrippedArgs();
             if (token->m_IsConst)
                 str << _T(" const");
@@ -2822,9 +2826,9 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             Token* tk = tokens->at(*it);
             if (tk && tk->m_TokenKind == tkClass)
             {
-                tk = tokens->at(tokens->TokenExists(target, tk->GetSelf(), tkDestructor));
+                tk = tokens->at(tokens->TokenExists(target, tk->m_Index, tkDestructor));
                 if (tk)
-                    result.insert(tk->GetSelf());
+                    result.insert(tk->m_Index);
             }
         }
     }
