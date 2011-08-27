@@ -1458,62 +1458,68 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
 
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
-            Token* token = nullptr;
+            wxString buffer;
+            int initLine = -1;
+            int tokenIdx = -1;
+
             {
                 TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
                 THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                token = m_Parser->GetTokensTree()->at(*it);
-            }
+                Token* token = m_Parser->GetTokensTree()->at(*it);
 
-            if (!token)
-                continue;
-            if (curLine < token->m_ImplLineStart || curLine > token->m_ImplLineEnd)
-                continue;
-
-            if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(_T("ParseFunctionArguments() + Function match: ") + token->m_Name);
-
-            if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
-            {
-                wxString buffer = token->m_Args;
-                // Now we have something like "(int my_int, const TheClass* my_class, float f)"
-                buffer.Remove(0, 1);              // remove (
-                buffer.RemoveLast();              // remove )
-                // Now we have                "int my_int, const TheClass* my_class, float f"
-                buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
-                // Now we have                "int my_int; const TheClass* my_class; float f"
-                buffer << _T(';');                // aid parser ;)
-                // Finally we have            "int my_int; const TheClass* my_class; float f;"
-                buffer.Trim();
+                if (!token)
+                    continue;
+                if (curLine < token->m_ImplLineStart || curLine > token->m_ImplLineEnd)
+                    continue;
 
                 if (s_DebugSmartSense)
-                {
-                    CCLogger::Get()->DebugLog(F(_T("ParseFunctionArguments() Parsing arguments: \"%s\""), buffer.wx_str()));
-                }
+                    CCLogger::Get()->DebugLog(_T("ParseFunctionArguments() + Function match: ") + token->m_Name);
 
-                if (!buffer.IsEmpty())
+                if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
                 {
-                    const int textLength= searchData->control->GetLength();
-                    if (textLength == -1)
-                        continue;
-                    int paraPos = searchData->control->PositionFromLine(token->m_ImplLine - 1);
-                    if (paraPos == -1)
-                        continue;
-                    while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) != _T('('))
-                        ;
-                    while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) < _T(' '))
-                        ;
-                    const int initLine = searchData->control->LineFromPosition(paraPos) + 1;
-                    if (initLine == -1)
-                        continue;
-                    if (   !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, token, initLine)
-                        && s_DebugSmartSense)
+                    buffer = token->m_Args;
+                    // Now we have something like "(int my_int, const TheClass* my_class, float f)"
+                    buffer.Remove(0, 1);              // remove (
+                    buffer.RemoveLast();              // remove )
+                    // Now we have                "int my_int, const TheClass* my_class, float f"
+                    buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
+                    // Now we have                "int my_int; const TheClass* my_class; float f"
+                    buffer << _T(';');                // aid parser ;)
+                    // Finally we have            "int my_int; const TheClass* my_class; float f;"
+                    buffer.Trim();
+
+                    if (s_DebugSmartSense)
                     {
-                        CCLogger::Get()->DebugLog(_T("ParseFunctionArguments() Error parsing arguments."));
+                        CCLogger::Get()->DebugLog(F(_T("ParseFunctionArguments() Parsing arguments: \"%s\""), buffer.wx_str()));
+                    }
+
+                    if (!buffer.IsEmpty())
+                    {
+                        const int textLength= searchData->control->GetLength();
+                        if (textLength == -1)
+                            continue;
+                        int paraPos = searchData->control->PositionFromLine(token->m_ImplLine - 1);
+                        if (paraPos == -1)
+                            continue;
+                        while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) != _T('('))
+                            ;
+                        while (paraPos < textLength && searchData->control->GetCharAt(paraPos++) < _T(' '))
+                            ;
+                        initLine = searchData->control->LineFromPosition(paraPos) + 1;
+                        if (initLine == -1)
+                            continue;
+                        tokenIdx = token->GetSelf();
                     }
                 }
+            }
+
+            if (   !buffer.IsEmpty()
+                && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, tokenIdx, initLine)
+                && s_DebugSmartSense)
+            {
+                CCLogger::Get()->DebugLog(_T("ParseFunctionArguments() Error parsing arguments."));
             }
         }
         return true;
@@ -1533,11 +1539,13 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
 
     Token* parent = nullptr;
     int blockStart = FindCurrentFunctionStart(searchData, nullptr, nullptr, &parent, caretPos);
+    int initLine = 0;
     if (parent)
     {
         if (!(parent->m_TokenKind & tkAnyFunction))
             return false;
         m_LastFuncTokenIdx = parent->GetSelf();
+        initLine = parent->m_ImplLineStart;
     }
 
     if (blockStart != -1)
@@ -1562,7 +1570,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
         wxString buffer = searchData->control->GetTextRange(blockStart, blockEnd);
         buffer.Trim();
         if (   !buffer.IsEmpty()
-            && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, parent, parent->m_ImplLineStart) )
+            && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, m_LastFuncTokenIdx, initLine) )
         {
             if (s_DebugSmartSense)
                 CCLogger::Get()->DebugLog(_T("ParseLocalBlock() ERROR parsing block:\n") + buffer);

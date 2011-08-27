@@ -699,7 +699,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 }
 
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp,
-                         const wxString& filename, Token* parent, int initLine)
+                         const wxString& filename, int parentIdx, int initLine)
 {
     ParserThreadOptions opts;
 
@@ -712,7 +712,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
     opts.bufferSkipBlocks     = bufferSkipBlocks;
     opts.handleFunctions      = false;
     opts.fileOfBuffer         = filename;
-    opts.parentOfBuffer       = parent;
+    opts.parentIdxOfBuffer    = parentIdx;
     opts.initLineOfBuffer     = initLine;
 
     ParserThread thread(this,

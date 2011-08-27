@@ -1264,8 +1264,8 @@ Token* ParserThread::DoAddToken(TokenKind kind,
               m_FileIdx, line, m_TokensTree->m_TokenTicketCount);
 
         Token* finalParent = localParent ? localParent : m_LastParent;
-        if (kind == tkVariable && m_Options.parentOfBuffer)
-            finalParent = m_Options.parentOfBuffer;
+        if (kind == tkVariable && m_Options.parentIdxOfBuffer != -1)
+            finalParent = m_TokensTree->at(m_Options.parentIdxOfBuffer);
 
         newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
         newToken->m_TokenKind   = kind;

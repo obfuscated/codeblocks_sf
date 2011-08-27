@@ -143,7 +143,7 @@ public:
 
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,
-                             Token* parent = nullptr, int initLine = 0) { return false; }
+                             int parentIdx = -1, int initLine = 0) { return false; }
     virtual bool ParseBufferForFunctions(const wxString& buffer) { return false; }
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result) { return false; }
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result) { return false; }
@@ -245,7 +245,7 @@ public:
      */
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,
-                             Token* parent = nullptr, int initLine = 0);
+                             int parentIdx = -1, int initLine = 0);
     virtual bool ParseBufferForFunctions(const wxString& buffer);
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);

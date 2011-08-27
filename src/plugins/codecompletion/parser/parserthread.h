@@ -49,7 +49,7 @@ struct ParserThreadOptions
         handleEnums(true),
         handleTypedefs(true),
         parseComplexMacros(true),
-        parentOfBuffer(nullptr),
+        parentIdxOfBuffer(-1),
         initLineOfBuffer(1),
         loader(nullptr)
         {}
@@ -74,7 +74,7 @@ struct ParserThreadOptions
     bool        parseComplexMacros;
 
     wxString    fileOfBuffer;
-    Token*      parentOfBuffer;
+    int         parentIdxOfBuffer;
     int         initLineOfBuffer;
 
     LoaderBase* loader; // if not NULL, load through filemanager (using threads)
