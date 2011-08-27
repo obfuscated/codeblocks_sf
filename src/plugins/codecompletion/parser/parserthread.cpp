@@ -1329,8 +1329,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->m_Index);
     }
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
-      name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(), newToken->m_ActualType.wx_str(),
-      newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
+          name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(),
+          newToken->m_ActualType.wx_str(), m_TokensTree->at(newToken->m_ParentIndex) ?
+          m_TokensTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
+          newToken->m_ParentIndex);
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())

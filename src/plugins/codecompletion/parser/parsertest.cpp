@@ -92,7 +92,8 @@ void ParserTest::PrintTree()
     TokenList& tokens = m_tokensTree->m_Tokens;
     for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
     {
-        if ((*it)->GetParentToken() == 0)
+        Token* parent = m_tokensTree->at((*it)->m_ParentIndex);
+        if (!parent)
             PrintTokenTree(*it);
     }
 }
