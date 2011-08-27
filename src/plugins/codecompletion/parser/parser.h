@@ -163,7 +163,6 @@ public:
     const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
     wxString GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
     wxArrayString FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
-    size_t GetFilesCount();
 
     void ReadOptions();
     void WriteOptions();

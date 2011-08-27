@@ -209,15 +209,6 @@ bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
     return false;
 }
 
-size_t ParserBase::GetFilesCount()
-{
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-    return m_TokensTree->m_FilesMap.size();
-}
-
 void ParserBase::ReadOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));

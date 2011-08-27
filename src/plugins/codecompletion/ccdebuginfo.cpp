@@ -493,7 +493,8 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
-                                           m_Parser->GetTokensTree()->size(), m_Parser->GetFilesCount()));
+                                           m_Parser->GetTokensTree()->size(),
+                                           m_Parser->GetTokensTree()->m_FilesMap.size()));
     }
 
     DisplayTokenInfo();
