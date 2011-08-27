@@ -897,10 +897,10 @@ int TokensTree::AddTokenToList(Token* newToken, int forceidx)
     }
     else // For real-time parsing
     {
-        if (m_FreeTokens.size())
+        if (m_FreeTokens.size() > 99) // Leave enough freedom index
         {
-            result = m_FreeTokens[m_FreeTokens.size() - 1];
-            m_FreeTokens.pop_back();
+            result = m_FreeTokens.front();
+            m_FreeTokens.pop_front();
             m_Tokens[result] = newToken;
         }
         else
