@@ -377,49 +377,6 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
     return fullname;
 }
 
-
-Token* ParserBase::FindTokenByName(const wxString& name, bool globalsOnly, short int kindMask)
-{
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-    int result = m_TokensTree->TokenExists(name, -1, kindMask);
-    return m_TokensTree->at(result);
-}
-
-Token* ParserBase::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask)
-{
-    if (!parent)
-        return FindTokenByName(name, false, kindMask);
-
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-    Token* result = m_TokensTree->at(m_TokensTree->TokenExists(name, parent->GetSelf(), kindMask));
-    if (!result && useInheritance)
-    {
-        TokenIdxSet::iterator it;
-        m_TokensTree->RecalcInheritanceChain(parent);
-        for (it = parent->m_DirectAncestors.begin(); it != parent->m_DirectAncestors.end(); ++it)
-        {
-            Token* ancestor = m_TokensTree->at(*it);
-            s_TokensTreeCritical.Leave();
-            result = FindChildTokenByName(ancestor, name, true, kindMask);
-
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-            if (result)
-                break;
-        }
-    }
-    s_TokensTreeCritical.Leave();
-    return result;
-}
-
 size_t ParserBase::FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask)
 {
     result.clear();

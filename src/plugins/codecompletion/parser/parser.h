@@ -170,9 +170,6 @@ public:
     ParserOptions& Options() { return m_Options; }
     BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 
-    Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF);
-    Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false,
-                                short int kindMask = 0xFFFF);
     size_t FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask);
 
 private:
