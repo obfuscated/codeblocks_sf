@@ -74,7 +74,7 @@
     #define TRACE2(format, args...)
 #endif
 
-extern void GotoTokenPosition(cbEditor* editor, const wxString& target, size_t line);
+extern bool GotoTokenPosition(cbEditor* editor, const wxString& target, int line);
 
 int idMenuJumpToDeclaration    = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
