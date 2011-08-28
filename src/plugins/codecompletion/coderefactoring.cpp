@@ -170,14 +170,13 @@ bool CodeRefactoring::Parse()
 
     // handle local variables
     bool isLocalVariable = false;
-    Token* token = nullptr;
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
-        token = tree->at(*targetResult.begin());
+        Token* token = tree->at(*targetResult.begin());
         if (token)
         {
             Token* parent = tree->at(token->m_ParentIndex);
