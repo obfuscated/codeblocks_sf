@@ -2948,7 +2948,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
             wxCriticalSectionLocker locker(s_TokensTreeCritical);
             THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-            for (TokenIdxSet::iterator it=tempInitialScope.begin(); it!=tempInitialScope.end(); ++it)
+            for (TokenIdxSet::iterator it = tempInitialScope.begin(); it != tempInitialScope.end(); ++it)
             {
                 Token* token = tree->at(*it);
                 if (token && (token->m_TokenKind !=tkClass))
@@ -3001,65 +3001,70 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
         if (!initialResult.empty())
         {
             //loop all matches.
-            for (TokenIdxSet::iterator it=initialResult.begin(); it!=initialResult.end(); ++it)
+            for (TokenIdxSet::iterator it = initialResult.begin(); it != initialResult.end(); ++it)
             {
-                size_t id = (*it);
-                Token* token = nullptr;
+                const size_t id = (*it);
+                wxString actualTypeStr;
+                int parentIndex = -1;
+                bool isFuncOrVar = false;
                 {
                     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                     wxCriticalSectionLocker locker(s_TokensTreeCritical);
                     THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                    token = tree->at(id);
-                }
+                    Token* token = tree->at(id);
+                    if (!token)
+                    {
+                        if (s_DebugSmartSense)
+                            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() token is NULL?!")));
 
-                if (!token)
-                {
+                        continue;
+                    }
+
+                    // TODO: we should deal with operators carefully.
+                    // it should work for class::/namespace::
+                    if (token->m_IsOperator && (m_LastComponent.tokenType != pttNamespace))
+                        continue;
+
                     if (s_DebugSmartSense)
-                        CCLogger::Get()->DebugLog(F(_T("ResolveExpression() token is NULL?!")));
+                        CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%d) : type='%s'"),
+                                                    token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
 
-                    continue;
+                    // recond the template map message here. hope it will work.
+                    // wxString tkname = token->m_Name;
+                    // wxArrayString tks = token->m_TemplateType;
+                    if (!token->m_TemplateMap.empty())
+                        m_TemplateMap = token->m_TemplateMap;
+
+                    // if the token is a function/variable(i.e. is not a type)
+                    isFuncOrVar =   !searchText.IsEmpty()
+                                 && (subComponent.tokenType != pttSearchText)
+                                 && !token->m_ActualType.IsEmpty();
+                    if (isFuncOrVar)
+                    {
+                        actualTypeStr = token->m_ActualType;
+                        parentIndex = token->m_Index;
+                    }
                 }
 
-                // TODO: we should deal with operators carefully.
-                // it should work for class::/namespace::
-                if (token->m_IsOperator && (m_LastComponent.tokenType != pttNamespace))
-                    continue;
-
-                //------------------------------
-
-                if (s_DebugSmartSense)
-                    CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%d) : type='%s'"),
-                                                token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
-
-                //------------------------------
-                // recond the template map message here. hope it will work.
-                // wxString tkname = token->m_Name;
-                // wxArrayString tks = token->m_TemplateType;
-                if (!token->m_TemplateMap.empty())
-                    m_TemplateMap = token->m_TemplateMap;
                 // handle it if the token is a function/variable(i.e. is not a type)
-                if (   !searchText.IsEmpty()
-                    && (subComponent.tokenType != pttSearchText)
-                    && !token->m_ActualType.IsEmpty())
+                if (isFuncOrVar)
                 {
                     TokenIdxSet autualTypeResult;
-                    wxString actualTypeStr = token->m_ActualType;
-
                     TokenIdxSet actualTypeScope;
                     if (searchScope.empty())
                         actualTypeScope.insert(-1);
                     else
                     {
-                        //now collect the search scope for actual type of function/variable.
+                        // now collect the search scope for actual type of function/variable.
                         CollectSS(searchScope, actualTypeScope, tree);
 
                         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                         wxCriticalSectionLocker locker(s_TokensTreeCritical);
                         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                        //now add the current token's parent scope;
-                        Token* currentTokenParent = tree->at(token->m_ParentIndex);
+                        // now add the current token's parent scope;
+                        Token* currentTokenParent = tree->at(parentIndex);
                         while(true)
                         {
                             if (!currentTokenParent)
@@ -3074,19 +3079,19 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     ResolveActualType(actualTypeStr, actualTypeScope, actualTypeResult);
                     if (!actualTypeResult.empty())
                     {
-                        for (TokenIdxSet::iterator it2=actualTypeResult.begin(); it2!=actualTypeResult.end(); ++it2)
+                        for (TokenIdxSet::iterator it2 = actualTypeResult.begin(); it2 != actualTypeResult.end(); ++it2)
                         {
                             initialScope.insert(*it2);
-                            Token* typeToken = nullptr;
                             {
                                 TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
                                 THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-                                typeToken = tree->at(*it2);
+                                Token* typeToken = tree->at(*it2);
+                                if (typeToken && !typeToken->m_TemplateMap.empty())
+                                    m_TemplateMap = typeToken->m_TemplateMap;
                             }
-                            if (typeToken && !typeToken->m_TemplateMap.empty())
-                                m_TemplateMap = typeToken->m_TemplateMap;
+
                             //and we need to add the template argument alias too.
                             AddTemplateAlias(*it2, actualTypeScope, initialScope, tree);
                         }
@@ -3096,7 +3101,6 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                         ResolveTemplateMap(actualTypeStr, actualTypeScope, initialScope);
                     }
                     continue;
-
                 }
 
                 initialScope.insert(id);
@@ -3118,7 +3122,6 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
         if (subComponent.tokenType != pttSearchText)
             m_LastComponent = subComponent;
     }
-
 
     if (!initialScope.empty())
         result = initialScope;
