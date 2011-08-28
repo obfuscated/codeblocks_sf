@@ -560,11 +560,11 @@ private:
                          const TokenIdxSet& searchScope,
                          TokenIdxSet& result);
 
-    /** used to get the correct token in current line, e.g. class A { void test() { | } };
+    /** used to get the correct token index in current line, e.g. class A { void test() { | } };
      * @param tokens all current file's function and class
      * @param curLine the line of the current position
      */
-    Token* GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx);
+    int GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx);
 
     /** Init cc search member variables */
     void InitCCSearchVariables();

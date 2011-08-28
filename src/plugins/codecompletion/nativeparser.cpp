@@ -3394,16 +3394,23 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Found %d results"), num_results));
 
+    TokensTree* tree = m_Parser->GetTokensTree();
     size_t fileIdx = -1;
     {
         TRACK_THREAD_LOCKER(s_TokensTreeCritical);
         wxCriticalSectionLocker locker(s_TokensTreeCritical);
         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-        fileIdx = m_Parser->GetTokensTree()->GetFileIndex(searchData->file);
+        fileIdx = tree->GetFileIndex(searchData->file);
     }
 
-    Token* token = GetTokenFromCurrentLine(result, curLine, fileIdx);
+    const int idx = GetTokenFromCurrentLine(result, curLine, fileIdx);
+
+    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
+    Token* token = tree->at(idx);
     if (token)
     {
         // got it :)
@@ -4065,7 +4072,7 @@ void NativeParser::ResolveOpeartor(const OperatorType& tokenOperatorType, const 
     }
 }
 
-Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx)
+int NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx)
 {
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -4089,7 +4096,7 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
                 TRACE(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
                        token->DisplayName().wx_str(), token->GetFilename().wx_str(),
                        token->m_ImplLineStart, token->m_ImplLineEnd);
-                return token;
+                return token->m_Index;
             }
             else if (   token->m_TokenKind == tkConstructor
                      && token->m_ImplFileIdx == fileIdx
@@ -4099,7 +4106,7 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
                 TRACE(_T("GetTokenFromCurrentLine() tkConstructor : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
                       token->DisplayName().wx_str(), token->GetFilename().wx_str(),
                       token->m_ImplLineStart, token->m_ImplLineEnd);
-                return token;
+                return token->m_Index;
             }
             else if (   token->m_TokenKind == tkClass
                      && token->m_ImplLineStart <= curLine
@@ -4119,7 +4126,10 @@ Token* NativeParser::GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t c
         }
     }
 
-    return classToken;
+    if (classToken)
+        return classToken->m_Index;
+    else
+        return -1;
 }
 
 void NativeParser::InitCCSearchVariables()
