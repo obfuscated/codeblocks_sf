@@ -511,8 +511,13 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
+            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+            wxCriticalSectionLocker locker(s_TokensTreeCritical);
+            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+
             CCDebugInfo info(tree, m_Parser, ctd->m_Token);
             info.ShowModal();
+
             return;
         }
 

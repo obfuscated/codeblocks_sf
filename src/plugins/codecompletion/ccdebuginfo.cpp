@@ -30,7 +30,6 @@
 #include "ccdebuginfo.h"
 #include "parser/parser.h"
 
-
 #define CC_DEBUGINFO_DEBUG_OUTPUT 0
 
 #if CC_GLOBAL_DEBUG_OUTPUT == 1
@@ -59,8 +58,6 @@
     #define TRACE(format, args...)
     #define TRACE2(format, args...)
 #endif
-
-
 
 //(*IdInit(CCDebugInfo)
 const long CCDebugInfo::ID_STATICTEXT29 = wxNewId();
@@ -317,18 +314,12 @@ void CCDebugInfo::FillFiles()
     lstFiles->Freeze();
     lstFiles->Clear();
 
+    TokensTree* tokens = m_Parser->GetTokensTree();
+    for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
     {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        TokensTree* tokens = m_Parser->GetTokensTree();
-        for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
-        {
-            wxString file = tokens->m_FilenamesMap.GetString(i);
-            if (!file.IsEmpty())
-                lstFiles->Append(file);
-        }
+        wxString file = tokens->m_FilenamesMap.GetString(i);
+        if (!file.IsEmpty())
+            lstFiles->Append(file);
     }
 
     lstFiles->Thaw();
@@ -375,16 +366,9 @@ void CCDebugInfo::DisplayTokenInfo()
         return;
     }
 
-    Token* parent = nullptr;
-    {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        TokensTree* tokens = m_Parser->GetTokensTree();
-        parent = tokens->at(m_Token->m_ParentIndex);
-        tokens->RecalcInheritanceChain(m_Token);
-    }
+    TokensTree* tokens = m_Parser->GetTokensTree();
+    Token* parent = tokens->at(m_Token->m_ParentIndex);
+    tokens->RecalcInheritanceChain(m_Token);
 
     wxString args = m_Token->GetFormattedArgs();
     wxString argsStr = m_Token->m_BaseArgs;
@@ -433,10 +417,6 @@ void CCDebugInfo::FillChildren()
     TokensTree* tokens = m_Parser->GetTokensTree();
     cmbChildren->Clear();
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
     for (TokenIdxSet::iterator it = m_Token->m_Children.begin(); it != m_Token->m_Children.end(); ++it)
     {
         Token* child = tokens->at(*it);
@@ -450,10 +430,6 @@ void CCDebugInfo::FillAncestors()
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
     cmbAncestors->Clear();
-
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
     for (TokenIdxSet::iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
     {
@@ -469,10 +445,6 @@ void CCDebugInfo::FillDescendants()
     TokensTree* tokens = m_Parser->GetTokensTree();
     cmbDescendants->Clear();
 
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
     for (TokenIdxSet::iterator it = m_Token->m_Descendants.begin(); it != m_Token->m_Descendants.end(); ++it)
     {
         Token* descendant = tokens->at(*it);
@@ -487,15 +459,9 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
     if (!m_Parser)
         return;
 
-    {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
-                                           m_Parser->GetTokensTree()->size(),
-                                           m_Parser->GetTokensTree()->m_FilesMap.size()));
-    }
+    lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
+                                       m_Parser->GetTokensTree()->size(),
+                                       m_Parser->GetTokensTree()->m_FilesMap.size()));
 
     DisplayTokenInfo();
     FillFiles();
@@ -506,56 +472,50 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
+    TokensTree* tokens = m_Parser->GetTokensTree();
+    wxString search = txtFilter->GetValue();
+
+    m_Token = 0;
+
+    // first determine if the user entered an ID or a search mask
+    long unsigned id;
+    if (search.ToULong(&id, 10))
     {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        TokensTree* tokens = m_Parser->GetTokensTree();
-        wxString search = txtFilter->GetValue();
-
-        m_Token = 0;
-
-        // first determine if the user entered an ID or a search mask
-        long unsigned id;
-        if (search.ToULong(&id, 10))
+        // easy; ID
+        m_Token = tokens->at(id);
+    }
+    else
+    {
+        // find all matching tokens
+        TokenIdxSet result;
+        for (size_t i = 0; i < tokens->size(); ++i)
         {
-            // easy; ID
-            m_Token = tokens->at(id);
+            Token* token = tokens->at(i);
+            if (token && token->m_Name.Matches(search))
+                result.insert(i);
+        }
+
+        // a single result?
+        if (result.size() == 1)
+        {
+            m_Token = tokens->at(*(result.begin()));
         }
         else
         {
-            // find all matching tokens
-            TokenIdxSet result;
-            for (size_t i = 0; i < tokens->size(); ++i)
+            // fill a list and ask the user which token to display
+            wxArrayString arr;
+            wxArrayInt intarr;
+            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                Token* token = tokens->at(i);
-                if (token && token->m_Name.Matches(search))
-                    result.insert(i);
+                Token* token = tokens->at(*it);
+                arr.Add(token->DisplayName());
+                intarr.Add(*it);
             }
+            int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), arr, this);
+            if (sel == -1)
+                return;
 
-            // a single result?
-            if (result.size() == 1)
-            {
-                m_Token = tokens->at(*(result.begin()));
-            }
-            else
-            {
-                // fill a list and ask the user which token to display
-                wxArrayString arr;
-                wxArrayInt intarr;
-                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
-                {
-                    Token* token = tokens->at(*it);
-                    arr.Add(token->DisplayName());
-                    intarr.Add(*it);
-                }
-                int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), arr, this);
-                if (sel == -1)
-                    return;
-
-                m_Token = tokens->at(intarr[sel]);
-            }
+            m_Token = tokens->at(intarr[sel]);
         }
     }
 
@@ -573,13 +533,7 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
     {
         if (count == idx)
         {
-            {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-                m_Token = m_Parser->GetTokensTree()->at(*it);
-            }
+            m_Token = m_Parser->GetTokensTree()->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -598,13 +552,7 @@ void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
     {
         if (count == idx)
         {
-            {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-                m_Token = m_Parser->GetTokensTree()->at(*it);
-            }
+            m_Token = m_Parser->GetTokensTree()->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -617,14 +565,7 @@ void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
     if (!m_Token || m_Token->m_ParentIndex == -1)
         return;
 
-    {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        m_Token = m_Parser->GetTokensTree()->at(m_Token->m_ParentIndex);
-    }
-
+    m_Token = m_Parser->GetTokensTree()->at(m_Token->m_ParentIndex);
     DisplayTokenInfo();
 }
 
@@ -639,13 +580,7 @@ void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
     {
         if (count == idx)
         {
-            {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-                m_Token = m_Parser->GetTokensTree()->at(*it);
-            }
+            m_Token = m_Parser->GetTokensTree()->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -704,10 +639,6 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                     wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
                                        Manager::Get()->GetAppWindow());
 
-                    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
                     tt = tokens->m_Tree.dump();
                 }
                 SaveCCDebugInfo(_("Save tokens tree"), tt);
@@ -716,17 +647,11 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
         case 1:
             {
                 wxString files;
+                for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
                 {
-                    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-                    for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
-                    {
-                        wxString file = tokens->m_FilenamesMap.GetString(i);
-                        if (!file.IsEmpty())
-                            files += file + _T("\r\n");
-                    }
+                    wxString file = tokens->m_FilenamesMap.GetString(i);
+                    if (!file.IsEmpty())
+                        files += file + _T("\r\n");
                 }
 
                 SaveCCDebugInfo(_("Save file list"), files);
@@ -754,10 +679,6 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                                        Manager::Get()->GetAppWindow());
                     for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
                     {
-                        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
                         const wxString file = tokens->m_FilenamesMap.GetString(i);
                         if (!file.IsEmpty())
                         {
