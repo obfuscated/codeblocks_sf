@@ -2739,8 +2739,6 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         }
     }
 
-    tmptree->clear();
-
     IncrementalSelectIteratorStringArray iterator(tokens);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
                                  _("Select function..."), _("Please select function to go to:"));
@@ -2755,6 +2753,8 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             GotoTokenPosition(ed, token->m_Name, token->m_Line - 1);
         }
     }
+
+    tmptree->clear();
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
