@@ -318,7 +318,7 @@ protected:
      * @return current function line number
      */
     int FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace = 0L, wxString* procName = 0L,
-                                 Token** functionToken = 0L, int caretPos = -1);
+                                 int* functionIndex = 0L, int caretPos = -1);
 
     /** return all the tokens matching the current function(hopefully, just one)
      * @param editor editor pointer
@@ -593,7 +593,7 @@ private:
     int                          m_LastFuncTokenIdx;      /// saved the function token's index, for remove all local variable
     ParserComponent              m_LastComponent;
     cbStyledTextCtrl*            m_LastControl;
-    Token*                       m_LastFunction;
+    int                          m_LastFunctionIndex;
     int                          m_LastLine;
     int                          m_LastResult;
     wxString                     m_LastFile;
