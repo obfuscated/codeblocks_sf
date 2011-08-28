@@ -1560,9 +1560,20 @@ int CodeCompletion::DoClassMethodDeclImpl()
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
         return -4;
 
-    wxString filename = ed->GetFilename();
+    if (!m_NativeParser.GetParser().Done())
+    {
+        wxString msg = _("The Parser is still parsing files.");
+        msg += m_NativeParser.GetParser().NotDoneReason();
+        CCLogger::Get()->DebugLog(msg);
+        return -5;
+    }
+
+    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
+    wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
     // open the insert class dialog
+    wxString filename = ed->GetFilename();
     InsertClassMethodDlg dlg(Manager::Get()->GetAppWindow(), &m_NativeParser.GetParser(), filename);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
@@ -1585,7 +1596,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         return 0;
     }
 
-    return -5;
+    return -6;
 }
 
 int CodeCompletion::DoAllMethodsImpl()

@@ -15,6 +15,8 @@ class Token;
 class wxCheckListBox;
 class wxCommandEvent;
 
+// When instance this class, *MUST* entered a critical section, and should call ShowModal() rather than the other
+// e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
 class InsertClassMethodDlg : public wxScrollingDialog
 {
 public:

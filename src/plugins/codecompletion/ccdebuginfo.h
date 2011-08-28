@@ -28,6 +28,8 @@
 class ParserBase;
 class Token;
 
+// When instance this class, *MUST* entered a critical section, and should call ShowModal() rather than the other
+// e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
 class CCDebugInfo: public wxScrollingDialog
 {
 public:

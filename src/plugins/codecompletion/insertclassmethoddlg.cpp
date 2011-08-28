@@ -72,29 +72,20 @@ wxArrayString InsertClassMethodDlg::GetCode() const
 
 void InsertClassMethodDlg::FillClasses()
 {
-    if (!m_Parser || !m_Parser->Done())
-        return;
-
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     lb->Freeze();
     lb->Clear();
 
+    TokensTree* tree = m_Parser->GetTokensTree();
+    for (size_t i = 0; i < tree->size(); ++i)
     {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        TokensTree* tree = m_Parser->GetTokensTree();
-        for (size_t i = 0; i < tree->size(); ++i)
+        Token* token = tree->at(i);
+        //CCLogger::Get()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
+        if (token && (token->m_TokenKind & (tkClass | tkTypedef)))
         {
-            Token* token = tree->at(i);
-            //CCLogger::Get()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
-            if (token && (token->m_TokenKind & (tkClass | tkTypedef)))
-            {
-                //token->m_Filename == UnixFilename(m_Filename))
-                // TODO: check against file's pair too
-                lb->Append(token->m_Name, token);
-            }
+            //token->m_Filename == UnixFilename(m_Filename))
+            // TODO: check against file's pair too
+            lb->Append(token->m_Name, token);
         }
     }
 
@@ -102,9 +93,6 @@ void InsertClassMethodDlg::FillClasses()
     FillMethods();
 }
 
-// No critical section needed here:
-// All functions that call this, already entered a critical section.
-// e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
 void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& ns, bool includePrivate,
                       bool includeProtected, bool includePublic)
 {
@@ -153,9 +141,6 @@ void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& n
 
 void InsertClassMethodDlg::FillMethods()
 {
-    if (!m_Parser || !m_Parser->Done())
-        return;
-
     wxListBox* lb = XRCCTRL(*this, "lstClasses", wxListBox);
     wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
     clb->Clear();
@@ -170,18 +155,12 @@ void InsertClassMethodDlg::FillMethods()
     Token* parentToken = reinterpret_cast<Token*>(lb->GetClientData(lb->GetSelection()));
 
     clb->Freeze();
-    {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        DoFillMethodsFor(clb,
-                         parentToken,
-                         parentToken ? parentToken->m_Name + _T("::") : _T(""),
-                         includePrivate,
-                         includeProtected,
-                         includePublic);
-    }
+    DoFillMethodsFor(clb,
+                     parentToken,
+                     parentToken ? parentToken->m_Name + _T("::") : _T(""),
+                     includePrivate,
+                     includeProtected,
+                     includePublic);
     clb->Thaw();
 }
 
