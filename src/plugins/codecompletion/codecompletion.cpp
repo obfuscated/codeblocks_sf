@@ -56,6 +56,7 @@
 #include "parser/parser.h"
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
+#include "ccdebuginfo.h"
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 
@@ -2937,7 +2938,15 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // do we have a token?
     if (token)
     {
-        if (isImpl)
+        if (   wxGetKeyState(WXK_CONTROL)
+            && wxGetKeyState(WXK_SHIFT)
+            && (  event.GetId() == idGotoDeclaration
+               || event.GetId() == idGotoImplementation ) )
+        {
+            CCDebugInfo info(nullptr, &m_NativeParser.GetParser(), token);
+            info.ShowModal();
+        }
+        else if (isImpl)
         {
             if (cbEditor* ed = edMan->Open(token->GetImplFilename()))
                 GotoTokenPosition(ed, target, token->m_ImplLine - 1);
