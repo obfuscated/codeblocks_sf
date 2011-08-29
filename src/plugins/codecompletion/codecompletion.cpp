@@ -2796,12 +2796,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         return;
 
     const int pos = editor->GetControl()->GetCurrentPos();
-    const int start = editor->GetControl()->WordStartPosition(pos, true);
-    const int end = editor->GetControl()->WordEndPosition(pos, true);
+    const int startPos = editor->GetControl()->WordStartPosition(pos, true);
+    const int endPos = editor->GetControl()->WordEndPosition(pos, true);
     wxString target;
-    if (GetLastNonWhitespaceChar(editor->GetControl(), start) == _T('~'))
+    if (GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T('~'))
         target << _T('~');
-    target << editor->GetControl()->GetTextRange(start, end);
+    target << editor->GetControl()->GetTextRange(startPos, endPos);
     if (target.IsEmpty())
         return;
 
@@ -2811,7 +2811,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
     // get the matching set
     TokenIdxSet result;
-    m_NativeParser.MarkItemsByAI(result, true, false, true, end);
+    m_NativeParser.MarkItemsByAI(result, true, false, true, endPos);
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -2852,7 +2852,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
         if (isClassOrConstructor)
         {
-            const bool isConstructor = (GetNextNonWhitespaceChar(editor->GetControl(), end) == _T('('));
+            const bool isConstructor =   GetNextNonWhitespaceChar(editor->GetControl(), endPos) == _T('(')
+                                      && GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T(':');
             for (TokenIdxSet::iterator it = result.begin(); it != result.end();)
             {
                 Token* tk = tokens->at(*it);
