@@ -13,4 +13,4 @@ autorevision.h
 *.exe
 autorevision
 cb_console_runner
-
+*.bmarks

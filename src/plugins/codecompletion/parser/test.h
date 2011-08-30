@@ -1,9 +1,8 @@
-bool Parse(bool bTest)
+namespace std _GLIBCXX_VISIBILITY(default)
 {
-    return !bTest;
-}
-
-bool Parse(int nTest, bool bTest)
-{
-    return !bTest;
-}
+    _GLIBCXX_BEGIN_NAMESPACE_VERSION
+    void test()
+    {
+    }
+    _GLIBCXX_END_NAMESPACE_VERSION
+} // namespace

@@ -1178,7 +1178,13 @@ void Tokenizer::MacroReplace(wxString& str)
             ;
         DoGetToken(); // eat (...)
         wxString target = (const wxChar*)it->second + 1;
-        if (target != str && ReplaceBufferForReparse(target, false))
+        if (target.IsEmpty())
+        {
+            while (SkipWhiteSpace() || SkipComment())
+                ;
+            str = DoGetToken();
+        }
+        else if (target != str && ReplaceBufferForReparse(target, false))
             str = DoGetToken();
     }
     else if (it->second[0] == _T('-'))

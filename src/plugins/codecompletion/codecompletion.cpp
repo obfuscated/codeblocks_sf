@@ -506,6 +506,11 @@ void CodeCompletion::LoadTokenReplacements()
     repl[_T("_GLIBCXX_BEGIN_NAMESPACE_TR1")]    = _T("namespace tr1 {");
     repl[_T("_GLIBCXX_END_NAMESPACE_TR1")]      = _T("}");
 
+    // for GCC 4.6.x
+    repl[_T("_GLIBCXX_VISIBILITY")]             = _T("+");
+    repl[_T("_GLIBCXX_BEGIN_NAMESPACE_VERSION")]= _T("");
+    repl[_T("_GLIBCXX_END_NAMESPACE_VERSION")]  = _T("");
+
     // for VC
     repl[_T("_STD_BEGIN")]                      = _T("namespace std {");
     repl[_T("_STD_END")]                        = _T("}");
@@ -2570,7 +2575,6 @@ void CodeCompletion::OnToolbarTimer(wxTimerEvent& event)
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
-
     if (IsAttached() && m_InitDone)
     {
         if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
