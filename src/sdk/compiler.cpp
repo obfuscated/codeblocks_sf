@@ -34,7 +34,7 @@ wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 // common regex that can be used by the different compiler for matching compiler output
 // it can be used in the patterns for warnings, errors, ...
 // NOTE : it is an approximation (for example the ':' can appear anywhere and several times)
-const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~A-Za-z0-9_:+/\\.-]+");
+const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~[:alnum:]&_:+/\\.-]+");
 
 // version of compiler settings
 // when this is different from what is saved in the config, a message appears
