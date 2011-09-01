@@ -4,9 +4,9 @@
  *
  * Copyright: 2010 Jens Lody
  *
- * $Revision:$
- * $Id:$
- * $HeadURL:$
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk.h"

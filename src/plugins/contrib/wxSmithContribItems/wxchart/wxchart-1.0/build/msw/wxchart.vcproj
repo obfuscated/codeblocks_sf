@@ -1,270 +1,540 @@
-<?xml version="1.0" encoding="Windows-1252"?>
-<VisualStudioProject
-	ProjectType="Visual C++"
-	Version="7.10"
-	Name="wxchart"
-	ProjectGUID="{2C05CF66-09CE-484C-A291-4BF4137CCE54}"
-	Keyword="Win32Proj">
-	<Platforms>
-		<Platform
-			Name="Win32"/>
-	</Platforms>
-	<Configurations>
-		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
-			ConfigurationType="1"
-			CharacterSet="1">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswud&quot;;../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26ud_xrc.lib wxmsw26ud_html.lib wxmsw26ud_adv.lib wxmsw26ud_core.lib wxbase26ud_xml.lib wxbase26ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
-				OutputFile="$(OutDir)/wxchart.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib&quot;"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/wxchart.pdb"
-				SubSystem="2"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG,__WXMSW__,__WXDEBUG__,_UNICODE,_WINDOWS,NOPCH"
-				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswud&quot;;..\..\include"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="1"
-			CharacterSet="1">
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswu&quot;;../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;NOPCH"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26u_xrc.lib wxmsw26u_html.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxbase26u_xml.lib wxbase26u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
-				OutputFile="$(OutDir)/wxchart.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib&quot;"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="__WXMSW__,_UNICODE,_WINDOWS,NOPCH"
-				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswu&quot;;..\..\include"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
-		</Configuration>
-	</Configurations>
-	<References>
-	</References>
-	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
-			<File
-				RelativePath="..\..\src\axis.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\bar3dchartpoints.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\barchartpoints.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\chart.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\chartcolors.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\chartctrl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\chartsizes.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\chartwindow.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\label.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\legend.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\legendwindow.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\pie3dchartpoints.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\piechartpoints.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\points.cpp">
-			</File>
-			<File
-				RelativePath="..\..\samples\wxchart.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\xaxis.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\xaxiswindow.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\yaxis.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\yaxiswindow.cpp">
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath="..\..\include\wx\axis.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\bar3dchartpoints.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\barchartpoints.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chart.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartcolors.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartctrl.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartdef.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartpoints.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartpointstypes.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartsizes.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\charttypes.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\chartwindow.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\label.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\legend.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\legendwindow.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\pie3dchartpoints.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\piechartpoints.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\points.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\xaxis.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\xaxiswindow.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\yaxis.h">
-			</File>
-			<File
-				RelativePath="..\..\include\wx\yaxiswindow.h">
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
-			<File
-				RelativePath=".\wxchart.rc">
-			</File>
-		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
-	</Files>
-	<Globals>
-	</Globals>
-</VisualStudioProject>
+<?xml version="1.0" encoding="Windows-1252"?>
+
+<VisualStudioProject
+
+	ProjectType="Visual C++"
+
+	Version="7.10"
+
+	Name="wxchart"
+
+	ProjectGUID="{2C05CF66-09CE-484C-A291-4BF4137CCE54}"
+
+	Keyword="Win32Proj">
+
+	<Platforms>
+
+		<Platform
+
+			Name="Win32"/>
+
+	</Platforms>
+
+	<Configurations>
+
+		<Configuration
+
+			Name="Debug|Win32"
+
+			OutputDirectory="Debug"
+
+			IntermediateDirectory="Debug"
+
+			ConfigurationType="1"
+
+			CharacterSet="1">
+
+			<Tool
+
+				Name="VCCLCompilerTool"
+
+				Optimization="0"
+
+				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswud&quot;;../../include"
+
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+
+				MinimalRebuild="TRUE"
+
+				BasicRuntimeChecks="3"
+
+				RuntimeLibrary="3"
+
+				UsePrecompiledHeader="0"
+
+				WarningLevel="4"
+
+				Detect64BitPortabilityProblems="FALSE"
+
+				DebugInformationFormat="3"/>
+
+			<Tool
+
+				Name="VCCustomBuildTool"/>
+
+			<Tool
+
+				Name="VCLinkerTool"
+
+				AdditionalDependencies="wxmsw26ud_xrc.lib wxmsw26ud_html.lib wxmsw26ud_adv.lib wxmsw26ud_core.lib wxbase26ud_xml.lib wxbase26ud.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+
+				OutputFile="$(OutDir)/wxchart.exe"
+
+				LinkIncremental="1"
+
+				SuppressStartupBanner="TRUE"
+
+				AdditionalLibraryDirectories="&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib&quot;"
+
+				GenerateDebugInformation="TRUE"
+
+				ProgramDatabaseFile="$(OutDir)/wxchart.pdb"
+
+				SubSystem="2"
+
+				TargetMachine="1"/>
+
+			<Tool
+
+				Name="VCMIDLTool"/>
+
+			<Tool
+
+				Name="VCPostBuildEventTool"/>
+
+			<Tool
+
+				Name="VCPreBuildEventTool"/>
+
+			<Tool
+
+				Name="VCPreLinkEventTool"/>
+
+			<Tool
+
+				Name="VCResourceCompilerTool"
+
+				PreprocessorDefinitions="_DEBUG,__WXMSW__,__WXDEBUG__,_UNICODE,_WINDOWS,NOPCH"
+
+				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswud&quot;;..\..\include"/>
+
+			<Tool
+
+				Name="VCWebServiceProxyGeneratorTool"/>
+
+			<Tool
+
+				Name="VCXMLDataGeneratorTool"/>
+
+			<Tool
+
+				Name="VCWebDeploymentTool"/>
+
+			<Tool
+
+				Name="VCManagedWrapperGeneratorTool"/>
+
+			<Tool
+
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+
+		</Configuration>
+
+		<Configuration
+
+			Name="Release|Win32"
+
+			OutputDirectory="Release"
+
+			IntermediateDirectory="Release"
+
+			ConfigurationType="1"
+
+			CharacterSet="1">
+
+			<Tool
+
+				Name="VCCLCompilerTool"
+
+				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswu&quot;;../../include"
+
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WXMSW__;NOPCH"
+
+				RuntimeLibrary="2"
+
+				UsePrecompiledHeader="0"
+
+				WarningLevel="4"
+
+				Detect64BitPortabilityProblems="FALSE"
+
+				DebugInformationFormat="0"/>
+
+			<Tool
+
+				Name="VCCustomBuildTool"/>
+
+			<Tool
+
+				Name="VCLinkerTool"
+
+				AdditionalDependencies="wxmsw26u_xrc.lib wxmsw26u_html.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxbase26u_xml.lib wxbase26u.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+
+				OutputFile="$(OutDir)/wxchart.exe"
+
+				LinkIncremental="1"
+
+				SuppressStartupBanner="TRUE"
+
+				AdditionalLibraryDirectories="&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib&quot;"
+
+				GenerateDebugInformation="TRUE"
+
+				SubSystem="2"
+
+				OptimizeReferences="2"
+
+				EnableCOMDATFolding="2"
+
+				TargetMachine="1"/>
+
+			<Tool
+
+				Name="VCMIDLTool"/>
+
+			<Tool
+
+				Name="VCPostBuildEventTool"/>
+
+			<Tool
+
+				Name="VCPreBuildEventTool"/>
+
+			<Tool
+
+				Name="VCPreLinkEventTool"/>
+
+			<Tool
+
+				Name="VCResourceCompilerTool"
+
+				PreprocessorDefinitions="__WXMSW__,_UNICODE,_WINDOWS,NOPCH"
+
+				AdditionalIncludeDirectories="&quot;F:\Development\wxWidgets-2.6.3\include&quot;;&quot;F:\Development\wxWidgets-2.6.3\lib\vc_lib\mswu&quot;;..\..\include"/>
+
+			<Tool
+
+				Name="VCWebServiceProxyGeneratorTool"/>
+
+			<Tool
+
+				Name="VCXMLDataGeneratorTool"/>
+
+			<Tool
+
+				Name="VCWebDeploymentTool"/>
+
+			<Tool
+
+				Name="VCManagedWrapperGeneratorTool"/>
+
+			<Tool
+
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+
+		</Configuration>
+
+	</Configurations>
+
+	<References>
+
+	</References>
+
+	<Files>
+
+		<Filter
+
+			Name="Source Files"
+
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+
+			<File
+
+				RelativePath="..\..\src\axis.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\bar3dchartpoints.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\barchartpoints.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\chart.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\chartcolors.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\chartctrl.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\chartsizes.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\chartwindow.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\label.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\legend.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\legendwindow.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\pie3dchartpoints.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\piechartpoints.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\points.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\samples\wxchart.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\xaxis.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\xaxiswindow.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\yaxis.cpp">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\src\yaxiswindow.cpp">
+
+			</File>
+
+		</Filter>
+
+		<Filter
+
+			Name="Header Files"
+
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+
+			<File
+
+				RelativePath="..\..\include\wx\axis.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\bar3dchartpoints.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\barchartpoints.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chart.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartcolors.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartctrl.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartdef.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartpoints.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartpointstypes.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartsizes.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\charttypes.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\chartwindow.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\label.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\legend.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\legendwindow.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\pie3dchartpoints.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\piechartpoints.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\points.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\xaxis.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\xaxiswindow.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\yaxis.h">
+
+			</File>
+
+			<File
+
+				RelativePath="..\..\include\wx\yaxiswindow.h">
+
+			</File>
+
+		</Filter>
+
+		<Filter
+
+			Name="Resource Files"
+
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+
+			<File
+
+				RelativePath=".\wxchart.rc">
+
+			</File>
+
+		</Filter>
+
+		<File
+
+			RelativePath=".\ReadMe.txt">
+
+		</File>
+
+	</Files>
+
+	<Globals>
+
+	</Globals>
+
+</VisualStudioProject>
+

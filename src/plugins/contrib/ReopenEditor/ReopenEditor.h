@@ -4,9 +4,9 @@
  *
  * Copyright: 2010 Jens Lody
  *
- * $Revision:$
- * $Id:$
- * $HeadURL:$
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #ifndef REOPEN_EDITOR_H_INCLUDED
