@@ -185,6 +185,8 @@ struct CompilerSwitches
     bool Use83Paths;              // This is mainly a workaround for the resource compiler under Windows, apparently
                                   // it doesn't deal well with spaces in the (include) path even if the path is quoted,
                                   // therefore use 8.3 notation without spaces on Windows.
+                                  // However, this will apply to all include path's as other tools might have the
+                                  // same issue and it won't hurt to apply it to all include directories, if enabled.
 
     CompilerSwitches(); // constructor initializing the members, specific compilers should overrule if needed
 };
