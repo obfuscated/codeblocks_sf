@@ -2474,7 +2474,7 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 void CodeCompletion::OnEditorActivatedTimer(wxTimerEvent& event)
 {
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    const wxString& curFile = editor->GetFilename();
+    const wxString& curFile = editor ? editor->GetFilename() : wxEmptyString;
     if (!editor || editor != m_LastEditor || curFile.IsEmpty())
     {
         m_LastEditor = nullptr;
