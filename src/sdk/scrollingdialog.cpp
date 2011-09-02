@@ -307,8 +307,19 @@ int wxStandardDialogLayoutAdapter::MustScroll(wxDialog* dialog, wxSize& windowSi
     wxSize minWindowSize = dialog->GetSizer()->GetMinSize();
     windowSize = dialog->GetSize();
     windowSize = wxSize(wxMax(windowSize.x, minWindowSize.x), wxMax(windowSize.y, minWindowSize.y));
+#ifdef __WXMSW__
+    // On windows wxWidgets does not recognize a (dis)connection of additional monitors on run
+    // and therefore wxDisplay::GetFromWindow() fails and returns wxNOT_FOUND.
+    // This results in a displaySize of (0,0) and invisible dialogs.
+    // Using 0 as displayIndex in this case is safe, because one display must be there if
+    // C::B is running, or we have a real problem.
+    int displayIndex = wxDisplay::GetFromWindow(dialog);
+    if ( displayIndex == wxNOT_FOUND)
+        displayIndex = 0;
+    displaySize = wxDisplay(displayIndex).GetClientArea().GetSize();
+#else //__WXMSW__
     displaySize = wxDisplay(wxDisplay::GetFromWindow(dialog)).GetClientArea().GetSize();
-
+#endif //__WXMSW__
     int flags = 0;
 
     if (windowSize.y >= (displaySize.y - wxEXTRA_DIALOG_HEIGHT))
