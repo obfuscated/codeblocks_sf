@@ -103,7 +103,8 @@ noinst_HEADERS = include/wx/pdfannotation.h \
 				include/wx/pdfspotcolour.h \
 				include/wx/pdftemplate.h \
 				include/wx/pdfutility.h \
-				include/wx/pdfxml.h
+				include/wx/pdfxml.h \
+				src/wxmemdbg.h
 
 EXTRA_DIST = src/pdfcjkfontdata.inc \
 				src/pdfcmapdata.inc \
