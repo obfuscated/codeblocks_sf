@@ -522,7 +522,7 @@ do
 	-ThreadSearch)
 		AM_CONDITIONAL([BUILD_THREADSEARCH], [false])
 		;;
-	-ToolPlus)
+	-ToolsPlus)
 		AM_CONDITIONAL([BUILD_TOOLSPLUS], [false])
 		;;
 	-Valgrind)
