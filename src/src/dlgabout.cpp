@@ -141,6 +141,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
     XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
     XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
+    XRCCTRL(*this, "lblSDK", wxStaticText)->SetLabel(appglobals::AppSDKVersion);
     XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
     XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(appglobals::AppContactEmail);
     XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);

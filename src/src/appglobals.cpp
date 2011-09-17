@@ -9,9 +9,10 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/utils.h>
-#include <wx/intl.h>
-#include "configmanager.h"
+    #include <wx/utils.h>
+    #include <wx/intl.h>
+    #include "cbplugin.h"
+    #include "configmanager.h"
 #endif
 #include "appglobals.h"
 
@@ -29,6 +30,11 @@ namespace appglobals
         const wxString AppActualVersionVerb = _T("Release " RELEASE "  rev ") + ConfigManager::GetRevisionString();
         const wxString AppActualVersion     = _T(RELEASE "-r") + ConfigManager::GetRevisionString();
     #endif
+
+    const wxString AppSDKVersion = wxString::Format(wxT("%d.%d.%d"),
+                                                    static_cast<int>(PLUGIN_SDK_VERSION_MAJOR),
+                                                    static_cast<int>(PLUGIN_SDK_VERSION_MINOR),
+                                                    static_cast<int>(PLUGIN_SDK_VERSION_RELEASE));
 
     const wxString AppUrl                   = _T("http://www.codeblocks.org");
     const wxString AppContactEmail          = _T("info@codeblocks.org");

@@ -27,6 +27,7 @@ namespace appglobals
     extern const wxString AppVersion;
     extern const wxString AppActualVersionVerb;
     extern const wxString AppActualVersion;
+    extern const wxString AppSDKVersion;
     extern const wxString AppUrl;
     extern const wxString AppContactEmail;
     extern const wxString AppPlatform;
