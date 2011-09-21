@@ -102,7 +102,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
     XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"), false));
-    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"), false));
+    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"), true));
     XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
     XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 3));
     XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));

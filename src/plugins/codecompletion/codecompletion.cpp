@@ -580,7 +580,7 @@ void CodeCompletion::RereadOptions()
     m_CCAutoAddParentheses = cfg->ReadBool(_T("/auto_add_parentheses"), true);
     m_CCFillupChars        = cfg->Read(_T("/fillup_chars"), wxEmptyString);
     m_CCAutoSelectOne      = cfg->ReadBool(_T("/auto_select_one"), false);
-    m_CCEnableHeaders      = cfg->ReadBool(_T("/enable_headers"), false);
+    m_CCEnableHeaders      = cfg->ReadBool(_T("/enable_headers"), true);
 
     if (m_ToolBar)
     {
