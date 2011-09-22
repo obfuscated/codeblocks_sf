@@ -72,7 +72,7 @@ public:
 
     virtual wxDirTraverseResult OnDir(const wxString& dirname)
     {
-        return wxDIR_IGNORE;
+        return wxDIR_CONTINUE;
     }
 
     bool IsValidPath() { return m_IsValidPath; }
@@ -380,7 +380,7 @@ void cbProject::CalculateCommonTopLevelPath()
             if (dir.IsOpened())
             {
                 ProjectDirTraverser traverser;
-                dir.Traverse(traverser, wxEmptyString, wxDIR_FILES);
+                dir.Traverse(traverser, wxEmptyString, wxDIR_DIRS | wxDIR_FILES);
                 if (traverser.IsValidPath())
                     base = tmpbaseF;
             }
