@@ -381,7 +381,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
         if (!compiler)
-            return
+            return;
         compiler->LoadDefaultRegExArray();
         m_Regexes = compiler->GetRegExArray();
         while (m_SelectedRegex >= (int)m_Regexes.Count())

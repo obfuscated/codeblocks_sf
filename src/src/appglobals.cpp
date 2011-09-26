@@ -64,8 +64,9 @@ namespace appglobals
     #endif
 
     const wxString AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + AppPlatform + wxT(", ") + AppWXAnsiUnicode + wxT(")") + bit_type );
+//    const wxString AppBuildTimestamp = (wxString(wxDateTime::Now().Format()) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + AppPlatform + wxT(", ") + AppWXAnsiUnicode + wxT(")") + bit_type );
 
-    const wxString DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
+    const wxString DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");             
 };
 
 

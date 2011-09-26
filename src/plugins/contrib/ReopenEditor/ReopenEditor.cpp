@@ -234,7 +234,7 @@ void ReopenEditor::OnEditorClosed(CodeBlocksEvent& event)
 
 void ReopenEditor::OnEditorOpened(CodeBlocksEvent& event)
 {
-    if(m_pListLog->GetItemsCount() > 0)
+    if(m_pListLog->GetItemsCount() > 0)        
     {
         EditorBase* eb = event.GetEditor();
 

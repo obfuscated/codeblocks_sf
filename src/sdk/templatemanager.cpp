@@ -293,10 +293,11 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     int total_count = prj->GetFilesCount();
     templ << wxFILE_SEP_PATH;
     wxFileName fname;
-    for (int i = 0; i < total_count; ++i)
+
+    for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
-        wxString src = prj->GetFile(i)->file.GetFullPath();
-        wxString dst = templ + prj->GetFile(i)->relativeToCommonTopLevelPath;
+        wxString src = (*it)->file.GetFullPath();
+        wxString dst = templ + (*it)->relativeToCommonTopLevelPath;
         #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Copying %s to %s"), src.wx_str(), dst.wx_str()));
         #else

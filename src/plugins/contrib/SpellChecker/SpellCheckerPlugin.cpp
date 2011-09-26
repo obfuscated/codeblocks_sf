@@ -187,35 +187,66 @@ void SpellCheckerPlugin::OnRelease(bool appShutDown)
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     EditorHooks::UnregisterHook(m_FunctorId);
 
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     SavePersonalDictionary();
 
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pSpellChecker->UninitializeSpellCheckEngine();
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     delete m_pSpellChecker;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pSpellChecker = NULL;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     delete m_pSpellHelper;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pSpellHelper = NULL;
     //delete m_pOnlineChecker;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pOnlineChecker = NULL;
 
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     if ( m_pThesaurus )
+    {
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         delete m_pThesaurus;
+    }
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pThesaurus = NULL;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     if ( m_sccfg )
+    {
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         delete m_sccfg;
+    }
     m_sccfg = NULL;
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
     Disconnect(idSpellCheck, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnSpelling));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     Disconnect(idSpellCheck, wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateSpelling) );
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     for ( unsigned int i = 0 ; i < MaxSuggestEntries ; i++ )
+    {
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         Disconnect(idSuggest[i], wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnReplaceBySuggestion), NULL, this);
+    }
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     Disconnect(idMoreSuggestions, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnMoreSuggestions));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     Disconnect(idAddToDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnAddToPersonalDictionary), NULL, this);
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     Disconnect(idThesaurus,  wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnThesaurus));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     Disconnect(idThesaurus,  wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateThesaurus));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
 }
 void SpellCheckerPlugin::SavePersonalDictionary()

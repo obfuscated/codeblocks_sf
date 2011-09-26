@@ -573,9 +573,9 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* /*pFilename*/)
     target->SetObjectOutput(GetTargetObjectOutputDir());
     target->SetWorkingDir(GetTargetOutputDir());
     // Assign this target to all project files
-    for (int i = 0; i < theproject->GetFilesCount(); ++i)
+    for (FilesList::iterator it = theproject->GetFilesList().begin(); it != theproject->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = theproject->GetFile(i);
+        ProjectFile* pf = *it;
         if (pf)
             pf->AddBuildTarget(GetTargetName());
     }

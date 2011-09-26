@@ -22,6 +22,7 @@
 #endif
 
 #include <wx/tipwin.h>
+#include "cbstyledtextctrl.h"
 
 // static
 bool cbAuiNotebook::s_UseTabTooltips = true;
@@ -166,7 +167,10 @@ void cbAuiNotebook::ResetTabCtrlEvents()
         m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
         m_TabCtrls[i]->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
         if (s_AllowMousewheel)
-            m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+        {
+            Manager::Get()->GetAppWindow()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+//            m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+        }
     }
 }
 
@@ -262,6 +266,7 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 
     long curTime = m_StopWatch.Time();
     wxPoint screenPosition = wxGetMousePosition();
+    wxMouseState theState = wxGetMouseState();
 	wxPoint thePoint;
     wxWindow* win = 0;
     bool tabHit = false;
@@ -423,7 +428,10 @@ void cbAuiNotebook::OnTabCtrlDblClick(wxMouseEvent& event)
 
 void cbAuiNotebook::OnTabCtrlMouseWheel(wxMouseEvent& event)
 {
-    wxAuiTabCtrl* tabCtrl = (wxAuiTabCtrl*)event.GetEventObject();
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("this = 0x%x, event.GetEventObject() = 0x%x, classname = %s"),this, event.GetEventObject(),GetClassInfo()->GetClassName()));
+//    return;
+    wxAuiTabCtrl* tabCtrl = wxDynamicCast(event.GetEventObject(), wxAuiTabCtrl);
     if (!tabCtrl)
         return;
     cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
@@ -491,8 +499,18 @@ void cbAuiNotebook::ShowToolTip(wxWindow* win)
         wxString text = win->GetName();
         if (!text.IsEmpty())
         {
-            m_pToolTip = new wxTipWindow(Manager::Get()->GetAppWindow(),text, 640, &m_pToolTip);
+            wxAuiTabCtrl* tmpCtrl= (wxAuiTabCtrl*)win->GetParent();
+//            m_pToolTip = new wxTipWindow(Manager::Get()->GetAppWindow(),text, 640, &m_pToolTip);
+            m_pToolTip = new wxTipWindow(win->GetParent(),text, 640, &m_pToolTip);
+            Manager::Get()->GetLogManager()->DebugLogError(F(_("m_pToolTip->GetWindowStyleFlag() = 0x%x"), m_pToolTip->GetWindowStyleFlag()));
+            m_pToolTip->SetWindowStyleFlag((m_pToolTip->GetWindowStyleFlag() | wxWANTS_CHARS));
+            Manager::Get()->GetLogManager()->DebugLogError(F(_("m_pToolTip->GetWindowStyleFlag() = 0x%x"), m_pToolTip->GetWindowStyleFlag()));
             m_pToolTip->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnToolTipMouseWheel));
+            m_pToolTip->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(cbAuiNotebook::OnToolTipKey));
+            m_pToolTip->Connect(wxEVT_KEY_UP, wxKeyEventHandler(cbAuiNotebook::OnToolTipKey));
+            m_pToolTip->Connect(wxEVT_CHAR, wxKeyEventHandler(cbAuiNotebook::OnToolTipKey));
+//            
+//            
         }
     }
 }
@@ -502,6 +520,30 @@ void cbAuiNotebook::OnToolTipMouseWheel(wxMouseEvent& event)
     wxTipWindow* win = (wxTipWindow*)event.GetEventObject();
     if (win)
         win->Close();
+}
+
+void cbAuiNotebook::OnToolTipKey(wxKeyEvent& event)
+{
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("event.GetKeyCode() = 0x%x"), event.GetKeyCode()));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("event.m_keyCode = 0x%x"), event.m_keyCode));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("event.GetRawKeyCode() = 0x%x"), event.GetRawKeyCode() ));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("event.m_scanCode = 0x%x"), event.m_scanCode ));
+    Manager::Get()->GetLogManager()->DebugLogError(F(_("event.GetRawKeyFlags() = 0x%x"), event.GetRawKeyFlags() ));
+    wxTipWindow* win = (wxTipWindow*)event.GetEventObject();
+    if (win)
+        win->Close();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if(!ed)
+        return;
+    cbStyledTextCtrl* control = ed->GetControl();
+    if(!control)
+        return;
+//    event.
+    const int pos = control->GetCurrentPos();
+    const wxChar ch = event.GetRawKeyCode();
+    control->InsertText(pos, ch);
+    control->GotoPos(pos + sizeof(ch));
 }
 
 void cbAuiNotebook::CancelToolTip()
@@ -658,6 +700,7 @@ int cbAuiNotebook::GetTabPositionFromIndex(int index)
 
 void cbAuiNotebook::AdvanceSelection(bool forward)
 {
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     if (GetPageCount() <= 1)
         return;
 
@@ -699,6 +742,13 @@ void cbAuiNotebook::OnNavigationKeyNotebook(wxNavigationKeyEvent& event)
 void cbAuiNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 #endif
 {
+    event.StopPropagation();
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    if(event.IsFromTab())
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    if(event.GetDirection())
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    
     // if we change window, we call our own AdvanceSelection
     if ( event.IsWindowChange() )
     {

@@ -664,15 +664,14 @@ wxString DoxyBlocks::GetInputList(cbProject *prj, wxFileName fnDoxyfile)
      // we will quote them all so spaces and other special chars don't break the actual
      // command later...
      wxString sInputList;
-     const int cnt = prj->GetFilesCount();
      const int cntExtList = asExtList.GetCount();
 
      sInputList += wxT("INPUT                  = ");
 
-    for (int i = 0; i < cnt; ++i)
+    for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
-           const ProjectFile* prjFile = prj->GetFile(i);
-           if(prjFile)
+        ProjectFile* prjFile = *it;
+        if(prjFile)
         {
             const wxString sFileName = prjFile->relativeFilename;
             wxFileName fnFileName = prjFile->file;

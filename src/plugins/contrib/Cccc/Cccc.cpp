@@ -117,11 +117,10 @@ int Cccc::Execute()
 
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
     ::wxSetWorkingDirectory(Project->GetBasePath());
-    const long Files = Project->GetFilesCount();
     wxString ListOfFileNames;
-    for (int File = 0; File < Files; ++File)
+    for (FilesList::iterator it = Project->GetFilesList().begin(); it != Project->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = Project->GetFile(File);
+        ProjectFile* pf = *it;
         ListOfFileNames += _T("\"") + pf->relativeFilename + _T("\" ");
     }
 

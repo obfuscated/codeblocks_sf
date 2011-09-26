@@ -1285,6 +1285,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     if (!control)
         return;
 
+    control->Colourise(0, -1);
+
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
     // setting the default editor font size to 10 point
@@ -1441,7 +1443,6 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetProperty(_T("fold.compact"),      _T("0"));
         control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
 
-        control->Colourise(0, -1);
         control->SetFoldFlags(16);
         control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
         control->SetMarginWidth(foldingMargin, 16);
@@ -1829,8 +1830,8 @@ bool cbEditor::FixFoldState()
             ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
             if (mgr->ReadBool(_T("/folding/show_folds"), true)) //Only fix the folds if the folds are enabled
             {
-                m_pControl->Colourise(0, -1); // the *most* important part!
-                m_foldBackup->Colourise(0, -1); // " Not so sure here.. but what the hell :)
+//                m_pControl->Colourise(0, -1); // the *most* important part!
+//                m_foldBackup->Colourise(0, -1); // " Not so sure here.. but what the hell :)
                 int count = m_pControl->GetLineCount();
                 for (int i = 0; i < count; ++i)
                 {

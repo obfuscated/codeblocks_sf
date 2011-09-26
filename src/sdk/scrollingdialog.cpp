@@ -315,7 +315,7 @@ int wxStandardDialogLayoutAdapter::MustScroll(wxDialog* dialog, wxSize& windowSi
     // C::B is running, or we have a real problem.
     int displayIndex = wxDisplay::GetFromWindow(dialog);
     if ( displayIndex == wxNOT_FOUND)
-        displayIndex = 0;
+        displayIndex = 0;                                                  
     displaySize = wxDisplay(displayIndex).GetClientArea().GetSize();
 #else //__WXMSW__
     displaySize = wxDisplay(wxDisplay::GetFromWindow(dialog)).GetClientArea().GetSize();

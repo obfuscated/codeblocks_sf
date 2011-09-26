@@ -1,6 +1,8 @@
 #include "SpellCheckEngineInterface.h"
 #include "SpellCheckUserInterface.h"
 
+#include <sdk.h>
+
 wxSpellCheckEngineInterface::wxSpellCheckEngineInterface()
 {
 	m_AlwaysReplaceMap.clear();
@@ -12,11 +14,15 @@ wxSpellCheckEngineInterface::wxSpellCheckEngineInterface()
 
 wxSpellCheckEngineInterface::~wxSpellCheckEngineInterface()
 {
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 	if (m_pSpellUserInterface != NULL)
   {
+      Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 		delete m_pSpellUserInterface;
+		Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pSpellUserInterface = NULL;
   }
+  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 }
 
 void wxSpellCheckEngineInterface::SetSpellCheckUserInterface(wxSpellCheckUserInterface* pDlg)
