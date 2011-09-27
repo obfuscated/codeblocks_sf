@@ -1345,10 +1345,9 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         }
     }
 
-    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
-
-     {
-        ProjectFile* pf = *it;
+    for (int i = 0; project && i < project->GetFilesCount(); ++i)
+    {
+        ProjectFile* pf = project->GetFile(i);
         if (!pf)
             continue;
         CCFileType ft = CCFileTypeOf(pf->relativeFilename);
@@ -4202,18 +4201,18 @@ void NativeParser::AddProjectToParser(cbProject* project)
     if (project)
     {
         size_t fileCount = 0;
-    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
-     {
-        ProjectFile* pf = *it;
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
                 if (AddFileToParser(project, pf->file.GetFullPath(), parser))
                     ++fileCount;
             }
         }
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
-         {
-            ProjectFile* pf = *it;
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
             {
                 if (AddFileToParser(project, pf->file.GetFullPath(), parser))
@@ -4258,9 +4257,9 @@ bool NativeParser::RemoveProjectFromParser(cbProject* project)
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
-    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
-     {
-        ProjectFile* pf = *it;
+    for (int i = 0; i < project->GetFilesCount(); ++i)
+    {
+        ProjectFile* pf = project->GetFile(i);
         if (pf && CCFileTypeOf(pf->relativeFilename) != ccftOther)
             RemoveFileFromParser(project, pf->file.GetFullPath());
     }

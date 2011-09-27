@@ -211,9 +211,10 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
         wxArrayString includedDirs; // avoid adding duplicate dirs...
         wxString sep = wxFILE_SEP_PATH;
         // find all PCH in project
-        for (FilesList::iterator it = target->GetParentProject()->GetFilesList().begin(); it != target->GetParentProject()->GetFilesList().end(); ++it)
+        int count = target->GetParentProject()->GetFilesCount();
+        for (int i = 0; i < count; ++i)
         {
-            ProjectFile* f = *it;
+            ProjectFile* f = target->GetParentProject()->GetFile(i);
             if (FileTypeOf(f->relativeFilename) == ftHeader &&
                 f->compile)
             {
@@ -1655,9 +1656,9 @@ void MakefileGenerator::DoPrepareFiles()
 {
     m_Files.Clear();
 
-    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
+    for (int i = 0; i < m_Project->GetFilesCount(); ++i)
     {
-        ProjectFile* pf = *it;
+        ProjectFile* pf = m_Project->GetFile(i);
         m_Files.Add(pf);
     }
     m_Files.Sort(SortProjectFilesByWeight);

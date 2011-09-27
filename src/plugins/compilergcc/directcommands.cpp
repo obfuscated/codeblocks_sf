@@ -106,9 +106,9 @@ static int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
 MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link)
 {
     MyFilesArray files;
-    for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
+    for (int i = 0; i < m_pProject->GetFilesCount(); ++i)
     {
-        ProjectFile* pf = *it;
+        ProjectFile* pf = m_pProject->GetFile(i);
         // require compile
         if (compile && !pf->compile)
             continue;

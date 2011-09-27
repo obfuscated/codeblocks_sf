@@ -349,9 +349,9 @@ void AutoVersioning::OnTimerVerify(wxTimerEvent& WXUNUSED(event))
     {
         if (!m_Modified)
         {
-            for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
+            for (int i=0; i < m_Project->GetFilesCount(); ++i)
             {
-                const ProjectFile* file = *it;
+                const ProjectFile* file = m_Project->GetFile(i);
                 if (file->GetFileState() == fvsModified)
                 {
                     m_Modified = true;

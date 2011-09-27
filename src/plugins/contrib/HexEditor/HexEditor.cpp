@@ -171,7 +171,8 @@ void HexEditor::OnOpenHexEdit( wxCommandEvent& /*event*/ )
 
     if ( data->GetKind() == FileTreeData::ftdkFile )
     {
-        OpenProjectFile( data->GetProjectFile() );
+
+        OpenProjectFile( data->GetProject()->GetFile( data->GetFileIndex() ) );
     }
 }
 

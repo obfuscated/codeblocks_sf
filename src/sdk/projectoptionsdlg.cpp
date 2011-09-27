@@ -99,10 +99,11 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
+    int count = m_Project->GetFilesCount();
+    for (int i = 0; i < count; ++i)
     {
-        int idx = list->Append(((ProjectFile*)*it)->relativeFilename);
-        list->SetClientData(idx, *it);
+        ProjectFile* pf = m_Project->GetFile(i);
+        list->Append(pf->relativeFilename);
     }
     // this fixes the minsize of the file list
     // which becomes huge when we add items in it (!)
@@ -318,7 +319,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
     int count = list->GetCount();
     for (int i = 0; i < count; ++i)
     {
-        ProjectFile* pf = (ProjectFile*)list->GetClientData(i);
+        ProjectFile* pf = m_Project->GetFile(i);
         if (!pf)
             break;
 
@@ -386,7 +387,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
         int count = list->GetCount();
         for (int i = 0; i < count; ++i)
         {
-            ProjectFile* pf = (ProjectFile*)list->GetClientData(i);
+            ProjectFile* pf = m_Project->GetFile(i);
             if (!pf)
                 break;
 
@@ -849,7 +850,7 @@ void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
     if (list->GetSelection() >= 0)
     {
         // show file options dialog
-        ProjectFile* pf = (ProjectFile*)list->GetClientData(list->GetSelection());
+        ProjectFile* pf = m_Project->GetFile(list->GetSelection());
         pf->ShowOptions(this);
     }
 }
@@ -863,7 +864,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     for (int i = 0; i < (int)list->GetCount(); ++i)
     {
-        ProjectFile* pf = (ProjectFile*)list->GetClientData(i);
+        ProjectFile* pf = m_Project->GetFile(i);
         list->Check(i, !list->IsChecked(i));
         if (list->IsChecked(i))
             pf->AddBuildTarget(target->GetTitle());

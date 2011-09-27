@@ -159,13 +159,12 @@ void wxWidgetsGUIAppAdoptingDlg::Run()
 {
     int FilesCnt = m_Project->GetFilesCount();
     Progress->SetRange(FilesCnt);
-    int i = 0;
-    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
+    for ( int i=0; i<FilesCnt && m_Run; i++ )
     {
         Manager::Yield();
-        ProjectFile* File = *it;
+        ProjectFile* File = m_Project->GetFile(i);
         ScanningFile->SetLabel(File->relativeFilename);
-        Progress->SetValue(++i);
+        Progress->SetValue(i+1);
         if ( ScanFile(File) )
         {
             FoundFiles->Append(File->relativeFilename);

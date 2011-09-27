@@ -667,9 +667,9 @@ wxString wxsNewWindowDlg::DetectPchFile()
 {
     // Searching for files that are good candidates for pch files
     cbProject* Proj = m_Project->GetCBProject();
-    for (FilesList::iterator it = Proj->GetFilesList().begin(); it != Proj->GetFilesList().end(); ++it)
+    for ( int i=0; i<Proj->GetFilesCount(); i++ )
     {
-        ProjectFile* File = *it;
+        ProjectFile* File = Proj->GetFile(i);
         if ( File && File->file.GetExt()==_T("h") && File->compile )
         {
             int Index = m_Pch->Append(File->relativeFilename);

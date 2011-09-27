@@ -1400,9 +1400,9 @@ void CodeCompletion::CodeCompleteIncludes()
     if (project)
     {
         const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (int i = 0; i < project->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = project->GetFile(i);
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
                 wxString file = pf->file.GetFullPath();
@@ -2458,7 +2458,7 @@ void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 {
-    if (!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)  
+    if (!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
     {
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
         if (ed)
@@ -3016,9 +3016,9 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     cbProject* project = m_NativeParser.GetProjectByEditor(editor);
     if (project)
     {
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (int i = 0; i < project->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = project->GetFile(i);
             if (!pf)
                 continue;
 
@@ -3092,7 +3092,7 @@ void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
     if (data->GetKind() == FileTreeData::ftdkFile)
     {
         cbProject* project = data->GetProject();
-        ProjectFile* pf = data->GetProjectFile();
+        ProjectFile* pf = project->GetFile(data->GetFileIndex());
         if (pf && m_NativeParser.ReparseFile(project, pf->file.GetFullPath()))
         {
              CCLogger::Get()->DebugLog(_T("Reparsing the selected file ") +

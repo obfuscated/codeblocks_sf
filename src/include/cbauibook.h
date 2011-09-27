@@ -176,12 +176,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event the tipwindow, that sends the event
          */
         void OnToolTipMouseWheel(wxMouseEvent& event);
-        /** \brief Catch mousewheel-events from tooltipwindow
-         *
-         * Closes Tooltip.
-         * \param event the tipwindow, that sends the event
-         */
-        void OnToolTipKey(wxKeyEvent& event);
         /** \brief Catch resize-events and call MinimizeFreeSpace()
          *
          * \param event unused

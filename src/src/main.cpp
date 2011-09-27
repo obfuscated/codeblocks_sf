@@ -572,7 +572,6 @@ MainFrame::MainFrame(wxWindow* parent)
     wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));
     if (deflayout.IsEmpty())
         cfg->Write(_T("/main_frame/layout/default"), gDefaultLayout);
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoFixToolbarsLayout();
     gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
     gDefaultMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
@@ -703,7 +702,6 @@ void MainFrame::CreateIDE()
     m_LayoutManager.AddPane(m_pScriptConsole, wxAuiPaneInfo().Name(wxT("ScriptConsole")).
                             Caption(_("Scripting console")).Float().MinSize(100,100).FloatingPosition(300, 200));
 
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
     DoUpdateLayoutColours();
     DoUpdateEditorStyle();
@@ -1025,7 +1023,6 @@ void MainFrame::CreateToolbars()
     m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                           Name(wxT("MainToolbar")).Caption(_("Main Toolbar")).
                           ToolbarPane().Top());
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 
     // ask all plugins to rebuild their toolbars
@@ -1292,8 +1289,7 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     // first load taborder of MessagePane, so LoadPerspective can restore the last selected tab
     m_pInfoPane->LoadTabOrder(layoutMP);
     m_LayoutManager.LoadPerspective(layout, false);
-//    DoFixToolbarsLayout();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    DoFixToolbarsLayout();
     DoUpdateLayout();
 
     m_PreviousLayoutName = m_LastLayoutName;
@@ -1409,10 +1405,8 @@ bool MainFrame::LayoutMessagePaneDifferent(const wxString& layout1,const wxStrin
 
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 {
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoFixToolbarsLayout();
     wxString lastlayout = m_LayoutManager.SavePerspective();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_("lastlayout=\"%s\""), lastlayout.c_str()));
     wxString lastmessagepanelayout = m_pInfoPane->SaveTabOrder();
     if (!m_LastLayoutName.IsEmpty() &&
         (LayoutDifferent(lastlayout, m_LastLayoutData) ||
@@ -1440,7 +1434,6 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 
 void MainFrame::DoFixToolbarsLayout()
 {
-//    return;
     // because the user might change the toolbar icons size, we must cater for it...
     wxAuiPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
     for (size_t i = 0; i < panes.GetCount(); ++i)
@@ -1448,22 +1441,10 @@ void MainFrame::DoFixToolbarsLayout()
         wxAuiPaneInfo& info = panes[i];
         if (info.state & wxAuiPaneInfo::optionToolbar)
         {
-            Manager::Get()->GetLogManager()->DebugLogError(F(_("vorher %s.best_size = (%d,%d)"), info.caption.c_str() , info.best_size.GetWidth(), info.best_size.GetHeight()));
             info.best_size = info.window->GetSize();
-            Manager::Get()->GetLogManager()->DebugLogError(F(_("nacher %s.best_size = (%d,%d)"), info.name.c_str() , info.best_size.GetWidth(), info.best_size.GetHeight()));
-            Manager::Get()->GetLogManager()->DebugLogError(F(_("***********************************************")));
             info.floating_size = wxDefaultSize;
-//            m_LayoutManager.DetachPane(info.window);
-//            m_LayoutManager.AddPane(info.window, info);
-//            if(info. )
-//            {
-//                info.Hide();
-//                info.Show();
-//            }
-////            info.window->Update();
         }
     }
-//    m_LayoutManager.Update();
 }
 
 void MainFrame::DoSelectLayout(const wxString& name)
@@ -1567,7 +1548,6 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
         m_LayoutManager.AddPane(tb, wxAuiPaneInfo().
                               Name(info->name + _T("Toolbar")).Caption(info->title + _(" Toolbar")).
                               ToolbarPane().Top().Row(row++));
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoUpdateLayout();
     }
     else
@@ -1899,18 +1879,15 @@ void MainFrame::DoUpdateLayoutColours()
     art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
     art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR)));
 
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 
 void MainFrame::DoUpdateLayout()
 {
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
-    DoFixToolbarsLayout();
     if (!m_StartupDone)
         return;
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
-    Manager::Get()->GetLogManager()->DebugLogError(F(_("#########################################################")));
+
+    DoFixToolbarsLayout();
     m_LayoutManager.Update();
 }
 
@@ -3728,7 +3705,6 @@ void MainFrame::OnViewLayoutSave(wxCommandEvent& /*event*/)
     wxString name = wxGetTextFromUser(_("Enter the name for this perspective"), _("Save current perspective"), def);
     if (!name.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoFixToolbarsLayout();
         SaveViewLayout(name, m_LayoutManager.SavePerspective(), m_pInfoPane->SaveTabOrder(), true);
     }
@@ -4198,7 +4174,6 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
              m_LayoutManager.GetPane(win).BestSize(win->GetSize());
 
         m_LayoutManager.GetPane(win).Show(event.IsChecked());
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoUpdateLayout();
     }
 }
@@ -4215,7 +4190,6 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& /*event*/)
     DoUpdateStatusBar();
     sb->Show(show);
     if ( show ) SendSizeEvent();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 
@@ -4384,7 +4358,6 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
         m_LayoutManager.DetachPane(m_PluginsTools[plugin]);
         m_PluginsTools[plugin]->Destroy();
         m_PluginsTools.erase(plugin);
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoUpdateLayout();
     }
 
@@ -4455,35 +4428,27 @@ void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 
 void MainFrame::OnEditorOpened(CodeBlocksEvent& event)
 {
-//    if(!Manager::Get()->GetProjectManager()->IsLoading())
-        DoUpdateAppTitle();
+    DoUpdateAppTitle();
     event.Skip();
 }
 
 void MainFrame::OnEditorActivated(CodeBlocksEvent& event)
 {
-//    if(!Manager::Get()->GetProjectManager()->IsLoading())
-    {
-        DoUpdateAppTitle();
-        DoUpdateStatusBar();
-    }
+    DoUpdateAppTitle();
+    DoUpdateStatusBar();
     event.Skip();
 }
 
 void MainFrame::OnEditorClosed(CodeBlocksEvent& event)
 {
-//    if(!Manager::Get()->GetProjectManager()->IsClosingProject() )
-    {
-        DoUpdateAppTitle();
-        DoUpdateStatusBar();
-    }
+    DoUpdateAppTitle();
+    DoUpdateStatusBar();
     event.Skip();
 }
 
 void MainFrame::OnEditorSaved(CodeBlocksEvent& event)
 {
-//    if(!Manager::Get()->GetProjectManager()->IsClosingProject())
-        DoUpdateAppTitle();
+    DoUpdateAppTitle();
     event.Skip();
 }
 
@@ -4501,9 +4466,7 @@ void MainFrame::OnProjectClosed(CodeBlocksEvent& event)
 
 void MainFrame::OnPageChanged(wxNotebookEvent& event)
 {
-//    if(!Manager::Get()->GetProjectManager()->IsClosingProject() &&
-//       !Manager::Get()->GetProjectManager()->IsLoading())
-        DoUpdateAppTitle();
+    DoUpdateAppTitle();
     event.Skip();
 }
 
@@ -4572,7 +4535,6 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
         info.Position(event.column);
     info.CloseButton(event.hideable ? true : false);
     m_LayoutManager.AddPane(event.pWindow, info);
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 
@@ -4582,7 +4544,6 @@ void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
     if (info.IsOk())
     {
         m_LayoutManager.DetachPane(event.pWindow);
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoUpdateLayout();
     }
 }
@@ -4590,7 +4551,6 @@ void MainFrame::OnRequestUndockWindow(CodeBlocksDockEvent& event)
 void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.GetPane(event.pWindow).Show();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 
     CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
@@ -4601,7 +4561,6 @@ void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.GetPane(event.pWindow).Hide();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 
     CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
@@ -4617,8 +4576,7 @@ void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& /*event*/)
 
 void MainFrame::OnLayoutUpdate(CodeBlocksLayoutEvent& WXUNUSED(event))
 {
-//    DoFixToolbarsLayout();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
+    DoFixToolbarsLayout();
     DoUpdateLayout();
 }
 
@@ -4695,7 +4653,6 @@ void MainFrame::OnShowLogManager(CodeBlocksLogEvent& /*event*/)
         return;
 
     m_LayoutManager.GetPane(m_pInfoPane).Show(true);
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 
@@ -4706,7 +4663,6 @@ void MainFrame::OnHideLogManager(CodeBlocksLogEvent& /*event*/)
         return;
 
     m_LayoutManager.GetPane(m_pInfoPane).Show(false);
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 
@@ -4725,7 +4681,6 @@ void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& /*event*/)
     if (--m_AutoHideLockCounter == 0)
     {
         m_LayoutManager.GetPane(m_pInfoPane).Show(false);
-        Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
         DoUpdateLayout();
     }
 }
@@ -4733,7 +4688,6 @@ void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& /*event*/)
 void MainFrame::StartupDone()
 {
     m_StartupDone = true;
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     DoUpdateLayout();
 }
 

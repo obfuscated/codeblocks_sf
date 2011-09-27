@@ -24,7 +24,7 @@
 #include "filefilters.h"
 
 #include <wx/listimpl.cpp>
-//WX_DEFINE_LIST(FilesList);
+WX_DEFINE_LIST(FilesList);
 
 ProjectFile::ProjectFile(cbProject* prj) :
     compile(false),
@@ -80,12 +80,6 @@ void ProjectFile::Rename(const wxString& new_name)
 
 void ProjectFile::AddBuildTarget(const wxString& targetName)
 {
-//    return;
-#ifdef fileload_measuring
-    wxStopWatch sw;
-    static int time = 0;
-#endif
- 
     if (buildTargets.Index(targetName) == wxNOT_FOUND)
         buildTargets.Add(targetName);
 
@@ -93,20 +87,13 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
     if (project)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(targetName);
-//        if (target && !target->m_Files.Find(this))
-        if (target && (target->m_Files.find(this) == target->m_Files.end()))
-//            target->m_Files.Append(this);
-            target->m_Files.insert(this);
+        if (target && !target->m_Files.Find(this))
+            target->m_Files.Append(this);
     }
 
     // also do this for auto-generated files
     for (size_t i = 0; i < generatedFiles.size(); ++i)
         generatedFiles[i]->AddBuildTarget(targetName);
-#ifdef fileload_measuring
-    time += (int)sw.Time();
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("%s::%s:%d  took : %d ms"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__, time));
-#endif
-
 }
 
 void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName)
@@ -132,9 +119,9 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
         ProjectBuildTarget* target = project->GetBuildTarget(targetName);
         if (target)
         {
-            FilesList::iterator it = target->m_Files.find(this);
-            if (it != target->m_Files.end())
-                target->m_Files.erase(it);
+            wxFilesListNode* node = target->m_Files.Find(this);
+            if (node)
+                target->m_Files.Erase(node);
         }
     }
 

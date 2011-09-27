@@ -197,7 +197,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
         if (Manager::IsBatchBuild()) // no dialog if batch building...
             Manager::Get()->GetLogManager()->LogToStdOut(msg);
         else
-            cbMessageBox(msg, _("Error"), wxICON_ERROR); 
+            cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 }
 
@@ -209,14 +209,14 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
                                                    const wxString&     flat_object,
                                                    const wxString&     deps)
 {
-#ifdef command_line_generation                   
+#ifdef command_line_generation
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[0]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
                                                 macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
 #endif
 
     if (target && !target->SupportsCurrentPlatform())
     {
-        macro.Clear();       
+        macro.Clear();
         return;
     }
 

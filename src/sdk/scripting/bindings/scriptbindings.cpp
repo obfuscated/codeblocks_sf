@@ -162,7 +162,7 @@ namespace ScriptBindings
         {
             cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             if (sa.GetType(2) == OT_INTEGER)
-                return sa.ThrowError("Invalid arguments to \"cbProject::RemoveFile\"");
+                return sa.Return(prj->RemoveFile(sa.GetInt(2)));
             else
                 return sa.Return(prj->RemoveFile(SqPlus::GetInstance<ProjectFile,false>(v, 2)));
         }
@@ -513,7 +513,7 @@ namespace ScriptBindings
                 func(&cbProject::ShowOptions, "ShowOptions").
                 func(&cbProject::GetCommonTopLevelPath, "GetCommonTopLevelPath").
                 func(&cbProject::GetFilesCount, "GetFilesCount").
-//                func(&cbProject::GetFile, "GetFile").
+                func(&cbProject::GetFile, "GetFile").
                 func(&cbProject::GetFileByFilename, "GetFileByFilename").
                 staticFuncVarArgs(&cbProject_RemoveFile, "RemoveFile", "*").
                 staticFuncVarArgs(&cbProject_AddFile, "AddFile", "*").

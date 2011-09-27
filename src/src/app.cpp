@@ -78,7 +78,7 @@ wxArrayString s_DelayedFilesToOpen;
 bool s_Loading = false;
 
 
-class DDEServer : public wxServer                   
+class DDEServer : public wxServer
 {
     public:
         DDEServer(MainFrame* frame) : m_Frame(frame) {}
@@ -531,7 +531,7 @@ bool CodeBlocksApp::OnInit()
 
         InitLocale();
 
-        if(m_DDE)
+        if(m_DDE && !m_Batch && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true))
         {
             // Create a new client
             DDEClient *client = new DDEClient;
@@ -600,7 +600,10 @@ bool CodeBlocksApp::OnInit()
             }
             // free memory DDE-/IPC-clients, if we are here connection could not be established and there is no need to free it
             delete client;
-            // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
+        }
+        // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
+        if (m_DDE && !m_Batch)
+        {
             g_DDEServer = new DDEServer(0L);
             #if wxCHECK_VERSION(2, 9, 0)
             g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().wx_str()));
@@ -1126,9 +1129,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild || m_Clean;
 
-                    // Do not use dde/ipc in batch-mode, or if the config does not allow it.
-                    if(m_Batch || !Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true))
-                        m_DDE = false;
 
                     if(parser.Found(_T("no-log")) == false)
                         Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);

@@ -295,9 +295,9 @@ void ThreadSearchThread::AddProjectFiles(wxSortedArrayString& sortedArrayString,
     // Adds project file paths to array only if they do not already exist.
     // Same path may exist if we parse both open files and project files
     // for examle.
-    for (FilesList::iterator it = project.GetFilesList().begin(); it != project.GetFilesList().end(); ++it)
+    for ( int i = 0; i < project.GetFilesCount(); ++i )
     {
-        AddNewItem(sortedArrayString, (*it)->file.GetFullPath());
+        AddNewItem(sortedArrayString, project.GetFile(i)->file.GetFullPath());
         if ( TestDestroy() == true ) return;
     }
 }
@@ -308,9 +308,9 @@ void ThreadSearchThread::AddTargetFiles(wxSortedArrayString& sortedArrayString, 
     // Adds target file paths to array only if they do not already exist.
     // Same path may exist if we parse both open files and target files
     // for examle.
-    for (FilesList::iterator it = target.GetFilesList().begin(); it != target.GetFilesList().end(); it++)
+    for (FilesList::Node* it = target.GetFilesList().GetFirst(); it; it = it->GetNext())
     {
-        ProjectFile* pf = *it;
+        ProjectFile* pf = it->GetData();
         AddNewItem(sortedArrayString, pf->file.GetFullPath());
         if ( TestDestroy() == true ) return;
     }

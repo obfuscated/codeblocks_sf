@@ -23,8 +23,6 @@
 #include <wx/tokenzr.h>
 #include <wx/textfile.h>
 #include <wx/config.h>
-#include "sdk.h"
-
 
 HunspellInterface::HunspellInterface(wxSpellCheckUserInterface* pDlg /* = NULL */)
 {
@@ -39,26 +37,19 @@ HunspellInterface::HunspellInterface(wxSpellCheckUserInterface* pDlg /* = NULL *
 
 HunspellInterface::~HunspellInterface()
 {
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
   if (m_bPersonalDictionaryModified)
   {
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     //if (wxYES == ::wxMessageBox(_T("Would you like to save any of your changes to your personal dictionary?"), _T("Save Changes"), wxYES_NO | wxICON_QUESTION))
       m_PersonalDictionary.SavePersonalDictionary();
   }
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
   UninitializeSpellCheckEngine();
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 
   if (m_pSpellUserInterface != NULL)
   {
-      Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     delete m_pSpellUserInterface;
-    Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
     m_pSpellUserInterface = NULL;
   }
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
 }
 
 int HunspellInterface::InitializeSpellCheckEngine()
@@ -81,11 +72,8 @@ int HunspellInterface::InitializeSpellCheckEngine()
 
 int HunspellInterface::UninitializeSpellCheckEngine()
 {
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
   wxDELETE(m_pHunspell);
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
   m_bEngineInitialized = false;
-  Manager::Get()->GetLogManager()->DebugLogError(F(_T("in %s::%s:%d"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__));
   return true;
 }
 

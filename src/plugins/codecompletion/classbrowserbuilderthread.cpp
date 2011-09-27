@@ -251,9 +251,9 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
         THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
         cbProject* prj = (cbProject*)user_data;
-        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
-            ProjectFile* curfile = *it;
+            ProjectFile* curfile = prj->GetFile(i);
             if (!curfile)
                 continue;
 

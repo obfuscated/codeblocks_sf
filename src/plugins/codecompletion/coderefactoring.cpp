@@ -533,9 +533,9 @@ void CodeRefactoring::GetAllProjectFiles(wxArrayString& files, cbProject* projec
         return;
 
     // fill the search list with all the project files
-    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+    for (int i = 0; i < project->GetFilesCount(); ++i)
     {
-        ProjectFile* pf = *it;
+        ProjectFile* pf = project->GetFile(i);
         if (!pf)
             continue;
         CCFileType ft = CCFileTypeOf(pf->relativeFilename);

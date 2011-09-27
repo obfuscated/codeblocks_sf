@@ -14,7 +14,6 @@
 #include <wx/filename.h>
 #include <wx/list.h>
 #include <wx/treectrl.h>
-#include <wx/hashset.h>
 
 class cbProject;
 class ProjectBuildTarget;
@@ -208,8 +207,7 @@ class ProjectFile
         wxString m_ObjName;
         PFDMap m_PFDMap;
 };
-//WX_DECLARE_LIST(ProjectFile, FilesList);
-WX_DECLARE_HASH_SET( ProjectFile*, wxPointerHash, wxPointerEqual, FilesList );
+WX_DECLARE_LIST(ProjectFile, FilesList);
 
 /** This is a helper class that caches various filenames for one ProjectFile.
   * These include the source filename, the generated object filename,

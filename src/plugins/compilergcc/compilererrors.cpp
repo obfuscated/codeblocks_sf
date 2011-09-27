@@ -194,9 +194,9 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     // finally go through the project files and try to find the file there
     if (!ed && project)
     {
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (int i = 0; i < project->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = project->GetFile(i);
             if (!pf)
                 continue;
 

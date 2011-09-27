@@ -244,9 +244,10 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
 	if (ed)
 		active = ed->GetProjectFile();
 
-    for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
-    {
-        ProjectFile* f = *it;
+	int count = m_pProject->GetFilesCount();
+	for (int i = 0; i < count; ++i)
+	{
+		ProjectFile* f = m_pProject->GetFile(i);
 
 		if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
 		{

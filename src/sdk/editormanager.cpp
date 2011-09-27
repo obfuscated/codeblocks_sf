@@ -1202,9 +1202,9 @@ bool EditorManager::SwapActiveHeaderSource()
 
         // build a list of project files
         fileArray.Clear();
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (int i = 0; i < project->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = project->GetFile(i);
             if (!pf)
                 continue;
 
@@ -1835,9 +1835,9 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             return 0;
 
         wxString fullpath = _T("");
-        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = prj->GetFile(i);
             if (pf)
             {
                 fullpath = pf->file.GetFullPath();
@@ -1862,10 +1862,9 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                 if (pProject)
                 {
                     wxString fullpath = _T("");
-
-                    for (FilesList::iterator it = pProject->GetFilesList().begin(); it != pProject->GetFilesList().end(); ++it)
+                    for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
                     {
-                        ProjectFile* pf = *it;
+                        ProjectFile* pf = pProject->GetFile(idxFile);
                         if (pf)
                         {
                             fullpath = pf->file.GetFullPath();
@@ -2410,9 +2409,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         }
 
         wxString fullpath = _T("");
-        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
         {
-            ProjectFile* pf = *it;
+            ProjectFile* pf = prj->GetFile(i);
             if (pf)
             {
                 fullpath = pf->file.GetFullPath();
@@ -2442,9 +2441,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             if (pProject)
             {
                 wxString fullpath = _T("");
-                for (FilesList::iterator it = pProject->GetFilesList().begin(); it != pProject->GetFilesList().end(); ++it)
+                for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
                 {
-                    ProjectFile* pf = *it;
+                    ProjectFile* pf = pProject->GetFile(idxFile);
                     if (pf)
                     {
                         fullpath = pf->file.GetFullPath();
@@ -2989,14 +2988,23 @@ void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& /*event*/)
 
 void EditorManager::HideNotebook()
 {
-        if (m_pNotebook)
-            m_pNotebook->Hide();
+    //    if (!this)
+    //        return;
+    //    if (m_pNotebook)
+    //        m_pNotebook->Hide();
+    //    m_pData->m_NeedsRefresh = false;
+    //    return;
 }
 
 void EditorManager::ShowNotebook()
 {
-        if (m_pNotebook)
-            m_pNotebook->Show();
+    //    if (!this)
+    //        return;
+    //    if (m_pNotebook)
+    //        m_pNotebook->Show();
+    //    m_pData->m_NeedsRefresh = true;
+    //    m_pData->InvalidateTree();
+    //    return;
 }
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)

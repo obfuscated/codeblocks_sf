@@ -47,9 +47,10 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
         wxArrayString includedDirs; // avoid adding duplicate dirs...
         wxString sep = wxFILE_SEP_PATH;
         // find all PCH in project
-        for (FilesList::iterator it = target->GetParentProject()->GetFilesList().begin(); it != target->GetParentProject()->GetFilesList().end(); ++it)
+        int count = target->GetParentProject()->GetFilesCount();
+        for (int i = 0; i < count; ++i)
         {
-            ProjectFile* f = *it;
+            ProjectFile* f = target->GetParentProject()->GetFile(i);
             if (FileTypeOf(f->relativeFilename) == ftHeader &&
                 f->compile)
             {
@@ -74,7 +75,7 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
         // for earlier versions, -I- must be used
         if (!IsGcc4)
             pch_prepend << _T("-I- ");
-        int count = (int)includedDirs.GetCount();
+        count = (int)includedDirs.GetCount();
         for (int i = 0; i < count; ++i)
         {
             QuoteStringIfNeeded(includedDirs[i]);

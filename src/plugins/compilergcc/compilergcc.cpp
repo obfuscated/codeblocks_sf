@@ -3041,7 +3041,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
         // we 're called from a menu in ProjectManager
         // let's check the selected project...
         FileTreeData* ftd = DoSwitchProjectTemporarily();
-        ProjectFile* pf = ftd->GetProjectFile();
+        ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
         if (!pf)
             return;
 

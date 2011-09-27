@@ -173,9 +173,10 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     if (ed)
         active = ed->GetProjectFile();
 
-    for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
+    int count = m_pProject->GetFilesCount();
+    for (int i = 0; i < count; ++i)
     {
-        ProjectFile* f = *it;
+        ProjectFile* f = m_pProject->GetFile(i);
 
         if (f->editorOpen || f->editorPos || f->editorPos_2 || f->editorTopLine || f->editorTopLine_2 || f->editorTabPos)
         {

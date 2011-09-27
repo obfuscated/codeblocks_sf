@@ -205,7 +205,8 @@ int CppCheck::Execute()
     }
 
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if(Project->GetFilesCount() < 1)
+    const long Files = Project->GetFilesCount();
+    if(!Files)
     {
     	return 0;
     }
@@ -218,9 +219,9 @@ int CppCheck::Execute()
     {
     	return -1;
     }
-    for (FilesList::iterator it = Project->GetFilesList().begin(); it != Project->GetFilesList().end(); ++it)
+    for (int File = 0; File < Files; ++File)
     {
-        ProjectFile* pf = *it;
+        ProjectFile* pf = Project->GetFile(File);
         Input.Write(pf->relativeFilename + _T("\n"));
     }
     Input.Close();

@@ -80,9 +80,6 @@
 		<VirtualTargets>
 			<Add alias="All" targets="wxSpellChecker;plugin;" />
 		</VirtualTargets>
-		<Compiler>
-			<Add directory="../../../include" />
-		</Compiler>
 		<Unit filename="DictionariesNeededDialog.cpp">
 			<Option target="plugin" />
 		</Unit>
@@ -107,36 +104,6 @@
 		<Unit filename="OnlineSpellChecker.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxspellchecker/src/PersonalDictionary.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/PersonalDictionary.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckCmdLineInterface.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckCmdLineInterface.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckDialogInterface.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckDialogInterface.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckEngineInterface.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckEngineInterface.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckEngineOption.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckEngineOption.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
 		<Unit filename="SpellCheckHelper.cpp">
 			<Option target="plugin" />
 		</Unit>
@@ -149,29 +116,14 @@
 		<Unit filename="SpellCheckSettingsPanel.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxsmith/SpellCheckSettingsPanel.wxs">
-			<Option target="plugin" />
-		</Unit>
 		<Unit filename="SpellCheckSettingsPanel.xrc">
 			<Option target="plugin" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckUserInterface.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckUserInterface.h">
-			<Option target="wxSpellChecker" />
 		</Unit>
 		<Unit filename="SpellCheckerConfig.cpp">
 			<Option target="plugin" />
 		</Unit>
 		<Unit filename="SpellCheckerConfig.h">
 			<Option target="plugin" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/SpellCheckerOptionsDialog.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/SpellCheckerOptionsDialog.h">
-			<Option target="wxSpellChecker" />
 		</Unit>
 		<Unit filename="SpellCheckerPlugin.cpp">
 			<Option target="plugin" />
@@ -197,24 +149,6 @@
 		<Unit filename="ThesaurusDialog.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxspellchecker/src/XmlPersonalDictionaryDialog.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/XmlPersonalDictionaryDialog.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/XmlSpellCheckDialog.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/XmlSpellCheckDialog.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/src/exports.cpp">
-			<Option target="wxSpellChecker" />
-		</Unit>
-		<Unit filename="wxspellchecker/include/exports.h">
-			<Option target="wxSpellChecker" />
-		</Unit>
 		<Unit filename="manifest.xml">
 			<Option target="plugin" />
 		</Unit>
@@ -224,14 +158,77 @@
 		<Unit filename="mythes.hxx">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxspellchecker/src/open.xpm">
-			<Option target="wxSpellChecker" />
-		</Unit>
 		<Unit filename="wxThes.cpp">
 			<Option target="plugin" />
 		</Unit>
 		<Unit filename="wxThes.h">
 			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxsmith/SpellCheckSettingsPanel.wxs">
+			<Option target="plugin" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/PersonalDictionary.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckCmdLineInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckDialogInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckEngineInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckEngineOption.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckUserInterface.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/SpellCheckerOptionsDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/XmlPersonalDictionaryDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/XmlSpellCheckDialog.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/include/exports.h">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/PersonalDictionary.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckCmdLineInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckDialogInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckEngineInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckEngineOption.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckUserInterface.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/SpellCheckerOptionsDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/XmlPersonalDictionaryDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/XmlSpellCheckDialog.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/exports.cpp">
+			<Option target="wxSpellChecker" />
+		</Unit>
+		<Unit filename="wxspellchecker/src/open.xpm">
+			<Option target="wxSpellChecker" />
 		</Unit>
 		<Extensions>
 			<code_completion />
