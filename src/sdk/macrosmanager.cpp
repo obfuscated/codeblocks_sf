@@ -87,6 +87,7 @@ void MacrosManager::Reset()
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"), wxRE_ADVANCED);
     m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"), wxRE_ADVANCED);
+    m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"), wxRE_ADVANCED);
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_RE_Unix.IsValid());
@@ -472,6 +473,17 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         fn.MakeAbsolute(); // make absolute before translating to 8.3 notation
         replace = fn.GetShortPath();
         buffer.Replace(search, replace, false);
+    }
+
+    while (m_RE_RemoveQuotes.Matches(buffer))
+    {
+        search = m_RE_RemoveQuotes.GetMatch(buffer, 0);
+        const wxString content = m_RE_RemoveQuotes.GetMatch(buffer, 1);
+        if (content.Len()>2 && content.StartsWith(wxT("\"")) && content.EndsWith(wxT("\"")))
+        {
+            replace = content.Mid(1,content.Len()-2); // with first and last char (the quotes) removed
+            buffer.Replace(search, replace, false);
+        }
     }
 
     while (m_RE_Unix.Matches(buffer))
