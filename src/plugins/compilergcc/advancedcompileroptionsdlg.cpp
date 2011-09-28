@@ -343,6 +343,13 @@ void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& WXUNUSED(event))
 
 void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& WXUNUSED(event))
 {
+    // If we just have deleted the actual item or cleared the list, we should leave,
+    // otherwise m_Regexes will be broken, because the regex details of an invalid
+    // item will be saved
+    wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
+    if (list->GetSelection() == wxNOT_FOUND)
+        return;
+    
     SaveRegexDetails(m_SelectedRegex);
 
     // update regex list, in case desc was changed
@@ -395,6 +402,7 @@ void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& WXUNUSED(event))
     if (m_SelectedRegex <= 0)
         return;
 
+    SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
     m_Regexes.RemoveAt(m_SelectedRegex);
     m_Regexes.Insert(rs, m_SelectedRegex - 1);
@@ -407,6 +415,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& WXUNUSED(event))
     if (m_SelectedRegex >= (int)m_Regexes.Count() - 1)
         return;
 
+    SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
     m_Regexes.RemoveAt(m_SelectedRegex);
     m_Regexes.Insert(rs, m_SelectedRegex + 1);
