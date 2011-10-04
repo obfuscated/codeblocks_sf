@@ -12,9 +12,9 @@ wxSpellCheckEngineInterface::wxSpellCheckEngineInterface()
 
 wxSpellCheckEngineInterface::~wxSpellCheckEngineInterface()
 {
-	if (m_pSpellUserInterface != NULL)
+  if (m_pSpellUserInterface != NULL)
   {
-		delete m_pSpellUserInterface;
+    delete m_pSpellUserInterface;
     m_pSpellUserInterface = NULL;
   }
 }
