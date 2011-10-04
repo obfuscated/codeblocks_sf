@@ -71,9 +71,9 @@ END_EVENT_TABLE()
 MySpellingDialog::MySpellingDialog(wxWindow *parent, wxSpellCheckEngineInterface* pSpellChecker)
   : wxSpellCheckDialogInterface(parent, pSpellChecker)
 {
-	m_strReplaceWithText = _("");
+	m_strReplaceWithText = _T("");
 
-  m_pSpellCheckEngine = pSpellChecker;
+    m_pSpellCheckEngine = pSpellChecker;
 	CreateDialog();
 }
 

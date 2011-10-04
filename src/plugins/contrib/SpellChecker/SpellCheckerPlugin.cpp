@@ -249,8 +249,8 @@ void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
         // just append
         wxMenu* EditMenu = menuBar->GetMenu(EditPos);
         EditMenu->AppendSeparator();
-        EditMenu->Append(idSpellCheck, _T("Spelling..."), _T("Spell check the selected text"));
-        EditMenu->Append(idThesaurus,  _T("Thesaurus..."), _T(""));
+        EditMenu->Append(idSpellCheck, _("Spelling..."), _("Spell check the selected text"));
+        EditMenu->Append(idThesaurus,  _("Thesaurus..."), _T(""));
     }
 }
 void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -309,13 +309,13 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, co
             SuggestionsMenu->AppendSeparator();
             if ( m_suggestions.size() > MaxSuggestEntries )
                 SuggestionsMenu->Append(idMoreSuggestions, _("more..."));
-            SuggestionsMenu->Append(idAddToDictionary, _T("Add '") + misspelledWord + _T("' to dictionary"));
+            SuggestionsMenu->Append(idAddToDictionary, _("Add '") + misspelledWord + _("' to dictionary"));
             menu->AppendSubMenu(SuggestionsMenu, _("Spelling suggestions for '") + misspelledWord + _T("'") );
         }
         else
         {
-            //menu->Append(idMoreSuggestions, _T("No spelling suggestions for '") + misspelledWord + _T("'"))->Enable(false);
-            menu->Append(idAddToDictionary, _T("Add '") + misspelledWord + _T("' to dictionary"));
+            //menu->Append(idMoreSuggestions, _("No spelling suggestions for '") + misspelledWord + _T("'"))->Enable(false);
+            menu->Append(idAddToDictionary, _("Add '") + misspelledWord + _("' to dictionary"));
         }
     }
 }

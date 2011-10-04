@@ -267,7 +267,7 @@ void HunspellInterface::PopulateDictionaryMap(StringToStringMap* pLookupMap, con
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-neu ortho.)"), _T("de_DE_neu"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Greek (Greece)"), _T("el_GR"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (Australia)"), _T("en_AU"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (Canada)"), _("en_CA"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (Canada)"), _T("en_CA"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (United Kingdom)"), _T("en_GB"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (New Zealand)"), _T("en_NZ"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (United States)"), _T("en_US"));
@@ -344,7 +344,7 @@ void HunspellInterface::UpdatePossibleValues(SpellCheckEngineOption& OptionDepen
   {
     wxMessageOutput* msgOut = wxMessageOutput::Get();
     if (msgOut)
-      msgOut->Printf(_T("Unsure how to update the possible values for %s based on the value of %s"), OptionDependency.GetText().c_str(), OptionToUpdate.GetText().c_str());
+      msgOut->Printf(_("Unsure how to update the possible values for %s based on the value of %s"), OptionDependency.GetText().c_str(), OptionToUpdate.GetText().c_str());
   }
 }
 

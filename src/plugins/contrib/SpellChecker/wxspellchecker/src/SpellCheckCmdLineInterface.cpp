@@ -12,7 +12,7 @@ SpellCheckCmdLineInterface::~SpellCheckCmdLineInterface()
 int SpellCheckCmdLineInterface::PresentSpellCheckUserInterface(const wxString& strMisspelling)
 {
   SetMisspelledWord(strMisspelling);
-		
+
 	m_nLastAction = ACTION_INITIAL;
 
   PrintMisspelling();
@@ -32,13 +32,13 @@ void SpellCheckCmdLineInterface::PrintMisspelling()
     strContext.insert(Context.GetOffset() + Context.GetLength(), _T("<-**"));
     strContext.insert(Context.GetOffset(), _T("**->"));
     wxCharBuffer contextCharBuffer(wxConvUTF8.cWC2MB(strContext.wc_str(*wxConvCurrent)));
-    wxPrintf(_("%s\n"), (const char*)contextCharBuffer);
+    wxPrintf(_T("%s\n"), (const char*)contextCharBuffer);
   }
 }
 
 void SpellCheckCmdLineInterface::PrintSuggestions()
 {
-  wxPrintf(_T("Suggestions: \n"));
+  wxPrintf(_("Suggestions: \n"));
 
   if (m_pSpellCheckEngine)
   {
@@ -50,7 +50,7 @@ void SpellCheckCmdLineInterface::PrintSuggestions()
       for (unsigned int nCtr = 0; (nCtr < SuggestionArray.GetCount()) && (nCtr < 5); nCtr++)
       {
         wxCharBuffer suggestionCharBuffer(wxConvUTF8.cWC2MB(SuggestionArray[nCtr].wc_str(*wxConvCurrent)));
-        wxPrintf(_(" '%s'"), (const char*)suggestionCharBuffer);
+        wxPrintf(_T(" '%s'"), (const char*)suggestionCharBuffer);
       }
     }
     else

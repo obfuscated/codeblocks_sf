@@ -5,7 +5,7 @@
 #include <wx/hyperlink.h>
 
 DictionariesNeededDialog::DictionariesNeededDialog():
-AnnoyingDialog(_T("Dictionaries needed!"),_T("SpellChecker needs a dictionary to work correctly.\nThe following page explains where to get\nand how to install a dictionary:"), wxART_INFORMATION, OK)
+AnnoyingDialog(_("Dictionaries needed!"),_("SpellChecker needs a dictionary to work correctly.\nThe following page explains where to get\nand how to install a dictionary:"), wxART_INFORMATION, OK)
 {
     wxSizer *outerSizer = GetSizer();
 
@@ -15,7 +15,7 @@ AnnoyingDialog(_T("Dictionaries needed!"),_T("SpellChecker needs a dictionary to
         wxSizerItemList& childs = outerSizer->GetChildren();
         wxSizer *mainArea = childs[0]->GetSizer();
 
-        wxHyperlinkCtrl *hyperlink1 = new wxHyperlinkCtrl( this, wxID_ANY, wxT("How to configure SpellChecker?"), wxT("http://wiki.codeblocks.org/index.php?title=SpellChecker"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+        wxHyperlinkCtrl *hyperlink1 = new wxHyperlinkCtrl( this, wxID_ANY, _("How to configure SpellChecker?"), _T("http://wiki.codeblocks.org/index.php?title=SpellChecker"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 
         mainArea->Add(hyperlink1, 0, wxALL, 5);
 
