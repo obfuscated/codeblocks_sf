@@ -294,7 +294,6 @@ class cbAuiNotebook : public wxAuiNotebook
         bool m_OverTabCtrl;
         /** \brief If true, zoom for all editors
          * is set in next OnIdle-call
-         *
          */
         bool m_SetZoomOnIdle;
         /** \brief Holds the id of the dwell timer

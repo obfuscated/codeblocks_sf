@@ -349,7 +349,7 @@ void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& WXUNUSED(event))
     wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
     if (list->GetSelection() == wxNOT_FOUND)
         return;
-    
+
     SaveRegexDetails(m_SelectedRegex);
 
     // update regex list, in case desc was changed

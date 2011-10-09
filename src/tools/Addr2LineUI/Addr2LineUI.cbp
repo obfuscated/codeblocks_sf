@@ -10,7 +10,7 @@
 				<Option platforms="Windows;" />
 				<Option output="..\..\devel\Addr2LineUI" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\devel" />
-				<Option object_output="..\..\.objs" />
+				<Option object_output="..\..\.objs\tools\Addr2LineUI" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />

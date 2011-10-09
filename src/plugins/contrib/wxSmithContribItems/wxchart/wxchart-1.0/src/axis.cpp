@@ -17,13 +17,13 @@
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
-//	PARAMETERS:	ChartValue max, 
+//	DESC:
+//	PARAMETERS:	ChartValue max,
 //				ChartValue min
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxAxis::wxAxis(
-	ChartValue max, 
+	ChartValue max,
 	ChartValue min
 ) : m_vMax(max),
 	m_vMin(min),
@@ -33,7 +33,7 @@ wxAxis::wxAxis(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMax
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -46,7 +46,7 @@ void wxAxis::SetVirtualMax(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMin
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -59,7 +59,7 @@ void wxAxis::SetVirtualMin(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMax
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -70,7 +70,7 @@ ChartValue wxAxis::GetVirtualMax() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMin
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++

@@ -158,7 +158,7 @@ void wxChartWindow::DrawHLines(
         wxChartSizes *sizes = GetSizes();
 /* C::B begin */
         // avoid crashes if style contains USE_GRID and no charts are added to chartctrl
-        if(!sizes)
+        if (!sizes)
             return;
 /* C::B end */
 
@@ -192,6 +192,12 @@ ChartValue wxChartWindow::GetVirtualWidth() const
 {
     int iNodes = static_cast<int>(ceil( GetVirtualMaxX() ));
     wxChartSizes *sizes = GetSizes();
+
+/* C::B begin */
+    // sizes may be NULL, in this case return a fixed value
+    if (!sizes)
+        return 1;
+/* C::B end */
 
     ChartValue x = 0;
 

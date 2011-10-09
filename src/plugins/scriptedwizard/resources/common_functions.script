@@ -509,7 +509,7 @@ function AddFileToTargets(the_wiz, the_file)
             local pf = prj.AddFile(tgtidx, the_file);
             GetProjectManager().RebuildTree(); // make sure our view is current
 
-            // if the file was added succesfully, (...)
+            // if the file was added successfully, (...)
             if (!IsNull(pf))
             {
                 // add to this file the rest of the selected targets...

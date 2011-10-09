@@ -21,7 +21,7 @@
 
 #ifndef CB_PRECOMP
 	#include <wx/dir.h>
-	
+
     #include "cbproject.h" // class's header file
     #include "compiler.h" // GetSwitches
     #include "sdk_events.h"
@@ -358,12 +358,14 @@ void cbProject::CalculateCommonTopLevelPath()
         wxString tmpbase = m_BasePath;
 
         size_t pos = 0;
-        while (pos < tmp.Length() &&
-            (tmp.GetChar(pos) == _T('.') || tmp.GetChar(pos) == _T('/') || tmp.GetChar(pos) == _T('\\')))
+        while (   (pos < tmp.Length())
+               && (   (tmp.GetChar(pos) == _T('.'))
+                   || (tmp.GetChar(pos) == _T('/'))
+                   || (tmp.GetChar(pos) == _T('\\')) ) )
         {
             ++pos;
         }
-        if (pos > 0 && pos < tmp.Length())
+        if ( (pos > 0) && (pos < tmp.Length()) )
         {
             tmpbase << sep << tmp.Left(pos) << sep;
             f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);

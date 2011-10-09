@@ -315,6 +315,10 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) : currentSet(Man
     lib = XRCCTRL(*this, "lib", wxTextCtrl);
     obj = XRCCTRL(*this, "obj", wxTextCtrl);
 
+    wxSplitterWindow *splitter = XRCCTRL(*this, "splitter", wxSplitterWindow);
+    if (splitter)
+        splitter->SetSashGravity(0.7);
+
     wxString n;
     for (unsigned int i = 0; i < 7; ++i)
     {

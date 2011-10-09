@@ -55,7 +55,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Linker>
-			<Add option="--enable-auto-image-base" />
+			<Add option="-Wl,--enable-auto-image-base" />
 		</Linker>
 		<Unit filename="ModPoller.cpp" />
 		<Unit filename="ModPoller.h" />
