@@ -813,7 +813,7 @@ public:
 #ifdef __WXMAC__
     // For some reason I don't understand yet the focus doesn't really leave
     // the listbox like it should, so if we get any events feed them back to
-    // the wxSintilla
+    // the wxScintilla
     void OnKeyDown(wxKeyEvent& event) {
         GetGrandParent()->GetEventHandler()->ProcessEvent(event);
     }
@@ -844,15 +844,6 @@ END_EVENT_TABLE()
 
 #if wxUSE_POPUPWIN //-----------------------------------
 #include <wx/popupwin.h>
-
-
-//
-// TODO: Refactor these two classes to have a common base (or a mix-in) to get
-// rid of the code duplication.  (Either that or convince somebody to
-// implement wxPopupWindow for the Mac!!)
-//
-// In the meantime, be careful to duplicate any changes as needed...
-//
 
 // A popup window to place the wxSCIListBox upon
 class wxSCIListBoxWin : public wxPopupWindow
@@ -1435,8 +1426,10 @@ DynamicLibraryImpl::DynamicLibraryImpl(const wxString& modulePath) : lexModule(0
 
 DynamicLibraryImpl::~DynamicLibraryImpl()
 {
-    if(lexModule) {
-        if( lexModule->IsLoaded() ) {
+    if (lexModule)
+    {
+        if ( lexModule->IsLoaded() )
+        {
             lexModule->Unload();
         }
         delete lexModule;
@@ -1448,7 +1441,8 @@ DynamicLibraryImpl::~DynamicLibraryImpl()
 Function DynamicLibraryImpl::FindFunction(const char *name)
 {
     wxString symbol = sci2wx(name);
-    if( lexModule->HasSymbol(symbol) ) {
+    if ( lexModule->HasSymbol(symbol) )
+    {
         return lexModule->GetSymbol(symbol);
     }
     return NULL;
@@ -1457,7 +1451,10 @@ Function DynamicLibraryImpl::FindFunction(const char *name)
 /// @return true if the library was loaded successfully.
 bool DynamicLibraryImpl::IsValid()
 {
-    if( lexModule != NULL && lexModule->IsLoaded() ) return true;
+    if( lexModule != NULL && lexModule->IsLoaded() )
+    {
+        return true;
+    }
     return false;
 }
 /* C::B end */

@@ -109,7 +109,7 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_SELECTION )
 DEFINE_EVENT_TYPE( wxEVT_SCI_INDICATOR_CLICK )
 DEFINE_EVENT_TYPE( wxEVT_SCI_INDICATOR_RELEASE )
 DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_CANCELLED )
-DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_CHARDELETED )
+DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_CHAR_DELETED )
 /* C::B begin */
 DEFINE_EVENT_TYPE( wxEVT_SCI_SETFOCUS )
 DEFINE_EVENT_TYPE( wxEVT_SCI_KILLFOCUS )
@@ -656,11 +656,12 @@ void wxScintilla::MarkerDefineBitmap (int markerNumber, const wxBitmap& bmp)
         img.ConvertAlphaToMask();
     img.SaveFile(strm, wxBITMAP_TYPE_XPM);
     size_t len = strm.GetSize();
-    char* buf = new char[len+1];
-    strm.CopyTo(buf, len);
-    buf[len] = 0;
-    SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (uptr_t)buf);
-    delete [] buf;
+    char* buff = new char[len+1];
+    strm.CopyTo(buff, len);
+    buff[len] = 0;
+    SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (uptr_t)buff);
+    delete [] buff;
+
 }
 
 // Add a set of markers to a line.
@@ -1267,11 +1268,12 @@ void wxScintilla::RegisterImage (int type, const wxBitmap& bmp)
         img.ConvertAlphaToMask();
     img.SaveFile(strm, wxBITMAP_TYPE_XPM);
     size_t len = strm.GetSize();
-    char* buf = new char[len+1];
-    strm.CopyTo(buf, len);
-    buf[len] = 0;
-    SendMsg(SCI_REGISTERIMAGE, type, (uptr_t)buf);
-    delete [] buf;
+    char* buff = new char[len+1];
+    strm.CopyTo(buff, len);
+    buff[len] = 0;
+    SendMsg(SCI_REGISTERIMAGE, type, (uptr_t)buff);
+    delete [] buff;
+
 }
 
 // Clear all the registered images.
@@ -3398,12 +3400,10 @@ void wxScintilla::CopyAllowLine()
 // characters in the document.
 /* C::B begin */
 // defined later as wxUIntPtr wxScintilla::GetCharacterPointer() const;
-/*
-int wxScintilla::GetCharacterPointer() const
+const char* wxScintilla::GetCharacterPointer()
 {
-    return SendMsg(SCI_GETCHARACTERPOINTER, 0, 0);
+    return (const char*)SendMsg(SCI_GETCHARACTERPOINTER, 0, 0);
 }
-*/
 /* C::B end */
 
 // Always interpret keyboard input as Unicode
@@ -3983,6 +3983,18 @@ void wxScintilla::MarkerDefineRGBAImage(int markerNumber, const wxString& pixels
 void wxScintilla::RegisterRGBAImage(int type, const wxString& pixels)
 {
     SendMsg(SCI_REGISTERRGBAIMAGE, type, (uptr_t)(const char*)wx2sci(pixels));
+}
+
+// Scroll to start of document.
+void wxScintilla::ScrollToStart()
+{
+    SendMsg(SCI_SCROLLTOSTART, 0, 0);
+}
+
+// Scroll to end of document.
+void wxScintilla::ScrollToEnd()
+{
+    SendMsg(SCI_SCROLLTOEND, 0, 0);
 }
 
 // Start notifying the container of all key presses and commands.
@@ -5062,7 +5074,7 @@ void wxScintilla::NotifyParent (SCNotification* _scn)
         break;
 
     case SCN_AUTOCCHARDELETED:
-        evt.SetEventType(wxEVT_SCI_AUTOCOMP_CHARDELETED);
+        evt.SetEventType(wxEVT_SCI_AUTOCOMP_CHAR_DELETED);
         break;
 
     default:
@@ -5145,7 +5157,7 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 2, 2, 7, "Scintilla 2.27");
+    return wxVersionInfo("Scintilla", 2, 2, 9, "Scintilla 2.29");
 }
 #endif
 /* C::B end */

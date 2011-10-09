@@ -380,17 +380,17 @@ bool ScintillaWX::SetIdle(bool on) {
 
 
 void ScintillaWX::SetTicking(bool on) {
-    wxSCITimer* stiTimer;
+    wxSCITimer* sciTimer;
     if (timer.ticking != on) {
         timer.ticking = on;
         if (timer.ticking) {
-            stiTimer = new wxSCITimer(this);
-            stiTimer->Start(timer.tickSize);
-            timer.tickerID = stiTimer;
+            sciTimer = new wxSCITimer(this);
+            sciTimer->Start(timer.tickSize);
+            timer.tickerID = sciTimer;
         } else {
-            stiTimer = (wxSCITimer*)timer.tickerID;
-            stiTimer->Stop();
-            delete stiTimer;
+            sciTimer = (wxSCITimer*)timer.tickerID;
+            sciTimer->Stop();
+            delete sciTimer;
             timer.tickerID = 0;
         }
     }
@@ -543,7 +543,7 @@ void ScintillaWX::Copy() {
         CopySelectionRange(&st);
 /* C::B begin */
 #ifdef __WXGTK__
-		for(int i=0; i<5; i++) {
+		for (int i=0; i<5; i++) {
 			//wxPrintf(wxT("Copying to clipboard %ld\n"), i);
         	CopyToClipboard(st);
 		}
@@ -560,10 +560,10 @@ void ScintillaWX::Paste() {
     UndoGroup ug(pdoc);
 	// Selection::First
     SelectionPosition firstPosition = SelectionStart();
-    if(sel.IsRectangular() && !sel.Empty()) {
+    if (sel.IsRectangular() && !sel.Empty()) {
         for (size_t i=0; i<sel.Count()-1; i++) {
             sel.RotateMain();
-            if(firstPosition > SelectionStart())
+            if (firstPosition > SelectionStart())
                 firstPosition = SelectionStart();
         }
     }

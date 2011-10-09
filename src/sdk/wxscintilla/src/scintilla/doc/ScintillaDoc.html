@@ -79,7 +79,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 2/July/2011 NH</p>
+    <p>Last edited 1/August/2011 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -3737,6 +3737,20 @@ struct Sci_TextToFind {
 	  so will fit under small fonts.</td>
         </tr>
 
+        <tr>
+          <td align="left"><code>INDIC_DOTBOX</code></td>
+
+          <td align="center">12</td>
+
+          <td>A dotted rectangle around the text using translucent drawing.
+          Translucency alternates between the alpha and outline alpha settings with the top-left pixel using the alpha setting.
+              <a class="message" href="#SCI_INDICSETALPHA">SCI_INDICSETALPHA</a> and
+              <a class="message" href="#SCI_INDICSETOUTLINEALPHA">SCI_INDICSETOUTLINEALPHA</a>
+              control the alpha transparency values. The default values are 30 for alpha and 50 for outline alpha.
+              To avoid excessive memory allocation the maximum width of a dotted box is 4000 pixels.
+              Not available for OS X Carbon.</td>
+        </tr>
+
       </tbody>
     </table>
 
@@ -4271,7 +4285,7 @@ struct Sci_TextToFind {
 
           <td><code>SCI_HOMEEXTEND</code></td>
 
-          <td><code>[SCI_HOMERECTEXTEND]</code></td>
+          <td><code>SCI_HOMERECTEXTEND</code></td>
         </tr>
 
         <tr>
@@ -4419,6 +4433,12 @@ struct Sci_TextToFind {
 
           <td><code>SCI_MOVESELECTEDLINESDOWN</code></td>
         </tr>
+
+        <tr>
+          <td><code>SCI_SCROLLTOSTART</code></td>
+
+          <td><code>SCI_SCROLLTOEND</code></td>
+        </tr>
      </tbody>
     </table>
 
@@ -4431,7 +4451,7 @@ struct Sci_TextToFind {
     capitalisation (aCamelCaseIdentifier) or underscores (an_under_bar_ident).</p>
 
     <p>The <code>SCI_HOME*</code> commands move the caret to the start of the line, while the
-    <code>SCI_VCHOME*</code>commands move the caret to the first non-blank character of the line
+    <code>SCI_VCHOME*</code> commands move the caret to the first non-blank character of the line
     (ie. just after the indentation) unless it is already there; in this case, it acts as SCI_HOME*.</p>
 
     <p>The <code>SCI_[HOME|LINEEND]DISPLAY*</code> commands are used when in line wrap mode to
@@ -4443,6 +4463,12 @@ struct Sci_TextToFind {
      They go first to the start / end of the display line, like <code>SCI_[HOME|LINEEND]DISPLAY*</code>,
      but if the cursor is already at the point, it goes on to the start or end of the document line,
      as appropriate for <code>SCI_[[VC]HOME|LINEEND]*</code>.
+     </p>
+
+    <p>The <code>SCI_SCROLLTO[START|END]</code> commands scroll the document to the start
+    or end without changing the selection. These commands match OS X platform conventions for the behaviour of the
+    <code>home</code> and <code>end</code> keys. Scintilla can be made to match OS X applications
+    by binding the <code>home</code> and <code>end</code> keys to these commands.
      </p>
 
     <h2 id="KeyBindings">Key bindings</h2>
