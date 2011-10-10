@@ -37,7 +37,7 @@
 					<Add directory="$(#boost)" />
 				</Compiler>
 				<Linker>
-					<Add option="-enable-auto-import" />
+					<Add option="-Wl,-enable-auto-import" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="..\..\..\devel" />
