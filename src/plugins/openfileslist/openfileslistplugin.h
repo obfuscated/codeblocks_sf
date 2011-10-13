@@ -31,7 +31,7 @@ class OpenFilesListPlugin : public cbPlugin
         virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
 
         virtual void OnAttach();
-        virtual void OnRelease();
+        virtual void OnRelease(bool appShutDown);
     protected:
         int GetOpenFilesListIcon(EditorBase* ed);
         void RebuildOpenFilesTree();

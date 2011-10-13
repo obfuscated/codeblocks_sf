@@ -127,8 +127,10 @@ void OpenFilesListPlugin::OnAttach()
     pm->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<OpenFilesListPlugin, CodeBlocksEvent>(this, &OpenFilesListPlugin::OnProjectOpened));
 }
 
-void OpenFilesListPlugin::OnRelease()
+void OpenFilesListPlugin::OnRelease(bool appShutDown)
 {
+    if (appShutDown)
+        return;
     // remove registered event sinks
     Manager::Get()->RemoveAllEventSinksFor(this);
 
@@ -139,6 +141,7 @@ void OpenFilesListPlugin::OnRelease()
 
     // finally destroy the tree
     m_pTree->Destroy();
+    m_pTree = nullptr;
 }
 
 void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)
