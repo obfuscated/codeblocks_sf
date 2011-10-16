@@ -197,6 +197,8 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
       wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, CMD_ENTRY("nc"), CMD_ENTRY("no-crash-handler"),      CMD_ENTRY("don't use the crash handler (useful for debugging C::B)"),
       wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, CMD_ENTRY("v"),  CMD_ENTRY("verbose"),               CMD_ENTRY("show more debugging messages"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("prefix"),                CMD_ENTRY("the shared data dir prefix"),
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, CMD_ENTRY("p"),  CMD_ENTRY("personality"),           CMD_ENTRY("the personality to use: \"ask\" or <personality-name>"),
@@ -474,7 +476,7 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
-    wxLog::EnableLogging(false);
+    wxLog::EnableLogging(true);
 
     SetAppName(_T("codeblocks"));
     s_Loading = true;
@@ -1111,6 +1113,9 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_Splash = !parser.Found(_T("no-splash-screen"));
                     m_HasDebugLog = parser.Found(_T("debug-log"));
                     m_CrashHandler = !parser.Found(_T("no-crash-handler"));
+                    
+                    wxLog::EnableLogging(parser.Found(_T("verbose")));
+                    
                     if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))
                     {
