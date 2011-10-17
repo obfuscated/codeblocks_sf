@@ -210,24 +210,24 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                     Config.ChangesLog.ShowChangesEditor = Help?true:false;
                 }
             }
-        }
-        avVersionState VersionState;
-        m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
+            avVersionState VersionState;
+            m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
 
-        avHeader VersionHeader;
-        if(VersionHeader.LoadFile(m_versionHeaderPath))
-        {
-            VersionState.Values.Major = VersionHeader.GetValue(_("MAJOR"));
-            VersionState.Values.Minor = VersionHeader.GetValue(_("MINOR"));
-            VersionState.Values.Build = VersionHeader.GetValue(_("BUILD"));
-            VersionState.Values.Revision = VersionHeader.GetValue(_("REVISION"));
-            VersionState.Values.BuildCount = VersionHeader.GetValue(_("BUILDS_COUNT"));
-            VersionState.Status.SoftwareStatus = cbU2C(VersionHeader.GetString(_("STATUS")));
-            VersionState.Status.Abbreviation = cbU2C(VersionHeader.GetString(_("STATUS_SHORT")));
-            VersionState.BuildHistory = VersionHeader.GetValue(_("BUILD_HISTORY"));
+            avHeader VersionHeader;
+            if(VersionHeader.LoadFile(m_versionHeaderPath))
+            {
+                VersionState.Values.Major = VersionHeader.GetValue(_("MAJOR"));
+                VersionState.Values.Minor = VersionHeader.GetValue(_("MINOR"));
+                VersionState.Values.Build = VersionHeader.GetValue(_("BUILD"));
+                VersionState.Values.Revision = VersionHeader.GetValue(_("REVISION"));
+                VersionState.Values.BuildCount = VersionHeader.GetValue(_("BUILDS_COUNT"));
+                VersionState.Status.SoftwareStatus = cbU2C(VersionHeader.GetString(_("STATUS")));
+                VersionState.Status.Abbreviation = cbU2C(VersionHeader.GetString(_("STATUS_SHORT")));
+                VersionState.BuildHistory = VersionHeader.GetValue(_("BUILD_HISTORY"));
+            }
+            m_ProjectMap[project] = Config;
+            m_ProjectMapVersionState[project] = VersionState;
         }
-        m_ProjectMap[project] = Config;
-        m_ProjectMapVersionState[project] = VersionState;
     }
     else
     {
