@@ -77,4 +77,6 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			makefilegenerator.h
 
 EXTRA_DIST = compilerMSVC8.h \
-			compilerMSVC8.cpp
+			compilerMSVC10.h \
+			compilerMSVC8.cpp \
+			compilerMSVC10.cpp

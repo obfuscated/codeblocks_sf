@@ -43,12 +43,12 @@ noinst_HEADERS = DictionariesNeededDialog.h \
                 mythes.hxx \
                 wxThes.h
 
-EXTRA_DIST = 	$(srcdir)/*.cbp \
-		$(srcdir)/*.xrc \
-		$(srcdir)/*.png \
-		$(srcdir)/wxsmith/ \
-		$(srcdir)/hunspell/ \
-		$(srcdir)/dictionaries/ \
+EXTRA_DIST = 	*.cbp \
+		*.xrc \
+		*.png \
+		wxsmith \
+		hunspell \
+		dictionaries \
 		manifest.xml \
 		update
 

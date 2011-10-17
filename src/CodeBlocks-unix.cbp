@@ -1313,6 +1313,12 @@
 		<Unit filename="plugins/compilergcc/compilerMSVC.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMSVC10.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMSVC10.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerMSVC8.cpp">
 			<Option target="Compiler" />
 		</Unit>

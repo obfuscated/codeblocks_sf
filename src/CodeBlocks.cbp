@@ -2865,9 +2865,6 @@
 		<Unit filename="sdk\wxpropgrid\include\wx\propgrid\xh_propgrid.h">
 			<Option target="wxpropgrid" />
 		</Unit>
-		<Unit filename="sdk\wxpropgrid\samples\sample.xrc">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk\wxpropgrid\src\advprops.cpp">
 			<Option target="wxpropgrid" />
 		</Unit>
