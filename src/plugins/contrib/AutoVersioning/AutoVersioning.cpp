@@ -210,6 +210,8 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                     Config.ChangesLog.ShowChangesEditor = Help?true:false;
                 }
             }
+            // do not try to read from version.h, if autoversioning is not enabled for the project,
+            // to avoid error messages if verbose debuglog is on
             avVersionState VersionState;
             m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
 
