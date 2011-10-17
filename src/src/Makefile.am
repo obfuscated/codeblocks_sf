@@ -8,7 +8,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include/mozilla_chardet
 
 if CODEBLOCKS_LINUX
-AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\""
+AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\"" $(WX_GTK2_CFLAGS)
 endif
 
 bin_PROGRAMS = codeblocks
@@ -23,7 +23,8 @@ install-exec-hook:
 # codeblocks_LDFLAGS = $(WX_GTK2_LIBS)
 
 codeblocks_LDADD =  -L../sdk -lcodeblocks \
-			$(WX_LIBS)
+			$(WX_LIBS) \
+			$(WX_GTK2_LIBS)
 
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \

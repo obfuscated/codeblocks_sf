@@ -167,6 +167,7 @@
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="`pkg-config gtk+-2.0 --cflags`" />
 					<Add option="-DENABLE_BINRELOC" />
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
@@ -174,6 +175,7 @@
 					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
+					<Add option="`pkg-config gtk+-2.0 --libs`" />
 					<Add library="codeblocks" />
 					<Add library="wxpropgrid" />
 					<Add directory="devel" />
