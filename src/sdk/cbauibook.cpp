@@ -474,8 +474,6 @@ void cbAuiNotebook::OnResize(wxSizeEvent& event)
         {
             if(nb->m_TabCtrlSize == wxDefaultSize)
                 nb->m_TabCtrlSize = event.GetSize();
-            if(nb->m_TabCtrlSize == event.GetSize())
-                return;
             nb->m_TabCtrlSize = event.GetSize();
             nb->MinimizeFreeSpace(tabCtrl);
         }
