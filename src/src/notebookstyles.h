@@ -45,7 +45,7 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
 class NbStyleGTK : public wxAuiDefaultTabArt
 {
 public:
@@ -73,6 +73,6 @@ private:
     int m_TabHBorder;
     int m_TabVBorder;
 };
-#endif // #ifdef __WXGTK__
+#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
 
 #endif // NOTEBOOKSTYLES_H

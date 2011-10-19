@@ -223,6 +223,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to use gtk-notebook as default notebook)
+gtk_notebook_default="yes"
+AC_ARG_ENABLE(gtk-notebook, [AC_HELP_STRING([--enable-gtk-notebook], [use gtk-notebook as default notebook (default YES)])],,
+                       enable_gtk_notebook=$gtk_notebook_default)
+AM_CONDITIONAL([GTK_NOTEBOOK], [test "x$enable_gtk_notebook" = "xyes"])
+if test "x$enable_gtk_notebook" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 
 case $host in
 	*-*-cygwin* | *-*-mingw*)

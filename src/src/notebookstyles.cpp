@@ -14,12 +14,12 @@
 #include "prep.h"
 #include "notebookstyles.h"
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
     #define GSocket GLibSocket
     #include <gtk/gtk.h>
     #undef GSocket
     #include <wx/artprov.h>
-#endif // #ifdef __WXGTK__
+#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
 // Some general constants:
 namespace
 {
@@ -376,7 +376,7 @@ int NbStyleFF2::GetBestTabCtrlSize(wxWindow* wnd,
     return s.y + 6;
 }
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
 
 namespace
 {
@@ -795,4 +795,4 @@ wxSize NbStyleGTK::GetTabSize(wxDC& dc, wxWindow* wnd, const wxString& caption, 
     return s;
 }
 
-#endif // #ifdef __WXGTK__
+#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
