@@ -69,6 +69,7 @@ class DLLIMPORT IncrementalSelectIterator
 
         virtual long GetCount() const = 0;
         virtual wxString GetItem(long index) const = 0;
+        virtual wxString GetDisplayItem(long index) const { return GetItem(index); }
 };
 
 class DLLIMPORT IncrementalSelectIteratorStringArray : public IncrementalSelectIterator

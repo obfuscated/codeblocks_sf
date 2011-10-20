@@ -139,7 +139,7 @@ void IncrementalSelectListDlg::FillList()
         // 2 for before and after stars =~ empty string
         if ((search.Length()==2) || item.Lower().Matches(search.c_str()))
         {
-            result.Add(item);
+            result.Add(m_Iterator.GetDisplayItem(i));
             indexes.Add(i);
         }
     }

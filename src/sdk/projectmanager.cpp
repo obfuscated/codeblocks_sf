@@ -2519,8 +2519,18 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
 
 struct ProjectFileRelativePathCmp
 {
+    ProjectFileRelativePathCmp(cbProject *pActiveProject) : m_pActiveProject(pActiveProject) {}
     bool operator()(ProjectFile* f1, ProjectFile* f2)
-    { return f1->relativeFilename.Cmp(f2->relativeFilename) < 0; }
+    {
+        if (f1->GetParentProject() == m_pActiveProject && f2->GetParentProject() != m_pActiveProject)
+            return true;
+        else if (f1->GetParentProject() != m_pActiveProject && f2->GetParentProject() == m_pActiveProject)
+            return false;
+        else
+            return f1->relativeFilename.Cmp(f2->relativeFilename) < 0;
+    }
+private:
+    cbProject *m_pActiveProject;
 };
 
 struct ProjectFileAbsolutePathCmp
@@ -2562,7 +2572,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
             files.erase(last, files.end());
         }
 
-        std::sort(files.begin(), files.end(), ProjectFileRelativePathCmp());
+        std::sort(files.begin(), files.end(), ProjectFileRelativePathCmp(m_pActiveProject));
     }
 
     class Iterator : public IncrementalSelectIterator
@@ -2571,6 +2581,10 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
             Iterator(ProjectFiles &files, bool showProject) : m_Files(files), m_ShowProject(showProject) {}
             virtual long GetCount() const { return m_Files.size(); }
             virtual wxString GetItem(long index) const
+            {
+                return m_Files[index]->relativeFilename;
+            }
+            virtual wxString GetDisplayItem(long index) const
             {
                 if (m_ShowProject)
                 {
