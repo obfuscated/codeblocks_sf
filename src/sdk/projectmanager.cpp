@@ -2164,6 +2164,34 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
     }
 }
 
+namespace
+{
+void FindFiles(wxArrayString &resultFiles, wxTreeCtrl &tree, wxTreeItemId item)
+{
+    FileTreeData* ftd = static_cast<FileTreeData*>(tree.GetItemData(item));
+    switch (ftd->GetKind())
+    {
+        case FileTreeData::ftdkFile:
+            resultFiles.Add(ftd->GetProjectFile()->relativeFilename);
+            break;
+        case FileTreeData::ftdkFolder:
+            {
+                wxTreeItemIdValue cookie;
+                wxTreeItemId i = tree.GetFirstChild(item, cookie);
+                while (i.IsOk())
+                {
+                    FindFiles(resultFiles, tree, i);
+                    i = tree.GetNextChild(item, cookie);
+                }
+            }
+            break;
+        default:
+            for (int i = 0; i < ftd->GetProject()->GetFilesCount(); ++i)
+                resultFiles.Add(ftd->GetProject()->GetFile(i)->relativeFilename);
+    }
+}
+} // namespace
+
 void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 {
     wxTreeItemId sel = m_pTree->GetSelection();
@@ -2181,8 +2209,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     {
         // remove multiple-files
         wxArrayString files;
-        for (int i = 0; i < prj->GetFilesCount(); ++i)
-            files.Add(prj->GetFile(i)->relativeFilename);
+        FindFiles(files, *m_pTree, sel);
 
         if (files.Count()==0)
         {
