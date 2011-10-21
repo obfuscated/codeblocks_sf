@@ -1192,6 +1192,9 @@
 		<Unit filename="plugins/codecompletion/resources/classbrowser.xrc">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
 			<Option target="Code-completion" />
 		</Unit>
