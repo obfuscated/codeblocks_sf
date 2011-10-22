@@ -83,7 +83,7 @@ struct TokenizerOptions
   * on the next token string, thus, the peeked string will be buffered to the next GetToken() call, this can
   * improve the performance.
   * Also, Tokenizer class do some kind of handling Marcro on the buffer, see
-  * member-function MacroReplace(). Furtherly, more functions like "conditional preprocessor" handling can
+  * member-function MacroReplace(). Further, more functions like "conditional preprocessor" handling can
   * be added.
   */
 class Tokenizer
@@ -184,22 +184,22 @@ public:
     void ReadParentheses(wxString& str);
 
     /** Skip fron the current position to the end of line.
-     * @param nestBraces if true, we should still couting the brace levels in this function.
+     * @param nestBraces if true, we should still counting the brace levels in this function.
      */
     bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
 
-    /** Skip to then end of the C++ style comemnt */
+    /** Skip to then end of the C++ style comment */
     bool SkipToInlineCommentEnd();
 
     /** Add one Replacement rules, this is just a simple way of handling preprocessor (macro) replacement.
      * the rule composite of two strings. if the first string has found in
-     * the Tokenizer, the it will retunrn the second string instead. We have more replacement rulse to
+     * the Tokenizer, the it will return the second string instead. We have more replacement rules to
      * expand this sinple replacement.
      * for replace the "_GLIBCXX_BEGIN_NAMESPACE(std)" to  "namespace std {"
      * we can use: Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
      * see more details in CodeCompletion::LoadTokenReplacements() function body.
      * @param from the matching key string
-     * @param to the mathing value
+     * @param to the matching value
      */
     static void SetReplacementString(const wxString& from, const wxString& to)
     {
@@ -227,7 +227,7 @@ public:
         }
     }
 
-    /** Check wether the Tokenizer reached the end of the buffer (file) */
+    /** Check whether the Tokenizer reached the end of the buffer (file) */
     bool IsEOF() const
     {
         return m_TokenIndex >= m_BufferLen;
@@ -238,10 +238,10 @@ public:
         return m_TokenIndex < m_BufferLen;
     };
 
-    /** Backward buffer replace for reparsing */
+    /** Backward buffer replace for re-parsing */
     bool ReplaceBufferForReparse(const wxString& target, bool updatePeekToken = true);
 
-    /** Get actual context for macro first, then replace buffer to reparsing */
+    /** Get actual context for macro first, then replace buffer to re-parsing */
     bool ReplaceMacroActualContext(Token* tk, bool updatePeekToken = true);
 
     /** Get first token position in buffer */
@@ -283,7 +283,7 @@ protected:
      */
     bool SkipUnwanted();
 
-    /** Skip any "tab" "whitespace" */
+    /** Skip any "tab" "white-space" */
     bool SkipWhiteSpace();
 
     /** Skip the C/C++ comment */
@@ -295,7 +295,7 @@ protected:
     /** Move to the end of "XXXX" or 'X' */
     bool SkipToStringEnd(const wxChar& ch);
 
-    /** Move to the next chracter in the buffer, amount defines the stpe (by default, it is one) */
+    /** Move to the next character in the buffer, amount defines the steps (by default, it is one) */
     bool MoveToNextChar(const unsigned int amount = 1)
     {
         assert(amount);
@@ -423,8 +423,8 @@ private:
       */
     void HandleConditionPreprocessor(const PreprocessorType type);
 
-    /** Splite the actual macro arguments, and store them in results*/
-    void SpliteArguments(wxArrayString& results);
+    /** Split the actual macro arguments, and store them in results*/
+    void SplitArguments(wxArrayString& results);
 
     /** Get the actual context for macro */
     bool GetActualContextForMacro(Token* tk, wxString& actualContext);
@@ -443,7 +443,7 @@ private:
     /** Buffer length */
     unsigned int         m_BufferLen;
 
-    /** These varialbes defined the current Token string attached information,
+    /** These variables defined the current Token string attached information,
      * such as the token name, the line of the token, the current brace nest level
      */
     wxString             m_Token;
@@ -471,7 +471,7 @@ private:
     /** File loader pointer */
     LoaderBase*          m_Loader;
 
-    /** Calc Expression's result, true or false */
+    /** Calculate Expression's result, true or false */
     std::stack<bool>     m_ExpressionResult;
 
     /** is replace buffer parsing */

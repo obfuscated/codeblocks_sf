@@ -140,7 +140,7 @@ public:
     virtual void clear(); /// Clears items and tree
 
     /** Adds an item number to position defined by s.
-        If the string already exists, returns the correspoinding item no. */
+        If the string already exists, returns the corresponding item no. */
     size_t insert(const wxString& s);
 
     /// Tells if there is an item for string s
@@ -208,8 +208,7 @@ protected:
     SearchTreePointsArray m_Points;
 };
 
-template <class T>
-class SearchTree: public BasicSearchTree
+template <class T> class SearchTree : public BasicSearchTree
 {
 public:
     SearchTree();
@@ -243,62 +242,53 @@ protected:
     virtual bool AddFirstNullItem();
 };
 
-template <class T>
-SearchTree<T>::SearchTree():BasicSearchTree()
+template <class T> SearchTree<T>::SearchTree() : BasicSearchTree()
 {
     m_Items.clear();
     AddFirstNullItem();
 }
 
-template <class T>
-SearchTree<T>::~SearchTree()
+template <class T> SearchTree<T>::~SearchTree()
 {
     ClearItems();
 }
 
-template <class T>
-void SearchTree<T>::clear()
+template <class T> void SearchTree<T>::clear()
 {
     ClearItems();
     BasicSearchTree::clear();
     AddFirstNullItem();
 }
 
-template <class T>
-size_t SearchTree<T>::GetCount() const
+template <class T> size_t SearchTree<T>::GetCount() const
 {
     size_t result = m_Items.size() -1;
     return result;
 }
 
-template <class T>
-size_t SearchTree<T>::size() const
+template <class T> size_t SearchTree<T>::size() const
 {
     size_t result = m_Items.size() -1;
     return result;
 }
 
-template <class T>
-bool SearchTree<T>::SaveCacheTo(const wxString& filename)
+template <class T> bool SearchTree<T>::SaveCacheTo(const wxString& filename)
 {
     return true;
 }
 
-template <class T>
-bool SearchTree<T>::LoadCacheFrom(const wxString& filename)
+template <class T> bool SearchTree<T>::LoadCacheFrom(const wxString& filename)
 {
     return true;
 }
 
-template <class T>
-T SearchTree<T>::GetItem(const wxChar* s)
+template <class T> T SearchTree<T>::GetItem(const wxChar* s)
 {
     wxString tmps(s);
     return GetItem(tmps);
 }
 
-template <class T>
-T SearchTree<T>::GetItem(const wxString& s)
+template <class T> T SearchTree<T>::GetItem(const wxString& s)
 {
     size_t itemno = GetItemNo(s);
     if(!itemno && !s.empty())
@@ -306,8 +296,7 @@ T SearchTree<T>::GetItem(const wxString& s)
     return GetItemAtPos(itemno);
 }
 
-template <class T>
-size_t SearchTree<T>::AddItem(const wxString& s, T item, bool replaceexisting)
+template <class T> size_t SearchTree<T>::AddItem(const wxString& s, T item, bool replaceexisting)
 {
     size_t itemno = insert(s);
 
@@ -321,37 +310,32 @@ size_t SearchTree<T>::AddItem(const wxString& s, T item, bool replaceexisting)
     return itemno;
 }
 
-template <class T>
-T& SearchTree<T>::GetItemAtPos(size_t i)
+template <class T> T& SearchTree<T>::GetItemAtPos(size_t i)
 {
     if(i>=m_Items.size() || i < 1)
         i = 0;
     return m_Items[i];
 }
 
-template <class T>
-void SearchTree<T>::SetItemAtPos(size_t i,T item)
+template <class T> void SearchTree<T>::SetItemAtPos(size_t i,T item)
 {
     m_Items[i]=item;
 }
 
-template <class T>
-void SearchTree<T>::ClearItems()
 /// Called by BasicSearchTree::BasicSearchTree() and BasicSearchTree::Clear()
+template <class T> void SearchTree<T>::ClearItems()
 {
     m_Items.clear();
 }
 
-template <class T>
-bool SearchTree<T>::AddFirstNullItem()
+template <class T> bool SearchTree<T>::AddFirstNullItem()
 {
     T newvalue;
     m_Items.push_back(newvalue);
     return true;
 }
 
-template <class T>
-T& SearchTree<T>::operator[](const wxString& s)
+template <class T> T& SearchTree<T>::operator[](const wxString& s)
 {
     size_t curpos = GetItemNo(s);
     if(!curpos)
@@ -363,8 +347,7 @@ T& SearchTree<T>::operator[](const wxString& s)
     return m_Items[curpos];
 }
 
-template <class T>
-wxString SearchTree<T>::Serialize()
+template <class T> wxString SearchTree<T>::Serialize()
 {
     wxString result;
     size_t i;

@@ -722,7 +722,6 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
     // than an exhaustive search.
     result.clear();
     wxString s2,curcmp,s3;
-    nSearchTreeNode ncurnode;
     SearchTreeNode* curnode = 0;
     BasicSearchTreeIterator it(this);
     SearchTreeItemsMap::iterator it2;
@@ -737,7 +736,6 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
     while (!it.Eof())
     {
         matches = false;
-        ncurnode = *it;
         curnode = m_Nodes[*it];
         if (!curnode)
             break; // Error! Found a NULL Node
@@ -781,9 +779,7 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
                 else
                 {
                     for (it2 = curnode->m_Items.lower_bound(s2.length()); it2 != curnode->m_Items.end(); ++it2)
-                    {
                         result.insert(it2->second);
-                    }
                 }
                 matches = is_prefix;
                 // End items addition
@@ -807,9 +803,8 @@ size_t BasicSearchTree::insert(const wxString& s)
         m_Points[result] = resultpos;
     }
     else if (m_Points.size() == result)
-    {
         m_Points.push_back(resultpos);
-    }
+
     return result;
 }
 
@@ -917,7 +912,7 @@ bool SearchTreeNode::UnSerializeString(const wxString& s,wxString& result)
                         ch = u;
                     else
                     {
-                        mode = -1; // Error: Unrecognized entity
+                        mode = -1; // Error: Unrecognised entity
                         break;
                     }
                     result << ch;

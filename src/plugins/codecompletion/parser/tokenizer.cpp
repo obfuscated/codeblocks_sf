@@ -1572,7 +1572,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
     }
 }
 
-void Tokenizer::SpliteArguments(wxArrayString& results)
+void Tokenizer::SplitArguments(wxArrayString& results)
 {
     while (SkipWhiteSpace() || SkipComment())
         ;
@@ -1762,12 +1762,12 @@ bool Tokenizer::GetActualContextForMacro(Token* tk, wxString& actualContext)
     // 1. break the args into substring with ","
     wxArrayString formalArgs;
     if (ReplaceBufferForReparse(tk->m_Args, false))
-        SpliteArguments(formalArgs);
+        SplitArguments(formalArgs);
 
     // 2. splite the actual macro arguments
     wxArrayString actualArgs;
     if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
-        SpliteArguments(actualArgs);
+        SplitArguments(actualArgs);
 
     // 3. get actual context
     actualContext = tk->m_Type;
