@@ -647,6 +647,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     if (!parser)
         return false;
 
+    // If there is no project, work on default compiler
     if (!project)
     {
         Compiler* compiler = CompilerFactory::GetDefaultCompiler();
@@ -661,23 +662,13 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
             }
 
             if (compiler->GetID().Contains(_T("gcc")))
-            {
-                wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
-                fn.SetPath(compiler->GetMasterPath());
-                fn.AppendDir(_T("bin"));
-                const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
-                TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
-                for (size_t i = 0; i < gccDirs.GetCount(); ++i)
-                {
-                    parser->AddIncludeDir(gccDirs[i]);
-                    TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
-                }
-            }
+                AddGCCCompilerDirs(compiler, parser);
         }
 
         return true;
     }
 
+    // Otherwise (if there is a project), work on the project's compiler
     wxString base = project->GetBasePath();
     parser->AddIncludeDir(base); // add project's base path
     TRACE(_T("AddCompilerDirs() : Adding project base dir to parser: ") + base);
@@ -790,24 +781,11 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         // but do only once per C::B session, thus cache for later calls
         wxString CompilerID = (Compilers[idxCompiler])->GetID();
         if (CompilerID.Contains(_T("gcc")))
-        {
-            wxFileName fn(wxEmptyString, ((Compilers[idxCompiler])->GetPrograms()).CPP);
-            fn.SetPath((Compilers[idxCompiler])->GetMasterPath());
-            fn.AppendDir(_T("bin"));
-            const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
-            TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
-            for (size_t i = 0; i < gccDirs.GetCount(); ++i)
-            {
-                parser->AddIncludeDir(gccDirs[i]);
-                TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
-            }
-        }
+            AddGCCCompilerDirs(Compilers[idxCompiler], parser);
     } // end of while loop over the found compilers
 
     if (!nCompilers)
-    {
         CCLogger::Get()->DebugLog(_T("No compilers found!"));
-    }
 
     delete [] Compilers;
     return true;
@@ -837,7 +815,9 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
             return false;
 
         wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
-        fn.SetPath(compiler->GetMasterPath());
+        wxString masterPath = compiler->GetMasterPath();
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+        fn.SetPath(masterPath);
         fn.AppendDir(_T("bin"));
 
         static std::map<wxString, wxString> defsMap;
@@ -917,8 +897,10 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
             Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
             if(!compiler)
                 return false;
-            wxString cmd = compiler->GetMasterPath() + _T("\\bin\\") + compiler->GetPrograms().C;
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
+
+            wxString masterPath = compiler->GetMasterPath();
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+            wxString cmd = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
 
             // wxExecute can be a long action and C::B might have been shutdown in the meantime...
             if (Manager::IsAppShuttingDown())
@@ -1028,7 +1010,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
 
 const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler)
 {
-    // keep the gcc compiler path's once if found accross C::B session
+    // keep the gcc compiler path's once if found across C::B session
     // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
     static std::map<wxString, wxArrayString> dirs;
     if (!dirs[cpp_compiler].IsEmpty())
@@ -1037,14 +1019,14 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // for starters , only do this for gnu compiler
     //CCLogger::Get()->DebugLog(_T("CompilerID ") + CompilerID);
     //
-    //   windows: mingw32-g++ -v -E -x c++ nul
-    //   linux  : g++ -v -E -x c++ /dev/null
+    //   Windows: mingw32-g++ -v -E -x c++ nul
+    //   Linux  : g++ -v -E -x c++ /dev/null
     // do the trick only for c++, not needed then for C (since this is a subset of C++)
 
 
     // let's construct the command
     // use a null file handler
-    // both works fine in Windows and linux
+    // both works fine in Windows and Linux
 
 #ifdef __WXMSW__
     wxString Command = cpp_compiler + _T(" -v -E -x c++ nul");
@@ -1097,6 +1079,23 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     }
 
     return dirs[cpp_compiler];
+}
+
+void NativeParser::AddGCCCompilerDirs(Compiler* compiler, ParserBase* parser)
+{
+    wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
+    wxString masterPath = compiler->GetMasterPath();
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+    fn.SetPath(masterPath);
+    fn.AppendDir(_T("bin"));
+
+    const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
+    TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
+    for (size_t i=0; i<gccDirs.GetCount(); ++i)
+    {
+        parser->AddIncludeDir(gccDirs[i]);
+        TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
+    }
 }
 
 wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
@@ -1996,16 +1995,12 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
     size_t pos = 0;
     size_t copy_start = 0;
     int last_comma = -1;
-    int last_space = -1;
     while (pos < original_str.Length())
     {
         wxChar c = original_str.GetChar(pos);
 
-        if      (c == _T(','))
+        if (c == _T(','))
             last_comma = pos;
-        else if (   (c == _T(' '))
-                 || (c == _T('\t')) )
-            last_space = pos;
 
         if (pos % chars_per_line == 0 && last_comma != -1)
         {

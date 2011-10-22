@@ -143,7 +143,7 @@ public:
      */
     cbProject* GetProjectByEditor(cbEditor* editor);
 
-    /** Get current project by actived editor or just return actived project */
+    /** Get current project by active editor or just return active project */
     cbProject* GetCurrentProject();
 
     /** Return true if all the parser's batch-parse stages finished, otherwise return false*/
@@ -167,7 +167,7 @@ public:
     wxArrayString GetAllPathsByFilename(const wxString& filename);
 
     /** Add the paths to path array, and this will be used in GetAllPathsByFilename() function.
-     *  internally, all the folder path was recored in UNIX format.
+     *  internally, all the folder path was recorded in UNIX format.
      */
     void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 
@@ -232,7 +232,7 @@ public:
     size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool isPrefix = true,
                          bool caseSensitive = false, int caretPos = -1);
 
-    /** Returns the start and end of the calltip highlight region. */
+    /** Returns the start and end of the call-tip highlight region. */
     void GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas);
 
     /** count commas in lineText (nesting parentheses)*/
@@ -243,7 +243,7 @@ public:
      * the prototypes information of the current function,
      * the type information of the variable...
      *
-     * @param chars_per_line specify the char number per one line of the calltip window, so it can restrict the width.
+     * @param chars_per_line specify the char number per one line of the call-tip window, so it can restrict the width.
      * @param items array to store result in.
      * @param typedCommas how much comma characters the user has typed in the current line before the cursor.
      */
@@ -408,7 +408,7 @@ private:
                              bool isPrefix = false,
                              short int kindMask = 0xFFFF);
 
-    /** This function is just like the one above, especially that no Tokentree information is used
+    /** This function is just like the one above, especially that no Tokenstree information is used
      * So, it use the current parser's Tokenstree.
      *
      * All functions that call this recursive function, should already entered a critical section.
@@ -465,11 +465,14 @@ private:
     /** collect compiler predefined preprocessor definition */
     bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
 
-    /** collect project (user) defined preprocessor definition*/
+    /** collect project (user) defined preprocessor definition */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
+
+    /** Add the collected default compiler include file search paths to a parser */
+    void AddGCCCompilerDirs(Compiler* compiler, ParserBase* parser);
 
     /** Event handler when the batch parse starts, print some log information */
     void OnParserStart(wxCommandEvent& event);
