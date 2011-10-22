@@ -55,57 +55,74 @@ END_EVENT_TABLE()
 Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
 {
     //(*Initialize(Frame)
-    wxBoxSizer* bszMain;
-    wxStaticText* lblLog;
-    wxMenuItem* MenuItem5;
-    wxMenuItem* MenuItem2;
-    wxMenu* Menu3;
-    wxMenuItem* MenuItem1;
-    wxMenuItem* MenuItem4;
-    wxStaticText* lblInclude;
-    wxMenu* Menu1;
-    wxMenuItem* MenuItem3;
-    wxMenuItem* MenuItem6;
-    wxBoxSizer* bszInclude;
-    wxMenuBar* MenuBar1;
-    wxMenu* Menu2;
+    wxMenuItem* mnu_itm_save_log;
+    wxStaticText* lbl_search_tree;
+    wxMenuItem* mnu_item_find;
+    wxBoxSizer* bsz_search_tree;
+    wxStaticText* lbl_log;
+    wxMenuItem* mnu_itm_reload;
+    wxMenu* mnu_help;
+    wxBoxSizer* bsz_parserlog;
+    wxBoxSizer* bsz_search_tree_opts;
+    wxStaticText* lbl_include;
+    wxMenuItem* mnu_itm_quit;
+    wxBoxSizer* bsz_include;
+    wxMenuItem* mnu_item_about;
+    wxMenuBar* mnu_main;
+    wxMenu* mnu_search;
+    wxMenuItem* mnu_itm_open;
+    wxMenu* mnu_file;
+    wxBoxSizer* bsz_main;
 
     Create(0, wxID_ANY, _("Parser Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
-    bszMain = new wxBoxSizer(wxVERTICAL);
-    bszInclude = new wxBoxSizer(wxVERTICAL);
-    lblInclude = new wxStaticText(this, wxID_ANY, _("Add include directories to search for files here (one directory per line):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    bszInclude->Add(lblInclude, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main = new wxBoxSizer(wxVERTICAL);
+    bsz_include = new wxBoxSizer(wxVERTICAL);
+    lbl_include = new wxStaticText(this, wxID_ANY, _("Add include directories to search for files here (one directory per line):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    bsz_include->Add(lbl_include, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_IncludeCtrl = new wxTextCtrl(this, wxID_ANY, _("C:\\Devel\\wxWidgets\\lib\\gcc_dll\\mswu\nC:\\Devel\\wxWidgets\\include\n"), wxDefaultPosition, wxSize(-1,60), wxTE_AUTO_SCROLL|wxTE_MULTILINE, wxDefaultValidator, _T("wxID_ANY"));
-    bszInclude->Add(m_IncludeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bszMain->Add(bszInclude, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    lblLog = new wxStaticText(this, wxID_ANY, _("The parser\'s log output:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    bszMain->Add(lblLog, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(640,480), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
-    bszMain->Add(m_LogCtrl, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    SetSizer(bszMain);
-    MenuBar1 = new wxMenuBar();
-    Menu2 = new wxMenu();
-    MenuItem3 = new wxMenuItem(Menu2, wxID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
-    Menu2->Append(MenuItem3);
-    MenuItem6 = new wxMenuItem(Menu2, wxID_REFRESH, _("&Reload\tF5"), _("Reload test file"), wxITEM_NORMAL);
-    Menu2->Append(MenuItem6);
-    Menu2->AppendSeparator();
-    MenuItem1 = new wxMenuItem(Menu2, wxID_SAVE, _("&Save Log...\tCtrl+S"), _("Save log file to hard disk "), wxITEM_NORMAL);
-    Menu2->Append(MenuItem1);
-    Menu2->AppendSeparator();
-    MenuItem2 = new wxMenuItem(Menu2, wxID_EXIT, _("&Quit\tCtrl+Q"), wxEmptyString, wxITEM_NORMAL);
-    Menu2->Append(MenuItem2);
-    MenuBar1->Append(Menu2, _("&File"));
-    Menu1 = new wxMenu();
-    MenuItem4 = new wxMenuItem(Menu1, wxID_FIND, _("&Find...\tCtrl+F"), _("Find keyword"), wxITEM_NORMAL);
-    Menu1->Append(MenuItem4);
-    MenuBar1->Append(Menu1, _("&Search"));
-    Menu3 = new wxMenu();
-    MenuItem5 = new wxMenuItem(Menu3, wxID_ABOUT, _("&About"), wxEmptyString, wxITEM_NORMAL);
-    Menu3->Append(MenuItem5);
-    MenuBar1->Append(Menu3, _("&Help"));
-    SetMenuBar(MenuBar1);
+    bsz_include->Add(m_IncludeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main->Add(bsz_include, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_parserlog = new wxBoxSizer(wxVERTICAL);
+    lbl_log = new wxStaticText(this, wxID_ANY, _("The parser\'s log output:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    bsz_parserlog->Add(lbl_log, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(640,350), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_parserlog->Add(m_LogCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main->Add(bsz_parserlog, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_search_tree = new wxBoxSizer(wxVERTICAL);
+    bsz_search_tree_opts = new wxBoxSizer(wxHORIZONTAL);
+    lbl_search_tree = new wxStaticText(this, wxID_ANY, _("The parser\'s internal search tree:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    bsz_search_tree_opts->Add(lbl_search_tree, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation (careful, might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    m_DoTreeCtrl->SetValue(false);
+    bsz_search_tree_opts->Add(m_DoTreeCtrl, 1, wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_search_tree->Add(bsz_search_tree_opts, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_TreeCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(640,200), wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_search_tree->Add(m_TreeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main->Add(bsz_search_tree, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(bsz_main);
+    mnu_main = new wxMenuBar();
+    mnu_file = new wxMenu();
+    mnu_itm_open = new wxMenuItem(mnu_file, wxID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
+    mnu_file->Append(mnu_itm_open);
+    mnu_itm_reload = new wxMenuItem(mnu_file, wxID_REFRESH, _("&Reload\tF5"), _("Reload test file"), wxITEM_NORMAL);
+    mnu_file->Append(mnu_itm_reload);
+    mnu_file->AppendSeparator();
+    mnu_itm_save_log = new wxMenuItem(mnu_file, wxID_SAVE, _("&Save Log...\tCtrl+S"), _("Save log file to hard disk "), wxITEM_NORMAL);
+    mnu_file->Append(mnu_itm_save_log);
+    mnu_file->AppendSeparator();
+    mnu_itm_quit = new wxMenuItem(mnu_file, wxID_EXIT, _("&Quit\tCtrl+Q"), wxEmptyString, wxITEM_NORMAL);
+    mnu_file->Append(mnu_itm_quit);
+    mnu_main->Append(mnu_file, _("&File"));
+    mnu_search = new wxMenu();
+    mnu_item_find = new wxMenuItem(mnu_search, wxID_FIND, _("&Find...\tCtrl+F"), _("Find keyword"), wxITEM_NORMAL);
+    mnu_search->Append(mnu_item_find);
+    mnu_main->Append(mnu_search, _("&Search"));
+    mnu_help = new wxMenu();
+    mnu_item_about = new wxMenuItem(mnu_help, wxID_ABOUT, _("&About"), wxEmptyString, wxITEM_NORMAL);
+    mnu_help->Append(mnu_item_about);
+    mnu_main->Append(mnu_help, _("&Help"));
+    SetMenuBar(mnu_main);
     m_StatuBar = new wxStatusBar(this, wxID_ANY, 0, _T("wxID_ANY"));
     int __wxStatusBarWidths_1[1] = { -10 };
     int __wxStatusBarStyles_1[1] = { wxSB_NORMAL };
@@ -114,8 +131,8 @@ Frame::Frame() : m_LogCount(0), m_DlgFind(NULL)
     SetStatusBar(m_StatuBar);
     m_OpenFile = new wxFileDialog(this, _("Select Test Source File"), _("."), wxEmptyString, _("*.cpp;*.h"), wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     m_SaveFile = new wxFileDialog(this, _("Select file"), _("."), _("log.txt"), _("*.txt"), wxFD_DEFAULT_STYLE|wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    bszMain->Fit(this);
-    bszMain->SetSizeHints(this);
+    bsz_main->Fit(this);
+    bsz_main->SetSizeHints(this);
     Center();
 
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuOpenSelected);
@@ -134,10 +151,7 @@ Frame::~Frame()
 {
     //(*Destroy(Frame)
     //*)
-    if (m_DlgFind != NULL)
-    {
-        delete m_DlgFind;
-    }
+    delete m_DlgFind;
 }
 
 void Frame::Start(const wxString& file)
@@ -179,6 +193,13 @@ void Frame::DoStart()
     m_ParserTest.PrintList();
 
     ShowLog();
+
+    if (m_DoTreeCtrl->IsChecked())
+    {
+      Freeze();
+      m_TreeCtrl->SetValue( m_ParserTest.SerializeTree() );
+      Thaw();
+    }
 }
 
 void Frame::ShowLog()

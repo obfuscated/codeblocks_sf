@@ -11,18 +11,20 @@ class Token;
 class ParserTest
 {
 public:
-    ParserTest();
+     ParserTest();
     ~ParserTest();
-    bool Start(const wxString& file);
-    void Clear();
-    void PrintTree();
-    void PrintList();
+
+    bool     Start(const wxString& file);
+    void     Clear();
+    void     PrintTree();
+    void     PrintList();
+    wxString SerializeTree();
 
 private:
     void PrintTokenTree(Token* token);
 
 private:
-    TokensTree*   m_tokensTree;
+    TokensTree* m_pTokensTree;
 };
 
 #endif // PARSERTEST_H

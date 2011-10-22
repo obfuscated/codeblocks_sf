@@ -14,6 +14,7 @@
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
 #include <wx/filedlg.h>
 #include <wx/frame.h>
 #include <wx/statusbr.h>
@@ -51,6 +52,8 @@ private:
 
 private:
     //(*Declarations(Frame)
+    wxTextCtrl* m_TreeCtrl;
+    wxCheckBox* m_DoTreeCtrl;
     wxFileDialog* m_SaveFile;
     wxStatusBar* m_StatuBar;
     wxTextCtrl* m_LogCtrl;

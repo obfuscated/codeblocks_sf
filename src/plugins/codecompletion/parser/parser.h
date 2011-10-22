@@ -239,7 +239,7 @@ public:
     /** set the associated C::B project pointer. (only used by one parser for whole workspace) */
     virtual bool UpdateParsingProject(cbProject* project);
 
-    /** Must add a locker before call all named ParseBufferXXX fuctions
+    /** Must add a locker before call all named ParseBufferXXX functions
      * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
      */
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
@@ -341,13 +341,13 @@ private:
     bool                 m_IgnoreThreadEvents;
 
     StringList           m_PriorityHeaders;       //!< All priority headers
-    StringList           m_SystemPriorityHeaders; //!< Only system priority headers, for reparse
+    StringList           m_SystemPriorityHeaders; //!< Only system priority headers, for re-parse
     StringList           m_BatchParseFiles;       //!< All other batch parse files
     wxString             m_PredefinedMacros;      //!< Pre-defined macros
     /** used to measure batch parse time*/
     bool                 m_IsBatchParseDone;
     ParsingType          m_ParsingType;
-    /** if true, all the files of the current project will be labelled as "local" */
+    /** if true, all the files of the current project will be labeled as "local" */
     bool                 m_NeedMarkFileAsLocal;
 };
 

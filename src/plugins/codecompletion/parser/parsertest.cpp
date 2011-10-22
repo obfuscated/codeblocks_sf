@@ -30,7 +30,7 @@ wxCriticalSection g_ParserCritical;
 
 ParserTest::ParserTest()
 {
-    m_tokensTree = new TokensTree();
+    m_pTokensTree = new TokensTree();
 
     // for GCC
     Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                     _T("std"));
@@ -62,7 +62,7 @@ ParserTest::ParserTest()
 
 ParserTest::~ParserTest()
 {
-    delete m_tokensTree;
+    delete m_pTokensTree;
 }
 
 bool ParserTest::Start(const wxString& file)
@@ -80,7 +80,7 @@ bool ParserTest::Start(const wxString& file)
     opts.followGlobalIncludes  = true;
     opts.loader                = loader;
 
-    ParserThread* ph = new ParserThread(&client, file, true, opts, m_tokensTree);
+    ParserThread* ph = new ParserThread(&client, file, true, opts, m_pTokensTree);
     bool b = ph->Parse();
     delete ph;
 
@@ -89,15 +89,15 @@ bool ParserTest::Start(const wxString& file)
 
 void ParserTest::Clear()
 {
-    m_tokensTree->clear();
+    m_pTokensTree->clear();
 }
 
 void ParserTest::PrintTree()
 {
-    TokenList& tokens = m_tokensTree->m_Tokens;
+    TokenList& tokens = m_pTokensTree->m_Tokens;
     for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
     {
-        Token* parent = m_tokensTree->at((*it)->m_ParentIndex);
+        Token* parent = m_pTokensTree->at((*it)->m_ParentIndex);
         if (!parent)
             PrintTokenTree(*it);
     }
@@ -117,14 +117,14 @@ void ParserTest::PrintTokenTree(Token* token)
     TokenIdxSet& ids = token->m_Children;
     for (TokenIdxSet::iterator it = ids.begin(); it != ids.end(); it++)
     {
-        Token* token = m_tokensTree->at(*it);
+        Token* token = m_pTokensTree->at(*it);
         PrintTokenTree(token);
     }
 }
 
 void ParserTest::PrintList()
 {
-    TokenList& tokens = m_tokensTree->m_Tokens;
+    TokenList& tokens = m_pTokensTree->m_Tokens;
     for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
     {
         wxString log;
@@ -132,4 +132,9 @@ void ParserTest::PrintList()
         log << _T(",") << (*it)->m_ImplLine << _T("]");
         CCLogger::Get()->Log(log);
     }
+}
+
+wxString ParserTest::SerializeTree()
+{
+  return m_pTokensTree->m_Tree.Serialize();
 }
