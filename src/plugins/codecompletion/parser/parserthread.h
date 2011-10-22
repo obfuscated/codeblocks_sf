@@ -112,7 +112,7 @@ public:
 
     /** Get the context "namespace XXX { ... }" directive. It is used to find the initial search scope
       * before CC prompt a suggestion list.
-      * Need a critical section locker before call this funtion!
+      * Need a critical section locker before call this function!
       * @param buffer  wxString to be parsed.
       * @param result  vector containing all the namespace names.
       */
@@ -120,7 +120,7 @@ public:
 
     /** Get the context "using namespace XXX" directive. It is used to find the initial search scope
       * before CC prompt a suggestion list.
-      * Need a critical section locker before call this funtion!
+      * Need a critical section locker before call this function!
       * @param buffer  wxString to be parsed.
       * @param result the wxArrayString contains all the namespace names.
       */
@@ -264,7 +264,7 @@ private:
       * then, the returned argument list is "(const TheClass*,int)"
       * @param args Full argument list
       * @param baseArgs argument types only
-      * @return if faild, will return false, so, it must be a variable
+      * @return if failed, will return false, so, it must be a variable
       */
     bool GetBaseArgs(const wxString & args, wxString& baseArgs);
 

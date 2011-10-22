@@ -131,6 +131,7 @@ namespace ParserConsts
     const wxString kw_else         (_T("else"));
     const wxString kw_enum         (_T("enum"));
     const wxString kw_elif         (_T("elif"));
+    const wxString kw_case         (_T("case"));
     // length: 5
     const wxString kw__CPP_        (_T("\"C++\""));
     const wxString kw___asm        (_T("__asm"));
@@ -649,7 +650,7 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                 else
-                    m_Tokenizer.GetToken(); //skip args
+                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else
@@ -663,7 +664,7 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                 else
-                    m_Tokenizer.GetToken(); //skip args
+                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else
@@ -677,7 +678,7 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                 else
-                    m_Tokenizer.GetToken(); //skip args
+                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else if (token == ParserConsts::kw_enum)
@@ -687,6 +688,11 @@ void ParserThread::DoParse()
                     HandleEnum();
                 else
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
+            }
+            else if (token == ParserConsts::kw_case)
+            {
+                m_Str.Clear();
+                SkipToOneOfChars(ParserConsts::colon, true);
             }
             else
                 switchHandled = false;
@@ -699,7 +705,7 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                 else
-                    m_Tokenizer.GetToken(); //skip args
+                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else if (token == ParserConsts::kw_const)
@@ -769,7 +775,7 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                 else
-                    m_Tokenizer.GetToken(); //skip args
+                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else if (token == ParserConsts::kw_return)
@@ -901,6 +907,7 @@ void ParserThread::DoParse()
                 switchHandled = false;
             break;
 
+            // token length of other than 1 .. 9
             default:
                 switchHandled = false;
             break;
