@@ -416,7 +416,9 @@ bool GotoTokenPosition(cbEditor* editor, const wxString& target, int line)
     if (line > control->GetLineCount())
         return false;
 
-    control->GotoLine(line);
+//    control->GotoLine(line); // old style
+    editor->GotoLine(line, true); // center function on screen
+    editor->SetFocus(); // ...and set focus to the editor
     const int startPos = control->GetCurrentPos();
     const int endPos = startPos + control->LineLength(line);
     if (endPos <= startPos)

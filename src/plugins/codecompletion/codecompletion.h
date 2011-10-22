@@ -27,12 +27,12 @@ class SystemHeadersThread;
 
 typedef std::map<wxString, StringSet> SystemHeadersMap;
 
-/** code completion plugin can show function tip, give automaticall suggestion
- *  list while entering code, browse all global declaration and symbols of the
- *  source files.
+/** Code completion plugin can show function call-tip, automatically suggest code-completion
+ *  lists while entering code. Also, it supports navigating the source files, jump between declarations
+ *  and implementations, find symbol usage, or even rename a symbol(code re-factoring).
  *
  *  We later use "CC" as an abbreviation of Code Completion plugin.
- * See the general achitecture of code completion plugin on wiki page
+ * See the general architecture of code completion plugin on wiki page
  *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
  */
 class CodeCompletion : public cbCodeCompletionPlugin
@@ -51,7 +51,7 @@ public:
         wxString Scope;    // class or namespace
     };
 
-    /** each file contains on such vector, containing all the function infos in the file */
+    /** each file contains on such vector, containing all the function information in the file */
     typedef std::vector<FunctionScope> FunctionsScopeVec;
     /** helper class to support FunctionsScopeVec*/
     typedef std::vector<int> ScopeMarksVec;
@@ -101,7 +101,7 @@ public:
      */
     wxArrayString GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets);
 
-    /** the defualt compilers search paths
+    /** the default compilers search paths
      * @param force if false, then it just return a static wxArrayString to optimize the performance
      */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
@@ -143,12 +143,12 @@ private:
     /** handle CC's context menu->insert */
     void OnUnimplementedClassMethods(wxCommandEvent& event);
 
-    /** handle both goto decleration and implementation event */
+    /** handle both goto declaration and implementation event */
     void OnGotoDeclaration(wxCommandEvent& event);
 
-    /** CC's refactoring function, find all the reference place*/
+    /** CC's re-factoring function, find all the reference place*/
     void OnFindReferences(wxCommandEvent& event);
-    /** CC's refactoring function, rename a symbol */
+    /** CC's re-factoring function, rename a symbol */
     void OnRenameSymbols(wxCommandEvent& event);
     /** open the include file under the caret position */
     void OnOpenIncludeFile(wxCommandEvent& event);
@@ -173,9 +173,9 @@ private:
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
 
-    /** CC's own loger, to handle event sent from other thread or itself*/
+    /** CC's own logger, to handle event sent from other thread or itself*/
     void OnCCLogger(wxCommandEvent& event);
-    /** CC's own debug loger, to handle event sent from other thread ot itself*/
+    /** CC's own debug logger, to handle event sent from other thread ot itself*/
     void OnCCDebugLogger(wxCommandEvent& event);
 
     /** batch parsing end event*/
@@ -223,13 +223,13 @@ private:
     /** delayed for toolbar update */
     void OnToolbarTimer(wxTimerEvent& event);
 
-    /** event fired from the editoevent hook function to indicate parsing while editing*/
+    /** event fired from the edit event hook function to indicate parsing while editing*/
     void OnRealtimeParsingTimer(wxTimerEvent& event);
 
     /** delayed running after saving project, while many projects' saving */
     void OnProjectSavedTimer(wxTimerEvent& event);
 
-    /** delayed for reparsing */
+    /** delayed for re-parsing */
     void OnReparsingTimer(wxTimerEvent& event);
 
     /** delayed running of editor activated event, only the last activated editor should be considered*/
@@ -237,7 +237,7 @@ private:
 
     /** Not used*/
     int                     m_PageIndex;
-    /** Indicates CC's initilization is done*/
+    /** Indicates CC's initialization is done*/
     bool                    m_InitDone;
 
     /** menu pointers to the frame's main menu*/
@@ -248,7 +248,7 @@ private:
 
     /** this member will actually manage the many Parser objects*/
     NativeParser            m_NativeParser;
-    /** code refectoring tool*/
+    /** code re-factoring tool*/
     CodeRefactoring         m_CodeRefactoring;
 
     int                     m_EditorHookId;
@@ -256,7 +256,7 @@ private:
 
     /** delay for showing the suggesting list*/
     wxTimer                 m_TimerCodeCompletion;
-    /** timer triggered by editor hook function to delay the realtime parse*/
+    /** timer triggered by editor hook function to delay the real-time parse*/
     wxTimer                 m_TimerRealtimeParsing;
     /** timer for toolbar*/
     wxTimer                 m_TimerToolbar;
@@ -277,7 +277,7 @@ private:
     wxToolBar*              m_ToolBar;
     /** function choice control of CC's toolbar, it is the second choice */
     wxChoice*               m_Function;
-    /** namespace/scope choise control, it is the first choice control*/
+    /** namespace/scope choice control, it is the first choice control*/
     wxChoice*               m_Scope;
     /** current active file's function body info*/
     FunctionsScopeVec       m_FunctionsScope;
@@ -300,15 +300,15 @@ private:
     /** the file updating the toolbar info*/
     wxString                m_LastFile;
 
-    /** indicate whether the predefined keywords set should be added in the suggetion list*/
+    /** indicate whether the predefined keywords set should be added in the suggestion list*/
     bool                    m_LexerKeywordsToInclude[9];
 
-    /** indicate the editor has modifled by the user and a real-time parse should be start*/
+    /** indicate the editor has modified by the user and a real-time parse should be start*/
     bool                    m_NeedReparse;
 
     /** remember the number of bytes in the current editor/document */
     int                     m_CurrentLength;
-    /** collected header file names to support autocompletion after #include*/
+    /** collected header file names to support auto-completion after #include*/
     SystemHeadersMap        m_SystemHeadersMap;
 
     //options on code completion plugins
@@ -325,7 +325,7 @@ private:
     /** thread to collect header file names */
     std::list<SystemHeadersThread*> m_SystemHeadersThread;
 
-    /** map to collect all reparsing files */
+    /** map to collect all re-parsing files */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
     ReparsingMap m_ReparsingMap;
 
