@@ -203,6 +203,8 @@ void CompilerMINGW::LoadDefaultRegExArray()
     m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, _T("FATAL:[ \t]*(.*)"), 1));
     m_RegExes.Add(RegExStruct(_("'In function...' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):[ \t]+") + _T("([iI]n ([cC]lass|[cC]onstructor|[dD]estructor|[fF]unction|[mM]ember [fF]unction).*)"), 2, 1));
+    m_RegExes.Add(RegExStruct(_("'Skipping N instantiation contexts' info (2)"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]+(\[[ \t]+[Ss]kipping [0-9]+ instantiation contexts[ \t]+\])"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("'Skipping N instantiation contexts' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]+(\[[ \t]+[Ss]kipping [0-9]+ instantiation contexts[ \t]+\])"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("'Instantiated from' info (2)"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]+([iI]nstantiated from .*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("'Instantiated from' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]+([iI]nstantiated from .*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, _T("windres.exe:[ \t](") + FilePathWithSpaces + _T("):([0-9]+):[ \t](.*)"), 3, 1, 2));
