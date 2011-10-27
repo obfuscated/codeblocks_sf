@@ -1227,59 +1227,84 @@ bool cbProject::CanDragNode(wxTreeCtrl* tree, wxTreeItemId node)
             || (ftd->GetKind() == FileTreeData::ftdkVirtualFolder) );
 }
 
-bool cbProject::NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to)
+bool cbProject::NodeDragged(wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to)
 {
     // what items did we drag?
-    if (!from.IsOk() || !to.IsOk())
+    if (!to.IsOk())
         return false;
 
     // if no data associated with it, disallow
-    FileTreeData* ftd1 = (FileTreeData*)tree->GetItemData(from);
-    FileTreeData* ftd2 = (FileTreeData*)tree->GetItemData(to);
-    if (!ftd1 || !ftd2)
+    FileTreeData* ftdTo = (FileTreeData*)tree->GetItemData(to);
+    if (!ftdTo)
         return false;
 
     // if not ours, disallow
-    if (ftd1->GetProject() != this || ftd2->GetProject() != this)
+    if (ftdTo->GetProject() != this)
         return false;
 
     // allow only if a file or vfolder was dragged on a file, another vfolder or the project itself
-    if ((ftd1->GetKind() != FileTreeData::ftdkFile &&
-        ftd1->GetKind() != FileTreeData::ftdkVirtualFolder) ||
-        (ftd2->GetKind() != FileTreeData::ftdkFile &&
-         ftd2->GetKind() != FileTreeData::ftdkVirtualFolder &&
-         ftd2->GetKind() != FileTreeData::ftdkProject))
+    if (   (ftdTo->GetKind() != FileTreeData::ftdkFile)
+        && (ftdTo->GetKind() != FileTreeData::ftdkVirtualFolder)
+        && (ftdTo->GetKind() != FileTreeData::ftdkProject) )
     {
         return false;
     }
 
-    // don't drag under the same parent
-    wxTreeItemId parent1 = ftd1->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(from) : from;
-    wxTreeItemId parent2 = ftd2->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(to) : to;
-    if (parent1 == parent2)
-        return false;
+    wxTreeItemId parentTo = ftdTo->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(to) : to;
 
-    // A special check for virtual folders.
-    if (ftd1->GetKind() == FileTreeData::ftdkVirtualFolder || ftd2->GetKind() == FileTreeData::ftdkVirtualFolder)
+    // do all the checking for all selected items first (no movement yet, just checking!)
+    size_t count = fromArray.Count();
+    for (size_t i = 0; i < count; i++)
     {
-        wxTreeItemId root = tree->GetRootItem();
-        wxTreeItemId toParent = tree->GetItemParent(to);
-        while (toParent != root)
-        {
-            if (toParent == from)
-                return false;
-            toParent = tree->GetItemParent(toParent);
-        }
-        if (!VirtualFolderDragged(tree, from, to))
-        {
+        wxTreeItemId from = fromArray[i];
+        if (!from.IsOk())
             return false;
+
+        // if no data associated with it, disallow
+        FileTreeData* ftdFrom = (FileTreeData*)tree->GetItemData(from);
+        if (!ftdFrom)
+            return false;
+
+        // if not ours, disallow
+        if (ftdFrom->GetProject() != this)
+            return false;
+
+        // allow only if a file or vfolder was dragged on a file, another vfolder or the project itself
+        if (   (ftdFrom->GetKind() != FileTreeData::ftdkFile)
+            && (ftdFrom->GetKind() != FileTreeData::ftdkVirtualFolder) )
+            return false;
+
+        // don't drag under the same parent
+        wxTreeItemId parentFrom = ftdFrom->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(from) : from;
+        if (parentFrom == parentTo)
+            return false;
+
+        // A special check for virtual folders.
+        if (   (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder)
+            || (ftdTo->GetKind()   == FileTreeData::ftdkVirtualFolder) )
+        {
+            wxTreeItemId root = tree->GetRootItem();
+            wxTreeItemId toParent = tree->GetItemParent(to);
+            while (toParent != root)
+            {
+                if (toParent == from)
+                    return false;
+                toParent = tree->GetItemParent(toParent);
+            }
+            if (!VirtualFolderDragged(tree, from, to))
+                return false;
         }
     }
 
-    // finally; make the move
-    CopyTreeNodeRecursively(tree, from, parent2);
-    // remove old node
-    tree->Delete(from);
+    // now that we have successfully done the checking, do the moving
+    for (size_t i = 0; i < count; i++)
+    {
+        wxTreeItemId from = fromArray[i];
+        // finally; make the move
+        CopyTreeNodeRecursively(tree, from, parentTo);
+        // remove old node
+        tree->Delete(from);
+    }
 
     SetModified(true);
 

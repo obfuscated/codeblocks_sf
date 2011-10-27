@@ -374,6 +374,17 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return A pointer to a wxTreeCtrl window.
           */
         wxTreeCtrl* GetTree(){ return m_pTree; }
+        /** Get the selection of the project manager's tree (GUI).
+          * This must be used instead of tree->GetSelection() because the tree
+          * has the wxTR_MULTIPLE style.
+          * This usually returns the first item in the selection list, but
+          * if there is a right-click popup menu then the user may have
+          * selected several items and right-clicked on one, so return the
+          * right-click item instead.
+          * of the first
+          * @return A wxTreeItemId of the selected tree item.
+          */
+        wxTreeItemId GetTreeSelection();
         /** Retrieve a pointer to the project manager's panel (GUI). This panel
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
@@ -516,7 +527,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         bool m_IsClosingProject;
         bool m_IsClosingWorkspace;
         wxString m_InitialDir;
-        wxTreeItemId m_DraggingItem;
+        wxArrayTreeItemIds m_DraggingSelection;
+        wxTreeItemId m_RightClickItem;
         bool m_isCheckingForExternallyModifiedProjects;
         bool m_CanSendWorkspaceChanged;
 

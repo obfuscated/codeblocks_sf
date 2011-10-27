@@ -379,10 +379,9 @@ void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
 //    if (!CompilerFactory::GetCompiler(compilerIdx))
 //        compilerIdx = 0;
 //    m_Options = CompilerFactory::GetCompiler(compilerIdx)->GetOptions();
-    if(compilerIdx != -1)
-    {
+    if (compilerIdx != -1)
         cmb->SetSelection(compilerIdx);
-    }
+
 //    m_CurrentCompilerIdx = compilerIdx;
 } // DoFillCompilerSets
 

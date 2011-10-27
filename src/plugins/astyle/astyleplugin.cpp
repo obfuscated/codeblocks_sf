@@ -132,7 +132,7 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
     if ( !tree )
         return;
 
-    wxTreeItemId treeItem =  tree->GetSelection();
+    wxTreeItemId treeItem =  manager->GetTreeSelection();
 
     if ( !treeItem.IsOk() )
         return;

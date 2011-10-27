@@ -557,12 +557,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         bool CanDragNode(wxTreeCtrl* tree, wxTreeItemId node);
 
-        /** Notify that a specific tree node has been dragged.
+        /** Notify that an array of tree nodes has been dragged.
           *
           * @note Called by ProjectManager.
           * @return True if succeeded, false if not.
           */
-        bool NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
+        bool NodeDragged(wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to);
 
         /** Notify that a virtual folder has been added.
           * @return True if it is allowed, false if not. */
