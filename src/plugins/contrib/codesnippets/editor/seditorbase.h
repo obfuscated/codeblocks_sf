@@ -104,7 +104,7 @@ class SEditorBase : public wxPanel
         /** @brief Close this editor.
           *
           * The default implementation closes (destroys) the editor and returns true.
-          * @return True if editor closed succesfully
+          * @return True if editor closed successfully
           */
         virtual bool Close();
 

@@ -98,7 +98,7 @@ class ScbEditor : public SEditorBase
         SplitType GetSplitType() const { return m_SplitType; }
 
         /** Returns true if editor is OK, i.e. constructor was called with a filename
-          * parameter and file was opened succesfully. If it returns false, you
+          * parameter and file was opened successfully. If it returns false, you
           * should delete the editor...
           */
         bool IsOK() const { return m_IsOK; }

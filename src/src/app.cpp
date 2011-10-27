@@ -1113,9 +1113,9 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_Splash = !parser.Found(_T("no-splash-screen"));
                     m_HasDebugLog = parser.Found(_T("debug-log"));
                     m_CrashHandler = !parser.Found(_T("no-crash-handler"));
-                    
+
                     wxLog::EnableLogging(parser.Found(_T("verbose")));
-                    
+
                     if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))
                     {

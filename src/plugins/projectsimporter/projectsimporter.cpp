@@ -47,9 +47,7 @@ ProjectsImporter::ProjectsImporter()
 {
     //ctor
     if (!Manager::LoadResource(_T("projectsimporter.zip")))
-    {
         NotifyMissingFile(_T("projectsimporter.zip"));
-    }
 }
 
 ProjectsImporter::~ProjectsImporter()
@@ -79,16 +77,11 @@ cbConfigurationPanel* ProjectsImporter::GetConfigurationPanel(wxWindow* parent)
 void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
 {
     if (!IsAttached() || !menuBar)
-    {
         return;
-    }
 
     m_Menu = Manager::Get()->LoadMenu(_T("project_import_menu"), false);
-
     if (!m_Menu)
-    {
         return;
-    }
 
     wxMenu* fileMenu = menuBar->GetMenu(0);
     if (fileMenu)
@@ -99,13 +92,10 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
         wxMenuItem* recentFileItem = fileMenu->FindItem(menuId);
         id = menuItems.IndexOf(recentFileItem);
         if (id == wxNOT_FOUND)
-        {
             id = 7;
-        }
         else
-        {
             ++id;
-        }
+
         // The position is hard-coded to "Recent Files" menu. Please adjust it if necessary
         fileMenu->Insert(++id, wxNewId(), _("&Import project"), m_Menu);
         fileMenu->InsertSeparator(++id);
@@ -115,11 +105,11 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
 bool ProjectsImporter::CanHandleFile(const wxString& filename) const
 {
     const FileType ft = FileTypeOf(filename);
-    return ft == ftDevCppProject ||
-           ft == ftMSVC6Project ||
-           ft == ftMSVC6Workspace ||
-           ft == ftMSVC7Project ||
-           ft == ftMSVC7Workspace;
+    return (   ft == ftDevCppProject
+            || ft == ftMSVC6Project
+            || ft == ftMSVC6Workspace
+            || ft == ftMSVC7Project
+            || ft == ftMSVC7Workspace );
 }
 
 int ProjectsImporter::OpenFile(const wxString& filename)
@@ -217,7 +207,6 @@ int ProjectsImporter::LoadProject(const wxString& filename)
         {
             prj->CalculateCommonTopLevelPath();
             prj->Save(); // Save it now to avoid project file opening error
-//            prj->SetModified(true);
 
             Manager::Get()->GetProjectManager()->EndLoadingProject(prj);
             if (!Manager::Get()->GetProjectManager()->IsLoadingWorkspace())
@@ -291,9 +280,8 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
     if (pWsp->Open(filename, Title))
     {
         if (!Title.IsEmpty())
-        {
             wksp->SetTitle(Title);
-        }
+
         wksp->SetModified(true);
     }
     else

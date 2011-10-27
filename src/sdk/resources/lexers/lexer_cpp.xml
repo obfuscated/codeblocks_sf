@@ -84,9 +84,9 @@
                 <Style name="wxSmith-generated code"
                         index="99"
                         fg="64,64,128"
-                                                bg="255,255,255"
-                                                italics="1"/>
-                                <Keywords>
+                        bg="255,255,255"
+                        italics="1"/>
+                <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
                             value="_Char16_t _Char32_t align_union alignof
