@@ -280,7 +280,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
     else if (m_pProject)
         compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
-    if((m_pTarget || m_pProject) && compilerIdx == -1)
+    if ((m_pTarget || m_pProject) && compilerIdx == -1)
     { // unknown user compiler
         // similar code can be found @ OnTreeSelectionChange()
         // see there for more info : duplicate code now, since here we still need
@@ -316,10 +316,8 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         else
         { // the user cancelled and wants to keep the compiler
             DoFillCompilerSets(compilerIdx);
-            if(nb)
-            {
+            if (nb)
                 nb->Disable();
-            }
         }
     }
     else
@@ -346,7 +344,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     this->SetSize(-1, -1, 0, 0);
     // disable some elements, if project is using custom makefile
     // we do this after the layout is done, so the resulting dialog has always the same size
-    if(project && project->IsMakefileCustom())
+    if (project && project->IsMakefileCustom())
     {
         nb->RemovePage(2); // remove "Search directories" page
         nb->RemovePage(1); // remove "Linker settings" page
@@ -355,6 +353,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "tabLinker", wxPanel)->Show(false);
         XRCCTRL(*this, "tabDirs", wxPanel)->Show(false);
     }
+    Fit();
 } // constructor
 
 CompilerOptionsDlg::~CompilerOptionsDlg()
@@ -538,7 +537,6 @@ void CompilerOptionsDlg::DoFillTree()
     tc->DeleteAllItems();
 
     wxTreeItemId root;
-    ScopeTreeData* selected = 0L;
     wxTreeItemId selectedItem;
 
     if (!m_pProject)
@@ -554,25 +552,20 @@ void CompilerOptionsDlg::DoFillTree()
         ScopeTreeData* data = new ScopeTreeData(m_pProject, 0L);
         root = tc->AddRoot(m_pProject->GetTitle(), -1, -1, data);
         selectedItem = root;
-        selected = data;
         for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
         {
             ProjectBuildTarget* target = m_pProject->GetBuildTarget(x);
             data = new ScopeTreeData(m_pProject, target);
             wxTreeItemId targetItem = tc->AppendItem(root, target->GetTitle(), -1, -1, data);
             if (target == m_pTarget)
-            {
-                selected = data;
                 selectedItem = targetItem;
-            }
         }
     }
     // normally the target should be found in the targets of the project
     // in case it is not, we will reset m_pTarget to 0 (in sync with tree selection)
-    if(selectedItem == root)
-    {
+    if (selectedItem == root)
         m_pTarget = 0;
-    }
+
     tc->Expand(root);
     tc->SelectItem(selectedItem);
     m_BuildingTree = false;
@@ -1023,10 +1016,10 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
 void CompilerOptionsDlg::DoSaveVars()
 {
     CompileOptionsBase* pBase = GetVarsOwner();
-    if(pBase)
+    if (pBase)
     {
         // let's process all the stored CustomVarActions
-        for(unsigned int idxAction = 0; idxAction < m_CustomVarActions.size(); ++idxAction)
+        for (unsigned int idxAction = 0; idxAction < m_CustomVarActions.size(); ++idxAction)
         {
             CustomVarAction Action = m_CustomVarActions[idxAction];
             switch(Action.m_Action)
@@ -1039,7 +1032,7 @@ void CompilerOptionsDlg::DoSaveVars()
                     // first split up the KeyValue
                     wxString NewKey = Action.m_KeyValue.BeforeFirst(_T('=')).Trim(true).Trim(false);
                     wxString NewValue = Action.m_KeyValue.AfterFirst(_T('=')).Trim(true).Trim(false);
-                    if(Action.m_Key != NewKey)
+                    if (Action.m_Key != NewKey)
                     {   // the key name changed
                         pBase->UnsetVar(Action.m_Key);
                     }
@@ -1068,9 +1061,9 @@ void CompilerOptionsDlg::ProjectTargetCompilerAdjust()
 {   // note this can also be called when on global compiler level, won't do anything (well reset a member which has
     // no use in this case)
     // check if the compilerID needs to be updated
-    if(m_pTarget)
+    if (m_pTarget)
     { // target was the (tree) selection
-        if(!m_NewProjectOrTargetCompilerId.IsEmpty() && m_pTarget->GetCompilerID() != m_NewProjectOrTargetCompilerId)
+        if (!m_NewProjectOrTargetCompilerId.IsEmpty() && m_pTarget->GetCompilerID() != m_NewProjectOrTargetCompilerId)
         {
             m_pTarget->SetCompilerID(m_NewProjectOrTargetCompilerId);
             cbMessageBox(_("You changed the compiler used for this target.\n"
@@ -1080,9 +1073,9 @@ void CompilerOptionsDlg::ProjectTargetCompilerAdjust()
                             wxICON_EXCLAMATION);
         }
     }
-    else if(m_pProject)
+    else if (m_pProject)
     {   // the project was the (tree) selection
-        if(!m_NewProjectOrTargetCompilerId.IsEmpty() && m_pProject->GetCompilerID() != m_NewProjectOrTargetCompilerId)
+        if (!m_NewProjectOrTargetCompilerId.IsEmpty() && m_pProject->GetCompilerID() != m_NewProjectOrTargetCompilerId)
         { // should be project then
             m_pProject->SetCompilerID(m_NewProjectOrTargetCompilerId);
             UpdateCompilerForTargets(m_CurrentCompilerIdx);
@@ -1171,7 +1164,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
         }
         else
         { // the user cancelled and wants to keep the compiler
-            if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+            if (wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
             {
                 nb->Disable();
             }
@@ -1185,7 +1178,7 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
         return;
     wxTreeCtrl* tc = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     ScopeTreeData* data = (ScopeTreeData*)tc->GetItemData(event.GetOldItem());
-    if(data && m_bDirty)
+    if (data && m_bDirty)
     {   // data : should always be the case, since on global compiler level, there's no tree
         // when changes are made prompt the user if these changes should be applied
         // YES -> do the changes
@@ -1224,7 +1217,7 @@ void CompilerOptionsDlg::OnCompilerChanged(wxCommandEvent& /*event*/)
     // NO -> no changes, just switch
     // CANCEL : don't switch
     bool bChanged = true;
-    if(m_bDirty)
+    if (m_bDirty)
     {
         switch(cbMessageBox(_("You have changed some settings. Do you want these settings saved ?\n\n"
                         "Yes    : will apply the changes\n"
@@ -1246,10 +1239,10 @@ void CompilerOptionsDlg::OnCompilerChanged(wxCommandEvent& /*event*/)
                 break;
         } // end switch
     }
-    if(bChanged)
+    if (bChanged)
     {
         CompilerChanged();
-        if(m_pProject)
+        if (m_pProject)
         {   // in case of project/target --> dirty
             m_bDirty = true;
         }
@@ -1263,7 +1256,7 @@ void CompilerOptionsDlg::CompilerChanged()
     // so that on "SAVE" time we can adjust the project/target with it's new compiler
     // SAVE time for this particular setting means (Apply or TreeSelection change
     // not compiler change since we could (re)change the compiler of that project/target
-    if(m_pProject)
+    if (m_pProject)
     {
         m_NewProjectOrTargetCompilerId = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetID();
     }
@@ -1616,7 +1609,7 @@ void CompilerOptionsDlg::OnSetDefaultCompilerClick(wxCommandEvent& /*event*/)
 
 void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& /*event*/)
 {
-    if(m_bDirty)
+    if (m_bDirty)
     {   // changes had been made to the current selected compiler
         switch(cbMessageBox(_("You have changed some settings. Do you want these settings saved ?\n\n"
                         "Yes    : will apply the changes\n"
@@ -1675,7 +1668,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& /*event*/)
             cbMessageBox(_("The new compiler has been added! Don't forget to update the \"Toolchain executables\" page..."));
         }
     }
-    if(m_bDirty)
+    if (m_bDirty)
     {   // something went wrong -> reload current settings ommitting the NO-ed changes
         m_bDirty = false;
         CompilerChanged();
@@ -2155,7 +2148,7 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& /*event*/)
         PlaceWindow(&dlg);
         dlg.ShowModal();
         // check if dirty
-        if(dlg.IsDirty())
+        if (dlg.IsDirty())
         {
 //            m_bDirty = true;  // TO DO : Activate when implemented in the adv dialog
         }
@@ -2315,7 +2308,7 @@ void CompilerOptionsDlg::OnApply()
 void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
 {
     wxWindow* focused = wxWindow::FindFocus();
-    if(!focused)
+    if (!focused)
     {
         event.Skip();
         return;
@@ -2331,11 +2324,11 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     const wxChar* str_vars[4] = { _T("btnEditVar"),  _T("btnAddVar"),  _T("btnDeleteVar"),  _T("btnClearVar")   };
     const wxChar* str_xtra[4] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete"),_T("btnExtraClear") };
 
-    if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
+    if (keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
         { myidx = 0; } // Edit
-    else if(keycode == WXK_INSERT || keycode == WXK_NUMPAD_INSERT)
+    else if (keycode == WXK_INSERT || keycode == WXK_NUMPAD_INSERT)
         { myidx = 1; } // Add
-    else if(keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE)
+    else if (keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE)
         { myidx = 2; } // Delete
     else
     {
@@ -2343,19 +2336,19 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         return;
     }
 
-    if(     id == XRCID("lstLibs")) // Link libraries
+    if (     id == XRCID("lstLibs")) // Link libraries
         { myid =  wxXmlResource::GetXRCID(str_libs[myidx]); }
-    else if(id == XRCID("lstIncludeDirs") || id == XRCID("lstLibDirs") || id == XRCID("lstResDirs")) // Directories
+    else if (id == XRCID("lstIncludeDirs") || id == XRCID("lstLibDirs") || id == XRCID("lstResDirs")) // Directories
         { myid =  wxXmlResource::GetXRCID(str_dirs[myidx]); }
-    else if(id == XRCID("lstVars")) // Custom Vars
+    else if (id == XRCID("lstVars")) // Custom Vars
         { myid =  wxXmlResource::GetXRCID(str_vars[myidx]); }
-    else if(id == XRCID("lstExtraPaths")) // Extra Paths
+    else if (id == XRCID("lstExtraPaths")) // Extra Paths
         { myid =  wxXmlResource::GetXRCID(str_xtra[myidx]); }
     else
         myid = 0;
 
     // Generate the event
-    if(myid == 0)
+    if (myid == 0)
         event.Skip();
     else
     {
