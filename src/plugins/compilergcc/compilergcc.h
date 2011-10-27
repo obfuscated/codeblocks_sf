@@ -165,7 +165,7 @@ class CompilerGCC : public cbCompilerPlugin
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectLoaded(CodeBlocksEvent& event);
         void OnProjectUnloaded(CodeBlocksEvent& event);
-        /*void OnProjectPopupMenu(wxNotifyEvent& event);*/
+        void OnCompileFileRequest(CodeBlocksEvent& event);
         void OnGCCOutput(CodeBlocksEvent& event);
         void OnGCCError(CodeBlocksEvent& event);
         void OnGCCTerminated(CodeBlocksEvent& event);
@@ -186,8 +186,11 @@ class CompilerGCC : public cbCompilerPlugin
         ProjectBuildTarget* DoAskForTarget();
         int DoGUIAskForTarget();
         void ClearLog();
+        void PrepareCompileFile(wxFileName& file);
+        void PrepareCompileFilePM(wxFileName& file);
         bool CheckProject();
         void AskForActiveProject();
+        void StartCompileFile(wxFileName file);
         void DoGotoNextError();
         void DoGotoPreviousError();
         void DoClearErrors();

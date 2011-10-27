@@ -481,6 +481,8 @@ void CompilerGCC::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,             new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,            new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectUnloaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_TARGETS_MODIFIED, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
+
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILE_FILE_REQUEST,     new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnCompileFileRequest));
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)
@@ -926,16 +928,46 @@ void CompilerGCC::SwitchCompiler(const wxString& id)
     SetupEnvironment();
 }
 
-void CompilerGCC::AskForActiveProject()
+void CompilerGCC::PrepareCompileFilePM(wxFileName& file)
 {
-    m_Project = m_pBuildingProject
-                ? m_pBuildingProject
-                : Manager::Get()->GetProjectManager()->GetActiveProject();
+    // we 're called from a menu in ProjectManager
+    // let's check the selected project...
+    FileTreeData* ftd = DoSwitchProjectTemporarily();
+    ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
+    if (!pf)
+        return;
+
+    file = pf->file;
+    CheckProject();
+}
+
+void CompilerGCC::PrepareCompileFile(wxFileName& file)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        // make sure it is saved
+        ed->Save();
+        file.Assign(ed->GetFilename());
+    }
+
+    // Now activate the project this file belongs to
+    ProjectFile* pf = ed->GetProjectFile();
+    if (pf)
+    {
+        cbProject* CurProject = pf->GetParentProject();
+        if (CurProject)
+        {
+            Manager::Get()->GetProjectManager()->SetProject(CurProject, true);
+            CheckProject();
+        }
+    }
 }
 
 bool CompilerGCC::CheckProject()
 {
     AskForActiveProject();
+
     // switch compiler for the project (if needed)
     if (m_Project && m_Project->GetCompilerID() != m_CompilerId)
         SwitchCompiler(m_Project->GetCompilerID());
@@ -943,12 +975,35 @@ bool CompilerGCC::CheckProject()
     else if (!m_Project && m_CompilerId != CompilerFactory::GetDefaultCompilerID())
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 
-    return m_Project;
+    return (m_Project != 0L);
+}
+
+void CompilerGCC::AskForActiveProject()
+{
+    m_Project = m_pBuildingProject
+                ? m_pBuildingProject
+                : Manager::Get()->GetProjectManager()->GetActiveProject();
+}
+
+void CompilerGCC::StartCompileFile(wxFileName file)
+{
+    if (m_Project)
+    {
+        if (!m_Project->SaveAllFiles())
+            Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
+
+        file.MakeRelativeTo(m_Project->GetBasePath());
+    }
+
+    wxString fname = file.GetFullPath();
+    if (!fname.IsEmpty())
+        CompileFile( UnixFilename(fname) );
 }
 
 wxString CompilerGCC::ProjectMakefile()
 {
     AskForActiveProject();
+
     if (!m_Project)
         return wxEmptyString;
 
@@ -2933,14 +2988,13 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
-//        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if (!pf)]-----"));
         Manager::Get()->GetMacrosManager()->Reset();
 
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
         if (compiler)
             compiler->Init(0);
 
-        // TODO (Morten#5#): Why is m_CompilerID iused for initialisation, but the default compiler for compiling (DirectCommands)???
+        // TODO (Morten#5#): Why is m_CompilerID used for initialisation, but the default compiler for compiling (DirectCommands)???
         // get compile commands for file (always linked as console-executable)
         DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
         wxArrayString compile = dc.GetCompileSingleFileCommand(file);
@@ -3037,52 +3091,11 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     // TODO (Rick#1#): Clean the file so it will always recompile
     wxFileName file;
     if (event.GetId() == idMenuCompileFileFromProjectManager)
-    {
-        // we 're called from a menu in ProjectManager
-        // let's check the selected project...
-        FileTreeData* ftd = DoSwitchProjectTemporarily();
-        ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
-        if (!pf)
-            return;
-
-        file = pf->file;
-        CheckProject();
-    }
+        PrepareCompileFilePM(file);
     else
-    {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-        {
-            // make sure it is saved
-            ed->Save();
-            file.Assign(ed->GetFilename());
-        }
-        // Now activate the project this file belongs to
-        ProjectFile* pf = ed->GetProjectFile();
-        if (pf)
-        {
-            cbProject* CurProject = pf->GetParentProject();
-            if (CurProject)
-            {
-                Manager::Get()->GetProjectManager()->SetProject(CurProject, true);
-                CheckProject();
-            }
-        }
-    }
+        PrepareCompileFile(file);
 
-    if (m_Project)
-    {
-        if (!m_Project->SaveAllFiles())
-            Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
-
-        file.MakeRelativeTo(m_Project->GetBasePath());
-    }
-#ifdef ALWAYS_USE_MAKEFILE
-    file.SetExt(OBJECT_EXT);
-#endif
-    wxString fname = file.GetFullPath();
-    if (!fname.IsEmpty())
-        CompileFile(UnixFilename(fname));
+    StartCompileFile(file);
 }
 
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
@@ -3340,15 +3353,35 @@ void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
         m_Project = 0;
 }
 
+void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
+{
+    cbProject*  prj = event.GetProject();
+    EditorBase* eb  = event.GetEditor();
+    if (prj && eb)
+    {
+        const wxString& ed_filename = eb->GetFilename();
+        wxFileName wx_filename;
+        wx_filename.Assign(ed_filename);
+        wx_filename.MakeRelativeTo( prj->GetBasePath() );
+
+        wxString filepath = wx_filename.GetFullPath();
+        if (!filepath.IsEmpty())
+        {
+            Manager::Get()->GetProjectManager()->SetProject(prj, false);
+            CompileFile( UnixFilename(filepath) );
+        }
+    }
+}
+
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 {
     wxString msg = event.GetString();
     if (!msg.IsEmpty() &&
         !msg.Matches(_T("# ??*")))  // gcc 3.4 started displaying a line like this filter
-                                // when calculating dependencies. Until I check out
-                                // why this happens (and if there is a switch to
-                                // turn it off), I put this condition here to avoid
-                                // displaying it...
+                                    // when calculating dependencies. Until I check out
+                                    // why this happens (and if there is a switch to
+                                    // turn it off), I put this condition here to avoid
+                                    // displaying it...
     {
         AddOutputLine(msg);
     }
