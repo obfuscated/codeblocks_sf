@@ -110,7 +110,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-D__WX__" />
-					<Add option="-DWINVER=0x0400" />
+					<Add option="-DWINVER=0x0501" />
 					<Add option="-DSCI_LEXER" />
 					<Add option="-DLINK_LEXERS" />
 					<Add option="-DWXMAKINGDLL_SCI" />
@@ -125,6 +125,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="gdi32" />
 				</Linker>
 			</Target>
@@ -148,6 +149,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 				</Linker>
 			</Target>
 			<Target title="sdk">
@@ -160,6 +162,7 @@
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-Woverloaded-virtual" />
 					<Add option="-DEXPORT_LIB" />
 					<Add option="-DEXPORT_EVENTS" />
 					<Add option="-DWXMAKINGDLL_PROPGRID" />
@@ -178,6 +181,7 @@
 					<Add option="-Wl,--export-all-symbols" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="shfolder" />
 					<Add library="txml" />
 					<Add library="wxscintilla_cb" />
@@ -214,6 +218,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="wxpropgrid" />
 					<Add library="shfolder" />
@@ -254,6 +259,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -278,6 +284,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -301,6 +308,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -316,6 +324,7 @@
 					<Add option="-DDEPSLIB_WINDOWS" />
 				</Compiler>
 				<Linker>
+					<Add option="-r" />
 					<Add option="-mthreads" />
 				</Linker>
 			</Target>
@@ -339,6 +348,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -366,6 +376,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -390,6 +401,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -413,6 +425,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -436,6 +449,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -459,6 +473,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -483,6 +498,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -508,6 +524,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -532,6 +549,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -555,6 +573,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
@@ -600,7 +619,6 @@
 			<Add directory="$(#WX)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="-mthreads" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
