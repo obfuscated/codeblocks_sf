@@ -2709,6 +2709,11 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
+    // Fire-up event
+    CodeBlocksEvent evt(cbEVT_COMPLETE_CODE, 0, 0, 0, this);
+    Manager::Get()->ProcessEvent(evt);
+    Manager::Yield();
+
     if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_code_completion"), true))
         return;
     if (IsAttached() && m_InitDone)
@@ -2718,6 +2723,11 @@ void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 
 void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
 {
+    // Fire-up event
+    CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP, 0, 0, 0, this);
+    Manager::Get()->ProcessEvent(evt);
+    Manager::Yield();
+
     if (IsAttached() && m_InitDone)
         ShowCallTip();
     event.Skip();

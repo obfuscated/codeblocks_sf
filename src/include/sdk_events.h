@@ -412,4 +412,10 @@ extern EVTIMPORT const wxEventType cbEVT_UNLOCK_LOG_MANAGER;
 extern EVTIMPORT const wxEventType cbEVT_CBAUIBOOK_LEFT_DCLICK;
 #define EVT_CBAUIBOOK_LEFT_DCLICK(winid, fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_CBAUIBOOK_LEFT_DCLICK, winid, -1, (wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)&fn, (wxObject *) NULL ),
 
+// code-completion related events (CodeCompletion plugin usually fires them)
+extern EVTIMPORT const wxEventType cbEVT_COMPLETE_CODE;
+#define EVT_COMPLETE_CODE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPLETE_CODE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_SHOW_CALL_TIP;
+#define EVT_SHOW_CALL_TIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SHOW_CALL_TIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+
 #endif // SDK_EVENTS_H
