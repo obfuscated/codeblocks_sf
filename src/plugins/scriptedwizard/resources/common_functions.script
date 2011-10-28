@@ -152,6 +152,14 @@ function OptimizationsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-o"));
     }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")))
+    {
+        base.AddCompilerOption(_T("/O2"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin")))
+    {
+        base.AddCompilerOption(_T("-O2"));
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup optimisation flags for this compiler.\n"));
