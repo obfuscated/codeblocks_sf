@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
 <object class="wxToolBarAddOn" name="main_toolbar">
 <bitmapsize platform="mac">32,32</bitmapsize>
