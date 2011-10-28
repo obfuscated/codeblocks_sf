@@ -116,7 +116,10 @@ void ProjectBuildTarget::SetCreateStaticLib(bool createIt)
 
 bool ProjectBuildTarget::GetUseConsoleRunner() const
 {
-    return GetTargetType() == ttConsoleOnly ? m_UseConsoleRunner : false;
+    if (GetTargetType() == ttConsoleOnly || GetRunHostApplicationInTerminal())
+        return m_UseConsoleRunner;
+
+    return false;
 }
 
 void ProjectBuildTarget::SetUseConsoleRunner(bool useIt)

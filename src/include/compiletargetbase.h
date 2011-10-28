@@ -139,6 +139,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
         virtual const wxString& GetHostApplication() const; ///< Read the target's host application
         virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
+        virtual bool GetRunHostApplicationInTerminal() const; ///< Get the flag if the host app should be run in terminal
+        virtual void SetRunHostApplicationInTerminal(bool in_terminal); ///! Set the flag if the host app should be run in terminal
         virtual void SetCompilerID(const wxString& id); ///< Set the target's compiler
         virtual const wxString& GetCompilerID() const { return m_CompilerId; } ///< Read the target's compiler
         virtual wxString GetMakeCommandFor(MakeCommand cmd) const { return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
@@ -162,6 +164,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_CompilerId;
         wxString m_MakeCommands[mcLast];
         bool m_MakeCommandsModified;
+        bool m_RunHostApplicationInTerminal;
         TargetFilenameGenerationPolicy m_PrefixGenerationPolicy;
         TargetFilenameGenerationPolicy m_ExtensionGenerationPolicy;
     private:

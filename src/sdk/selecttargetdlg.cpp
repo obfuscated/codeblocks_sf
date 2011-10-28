@@ -72,6 +72,7 @@ void SelectTargetDlg::UpdateSelected()
         XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(name == m_pProject->GetDefaultExecuteTarget());
 		XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(target->GetExecutionParameters());
 		XRCCTRL(*this, "txtHostApp", wxTextCtrl)->SetValue(target->GetHostApplication());
+		XRCCTRL(*this, "chkHostInTerminal", wxCheckBox)->SetValue(target->GetRunHostApplicationInTerminal());
 	}
 	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(target);
 } // end of UpdateSelected
@@ -153,6 +154,7 @@ void SelectTargetDlg::EndModal(int retCode)
             }
             target->SetExecutionParameters(execution_parameters);
             target->SetHostApplication(XRCCTRL(*this, "txtHostApp", wxTextCtrl)->GetValue());
+            target->SetRunHostApplicationInTerminal(XRCCTRL(*this, "chkHostInTerminal", wxCheckBox)->IsChecked());
         }
     }
 	wxScrollingDialog::EndModal(retCode);

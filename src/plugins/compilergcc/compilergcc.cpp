@@ -1857,7 +1857,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
-    if (target->GetTargetType() == ttConsoleOnly)
+    if (target->GetUseConsoleRunner())
     {
         if (!platform::windows)
         {
@@ -1883,22 +1883,18 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             }
         }
 
-        // should console runner be used?
-        if (target->GetUseConsoleRunner())
+        if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
         {
-            if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-            {
-                command << crunnStr << strSPACE;
+            command << crunnStr << strSPACE;
 
-                if (!platform::windows)
-                {
-                    // set LD_LIBRARY_PATH
-                    command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
-                    // we have to quote the string, just escape the spaces does not work
-                    wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
-                    QuoteStringIfNeeded(strLinkerPath);
-                    command << strLinkerPath << strSPACE;
-                }
+            if (!platform::windows)
+            {
+                // set LD_LIBRARY_PATH
+                command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
+                // we have to quote the string, just escape the spaces does not work
+                wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
+                QuoteStringIfNeeded(strLinkerPath);
+                command << strLinkerPath << strSPACE;
             }
         }
     }

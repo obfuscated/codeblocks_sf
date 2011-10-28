@@ -22,6 +22,7 @@
 
 CompileTargetBase::CompileTargetBase()
     : m_TargetType(ttExecutable),
+    m_RunHostApplicationInTerminal(false),
     m_PrefixGenerationPolicy(tgfpPlatformDefault),
     m_ExtensionGenerationPolicy(tgfpPlatformDefault)
 {
@@ -511,6 +512,19 @@ void CompileTargetBase::SetHostApplication(const wxString& app)
         return;
 
     m_HostApplication = app;
+    SetModified(true);
+}
+
+bool CompileTargetBase::GetRunHostApplicationInTerminal() const
+{
+    return m_RunHostApplicationInTerminal;
+}
+
+void CompileTargetBase::SetRunHostApplicationInTerminal(bool in_terminal)
+{
+    if (m_RunHostApplicationInTerminal == in_terminal)
+        return;
+    m_RunHostApplicationInTerminal = in_terminal;
     SetModified(true);
 }
 
