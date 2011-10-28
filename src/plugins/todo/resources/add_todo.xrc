@@ -131,6 +131,7 @@
 				<item>Doxygen C++ style comment</item>
                 <item>Compiler warning</item>
                 <item>Compiler error</item>
+                <item>Fortran comment</item>
               </content>
               <selection>0</selection>
             </object>

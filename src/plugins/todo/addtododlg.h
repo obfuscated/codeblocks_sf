@@ -28,7 +28,8 @@ enum ToDoCommentType
     tdctDoxygenC, // Doxygen C style
     tdctDoxygenCPP, // Doxygen CPP style
     tdctWarning, // compiler warning
-    tdctError    // compiler error
+    tdctError,   // compiler error
+    tdctFortran  // Fortran style
 };
 
 class AddTodoDlg : public wxScrollingDialog

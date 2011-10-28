@@ -391,6 +391,9 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     // start with the comment
     switch(CmtType)
     {
+        case tdctFortran:
+            buffer << _T("!// ");
+            break;
         case tdctCpp:
             buffer << _T("// ");
             break;
@@ -444,9 +447,9 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         switch (control->GetEOLMode())
         {
             // NOTE: maybe this switch, should make it in the SDK (maybe as cbStyledTextCtrl::GetEOLString())???
-            case wxSCI_EOL_CR:   buffer << _T("\n");   break;
+            case wxSCI_EOL_CR: buffer << _T("\r"); break;
             case wxSCI_EOL_CRLF: buffer << _T("\r\n"); break;
-            case wxSCI_EOL_LF:   buffer << _T("\r");   break;
+            case wxSCI_EOL_LF: buffer << _T("\n"); break;
         }
     }
 
