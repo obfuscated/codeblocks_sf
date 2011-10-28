@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
     <object class="wxPanel" name="ID_EditorManagerPanel">
         <object class="wxBoxSizer">
@@ -9,7 +9,7 @@
                     <bitmap>closebutton.png</bitmap>
                 </object>
                 <option>0</option>
-            </object> 
+            </object>
         </object>
-    </object> 
+    </object>
 </resource>

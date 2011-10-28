@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxScrollingDialog" name="dlgConfirmReplace">
     <title>Confirm replace</title>
@@ -6,13 +6,11 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText" name="lblMessage">
-          <label>Replace this occurrence?
-
-</label>
+          <label>Replace this occurrence?</label>
         </object>
         <flag>wxALL|wxGROW</flag>
         <border>8</border>
-		<option>1</option>
+        <option>1</option>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
