@@ -25,6 +25,7 @@ class cbEditor;
 class EditorBase;
 class cbProject;
 class ClassBrowser;
+class Compiler;
 class Token;
 
 WX_DECLARE_HASH_MAP(cbProject*, ParserBase*, wxPointerHash, wxPointerEqual, ParsersMap);
