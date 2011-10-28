@@ -238,6 +238,10 @@ FileType FileTypeOf(const wxString& filename)
         ext.IsSameAs(FileFilters::F77_EXT) ||
         ext.IsSameAs(FileFilters::F90_EXT) ||
         ext.IsSameAs(FileFilters::F95_EXT) ||
+        ext.IsSameAs(FileFilters::FOR_EXT) ||
+        ext.IsSameAs(FileFilters::FPP_EXT) ||
+        ext.IsSameAs(FileFilters::F03_EXT) ||
+        ext.IsSameAs(FileFilters::F08_EXT) ||
         ext.IsSameAs(FileFilters::JAVA_EXT)
        )
         return ftSource;

@@ -71,7 +71,7 @@ void FilesGroupsAndMasks::SetDefault(bool do_clear)
     SetFileMasks(group, _T("*.d") );
 
     group = AddGroup(_("Fortran Sources"));
-    SetFileMasks(group, _T("*.f;*.f77;*.f90;*.f95") );
+    SetFileMasks(group, _T("*.f;*.f77;*.for;*.fpp;*.f90;*.f95;*.f03;*.f08") );
 
     group = AddGroup(_("Java Sources"));
     SetFileMasks(group, _T("*.java") );
