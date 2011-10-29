@@ -1902,7 +1902,10 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
         // toggle it one time so that it is toggled back by wx
         m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
     }
-    else if (ftd && (ftd->GetKind() == FileTreeData::ftdkVirtualGroup || ftd->GetKind() == FileTreeData::ftdkFolder))
+    else if (   ftd
+             && (   (ftd->GetKind() == FileTreeData::ftdkVirtualGroup)
+                 || (ftd->GetKind() == FileTreeData::ftdkVirtualFolder)
+                 || (ftd->GetKind() == FileTreeData::ftdkFolder) ) )
         m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
     else if (!ftd && m_pWorkspace)
         m_pTree->IsExpanded(m_TreeRoot) ? m_pTree->Collapse(m_TreeRoot) : m_pTree->Expand(m_TreeRoot);
