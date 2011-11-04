@@ -2893,6 +2893,11 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
         if (m_pProjectFile && tree)
         {
+            //first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
+            wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
+            if (sel.IsOk())
+                tree->SelectItem(sel, false);
+            
             const wxTreeItemId &itemId = m_pProjectFile->GetTreeItemId();
             if (itemId.IsOk())
             {

@@ -522,6 +522,8 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
     if (m_pActiveProject)
         m_pTree->EnsureVisible(m_pActiveProject->GetProjectNode());
 
+    m_pTree->Refresh();
+    
     CodeBlocksEvent event(cbEVT_PROJECT_ACTIVATE);
     event.SetProject(m_pActiveProject);
     Manager::Get()->GetPluginManager()->NotifyPlugins(event);
@@ -2395,6 +2397,7 @@ void ProjectManager::OnCloseFile(wxCommandEvent& WXUNUSED(event))
     wxTreeItemId sel = GetTreeSelection();
     if (!sel.IsOk())
         return;
+
     if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
         if (cbProject* Project = ftd->GetProject())
