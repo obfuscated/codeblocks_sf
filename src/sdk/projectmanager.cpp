@@ -2412,7 +2412,7 @@ void ProjectManager::OnOpenFile(wxCommandEvent& WXUNUSED(event))
 
 void ProjectManager::OnOpenFolderFiles(wxCommandEvent& event)
 {
-    wxTreeItemId sel = m_pTree->GetSelection();
+    wxTreeItemId sel = GetTreeSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     if (!ftd)
         return;

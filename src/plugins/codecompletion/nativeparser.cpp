@@ -1425,7 +1425,7 @@ void NativeParser::ReparseSelectedProject()
     if (!tree)
         return;
 
-    wxTreeItemId treeItem =  tree->GetSelection();
+    wxTreeItemId treeItem = Manager::Get()->GetProjectManager()->GetTreeSelection();
     if (!treeItem.IsOk())
         return;
 
