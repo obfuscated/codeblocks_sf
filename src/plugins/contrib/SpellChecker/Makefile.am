@@ -2,7 +2,7 @@ SUBDIRS = wxspellchecker
 
 INCLUDES = $(WX_CXXFLAGS) \
 		$(CB_HUNSPELL_CFLAGS) \
-		-Iwxspellchecker/include \
+		-I$(srcdir)/wxspellchecker/include \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include
 
@@ -15,7 +15,7 @@ libSpellChecker_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -
 libSpellChecker_la_LIBADD = $(PLUGIN_WX_LIBS) \
                             $(CB_HUNSPELL_LIBS) \
                             wxspellchecker/libwxSpellChecker.la \
-							$(top_srcdir)/src/sdk/libcodeblocks.la
+							../../../sdk/libcodeblocks.la
 
 libSpellChecker_la_SOURCES = DictionariesNeededDialog.cpp \
                             MySpellingDialog.cpp \
