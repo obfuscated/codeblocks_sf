@@ -53,34 +53,6 @@
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
-class ProjectDirTraverser : public wxDirTraverser
-{
-public:
-    ProjectDirTraverser() : m_IsValidPath(false)
-    {}
-
-    virtual wxDirTraverseResult OnFile(const wxString& filename)
-    {
-        const FileType ft = FileTypeOf(filename);
-        if (ft == ftCodeBlocksProject || ft == ftCodeBlocksWorkspace)
-        {
-            m_IsValidPath = true;
-            return wxDIR_STOP;
-        }
-        return wxDIR_CONTINUE;
-    }
-
-    virtual wxDirTraverseResult OnDir(const wxString& dirname)
-    {
-        return wxDIR_CONTINUE;
-    }
-
-    bool IsValidPath() { return m_IsValidPath; }
-
-private:
-    bool m_IsValidPath;
-};
-
 // class constructor
 cbProject::cbProject(const wxString& filename)
     : m_CustomMakefile(false),
@@ -376,17 +348,9 @@ void cbProject::CalculateCommonTopLevelPath()
 
         wxFileName tmpbaseF(tmpbase);
         tmpbaseF.Normalize(wxPATH_NORM_DOTS);
-        if (tmpbaseF.GetDirCount() && tmpbaseF.GetDirCount() < base.GetDirCount())
-        {
-            wxDir dir(tmpbaseF.GetPath());
-            if (dir.IsOpened())
-            {
-                ProjectDirTraverser traverser;
-                dir.Traverse(traverser, wxEmptyString, wxDIR_DIRS | wxDIR_FILES);
-                if (traverser.IsValidPath())
-                    base = tmpbaseF;
-            }
-        }
+        if ( tmpbaseF.GetDirCount() < base.GetDirCount() &&
+             base.GetPath().StartsWith(tmpbaseF.GetPath()))
+            base = tmpbaseF;
     }
 
     m_CommonTopLevelPath = base.GetFullPath();
