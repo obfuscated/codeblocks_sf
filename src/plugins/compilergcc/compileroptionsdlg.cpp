@@ -36,11 +36,12 @@
 #include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
+
 #include "advancedcompileroptionsdlg.h"
 #include "annoyingdialog.h"
+#include "cbexception.h"
 #include "compilergcc.h"
 #include "compileroptionsdlg.h"
-#include "debuggermanager.h"
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 
