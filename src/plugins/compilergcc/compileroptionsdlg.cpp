@@ -36,11 +36,11 @@
 #include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
-#include "cbexception.h"
-#include "annoyingdialog.h"
-#include "compileroptionsdlg.h"
-#include "compilergcc.h"
 #include "advancedcompileroptionsdlg.h"
+#include "annoyingdialog.h"
+#include "compilergcc.h"
+#include "compileroptionsdlg.h"
+#include "debuggermanager.h"
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 
@@ -818,11 +818,11 @@ void CompilerOptionsDlg::DoLoadOptions()
     TextToOptions();
 
     DoFillOptions();
-    ArrayString2ListBox(IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
-    ArrayString2ListBox(LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
-    ArrayString2ListBox(ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
+    ArrayString2ListBox(IncludeDirs,        XRCCTRL(*this, "lstIncludeDirs", wxListBox));
+    ArrayString2ListBox(LibDirs,            XRCCTRL(*this, "lstLibDirs", wxListBox));
+    ArrayString2ListBox(ResDirs,            XRCCTRL(*this, "lstResDirs", wxListBox));
     ArrayString2TextCtrl(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
-    ArrayString2TextCtrl(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
+    ArrayString2TextCtrl(m_LinkerOptions,   XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
 
     // only if "Commands" page exists
     if (m_pProject)
@@ -894,11 +894,11 @@ void CompilerOptionsDlg::DoSaveOptions()
     wxArrayString IncludeDirs;
     wxArrayString LibDirs;
     wxArrayString ResDirs;
-    ListBox2ArrayString(IncludeDirs, XRCCTRL(*this, "lstIncludeDirs", wxListBox));
-    ListBox2ArrayString(LibDirs, XRCCTRL(*this, "lstLibDirs", wxListBox));
-    ListBox2ArrayString(ResDirs, XRCCTRL(*this, "lstResDirs", wxListBox));
+    ListBox2ArrayString(IncludeDirs,       XRCCTRL(*this, "lstIncludeDirs", wxListBox));
+    ListBox2ArrayString(LibDirs,           XRCCTRL(*this, "lstLibDirs", wxListBox));
+    ListBox2ArrayString(ResDirs,           XRCCTRL(*this, "lstResDirs", wxListBox));
     DoGetCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
-    DoGetCompileOptions(m_LinkerOptions, XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
+    DoGetCompileOptions(m_LinkerOptions,   XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
     OptionsToText();
 
     if (!m_pProject && !m_pTarget)
@@ -991,13 +991,13 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
 
     CompilerPrograms progs;
     wxString masterPath = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
-    progs.C = (XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue()).Trim();
-    progs.CPP = (XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->GetValue()).Trim();
-    progs.LD = (XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue()).Trim();
-    progs.LIB = (XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->GetValue()).Trim();
-    progs.WINDRES = (XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue()).Trim();
-    progs.MAKE = (XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue()).Trim();
-    progs.DBG = (XRCCTRL(*this, "txtDebugger", wxTextCtrl)->GetValue()).Trim();
+    progs.C       = (XRCCTRL(*this, "txtCcompiler",   wxTextCtrl)->GetValue()).Trim();
+    progs.CPP     = (XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->GetValue()).Trim();
+    progs.LD      = (XRCCTRL(*this, "txtLinker",      wxTextCtrl)->GetValue()).Trim();
+    progs.LIB     = (XRCCTRL(*this, "txtLibLinker",   wxTextCtrl)->GetValue()).Trim();
+    progs.WINDRES = (XRCCTRL(*this, "txtResComp",     wxTextCtrl)->GetValue()).Trim();
+    progs.MAKE    = (XRCCTRL(*this, "txtMake",        wxTextCtrl)->GetValue()).Trim();
+    progs.DBG     = (XRCCTRL(*this, "txtDebugger",    wxTextCtrl)->GetValue()).Trim();
     compiler->SetPrograms(progs);
     compiler->SetMasterPath(masterPath);
     compiler->SetOptions(m_Options); //LDC : DOES NOT BELONG HERE !!!
@@ -1402,19 +1402,27 @@ void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& /*event*/)
 {
     wxListBox* control = GetDirsListBox();
-    if (!control || control->GetSelection() < 0)
+    wxArrayInt selections;
+    if (!control || control->GetSelections(selections) < 1)
         return;
 
+    if (selections.GetCount()>1)
+    {
+        cbMessageBox(_("Please select only one directory you would like to edit."),
+                    _("Error"), wxICON_ERROR);
+        return;
+    }
+
     EditPathDlg dlg(this,
-            control->GetString(control->GetSelection()),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            _("Edit directory"));
+                    control->GetString(selections[0]),
+                    m_pProject ? m_pProject->GetBasePath() : _T(""),
+                    _("Edit directory"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString path = dlg.GetPath();
-        control->SetString(control->GetSelection(), path);
+        control->SetString(selections[0], path);
         m_bDirty = true;
     }
 } // OnEditDirClick
@@ -1422,13 +1430,16 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& /*event*/)
 {
     wxListBox* control = GetDirsListBox();
-    if (!control || control->GetSelection() < 0)
+    wxArrayInt selections;
+    if (!control || control->GetSelections(selections) < 1)
         return;
-    if (cbMessageBox(_("Remove '")+control->GetStringSelection()+_("' from the list?"),
-                    _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
+
+    if (cbMessageBox(_("Remove selected folders from the list?"),
+                     _("Confirmation"),
+                     wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
     {
-        control->Delete(control->GetSelection());
+        for (int i=0; i<selections.GetCount(); ++i)
+            control->Delete(selections[static_cast<unsigned int>(i)]);
         m_bDirty = true;
     }
 } // OnRemoveDirClick
@@ -1436,11 +1447,13 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnClearDirClick(wxCommandEvent& /*event*/)
 {
     wxListBox* control = GetDirsListBox();
-    if (!control || control->GetCount() == 0)
+    wxArrayInt selections;
+    if (!control || control->GetSelections(selections) < 1)
         return;
+
     if (cbMessageBox(_("Remove all directories from the list?"),
-                    _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
+                     _("Confirmation"),
+                     wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
     {
         control->Clear();
         m_bDirty = true;
@@ -1451,8 +1464,10 @@ void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
 {
     if (!m_pProject)
         return;
+
     wxListBox* control = GetDirsListBox();
-    if (!control || control->GetCount() == 0)
+    wxArrayInt selections;
+    if (!control || control->GetSelections(selections) < 1)
         return;
 
     wxArrayString choices;
@@ -1464,10 +1479,8 @@ void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
     }
 
     int sel = wxGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
-                                    _("Copy directories"),
-                                    choices,
-                                    this);
-    // -1 means no selection
+                                     _("Copy directories"), choices, this);
+    // -1 means no selection (Cancel)
     if (sel == -1)
         return;
 
@@ -1478,19 +1491,20 @@ void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
                                 : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
     if (!base)
         return;
+
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (int i = 0; i < (int)control->GetCount(); ++i)
+    for (int i = 0; i < (int)selections.GetCount(); ++i)
     {
         switch (nb->GetSelection())
         {
             case 0: // compiler dirs
-                base->AddIncludeDir(control->GetString(i));
+                base->AddIncludeDir(control->GetString(selections[i]));
                 break;
             case 1: // linker dirs
-                base->AddLibDir(control->GetString(i));
+                base->AddLibDir(control->GetString(selections[i]));
                 break;
             case 2: // resource compiler dirs
-                base->AddResourceIncludeDir(control->GetString(i));
+                base->AddResourceIncludeDir(control->GetString(selections[i]));
                 break;
         }
     }
@@ -2029,7 +2043,7 @@ void CompilerOptionsDlg::OnMoveLibDownClick(wxSpinEvent& /*event*/)
     {
         // do not move downwards if the lib after is selected, too
         // notice here: as started with index+1 (due to GetCount)...
-        // ... substract 1 all the way to achive the real index oprated on
+        // ... substract 1 all the way to achieve the real index operated on
         if (lstLibs->IsSelected(i-1) && !lstLibs->IsSelected(i))
         {
             wxString lib = lstLibs->GetString(i-1);
@@ -2046,27 +2060,53 @@ void CompilerOptionsDlg::OnMoveLibDownClick(wxSpinEvent& /*event*/)
 void CompilerOptionsDlg::OnMoveDirUpClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lst = GetDirsListBox();
-    if (!lst || lst->GetSelection() <= 0)
+    wxArrayInt sels;
+    if (!lst || lst->GetSelections(sels) < 1)
         return;
-    int sel = lst->GetSelection();
-    wxString lib = lst->GetStringSelection();
-    lst->Delete(sel);
-    lst->InsertItems(1, &lib, sel - 1);
-    lst->SetSelection(sel - 1);
-    m_bDirty = true;
+
+    // moving upwards: need to start from the first element
+    // starting at second element, the first one cannot be moved upwards
+    for (size_t i=1; i<lst->GetCount(); i++)
+    {
+        // do not move upwards if the dir before is selected, too
+        if (lst->IsSelected(i) && !lst->IsSelected(i-1))
+        {
+            wxString dir = lst->GetString(i);
+            lst->Delete(i);
+
+            lst->InsertItems(1, &dir, i - 1);
+            lst->SetSelection(i - 1);
+
+            m_bDirty = true;
+        }
+    }
 } // OnMoveDirUpClick
 
 void CompilerOptionsDlg::OnMoveDirDownClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lst = GetDirsListBox();
-    if (!lst || lst->GetSelection() == (int)(lst->GetCount()) - 1)
+    wxArrayInt sels;
+    if (!lst || lst->GetSelections(sels) < 1)
         return;
-    int sel = lst->GetSelection();
-    wxString lib = lst->GetStringSelection();
-    lst->Delete(sel);
-    lst->InsertItems(1, &lib, sel + 1);
-    lst->SetSelection(sel + 1);
-    m_bDirty = true;
+
+    // moving downwards: need to start from the last element
+    // starting at pre-last element, the last one cannot be moved downwards
+    for (size_t i=lst->GetCount()-1; i>0; i--)
+    {
+        // do not move downwards if the dir after is selected, too
+        // notice here: as started with index+1 (due to GetCount)...
+        // ... substract 1 all the way to achieve the real index operated on
+        if (lst->IsSelected(i-1) && !lst->IsSelected(i))
+        {
+            wxString dir = lst->GetString(i-1);
+            lst->Delete(i-1);
+
+            lst->InsertItems(1, &dir, i);
+            lst->SetSelection(i);
+
+            m_bDirty = true;
+        }
+    }
 } // OnMoveDirDownClick
 
 void CompilerOptionsDlg::OnMasterPathClick(wxCommandEvent& /*event*/)
@@ -2162,8 +2202,11 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     if (control)
     {
         // edit/delete/clear/copy include dirs
-        en = control->GetSelection() >= 0;
-        XRCCTRL(*this, "btnEditDir",  wxButton)->Enable(en);
+        wxArrayInt sels_dummy;
+        int num = control->GetSelections(sels_dummy);
+        en = (num > 0);
+
+        XRCCTRL(*this, "btnEditDir",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelDir",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
         XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(control->GetCount() != 0);
