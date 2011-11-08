@@ -38,7 +38,8 @@
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
-			<Add library="libcodeblocks.a" />
+			<Add option="`wx-config --libs`" />
+			<Add library="codeblocks" />
 			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
