@@ -84,7 +84,11 @@ wxRegEx reFunction(wxT(
     "([^)]*)?"                      // The function's parameters.
     "\\)"                           // The closing parenthesis.
     ),
+#ifndef __WXMAC__
     wxRE_ADVANCED);
+#else
+    wxRE_EXTENDED);
+#endif
 
 /** \brief The regex for a class function declaration.
  *
@@ -100,7 +104,11 @@ wxRegEx reClassFunction(wxT(
     "([^)]*)?"                      // The function's parameters.
     "\\)"                           // The closing parenthesis.
     ),
+#ifndef __WXMAC__
     wxRE_ADVANCED);
+#else
+    wxRE_EXTENDED);
+#endif
 
 /** \brief The regex for a class function declaration without a return value, such as a constructor.
  *

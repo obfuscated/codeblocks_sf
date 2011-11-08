@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 zip ../../../devel/share/codeblocks/wxsmith.zip manifest.xml
 zip ../../../output/share/codeblocks/wxsmith.zip manifest.xml
 mkdir -p ../../../devel/share/codeblocks/images/wxsmith > /dev/null 2> /dev/null

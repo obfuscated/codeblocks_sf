@@ -85,9 +85,24 @@ void MacrosManager::Reset()
     m_RE_If.Compile(_T("\\$if\\(([^)]*)\\)[::space::]*(\\{([^}]*)\\})(\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_IfSp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"), wxRE_ADVANCED);
-    m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"), wxRE_ADVANCED);
-    m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"), wxRE_ADVANCED);
+    m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"),
+#ifndef __WXMAC__
+                                wxRE_ADVANCED);
+#else
+                                wxRE_EXTENDED);
+#endif
+    m_RE_To83Path.Compile(_T("\\$TO_83_PATH{([^}]*)}"),
+#ifndef __WXMAC__
+                                wxRE_ADVANCED);
+#else
+                                wxRE_EXTENDED);
+#endif
+    m_RE_RemoveQuotes.Compile(_T("\\$REMOVE_QUOTES{([^}]*)}"),
+#ifndef __WXMAC__
+                                wxRE_ADVANCED);
+#else
+                                wxRE_EXTENDED);
+#endif
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_RE_Unix.IsValid());

@@ -96,7 +96,8 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
  */
 wxObject* wxsAnimationCtrl::OnBuildPreview(wxWindow* parent,long flags)
 {
-    wxAnimationCtrl* preview = new wxAnimationCtrl(parent, GetId(), m_sAnimation, Pos(parent), Size(parent), Style());
+    wxAnimation anim; anim.LoadFile(m_sAnimation);
+    wxAnimationCtrl* preview = new wxAnimationCtrl(parent, GetId(), anim, Pos(parent), Size(parent), Style());
 
     if(!m_bmpInactive.IsEmpty())
     {

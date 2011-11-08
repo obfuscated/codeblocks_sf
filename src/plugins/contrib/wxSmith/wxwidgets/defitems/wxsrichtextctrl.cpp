@@ -176,7 +176,9 @@ namespace
 	};
 
     WXS_ST_BEGIN(wxsRichTextCtrlStyles, _T("wxRE_MULTILINE"))
+#ifndef __WXMAC__
 		WXS_ST(wxRE_CENTRE_CARET)
+#endif
 		WXS_ST(wxRE_MULTILINE)
 		WXS_ST(wxRE_READONLY)
         WXS_ST_DEFAULTS()

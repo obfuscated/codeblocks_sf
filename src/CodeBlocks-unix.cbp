@@ -277,7 +277,6 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="-z defs" />
 					<Add option="`wx-config --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />

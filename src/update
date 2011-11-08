@@ -64,35 +64,37 @@ echo .svn > excludes.txt
 echo Makefile >> excludes.txt
 echo Makefile.am >> excludes.txt
 echo Makefile.in >> excludes.txt
-cp -fu ${RESDIR}/*.zip output/share/codeblocks > /dev/null
-cp -fu sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
-cp -fu sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
-cp -fu src/resources/images/*.png ${RESDIR}/images > /dev/null
-cp -fu src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
-cp -fu src/resources/images/*.png output/share/codeblocks/images > /dev/null
-cp -fu src/resources/images/settings/*.png output/share/codeblocks/images/settings > /dev/null
-cp -fu src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
-cp -fu src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
-cp -fu plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
+cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
+cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
+cp -f src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
+cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
+
+cp -f ${RESDIR}/*.zip output/share/codeblocks > /dev/null
+cp -f sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
+cp -f src/resources/images/*.png output/share/codeblocks/images > /dev/null
+cp -f src/resources/images/settings/*.png output/share/codeblocks/images/settings > /dev/null
+cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
+
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output/share/codeblocks/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ output/share/codeblocks/templates > /dev/null
 rsync -au --exclude-from=excludes.txt templates/unix/ output/share/codeblocks/templates > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ ${RESDIR}/templates > /dev/null
 rsync -au --exclude-from=excludes.txt templates/unix/ ${RESDIR}/templates > /dev/null
-cp -fu scripts/*.script ${RESDIR}/scripts > /dev/null
-cp -fu scripts/*.script output/share/codeblocks/scripts > /dev/null
-cp -fu scripts/*.gdb ${RESDIR}/scripts > /dev/null
-cp -fu scripts/*.gdb output/share/codeblocks/scripts > /dev/null
-cp -fu tips.txt devel/share/codeblocks > /dev/null
-cp -fu tips.txt output/share/codeblocks > /dev/null
-cp -fu tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null
-cp -fu tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
-cp -fu devel/codeblocks${EXEEXT} output > /dev/null
-# cp -fu devel/cb_share_config${EXEEXT} output > /dev/null
-cp -fu devel/*.${LIBEXT} output > /dev/null
-cp -fu ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
+cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
+cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
+cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
+cp -f scripts/*.gdb output/share/codeblocks/scripts > /dev/null
+cp -f tips.txt devel/share/codeblocks > /dev/null
+cp -f tips.txt output/share/codeblocks > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
+cp -f devel/codeblocks${EXEEXT} output > /dev/null
+# cp -f devel/cb_share_config${EXEEXT} output > /dev/null
+cp -f devel/*.${LIBEXT} output > /dev/null
+cp -f ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
 # Now remove the exclude pattern file
 rm excludes.txt
 

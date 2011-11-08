@@ -15,6 +15,12 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns" />
 				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+				</Linker>
 			</Target>
 			<Target title="wxSmith">
 				<Option platforms="Unix;Mac;" />
@@ -24,8 +30,13 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Compiler>
+					<Add option="`wx-config --cflags`" />
+				</Compiler>
 				<Linker>
+					<Add option="`wx-config --libs`" />
 					<Add library="wxsmithlib" />
+					<Add library="wxpropgrid" />
 				</Linker>
 			</Target>
 		</Build>
