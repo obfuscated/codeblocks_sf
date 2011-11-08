@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="KeyBinder plugin">
-				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel/share/codeblocks/plugins/keybinder" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/keybinder" />
 				<Option type="3" />
 				<Option compiler="gcc" />

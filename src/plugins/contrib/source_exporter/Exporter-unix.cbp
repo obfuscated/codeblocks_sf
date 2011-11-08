@@ -20,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libexporter.so" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel/share/codeblocks/plugins/exporter" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/source_exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
