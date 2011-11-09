@@ -125,13 +125,12 @@ case $WX_BASENAME in
         AC_MSG_RESULT(wxGTK)
 		dnl
 		dnl pkg-config no longer needed by debugger plugin
-		dnl but seems to be needed by codesnippets...
+		dnl but is needed by others
 		dnl
 		dnl only do this if it is really needed
 		dnl AM_CONDITIONAL adds _TRUE and _FALSE to the appropriate variables
 		dnl if the condition is true, the *_TRUE variable is empty (!)
-		if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
-				"x$BUILD_FILEMANAGER_TRUE" = "x" -o \
+		if test "x$BUILD_FILEMANAGER_TRUE" = "x" -o \
 				"x$BUILD_SPELLCHECKER_TRUE" = "x" -o \
 				"x$BUILD_MOUSESAP_TRUE" = "x" -o \
 				"x$GTK_NOTEBOOK_TRUE" = "x" ; then
@@ -158,8 +157,7 @@ case $WX_BASENAME in
 				fi
 			fi
 
-			if test "x$BUILD_CODESNIPPETS_TRUE" = "x" -o \
-					"x$BUILD_MOUSESAP_TRUE" = "x"  -o \
+			if test "x$BUILD_MOUSESAP_TRUE" = "x"  -o \
 					"x$GTK_NOTEBOOK_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 					PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.0.0])

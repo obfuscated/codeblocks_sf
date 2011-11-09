@@ -52,16 +52,6 @@
 #include "cbauibook.h"
 #include "dragscrollevent.h"
 
-//FIXME: This does not work without (apt-get) libgtk2.0-dev and libxtst-dev
-#if defined(__WXGTK__)
-    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-    // in newer glib-headers
-    #define GSocket GLibSocket
-    #include <gdk/gdkx.h>
-    #undef GSocket
-    #include "wx/gtk/win_gtk.h"
-#endif
-
 // ----------------------------------------------------------------------------
 namespace
 // ----------------------------------------------------------------------------
