@@ -21,10 +21,6 @@
 				<Option object_output="../../../.objs/plugins/contrib/codesnippets/app" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Linker>
-					<Add library="X11" />
-					<Add library="gdk-x11-2.0" />
-				</Linker>
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -39,7 +35,6 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
-			<Add option="`pkg-config --cflags gtk+-2.0`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="../../../include" />
