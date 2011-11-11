@@ -484,13 +484,9 @@ void ReplaceDlg::OnFindChange(wxNotebookEvent& event)
     wxTextCtrl* txtFind2  = XRCCTRL(*this, "txtMultiLineFind2", wxTextCtrl);
     wxComboBox* cmbReplace1 =XRCCTRL(*this, "cmbReplace1", wxComboBox); //
     wxComboBox* cmbReplace2 =XRCCTRL(*this, "cmbReplace2", wxComboBox); //
-    wxCheckBox* chkMultiLine1 = XRCCTRL(*this, "chkMultiLine1", wxCheckBox);
-    wxCheckBox* chkMultiLine2 = XRCCTRL(*this, "chkMultiLine2", wxCheckBox);
 
     if (txtFind1 && txtFind2 && cmbFind1 && cmbFind2)
     {
-        wxWindow* controlToFocus = 0;
-
         if (event.GetSelection() == 0)
         {
             // Switched from "Find in files" to "Find"
@@ -499,9 +495,6 @@ void ReplaceDlg::OnFindChange(wxNotebookEvent& event)
 
             cmbFind1->SetValue(cmbFind2->GetValue());
             cmbReplace1->SetValue(cmbReplace2->GetValue());
-
-            // If Multiline was active in "Find in Files", activate it in "Find"
-            controlToFocus = chkMultiLine2->GetValue() ? dynamic_cast<wxWindow*>(txtFind1) : dynamic_cast<wxWindow*>(cmbFind1);
         }
         else if (event.GetSelection() == 1)
         {
@@ -511,10 +504,6 @@ void ReplaceDlg::OnFindChange(wxNotebookEvent& event)
 
             cmbFind2->SetValue(cmbFind1->GetValue());
             cmbReplace2->SetValue(cmbReplace1->GetValue());
-
-            // If Multiline was active in "Find", activate it in "Find in files"
-            controlToFocus = chkMultiLine1->GetValue() ? dynamic_cast<wxWindow*>(txtFind2) : dynamic_cast<wxWindow*>(cmbFind2);
-
         }
     }
     wxSizeEvent event1;

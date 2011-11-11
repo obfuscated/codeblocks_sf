@@ -1087,7 +1087,6 @@ wxTreeItemId cbProject::FindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& 
         int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
         int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
         wxTreeItemId last;
-        bool last_is_folder = false;
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child)
         {
@@ -1111,7 +1110,6 @@ wxTreeItemId cbProject::FindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& 
             }
 
             last = child;
-            last_is_folder = is_folder;
             child = tree->GetNextChild(parent, cookie);
         }
         if (!result.IsOk())

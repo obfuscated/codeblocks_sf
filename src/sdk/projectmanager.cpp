@@ -2760,7 +2760,7 @@ wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search
 
 void ProjectManager::OnFindFile(wxCommandEvent& /*event*/)
 {
-    wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
+    const wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
     if ( !text.IsEmpty() )
     {
         wxTreeItemId sel = GetTreeSelection();
