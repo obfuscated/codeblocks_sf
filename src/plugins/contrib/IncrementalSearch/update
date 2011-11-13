@@ -5,9 +5,9 @@
 #
 # Copyright: 2008 Jens Lody
 #
-# $Revision$
-# $Id$
-# $HeadURL$
+# $Revision: 5277 $
+# $Id: update 5277 2008-10-19 19:08:32Z jenslody $
+# $HeadURL: https://mortenmacfly@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/IncrementalSearch/update $
 #
 
 mkdir -p ../../../devel/share/codeblocks/images/settings > /dev/null 2> /dev/null
