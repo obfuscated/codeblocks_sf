@@ -1344,32 +1344,35 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         }
     }
 
-    for (int i = 0; project && i < project->GetFilesCount(); ++i)
+    if(project)
     {
-        ProjectFile* pf = project->GetFile(i);
-        if (!pf)
-            continue;
-        CCFileType ft = CCFileTypeOf(pf->relativeFilename);
-        if (ft == ccftHeader) // parse header files
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
-            bool isPriorityFile = false;
-            for (PriorityMap::iterator it = priorityTempMap.begin(); it != priorityTempMap.end(); ++it)
+            ProjectFile* pf = *it;
+            if (!pf)
+                continue;
+            CCFileType ft = CCFileTypeOf(pf->relativeFilename);
+            if (ft == ccftHeader) // parse header files
             {
-                if (it->second.IsSameAs(pf->file.GetFullName(), false))
+                bool isPriorityFile = false;
+                for (PriorityMap::iterator it = priorityTempMap.begin(); it != priorityTempMap.end(); ++it)
                 {
-                    isPriorityFile = true;
-                    priorityMap[it->first] = pf->file.GetFullPath() + _T(", 0");
-                    priorityTempMap.erase(it);
-                    break;
+                    if (it->second.IsSameAs(pf->file.GetFullName(), false))
+                    {
+                        isPriorityFile = true;
+                        priorityMap[it->first] = pf->file.GetFullPath() + _T(", 0");
+                        priorityTempMap.erase(it);
+                        break;
+                    }
                 }
-            }
 
-            if (!isPriorityFile)
-                headers.push_back(pf->file.GetFullPath());
-        }
-        else if (ft == ccftSource) // parse source files
-        {
-            sources.push_back(pf->file.GetFullPath());
+                if (!isPriorityFile)
+                    headers.push_back(pf->file.GetFullPath());
+            }
+            else if (ft == ccftSource) // parse source files
+            {
+                sources.push_back(pf->file.GetFullPath());
+            }
         }
     }
 
@@ -4196,18 +4199,18 @@ void NativeParser::AddProjectToParser(cbProject* project)
     if (project)
     {
         size_t fileCount = 0;
-        for (int i = 0; i < project->GetFilesCount(); ++i)
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = project->GetFile(i);
+            ProjectFile* pf = *it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
                 if (AddFileToParser(project, pf->file.GetFullPath(), parser))
                     ++fileCount;
             }
         }
-        for (int i = 0; i < project->GetFilesCount(); ++i)
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = project->GetFile(i);
+            ProjectFile* pf = *it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
             {
                 if (AddFileToParser(project, pf->file.GetFullPath(), parser))
@@ -4219,7 +4222,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
                      project ? project->GetTitle().wx_str() : _T("*NONE*")));
         CCLogger::Get()->DebugLog(log);
     }
-    else
+    else               
     {
         EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
         if (editor && AddFileToParser(project, editor->GetFilename(), parser))
@@ -4252,9 +4255,9 @@ bool NativeParser::RemoveProjectFromParser(cbProject* project)
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
-    for (int i = 0; i < project->GetFilesCount(); ++i)
+    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = project->GetFile(i);
+        ProjectFile* pf = *it;
         if (pf && CCFileTypeOf(pf->relativeFilename) != ccftOther)
             RemoveFileFromParser(project, pf->file.GetFullPath());
     }

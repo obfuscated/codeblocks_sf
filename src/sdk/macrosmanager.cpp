@@ -263,10 +263,10 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_ProjectTopDir   = UnixFilename(project->GetCommonTopLevelPath());
         m_Makefile        = UnixFilename(project->GetMakefile());
         m_ProjectFiles    = wxEmptyString;
-        for (int i = 0; i < project->GetFilesCount(); ++i)
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
             // quote filenames, if they contain spaces
-            wxString out = UnixFilename(project->GetFile(i)->relativeFilename);
+            wxString out = UnixFilename(((ProjectFile*)*it)->relativeFilename);
             QuoteStringIfNeeded(out);
             m_ProjectFiles << out << _T(' ');
         }

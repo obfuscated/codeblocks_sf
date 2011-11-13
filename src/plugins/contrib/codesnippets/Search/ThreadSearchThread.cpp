@@ -294,11 +294,12 @@ void ThreadSearchThread::AddSnippetFiles(wxSortedArrayString& sortedArrayString,
 	// Adds project file paths to array only if they do not already exist.
 	// Same path may exist if we parse both open files and project files
 	// for examle.
-	for ( int i = 0; i < project.GetFilesCount(); ++i )
-	{
-		AddNewItem(sortedArrayString, project.GetFile(i)->file.GetFullPath());
-		if ( TestDestroy() == true ) return;
-	}
+    for (FilesList::iterator it = project.GetFilesList().begin(); it != project.GetFilesList().end(); ++it)
+    {
+        ProjectFile* pf = *it;
+        AddNewItem(sortedArrayString, (*it)->file.GetFullPath());
+        if ( TestDestroy() == true ) return;
+    }
 }
 
 

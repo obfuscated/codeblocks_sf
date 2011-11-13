@@ -23,9 +23,6 @@
 #include "projectfileoptionsdlg.h"
 #include "filefilters.h"
 
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(FilesList);
-
 ProjectFile::ProjectFile(cbProject* prj) :
     compile(false),
     link(false),
@@ -87,8 +84,8 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
     if (project)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(targetName);
-        if (target && !target->m_Files.Find(this))
-            target->m_Files.Append(this);
+        if (target && (target->m_Files.find(this) == target->m_Files.end()))
+            target->m_Files.insert(this);
     }
 
     // also do this for auto-generated files
@@ -119,9 +116,9 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
         ProjectBuildTarget* target = project->GetBuildTarget(targetName);
         if (target)
         {
-            wxFilesListNode* node = target->m_Files.Find(this);
-            if (node)
-                target->m_Files.Erase(node);
+            FilesList::iterator it = target->m_Files.find(this);
+            if (it != target->m_Files.end())
+                target->m_Files.erase(it);
         }
     }
 

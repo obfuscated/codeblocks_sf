@@ -234,9 +234,9 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
     std::vector< wxFileName > files;
 	m_view->GetWindow()->SetMessage(_T("Creating file list..."), 5);
 
-    for ( unsigned int k = 0 ; k < static_cast<unsigned int>(prj->GetFilesCount()) ; ++k )
+    for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
-        wxFileName fn( prj->GetFile(k)->file.GetFullPath() );
+        wxFileName fn( (*it)->file.GetFullPath() );
         files.push_back(fn);
     }
 

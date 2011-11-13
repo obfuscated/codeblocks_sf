@@ -149,16 +149,17 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
                 cbProject* prj = data->GetProject();
                 wxProgressDialog progressDlg(_("Please wait"), _("Formatting..."), prj->GetFilesCount(), 0, wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_SMOOTH );
                 progressDlg.Show();
-                for ( int i = 0; i < prj->GetFilesCount(); ++i )
+                int i = 0;
+                for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
                 {
-                    ProjectFile* pf = prj->GetFile( i );
+                    ProjectFile* pf = *it;
                     wxString filename = pf->file.GetFullPath();
 
                     FileType fileType = FileTypeOf( filename );
                     if ( fileType == ftSource || fileType == ftHeader )
                     {
                         FormatFile( filename );
-                        if ( false == progressDlg.Update( i, wxString(_("Formatting ")) + pf->relativeFilename ) )
+                        if ( false == progressDlg.Update( i++, wxString(_("Formatting ")) + pf->relativeFilename ) )
                             break;
                     }
                 }
@@ -167,7 +168,7 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
 
         case FileTreeData::ftdkFile:
             {
-                ProjectFile* f = data->GetProject()->GetFile( data->GetFileIndex() );
+                ProjectFile* f = data->GetProjectFile();
                 if ( f )
                     FormatFile( f->file.GetFullPath() );
             }

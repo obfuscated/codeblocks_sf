@@ -157,14 +157,14 @@ void wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick(wxCommandEvent& event)
 
 void wxWidgetsGUIAppAdoptingDlg::Run()
 {
-    int FilesCnt = m_Project->GetFilesCount();
-    Progress->SetRange(FilesCnt);
-    for ( int i=0; i<FilesCnt && m_Run; i++ )
+    Progress->SetRange(m_Project->GetFilesCount());
+    int i = 0;
+    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
     {
         Manager::Yield();
-        ProjectFile* File = m_Project->GetFile(i);
+        ProjectFile* File = *it;
         ScanningFile->SetLabel(File->relativeFilename);
-        Progress->SetValue(i+1);
+        Progress->SetValue(++i);
         if ( ScanFile(File) )
         {
             FoundFiles->Append(File->relativeFilename);

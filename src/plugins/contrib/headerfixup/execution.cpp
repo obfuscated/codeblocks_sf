@@ -478,9 +478,9 @@ void Execution::AddFilesFromProject(wxArrayString& Files,cbProject* Project)
   if (!Project)
     return;
 
-  for ( int i=0; i<Project->GetFilesCount(); i++ )
+  for (FilesList::iterator it = Project->GetFilesList().begin(); it != Project->GetFilesList().end(); ++it)
   {
-    wxFileName Name = Project->GetFile(i)->file;
+    wxFileName Name = (*it)->file;
     if ( Name.GetExt().Lower() == _T("c")   ||
          Name.GetExt().Lower() == _T("cc")  ||
          Name.GetExt().Lower() == _T("cpp") ||

@@ -121,6 +121,26 @@ static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
 static const int idNB_TabBottom = wxNewId();
 
+PrjTree::PrjTree()
+{
+    Compare = &filesSort;
+}
+PrjTree::PrjTree(wxWindow* parent, int id) :
+     wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
+                wxTR_EDIT_LABELS | wxTR_DEFAULT_STYLE | wxTR_MULTIPLE | wxNO_BORDER)
+{
+    Compare = &filesSort;
+}
+void PrjTree::SetCompareFunction(const int ptvs)
+{
+    // sort list of files
+    if ( !(ptvs&ptvsUseFolders)
+        && (ptvs&ptvsHideFolderName) )
+        Compare = &filesSortNameOnly;
+    else
+        Compare = &filesSort;
+}
+
 #ifndef __WXMSW__
 /*
     Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
@@ -128,35 +148,47 @@ static const int idNB_TabBottom = wxNewId();
     This is a "proxy" wxTreeCtrl descendant that handles this for us...
 */
 
-class PrjTree : public wxTreeCtrl
+void PrjTree::OnRightClick(wxMouseEvent& event)
 {
-    public:
-        PrjTree(wxWindow* parent, int id) :
-            wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
-                       wxTR_EDIT_LABELS|wxTR_DEFAULT_STYLE|wxTR_MULTIPLE|wxNO_BORDER)
-        { ; }
-    protected:
-        void OnRightClick(wxMouseEvent& event)
-        {
-            if (!this) return;
-
-            int flags;
-            HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-            if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
-            {
-                // "proxy" the call
-                wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, ID_ProjectManager);
-                wxPostEvent(GetParent(), e);
-            }
-            else
-                event.Skip();
-        }
-        DECLARE_EVENT_TABLE();
-};
-BEGIN_EVENT_TABLE(PrjTree, wxTreeCtrl)
-    EVT_RIGHT_DOWN(PrjTree::OnRightClick)
-END_EVENT_TABLE()
+    if (!this) return;
+    //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
+    int flags;
+    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+    if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
+    {
+        // "proxy" the call
+        wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, ID_ProjectManager);
+        wxPostEvent(GetParent(), e);
+    }
+    else
+        event.Skip();
+}
 #endif // !__WXMSW__
+int PrjTree::filesSort(const ProjectFile* arg1, const ProjectFile* arg2)
+{
+    if(arg1 && arg2)
+        return wxStricmp(arg1->file.GetFullPath(),arg2->file.GetFullPath());
+    else
+        return 0;
+}
+int PrjTree::filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2)
+{
+    if(arg1 && arg2)
+        return wxStricmp(arg1->file.GetFullName(),arg2->file.GetFullName());
+    else
+        return 0;
+}
+int PrjTree::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
+{
+    return Compare(((FileTreeData*)GetItemData(item1))->GetProjectFile(), ((FileTreeData*)GetItemData(item2))->GetProjectFile());
+}
+IMPLEMENT_DYNAMIC_CLASS(PrjTree, wxTreeCtrl)
+
+BEGIN_EVENT_TABLE(PrjTree, wxTreeCtrl)
+#ifndef __WXMSW__
+    EVT_RIGHT_DOWN(PrjTree::OnRightClick)
+#endif // !__WXMSW__
+END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_TREE_BEGIN_DRAG(ID_ProjectManager, ProjectManager::OnTreeBeginDrag)
@@ -333,11 +365,7 @@ int ProjectManager::VirtualFolderIconIndex()
 
 void ProjectManager::BuildTree()
 {
-    #ifndef __WXMSW__
-        m_pTree = new PrjTree(m_pNotebook, ID_ProjectManager);
-    #else
-        m_pTree = new wxTreeCtrl(m_pNotebook, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_EDIT_LABELS | wxTR_DEFAULT_STYLE | wxTR_MULTIPLE | wxNO_BORDER);
-    #endif
+    m_pTree = new PrjTree(m_pNotebook, ID_ProjectManager);
 
     static const wxString imgs[] =
     {
@@ -2237,8 +2265,8 @@ void FindFiles(wxArrayString &resultFiles, wxTreeCtrl &tree, wxTreeItemId item)
             }
             break;
         default:
-            for (int i = 0; i < ftd->GetProject()->GetFilesCount(); ++i)
-                resultFiles.Add(ftd->GetProject()->GetFile(i)->relativeFilename);
+            for (FilesList::iterator it = ftd->GetProject()->GetFilesList().begin(); it != ftd->GetProject()->GetFilesList().end(); ++it)
+                resultFiles.Add(((ProjectFile*)*it)->relativeFilename);
     }
 }
 } // namespace
@@ -2290,7 +2318,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             {
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing index %d"), indices[i]));
 
-                ProjectFile* pf = prj->GetFile(indices[i]);
+                ProjectFile* pf = prj->GetFileByFilename(files[indices[i]]);
                 RemoveFileFromProject(pf, prj);
             }
             prj->CalculateCommonTopLevelPath();
@@ -2384,11 +2412,8 @@ void ProjectManager::OnSaveFile(wxCommandEvent& WXUNUSED(event))
         return;
     if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if (cbProject* Project = ftd->GetProject())
-        {
-            if (ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
-                Manager::Get()->GetEditorManager()->Save(File->file.GetFullPath());
-        }
+        if (ProjectFile* File = ftd->GetProjectFile())
+            Manager::Get()->GetEditorManager()->Save(File->file.GetFullPath());
     }
 }
 
@@ -2400,11 +2425,8 @@ void ProjectManager::OnCloseFile(wxCommandEvent& WXUNUSED(event))
 
     if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        if (cbProject* Project = ftd->GetProject())
-        {
-            if (ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
-                Manager::Get()->GetEditorManager()->Close(File->file.GetFullPath());
-        }
+        if (ProjectFile* File = ftd->GetProjectFile())
+            Manager::Get()->GetEditorManager()->Close(File->file.GetFullPath());
     }
 }
 
@@ -2446,8 +2468,7 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     if (ftd)
     {
-        cbProject* project = ftd->GetProject();
-        ProjectFile* f = project->GetFile(ftd->GetFileIndex());
+        ProjectFile* f = ftd->GetProjectFile();
         if (f)
         {
             wxString filename = f->file.GetFullPath();
@@ -2544,7 +2565,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
         {
             if (ftd && ftd->GetFileIndex() != -1)
             {
-                ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
+                ProjectFile* pf = ftd->GetProjectFile();
                 if (pf)
                     pf->ShowOptions(Manager::Get()->GetAppWindow());
             }
@@ -2610,8 +2631,9 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
     for (size_t proj_index = 0; proj_index < m_pProjects->GetCount(); ++proj_index)
     {
         cbProject *project = (*m_pProjects)[proj_index];
-        for (int i = 0; i < project->GetFilesCount(); ++i)
-            files.push_back(project->GetFile(i));
+
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+            files.push_back(*it);
     }
 
     if (!files.empty())

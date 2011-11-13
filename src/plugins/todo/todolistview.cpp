@@ -177,16 +177,17 @@ void ToDoListView::Parse()
                                 prj->GetFilesCount(),
                                 Manager::Get()->GetAppWindow(),
                                 wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
-            for (int i = 0; i < prj->GetFilesCount(); ++i)
+            int i = 0;
+            for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
             {
-                ProjectFile* pf = prj->GetFile(i);
+                ProjectFile* pf = *it;
                 wxString filename = pf->file.GetFullPath();
                 cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
                 if (ed)
                     ParseEditor(ed);
                 else
                     ParseFile(filename);
-                if (!pd.Update(i))
+                if (!pd.Update(i++))
                 {
                     break;
                 }

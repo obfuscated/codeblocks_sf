@@ -163,9 +163,9 @@ public:
     int Execute()
     {
         // mark all project files as local
-        for (int i = 0; i < m_Project.GetFilesCount(); ++i)
+        for (FilesList::iterator it = m_Project.GetFilesList().begin(); it != m_Project.GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = m_Project.GetFile(i);
+            ProjectFile* pf = *it;
             if (!pf)
                 continue;
 

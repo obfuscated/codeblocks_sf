@@ -30,6 +30,31 @@ class cbWorkspace;
 class cbAuiNotebook;
 class wxAuiNotebookEvent;
 
+class PrjTree : public wxTreeCtrl
+{
+    public:
+        PrjTree();
+        PrjTree(wxWindow* parent, int id);
+        void SetCompareFunction(const int ptvs);
+    protected:
+#ifndef __WXMSW__
+/*
+    Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
+    event when right-clicking on the client area.
+    This is a "proxy" wxTreeCtrl descendant that handles this for us...
+*/
+        void OnRightClick(wxMouseEvent& event);
+#endif // !__WXMSW__
+        static int filesSort(const ProjectFile* arg1, const ProjectFile* arg2);
+        static int filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2);
+        int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
+        int (*Compare)(const ProjectFile* arg1, const ProjectFile* arg2);
+
+        DECLARE_DYNAMIC_CLASS(PrjTree)
+        DECLARE_EVENT_TABLE();
+};
+
+
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
 WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, DepsMap); // for project dependencies
@@ -373,7 +398,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
-        wxTreeCtrl* GetTree(){ return m_pTree; }
+        PrjTree* GetTree(){ return m_pTree; }
         /** Get the selection of the project manager's tree (GUI).
           * This must be used instead of tree->GetSelection() because the tree
           * has the wxTR_MULTIPLE style.
@@ -511,7 +536,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OpenFilesRecursively(wxTreeItemId& sel_id);
 
         cbAuiNotebook* m_pNotebook;
-        wxTreeCtrl* m_pTree;
+        PrjTree* m_pTree;
         wxTreeItemId m_TreeRoot;
         cbProject* m_pActiveProject;
         cbProject* m_pProjectToActivate;

@@ -2020,8 +2020,7 @@ void BrowseTracker::OnProjectOpened(CodeBlocksEvent& event)
     // didn't manually activate them.
     if (not m_bProjectIsLoading)
     {
-        int fileCount = pProject->GetFilesCount();
-        for (int i=0; i<fileCount; ++i)
+        for (FilesList::iterator it = pCBProject->GetFilesList().begin(); it != pCBProject->GetFilesList().end(); ++it)
         {
             for (int j=0; j<MaxEntries; ++j)
             {
@@ -2030,7 +2029,7 @@ void BrowseTracker::OnProjectOpened(CodeBlocksEvent& event)
                 //LOGIT( _T("BT eb[%s]projectFile[%s]"),
                 //    GetEditor(j)->GetFilename().c_str(), pProject->GetFile(i)->file.GetFullPath().c_str() );
                 //#endif
-                if ( pProject->GetFile(i)->file.GetFullPath() ==  GetEditor(j)->GetFilename())
+                if ( (*it)->file.GetFullPath() ==  GetEditor(j)->GetFilename())
                 {
                     //#if defined(LOGGING)
                     //LOGIT( _T("BT OnProjectOpened:Removing[%s]"),GetEditor(j)->GetFilename().c_str() );

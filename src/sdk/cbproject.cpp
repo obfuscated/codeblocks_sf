@@ -69,7 +69,7 @@ cbProject::cbProject(const wxString& filename)
 
     wxString realFile = realpath(filename);
 
-    m_Files.Clear();
+    m_Files.clear();
     if (!realFile.IsEmpty() && (wxFileExists(realFile) || wxDirExists(realFile)))
     {
         // existing project
@@ -141,10 +141,9 @@ void cbProject::SetCompilerID(const wxString& id)
                 if (!compiler)
                     continue;
 
-                int count = GetFilesCount();
-                for (int i = 0; i < count; ++i)
+                for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
                 {
-                    ProjectFile* pf = GetFile(i);
+                    ProjectFile* pf = *it;
                     wxFileName obj(pf->GetObjName());
                     if (FileTypeOf(pf->relativeFilename) != ftResource &&
                         obj.GetExt() == compiler->GetSwitches().objectExtension)
@@ -236,9 +235,11 @@ void cbProject::ClearAllProperties()
 {
     Delete(m_pExtensionsElement);
 
-    m_Files.DeleteContents(true);
-    m_Files.Clear();
-    m_Files.DeleteContents(false);
+    for(FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
+    {
+        delete(*it);
+    }
+    m_Files.clear();
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_IncludeDirs.Clear();
@@ -323,9 +324,13 @@ void cbProject::CalculateCommonTopLevelPath()
     // this loop takes ~30ms for 1000 project files
     // it's as fast as it can get, considered that it used to take ~1200ms ;)
     // don't even bother making it faster - you can't :)
-    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = (*it);
+
+        if (!f)
+            continue;
+
         wxString tmp = f->relativeFilename;
         wxString tmpbase = m_BasePath;
 
@@ -450,12 +455,11 @@ bool cbProject::LoadLayout()
         Manager::Get()->GetEditorManager()->HideNotebook();
         if (openmode == 0) // Open all files
         {
-            FilesList::Node* node = m_Files.GetFirst();
-            while (node)
+            FilesList::iterator it = m_Files.begin();
+            while (it != m_Files.end())
             {
-                ProjectFile* f = node->GetData();
+                ProjectFile* f = *it++;
                 Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
-                node = node->GetNext();
             }
             result = true;
         }
@@ -470,13 +474,12 @@ bool cbProject::LoadLayout()
                 open_files_map open_files;
 
                 // Get all files to open and sort them according to their tab-position:
-                FilesList::Node* node = m_Files.GetFirst();
-                while (node)
+                FilesList::iterator it = m_Files.begin();
+                while (it != m_Files.end())
                 {
-                    ProjectFile* f = node->GetData();
+                    ProjectFile* f = *it++;
                     if (f->editorOpen)
                         open_files[f->editorTabPos] = f;
-                    node = node->GetNext();
                 }
 
                 // Load all requested files
@@ -503,7 +506,6 @@ bool cbProject::LoadLayout()
                     if (eb)
                         eb->Activate();
                 }
-//                Manager::Get()->GetAppWindow()->Thaw();
             }
             result = true;
         }
@@ -720,7 +722,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         return existing;
     }
 
-    m_Files.Append(pf);
+    m_Files.insert(pf);
     if (!m_CurrentlyLoading)
     {
         // check if we really need to recalculate the common top-level path for the project
@@ -782,14 +784,14 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     m_ProjectFilesMap.erase(UnixFilename(pf->relativeFilename)); // remove from hashmap
     Manager::Get()->GetEditorManager()->Close(pf->file.GetFullPath());
 
-    FilesList::Node* node = m_Files.Find(pf);
-    if (!node)
+    FilesList::iterator it = m_Files.find(pf);
+    if (it == m_Files.end())
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
     }
     else
     {
-        m_Files.DeleteNode(node);
+        m_Files.erase(it);
     }
 
     // remove this file from all targets too
@@ -797,7 +799,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     {
         if (ProjectBuildTarget* target = m_Targets[i])
         {
-            target->GetFilesList().DeleteObject(pf);
+            target->GetFilesList().erase(pf);
         }
     }
 
@@ -820,40 +822,54 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     return true;
 }
 
-bool cbProject::RemoveFile(int index)
+//bool cbProject::RemoveFile(int index)
+//{
+//    if (index < 0 || index >= (int)m_Files.size())
+//        return false; // invalid index
+//    ProjectFile* f = m_Files[index];
+//    return RemoveFile(f);
+//}
+
+//int filesSort(const ProjectFile** arg1, const ProjectFile** arg2)
+//{
+//    return (*arg1)->file.GetFullPath().CompareTo((*arg2)->file.GetFullPath());
+//}
+//
+//int filesSortNameOnly(const ProjectFile** arg1, const ProjectFile** arg2)
+//{
+//    return (*arg1)->file.GetFullName().CompareTo((*arg2)->file.GetFullName());
+//}
+//
+
+void cbProject::SortChildrenRecursive(PrjTree* tree, const wxTreeItemId& parent)
 {
-    if (index < 0 || index >= (int)m_Files.GetCount())
-        return false; // invalid index
-    ProjectFile* f = m_Files[index];
-    return RemoveFile(f);
+    compatibility::tree_cookie_t cookie = 0;
+
+    tree->SortChildren(parent);
+
+    wxTreeItemId current = tree->GetFirstChild(parent, cookie);
+    while (current && tree->ItemHasChildren(current))
+    {
+        SortChildrenRecursive(tree, current);
+        current = tree->GetNextChild(parent, cookie);
+    }
 }
 
-int filesSort(const ProjectFile** arg1, const ProjectFile** arg2)
-{
-    return (*arg1)->file.GetFullPath().CompareTo((*arg2)->file.GetFullPath());
-}
 
-int filesSortNameOnly(const ProjectFile** arg1, const ProjectFile** arg2)
-{
-    return (*arg1)->file.GetFullName().CompareTo((*arg2)->file.GetFullName());
-}
-
-void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
+void cbProject::BuildTree(PrjTree* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
 {
     if (!tree)
         return;
+#ifdef fileload_measuring
+    wxStopWatch sw;
+#endif
 
     int  fldIdx    = Manager::Get()->GetProjectManager()->FolderIconIndex();
     int  vfldIdx   = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
     bool read_only = (!wxFile::Access(GetFilename().c_str(), wxFile::write));
     int  prjIdx    = Manager::Get()->GetProjectManager()->ProjectIconIndex(read_only);
 
-    // sort list of files
-    if (  !(ptvs&ptvsUseFolders)
-        && (ptvs&ptvsHideFolderName) )
-        m_Files.Sort(filesSortNameOnly);
-    else
-        m_Files.Sort(filesSort);
+    tree->SetCompareFunction(ptvs);
 
     // add our project's root item
     FileTreeData* ftd         = new FileTreeData(this, FileTreeData::ftdkProject);
@@ -893,9 +909,9 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, int ptvs, 
 
     // iterate all project files and add them to the tree
     int count = 0;
-    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it;
         ftd = new FileTreeData(this, FileTreeData::ftdkFile);
         ftd->SetFileIndex(count++);
         ftd->SetProjectFile(f);
@@ -979,7 +995,11 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, int ptvs, 
     }
     delete[] pGroupNodes;
 
+    SortChildrenRecursive(tree, m_ProjectNode);
     tree->Expand(m_ProjectNode);
+#ifdef fileload_measuring
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("%s::%s:%d  took : %d ms"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__, (int)sw.Time()));
+#endif
 }
 
 // helper function used by AddTreeNode
@@ -1073,6 +1093,8 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
         if (!compiles)
             tree->SetItemTextColour(ret, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
     }
+//    if(parent != m_ProjectNode)
+//        tree->SortChildren(parent);
     return ret;
 }
 
@@ -1330,9 +1352,9 @@ void cbProject::VirtualFolderDeleted(wxTreeCtrl* tree, wxTreeItemId node)
     wxString parent_foldername = GetRelativeFolderPath(tree, tree->GetItemParent(node));
 
     // now loop all project files and remove them from this virtual folder
-    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it;
         if (f && !f->virtual_path.IsEmpty())
         {
             if (f->virtual_path.StartsWith(foldername)) // need 2 checks because of last separator
@@ -1402,9 +1424,9 @@ bool cbProject::VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const 
         m_VirtualFolders.Add(new_foldername);
 
     // now loop all project files and rename this virtual folder
-    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it;
         if (f && !f->virtual_path.IsEmpty())
         {
             if (f->virtual_path.StartsWith(old_foldername))
@@ -1602,14 +1624,14 @@ wxString cbProject::GetExecutionDir()
     return GetMakefileExecutionDir();
 }
 
-ProjectFile* cbProject::GetFile(int index)
-{
-    FilesList::Node* node = m_Files.Item(index);
-    if (node)
-        return node->GetData();
+//ProjectFile* cbProject::GetFile(int index)
+//{
+//    FilesList::Node* node = m_Files.Item(index);
+//    if (node)
+//        return node->GetData();
 
-    return NULL;
-}
+//    return NULL;
+//}
 
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {
@@ -1642,18 +1664,16 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
 
 bool cbProject::QueryCloseAllFiles()
 {
-    FilesList::Node* node;
-    node = m_Files.GetFirst();
-    while (node)
+    FilesList::iterator it = m_Files.begin();
+    while (it != m_Files.end())
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it++;
         cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(f->file.GetFullPath());
         if (ed && ed->GetModified())
         {
             if (!Manager::Get()->GetEditorManager()->QueryClose(ed))
                 return false;
         }
-        node = node->GetNext();
     }
     return true;
 }
@@ -1668,14 +1688,14 @@ bool cbProject::CloseAllFiles(bool dontsave)
 
     // now free the rest of the project files
     Manager::Get()->GetEditorManager()->HideNotebook();
-    FilesList::Node* node = m_Files.GetFirst();
-    while (node)
+    FilesList::iterator it = m_Files.begin();
+    while (it != m_Files.end())
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it;
         Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
         delete f;
-        delete node;
-        node = m_Files.GetFirst();
+        m_Files.erase(it);
+        it = m_Files.begin();
     }
     Manager::Get()->GetEditorManager()->ShowNotebook();
     return true;
@@ -1683,14 +1703,13 @@ bool cbProject::CloseAllFiles(bool dontsave)
 
 bool cbProject::SaveAllFiles()
 {
-    int count = m_Files.GetCount();
-    FilesList::Node* node = m_Files.GetFirst();
-    while (node)
+    int count = m_Files.size();
+    FilesList::iterator it = m_Files.begin();
+    while (it != m_Files.end())
     {
-        ProjectFile* f = node->GetData();
+        ProjectFile* f = *it++;
         if (Manager::Get()->GetEditorManager()->Save(f->file.GetFullPath()))
             --count;
-        node = node->GetNext();
     }
     return count == 0;
 }
@@ -1702,12 +1721,11 @@ bool cbProject::ShowOptions()
     if (dlg.ShowModal() == wxID_OK)
     {
         // update file details
-        FilesList::Node* node = m_Files.GetFirst();
-        while (node)
+        FilesList::iterator it = m_Files.begin();
+        while (it != m_Files.end())
         {
-            ProjectFile* f = node->GetData();
+            ProjectFile* f = *it++;
             f->UpdateFileDetails();
-            node = node->GetNext();
         }
         return true;
     }
@@ -1785,10 +1803,9 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
         }
 
         // rename target for all files that reference it
-        int count = GetFilesCount();
-        for (int i = 0; i < count; ++i)
+        for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         {
-            ProjectFile* pf = GetFile(i);
+            ProjectFile* pf = *it;
             pf->RenameBuildTarget(target->GetTitle(), targetName);
         }
 
@@ -1817,9 +1834,9 @@ ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& n
         wxString newTargetName = !newName.IsEmpty() ? newName : (_("Copy of ") + target->GetTitle());
         newTarget->SetTitle(newTargetName);
         // just notify the files of this target that they belong to the new target too
-        for (FilesList::Node* it = newTarget->GetFilesList().GetFirst(); it; it = it->GetNext())
+        for (FilesList::iterator it = newTarget->GetFilesList().begin(); it != newTarget->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = it->GetData();
+            ProjectFile* pf = *it;
             pf->AddBuildTarget(newTargetName);
         }
         SetModified(true);
@@ -1892,10 +1909,9 @@ bool cbProject::RemoveBuildTarget(int index)
         }
 
         // remove target from any project files that reference it
-        int count = GetFilesCount();
-        for (int i = 0; i < count; ++i)
+        for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         {
-            ProjectFile* pf = GetFile(i);
+            ProjectFile* pf = *it;
             pf->RemoveBuildTarget(target->GetTitle());
         }
 
@@ -2177,9 +2193,9 @@ void cbProject::SetExtendedObjectNamesGeneration(bool ext)
 
     if (changed)
     {
-        for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+        for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         {
-            ProjectFile* f = node->GetData();
+            ProjectFile* f = *it;
             f->SetObjName(f->relativeToCommonTopLevelPath);
             f->UpdateFileDetails();
         }

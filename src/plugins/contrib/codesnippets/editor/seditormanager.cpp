@@ -1357,9 +1357,9 @@ bool SEditorManager::SwapActiveHeaderSource()
 
         // build a list of project files
         fileArray.Clear();
-        for (int i = 0; i < project->GetFilesCount(); ++i)
+        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = project->GetFile(i);
+            ProjectFile* pf = *it;
             if (!pf)
                 continue;
 
@@ -1962,9 +1962,9 @@ int SEditorManager::ReplaceInFiles(cbFindReplaceData* data)
             return 0;
 
         wxString fullpath = _T("");
-        for (int i = 0; i < prj->GetFilesCount(); ++i)
+        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = prj->GetFile(i);
+            ProjectFile* pf = *it;
             if (pf)
             {
                 fullpath = pf->file.GetFullPath();
@@ -1999,9 +1999,9 @@ int SEditorManager::ReplaceInFiles(cbFindReplaceData* data)
                 if(pProject)
                 {
                     wxString fullpath = _T("");
-                    for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+                    for (FilesList::iterator it = pProject->GetFilesList().begin(); it != pProject->GetFilesList().end(); ++it)
                     {
-                        ProjectFile* pf = pProject->GetFile(idxFile);
+                        ProjectFile* pf = *it;
                         if (pf)
                         {
                             fullpath = pf->file.GetFullPath();
@@ -2511,9 +2511,9 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
         }
 
         wxString fullpath = _T("");
-        for (int i = 0; i < prj->GetFilesCount(); ++i)
+        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = prj->GetFile(i);
+            ProjectFile* pf = *it;
             if (pf)
             {
                 fullpath = pf->file.GetFullPath();
@@ -2570,9 +2570,9 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
             if(pProject)
             {
                 wxString fullpath = _T("");
-                for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+                for (FilesList::iterator it = pProject->GetFilesList().begin(); it != pProject->GetFilesList().end(); ++it)
                 {
-                    ProjectFile* pf = pProject->GetFile(idxFile);
+                    ProjectFile* pf = *it;
                     if (pf)
                     {
                         fullpath = pf->file.GetFullPath();

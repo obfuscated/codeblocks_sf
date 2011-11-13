@@ -50,6 +50,7 @@
 #include "annoyingdialog.h"
 #include "filefilters.h"
 #include "virtualbuildtargetsdlg.h"
+#include "projectloader.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxScrollingDialog)
     EVT_UPDATE_UI( -1,                                          ProjectOptionsDlg::OnUpdateUI)
@@ -99,12 +100,19 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    int count = m_Project->GetFilesCount();
-    for (int i = 0; i < count; ++i)
+    ProjectFileArray pfa(ProjectLoader::CompareProjectFiles);
+
+    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = m_Project->GetFile(i);
-        list->Append(pf->relativeFilename);
+        if(!*it)
+            continue;
+        pfa.Add((ProjectFile*)*it);
     }
+    for (int i=0; i< pfa.GetCount(); ++i)
+    {
+        list->Append(pfa[i]->relativeFilename);
+    }
+
     // this fixes the minsize of the file list
     // which becomes huge when we add items in it (!)
     list->SetMinSize(wxSize(50,50));
@@ -319,7 +327,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
     int count = list->GetCount();
     for (int i = 0; i < count; ++i)
     {
-        ProjectFile* pf = m_Project->GetFile(i);
+        ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
         if (!pf)
             break;
 
@@ -387,7 +395,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
         int count = list->GetCount();
         for (int i = 0; i < count; ++i)
         {
-            ProjectFile* pf = m_Project->GetFile(i);
+            ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
             if (!pf)
                 break;
 
@@ -850,7 +858,7 @@ void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
     if (list->GetSelection() >= 0)
     {
         // show file options dialog
-        ProjectFile* pf = m_Project->GetFile(list->GetSelection());
+        ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(list->GetSelection()));
         pf->ShowOptions(this);
     }
 }
@@ -864,12 +872,15 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     for (int i = 0; i < (int)list->GetCount(); ++i)
     {
-        ProjectFile* pf = m_Project->GetFile(i);
-        list->Check(i, !list->IsChecked(i));
-        if (list->IsChecked(i))
-            pf->AddBuildTarget(target->GetTitle());
-        else
-            pf->RemoveBuildTarget(target->GetTitle());
+        ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
+        if (pf)
+        {
+            list->Check(i, !list->IsChecked(i));
+            if (list->IsChecked(i))
+                pf->AddBuildTarget(target->GetTitle());
+            else
+                pf->RemoveBuildTarget(target->GetTitle());
+        }
     }
 }
 

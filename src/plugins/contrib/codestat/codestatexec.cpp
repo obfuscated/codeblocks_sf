@@ -38,18 +38,18 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 
    // Check if all files have been saved
    bool all_files_saved = true;
-   for (int i=0; i<nb_files; ++i)
-      if (project->GetFile(i)->GetFileState() == fvsModified)
+   for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+      if ((*it)->GetFileState() == fvsModified)
          all_files_saved = false;
    // If not, ask user if we can save them
    if (!all_files_saved)
    {
        if (cbMessageBox(_T("Some files are not saved.\nDo you want to save them before running the plugin?"), _("Warning"), wxICON_EXCLAMATION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_YES)
        {
-           for (int i=0; i<nb_files; ++i)
-           {
-              if (project->GetFile(i)->GetFileState() == fvsModified)
-                 Manager::Get()->GetEditorManager()->Save(project->GetFile(i)->file.GetFullPath());
+            for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+            {
+              if ((*it)->GetFileState() == fvsModified)
+                 Manager::Get()->GetEditorManager()->Save((*it)->file.GetFullPath());
            }
        }
    }
@@ -63,13 +63,14 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 	long comment_lines = 0;
 	long codecomments_lines = 0;
 
-	wxProgressDialog progress(_("Code Statistics plugin"),_("Parsing project files. Please wait..."));
-	for (int i=0; i<nb_files; ++i)
-	{
-		ProjectFile* pf = project->GetFile(i);
-		wxFileName filename(pf->file.GetFullPath(), wxPATH_DOS);
-		if (!filename.FileExists())
-		{
+    wxProgressDialog progress(_("Code Statistics plugin"),_("Parsing project files. Please wait..."));
+    int i = 0;
+    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+    {
+        ProjectFile* pf = *it;
+        wxFileName filename(pf->file.GetFullPath(), wxPATH_DOS);
+        if (!filename.FileExists())
+        {
 			++nb_files_not_found;
 			//Manager::Get()->GetLogManager()->DebugLog(_T("Code Statistics: Ignoring file '%s' (file not found)"), filename.GetName());
 		}
@@ -92,7 +93,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 			else ++nb_skipped_files;
 		}
 		if (nb_files > 1)
-			progress.Update((100*i)/(nb_files-1));
+			progress.Update((100*i++)/(nb_files-1));
    }
    progress.Update(100);
 

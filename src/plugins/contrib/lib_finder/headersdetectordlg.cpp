@@ -107,18 +107,19 @@ void HeadersDetectorDlg::Cancel(wxCommandEvent& event)
 
 void HeadersDetectorDlg::ThreadProc()
 {
-    for ( int i=0; i<m_Project->GetFilesCount(); i++ )
+    m_Progress = 0;
+    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
     {
         if ( m_Thread.TestDestroy() || m_Cancel )
         {
             break;
         }
 
-        ProjectFile* file = m_Project->GetFile(i);
+        ProjectFile* file = *it;
 
         {
             wxCriticalSectionLocker lock(m_Section);
-            m_Progress = i;
+            m_Progress++;
             m_FileName = file ? file->relativeFilename : _T("");
         }
 
