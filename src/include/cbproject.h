@@ -109,7 +109,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @param ptvs The visual style of the project tree
           * @param fgam If not NULL, use these file groups and masks for virtual folders.
           */
-        void BuildTree(PrjTree* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam = 0L);
+        void BuildTree(cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam = 0L);
 
         /** This resets the project to a clear state. Like it's just been new'ed. */
         void ClearAllProperties();
@@ -688,7 +688,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void NotifyPlugins(wxEventType type, const wxString& targetName = wxEmptyString, const wxString& oldTargetName = wxEmptyString);
         void CopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent);
         bool VirtualFolderDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
-        void SortChildrenRecursive(PrjTree* tree, const wxTreeItemId& parent);
+        void SortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent);
 
         // properties
         VirtualBuildTargetsMap m_VirtualTargets;

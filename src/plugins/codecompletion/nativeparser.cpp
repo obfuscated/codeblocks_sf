@@ -1344,7 +1344,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         }
     }
 
-    if(project)
+    if (project)
     {
         for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
@@ -4222,7 +4222,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
                      project ? project->GetTitle().wx_str() : _T("*NONE*")));
         CCLogger::Get()->DebugLog(log);
     }
-    else               
+    else
     {
         EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
         if (editor && AddFileToParser(project, editor->GetFilename(), parser))

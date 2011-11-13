@@ -1,21 +1,21 @@
 #include "BrowseTrackerLayout.h"
 /*
-	This file is part of Browse Tracker, a plugin for Code::Blocks
-	Copyright (C) 2007 Pecan Heber
+    This file is part of Browse Tracker, a plugin for Code::Blocks
+    Copyright (C) 2007 Pecan Heber
 
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // RCS-ID: $Id$
 
@@ -58,14 +58,14 @@ BrowseTrackerLayout::BrowseTrackerLayout(cbProject* project)
 // ----------------------------------------------------------------------------
     : m_pProject(project)
 {
-	//ctor
+    //ctor
 }
 
 // ----------------------------------------------------------------------------
 BrowseTrackerLayout::~BrowseTrackerLayout()
 // ----------------------------------------------------------------------------
 {
-	//dtor
+    //dtor
 }
 
 // IMPORTANT! We have to be careful of what to unicode and what not to.
@@ -148,7 +148,7 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
             }
             if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
             {
-				;//pf->editorTabPos = tabpos;
+                ;//pf->editorTabPos = tabpos;
             }
 
             TiXmlElement* cursor = elem->FirstChildElement();
@@ -239,17 +239,17 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
     TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));
 
-	ProjectFile* active = 0L;
+    ProjectFile* active = 0L;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if (ed)
-		active = ed->GetProjectFile();
+    if (ed)
+        active = ed->GetProjectFile();
 
     for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
     {
         ProjectFile* f = *it;
 
-		if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
-		{
+        if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
+        {
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
@@ -285,10 +285,10 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
 ////                for (EbBrowse_MarksHash::iterator it = m_FileBrowse_MarksArchive.begin();
 ////                        it != m_FileBrowse_MarksArchive.end(); ++it)
 ////                {
-////                	#if defined(LOGGING)
-////                	LOGIT( _T("m_FileBrowse_MarksArchive[i][%d][%p]"), i, it->first );
-////                	#endif
-////                	++i;
+////                    #if defined(LOGGING)
+////                    LOGIT( _T("m_FileBrowse_MarksArchive[i][%d][%p]"), i, it->first );
+////                    #endif
+////                    ++i;
 ////                }
 ////            }
 ////            #endif
@@ -332,18 +332,18 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
             ////    #endif
             ////}
 
-		}
-	}//for
+        }
+    }//for
 
-	const wxArrayString& en = m_pProject->ExpandedNodes();
-	for (unsigned int i = 0; i < en.GetCount(); ++i)
-	{
-		if (!en[i].IsEmpty())
-		{
+    const wxArrayString& en = m_pProject->ExpandedNodes();
+    for (unsigned int i = 0; i < en.GetCount(); ++i)
+    {
+        if (!en[i].IsEmpty())
+        {
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
             node->SetAttribute("folder", cbU2C(en[i]));
-		}
-	}
+        }
+    }
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 // ----------------------------------------------------------------------------

@@ -104,14 +104,12 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 
     for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
     {
-        if(!*it)
+        if (!*it)
             continue;
         pfa.Add((ProjectFile*)*it);
     }
     for (int i=0; i< pfa.GetCount(); ++i)
-    {
         list->Append(pfa[i]->relativeFilename);
-    }
 
     // this fixes the minsize of the file list
     // which becomes huge when we add items in it (!)
@@ -366,8 +364,6 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 
         target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
         wxFileName fname(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
-//        fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-//        fname.MakeRelativeTo(m_Project->GetBasePath());
         target->SetOutputFilename(fname.GetFullPath());
 
         fname.Assign(XRCCTRL(*this, "txtImportLibraryFilename", wxTextCtrl)->GetValue());
@@ -377,13 +373,9 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
         target->SetDefinitionFileFilename(fname.GetFullPath());
 
         fname.Assign(XRCCTRL(*this, "txtWorkingDir", wxTextCtrl)->GetValue());
-//        fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-//        fname.MakeRelativeTo(m_Project->GetBasePath());
         target->SetWorkingDir(fname.GetFullPath());
 
         fname.Assign(XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->GetValue());
-//        fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-//        fname.MakeRelativeTo(m_Project->GetBasePath());
         target->SetObjectOutput(fname.GetFullPath());
 
         target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
@@ -414,6 +406,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& /*event*/)
     ProjectBuildTarget* target = m_Project->GetBuildTarget(m_Current_Sel);
     if (!target)
         return;
+
     wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
     wxCheckBox* chkSL = XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox);
     wxCheckBox* chkCD = XRCCTRL(*this, "chkCreateDefFile", wxCheckBox);
@@ -618,9 +611,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& /*event*/)
     if (!target)
     {
         cbMessageBox(_("The new target could not be added..."),
-                     _("Error"),
-                     wxOK | wxICON_ERROR,
-                     this);
+                     _("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
@@ -644,9 +635,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& /*event*/)
     if (!target)
     {
         cbMessageBox(_("Could not locate target..."),
-                     _("Error"),
-                     wxOK | wxICON_ERROR,
-                     this);
+                     _("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
@@ -675,9 +664,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& /*event*/)
     if (!target)
     {
         cbMessageBox(_("Could not locate target..."),
-                     _("Error"),
-                     wxOK | wxICON_ERROR,
-                     this);
+                     _("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
@@ -753,9 +740,7 @@ void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& /*event*/)
                         _("This project will be saved before exporting the build target.\n"
                         "Are you sure you want to export the selected "
                         "build target to a new project?"),
-                        wxART_QUESTION,
-                        AnnoyingDialog::YES_NO,
-                        wxID_YES);
+                        wxART_QUESTION, AnnoyingDialog::YES_NO, wxID_YES);
     if (dlg.ShowModal() == wxID_YES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
@@ -797,11 +782,11 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& /*event*/)
     fname.Assign(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
     wxFileDialog dlg(this,
-                    _("Select output filename"),
-                    fname.GetPath(),
-                    fname.GetFullName(),
-                    FileFilters::GetFilterAll(),
-                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Select output filename"),
+                     fname.GetPath(),
+                     fname.GetFullName(),
+                     FileFilters::GetFilterAll(),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
@@ -817,11 +802,11 @@ void ProjectOptionsDlg::OnBrowseImportLibraryFilenameClick(wxCommandEvent& event
     fname.Assign(XRCCTRL(*this, "txtImportLibraryFilename", wxTextCtrl)->GetValue());
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
     wxFileDialog dlg(this,
-                    _("Select import library filename"),
-                    fname.GetPath(),
-                    fname.GetFullName(),
-                    FileFilters::GetFilterAll(),
-                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Select import library filename"),
+                     fname.GetPath(),
+                     fname.GetFullName(),
+                     FileFilters::GetFilterAll(),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
@@ -837,11 +822,11 @@ void ProjectOptionsDlg::OnBrowseDefinitionFileFilenameClick(wxCommandEvent& even
     fname.Assign(XRCCTRL(*this, "txtDefinitionFileFilename", wxTextCtrl)->GetValue());
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
     wxFileDialog dlg(this,
-                    _("Select definition file filename"),
-                    fname.GetPath(),
-                    fname.GetFullName(),
-                    FileFilters::GetFilterAll(),
-                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Select definition file filename"),
+                     fname.GetPath(),
+                     fname.GetFullName(),
+                     FileFilters::GetFilterAll(),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
@@ -868,6 +853,8 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
+    if (!target)
+        return;
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     for (int i = 0; i < (int)list->GetCount(); ++i)
@@ -903,6 +890,7 @@ bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString
 
         if (setopts.func.IsNull())
             return false;
+
         return true;
     }
     catch (SquirrelError& e)
@@ -920,16 +908,14 @@ bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
     if (m_Project->GetBuildTarget(name))
     {
         cbMessageBox(_("A target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
     if (m_Project->HasVirtualBuildTarget(name))
     {
         cbMessageBox(_("A virtual target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
@@ -937,8 +923,7 @@ bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
     if (name.find_first_of(forbidden, 0) != wxString::npos)
     {
         cbMessageBox(_("The name contains at least one invalid character:\n\n") + forbidden,
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
@@ -991,17 +976,18 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& /*event*/)
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 
     EditPathDlg dlg(this,
-            fname.GetFullName(),
-            wxEmptyString,//fname.GetPath(),
-            _("Add script(s)"),
-            _("Select script file(s)"),
-            false,
-            true,
-            _("Script files (*.script)|*.script"));
+                    fname.GetFullName(),
+                    wxEmptyString,//fname.GetPath(),
+                    _("Add script(s)"),
+                    _("Select script file(s)"),
+                    false,
+                    true,
+                    _("Script files (*.script)|*.script"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
+
     wxArrayString paths = GetArrayFromString(dlg.GetPath());
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
@@ -1024,6 +1010,7 @@ void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& /*event*/)
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
     if (!ctrl || ctrl->GetSelection() == -1)
         return;
+
     wxString script = ctrl->GetStringSelection();
     if (script.IsEmpty())
         return;
@@ -1043,7 +1030,7 @@ void ProjectOptionsDlg::OnPlatform(wxCommandEvent& event)
 {
     wxTextCtrl* txtP;
     if (event.GetId() == XRCID("btnPlatform"))
-        txtP = XRCCTRL(*this, "txtPlatform", wxTextCtrl);
+        txtP = XRCCTRL(*this, "txtPlatform",     wxTextCtrl);
     else
         txtP = XRCCTRL(*this, "txtPlatformProj", wxTextCtrl);
     bool isAll = txtP->GetValue().Contains(_("All"));
@@ -1130,22 +1117,22 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "btnFileOptions", wxButton)->Enable(filesEn);
 
     // target options
-    XRCCTRL(*this, "btnBuildOrder", wxButton)->Enable(lstTargets->GetCount() > 1);
+    XRCCTRL(*this, "btnBuildOrder",      wxButton)->Enable(lstTargets->GetCount() > 1);
     XRCCTRL(*this, "btnEditBuildTarget", wxButton)->Enable(en);
     XRCCTRL(*this, "btnCopyBuildTarget", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnDelBuildTarget", wxButton)->Enable(en && lstTargets->GetCount() > 1);
+    XRCCTRL(*this, "btnDelBuildTarget",  wxButton)->Enable(en && lstTargets->GetCount() > 1);
 
     // edit project/target build options
     XRCCTRL(*this, "btnProjectBuildOptions", wxButton)->Enable(m_pCompiler);
-    XRCCTRL(*this, "btnTargetBuildOptions", wxButton)->Enable(m_pCompiler && en);
-    XRCCTRL(*this, "btnExportTarget", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnTargetBuildOptions",  wxButton)->Enable(m_pCompiler && en);
+    XRCCTRL(*this, "btnExportTarget",        wxButton)->Enable(en);
 
     // disable some stuff if using a custom makefile
     bool customMake = XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue();
-    XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->Enable(!customMake);
-    XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->Enable(!customMake && en);
-    XRCCTRL(*this, "txtObjectDir", wxTextCtrl)->Enable(!customMake && en);
-    XRCCTRL(*this, "btnBrowseObjectDir", wxButton)->Enable(!customMake && en);
+    XRCCTRL(*this, "rbPCHStrategy",       wxRadioBox)->Enable(!customMake);
+    XRCCTRL(*this, "txtObjectDir",        wxTextCtrl)->Enable(!customMake && en);
+    XRCCTRL(*this, "txtObjectDir",        wxTextCtrl)->Enable(!customMake && en);
+    XRCCTRL(*this, "btnBrowseObjectDir",  wxButton)->Enable(!customMake && en);
     XRCCTRL(*this, "btnToggleCheckmarks", wxButton)->Enable(!customMake && en);
     list->Enable(!customMake);
 
@@ -1161,10 +1148,10 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     wxListBox* lstPreScripts = XRCCTRL(*this, "lstPreScripts", wxListBox);
     lstPreScripts->Enable(scrsel);
     bool presel = lstPreScripts->GetSelection() != -1;
-    XRCCTRL(*this, "btnAddPreScripts", wxButton)->Enable(scrsel);
+    XRCCTRL(*this, "btnAddPreScripts",    wxButton)->Enable(scrsel);
     XRCCTRL(*this, "btnRemovePreScripts", wxButton)->Enable(scrsel && presel);
-    XRCCTRL(*this, "spnPreScripts", wxSpinButton)->Enable(scrsel && presel && lstPreScripts->GetCount() > 1);
-    XRCCTRL(*this, "btnCheckScripts", wxButton)->Enable(!customMake);
+    XRCCTRL(*this, "spnPreScripts",       wxSpinButton)->Enable(scrsel && presel && lstPreScripts->GetCount() > 1);
+    XRCCTRL(*this, "btnCheckScripts",     wxButton)->Enable(!customMake);
 }
 
 void ProjectOptionsDlg::OnOK(wxCommandEvent& event)

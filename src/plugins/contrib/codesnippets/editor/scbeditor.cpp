@@ -1843,7 +1843,7 @@ void ScbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
     if (!arr.GetCount())
         return;
     bool toggle=false;
-    for(size_t i=0;i<arr.GetCount();i++)
+    for (size_t i=0;i<arr.GetCount();i++)
     {
         cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
         if (HasBreakpoint(line))

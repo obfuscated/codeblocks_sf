@@ -20,7 +20,7 @@
 #include <wx/textdlg.h>
 
 #ifndef CB_PRECOMP
-	#include <wx/dir.h>
+    #include <wx/dir.h>
 
     #include "cbproject.h" // class's header file
     #include "compiler.h" // GetSwitches
@@ -235,10 +235,8 @@ void cbProject::ClearAllProperties()
 {
     Delete(m_pExtensionsElement);
 
-    for(FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
-    {
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
         delete(*it);
-    }
     m_Files.clear();
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
@@ -327,7 +325,6 @@ void cbProject::CalculateCommonTopLevelPath()
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
         ProjectFile* f = (*it);
-
         if (!f)
             continue;
 
@@ -786,21 +783,15 @@ bool cbProject::RemoveFile(ProjectFile* pf)
 
     FilesList::iterator it = m_Files.find(pf);
     if (it == m_Files.end())
-    {
         Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
-    }
     else
-    {
         m_Files.erase(it);
-    }
 
     // remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
         if (ProjectBuildTarget* target = m_Targets[i])
-        {
             target->GetFilesList().erase(pf);
-        }
     }
 
     // if this is auto-generated, inform "parent"
@@ -822,26 +813,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     return true;
 }
 
-//bool cbProject::RemoveFile(int index)
-//{
-//    if (index < 0 || index >= (int)m_Files.size())
-//        return false; // invalid index
-//    ProjectFile* f = m_Files[index];
-//    return RemoveFile(f);
-//}
-
-//int filesSort(const ProjectFile** arg1, const ProjectFile** arg2)
-//{
-//    return (*arg1)->file.GetFullPath().CompareTo((*arg2)->file.GetFullPath());
-//}
-//
-//int filesSortNameOnly(const ProjectFile** arg1, const ProjectFile** arg2)
-//{
-//    return (*arg1)->file.GetFullName().CompareTo((*arg2)->file.GetFullName());
-//}
-//
-
-void cbProject::SortChildrenRecursive(PrjTree* tree, const wxTreeItemId& parent)
+void cbProject::SortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent)
 {
     compatibility::tree_cookie_t cookie = 0;
 
@@ -855,11 +827,11 @@ void cbProject::SortChildrenRecursive(PrjTree* tree, const wxTreeItemId& parent)
     }
 }
 
-
-void cbProject::BuildTree(PrjTree* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
+void cbProject::BuildTree(cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
 {
     if (!tree)
         return;
+
 #ifdef fileload_measuring
     wxStopWatch sw;
 #endif
@@ -1093,8 +1065,6 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
         if (!compiles)
             tree->SetItemTextColour(ret, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
     }
-//    if(parent != m_ProjectNode)
-//        tree->SortChildren(parent);
     return ret;
 }
 
@@ -1623,15 +1593,6 @@ wxString cbProject::GetExecutionDir()
 
     return GetMakefileExecutionDir();
 }
-
-//ProjectFile* cbProject::GetFile(int index)
-//{
-//    FilesList::Node* node = m_Files.Item(index);
-//    if (node)
-//        return node->GetData();
-
-//    return NULL;
-//}
 
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {

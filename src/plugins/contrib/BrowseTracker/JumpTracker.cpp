@@ -101,8 +101,8 @@ void JumpTracker::OnAttach()
     //    #endif
 
     //    // Set current plugin version
-    //	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
-    //	pInfo->version = plgnVersion.GetVersion();
+    //    PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+    //    pInfo->version = plgnVersion.GetVersion();
 
     m_bJumpInProgress = false;
 

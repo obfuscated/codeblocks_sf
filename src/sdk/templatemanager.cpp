@@ -45,9 +45,6 @@ TemplateManager::TemplateManager()
 TemplateManager::~TemplateManager()
 {
     //dtor
-    // this is a core manager, so it is removed when the app is shutting down.
-    // in this case, the app has already un-hooked us, so no need to do it ourselves...
-//  Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 }
 
 void TemplateManager::CreateMenu(wxMenuBar* menuBar)
@@ -132,13 +129,9 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     path = ChooseDirectory(0, _("Choose a directory to create the new project"),
                         path, _T(""), false, true);
     if (path.IsEmpty())
-    {
         return NULL;
-    }
-    else if(path.Mid(path.Length() - 1) == wxFILE_SEP_PATH)
-    {
+    else if (path.Mid(path.Length() - 1) == wxFILE_SEP_PATH)
         path.RemoveLast();
-    }
 
     // check for existing files; if found, notify about overwriting them
     wxDir dir(path);
@@ -214,7 +207,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
                 project_filename = fname.GetFullPath();
             }
             prj = Manager::Get()->GetProjectManager()->LoadProject(project_filename);
-            if(prj && !newname.IsEmpty())
+            if (prj && !newname.IsEmpty())
             {
                 prj->SetTitle(newname);
                 for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)

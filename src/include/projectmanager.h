@@ -30,18 +30,20 @@ class cbWorkspace;
 class cbAuiNotebook;
 class wxAuiNotebookEvent;
 
-class PrjTree : public wxTreeCtrl
+/*
+    This is a "proxy" wxTreeCtrl descendant handles several usage limitations.
+*/
+class cbTreeCtrl : public wxTreeCtrl
 {
     public:
-        PrjTree();
-        PrjTree(wxWindow* parent, int id);
+        cbTreeCtrl();
+        cbTreeCtrl(wxWindow* parent, int id);
         void SetCompareFunction(const int ptvs);
     protected:
 #ifndef __WXMSW__
 /*
-    Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
-    event when right-clicking on the client area.
-    This is a "proxy" wxTreeCtrl descendant that handles this for us...
+        Under wxGTK, wxTreeCtrl is not sending an EVT_COMMAND_RIGHT_CLICK
+        event when right-clicking on the client area.
 */
         void OnRightClick(wxMouseEvent& event);
 #endif // !__WXMSW__
@@ -50,10 +52,9 @@ class PrjTree : public wxTreeCtrl
         int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
         int (*Compare)(const ProjectFile* arg1, const ProjectFile* arg2);
 
-        DECLARE_DYNAMIC_CLASS(PrjTree)
+        DECLARE_DYNAMIC_CLASS(cbTreeCtrl)
         DECLARE_EVENT_TABLE();
 };
-
 
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
@@ -398,7 +399,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
-        PrjTree* GetTree(){ return m_pTree; }
+        cbTreeCtrl* GetTree(){ return m_pTree; }
         /** Get the selection of the project manager's tree (GUI).
           * This must be used instead of tree->GetSelection() because the tree
           * has the wxTR_MULTIPLE style.
@@ -487,6 +488,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void BuildTree();
         void CreateMenuTreeProps(wxMenu* menu, bool popup);
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+
         void OnTabContextMenu(wxAuiNotebookEvent& event);
         void OnTabPosition(wxCommandEvent& event);
         void OnProjectFileActivated(wxTreeEvent& event);
@@ -531,31 +533,31 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         void DoOpenSelectedFile();
         void DoOpenFile(ProjectFile* pf, const wxString& filename);
-        int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
+        int  DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
         void RemoveFilesRecursively(wxTreeItemId& sel_id);
         void OpenFilesRecursively(wxTreeItemId& sel_id);
 
-        cbAuiNotebook* m_pNotebook;
-        PrjTree* m_pTree;
-        wxTreeItemId m_TreeRoot;
-        cbProject* m_pActiveProject;
-        cbProject* m_pProjectToActivate;
-        wxImageList* m_pImages;
-        ProjectsArray* m_pProjects;
-        DepsMap m_ProjectDeps;
-        cbWorkspace* m_pWorkspace;
-        int m_TreeVisualState;
+        cbAuiNotebook*       m_pNotebook;
+        cbTreeCtrl*          m_pTree;
+        wxTreeItemId         m_TreeRoot;
+        cbProject*           m_pActiveProject;
+        cbProject*           m_pProjectToActivate;
+        wxImageList*         m_pImages;
+        ProjectsArray*       m_pProjects;
+        DepsMap              m_ProjectDeps;
+        cbWorkspace*         m_pWorkspace;
+        int                  m_TreeVisualState;
         FilesGroupsAndMasks* m_pFileGroups;
-        int m_TreeFreezeCounter;
-        bool m_IsLoadingProject;
-        bool m_IsLoadingWorkspace;
-        bool m_IsClosingProject;
-        bool m_IsClosingWorkspace;
-        wxString m_InitialDir;
-        wxArrayTreeItemIds m_DraggingSelection;
-        wxTreeItemId m_RightClickItem;
-        bool m_isCheckingForExternallyModifiedProjects;
-        bool m_CanSendWorkspaceChanged;
+        int                  m_TreeFreezeCounter;
+        bool                 m_IsLoadingProject;
+        bool                 m_IsLoadingWorkspace;
+        bool                 m_IsClosingProject;
+        bool                 m_IsClosingWorkspace;
+        wxString             m_InitialDir;
+        wxArrayTreeItemIds   m_DraggingSelection;
+        wxTreeItemId         m_RightClickItem;
+        bool                 m_isCheckingForExternallyModifiedProjects;
+        bool                 m_CanSendWorkspaceChanged;
 
         DECLARE_EVENT_TABLE()
 };

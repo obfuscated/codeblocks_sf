@@ -24,6 +24,7 @@ void FileFilters::AddDefaultFileFilters()
 {
     if (s_Filters.size() != 0)
         return;
+
     Add(_("Code::Blocks workspace files"),         _T("*.workspace"));
     Add(_("Code::Blocks project files"),           _T("*.cbp"));
     Add(_("Code::Blocks project/workspace files"), _T("*.workspace;*.cbp"));
@@ -40,6 +41,7 @@ bool FileFilters::Add(const wxString& name, const wxString& mask)
 {
     if (name.IsEmpty() || mask.IsEmpty())
         return false; // both must be valid
+
     if (mask.Index(_T(',')) != wxString::npos)
     {
         // replace commas with semicolons
@@ -50,6 +52,7 @@ bool FileFilters::Add(const wxString& name, const wxString& mask)
     }
     else
         s_Filters[name] = mask;
+
     return true;
 }
 
@@ -94,10 +97,10 @@ wxString FileFilters::GetFilterString(const wxString& ext)
 wxString FileFilters::GetFilterAll()
 {
     s_LastFilterAllIndex = 0;
-    if(platform::windows)
+    if (platform::windows)
         return _("All files (*.*)|*.*");
-    else
-        return _("All files (*)|*");
+
+    return _("All files (*)|*");
 }
 
 size_t FileFilters::GetIndexForFilterAll()
@@ -113,7 +116,7 @@ bool FileFilters::GetFilterIndexFromName(const wxString& FiltersList, const wxSt
     int LoopEnd = static_cast<int>(List.GetCount());
     for(int idxList = 0; idxList < LoopEnd; idxList+=2)
     {
-        if(List[idxList] == FilterName)
+        if (List[idxList] == FilterName)
         {
             Index = idxList/2;
             bFound = true;
@@ -129,7 +132,7 @@ bool FileFilters::GetFilterNameFromIndex(const wxString& FiltersList, int Index,
     // the List will contain 2 entries per type (description, mask)
     wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
     int LoopEnd = static_cast<int>(List.GetCount());
-    if(2*Index < LoopEnd)
+    if (2*Index < LoopEnd)
     {
         FilterName = List[2*Index];
         bFound = true;
