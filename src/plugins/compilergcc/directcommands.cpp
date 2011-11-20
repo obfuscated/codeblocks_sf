@@ -850,16 +850,33 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
 			// look for static libraries in target/project library dirs
 			const wxArrayString& libs = target->GetLinkLibs();
 			const wxArrayString& prjLibDirs = target->GetParentProject()->GetLibDirs();
+			const wxArrayString& cmpLibDirs = compiler->GetLibDirs();
 			wxArrayString libDirs = target->GetLibDirs();
 			AppendArray(prjLibDirs, libDirs);
+			AppendArray(cmpLibDirs, libDirs);
 			for (size_t i = 0; i < libs.GetCount(); ++i)
 			{
 				wxString lib = libs[i];
 
 				// if user manually pointed to a library, without using the lib dirs,
-				// then let him handle the dependency on his own as he probably knows better...
+				// then just check the file directly w/out involving the search dirs...
 				if (lib.Contains(_T("/")) || lib.Contains(_T("\\")))
+				{
+					Manager::Get()->GetMacrosManager()->ReplaceMacros(lib, target);
+					lib = UnixFilename(lib);
+					time_t timeExtDep;
+					depsTimeStamp(lib.mb_str(), &timeExtDep);
+					if (timeExtDep > timeOutput)
+					{
+						// force re-link
+						Manager::Get()->GetLogManager()->DebugLog(F(_T("Forcing re-link of '%s/%s' because '%s' is newer"),
+																		target->GetParentProject()->GetTitle().wx_str(),
+																		target->GetTitle().wx_str(),
+																		lib.wx_str()));
+						return true;
+					}
 					continue;
+				}
 
 				if (!lib.StartsWith(compiler->GetSwitches().libPrefix))
 					lib = compiler->GetSwitches().libPrefix + lib;
@@ -879,7 +896,7 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
 						Manager::Get()->GetLogManager()->DebugLog(F(_T("Forcing re-link of '%s/%s' because '%s' is newer"),
 																		target->GetParentProject()->GetTitle().wx_str(),
 																		target->GetTitle().wx_str(),
-																		 dir.wx_str()));
+																		dir.wx_str()));
 						return true;
 					}
 				}
