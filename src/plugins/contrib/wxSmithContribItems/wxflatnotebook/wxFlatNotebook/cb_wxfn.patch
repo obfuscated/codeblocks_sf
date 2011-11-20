@@ -1012,7 +1012,8 @@ diff -u -r D:\projects\CodeBlocks(commit)\src\sdk\wxFlatNotebook/wxFlatNotebook.
 -	const char *down_arrow_pressed_xpm[] = {
 -		/* width height num_colors chars_per_pixel */
 -		"    16    16        8            1",
--			/* colors */
+-			/* colors */
+
 -			"` c #008080",
 -			". c #4766e0",
 -			"# c #9e9ede",

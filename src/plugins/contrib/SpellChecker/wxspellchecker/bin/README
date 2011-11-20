@@ -1,9 +1,9 @@
-Currently, the compiled file is an executable rather than a library.
-The only spell check engine that I've created an interface for is Aspell, but there are 3 dialogs to make sure that I didn't accidentally tie the engine to only one interface.  The default dialog resembles Mozilla's spell checker dialog, but with a context text box.  The other dialogs resemble WinterTree's Sentry spellchecker dialog and Outlook 97's spell check dialog.  Those dialogs are used if the command line parameter "sentry" or "outlook97" are used when running the executable.
-Also, the code currently looks for the dictionaries under directories "data" and "dict" under the executable's working directory.  To stop this behavior remove the call to "SetDefaultOptions" in the AspellInterface.cpp.
-This program has been developed and tested under Linux and Windows.  The Makefile was grabbed from the Minimal sample and uses relative paths and makeprog.env from the wxWindows source tree.  It can probably be adjusted to use wx-config flags but I haven't gotten around to it.
-
-TODO:
-  The Aspell options dialog currently only shows the options available to the engine, but doesn't let the user change the options.  This needs to be changed to present the current options to the user and allow the user to change the settings.
-  This REALLY needs to be put into a library with external interfaces that can be dynamically loaded and used by any programming language not just a wxWindows application.  However, I don't know how to do this.  (Any help is greatly appreciated.)
-
+Currently, the compiled file is an executable rather than a library.
+The only spell check engine that I've created an interface for is Aspell, but there are 3 dialogs to make sure that I didn't accidentally tie the engine to only one interface.  The default dialog resembles Mozilla's spell checker dialog, but with a context text box.  The other dialogs resemble WinterTree's Sentry spellchecker dialog and Outlook 97's spell check dialog.  Those dialogs are used if the command line parameter "sentry" or "outlook97" are used when running the executable.
+Also, the code currently looks for the dictionaries under directories "data" and "dict" under the executable's working directory.  To stop this behavior remove the call to "SetDefaultOptions" in the AspellInterface.cpp.
+This program has been developed and tested under Linux and Windows.  The Makefile was grabbed from the Minimal sample and uses relative paths and makeprog.env from the wxWindows source tree.  It can probably be adjusted to use wx-config flags but I haven't gotten around to it.
+
+TODO:
+  The Aspell options dialog currently only shows the options available to the engine, but doesn't let the user change the options.  This needs to be changed to present the current options to the user and allow the user to change the settings.
+  This REALLY needs to be put into a library with external interfaces that can be dynamically loaded and used by any programming language not just a wxWindows application.  However, I don't know how to do this.  (Any help is greatly appreciated.)
+

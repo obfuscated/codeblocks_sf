@@ -6,7 +6,7 @@
 # Author:       Robin Dunn
 #
 # Created:      5-Sept-2000
-# RCS-ID:       $Id$
+# RCS-ID:       $Id: gen_iface.py 7291 2011-07-25 08:12:01Z mortenmacfly $
 # Copyright:    (c) 2000 by Total Control Software
 # Licence:      wxWindows licence
 #----------------------------------------------------------------------------

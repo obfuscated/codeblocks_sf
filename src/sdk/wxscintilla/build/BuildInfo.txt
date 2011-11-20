@@ -3,7 +3,7 @@
 ## Purpose:     Installation info
 ## Maintainer:  Otto Wyss
 ## Created:     2004-11-14
-## RCS-ID:      $Id$
+## RCS-ID:      $Id: BuildInfo.txt 4946 2008-03-13 09:14:30Z mortenmacfly $
 ## Copyright:   (c) 2004 wxCode
 ## Licence:     wxWindows
 ##############################################################################

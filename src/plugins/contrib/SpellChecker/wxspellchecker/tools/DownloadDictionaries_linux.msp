@@ -1,10 +1,10 @@
-[Project]
+[Project]
 name=DownloadDictionaries
 type=5
 defaultConfig=0
-
-[Debug]
-// compiler 
+
+[Debug]
+// compiler 
 workingDirectory=../bin
 arguments=
 intermediateFilesDirectory=Debug
@@ -23,8 +23,8 @@ debugLevel=2
 exceptionEnabled=0
 runtimeTypeEnabled=0
 optimizeLevel=0
-
-// linker
+
+// linker
 libraryPath=
 outputFilename=../bin/DownloadDictionariesD
 libraries=
@@ -32,17 +32,17 @@ extraLinkerOptions=./lib_bzipstreamd.a ../lib/libwx_spellcheckd.a `${WXSTABLE}/b
 ignoreStartupFile=0
 ignoreDefaultLibs=0
 stripExecutableFile=0
-
-// archive
+
+// archive
 extraArchiveOptions=
-
-//resource
+
+//resource
 resourcePreprocessor=
 resourceIncludeDirectory=
 extraResourceOptions=
-
-[Release]
-// compiler 
+
+[Release]
+// compiler 
 workingDirectory=../bin
 arguments=
 intermediateFilesDirectory=Release
@@ -61,8 +61,8 @@ debugLevel=1
 exceptionEnabled=0
 runtimeTypeEnabled=0
 optimizeLevel=2
-
-// linker
+
+// linker
 libraryPath=
 outputFilename=../bin/DownloadDictionaries
 libraries=
@@ -70,25 +70,25 @@ extraLinkerOptions=./lib_bzipstream.a ../lib/libwx_spellcheck.a `${WXSTABLE}/bin
 ignoreStartupFile=0
 ignoreDefaultLibs=0
 stripExecutableFile=1
-
-// archive
+
+// archive
 extraArchiveOptions=
-
-//resource
+
+//resource
 resourcePreprocessor=
 resourceIncludeDirectory=
 extraResourceOptions=
-
-[Source]
+
+[Source]
 1=DictionaryWizard.cpp
 2=wizard.cpp
 3=AspellDictionaryDownloader.cpp
-[Header]
+[Header]
 1=DictionaryWizard.h
 2=AspellDictionaryDownloader.h
 3=EngineDictionaryDownloader.h
 4=MySpellDictionaryDownloader.h
-[Resource]
-[Other]
+[Resource]
+[Other]
 1=wiztest.xpm
-[History]
+[History]
