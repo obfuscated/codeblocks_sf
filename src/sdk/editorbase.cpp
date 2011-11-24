@@ -84,27 +84,6 @@ void EditorBase::InitFilename(const wxString& filename)
     wxFileName fname;
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
-
-    // set full filename (including path) as tooltip,
-    // if possible add the appropriate project also
-    NormalizePath(fname, wxEmptyString);
-    wxString toolTip = UnixFilename(fname.GetFullPath());
-    cbProject* prj = nullptr;
-    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-    for (unsigned int i = 0; i < projects->GetCount(); ++i)
-    {
-        prj = projects->Item(i);
-        if (prj->GetFileByFilename(toolTip, false))
-        {
-            toolTip += _("\nProject: ") + prj->GetTitle();
-            break;
-        }
-    }
-    cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
-    if (nb)
-        nb->SetTabToolTip(this, toolTip);
-
-    //    Manager::Get()->GetLogManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
 }
 
 wxString EditorBase::CreateUniqueFilename()
@@ -168,6 +147,29 @@ void EditorBase::SetTitle(const wxString& newTitle)
     int mypage = Manager::Get()->GetEditorManager()->FindPageFromEditor(this);
     if (mypage != -1)
         Manager::Get()->GetEditorManager()->GetNotebook()->SetPageText(mypage, newTitle);
+
+
+    // set full filename (including path) as tooltip,
+    // if possible add the appropriate project also
+    wxString toolTip = GetFilename();
+    wxFileName fname(realpath(toolTip));
+    NormalizePath(fname, wxEmptyString);
+    toolTip = UnixFilename(fname.GetFullPath());
+    cbProject* prj = nullptr;
+    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+    for (unsigned int i = 0; i < projects->GetCount(); ++i)
+    {
+        prj = projects->Item(i);
+        if (prj && prj->GetFileByFilename(toolTip, false, true))
+        {
+            toolTip += _("\nProject: ") + prj->GetTitle();
+            break;
+        }
+    }
+    cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+    if (nb)
+        nb->SetTabToolTip(this, toolTip);
+
 }
 
 void EditorBase::Activate()
