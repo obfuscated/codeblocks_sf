@@ -84,7 +84,7 @@ void CompilerLDC::Reset()
     m_Options.AddOption(_("enable contracts"), _T("-enable-contracts"), category);
     m_Options.AddOption(_("enable assertions"), _T("-enable-asserts"), category);
     m_Options.AddOption(_("enable invariants"), _T("-enable-invariants"), category);
- 
+
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("No optimization"), _T("-O0"), category);
@@ -134,7 +134,7 @@ AutoDetectResult CompilerLDC::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
     m_MasterPath = wxFileExists(_T("/usr/local/bin/ldc")) ? _T("/usr/local") : _T("/usr");
-    
+
     AddIncludeDir(m_MasterPath + sep + _T("import"));
     AddLibDir(m_MasterPath + sep + _T("lib"));
 

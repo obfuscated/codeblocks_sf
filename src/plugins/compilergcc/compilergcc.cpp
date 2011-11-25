@@ -79,6 +79,8 @@
 #include "compilerDMD.h"
 #include "compilerGNUPOWERPC.h"
 #include "compilerGNUTRICORE.h"
+#include "compilerGNUFortran.h"
+#include "compilerG95.h"
 
 #include <scripting/bindings/sc_base_types.h>
 
@@ -405,6 +407,8 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerGDC);
     CompilerFactory::RegisterCompiler(new CompilerLDC);
     CompilerFactory::RegisterCompiler(new CompilerDMD);
+    CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
+    CompilerFactory::RegisterCompiler(new CompilerPGIFortran);
 #if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
     CompilerFactory::RegisterCompiler(new CompilerGNUAVR);

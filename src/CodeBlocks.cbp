@@ -1413,6 +1413,12 @@
 		<Unit filename="plugins\compilergcc\compilerDMD.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerG95.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerG95.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerGDC.cpp">
 			<Option target="Compiler" />
 		</Unit>
@@ -1429,6 +1435,12 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerGNUAVR.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUFortran.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUFortran.h">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerGNUMSP430.cpp">

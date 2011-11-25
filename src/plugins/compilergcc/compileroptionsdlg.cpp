@@ -1440,9 +1440,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& /*event*/)
                      wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
     {
         for (size_t i=0; i<selections.GetCount(); ++i)
-        {
             control->Delete(selections[static_cast<unsigned int>(i)]);
-        }
         m_bDirty = true;
     }
 } // OnRemoveDirClick

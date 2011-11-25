@@ -568,9 +568,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         force = true;
     wxArrayString fileMissing;
     if ( AreExternalDepsOutdated(target, out.GetFullPath(), &fileMissing) )
-    {
         force = true;
-    }
+
     if (!fileMissing.IsEmpty())
     {
         wxString warn;

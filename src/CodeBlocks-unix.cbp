@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="exchndl">
 				<Option platforms="Windows;" />
-				<Option output="devel/libexchndl" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/exchndl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -1245,6 +1245,12 @@
 		<Unit filename="plugins/compilergcc/compilerDMD.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerG95.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerG95.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerGDC.cpp">
 			<Option target="Compiler" />
 		</Unit>
@@ -1261,6 +1267,12 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerGNUAVR.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerGNUFortran.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerGNUFortran.h">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerGNUMSP430.cpp">
