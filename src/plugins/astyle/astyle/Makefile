@@ -6,12 +6,12 @@ SRC = astyle_main.cpp \
       ASBeautifier.cpp \
       ASFormatter.cpp \
       ASEnhancer.cpp \
-	  ASLocalizer.cpp \
+      ASLocalizer.cpp \
       ASResource.cpp
 
 # source directories
-vpath %.cpp ../src
-vpath %.h   ../src
+vpath %.cpp ../../src
+vpath %.h   ../../src
 
 # NOTE for java compiles the environment variable $JAVA_HOME must be set
 # example: export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.00

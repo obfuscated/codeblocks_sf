@@ -85,7 +85,7 @@ jobject   g_obj;
 jmethodID g_mid;
 #endif
 
-const char* g_version = "2.02";
+const char* g_version = "2.03 beta";
 
 //-----------------------------------------------------------------------------
 // ASStreamIterator class
@@ -1213,7 +1213,7 @@ void ASConsole::getFilePaths(string& filePath)
 	}
 
 	// check if files were found (probably an input error if not)
-	if (fileName.size() == 0)
+	if (fileName.empty())
 	{
 		fprintf(stderr, _("No file to process %s\n"), filePath.c_str());
 		if (hasWildcard && !isRecursive)
@@ -1530,6 +1530,21 @@ void ASConsole::printHelp() const
 	(*_err) << "    Fill empty lines with the white space of their\n";
 	(*_err) << "    previous lines.\n";
 	(*_err) << endl;
+	(*_err) << "    --align-pointer=type    OR  -k1\n";
+	(*_err) << "    --align-pointer=middle  OR  -k2\n";
+	(*_err) << "    --align-pointer=name    OR  -k3\n";
+	(*_err) << "    Attach a pointer or reference operator (* or &) to either\n";
+	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
+	(*_err) << "    To align the reference separately use --align-reference.\n";
+	(*_err) << endl;
+	(*_err) << "    --align-reference=none    OR  -W0\n";
+	(*_err) << "    --align-reference=type    OR  -W1\n";
+	(*_err) << "    --align-reference=middle  OR  -W2\n";
+	(*_err) << "    --align-reference=name    OR  -W3\n";
+	(*_err) << "    Attach a reference operator (&) to either\n";
+	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
+	(*_err) << "    If not set, follow pointer alignment.\n";
+	(*_err) << endl;
 	(*_err) << "Formatting options:\n";
 	(*_err) << "-------------------\n";
 	(*_err) << "    --break-closing-brackets  OR  -y\n";
@@ -1557,20 +1572,14 @@ void ASConsole::printHelp() const
 	(*_err) << "    --convert-tabs  OR  -c\n";
 	(*_err) << "    Convert tabs to the appropriate number of spaces.\n";
 	(*_err) << endl;
-	(*_err) << "    --align-pointer=type    OR  -k1\n";
-	(*_err) << "    --align-pointer=middle  OR  -k2\n";
-	(*_err) << "    --align-pointer=name    OR  -k3\n";
-	(*_err) << "    Attach a pointer or reference operator (* or &) to either\n";
-	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
-	(*_err) << "    To align the reference separately use --align-reference.\n";
-	(*_err) << endl;
-	(*_err) << "    --align-reference=none    OR  -W0\n";
-	(*_err) << "    --align-reference=type    OR  -W1\n";
-	(*_err) << "    --align-reference=middle  OR  -W2\n";
-	(*_err) << "    --align-reference=name    OR  -W3\n";
-	(*_err) << "    Attach a reference operator (&) to either\n";
-	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
-	(*_err) << "    If not set, follow pointer alignment.\n";
+	(*_err) << "    --max-code-length=#    OR  -xC#\n";
+	(*_err) << "    --break-after-logical  OR  -xL\n";
+	(*_err) << "    max-code-length=# will break the line if it exceeds more than\n";
+	(*_err) << "    # characters. The valid values are 50 thru 200.\n";
+	(*_err) << "    If the line contains logical conditionals they will be placed\n";
+	(*_err) << "    first on the new line. The option break-after-logical will\n";
+	(*_err) << "    cause the logical conditional to be placed last on the\n";
+	(*_err) << "    previous line.\n";
 	(*_err) << endl;
 	(*_err) << "    --mode=c\n";
 	(*_err) << "    Indent a C or C++ source file (this is the default).\n";
@@ -2625,7 +2634,9 @@ void ASOptions::parseOption(const string& arg, const string& errorInfo)
 		string maxIndentParam = getParam(arg, "M", "max-instatement-indent=");
 		if (maxIndentParam.length() > 0)
 			maxIndent = atoi(maxIndentParam.c_str());
-		if (maxIndent > 120)
+		if (maxIndent < 40)
+			isOptionError(arg, errorInfo);
+		else if (maxIndent > 120)
 			isOptionError(arg, errorInfo);
 		else
 			formatter.setMaxInStatementIndentLength(maxIndent);
@@ -2808,7 +2819,35 @@ void ASOptions::parseOption(const string& arg, const string& errorInfo)
 		else if (align == 3)
 			formatter.setReferenceAlignment(REF_ALIGN_NAME);
 	}
-	// depreciated options release 2.02 ///////////////////////////////////////////////////////////
+	else if ( isParamOption(arg, "max-code-length=") )
+	{
+		int maxLength = 50;
+		string maxLengthParam = getParam(arg, "max-code-length=");
+		if (maxLengthParam.length() > 0)
+			maxLength = atoi(maxLengthParam.c_str());
+		if (maxLength < 50)
+			isOptionError(arg, errorInfo);
+		else if (maxLength > 200)
+			isOptionError(arg, errorInfo);
+		else
+			formatter.setMaxCodeLength(maxLength);
+	}
+	else if ( isParamOption(arg, "xC") )
+	{
+		int maxLength = 50;
+		string maxLengthParam = getParam(arg, "xC");
+		if (maxLengthParam.length() > 0)
+			maxLength = atoi(maxLengthParam.c_str());
+		if (maxLength > 200)
+			isOptionError(arg, errorInfo);
+		else
+			formatter.setMaxCodeLength(maxLength);
+	}
+	else if ( isOption(arg, "xL", "break-after-logical") )
+	{
+		formatter.setBreakAfterMode(true);
+	}
+	// depreciated options release 2.02 ///////////////////////////////////////////////////////////////////////////////
 	else if ( isOption(arg, "brackets=horstmann") )
 	{
 		isOptionError(arg, errorInfo);
@@ -2821,13 +2860,13 @@ void ASOptions::parseOption(const string& arg, const string& errorInfo)
 	{
 		isOptionError(arg, errorInfo);
 	}
-	// end depreciated options ////////////////////////////////////////////////////////////////////
+	// end depreciated options ////////////////////////////////////////////////////////////////////////////////////////
 #ifdef ASTYLE_LIB
-	// End of options used by GUI /////////////////////////////////////////////////////////////////
+	// End of options used by GUI /////////////////////////////////////////////////////////////////////////////////////
 	else
 		isOptionError(arg, errorInfo);
 #else
-	// Options used by only console ///////////////////////////////////////////////////////////////
+	// Options used by only console ///////////////////////////////////////////////////////////////////////////////////
 	else if ( isOption(arg, "n", "suffix=none") )
 	{
 		g_console->setNoBackup(true);
@@ -3146,7 +3185,16 @@ AStyleMain(const char* pSourceIn,          // pointer to the source to be format
 	}
 
 	strcpy(pTextOut, out.str().c_str());
-	assert(formatter.getChecksumDiff() == 0);
+#ifndef NDEBUG
+	// The checksum is an assert in the console build and ASFormatter.
+	// This error returns the incorrectly formatted file to the editor.
+	// This is done to allow the file to be saved for debugging purposes.
+	if (formatter.getChecksumDiff() != 0)
+		fpErrorHandler(220,
+		               "Checksum error.\n"
+		               "The incorrectly formatted file\n"
+		               "will been returned for debugging.");
+#endif
 	return pTextOut;
 }
 

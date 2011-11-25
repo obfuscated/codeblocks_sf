@@ -36,9 +36,6 @@ namespace astyle
  */
 ASEnhancer::ASEnhancer()
 {
-	// the following prevents warning messages with cppcheck
-	// it will NOT compile if activated
-//	init();
 }
 
 /**
@@ -580,7 +577,7 @@ size_t ASEnhancer::processSwitchBlock(string& line, size_t index)
 		{
 			int lineUnindent = sw.unindentDepth;
 			if (line.find_first_not_of(" \t") == i
-			        && switchStack.size() > 0)
+			        && !switchStack.empty())
 				lineUnindent = switchStack[switchStack.size()-1].unindentDepth;
 			if (shouldIndentLine)
 			{

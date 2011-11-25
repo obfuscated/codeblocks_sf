@@ -587,7 +587,7 @@ int ASBeautifier::getFileType()
  *
  * @return   value of indentLength option.
  */
-int ASBeautifier::getIndentLength(void)
+int ASBeautifier::getIndentLength(void) const
 {
 	return indentLength;
 }
@@ -597,7 +597,7 @@ int ASBeautifier::getIndentLength(void)
  *
  * @return   the char used for indentation.
  */
-string ASBeautifier::getIndentString(void)
+string ASBeautifier::getIndentString(void) const
 {
 	return indentString;
 }
@@ -774,7 +774,7 @@ string ASBeautifier::beautify(const string& originalLine)
 		if (backslashEndsPrevLine)  // must continue to clear variables
 			line = ' ';
 		else if (emptyLineFill && !isInQuoteContinuation
-		         && (headerStack->size() > 0 || isInEnum))
+		         && (!headerStack->empty() || isInEnum))
 			return preLineWS(prevFinalLineSpaceTabCount, prevFinalLineTabCount);
 		else
 			return line;
@@ -900,7 +900,7 @@ string ASBeautifier::beautify(const string& originalLine)
 	// Flag an indented header in case this line is a one-line block.
 	// The header in the header stack will be deleted by a one-line block.
 	bool isInExtraHeaderIndent = false;
-	if (headerStack->size() > 0
+	if (!headerStack->empty()
 	        && line.length() > 0
 	        && line[0] == '{'
 	        && (headerStack->back() != &AS_OPEN_BRACKET
@@ -977,7 +977,7 @@ string ASBeautifier::beautify(const string& originalLine)
 	         && line.length() > 0
 	         && lineOpeningBlocksNum == 0
 	         && lineOpeningBlocksNum == lineClosingBlocksNum
-	         && (headerStack->size() > 0 && headerStack->back() == &AS_CLASS))
+	         && (!headerStack->empty() && headerStack->back() == &AS_CLASS))
 		--tabCount;
 
 	if (tabCount < 0)
@@ -1354,8 +1354,11 @@ void ASBeautifier::deleteContainer(vector<vector<const string*>*>* &container)
 	if (container != NULL)
 	{
 		vector<vector<const string*>*>::iterator iter = container->begin();
-		for (; iter != container->end(); iter++)
+		while (iter < container->end())
+		{
 			delete *iter;
+			++iter;
+		}
 		container->clear();
 		delete (container);
 		container = NULL;
@@ -1962,7 +1965,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 				// if have a struct header, this is a declaration not a definition
 				if (ch == '('
 				        && (isInClassInitializer || isInClassHeaderTab)
-				        && headerStack->size() > 0
+				        && !headerStack->empty()
 				        && headerStack->back() == &AS_STRUCT)
 				{
 					headerStack->pop_back();
@@ -2051,7 +2054,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 			// remove inStatementIndent for C++ class initializer
 			if (isInClassInitializer)
 			{
-				if (inStatementIndentStack->size() > 0)
+				if (!inStatementIndentStack->empty())
 					inStatementIndentStack->pop_back();
 				isInStatement = false;
 				if (lineBeginsWithBracket)
@@ -2097,7 +2100,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 				{
 					tabCount -= classInitializerTabs;
 					// decrease one more if an empty class
-					if (headerStack->size() > 0
+					if (!headerStack->empty()
 					        && (*headerStack).back() == &AS_CLASS)
 					{
 						int nextChar = getNextProgramCharDistance(line, i);
@@ -2107,7 +2110,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 				}
 			}
 
-			if (bracketIndent && !namespaceIndent && headerStack->size() > 0
+			if (bracketIndent && !namespaceIndent && !headerStack->empty()
 			        && (*headerStack).back() == &AS_NAMESPACE)
 			{
 				shouldIndentBrackettedLine = false;
@@ -2115,7 +2118,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 			}
 
 			// an indentable struct is treated like a class in the header stack
-			if (headerStack->size() > 0
+			if (!headerStack->empty()
 			        && (*headerStack).back() == &AS_STRUCT
 			        && isInIndentableStruct)
 				(*headerStack).back() = &AS_CLASS;
@@ -2124,13 +2127,13 @@ void ASBeautifier::parseCurrentLine(const string& line)
 			blockStatementStack->push_back(isInStatement);
 
 			inStatementIndentStackSizeStack->push_back(inStatementIndentStack->size());
-			if (inStatementIndentStack->size() > 0)
+			if (!inStatementIndentStack->empty())
 			{
 				spaceTabCount = 0;
 				inStatementIndentStack->back() = 0;
 			}
 
-			blockTabCount += isInStatement ? 1 : 0;
+			blockTabCount += (isInStatement ? 1 : 0);
 			parenDepth = 0;
 			isInStatement = false;
 			foundPreCommandHeader = false;
@@ -2519,7 +2522,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 					headerStack->pop_back();
 
 					// do not indent namespace bracket unless namespaces are indented
-					if (!namespaceIndent && headerStack->size() > 0
+					if (!namespaceIndent && !headerStack->empty()
 					        && (*headerStack).back() == &AS_NAMESPACE
 					        && i == 0)		// must be the first bracket on the line
 						shouldIndentBrackettedLine = false;
@@ -2583,7 +2586,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 					// do not need second 'class' statement in a row
 					else if (!(newHeader == &AS_WHERE
 					           || (newHeader == &AS_CLASS
-					               && headerStack->size() > 0
+					               && !headerStack->empty()
 					               && headerStack->back() == &AS_CLASS)))
 						headerStack->push_back(newHeader);
 

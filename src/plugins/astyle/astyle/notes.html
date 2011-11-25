@@ -17,11 +17,43 @@
     <p>
         &nbsp;</p>
 
+    <h3 id="_2.03">
+        Artistic Style 2.03&nbsp; (pending)</h3>
+
+    <ul>
+        <li>Add new option "max-code-length=#" (-xC#) to limit the length of code on a line. </li>
+        <li>Add new option "break-after-logical" (-xL) to modify a "max-code-length" line break for conditionals. </li>
+        <li>Add translations for Dutch, Finnish, Italian, Japanese, Korean, Polish, Portuguese, Russian, Swedish, and Ukrainian.
+        </li>
+        <li>Refactor to improve the design and decomposition:
+            <ul>
+                <li>Fix warning messages from cppcheck, except for constructor uninitialized variables (false positive). </li>
+                <li>Remove astyle_main.h dependency from ASLocalizer.h </li>
+                <li>Remove appendChar() from the inline functions.</li>
+            </ul>
+        </li>
+    </ul>
+
     <h3 id="_2.02">
+        Artistic Style 2.02.1&nbsp; (November 2011)</h3>
+    <ul>
+        <li>Add to C# the recognition of pointers and address-of operators. </li>
+        <li>Improve recognition of pointers and references (3,314,499, 3,298,204, and 2,990,608). </li>
+        <li>Improve alignment of a reference to a pointer (*&amp;).</li>
+        <li>Fix crash with "align-pointer=type" when pointer to pointer (**) starts a new line (3,431,431). </li>
+        <li>Fix breaking after a "case" statement when "break-elseifs" is used without "keep-one-line-statements" (3,421,577,
+            and 3,314,247). </li>
+        <li>Fix "pad-oper" used with "keep-one-line-statements" not padding operators in a one-line "case" statement. </li>
+        <li>Fix not recognizing a "pointer dereference" or "address of" that follows a comment (3,431,431). </li>
+        <li>Fix "break-blocks" used with "delete-empty-lines" not correctly breaking blocks on the first run. </li>
+        <li>Fix "pad-oper" not padding the alternate comparison operators "and" and "or" (3,342,373). </li>
+    </ul>
+
+    <h3>
         Artistic Style 2.02&nbsp; (May 2011)</h3>
 
     <ul>
-        <li>Add a new program module, ASLocalizer, containing language translations.</li>
+        <li>Add new program module, ASLocalizer, containing language translations.</li>
         <li>Add new short option prefix "x" to allow for expansion of short options.</li>
         <li>Add new command line only option "ascii" (-I). </li>
         <li>Add new bracket style, "style=pico" (-A11). </li>
@@ -1237,7 +1269,29 @@
 
     <p>
         &nbsp;</p>
-  
+
+    <!-- Piwik -->
+
+    <script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/astyle/" : "http://sourceforge.net/apps/piwik/astyle/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+    <script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+    </script>
+
+    <noscript>
+        <p>
+            <img src="http://sourceforge.net/apps/piwik/astyle/piwik.php?idsite=1" style="border: 0" alt="" /></p>
+    </noscript>
+
+    <!-- End Piwik Tag -->
+
 </body>
 
 </html>

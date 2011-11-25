@@ -27,10 +27,8 @@
 
 <body>
 
-    <!-- CUT HERE FOR INSERTION INTO SOURCEFORGE DOC MANAGER -->
-
     <h1>
-        Artistic Style 2.02</h1>
+        Artistic Style 2.03</h1>
 
     <h2>
         A Free, Fast and Small Automatic Formatter<br />
@@ -73,15 +71,6 @@
         <a class="contents" href="#_indent=force-tab">indent=force&#8209;tab</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
-        <a class="contents" href="#_Bracket_Options">Old&nbsp;Bracket&nbsp;Options (<em>depreciated</em>)</a></p>
-    <p class="contents2">
-        <a class="contents" href="#_brackets=break">brackets=break</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_brackets=attach">brackets=attach</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_brackets=linux">brackets=linux</a>&nbsp;&nbsp;&nbsp;
-        <a class="contents" href="#_brackets=stroustrup">brackets=stroustrup</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_brackets=run-in">brackets=run-in</a>&nbsp;&nbsp;
-    </p>
-    <p class="contents1">
         <a class="contents" href="#_Indentation_Options">Indentation&nbsp;Options</a></p>
     <p class="contents2">
         <a class="contents" href="#_indent-classes">indent&#8209;classes</a>&nbsp;&nbsp;&nbsp; 
@@ -107,6 +96,8 @@
         <a class="contents" href="#_unpad-paren">unpad&#8209;paren</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_delete-empty-lines">delete&#8209;empty&#8209;lines</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_fill-empty-lines">fill&#8209;empty&#8209;lines</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_align-pointer">align&#8209;pointer</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_align-reference">align&#8209;reference</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
         <a class="contents" href="#_Formatting_Options">Formatting&nbsp;Options</a></p>
@@ -117,9 +108,9 @@
         <a class="contents" href="#_add-one-line-brackets">add&#8209;one&#8209;line&#8209;brackets</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_keep-one-line-blocks">keep&#8209;one&#8209;line&#8209;blocks</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_keep-one-line-statements">keep&#8209;one&#8209;line&#8209;statements</a>&nbsp;&nbsp;&nbsp;
-        <a class="contents" href="#_convert-tabs">convert&#8209;tabs</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_align-pointer">align&#8209;pointer</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_align-reference">align&#8209;reference</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_convert-tabs">convert&#8209;tabs</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_max-code-length">max&#8209;code&#8209;length</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_max-code-length">break&#8209;after&#8209;logical</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_mode">mode</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
@@ -207,7 +198,7 @@
         next release.</p>
     <p>
         To add a new language, add a new translation class to ASLocalizer.h. Add the English&#8209;Translation pair to
-        the constructor in ASLocalizer.cpp. Update the WinLangCode array, if necessary, and add the language code to the
+        the constructor in ASLocalizer.cpp. Update the WinLangCode array and add the language code to the
         function setTranslationClass(). The ASLocalizer.cpp program contains comments that give web pages for obtaining
         the LCIDs and language codes. Send the source code as a bug report and it will be included in the next release.</p>
 
@@ -215,7 +206,7 @@
         Other Considerations</h4>
 
     <p>
-        Artistic Style can format standard class library statements such as Open GL, wxWidgets, QT, and MFC.</p>
+        Artistic Style can format standard class library statements such as Open GL, wxWidgets, Qt, and MFC.</p>
     <p>
         Embedded assembler language is formatted correctly. This includes extended assembly and Microsoft specific assembler
         lines and blocks.</p>
@@ -246,7 +237,7 @@
     <p>
         If you have never used Artistic Style there are a couple of ways to start. One is to run it with no options at
         all. This will format the file with 4 spaces per indent and will leave the brackets unchanged. Another is to use
-        one of the predefined styles described in the "Bracket Style Options" section. Select one with a bracket formatting
+        one of the bracket styles described in the "Bracket Style Options" section. Select one with a bracket formatting
         style you like. Once you are familiar with the options you can customize the format to your personal preference.</p>
     <p>
         &nbsp;</p>
@@ -613,136 +604,87 @@ indent-switches     <span class="comment"># cannot do this on the command line</
     <h3 id="_Tab_Options">
         Tab Options</h3>
 
+    <p>
+        The following examples show whitespace characters. A space is indicated with a <strong>.</strong> (dot), a tab is indicated by
+        a &gt; (greater than).</p>
+
     <p id="_default_indent">
         <code class="title">default indent</code><br />
         If no indentation option is set, the default option of 4 spaces will be used (e.g. <code>-s<span class="option">4</span>
             --indent=spaces=<span class="option">4</span></code>).</p>
+    <div class="code">
+        <p class="code">
+            with default values:</p>
+        <pre>void Foo() <span class="brace">{</span>
+....if (isBar1
+............&amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
+........bar();
+<span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
     <p id="_indent=spaces">
         <code class="title">--indent=spaces / --indent=spaces=<span class="option">#</span> / -s<span class="option">#</span></code><br />
-        Indent using # spaces per indent (e.g. <code>-s<span class="option">6</span></code> <code>--indent=spaces=<span
-            class="option">6</span></code>). # must be between 2 and 20. Not specifying # will result in a default of
+        Indent using # <strong>spaces</strong> per indent (e.g. <code>-s<span class="option">3</span></code> <code>--indent=spaces=<span
+            class="option">3</span></code>). # must be between 2 and 20. Not specifying # will result in a default of
         4 spaces per indent.</p>
+    <div class="code">
+        <p class="code">
+            with indent=spaces=3</p>
+        <pre>void Foo() <span class="brace">{</span>
+...if (isBar1
+.........&amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
+......bar();
+<span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
     <p id="_indent=tab">
         <code class="title">--indent=tab / --indent=tab=<span class="option">#</span> / -t / -t<span class="option">#</span></code><br />
-        Indent using tab characters. Treat each tab as # spaces (e.g. <code>-t<span class="option">6</span></code> / <code>
-            --indent=tab=<span class="option">6</span></code>). # must be between 2 and 20. If no # is set, treats tabs
-        as 4 spaces.</p>
+        Indent using <strong>tabs for indentation, spaces for continuation line alignment</strong>. This ensures that
+        the code is displayed correctly everywhere, regardless of the viewer&#8217;s tab size. Treat each tab as # spaces
+        (e.g. <code>-t<span class="option">6</span></code> / <code>--indent=tab=<span class="option">6</span></code>).
+        # must be between 2 and 20. If no # is set, treats tabs as 4 spaces.
+    </p>
+    <div class="code">
+        <p class="code">
+            with indent=tab:</p>
+        <pre>void Foo() <span class="brace">{</span>
+&gt;   if (isBar1
+&gt;   ........&amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
+&gt;   &gt;   bar();
+<span class="brace">}</span>
+</pre>
+        <p class="code">
+            with style=linux, indent=tab=8:</p>
+        <pre>void Foo()
+<span class="brace">{</span>
+&gt;       if (isBar1
+&gt;       ....&amp;&amp; isBar2)    <span class="comment">// indent of this line can NOT be changed with style=linux</span>
+&gt;       &gt;       bar();
+<span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
     <p id="_indent=force-tab">
         <code class="title">--indent=force-tab / --indent=force-tab=<span class="option">#</span> / -T / -T<span class="option">#</span></code><br />
-        Indent using tab characters. Treat each tab as # spaces (e.g. <code>-T<span class="option">6</span></code> / <code>
-            --indent=<span lang="en-us">force-</span>tab=<span class="option">6</span></code>). Uses tabs as indents where
-        <code>&#8209;&#8209;indent=tab</code> prefers to use spaces, such as inside multi-line statements. # must be between
+        Indent using <strong>all tab</strong> characters, if possible. If the continuation line is not an even number
+        of tabs, spaces will be added at the end. Treat each tab as # spaces (e.g. <code>-T<span class="option">6</span></code>
+        / <code>--indent=<span lang="en-us">force-</span>tab=<span class="option">6</span></code>). # must be between
         2 and 20. If no # is set, treats tabs as 4 spaces.</p>
-    <p>
-        &nbsp;</p>
-    <hr />
-
-    <!--  * * * * * * * * * * * * * *   Bracket Options  * * * * * * * * * * * * * *  -->
-
-    <h3 id="_Bracket_Options">
-        Old Bracket Options (<em>depreciated</em>)</h3>
-
-    <p>
-        <b><big>The following bracket options have been depreciated and will be removed in a future release.<br />
-            Use the above Bracket Style Options instead.</big></b></p>
-    <p id="_brackets=break">
-        <code class="title">--brackets=break / -b&nbsp; (<em>depreciated</em>)</code><br />
-        Break brackets from their pre-block statements ( e.g. Allman / ANSI style ). This option is depreciated. Instead
-        use style=allman.</p>
     <div class="code">
-        <pre>void Foo(bool isFoo)
-<span class="brace">{</span>
-    if (isFoo)
-    <span class="brace">{</span>
-        bar();
-    <span class="brace">}</span>
-    else
-    <span class="brace">{</span>
-        anotherBar();
-    <span class="brace">}</span>
+        <p class="code">
+            with indent=force-tab:</p>
+        <pre>void Foo() <span class="brace">{</span>
+>   if (isBar1
+>   >   >   &amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
+>   >   bar();
 <span class="brace">}</span>
 </pre>
     </div>
-    <p>
-        &nbsp;</p>
-    <p id="_brackets=attach">
-        <code class="title">--brackets=attach / -a&nbsp; (<em>depreciated</em>)</code><br />
-        Attach brackets to their pre-block statements ( e.g. Java style ). This option is depreciated. Instead use style=java.</p>
-    <div class="code">
-        <pre>void Foo(bool isFoo) <span class="brace">{</span>
-    if (isFoo) <span class="brace">{</span>
-        bar();
-    <span class="brace">}</span> else <span class="brace">{</span>
-        anotherBar();
-    <span class="brace">}</span>
-<span class="brace">}</span>
-</pre>
-    </div>
-    <p>
-        &nbsp;</p>
-    <p id="_brackets=linux">
-        <code class="title">--brackets=linux / -l&nbsp; (<em>depreciated</em>)</code><br />
-        Break brackets from namespace, class, and function definitions, but attach brackets to statements within a function&nbsp;
-        ( e.g. K&amp;R / Linux style ). This option is depreciated. Instead use style=kr or style=linux.</p>
-    <p>
-        With C++ files brackets are attached for function definitions within a class (inline class functions). The brackets
-        are also attached for arrays, structs, enums, and other top level objects that are not classes or functions. This
-        option is effective for C/C++ files only.</p>
-    <div class="code">
-        <pre>void Foo(bool isFoo)
-<span class="brace">{</span>
-    if (isFoo) <span class="brace">{</span>
-        bar();
-    <span class="brace">}</span> else <span class="brace">{</span>
-        anotherBar;
-    <span class="brace">}</span>
-<span class="brace">}</span>
-</pre>
-    </div>
-    <p>
-        &nbsp;</p>
-    <p id="_brackets=stroustrup">
-        <code class="title">--brackets=stroustrup / -u&nbsp; (<em>depreciated</em>)</code><br />
-        Break brackets from function definitions only. Attach brackets to namespaces, classes, and statements within a
-        function ( e.g. Stroustrup style ). This option is depreciated. Instead use style=stroustrup.</p>
-    <p>
-        With C++ files brackets are attached for function definitions within a class (inline class functions). The brackets
-        are also attached for arrays, structs, enums, and other top level objects that are not classes or functions. This
-        option is effective for C/C++ files only.</p>
-    <div class="code">
-        <pre>void Foo(bool isFoo)
-<span class="brace">{</span>
-    if (isFoo) <span class="brace">{</span>
-        bar();
-    <span class="brace">}</span> else <span class="brace">{</span>
-        anotherBar;
-    <span class="brace">}</span>
-<span class="brace">}</span>
-</pre>
-    </div>
-    <p>
-        &nbsp;</p>
-    <p id="_brackets=run-in">
-        <code class="title">--brackets=run-in / -g&nbsp; (<em>depreciated</em>)</code><br />
-        Break brackets from their pre-block statements but allow run-in statements on the same line as an opening bracket
-        ( e.g. Horstmann style ). This option is depreciated. Instead use style=horstmann.</p>
-    <div class="code">
-        <pre>void Foo(bool isFoo)
-<span class="brace">{</span>   if (isFoo())
-    <span class="brace">{</span>   bar1();
-        bar2();
-    <span class="brace">}</span>
-    else
-    <span class="brace">{</span>   anotherBar();
-    <span class="brace">}</span>
-<span class="brace">}</span>
-</pre>
-    </div>
-    <p>
-        &nbsp;</p>
-    <p id="_brackets=horstmann">
-        <code class="title">--brackets=horstmann</code><br />
-        THIS IS NO LONGER A VALID OPTION. Instead use style=horstmann.</p>
     <p>
         &nbsp;</p>
     <hr />
@@ -965,9 +907,9 @@ error:
     <p id="_min-conditional-indent">
         <code class="title">--min-conditional-indent=<span class="option">#</span> / -m<span class="option">#</span></code><br />
         Set the minimal indent that is added when a header is built of multiple lines. This indent helps to easily separate
-        the header from the command statements that follow. The value for <span class="option">#</span> indicates a <strong>
-            number of indents</strong> and is a minimum value. The indent may be greater to align with the data on the
-        previous line.<br />
+        the header from the command statements that follow. The value for <span class="option"><strong>#</strong></span>
+        indicates a <strong>number of indents</strong> and is a minimum value. The indent may be greater to align with
+        the data on the previous line.<br />
         The valid values are:<br />
         0 - no minimal indent. The lines will be aligned with the paren on the preceding line.<br />
         1 - indent at least one additional indent.<br />
@@ -1007,11 +949,11 @@ if (a &lt; b
         &nbsp;</p>
     <p id="_max-instatement-indent">
         <code class="title">--max-instatement-indent=<span class="option">#</span> / -M<span class="option">#</span></code><br />
-        Set the &nbsp;maximum of <span class="option">#</span> spaces to indent a continuation line. The &nbsp;<span class="option">#</span>
-        indicates a number of columns and must not be greater than <strong>120</strong>. If no <span class="option">#</span> is
-        set, the default value of <strong>40</strong> will be used. A maximum of less than two indent lengths will be
-        ignored. This option will prevent continuation lines from extending too far to the right. Setting a larger value
-        will allow the code to be extended further to the right.</p>
+        Set the &nbsp;maximum of <span class="option">#</span> spaces to indent a continuation line. The <span class="option"><strong>#</strong></span>
+        indicates a number of columns and must not be greater than <strong>120</strong>. If no <span class="option"><strong>
+            #</strong></span> is set, the default value of <strong>40</strong> will be used. A maximum of less than two
+        indent lengths will be ignored. This option will prevent continuation lines from extending too far to the right.
+        Setting a larger value will allow the code to be extended further to the right.</p>
     <div class="code">
         <pre>fooArray[] = <span class="brace">{</span> red,
          green,
@@ -1230,6 +1172,70 @@ isBar = false;
         Fill empty lines with the white space of the previous line.</p>
     <p>
         &nbsp;</p>
+    <p id="_align-pointer">
+        <code class="title">--align-pointer=type&nbsp;&nbsp; / -k1<br />
+            --align-pointer=middle / -k2<br />
+            --align-pointer=name&nbsp;&nbsp; / -k3</code><br />
+        Attach a pointer or reference operator (* or &amp;) to either the variable type (left) or variable name (right),
+        or place it between the type and name (middle). The spacing between the type and name will be preserved, if possible.
+        This option is effective for C/C++ files only. To format references separately use the following align-reference
+        option.</p>
+    <div class="code">
+        <pre>char *foo1;
+char &amp;foo2;</pre>
+        <p class="code">
+            becomes (with align-pointer=type):</p>
+        <pre>char* foo1;
+char&amp; foo2;</pre>
+    </div>
+    <div class="code">
+        <pre>char* foo1;
+char&amp; foo2;</pre>
+        <p class="code">
+            becomes (with align-pointer=middle):</p>
+        <pre>char * foo1;
+char &amp; foo2;</pre>
+    </div>
+    <div class="code">
+        <pre>char* foo1;
+char&amp; foo2;</pre>
+        <p class="code">
+            becomes (with align-pointer=name):</p>
+        <pre>char *foo1;
+char &amp;foo2;</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_align-reference">
+        <code class="title">--align-reference=none&nbsp;&nbsp; / -W0<br />
+            --align-reference=type&nbsp;&nbsp; / -W1<br />
+            --align-reference=middle / -W2<br />
+            --align-reference=name&nbsp;&nbsp; / -W3</code><br />
+        This option will align references separate from pointers. Pointers are not changes by this option. If pointers
+        and references are to be aligned the same, use the previous align-pointer option. The option align-reference=none
+        will not change the reference alignment. The other options are the same as for align-pointer. This option is effective
+        for C/C++ files only.
+    </p>
+    <div class="code">
+        <pre>char &amp;foo1;</pre>
+        <p class="code">
+            becomes (with align-reference=type):</p>
+        <pre>char&amp; foo1;</pre>
+    </div>
+    <div class="code">
+        <pre>char&amp; foo2;</pre>
+        <p class="code">
+            becomes (with align-reference=middle):</p>
+        <pre>char &amp; foo2;</pre>
+    </div>
+    <div class="code">
+        <pre>char& foo3;</pre>
+        <p class="code">
+            becomes (with align-reference=name):</p>
+        <pre>char &amp;foo3;</pre>
+    </div>
+    <p>
+        &nbsp;</p>
     <hr />
 
     <!--  * * * * * * * * * * * * *   Formatting Options  * * * * * * * * * * * * *  -->
@@ -1301,8 +1307,8 @@ else
         &nbsp;</p>
     <p id="_add-brackets">
         <code class="title">--add-brackets / -j </code><br />
-        Add brackets to unbracketed one line conditional statements&nbsp; (e.g. '<code>if</code>', '<code>for</code>',
-        '<code>while</code>'...). The statement must be on a single line.&nbsp;The brackets will be added according to
+        Add brackets to unbracketed one line conditional statements (e.g. '<code>if</code>', '<code>for</code>',
+        '<code>while</code>'...). The statement must be on a single line. The brackets will be added according to
         the currently requested predefined style or bracket type. If no style or bracket type is requested the brackets
         will be attached. If --add-one-line-brackets is also used the result will be one line brackets.</p>
     <div class="code">
@@ -1372,67 +1378,38 @@ else
         if convert-tabs is used when changing spaces per tab. Tabs are not replaced in quotes.</p>
     <p>
         &nbsp;</p>
-    <p id="_align-pointer">
-        <code class="title">--align-pointer=type&nbsp;&nbsp; / -k1<br />
-            --align-pointer=middle / -k2<br />
-            --align-pointer=name&nbsp;&nbsp; / -k3</code><br />
-        Attach a pointer or reference operator (* or &amp;) to either the variable type (left) or variable name (right),
-        or place it between the type and name (middle). The spacing between the type and name will be preserved, if possible.
-        This option is effective for C/C++ files only. To format references separately use the following align-reference
-        option.</p>
-    <div class="code">
-        <pre>char *foo1;
-char &amp;foo2;</pre>
-        <p class="code">
-            becomes (with align-pointer=type):</p>
-        <pre>char* foo1;
-char&amp; foo2;</pre>
-    </div>
-    <div class="code">
-        <pre>char* foo1;
-char&amp; foo2;</pre>
-        <p class="code">
-            becomes (with align-pointer=middle):</p>
-        <pre>char * foo1;
-char &amp; foo2;</pre>
-    </div>
-    <div class="code">
-        <pre>char* foo1;
-char&amp; foo2;</pre>
-        <p class="code">
-            becomes (with align-pointer=name):</p>
-        <pre>char *foo1;
-char &amp;foo2;</pre>
-    </div>
-    <p>
-        &nbsp;</p>
-    <p id="_align-reference">
-        <code class="title">--align-reference=none&nbsp;&nbsp; / -W0<br />
-            --align-reference=type&nbsp;&nbsp; / -W1<br />
-            --align-reference=middle / -W2<br />
-            --align-reference=name&nbsp;&nbsp; / -W3</code><br />
-        This option will align references separate from pointers. Pointers are not changes by this option. If pointers
-        and references are to be aligned the same, use the previous align-pointer option. The option align-reference=none
-        will not change the reference alignment. The other options are the same as for align-pointer. This option is effective
-        for C/C++ files only.
+    <p id="_max-code-length">
+        <code class="title">--max-code-length=<span class="option">#</span>&nbsp;&nbsp; / -xC<span class="option">#</span><br />
+            --break-after-logical / -xL</code><br />
+        The option max&#8209;code&#8209;length will break a line if the code exceeds <span class="option"><strong>#</strong></span>
+        characters. The valid values are 50 thru 200. Lines without logical conditionals will break on a logical conditional
+        (||, &amp;&amp;, ...), comma, paren, semicolon, or space.
     </p>
+    <p>
+        Some code will not be broken, such as comments, quotes, and arrays. If used with keep&#8209;one&#8209;line&#8209;blocks
+        or add-one-line-brackets the blocks will NOT be broken. If used with keep&#8209;one&#8209;line&#8209;statements
+        the statements will be broken at a semicolon if the line goes over the maximum length. If there is no available
+        break point within the max code length, the line will be broken at the first available break point after the max
+        code length.</p>
+    <p>
+        By default logical conditionals will be placed first on the new line. The option break&#8209;after&#8209;logical
+        will cause the logical conditionals to be placed last on the previous line. This option has no effect without
+        max&#8209;code&#8209;length.</p>
     <div class="code">
-        <pre>char &amp;foo1;</pre>
+        <pre>   if (thisVariable1 == thatVariable1 || thisVariable2 == thatVariable2 || thisVariable3 == thatVariable3)
+        bar();</pre>
         <p class="code">
-            becomes (with align-reference=type):</p>
-        <pre>char&amp; foo1;</pre>
-    </div>
-    <div class="code">
-        <pre>char&amp; foo2;</pre>
+            becomes:</p>
+        <pre>    if (thisVariable1 == thatVariable1
+            || thisVariable2 == thatVariable2
+            || thisVariable3 == thatVariable3)
+        bar();</pre>
         <p class="code">
-            becomes (with align-reference=middle):</p>
-        <pre>char &amp; foo2;</pre>
-    </div>
-    <div class="code">
-        <pre>char& foo3;</pre>
-        <p class="code">
-            becomes (with align-reference=name):</p>
-        <pre>char &amp;foo3;</pre>
+            becomes (with break&#8209;after&#8209;logical):</p>
+        <pre>    if (thisVariable1 == thatVariable1 ||
+            thisVariable2 == thatVariable2 ||
+            thisVariable3 == thatVariable3)
+        bar();</pre>
     </div>
     <p>
         &nbsp;</p>
@@ -1569,7 +1546,27 @@ char &amp;foo2;</pre>
     <p>
         &nbsp;</p>
 
-    <!-- CUT HERE FOR INSERTION INTO SOURCEFORGE DOC MANAGER -->
+    <!-- Piwik -->
+
+    <script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/astyle/" : "http://sourceforge.net/apps/piwik/astyle/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+    <script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+    </script>
+
+    <noscript>
+        <p>
+            <img src="http://sourceforge.net/apps/piwik/astyle/piwik.php?idsite=1" style="border: 0" alt="" /></p>
+    </noscript>
+
+    <!-- End Piwik Tag -->
 
 </body>
 
