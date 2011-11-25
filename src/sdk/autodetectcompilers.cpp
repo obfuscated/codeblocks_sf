@@ -28,15 +28,15 @@ END_EVENT_TABLE()
 
 AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 {
-	//ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
+    //ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
 
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)
     {
         list->ClearAll();
-		list->InsertColumn(0, _("Compiler"), wxLIST_FORMAT_LEFT, 240);
-		list->InsertColumn(1, _("Status"), wxLIST_FORMAT_LEFT, 76);
+        list->InsertColumn(0, _("Compiler"), wxLIST_FORMAT_LEFT, 240);
+        list->InsertColumn(1, _("Status"), wxLIST_FORMAT_LEFT, 76);
 
         for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
         {
@@ -69,7 +69,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 
 AutoDetectCompilers::~AutoDetectCompilers()
 {
-	//dtor
+    //dtor
 }
 
 void AutoDetectCompilers::OnDefaultClick(wxCommandEvent& /*event*/)

@@ -42,30 +42,30 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
         const bool allowMultiSel,
         const wxString& filter)
 {
-	//ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
+    //ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
 
-	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
-	XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
+    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
+    XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
-	if (!wantDir) {
+    if (!wantDir) {
         XRCCTRL(*this, "lblText", wxStaticText)->SetLabel(_("File:"));
-	}
+    }
 
-	m_Path = path;
-	m_WantDir = wantDir;
-	m_AllowMultiSel = allowMultiSel;
-	m_Message = message;
-	m_Basepath = basepath;
-	m_Filter = filter;
-	m_AskMakeRelative = true;
-	m_ShowCreateDirButton = false;
-	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
+    m_Path = path;
+    m_WantDir = wantDir;
+    m_AllowMultiSel = allowMultiSel;
+    m_Message = message;
+    m_Basepath = basepath;
+    m_Filter = filter;
+    m_AskMakeRelative = true;
+    m_ShowCreateDirButton = false;
+    XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
 }
 
 EditPathDlg::~EditPathDlg()
 {
-	//dtor
+    //dtor
 }
 
 void EditPathDlg::OnBrowse(wxCommandEvent& /*event*/)

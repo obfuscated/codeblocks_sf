@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource>
-	<object class="wxScrollingDialog" name="ScriptingSecurityDlg">
-		<title>Security Warning!</title>
-		<centered>1</centered>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<object class="sizeritem">
-						<object class="wxStaticBitmap" name="ID_STATICBITMAP1">
-							<bitmap stock_id="wxART_WARNING" />
-						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<border>8</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxBoxSizer">
-							<orient>wxVERTICAL</orient>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT1">
-									<label>A script is trying to execute a privileged command:</label>
-								</object>
-								<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<border>8</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="lblOperation">
-									<label>Operation:</label>
-								</object>
-								<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<border>8</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtCommand">
-									<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP|wxNO_BORDER</style>
-								</object>
-								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<border>16</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxBoxSizer">
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT2">
-											<label>Choose your action:</label>
-										</object>
-										<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-										<border>5</border>
-									</object>
-									<object class="sizeritem">
-										<object class="wxComboBox" name="cmbAnswer">
-											<content>
-												<item>ALLOW execution of this command</item>
-												<item>ALLOW execution of this command for all scripts from now on</item>
-												<item>DENY execution of this command</item>
-												<item>Mark this script as TRUSTED for this session</item>
-												<item>Mark this script as TRUSTED permanently</item>
-											</content>
-											<selection>2</selection>
-											<style>wxCB_READONLY</style>
-										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-									</object>
-								</object>
-								<flag>wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-								<border>16</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT3">
-									<label>Scripts may contain malicious code so by default you are asked before a privileged&#x0D;&#x0A;command is allowed to execute. Only allow execution of this command if you trust&#x0D;&#x0A;the source of this script or you are confident enough that the above command is&#x0D;&#x0A;harmless for your system.&#x0D;&#x0A;&#x0D;&#x0A;If you mark the script as &quot;trusted&quot; you declare that you trust this script and explicitly&#x0D;&#x0A;allow it to execute privileged commands. You should only trust scripts that you wrote&#x0D;&#x0A;yourself or if they come from a trusty source.</label>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-							</object>
-						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<border>8</border>
-						<option>1</option>
-					</object>
-				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-				<border>8</border>
-				<option>1</option>
-			</object>
-			<object class="sizeritem">
-				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-				<border>8</border>
-			</object>
-			<object class="sizeritem">
-				<object class="wxStdDialogButtonSizer">
-					<object class="button">
-						<object class="wxButton" name="wxID_OK">
-							<label></label>
-						</object>
-					</object>
-					<object class="button">
-						<object class="wxButton" name="wxID_CANCEL">
-							<label></label>
-						</object>
-					</object>
-				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-				<border>8</border>
-			</object>
-		</object>
-	</object>
+    <object class="wxScrollingDialog" name="ScriptingSecurityDlg">
+        <title>Security Warning!</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                        <object class="wxStaticBitmap" name="ID_STATICBITMAP1">
+                            <bitmap stock_id="wxART_WARNING" />
+                        </object>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <object class="wxStaticText" name="ID_STATICTEXT1">
+                                    <label>A script is trying to execute a privileged command:</label>
+                                </object>
+                                <flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxStaticText" name="lblOperation">
+                                    <label>Operation:</label>
+                                </object>
+                                <flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxTextCtrl" name="txtCommand">
+                                    <style>wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP|wxNO_BORDER</style>
+                                </object>
+                                <flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                <border>16</border>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxBoxSizer">
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT2">
+                                            <label>Choose your action:</label>
+                                        </object>
+                                        <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxComboBox" name="cmbAnswer">
+                                            <content>
+                                                <item>ALLOW execution of this command</item>
+                                                <item>ALLOW execution of this command for all scripts from now on</item>
+                                                <item>DENY execution of this command</item>
+                                                <item>Mark this script as TRUSTED for this session</item>
+                                                <item>Mark this script as TRUSTED permanently</item>
+                                            </content>
+                                            <selection>2</selection>
+                                            <style>wxCB_READONLY</style>
+                                        </object>
+                                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                    </object>
+                                </object>
+                                <flag>wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+                                <border>16</border>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxStaticText" name="ID_STATICTEXT3">
+                                    <label>Scripts may contain malicious code so by default you are asked before a privileged&#x0D;&#x0A;command is allowed to execute. Only allow execution of this command if you trust&#x0D;&#x0A;the source of this script or you are confident enough that the above command is&#x0D;&#x0A;harmless for your system.&#x0D;&#x0A;&#x0D;&#x0A;If you mark the script as &quot;trusted&quot; you declare that you trust this script and explicitly&#x0D;&#x0A;allow it to execute privileged commands. You should only trust scripts that you wrote&#x0D;&#x0A;yourself or if they come from a trusty source.</label>
+                                </object>
+                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                        </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>8</border>
+                        <option>1</option>
+                    </object>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+                <option>1</option>
+            </object>
+            <object class="sizeritem">
+                <object class="wxStaticLine" name="ID_STATICLINE1" />
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+            </object>
+            <object class="sizeritem">
+                <object class="wxStdDialogButtonSizer">
+                    <object class="button">
+                        <object class="wxButton" name="wxID_OK">
+                            <label></label>
+                        </object>
+                    </object>
+                    <object class="button">
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label></label>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+                <border>8</border>
+            </object>
+        </object>
+    </object>
 </resource>

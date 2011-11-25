@@ -74,16 +74,16 @@ void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString& files)
 
 bool ProjectBuildTarget::GetIncludeInTargetAll() const
 {
-	return m_BuildWithAll;
+    return m_BuildWithAll;
 }
 
 void ProjectBuildTarget::SetIncludeInTargetAll(bool buildIt)
 {
-	if (m_BuildWithAll != buildIt)
-	{
+    if (m_BuildWithAll != buildIt)
+    {
         m_BuildWithAll = buildIt;
         SetModified(true);
-	}
+    }
 }
 
 bool ProjectBuildTarget::GetCreateDefFile() const
@@ -133,19 +133,19 @@ void ProjectBuildTarget::SetUseConsoleRunner(bool useIt)
 
 void ProjectBuildTarget::SetTargetType(const TargetType& pt)
 {
-	TargetType ttold = GetTargetType();
-	CompileTargetBase::SetTargetType(pt);
-	if (ttold != GetTargetType() && GetTargetType() == ttConsoleOnly)
+    TargetType ttold = GetTargetType();
+    CompileTargetBase::SetTargetType(pt);
+    if (ttold != GetTargetType() && GetTargetType() == ttConsoleOnly)
         SetUseConsoleRunner(true); // by default, use console runner
 }
 
 // target dependencies: targets to be compiled (if necessary) before this one
 void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target) {
-	m_TargetDeps.Add(target);
+    m_TargetDeps.Add(target);
 }
 
 // get the list of dependency targets of this target
 BuildTargets& ProjectBuildTarget::GetTargetDeps() {
-	return m_TargetDeps;
+    return m_TargetDeps;
 }
 

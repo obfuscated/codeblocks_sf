@@ -23,7 +23,7 @@
 
 namespace
 {
-	const int ID_List = wxNewId();
+    const int ID_List = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(SearchResultsLog, wxEvtHandler)
@@ -33,23 +33,23 @@ END_EVENT_TABLE()
 SearchResultsLog::SearchResultsLog(const wxArrayString& titles, wxArrayInt& widths)
     : ListCtrlLogger(titles, widths)
 {
-	//ctor
+    //ctor
 }
 
 SearchResultsLog::~SearchResultsLog()
 {
-	//dtor
+    //dtor
 }
 
 wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
 {
-	ListCtrlLogger::CreateControl(parent);
+    ListCtrlLogger::CreateControl(parent);
     control->SetId(ID_List);
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &SearchResultsLog::OnDoubleClick);
-	control->PushEventHandler(this);
-	return control;
+    control->PushEventHandler(this);
+    return control;
 };
 
 void SearchResultsLog::FocusEntry(size_t index)

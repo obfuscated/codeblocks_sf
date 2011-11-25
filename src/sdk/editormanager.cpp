@@ -1757,7 +1757,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                         lengthReplace=text.Len();
                         control->ReplaceSelection(text);
                     }
-					else
+                    else
                     {
                         // replace with regEx support
                         lengthReplace = control->ReplaceTargetRE(data->replaceText);
@@ -1785,12 +1785,12 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 }
             }
             else
-			{
+            {
                 if (data->directionDown)
                     data->start += lengthFound;
                 else
                     data->start -= lengthFound;
-			}
+            }
         }
     }
     control->EndUndoAction();
@@ -2272,11 +2272,11 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                         pos=start+data->start+1;
                         lengthFound=len;
                     }
-					else
+                    else
                         pos=-1;
                 }
             }
-			else
+            else
                 pos=-1;
         }
         if (pos != -1 && data->start!=data->end)
@@ -2806,9 +2806,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     pop->Append(idNBTabTop, _("Tabs at top"));
     pop->Append(idNBTabBottom, _("Tabs at bottom"));
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
-    	pop->FindItem(idNBTabBottom)->Enable(false);
+        pop->FindItem(idNBTabBottom)->Enable(false);
     else
-    	pop->FindItem(idNBTabTop)->Enable(false);
+        pop->FindItem(idNBTabTop)->Enable(false);
 
     cbEditor* ed = GetBuiltinEditor(event.GetSelection());
     if (ed)

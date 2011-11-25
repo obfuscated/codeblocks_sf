@@ -29,13 +29,13 @@ EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, Highl
     m_Lang(lang)
 {
     //ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditLangKeywords"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditLangKeywords"),_T("wxScrollingDialog"));
 
     spnSet = XRCCTRL(*this, "spnSet", wxSpinCtrl);
-	txtKeywords = XRCCTRL(*this, "txtKeywords", wxTextCtrl);
+    txtKeywords = XRCCTRL(*this, "txtKeywords", wxTextCtrl);
 
     m_LastSet = spnSet->GetValue() - 1;
-	txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
+    txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
 }
 
 EditKeywordsDlg::~EditKeywordsDlg()
@@ -45,7 +45,7 @@ EditKeywordsDlg::~EditKeywordsDlg()
 
 void EditKeywordsDlg::OnSetChange(wxSpinEvent& /*event*/)
 {
-	m_pTheme->SetKeywords(m_Lang, m_LastSet, txtKeywords->GetValue());
-	m_LastSet = spnSet->GetValue() - 1;
-	txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
+    m_pTheme->SetKeywords(m_Lang, m_LastSet, txtKeywords->GetValue());
+    m_LastSet = spnSet->GetValue() - 1;
+    txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
 }

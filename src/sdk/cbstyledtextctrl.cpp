@@ -58,15 +58,11 @@ cbStyledTextCtrl::~cbStyledTextCtrl()
 void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
 {
     // cancel auto-completion list when losing focus
-    if (AutoCompActive())
-    {
+    if ( AutoCompActive() )
         AutoCompCancel();
-    }
 
-    if (CallTipActive())
-    {
+    if ( CallTipActive() )
         CallTipCancel();
-    }
 
     event.Skip();
 }
@@ -90,9 +86,7 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
             pParent->DisplayContextMenu(mp, mtEditorManager);
         }
         else
-        {
             event.Skip();
-        }
     }
 }
 
@@ -110,7 +104,7 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
 
         const wxString s = GetSelectedText();
 
-        if(pos < GetCurrentPos())
+        if (pos < GetCurrentPos())
         {
             start += s.length();
             end += s.length();
@@ -218,9 +212,7 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
                 }
             }
             else if (keyCode == _T('\'')) // ' "
-            {
                 m_tabSmartJump = false;
-            }
         }
         break;
 

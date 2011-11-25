@@ -469,10 +469,10 @@ CodeCompletion::CodeCompletion() :
     if (!Manager::LoadResource(_T("codecompletion.zip")))
         NotifyMissingFile(_T("codecompletion.zip"));
 
-    Connect(idCCLogger, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnCCLogger));
+    Connect(idCCLogger,      wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnCCLogger));
     Connect(idCCDebugLogger, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnCCDebugLogger));
-    Connect(idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart));
-    Connect(idParserEnd, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserEnd));
+    Connect(idParserStart,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart));
+    Connect(idParserEnd,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserEnd));
 }
 
 CodeCompletion::~CodeCompletion()
@@ -537,9 +537,8 @@ void CodeCompletion::SaveTokenReplacements()
     ConfigManagerContainer::StringToStringMap repl;
     wxStringHashMap::const_iterator it = hashRepl.begin();
     for (; it != hashRepl.end(); it++)
-    {
         repl[it->first] = it->second;
-    }
+
     cfg->Write(_T("token_replacements"), repl);
 }
 
@@ -896,7 +895,7 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
     Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
 
     m_Function = XRCCTRL(*toolBar, "chcCodeCompletionFunction", wxChoice);
-    m_Scope = XRCCTRL(*toolBar, "chcCodeCompletionScope", wxChoice);
+    m_Scope    = XRCCTRL(*toolBar, "chcCodeCompletionScope",    wxChoice);
 
     m_ToolBar = toolBar;
     UpdateToolBar();

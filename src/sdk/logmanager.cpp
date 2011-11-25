@@ -23,18 +23,17 @@
 template<> LogManager* Mgr<LogManager>::instance = 0;
 template<> bool  Mgr<LogManager>::isShutdown = false;
 
-LogSlot::LogSlot()
-    : log(0),
+LogSlot::LogSlot() :
+    log(0),
     icon(0)
 {
 }
 
 LogSlot::~LogSlot()
 {
-    if(log != &g_null_log)
+    if (log != &g_null_log)
         delete log;
-    if (icon)
-        delete icon;
+    delete icon;
 }
 
 size_t LogSlot::Index() const
@@ -44,7 +43,7 @@ size_t LogSlot::Index() const
 
 void LogSlot::SetLogger(Logger* in)
 {
-    if(log != &g_null_log)
+    if (log != &g_null_log)
         delete log;
     log = in;
 }
@@ -58,7 +57,7 @@ Logger* LogSlot::GetLogger() const
 
 LogManager::LogManager()
 {
-    for(size_t i = 0; i < max_logs; ++i)
+    for (size_t i = 0; i < max_logs; ++i)
     {
         slot[i].index = i;
         slot[i].log = &g_null_log;
@@ -79,7 +78,7 @@ LogManager::LogManager()
 
 LogManager::~LogManager()
 {
-    for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+    for (inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
         delete i->second;
 }
 
@@ -87,9 +86,9 @@ size_t LogManager::SetLog(Logger* l, int i)
 {
     unsigned int index = i;
 
-    if(i <= no_index)
+    if (i <= no_index)
     {
-        for(index = debug_log + 1; index < max_logs; ++index)
+        for (index = debug_log + 1; index < max_logs; ++index)
         {
             if(slot[index].GetLogger() == &g_null_log)
             {
@@ -108,10 +107,11 @@ size_t LogManager::SetLog(Logger* l, int i)
 
 void LogManager::NotifyUpdate()
 {
-    for(size_t i = 0; i < max_logs; ++i)
-        if(slot[i].log)
+    for (size_t i = 0; i < max_logs; ++i)
+    {
+        if (slot[i].log)
             slot[i].log->UpdateSettings();
-
+    }
 }
 
 void LogManager::DeleteLog(int i)
@@ -126,9 +126,9 @@ LogSlot& LogManager::Slot(int i)
 
 size_t LogManager::FindIndex(Logger* l)
 {
-    for(unsigned int i = invalid_log; i < max_logs; ++i)
+    for (unsigned int i = invalid_log; i < max_logs; ++i)
     {
-        if(slot[i].log == l)
+        if (slot[i].log == l)
             return i;
     }
     return invalid_log;
@@ -138,7 +138,7 @@ wxArrayString LogManager::ListAvailable()
 {
     wxArrayString as;
 
-    for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+    for (inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
         as.Add(i->first);
 
     return as;
@@ -148,7 +148,7 @@ bool LogManager::FilenameRequired(const wxString& name)
 {
     inst_map_t::iterator i = instMap.find(name);
 
-    if(i != instMap.end())
+    if (i != instMap.end())
         return i->second->RequiresFilename();
     else
         return false;

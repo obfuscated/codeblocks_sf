@@ -262,7 +262,7 @@ void cbAuiNotebook::OnDwellTimerTrigger(wxTimerEvent& /*event*/)
 
     long curTime = m_StopWatch.Time();
     wxPoint screenPosition = wxGetMousePosition();
-	wxPoint thePoint;
+    wxPoint thePoint;
     wxWindow* win = 0;
     bool tabHit = false;
 

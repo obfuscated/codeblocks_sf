@@ -36,7 +36,7 @@ namespace ScriptBindings
                 // first try to load dlgName as wxDialog, if that does not work, try to load it as wxScrollingDialog
                 // if both does not work, throw an exception
                 if (   !wxXmlResource::Get()->LoadDialog(this, parent, dlgName)
-				    && !wxXmlResource::Get()->LoadObject(this, parent, dlgName,_T("wxScrollingDialog")) )
+                    && !wxXmlResource::Get()->LoadObject(this, parent, dlgName,_T("wxScrollingDialog")) )
                 {
                     cbThrow(wxEmptyString);
                 }

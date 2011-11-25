@@ -276,7 +276,7 @@ namespace ScriptBindings
 #else
         typedef bool(wxFileName::*WXFN_SETCWD)();
 #endif
-	typedef bool(wxFileName::*WXFN_ISFILEWRITEABLE)()const;
+        typedef bool(wxFileName::*WXFN_ISFILEWRITEABLE)()const;
 
         SqPlus::SQClassDef<wxFileName>("wxFileName").
                 emptyCtor().

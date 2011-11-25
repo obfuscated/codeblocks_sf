@@ -20,16 +20,16 @@
 
 BEGIN_EVENT_TABLE(EditArrayOrderDlg, wxScrollingDialog)
     EVT_UPDATE_UI( -1, EditArrayOrderDlg::OnUpdateUI)
-	EVT_BUTTON(XRCID("btnMoveUp"), EditArrayOrderDlg::OnMoveUp)
-	EVT_BUTTON(XRCID("btnMoveDown"), EditArrayOrderDlg::OnMoveDown)
+    EVT_BUTTON(XRCID("btnMoveUp"), EditArrayOrderDlg::OnMoveUp)
+    EVT_BUTTON(XRCID("btnMoveDown"), EditArrayOrderDlg::OnMoveDown)
 END_EVENT_TABLE()
 
 // class constructor
 EditArrayOrderDlg::EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array)
     : m_Array(array)
 {
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayOrder"),_T("wxScrollingDialog"));
-	DoFillList();
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayOrder"),_T("wxScrollingDialog"));
+    DoFillList();
 }
 
 // class destructor
@@ -41,7 +41,7 @@ void EditArrayOrderDlg::DoFillList()
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     list->Clear();
-	for (unsigned int i = 0; i < m_Array.GetCount(); ++i)
+    for (unsigned int i = 0; i < m_Array.GetCount(); ++i)
         list->Append(m_Array[i]);
 }
 
@@ -63,7 +63,7 @@ void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& WXUNUSED(event))
         wxString tmp = list->GetString(sel);
         list->Delete(sel);
         list->InsertItems(1, &tmp, sel - 1);
-		list->SetSelection(sel - 1);
+        list->SetSelection(sel - 1);
     }
 }
 
@@ -77,7 +77,7 @@ void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& WXUNUSED(event))
         wxString tmp = list->GetString(sel);
         list->Delete(sel);
         list->InsertItems(1, &tmp, sel + 1);
-		list->SetSelection(sel + 1);
+        list->SetSelection(sel + 1);
     }
 }
 

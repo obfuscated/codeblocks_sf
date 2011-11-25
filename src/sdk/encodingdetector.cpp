@@ -184,7 +184,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
         wxEncodingConverter conv;
         wchar_t* tmp = new wchar_t[size + 4 - m_BOMSizeInBytes];
         if(   conv.Init(m_Encoding, wxFONTENCODING_UNICODE)
-		   && conv.Convert((char*)buffer, tmp) )
+           && conv.Convert((char*)buffer, tmp) )
         {
             wideBuff = tmp;
             outlen = size + 4 - m_BOMSizeInBytes; // should be correct, because Convert has returned true

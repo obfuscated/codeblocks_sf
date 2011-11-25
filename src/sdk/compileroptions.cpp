@@ -23,93 +23,93 @@ CompilerOptions::CompilerOptions(const CompilerOptions& other)
 CompilerOptions& CompilerOptions::operator=(const CompilerOptions& other)
 {
     ClearOptions();
-	for (unsigned int i = 0; i < other.m_Options.GetCount(); ++i)
-	{
+    for (unsigned int i = 0; i < other.m_Options.GetCount(); ++i)
+    {
         CompOption* coption = new CompOption(*(other.m_Options[i]));
         AddOption(coption);
-	}
-	return *this;
+    }
+    return *this;
 }
 
 CompilerOptions::~CompilerOptions()
 {
-	ClearOptions();
+    ClearOptions();
 }
 
 void CompilerOptions::ClearOptions()
 {
-	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
-	{
-		CompOption* coption = m_Options.Item(i);
-		delete coption;
-	}
-	m_Options.Clear();
+    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    {
+        CompOption* coption = m_Options.Item(i);
+        delete coption;
+    }
+    m_Options.Clear();
 }
 
 void CompilerOptions::AddOption(CompOption* coption)
 {
-	m_Options.Add(coption);
+    m_Options.Add(coption);
 }
 
 void CompilerOptions::AddOption(const wxString& name,
-								const wxString& option,
-								const wxString& category,
-								const wxString& additionalLibs,
-								bool doChecks,
-								const wxString& checkAgainst,
-								const wxString& checkMessage)
+                                const wxString& option,
+                                const wxString& category,
+                                const wxString& additionalLibs,
+                                bool doChecks,
+                                const wxString& checkAgainst,
+                                const wxString& checkMessage)
 {
-	if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
-		return;
-	CompOption* coption = new CompOption;
+    if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
+        return;
+    CompOption* coption = new CompOption;
 
-	wxString listboxname = name + _T("  [");
-	if (option.IsEmpty())
+    wxString listboxname = name + _T("  [");
+    if (option.IsEmpty())
         listboxname += additionalLibs;
     else
         listboxname += option;
     listboxname += _T("]");
 
-	coption->name = listboxname;
-	coption->option = option;
-	coption->additionalLibs = additionalLibs;
-	coption->enabled = false;
-	coption->category = category;
-	coption->doChecks = doChecks;
-	coption->checkAgainst = checkAgainst;
-	coption->checkMessage = checkMessage;
-	AddOption(coption);
+    coption->name = listboxname;
+    coption->option = option;
+    coption->additionalLibs = additionalLibs;
+    coption->enabled = false;
+    coption->category = category;
+    coption->doChecks = doChecks;
+    coption->checkAgainst = checkAgainst;
+    coption->checkMessage = checkMessage;
+    AddOption(coption);
 }
 
 CompOption* CompilerOptions::GetOptionByName(const wxString& name)
 {
-	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
-	{
-		CompOption* coption = m_Options.Item(i);
-		if (coption->name == name)
-			return coption;
-	}
-	return 0L;
+    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    {
+        CompOption* coption = m_Options.Item(i);
+        if (coption->name == name)
+            return coption;
+    }
+    return 0L;
 }
 
 CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
 {
-	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
-	{
-		CompOption* coption = m_Options.Item(i);
-		if (coption->option == option)
-			return coption;
-	}
-	return 0L;
+    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    {
+        CompOption* coption = m_Options.Item(i);
+        if (coption->option == option)
+            return coption;
+    }
+    return 0L;
 }
 
 CompOption* CompilerOptions::GetOptionByAdditionalLibs(const wxString& libs)
 {
-	for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
-	{
-		CompOption* coption = m_Options.Item(i);
-		if (coption->additionalLibs == libs)
-			return coption;
-	}
-	return 0L;
+    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    {
+        CompOption* coption = m_Options.Item(i);
+        if (coption->additionalLibs == libs)
+            return coption;
+    }
+    return 0L;
 }

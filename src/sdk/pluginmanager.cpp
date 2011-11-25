@@ -1265,11 +1265,11 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     }
     else
     {
-		#if wxCHECK_VERSION(2, 9, 0)
-		Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.wx_str()));
-		#else
-		Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.c_str()));
-		#endif
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.wx_str()));
+        #else
+        Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.c_str()));
+        #endif
     }
     return 0;
 }

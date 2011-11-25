@@ -443,7 +443,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
                                   "which were illegal in the selected encoding.\n\n"
                                   "The file's encoding has been changed to UTF-8\n"
                                   "to prevent you from losing data."), 8000);
-		}
+        }
     }
 
     return f.Write(buf, size);

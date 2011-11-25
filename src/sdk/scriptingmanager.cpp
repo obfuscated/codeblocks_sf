@@ -123,27 +123,27 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     f.Open(fname);
     if (!f.IsOpened())
     {
-    	bool found = false;
+        bool found = false;
 
-    	// check in same dir as currently running script (if any)
-    	if (!m_CurrentlyRunningScriptFile.IsEmpty())
-    	{
-    		fname = wxFileName(m_CurrentlyRunningScriptFile).GetPath() + _T('/') + filename;
-			f.Open(fname);
-			found = f.IsOpened();
-    	}
+        // check in same dir as currently running script (if any)
+        if (!m_CurrentlyRunningScriptFile.IsEmpty())
+        {
+            fname = wxFileName(m_CurrentlyRunningScriptFile).GetPath() + _T('/') + filename;
+            f.Open(fname);
+            found = f.IsOpened();
+        }
 
-		if (!found)
-		{
-			// check in standard script dirs
-			fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
-			f.Open(fname);
-			if (!f.IsOpened())
-			{
-				Manager::Get()->GetLogManager()->DebugLog(_T("Can't open script ") + filename);
-				return false;
-			}
-		}
+        if (!found)
+        {
+            // check in standard script dirs
+            fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
+            f.Open(fname);
+            if (!f.IsOpened())
+            {
+                Manager::Get()->GetLogManager()->DebugLog(_T("Can't open script ") + filename);
+                return false;
+            }
+        }
     }
     // read file
     wxString contents = cbReadFileContents(f);
@@ -233,16 +233,16 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
     wxString msg = GetErrorString(exception, clearErrors);
     if (!msg.IsEmpty())
     {
-		if (cbMessageBox(_("Script errors have occured...\nPress 'Yes' to see the exact errors."),
-							_("Script errors"),
-							wxICON_ERROR | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
-		{
-			GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
-										_("Script errors"),
-										msg,
-										true);
-			dlg.ShowModal();
-		}
+        if (cbMessageBox(_("Script errors have occured...\nPress 'Yes' to see the exact errors."),
+                            _("Script errors"),
+                            wxICON_ERROR | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+        {
+            GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
+                                        _("Script errors"),
+                                        msg,
+                                        true);
+            dlg.ShowModal();
+        }
     }
 }
 

@@ -108,12 +108,12 @@ class DbgCmd_UpdateWatchesTree : public DebuggerCmd
 ////////////////////////////////////////////////////////////////////////////////
 struct DebuggerBreakpoint
 {
-	enum BreakpointType
-	{
-		bptCode = 0,	///< Normal file/line breakpoint
-		bptFunction,	///< Function signature breakpoint
-		bptData			///< Data breakpoint
-	};
+    enum BreakpointType
+    {
+        bptCode = 0,    ///< Normal file/line breakpoint
+        bptFunction,    ///< Function signature breakpoint
+        bptData            ///< Data breakpoint
+    };
 
     /** Constructor.
       * Sets default values for members.

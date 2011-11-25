@@ -105,25 +105,25 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
 
     void Sanitise(wxString& s)
     {
-    s.Trim().Trim(true);
+        s.Trim().Trim(true);
 
-    if(s.IsEmpty())
+        if(s.IsEmpty())
         {
-        s = _T("[?empty?]");
-        return;
+            s = _T("[?empty?]");
+            return;
         }
 
-    for(unsigned int i = 0; i < s.length(); ++i)
-    #if wxCHECK_VERSION(2, 9, 0)
-        s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : wxUniChar('_');
-    #else
-        s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : _T('_');
-    #endif
+        for(unsigned int i = 0; i < s.length(); ++i)
+        #if wxCHECK_VERSION(2, 9, 0)
+            s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : wxUniChar('_');
+        #else
+            s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : _T('_');
+        #endif
 
-    if(s.GetChar(0) == _T('_'))
+        if(s.GetChar(0) == _T('_'))
             s.Prepend(_T("set"));
 
-    if(s.GetChar(0) >= _T('0') && s.GetChar(0) <= _T('9'))
+        if(s.GetChar(0) >= _T('0') && s.GetChar(0) <= _T('9'))
             s.Prepend(_T("set_"));
 
     };

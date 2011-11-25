@@ -24,12 +24,12 @@ WX_DEFINE_OBJARRAY(TemplateOptionArray);
 
 ProjectTemplateLoader::ProjectTemplateLoader()
 {
-	//ctor
+    //ctor
 }
 
 ProjectTemplateLoader::~ProjectTemplateLoader()
 {
-	//dtor
+    //dtor
 }
 
 bool ProjectTemplateLoader::Open(const wxString& filename)

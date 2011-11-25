@@ -113,7 +113,7 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(ttStaticLib);
         BIND_INT_CONSTANT(ttDynamicLib);
         BIND_INT_CONSTANT(ttCommandsOnly);
-	BIND_INT_CONSTANT(ttNative);
+        BIND_INT_CONSTANT(ttNative);
 
         // MakeCommand
         BIND_INT_CONSTANT(mcClean);
@@ -168,7 +168,7 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(spMac);
         BIND_INT_CONSTANT(spAll);
 
-		// TargetFilenameGenerationPolicy
+        // TargetFilenameGenerationPolicy
         BIND_INT_CONSTANT(tgfpPlatformDefault);
         BIND_INT_CONSTANT(tgfpNone);
 

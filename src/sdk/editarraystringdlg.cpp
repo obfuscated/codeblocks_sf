@@ -22,77 +22,77 @@
 #include <wx/textdlg.h>
 
 BEGIN_EVENT_TABLE(EditArrayStringDlg, wxScrollingDialog)
-	EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayStringDlg::OnEdit)
-	EVT_BUTTON(XRCID("btnAdd"), EditArrayStringDlg::OnAdd)
-	EVT_BUTTON(XRCID("btnEdit"), EditArrayStringDlg::OnEdit)
-	EVT_BUTTON(XRCID("btnDelete"), EditArrayStringDlg::OnDelete)
-	EVT_UPDATE_UI(-1, EditArrayStringDlg::OnUpdateUI)
+    EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayStringDlg::OnEdit)
+    EVT_BUTTON(XRCID("btnAdd"), EditArrayStringDlg::OnAdd)
+    EVT_BUTTON(XRCID("btnEdit"), EditArrayStringDlg::OnEdit)
+    EVT_BUTTON(XRCID("btnDelete"), EditArrayStringDlg::OnDelete)
+    EVT_UPDATE_UI(-1, EditArrayStringDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
 EditArrayStringDlg::EditArrayStringDlg(wxWindow* parent, wxArrayString& array)
-	: m_Array(array)
+    : m_Array(array)
 {
-	//ctor
-	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
+    //ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
 
-	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-	list->Clear();
-	for (unsigned int i = 0; i < m_Array.GetCount(); ++i)
-	{
-		list->Append(m_Array[i]);
-	}
+    wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+    list->Clear();
+    for (unsigned int i = 0; i < m_Array.GetCount(); ++i)
+    {
+        list->Append(m_Array[i]);
+    }
 }
 
 EditArrayStringDlg::~EditArrayStringDlg()
 {
-	//dtor
+    //dtor
 }
 
 void EditArrayStringDlg::EndModal(int retCode)
 {
-	if (retCode == wxID_OK)
-	{
-		wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-		m_Array.Clear();
-		for (int i = 0; i < (int)list->GetCount(); ++i)
-		{
-			m_Array.Add(list->GetString(i));
-		}
-	}
-	wxScrollingDialog::EndModal(retCode);
+    if (retCode == wxID_OK)
+    {
+        wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+        m_Array.Clear();
+        for (int i = 0; i < (int)list->GetCount(); ++i)
+        {
+            m_Array.Add(list->GetString(i));
+        }
+    }
+    wxScrollingDialog::EndModal(retCode);
 }
 
 // events
 
 void EditArrayStringDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
-	wxString w = wxGetTextFromUser(_("Add item"), _("Enter the new item:"));
-	if (!w.IsEmpty())
-		XRCCTRL(*this, "lstItems", wxListBox)->Append(w);
+    wxString w = wxGetTextFromUser(_("Add item"), _("Enter the new item:"));
+    if (!w.IsEmpty())
+        XRCCTRL(*this, "lstItems", wxListBox)->Append(w);
 }
 
 void EditArrayStringDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 {
-	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+    wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
-	wxString w = list->GetStringSelection();
-	w = wxGetTextFromUser(_("Edit item"), _("Edit the item:"), w);
-	if (!w.IsEmpty())
-		list->SetString(list->GetSelection(), w);
+    wxString w = list->GetStringSelection();
+    w = wxGetTextFromUser(_("Edit item"), _("Edit the item:"), w);
+    if (!w.IsEmpty())
+        list->SetString(list->GetSelection(), w);
 }
 
 void EditArrayStringDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
-	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxID_YES)
-	{
-		wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-		list->Delete(list->GetSelection());
-	}
+    if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxID_YES)
+    {
+        wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+        list->Delete(list->GetSelection());
+    }
 }
 
 void EditArrayStringDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
-	const bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
-	XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);
-	XRCCTRL(*this, "btnDelete", wxButton)->Enable(en);
+    const bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
+    XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDelete", wxButton)->Enable(en);
 }

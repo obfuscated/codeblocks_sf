@@ -34,8 +34,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         dontAnnoy(false),
         defRet(defaultReturn)
 {
-	// Code::Blocks needs wxWidgets 2.8
-	CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+    // Code::Blocks needs wxWidgets 2.8
+    CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
 
     ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
     if(disabled.find(caption) != disabled.end())
@@ -90,53 +90,53 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     else
         cbThrow(wxString(_T("Fatal error:\nUndefined style in dialog ")) << caption);
 
-	wxSizer* buttonSizer = 0;
-	if (style < ONE_BUTTON) // standard buttons? use wxStdDialogButtonSizer
-	{
-		wxStdDialogButtonSizer *buttonArea = new wxStdDialogButtonSizer();
+    wxSizer* buttonSizer = 0;
+    if (style < ONE_BUTTON) // standard buttons? use wxStdDialogButtonSizer
+    {
+        wxStdDialogButtonSizer *buttonArea = new wxStdDialogButtonSizer();
 
-		wxButton *but1 = new wxButton(this, id1, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
-		but1->SetDefault();
-		buttonArea->AddButton(but1);
+        wxButton *but1 = new wxButton(this, id1, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
+        but1->SetDefault();
+        buttonArea->AddButton(but1);
 
-		if(numButtons > 1)
-		{
-			wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
-			but2->SetDefault();
-			buttonArea->AddButton(but2);
-		}
-		if(numButtons > 2)
-		{
-			wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
-			but3->SetDefault();
-			buttonArea->AddButton(but3);
-		}
-		buttonArea->Realize();
-		buttonSizer = buttonArea;
-	}
-	else
-	{
-		// wxStdDialogButtonSizer accepts only standard IDs for its buttons, so we can't use
-		// it with custom buttons
-		buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+        if(numButtons > 1)
+        {
+            wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
+            but2->SetDefault();
+            buttonArea->AddButton(but2);
+        }
+        if(numButtons > 2)
+        {
+            wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
+            but3->SetDefault();
+            buttonArea->AddButton(but3);
+        }
+        buttonArea->Realize();
+        buttonSizer = buttonArea;
+    }
+    else
+    {
+        // wxStdDialogButtonSizer accepts only standard IDs for its buttons, so we can't use
+        // it with custom buttons
+        buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-		wxButton *but1 = new wxButton(this, id1, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
-		but1->SetDefault();
-		buttonSizer->Add(but1, 0, wxRIGHT, 5);
+        wxButton *but1 = new wxButton(this, id1, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
+        but1->SetDefault();
+        buttonSizer->Add(but1, 0, wxRIGHT, 5);
 
-		if(numButtons > 1)
-		{
-			wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
-			but2->SetDefault();
-			buttonSizer->Add(but2, 0, wxRIGHT, 5);
-		}
-		if(numButtons > 2)
-		{
-			wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
-			but3->SetDefault();
-			buttonSizer->Add(but3, 0, wxRIGHT, 5);
-		}
-	}
+        if(numButtons > 1)
+        {
+            wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
+            but2->SetDefault();
+            buttonSizer->Add(but2, 0, wxRIGHT, 5);
+        }
+        if(numButtons > 2)
+        {
+            wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
+            but3->SetDefault();
+            buttonSizer->Add(but3, 0, wxRIGHT, 5);
+        }
+    }
 
     outerSizer->Add( mainArea, 0, wxALIGN_CENTER|wxALL, 5);
     outerSizer->Add( buttonSizer, 0, wxALIGN_CENTER);

@@ -148,7 +148,6 @@ void EditorBase::SetTitle(const wxString& newTitle)
     if (mypage != -1)
         Manager::Get()->GetEditorManager()->GetNotebook()->SetPageText(mypage, newTitle);
 
-
     // set full filename (including path) as tooltip,
     // if possible add the appropriate project also
     wxString toolTip = GetFilename();
@@ -169,7 +168,6 @@ void EditorBase::SetTitle(const wxString& newTitle)
     cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (nb)
         nb->SetTabToolTip(this, toolTip);
-
 }
 
 void EditorBase::Activate()

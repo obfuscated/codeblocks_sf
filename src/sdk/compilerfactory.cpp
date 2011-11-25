@@ -136,14 +136,14 @@ void CompilerFactory::RegisterUserCompilers()
     for (unsigned int i = 0; i < paths.GetCount(); ++i)
     {
         wxString base = _T("/user_sets/") + paths[i];
-		wxString parent = cfg->Read(base + _T("/parent"), wxEmptyString);
+        wxString parent = cfg->Read(base + _T("/parent"), wxEmptyString);
         if (!parent.IsEmpty())
         {
             Compiler* compiler = GetCompiler(parent);
             wxString name = cfg->Read(base + _T("/name"), wxEmptyString);
             CreateCompilerCopy(compiler, name);
         }
-	}
+    }
 }
 
 Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString& newName)
@@ -242,9 +242,9 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
-	// clear old keys before saving
-	Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/sets"));
-	Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets"));
+    // clear old keys before saving
+    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/sets"));
+    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets"));
 
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
@@ -312,10 +312,8 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
 
 wxString CompilerFactory::GetCompilerVersionString(const wxString& Id)
 {
-	wxString Version;
-	if(const Compiler* pCompiler = GetCompiler(Id))
-	{
-		Version = pCompiler->GetVersionString();
-	}
-	return Version;
-} // end of GetCompilerVersionString
+    wxString Version;
+    if (const Compiler* pCompiler = GetCompiler(Id))
+        Version = pCompiler->GetVersionString();
+    return Version;
+}

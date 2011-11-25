@@ -25,12 +25,12 @@
 EditorLexerLoader::EditorLexerLoader(EditorColourSet* target)
     : m_pTarget(target)
 {
-	//ctor
+    //ctor
 }
 
 EditorLexerLoader::~EditorLexerLoader()
 {
-	//dtor
+    //dtor
 }
 
 void EditorLexerLoader::Load(LoaderBase* loader)
@@ -75,7 +75,7 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
 {
     if (!node->Attribute("name") || !node->Attribute("index"))
     {
-    	Manager::Get()->GetLogManager()->Log(_("No name or index..."));
+        Manager::Get()->GetLogManager()->Log(_("No name or index..."));
         return;
     }
 
@@ -135,7 +135,7 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
 
             for (size_t i = 0; i < indices.GetCount(); ++i)
             {
-            	if (indices[i].IsEmpty())
+                if (indices[i].IsEmpty())
                     continue;
                 long value = 0;
                 indices[i].ToLong(&value);

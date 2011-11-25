@@ -20,7 +20,7 @@
     #include <wx/stattext.h>
     #include <wx/textdlg.h>
     #include <wx/xrc/xmlres.h>
-    
+
     #include "manager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"
