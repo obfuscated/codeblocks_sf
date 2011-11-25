@@ -1232,7 +1232,16 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
         SetProject(m_pProjects->Item(0), false);
 
-    return m_pWorkspace && m_pWorkspace->IsOK();
+    if ( m_pWorkspace && m_pWorkspace->IsOK() )
+    {
+        // Fire-up event here, where we're sure there's an active project
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADING_COMPLETE);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
+        return true;
+    }
+
+    return false;
 }
 
 bool ProjectManager::SaveWorkspace()
