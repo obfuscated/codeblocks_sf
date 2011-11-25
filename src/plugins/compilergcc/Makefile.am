@@ -38,8 +38,10 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerOW.cpp \
 			compilerOWgenerator.cpp \
 			compilerSDCC.cpp \
+			compilerG95.cpp \
 			compilerGNUARM.cpp \
 			compilerGNUAVR.cpp \
+			compilerGNUFortran.cpp \
 			compilerGNUMSP430.cpp \
 			compilerGNUPOWERPC.cpp \
 			compilerGNUTRICORE.cpp \
@@ -55,6 +57,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerDMD.h \
 			compilererrors.h \
 			compilergcc.h \
+			compilerG95.h \
 			compilerGDC.h \
 			compilerLDC.h \
 			compilerICC.h \
@@ -69,6 +72,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerSDCC.h \
 			compilerGNUARM.h \
 			compilerGNUAVR.h \
+			compilerGNUFortran.h \
 			compilerGNUMSP430.h \
 			compilerGNUPOWERPC.h \
 			compilerGNUTRICORE.h \
