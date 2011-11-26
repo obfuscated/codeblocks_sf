@@ -484,7 +484,7 @@ void wxsAuiManager::OnBuildCreatingCode()
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsAuiPaneInfoExtra*  = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
+        wxsAuiPaneInfoExtra* Extra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
 
         if (!Child || !Extra) continue;
 
