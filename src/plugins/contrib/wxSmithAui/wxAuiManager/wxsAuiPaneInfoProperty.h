@@ -42,7 +42,7 @@ class wxsAuiDockableProperty: public wxsProperty
          *  \param Offset   offset to long handling border flags
          *  \param Priority         priority of this property
          */
-		wxsAuiDockableProperty(long Offset,int Priority);
+        wxsAuiDockableProperty(long Offset,int Priority);
 
         /** \brief Returning type of this property */
         virtual const wxString GetTypeName() { return _T("PaneInfo"); }
@@ -87,7 +87,7 @@ class wxsAuiDockableProperty: public wxsProperty
 /** \brief First time add property */
 class wxsFirstAddProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName   name of property in Property Grid
@@ -95,7 +95,7 @@ class wxsFirstAddProperty: public wxsProperty
          *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
          */
-		wxsFirstAddProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
+        wxsFirstAddProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
 
         /** \brief Returning type name */
         virtual const wxString GetTypeName() { return _T("bool"); }
@@ -107,7 +107,7 @@ class wxsFirstAddProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         bool Default;
 };

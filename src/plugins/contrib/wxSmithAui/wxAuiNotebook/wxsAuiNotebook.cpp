@@ -247,12 +247,12 @@ void wxsAuiNotebook::OnEnumContainerProperties(long Flags)
 
 bool wxsAuiNotebook::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
+    if (!Item) return false;
+
     if ( Item->GetType() == wxsTSizer )
     {
         if ( ShowMessage )
-        {
-            wxMessageBox(_("Can not add sizer into AuiNotebook.\nAdd panels first"));
-        }
+            wxMessageBox(_("Can not add sizer into AuiNotebook.\nAdd panels first."));
         return false;
     }
 
@@ -273,9 +273,7 @@ void wxsAuiNotebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 {
     wxsAuiNotebookExtra* Extra = (wxsAuiNotebookExtra*)GetChildExtra(GetChildIndex(Child));
     if ( Extra )
-    {
         QPP->Register(new wxsAuiNotebookParentQP(QPP,Extra),_("AuiNotebook"));
-    }
 }
 
 wxObject* wxsAuiNotebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
@@ -367,7 +365,7 @@ bool wxsAuiNotebook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
     wxSmithAuiNotebook* AuiNotebook = (wxSmithAuiNotebook*)Preview;
     int Hit = wxNOT_FOUND;
 
-    if ( GetChildCount() ) Hit = AuiNotebook->HitTest(wxPoint(PosX,PosY));
+    if ( AuiNotebook && GetChildCount() ) Hit = AuiNotebook->HitTest(wxPoint(PosX,PosY));
     if ( Hit != wxNOT_FOUND )
     {
         wxsItem* OldSel = m_CurrentSelection;
@@ -399,10 +397,8 @@ void wxsAuiNotebook::UpdateCurrentSelection()
     {
         if ( m_CurrentSelection == GetChild(i) ) return;
         wxsAuiNotebookExtra* Extra = (wxsAuiNotebookExtra*)GetChildExtra(i);
-        if ( (i==0) || Extra->m_Selected )
-        {
+        if ( (i==0) || (Extra && Extra->m_Selected) )
             NewCurrentSelection = GetChild(i);
-        }
     }
     m_CurrentSelection = NewCurrentSelection;
 }
@@ -444,15 +440,11 @@ bool wxsAuiNotebook::OnPopup(long Id)
                 {
                     wxsAuiNotebookExtra* Extra = (wxsAuiNotebookExtra*)GetChildExtra(GetChildCount()-1);
                     if ( Extra )
-                    {
                         Extra->m_Label = Dlg.GetValue();
-                    }
                     m_CurrentSelection = Panel;
                 }
                 else
-                {
                     delete Panel;
-                }
                 GetResourceData()->EndChange();
             }
         }
@@ -486,8 +478,7 @@ bool wxsAuiNotebook::OnPopup(long Id)
         GetResourceData()->EndChange();
     }
     else
-    {
         return wxsContainer::OnPopup(Id);
-    }
+
     return true;
 }

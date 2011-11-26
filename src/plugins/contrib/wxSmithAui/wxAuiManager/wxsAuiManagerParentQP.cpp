@@ -62,248 +62,248 @@ const long wxsAuiManagerParentQP::ID_RADIOBOX1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxsAuiManagerParentQP,wxsAdvQPPChild)
-	//(*EventTable(wxsAuiManagerParentQP)
-	//*)
+    //(*EventTable(wxsAuiManagerParentQP)
+    //*)
 END_EVENT_TABLE()
 
 wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent,wxsAuiPaneInfoExtra* Extra, wxWindowID id):
     wxsAdvQPPChild(parent,_("AuiManager")),
     m_Extra(Extra)
 {
-	//(*Initialize(wxsAuiManagerParentQP)
-	wxStaticBoxSizer* StaticBoxSizer2;
-	wxGridSizer* GridSizer1;
-	wxFlexGridSizer* FlexGridSizer2;
-	wxBoxSizer* BoxSizer3;
-	wxStaticBoxSizer* StaticBoxSizer7;
-	wxStaticBoxSizer* StaticBoxSizer5;
-	wxGridSizer* GridSizer3;
-	wxFlexGridSizer* FlexGridSizer7;
-	wxBoxSizer* BoxSizer2;
-	wxFlexGridSizer* FlexGridSizer4;
-	wxStaticBoxSizer* StaticBoxSizer3;
-	wxFlexGridSizer* FlexGridSizer6;
-	wxFlexGridSizer* FlexGridSizer3;
-	wxBoxSizer* BoxSizer4;
-	wxStaticBoxSizer* StaticBoxSizer4;
-	wxStaticBoxSizer* StaticBoxSizer6;
-	wxBoxSizer* BoxSizer1;
-	wxFlexGridSizer* FlexGridSizer5;
-	wxBoxSizer* BoxSizer5;
-	wxStaticBoxSizer* StaticBoxSizer1;
+    //(*Initialize(wxsAuiManagerParentQP)
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxGridSizer* GridSizer1;
+    wxFlexGridSizer* FlexGridSizer2;
+    wxBoxSizer* BoxSizer3;
+    wxStaticBoxSizer* StaticBoxSizer7;
+    wxStaticBoxSizer* StaticBoxSizer5;
+    wxGridSizer* GridSizer3;
+    wxFlexGridSizer* FlexGridSizer7;
+    wxBoxSizer* BoxSizer2;
+    wxFlexGridSizer* FlexGridSizer4;
+    wxStaticBoxSizer* StaticBoxSizer3;
+    wxFlexGridSizer* FlexGridSizer6;
+    wxFlexGridSizer* FlexGridSizer3;
+    wxBoxSizer* BoxSizer4;
+    wxStaticBoxSizer* StaticBoxSizer4;
+    wxStaticBoxSizer* StaticBoxSizer6;
+    wxBoxSizer* BoxSizer1;
+    wxFlexGridSizer* FlexGridSizer5;
+    wxBoxSizer* BoxSizer5;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
-	Create(parent, wxID_ANY, wxPoint(-1,-1), wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
-	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
-	FlexGridSizer1->AddGrowableCol(1);
-	StaticBoxSizer4 = new wxStaticBoxSizer(wxVERTICAL, this, _("General"));
-	FlexGridSizer4 = new wxFlexGridSizer(0, 2, 0, 0);
-	FlexGridSizer4->AddGrowableCol(1);
-	StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-	FlexGridSizer4->Add(StaticText4, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	Name = new wxTextCtrl(this, ID_TEXTCTRL1, _("Pane name"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	FlexGridSizer4->Add(Name, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Visible = new wxCheckBox(this, ID_CHECKBOX18, _("Visible"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX18"));
-	Visible->SetValue(false);
-	FlexGridSizer4->Add(Visible, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Resizable = new wxCheckBox(this, ID_CHECKBOX15, _("Resizable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX15"));
-	Resizable->SetValue(false);
-	FlexGridSizer4->Add(Resizable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Movable = new wxCheckBox(this, ID_CHECKBOX20, _("Movable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX20"));
-	Movable->SetValue(false);
-	FlexGridSizer4->Add(Movable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Floatable = new wxCheckBox(this, ID_CHECKBOX21, _("Floatable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX21"));
-	Floatable->SetValue(false);
-	FlexGridSizer4->Add(Floatable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	PaneBorder = new wxCheckBox(this, ID_CHECKBOX19, _("Border"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX19"));
-	PaneBorder->SetValue(false);
-	FlexGridSizer4->Add(PaneBorder, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	DestroyOnClose = new wxCheckBox(this, ID_CHECKBOX22, _("Destroy on close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX22"));
-	DestroyOnClose->SetValue(false);
-	FlexGridSizer4->Add(DestroyOnClose, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer4->Add(FlexGridSizer4, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer1->Add(StaticBoxSizer4, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer7 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Standard pane type"));
-	StandardPane = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
-	StandardPane->SetSelection( StandardPane->Append(_("None")) );
-	StandardPane->Append(_("Default pane"));
-	StandardPane->Append(_("Center pane"));
-	StandardPane->Append(_("Toolbar pane"));
-	StaticBoxSizer7->Add(StandardPane, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer1->Add(StaticBoxSizer7, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Caption"));
-	FlexGridSizer5 = new wxFlexGridSizer(0, 1, 0, 0);
-	FlexGridSizer5->AddGrowableCol(0);
-	FlexGridSizer7 = new wxFlexGridSizer(0, 2, 0, 0);
-	FlexGridSizer7->AddGrowableCol(0);
-	Caption = new wxTextCtrl(this, ID_TEXTCTRL2, _("Caption"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-	FlexGridSizer7->Add(Caption, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	CaptionVisible = new wxCheckBox(this, ID_CHECKBOX7, _("Visible"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX7"));
-	CaptionVisible->SetValue(false);
-	FlexGridSizer7->Add(CaptionVisible, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer5->Add(FlexGridSizer7, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Buttons"));
-	FlexGridSizer6 = new wxFlexGridSizer(0, 2, 0, 0);
-	FlexGridSizer6->AddGrowableCol(0);
-	FlexGridSizer6->AddGrowableCol(1);
-	MinimizeButton = new wxCheckBox(this, ID_CHECKBOX9, _("Minimize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX9"));
-	MinimizeButton->SetValue(false);
-	FlexGridSizer6->Add(MinimizeButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	PinButton = new wxCheckBox(this, ID_CHECKBOX11, _("Pin"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX11"));
-	PinButton->SetValue(false);
-	FlexGridSizer6->Add(PinButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	MaximizeButton = new wxCheckBox(this, ID_CHECKBOX10, _("Maximize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX10"));
-	MaximizeButton->SetValue(false);
-	FlexGridSizer6->Add(MaximizeButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	CloseButton = new wxCheckBox(this, ID_CHECKBOX12, _("Close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX12"));
-	CloseButton->SetValue(false);
-	FlexGridSizer6->Add(CloseButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer5->Add(FlexGridSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer5->Add(StaticBoxSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer3->Add(FlexGridSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer1->Add(StaticBoxSizer3, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Dock"));
-	FlexGridSizer3 = new wxFlexGridSizer(3, 1, 0, 0);
-	FlexGridSizer3->AddGrowableCol(0);
-	FlexGridSizer3->AddGrowableCol(1);
-	FlexGridSizer3->AddGrowableCol(2);
-	FlexGridSizer3->AddGrowableCol(3);
-	FlexGridSizer3->AddGrowableCol(4);
-	FlexGridSizer3->AddGrowableCol(5);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	Docked = new wxCheckBox(this, ID_CHECKBOX6, _("Docked"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
-	Docked->SetValue(false);
-	BoxSizer2->Add(Docked, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	DockFixed = new wxCheckBox(this, ID_CHECKBOX8, _("Fixed"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
-	DockFixed->SetValue(false);
-	BoxSizer2->Add(DockFixed, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer3->Add(BoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer2 = new wxFlexGridSizer(0, 5, 0, 0);
-	FlexGridSizer2->AddGrowableCol(2);
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Layer:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	BoxSizer1->Add(StaticText1, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Layer = new wxSpinCtrl(this, ID_SPINCTRL1, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 10000, 0, _T("ID_SPINCTRL1"));
-	Layer->SetValue(_T("0"));
-	Layer->SetMinSize(wxSize(0,-1));
-	BoxSizer1->Add(Layer, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer2->Add(BoxSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_VERTICAL, _T("ID_STATICLINE1"));
-	FlexGridSizer2->Add(StaticLine1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer4 = new wxBoxSizer(wxVERTICAL);
-	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Row:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-	BoxSizer4->Add(StaticText2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
-	Row = new wxSpinCtrl(this, ID_SPINCTRL2, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 10000, 0, _T("ID_SPINCTRL2"));
-	Row->SetValue(_T("0"));
-	Row->SetMinSize(wxSize(0,-1));
-	BoxSizer4->Add(Row, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer2->Add(BoxSizer4, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(10,-1), wxLI_VERTICAL, _T("ID_STATICLINE2"));
-	FlexGridSizer2->Add(StaticLine2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
-	StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Position:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-	BoxSizer5->Add(StaticText3, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Position = new wxSpinCtrl(this, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxDefaultSize, 0, -10000, 10000, 0, _T("ID_SPINCTRL3"));
-	Position->SetValue(_T("0"));
-	Position->SetMinSize(wxSize(0,-1));
-	BoxSizer5->Add(Position, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer2->Add(BoxSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer3->Add(FlexGridSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Direction"));
-	GridSizer1 = new wxGridSizer(0, 3, 0, 0);
-	GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	DockTop = new wxCheckBox(this, ID_CHECKBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-	DockTop->SetValue(false);
-	GridSizer1->Add(DockTop, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	DockLeft = new wxCheckBox(this, ID_CHECKBOX2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
-	DockLeft->SetValue(false);
-	GridSizer1->Add(DockLeft, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	DockCenter = new wxCheckBox(this, ID_CHECKBOX5, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
-	DockCenter->SetValue(false);
-	GridSizer1->Add(DockCenter, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	DockRight = new wxCheckBox(this, ID_CHECKBOX3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
-	DockRight->SetValue(false);
-	GridSizer1->Add(DockRight, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	DockBottom = new wxCheckBox(this, ID_CHECKBOX4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
-	DockBottom->SetValue(false);
-	GridSizer1->Add(DockBottom, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer2->Add(GridSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	BoxSizer3->Add(StaticBoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Dockable"));
-	GridSizer3 = new wxGridSizer(0, 3, 0, 0);
-	GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	TopDockable = new wxCheckBox(this, ID_CHECKBOX13, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX13"));
-	TopDockable->SetValue(false);
-	GridSizer3->Add(TopDockable, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	LeftDockable = new wxCheckBox(this, ID_CHECKBOX14, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX14"));
-	LeftDockable->SetValue(false);
-	GridSizer3->Add(LeftDockable, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	GridSizer3->Add(-1,-1,1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	RightDockable = new wxCheckBox(this, ID_CHECKBOX16, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX16"));
-	RightDockable->SetValue(false);
-	GridSizer3->Add(RightDockable, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BottomDockable = new wxCheckBox(this, ID_CHECKBOX17, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX17"));
-	BottomDockable->SetValue(false);
-	GridSizer3->Add(BottomDockable, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer6->Add(GridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	BoxSizer3->Add(StaticBoxSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	FlexGridSizer3->Add(BoxSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1->Add(FlexGridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	wxString __wxRadioBoxChoices_1[3] =
-	{
-		_("None"),
-		_("Default"),
-		_("Top")
-	};
-	Gripper = new wxRadioBox(this, ID_RADIOBOX1, _("Gripper"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
-	FlexGridSizer1->Add(Gripper, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	SetSizer(FlexGridSizer1);
-	FlexGridSizer1->Fit(this);
-	FlexGridSizer1->SetSizeHints(this);
+    Create(parent, wxID_ANY, wxPoint(-1,-1), wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
+    FlexGridSizer1->AddGrowableCol(1);
+    StaticBoxSizer4 = new wxStaticBoxSizer(wxVERTICAL, this, _("General"));
+    FlexGridSizer4 = new wxFlexGridSizer(0, 2, 0, 0);
+    FlexGridSizer4->AddGrowableCol(1);
+    StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+    FlexGridSizer4->Add(StaticText4, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    Name = new wxTextCtrl(this, ID_TEXTCTRL1, _("Pane name"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    FlexGridSizer4->Add(Name, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Visible = new wxCheckBox(this, ID_CHECKBOX18, _("Visible"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX18"));
+    Visible->SetValue(false);
+    FlexGridSizer4->Add(Visible, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Resizable = new wxCheckBox(this, ID_CHECKBOX15, _("Resizable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX15"));
+    Resizable->SetValue(false);
+    FlexGridSizer4->Add(Resizable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Movable = new wxCheckBox(this, ID_CHECKBOX20, _("Movable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX20"));
+    Movable->SetValue(false);
+    FlexGridSizer4->Add(Movable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Floatable = new wxCheckBox(this, ID_CHECKBOX21, _("Floatable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX21"));
+    Floatable->SetValue(false);
+    FlexGridSizer4->Add(Floatable, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    PaneBorder = new wxCheckBox(this, ID_CHECKBOX19, _("Border"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX19"));
+    PaneBorder->SetValue(false);
+    FlexGridSizer4->Add(PaneBorder, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    DestroyOnClose = new wxCheckBox(this, ID_CHECKBOX22, _("Destroy on close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX22"));
+    DestroyOnClose->SetValue(false);
+    FlexGridSizer4->Add(DestroyOnClose, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(FlexGridSizer4, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticBoxSizer4, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer7 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Standard pane type"));
+    StandardPane = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
+    StandardPane->SetSelection( StandardPane->Append(_("None")) );
+    StandardPane->Append(_("Default pane"));
+    StandardPane->Append(_("Center pane"));
+    StandardPane->Append(_("Toolbar pane"));
+    StaticBoxSizer7->Add(StandardPane, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticBoxSizer7, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Caption"));
+    FlexGridSizer5 = new wxFlexGridSizer(0, 1, 0, 0);
+    FlexGridSizer5->AddGrowableCol(0);
+    FlexGridSizer7 = new wxFlexGridSizer(0, 2, 0, 0);
+    FlexGridSizer7->AddGrowableCol(0);
+    Caption = new wxTextCtrl(this, ID_TEXTCTRL2, _("Caption"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+    FlexGridSizer7->Add(Caption, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CaptionVisible = new wxCheckBox(this, ID_CHECKBOX7, _("Visible"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX7"));
+    CaptionVisible->SetValue(false);
+    FlexGridSizer7->Add(CaptionVisible, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer5->Add(FlexGridSizer7, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Buttons"));
+    FlexGridSizer6 = new wxFlexGridSizer(0, 2, 0, 0);
+    FlexGridSizer6->AddGrowableCol(0);
+    FlexGridSizer6->AddGrowableCol(1);
+    MinimizeButton = new wxCheckBox(this, ID_CHECKBOX9, _("Minimize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX9"));
+    MinimizeButton->SetValue(false);
+    FlexGridSizer6->Add(MinimizeButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    PinButton = new wxCheckBox(this, ID_CHECKBOX11, _("Pin"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX11"));
+    PinButton->SetValue(false);
+    FlexGridSizer6->Add(PinButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    MaximizeButton = new wxCheckBox(this, ID_CHECKBOX10, _("Maximize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX10"));
+    MaximizeButton->SetValue(false);
+    FlexGridSizer6->Add(MaximizeButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    CloseButton = new wxCheckBox(this, ID_CHECKBOX12, _("Close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX12"));
+    CloseButton->SetValue(false);
+    FlexGridSizer6->Add(CloseButton, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer5->Add(FlexGridSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer5->Add(StaticBoxSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlexGridSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticBoxSizer3, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Dock"));
+    FlexGridSizer3 = new wxFlexGridSizer(3, 1, 0, 0);
+    FlexGridSizer3->AddGrowableCol(0);
+    FlexGridSizer3->AddGrowableCol(1);
+    FlexGridSizer3->AddGrowableCol(2);
+    FlexGridSizer3->AddGrowableCol(3);
+    FlexGridSizer3->AddGrowableCol(4);
+    FlexGridSizer3->AddGrowableCol(5);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    Docked = new wxCheckBox(this, ID_CHECKBOX6, _("Docked"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
+    Docked->SetValue(false);
+    BoxSizer2->Add(Docked, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    DockFixed = new wxCheckBox(this, ID_CHECKBOX8, _("Fixed"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
+    DockFixed->SetValue(false);
+    BoxSizer2->Add(DockFixed, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(BoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2 = new wxFlexGridSizer(0, 5, 0, 0);
+    FlexGridSizer2->AddGrowableCol(2);
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Layer:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    BoxSizer1->Add(StaticText1, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Layer = new wxSpinCtrl(this, ID_SPINCTRL1, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 10000, 0, _T("ID_SPINCTRL1"));
+    Layer->SetValue(_T("0"));
+    Layer->SetMinSize(wxSize(0,-1));
+    BoxSizer1->Add(Layer, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(BoxSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_VERTICAL, _T("ID_STATICLINE1"));
+    FlexGridSizer2->Add(StaticLine1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer4 = new wxBoxSizer(wxVERTICAL);
+    StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Row:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    BoxSizer4->Add(StaticText2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 10);
+    Row = new wxSpinCtrl(this, ID_SPINCTRL2, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 10000, 0, _T("ID_SPINCTRL2"));
+    Row->SetValue(_T("0"));
+    Row->SetMinSize(wxSize(0,-1));
+    BoxSizer4->Add(Row, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(BoxSizer4, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(10,-1), wxLI_VERTICAL, _T("ID_STATICLINE2"));
+    FlexGridSizer2->Add(StaticLine2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer5 = new wxBoxSizer(wxVERTICAL);
+    StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Position:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+    BoxSizer5->Add(StaticText3, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Position = new wxSpinCtrl(this, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxDefaultSize, 0, -10000, 10000, 0, _T("ID_SPINCTRL3"));
+    Position->SetValue(_T("0"));
+    Position->SetMinSize(wxSize(0,-1));
+    BoxSizer5->Add(Position, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(BoxSizer5, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(FlexGridSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+    StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Direction"));
+    GridSizer1 = new wxGridSizer(0, 3, 0, 0);
+    GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    DockTop = new wxCheckBox(this, ID_CHECKBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    DockTop->SetValue(false);
+    GridSizer1->Add(DockTop, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    DockLeft = new wxCheckBox(this, ID_CHECKBOX2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+    DockLeft->SetValue(false);
+    GridSizer1->Add(DockLeft, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    DockCenter = new wxCheckBox(this, ID_CHECKBOX5, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
+    DockCenter->SetValue(false);
+    GridSizer1->Add(DockCenter, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    DockRight = new wxCheckBox(this, ID_CHECKBOX3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
+    DockRight->SetValue(false);
+    GridSizer1->Add(DockRight, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer1->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    DockBottom = new wxCheckBox(this, ID_CHECKBOX4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
+    DockBottom->SetValue(false);
+    GridSizer1->Add(DockBottom, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(GridSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    BoxSizer3->Add(StaticBoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Dockable"));
+    GridSizer3 = new wxGridSizer(0, 3, 0, 0);
+    GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    TopDockable = new wxCheckBox(this, ID_CHECKBOX13, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX13"));
+    TopDockable->SetValue(false);
+    GridSizer3->Add(TopDockable, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    LeftDockable = new wxCheckBox(this, ID_CHECKBOX14, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX14"));
+    LeftDockable->SetValue(false);
+    GridSizer3->Add(LeftDockable, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer3->Add(-1,-1,1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    RightDockable = new wxCheckBox(this, ID_CHECKBOX16, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX16"));
+    RightDockable->SetValue(false);
+    GridSizer3->Add(RightDockable, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    GridSizer3->Add(0,0,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BottomDockable = new wxCheckBox(this, ID_CHECKBOX17, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX17"));
+    BottomDockable->SetValue(false);
+    GridSizer3->Add(BottomDockable, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6->Add(GridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    BoxSizer3->Add(StaticBoxSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(BoxSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(FlexGridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    wxString __wxRadioBoxChoices_1[3] =
+    {
+        _("None"),
+        _("Default"),
+        _("Top")
+    };
+    Gripper = new wxRadioBox(this, ID_RADIOBOX1, _("Gripper"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
+    FlexGridSizer1->Add(Gripper, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(FlexGridSizer1);
+    FlexGridSizer1->Fit(this);
+    FlexGridSizer1->SetSizeHints(this);
 
-	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnNameChange);
-	Connect(ID_CHECKBOX18,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHECKBOX15,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHECKBOX20,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHECKBOX21,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHECKBOX19,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHECKBOX22,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
-	Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnStandardPaneChange);
-	Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionChange);
-	Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionVisibleClick);
-	Connect(ID_CHECKBOX9,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
-	Connect(ID_CHECKBOX11,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
-	Connect(ID_CHECKBOX10,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
-	Connect(ID_CHECKBOX12,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
-	Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockChange);
-	Connect(ID_CHECKBOX8,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockChange);
-	Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
-	Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
-	Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
-	Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
-	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
-	Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
-	Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
-	Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
-	Connect(ID_CHECKBOX13,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
-	Connect(ID_CHECKBOX14,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
-	Connect(ID_CHECKBOX16,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
-	Connect(ID_CHECKBOX17,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
-	Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGripperSelect);
-	//*)
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnNameChange);
+    Connect(ID_CHECKBOX18,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHECKBOX15,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHECKBOX20,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHECKBOX21,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHECKBOX19,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHECKBOX22,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGeneralChange);
+    Connect(ID_CHOICE1,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnStandardPaneChange);
+    Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionChange);
+    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionVisibleClick);
+    Connect(ID_CHECKBOX9,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
+    Connect(ID_CHECKBOX11,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
+    Connect(ID_CHECKBOX10,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
+    Connect(ID_CHECKBOX12,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnCaptionButtonClick);
+    Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockChange);
+    Connect(ID_CHECKBOX8,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockChange);
+    Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
+    Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
+    Connect(ID_SPINCTRL3,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockSiteChange);
+    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
+    Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
+    Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
+    Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockDirectionChange);
+    Connect(ID_CHECKBOX13,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
+    Connect(ID_CHECKBOX14,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
+    Connect(ID_CHECKBOX16,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
+    Connect(ID_CHECKBOX17,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnDockableChange);
+    Connect(ID_RADIOBOX1,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&wxsAuiManagerParentQP::OnGripperSelect);
+    //*)
 
-	ReadData();
+    ReadData();
 }
 
 wxsAuiManagerParentQP::~wxsAuiManagerParentQP()
 {
-	//(*Destroy(wxsAuiManagerParentQP)
-	//*)
+    //(*Destroy(wxsAuiManagerParentQP)
+    //*)
 }
 
 void wxsAuiManagerParentQP::ReadData()
@@ -501,18 +501,24 @@ void wxsAuiManagerParentQP::OnDockSiteChange(wxSpinEvent& event)
 
 void wxsAuiManagerParentQP::OnNameChange(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_Name = Name->GetValue();
     NotifyChange();
 }
 
 void wxsAuiManagerParentQP::OnCaptionChange(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_Caption = Caption->GetValue();
     NotifyChange();
 }
 
 void wxsAuiManagerParentQP::OnCaptionButtonClick(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_MinimizeButton = MinimizeButton->GetValue();
     m_Extra->m_MaximizeButton = MaximizeButton->GetValue();
     m_Extra->m_PinButton      = PinButton->GetValue();
@@ -523,10 +529,12 @@ void wxsAuiManagerParentQP::OnCaptionButtonClick(wxCommandEvent& event)
 
 void wxsAuiManagerParentQP::OnDockableChange(wxCommandEvent& event)
 {
-    bool Top = TopDockable->GetValue();
+    if ( !m_Extra ) return;
+
+    bool Top    = TopDockable->GetValue();
     bool Bottom = BottomDockable->GetValue();
-    bool Left = LeftDockable->GetValue();
-    bool Right = RightDockable->GetValue();
+    bool Left   = LeftDockable->GetValue();
+    bool Right  = RightDockable->GetValue();
 
     if ( Top && Bottom && Left && Right ) m_Extra->m_DockableFlags = wxsAuiDockableProperty::Dockable;
     else
@@ -543,6 +551,8 @@ void wxsAuiManagerParentQP::OnDockableChange(wxCommandEvent& event)
 
 void wxsAuiManagerParentQP::OnGripperSelect(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     switch ( Gripper->GetSelection() )
     {
         case 0:
@@ -562,6 +572,8 @@ void wxsAuiManagerParentQP::OnGripperSelect(wxCommandEvent& event)
 
 void wxsAuiManagerParentQP::OnGeneralChange(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_Visible        = Visible->GetValue();
     m_Extra->m_Resizable      = Resizable->GetValue();
     m_Extra->m_PaneBorder     = PaneBorder->GetValue();
@@ -574,6 +586,8 @@ void wxsAuiManagerParentQP::OnGeneralChange(wxCommandEvent& event)
 
 void wxsAuiManagerParentQP::OnCaptionVisibleClick(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_CaptionVisible = CaptionVisible->GetValue();
 
     NotifyChange();
@@ -581,6 +595,8 @@ void wxsAuiManagerParentQP::OnCaptionVisibleClick(wxCommandEvent& event)
 
 void wxsAuiManagerParentQP::OnStandardPaneChange(wxCommandEvent& event)
 {
+    if ( !m_Extra ) return;
+
     m_Extra->m_StandardPane = StandardPane->GetSelection();
 
     switch ( m_Extra->m_StandardPane )

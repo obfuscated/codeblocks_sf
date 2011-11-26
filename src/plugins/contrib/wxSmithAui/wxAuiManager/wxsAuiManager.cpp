@@ -484,7 +484,9 @@ void wxsAuiManager::OnBuildCreatingCode()
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsAuiPaneInfoExtra* Extra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
+        wxsAuiPaneInfoExtra*  = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
+
+        if (!Child || !Extra) continue;
 
         // Using same parent as we got, AuiManager is not a parent window
         Child->BuildCode(GetCoderContext());
@@ -521,9 +523,7 @@ void wxsAuiManager::OnBuildCreatingCode()
         Codef(_T("%AUpdate();\n"));
 
     if ( UnknownLang )
-    {
         wxsCodeMarks::Unknown(_T("wxsAuiManager::OnBuildCreatingCode"),GetLanguage());
-    }
 }
 
 wxObject* wxsAuiManager::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -537,9 +537,7 @@ wxObject* wxsAuiManager::OnBuildPreview(wxWindow* Parent,long Flags)
     {
         NewParent = new wxsAuiManagerPreview(Parent);
         if (Count)
-        {
             AuiManager = new wxSmithAuiManager(NewParent, Style());
-        }
     }
     else
     {
@@ -579,9 +577,7 @@ wxObject* wxsAuiManager::OnBuildPreview(wxWindow* Parent,long Flags)
     if ( !(Flags & pfExact) )
     {
         if (Count)
-        {
             wxDynamicCast(NewParent, wxsAuiManagerPreview)->SetAuiManager(AuiManager);
-        }
         return NewParent;
     }
 
@@ -598,21 +594,17 @@ bool wxsAuiManager::OnCanAddChild(wxsItem* Item,bool ShowMessage)
     if ( Item->GetType() == wxsTSizer )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("Can not add sizer into AuiManager.\nAdd panels first."));
-        }
         return false;
     }
     else if( Item->GetType() == wxsTSpacer )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("Spacer can be added into sizer only"));
-        }
         return false;
     }
 
-	return wxsParent::OnCanAddChild(Item,ShowMessage);
+    return wxsParent::OnCanAddChild(Item,ShowMessage);
 }
 
 bool wxsAuiManager::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
@@ -620,40 +612,32 @@ bool wxsAuiManager::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
     if ( Parent->GetClassName() == _T("wxAuiManager") )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("wxAuiManager can't be added to a wxAuiManager. Add panels first."));
-        }
         return false;
     }
 
     if ( Parent->GetClassName().EndsWith(_T("book")) )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("wxAuiManager can't be added to a book type widget. Add panels first."));
-        }
         return false;
     }
 
     if ( Parent->GetType() == wxsTSizer )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("wxAuiManager can't be added to a sizer. Add panels first."));
-        }
         return false;
     }
 
     if ( !wxDynamicCast(Parent->BuildPreview(new wxFrame(0,-1,wxEmptyString),0),wxWindow) )
     {
         if ( ShowMessage )
-        {
             wxMessageBox(_("wxAuiManager can only be added to a wxWindow descendant."));
-        }
         return false;
     }
 
-	return wxsParent::OnCanAddToParent(Parent,ShowMessage);
+    return wxsParent::OnCanAddToParent(Parent,ShowMessage);
 }
 
 void wxsAuiManager::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
@@ -665,9 +649,7 @@ void wxsAuiManager::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
     wxsAuiPaneInfoExtra* ChildExtra = (wxsAuiPaneInfoExtra*)GetChildExtra(Index);
 
     if ( Index >= 0 )
-    {
         QPP->Register(new wxsAuiManagerParentQP(QPP,(wxsAuiPaneInfoExtra*)GetChildExtra(Index)),_("PaneInfo"));
-    }
 
     if ( ChildExtra->m_FirstAdd )
     {

@@ -62,18 +62,14 @@ bool wxsAuiDockableProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridM
             DOCKABLEFLAGS &= ~DockableMask;
 
             if ( !(DockableValue&Dockable) && PreviousDockable)
-            {
                 break;
-            }
-            else if ( ((DockableValue & DockableMask) == DockableAll) |
-                      ((DockableValue & Dockable) && !PreviousDockable) )
+            else if ( ((DockableValue & DockableMask) ==  DockableAll) |
+                      ((DockableValue & Dockable)     && !PreviousDockable) )
             {
                 DOCKABLEFLAGS |= Dockable;
             }
             else
-            {
                 DOCKABLEFLAGS |= ( (DockableValue & DockableMask) & ~Dockable );
-            }
             break;
 
         default:
@@ -91,13 +87,9 @@ bool wxsAuiDockableProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGrid
             DockableValue = DOCKABLEFLAGS&DockableMask;
 
             if (DockableValue == Dockable)
-            {
                 Grid->SetPropertyValue(Id,DockableMask);
-            }
             else
-            {
                 Grid->SetPropertyValue(Id,DockableValue);
-            }
             break;
 
         default:
@@ -127,22 +119,22 @@ bool wxsAuiDockableProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* 
 
 bool wxsAuiDockableProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
+    if (!Element) return;
     Element->InsertEndChild(TiXmlText(cbU2C(GetString(DOCKABLEFLAGS))));
     return true;
 }
 
 bool wxsAuiDockableProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    if ( Stream->GetLong(GetDataName(),DOCKABLEFLAGS) )
-    {
+    if ( Stream && Stream->GetLong(GetDataName(),DOCKABLEFLAGS) )
         return true;
-    }
+
     return false;
 }
 
 bool wxsAuiDockableProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    return Stream->PutLong(GetDataName(),DOCKABLEFLAGS);
+    return ( Stream && Stream->PutLong(GetDataName(),DOCKABLEFLAGS) );
 }
 
 long wxsAuiDockableProperty::ParseString(const wxString& String)
@@ -154,11 +146,11 @@ long wxsAuiDockableProperty::ParseString(const wxString& String)
     {
         wxString Flag = Tkn.GetNextToken();
 
-             if ( Flag == _T("TopDockable(false)")      ) Flags &= ~TopDockable;
-        else if ( Flag == _T("BottomDockable(false)")   ) Flags &= ~BottomDockable;
-        else if ( Flag == _T("LeftDockable(false)")     ) Flags &= ~LeftDockable;
-        else if ( Flag == _T("RightDockable(false)")    ) Flags &= ~RightDockable;
-        else if ( Flag == _T("Dockable(false)")         ) Flags &= ~DockableMask;
+             if ( Flag == _T("TopDockable(false)")    ) Flags &= ~TopDockable;
+        else if ( Flag == _T("BottomDockable(false)") ) Flags &= ~BottomDockable;
+        else if ( Flag == _T("LeftDockable(false)")   ) Flags &= ~LeftDockable;
+        else if ( Flag == _T("RightDockable(false)")  ) Flags &= ~RightDockable;
+        else if ( Flag == _T("Dockable(false)")       ) Flags &= ~DockableMask;
     }
 
     if ( Flags == DockableAll ) Flags |= Dockable;
@@ -204,7 +196,8 @@ wxsFirstAddProperty::wxsFirstAddProperty(const wxString& PGName,const wxString& 
     wxsProperty(PGName,DataName,Priority),
     Offset(_Offset),
     Default(_Default)
-{}
+{
+}
 
 bool wxsFirstAddProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
@@ -220,27 +213,29 @@ bool wxsFirstAddProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Ele
         return false;
     }
     VALUE = atol(Text) != 0;
+
     return true;
 }
 
 bool wxsFirstAddProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( VALUE != Default )
+    if ( Element && (VALUE != Default) )
     {
         Element->InsertEndChild(TiXmlText(VALUE?"1":"0"));
         return true;
     }
+
     return false;
 }
 
 bool wxsFirstAddProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    return Stream->GetBool(GetDataName(),VALUE,Default);
+    return ( Stream && Stream->GetBool(GetDataName(),VALUE,Default) );
 }
 
 bool wxsFirstAddProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    return Stream->PutBool(GetDataName(),VALUE,Default);
+    return ( Stream && Stream->PutBool(GetDataName(),VALUE,Default) );
 }
 
 //} wxsFirstAddProperty
