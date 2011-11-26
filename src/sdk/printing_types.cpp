@@ -35,7 +35,14 @@ void InitPrinting()
         #endif
         wxPrintData* ppd = &(g_printer->GetPrintDialogData().GetPrintData());
         ppd->SetPaperId((wxPaperSize)paperid);
+        #if wxCHECK_VERSION(2, 9, 1)
+        if (paperorientation == wxPORTRAIT)
+            ppd->SetOrientation(wxPORTRAIT);
+        else
+            ppd->SetOrientation(wxLANDSCAPE);
+        #else
         ppd->SetOrientation(paperorientation);
+        #endif
     }
 
 //    if (!g_pageSetupData)

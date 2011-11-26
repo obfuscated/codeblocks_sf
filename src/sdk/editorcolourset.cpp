@@ -106,7 +106,7 @@ void EditorColourSet::LoadAvailableSets()
 
     // user paths first
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
-    if (dir.Open(path))
+    if (wxDirExists(path) && dir.Open(path))
     {
         #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
@@ -126,7 +126,7 @@ void EditorColourSet::LoadAvailableSets()
 
     // global paths next
     path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
-    if (dir.Open(path))
+    if (wxDirExists(path) && dir.Open(path))
     {
         #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
@@ -796,12 +796,12 @@ wxString EditorColourSet::GetSampleCode(HighlightLanguage lang, int* breakLine, 
     // user path first
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
     wxFileName fullname( path + shortname );
-    if ( ! fullname.FileExists(path + shortname) )
+    if ( !fullname.FileExists(path + shortname) )
     {
         // global path next
         path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
     }
-    if (!mset.m_SampleCode.IsEmpty())
+    if ( !mset.m_SampleCode.IsEmpty() )
         return path + mset.m_SampleCode;
     return wxEmptyString;
 }
