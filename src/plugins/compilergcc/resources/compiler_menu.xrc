@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
   <object class="wxMenu" name="compiler_menu">
     <object class="wxMenuItem" name="idCompilerMenuCompile">
       <label>&amp;Build</label>
