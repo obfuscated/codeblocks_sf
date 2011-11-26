@@ -119,7 +119,7 @@ bool wxsAuiDockableProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* 
 
 bool wxsAuiDockableProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if (!Element) return;
+    if (!Element) return false;
     Element->InsertEndChild(TiXmlText(cbU2C(GetString(DOCKABLEFLAGS))));
     return true;
 }
