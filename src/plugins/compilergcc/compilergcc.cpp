@@ -408,7 +408,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerLDC);
     CompilerFactory::RegisterCompiler(new CompilerDMD);
     CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
-    CompilerFactory::RegisterCompiler(new CompilerPGIFortran);
+    CompilerFactory::RegisterCompiler(new CompilerG95);
 #if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
     CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
