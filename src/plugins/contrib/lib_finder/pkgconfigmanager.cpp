@@ -21,10 +21,12 @@
 * $HeadURL$
 */
 
-#include "pkgconfigmanager.h"
+#include <wx/intl.h>
+#include <wx/log.h>
 #include <wx/utils.h>
 #include <wx/tokenzr.h>
-#include <wx/intl.h>
+
+#include "pkgconfigmanager.h"
 
 PkgConfigManager::PkgConfigManager()
 {
@@ -38,25 +40,18 @@ PkgConfigManager::~PkgConfigManager()
 void PkgConfigManager::RefreshData()
 {
     if ( !DetectVersion() /*|| !LoadLibraries() */)
-    {
         m_PkgConfigVersion = -1;
-    }
 }
 
 bool PkgConfigManager::DetectVersion()
 {
     wxArrayString Output;
+    wxLogNull noLog;
     if ( wxExecute(_T("pkg-config --version"),Output,wxEXEC_NODISABLE) != 0 )
-    {
-        // Some error, we can not talk to pkg-config
-        return false;
-    }
+        return false; // Some error, we can not talk to pkg-config
 
     if ( Output.Count() < 1 )
-    {
-        // Did not receive version string
-        return false;
-    }
+        return false; // Did not receive version string
 
     wxStringTokenizer VerTok(Output[0],_T("."));
     long VersionNumbers[4] = { 0,0,0,0 };
@@ -65,17 +60,11 @@ bool PkgConfigManager::DetectVersion()
     while ( VerTok.HasMoreTokens() && CurrentVersionToken<4 )
     {
         if ( !VerTok.GetNextToken().ToLong(&VersionNumbers[CurrentVersionToken++],10) )
-        {
-            // Incorrect version
-            return false;
-        }
+            return false; // Incorrect version
     }
 
     if ( CurrentVersionToken==0 )
-    {
-        // No suitable version number found
-        return false;
-    }
+        return false; // No suitable version number found
 
     m_PkgConfigVersion =
         ((VersionNumbers[0]&0xFFL) << 24) |
@@ -90,12 +79,10 @@ bool PkgConfigManager::DetectLibraries(ResultMap& Results)
 {
     if ( !IsPkgConfig() ) return false;
 
+    wxLogNull noLog;
     wxArrayString Output;
     if ( wxExecute(_T("pkg-config --list-all"),Output,wxEXEC_NODISABLE) != 0 )
-    {
-        // Some error, we can not talk to pkg-config
-        return false;
-    }
+        return false; // Some error, we can not talk to pkg-config
 
     Results.Clear();
     for ( size_t i=0; i<Output.Count(); i++ )
@@ -111,16 +98,11 @@ bool PkgConfigManager::DetectLibraries(ResultMap& Results)
         {
             wxChar ch = Line[j];
             if ( ch==_T('\0') || ch==_T(' ') || ch==_T('\t') )
-            {
                 break;
-            }
             Name += ch;
         }
         if ( Name.IsEmpty() )
-        {
-            // Woow, what was that ?
-            continue;
-        }
+            continue; // Woow, what was that ?
 
         // Eat white
         while ( j<Line.Length() && (Line[j]==_T(' ') || Line[j]==_T('\t')) ) j++;

@@ -46,9 +46,7 @@ LibraryDetectionManager::~LibraryDetectionManager()
 void LibraryDetectionManager::Clear()
 {
     for ( size_t i=0; i<Libraries.Count(); ++i )
-    {
         delete Libraries[i];
-    }
     Libraries.Clear();
 }
 
@@ -97,23 +95,17 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
         // Load the version of this set
         int version = 0;
         if ( Elem->QueryIntAttribute( "version", &version ) != TIXML_SUCCESS )
-        {
             version = 0;
-        }
 
         // Load shortcode
         wxString ShortCode = wxString(Elem->Attribute("short_code"),wxConvUTF8);
         if ( ShortCode.IsEmpty() )
-        {
             continue;
-        }
 
         // Load name
         wxString Name = wxString( Elem->Attribute("name"), wxConvUTF8 );
         if ( Name.IsEmpty() )
-        {
             continue;
-        }
 
         // Check if we already have setting of this library
         // I'm to lazy to firbid const_cast here ;)
@@ -125,10 +117,7 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
             // There are detection settings yet, we override only when there's newer
             // or same version already
             if ( OldSet->Version > version )
-            {
-                // We do not upgrade
-                continue;
-            }
+                continue; // We do not upgrade
 
             OldSet->Categories.Clear();
             OldSet->Configurations.clear();
@@ -153,9 +142,7 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
         {
 //            if ( !strncasecmp(attr->Name(),"category",8) )
             if ( !strncmp(attr->Name(),"category",8) )
-            {
                 NewSet->Categories.Add( wxString( attr->Value(),wxConvUTF8 ) );
-            }
         }
 
         // Check if there's corresponding pkg-config entry
@@ -233,9 +220,7 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
                 Filter.Type = Type;
                 Filter.Value = wxString(Data->Attribute("name"),wxConvUTF8);
                 if ( !Filter.Value.IsEmpty() )
-                {
                     Config.Filters.push_back(Filter);
-                }
                 continue;
             }
         }
@@ -330,9 +315,7 @@ const LibraryDetectionConfigSet* LibraryDetectionManager::GetLibrary(const wxStr
     for ( int i=0; i<GetLibraryCount(); i++ )
     {
         if ( Libraries[i]->ShortCode == ShortCode )
-        {
             return Libraries[i];
-        }
     }
     return 0;
 }
@@ -382,27 +365,21 @@ int LibraryDetectionManager::StoreNewSettingsFile( const wxString& shortcut, con
     int i=0;
     wxString BaseName = ConfigManager::GetFolder(sdDataUser) + wxFileName::GetPathSeparator() + _T("lib_finder") + wxFileName::GetPathSeparator();
     if ( !wxFileName::Mkdir( BaseName, 0777, wxPATH_MKDIR_FULL ) )
-    {
         return -2;
-    }
+
     wxString FileName = BaseName + shortcut + _T(".xml");
     while ( wxFileName::FileExists( FileName ) || wxFileName::DirExists( FileName ) )
-    {
         FileName = BaseName + shortcut + wxString::Format(_T("%d.xml"),i++);
-    }
 
     // Store data
     wxFile fl( FileName, wxFile::write_excl );
     if ( !fl.IsOpened() )
-    {
         return -2;
-    }
+
     const char* ptr = &content[0];
     size_t len = strlen(ptr);
     if ( fl.Write( ptr, len ) != len )
-    {
         return -2;
-    }
 
     return AddedConfigs;
 }

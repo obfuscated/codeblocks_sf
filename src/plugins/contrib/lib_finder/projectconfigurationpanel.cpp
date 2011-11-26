@@ -190,10 +190,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	m_EventText->Show(!lib_finder::IsExtraEvent());
 
 	if ( m_Project->GetBuildScripts().Index(_T("lib_finder.script")) != wxNOT_FOUND )
-	{
-	    // There's a build script yet
-	    m_AddScript->Disable();
-	}
+	    m_AddScript->Disable(); // There's a build script yet
 
 	m_ConfCopy = *m_Configuration;
 	FillKnownLibraries();
@@ -294,9 +291,7 @@ void ProjectConfigurationPanel::FillKnownLibraries()
             if ( j!=rtPkgConfig )
             {
                 if ( m_KnownLibs[j].IsShortCode(Vars[i]) )
-                {
                     Array = &m_KnownLibs[j].GetShortCode(Vars[i]);
-                }
             }
         }
 
@@ -316,21 +311,15 @@ void ProjectConfigurationPanel::FillKnownLibraries()
         {
             wxArrayString& Categories = (*Array)[0]->Categories;
             if ( Categories.IsEmpty() )
-            {
                 BuildEntry(OtherCategoryId(),*Array);
-            }
             else
             {
                 for ( size_t i=0; i<Categories.Count(); i++ )
-                {
                     BuildEntry(CategoryId(Categories[i]),*Array);
-                }
             }
         }
         else
-        {
             BuildEntry(m_KnownLibrariesTree->GetRootItem(),*Array);
-        }
     }
 
     // Now add pkg-config entries in separate category at the end
@@ -367,18 +356,14 @@ void ProjectConfigurationPanel::BuildEntry(const wxTreeItemId& Id,ResultArray& A
 {
     wxString Name = Array[0]->ShortCode;
     if ( !Array[0]->LibraryName.IsEmpty() )
-    {
         Name = Name + _T(": ") + Array[0]->LibraryName;
-    }
     m_KnownLibrariesTree->AppendItem(Id,Name,0,0,new TreeItemData(Array[0]->ShortCode));
 }
 
 wxTreeItemId ProjectConfigurationPanel::OtherCategoryId()
 {
     if ( m_IsOtherCategory )
-    {
         return m_CategoryMap[_T(".other")];
-    }
 
     m_IsOtherCategory = true;
     return m_CategoryMap[_T(".other")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Other"));
@@ -387,9 +372,7 @@ wxTreeItemId ProjectConfigurationPanel::OtherCategoryId()
 wxTreeItemId ProjectConfigurationPanel::PkgConfigId()
 {
     if ( m_IsPkgConfig )
-    {
         return m_CategoryMap[_T(".pkg-config")];
-    }
     m_IsPkgConfig = true;
     return m_CategoryMap[_T(".pkg-config")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Available in pkg-config"));
 }
@@ -397,9 +380,7 @@ wxTreeItemId ProjectConfigurationPanel::PkgConfigId()
 wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)
 {
     if ( m_CategoryMap.find(Category.Lower()) != m_CategoryMap.end() )
-    {
         return m_CategoryMap[Category.Lower()];
-    }
 
     wxStringTokenizer Tokens(Category,_T("."),wxTOKEN_STRTOK);
     wxString PathSoFar = _T("");
@@ -601,9 +582,7 @@ void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& event)
     // Getting array of all known libraries
     ResultArray AllArray;
     for ( int i=0; i<rtCount; i++ )
-    {
         m_KnownLibs[i].GetAllResults(AllArray);
-    }
     wxArrayString NewLibs;
 
     // Sorting and removing duplicates and processing results
@@ -628,9 +607,7 @@ void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& event)
         {
             Previous = NewLibs[i];
             if ( m_ConfCopy.m_GlobalUsedLibs.Index(Previous) == wxNOT_FOUND )
-            {
                 NewLibsFiltered.Add( Previous );
-            }
         }
     }
 
@@ -657,9 +634,7 @@ void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& event)
         this);
 
     if ( Choices.IsEmpty() )
-    {
         return;
-    }
 
     for ( size_t i=0; i<Choices.Count(); i++ )
     {

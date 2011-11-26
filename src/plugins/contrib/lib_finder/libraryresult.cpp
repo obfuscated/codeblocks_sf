@@ -81,13 +81,9 @@ void LibraryResult::SetGlobalVar() const
     {
         // BasePath is mandatory so let's set it anyway
         if ( !PkgConfigVar.IsEmpty() )
-        {
             _BasePath = _T("`pkg-config ") + PkgConfigVar + _T(" --variable=prefix`");
-        }
         else
-        {
             _BasePath = _T("---");
-        }
     }
 
     cfg->Write(curr + _T("/base"),    _BasePath);

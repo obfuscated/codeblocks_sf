@@ -23,6 +23,8 @@
 
 #include <wx/arrstr.h>
 #include <wx/dir.h>
+#include <wx/filefn.h>
+
 #include <manager.h>
 #include <configmanager.h>
 #include <logmanager.h>
@@ -181,9 +183,12 @@ void ResultMap::ReadPredefinedResults()
     for ( size_t i=0; i<DirsCnt; i++ )
     {
         wxString Path = ConfigManager::GetFolder(Dirs[i]) + wxFileName::GetPathSeparator() + _T("lib_finder/predefined");
+        if ( !::wxDirExists(Path) ) continue;
+
         wxDir Dir(Path);
         wxString Name;
         if ( !Dir.IsOpened() ) continue;
+
         if ( Dir.GetFirst(&Name,wxEmptyString,wxDIR_FILES|wxDIR_HIDDEN) )
         {
             do
