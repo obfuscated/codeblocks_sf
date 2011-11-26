@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
 <object class="wxScrollingDialog" name="dlgManageAssocs">
     <title>Manage associations</title>
     <object class="wxBoxSizer">

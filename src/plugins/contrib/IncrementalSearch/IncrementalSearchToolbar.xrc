@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -9,7 +9,7 @@
  * $Id$
  * $HeadURL$
  -->
-<resource>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
   <object class="wxBitmap" name="MenuBitmap">images/16x16/incsearchfocus.png</object>
   <object class="wxToolBarAddOn" name="incremental_search_toolbar_16x16">
     <object class="tool" name="idIncSearchClear">

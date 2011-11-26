@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <resource xmlns="http://www.wxwindows.org/wxxrc">
 	<object class="wxDialog" name="FileBrowserShortcuts">
 		<size>500,150</size>

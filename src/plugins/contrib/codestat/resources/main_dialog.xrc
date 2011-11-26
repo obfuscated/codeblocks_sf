@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
   <object class="wxScrollingDialog" name="dlgCodeStatExec">
     <title>Code Statistics</title>
     <object class="wxBoxSizer">
@@ -13,117 +13,42 @@
               <rows>2</rows>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
                   <label>Number of files:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_num_files">
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
                   <label>Files skipped:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_skipped_files">
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
                   <label>Files not found:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_files_not_found">
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
             </object>
-
-
-
-
-
-
             <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
             <border>5</border>
           </object>
           <object class="sizeritem">
@@ -132,259 +57,58 @@
               <rows>2</rows>
               <object class="sizeritem">
                 <object class="wxGauge" name="Gauge_Code">
-
-
-
-
-
-
-
-
-
                   <range>100</range>
-
-
-
-
-
-
                   <size>-1,20</size>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
                 <border>2</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Gauge_Code">
-
-
-
-
-
-
-
-
-
                   <label>XXXX% Code only</label>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxGauge" name="Gauge_Code_Comments">
-
-
-
-
-
-
-
-
-
                   <range>100</range>
-
-
-
-
-
                   <size>-1,20</size>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
                 <border>2</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Gauge_Code_Comments">
-
-
-
-
-
-
-
-
-
                   <label>XXXX% Code + comm.</label>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxGauge" name="Gauge_Comments">
-
-
-
-
-
-
-
-
-
                   <range>100</range>
-
-
-
-
-
                   <size>-1,20</size>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
                 <border>2</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Gauge_Comments">
-
-
-
-
-
-
-
-
-
                   <label>XXXX% Comments</label>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxGauge" name="Gauge_Empty">
-
-
-
-
-
-
-
-
-
                   <range>100</range>
-
-
-
-
-
                   <size>-1,20</size>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
                 <border>2</border>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Gauge_Empty">
-
-
-
-
-
-
-
-
-
                   <label>XXXX% Empty</label>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
             </object>
@@ -395,275 +119,78 @@
               <rows>2</rows>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
-
-
-
                   <label>Code only:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Code">
-
-
-
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
-
-
-
                   <label>Empty lines:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Empty">
-
-
-
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
-
-
-
                   <label>Comment lines:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Comments">
-
-
-
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
-
-
-
                   <label>Code and comments:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Code_Comments">
-
-
-
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText">
-
-
-
-
-
-
-
-
-
                   <label>Total:</label>
                 </object>
               </object>
               <object class="sizeritem">
                 <object class="wxStaticText" name="txt_Total">
-
-
-
-
-
-
-
-
-
                   <label>999999</label>
-
-
-
                   <style>wxALIGN_RIGHT</style>
                 </object>
-
-
-
-
-
-
-
-
-
                 <flag>wxALIGN_RIGHT</flag>
               </object>
             </object>
-
-
-
-
-
-
-
-
-
             <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
             <border>5</border>
           </object>
           <label></label>
         </object>
-
-
-
-
         <flag>wxALL</flag>
-
-
-
         <border>5</border>
       </object>
       <object class="sizeritem">
         <object class="wxButton" name="wxID_OK">
-
-
-
-
-
-
-
-
-
           <label>OK</label>
         </object>
-
-
-
-
-
-
-
-
-
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
-
-
-
-
         <border>5</border>
       </object>
     </object>
