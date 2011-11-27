@@ -52,7 +52,7 @@ size_t LoaderBase::GetLength()
 // ***** class: FileLoader *****
 void FileLoader::operator()()
 {
-    if(!wxFile::Access(fileName, wxFile::read))
+    if (!wxFile::Access(fileName, wxFile::read))
     {
         Ready();
         return;
@@ -68,7 +68,7 @@ void FileLoader::operator()()
     *dp++ = '\0';
     *dp++ = '\0';
 
-    if(file.Read(data, len) == wxInvalidOffset)
+    if (file.Read(data, len) == wxInvalidOffset)
     {
         delete[] data;
         data = 0;
@@ -100,7 +100,7 @@ void URLLoader::operator()()
     char tmp[8192];
     size_t chunk = 0;
 
-    while((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
+    while ((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
         buffer.Append(tmp, chunk);
 
     data = buffer.Data();
@@ -127,16 +127,16 @@ FileManager::~FileManager()
 
 LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 {
-    if(reuseEditors)
+    if (reuseEditors)
     {
         EditorManager* em = Manager::Get()->GetEditorManager();
-        if(em)
+        if (em)
         {
             wxFileName fileName(file);
-            for(int i = 0; i < em->GetEditorsCount(); ++i)
+            for (int i = 0; i < em->GetEditorsCount(); ++i)
             {
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
-                if(ed && fileName == ed->GetFilename())
+                if (ed && fileName == ed->GetFilename())
                 {
                     if (!ed->GetModified())
                         break;
@@ -147,7 +147,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
         }
     }
 
-    if(file.StartsWith(_T("http://")))
+    if (file.StartsWith(_T("http://")))
     {
         URLLoader *ul = new URLLoader(file);
         urlLoaderThread.Queue(ul);
@@ -156,7 +156,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
     FileLoader *fl = new FileLoader(file);
 
-    if(file.length() > 2 && file[0] == _T('\\') && file[1] == _T('\\'))
+    if (file.length() > 2 && file[0] == _T('\\') && file[1] == _T('\\'))
     {
         // UNC files behave like "normal" files, but since we know they are served over the network,
         // we can run them independently from local filesystem files for higher concurrency
@@ -170,35 +170,34 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
 bool FileManager::Save(const wxString& name, const char* data, size_t len)
 {
-    if(wxFileExists(name) == false) // why bother if we don't need to
+    if (wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);
-        if(!f.IsOpened())
+        if (!f.IsOpened())
             return false;
         return f.Write(data, len);
     }
 
-    if(platform::windows) // work around broken Windows readonly flag
+    if (platform::windows) // work around broken Windows readonly flag
     {
         wxFile f;
-        if(!f.Open(name, wxFile::read_write))
+        if (!f.Open(name, wxFile::read_write))
             return false;
     }
 
     wxString tempName(name + _T(".cbTemp"));
     do
     {
-        if( !wxCopyFile(name, tempName) )
+        if ( !wxCopyFile(name, tempName) )
         {
             return false;
         }
 
         wxFile f(name, wxFile::write);
         if ( !f.IsOpened() )
-        {
             return false;
-        }
-        if(f.Write(data, len) != len)
+
+        if (f.Write(data, len) != len)
         {
             f.Close();
             // Keep the backup file as the original file has been destroyed
@@ -208,7 +207,7 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
 
         f.Close();
 
-    }while(false);
+    } while (false);
 
     if (Manager::IsAppShuttingDown())
     {
@@ -226,18 +225,18 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
 {
-    if(wxFileExists(name) == false) // why bother if we don't need to
+    if (wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);
-        if(!f.IsOpened())
+        if (!f.IsOpened())
             return false;
         return WriteWxStringToFile(f, data, encoding, bom);
     }
 
-    if(platform::windows)
+    if (platform::windows)
     {
         wxFile f;
-        if(!f.Open(name, wxFile::read_write))
+        if (!f.Open(name, wxFile::read_write))
             return false;
     }
 
@@ -251,10 +250,9 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
 
         wxFile f(name, wxFile::write);
         if ( !f.IsOpened() )
-        {
             return false;
-        }
-        if(WriteWxStringToFile(f, data, encoding, bom) == false)
+
+        if (WriteWxStringToFile(f, data, encoding, bom) == false)
         {
             f.Close();
             // Keep the backup file as the original file has been destroyed
@@ -264,7 +262,7 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
 
         f.Close();
 
-    }while(false);
+    } while (false);
 
     if (Manager::IsAppShuttingDown())
     {
@@ -284,10 +282,10 @@ bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file
     wxString backup_file(old_file + _T(".backup"));
 
     // rename the old file into a backup file
-    if(wxRenameFile(old_file, backup_file))
+    if (wxRenameFile(old_file, backup_file))
     {
         // now rename the new created (temporary) file to the "old" filename
-        if(wxRenameFile(new_file, old_file))
+        if (wxRenameFile(new_file, old_file))
         {
             if (Manager::IsAppShuttingDown())
             {
@@ -344,7 +342,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
             break;
         }
 
-        if(f.Write(mark, mark_length) != mark_length)
+        if (f.Write(mark, mark_length) != mark_length)
             return false;
     }
 
@@ -395,38 +393,36 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         char* tmp = new char[2*inlen];
 
         #if wxCHECK_VERSION(2, 9, 0)
-        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
+        if (conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
         #else
-        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
+        if (conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
         #endif
         {
             mbBuff = tmp;
             outlen = strlen(mbBuff); // should be correct, because Convert has returned true
         }
         else
-    {
+        {
             // try wxCSConv, if nothing else works
-        wxCSConv conv(encoding);
+            wxCSConv conv(encoding);
             mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
         }
         delete[] tmp;
     }
      // if conversion to chosen encoding succeeded, we write the file to disk
-    if(outlen > 0)
-    {
+    if (outlen > 0)
         return f.Write(mbBuff, outlen) == outlen;
-    }
 
     // if conversion to chosen encoding does not succeed, we try UTF-8 instead
     size_t size = 0;
     wxCSConv conv(encoding);
     wxCharBuffer buf = data.mb_str(conv);
 
-    if(!buf || !(size = strlen(buf)))
+    if (!buf || !(size = strlen(buf)))
     {
         buf = data.mb_str(wxConvUTF8);
 
-        if(!buf || !(size = strlen(buf)))
+        if (!buf || !(size = strlen(buf)))
         {
             cbMessageBox(_T(    "The file could not be saved because it contains characters "
                                 "that can neither be represented in your current code page, "

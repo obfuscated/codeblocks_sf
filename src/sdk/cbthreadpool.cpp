@@ -10,9 +10,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
- #include "sdk_events.h"
- #include "manager.h"
- #include "logmanager.h"
+  #include "sdk_events.h"
+  #include "manager.h"
+  #include "logmanager.h"
 #endif
 
 #include "cbthreadpool.h"
@@ -34,11 +34,8 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
   if (concurrentThreads <= 0)
   {
     concurrentThreads = wxThread::GetCPUCount();
-
     if (concurrentThreads == -1)
-    {
       m_concurrentThreads = 1;
-    }
   }
 
   if (concurrentThreads == m_concurrentThreads)
@@ -75,17 +72,13 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
 //    Manager::Get()->GetLogManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_concurrentThreads);
   }
   else
-  {
     m_concurrentThreadsSchedule = concurrentThreads;
-  }
 }
 
 void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
 {
   if (!task)
-  {
     return;
-  }
 
   wxMutexLocker lock(m_Mutex);
 
@@ -93,9 +86,7 @@ void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
   m_taskAdded = true;
 
   if (!m_batching && m_workingThreads < m_concurrentThreads)
-  {
     AwakeNeeded();
-  }
 }
 
 void cbThreadPool::AbortAllTasks()
@@ -120,9 +111,7 @@ cbThreadPool::cbThreadedTaskElement cbThreadPool::GetNextTask()
   wxMutexLocker lock(m_Mutex);
 
   if (m_tasksQueue.empty())
-  {
     return cbThreadedTaskElement();
-  }
 
   cbThreadedTaskElement element = m_tasksQueue.front();
   m_tasksQueue.pop_front();
@@ -143,13 +132,13 @@ bool cbThreadPool::WaitingThread()
 
   if (m_workingThreads <= 0 && m_tasksQueue.empty())
   {
-      // Sends cbEVT_THREADTASK_ALLDONE message only the real task is all done
-      if (m_taskAdded)
-      {
-        // notify the owner that all tasks are done
-        CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
-        wxPostEvent(m_pOwner, evt);
-      }
+    // Sends cbEVT_THREADTASK_ALLDONE message only the real task is all done
+    if (m_taskAdded)
+    {
+      // notify the owner that all tasks are done
+      CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
+      wxPostEvent(m_pOwner, evt);
+    }
 
     // The last active thread is now waiting and there's a pending new number of threads to assign...
     if (m_concurrentThreadsSchedule)
@@ -197,17 +186,13 @@ wxThread::ExitCode QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Entry()
 
       // If a call to WaitingThread returns false, we must abort
       if (!m_pPool->WaitingThread())
-      {
         break;
-      }
 
       m_semaphore->Wait(); // nothing to do... so just wait
     }
 
     if (Aborted())
-    {
       break;
-    }
 
     if (!workingThread)
     {
@@ -224,9 +209,7 @@ wxThread::ExitCode QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Entry()
 
     // are we done with all tasks?
     if (!m_pTask)
-    {
       continue;
-    }
 
     if (!Aborted())
     {
@@ -243,9 +226,7 @@ wxThread::ExitCode QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Entry()
   }
 
   if (workingThread)
-  {
     m_pPool->WaitingThread();
-  }
 
   return 0;
 }
@@ -266,7 +247,5 @@ void QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::AbortTask()
   wxMutexLocker lock(m_taskMutex);
 
   if (m_pTask)
-  {
     m_pTask->Abort();
-  }
 }

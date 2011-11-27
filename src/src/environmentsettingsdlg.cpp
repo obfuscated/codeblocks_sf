@@ -183,26 +183,24 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->SetSelection(sel != wxNOT_FOUND ? sel : 0);
     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Enable(en);
 
-    bool i18n=cfg->ReadBool(_T("/locale/enable"), false);
+    bool i18n = cfg->ReadBool(_T("/locale/enable"), false);
         XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
 
-    wxDir locDir(ConfigManager::GetDataFolder() + _T("/locale"));
+    wxString locPath = ConfigManager::GetDataFolder() + _T("/locale");
+    wxDir    locDir(locPath);
     wxString locFName;
-
-    if(locDir.IsOpened() && locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
+    if (wxDirExists(locPath) && locDir.IsOpened() && locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
     do
     {
-        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(locFName);
-        if(info)
-        {
+        const wxLanguageInfo* info = wxLocale::FindLanguageInfo(locFName);
+        if (info)
             XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(info->Description);
-        }
-    }while(locDir.GetNext(&locFName));
+    } while ( locDir.GetNext(&locFName) );
 
     XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
 
-    const wxLanguageInfo *info = wxLocale::FindLanguageInfo(cfg->Read(_T("/locale/language")));
-    if(info)
+    const wxLanguageInfo* info = wxLocale::FindLanguageInfo(cfg->Read(_T("/locale/language")));
+    if (info)
         XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetStringSelection(info->Description);
 
 
@@ -328,9 +326,7 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     int sel = lb->GetSelection();
     // set page images according to their on/off status
     for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
-    {
         lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
-    }
 
     // the selection colour is ruining the on/off effect,
     // so make sure no item is selected ;)
@@ -355,9 +351,7 @@ void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
 {
     // update only on real change, not on dialog creation
     if (event.GetOldSelection() != -1 && event.GetSelection() != -1)
-    {
         UpdateListbookImages();
-    }
 }
 
 void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& /*event*/)
@@ -524,7 +518,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         cfg->Write(_T("/locale/enable"),                     (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
         const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetStringSelection());
-        if(info)
+        if (info)
             cfg->Write(_T("/locale/language"), info->CanonicalName);
         else
             cfg->Write(_T("/locale/language"), wxEmptyString);
