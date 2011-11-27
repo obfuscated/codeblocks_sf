@@ -108,22 +108,33 @@ int InfoPane::CompareIndexes(Page **p1, Page **p2)
 
 void InfoPane::ReorderTabs(CompareFunction cmp_f)
 {
-    page.Sort(cmp_f);
     if (page.GetCount() == 0)
         return;
+    page.Sort(cmp_f);
 
-    wxWindowUpdateLocker noUpdates(GetParent());
+    cbAuiNotebook::Hide();
+    int index = 0;
     for (size_t i = 0 ; i < page.GetCount(); ++i)
     {
-        RemovePage(GetPageIndex(page.Item(i)->window));
+        int pageIndex = GetPageIndex(page.Item(i)->window);
         if (page.Item(i)->indexInNB < 0)
         {
+            if (pageIndex >= 0)
+                RemovePage(pageIndex);
             if (page.Item(i)->window)
                 page.Item(i)->window->Hide();
         }
         else
-            AddPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon);
+        {
+            if (pageIndex < 0)
+            {
+                AddPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon);
+            }
+            if (index++ != pageIndex)
+                MovePage(page.Item(i)->window, index );
+        }
     }
+    cbAuiNotebook::Show();
 }
 
 int InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
