@@ -1337,7 +1337,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             continue;
 
         // do not save project files that do not belong in the target we 're exporting
-        if (onlytgt && (onlytgt->GetFilesList().find(f) != onlytgt->GetFilesList().end()))
+        if (onlytgt && (onlytgt->GetFilesList().find(f) == onlytgt->GetFilesList().end()))
             continue;
 
         pfa.Add(f);
