@@ -18,6 +18,9 @@ bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
     wxFile file(filename);
     size_t len = file.Length();
 
+    if(!len)
+		return false;
+
     char *input = new char[len+1];
     input[len] = '\0';
     file.Read(input, len);

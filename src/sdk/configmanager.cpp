@@ -227,7 +227,11 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     doc = new TiXmlDocument();
 
     if(!TinyXML::LoadDocument(fileName, doc))
-        cbThrow(wxString::Format(_T("Error accessing file:\n%s"), fileName.c_str()));
+    {
+        doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+        doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
+        doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
+    }
 
     if(doc->ErrorId())
         cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
