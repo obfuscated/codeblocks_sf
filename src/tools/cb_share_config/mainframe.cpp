@@ -537,26 +537,6 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<code_completion>")); // recursive call
     }
   }
-  else if (section.MakeLower().Matches(wxT("envvars")))     // envvar plugin variables
-  {
-    listbox->Append(wxT("<") + section + wxT(">"));
-    nodes->push_back(*node);
-  }
-  else if (section.MakeLower().Matches(wxT("gcv")))         // global variables
-  {
-    listbox->Append(wxT("<") + section + wxT(">"));
-    nodes->push_back(*node);
-  }
-  else if (section.MakeLower().Matches(wxT("help_plugin"))) // help plugin files
-  {
-    listbox->Append(wxT("<") + section + wxT(">"));
-    nodes->push_back(*node);
-  }
-  else if (section.MakeLower().Matches(wxT("tools")))       // tools setup by the user
-  {
-    listbox->Append(wxT("<") + section + wxT(">"));
-    nodes->push_back(*node);
-  }
   else if (section.MakeLower().Matches(wxT("compiler")))    // compiler sets
   {
     TiXmlNode* child = NULL;
@@ -575,7 +555,27 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<editor>")); // recursive call
     }
   }
+  else if (section.MakeLower().Matches(wxT("envvars")))     // envvar plugin variables
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+  else if (section.MakeLower().Matches(wxT("gcv")))         // global variables
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+  else if (section.MakeLower().Matches(wxT("help_plugin"))) // help plugin files
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
   else if (section.MakeLower().Matches(wxT("mime_types")))  // mime types
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+  else if (section.MakeLower().Matches(wxT("plugins")))     // plugins
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -588,6 +588,11 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
       if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
         OfferNode(&child, listbox, nodes, wxT("<project_manager>")); // recursive call
     }
+  }
+  else if (section.MakeLower().Matches(wxT("tools")))       // tools setup by the user
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
   }
 
   // ----------------------------------------------------------
