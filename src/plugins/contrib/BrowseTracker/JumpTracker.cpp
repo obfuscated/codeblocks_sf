@@ -448,24 +448,26 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
     m_bJumpInProgress = true;
 
     do {
-        int count = m_ArrayOfJumpData.GetCount();
-        if (not count) break;
+        int knt = m_ArrayOfJumpData.GetCount();
+        if (not knt) break;
 
-        if ( count > 1 )
+        if ( knt > 1 )
             m_Cursor -= 1;
         if (m_Cursor < 0)
-            m_Cursor = maxJumpEntries-1;
-        if (m_Cursor > (int)count-1)
-            m_Cursor = count-1;
+            //m_Cursor = maxJumpEntries-1;  //(remove wrap code)-
+            m_Cursor = 0;
+        if (m_Cursor > (int)knt-1)
+            //-m_Cursor = knt-1;          //(remove wrap code)-
+            m_Cursor = (int)knt-1;
 
         EditorManager* edmgr = Manager::Get()->GetEditorManager();
         int cursor = m_Cursor;
         wxString edFilename;
         long edPosn;
         bool found = false;
-        for (int i = 0; i<count; ++i, --cursor)
+        for (int i = 0; i<knt; ++i, --cursor)
         {
-            if (cursor < 0) cursor = count-1;
+            if (cursor < 0) cursor = knt-1;
             JumpData& jumpBack = m_ArrayOfJumpData.Item(cursor);
             edFilename = jumpBack.GetFilename();
             edPosn = jumpBack.GetPosition();
@@ -512,22 +514,24 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
 
     m_bJumpInProgress = true;
     do {
-        int count = m_ArrayOfJumpData.GetCount();
-        if (not count) break;
+        int knt = m_ArrayOfJumpData.GetCount();
+        if (not knt) break;
 
-        if ( count > 1 )
+        if ( knt > 1 )
             m_Cursor += 1;
-        if (m_Cursor > (int)count-1)
-            m_Cursor = 0;
+        //-if (m_Cursor > (int)knt-1) (remove wrap code)
+        //-   m_Cursor = 0;             (remove wrap code)
+        if (m_Cursor > (int)knt-1)
+            m_Cursor = (int)knt-1;
 
         EditorManager* edmgr = Manager::Get()->GetEditorManager();
         int cursor = m_Cursor;
         wxString edFilename;
         long edPosn;
         bool found = false;
-        for (int i = 0; i<count; ++i, ++cursor)
+        for (int i = 0; i<knt; ++i, ++cursor)
         {
-            if (cursor > count-1) cursor = 0;
+            if (cursor > knt-1) cursor = 0;
             JumpData& jumpNext = m_ArrayOfJumpData.Item(cursor);
             edFilename = jumpNext.GetFilename();
             edPosn = jumpNext.GetPosition();
