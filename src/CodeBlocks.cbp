@@ -2051,6 +2051,12 @@
 		<Unit filename="plugins\scriptedwizard\resources\matlab_csf\wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\mcs51\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\mcs51\wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>

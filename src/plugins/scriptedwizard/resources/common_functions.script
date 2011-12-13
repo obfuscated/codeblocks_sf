@@ -27,7 +27,8 @@ function WarningsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
     {
         base.AddCompilerOption(_T("-Wall"));
     }
@@ -93,6 +94,10 @@ function DebugSymbolsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
         base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
+    {
+        base.AddCompilerOption(_T("--debug"));
     }
     else
     {
@@ -163,6 +168,10 @@ function OptimizationsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin")))
     {
         base.AddCompilerOption(_T("-O2"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
+    {
+        base.AddCompilerOption(_T("--opt-code-size"));
     }
     else
     {

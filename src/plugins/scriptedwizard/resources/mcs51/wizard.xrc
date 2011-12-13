@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource>
+	<object class="wxPanel" name="memoryModelChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose a memory model for this project...</label>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxMem">
+					<content>
+						<item>small</item>
+						<item>medium</item>
+						<item>large</item>
+						<item>huge</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="radioboxOutput">
+					<label>Output Format</label>
+					<content>
+						<item>Create Intel hex files</item>
+						<item>Create Motorola S19 files</item>
+					</content>
+					<default>-1</default>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>
