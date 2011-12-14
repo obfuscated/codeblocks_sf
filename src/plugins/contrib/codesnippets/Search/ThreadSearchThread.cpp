@@ -290,7 +290,7 @@ void ThreadSearchThread::AddSnippetFiles(wxSortedArrayString& sortedArrayString,
     // for examle.
     for (FilesList::iterator it = project.GetFilesList().begin(); it != project.GetFilesList().end(); ++it)
     {
-        ProjectFile* pf = *it;
+//-        ProjectFile* pf = *it;   //(pecan 2011/12/14)
         AddNewItem(sortedArrayString, (*it)->file.GetFullPath());
         if ( TestDestroy() == true ) return;
     }
