@@ -21,12 +21,15 @@
 
 
 // class constructor
-ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject) : m_Project(parentProject)
+ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
+    : m_Project(parentProject),
+    m_FileArray(ProjectFile::CompareProjectFiles)
 {
     m_BuildWithAll = false;
     m_CreateStaticLib = true;
     m_CreateDefFile = true;
     m_UseConsoleRunner = true;
+    m_FileArray.Clear();
 }
 
 // class destructor
@@ -149,3 +152,31 @@ BuildTargets& ProjectBuildTarget::GetTargetDeps() {
     return m_TargetDeps;
 }
 
+ProjectFile* ProjectBuildTarget::GetFile(int index)
+{
+    if (m_FileArray.GetCount() == 0)
+    {
+        for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
+        {
+            if (!*it)
+                continue;
+            m_FileArray.Add(*it);
+        }
+    }
+
+    if (index < 0 || index >= m_FileArray.GetCount())
+        return NULL;
+
+    return m_FileArray.Item(index);
+}
+
+bool ProjectBuildTarget::RemoveFile(ProjectFile* pf)
+{
+    if (!pf)
+        return false;
+    m_Files.erase(pf);
+    if (m_FileArray.GetCount() > 0)
+        m_FileArray.Remove(pf);
+
+    return true;
+}

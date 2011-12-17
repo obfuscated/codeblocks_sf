@@ -284,12 +284,13 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK && m_ProjectFile)
     {
-        m_ProjectFile->buildTargets.Clear();
         wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
         for (int i = 0; i < (int)list->GetCount(); i++)
         {
             if (list->IsChecked(i))
                 m_ProjectFile->AddBuildTarget(list->GetString(i));
+            else
+                m_ProjectFile->RemoveBuildTarget(list->GetString(i));
         }
 
         m_ProjectFile->compile = XRCCTRL(*this, "chkCompile",   wxCheckBox)->GetValue();

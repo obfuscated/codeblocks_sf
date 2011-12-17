@@ -17,7 +17,6 @@ class ProjectBuildTarget;
 class ProjectFile;
 
 WX_DECLARE_STRING_HASH_MAP(wxString, CompilerSubstitutes);
-WX_DEFINE_SORTED_ARRAY(ProjectFile*, ProjectFileArray);
 
 /** Code::Blocks project file loader. */
 class DLLIMPORT ProjectLoader : public IBaseLoader
@@ -28,15 +27,6 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         ProjectLoader(cbProject* project);
         /// Destructor.
         virtual ~ProjectLoader();
-
-        /** Compare relative names of rojectfiles.
-          * Static helper function to sort array of projectfiles.
-          * Needed because the order of files in a hashset is not guaranteed.
-          * @param item1 first projectfile.
-          * @param item2 second projectfile.
-          * @return A negative value, 0, or positive value if the relative
-          * filename of item1 is less than, equal to or greater than the one of item2. */
-        static int CompareProjectFiles(ProjectFile* item1, ProjectFile* item2);
 
         /** Open a file.
           * @param filename The file to open.

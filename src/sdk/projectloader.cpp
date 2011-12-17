@@ -48,11 +48,6 @@ ProjectLoader::~ProjectLoader()
     //dtor
 }
 
-int ProjectLoader::CompareProjectFiles(ProjectFile* item1, ProjectFile* item2)
-{
-    return wxStrcmp(item1->relativeFilename, item2->relativeFilename);
-}
-
 bool ProjectLoader::Open(const wxString& filename)
 {
     return Open(filename, 0);
@@ -1326,7 +1321,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(node, "Mode", "after", wxString(_T("always")));
     }
 
-    ProjectFileArray pfa(CompareProjectFiles);
+    ProjectFileArray pfa(ProjectFile::CompareProjectFiles);
 
     for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
     {

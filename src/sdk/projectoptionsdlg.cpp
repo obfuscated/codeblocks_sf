@@ -100,16 +100,9 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    ProjectFileArray pfa(ProjectLoader::CompareProjectFiles);
 
-    for (FilesList::iterator it = m_Project->GetFilesList().begin(); it != m_Project->GetFilesList().end(); ++it)
-    {
-        if (!*it)
-            continue;
-        pfa.Add((ProjectFile*)*it);
-    }
-    for (int i=0; i< pfa.GetCount(); ++i)
-        list->Append(pfa[i]->relativeFilename);
+    for (int i=0; i< m_Project->GetFilesCount(); ++i)
+        list->Append(m_Project->GetFile(i)->relativeFilename);
 
     // this fixes the minsize of the file list
     // which becomes huge when we add items in it (!)

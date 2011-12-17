@@ -394,7 +394,8 @@ namespace ScriptBindings
                 var(&ProjectFile::compile, "compile").
                 var(&ProjectFile::link, "link").
                 var(&ProjectFile::weight, "weight").
-                var(&ProjectFile::compilerVar, "compilerVar");
+                var(&ProjectFile::compilerVar, "compilerVar").
+                var(&ProjectFile::buildTargets, "buildTargets");
 
         SqPlus::SQClassDef<CompileOptionsBase>("CompileOptionsBase").
                 func(&CompileOptionsBase::AddPlatform, "AddPlatform").
@@ -495,7 +496,9 @@ namespace ScriptBindings
                 func(&ProjectBuildTarget::GetCreateStaticLib, "GetCreateStaticLib").
                 func(&ProjectBuildTarget::SetCreateStaticLib, "SetCreateStaticLib").
                 func(&ProjectBuildTarget::GetUseConsoleRunner, "GetUseConsoleRunner").
-                func(&ProjectBuildTarget::SetUseConsoleRunner, "SetUseConsoleRunner");
+                func(&ProjectBuildTarget::SetUseConsoleRunner, "SetUseConsoleRunner").
+                func(&ProjectBuildTarget::GetFilesCount, "GetFilesCount").
+                func(&ProjectBuildTarget::GetFile, "GetFile");
 
         SqPlus::SQClassDef<cbProject>("cbProject", "CompileTargetBase").
                 func(&cbProject::GetModified, "GetModified").
@@ -513,6 +516,7 @@ namespace ScriptBindings
                 func(&cbProject::ShowOptions, "ShowOptions").
                 func(&cbProject::GetCommonTopLevelPath, "GetCommonTopLevelPath").
                 func(&cbProject::GetFilesCount, "GetFilesCount").
+                func(&cbProject::GetFile, "GetFile").
                 func(&cbProject::GetFileByFilename, "GetFileByFilename").
                 staticFuncVarArgs(&cbProject_RemoveFile, "RemoveFile", "*").
                 staticFuncVarArgs(&cbProject_AddFile, "AddFile", "*").

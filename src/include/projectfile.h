@@ -197,6 +197,15 @@ class ProjectFile
 
         /** Returns the wxTreeItemId for the file */
         const wxTreeItemId& GetTreeItemId() const { return m_TreeItemId; }
+
+        /** Compare relative names of rojectfiles.
+          * Static helper function to sort array of projectfiles.
+          * Needed because the order of files in a hashset is not guaranteed.
+          * @param item1 first projectfile.
+          * @param item2 second projectfile.
+          * @return A negative value, 0, or positive value if the relative
+          * filename of item1 is less than, equal to or greater than the one of item2. */
+        static int CompareProjectFiles(ProjectFile* item1, ProjectFile* item2);
     protected:
         friend class cbProject;
 
@@ -208,6 +217,7 @@ class ProjectFile
         PFDMap m_PFDMap;
 };
 WX_DECLARE_HASH_SET( ProjectFile*, wxPointerHash, wxPointerEqual, FilesList );
+WX_DEFINE_SORTED_ARRAY(ProjectFile*, ProjectFileArray);
 
 /** This is a helper class that caches various filenames for one ProjectFile.
   * These include the source filename, the generated object filename,

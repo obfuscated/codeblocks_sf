@@ -132,6 +132,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void SetModified(bool modified = true);
 
         /** Access a file of the project.
+          * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().
+          * @return A pointer to the file or NULL if not found.
+          */
+        ProjectFile* GetFile(int index);
+
+        /** Access a file of the project.
           * @param filename The filename of the file.
           * @param isRelative True if @c filename is a relative filename, false if not.
           * @param isUnixFilename True if @c filename is already normalized with UnixFilename(), false if not.
@@ -701,6 +707,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         mutable wxString m_MakefileExecutionDir;
 
         FilesList m_Files;
+        ProjectFileArray m_FileArray;
         wxArrayString m_ExpandedNodes;
         wxString m_SelectedNode;
         bool m_Loaded;

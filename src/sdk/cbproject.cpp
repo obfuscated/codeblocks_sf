@@ -56,6 +56,7 @@ namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval
 // class constructor
 cbProject::cbProject(const wxString& filename)
     : m_CustomMakefile(false),
+    m_FileArray(ProjectFile::CompareProjectFiles),
     m_Loaded(false),
     m_CurrentlyLoading(false),
     m_PCHMode(pchSourceFile),
@@ -70,6 +71,7 @@ cbProject::cbProject(const wxString& filename)
     wxString realFile = realpath(filename);
 
     m_Files.clear();
+    m_FileArray.Clear();
     if (!realFile.IsEmpty() && (wxFileExists(realFile) || wxDirExists(realFile)))
     {
         // existing project
@@ -238,6 +240,7 @@ void cbProject::ClearAllProperties()
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
         delete(*it);
     m_Files.clear();
+    m_FileArray.Clear();
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_IncludeDirs.Clear();
@@ -722,6 +725,12 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     m_Files.insert(pf);
     if (!m_CurrentlyLoading)
     {
+        // Onbly add the file, if we are not currently loading the project and
+        // m_FileArray is already initialised.
+        // Initialising is done in the getter-function (GetFile(index), to save time,
+        // because in many cases m_FileArray is not needed
+        if ( m_FileArray.GetCount() > 0 )
+            m_FileArray.Add(pf);
         // check if we really need to recalculate the common top-level path for the project
         if (!fullFilename.StartsWith(m_CommonTopLevelPath))
             CalculateCommonTopLevelPath();
@@ -787,11 +796,14 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     else
         m_Files.erase(it);
 
+    if ( m_FileArray.GetCount() > 0 )
+        m_FileArray.Remove(*it);
+
     // remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
         if (ProjectBuildTarget* target = m_Targets[i])
-            target->GetFilesList().erase(pf);
+            target->RemoveFile(pf);
     }
 
     // if this is auto-generated, inform "parent"
@@ -1594,6 +1606,23 @@ wxString cbProject::GetExecutionDir()
     return GetMakefileExecutionDir();
 }
 
+ProjectFile* cbProject::GetFile(int index)
+{
+    if (m_FileArray.GetCount() == 0)
+    {
+        for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
+        {
+            if (!*it)
+                continue;
+            m_FileArray.Add((ProjectFile*)*it);
+        }
+    }
+
+    if (index < 0 || index >= m_Files.size())
+        return NULL;
+    return m_FileArray.Item(index);
+}
+
 ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelative, bool isUnixFilename)
 {
     // m_ProjectFilesMap keeps UnixFilename(ProjectFile::relativeFilename)
@@ -1656,6 +1685,7 @@ bool cbProject::CloseAllFiles(bool dontsave)
         Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
         delete f;
         m_Files.erase(it);
+        m_FileArray.Remove(*it);
         it = m_Files.begin();
     }
     Manager::Get()->GetEditorManager()->ShowNotebook();
