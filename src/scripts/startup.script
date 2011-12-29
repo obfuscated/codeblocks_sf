@@ -13,5 +13,7 @@ Log(_T("Running startup script"));
 // un-comment the line below to register a pointless sample plugin
 // Include(_T("sample_plugin.script"));
 
+Include(_T("plugin_find_broken_files.script"));
+
 // add a menu entry to edit this script
 GetScriptingManager().RegisterScriptMenu(_("&Settings") + _T("/-") + _("Edit startup script"), _T("edit_startup_script.script"), false);

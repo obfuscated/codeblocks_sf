@@ -1946,8 +1946,20 @@
 		<Unit filename="scripts/gdb_types.script">
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="scripts/make_dist.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/plugin_find_broken_files.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/sample_plugin.script">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="scripts/startup.script">
 			<Option target="sdk" />
+		</Unit>
+		<Unit filename="scripts/wx_help.script">
+			<Option target="src" />
 		</Unit>
 		<Unit filename="sdk/annoyingdialog.cpp">
 			<Option target="sdk" />
