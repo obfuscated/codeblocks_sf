@@ -163,6 +163,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
         dc.SetFont(m_normal_font);
     dc.GetTextExtent(caption, &textx, &texty);
     // draw tab text
+    dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
     dc.DrawText(page.caption, text_offset,
                 drawn_tab_yoff + drawn_tab_height / 2 - texty / 2 - 1);
 
@@ -331,6 +332,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
         dc.SetFont(m_normal_font);
     dc.GetTextExtent(caption, &textx, &texty);
     // draw tab text
+    dc.SetTextForeground(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
     dc.DrawText(page.caption, text_offset,
                 drawn_tab_yoff + drawn_tab_height / 2 - texty / 2 - 1);
 
