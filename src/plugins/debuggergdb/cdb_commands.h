@@ -178,7 +178,6 @@ class CdbCmd_Detach : public DebuggerCmd
   */
 class CdbCmd_AddBreakpoint : public DebuggerCmd
 {
-        static int m_lastIndex;
     public:
         /** @param bp The breakpoint to set. */
         CdbCmd_AddBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp)
@@ -187,14 +186,11 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
         {
             if (bp->enabled)
             {
-                if (bp->index==-1)
-                    bp->index = m_lastIndex++;
-
                 wxString out = m_BP->filename;
 //                DebuggerGDB::ConvertToGDBFile(out);
                 QuoteStringIfNeeded(out);
                 // we add one to line,  because scintilla uses 0-based line numbers, while cdb uses 1-based
-                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) bp->index) << _T(' ');
+                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(' ');
                 if (m_BP->temporary)
                     m_Cmd << _T("/1 ");
                 if (bp->func.IsEmpty())
@@ -221,8 +217,6 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
 
         DebuggerBreakpoint* m_BP;
 };
-
-int CdbCmd_AddBreakpoint::m_lastIndex = 1;
 
 /**
   * Command to remove a breakpoint.
