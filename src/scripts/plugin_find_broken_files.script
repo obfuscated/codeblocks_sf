@@ -93,9 +93,9 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
             {
                 // search for broken files again and remove them from the project
                 local removed_files = 0;
-                for (local i=0; i<files_count; i++)
+                for (local i=files_count-1; i>=0; i--)
                 {
-                    local pf = p.GetFile(i-removed_files);
+                    local pf = p.GetFile(i);
                     if (IsNull(pf))
                     {
                         ShowError(_T("Could not access project file(s). Cannot continue."));
