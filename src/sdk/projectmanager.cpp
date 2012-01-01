@@ -3323,4 +3323,6 @@ void ProjectManager::OnKeyDown(wxTreeEvent& event)
         wxCommandEvent command(0, idMenuRemoveFilePopup);
         OnRemoveFileFromProject(command);
     }
+    else
+        event.Skip();
 }
