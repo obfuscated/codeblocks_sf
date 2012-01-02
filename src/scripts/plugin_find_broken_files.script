@@ -18,7 +18,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
     function GetMenu()
     {
         local entries = ::wxArrayString();
-        entries.Add(_T("Plugins/0:-Find broken files in project"), 1);
+        entries.Add(_("Plugins") + _T("/0:-") + _("Find broken files in project"), 1);
         return entries;
     }
 
