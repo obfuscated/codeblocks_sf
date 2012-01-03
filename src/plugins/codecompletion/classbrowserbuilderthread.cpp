@@ -205,19 +205,21 @@ void ClassBrowserBuilderThread::Init(NativeParser* nativeParser,
                                     void* user_data, // active project
                                     const BrowserOptions& options,
                                     TokensTree* pTokensTree,
-                                    bool build_tree)
+                                    bool build_tree,
+                                    int idCBMakeSelectItem)
 {
     TRACK_THREAD_LOCKER(m_BuildMutex);
     wxMutexLocker lock(m_BuildMutex);
     THREAD_LOCKER_SUCCESS(m_BuildMutex);
 
-    m_NativeParser   = nativeParser;
-    m_TreeTop        = treeTop;
-    m_TreeBottom     = treeBottom;
-    m_ActiveFilename = active_filename;
-    m_UserData       = user_data;
-    m_Options        = options;
-    m_TokensTree     = pTokensTree;
+    m_NativeParser       = nativeParser;
+    m_TreeTop            = treeTop;
+    m_TreeBottom         = treeBottom;
+    m_ActiveFilename     = active_filename;
+    m_UserData           = user_data;
+    m_Options            = options;
+    m_TokensTree         = pTokensTree;
+    m_idCBMakeSelectItem = idCBMakeSelectItem;
 
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
@@ -1276,7 +1278,21 @@ void ClassBrowserBuilderThread::SelectSavedItem()
             item = m_TreeTop->GetNextSibling(item);
     }
 
-    m_TreeTop->SelectItem(parent, true);
-    m_TreeTop->EnsureVisible(parent);
+    m_SelectItemRequired = parent;
+
+    wxCommandEvent event(wxEVT_COMMAND_ENTER, m_idCBMakeSelectItem);
+    m_TreeTop->GetEventHandler()->AddPendingEvent(event);
     m_SelectedPath.clear();
+}
+
+void ClassBrowserBuilderThread::SelectItemRequired()
+{
+    if (Manager::IsAppShuttingDown())
+        return;
+
+    if (m_SelectItemRequired.IsOk())
+    {
+        m_TreeTop->SelectItem(m_SelectItemRequired);
+        m_TreeTop->EnsureVisible(m_SelectItemRequired);
+    }
 }

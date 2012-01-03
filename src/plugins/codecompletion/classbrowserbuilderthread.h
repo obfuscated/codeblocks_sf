@@ -96,12 +96,13 @@ public:
 
     void Init(NativeParser* nativeParser, CBTreeCtrl* treeTop, CBTreeCtrl* treeBottom,
               const wxString& active_filename, void* user_data/*active project*/,
-              const BrowserOptions& options, TokensTree* pTokensTree, bool build_tree);
+              const BrowserOptions& options, TokensTree* pTokensTree, bool build_tree, int idCBMakeSelectItem);
     void ExpandItem(wxTreeItemId item);
 #ifndef CC_NO_COLLAPSE_ITEM
     void CollapseItem(wxTreeItemId item);
 #endif // CC_NO_COLLAPSE_ITEM
     void SelectItem(wxTreeItemId item);
+    void SelectItemRequired();
 
 protected:
     virtual void* Entry();
@@ -146,6 +147,9 @@ private:
     ExpandedItemVect m_ExpandedVect;
     SelectedItemPath m_SelectedPath;
     bool             m_initDone;
+
+    wxTreeItemId     m_SelectItemRequired;
+    int              m_idCBMakeSelectItem;
 };
 
 #endif // CLASSBROWSERBUILDERTHREAD_H

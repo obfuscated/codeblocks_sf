@@ -90,6 +90,7 @@ int idCBSortByAlpabet          = wxNewId();
 int idCBSortByKind             = wxNewId();
 int idCBSortByScope            = wxNewId();
 int idCBBottomTree             = wxNewId();
+int idCBMakeSelectItem         = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED  (XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
@@ -122,6 +123,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBSortByKind, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByScope, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBBottomTree, ClassBrowser::OnCBViewMode)
+    EVT_COMMAND(idCBMakeSelectItem, wxEVT_COMMAND_ENTER, ClassBrowser::OnMakeSelectItem)
 END_EVENT_TABLE()
 
 // class constructor
@@ -837,7 +839,8 @@ void ClassBrowser::BuildTree()
                           m_ActiveProject,
                           m_Parser->ClassBrowserOptions(),
                           m_Parser->GetTokensTree(),
-                          create_tree);
+                          create_tree,
+                          idCBMakeSelectItem);
 
     // and launch it
     if (!create_tree)
@@ -866,9 +869,18 @@ void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
 
 void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
 {
+    if (!::wxIsMainThread())
+        return; // just to be sure it called from main thread
+
     if (m_BuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
         m_BuilderThread->SelectItem(event.GetItem());
 #ifndef CC_NO_COLLAPSE_ITEM
     event.Allow();
 #endif // CC_NO_COLLAPSE_ITEM
+}
+
+void ClassBrowser::OnMakeSelectItem(wxCommandEvent& event)
+{
+    if (m_BuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
+        m_BuilderThread->SelectItemRequired();
 }

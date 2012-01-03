@@ -66,6 +66,8 @@ private:
     void OnTreeItemCollapsing(wxTreeEvent& event);
 #endif // CC_NO_COLLAPSE_ITEM
 
+    void OnMakeSelectItem(wxCommandEvent& event);
+
 private:
     NativeParser*              m_NativeParser;
     CBTreeCtrl*                m_Tree;
