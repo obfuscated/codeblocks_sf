@@ -21,41 +21,44 @@
 #include <wx/filename.h>
 #include <wx/string.h>
 
-extern wxArrayString     s_includeDirs;
-extern wxArrayString     s_filesParsed;
-extern wxBusyInfo*       s_busyInfo;
+extern wxArrayString s_includeDirs;
+extern wxArrayString s_filesParsed;
+extern wxBusyInfo*   s_busyInfo;
 
-wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
+ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
 {
-    wxString log;
-    log.Printf(wxT("ParserDummy() : GetFullFileName() : Querying full file name for source '%s', target '%s' (isGlobal=%s)."),
-               src.wx_str(), tgt.wx_str(), (isGlobal ? wxT("true") : wxT("false")));
-    CCLogger::Get()->Log(log);
+    static bool          empty_ext = true;
+    static wxArrayString header_ext;
+    header_ext.Add(_T("h")); header_ext.Add(_T("hpp")); header_ext.Add(_T("tcc")); header_ext.Add(_T("xpm"));
+    static wxArrayString source_ext;
+    source_ext.Add(_T("c")); source_ext.Add(_T("cpp")); source_ext.Add(_T("cxx")); source_ext.Add(_T("cc")); source_ext.Add(_T("c++"));
 
-    // first, try local include file
-    wxFileName fn(src);
-    wxString full_file_name = fn.GetPath(wxPATH_GET_SEPARATOR) + tgt;
-    if ( ::wxFileExists(full_file_name) )
-        return full_file_name;
+    if (filename.IsEmpty())
+        return ParserCommon::ftOther;
 
-    // second, try taking include directories into account
-    for (size_t i=0; i<s_includeDirs.GetCount(); i++)
+    const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
+    const int      pos  = file.Find(_T('.'), true);
+    wxString       ext;
+    if (pos != wxNOT_FOUND)
+        ext = file.SubString(pos + 1, file.Len());
+
+    if (empty_ext && ext.IsEmpty())
+        return ParserCommon::ftHeader;
+
+    for (size_t i=0; i<header_ext.GetCount(); ++i)
     {
-        wxString include_dir = s_includeDirs.Item(i);
-        CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : Checking existence of ")+include_dir);
-        if ( ::wxDirExists(include_dir) )
-        {
-            full_file_name = include_dir + fn.GetPathSeparator() + tgt;
-            CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : Checking existence of ")+full_file_name);
-            if ( ::wxFileExists(full_file_name) )
-                return full_file_name;
-        }
+        if (ext==header_ext[i])
+            return ParserCommon::ftHeader;
     }
 
-    CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : File not found"));
-    return wxEmptyString;
-}
+    for (size_t i=0; i<source_ext.GetCount(); ++i)
+    {
+        if (ext==source_ext[i])
+            return ParserCommon::ftSource;
+    }
 
+    return ParserCommon::ftOther;
+}
 
 bool Parse(const wxString& filename, bool isLocal)
 {
@@ -95,6 +98,37 @@ bool Parse(const wxString& filename, bool isLocal)
 //    pt.PrintList();
 
     return true;
+}
+
+wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
+{
+    wxString log;
+    log.Printf(wxT("ParserDummy() : GetFullFileName() : Querying full file name for source '%s', target '%s' (isGlobal=%s)."),
+               src.wx_str(), tgt.wx_str(), (isGlobal ? wxT("true") : wxT("false")));
+    CCLogger::Get()->Log(log);
+
+    // first, try local include file
+    wxFileName fn(src);
+    wxString full_file_name = fn.GetPath(wxPATH_GET_SEPARATOR) + tgt;
+    if ( ::wxFileExists(full_file_name) )
+        return full_file_name;
+
+    // second, try taking include directories into account
+    for (size_t i=0; i<s_includeDirs.GetCount(); i++)
+    {
+        wxString include_dir = s_includeDirs.Item(i);
+        CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : Checking existence of ")+include_dir);
+        if ( ::wxDirExists(include_dir) )
+        {
+            full_file_name = include_dir + fn.GetPathSeparator() + tgt;
+            CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : Checking existence of ")+full_file_name);
+            if ( ::wxFileExists(full_file_name) )
+                return full_file_name;
+        }
+    }
+
+    CCLogger::Get()->Log(wxT("ParserDummy() : GetFullFileName() : File not found"));
+    return wxEmptyString;
 }
 
 bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
