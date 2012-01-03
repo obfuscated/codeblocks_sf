@@ -1362,6 +1362,9 @@
 		<Unit filename="plugins\codecompletion\resources\classbrowser.xrc">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\resources\codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\resources\insert_class_method.xrc">
 			<Option target="Code-completion" />
 		</Unit>
@@ -2182,13 +2185,13 @@
 		</Unit>
 		<Unit filename="scripts\sample_plugin.script">
 			<Option target="src" />
-		</Unit>		
+		</Unit>
 		<Unit filename="scripts\startup.script">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="scripts\wx_help.script">
 			<Option target="src" />
-		</Unit>		
+		</Unit>
 		<Unit filename="sdk\annoyingdialog.cpp">
 			<Option target="sdk" />
 		</Unit>

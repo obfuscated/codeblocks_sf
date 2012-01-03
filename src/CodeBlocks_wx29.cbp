@@ -1254,6 +1254,9 @@
 		<Unit filename="plugins\astyle\astyleplugin.h">
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\astylepredefinedstyles.h">
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\dlgformattersettings.cpp">
 			<Option target="AStyle" />
 		</Unit>
@@ -1928,12 +1931,6 @@
 		<Unit filename="plugins\projectsimporter\devcpploader.h">
 			<Option target="Projects-workspaces importer" />
 		</Unit>
-		<Unit filename="plugins\projectsimporter\msvc10loader.cpp">
-			<Option target="Projects-workspaces importer" />
-		</Unit>
-		<Unit filename="plugins\projectsimporter\msvc10loader.h">
-			<Option target="Projects-workspaces importer" />
-		</Unit>
 		<Unit filename="plugins\projectsimporter\msvc7loader.cpp">
 			<Option target="Projects-workspaces importer" />
 		</Unit>
@@ -2036,9 +2033,6 @@
 		<Unit filename="plugins\scriptedwizard\resources\d\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\scriptedwizard\resources\d_source\wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\directx\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2118,9 +2112,6 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\qt4\wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\resources\qt4dll\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\sdl\wizard.script">
