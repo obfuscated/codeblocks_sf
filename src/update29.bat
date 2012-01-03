@@ -3,13 +3,13 @@
 REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
 setlocal
 
-echo Creating output directory tree
+echo Creating output29 directory tree
 
-set CB_DEVEL_RESDIR=devel\share\CodeBlocks
-set CB_OUTPUT_RESDIR=output\share\CodeBlocks
+set CB_DEVEL_RESDIR=devel29\share\CodeBlocks
+set CB_OUTPUT_RESDIR=output29\share\CodeBlocks
 
-if not exist output md output\
-if not exist output\share md output\share\
+if not exist output29 md output29\
+if not exist output29\share md output29\share\
 if not exist %CB_OUTPUT_RESDIR% md %CB_OUTPUT_RESDIR%\
 if not exist %CB_OUTPUT_RESDIR%\lexers md %CB_OUTPUT_RESDIR%\lexers\
 if not exist %CB_OUTPUT_RESDIR%\images md %CB_OUTPUT_RESDIR%\images\
@@ -20,8 +20,8 @@ if not exist %CB_OUTPUT_RESDIR%\plugins md %CB_OUTPUT_RESDIR%\plugins\
 if not exist %CB_OUTPUT_RESDIR%\templates md %CB_OUTPUT_RESDIR%\templates\
 if not exist %CB_OUTPUT_RESDIR%\templates\wizard md %CB_OUTPUT_RESDIR%\templates\wizard\
 if not exist %CB_OUTPUT_RESDIR%\scripts md %CB_OUTPUT_RESDIR%\scripts\
-if not exist devel md devel\
-if not exist devel\share md devel\share\
+if not exist devel29 md devel29\
+if not exist devel29\share md devel29\share\
 if not exist %CB_DEVEL_RESDIR% md %CB_DEVEL_RESDIR%\
 if not exist %CB_DEVEL_RESDIR%\lexers md %CB_DEVEL_RESDIR%\lexers\
 if not exist %CB_DEVEL_RESDIR%\images md %CB_DEVEL_RESDIR%\images\
@@ -66,8 +66,8 @@ cd ..\..\..\plugins\debuggergdb\resources
 cd ..\..\..
 
 echo Copying external exception handler
-if exist devel\exchndl.dll xcopy /D /y devel\exchndl.dll output > nul
-if exist devel\exchndl.dll xcopy /D /y devel\exchndl.dll devel > nul
+if exist devel29\exchndl.dll xcopy /D /y devel29\exchndl.dll output29 > nul
+if exist devel29\exchndl.dll xcopy /D /y devel29\exchndl.dll devel29 > nul
 echo Copying files
 xcopy /D /y %CB_DEVEL_RESDIR%\*.zip %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y sdk\resources\lexers\lexer_* %CB_DEVEL_RESDIR%\lexers > nul
@@ -96,13 +96,13 @@ xcopy /D /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
 del excludes.txt
 xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
-xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe output > nul
-xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe devel > nul
-xcopy /D /y devel\*.exe output > nul
-xcopy /D /y devel\*.dll output > nul
+xcopy /D /y tools\ConsoleRunner\cb_console_runner29.exe output29 > nul
+xcopy /D /y tools\ConsoleRunner\cb_console_runner29.exe devel29 > nul
+xcopy /D /y devel29\*.exe output29 > nul
+xcopy /D /y devel29\*.dll output29 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
 echo Stripping debug info from output tree
-strip output\*.exe
-strip output\*.dll
+strip output29\*.exe
+strip output29\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll
