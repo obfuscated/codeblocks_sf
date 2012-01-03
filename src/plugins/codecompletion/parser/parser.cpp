@@ -17,7 +17,6 @@
     #include <wx/filename.h>
     #include <wx/intl.h>
     #include <wx/progdlg.h>
-    #include <wx/tokenzr.h>
 
     #include <cbproject.h>
     #include <configmanager.h>
@@ -28,6 +27,7 @@
     #include <manager.h>
 #endif
 
+#include <wx/tokenzr.h>
 #include <cbstyledtextctrl.h>
 
 #include "parser.h"
@@ -69,7 +69,6 @@
     #define TRACE2(format, args...)
 #endif
 
-static const char CACHE_MAGIC[]      = "CCCACHE_1_4";
 static const int batch_timer_delay   = 300;
 static const int reparse_timer_delay = 100;
 
@@ -78,6 +77,61 @@ int idParserEnd   = wxNewId();
 
 static volatile Parser* s_CurrentParser = nullptr;
 static wxCriticalSection s_ParserCritical;
+
+ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
+{
+    static bool          cfg_read  = false;
+
+    static bool          empty_ext = true;
+    static wxArrayString header_ext;
+    static wxArrayString source_ext;
+
+    if (!cfg_read || force_refresh)
+    {
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+        empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
+        wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm"));
+        wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
+
+        header_ext.Clear();
+        wxStringTokenizer header_ext_tknzr(header_ext_str, _T(","));
+        while (header_ext_tknzr.HasMoreTokens())
+            header_ext.Add(header_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
+
+        source_ext.Clear();
+        wxStringTokenizer source_ext_tknzr(source_ext_str, _T(","));
+        while (source_ext_tknzr.HasMoreTokens())
+            source_ext.Add(source_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
+
+        cfg_read = true; // caching done
+    }
+
+    if (filename.IsEmpty())
+        return ParserCommon::ftOther;
+
+    const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
+    const int      pos  = file.Find(_T('.'), true);
+    wxString       ext;
+    if (pos != wxNOT_FOUND)
+        ext = file.SubString(pos + 1, file.Len());
+
+    if (empty_ext && ext.IsEmpty())
+        return ParserCommon::ftHeader;
+
+    for (size_t i=0; i<header_ext.GetCount(); ++i)
+    {
+        if (ext==header_ext[i])
+            return ParserCommon::ftHeader;
+    }
+
+    for (size_t i=0; i<source_ext.GetCount(); ++i)
+    {
+        if (ext==source_ext[i])
+            return ParserCommon::ftSource;
+    }
+
+    return ParserCommon::ftOther;
+}
 
 class AddParseThread : public cbThreadedTask
 {
@@ -169,7 +223,7 @@ public:
             if (!pf)
                 continue;
 
-            if (CCFileTypeOf(pf->relativeFilename) != ccftOther)
+            if (ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
             {
                 TRACK_THREAD_LOCKER(s_TokensTreeCritical);
                 wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -244,6 +298,9 @@ void ParserBase::ReadOptions()
     // Token tree
     m_BrowserOptions.displayFilter   = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
     m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
+
+    // force e-read of file types
+    ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
 }
 
 void ParserBase::WriteOptions()
@@ -439,19 +496,6 @@ void Parser::DisconnectEvents()
                (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
     Disconnect(m_ReparseTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnReparseTimer));
     Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
-}
-
-bool Parser::CacheNeedsUpdate()
-{
-    if (m_UsingCache)
-    {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-        return m_TokensTree->m_Modified;
-    }
-    return true;
 }
 
 bool Parser::Done()
@@ -857,160 +901,6 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     return true;
 }
 
-bool Parser::ReadFromCache(wxInputStream* f)
-{
-    bool result = false;
-
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-    char CACHE_MAGIC_READ[] = "           ";
-    m_TokensTree->clear(); // Clear data
-
-    // File format is like this:
-    //
-    // CACHE_MAGIC
-    // Number of parsed files
-    // Number of tokens
-    // Parsed files
-    // Tokens
-    // EOF
-
-//  Begin loading process
-    do
-    {
-
-        // keep a backup of include dirs
-        if (f->Read(CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ)).LastRead() != sizeof(CACHE_MAGIC_READ) ||
-            strncmp(CACHE_MAGIC, CACHE_MAGIC_READ, sizeof(CACHE_MAGIC_READ) != 0))
-            break;
-        int fcount = 0, actual_fcount = 0;
-        int tcount = 0, actual_tcount = 0;
-        int idx;
-        if (!LoadIntFromFile(f, &fcount))
-            break;
-        if (!LoadIntFromFile(f, &tcount))
-            break;
-        if (fcount < 0)
-            break;
-        if (tcount < 0)
-            break;
-
-        wxString file;
-        int nonempty_token = 0;
-        Token* token = 0;
-        do // do while-false block
-        {
-            // Filenames
-            int i;
-            for (i = 0; i < fcount && !f->Eof(); ++i)
-            {
-                if (!LoadIntFromFile(f,&idx)) // Filename index
-                    break;
-                if (idx != i)
-                    break;
-                if (!LoadStringFromFile(f,file)) // Filename data
-                    break;
-                if (!idx)
-                    file.Clear();
-                if (file.IsEmpty())
-                    idx = 0;
-                m_TokensTree->m_FilenamesMap.insert(file);
-                actual_fcount++;
-            }
-            result = (actual_fcount == fcount);
-            if (!result)
-                break;
-            if (tcount)
-                m_TokensTree->m_Tokens.resize(tcount,0);
-            // Tokens
-            for (i = 0; i < tcount && !f->Eof(); ++i)
-            {
-                token = 0;
-                if (!LoadIntFromFile(f, &nonempty_token))
-                break;
-                if (nonempty_token != 0)
-                {
-                    token = new Token(wxEmptyString, 0, 0, ++m_TokensTree->m_TokenTicketCount);
-                    if (!token->SerializeIn(f))
-                    {
-                        delete token;
-                        --m_TokensTree->m_TokenTicketCount;
-                        token = 0;
-                        break;
-                    }
-                    m_TokensTree->insert(i,token);
-                }
-                ++actual_tcount;
-            }
-            if (actual_tcount != tcount)
-                break;
-            m_TokensTree->RecalcFreeList();
-            result = true;
-        } while(false);
-
-    } while(false);
-
-//  End loading process
-
-    if (result)
-        m_UsingCache = true;
-    else
-        m_TokensTree->clear();
-
-    m_TokensTree->m_Modified = false;
-
-    return result;
-}
-
-bool Parser::WriteToCache(wxOutputStream* f)
-{
-    bool result = false;
-
-    TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-    wxCriticalSectionLocker locker(s_TokensTreeCritical);
-    THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
-
-//  Begin saving process
-
-    size_t tcount = m_TokensTree->m_Tokens.size();
-    size_t fcount = m_TokensTree->m_FilenamesMap.size();
-    size_t i = 0;
-
-    // write cache magic
-    f->Write(CACHE_MAGIC, sizeof(CACHE_MAGIC));
-
-    SaveIntToFile(f, fcount); // num parsed files
-    SaveIntToFile(f, tcount); // num tokens
-
-    // Filenames
-    for (i = 0; i < fcount; ++i)
-    {
-        SaveIntToFile(f,i);
-        SaveStringToFile(f,m_TokensTree->m_FilenamesMap.GetString(i));
-    }
-
-    // Tokens
-
-    for (i = 0; i < tcount; ++i)
-    {
-        TRACE(_T("WriteToCache() : Token #%d, offset %d"),i,f->TellO());
-        Token* token = m_TokensTree->at(i);
-        SaveIntToFile(f,(token!=0) ? 1 : 0);
-        if (token)
-            token->SerializeOut(f);
-    }
-
-    result = true;
-
-    if (result)
-        m_TokensTree->m_Modified = false;
-
-//  End saving process
-    return result;
-}
-
 void Parser::TerminateAllThreads()
 {
     while (!m_PoolTask.empty())
@@ -1121,7 +1011,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
             parseEndLog.Printf(_T("Project '%s' parsing stage done (%d total parsed files, ")
                                _T("%d tokens in %ld minute(s), %ld.%03ld seconds)."),
-                               m_Project    ? m_Project->GetTitle().wx_str()  : _T("*NONE*"),
+                               m_Project    ? m_Project->GetTitle().wx_str()  : wxString(_T("*NONE*")).wx_str(),
                                m_TokensTree ? m_TokensTree->m_FilesMap.size() : 0,
                                m_TokensTree ? m_TokensTree->realsize()        : 0,
                                (m_LastStopWatchTime / 60000),

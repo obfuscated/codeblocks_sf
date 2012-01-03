@@ -232,15 +232,6 @@ enum FileParsingStatus
     fpsDone
 };
 
-enum CCFileType
-{
-    ccftHeader,
-    ccftSource,
-    ccftOther
-};
-
-CCFileType CCFileTypeOf(const wxString& filename);
-
 WX_DEFINE_ARRAY(Token*, TokensArray);
 
 typedef std::vector<Token*> TokenList;
@@ -306,9 +297,6 @@ public:
     wxString GetStrippedArgs() const; // remove all default value
     size_t GetTicket() const { return m_Ticket; }
     bool MatchesFiles(const TokenFilesSet& files);
-
-    bool SerializeIn(wxInputStream* f);
-    bool SerializeOut(wxOutputStream* f);
 
     TokensTree* GetTree() { return m_TokensTree; }
     bool IsValidAncestor(const wxString& ancestor);
@@ -433,65 +421,5 @@ protected:
       */
     bool CheckChildRemove(Token * token, int fileIndex);
 };
-
-inline void SaveIntToFile(wxOutputStream* f, int i)
-{
-    /* This used to be done as
-        f->Write(&i, sizeof(int));
-    which is incorrect because it assumes a consistant byte order
-    and a constant int size */
-
-    unsigned int const j = i; // rshifts aren't well-defined for negatives
-    wxChar c[4] = { (wxChar) (j>> 0&0xFF),
-                    (wxChar) (j>> 8&0xFF),
-                    (wxChar) (j>>16&0xFF),
-                    (wxChar) (j>>24&0xFF) };
-    f->Write( c, 4 );
-}
-
-inline bool LoadIntFromFile(wxInputStream* f, int* i)
-{
-//    See SaveIntToFile
-//    return f->Read(i, sizeof(int)) == sizeof(int);
-
-    wxChar c[4];
-    if ( f->Read( c, 4 ).LastRead() != 4 ) return false;
-    *i = ( c[0]<<0 | c[1]<<8 | c[2]<<16 | c[3]<<24 );
-    return true;
-}
-
-inline void SaveStringToFile(wxOutputStream* f, const wxString& str)
-{
-    const wxWX2MBbuf psz = str.mb_str(wxConvUTF8);
-    // TODO (MortenMacFly#5#): Can we safely use strlen here?
-    int size = psz ? strlen(psz) : 0;
-    if (size >= 32767)
-        size = 32767;
-    SaveIntToFile(f, size);
-    if(size)
-        f->Write(psz, size);
-}
-
-inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
-{
-    int size;
-    if (!LoadIntFromFile(f, &size))
-        return false;
-    bool ok = true;
-    if (size > 0 && size <= 32767)
-    {
-        wxChar buf[32768];
-        ok = f->Read(buf, size).LastRead() == (size_t)size;
-        buf[size] = '\0';
-        str = wxString(buf, wxConvUTF8);
-    }
-    else // doesn't fit in our buffer, but still we have to skip it
-    {
-        str.Empty();
-        size = size & 0xFFFFFF; // Can't get any longer than that
-        f->SeekI(size, wxFromCurrent);
-    }
-    return ok;
-}
 
 #endif // TOKEN_H

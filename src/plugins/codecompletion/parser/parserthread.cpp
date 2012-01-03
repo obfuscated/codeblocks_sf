@@ -527,7 +527,7 @@ void ParserThread::DoParse()
         {
             // token length of 1
             case 1:
-            switch (token[0])
+            switch (static_cast<wxChar>(token[0]))
             {
             case ParserConsts::semicolon_chr:
                 {
@@ -1394,7 +1394,7 @@ void ParserThread::HandleIncludes()
         }
     }
 
-    if (CCFileTypeOf(filename) == ccftOther)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftOther)
         return;
 
     if (!filename.IsEmpty())
@@ -2693,7 +2693,8 @@ wxArrayString ParserThread::GetTemplateArgArray(const wxString& templateArgs, bo
     wxArrayString container;
     for (size_t i = 0; i < args.Len(); ++i)
     {
-        switch (args.GetChar(i))
+        wxChar arg = args.GetChar(i);
+        switch (arg)
         {
         case ParserConsts::space_chr:
             container.Add(word);
@@ -2702,7 +2703,6 @@ wxArrayString ParserThread::GetTemplateArgArray(const wxString& templateArgs, bo
         case ParserConsts::lt_chr:
         case ParserConsts::gt_chr:
         case ParserConsts::comma_chr:
-
             container.Add(word);
             word.clear();
             container.Add(args[i]);

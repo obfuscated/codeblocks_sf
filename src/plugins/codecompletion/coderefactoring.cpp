@@ -538,8 +538,9 @@ void CodeRefactoring::GetAllProjectFiles(wxArrayString& files, cbProject* projec
         ProjectFile* pf = *it;
         if (!pf)
             continue;
-        CCFileType ft = CCFileTypeOf(pf->relativeFilename);
-        if (ft != ccftOther)
+
+        ParserCommon::EFileType ft = ParserCommon::FileType(pf->relativeFilename);
+        if (ft != ParserCommon::ftOther)
             files.Add(pf->file.GetFullPath());
     }
 }

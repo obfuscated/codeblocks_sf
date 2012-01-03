@@ -1209,7 +1209,7 @@ bool NativeParser::SwitchParser(cbProject* project, ParserBase* parser)
 
 bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
 {
-    if (CCFileTypeOf(filename) == ccftOther)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftOther)
         return false;
 
     ParserBase* parser = GetParserByProject(project);
@@ -1224,7 +1224,7 @@ bool NativeParser::ReparseFile(cbProject* project, const wxString& filename)
 
 bool NativeParser::AddFileToParser(cbProject* project, const wxString& filename, ParserBase* parser)
 {
-    if (CCFileTypeOf(filename) == ccftOther)
+    if (ParserCommon::FileType(filename) == ParserCommon::ftOther)
         return false;
 
     if (!parser)
@@ -1351,8 +1351,9 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             ProjectFile* pf = *it;
             if (!pf)
                 continue;
-            CCFileType ft = CCFileTypeOf(pf->relativeFilename);
-            if (ft == ccftHeader) // parse header files
+
+            ParserCommon::EFileType ft = ParserCommon::FileType(pf->relativeFilename);
+            if (ft == ParserCommon::ftHeader) // parse header files
             {
                 bool isPriorityFile = false;
                 for (PriorityMap::iterator it = priorityTempMap.begin(); it != priorityTempMap.end(); ++it)
@@ -1369,7 +1370,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
                 if (!isPriorityFile)
                     headers.push_back(pf->file.GetFullPath());
             }
-            else if (ft == ccftSource) // parse source files
+            else if (ft == ParserCommon::ftSource) // parse source files
             {
                 sources.push_back(pf->file.GetFullPath());
             }
@@ -3684,8 +3685,8 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     ParserBase* parser = GetParserByProject(project);
     if (!parser)
     {
-        CCFileType ft = CCFileTypeOf(lastFile);
-        if (ft != ccftOther && (parser = CreateParser(project)))
+        ParserCommon::EFileType ft = ParserCommon::FileType(lastFile);
+        if (ft != ParserCommon::ftOther && (parser = CreateParser(project)))
         {
             if (!project && AddFileToParser(project, lastFile, parser) )
             {
@@ -3802,7 +3803,7 @@ public:
 
     virtual wxDirTraverseResult OnFile(const wxString& filename)
     {
-        if (CCFileTypeOf(filename) != ccftOther)
+        if (ParserCommon::FileType(filename) != ParserCommon::ftOther)
             m_Files.Add(filename);
         return wxDIR_CONTINUE;
     }
@@ -4258,7 +4259,7 @@ bool NativeParser::RemoveProjectFromParser(cbProject* project)
     for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
-        if (pf && CCFileTypeOf(pf->relativeFilename) != ccftOther)
+        if (pf && ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
             RemoveFileFromParser(project, pf->file.GetFullPath());
     }
 
