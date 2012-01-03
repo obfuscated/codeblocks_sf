@@ -755,7 +755,11 @@ wxString cbAuiNotebook::SavePerspective()
                 if (p)
                     tabs += wxT(",");
 
+#if wxCHECK_VERSION(2, 9, 3)
+                if ((int)page_idx == m_curPage)
+#else
                 if ((int)page_idx == m_curpage)
+#endif
                     tabs += wxT("*");
                 else if ((int)p == tabCtrl->GetActivePage())
                     tabs += wxT("+");

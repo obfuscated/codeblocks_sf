@@ -9,7 +9,7 @@
 						<size>10</size>
 						<family>modern</family>
 					</font>
-					<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<option>1</option>
