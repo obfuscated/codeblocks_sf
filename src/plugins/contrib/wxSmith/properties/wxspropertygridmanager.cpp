@@ -273,11 +273,10 @@ void wxsPropertyGridManager::StoreSelected(SelectionData* Data)
 
     #if wxCHECK_VERSION(2, 9, 0)
     wxPGId Selected = GetSelection();
-    if ( Selected != NULL )
     #else
     wxPGId Selected = GetSelectedProperty();
-    if ( wxPGIdIsOk(Selected) )
     #endif
+    if ( Selected != NULL )
     {
         Data->m_PropertyName = GetPropertyName(Selected);
     }

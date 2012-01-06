@@ -54,7 +54,7 @@
     #define wxUSE_TOOLTIPS          1
     #define wxUSE_SPINBTN           1
     #define wxUSE_DATEPICKCTRL      1
-    #define wxPG_COMPATIBILITY_1_2_0    1
+    #define wxPG_COMPATIBILITY_1_2_0    0
 #endif
 
 
@@ -273,7 +273,7 @@
 // -----------------------------------------------------------------------
 
 #ifndef wxPG_COMPATIBILITY_1_2_0
-    #define wxPG_COMPATIBILITY_1_2_0    1
+    #define wxPG_COMPATIBILITY_1_2_0    0
 #endif
 
 
@@ -4599,7 +4599,9 @@ public:
         Used by SetSplitterLeft() and DoFitColumns().
     */
     int GetColumnFitWidth(wxClientDC& dc, wxPGProperty* pwc, unsigned int col, bool subProps) const;
-
+/* C::B begin */
+    int GetColumnFullWidth( wxClientDC &dc, wxPGProperty *p, unsigned int col );
+/* C::B end */
     /**
         Returns currently selected property.
     */

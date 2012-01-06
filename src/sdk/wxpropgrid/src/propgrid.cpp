@@ -2068,7 +2068,9 @@ int wxPGProperty::GetY2( int lh ) const
     for ( parent = GetParent(); parent != NULL; parent = child->GetParent() )
     {
         if ( !parent->IsExpanded() )
-            return -1;
+/* C::B begin */
+            return parent->GetY2(lh);
+/* C::B end */
         y += parent->GetChildrenHeight(lh, child->GetIndexInParent());
         y += lh;
         child = parent;
@@ -3069,18 +3071,36 @@ protected:
     {
         wxPropertyGrid* pg = wxStaticCast(GetParent(), wxPropertyGrid);
         pg->OnKey( event );
+/* C::B begin */
+        int id = event.GetId();
+        event.SetId(pg->GetId());
+        pg->ProcessEvent(event);
+        event.SetId(id);
+/* C::B end */
     }
 
     void OnKeyUp( wxKeyEvent& event )
     {
         wxPropertyGrid* pg = wxStaticCast(GetParent(), wxPropertyGrid);
         pg->OnKeyUp( event );
+/* C::B begin */
+        int id = event.GetId();
+        event.SetId(pg->GetId());
+        pg->ProcessEvent(event);
+        event.SetId(id);
+/* C::B end */
     }
 
     void OnNavigationKey( wxNavigationKeyEvent& event )
     {
         wxPropertyGrid* pg = wxStaticCast(GetParent(), wxPropertyGrid);
         pg->OnNavigationKey( event );
+/* C::B begin */
+        int id = event.GetId();
+        event.SetId(pg->GetId());
+        pg->ProcessEvent(event);
+        event.SetId(id);
+/* C::B end */
     }
 
     void OnPaint( wxPaintEvent& event );
@@ -7455,6 +7475,15 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
         return true;
 
     m_inDoSelectProperty = true;
+/* C::B begin */
+    struct UnsetValue
+    {
+        UnsetValue(bool &value) : value(value) {}
+        ~UnsetValue() { value = false; }
+        bool &value;
+    };
+    UnsetValue unsetValue(m_inDoSelectProperty);
+/* C::B end */
 
 #if !wxCHECK_VERSION(2,8,0)
     //
@@ -7471,10 +7500,7 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
 #endif
 
     if ( !m_pState )
-    {
-        m_inDoSelectProperty = false;
         return false;
-    }
 
     wxArrayPGProperty prevSelection = m_pState->m_selection;
     wxPGProperty* prevFirstSel;
@@ -7531,8 +7557,6 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
                     SetFocusOnCanvas();
                 }
             }
-
-            m_inDoSelectProperty = 0;
             return true;
         }
 
@@ -7548,7 +7572,6 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
                     // Validation has failed, so we can't exit the previous editor
                     //::wxMessageBox(_("Please correct the value or press ESC to cancel the edit."),
                     //               _("Invalid Value"),wxOK|wxICON_ERROR);
-                    m_inDoSelectProperty = 0;
                     return false;
                 }
             }
@@ -7809,8 +7832,6 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
         }
 #endif
     }
-
-    m_inDoSelectProperty = 0;
 
     // call wx event handler (here so that it also occurs on deselection)
     SendEvent( wxEVT_PG_SELECTED, p, NULL );
@@ -10431,7 +10452,7 @@ wxArrayString wxPGChoices::GetLabels() const
 }
 
 // -----------------------------------------------------------------------
-
+#if wxPG_COMPATIBILITY_1_2_0
 bool wxPGChoices::HasValue( unsigned int WXUNUSED(i) ) const
 {
     return true;
@@ -10443,6 +10464,7 @@ bool wxPGChoices::HasValues() const
 {
     return true;
 }
+#endif
 
 // -----------------------------------------------------------------------
 
@@ -11827,6 +11849,26 @@ int wxPropertyGridState::GetColumnFitWidth(wxClientDC& dc,
 
     return maxW;
 }
+
+/* C::B begin */
+int wxPropertyGridState::GetColumnFullWidth( wxClientDC &dc, wxPGProperty *p, unsigned int col )
+{
+    if ( p->IsCategory() )
+        return 0;
+
+    long w, h;
+    dc.GetTextExtent( p->GetColumnText(col), &w, &h );
+    if ( col == 0 )
+        w += (int)p->m_depth * m_pPropGrid->m_subgroup_extramargin;
+
+    // account for the bitmap
+    if ( col == 1 )
+        w += p->GetImageOffset(m_pPropGrid->GetImageRect(p, -1).GetWidth());
+
+    w += (wxPG_XBEFORETEXT*2);
+    return w;
+}
+/* C::B end */
 
 int wxPropertyGridState::DoGetSplitterPosition( int splitterColumn ) const
 {
