@@ -123,7 +123,8 @@ void JumpTracker::OnAttach()
 
     // Codeblocks Events registration
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI   , new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorUpdateEvent));
-    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorActivated));
+   //-Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorDeactivated));
     Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnStartShutdown));
     // -- Project events
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnProjectActivatedEvent));
@@ -315,6 +316,47 @@ void JumpTracker::OnEditorActivated(CodeBlocksEvent& event)
     return;
 }//OnEditorActivated
 // ----------------------------------------------------------------------------
+void JumpTracker::OnEditorDeactivated(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Record this deactivation event and place deactivation location in history
+    event.Skip();
+
+    if (m_bShuttingDown) return;
+    if (not IsAttached()) return;
+
+    // Don't record closing editor deactivations
+    if (m_bProjectClosing)
+        return;
+
+    EditorBase* eb = event.GetEditor();
+    wxString edFilename = eb->GetFilename();
+    cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
+
+    if (not cbed)
+    {
+        // We ignore events with no associated editor
+        #if defined(LOGGING)
+        LOGIT( _T("JT [OnEditorDeactivated ignored:no cbEditor[%s]"), edFilename.c_str());
+        #endif
+        return;
+    }
+
+    #if defined(LOGGING)
+    LOGIT( _T("JT Editor DeActivated[%s]"), eb->GetShortName().c_str() );
+    #endif
+
+    cbStyledTextCtrl* edstc = cbed->GetControl();
+    if(edstc->GetCurrentLine() == wxSCI_INVALID_POSITION)
+        return;
+
+    long edPosn = edstc->GetCurrentPos();
+    //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
+        JumpDataAdd(edFilename, edPosn, edstc->GetCurrentLine());
+    return;
+}//OnEditorDeactivated
+
+// ----------------------------------------------------------------------------
 void JumpTracker::OnStartShutdown(CodeBlocksEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
@@ -454,11 +496,17 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
         if ( knt > 1 )
             m_Cursor -= 1;
         if (m_Cursor < 0)
+        {
             //m_Cursor = maxJumpEntries-1;  //(remove wrap code)-
             m_Cursor = 0;
+            return;
+        }
         if (m_Cursor > (int)knt-1)
+        {
             //-m_Cursor = knt-1;          //(remove wrap code)-
             m_Cursor = (int)knt-1;
+            return;
+        }
 
         EditorManager* edmgr = Manager::Get()->GetEditorManager();
         int cursor = m_Cursor;

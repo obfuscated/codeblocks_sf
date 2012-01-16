@@ -243,6 +243,9 @@ AppVersion::~AppVersion()
 //       95) Do not record firt source line in JumpTracker
 //  Commit 1.2.96 2011/12/13
 //       96) Remove wrap on JumpTracker jump back/forward
+//  Commit 1.2.97 2012/01/11
+//       96) Record last position for deactivated editor
+//           Remove recording position for activated editor
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

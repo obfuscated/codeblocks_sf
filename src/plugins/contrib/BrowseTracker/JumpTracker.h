@@ -101,6 +101,7 @@ class JumpTracker : public cbPlugin
         // CodeBlocks events
         void OnEditorUpdateEvent(CodeBlocksEvent& event);
         void OnEditorActivated(CodeBlocksEvent& event);
+        void OnEditorDeactivated(CodeBlocksEvent& event);
         void OnStartShutdown(CodeBlocksEvent& event);
         void OnProjectClosing(CodeBlocksEvent& event);
         void OnProjectActivatedEvent(CodeBlocksEvent& event);
