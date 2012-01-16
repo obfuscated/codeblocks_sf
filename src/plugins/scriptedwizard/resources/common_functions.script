@@ -27,8 +27,7 @@ function WarningsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
     {
         base.AddCompilerOption(_T("-Wall"));
     }
@@ -45,6 +44,10 @@ function WarningsOn(base, compilerID)
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
     {
         base.AddCompilerOption(_T("-w-"));
+    }
+    else if( GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
+    {
+        // with SDCC all warnings are enabled by default. You can only ask for less by using --less-pedantic or --disable-warning.
     }
     else
     {
