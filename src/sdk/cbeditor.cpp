@@ -963,7 +963,7 @@ void cbEditor::UnderlineFoldedLines(bool underline)
         m_pControl2->SetFoldFlags(underline ? 16 : 0);
 }
 
-cbStyledTextCtrl* cbEditor::CreateEditor()
+cbStyledTextCtrl* cbEditor::CreateEditor(bool connectEvents)
 {
     m_ID = wxNewId();
 
@@ -978,81 +978,84 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
     m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
 
-    // dynamic events
-    Connect( m_ID,  -1, wxEVT_SCI_MARGINCLICK,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnMarginClick );
-    Connect( m_ID,  -1, wxEVT_SCI_UPDATEUI,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorUpdateUI );
-    Connect( m_ID,  -1, wxEVT_SCI_CHANGE,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorChange );
-    Connect( m_ID,  -1, wxEVT_SCI_CHARADDED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorCharAdded );
-    Connect( m_ID,  -1, wxEVT_SCI_DWELLSTART,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorDwellStart );
-    Connect( m_ID,  -1, wxEVT_SCI_DWELLEND,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorDwellEnd );
-    Connect( m_ID,  -1, wxEVT_SCI_USERLISTSELECTION,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnUserListSelection );
-    Connect( m_ID,  -1, wxEVT_SCI_MODIFIED,
-                  (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                  &cbEditor::OnEditorModified );
-
-    // Now bind all *other* scintilla events to a common function so that editor hooks
-    // can be informed for them too.
-    // If you implement one of these events using a different function, do the following:
-    //  * comment it out here,
-    //  * "connect" it in the above block
-    //  * and make sure you call OnScintillaEvent() from your new handler function
-    // This will make sure that all editor hooks will be called when needed.
-    int scintilla_events[] =
+    if (connectEvents)
     {
-//        wxEVT_SCI_CHANGE,
-        wxEVT_SCI_STYLENEEDED,
-//        wxEVT_SCI_CHARADDED,
-        wxEVT_SCI_SAVEPOINTREACHED,
-        wxEVT_SCI_SAVEPOINTLEFT,
-        wxEVT_SCI_ROMODIFYATTEMPT,
-        wxEVT_SCI_KEY,
-        wxEVT_SCI_DOUBLECLICK,
-//        wxEVT_SCI_UPDATEUI,
-//        wxEVT_SCI_MODIFIED,
-        wxEVT_SCI_MACRORECORD,
-//        wxEVT_SCI_MARGINCLICK,
-        wxEVT_SCI_NEEDSHOWN,
-        wxEVT_SCI_PAINTED,
-//        wxEVT_SCI_USERLISTSELECTION,
-        wxEVT_SCI_URIDROPPED,
-//        wxEVT_SCI_DWELLSTART,
-//        wxEVT_SCI_DWELLEND,
-        wxEVT_SCI_START_DRAG,
-        wxEVT_SCI_DRAG_OVER,
-        wxEVT_SCI_DO_DROP,
-        wxEVT_SCI_ZOOM,
-        wxEVT_SCI_HOTSPOT_CLICK,
-        wxEVT_SCI_HOTSPOT_DCLICK,
-        wxEVT_SCI_CALLTIP_CLICK,
-        wxEVT_SCI_AUTOCOMP_SELECTION,
-//        wxEVT_SCI_INDICATOR_CLICK,
-//        wxEVT_SCI_INDICATOR_RELEASE,
-        wxEVT_SCI_TAB,
-        wxEVT_SCI_ESC,
-
-        -1 // to help enumeration of this array
-    };
-    int i = 0;
-    while (scintilla_events[i] != -1)
-    {
-        Connect( m_ID,  -1, scintilla_events[i],
+        // dynamic events
+        Connect( m_ID,  -1, wxEVT_SCI_MARGINCLICK,
                       (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
-                      &cbEditor::OnScintillaEvent );
-        ++i;
+                      &cbEditor::OnMarginClick );
+        Connect( m_ID,  -1, wxEVT_SCI_UPDATEUI,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorUpdateUI );
+        Connect( m_ID,  -1, wxEVT_SCI_CHANGE,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorChange );
+        Connect( m_ID,  -1, wxEVT_SCI_CHARADDED,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorCharAdded );
+        Connect( m_ID,  -1, wxEVT_SCI_DWELLSTART,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorDwellStart );
+        Connect( m_ID,  -1, wxEVT_SCI_DWELLEND,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorDwellEnd );
+        Connect( m_ID,  -1, wxEVT_SCI_USERLISTSELECTION,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnUserListSelection );
+        Connect( m_ID,  -1, wxEVT_SCI_MODIFIED,
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnEditorModified );
+
+        // Now bind all *other* scintilla events to a common function so that editor hooks
+        // can be informed for them too.
+        // If you implement one of these events using a different function, do the following:
+        //  * comment it out here,
+        //  * "connect" it in the above block
+        //  * and make sure you call OnScintillaEvent() from your new handler function
+        // This will make sure that all editor hooks will be called when needed.
+        int scintilla_events[] =
+        {
+    //        wxEVT_SCI_CHANGE,
+            wxEVT_SCI_STYLENEEDED,
+    //        wxEVT_SCI_CHARADDED,
+            wxEVT_SCI_SAVEPOINTREACHED,
+            wxEVT_SCI_SAVEPOINTLEFT,
+            wxEVT_SCI_ROMODIFYATTEMPT,
+            wxEVT_SCI_KEY,
+            wxEVT_SCI_DOUBLECLICK,
+    //        wxEVT_SCI_UPDATEUI,
+    //        wxEVT_SCI_MODIFIED,
+            wxEVT_SCI_MACRORECORD,
+    //        wxEVT_SCI_MARGINCLICK,
+            wxEVT_SCI_NEEDSHOWN,
+            wxEVT_SCI_PAINTED,
+    //        wxEVT_SCI_USERLISTSELECTION,
+            wxEVT_SCI_URIDROPPED,
+    //        wxEVT_SCI_DWELLSTART,
+    //        wxEVT_SCI_DWELLEND,
+            wxEVT_SCI_START_DRAG,
+            wxEVT_SCI_DRAG_OVER,
+            wxEVT_SCI_DO_DROP,
+            wxEVT_SCI_ZOOM,
+            wxEVT_SCI_HOTSPOT_CLICK,
+            wxEVT_SCI_HOTSPOT_DCLICK,
+            wxEVT_SCI_CALLTIP_CLICK,
+            wxEVT_SCI_AUTOCOMP_SELECTION,
+    //        wxEVT_SCI_INDICATOR_CLICK,
+    //        wxEVT_SCI_INDICATOR_RELEASE,
+            wxEVT_SCI_TAB,
+            wxEVT_SCI_ESC,
+
+            -1 // to help enumeration of this array
+        };
+        int i = 0;
+        while (scintilla_events[i] != -1)
+        {
+            Connect( m_ID,  -1, scintilla_events[i],
+                          (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                          &cbEditor::OnScintillaEvent );
+            ++i;
+        }
     }
 
     return control;
@@ -1787,7 +1790,7 @@ bool cbEditor::SaveAs()
 bool cbEditor::SaveFoldState()
 {
     bool bRet = false;
-    if ((m_foldBackup = CreateEditor()))
+    if ((m_foldBackup = CreateEditor(false)))
     {
         ApplyStyles(m_foldBackup);
         m_foldBackup->SetText(m_pControl->GetText());
