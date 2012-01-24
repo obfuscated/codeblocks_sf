@@ -43,9 +43,9 @@ noinst_HEADERS = DictionariesNeededDialog.h \
                 mythes.hxx \
                 wxThes.h
 
-EXTRA_DIST = 	*.cbp \
-		*.xrc \
-		*.png \
+EXTRA_DIST = 	$(srcdir)/*.cbp \
+		$(srcdir)/*.xrc \
+		$(srcdir)/*.png \
 		wxsmith \
 		hunspell \
 		dictionaries \

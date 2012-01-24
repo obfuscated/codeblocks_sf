@@ -27,15 +27,15 @@ noinst_HEADERS = Config.h \
 		DoxyBlocksLogger.h \
 		version.h
 
-EXTRA_DIST = *.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 		wxsmith/ConfigPanel.wxs \
 		manifest.xml \
 		ChangeLog.txt \
 		DoxyBlocks.rc \
 		update \
 		update.bat \
-		images/*.png \
-		images/16x16/*.png
+		$(srcdir)/images/*.png \
+		$(srcdir)/images/16x16/*.png
 
 pkgdata_DATA = DoxyBlocks.zip
 

@@ -56,14 +56,12 @@ noinst_HEADERS = \
 		projectconfigurationpanel.h
 
 EXTRA_DIST = \
-	lib_finder.cbp \
-	lib_finder-unix.cbp \
+	$(srcdir)/*.cbp \
 	update \
 	update.bat \
 	readme.txt \
 	manifest.xml \
-	wxsmith/*.wxs
-#	license.txt
+	$(srcdir)/wxsmith/*.wxs
 
 pkgdata_DATA = lib_finder.zip
 CLEANFILES = $(pkgdata_DATA)

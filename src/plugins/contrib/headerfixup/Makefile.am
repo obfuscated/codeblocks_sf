@@ -29,7 +29,7 @@ noinst_HEADERS = bindings.h \
                  helper.h \
                  protocol.h
 
-EXTRA_DIST = *.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
              wxsmith/configuration.wxs \
              wxsmith/execution.wxs \
              wxsmith/protocol.wxs \
