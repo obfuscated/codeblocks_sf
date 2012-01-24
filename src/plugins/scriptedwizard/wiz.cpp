@@ -667,22 +667,6 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
 {
     wxFileName fname(filename);
 
-    if ( fname.FileExists() )
-    {
-        wxString query_overwrite;
-        query_overwrite.Printf(
-          _T("Warning:\n")
-          _T("The wizard is about OVERWRITE the following existing file:\n")+
-          fname.GetFullPath()+_T("\n\n")+
-          _T("Are you sure that you want to OVERWRITE the file?\n\n")+
-          _T("(If you answer 'No' the existing file will be kept.)"));
-        if (cbMessageBox(query_overwrite, _T("Confirmation"),
-                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_NO)
-        {
-            return fname.GetFullPath();
-        }
-    }
-
     // extension sanity check
     FileType ft = FileTypeOf(fname.GetFullPath());
     switch (ft)
@@ -731,6 +715,21 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     }
 
     fname = basePath + wxFILE_SEP_PATH + fname.GetFullPath();
+    if ( fname.FileExists() )
+    {
+        wxString query_overwrite;
+        query_overwrite.Printf(
+          _T("Warning:\n")
+          _T("The wizard is about OVERWRITE the following existing file:\n")+
+          fname.GetFullPath()+_T("\n\n") +
+          _T("Are you sure that you want to OVERWRITE the file?\n\n")+
+          _T("(If you answer 'No' the existing file will be kept.)"));
+        if (cbMessageBox(query_overwrite, _T("Confirmation"),
+                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_NO)
+        {
+            return fname.GetFullPath();
+        }
+    }
 
     // create the file with the passed contents
     wxFileName::Mkdir(fname.GetPath(),0777,wxPATH_MKDIR_FULL);
