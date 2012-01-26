@@ -216,8 +216,8 @@ class ProjectFile
         wxString m_ObjName;
         PFDMap m_PFDMap;
 };
-WX_DECLARE_HASH_SET( ProjectFile*, wxPointerHash, wxPointerEqual, FilesList );
-WX_DEFINE_SORTED_ARRAY(ProjectFile*, ProjectFileArray);
+WX_DECLARE_HASH_SET   ( ProjectFile*, wxPointerHash, wxPointerEqual, FilesList );
+WX_DEFINE_SORTED_ARRAY( ProjectFile*, ProjectFileArray                         );
 
 /** This is a helper class that caches various filenames for one ProjectFile.
   * These include the source filename, the generated object filename,

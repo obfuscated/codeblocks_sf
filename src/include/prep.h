@@ -31,8 +31,8 @@ private:
     const nullptr_t& operator=(const nullptr_t&);
 } nullptr;
 
-template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return lhs.equals(rhs); }
-template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return rhs.equals(lhs); }
+template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return  lhs.equals(rhs); }
+template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return  rhs.equals(lhs); }
 template<typename T> inline bool operator!=(const nullptr_t& lhs, T const& rhs) { return !lhs.equals(rhs); }
 template<typename T> inline bool operator!=(T const& lhs, const nullptr_t& rhs) { return !rhs.equals(lhs); }
 #endif
@@ -168,7 +168,7 @@ namespace platform
     const bool unicode = false;
     #endif
 
-    #if   defined ( __WIN32__ )
+    #if   defined ( __WIN32__ ) || defined ( _WIN64 )
     const identifier id = platform_windows;
     #elif defined ( __WXMAC__ )  || defined ( __WXCOCOA__ )
     const identifier id = platform_macosx;

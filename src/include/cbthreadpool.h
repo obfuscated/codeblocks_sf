@@ -215,27 +215,19 @@ inline void cbThreadPool::BatchBegin()
 inline void cbThreadPool::Broadcast()
 {
   if (m_concurrentThreads == -1)
-  {
     return;
-  }
 
   for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads); ++i)
-  {
     m_semaphore->Post();
-  }
 }
 
 inline void cbThreadPool::AwakeNeeded()
 {
   if (m_concurrentThreads == -1)
-  {
     return;
-  }
 
   for (std::size_t i = 0; i < m_tasksQueue.size(); ++i)
-  {
     m_semaphore->Post();
-  }
 }
 
 /* *** Josuttis' CountedPtr *** */

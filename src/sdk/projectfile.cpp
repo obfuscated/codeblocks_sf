@@ -87,8 +87,8 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
         if (target && (target->m_Files.find(this) == target->m_Files.end()))
         {
             target->m_Files.insert(this);
-        // Onbly add the file, if we are not currently loading the project and m_FileArray is already initialised
-        // initialising is done in the getter-function (GetFile(index), to save time, if it is not needed
+            // Only add the file, if we are not currently loading the project and m_FileArray is already initialised
+            // initialising is done in the getter-function (GetFile(index), to save time, if it is not needed
             if ( target->m_FileArray.GetCount() > 0 )
                 target->m_FileArray.Add(this);
         }

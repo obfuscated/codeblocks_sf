@@ -698,38 +698,38 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         // properties
         VirtualBuildTargetsMap m_VirtualTargets;
-        BuildTargets m_Targets;
-        wxString m_ActiveTarget;
-        wxString  m_LastSavedActiveTarget;
-        wxString m_DefaultExecuteTarget;
-        wxString m_Makefile;
-        bool m_CustomMakefile;
-        mutable wxString m_MakefileExecutionDir;
+        BuildTargets           m_Targets;
+        wxString               m_ActiveTarget;
+        wxString               m_LastSavedActiveTarget;
+        wxString               m_DefaultExecuteTarget;
+        wxString               m_Makefile;
+        bool                   m_CustomMakefile;
+        mutable wxString       m_MakefileExecutionDir;
 
-        FilesList m_Files;
+        FilesList        m_Files;
         ProjectFileArray m_FileArray;
-        wxArrayString m_ExpandedNodes;
-        wxString m_SelectedNode;
-        bool m_Loaded;
-        wxTreeItemId m_ProjectNode;
+        wxArrayString    m_ExpandedNodes;
+        wxString         m_SelectedNode;
+        bool             m_Loaded;
+        wxTreeItemId     m_ProjectNode;
 
         wxArrayString m_VirtualFolders; // not saved, just used throughout cbProject's lifetime
 
-        bool m_CurrentlyLoading;
+        bool     m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
         wxString m_BasePath;
 
         PCHMode m_PCHMode;
 
         // hashmap for fast searches in cbProject::GetFileByFilename()
-        ProjectFiles m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
+        ProjectFiles        m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
         ProjectBuildTarget* m_CurrentlyCompilingTarget;
 
         wxDateTime m_LastModified;
 
-        bool m_ExtendedObjectNamesGeneration;
+        bool     m_ExtendedObjectNamesGeneration;
         wxString m_Notes;
-        bool m_AutoShowNotesOnLoad;
+        bool     m_AutoShowNotesOnLoad;
 
         // copy of <Extensions> element, in case certain plugins are disabled
         // so that the contents are not lost

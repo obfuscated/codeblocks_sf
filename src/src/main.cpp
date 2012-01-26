@@ -611,41 +611,41 @@ void MainFrame::RegisterEvents()
 {
     Manager* pm = Manager::Get();
 
-    pm->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorUpdateUI));
+    pm->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorUpdateUI));
 
-    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectActivated));
-    pm->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectOpened));
-    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectClosed));
-    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorClosed));
-    pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorOpened));
-    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorActivated));
-    pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorSaved));
-    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorModified));
+    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectActivated));
+    pm->RegisterEventSink(cbEVT_PROJECT_OPEN,           new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectOpened));
+    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,          new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,           new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_OPEN,            new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorOpened));
+    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorActivated));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,            new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorSaved));
+    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorModified));
 
-    pm->RegisterEventSink(cbEVT_ADD_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestDockWindow));
-    pm->RegisterEventSink(cbEVT_REMOVE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestUndockWindow));
-    pm->RegisterEventSink(cbEVT_SHOW_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestShowDockWindow));
-    pm->RegisterEventSink(cbEVT_HIDE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestHideDockWindow));
+    pm->RegisterEventSink(cbEVT_ADD_DOCK_WINDOW,        new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestDockWindow));
+    pm->RegisterEventSink(cbEVT_REMOVE_DOCK_WINDOW,     new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestUndockWindow));
+    pm->RegisterEventSink(cbEVT_SHOW_DOCK_WINDOW,       new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestShowDockWindow));
+    pm->RegisterEventSink(cbEVT_HIDE_DOCK_WINDOW,       new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestHideDockWindow));
     pm->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnDockWindowVisibility));
 
-    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginLoaded));
-    pm->RegisterEventSink(cbEVT_PLUGIN_RELEASED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUnloaded));
-    pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
-    pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
+    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginLoaded));
+    pm->RegisterEventSink(cbEVT_PLUGIN_RELEASED,        new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUnloaded));
+    pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED,       new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
+    pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED,     new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
 
-    pm->RegisterEventSink(cbEVT_UPDATE_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutUpdate));
-    pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
-    pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
+    pm->RegisterEventSink(cbEVT_UPDATE_VIEW_LAYOUT,     new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutUpdate));
+    pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT,      new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
+    pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT,     new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
 
-    pm->RegisterEventSink(cbEVT_ADD_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnAddLogWindow));
-    pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
-    pm->RegisterEventSink(cbEVT_HIDE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogWindow));
-    pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
-    pm->RegisterEventSink(cbEVT_GET_ACTIVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnGetActiveLogWindow));
-    pm->RegisterEventSink(cbEVT_SHOW_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnShowLogManager));
-    pm->RegisterEventSink(cbEVT_HIDE_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogManager));
-    pm->RegisterEventSink(cbEVT_LOCK_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnLockLogManager));
-    pm->RegisterEventSink(cbEVT_UNLOCK_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnUnlockLogManager));
+    pm->RegisterEventSink(cbEVT_ADD_LOG_WINDOW,         new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnAddLogWindow));
+    pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW,      new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
+    pm->RegisterEventSink(cbEVT_HIDE_LOG_WINDOW,        new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogWindow));
+    pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW,   new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
+    pm->RegisterEventSink(cbEVT_GET_ACTIVE_LOG_WINDOW,  new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnGetActiveLogWindow));
+    pm->RegisterEventSink(cbEVT_SHOW_LOG_MANAGER,       new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnShowLogManager));
+    pm->RegisterEventSink(cbEVT_HIDE_LOG_MANAGER,       new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogManager));
+    pm->RegisterEventSink(cbEVT_LOCK_LOG_MANAGER,       new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnLockLogManager));
+    pm->RegisterEventSink(cbEVT_UNLOCK_LOG_MANAGER,     new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnUnlockLogManager));
 }
 
 void MainFrame::ShowTips(bool forceShow)
@@ -767,8 +767,7 @@ void MainFrame::RegisterScriptFunctions()
 
 void MainFrame::RunStartupScripts()
 {
-    ConfigManager* mgr = 0;
-    mgr = Manager::Get()->GetConfigManager(_T("scripting"));
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
     wxArrayString keys = mgr->EnumerateKeys(_T("/startup_scripts"));
 
     for (size_t i = 0; i < keys.GetCount(); ++i)
@@ -894,7 +893,7 @@ void MainFrame::CreateMenubar()
 
     // Find Menus that we'll change later
 
-    tmpidx=mbar->FindMenu(_("&Edit"));
+    tmpidx = mbar->FindMenu(_("&Edit"));
     if (tmpidx!=wxNOT_FOUND)
     {
         mbar->FindItem(idEditHighlightModeText, &hl);
@@ -930,8 +929,8 @@ void MainFrame::CreateMenubar()
     if ((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
         pluginsM = tmpitem->GetSubMenu();
 
-    m_ToolsMenu = tools ? tools : new wxMenu();
-    m_PluginsMenu = plugs ? plugs : new wxMenu();
+    m_ToolsMenu       = tools    ? tools    : new wxMenu();
+    m_PluginsMenu     = plugs    ? plugs    : new wxMenu();
     m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
     // core modules: create menus
@@ -978,7 +977,7 @@ void MainFrame::CreateMenubar()
             {
                 // Change the accelerator for this menu item:
                 wxString accel;
-                if (platform::carbon)
+                if      (platform::carbon)
                     accel = wxT("Alt+Tab");
                 else if (platform::gtk)
                     accel = wxT("Ctrl+,");
@@ -1031,9 +1030,7 @@ void MainFrame::CreateToolbars()
     {
         cbPlugin* plug = plugins[i]->plugin;
         if (plug && plug->IsAttached())
-        {
             DoAddPluginToolbar(plug);
-        }
     }
 
     Manager::ProcessPendingEvents();
@@ -2890,7 +2887,6 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evt);
     Manager::Yield();
-
 
     m_InitiatedShutdown = true;
     Manager::BlockYields(true);

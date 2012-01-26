@@ -143,12 +143,14 @@ void ProjectBuildTarget::SetTargetType(const TargetType& pt)
 }
 
 // target dependencies: targets to be compiled (if necessary) before this one
-void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target) {
+void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target)
+{
     m_TargetDeps.Add(target);
 }
 
 // get the list of dependency targets of this target
-BuildTargets& ProjectBuildTarget::GetTargetDeps() {
+BuildTargets& ProjectBuildTarget::GetTargetDeps()
+{
     return m_TargetDeps;
 }
 

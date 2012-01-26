@@ -110,8 +110,8 @@ void TextCtrlLogger::UpdateSettings()
     style[error].SetTextColour(BlendTextColour(*wxRED));
 
     style[critical].SetFont(bold_font);
-    style[critical].SetTextColour(BlendTextColour(*wxWHITE));        // we're setting both fore and background colors here
-    style[critical].SetBackgroundColour(BlendTextColour(*wxRED));    // so we don't have to mix in default colors
+    style[critical].SetTextColour(BlendTextColour(*wxWHITE));     // we're setting both fore and background colors here
+    style[critical].SetBackgroundColour(BlendTextColour(*wxRED)); // so we don't have to mix in default colors
     style[spacer].SetFont(small_font);
 
     // Tell control about the font change
@@ -341,19 +341,16 @@ CSS::CSS() :
     info     (wxEmptyString),
     warning  (_T("margin-left: 2em;")),
     success  (wxEmptyString),
+    error    (_T("margin-left: 2em; border-left: 1px solid ")),
+    critical (_T("color: ")),
+    failure  (_T("color: ")),
     pagetitle(_T("font-size: 16pt;")),
     spacer   (wxEmptyString),
     asterisk (_T("font-family: Arial, Helvetica, \"Bitstream Vera Sans\", sans;"))
 {
-    error  = _T("margin-left: 2em; border-left: 1px solid ");
-    error += BlendTextColour(*wxRED).GetAsString(wxC2S_HTML_SYNTAX);
-    error += _T(";");
-    critical  = _T("color: ");
-    critical += BlendTextColour(*wxRED).GetAsString(wxC2S_HTML_SYNTAX);
-    critical += _T("; font-weight: bold;");
-    failure  = _T("color: ");
-    failure += BlendTextColour(wxColour(0x80, 0x00, 0x00)).GetAsString(wxC2S_HTML_SYNTAX);
-    failure += _T(";");
+    error    += BlendTextColour(*wxRED).GetAsString(wxC2S_HTML_SYNTAX) + _T(";");
+    critical += BlendTextColour(*wxRED).GetAsString(wxC2S_HTML_SYNTAX) + _T("; font-weight: bold;");
+    failure  += BlendTextColour(wxColour(0x80, 0x00, 0x00)).GetAsString(wxC2S_HTML_SYNTAX) + _T(";");
 }
 
 CSS::operator wxString()

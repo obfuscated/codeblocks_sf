@@ -117,10 +117,8 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 {
 //    wxCriticalSectionLocker c(cs);
 
-    wxString fname = filename;
-    wxFile f;
-    // try open
-    f.Open(fname);
+    wxString fname(filename);
+    wxFile f(fname); // try to open
     if (!f.IsOpened())
     {
         bool found = false;
