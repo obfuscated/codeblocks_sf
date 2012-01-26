@@ -47,6 +47,12 @@ class cbTreeCtrl : public wxTreeCtrl
 */
         void OnRightClick(wxMouseEvent& event);
 #endif // !__WXMSW__
+/*
+        Under all platforms there is no reaction when pressing "ENTER".
+        Expected would be e.g. to open the file in an editor.
+*/
+        void OnKeyDown(wxKeyEvent& event);
+
         static int filesSort(const ProjectFile* arg1, const ProjectFile* arg2);
         static int filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2);
         int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);

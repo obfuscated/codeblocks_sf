@@ -162,6 +162,115 @@ void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
         event.Skip();
 }
 #endif // !__WXMSW__
+/*
+    Under all platforms there is no reaction when pressing "ENTER".
+    Expected would be e.g. to open the file in an editor.
+*/
+void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
+{
+    // Don't care about special key combinations
+    if ( !this || (event.GetModifiers()!=wxMOD_NONE) )
+    {
+        event.Skip();
+        return;
+    }
+
+    wxArrayTreeItemIds selections;
+    unsigned int num = GetSelections(selections);
+    // Don't care if no selection has been made
+    if ( GetSelections(selections)<1 )
+    {
+        event.Skip();
+        return;
+    }
+
+    long         keycode = event.GetKeyCode();
+    wxTreeItemId itemId  = selections[0];
+    // Don't care if item is invalid
+    if ( !itemId.IsOk() )
+    {
+        event.Skip();
+        return;
+    }
+
+    switch (keycode)
+    {
+        case WXK_RETURN:
+        {
+            wxTreeEvent te = wxTreeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, itemId);
+            wxPostEvent(this, te);
+            break;
+        }
+#ifndef __WXMSW__
+/*
+        Under wxGTK, there is no navigation possible using cursor keys.
+*/
+        case WXK_UP:
+        {
+            // GetPrevVisible - not implemented... strange...
+            wxTreeItemId itemIdPrev = GetPrevSibling(itemId);
+            if (itemIdPrev.IsOk())
+            {
+                SelectItem(itemId, false);
+                SelectItem(itemIdPrev, true);
+            }
+            else
+            {
+                wxTreeItemId itemIdParent = GetItemParent(itemId);
+                if (itemIdParent.IsOk())
+                {
+                    SelectItem(itemId, false);
+                    SelectItem(itemIdParent, true);
+                }
+            }
+            break;
+        }
+        case WXK_DOWN:
+        {
+            wxTreeItemId itemIdNext = GetNextVisible(itemId);
+            if (itemIdNext.IsOk())
+            {
+                SelectItem(itemId, false);
+                SelectItem(itemIdNext, true);
+            }
+            break;
+        }
+        case WXK_LEFT:
+        {
+            if ( ItemHasChildren(itemId) && IsExpanded(itemId) )
+                Collapse(itemId);
+            else
+            {
+                wxTreeItemId itemIdParent = GetItemParent(itemId);
+                if (itemIdParent.IsOk())
+                {
+                    SelectItem(itemId, false);
+                    SelectItem(itemIdParent, true);
+                }
+            }
+            break;
+        }
+        case WXK_RIGHT:
+        {
+            if ( ItemHasChildren(itemId) && !IsExpanded(itemId) )
+                Expand(itemId);
+            else
+            {
+                wxTreeItemIdValue cookie;
+                wxTreeItemId itemIdChild = GetFirstChild(itemId, cookie);
+                if (itemIdChild.IsOk())
+                {
+                    SelectItem(itemId, false);
+                    SelectItem(itemIdChild, true);
+                }
+            }
+            break;
+        }
+#endif // !__WXMSW__
+        default:
+            event.Skip();
+    }
+}
 
 int cbTreeCtrl::filesSort(const ProjectFile* arg1, const ProjectFile* arg2)
 {
@@ -186,6 +295,7 @@ BEGIN_EVENT_TABLE(cbTreeCtrl, wxTreeCtrl)
 #ifndef __WXMSW__
     EVT_RIGHT_DOWN(cbTreeCtrl::OnRightClick)
 #endif // !__WXMSW__
+    EVT_KEY_DOWN(cbTreeCtrl::OnKeyDown)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
