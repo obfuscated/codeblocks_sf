@@ -1116,7 +1116,7 @@ wxString ParserThread::GetActualTokenType()
     TRACE(_T("GetActualTokenType() : Searching within m_Str='%s'"), m_Str.wx_str());
 
     // we will compensate for spaces between
-    // namespaces (e.g. NAMESPACE :: SomeType) wich is valid C++ construct
+    // namespaces (e.g. NAMESPACE :: SomeType) which is valid C++ construct
     // we 'll remove spaces that follow a semicolon
     int pos = 0;
     while (pos < (int)m_Str.Length())
@@ -1566,7 +1566,10 @@ void ParserThread::HandleNamespace()
             if (!newToken)
                 newToken = DoAddToken(tkNamespace, ns, line);
             if (!newToken)
+            {
+                TRACE(_T("HandleNamespace() : Unable to create/add new token: ") + ns);
                 return;
+            }
 
             m_Tokenizer.GetToken(); // eat {
             int lineStart = m_Tokenizer.GetLineNumber();
@@ -1745,9 +1748,11 @@ void ParserThread::HandleClass(EClassType ct)
                               ct == ctUnion ? _T("Union") :
                               _T("Struct"), ++m_TokensTree->m_StructUnionUnnamedCount);
             Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
-            // maybe it is a bug here.I just fixed it.
+            // Maybe it is a bug here. I just fixed it.
             if (!newToken)
             {
+                TRACE(_T("HandleClass() : Unable to create/add new token: ") + unnamedTmp);
+
                 // restore tokenizer's functionality
                 m_Tokenizer.SetState(oldState);
                 return;
@@ -1763,23 +1768,23 @@ void ParserThread::HandleClass(EClassType ct)
             newToken->m_TemplateType = formals;
             m_TemplateArgument.Clear();
 
-            Token* lastParent = m_LastParent;
-            TokenScope lastScope = m_LastScope;
-            bool parsingTypedef = m_ParsingTypedef;
+            Token*     lastParent     = m_LastParent;
+            TokenScope lastScope      = m_LastScope;
+            bool       parsingTypedef = m_ParsingTypedef;
 
-            m_LastParent = newToken;
+            m_LastParent     = newToken;
             // default scope is: private for classes, public for structs, public for unions
-            m_LastScope = ct == ctClass ? tsPrivate : tsPublic;
+            m_LastScope      = ct == ctClass ? tsPrivate : tsPublic;
             m_ParsingTypedef = false;
 
             newToken->m_ImplLine = lineNr;
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
 
-            DoParse();
+            DoParse(); // recursion
 
+            m_LastParent     = lastParent;
+            m_LastScope      = lastScope;
             m_ParsingTypedef = parsingTypedef;
-            m_LastParent = lastParent;
-            m_LastScope = lastScope;
 
             m_LastUnnamedTokenName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
 
@@ -1808,6 +1813,8 @@ void ParserThread::HandleClass(EClassType ct)
             Token* newToken = DoAddToken(tkClass, current, lineNr);
             if (!newToken)
             {
+                TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
+
                 // restore tokenizer's functionality
                 m_Tokenizer.SetState(oldState);
                 return;
@@ -2030,13 +2037,16 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         TRACE(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'"));
         TokenKind tokenKind = !isCtorOrDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
         Token* newToken =  DoAddToken(tokenKind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
-
         if (newToken)
         {
             newToken->m_IsConst = isConst;
             newToken->m_TemplateArgument = m_TemplateArgument;
             if (!m_TemplateArgument.IsEmpty() && newToken->m_TemplateMap.empty())
                 ResolveTemplateArgs(newToken);
+        }
+        else
+        {
+            TRACE(_T("HandleFunction() : Unable to create/add new token: ") + name);
         }
         m_TemplateArgument.Clear();
     }
@@ -2172,7 +2182,8 @@ void ParserThread::HandleTypedef()
     // relatively easy:
     // typedef unsigned int uint32;
     // typedef std::map<String, StringVector> AnimableDictionaryMap;
-    // typedef class|struct|enum {...} type;
+    // typedef class|struct|enum [name] {...} type;
+    //
     // special case of above:
     // typedef struct __attribute__((packed)) _PSTRUCT {...} PSTRUCT;
     //
@@ -2418,7 +2429,10 @@ void ParserThread::ReadVarNames()
 
             Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
             if (!newToken)
+            {
+                TRACE(_T("ReadVarNames() : Unable to create/add new token: ") + token);
                 break;
+            }
         }
         else // unexpected
         {
@@ -2463,7 +2477,10 @@ void ParserThread::ReadClsNames(wxString& ancestor)
 
             Token* newToken = DoAddToken(tkTypedef, token, m_Tokenizer.GetLineNumber());
             if (!newToken)
+            {
+                TRACE(_T("ReadClsNames() : Unable to create/add new token: ") + token);
                 break;
+            }
             else
                 newToken->m_AncestorsString = tempAncestor;
         }
