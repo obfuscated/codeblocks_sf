@@ -6,220 +6,20 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <wx/arrstr.h>
+#include <wx/dynarray.h> // WX_DEFINE_ARRAY
 #include <wx/string.h>
-#include <wx/dynarray.h>
-#include <wx/file.h>
-#include <wx/thread.h>
-#include <wx/stream.h>
-#include <wx/stopwatch.h>
 
-#include <settings.h>
-#include <logmanager.h>
-#include <globals.h>
+#include <deque>
+#include <set>
+#include <vector>
 
 #include "searchtree.h"
 
-#include <deque>
-#include <memory>
+class wxEvtHandler;
 
-// Make sure already entered a critical section if TokensTree related!
-extern wxCriticalSection s_TokensTreeCritical;
-
-extern bool g_EnableDebugTrace;
+extern bool           g_EnableDebugTrace;
 extern const wxString g_DebugTraceFile;
-
-#define CC_PARSER_PROFILE_TEST 0
-
-#if CC_PARSER_PROFILE_TEST
-#define CC_PROFILE_TIMER()                                                                          \
-    static ProfileTimerData __ptd;                                                                  \
-    static size_t __i = ProfileTimer::Registry(&__ptd, wxString(__PRETTY_FUNCTION__, wxConvUTF8));  \
-    __ptd.m_CallTimes += __i;                                                                       \
-    ProfileTimerHelper __profileTimerHelper(__ptd)
-#define CC_PROFILE_TIMER_LOG() ProfileTimer::Log()
-#else
-#define CC_PROFILE_TIMER()
-#define CC_PROFILE_TIMER_LOG()
-#endif
-
-class ProfileTimerData
-{
-public:
-    ProfileTimerData() : m_CallTimes(0), m_Count(0)
-    {
-        m_StopWatch.Pause();
-    }
-    void Zero()
-    {
-        m_StopWatch.Start();
-        m_StopWatch.Pause();
-        m_CallTimes = 0;
-        m_Count = 0;
-    }
-    wxStopWatch m_StopWatch;
-    size_t m_CallTimes;
-    size_t m_Count;
-};
-
-class ProfileTimerHelper
-{
-public:
-    ProfileTimerHelper(ProfileTimerData& profileTimerData) : m_ProfileTimerData(profileTimerData)
-    {
-        if (m_ProfileTimerData.m_Count++ == 0)
-            m_ProfileTimerData.m_StopWatch.Resume();
-    }
-    ~ProfileTimerHelper()
-    {
-        if (--m_ProfileTimerData.m_Count == 0)
-            m_ProfileTimerData.m_StopWatch.Pause();
-    }
-
-private:
-    ProfileTimerData& m_ProfileTimerData;
-};
-
-class ProfileTimer
-{
-public:
-    static size_t Registry(ProfileTimerData* ptd, const wxString& funcName)
-    {
-        m_ProfileMap[ptd] = funcName;
-        return 1;
-    }
-
-    static void Log()
-    {
-        for (ProfileMap::iterator it = m_ProfileMap.begin(); it != m_ProfileMap.end(); ++it)
-        {
-            const long totalTime = it->first->m_StopWatch.Time();
-            wxString log;
-            log.Printf(_T("\"%s\" used time is %ld minute(s), %ld.%03ld seconds; call times is %lu."),
-                       it->second.wx_str(),
-                       (totalTime / 60000),
-                       (totalTime / 1000) % 60,
-                       (totalTime % 1000),
-                       static_cast<unsigned long>(it->first->m_CallTimes));
-#ifndef CC_PARSER_TEST
-            Manager::Get()->GetLogManager()->DebugLog(log);
-#endif
-            it->first->Zero();
-        }
-    }
-
-private:
-    typedef std::map<ProfileTimerData*, wxString> ProfileMap;
-    static ProfileMap m_ProfileMap;
-};
-
-#ifndef CC_LOG_SYNC_SEND
-    #define CC_LOG_SYNC_SEND 0
-#endif
-
-#ifdef CC_PARSER_TEST
-    #undef CC_LOG_SYNC_SEND
-    #define CC_LOG_SYNC_SEND 1
-#endif
-
-class CCLogger
-{
-public:
-    static CCLogger* Get()
-    {
-        if (!s_Inst.get())
-            s_Inst.reset(new CCLogger);
-        return s_Inst.get();
-    }
-
-    void Init(wxEvtHandler* parent, int logId, int debugLogId)
-    {
-        m_Parent     = parent;
-        m_LogId      = logId;
-        m_debugLogId = debugLogId;
-    }
-
-    void Log(const wxString& msg)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
-        evt.SetString(msg);
-#if CC_LOG_SYNC_SEND
-        m_Parent->ProcessEvent(evt);
-#else
-        wxPostEvent(m_Parent, evt);
-#endif
-    }
-
-    void DebugLog(const wxString& msg)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_debugLogId);
-        evt.SetString(msg);
-#if CC_LOG_SYNC_SEND
-        m_Parent->ProcessEvent(evt);
-#else
-        wxPostEvent(m_Parent, evt);
-#endif
-    }
-
-protected:
-    CCLogger() : m_Parent(nullptr), m_LogId(0) {}
-    virtual ~CCLogger() {}
-    CCLogger(const CCLogger&) {}
-    CCLogger& operator= (const CCLogger&) { return *this; }
-    friend class std::auto_ptr<CCLogger>;
-    static std::auto_ptr<CCLogger> s_Inst;
-
-private:
-    wxEvtHandler* m_Parent;
-    int m_LogId;
-    int m_debugLogId;
-};
-
-
-#ifdef CC_ENABLE_LOCKER_TRACK
-    #define TRACK_THREAD_LOCKER(NAME)                                                               \
-        CCLockerTrack NAME##Track(wxString(#NAME, wxConvUTF8),                                      \
-                                  wxString(__FUNCTION__, wxConvUTF8),                               \
-                                  wxString(__FILE__, wxConvUTF8),                                   \
-                                  __LINE__,                                                         \
-                                  wxIsMainThread())
-    #define THREAD_LOCKER_SUCCESS(NAME)                                                             \
-        CCLogger::Get()->DebugLog(F(_T("%s.Success() : %s(), %s, %d"),                              \
-                                    wxString(#NAME, wxConvUTF8).wx_str(),                           \
-                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(),                    \
-                                    wxString(__FILE__, wxConvUTF8).wx_str(),                        \
-                                    __LINE__))
-#else
-    #define TRACK_THREAD_LOCKER(NAME)
-    #define THREAD_LOCKER_SUCCESS(NAME)
-#endif
-
-class CCLockerTrack
-{
-public:
-    CCLockerTrack(const wxString& locker, const wxString& func, const wxString& file, int line,
-                  bool mainThread) :
-        m_LockerName(locker),
-        m_FuncName(func),
-        m_FileName(file),
-        m_Line(line),
-        m_MainThread(mainThread)
-    {
-        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
-    }
-    ~CCLockerTrack()
-    {
-        CCLogger::Get()->DebugLog(F(_T("%s.UnLock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
-    }
-
-private:
-    wxString m_LockerName;
-    wxString m_FuncName;
-    wxString m_FileName;
-    int      m_Line;
-    bool     m_MainThread;
-};
 
 class Token;
 class TokensTree;
@@ -234,8 +34,7 @@ enum FileParsingStatus
 
 WX_DEFINE_ARRAY(Token*, TokensArray);
 
-typedef std::vector<Token*> TokenList;
-
+typedef std::vector<Token*>                                      TokenList;
 typedef std::deque<int>                                          TokenIdxList;
 typedef std::set< int, std::less<int> >                          TokenIdxSet;
 typedef SearchTree<TokenIdxSet>                                  TokenSearchTree;
@@ -274,7 +73,6 @@ enum TokenKind
     // undefined or just "all"
     tkUndefined     = 0xFFFF
 };
-
 
 class Token
 {
@@ -339,87 +137,6 @@ public:
 protected:
     TokensTree*                  m_TokensTree;
     size_t                       m_Ticket;
-};
-
-class TokensTree
-{
-public:
-    TokensTree();
-    virtual ~TokensTree();
-
-    inline void Clear()               { clear(); }
-
-    // STL compatibility functions
-    void          clear();
-    inline Token* operator[](int idx) { return GetTokenAt(idx); }
-    inline Token* at(int idx)         { return GetTokenAt(idx); }
-    inline const Token * at(int idx) const { return GetTokenAt(idx); }
-    size_t        size();
-    size_t        realsize();
-    inline bool   empty()             { return size()==0; }
-    int           insert(Token* newToken);
-    int           insert(int loc, Token* newToken);
-    int           erase(int loc);
-    void          erase(Token* oldToken);
-
-    // Token specific functions
-    void   RecalcFreeList();
-    void   RecalcInheritanceChain(Token* token);
-    int    TokenExists(const wxString& name, int parent, short int kindMask);
-    int    TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind);
-    size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask = tkUndefined);
-    size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
-    void   RemoveFile(const wxString& filename);
-    void   RemoveFile(int fileIndex);
-
-    // Parsing related functions
-    size_t         GetFileIndex(const wxString& filename);
-    const wxString GetFilename(size_t idx) const;
-    size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
-    void           FlagFileForReparsing(const wxString& filename);
-    void           FlagFileAsParsed(const wxString& filename);
-    bool           IsFileParsed(const wxString& filename);
-
-    void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
-    void MarkFileTokensAsLocal(size_t file, bool local = true, void* userData = 0);
-
-    TokenList         m_Tokens;            /** Contains the pointers to all the tokens */
-    TokenSearchTree   m_Tree;              /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
-
-    TokenFilenamesMap m_FilenamesMap;      /** Map: filenames    -> file indexes */
-    TokenFilesMap     m_FilesMap;          /** Map: file indexes -> sets of TokenIndexes */
-    TokenFilesSet     m_FilesToBeReparsed; /** Set: file indexes */
-    TokenIdxList      m_FreeTokens;        /** List of all the deleted (and available) tokens */
-
-    /** List of tokens belonging to the global namespace */
-    TokenIdxSet       m_TopNameSpaces;
-    TokenIdxSet       m_GlobalNameSpace;
-
-    TokenFilesStatus  m_FilesStatus;       /** Parse status for each file */
-    bool              m_Modified;
-    size_t            m_StructUnionUnnamedCount;
-    size_t            m_EnumUnnamedCount;
-    size_t            m_TokenTicketCount;
-
-protected:
-    Token* GetTokenAt(int idx);
-    Token const * GetTokenAt(int idx) const;
-    int AddToken(Token* newToken, int fileIndex);
-
-    void RemoveToken(int idx);
-    void RemoveToken(Token* oldToken);
-
-    int  AddTokenToList(Token* newToken, int forceidx);
-    void RemoveTokenFromList(int idx);
-
-    void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData
-
-    /** Check all the children belong this token should be remove
-      * @param token the checked token pointer
-      * @param fileIndex file index the token belongs to
-      * @return if true, we can safely remove the token
-      */
-    bool CheckChildRemove(Token * token, int fileIndex);
 };
 
 #endif // TOKEN_H

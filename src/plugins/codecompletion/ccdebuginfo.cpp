@@ -59,6 +59,33 @@
     #define TRACE2(format, args...)
 #endif
 
+namespace CCDebugInfoHelper
+{
+    void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
+    {
+        wxString fname;
+        wxFileDialog dlg (Manager::Get()->GetAppWindow(),
+                        fileDesc,
+                        _T(""),
+                        _T(""),
+                        _T("Text files (*.txt)|*.txt|Any file (*)|*"),
+                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+        PlaceWindow(&dlg);
+        if (dlg.ShowModal() != wxID_OK)
+            return;
+
+        // Opening the file migth have failed, verify:
+        wxFile f(dlg.GetPath(), wxFile::write);
+        if (f.IsOpened())
+        {
+            f.Write(content); // write buffer to file
+            f.Close();        // release file handle
+        }
+        else
+            cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
+    }
+}// namespace CCDebugInfoHelper
+
 //(*IdInit(CCDebugInfo)
 const long CCDebugInfo::ID_STATICTEXT29 = wxNewId();
 const long CCDebugInfo::ID_TEXTCTRL1 = wxNewId();
@@ -588,30 +615,6 @@ void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
     }
 }
 
-void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
-{
-    wxString fname;
-    wxFileDialog dlg (Manager::Get()->GetAppWindow(),
-                    fileDesc,
-                    _T(""),
-                    _T(""),
-                    _T("Text files (*.txt)|*.txt|Any file (*)|*"),
-                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() != wxID_OK)
-        return;
-
-    // Opening the file migth have failed, verify:
-    wxFile f(dlg.GetPath(), wxFile::write);
-    if (f.IsOpened())
-    {
-        f.Write(content); // write buffer to file
-        f.Close();        // release file handle
-    }
-    else
-        cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
-}
-
 void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
@@ -641,7 +644,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 
                     tt = tokens->m_Tree.dump();
                 }
-                SaveCCDebugInfo(_("Save tokens tree"), tt);
+                CCDebugInfoHelper::SaveCCDebugInfo(_("Save tokens tree"), tt);
             }
             break;
         case 1:
@@ -654,7 +657,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                         files += file + _T("\r\n");
                 }
 
-                SaveCCDebugInfo(_("Save file list"), files);
+                CCDebugInfoHelper::SaveCCDebugInfo(_("Save file list"), files);
             }
             break;
         case 2:
@@ -667,7 +670,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                     if (!dir.IsEmpty())
                         dirs += dir + _T("\r\n");
                 }
-                SaveCCDebugInfo(_("Save list of include directories"), dirs);
+                CCDebugInfoHelper::SaveCCDebugInfo(_("Save list of include directories"), dirs);
             }
             break;
         case 3:
@@ -702,7 +705,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                     }
                 }
 
-                SaveCCDebugInfo(_("Save token list of files"), fileTokens);
+                CCDebugInfoHelper::SaveCCDebugInfo(_("Save token list of files"), fileTokens);
             }
             break;
         default:

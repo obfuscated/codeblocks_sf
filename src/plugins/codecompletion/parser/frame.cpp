@@ -19,6 +19,7 @@
 
 #include "frame.h"
 #include "finddlg.h"
+#include "cclogger.h"
 #include "token.h"
 
 //(*InternalHeaders(Frame)

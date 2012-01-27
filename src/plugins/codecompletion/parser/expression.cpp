@@ -18,6 +18,7 @@
 #include <logmanager.h>
 #include <manager.h>
 
+#include "cclogger.h"
 #include "expression.h"
 #include "token.h"
 

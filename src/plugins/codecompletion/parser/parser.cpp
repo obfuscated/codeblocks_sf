@@ -210,9 +210,8 @@ class MarkFileAsLocalThread : public cbThreadedTask
 {
 public:
     MarkFileAsLocalThread(Parser& parser, cbProject& project) :
-        m_Parser(parser),
-        m_Project(project)
-    {}
+        m_Parser(parser), m_Project(project)
+    { ; }
 
     int Execute()
     {

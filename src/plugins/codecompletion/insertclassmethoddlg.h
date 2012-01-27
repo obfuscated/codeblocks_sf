@@ -7,10 +7,12 @@
 #define INSERTCLASSMETHODDLG_H
 
 #include <wx/arrstr.h>
-#include "scrollingdialog.h"
 #include <wx/string.h>
 
+#include "scrollingdialog.h"
+
 class Parser;
+class ParserBase;
 class Token;
 class wxCheckListBox;
 class wxCommandEvent;

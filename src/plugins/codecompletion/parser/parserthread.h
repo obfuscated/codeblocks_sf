@@ -17,8 +17,10 @@
 #include <cbthreadpool.h>
 #include <filemanager.h>
 
+#include "cclogger.h"
 #include "tokenizer.h"
 #include "token.h"
+#include "tokenstree.h"
 
 extern const wxString g_UnnamedSymbol;
 

@@ -14,11 +14,14 @@
 #include <wx/file.h>
 #include <wx/msgdlg.h>
 
-#include "expression.h"
 #include "globals.h"
 #include "logmanager.h"
 #include "manager.h"
+
+#include "cclogger.h"
+#include "expression.h"
 #include "tokenizer.h"
+#include "tokenstree.h"
 
 #define CC_TOKENIZER_DEBUG_OUTPUT 0
 
@@ -75,7 +78,7 @@ namespace TokenizerConsts
     const wxString kw_endif     (_T("endif"));
     const wxString hash         (_T("#"));
     const wxString tabcrlf      (_T("\t\n\r"));
-};
+}// namespace TokenizerConsts
 
 // static
 wxStringHashMap Tokenizer::s_Replacements;

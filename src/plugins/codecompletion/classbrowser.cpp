@@ -41,6 +41,7 @@
 #include <cbstyledtextctrl.h>
 
 #include "classbrowser.h" // class's header file
+#include "codecompletionhelper.h"
 #include "nativeparser.h"
 
 #include "ccdebuginfo.h"
@@ -73,8 +74,6 @@
     #define TRACE(format, args...)
     #define TRACE2(format, args...)
 #endif
-
-extern bool GotoTokenPosition(cbEditor* editor, const wxString& target, int line);
 
 int idMenuJumpToDeclaration    = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
@@ -496,7 +495,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
             else
                 line = ctd->m_Token->m_Line - 1;
 
-            GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
+            CodeCompletionHelper::GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
         }
     }
 }
@@ -573,7 +572,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             else
                 line = ctd->m_Token->m_Line - 1;
 
-            GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
+            CodeCompletionHelper::GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
 
             wxFocusEvent ev(wxEVT_SET_FOCUS);
             ev.SetWindow(this);

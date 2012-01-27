@@ -129,7 +129,7 @@ namespace ParserCommon
       ftOther
   };
   EFileType FileType(const wxString& filename, bool force_refresh = false);
-};
+}// namespace ParserCommon
 
 enum ParsingType
 {

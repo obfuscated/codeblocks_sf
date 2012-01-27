@@ -41,6 +41,7 @@
 #include "nativeparser.h"
 #include "classbrowser.h"
 #include "parser/parser.h"
+#include "parser/profiletimer.h"
 
 #define CC_NATIVEPARSER_DEBUG_OUTPUT 0
 
@@ -70,6 +71,200 @@
     #define TRACE(format, args...)
     #define TRACE2(format, args...)
 #endif
+
+namespace NativeParserHelper
+{
+    // No critical section needed in this function!
+    // Called only by GenerateResultSet!
+    //
+    bool AddChildrenOfUnnamed(Token* parent, TokenIdxSet& result, TokensTree* tree)
+    {
+        if (parent->m_TokenKind == tkClass && parent->m_Name.StartsWith(g_UnnamedSymbol))
+        {
+            // add all its children
+            for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
+            {
+                Token* tokenChild = tree->at(*it);
+                if (tokenChild)
+                    result.insert(*it);
+            }
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // convenient static funcs for fast access and improved readability
+
+    static bool InsideToken(int startAt, const wxString& line)
+    {
+        return (   (startAt >= 0)
+                && ((size_t)startAt < line.Len())
+                && (   (wxIsalnum(line.GetChar(startAt)))
+                    || (line.GetChar(startAt) == '_') ) );
+    }
+    static int BeginOfToken(int startAt, const wxString& line)
+    {
+        while (   (startAt >= 0)
+               && ((size_t)startAt < line.Len())
+               && (   (wxIsalnum(line.GetChar(startAt)))
+                   || (line.GetChar(startAt) == '_') ) )
+            --startAt;
+        return startAt;
+    }
+    static int BeforeToken(int startAt, const wxString& line)
+    {
+        if (   (startAt > 0)
+            && ((size_t)startAt < line.Len() + 1)
+            && (   (wxIsalnum(line.GetChar(startAt - 1)))
+                || (line.GetChar(startAt - 1) == '_') ) )
+            --startAt;
+        return startAt;
+    }
+    static bool IsOperatorEnd(int startAt, const wxString& line)
+    {
+        return (   (startAt > 0)
+                && ((size_t)startAt < line.Len())
+                && (   (   (line.GetChar(startAt) == '>')
+                        && (line.GetChar(startAt - 1) == '-') )
+                    || (   (line.GetChar(startAt) == ':')
+                        && (line.GetChar(startAt - 1) == ':') ) ) );
+    }
+    static bool IsOperatorPointer(int startAt, const wxString& line)
+    {
+        return (   (startAt > 0)
+            && ((size_t)startAt < line.Len())
+            && (   (   (line.GetChar(startAt) == '>')
+                    && (line.GetChar(startAt - 1) == '-') )));
+    }
+    static bool IsOperatorBegin(int startAt, const wxString& line)
+    {
+        return (   (startAt >= 0)
+                && ((size_t)startAt < line.Len())
+                && (   (   (line.GetChar(startAt ) == '-')
+                        && (line.GetChar(startAt + 1) == '>') )
+                    || (   (line.GetChar(startAt) == ':')
+                        && (line.GetChar(startAt + 1) == ':') ) ) );
+    }
+    static bool IsOperatorDot(int startAt, const wxString& line)
+    {
+        return (   (startAt >= 0)
+                && ((size_t)startAt < line.Len())
+                && (line.GetChar(startAt) == '.') );
+    }
+    static int BeforeWhitespace(int startAt, const wxString& line)
+    {
+        while (   (startAt >= 0)
+               && ((size_t)startAt < line.Len())
+               && (   (line.GetChar(startAt) == ' ')
+                   || (line.GetChar(startAt) == '\t') ) )
+            --startAt;
+        return startAt;
+    }
+    static int AfterWhitespace(int startAt, const wxString& line)
+    {
+        if (startAt < 0)
+            startAt = 0;
+        while (   ((size_t)startAt < line.Len())
+               && (   (line.GetChar(startAt) == ' ')
+                   || (line.GetChar(startAt) == '\t') ) )
+            ++startAt;
+        return startAt;
+    }
+    static bool IsOpeningBracket(int startAt, const wxString& line)
+    {
+        return (   ((size_t)startAt < line.Len())
+                && (   (line.GetChar(startAt) == '(')
+                    || (line.GetChar(startAt) == '[') ) );
+    }
+    static bool IsClosingBracket(int startAt, const wxString& line)
+    {
+        return (   (startAt >= 0)
+                && (   (line.GetChar(startAt) == ')')
+                    || (line.GetChar(startAt) == ']') ) );
+    }
+
+    // for GenerateResultSet()
+    bool MatchText(const wxString& text, const wxString& target, bool caseSens, bool isPrefix)
+    {
+        if (isPrefix && target.IsEmpty())
+            return true;
+        if (!isPrefix)
+            return text.CompareTo(target, caseSens ? wxString::exact : wxString::ignoreCase) == 0;
+        // isPrefix == true
+        if (caseSens)
+            return text.StartsWith(target);
+        return text.Upper().StartsWith(target.Upper());
+    }
+
+    // for GenerateResultSet()
+    bool MatchType(TokenKind kind, short int kindMask)
+    {
+        return kind & kindMask;
+    }
+
+    // for GetCallTipHighlight()
+    // Finds the position of the opening parenthesis marking the beginning of the params.
+    int FindFunctionOpenParenthesis(const wxString& calltip)
+    {
+        int nest = 0;
+        for (size_t ii = calltip.length(); ii > 0; --ii)
+        {
+            wxChar c = calltip[ii - 1];
+            if (c == wxT('('))
+            {
+                --nest;
+                if (nest == 0)
+                return ii - 1;
+            }
+            else if (c == wxT(')'))
+                ++nest;
+        }
+        return -1;
+    }
+
+    // for GetCallTips()
+    // No critical section needed in this recursive function!
+    // All functions that call this recursive function, should already entered a critical section.
+    // Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
+    bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &tokens, bool root = true)
+    {
+        // if the token has parents and the token is a container or a function,
+        // then pretty print the parent of the token.
+        if (   (token.m_ParentIndex != -1)
+            && (token.m_TokenKind & (tkAnyContainer | tkAnyFunction)) )
+        {
+            const Token* parentToken = tokens.at(token.m_ParentIndex);
+            if (!parentToken || !PrettyPrintToken(result, *parentToken, tokens, false))
+                return false;
+        }
+
+        switch (token.m_TokenKind)
+        {
+        case tkConstructor:
+            result = result + token.m_Name + token.m_Args;
+            return true;
+
+        case tkFunction:
+            result = token.m_Type + wxT(" ") + result + token.m_Name + token.m_Args;
+            if (token.m_IsConst)
+                result += wxT(" const");
+            return true;
+
+        case tkClass:
+        case tkNamespace:
+            if (root)
+                result += token.m_Name;
+            else
+                result += token.m_Name + wxT("::");
+            return true;
+        default:
+            ;
+        }
+        return true;
+    }
+}// namespace NativeParserHelper
 
 int idTimerParsingOneByOne = wxNewId();
 
@@ -895,7 +1090,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
         {
             firstExecute = false;
             Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
-            if(!compiler)
+            if (!compiler)
                 return false;
 
             wxString masterPath = compiler->GetMasterPath();
@@ -1747,29 +1942,6 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
     }
 }
 
-namespace
-{
-// Finds the position of the opening parenthesis marking the beginning of the params.
-int FindFunctionOpenParenthesis(const wxString& calltip)
-{
-    int nest = 0;
-    for (size_t ii = calltip.length(); ii > 0; --ii)
-    {
-        wxChar c = calltip[ii - 1];
-        if (c == wxT('('))
-        {
-            --nest;
-            if (nest == 0)
-            return ii - 1;
-        }
-        else if (c == wxT(')'))
-            ++nest;
-    }
-    return -1;
-}
-
-}
-
 // Set start and end for the calltip highlight region.
 void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas)
 {
@@ -1777,7 +1949,7 @@ void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int*
     int paramsCloseBracket = calltip.length() - 1;
     int nest = 0;
     int commas = 0;
-    *start = FindFunctionOpenParenthesis(calltip) + 1;
+    *start = NativeParserHelper::FindFunctionOpenParenthesis(calltip) + 1;
     *end = 0;
     while (true)
     {
@@ -1825,47 +1997,6 @@ int NativeParser::CountCommas(const wxString& lineText, int start)
             ++commas;
     }
     return commas;
-}
-
-// No critical section needed in this recursive function!
-// All functions that call this recursive function, should already entered a critical section.
-// Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
-//
-bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &tokens, bool root = true)
-{
-    // if the token has parents and the token is a container or a function,
-    // then pretty print the parent of the token.
-    if (   (token.m_ParentIndex != -1)
-        && (token.m_TokenKind & (tkAnyContainer | tkAnyFunction)) )
-    {
-        const Token* parentToken = tokens.at(token.m_ParentIndex);
-        if (!parentToken || !PrettyPrintToken(result, *parentToken, tokens, false))
-            return false;
-    }
-
-    switch (token.m_TokenKind)
-    {
-    case tkConstructor:
-        result = result + token.m_Name + token.m_Args;
-        return true;
-
-    case tkFunction:
-        result = token.m_Type + wxT(" ") + result + token.m_Name + token.m_Args;
-        if (token.m_IsConst)
-            result += wxT(" const");
-        return true;
-
-    case tkClass:
-    case tkNamespace:
-        if (root)
-            result += token.m_Name;
-        else
-            result += token.m_Name + wxT("::");
-        return true;
-    default:
-        ;
-    }
-    return true;
 }
 
 void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &typedCommas)
@@ -1971,7 +2102,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &ty
             {
                 wxString s;
                 wxString full;
-                if(!PrettyPrintToken(full, *token, *tokens))
+                if (!NativeParserHelper::PrettyPrintToken(full, *token, *tokens))
                     full = wxT("Error while pretty printing token!");
                 BreakUpInLines(s, full, chars_per_line);
                 items.Add(s);
@@ -2018,96 +2149,6 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
     }
 }
 
-// convenient static funcs for fast access and improved readability
-
-static bool InsideToken(int startAt, const wxString& line)
-{
-    return (   (startAt >= 0)
-            && ((size_t)startAt < line.Len())
-            && (   (wxIsalnum(line.GetChar(startAt)))
-                || (line.GetChar(startAt) == '_') ) );
-}
-static int BeginOfToken(int startAt, const wxString& line)
-{
-    while (   (startAt >= 0)
-           && ((size_t)startAt < line.Len())
-           && (   (wxIsalnum(line.GetChar(startAt)))
-               || (line.GetChar(startAt) == '_') ) )
-        --startAt;
-    return startAt;
-}
-static int BeforeToken(int startAt, const wxString& line)
-{
-    if (   (startAt > 0)
-        && ((size_t)startAt < line.Len() + 1)
-        && (   (wxIsalnum(line.GetChar(startAt - 1)))
-            || (line.GetChar(startAt - 1) == '_') ) )
-        --startAt;
-    return startAt;
-}
-static bool IsOperatorEnd(int startAt, const wxString& line)
-{
-    return (   (startAt > 0)
-            && ((size_t)startAt < line.Len())
-            && (   (   (line.GetChar(startAt) == '>')
-                    && (line.GetChar(startAt - 1) == '-') )
-                || (   (line.GetChar(startAt) == ':')
-                    && (line.GetChar(startAt - 1) == ':') ) ) );
-}
-static bool IsOperatorPointer(int startAt, const wxString& line)
-{
-    return (   (startAt > 0)
-        && ((size_t)startAt < line.Len())
-        && (   (   (line.GetChar(startAt) == '>')
-                && (line.GetChar(startAt - 1) == '-') )));
-}
-static bool IsOperatorBegin(int startAt, const wxString& line)
-{
-    return (   (startAt >= 0)
-            && ((size_t)startAt < line.Len())
-            && (   (   (line.GetChar(startAt ) == '-')
-                    && (line.GetChar(startAt + 1) == '>') )
-                || (   (line.GetChar(startAt) == ':')
-                    && (line.GetChar(startAt + 1) == ':') ) ) );
-}
-static bool IsOperatorDot(int startAt, const wxString& line)
-{
-    return (   (startAt >= 0)
-            && ((size_t)startAt < line.Len())
-            && (line.GetChar(startAt) == '.') );
-}
-static int BeforeWhitespace(int startAt, const wxString& line)
-{
-    while (   (startAt >= 0)
-           && ((size_t)startAt < line.Len())
-           && (   (line.GetChar(startAt) == ' ')
-               || (line.GetChar(startAt) == '\t') ) )
-        --startAt;
-    return startAt;
-}
-static int AfterWhitespace(int startAt, const wxString& line)
-{
-    if (startAt < 0)
-        startAt = 0;
-    while (   ((size_t)startAt < line.Len())
-           && (   (line.GetChar(startAt) == ' ')
-               || (line.GetChar(startAt) == '\t') ) )
-        ++startAt;
-    return startAt;
-}
-static bool IsOpeningBracket(int startAt, const wxString& line)
-{
-    return (   ((size_t)startAt < line.Len())
-            && (   (line.GetChar(startAt) == '(')
-                || (line.GetChar(startAt) == '[') ) );
-}
-static bool IsClosingBracket(int startAt, const wxString& line)
-{
-    return (   (startAt >= 0)
-            && (   (line.GetChar(startAt) == ')')
-                || (line.GetChar(startAt) == ']') ) );
-}
-
 unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 {
     // Careful: startAt can become negative, so it's defined as integer here!
@@ -2119,17 +2160,17 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
     {
         repeat = false;
         // Go back to the beginning of the function/variable (token)
-        startAt = BeginOfToken(startAt, line);
+        startAt = NativeParserHelper::BeginOfToken(startAt, line);
 
         // Check for [Class]. ('.' pressed)
-        if (IsOperatorDot(startAt, line))
+        if (NativeParserHelper::IsOperatorDot(startAt, line))
         {
             --startAt;
             repeat = true; // yes -> repeat.
         }
         // Check for [Class]-> ('>' pressed)
         // Check for [Class]:: (':' pressed)
-        else if (IsOperatorEnd(startAt, line))
+        else if (NativeParserHelper::IsOperatorEnd(startAt, line))
         {
             startAt -= 2;
             repeat = true; // yes -> repeat.
@@ -2139,10 +2180,10 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
         {
             // now we're just before the "." or "->" or "::"
             // skip any whitespace
-            startAt = BeforeWhitespace(startAt, line);
+            startAt = NativeParserHelper::BeforeWhitespace(startAt, line);
 
             // check for function/array/cast ()
-            if (IsClosingBracket(startAt, line))
+            if (NativeParserHelper::IsClosingBracket(startAt, line))
             {
                 ++nest;
                 while (   (--startAt >= 0)
@@ -2162,19 +2203,19 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 
                     }
 
-                    startAt = BeforeWhitespace(startAt, line);
+                    startAt = NativeParserHelper::BeforeWhitespace(startAt, line);
 
-                    if (IsClosingBracket(startAt, line))
+                    if (NativeParserHelper::IsClosingBracket(startAt, line))
                         ++nest;
                 }
 
-                startAt = BeforeToken(startAt, line);
+                startAt = NativeParserHelper::BeforeToken(startAt, line);
             }
         }
     }
     ++startAt;
 
-    startAt = AfterWhitespace(startAt, line);
+    startAt = NativeParserHelper::AfterWhitespace(startAt, line);
 
 
     TRACE(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).c_str());
@@ -2205,7 +2246,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
 
     TRACE(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
 
-    while (InsideToken(startAt, line))
+    while (NativeParserHelper::InsideToken(startAt, line))
     {
         res << line.GetChar(startAt);
         ++startAt;
@@ -2220,8 +2261,8 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
 
     TRACE(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
 
-    startAt = AfterWhitespace(startAt, line);
-    if (IsOpeningBracket(startAt, line))
+    startAt = NativeParserHelper::AfterWhitespace(startAt, line);
+    if (NativeParserHelper::IsOpeningBracket(startAt, line))
     {
         if (line.GetChar(startAt) == _T('('))
             tokenOperatroType = otOperatorParentheses;
@@ -2245,13 +2286,13 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
                 case '(': ++nest; ++startAt; break;
             }
 
-            startAt = AfterWhitespace(startAt, line);
+            startAt = NativeParserHelper::AfterWhitespace(startAt, line);
 
-            if (IsOpeningBracket(startAt, line))
+            if (NativeParserHelper::IsOpeningBracket(startAt, line))
                 ++nest;
         }
     }
-    if (IsOperatorBegin(startAt, line))
+    if (NativeParserHelper::IsOperatorBegin(startAt, line))
         ++startAt;
 
     TRACE(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
@@ -2295,19 +2336,19 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType, Op
     else
     {
         // skip whitespace
-        startAt = AfterWhitespace(startAt, line);
+        startAt = NativeParserHelper::AfterWhitespace(startAt, line);
 
         // Check for [Class]. ('.' pressed)
-        if (IsOperatorDot(startAt, line))
+        if (NativeParserHelper::IsOperatorDot(startAt, line))
         {
             tokenType = pttClass;
             line.Remove(0, startAt + 1);
         }
         // Check for [Class]-> ('>' pressed)
         // Check for [Class]:: (':' pressed)
-        else if (IsOperatorEnd(startAt, line))
+        else if (NativeParserHelper::IsOperatorEnd(startAt, line))
         {
-            if (IsOperatorPointer(startAt, line) && !res.IsEmpty())
+            if (NativeParserHelper::IsOperatorPointer(startAt, line) && !res.IsEmpty())
                 tokenOperatroType = otOperatorPointer;
             if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
@@ -2734,23 +2775,6 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
     return result.size();
 }
 
-inline bool MatchText(const wxString& text, const wxString& target, bool caseSens, bool isPrefix)
-{
-    if (isPrefix && target.IsEmpty())
-        return true;
-    if (!isPrefix)
-        return text.CompareTo(target, caseSens ? wxString::exact : wxString::ignoreCase) == 0;
-    // isPrefix == true
-    if (caseSens)
-        return text.StartsWith(target);
-    return text.Upper().StartsWith(target.Upper());
-}
-
-inline bool MatchType(TokenKind kind, short int kindMask)
-{
-    return kind & kindMask;
-}
-
 // No critical section needed in this recursive function!
 // All functions that call this recursive function, should already entered a critical section.
 // Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -2783,15 +2807,15 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
         for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
         {
             Token* token = tree->at(*it);
-            if (token && MatchType(token->m_TokenKind, kindMask))
+            if (token && NativeParserHelper::MatchType(token->m_TokenKind, kindMask))
             {
-                if (MatchText(token->m_Name, target, caseSens, isPrefix))
+                if (NativeParserHelper::MatchText(token->m_Name, target, caseSens, isPrefix))
                     result.insert(*it);
                 else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
                 {
                     for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                     {
-                        if (MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
+                        if (NativeParserHelper::MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
                         {
                             result.insert(*it);
                             // break; ?
@@ -2812,15 +2836,15 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
             for (TokenIdxSet::iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
             {
                 Token* token = tree->at(*it2);
-                if (token && MatchType(token->m_TokenKind, kindMask))
+                if (token && NativeParserHelper::MatchType(token->m_TokenKind, kindMask))
                 {
-                    if (MatchText(token->m_Name, target, caseSens, isPrefix))
+                    if (NativeParserHelper::MatchText(token->m_Name, target, caseSens, isPrefix))
                         result.insert(*it2);
                     else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
                     {
                         for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                         {
-                            if (MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
+                            if (NativeParserHelper::MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
                             {
                                 result.insert(*it2);
                                 // break; ?
@@ -2841,15 +2865,15 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
             Token* token = *it;
             if (token && token->m_ParentIndex == -1)
             {
-                if (token && MatchType(token->m_TokenKind, kindMask))
+                if (token && NativeParserHelper::MatchType(token->m_TokenKind, kindMask))
                 {
-                    if (MatchText(token->m_Name, target, caseSens, isPrefix))
+                    if (NativeParserHelper::MatchText(token->m_Name, target, caseSens, isPrefix))
                         result.insert(token->m_Index);
                     else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
                     {
                         for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                         {
-                            if (MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
+                            if (NativeParserHelper::MatchText(token->m_Aliases[i], target, caseSens, isPrefix))
                             {
                                 result.insert(token->m_Index);
                                 // break; ?
@@ -3064,7 +3088,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
 
                         // now add the current token's parent scope;
                         Token* currentTokenParent = tree->at(parentIndex);
-                        while(true)
+                        while (true)
                         {
                             if (!currentTokenParent)
                                 break;
@@ -3127,27 +3151,6 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
     return result.size();
 }
 
-// No critical section needed in this function!
-// Called only by GenerateResultSet!
-//
-inline bool AddChildrenOfUnnamed(Token* parent, TokenIdxSet& result, TokensTree* tree)
-{
-    if (parent->m_TokenKind == tkClass && parent->m_Name.StartsWith(g_UnnamedSymbol))
-    {
-        // add all its children
-        for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
-        {
-            Token* tokenChild = tree->at(*it);
-            if (tokenChild)
-                result.insert(*it);
-        }
-
-        return true;
-    }
-    else
-        return false;
-}
-
 // No critical section needed in this recursive function!
 // All functions that call this recursive function, should already entered a critical section.
 // Like this: wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -3177,7 +3180,7 @@ size_t NativeParser::GenerateResultSet(const wxString&    target,
                 Token* token = tree->at(*it);
                 if (!token)
                     continue;
-                if (!AddChildrenOfUnnamed(token, result, tree))
+                if (!NativeParserHelper::AddChildrenOfUnnamed(token, result, tree))
                     result.insert(*it);
             }
 
@@ -3193,7 +3196,7 @@ size_t NativeParser::GenerateResultSet(const wxString&    target,
                     Token* token = tree->at(*it2);
                     if (!token)
                         continue;
-                    if (!AddChildrenOfUnnamed(token, result, tree))
+                    if (!NativeParserHelper::AddChildrenOfUnnamed(token, result, tree))
                         result.insert(*it2);
                 }
             }
@@ -3915,7 +3918,7 @@ void NativeParser::CollectSS(const TokenIdxSet& searchScope, TokenIdxSet& actual
             if (!token)
                 continue;
             Token* parent = tree->at(token->m_ParentIndex);
-            while(true)
+            while (true)
             {
                 if (!parent)
                     break;
