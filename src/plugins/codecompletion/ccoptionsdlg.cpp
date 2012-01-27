@@ -98,15 +98,15 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
     XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->SetValue(m_Parser.Options().whileTyping);
     XRCCTRL(*this, "chkCaseSensitive",      wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
-    XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"), true));
-    XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
+    XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"),         true));
+    XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"),      false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
-    XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"), false));
-    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"), true));
-    XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
-    XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 3));
-    XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));
-    XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"), wxEmptyString));
+    XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"),   false));
+    XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"),       true));
+    XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"),          true));
+    XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"),     3));
+    XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"),           16384));
+    XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"),             wxEmptyString));
 
     int timerDelay = cfg->ReadInt(_T("/cc_delay"), 300);
     XRCCTRL(*this, "sldCCDelay", wxSlider)->SetValue(timerDelay / 100);
@@ -141,9 +141,9 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
 
     // Page "C / C++ parser (adv.)"
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and parser.cpp
-    XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm")));
+    XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read(_T("/header_ext"),    _T("h,hpp,tcc,xpm")));
     XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/empty_ext"), true));
-    XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++")));
+    XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
 
     const wxStringHashMap& repl = Tokenizer::GetTokenReplacementsMap();
     wxStringHashMap::const_iterator it = repl.begin();
@@ -157,9 +157,9 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
     XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
     XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().expandNS);
-    XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
+    XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"),   false));
     XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().treeMembers);
-    XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->SetValue(cfg->ReadBool(_T("/scope_filter"), true));
+    XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->SetValue(cfg->ReadBool(_T("/scope_filter"),         true));
 
 //    m_Parser.ParseBuffer(g_SampleClasses, true);
 //    m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
@@ -173,19 +173,12 @@ void CCOptionsDlg::OnApply()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
+    // -----------------------------------------------------------------------
+    // Handle all options that are being directly applied / written form UI
+    // -----------------------------------------------------------------------
+
     // Page "Code Completion"
     cfg->Write(_T("/use_code_completion"),  (bool)!XRCCTRL(*this, "chkNoCC",                  wxCheckBox)->GetValue());
-    // Put here all options that are being be read by m_Parser.ReadOptions();
-    cfg->Write(_T("/max_threads"),          (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
-
-    // Force parser to read its options that we write in the config
-    // Also don't forget to the / update the Parser option according UI!
-    m_Parser.ReadOptions();
-
-    m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkUseSmartSense",                    wxCheckBox)->GetValue();
-    m_Parser.Options().whileTyping   =  XRCCTRL(*this, "chkWhileTyping",                      wxCheckBox)->GetValue();
-    m_Parser.Options().caseSensitive =  XRCCTRL(*this, "chkCaseSensitive",                    wxCheckBox)->GetValue();
-
     cfg->Write(_T("/eval_tooltip"),         (bool) XRCCTRL(*this, "chkEvalTooltip",           wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_select_one"),      (bool) XRCCTRL(*this, "chkAutoSelectOne",         wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses",    wxCheckBox)->GetValue());
@@ -196,7 +189,6 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",            wxSpinCtrl)->GetValue());
     cfg->Write(_T("/fillup_chars"),                XRCCTRL(*this, "txtFillupChars",           wxTextCtrl)->GetValue());
     cfg->Write(_T("/cc_delay"),             (int)  XRCCTRL(*this, "sldCCDelay",               wxSlider)->GetValue() * 100);
-
     cfg->Write(_T("/lexer_keywords_set1"),  (bool) XRCCTRL(*this, "chkKL_1",                  wxCheckBox)->GetValue());
     cfg->Write(_T("/lexer_keywords_set2"),  (bool) XRCCTRL(*this, "chkKL_2",                  wxCheckBox)->GetValue());
     cfg->Write(_T("/lexer_keywords_set3"),  (bool) XRCCTRL(*this, "chkKL_3",                  wxCheckBox)->GetValue());
@@ -208,12 +200,8 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/lexer_keywords_set9"),  (bool) XRCCTRL(*this, "chkKL_9",                  wxCheckBox)->GetValue());
 
     // Page "C / C++ parser"
-    m_Parser.Options().followLocalIncludes  = XRCCTRL(*this, "chkLocals",                     wxCheckBox)->GetValue();
-    m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals",                    wxCheckBox)->GetValue();
-    m_Parser.Options().wantPreprocessor     = XRCCTRL(*this, "chkPreprocessor",               wxCheckBox)->GetValue();
-    m_Parser.Options().parseComplexMacros   = XRCCTRL(*this, "chkComplexMacros",              wxCheckBox)->GetValue();
-
     cfg->Write(_T("/priority_headers"),            XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->GetValue());
+    cfg->Write(_T("/max_threads"),          (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
     cfg->Write(_T("/parser_per_workspace"), (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
     cfg->Write(_T("/max_parsers"),          (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
 
@@ -224,11 +212,32 @@ void CCOptionsDlg::OnApply()
 
     // Page "Symbol browser"
     cfg->Write(_T("/use_symbols_browser"),  (bool)!XRCCTRL(*this, "chkNoSB",                  wxCheckBox)->GetValue());
-    m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance",         wxCheckBox)->GetValue();
-    m_Parser.ClassBrowserOptions().expandNS        = XRCCTRL(*this, "chkExpandNS",            wxCheckBox)->GetValue();
     cfg->Write(_T("/as_floating_window"),   (bool) XRCCTRL(*this, "chkFloatCB",               wxCheckBox)->GetValue());
-    m_Parser.ClassBrowserOptions().treeMembers     = XRCCTRL(*this, "chkTreeMembers",         wxCheckBox)->GetValue();
     cfg->Write(_T("/scope_filter"),         (bool) XRCCTRL(*this, "chkScopeFilter",           wxCheckBox)->GetValue());
+
+    // -----------------------------------------------------------------------
+    // Handle all options that are being be read by m_Parser.ReadOptions();
+    // -----------------------------------------------------------------------
+
+    // Force parser to read its options that we write in the config
+    // Also don't forget to the / update the Parser option according UI!
+    m_Parser.ReadOptions();
+
+    // Page "Code Completion"
+    m_Parser.Options().useSmartSense        = !XRCCTRL(*this, "chkUseSmartSense",    wxCheckBox)->GetValue();
+    m_Parser.Options().whileTyping          =  XRCCTRL(*this, "chkWhileTyping",      wxCheckBox)->GetValue();
+    m_Parser.Options().caseSensitive        =  XRCCTRL(*this, "chkCaseSensitive",    wxCheckBox)->GetValue();
+
+    // Page "C / C++ parser"
+    m_Parser.Options().followLocalIncludes  = XRCCTRL(*this, "chkLocals",             wxCheckBox)->GetValue();
+    m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals",            wxCheckBox)->GetValue();
+    m_Parser.Options().wantPreprocessor     = XRCCTRL(*this, "chkPreprocessor",       wxCheckBox)->GetValue();
+    m_Parser.Options().parseComplexMacros   = XRCCTRL(*this, "chkComplexMacros",      wxCheckBox)->GetValue();
+
+    // Page "Symbol browser"
+    m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
+    m_Parser.ClassBrowserOptions().expandNS        = XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue();
+    m_Parser.ClassBrowserOptions().treeMembers     = XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue();
 
     // Now write the parser options and re-read them again to make sure they are up-to-date
     m_Parser.WriteOptions();
