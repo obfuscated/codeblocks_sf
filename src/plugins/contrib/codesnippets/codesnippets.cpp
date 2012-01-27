@@ -96,7 +96,9 @@ CodeSnippets::CodeSnippets()
     m_pDragCursor = false;
     m_MouseDownX = m_MouseDownY = 0;
     m_MouseUpX = m_MouseUpY = 0;
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_prjTreeItemAtKeyUp = m_prjTreeItemAtKeyDown= 0;
+    #endif
     m_bMouseExitedWindow = false;
     m_bBeginInternalDrag = false;
     m_pDragCursor = new wxCursor(wxCURSOR_HAND);
@@ -1230,8 +1232,10 @@ void CodeSnippets::OnPrjTreeMouseLeftDownEvent(wxMouseEvent& event)
     m_MouseDownX = event.GetX();
     m_MouseDownY = event.GetY();
 
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_prjTreeItemAtKeyDown = 0;
     m_prjTreeItemAtKeyUp = 0;
+    #endif
     int hitFlags = 0;
 
     wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
@@ -1260,7 +1264,9 @@ void CodeSnippets::OnPrjTreeMouseLeftUpEvent(wxMouseEvent& event)
     m_MouseUpX = event.GetX();
     m_MouseUpY = event.GetY();
 
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_prjTreeItemAtKeyUp = 0;
+    #endif
     int hitFlags = 0;
 
     wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
@@ -1436,8 +1442,10 @@ void CodeSnippets::DoPrjTreeExternalDrag(wxTreeCtrl* pTree)
     delete textData; //wxTextDataObject
     delete fileData; //wxFileDataObject
     m_TreeText = wxEmptyString;
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_prjTreeItemAtKeyDown = 0;
     m_prjTreeItemAtKeyUp = 0;
+    #endif
 
     // correct for treeCtrl bug
     SendMouseLeftUp(pTree, m_MouseDownX, m_MouseDownY);

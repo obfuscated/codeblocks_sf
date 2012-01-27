@@ -94,7 +94,9 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_mimeDatabase = 0;
     m_bBeginInternalDrag = false;
     m_LastXmlModifiedTime = time_t(0);            //2009/03/15
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_itemAtKeyUp = m_itemAtKeyDown = 0;
+    #endif
 
 
     m_pSnippetsTreeCtrl = this;
@@ -1070,8 +1072,10 @@ void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
     }
 
     delete pDoc; pDoc = 0;
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_itemAtKeyDown = 0;
     m_itemAtKeyUp = 0;
+    #endif
 
     return;
 
@@ -1291,8 +1295,10 @@ void CodeSnippetsTreeCtrl::FinishExternalDrag()
     delete textData; //wxTextDataObject
     delete fileData; //wxFileDataObject
     m_TreeText = wxEmptyString;
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_itemAtKeyDown = 0;
     m_itemAtKeyUp = 0;
+    #endif
 
 }
 //// ----------------------------------------------------------------------------
@@ -1403,7 +1409,9 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     m_MouseUpX = event.GetPoint().x;
     m_MouseUpY = event.GetPoint().y;
 
+    #if !wxCHECK_VERSION(2, 8, 12)
     m_itemAtKeyUp = 0;
+    #endif
     int hitFlags = 0;
     wxTreeItemId id = HitTest(wxPoint(m_MouseUpX, m_MouseUpY), hitFlags);
     if (id.IsOk() and (hitFlags & (wxTREE_HITTEST_ONITEMICON | wxTREE_HITTEST_ONITEMLABEL )))
