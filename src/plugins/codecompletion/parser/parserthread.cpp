@@ -662,10 +662,10 @@ void ParserThread::DoParse()
                 switchHandled = false;
             break;
 
+            // ---------------------------------------------------------------
             // token length of 3
             // ---------------------------------------------------------------
             case 3:
-            // ---------------------------------------------------------------
             if (token == ParserConsts::kw_for)
             {
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
@@ -915,8 +915,8 @@ void ParserThread::DoParse()
 
             // ---------------------------------------------------------------
             // token length of 9
-            case 9:
             // ---------------------------------------------------------------
+            case 9:
             if (token == ParserConsts::kw_namespace)
             {
                 m_Str.Clear();
@@ -1659,9 +1659,9 @@ void ParserThread::HandleClass(EClassType ct)
             TRACE(_T("HandleClass() : Skip __attribute__"));
 
             // Handle stuff like: __attribute__(( whatever ))
-            current = m_Tokenizer.GetToken(); // eat __attribute__
-            current = m_Tokenizer.GetToken(); // eat (( whatever ))
-            next    = m_Tokenizer.PeekToken();
+            current = m_Tokenizer.GetToken();  // eat __attribute__
+            current = m_Tokenizer.GetToken();  // eat (( whatever ))
+            next    = m_Tokenizer.PeekToken(); // peek again
         }
 
         TRACE(_T("HandleClass() : Found class '%s', next='%s'"), current.wx_str(), next.wx_str());
