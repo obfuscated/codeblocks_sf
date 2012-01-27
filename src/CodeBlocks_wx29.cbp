@@ -144,7 +144,7 @@
 				<Option external_deps="base\tinyxml\libtxml29.a;sdk\scripting\lib\libsquirrel29.a;sdk\scripting\lib\libsqstdlib29.a;sdk\scripting\lib\libsqplus29.a;devel29\libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations --multiple-instance -nd --profile=foo" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -190,7 +190,7 @@
 				<Option external_deps="devel29\libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -1341,6 +1341,12 @@
 		<Unit filename="plugins\codecompletion\codecompletion.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletionhelper.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\codecompletionhelper.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\coderefactoring.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1357,6 +1363,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\cclogger.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\cclogger.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\parser\expression.cpp">
@@ -1377,6 +1389,12 @@
 		<Unit filename="plugins\codecompletion\parser\parserthread.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\parser\profiletimer.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\profiletimer.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\parser\searchtree.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1393,6 +1411,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\parser\tokenizer.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenstree.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\tokenstree.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\resources\classbrowser.xrc">

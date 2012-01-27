@@ -19,14 +19,18 @@ libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 			classbrowser.cpp \
 			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
+			codecompletionhelper.cpp \
 			coderefactoring.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
 			selectincludefile.cpp \
+			parser/cclogger.cpp \
 			parser/parser.cpp \
 			parser/parserthread.cpp \
+			parser/profiletimer.cpp \
 			parser/token.cpp \
 			parser/tokenizer.cpp \
+			parser/tokenstree.cpp \
 			parser/searchtree.cpp \
 			parser/expression.cpp
 
@@ -36,13 +40,17 @@ noinst_HEADERS = ccdebuginfo.h \
 			classbrowser.h \
 			classbrowserbuilderthread.h \
 			codecompletion.h \
+			codecompletionhelper.h \
 			coderefactoring.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
 			selectincludefile.h \
+			parser/cclogger.h \
 			parser/parser.h \
 			parser/parserthread.h \
+			parser/profiletimer.h \
 			parser/token.h \
 			parser/tokenizer.h \
+			parser/tokenstree.h \
 			parser/searchtree.h \
 			parser/expression.h

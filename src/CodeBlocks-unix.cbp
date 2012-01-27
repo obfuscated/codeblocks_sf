@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="exchndl">
 				<Option platforms="Windows;" />
-				<Option output="devel/libexchndl" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/exchndl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -24,7 +24,7 @@
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/libtxml" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -57,7 +57,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/libsquirrel" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -68,7 +68,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/libsqstdlib" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
 				<Option type="2" />
@@ -80,7 +80,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/libsqplus" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;" />
 				<Option type="2" />
@@ -92,7 +92,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel/libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -111,7 +111,7 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="wxpropgrid">
-				<Option output="devel/libwxpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/wxpropgrid" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -125,7 +125,7 @@
 				</Compiler>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel/libcodeblocks" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option external_deps="base/tinyxml/libtxml.a;sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;sdk/scripting/lib/libsqplus.a;devel/libwxscintilla_cb.a;" />
 				<Option type="3" />
@@ -182,7 +182,7 @@
 				</Linker>
 			</Target>
 			<Target title="Abbreviations">
-				<Option output="devel/share/codeblocks/plugins/libabbreviations" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -201,7 +201,7 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel/share/codeblocks/plugins/libastyle" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -218,7 +218,7 @@
 				</Linker>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel/share/codeblocks/plugins/libautosave" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -234,7 +234,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/libdepslib" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -244,7 +244,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel/share/codeblocks/plugins/libcompiler" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;plugins/compilergcc/depslib/libdepslib.a;" />
 				<Option type="3" />
@@ -265,7 +265,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel/share/codeblocks/plugins/libdebugger" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -283,7 +283,7 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel/share/codeblocks/plugins/libcodecompletion" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -300,7 +300,7 @@
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel/share/codeblocks/plugins/libclasswizard" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -316,7 +316,7 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel/share/codeblocks/plugins/libdefaultmimehandler" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -332,7 +332,7 @@
 				</Linker>
 			</Target>
 			<Target title="Open files list">
-				<Option output="devel/share/codeblocks/plugins/libopenfileslist" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -348,7 +348,7 @@
 				</Linker>
 			</Target>
 			<Target title="Projects-workspaces importer">
-				<Option output="devel/share/codeblocks/plugins/libprojectsimporter" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -365,7 +365,7 @@
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel/share/codeblocks/plugins/libscriptedwizard" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -383,7 +383,7 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel/share/codeblocks/plugins/libtodo" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -401,7 +401,7 @@
 			</Target>
 			<Target title="XP look &amp; feel">
 				<Option platforms="Windows;" />
-				<Option output="devel/share/CodeBlocks/plugins/libxpmanifest" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel/share/CodeBlocks/plugins" />
 				<Option external_deps="devel/libcodeblocks.so;" />
 				<Option type="3" />
@@ -1134,6 +1134,12 @@
 		<Unit filename="plugins/codecompletion/codecompletion.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/codecompletionhelper.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/codecompletionhelper.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/coderefactoring.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1150,6 +1156,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/cclogger.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/cclogger.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/parser/expression.cpp">
@@ -1170,6 +1182,12 @@
 		<Unit filename="plugins/codecompletion/parser/parserthread.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/parser/profiletimer.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/profiletimer.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/parser/searchtree.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1186,6 +1204,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/parser/tokenizer.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/tokenstree.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/tokenstree.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/classbrowser.xrc">
