@@ -2056,9 +2056,7 @@ bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompl
     {
         result = wxStricmp(fs1.Name, fs2.Name);
         if (result == 0)
-        {
             result = fs1.StartLine - fs2.StartLine;
-        }
     }
 
     return result < 0;
@@ -2068,9 +2066,7 @@ bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeComp
 {
     int result = wxStricmp(fs1.Scope, fs2.Scope);
     if (result == 0)
-    {
         result = wxStricmp(fs1.Name, fs2.Name);
-    }
 
     return result == 0;
 }

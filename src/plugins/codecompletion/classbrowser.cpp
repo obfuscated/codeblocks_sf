@@ -844,9 +844,7 @@ void ClassBrowser::BuildTree()
 
     // and launch it
     if (!create_tree)
-    {
         m_Semaphore.Post();
-    }
 }
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
