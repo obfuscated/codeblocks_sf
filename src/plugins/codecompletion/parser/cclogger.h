@@ -6,6 +6,8 @@
 #ifndef CCLOGGER_H
 #define CCLOGGER_H
 
+#include <memory>
+
 #include <wx/event.h>
 #include <wx/string.h>
 
