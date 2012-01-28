@@ -453,7 +453,7 @@ bool ParserThread::InitTokenizer()
         {
             // record filename for buffer parsing
             m_Filename = m_Options.fileOfBuffer;
-            m_FileIdx = m_TokensTree->GetFileIndex(m_Filename);
+            m_FileIdx  = m_TokensTree->GetFileIndex(m_Filename);
             return m_Tokenizer.InitFromBuffer(m_Buffer, m_Filename, m_Options.initLineOfBuffer);
         }
     }
@@ -469,7 +469,7 @@ bool ParserThread::Parse()
 
     TRACE(_T("Parse() : Parsing '%s'"), m_Filename.wx_str());
 
-    bool result = false;
+    bool result      = false;
     m_ParsingTypedef = false;
 
     do
@@ -1111,13 +1111,13 @@ Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs,
     return m_TokensTree->at(m_TokensTree->TokenExists(name, baseArgs, parent ? parent->m_Index : -1, kind));
 }
 
-wxString ParserThread::GetActualTokenType()
+wxString ParserThread::GetTokenBaseType()
 {
-    TRACE(_T("GetActualTokenType() : Searching within m_Str='%s'"), m_Str.wx_str());
+    TRACE(_T("GetTokenBaseType() : Searching within m_Str='%s'"), m_Str.wx_str());
 
-    // we will compensate for spaces between
-    // namespaces (e.g. NAMESPACE :: SomeType) which is valid C++ construct
-    // we 'll remove spaces that follow a semicolon
+    // Compensate for spaces between namespaces (e.g. NAMESPACE :: SomeType)
+    // which is valid C++ construct.
+    // Also, spaces that follow a semicolon are removed.
     int pos = 0;
     while (pos < (int)m_Str.Length())
     {
@@ -1133,7 +1133,10 @@ wxString ParserThread::GetActualTokenType()
             ++pos;
     }
 
-    TRACE(_T("GetActualTokenType() : Compensated m_Str='%s'"), m_Str.wx_str());
+    TRACE(_T("GetTokenBaseType() : Compensated m_Str='%s'"), m_Str.wx_str());
+
+    // TODO (Morten#5#): Handle stuff like the following gracefully:
+    // int __cdecl __MINGW_NOTHROW vscanf (const char * __restrict__, __VALIST);
 
     // m_Str contains the full text before the token's declaration
     // an example m_Str value would be: const wxString&
@@ -1169,11 +1172,11 @@ wxString ParserThread::GetActualTokenType()
             --pos;
         }
 
-        TRACE(_T("GetActualTokenType() : Found '%s'"), m_Str.Mid(pos + 1, end - pos).wx_str());
+        TRACE(_T("GetTokenBaseType() : Found '%s'"), m_Str.Mid(pos + 1, end - pos).wx_str());
         return m_Str.Mid(pos + 1, end - pos);
     }
 
-    TRACE(_T("GetActualTokenType() : Returning '%s'"), m_Str.wx_str());
+    TRACE(_T("GetTokenBaseType() : Returning '%s'"), m_Str.wx_str());
     return m_Str; // token ends at start of phrase
 }
 
@@ -1320,14 +1323,14 @@ Token* ParserThread::DoAddToken(TokenKind kind,
 
     if (!(kind & (tkConstructor | tkDestructor)))
     {
-        wxString tokenType = m_Str;
+        wxString tokenFullType = m_Str;
         if (!m_PointerOrRef.IsEmpty())
         {
-            tokenType << m_PointerOrRef;
+            tokenFullType << m_PointerOrRef;
             m_PointerOrRef.Clear();
         }
-        wxString actualTokenType = GetActualTokenType();
-        if (actualTokenType.Find(ParserConsts::space_chr) == wxNOT_FOUND)
+        wxString tokenBaseType = GetTokenBaseType();
+        if (tokenBaseType.Find(ParserConsts::space_chr) == wxNOT_FOUND)
         {
             // token type must contain all namespaces
             wxString prepend;
@@ -1340,10 +1343,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
             }
 
             TRACE(_T("DoAddToken() : Prepending '%s'"), prepend.wx_str());
-            actualTokenType.Prepend(prepend);
+            tokenBaseType.Prepend(prepend);
         }
-        newToken->m_Type       = tokenType;
-        newToken->m_ActualType = actualTokenType;
+        newToken->m_FullType = tokenFullType;
+        newToken->m_BaseType = tokenBaseType;
     }
 
     newToken->m_IsLocal    = m_IsLocal;
@@ -1364,8 +1367,8 @@ Token* ParserThread::DoAddToken(TokenKind kind,
         m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->m_Index);
     }
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
-          name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_Type.wx_str(),
-          newToken->m_ActualType.wx_str(), m_TokensTree->at(newToken->m_ParentIndex) ?
+          name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
+          newToken->m_BaseType.wx_str(), m_TokensTree->at(newToken->m_ParentIndex) ?
           m_TokensTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
           newToken->m_ParentIndex);
 
@@ -1529,9 +1532,9 @@ void ParserThread::HandleNamespace()
 {
     wxString ns = m_Tokenizer.GetToken();
     Token* tk = TokenExists(ns, nullptr, tkPreprocessor);
-    if (tk && tk->m_Name != tk->m_Type)
+    if (tk && tk->m_Name != tk->m_FullType)
     {
-        if (m_Tokenizer.ReplaceBufferForReparse(tk->m_Type))
+        if (m_Tokenizer.ReplaceBufferForReparse(tk->m_FullType))
             ns = m_Tokenizer.GetToken();
     }
 
@@ -2016,9 +2019,9 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineEnd = m_Tokenizer.GetLineNumber();
 
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
-                if (!m_IsBuffer && ((lineEnd-lineStart) > (int)(m_FileSize/10)))
-                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."),
-                          name.wx_str(), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
+                if (!m_IsBuffer)
+                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%d)."),
+                          name.wx_str(), (lineEnd-lineStart), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
 
                 break;
             }
@@ -2366,15 +2369,15 @@ void ParserThread::HandleTypedef()
 
         if (is_function_pointer)
         {
-            tdef->m_Type            = ancestor + typ; // + args;
-            tdef->m_ActualType      = actualAncestor;
+            tdef->m_FullType        = ancestor + typ; // + args;
+            tdef->m_BaseType        = actualAncestor;
             if (tdef->IsValidAncestor(ancestor))
                 tdef->m_AncestorsString = ancestor;
         }
         else
         {
-            tdef->m_Type            = ancestor;
-            tdef->m_ActualType      = actualAncestor;
+            tdef->m_FullType        = ancestor;
+            tdef->m_BaseType        = actualAncestor;
             tdef->m_TemplateAlias   = alias;
             TRACE(_T("The typedef alias is %s."), tdef->m_TemplateAlias.wx_str());
 
@@ -2687,14 +2690,14 @@ bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
     {
         tk = TokenExists(tokenName, NULL, tkPreprocessor);
         if (   !tk
-            || tk->m_Type.IsEmpty()
-            || tk->m_Type == tokenName
-            || (   !wxIsalpha(tk->m_Type[0])
-                && (tk->m_Type[0] != ParserConsts::underscore_chr) ) )
+            || tk->m_FullType.IsEmpty()
+            || tk->m_FullType == tokenName
+            || (   !wxIsalpha(tk->m_FullType[0])
+                && (tk->m_FullType[0] != ParserConsts::underscore_chr) ) )
         {
             break;
         }
-        tokenName = tk->m_Type;
+        tokenName = tk->m_FullType;
         tokenIsMacro = true;
     }
 
@@ -2758,7 +2761,7 @@ void ParserThread::ResolveTemplateArgs(Token* newToken)
     // now resolve the template normal and actual map
     // wxString parentType = m_Str;
     std::map<wxString, wxString> templateMap;
-    ResolveTemplateMap(newToken->m_Type, actuals, templateMap);
+    ResolveTemplateMap(newToken->m_FullType, actuals, templateMap);
     newToken->m_TemplateMap = templateMap;
 }
 

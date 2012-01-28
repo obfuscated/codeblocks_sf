@@ -754,8 +754,8 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
             // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
 //            if (!token->m_ActualType.IsEmpty())
 //                 str = str + _T(" : ") + token->m_ActualType;
-            if (!token->m_Type.IsEmpty())
-                 str = str + _T(" : ") + token->m_Type + token->m_TemplateArgument;
+            if (!token->m_BaseType.IsEmpty())
+                 str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
 
             wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CBTreeData(sfToken, token, tokenKindMask));
 

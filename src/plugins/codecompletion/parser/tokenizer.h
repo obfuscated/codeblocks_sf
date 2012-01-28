@@ -99,14 +99,17 @@ public:
 
     /** Initialize the buffer by opening a file through a loader. */
     bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
+
     /** Initialize the buffer by directly use a wxString reference. */
     bool InitFromBuffer(const wxString& buffer, const wxString& fileOfBuffer = wxEmptyString,
                         size_t initLineNumber = 0);
 
     /** Consume and return the current token string. */
     wxString GetToken();
+
     /** Do a "look ahead", and return the next token string. */
     wxString PeekToken();
+
     /** Undo the GetToken. */
     void     UngetToken();
 
@@ -123,6 +126,7 @@ public:
     {
         m_State = state;
     };
+
     /** Return the Skipping options value, see TokenizerState for more details.*/
     TokenizerState GetState()
     {
@@ -194,7 +198,7 @@ public:
     /** Add one Replacement rules, this is just a simple way of handling preprocessor (macro) replacement.
      * the rule composite of two strings. if the first string has found in
      * the Tokenizer, the it will return the second string instead. We have more replacement rules to
-     * expand this sinple replacement.
+     * expand this simple replacement.
      * for replace the "_GLIBCXX_BEGIN_NAMESPACE(std)" to  "namespace std {"
      * we can use: Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
      * see more details in CodeCompletion::LoadTokenReplacements() function body.
@@ -205,6 +209,7 @@ public:
     {
         s_Replacements[from] = to;
     };
+
     /** Remove a replacement rule */
     static void RemoveReplacementString(const wxString& from)
     {
@@ -212,6 +217,7 @@ public:
         if (it != s_Replacements.end())
             s_Replacements.erase(it);
     };
+
     /** return the macro replacement map */
     static wxStringHashMap& GetTokenReplacementsMap()
     {
@@ -222,21 +228,20 @@ public:
     {
         ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin();
         for (; it != map.end(); it++)
-        {
             s_Replacements[it->first] = it->second;
-        }
     }
 
     /** Check whether the Tokenizer reached the end of the buffer (file) */
     bool IsEOF() const
     {
         return m_TokenIndex >= m_BufferLen;
-    };
+    }
+
     /** return true if it is Not the end of buffer */
     bool NotEOF() const
     {
         return m_TokenIndex < m_BufferLen;
-    };
+    }
 
     /** Backward buffer replace for re-parsing */
     bool ReplaceBufferForReparse(const wxString& target, bool updatePeekToken = true);
@@ -246,7 +251,10 @@ public:
 
     /** Get first token position in buffer */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
-    { return GetFirstTokenPosition(buffer.GetData(), buffer.Len(), target.GetData(), target.Len()); }
+    {
+        return GetFirstTokenPosition(buffer.GetData(), buffer.Len(), target.GetData(), target.Len());
+    }
+
     int GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLen,
                               const wxChar* target, const size_t targetLen);
 
@@ -262,6 +270,7 @@ protected:
 
     /** Read a file, and fill the m_Buffer */
     bool ReadFile();
+
     /** Check the current character is a C-Escape character in a string. */
     bool IsEscapedChar();
 
@@ -296,36 +305,7 @@ protected:
     bool SkipToStringEnd(const wxChar& ch);
 
     /** Move to the next character in the buffer, amount defines the steps (by default, it is one) */
-    bool MoveToNextChar(const unsigned int amount = 1)
-    {
-        assert(amount);
-        if(amount == 1) // compiler will dead-strip this
-        {
-            ++m_TokenIndex;
-            if (IsEOF())
-            {
-                m_TokenIndex = m_BufferLen;
-                return false;
-            }
-
-            if (PreviousChar() == _T('\n'))
-                ++m_LineNumber;
-            return true;
-        }
-        else
-        {
-            m_TokenIndex += amount;
-            if (IsEOF())
-            {
-                m_TokenIndex = m_BufferLen;
-                return false;
-            }
-
-            if (PreviousChar() == _T('\n'))
-                ++m_LineNumber;
-            return true;
-        }
-    };
+    bool MoveToNextChar(const unsigned int amount = 1);
 
     /** Return the current character indexed by m_TokenIndex in the m_Buffer */
     wxChar CurrentChar() const

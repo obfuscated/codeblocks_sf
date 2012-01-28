@@ -6,7 +6,6 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <wx/fdrepdlg.h>
 #include "parsertest.h"
 
 //(*Headers(Frame)
@@ -20,22 +19,22 @@
 #include <wx/statusbr.h>
 //*)
 
+#include <wx/fdrepdlg.h>
+
+class wxBusyInfo;
+
 class Frame : public wxFrame
 {
 public:
     Frame();
     virtual ~Frame();
 
-    void Log(const wxString& log);
-    void Start(const wxString& file);
-
-
-private:
-    void DoStart();
-    void ShowLog();
+    void AppendToLog(const wxString& log);
+    void Start(const wxString& file = wxEmptyString);
 
 protected:
     //(*Identifiers(Frame)
+    static const long wxID_TOKEN;
     //*)
 
 private:
@@ -46,28 +45,34 @@ private:
     void OnMenuOpenSelected(wxCommandEvent& event);
     void OnMenuFindSelected(wxCommandEvent& event);
     void OnMenuReloadSelected(wxCommandEvent& event);
+    void OnDoHeadersClick(wxCommandEvent& event);
+    void OnMenuTokenSelected(wxCommandEvent& event);
     //*)
+
     void OnFindDialog(wxFindDialogEvent& event);
     void OnCCLogger(wxCommandEvent& event);
 
-private:
+    void DoStart();
+
     //(*Declarations(Frame)
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
     wxFileDialog* m_SaveFile;
     wxStatusBar* m_StatuBar;
     wxTextCtrl* m_LogCtrl;
+    wxCheckBox* m_DoHeadersCtrl;
+    wxTextCtrl* m_HeadersCtrl;
     wxTextCtrl* m_IncludeCtrl;
     wxFileDialog* m_OpenFile;
     //*)
 
-    size_t               m_LogCount;
-    wxString             m_Log;
+    wxBusyInfo*          m_BusyInfo;
 
-    wxFindReplaceData    m_FindData;
-    wxFindReplaceDialog* m_DlgFind;
+    size_t               m_LogCount;
+
+    wxFindReplaceData    m_FRData;
+    wxFindReplaceDialog* m_FRDlg;
     int                  m_LastIndex;
-    wxString             m_LastFile;
 
     ParserTest           m_ParserTest;
 

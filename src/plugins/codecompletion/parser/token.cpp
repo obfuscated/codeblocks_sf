@@ -14,9 +14,6 @@
 
 #include "token.h"
 
-bool           g_EnableDebugTrace = false;
-const wxString g_DebugTraceFile   = wxEmptyString;
-
 #define CC_TOKEN_DEBUG_OUTPUT 0
 
 #if CC_GLOBAL_DEBUG_OUTPUT == 1
@@ -88,8 +85,8 @@ wxString Token::DisplayName() const
     {
         result << _T("typedef");
 
-        if (!m_Type.IsEmpty())
-            result << _T(" ") << m_Type;
+        if (!m_FullType.IsEmpty())
+            result << _T(" ") << m_FullType;
 
         if (result.Find('*', true) != wxNOT_FOUND)
         {
@@ -105,15 +102,15 @@ wxString Token::DisplayName() const
     else if (m_TokenKind == tkPreprocessor)
     {
         result << _T("#define ") << m_Name << GetFormattedArgs();
-        if (!m_Type.IsEmpty())
-            result << _T(" ") << m_Type;
+        if (!m_FullType.IsEmpty())
+            result << _T(" ") << m_FullType;
 
         return result;
     }
 
     // else
-    if (!m_Type.IsEmpty())
-        result << m_Type << m_TemplateArgument << _T(" ");
+    if (!m_FullType.IsEmpty())
+        result << m_FullType << m_TemplateArgument << _T(" ");
 
     if (m_TokenKind == tkEnumerator)
         return result << GetNamespace() << m_Name << _T("=") << GetFormattedArgs();

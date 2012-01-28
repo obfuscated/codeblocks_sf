@@ -54,7 +54,6 @@
 #include "ccdebuginfo.h"
 #include "ccoptionsdlg.h"
 #include "ccoptionsprjdlg.h"
-#include "codecompletionhelper.h"
 #include "insertclassmethoddlg.h"
 #include "selectincludefile.h"
 #include "parser/cclogger.h"
@@ -1726,7 +1725,7 @@ int CodeCompletion::DoAllMethodsImpl()
             str << ed->GetLineIndentString(line - 1);
             if (addDoxgenComment)
                 str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
-            wxString type = token->m_Type;
+            wxString type = token->m_BaseType;
             if ((type.Last() == _T('&') || type.Last() == _T('*')) && type[type.Len() - 2] == _T(' '))
             {
                 type[type.Len() - 2] = type.Last();
@@ -2236,8 +2235,8 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
                         wxString result = token->m_Name;
                         fs.ShortName = result;
                         result << token->GetFormattedArgs();
-                        if (!token->m_Type.IsEmpty())
-                            result << _T(" : ") << token->m_Type;
+                        if (!token->m_BaseType.IsEmpty())
+                            result << _T(" : ") << token->m_BaseType;
                         fs.Name = result;
                         funcdata->m_FunctionsScope.push_back(fs);
                     }
@@ -2756,10 +2755,10 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     {
         wxString sel = dlg.GetStringSelection();
         Token* token = tmpsearch.GetItem(sel);
-        if (token)
+        if (ed && token)
         {
-            TRACE(F(_T("Token found at line %d"), token->m_Line));
-            CodeCompletionHelper::GotoTokenPosition(ed, token->m_Name, token->m_Line - 1);
+            TRACE(F(_T("Token '%s' found at line %d."), token->m_Name.wx_str(), token->m_Line));
+            ed->GotoTokenPosition(token->m_Line - 1, token->m_Name);
         }
     }
 
@@ -2990,7 +2989,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
         cbEditor *targetEditor = edMan->Open(editorFilename);
         if (targetEditor)
-            CodeCompletionHelper::GotoTokenPosition(targetEditor, target, editorLine);
+            targetEditor->GotoTokenPosition(editorLine, target);
         else
         {
             if (isImpl)
@@ -3378,9 +3377,9 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
         if (idxFn != -1 && idxFn < static_cast<int>(m_FunctionsScope.size()))
         {
             cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-            if (!ed)
-                return;
-            CodeCompletionHelper::GotoTokenPosition(ed, m_FunctionsScope[idxFn].ShortName, m_FunctionsScope[idxFn].StartLine);
+            if (ed)
+                ed->GotoTokenPosition(m_FunctionsScope[idxFn].StartLine,
+                                      m_FunctionsScope[idxFn].ShortName);
         }
     }
 }

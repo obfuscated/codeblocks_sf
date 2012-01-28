@@ -81,7 +81,7 @@ namespace TokenizerConsts
 }// namespace TokenizerConsts
 
 // static
-wxStringHashMap Tokenizer::s_Replacements;
+wxStringHashMap     Tokenizer::s_Replacements;
 static const size_t s_MaxRepeatReplaceCount = 50;
 
 Tokenizer::Tokenizer(TokensTree* tokensTree, const wxString& filename) :
@@ -162,11 +162,13 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 bool Tokenizer::InitFromBuffer(const wxString& buffer, const wxString& fileOfBuffer, size_t initLineNumber)
 {
     BaseInit();
-    m_BufferLen = buffer.Length();
-    m_Buffer = buffer + _T(" "); // + 1 => sentinel
-    m_IsOK = true;
-    m_Filename = fileOfBuffer;
+
+    m_BufferLen  = buffer.Length();
+    m_Buffer     = buffer + _T(" "); // + 1 => sentinel
+    m_IsOK       = true;
+    m_Filename   = fileOfBuffer;
     m_LineNumber = initLineNumber;
+
     return true;
 }
 
@@ -232,18 +234,6 @@ bool Tokenizer::ReadFile()
         fileName = m_Filename;
         success = true;
     }
-
-//    size_t replacements  = m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_D)"), _T("namespace std {"),       true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_P)"), _T("namespace std {"),       true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NESTED_NAMESPACE"),                        _T("}"),                     true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),                         _T("namespace tr1 {"),       true);
-//           // The following must be before replacing "_GLIBCXX_END_NAMESPACE"!!!
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE_TR1"),                           _T("}"),                     true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(__gnu_cxx)"),                  _T("namespace __gnu_cxx {"), true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(std)"),                        _T("namespace std {"),       true);
-//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE"),                               _T("}"),                     true);
-//
-//    if (replacements) TRACE(_T("Did %d replacements in buffer of '%s'."), replacements, fileName.wx_str());
 
     m_BufferLen = m_Buffer.Length();
 
@@ -321,6 +311,37 @@ bool Tokenizer::SkipToStringEnd(const wxChar& ch)
         MoveToNextChar();
     }
     return true;
+}
+
+bool Tokenizer::MoveToNextChar(const unsigned int amount)
+{
+    assert(amount);
+    if(amount == 1) // compiler will dead-strip this
+    {
+        ++m_TokenIndex;
+        if (IsEOF())
+        {
+            m_TokenIndex = m_BufferLen;
+            return false;
+        }
+
+        if (PreviousChar() == _T('\n'))
+            ++m_LineNumber;
+        return true;
+    }
+    else
+    {
+        m_TokenIndex += amount;
+        if (IsEOF())
+        {
+            m_TokenIndex = m_BufferLen;
+            return false;
+        }
+
+        if (PreviousChar() == _T('\n'))
+            ++m_LineNumber;
+        return true;
+    }
 }
 
 // return true if we really skip a string, that means m_TokenIndex has changed.
@@ -617,7 +638,7 @@ void Tokenizer::ReadParentheses(wxString& str)
                 {
                     if (writeLen > maxBufferLen)
                     {
-                        TRACE(_T("ReadParentheses, Catch Exception 1: %d"), writeLen);
+                        TRACE(_T("ReadParentheses(): Catched exception 1: %d"), writeLen);
                         return;
                     }
 
@@ -754,7 +775,7 @@ void Tokenizer::ReadParentheses(wxString& str)
         str.Append(realBuffer, p - realBuffer);
     TRACE(_T("ReadParentheses(): %s, line=%d"), str.wx_str(), m_LineNumber);
     if (str.Len() > 512)
-        TRACE(_T("ReadParentheses: Catch Exception 2?: %d"), str.Len());
+        TRACE(_T("ReadParentheses(): Catched exception 2: %d"), str.Len());
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)
@@ -1152,9 +1173,9 @@ void Tokenizer::MacroReplace(wxString& str)
                 bool replaced = false;
                 if (!tk->m_Args.IsEmpty())
                     replaced = ReplaceMacroActualContext(tk, false);
-                else if (tk->m_Type != tk->m_Name)
-                    replaced = ReplaceBufferForReparse(tk->m_Type, false);
-                if (replaced || tk->m_Type.IsEmpty())
+                else if (tk->m_FullType != tk->m_Name)
+                    replaced = ReplaceBufferForReparse(tk->m_FullType, false);
+                if (replaced || tk->m_FullType.IsEmpty())
                 {
                     SkipUnwanted();
                     str = DoGetToken();
@@ -1255,7 +1276,7 @@ bool Tokenizer::CalcConditionExpression()
                 Token* tk = m_TokensTree->at(id);
                 if (tk)
                 {
-                    if (tk->m_Type.IsEmpty() || tk->m_Type == token)
+                    if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
                     {
                         if (tk->m_Args.IsEmpty())
                         {
@@ -1273,11 +1294,11 @@ bool Tokenizer::CalcConditionExpression()
                         if (ReplaceMacroActualContext(tk, false))
                             continue;
                     }
-                    else if (wxIsdigit(tk->m_Type[0]))
-                        token = tk->m_Type;
-                    else if (tk->m_Type != tk->m_Name)
+                    else if (wxIsdigit(tk->m_FullType[0]))
+                        token = tk->m_FullType;
+                    else if (tk->m_FullType != tk->m_Name)
                     {
-                        if (ReplaceBufferForReparse(tk->m_Type, false))
+                        if (ReplaceBufferForReparse(tk->m_FullType, false))
                             continue;
                     }
                 }
@@ -1759,7 +1780,7 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
 bool Tokenizer::GetActualContextForMacro(Token* tk, wxString& actualContext)
 {
     // e.g. "#define AAA AAA" and usage "AAA(x)"
-    if (!tk || tk->m_Name == tk->m_Type)
+    if (!tk || tk->m_Name == tk->m_FullType)
         return false;
 
     // 1. break the args into substring with ","
@@ -1767,13 +1788,13 @@ bool Tokenizer::GetActualContextForMacro(Token* tk, wxString& actualContext)
     if (ReplaceBufferForReparse(tk->m_Args, false))
         SplitArguments(formalArgs);
 
-    // 2. splite the actual macro arguments
+    // 2. split the actual macro arguments
     wxArrayString actualArgs;
     if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
         SplitArguments(actualArgs);
 
     // 3. get actual context
-    actualContext = tk->m_Type;
+    actualContext = tk->m_FullType;
     const size_t totalCount = std::min(formalArgs.GetCount(), actualArgs.GetCount());
     for (size_t i = 0; i < totalCount; ++i)
     {

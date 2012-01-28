@@ -67,24 +67,37 @@ ParserTest::~ParserTest()
 
 bool ParserTest::Start(const wxString& file)
 {
-    ParserBase client;
     FileLoader* loader = new FileLoader(file);
     (*loader)();
 
     ParserThreadOptions opts;
-    opts.wantPreprocessor      = true;
-    opts.useBuffer             = false;
-    opts.bufferSkipBlocks      = false;
-    opts.bufferSkipOuterBlocks = false;
-    opts.followLocalIncludes   = true;
-    opts.followGlobalIncludes  = true;
+
+    opts.useBuffer             = false; // default
+    opts.parentIdxOfBuffer     = -1;    // default
+    opts.initLineOfBuffer      = -1;    // default
+    opts.bufferSkipBlocks      = false; // default
+    opts.bufferSkipOuterBlocks = false; // default
+    opts.isTemp                = false; // default
+
+    opts.followLocalIncludes   = true;  // default
+    opts.followGlobalIncludes  = true;  // default
+    opts.wantPreprocessor      = true;  // default
+    opts.parseComplexMacros    = true;  // default
+
+    opts.handleFunctions       = true;  // default
+    opts.handleVars            = true;  // default
+    opts.handleClasses         = true;  // default
+    opts.handleEnums           = true;  // default
+    opts.handleTypedefs        = true;  // default
+
     opts.loader                = loader;
 
-    ParserThread* ph = new ParserThread(&client, file, true, opts, m_pTokensTree);
-    bool b = ph->Parse();
-    delete ph;
+    ParserBase client;
+    ParserThread* pt = new ParserThread(&client, file, true, opts, m_pTokensTree);
+    bool success = pt->Parse();
+    delete pt;
 
-    return b;
+    return success;
 }
 
 void ParserTest::Clear()

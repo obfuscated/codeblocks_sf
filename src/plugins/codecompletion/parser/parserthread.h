@@ -38,21 +38,26 @@ class ParserBase;
 struct ParserThreadOptions
 {
     ParserThreadOptions() :
+
         useBuffer(false),
+        fileOfBuffer(),
+        parentIdxOfBuffer(-1),
+        initLineOfBuffer(1),
         bufferSkipBlocks(false),
         bufferSkipOuterBlocks(false),
-        wantPreprocessor(true),
+        isTemp(false),
+
         followLocalIncludes(true),
         followGlobalIncludes(true),
-        isTemp(false),
+        wantPreprocessor(true),
+        parseComplexMacros(true),
+
         handleFunctions(true),
         handleVars(true),
         handleClasses(true),
         handleEnums(true),
         handleTypedefs(true),
-        parseComplexMacros(true),
-        parentIdxOfBuffer(-1),
-        initLineOfBuffer(1),
+
         loader(nullptr)
         {}
 
@@ -61,23 +66,23 @@ struct ParserThreadOptions
      * and will be deleted before the next file is parsed.
      */
     bool        useBuffer;
+    wxString    fileOfBuffer;
+    int         parentIdxOfBuffer;
+    int         initLineOfBuffer;
     bool        bufferSkipBlocks;
     bool        bufferSkipOuterBlocks; // classes, namespaces and functions
-    bool        wantPreprocessor;
+    bool        isTemp;
+
     bool        followLocalIncludes;
     bool        followGlobalIncludes;
-    bool        isTemp;
+    bool        wantPreprocessor;
+    bool        parseComplexMacros;
 
     bool        handleFunctions;
     bool        handleVars;
     bool        handleClasses;
     bool        handleEnums;
     bool        handleTypedefs;
-    bool        parseComplexMacros;
-
-    wxString    fileOfBuffer;
-    int         parentIdxOfBuffer;
-    int         initLineOfBuffer;
 
     LoaderBase* loader; // if not NULL, load through filemanager (using threads)
 };
@@ -99,11 +104,11 @@ public:
       * @param parserThreadOptions parser thread options, see ParserThreadOptions Class for details.
       * @param tokensTree it is the tree structure holding all the tokens, ParserThread will add every token when it parsed.
       */
-    ParserThread(ParserBase* parent,
-                 const wxString& bufferOrFilename,
-                 bool isLocal,
+    ParserThread(ParserBase*          parent,
+                 const wxString&      bufferOrFilename,
+                 bool                 isLocal,
                  ParserThreadOptions& parserThreadOptions,
-                 TokensTree* tokensTree);
+                 TokensTree*          tokensTree);
 
     /** ParserThread destructor.*/
     virtual ~ParserThread();
@@ -234,11 +239,11 @@ protected:
                       bool isOperator = false,
                       bool isImpl = false);
 
-    /** return the actual token type.
+    /** return the actual token's base type.
       * e.g.: if the token type string is: "const wxString &"
-      * then, the actual token type is : "wxString"
+      * then, the actual token base type is : "wxString"
       */
-    wxString GetActualTokenType();
+    wxString GetTokenBaseType();
 
 private:
     /** initialize the m_Buffer, load from local file or use a buffer in memory */
@@ -320,7 +325,7 @@ private:
     /** determine whether we are parsing the local files or buffer already in memory */
     bool                 m_IsLocal;
 
-    /** this is a very important member variables! It serves as a type stack,
+    /** This is a very important member variables! It serves as a type stack,
       * eg: parsing the statement: "int wxString const varA;"
       * we determine 'varA' is a token variable, until we searching to the last semicolon.
       * every token before 'varA' will be pushed to m_Str, at this time
@@ -328,7 +333,7 @@ private:
       */
     wxString             m_Str;
 
-    /**  hold the previous token string */
+    /** hold the previous token string */
     wxString             m_LastToken;
 
     /** parser options, see the ParserThreadOptions structure */

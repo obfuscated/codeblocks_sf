@@ -10,3 +10,7 @@
 #include "cclogger.h"
 
 std::auto_ptr<CCLogger> CCLogger::s_Inst;
+
+bool           g_EnableDebugTrace = false;
+const wxString g_DebugTraceFile   = wxEmptyString;
+

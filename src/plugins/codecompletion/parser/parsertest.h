@@ -8,6 +8,7 @@
 
 class TokensTree;
 class Token;
+
 class ParserTest
 {
 public:

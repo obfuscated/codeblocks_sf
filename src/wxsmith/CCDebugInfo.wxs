@@ -58,7 +58,7 @@
 										<hgap>5</hgap>
 										<growablecols>1</growablecols>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT17" variable="lblID" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblID" member="no">
 												<label>ID:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -70,7 +70,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblName" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblName" member="no">
 												<label>Name:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -82,7 +82,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT9" variable="lblKind" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblKind" member="no">
 												<label>Kind:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -94,7 +94,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="wxID_ANY" variable="lblScope" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblScope" member="no">
 												<label>Scope:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -106,31 +106,31 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT3" variable="lblType" member="yes">
-												<label>Type:</label>
+											<object class="wxStaticText" name="wxID_ANY" variable="lblFullType" member="no">
+												<label>Full type:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT4" variable="txtType" member="yes">
+											<object class="wxStaticText" name="ID_STATICTEXT4" variable="txtFullType" member="yes">
 												<label></label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT5" variable="lblActualType" member="yes">
-												<label>Actual type:</label>
+											<object class="wxStaticText" name="wxID_ANY" variable="lblBaseType" member="no">
+												<label>Base type:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT6" variable="txtActualType" member="yes">
+											<object class="wxStaticText" name="ID_STATICTEXT6" variable="txtBaseType" member="yes">
 												<label></label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT7" variable="lblArgs" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblArgs" member="no">
 												<label>Arguments:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -142,7 +142,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT36" variable="lblArgsStripped" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblArgsStripped" member="no">
 												<label>Arguments (str.):</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -154,7 +154,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT40" variable="lblTemplateArg" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblTemplateArg" member="no">
 												<label>Templ. args:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -166,7 +166,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT13" variable="lblIsOp" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblIsOp" member="no">
 												<label>Is operator?</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -178,7 +178,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT15" variable="lblIsLocal" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblIsLocal" member="no">
 												<label>Is local?</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -190,7 +190,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT32" variable="lblIsTemp" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblIsTemp" member="no">
 												<label>Is temp?</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -202,7 +202,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT38" variable="lblIsConst" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblIsConst" member="no">
 												<label>Is const?</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -214,7 +214,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT19" variable="lblNameSpace" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblNameSpace" member="no">
 												<label>Namespace:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -226,7 +226,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT22" variable="lblParent" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblParent" member="no">
 												<label>Parent:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -252,7 +252,7 @@
 											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT30" variable="lblChildren" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblChildren" member="no">
 												<label>Children:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -278,7 +278,7 @@
 											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT21" variable="lblAncestors" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblAncestors" member="no">
 												<label>Ancestors:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -304,7 +304,7 @@
 											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT23" variable="lblDescendants" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblDescendants" member="no">
 												<label>Descendants:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -330,7 +330,7 @@
 											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT25" variable="lblDeclFile" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblDeclFile" member="no">
 												<label>Decl. filename:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -342,7 +342,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT27" variable="lblImplfile" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblImplfile" member="no">
 												<label>Impl. filename:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -354,7 +354,7 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT34" variable="lblUserData" member="yes">
+											<object class="wxStaticText" name="wxID_ANY" variable="lblUserData" member="no">
 												<label>User data:</label>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>

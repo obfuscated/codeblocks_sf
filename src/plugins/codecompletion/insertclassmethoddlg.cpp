@@ -53,7 +53,7 @@ namespace InsertClassMethodDlgHelper
             if (valid)
             {
                 wxString str;
-                str << token->m_Type << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
+                str << token->m_FullType << _T(" ") << ns << token->m_Name << token->GetFormattedArgs();
                 str.Replace(_T("&"), _T("&&"));
                 if (clb->FindString(str) == wxNOT_FOUND)
                     clb->Append(str);

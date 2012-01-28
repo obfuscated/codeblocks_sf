@@ -144,9 +144,11 @@ public:
         TRACK_THREAD_LOCKER(s_ParserCritical);
         s_ParserCritical.Enter();
         THREAD_LOCKER_SUCCESS(s_ParserCritical);
-        wxString preDefs(m_Parser.m_PredefinedMacros);
+
+        wxString   preDefs(m_Parser.m_PredefinedMacros);
         StringList priorityHeaders(m_Parser.m_PriorityHeaders);
         StringList batchFiles(m_Parser.m_BatchParseFiles);
+
         s_ParserCritical.Leave();
 
         if (!preDefs.IsEmpty())
@@ -300,6 +302,7 @@ void ParserBase::ReadOptions()
 
     // force e-read of file types
     ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
+    wxUnusedVar(ft_dummy);
 }
 
 void ParserBase::WriteOptions()
@@ -619,13 +622,16 @@ void Parser::AddParse(const wxString& filename)
 bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBase* loader)
 {
     ParserThreadOptions opts;
-    opts.wantPreprocessor      = m_Options.wantPreprocessor;
+
     opts.useBuffer             = false;
     opts.bufferSkipBlocks      = false;
     opts.bufferSkipOuterBlocks = false;
+
     opts.followLocalIncludes   = m_Options.followLocalIncludes;
     opts.followGlobalIncludes  = m_Options.followGlobalIncludes;
+    opts.wantPreprocessor      = m_Options.wantPreprocessor;
     opts.parseComplexMacros    = m_Options.parseComplexMacros;
+
     opts.loader                = loader; // maybe 0 at this point
 
     const wxString unixFilename = UnixFilename(filename);
@@ -732,28 +738,27 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
     return result;
 }
 
-bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp,
-                         const wxString& filename, int parentIdx, int initLine)
+bool Parser::ParseBuffer(const wxString& buffer,   bool isLocal,
+                         bool  bufferSkipBlocks,   bool isTemp,
+                         const wxString& filename, int  parentIdx, int initLine)
 {
     ParserThreadOptions opts;
 
-    opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.followLocalIncludes  = false;
-    opts.followGlobalIncludes = false;
-    opts.parseComplexMacros   = false;
     opts.useBuffer            = true;
-    opts.isTemp               = isTemp;
-    opts.bufferSkipBlocks     = bufferSkipBlocks;
-    opts.handleFunctions      = false;
     opts.fileOfBuffer         = filename;
     opts.parentIdxOfBuffer    = parentIdx;
     opts.initLineOfBuffer     = initLine;
+    opts.bufferSkipBlocks     = bufferSkipBlocks;
+    opts.isTemp               = isTemp;
 
-    ParserThread thread(this,
-                    buffer,
-                    isLocal,
-                    opts,
-                    m_TokensTree);
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = false;
+
+    opts.handleFunctions      = false;
+
+    ParserThread thread(this, buffer, isLocal, opts, m_TokensTree);
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -765,19 +770,18 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 bool Parser::ParseBufferForFunctions(const wxString& buffer)
 {
     ParserThreadOptions opts;
-    opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.parseComplexMacros   = m_Options.parseComplexMacros;
-    opts.followLocalIncludes  = false;
-    opts.followGlobalIncludes = false;
+
     opts.useBuffer            = true;
     opts.bufferSkipBlocks     = true;
+
+    opts.followLocalIncludes  = false;
+    opts.followGlobalIncludes = false;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = m_Options.parseComplexMacros;
+
     opts.handleFunctions      = true;
 
-    ParserThread thread(this,
-                        buffer,
-                        false,
-                        opts,
-                        m_TempTokensTree);
+    ParserThread thread(this, buffer, false, opts, m_TempTokensTree);
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -789,17 +793,15 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result)
 {
     ParserThreadOptions opts;
+
     opts.useBuffer            = true;
-    opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.parseComplexMacros   = false;
+
     opts.followLocalIncludes  = false;
     opts.followGlobalIncludes = false;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = false;
 
-    ParserThread thread(this,
-                        wxEmptyString,
-                        true,
-                        opts,
-                        m_TempTokensTree);
+    ParserThread thread(this, wxEmptyString, true, opts, m_TempTokensTree);
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -811,17 +813,15 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
     ParserThreadOptions opts;
+
     opts.useBuffer            = true;
-    opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.parseComplexMacros   = false;
+
     opts.followLocalIncludes  = false;
     opts.followGlobalIncludes = false;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = false;
 
-    ParserThread thread(this,
-                        wxEmptyString,
-                        false,
-                        opts,
-                        m_TempTokensTree);
+    ParserThread thread(this, wxEmptyString, false, opts, m_TempTokensTree);
 
     TRACK_THREAD_LOCKER(s_TokensTreeCritical);
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
@@ -836,7 +836,7 @@ bool Parser::RemoveFile(const wxString& filename)
     wxCriticalSectionLocker locker(s_TokensTreeCritical);
     THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
 
-    size_t index = m_TokensTree->GetFileIndex(UnixFilename(filename));
+    size_t     index  = m_TokensTree->GetFileIndex(UnixFilename(filename));
     const bool result = m_TokensTree->m_FilesStatus.count(index);
 
     m_TokensTree->RemoveFile(filename);

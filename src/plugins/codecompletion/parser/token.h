@@ -18,9 +18,6 @@
 
 class wxEvtHandler;
 
-extern bool           g_EnableDebugTrace;
-extern const wxString g_DebugTraceFile;
-
 class Token;
 class TokensTree;
 
@@ -99,8 +96,8 @@ public:
     TokensTree* GetTree() { return m_TokensTree; }
     bool IsValidAncestor(const wxString& ancestor);
 
-    wxString                     m_Type;       // this is the return value (if any): e.g. const wxString&
-    wxString                     m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
+    wxString                     m_FullType; // this is the full return value (if any): e.g. const wxString&
+    wxString                     m_BaseType; // this is what the parser believes is the actual return value: e.g. wxString
     wxString                     m_Name;
     wxString                     m_Args;
     wxString                     m_BaseArgs;

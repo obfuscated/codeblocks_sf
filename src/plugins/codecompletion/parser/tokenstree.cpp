@@ -409,12 +409,15 @@ int TokensTree::AddTokenToList(Token* newToken, int forceidx)
 
     newToken->m_TokensTree = this;
     newToken->m_Index = result;
-    // Clean up extra string memory
 
-    newToken->m_Type.Shrink();
+    // Clean up extra string memory
+    newToken->m_FullType.Shrink();
+    newToken->m_BaseType.Shrink();
     newToken->m_Name.Shrink();
     newToken->m_Args.Shrink();
+    newToken->m_BaseArgs.Shrink();
     newToken->m_AncestorsString.Shrink();
+    newToken->m_TemplateArgument.Shrink();
 
     return result;
 }

@@ -247,7 +247,7 @@ namespace NativeParserHelper
             return true;
 
         case tkFunction:
-            result = token.m_Type + wxT(" ") + result + token.m_Name + token.m_Args;
+            result = token.m_BaseType + wxT(" ") + result + token.m_Name + token.m_Args;
             if (token.m_IsConst)
                 result += wxT(" const");
             return true;
@@ -1510,12 +1510,11 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         cfg->Write(_T("/priority_headers"), priority_headers);
     }
 
-    wxStringTokenizer tkz(priority_headers, _T(","));
-
     typedef std::map<int, wxString> PriorityMap;
     PriorityMap priorityMap;
     PriorityMap priorityTempMap;
     int priorityCnt = 0;
+    wxStringTokenizer tkz(priority_headers, _T(","));
     while (tkz.HasMoreTokens())
     {
         wxString token = tkz.GetNextToken().Trim(false).Trim(true);
@@ -1586,8 +1585,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             const bool systemHeaderFile = (file.Last() == _T('1'));
             const int pos = file.Find(_T(','), true);
             file = file.Left(pos);
-            CCLogger::Get()->DebugLog(F(_T("Header to parse with priority: '%s'"),
-                                                        file.wx_str()));
+            CCLogger::Get()->DebugLog(F(_T("Header to parse with priority: '%s'"), file.wx_str()));
             parser->AddPriorityHeaders(file, systemHeaderFile);
         }
 
@@ -2089,15 +2087,15 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int &ty
             // support macro call tips
             while (token->m_TokenKind == tkPreprocessor)
             {
-                Token* tk = tokens->at(tokens->TokenExists(token->m_Type, -1, tkPreprocessor | tkFunction));
-                if (tk && tk->m_Type != token->m_Name)
+                Token* tk = tokens->at(tokens->TokenExists(token->m_BaseType, -1, tkPreprocessor | tkFunction));
+                if (tk && tk->m_BaseType != token->m_Name)
                     token = tk;
                 else
                     break;
             }
 
-            if (token->m_TokenKind == tkTypedef && token->m_ActualType.Contains(_T("(")))
-                items.Add(token->m_ActualType); // typedef'd function pointer
+            if (token->m_TokenKind == tkTypedef && token->m_BaseType.Contains(_T("(")))
+                items.Add(token->m_BaseType); // typedef'd function pointer
             else
             {
                 wxString s;
@@ -2650,19 +2648,19 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
         }
 
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
+            CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"), token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
 
 
         // is the token a function or variable (i.e. is not a type)
         if (    !searchtext.IsEmpty()
              && (parser_component.tokenType != pttSearchText)
-             && !token->m_ActualType.IsEmpty() )
+             && !token->m_BaseType.IsEmpty() )
         {
             // the token is not a type
             // find its type's ID and use this as parent instead of (*it)
             TokenIdxSet type_result;
             std::queue<ParserComponent> type_components;
-            wxString actual = token->m_ActualType;
+            wxString actual = token->m_BaseType;
 
             // TODO: ignore builtin types (void, int, etc)
             BreakUpComponents(actual, type_components);
@@ -2753,12 +2751,12 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
                     CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
                     if (type_result.size() > 1)
                         CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Multiple types matched for '%s': %d results"),
-                                                    token->m_ActualType.wx_str(),
+                                                    token->m_BaseType.wx_str(),
                                                     type_result.size()));
                 }
             }
             else if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() No types matched '%s'."), token->m_ActualType.wx_str()));
+                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() No types matched '%s'."), token->m_BaseType.wx_str()));
         }
 
         // if no more components, add to result set
@@ -3051,7 +3049,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
 
                     if (s_DebugSmartSense)
                         CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%d) : type='%s'"),
-                                                    token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
+                                                    token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
 
                     // recond the template map message here. hope it will work.
                     // wxString tkname = token->m_Name;
@@ -3062,10 +3060,10 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     // if the token is a function/variable(i.e. is not a type)
                     isFuncOrVar =   !searchText.IsEmpty()
                                  && (subComponent.tokenType != pttSearchText)
-                                 && !token->m_ActualType.IsEmpty();
+                                 && !token->m_BaseType.IsEmpty();
                     if (isFuncOrVar)
                     {
-                        actualTypeStr = token->m_ActualType;
+                        actualTypeStr = token->m_BaseType;
                         parentIndex = token->m_Index;
                     }
                 }
@@ -4053,7 +4051,7 @@ void NativeParser::ResolveOpeartor(const OperatorType& tokenOperatorType, const 
 
                 Token* token = tree->at((*it));
                 if (token)
-                    type = token->m_ActualType;
+                    type = token->m_BaseType;
             }
 
             if (!type.IsEmpty())

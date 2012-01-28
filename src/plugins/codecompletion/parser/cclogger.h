@@ -6,10 +6,10 @@
 #ifndef CCLOGGER_H
 #define CCLOGGER_H
 
-#include <memory>
-
 #include <wx/event.h>
 #include <wx/string.h>
+
+#include <memory> // auto_ptr
 
 #include <prep.h> // nullptr
 #include <logmanager.h> // F()
@@ -22,6 +22,9 @@
     #undef CC_LOG_SYNC_SEND
     #define CC_LOG_SYNC_SEND 1
 #endif
+
+extern bool           g_EnableDebugTrace; //!< Toggles tracing into file.
+extern const wxString g_DebugTraceFile;   //!< Trace file name (if above is enabled).
 
 class CCLogger
 {

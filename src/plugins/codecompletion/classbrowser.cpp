@@ -41,7 +41,6 @@
 #include <cbstyledtextctrl.h>
 
 #include "classbrowser.h" // class's header file
-#include "codecompletionhelper.h"
 #include "nativeparser.h"
 
 #include "ccdebuginfo.h"
@@ -495,7 +494,7 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
             else
                 line = ctd->m_Token->m_Line - 1;
 
-            CodeCompletionHelper::GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
+            ed->GotoTokenPosition(line, ctd->m_Token->m_Name);
         }
     }
 }
@@ -572,15 +571,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             else
                 line = ctd->m_Token->m_Line - 1;
 
-            CodeCompletionHelper::GotoTokenPosition(ed, ctd->m_Token->m_Name, line);
-
-            wxFocusEvent ev(wxEVT_SET_FOCUS);
-            ev.SetWindow(this);
-            #if wxCHECK_VERSION(2, 9, 0)
-            ed->GetControl()->GetEventHandler()->AddPendingEvent(ev);
-            #else
-            ed->GetControl()->AddPendingEvent(ev);
-            #endif
+            ed->GotoTokenPosition(line, ctd->m_Token->m_Name);
         }
     }
 }

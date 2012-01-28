@@ -1305,12 +1305,6 @@
 		<Unit filename="plugins\codecompletion\codecompletion.h">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\codecompletionhelper.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\codecompletionhelper.h">
-			<Option target="Code-completion" />
-		</Unit>
 		<Unit filename="plugins\codecompletion\coderefactoring.cpp">
 			<Option target="Code-completion" />
 		</Unit>

@@ -9,24 +9,51 @@
 		<object class="wxBoxSizer" variable="bsz_main" member="no">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxBoxSizer" variable="bsz_include" member="no">
+				<object class="wxBoxSizer" variable="bsz_misc" member="no">
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxStaticText" name="wxID_ANY" variable="lbl_include" member="no">
-							<label>Add include directories to search for files here (one directory per line):</label>
+						<object class="wxBoxSizer" variable="bsz_include" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lbl_include" member="no">
+									<label>Add include directories to search for files here (one directory per line):</label>
+								</object>
+								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="wxID_ANY" variable="m_IncludeCtrl" member="yes">
+									<minsize>-1,60</minsize>
+									<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE</style>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+							</object>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
-						<object class="wxTextCtrl" name="wxID_ANY" variable="m_IncludeCtrl" member="yes">
-							<value>C:\\Devel\\wxWidgets\\lib\\gcc__dll\\mswu&#x0A;C:\\Devel\\wxWidgets\\include&#x0A;</value>
-							<size>-1,60</size>
-							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE</style>
+						<object class="wxBoxSizer" variable="bsz_headers" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="wxID_ANY" variable="m_DoHeadersCtrl" member="yes">
+									<label>Parse the following priority files/headers first (colon separated):</label>
+									<handler function="OnDoHeadersClick" entry="EVT_CHECKBOX" />
+								</object>
+								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="wxID_ANY" variable="m_HeadersCtrl" member="yes">
+									<enabled>0</enabled>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -44,7 +71,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
-							<size>640,350</size>
+							<minsize>640,250</minsize>
 							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -54,7 +81,7 @@
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
-				<option>1</option>
+				<option>2</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer" variable="bsz_search_tree" member="no">
@@ -83,7 +110,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="wxID_ANY" variable="m_TreeCtrl" member="yes">
-							<size>640,200</size>
+							<minsize>640,150</minsize>
 							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -93,6 +120,7 @@
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
+				<option>1</option>
 			</object>
 		</object>
 		<object class="wxMenuBar" variable="mnu_main" member="no">
@@ -131,6 +159,12 @@
 					<accel>Ctrl+F</accel>
 					<help>Find keyword</help>
 					<handler function="OnMenuFindSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="wxID_TOKEN" variable="mnu_item_token" member="no">
+					<label>&amp;Token...</label>
+					<accel>Ctrl+T</accel>
+					<help>Find token</help>
+					<handler function="OnMenuTokenSelected" entry="EVT_MENU" />
 				</object>
 			</object>
 			<object class="wxMenu" variable="mnu_help" member="no">
