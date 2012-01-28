@@ -2054,6 +2054,31 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
     control->GotoLine(line);
 }
 
+bool cbEditor::GotoTokenPosition(int line, const wxString& tokenName)
+{
+    cbStyledTextCtrl* control = GetControl();
+    if (line > control->GetLineCount())
+        return false;
+
+    GotoLine(line, true); // center function on screen
+    SetFocus();           // ...and set focus to this editor
+
+    // Now highlight the token
+    const int startPos = control->GetCurrentPos();
+    const int endPos   = startPos + control->LineLength(line);
+    if (endPos <= startPos)
+        return false;
+
+    int tokenPos = control->FindText(startPos, endPos, tokenName,
+                                     wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, nullptr);
+    if (tokenPos != wxSCI_INVALID_POSITION)
+        control->SetSelectionInt(tokenPos, tokenPos + tokenName.Len());
+    else
+        control->GotoPos(startPos); // fall back, point the cursor to it
+
+    return true;
+}
+
 bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
 {
     if (HasBreakpoint(line))
