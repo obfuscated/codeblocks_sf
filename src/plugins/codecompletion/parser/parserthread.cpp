@@ -968,16 +968,13 @@ void ParserThread::DoParse()
                         int pos = peek.find(ParserConsts::ptr);
                         if (pos != wxNOT_FOUND)
                         {
-                            if (m_Tokenizer.PeekToken().GetChar(0) == ParserConsts::opbracket_chr)
+                            peek = m_Tokenizer.PeekToken();
+                            if (peek.GetChar(0) == ParserConsts::opbracket_chr)
                             {
                                 arg.Trim(true).RemoveLast();
-                                //wxString token = arg.Mid(pos+1,)
                                 arg.Remove(0, pos+1);
                                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
-                                {
-                                    // function
-                                    HandleFunction(arg);
-                                }
+                                    HandleFunction(arg); // function
                             }
                         }
                         else // wxString arg = m_Tokenizer.GetToken(); // eat args ()

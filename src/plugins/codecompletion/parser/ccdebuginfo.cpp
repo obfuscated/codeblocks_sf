@@ -28,7 +28,7 @@
 #include <wx/busyinfo.h>
 
 #include "ccdebuginfo.h"
-#include "parser/parser.h"
+#include "parser.h"
 
 #define CC_DEBUGINFO_DEBUG_OUTPUT 0
 
