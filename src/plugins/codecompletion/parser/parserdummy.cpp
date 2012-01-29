@@ -87,14 +87,14 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool fo
     return ParserCommon::ftOther;
 }
 
-ParserBase::ParserBase()
+ParserBase::ParserBase() : m_TokensTree(NULL), m_TempTokensTree(NULL)
 {
-    CCLogger::Get()->Log(wxT("ParserDummy::ParserBase::ParserBase() : Instantiation of ParserDummy object."));
+    // override default constructor of ParserBase (parser.h)
 }
 
 ParserBase::~ParserBase()
 {
-    CCLogger::Get()->Log(wxT("ParserDummy::ParserBase::~ParserBase() : Destruction of ParserDummy object."));
+    // override default destructor of ParserBase (parser.h)
 }
 
 wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)

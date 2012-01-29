@@ -12,17 +12,15 @@
  * ParserTestApp():
  * - Creates the Frame
  * -> Frame(): holds dummy parser "ParserTest m_ParserTest;"
- *   -> Frame::Start(_T("test.h")):
- *      - Provided an initial dummy file, can be set by the user later.
+ *   - Provided an initial dummy file, can be set by the user later.
+ *   -> Frame::Start():
  *      - Reads all UI values into global vars (includes, headers)
+ *      - compiles initial global file queue
  *      - Creates global "Busy" dialog
- *      - Calls Frame::DoStart()
- *      - destroys "Busy" dialog
- *   -> Frame::DoStart():
  *      - Calls ParserTest::Clear()
- *      - Calls ParserTest::Start(filename)
+ *      - Iterates over global file queue and calls ParserTest::Start(file)
  *      - Prints results to UI
- * <LOOP_OVER_FILES>
+ *      - destroys "Busy" dialog
  * -> ParserTest(): holds dummy tree "TokensTree* m_pTokensTree;"
  *   -> ParserTest::Start(file)
  *      - Note: In ParserTest::ParserTest() the macro replacements are setup
@@ -43,24 +41,18 @@
  *       - Read the file or buffer and tokenises it into elements
  *    -> ParserThread::DoParse():
  *       - Recursive function that handles all the dirty stuff
- *       - Calls ParserCommon::FileType() in ParserThread::HandleIncludes()
+ *       - Calls ParserDummy::ParserCommon::FileType() in ParserThread::HandleIncludes()
  *         to parse additionally encountered files (#includes)
- *       - Calls ParserBase::ParseFile() in ParserThread::HandleIncludes()
+ *       - Calls ParserDummy::ParserBase::ParseFile() in ParserThread::HandleIncludes()
  *         to parse additionally encountered files (#includes)
  * -> ParserDummy(): provides the implementation to "Parser", namely:
- *      - ParserCommon::FileType:
+ *      - ParserDummy::ParserCommon::FileType:
  *        - determines file type as source/header according extension
- *      - ParserBase::GetFullFileName:
+ *      - ParserDummy::ParserBase::GetFullFileName:
  *        - uses includes provided to compute full file name
- *      - ParserBase::ParseFile():
- *        - Calls ParserDummy::Parse()
- *      - ParserDummy::Parse():
+ *      - ParserDummy::ParserBase::ParseFile():
  *        - Monitors the parsing of files to avoid re-parsing the same file
- *        - Updates the "Busy" dialog with the currently parsed file
- *        - Creates a *new* dummy parser "ParserTest pt;"
- *        - Calls ParserTest::Clear()
- *        - Calls ParserTest::Start(filename)
- * </LOOP_OVER_FILES>
+ *        - Appends new files to file global file queue
  * </CALL_GRAPH>
  */
 
@@ -106,10 +98,10 @@ bool ParserTestApp::OnInit()
     wxInitAllImageHandlers();
     //*)
 
-    Frame* frame = new Frame;
+    Frame* frame = new Frame(_T("test.h"));
     frame->Center();
     frame->Show();
-    frame->Start(_T("test.h"));
+    frame->Start();
 
     return wxsOK;
 }

@@ -3,7 +3,6 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="CC ParserTest" />
-		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="parsertest">
@@ -36,6 +35,7 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll\mswu" />
 			<Add directory="..\..\..\include" />
+			<Add directory=".." />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -50,6 +50,8 @@
 			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="app.cpp" />
+		<Unit filename="ccdebuginfo.cpp" />
+		<Unit filename="ccdebuginfo.h" />
 		<Unit filename="cclogger.cpp" />
 		<Unit filename="cclogger.h" />
 		<Unit filename="expression.cpp" />

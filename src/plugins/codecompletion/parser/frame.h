@@ -26,11 +26,11 @@ class wxBusyInfo;
 class Frame : public wxFrame
 {
 public:
-    Frame();
+    Frame(const wxString& main_file);
     virtual ~Frame();
 
     void AppendToLog(const wxString& log);
-    void Start(const wxString& file = wxEmptyString);
+    void Start();
 
 protected:
     //(*Identifiers(Frame)
@@ -52,8 +52,6 @@ private:
     void OnFindDialog(wxFindDialogEvent& event);
     void OnCCLogger(wxCommandEvent& event);
 
-    void DoStart();
-
     //(*Declarations(Frame)
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
@@ -68,13 +66,12 @@ private:
 
     wxBusyInfo*          m_BusyInfo;
 
+    wxString             m_MainFile;
     size_t               m_LogCount;
 
     wxFindReplaceData    m_FRData;
     wxFindReplaceDialog* m_FRDlg;
     int                  m_LastIndex;
-
-    ParserTest           m_ParserTest;
 
     DECLARE_EVENT_TABLE()
 };

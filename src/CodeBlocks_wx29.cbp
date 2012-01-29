@@ -1305,12 +1305,6 @@
 		<Unit filename="plugins\classwizard\resources\new_class.xrc">
 			<Option target="Class wizard" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\ccdebuginfo.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\ccdebuginfo.h">
-			<Option target="Code-completion" />
-		</Unit>
 		<Unit filename="plugins\codecompletion\ccoptionsdlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1357,6 +1351,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\ccdebuginfo.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\ccdebuginfo.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\parser\cclogger.cpp">
@@ -3601,7 +3601,7 @@
 				<resources>
 					<wxScrollingDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" fwddecl="0" i18n="1" name="VirtualBuildTargetsDlg" language="CPP" />
 					<wxScrollingDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" fwddecl="0" i18n="1" name="DataBreakpointDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/ccdebuginfo.cpp" hdr="plugins/codecompletion/ccdebuginfo.h" fwddecl="0" i18n="1" name="CCDebugInfo" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/parser/ccdebuginfo.cpp" hdr="plugins/codecompletion/parser/ccdebuginfo.h" fwddecl="0" i18n="1" name="CCDebugInfo" language="CPP" />
 					<wxPanel wxs="wxsmith/ScriptConsole.wxs" src="src/scriptconsole.cpp" hdr="src/scriptconsole.h" fwddecl="0" i18n="1" name="ScriptConsole" language="CPP" />
 					<wxPanel wxs="wxsmith/BuildTargetPanel.wxs" src="plugins/scriptedwizard/buildtargetpanel.cpp" hdr="plugins/scriptedwizard/buildtargetpanel.h" fwddecl="0" i18n="1" name="BuildTargetPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/CompilerPanel.wxs" src="plugins/scriptedwizard/compilerpanel.cpp" hdr="plugins/scriptedwizard/compilerpanel.h" fwddecl="0" i18n="1" name="CompilerPanel" language="CPP" />

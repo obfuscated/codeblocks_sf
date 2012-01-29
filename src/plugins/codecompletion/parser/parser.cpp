@@ -259,6 +259,11 @@ ParserBase::~ParserBase()
     Delete(m_TempTokensTree);
 }
 
+TokensTree* ParserBase::GetTokensTree()
+{
+    return m_TokensTree;
+}
+
 bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
 {
     return false;

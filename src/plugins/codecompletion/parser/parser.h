@@ -168,7 +168,7 @@ public:
     virtual bool     Done()          { return true;             }
     virtual wxString NotDoneReason() { return wxEmptyString;    }
 
-    TokensTree* GetTokensTree()      { return m_TokensTree;     }
+    virtual TokensTree* GetTokensTree(); // allow other implementations of derived (dummy) classes
     TokensTree* GetTempTokensTree()  { return m_TempTokensTree; }
 
     void AddIncludeDir(const wxString& dir);

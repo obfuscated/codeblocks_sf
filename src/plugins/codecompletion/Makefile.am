@@ -13,8 +13,7 @@ libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined
 
 libcodecompletion_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
 
-libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
-			ccoptionsdlg.cpp \
+libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			ccoptionsprjdlg.cpp \
 			classbrowser.cpp \
 			classbrowserbuilderthread.cpp \
@@ -23,6 +22,7 @@ libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
 			selectincludefile.cpp \
+			parser/ccdebuginfo.cpp \
 			parser/cclogger.cpp \
 			parser/parser.cpp \
 			parser/parserthread.cpp \
@@ -33,8 +33,7 @@ libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 			parser/searchtree.cpp \
 			parser/expression.cpp
 
-noinst_HEADERS = ccdebuginfo.h \
-			ccoptionsdlg.h \
+noinst_HEADERS = ccoptionsdlg.h \
 			ccoptionsprjdlg.h \
 			classbrowser.h \
 			classbrowserbuilderthread.h \
@@ -43,6 +42,7 @@ noinst_HEADERS = ccdebuginfo.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
 			selectincludefile.h \
+			parser/ccdebuginfo.h \
 			parser/cclogger.h \
 			parser/parser.h \
 			parser/parserthread.h \

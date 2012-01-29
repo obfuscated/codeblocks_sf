@@ -339,10 +339,12 @@ CCDebugInfo::~CCDebugInfo()
 
 void CCDebugInfo::FillFiles()
 {
+    TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     lstFiles->Freeze();
     lstFiles->Clear();
 
-    TokensTree* tokens = m_Parser->GetTokensTree();
     for (size_t i = 0; i < tokens->m_FilenamesMap.size(); ++i)
     {
         wxString file = tokens->m_FilenamesMap.GetString(i);
@@ -395,6 +397,8 @@ void CCDebugInfo::DisplayTokenInfo()
     }
 
     TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     Token* parent = tokens->at(m_Token->m_ParentIndex);
     tokens->RecalcInheritanceChain(m_Token);
 
@@ -443,6 +447,8 @@ void CCDebugInfo::DisplayTokenInfo()
 void CCDebugInfo::FillChildren()
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     cmbChildren->Clear();
 
     for (TokenIdxSet::iterator it = m_Token->m_Children.begin(); it != m_Token->m_Children.end(); ++it)
@@ -457,6 +463,8 @@ void CCDebugInfo::FillChildren()
 void CCDebugInfo::FillAncestors()
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     cmbAncestors->Clear();
 
     for (TokenIdxSet::iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
@@ -471,6 +479,8 @@ void CCDebugInfo::FillAncestors()
 void CCDebugInfo::FillDescendants()
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     cmbDescendants->Clear();
 
     for (TokenIdxSet::iterator it = m_Token->m_Descendants.begin(); it != m_Token->m_Descendants.end(); ++it)
@@ -484,7 +494,7 @@ void CCDebugInfo::FillDescendants()
 
 void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 {
-    if (!m_Parser)
+    if (!m_Parser || !m_Parser->GetTokensTree())
         return;
 
     lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
@@ -501,6 +511,8 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
     TokensTree* tokens = m_Parser->GetTokensTree();
+    if (!tokens) return;
+
     wxString search = txtFilter->GetValue();
 
     m_Token = 0;
@@ -560,8 +572,8 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
     for (TokenIdxSet::iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
     {
         if (count == idx)
-        {
             m_Token = m_Parser->GetTokensTree()->at(*it);
+        {
             DisplayTokenInfo();
             break;
         }
