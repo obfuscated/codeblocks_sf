@@ -43,7 +43,7 @@
 #include "classbrowser.h" // class's header file
 #include "nativeparser.h"
 
-#include "ccdebuginfo.h"
+#include "parser/ccdebuginfo.h"
 
 #define CC_CLASS_BROWSER_DEBUG_OUTPUT 0
 

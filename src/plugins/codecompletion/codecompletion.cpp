@@ -51,11 +51,11 @@
 
 #include "codecompletion.h"
 
-#include "ccdebuginfo.h"
 #include "ccoptionsdlg.h"
 #include "ccoptionsprjdlg.h"
 #include "insertclassmethoddlg.h"
 #include "selectincludefile.h"
+#include "parser/ccdebuginfo.h"
 #include "parser/cclogger.h"
 #include "parser/parser.h"
 #include "parser/tokenizer.h"
