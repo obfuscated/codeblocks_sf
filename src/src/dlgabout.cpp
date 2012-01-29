@@ -8,22 +8,26 @@
  */
 
 #include "sdk.h"
+
 #ifndef CB_PRECOMP
-#ifdef __WXMAC__
-#include <wx/font.h>
-#endif //__WXMAC__
-#include <wx/image.h>    // wxImage
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "licenses.h"
-#include "configmanager.h"
+    #ifdef __WXMAC__
+        #include <wx/font.h>
+    #endif //__WXMAC__
+    #include <wx/image.h>    // wxImage
+    #include <wx/intl.h>
+    #include <wx/stattext.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+
+    #include "licenses.h"
+    #include "configmanager.h"
 #endif
+
 #include <wx/bitmap.h>
 #include <wx/dcmemory.h>    // wxMemoryDC
 #include <wx/statbmp.h>
+
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
 #include "configmanager.h"
@@ -32,7 +36,12 @@
 
 dlgAbout::dlgAbout(wxWindow* parent)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAbout"),_T("wxScrollingDialog"));
+    if (!wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAbout"), _T("wxScrollingDialog")))
+    {
+        cbMessageBox(_("There was an error loading the \"About\" dialog from XRC file."),
+                     _("Information"), wxICON_EXCLAMATION);
+        return;
+    }
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
@@ -45,13 +54,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
                                    "plugins...\n");
 
     wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1005.png");
-
-
-    wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
-
-    wxImage im;
-    im.LoadFile(file, wxBITMAP_TYPE_PNG );
-    im.ConvertAlphaToMask();
+    wxImage im; im.LoadFile(file, wxBITMAP_TYPE_PNG); im.ConvertAlphaToMask();
     wxBitmap bmp(im);
     wxMemoryDC dc;
     dc.SelectObject(bmp);
@@ -90,11 +93,13 @@ dlgAbout::dlgAbout(wxWindow* parent)
 #endif
     }
 
+    wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
+    bmpControl->SetSize(im.GetWidth(),im.GetHeight());
     bmpControl->SetBitmap(bmp);
 
     XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
-    XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
-    XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
+    XRCCTRL(*this, "txtDescription",    wxTextCtrl)->SetValue(description);
+    XRCCTRL(*this, "txtThanksTo",       wxTextCtrl)->SetValue(_(
         "Developers:\n"
         "--------------\n"
         "Yiannis Mandravellos: Developer - Project leader\n"
@@ -139,11 +144,12 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "The GNU Software Foundation (http://www.gnu.org).\n"
         "Last, but not least, the open-source community."));
     XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
-    XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
+
+    XRCCTRL(*this, "lblName",    wxStaticText)->SetLabel(appglobals::AppName);
     XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
-    XRCCTRL(*this, "lblSDK", wxStaticText)->SetLabel(appglobals::AppSDKVersion);
-    XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
-    XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(appglobals::AppContactEmail);
+    XRCCTRL(*this, "lblSDK",     wxStaticText)->SetLabel(appglobals::AppSDKVersion);
+    XRCCTRL(*this, "lblAuthor",  wxStaticText)->SetLabel(_("The Code::Blocks Team"));
+    XRCCTRL(*this, "lblEmail",   wxStaticText)->SetLabel(appglobals::AppContactEmail);
     XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);
 
 #ifdef __WXMAC__
@@ -151,6 +157,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     wxFont font1 = XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->GetFont();
     font1.SetPointSize(10);
     XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetFont(font1);
+
     wxFont font2 = XRCCTRL(*this, "txtLicense", wxTextCtrl)->GetFont();
     font2.SetPointSize(10);
     XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
