@@ -14,6 +14,7 @@
 
 #include <stack>
 
+///Calculate the hash value for a wxString
 class HashForWxStringMap
 {
 public:
@@ -41,22 +42,26 @@ public:
     EqualForWxStringMap& operator=(const EqualForWxStringMap&) { return *this; }
 };
 
+///wxString->wxString hash map used to store the macro replacement rules
 WX_DECLARE_HASH_MAP(wxString, wxString, HashForWxStringMap, EqualForWxStringMap, wxStringHashMap);
 
+/// Enum defines the skip state of the Tokenizer
 enum TokenizerState
 {
-    tsSkipEqual         = 0x0001,
-    tsSkipQuestion      = 0x0002,
-    tsSkipSubScrip      = 0x0004,
-    tsSingleAngleBrace  = 0x0008,
-    tsReadRawExpression = 0x0010,
+    tsSkipEqual         = 0x0001,         /// Skip the assignment statement
+    tsSkipQuestion      = 0x0002,         /// Skip the conditional evaluation statement
+    tsSkipSubScrip      = 0x0004,         /// Skip the array-subscript notation statement
 
-    tsSkipNone          = 0x1000,
+    tsSingleAngleBrace  = 0x0008,         /// Reserve angle braces
+    tsReadRawExpression = 0x0010,         /// Reserve every chars
+
+    tsSkipNone          = 0x1000,         /// Skip None
     // convenient masks
     tsSkipUnWanted      = tsSkipEqual    | tsSkipQuestion | tsSkipSubScrip,
     tsTemplateArgument  = tsSkipUnWanted | tsSingleAngleBrace
 };
 
+/// Enum categorizing C-preprocessor directives
 enum PreprocessorType
 {
     ptIf                = 0x0001,   // #if
@@ -70,22 +75,24 @@ enum PreprocessorType
     ptOthers            = 0x0009,   // #include, #define ...
 };
 
+/// Whether we need to handle C-preprocessor directives
 struct TokenizerOptions
 {
     bool wantPreprocessor;
 };
 
 /** @brief This is just a simple lexer class
-  *
-  * A Tokenizer do the lexical analysis on an buffer. The buffer is a wxString either open from a file
-  * or a wxString already in memory. The most public interface is the two member function:
-  * GetToken() and PeekToken(). The first one just eat a token string, and the later one do a "look ahead"
-  * on the next token string, thus, the peeked string will be buffered to the next GetToken() call, this can
-  * improve the performance.
-  * Also, Tokenizer class do some kind of handling Marcro on the buffer, see
-  * member-function MacroReplace(). Further, more functions like "conditional preprocessor" handling can
-  * be added.
-  */
+ *
+ * A Tokenizer does the lexical analysis on a buffer. The buffer is either a wxString loaded from a local source/header file
+ * or a wxString already in memory(e.g. the scintilla text buffer). The most public interfaces are two member functions:
+ * GetToken() and PeekToken().
+ * The former one eats one token string from buffer, the later one does a "look ahead" on the buffer and return
+ * the next token string(peeked string). The peeked string content will be buffered until the next GetToken() call,
+ * thus performance can be improved.
+ * Also, Tokenizer class does some kind of handling "Macro replacement" on the buffer to imitate the macro expansion in
+ * C-preprocessor, see member-function MacroReplace() for details.
+ * Further more, it handles some "conditional preprocessor directives"(like "#if xxx").
+ */
 class Tokenizer
 {
 public:
@@ -100,7 +107,7 @@ public:
     /** Initialize the buffer by opening a file through a loader. */
     bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
 
-    /** Initialize the buffer by directly use a wxString reference. */
+    /** Initialize the buffer by directly using a wxString reference. */
     bool InitFromBuffer(const wxString& buffer, const wxString& fileOfBuffer = wxEmptyString,
                         size_t initLineNumber = 0);
 
@@ -119,7 +126,7 @@ public:
         m_TokenizerOptions.wantPreprocessor = wantPreprocessor;
     };
 
-    /** Set the Tokenizer Skipping options. Eg, sometimes, we need to skip the statement after "=",
+    /** Set the Tokenizer skipping options. E.g. sometimes, we need to skip the statement after "=",
      * but sometimes, we should disable this options, see more details on TokenizerState.
      */
     void SetState(TokenizerState state)
@@ -127,7 +134,7 @@ public:
         m_State = state;
     };
 
-    /** Return the Skipping options value, see TokenizerState for more details.*/
+    /** Return the skipping options value, see TokenizerState for more details.*/
     TokenizerState GetState()
     {
         return m_State;
@@ -151,13 +158,15 @@ public:
         return m_LineNumber;
     };
 
-    /** Return the brace "{" level */
+    /** Return the brace "{" level.
+     * the value will increase by one when we meet a "{", decrease by one when we meet a "}".
+     */
     unsigned int GetNestingLevel() const
     {
         return m_NestLevel;
     };
 
-    /** Save the brace level, the parser might need to ignore the nesting level in some cases */
+    /** Save the brace "{" level, the parser might need to ignore the nesting level in some cases */
     void SaveNestingLevel()
     {
         m_SavedNestingLevel = m_NestLevel;
@@ -187,7 +196,7 @@ public:
     void ReadParentheses(wxString& str, bool trimFirst);
     void ReadParentheses(wxString& str);
 
-    /** Skip fron the current position to the end of line.
+    /** Skip from the current position to the end of line.
      * @param nestBraces if true, we should still counting the brace levels in this function.
      */
     bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
@@ -195,22 +204,23 @@ public:
     /** Skip to then end of the C++ style comment */
     bool SkipToInlineCommentEnd();
 
-    /** Add one Replacement rules, this is just a simple way of handling preprocessor (macro) replacement.
-     * the rule composite of two strings. if the first string has found in
-     * the Tokenizer, the it will return the second string instead. We have more replacement rules to
-     * expand this simple replacement.
-     * for replace the "_GLIBCXX_BEGIN_NAMESPACE(std)" to  "namespace std {"
-     * we can use: Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
-     * see more details in CodeCompletion::LoadTokenReplacements() function body.
+    /** Add one "replacement rule", this is just a simple way of defining a macro definition.
+     * The rule composites two strings: the key string and the value string.
+     * When the Tokenizer gets an identifier kind string, it is lookuped in the
+     * replacement rules map, if it matches one rule, the rule's value string will be returned instead..
+     * Other rules are some function like macro definition,
+     * E.g. to replace the "_GLIBCXX_BEGIN_NAMESPACE(std)" to  "namespace std {"
+     * We can use: Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
+     * See more details in CodeCompletion::LoadTokenReplacements() function.
      * @param from the matching key string
-     * @param to the matching value
+     * @param to the matching value string
      */
     static void SetReplacementString(const wxString& from, const wxString& to)
     {
         s_Replacements[from] = to;
     };
 
-    /** Remove a replacement rule */
+    /** Remove a macro replacement rule */
     static void RemoveReplacementString(const wxString& from)
     {
         wxStringHashMap::iterator it = s_Replacements.find(from);
@@ -243,10 +253,10 @@ public:
         return m_TokenIndex < m_BufferLen;
     }
 
-    /** Backward buffer replace for re-parsing */
+    /** Backward buffer replacement for re-parsing */
     bool ReplaceBufferForReparse(const wxString& target, bool updatePeekToken = true);
 
-    /** Get actual context for macro first, then replace buffer to re-parsing */
+    /** Get actual context for macro, then replace buffer for re-parsing */
     bool ReplaceMacroActualContext(Token* tk, bool updatePeekToken = true);
 
     /** Get first token position in buffer */
@@ -258,14 +268,14 @@ public:
     int GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLen,
                               const wxChar* target, const size_t targetLen);
 
-    /** KMP find, get the first pos, if find nothing, return -1 */
+    /** KMP find, get the first position, if find nothing, return -1 */
     int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
 
 protected:
     /** Initialize some member variables */
     void BaseInit();
 
-    /** Do the job of lexer, both GetToken() and PeekToken will internally call this function */
+    /** Do the actual lexical analysis, both GetToken() and PeekToken will internally call this function */
     wxString DoGetToken();
 
     /** Read a file, and fill the m_Buffer */
@@ -274,10 +284,10 @@ protected:
     /** Check the current character is a C-Escape character in a string. */
     bool IsEscapedChar();
 
-    /** Skip every character until we meet a ch */
+    /** Skip character until we meet a ch */
     bool SkipToChar(const wxChar& ch);
 
-    /** Skip every until we meet any characters in a wxChar Array,
+    /** Skip characters until we meet any characters in a wxChar Array.
      * @param supportNesting handling brace level in this function.
      * @param skipPreprocessor handling preprocessor directive.
      * @param skipAngleBrace if this value is false, we will not do a match of "< > "
@@ -298,10 +308,10 @@ protected:
     /** Skip the C/C++ comment */
     bool SkipComment();
 
-    /** Skip the "XXXX" or 'X' */
+    /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single quotes).*/
     bool SkipString();
 
-    /** Move to the end of "XXXX" or 'X' */
+    /** Move to the end of string literal or character literal */
     bool SkipToStringEnd(const wxChar& ch);
 
     /** Move to the next character in the buffer, amount defines the steps (by default, it is one) */
@@ -315,7 +325,7 @@ protected:
         return 0;
     };
 
-    /** Do both of the previous two functions */
+    /** Do the previous two functions sequentially */
     wxChar CurrentCharMoveNext()
     {
         wxChar c = CurrentChar();
@@ -323,7 +333,7 @@ protected:
         return c;
     };
 
-    /** Return (peek)the next character */
+    /** Return (peek) the next character */
     wxChar NextChar() const
     {
         if ((m_TokenIndex + 1) >= m_BufferLen) // m_TokenIndex + 1) < 0  can never be true
@@ -342,7 +352,7 @@ protected:
     };
 
 private:
-    /** Check if a ch is in the wxChar array */
+    /** Check if a ch matches any characters in the wxChar array */
     inline bool CharInString(const wxChar ch, const wxChar* chars) const
     {
         int len = wxStrlen(chars);
@@ -367,7 +377,7 @@ private:
     inline bool IsBackslashBeforeEOL()
     {
         wxChar last = PreviousChar();
-        // if DOS line endings, we 've hit \r and we skip to \n...
+        // if DOS line endings, we have hit \r and we skip to \n...
         if (last == _T('\r') && (m_TokenIndex - 2 >= 0))
             return m_Buffer.GetChar(m_TokenIndex - 2) == _T('\\');
         return last == _T('\\');
@@ -377,29 +387,27 @@ private:
     void MacroReplace(wxString& str);
 
     /** Judge what is the first block
-      * If call this function, it will call 'SkipToEOL(false, true)' final.
+      * It will call 'SkipToEOL(false, true)' before returned.
       */
     bool CalcConditionExpression();
 
-    /** If the macro defined, return true
-      * If call this function, it will call 'SkipToEOL(false, true)' final.
+    /** If the macro is defined, return true
+      * It will call 'SkipToEOL(false, true)' before returned.
       */
     bool IsMacroDefined();
 
-    /** Skip to next condition preprocessor, To mark #else #elif #endif as the end
-      */
+    /** Skip to the next conditional preprocessor directive branch. */
     void SkipToNextConditionPreprocessor();
 
-    /** Skip to end condition preprocessor, To mark #endif as the end
-      */
+    /** Skip to the #endif conditional preprocessor directive. */
     void SkipToEndConditionPreprocessor();
 
-    /** Get current condition preprocessor type */
+    /** Get current conditional preprocessor type */
     PreprocessorType GetPreprocessorType();
 
-    /** handle the proprocessor directive:
+    /** handle the preprocessor directive:
       * #ifdef XXX or #endif or #if or #elif or...
-      * If handled condition preprocessor, return true; if Un-condition preprocessor, return false
+      * If conditional preprocessor handles correctly, return true, otherwise return false.
       */
     void HandleConditionPreprocessor(const PreprocessorType type);
 
@@ -412,27 +420,27 @@ private:
     /** Just for KMP find */
     void KMP_GetNextVal(const wxChar* pattern, int next[]);
 
-    /** Tokenizer options specify the current skipping option */
+    /** Tokenizer options specify the skipping option */
     TokenizerOptions     m_TokenizerOptions;
     TokensTree*          m_TokensTree;
 
-    /** File name */
+    /** Filename of the buffer */
     wxString             m_Filename;
-    /** Buffer, all the lexial analysis is done on this buffer string */
+    /** Buffer content, all the lexical analysis is done on this */
     wxString             m_Buffer;
     /** Buffer length */
     unsigned int         m_BufferLen;
 
-    /** These variables defined the current Token string attached information,
-     * such as the token name, the line of the token, the current brace nest level
+    /** These variables define the current token string and its auxiliary information,
+     * such as the token name, the line number of the token, the current brace nest level.
      */
-    wxString             m_Token;
-    unsigned int         m_TokenIndex;
-    unsigned int         m_LineNumber;
-    unsigned int         m_NestLevel; // keep track of block nesting { }
+    wxString             m_Token;                /// token name
+    unsigned int         m_TokenIndex;           /// index offset in buffer
+    unsigned int         m_LineNumber;           /// line offset in buffer
+    unsigned int         m_NestLevel;            /// keep track of block nesting { }
     unsigned int         m_SavedNestingLevel;
 
-    /** Backuped the previous Token information */
+    /** Backup the previous Token information */
     unsigned int         m_UndoTokenIndex;
     unsigned int         m_UndoLineNumber;
     unsigned int         m_UndoNestLevel;
@@ -444,26 +452,26 @@ private:
     unsigned int         m_PeekLineNumber;
     unsigned int         m_PeekNestLevel;
 
-    /** bool variable specifies the buffer is ok */
+    /** bool variable specifies whether the buffer is ready for parsing */
     bool                 m_IsOK;
     /** Tokeniser state specifies the skipping option */
     TokenizerState       m_State;
-    /** File loader pointer */
+    /** File loader */
     LoaderBase*          m_Loader;
 
-    /** Calculate Expression's result, true or false */
+    /** Calculate Expression's result, stack for Shunting-yard algorithm */
     std::stack<bool>     m_ExpressionResult;
 
-    /** is replace buffer parsing */
+    /** Whether we are in replace buffer parsing, avoid recursive calling */
     bool                 m_IsReplaceParsing;
 
-    /** save the remaining length, after the first replace buffer */
+    /** Save the remaining length, after the first replace buffer */
     size_t               m_FirstRemainingLength;
 
-    /** Save the repeat replace buffer count if current is replace parsing */
+    /** Save the repeat replace buffer count if currently in replace parsing */
     size_t               m_RepeatReplaceCount;
 
-    /** Static member, this is a map to hold the replacement rules */
+    /** Static member, this is a hash map storing all macro replacement rules */
     static wxStringHashMap s_Replacements;
 };
 
