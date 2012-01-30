@@ -191,7 +191,7 @@ bool EditorBase::ThereAreOthers() const
     return (Manager::Get()->GetEditorManager()->GetEditorsCount() > 1);
 }
 
-wxMenu* EditorBase::CreateContextSubMenu(int id) // For context menus
+wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
 {
     wxMenu* menu = 0;
 
