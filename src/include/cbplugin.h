@@ -349,6 +349,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
         /** @brief Get the exit code of the last build process. */
         virtual int GetExitCode() const = 0;
 
+        virtual int Configure() { return 0; }
         /** @brief Display configuration dialog.
           *
           * @param project The selected project (can be NULL).

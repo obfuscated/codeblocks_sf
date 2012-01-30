@@ -472,7 +472,7 @@ wxString CompileTargetBase::GetBasePath() const
     return !base.IsEmpty() ? base : _T(".");
 }
 
-void CompileTargetBase::SetTargetType(TargetType pt)
+void CompileTargetBase::SetTargetType(const TargetType& pt)
 {
     if (m_TargetType == pt)
         return;
