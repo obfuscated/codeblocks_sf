@@ -151,9 +151,10 @@ protected:
         return Parse() ? 0 : 1;
     }
 
-    /** skip until we meet one of the characters in the wxString
-      * @param chars wxString specifies all the ending characters
-      * @param supportNesting if true, we need to record the "{" and "}" nesting levels when skipping.
+    /** Continuously eat the tokens until we meet one of the matching characters
+      * @param chars wxString includes all the matching characters
+      * @param supportNesting if true, we need to consider the "{" and "}" nesting levels when skipping,
+      * in this case, the function returned on a match by nesting/brace level preserved.
       */
     wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
 

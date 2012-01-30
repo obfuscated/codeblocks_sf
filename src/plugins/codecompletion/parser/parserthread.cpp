@@ -210,10 +210,17 @@ wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting
         if (token.IsEmpty())
             return ParserConsts::null; // eof
 
+        //if supportNesting==true, we only do a match in the same brace/nesting level, thus we preserve
+        //the brace level when the function returned. But if the supportNesting==false, we do not consider
+        //the brace level on matching.
         if (!supportNesting || m_Tokenizer.GetNestingLevel() == level)
         {
+            //only consider tokens of length one
+            if (token.length() > 1)
+                continue;
+
             wxChar ch = token.GetChar(0);
-            if (chars.Find(ch) != wxNOT_FOUND)
+            if (chars.Find(ch) != wxNOT_FOUND) //match one char
                 return ch;
         }
     }
@@ -507,11 +514,11 @@ void ParserThread::DoParse()
     m_LastToken.Clear();
     m_LastUnnamedTokenName.Clear();
 
-    // Notice: clears the queue "m_EncounteredTypeNamespaces"
+    // Notice: clear the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
         m_EncounteredTypeNamespaces.pop();
 
-    // Notice: clears the queue "m_EncounteredNamespaces"
+    // Notice: clear the queue "m_EncounteredNamespaces"
     while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 
