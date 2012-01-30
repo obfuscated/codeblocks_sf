@@ -725,7 +725,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     m_Files.insert(pf);
     if (!m_CurrentlyLoading)
     {
-        // Onbly add the file, if we are not currently loading the project and
+        // Only add the file, if we are not currently loading the project and
         // m_FileArray is already initialised.
         // Initialising is done in the getter-function (GetFile(index), to save time,
         // because in many cases m_FileArray is not needed
@@ -1620,6 +1620,7 @@ ProjectFile* cbProject::GetFile(int index)
 
     if (index < 0 || index >= m_Files.size())
         return NULL;
+
     return m_FileArray.Item(index);
 }
 
@@ -1672,8 +1673,7 @@ bool cbProject::CloseAllFiles(bool dontsave)
 {
     // first try to close modified editors
 
-    if (!dontsave)
-        if (!QueryCloseAllFiles())
+    if (!dontsave && !QueryCloseAllFiles())
             return false;
 
     // now free the rest of the project files
@@ -1682,13 +1682,17 @@ bool cbProject::CloseAllFiles(bool dontsave)
     while (it != m_Files.end())
     {
         ProjectFile* f = *it;
-        Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
-        delete f;
+        if (f)
+        {
+            Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
+            delete f;
+        }
         m_Files.erase(it);
         m_FileArray.Remove(*it);
         it = m_Files.begin();
     }
     Manager::Get()->GetEditorManager()->ShowNotebook();
+
     return true;
 }
 
