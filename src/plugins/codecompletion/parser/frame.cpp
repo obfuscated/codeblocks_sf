@@ -484,8 +484,7 @@ void Frame::OnFindDialog(wxFindDialogEvent& event)
 
 void Frame::OnMenuReloadSelected(wxCommandEvent& event)
 {
-    if (!ParserTestAppGlobal::s_fileQueue.IsEmpty())
-        Start();
+    Start();
 }
 
 void Frame::OnDoHeadersClick(wxCommandEvent& event)

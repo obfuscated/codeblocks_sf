@@ -154,9 +154,10 @@ protected:
     /** Continuously eat the tokens until we meet one of the matching characters
       * @param chars wxString includes all the matching characters
       * @param supportNesting if true, we need to consider the "{" and "}" nesting levels when skipping,
+      * @param singleCharToken if true, only single char tokens (like semicolon, brace etc.) are considered (speeds up parsing for queries like this)
       * in this case, the function returned on a match by nesting/brace level preserved.
       */
-    wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
+    wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false, bool singleCharToken = true);
 
     /** actually run the syntax analysis*/
     void DoParse();
