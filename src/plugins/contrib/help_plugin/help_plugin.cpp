@@ -7,8 +7,6 @@
  * $HeadURL$
  */
 
-#include <vector>
-
 #include "sdk.h"
 #ifndef CB_PRECOMP
   #include <wx/filename.h>
@@ -28,30 +26,33 @@
   #include "projectmanager.h"
 #endif
 
-#include "help_plugin.h"
-#include "MANFrame.h"
+#include <vector>
 
 #include <wx/textdlg.h>
 #include <wx/mimetype.h>
-#include "cbstyledtextctrl.h"
-
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)
 #include <wx/helpbase.h> //(wxHelpControllerBase class)
 #include <wx/helpwin.h> //(Windows Help controller)
+#include <wx/generic/helpext.h> //(external HTML browser controller)
+#include <wx/html/helpctrl.h> //(wxHTML based help controller: wxHtmlHelpController)
 
 #ifdef __WXMSW__
 #include <wx/msw/helpchm.h> // used in case we fail to load the OCX module (it could fail too)
 #include <wx/thread.h>
 #endif
 
-#include <wx/generic/helpext.h> //(external HTML browser controller)
-#include <wx/html/helpctrl.h> //(wxHTML based help controller: wxHtmlHelpController)
+#include <cbstyledtextctrl.h>
+#include <sc_base_types.h>
+#include <sqplus.h>
+
+
+#include "help_plugin.h"
+#include "MANFrame.h"
+
+
 
 // 20 wasn't enough
 #define MAX_HELP_ITEMS 32
-
-#include "scripting/bindings/sc_base_types.h"
-#include "scripting/sqplus/sqplus.h"
 
 int idHelpMenus[MAX_HELP_ITEMS];
 

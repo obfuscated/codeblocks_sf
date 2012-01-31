@@ -1,6 +1,8 @@
 #ifndef MANFRAME_H
 #define MANFRAME_H
 
+#include <vector>
+
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
@@ -9,7 +11,6 @@
 #include <wx/string.h>
 #include <wx/html/htmlwin.h>
 #include <wx/bitmap.h>
-#include <vector>
 
 class MANFrame : public wxPanel
 {

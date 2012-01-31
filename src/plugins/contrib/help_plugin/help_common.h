@@ -1,9 +1,10 @@
 #ifndef HELP_COMMON_H
 #define HELP_COMMON_H
 
-#include <wx/string.h>
 #include <vector>
 #include <utility>
+
+#include <wx/string.h>
 
 using std::vector;
 using std::pair;

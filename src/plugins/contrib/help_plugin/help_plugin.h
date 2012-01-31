@@ -8,7 +8,7 @@
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>
 #include <cbplugin.h> // the base class we're inheriting
-#include <wx/dynarray.h>
+
 #include "MANFrame.h"
 #include "HelpConfigDialog.h"
 

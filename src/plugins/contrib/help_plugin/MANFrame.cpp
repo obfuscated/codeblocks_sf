@@ -6,23 +6,27 @@
  * $Id$
  * $HeadURL$
  */
-#include "sdk.h"
+#include <sdk.h>
+
 #ifndef CB_PRECOMP
   #include <wx/arrstr.h>
   #include <wx/dir.h>
   #include <wx/filename.h>
   #include <wx/sizer.h>
-  #include "globals.h" // cbC2U
+  #include <globals.h> // cbC2U
 #endif
+
+#include <bzlib.h>
+#include <zlib.h>
+
+#include <stdio.h>
+
+#include <wx/sstream.h>
+#include <wx/wfstream.h>
 
 #include "MANFrame.h"
 #include "man2html.h"
 
-#include <wx/sstream.h>
-#include <wx/wfstream.h>
-#include <stdio.h>
-#include <bzlib.h>
-#include <zlib.h>
 
 namespace
 {
