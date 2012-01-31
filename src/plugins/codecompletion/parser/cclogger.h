@@ -6,21 +6,21 @@
 #ifndef CCLOGGER_H
 #define CCLOGGER_H
 
-#include <wx/event.h>
 #include <wx/string.h>
 
 #include <memory> // auto_ptr
 
 #include <prep.h> // nullptr
-#include <logmanager.h> // F()
 
-#ifndef CC_LOG_SYNC_SEND
-    #define CC_LOG_SYNC_SEND 0
+class wxEvtHandler;
+
+#ifndef CC_PROCESS_LOG_EVENT_TO_PARENT
+    #define CC_PROCESS_LOG_EVENT_TO_PARENT 0
 #endif
 
 #ifdef CC_PARSER_TEST
-    #undef CC_LOG_SYNC_SEND
-    #define CC_LOG_SYNC_SEND 1
+    #undef CC_PROCESS_LOG_EVENT_TO_PARENT
+    #define CC_PROCESS_LOG_EVENT_TO_PARENT 1
 #endif
 
 extern bool           g_EnableDebugTrace; //!< Toggles tracing into file.
@@ -29,94 +29,80 @@ extern const wxString g_DebugTraceFile;   //!< Trace file name (if above is enab
 class CCLogger
 {
 public:
-    static CCLogger* Get()
-    {
-        if (!s_Inst.get())
-            s_Inst.reset(new CCLogger);
-        return s_Inst.get();
-    }
-
-    void Init(wxEvtHandler* parent, int logId, int debugLogId)
-    {
-        m_Parent     = parent;
-        m_LogId      = logId;
-        m_debugLogId = debugLogId;
-    }
-
-    void Log(const wxString& msg)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
-        evt.SetString(msg);
-#if CC_LOG_SYNC_SEND
-        m_Parent->ProcessEvent(evt);
-#else
-        wxPostEvent(m_Parent, evt);
-#endif
-    }
-
-    void DebugLog(const wxString& msg)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_debugLogId);
-        evt.SetString(msg);
-#if CC_LOG_SYNC_SEND
-        m_Parent->ProcessEvent(evt);
-#else
-        wxPostEvent(m_Parent, evt);
-#endif
-    }
+    static CCLogger* Get();
+    void Init(wxEvtHandler* parent, int logId, int debugLogId);
+    void Log(const wxString& msg);
+    void DebugLog(const wxString& msg);
 
 protected:
-    CCLogger() : m_Parent(nullptr), m_LogId(0) {}
-    virtual ~CCLogger() {}
-    CCLogger(const CCLogger&) {}
-    CCLogger& operator= (const CCLogger&) { return *this; }
+    CCLogger() : m_Parent(nullptr), m_LogId(0), m_DebugLogId(0) { ; }
+    virtual ~CCLogger()                                         { ; }
+    CCLogger(const CCLogger&)                                   { ; }
+    CCLogger& operator= (const CCLogger&)                       { return *this; }
+
     friend class std::auto_ptr<CCLogger>;
     static std::auto_ptr<CCLogger> s_Inst;
 
 private:
     wxEvtHandler* m_Parent;
-    int m_LogId;
-    int m_debugLogId;
+    int           m_LogId;
+    int           m_DebugLogId;
 };
 
+//#define CC_ENABLE_LOCKER_TRACK
 
 #ifdef CC_ENABLE_LOCKER_TRACK
-    #define TRACK_THREAD_LOCKER(NAME)                                            \
-        CCLockerTrack NAME##Track(wxString(#NAME, wxConvUTF8),                   \
-                                  wxString(__FUNCTION__, wxConvUTF8),            \
-                                  wxString(__FILE__, wxConvUTF8),                \
-                                  __LINE__,                                      \
-                                  wxIsMainThread())
+    #define THREAD_LOCKER_LOCK(NAME)                                             \
+        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %s, %d"),              \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
     #define THREAD_LOCKER_SUCCESS(NAME)                                          \
         CCLogger::Get()->DebugLog(F(_T("%s.Success() : %s(), %s, %d"),           \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
                                     __LINE__))
+    #define THREAD_LOCKER_FAIL(NAME)                                             \
+        CCLogger::Get()->DebugLog(F(_T("%s.Fail() : %s(), %s, %d"),              \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
+    #define THREAD_LOCKER_ENTER(NAME)                                            \
+        CCLogger::Get()->DebugLog(F(_T("%s.Enter() : %s(), %s, %d"),             \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
+    #define THREAD_LOCKER_ENTERED(NAME)                                          \
+        CCLogger::Get()->DebugLog(F(_T("%s.Entered() : %s(), %s, %d"),           \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
+    #define THREAD_LOCKER_LEAVE(NAME)                                            \
+        CCLogger::Get()->DebugLog(F(_T("%s.Leave() : %s(), %s, %d"),             \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
 #else
-    #define TRACK_THREAD_LOCKER(NAME)
+    #define THREAD_LOCKER_LOCK(NAME)
     #define THREAD_LOCKER_SUCCESS(NAME)
+    #define THREAD_LOCKER_FAIL(NAME)
+    #define THREAD_LOCKER_ENTER(NAME)
+    #define THREAD_LOCKER_ENTERED(NAME)
+    #define THREAD_LOCKER_LEAVE(NAME)
 #endif
 
 class CCLockerTrack
 {
 public:
-    CCLockerTrack(const wxString& locker, const wxString& func, const wxString& file, int line,
-                  bool mainThread) :
-        m_LockerName(locker),
-        m_FuncName(func),
-        m_FileName(file),
-        m_Line(line),
-        m_MainThread(mainThread)
-    {
-        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
-    }
-    ~CCLockerTrack()
-    {
-        CCLogger::Get()->DebugLog(F(_T("%s.UnLock() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                    m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
-    }
+    CCLockerTrack(const wxString& locker, const wxString& func,
+                  const wxString& file, int line, bool mainThread);
+    ~CCLockerTrack();
 
 private:
     wxString m_LockerName;

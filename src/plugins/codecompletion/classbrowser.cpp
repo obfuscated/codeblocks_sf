@@ -130,8 +130,8 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     m_TreeForPopupMenu(0),
     m_Parser(0L),
     m_ActiveProject(0),
-    m_Semaphore(0, 1),
-    m_BuilderThread(0)
+    m_ClassBrowserSemaphore(0, 1),
+    m_ClassBrowserBuilderThread(0)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -163,11 +163,11 @@ ClassBrowser::~ClassBrowser()
 
     SetParser(NULL);
 
-    if (m_BuilderThread)
+    if (m_ClassBrowserBuilderThread)
     {
-        m_Semaphore.Post();
-        m_BuilderThread->Delete();
-        m_BuilderThread->Wait();
+        m_ClassBrowserSemaphore.Post();
+        // m_ClassBrowserBuilderThread->Delete(); --> would delete it twice and leads to a warning
+        m_ClassBrowserBuilderThread->Wait();
     }
 }
 
@@ -511,12 +511,15 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+            s_TokensTreeCritical.Enter();
+            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
             CCDebugInfo info(tree, m_Parser, ctd->m_Token);
             info.ShowModal();
+
+            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+            s_TokensTreeCritical.Leave();
 
             return;
         }
@@ -677,11 +680,14 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         TokensTree* tokensTree = m_Parser->GetTokensTree();
         size_t count = 0;
         {
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+            s_TokensTreeCritical.Enter();
+            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
             count = tokensTree->FindMatches(search, result, false, true);
+
+            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+            s_TokensTreeCritical.Leave();
         }
 
         if (count == 0)
@@ -692,11 +698,14 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         }
         else if (count == 1)
         {
-            TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-            wxCriticalSectionLocker locker(s_TokensTreeCritical);
-            THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+            s_TokensTreeCritical.Enter();
+            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
             token = tokensTree->at(*result.begin());
+
+            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+            s_TokensTreeCritical.Leave();
         }
         else if (count > 1)
         {
@@ -704,9 +713,9 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             wxArrayInt int_selections;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+                s_TokensTreeCritical.Enter();
+                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
                 Token* sel = tokensTree->at(*it);
                 if (sel)
@@ -714,6 +723,12 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                     selections.Add(sel->DisplayName());
                     int_selections.Add(*it);
                 }
+
+                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+                s_TokensTreeCritical.Enter();
+                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+                s_TokensTreeCritical.Leave();
             }
             if (selections.GetCount() > 1)
             {
@@ -721,21 +736,27 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                 if (sel == -1)
                     return;
 
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+                s_TokensTreeCritical.Enter();
+                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
                 token = tokensTree->at(int_selections[sel]);
+
+                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+                s_TokensTreeCritical.Leave();
             }
             else if (selections.GetCount() == 1)
             {
-                TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-                wxCriticalSectionLocker locker(s_TokensTreeCritical);
-                THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+                s_TokensTreeCritical.Enter();
+                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
                 // number of selections can be < result.size() due to the if tests, so in case we fall
                 // back on 1 entry no need to show a selection
                 token = tokensTree->at(int_selections[0]);
+
+                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+                s_TokensTreeCritical.Leave();
             }
         }
     }
@@ -813,34 +834,34 @@ void ClassBrowser::BuildTree()
     bool create_tree = false;
 
     // create the thread if needed
-    if (!m_BuilderThread)
+    if (!m_ClassBrowserBuilderThread)
     {
-        m_BuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_BuilderThread);
-        m_BuilderThread->Create();
-        m_BuilderThread->Run();
+        m_ClassBrowserBuilderThread = new ClassBrowserBuilderThread(m_ClassBrowserSemaphore);
+        m_ClassBrowserBuilderThread->Create();
+        m_ClassBrowserBuilderThread->Run();
         create_tree = true; // new builder thread - need to create new tree
     }
 
     // initialise it
-    m_BuilderThread->Init(m_NativeParser,
-                          m_Tree,
-                          m_TreeBottom,
-                          m_ActiveFilename,
-                          m_ActiveProject,
-                          m_Parser->ClassBrowserOptions(),
-                          m_Parser->GetTokensTree(),
-                          create_tree,
-                          idCBMakeSelectItem);
+    m_ClassBrowserBuilderThread->Init(m_NativeParser,
+                                      m_Tree,
+                                      m_TreeBottom,
+                                      m_ActiveFilename,
+                                      m_ActiveProject,
+                                      m_Parser->ClassBrowserOptions(),
+                                      m_Parser->GetTokensTree(),
+                                      create_tree,
+                                      idCBMakeSelectItem);
 
     // and launch it
     if (!create_tree)
-        m_Semaphore.Post();
+        m_ClassBrowserSemaphore.Post();
 }
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
 {
-    if (m_BuilderThread)
-        m_BuilderThread->ExpandItem(event.GetItem());
+    if (m_ClassBrowserBuilderThread)
+        m_ClassBrowserBuilderThread->ExpandItem(event.GetItem());
 #ifndef CC_NO_COLLAPSE_ITEM
     event.Allow();
 #endif // CC_NO_COLLAPSE_ITEM
@@ -849,8 +870,8 @@ void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
 #ifndef CC_NO_COLLAPSE_ITEM
 void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
 {
-    if (m_BuilderThread)
-        m_BuilderThread->CollapseItem(event.GetItem());
+    if (m_ClassBrowserBuilderThread)
+        m_ClassBrowserBuilderThread->CollapseItem(event.GetItem());
     event.Allow();
 }
 #endif // CC_NO_COLLAPSE_ITEM
@@ -860,8 +881,8 @@ void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
     if (!::wxIsMainThread())
         return; // just to be sure it called from main thread
 
-    if (m_BuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
-        m_BuilderThread->SelectItem(event.GetItem());
+    if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
+        m_ClassBrowserBuilderThread->SelectItem(event.GetItem());
 #ifndef CC_NO_COLLAPSE_ITEM
     event.Allow();
 #endif // CC_NO_COLLAPSE_ITEM
@@ -869,6 +890,6 @@ void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
 
 void ClassBrowser::OnMakeSelectItem(wxCommandEvent& event)
 {
-    if (m_BuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
-        m_BuilderThread->SelectItemRequired();
+    if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
+        m_ClassBrowserBuilderThread->SelectItemRequired();
 }

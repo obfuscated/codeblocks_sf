@@ -91,7 +91,7 @@ protected:
 class ClassBrowserBuilderThread : public wxThread
 {
 public:
-    ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar);
+    ClassBrowserBuilderThread(wxSemaphore& sem);
     virtual ~ClassBrowserBuilderThread();
 
     void Init(NativeParser* nativeParser, CBTreeCtrl* treeTop, CBTreeCtrl* treeBottom,
@@ -127,21 +127,20 @@ private:
     void SelectSavedItem();
 
 protected:
-    wxSemaphore&                m_Semaphore;
-    NativeParser*               m_NativeParser;
-    CBTreeCtrl*                 m_TreeTop;
-    CBTreeCtrl*                 m_TreeBottom;
-    wxString                    m_ActiveFilename;
-    void*                       m_UserData; // active project
-    BrowserOptions              m_Options;
-    TokensTree*                 m_TokensTree;
-    ClassBrowserBuilderThread** m_ThreadVar;
+    wxMutex          m_ClassBrowserBuilderThreadMutex;
+    wxSemaphore&     m_ClassBrowserSemaphore;
+    NativeParser*    m_NativeParser;
+    CBTreeCtrl*      m_TreeTop;
+    CBTreeCtrl*      m_TreeBottom;
+    wxString         m_ActiveFilename;
+    void*            m_UserData; // active project
+    BrowserOptions   m_Options;
+    TokensTree*      m_TokensTree;
 
     // pair of current-file-filter
-    TokenFilesSet               m_CurrentFileSet;
-    TokenIdxSet                 m_CurrentTokenSet;
-    TokenIdxSet                 m_CurrentGlobalTokensSet;
-    wxMutex                     m_BuildMutex;
+    TokenFilesSet    m_CurrentFileSet;
+    TokenIdxSet      m_CurrentTokenSet;
+    TokenIdxSet      m_CurrentGlobalTokensSet;
 
 private:
     ExpandedItemVect m_ExpandedVect;

@@ -1347,6 +1347,12 @@
 		<Unit filename="plugins\codecompletion\parser\parserthread.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthreadedtask.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\parser\parserthreadedtask.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\parser\profiletimer.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1402,6 +1408,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\selectincludefile.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\systemheadersthread.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\systemheadersthread.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\compilergcc\advancedcompileroptionsdlg.cpp">

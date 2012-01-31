@@ -144,11 +144,16 @@ protected:
       */
     int Execute()
     {
-        TRACK_THREAD_LOCKER(s_TokensTreeCritical);
-        wxCriticalSectionLocker locker(s_TokensTreeCritical);
-        THREAD_LOCKER_SUCCESS(s_TokensTreeCritical);
+        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
+        s_TokensTreeCritical.Enter();
+        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
 
-        return Parse() ? 0 : 1;
+        bool success = Parse();
+
+        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
+        s_TokensTreeCritical.Leave();
+
+        return success ? 0 : 1;
     }
 
     /** Continuously eat the tokens until we meet one of the matching characters

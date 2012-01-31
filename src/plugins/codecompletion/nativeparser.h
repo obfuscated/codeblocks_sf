@@ -558,7 +558,7 @@ private:
      * @param searchScope search scope
      * @param result output result
      */
-    void ResolveOpeartor(const OperatorType& tokenOperatorType,
+    void ResolveOperator(const OperatorType& tokenOperatorType,
                          const TokenIdxSet& tokens,
                          TokensTree* tree,
                          const TokenIdxSet& searchScope,
@@ -569,6 +569,11 @@ private:
      * @param curLine the line of the current position
      */
     int GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx);
+
+    /** For GetCallTips()
+     * No critical section needed in this recursive function!
+     * All functions that call this recursive function, should already entered a critical section. */
+    bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &tokens, bool root = true);
 
     /** Init cc search member variables */
     void InitCCSearchVariables();

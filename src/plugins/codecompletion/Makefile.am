@@ -22,10 +22,12 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
 			selectincludefile.cpp \
+			systemheadersthread.cpp \
 			parser/ccdebuginfo.cpp \
 			parser/cclogger.cpp \
 			parser/parser.cpp \
 			parser/parserthread.cpp \
+			parser/parserthreadedtask.cpp \
 			parser/profiletimer.cpp \
 			parser/token.cpp \
 			parser/tokenizer.cpp \
@@ -42,10 +44,12 @@ noinst_HEADERS = ccoptionsdlg.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
 			selectincludefile.h \
+			systemheadersthread.h \
 			parser/ccdebuginfo.h \
 			parser/cclogger.h \
 			parser/parser.h \
 			parser/parserthread.h \
+			parser/parserthreadedtask.h \
 			parser/profiletimer.h \
 			parser/token.h \
 			parser/tokenizer.h \

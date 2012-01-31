@@ -117,11 +117,11 @@ struct BrowserOptions
 
 class ClassBrowser;
 
-extern int idParserStart;
-extern int idParserEnd;
-
 namespace ParserCommon
 {
+  extern int idParserStart;
+  extern int idParserEnd;
+
   enum EFileType
   {
       ftHeader,
@@ -217,7 +217,7 @@ private:
   */
 class Parser : public ParserBase
 {
-    friend class AddParseThread;
+    friend class ParserThreadedTask;
 
 public:
     /** constructor

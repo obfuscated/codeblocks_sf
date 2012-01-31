@@ -80,8 +80,8 @@ private:
     wxString                   m_ActiveFilename;
     cbProject*                 m_ActiveProject;
 
-    wxSemaphore                m_Semaphore;
-    ClassBrowserBuilderThread* m_BuilderThread;
+    wxSemaphore                m_ClassBrowserSemaphore;
+    ClassBrowserBuilderThread* m_ClassBrowserBuilderThread;
 
     DECLARE_EVENT_TABLE()
 };

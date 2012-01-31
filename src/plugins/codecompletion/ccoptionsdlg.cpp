@@ -85,7 +85,7 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
 END_EVENT_TABLE()
 
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc) :
-    m_NativeParsers(np),
+    m_NativeParser(np),
     m_CodeCompletion(cc),
     m_Parser(np->GetParser())
 {
@@ -165,8 +165,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkPreprocessor",       wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
     XRCCTRL(*this, "chkComplexMacros",      wxCheckBox)->SetValue(m_Parser.Options().parseComplexMacros);
 
-    XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->SetValue( m_NativeParsers->IsParserPerWorkspace());
-    XRCCTRL(*this, "rdoOneParserPerProject",   wxRadioButton)->SetValue(!m_NativeParsers->IsParserPerWorkspace());
+    XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->SetValue( m_NativeParser->IsParserPerWorkspace());
+    XRCCTRL(*this, "rdoOneParserPerProject",   wxRadioButton)->SetValue(!m_NativeParser->IsParserPerWorkspace());
 
     // Page "Symbol browser"
     XRCCTRL(*this, "chkInheritance",        wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
@@ -253,7 +253,7 @@ void CCOptionsDlg::OnApply()
 
     // Now write the parser options and re-read them again to make sure they are up-to-date
     m_Parser.WriteOptions();
-    m_NativeParsers->RereadParserOptions();
+    m_NativeParser->RereadParserOptions();
     m_CodeCompletion->RereadOptions();
 }
 

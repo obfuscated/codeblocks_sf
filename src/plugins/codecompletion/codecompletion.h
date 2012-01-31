@@ -10,12 +10,15 @@
 #include <cbplugin.h>
 #include <cbproject.h>
 #include <sdk_events.h>
-#include <wx/string.h>
 
-#include "nativeparser.h"
 #include "coderefactoring.h"
+#include "nativeparser.h"
+#include "systemheadersthread.h"
 
+#include <wx/arrstr.h>
+#include <wx/string.h>
 #include <wx/timer.h>
+
 #include <map>
 #include <vector>
 #include <set>
@@ -23,9 +26,6 @@
 class cbEditor;
 class wxScintillaEvent;
 class wxChoice;
-class SystemHeadersThread;
-
-typedef std::map<wxString, StringSet> SystemHeadersMap;
 
 /** Code completion plugin can show function call-tip, automatically suggest code-completion
  *  lists while entering code. Also, it supports navigating the source files, jump between declarations
@@ -186,10 +186,10 @@ private:
     /** mouse hover event*/
     void OnValueTooltip(CodeBlocksEvent& event);
 
-    /** receive event from System HeadersThread */
-    void OnThreadUpdate(wxCommandEvent& event);
-    void OnThreadCompletion(wxCommandEvent& event);
-    void OnThreadError(wxCommandEvent& event);
+    /** receive event from SystemHeadersThread */
+    void OnSystemHeadersThreadUpdate(wxCommandEvent& event);
+    void OnSystemHeadersThreadCompletion(wxCommandEvent& event);
+    void OnSystemHeadersThreadError(wxCommandEvent& event);
 
     /** show code suggestion list*/
     void DoCodeComplete();
@@ -323,7 +323,8 @@ private:
     bool                    m_CCEnableHeaders;
 
     /** thread to collect header file names */
-    std::list<SystemHeadersThread*> m_SystemHeadersThread;
+    std::list<SystemHeadersThread*> m_SystemHeadersThreads;
+    wxCriticalSection               m_SystemHeadersThreadCS;
 
     /** map to collect all re-parsing files */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
