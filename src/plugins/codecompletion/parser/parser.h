@@ -108,10 +108,10 @@ enum BrowserSortType
 
 struct BrowserOptions
 {
-    bool                 showInheritance; // default: false
-    bool                 expandNS;        // default: false (auto-expand namespaces)
+    bool                 showInheritance; //!< default: false
+    bool                 expandNS;        //!< default: false (auto-expand namespaces)
     bool                 treeMembers;     //
-    BrowserDisplayFilter displayFilter;   // default: bdfFile
+    BrowserDisplayFilter displayFilter;   //!< default: bdfFile
     BrowserSortType      sortType;        //
 };
 
@@ -252,7 +252,6 @@ public:
     virtual bool UpdateParsingProject(cbProject* project);
 
     /** Must add a locker before call all named ParseBufferXXX functions
-     * e.g. wxCriticalSectionLocker locker(s_TokensTreeCritical);
      */
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,

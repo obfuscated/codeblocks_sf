@@ -35,10 +35,10 @@ public:
     void DebugLog(const wxString& msg);
 
 protected:
-    CCLogger() : m_Parent(nullptr), m_LogId(0), m_DebugLogId(0) { ; }
+    CCLogger();
     virtual ~CCLogger()                                         { ; }
     CCLogger(const CCLogger&)                                   { ; }
-    CCLogger& operator= (const CCLogger&)                       { return *this; }
+    CCLogger& operator=(const CCLogger&)                        { return *this; }
 
     friend class std::auto_ptr<CCLogger>;
     static std::auto_ptr<CCLogger> s_Inst;
@@ -49,13 +49,23 @@ private:
     int           m_DebugLogId;
 };
 
+// For tracking, either uncomment:
 //#define CC_ENABLE_LOCKER_TRACK
+// ...or:
+//#define CC_ENABLE_LOCKER_ASSERT
+// ..or none of the above.
 
 #ifdef CC_ENABLE_LOCKER_TRACK
     // TRACKING MUTXES
     // [1] Implementations for tracking mutexes:
-    #define THREAD_LOCKER_LOCK(NAME,MODE)                                        \
-        CCLogger::Get()->DebugLog(F(_T("%s.#MODE() : %s(), %s, %d"),             \
+    #define THREAD_LOCKER_LOCK(NAME)                                             \
+        CCLogger::Get()->DebugLog(F(_T("%s.Lock() : %s(), %s, %d"),              \
+                                    wxString(#NAME, wxConvUTF8).wx_str(),        \
+                                    wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
+                                    wxString(__FILE__, wxConvUTF8).wx_str(),     \
+                                    __LINE__))
+    #define THREAD_LOCKER_UNLOCK(NAME)                                           \
+        CCLogger::Get()->DebugLog(F(_T("%s.Unlock() : %s(), %s, %d"),            \
                                     wxString(#NAME, wxConvUTF8).wx_str(),        \
                                     wxString(__FUNCTION__, wxConvUTF8).wx_str(), \
                                     wxString(__FILE__, wxConvUTF8).wx_str(),     \
@@ -76,7 +86,7 @@ private:
     // [2] Cumulative convenient macros for tracking mutexes [USE THESE!]:
     #define CC_LOCKER_TRACK_MTX_LOCK(M)   \
     {                                     \
-        THREAD_LOCKER_LOCK(M,Lock);       \
+        THREAD_LOCKER_LOCK(M);            \
         if (M.Lock()==wxMUTEX_NO_ERROR)   \
           THREAD_LOCKER_SUCCESS(M);       \
         else                              \
@@ -84,7 +94,7 @@ private:
     }
     #define CC_LOCKER_TRACK_MTX_UNLOCK(M) \
     {                                     \
-        THREAD_LOCKER_LOCK(M,Unlock);     \
+        THREAD_LOCKER_UNLOCK(M);          \
         if (M.Unlock()==wxMUTEX_NO_ERROR) \
           THREAD_LOCKER_SUCCESS(M);       \
         else                              \
@@ -124,6 +134,11 @@ private:
           THREAD_LOCKER_LEAVE(CS);       \
           CS.Leave();                    \
     }
+#elif CC_ENABLE_LOCKER_ASSERT
+    #define CC_LOCKER_TRACK_CS_ENTER(CS)  CS.Enter();
+    #define CC_LOCKER_TRACK_CS_LEAVE(CS)  CS.Leave();
+    #define CC_LOCKER_TRACK_MTX_LOCK(M)   cbAssert(M.Lock()==wxMUTEX_NO_ERROR);
+    #define CC_LOCKER_TRACK_MTX_UNLOCK(M) cbAssert(M.Unlock()==wxMUTEX_NO_ERROR);
 #else
     #define CC_LOCKER_TRACK_CS_ENTER(CS)  CS.Enter();
     #define CC_LOCKER_TRACK_CS_LEAVE(CS)  CS.Leave();

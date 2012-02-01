@@ -73,7 +73,7 @@
 #endif
 
 /*
- * (Recursive) function that are surrounded by a critical section:
+ * (Recursive) functions that are surrounded by a critical section:
  * GenerateResultSet() -> NativeParserHelper::AddChildrenOfUnnamed
  * GetCallTips() -> NativeParserHelper::PrettyPrintToken (recursive function)
  * FindCurrentFunctionToken() -> NativeParser::FindAIMatches (recursive function)
@@ -1280,36 +1280,34 @@ ParserBase* NativeParser::CreateParser(cbProject* project)
         return nullptr;
     }
 
-    if (!m_ParserPerWorkspace || m_ParsedProjects.empty())
-    {
-        ParserBase* parser = new Parser(this, project);
-        if (!DoFullParsing(project, parser))
-        {
-            CCLogger::Get()->DebugLog(_T("Full parsing failed!"));
-            delete parser;
-            return nullptr;
-        }
-
-        if (m_Parser == m_TempParser)
-            SetParser(parser);
-
-        if (m_ParserPerWorkspace)
-            m_ParsedProjects.insert(project);
-
-        m_ParserList.push_back(std::make_pair(project, parser));
-
-        wxString log(F(_("Create new parser for project '%s'"), project
-                     ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
-        CCLogger::Get()->Log(log);
-        CCLogger::Get()->DebugLog(log);
-
-        RemoveObsoleteParsers();
-        return parser;
-    }
-    else
-    {
+    // Easy case for "one parser per workspace" that has already been created:
+    if (m_ParserPerWorkspace && !m_ParsedProjects.empty())
         return m_ParserList.begin()->second;
+
+    ParserBase* parser = new Parser(this, project);
+    if (!DoFullParsing(project, parser))
+    {
+        CCLogger::Get()->DebugLog(_T("Full parsing failed!"));
+        delete parser;
+        return nullptr;
     }
+
+    if (m_Parser == m_TempParser)
+        SetParser(parser);
+
+    if (m_ParserPerWorkspace)
+        m_ParsedProjects.insert(project);
+
+    m_ParserList.push_back(std::make_pair(project, parser));
+
+    wxString log(F(_("Create new parser for project '%s'"), project
+                 ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+    CCLogger::Get()->Log(log);
+    CCLogger::Get()->DebugLog(log);
+
+    RemoveObsoleteParsers();
+
+    return parser;
 }
 
 bool NativeParser::DeleteParser(cbProject* project)

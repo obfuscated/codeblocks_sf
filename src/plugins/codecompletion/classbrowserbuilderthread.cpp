@@ -186,7 +186,7 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem) :
     m_UserData(0),
     m_Options(),
     m_TokensTree(0),
-    m_initDone(false)
+    m_InitDone(false)
 {
     //ctor
 }
@@ -289,7 +289,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
     if (build_tree)
         BuildTree();
 
-    m_initDone = true;
+    m_InitDone = true;
 
     CC_LOCKER_TRACK_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
@@ -298,9 +298,8 @@ void* ClassBrowserBuilderThread::Entry()
 {
     while (!TestDestroy() && !Manager::IsAppShuttingDown())
     {
-        // wait until the classbrowser signals
+        // waits here, until the ClassBrowser unlocks
         m_ClassBrowserSemaphore.Wait();
-//        CCLogger::Get()->DebugLog(F(_T(" - - - - - -")));
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
@@ -373,6 +372,7 @@ void ClassBrowserBuilderThread::BuildTree()
     m_TreeTop->SetImageList(m_NativeParser->GetImageList());
     m_TreeBottom->SetImageList(m_NativeParser->GetImageList());
 
+    // Create initial root node, if not already there
     wxTreeItemId root = m_TreeTop->GetRootItem();
     if (!root.IsOk())
     {
@@ -403,22 +403,23 @@ void ClassBrowserBuilderThread::BuildTree()
     }
     m_TreeTop->Hide();
     m_TreeTop->Freeze();
-
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     RemoveInvalidNodes(m_TreeTop, root);
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     if (m_Options.treeMembers)
     {
         RemoveInvalidNodes(m_TreeBottom, m_TreeBottom->GetRootItem());
 #ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
-    sw.Start();
+        CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
+        sw.Start();
 #endif
     }
 
@@ -442,6 +443,7 @@ void ClassBrowserBuilderThread::BuildTree()
     CCLogger::Get()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     // Bottleneck: Takes ~4 secs on C::B workspace:
     m_TreeTop->Expand(root);
 #ifdef CC_BUILDTREE_MEASURING
@@ -457,11 +459,13 @@ void ClassBrowserBuilderThread::BuildTree()
     CCLogger::Get()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     ExpandSavedItems(m_TreeTop, root, 0);
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     // Bottleneck: Takes ~4 secs on C::B workspace:
     SelectSavedItem();
 #ifdef CC_BUILDTREE_MEASURING
@@ -473,13 +477,14 @@ void ClassBrowserBuilderThread::BuildTree()
     {
         m_TreeBottom->Thaw();
 #ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
-    sw.Start();
+        CCLogger::Get()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
+        sw.Start();
 #endif
+
         m_TreeBottom->Show();
 #ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
-    sw.Start();
+        CCLogger::Get()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
+        sw.Start();
 #endif
     }
 
@@ -494,6 +499,7 @@ void ClassBrowserBuilderThread::BuildTree()
     CCLogger::Get()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
     sw.Start();
 #endif
+
     // Bottleneck: Takes ~4 secs on C::B workspace:
     m_TreeTop->Show();
 #ifdef CC_BUILDTREE_MEASURING
@@ -519,9 +525,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
 
         if (tree == m_TreeBottom)
-        {
             removeCurrent = true;
-        }
         else if (data && data->m_Token)
         {
             Token* token = nullptr;
@@ -532,7 +536,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
 
                 CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
             }
-            if (token != data->m_Token ||
+            if ( token != data->m_Token ||
                 (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket()) ||
                 !TokenMatchesFilter(data->m_Token))
             {
@@ -987,11 +991,16 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
         CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
 
-    wxTreeItemId gfuncs  = AddNodeIfNotThere(m_TreeTop, parent, _("Global functions"),     PARSER_IMG_FUNCS_FOLDER,   new CBTreeData(sfGFuncs, 0, tkFunction, -1));
-    wxTreeItemId tdef    = AddNodeIfNotThere(m_TreeTop, parent, _("Global typedefs"),      PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef, -1));
-    wxTreeItemId gvars   = AddNodeIfNotThere(m_TreeTop, parent, _("Global variables"),     PARSER_IMG_VARS_FOLDER,    new CBTreeData(sfGVars, 0, tkVariable, -1));
-    wxTreeItemId preproc = AddNodeIfNotThere(m_TreeTop, parent, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
-    wxTreeItemId gmacro  = AddNodeIfNotThere(m_TreeTop, parent, _("Global macros"),        PARSER_IMG_MACRO_FOLDER,   new CBTreeData(sfMacro, 0, tkMacro, -1));
+    wxTreeItemId gfuncs  = AddNodeIfNotThere(m_TreeTop, parent, _("Global functions"),
+                           PARSER_IMG_FUNCS_FOLDER,   new CBTreeData(sfGFuncs,  0, tkFunction,     -1));
+    wxTreeItemId tdef    = AddNodeIfNotThere(m_TreeTop, parent, _("Global typedefs"),
+                           PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef,      -1));
+    wxTreeItemId gvars   = AddNodeIfNotThere(m_TreeTop, parent, _("Global variables"),
+                           PARSER_IMG_VARS_FOLDER,    new CBTreeData(sfGVars,   0, tkVariable,     -1));
+    wxTreeItemId preproc = AddNodeIfNotThere(m_TreeTop, parent, _("Preprocessor symbols"),
+                           PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
+    wxTreeItemId gmacro  = AddNodeIfNotThere(m_TreeTop, parent, _("Global macros"),
+                           PARSER_IMG_MACRO_FOLDER,   new CBTreeData(sfMacro,   0, tkMacro,        -1));
 
     bool bottom = m_Options.treeMembers;
     m_TreeTop->SetItemHasChildren(gfuncs,  !bottom && hasGF);
@@ -1018,7 +1027,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
         return;
 
     bool locked = false;
-    if (m_initDone)
+    if (m_InitDone)
     {
         CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
         locked = true;
@@ -1058,10 +1067,14 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                         // add base and derived classes folders
                         if (m_Options.showInheritance)
                         {
-                            wxTreeItemId base = m_TreeTop->AppendItem(item, _("Base classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfBase, data->m_Token, tkClass, data->m_Token->m_Index));
+                            wxTreeItemId base = m_TreeTop->AppendItem(item, _("Base classes"),
+                                                PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
+                                                new CBTreeData(sfBase, data->m_Token, tkClass, data->m_Token->m_Index));
                             if (!data->m_Token->m_DirectAncestors.empty())
                                 m_TreeTop->SetItemHasChildren(base);
-                            wxTreeItemId derived = m_TreeTop->AppendItem(item, _("Derived classes"), PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER, new CBTreeData(sfDerived, data->m_Token, tkClass, data->m_Token->m_Index));
+                            wxTreeItemId derived = m_TreeTop->AppendItem(item, _("Derived classes"),
+                                                   PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
+                                                   new CBTreeData(sfDerived, data->m_Token, tkClass, data->m_Token->m_Index));
                             if (!data->m_Token->m_Descendants.empty())
                                 m_TreeTop->SetItemHasChildren(derived);
                         }
@@ -1099,7 +1112,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
         return;
 
     bool locked = false;
-    if (m_initDone)
+    if (m_InitDone)
     {
         CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
         locked = true;

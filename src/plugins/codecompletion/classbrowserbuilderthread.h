@@ -145,7 +145,7 @@ protected:
 private:
     ExpandedItemVect m_ExpandedVect;
     SelectedItemPath m_SelectedPath;
-    bool             m_initDone;
+    bool             m_InitDone;
 
     wxTreeItemId     m_SelectItemRequired;
     int              m_idCBMakeSelectItem;
