@@ -724,9 +724,6 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                     int_selections.Add(*it);
                 }
 
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
                 THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
                 s_TokensTreeCritical.Leave();
             }
