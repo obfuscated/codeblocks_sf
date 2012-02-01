@@ -170,9 +170,8 @@ bool CodeRefactoring::Parse()
 
     // handle local variables
     bool isLocalVariable = false;
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
     Token* token = tree->at(*targetResult.begin());
@@ -183,8 +182,7 @@ bool CodeRefactoring::Parse()
             isLocalVariable = true;
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     wxArrayString files;
     cbProject* project = m_NativeParser.GetProjectByEditor(editor);
@@ -291,16 +289,13 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
     Token* parentOfLocalVariable = nullptr;
     if (isLocalVariable)
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
         Token* token = tree->at(*targetResult.begin());
         parentOfLocalVariable = tree->at(token->m_ParentIndex);
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
 
     // now that list is filled, we'll search
@@ -393,9 +388,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                 {
                     bool do_continue = false;
 
-                    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                    s_TokensTreeCritical.Enter();
-                    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
                     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
                     Token* token = tree->at(*findIter);
@@ -409,8 +402,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                         }
                     }
 
-                    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                    s_TokensTreeCritical.Leave();
+                    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
                     if (do_continue) continue;
                 }

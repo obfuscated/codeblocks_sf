@@ -965,9 +965,7 @@ int CodeCompletion::CodeComplete()
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
             m_SearchItem.clear();
 
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
 
@@ -1010,8 +1008,7 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
             if (m_NativeParser.LastAISearchWasGlobal())
             {
@@ -1448,9 +1445,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 
     int success = -6;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     // open the insert class dialog
     wxString filename = ed->GetFilename();
@@ -1476,8 +1471,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         success = 0;
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     return success;
 }
@@ -1498,9 +1492,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
@@ -1516,8 +1508,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     if (result.empty())
     {
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
         cbMessageBox(_("Can not find any file in parser's database."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -1552,8 +1543,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     if (arr.empty())
     {
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
         cbMessageBox(_("No classes declared or no un-implemented class methods found."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -1617,8 +1607,7 @@ int CodeCompletion::DoAllMethodsImpl()
         success = 0;
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     return success;
 }
@@ -2080,9 +2069,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         else
             fileParseFinished = false;
 
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
@@ -2116,9 +2103,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             }
         }
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
-
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
         FunctionsScopeVec& functionsScopes = funcdata->m_FunctionsScope;
         NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;
@@ -2475,9 +2460,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         {
             wxString msg;
 
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             int count = 0;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -2495,8 +2478,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
                 }
             }
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
             if (!msg.IsEmpty())
             {
@@ -2594,9 +2576,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     wxArrayString tokens;
     SearchTree<Token*> tmpsearch;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     TokensTree* tmptree = m_NativeParser.GetParser().GetTempTokensTree();
 
@@ -2632,8 +2612,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         tmptree->clear();
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
@@ -2689,9 +2668,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, endPos);
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     TokensTree* tokens = m_NativeParser.GetParser().GetTokensTree();
 
@@ -2831,8 +2808,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     if (selections.GetCount() > 1)
     {

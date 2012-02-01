@@ -53,7 +53,7 @@
 
 // class ParserThreadedTask
 
-ParserThreadedTask::ParserThreadedTask(Parser* parser, wxCriticalSection* parserCS) :
+ParserThreadedTask::ParserThreadedTask(Parser* parser, wxCriticalSection& parserCS) :
     m_Parser(parser),
     m_ParserCritical(parserCS)
 {
@@ -61,29 +61,23 @@ ParserThreadedTask::ParserThreadedTask(Parser* parser, wxCriticalSection* parser
 
 int ParserThreadedTask::Execute()
 {
-    THREAD_LOCKER_ENTER(m_ParserCritical);
-    m_ParserCritical->Enter();
-    THREAD_LOCKER_ENTERED(m_ParserCritical);
+    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
     StringList priorityHeaders(m_Parser->m_PriorityHeaders);
     StringList batchFiles(m_Parser->m_BatchParseFiles);
 
-    THREAD_LOCKER_LEAVE(m_ParserCritical);
-    m_ParserCritical->Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
 
     if (!preDefs.IsEmpty())
         m_Parser->ParseBuffer(preDefs, false, false);
 
-    THREAD_LOCKER_ENTER(m_ParserCritical);
-    m_ParserCritical->Enter();
-    THREAD_LOCKER_ENTERED(m_ParserCritical);
+    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
 
     m_Parser->m_PredefinedMacros.Clear();
     m_Parser->m_IsPriority = true;
 
-    THREAD_LOCKER_LEAVE(m_ParserCritical);
-    m_ParserCritical->Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
 
     while (!priorityHeaders.empty())
     {
@@ -91,9 +85,7 @@ int ParserThreadedTask::Execute()
         priorityHeaders.pop_front();
     }
 
-    THREAD_LOCKER_ENTER(m_ParserCritical);
-    m_ParserCritical->Enter();
-    THREAD_LOCKER_ENTERED(m_ParserCritical);
+    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
 
     m_Parser->m_PriorityHeaders.clear();
     m_Parser->m_IsPriority = false;
@@ -101,9 +93,7 @@ int ParserThreadedTask::Execute()
     if (m_Parser->m_IgnoreThreadEvents)
         m_Parser->m_IsFirstBatch = true;
 
-    THREAD_LOCKER_LEAVE(m_ParserCritical);
-    m_ParserCritical->Leave();
-
+    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
 
     while (!batchFiles.empty())
     {
@@ -111,9 +101,7 @@ int ParserThreadedTask::Execute()
         batchFiles.pop_front();
     }
 
-    THREAD_LOCKER_ENTER(m_ParserCritical);
-    m_ParserCritical->Enter();
-    THREAD_LOCKER_ENTERED(m_ParserCritical);
+    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
 
     m_Parser->m_BatchParseFiles.clear();
 
@@ -123,8 +111,7 @@ int ParserThreadedTask::Execute()
         m_Parser->m_IsParsing = true;
     }
 
-    THREAD_LOCKER_LEAVE(m_ParserCritical);
-    m_ParserCritical->Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
 
     return 0;
 }
@@ -148,14 +135,11 @@ int MarkFileAsLocalThreadedTask::Execute()
 
         if (ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
         {
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             m_Parser->GetTokensTree()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, m_Project);
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
         }
     }
 

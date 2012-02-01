@@ -511,15 +511,12 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             CCDebugInfo info(tree, m_Parser, ctd->m_Token);
             info.ShowModal();
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical)
 
             return;
         }
@@ -680,14 +677,11 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         TokensTree* tokensTree = m_Parser->GetTokensTree();
         size_t count = 0;
         {
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             count = tokensTree->FindMatches(search, result, false, true);
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
         }
 
         if (count == 0)
@@ -698,14 +692,11 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         }
         else if (count == 1)
         {
-            THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-            s_TokensTreeCritical.Enter();
-            THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             token = tokensTree->at(*result.begin());
 
-            THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-            s_TokensTreeCritical.Leave();
+            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
         }
         else if (count > 1)
         {
@@ -713,9 +704,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             wxArrayInt int_selections;
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
                 Token* sel = tokensTree->at(*it);
                 if (sel)
@@ -724,8 +713,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                     int_selections.Add(*it);
                 }
 
-                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                s_TokensTreeCritical.Leave();
+                CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
             }
             if (selections.GetCount() > 1)
             {
@@ -733,27 +721,21 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                 if (sel == -1)
                     return;
 
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
                 token = tokensTree->at(int_selections[sel]);
 
-                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                s_TokensTreeCritical.Leave();
+                CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
             }
             else if (selections.GetCount() == 1)
             {
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
                 // number of selections can be < result.size() due to the if tests, so in case we fall
                 // back on 1 entry no need to show a selection
                 token = tokensTree->at(int_selections[0]);
 
-                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                s_TokensTreeCritical.Leave();
+                CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
             }
         }
     }

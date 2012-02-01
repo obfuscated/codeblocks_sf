@@ -144,14 +144,11 @@ protected:
       */
     int Execute()
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         bool success = Parse();
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
         return success ? 0 : 1;
     }

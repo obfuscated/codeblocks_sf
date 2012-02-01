@@ -206,11 +206,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
                                      bool                  build_tree,
                                      int                   idCBMakeSelectItem)
 {
-    THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-    if (m_ClassBrowserBuilderThreadMutex.Lock()==wxMUTEX_NO_ERROR)
-      THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-    else
-      THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+    CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex);
 
     m_NativeParser       = nativeParser;
     m_TreeTop            = treeTop;
@@ -234,9 +230,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
         wxArrayString paths = m_NativeParser->GetAllPathsByFilename(m_ActiveFilename);
 
         // Should add locker after called m_NativeParser->GetAllPathsByFilename
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         TokenFilesSet tmp;
         for (size_t i = 0; i < paths.GetCount(); ++i)
@@ -246,14 +240,11 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
                 m_CurrentFileSet.insert(*it);
         }
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
     else if (m_Options.displayFilter == bdfProject && (user_data != 0))
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         cbProject* prj = (cbProject*)user_data;
         for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
@@ -268,15 +259,12 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
                 m_CurrentFileSet.insert(fileIdx);
         }
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
 
     if (!m_CurrentFileSet.empty())
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         m_CurrentTokenSet.clear();
         m_CurrentGlobalTokensSet.clear();
@@ -295,8 +283,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
             }
         }
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
 
     if (build_tree)
@@ -304,10 +291,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
 
     m_initDone = true;
 
-    if (m_ClassBrowserBuilderThreadMutex.Unlock()==wxMUTEX_NO_ERROR)
-      THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-    else
-      THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+    CC_LOCKER_TRACK_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 
 void* ClassBrowserBuilderThread::Entry()
@@ -542,14 +526,11 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         {
             Token* token = nullptr;
             {
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+                CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
                 token = m_TokensTree->at(data->m_TokenIndex);
 
-                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                s_TokensTreeCritical.Leave();
+                CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
             }
             if (token != data->m_Token ||
                 (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket()) ||
@@ -627,9 +608,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
     bool parentTokenError = false;
     TokenIdxSet* tokens = 0;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     if (parentTokenIdx == -1)
     {
@@ -649,8 +628,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
         if (!parentTokenError) tokens = &parentToken->m_Children;
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     if (parentTokenError) return false;
 
@@ -662,16 +640,13 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId pa
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     Token* token = m_TokensTree->at(tokenIdx);
     if (token)
         m_TokensTree->RecalcInheritanceChain(token);
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     if (!token)
         return false;
@@ -684,16 +659,13 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId 
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     Token* token = m_TokensTree->at(tokenIdx);
     if (token)
         m_TokensTree->RecalcInheritanceChain(token);
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     if (!token)
         return false;
@@ -731,14 +703,11 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
     TokenIdxSet::iterator end = tokens.end();
     for (TokenIdxSet::iterator start = tokens.begin(); start != end; ++start)
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         Token* token = m_TokensTree->at(*start);
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
         if (token &&
             (token->m_TokenKind & tokenKindMask) &&
@@ -810,19 +779,12 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
         for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
         {
             if (!locked)
-            {
-                THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-                s_TokensTreeCritical.Enter();
-                THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
-            }
+                CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
             Token* token = m_TokensTree->at(*it);
 
             if (!locked)
-            {
-                THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-                s_TokensTreeCritical.Leave();
-            }
+                CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
             if (!token)
                 break;
@@ -844,9 +806,7 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
 
     bool isOfKind = false;
 
-    THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-    s_TokensTreeCritical.Enter();
-    THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
     TokensTree* tt = token->GetTree();
     for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
@@ -859,8 +819,7 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
         }
     }
 
-    THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-    s_TokensTreeCritical.Leave();
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     return isOfKind;
 }
@@ -1002,9 +961,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
     // loop all tokens in global namespace and see if we have matches
     TokensTree* tt = m_NativeParser->GetParser().GetTokensTree();
     {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
 
         for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
         {
@@ -1027,8 +984,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
                 break; // we have everything, stop iterating...
         }
 
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
+        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
     }
 
     wxTreeItemId gfuncs  = AddNodeIfNotThere(m_TreeTop, parent, _("Global functions"),     PARSER_IMG_FUNCS_FOLDER,   new CBTreeData(sfGFuncs, 0, tkFunction, -1));
@@ -1064,11 +1020,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     bool locked = false;
     if (m_initDone)
     {
-        THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-        if (m_ClassBrowserBuilderThreadMutex.Lock()==wxMUTEX_NO_ERROR)
-          THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-        else
-          THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+        CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
         locked = true;
     }
 
@@ -1076,17 +1028,12 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     wxStopWatch sw;
 #endif
 
+    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
+
     CBTreeData* data = (CBTreeData*)m_TreeTop->GetItemData(item);
-    {
-        THREAD_LOCKER_ENTER(s_TokensTreeCritical);
-        s_TokensTreeCritical.Enter();
-        THREAD_LOCKER_ENTERED(s_TokensTreeCritical);
+    m_TokensTree->RecalcInheritanceChain(data->m_Token);
 
-        m_TokensTree->RecalcInheritanceChain(data->m_Token);
-
-        THREAD_LOCKER_LEAVE(s_TokensTreeCritical);
-        s_TokensTreeCritical.Leave();
-    }
+    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
 
     if (data)
     {
@@ -1142,13 +1089,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 #endif
 
     if (locked)
-    {
-        THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-        if (m_ClassBrowserBuilderThreadMutex.Unlock()==wxMUTEX_NO_ERROR)
-          THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-        else
-          THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
-    }
+        CC_LOCKER_TRACK_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 
 #ifndef CC_NO_COLLAPSE_ITEM
@@ -1160,11 +1101,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
     bool locked = false;
     if (m_initDone)
     {
-        THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-        if (m_ClassBrowserBuilderThreadMutex.Lock()==wxMUTEX_NO_ERROR)
-          THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-        else
-          THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+        CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
         locked = true;
     }
 
@@ -1176,13 +1113,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
     m_TreeTop->SetItemHasChildren(item);
 
     if (locked)
-    {
-        THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-        if (m_ClassBrowserBuilderThreadMutex.Unlock()==wxMUTEX_NO_ERROR)
-          THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-        else
-          THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
-    }
+        CC_LOCKER_TRACK_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 #endif // CC_NO_COLLAPSE_ITEM
 
@@ -1191,11 +1122,7 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
-    THREAD_LOCKER_LOCK(m_ClassBrowserBuilderThreadMutex);
-    if (m_ClassBrowserBuilderThreadMutex.Lock()==wxMUTEX_NO_ERROR)
-      THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-    else
-      THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+    CC_LOCKER_TRACK_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
 
 #ifdef CC_BUILDTREE_MEASURING
     wxStopWatch sw;
@@ -1209,10 +1136,7 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     CCLogger::Get()->DebugLog(F(_T("SelectItem (internally) took : %ld ms"),sw.Time()));
 #endif
 
-    if (m_ClassBrowserBuilderThreadMutex.Unlock()==wxMUTEX_NO_ERROR)
-      THREAD_LOCKER_SUCCESS(m_ClassBrowserBuilderThreadMutex);
-    else
-      THREAD_LOCKER_FAIL(m_ClassBrowserBuilderThreadMutex);
+    CC_LOCKER_TRACK_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 
 void ClassBrowserBuilderThread::SaveExpandedItems(CBTreeCtrl* tree, wxTreeItemId parent, int level)

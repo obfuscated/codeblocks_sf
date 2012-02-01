@@ -18,8 +18,6 @@ std::auto_ptr<CCLogger> CCLogger::s_Inst;
 bool           g_EnableDebugTrace = false;
 const wxString g_DebugTraceFile   = wxEmptyString;
 
-// class CCLogger
-
 /*static*/ CCLogger* CCLogger::Get()
 {
     if (!s_Inst.get())
@@ -54,24 +52,4 @@ void CCLogger::DebugLog(const wxString& msg)
 #else
     wxPostEvent(m_Parent, evt);
 #endif
-}
-
-// class CCLockerTrack
-
-CCLockerTrack::CCLockerTrack(const wxString& locker, const wxString& func,
-              const wxString& file, int line, bool mainThread) :
-    m_LockerName(locker),
-    m_FuncName(func),
-    m_FileName(file),
-    m_Line(line),
-    m_MainThread(mainThread)
-{
-    CCLogger::Get()->DebugLog(F(_T("%s.CCLockerTrack() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
-}
-
-CCLockerTrack::~CCLockerTrack()
-{
-    CCLogger::Get()->DebugLog(F(_T("%s.~CCLockerTrack() : %s(), %d, %s, %d"), m_LockerName.wx_str(),
-                                m_FuncName.wx_str(), m_MainThread, m_FileName.wx_str(), m_Line));
 }
