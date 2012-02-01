@@ -28,11 +28,6 @@
 
 #include "openfileslistplugin.h"
 
-namespace compatibility
-{
-    typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t;
-}
-
 namespace
 {
     // this auto-registers the plugin
@@ -224,7 +219,7 @@ void OpenFilesListPlugin::RefreshOpenFilesTree(EditorBase* ed, bool remove)
 
     m_pTree->Freeze();
 
-    compatibility::tree_cookie_t cookie = 0;
+    wxTreeItemIdValue cookie = 0;
     wxTreeItemId item = m_pTree->GetFirstChild(m_pTree->GetRootItem(), cookie);
     wxString shortname = ed->GetShortName();
     bool found = false;

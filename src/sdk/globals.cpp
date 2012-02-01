@@ -40,9 +40,6 @@
     #include <sys/stat.h> // lstat
 #endif
 
-namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
-
-
 const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP     = _T(";");
 
@@ -364,7 +361,7 @@ void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxStri
         folder = tmpPath.Left(pos);
         tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
         wxTreeItemId item = parent;
-        compatibility::tree_cookie_t cookie = 0;
+        wxTreeItemIdValue cookie = 0;
 
         while (item.IsOk())
         {
@@ -397,7 +394,7 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
     wxString originalPath = path;
     bool found = false;
 
-    compatibility::tree_cookie_t cookie = 0;
+    wxTreeItemIdValue cookie = 0;
 
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
     while (child.IsOk())
@@ -443,7 +440,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 
         //Manager::Get()->GetLogManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
-        compatibility::tree_cookie_t cookie = 0;
+        wxTreeItemIdValue cookie = 0;
 
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child.IsOk())
