@@ -40,8 +40,6 @@ CompilerMessages::CompilerMessages(const wxArrayString& titles, const wxArrayInt
 CompilerMessages::~CompilerMessages()
 {
 	//dtor
-	if (control && !Manager::IsAppShuttingDown())
-		control->RemoveEventHandler(this);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
@@ -54,7 +52,7 @@ wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &CompilerMessages::OnDoubleClick);
-    control->PushEventHandler(this);
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
 }
 

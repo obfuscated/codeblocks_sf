@@ -72,7 +72,6 @@ ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths
 ToDoListView::~ToDoListView()
 {
     //dtor
-    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 }
 
 wxWindow* ToDoListView::CreateControl(wxWindow* parent)

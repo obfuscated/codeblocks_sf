@@ -48,7 +48,7 @@ wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &SearchResultsLog::OnDoubleClick);
-    control->PushEventHandler(this);
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
 };
 

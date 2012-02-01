@@ -1614,7 +1614,7 @@ void CompilerOptionsDlg::OnSetDefaultCompilerClick(wxCommandEvent& /*event*/)
     wxString msg;
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
     #if wxCHECK_VERSION(2, 9, 0)
-    msg.Printf(_("%s is now selected as the default compiler for new projects"), compiler ? compiler->GetName().wx_str() : _T("[invalid]"));
+    msg.Printf(_("%s is now selected as the default compiler for new projects"), compiler ? compiler->GetName().wx_str() : _("[invalid]").wx_str());
     #else
     msg.Printf(_("%s is now selected as the default compiler for new projects"), compiler ? compiler->GetName().c_str() : _("[invalid]"));
     #endif
