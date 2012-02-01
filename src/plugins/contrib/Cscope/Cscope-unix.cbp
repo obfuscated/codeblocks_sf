@@ -14,55 +14,55 @@
                 <Option parameters="--debug-log --multiple-instance -ns -ni" />
                 <Option host_application="../../../devel/codeblocks" />
                 <Compiler>
-					<Add option="-Wall" />
-					<Add option="-g" />
-					<Add option="-Ulinux" />
-					<Add option="-Uunix" />
-					<Add option="`wx-config --cflags`" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-fexceptions" />
-					<Add option="-fPIC" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DcbDEBUG" />
-					<Add directory="../../../include" />
-					<Add directory="../../../sdk/wxscintilla/include" />
-				</Compiler>
-				<Linker>
-					<Add option="`wx-config --libs`" />
-					<Add library="libcodeblocks.a" />
-					<Add directory="../../../devel" />
-				</Linker>
-				<ExtraCommands>
-					<Add after="zip -jq9 ../../../devel/share/codeblocks/Cscope.zip manifest.xml" />
-					<Mode after="always" />
-				</ExtraCommands>
-			</Target>
-		</Build>
-		<VirtualTargets>
-			<Add alias="All" targets="default;" />
-		</VirtualTargets>
-		<Unit filename="CscopeConfig.cpp" />
-		<Unit filename="CscopeConfig.h" />
-		<Unit filename="CscopeEntryData.cpp" />
-		<Unit filename="CscopeEntryData.h" />
-		<Unit filename="CscopeParserThread.cpp" />
-		<Unit filename="CscopeParserThread.h" />
-		<Unit filename="CscopePlugin.cpp" />
-		<Unit filename="CscopePlugin.h" />
-		<Unit filename="CscopeProcess.cpp" />
-		<Unit filename="CscopeProcess.h" />
-		<Unit filename="CscopeStatusMessage.cpp" />
-		<Unit filename="CscopeStatusMessage.h" />
-		<Unit filename="CscopeTab.cpp" />
-		<Unit filename="CscopeTab.h" />
-		<Unit filename="CscopeView.cpp" />
-		<Unit filename="CscopeView.h" />
-		<Unit filename="manifest.xml" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-			<lib_finder disable_auto="1" />
-		</Extensions>
-	</Project>
+                    <Add option="-Wall" />
+                    <Add option="-g" />
+                    <Add option="-Ulinux" />
+                    <Add option="-Uunix" />
+                    <Add option="`wx-config --cflags`" />
+                    <Add option="-Winvalid-pch" />
+                    <Add option="-fexceptions" />
+                    <Add option="-fPIC" />
+                    <Add option="-DCB_PRECOMP" />
+                    <Add option="-DcbDEBUG" />
+                    <Add directory="../../../include" />
+                    <Add directory="../../../sdk/wxscintilla/include" />
+                </Compiler>
+                <Linker>
+                    <Add option="`wx-config --libs`" />
+                    <Add library="libcodeblocks.a" />
+                    <Add directory="../../../devel" />
+                </Linker>
+                <ExtraCommands>
+                    <Add after="zip -jq9 ../../../devel/share/codeblocks/Cscope.zip manifest.xml" />
+                    <Mode after="always" />
+                </ExtraCommands>
+            </Target>
+        </Build>
+        <VirtualTargets>
+            <Add alias="All" targets="default;" />
+        </VirtualTargets>
+        <Unit filename="CscopeConfig.cpp" />
+        <Unit filename="CscopeConfig.h" />
+        <Unit filename="CscopeEntryData.cpp" />
+        <Unit filename="CscopeEntryData.h" />
+        <Unit filename="CscopeParserThread.cpp" />
+        <Unit filename="CscopeParserThread.h" />
+        <Unit filename="CscopePlugin.cpp" />
+        <Unit filename="CscopePlugin.h" />
+        <Unit filename="CscopeProcess.cpp" />
+        <Unit filename="CscopeProcess.h" />
+        <Unit filename="CscopeStatusMessage.cpp" />
+        <Unit filename="CscopeStatusMessage.h" />
+        <Unit filename="CscopeTab.cpp" />
+        <Unit filename="CscopeTab.h" />
+        <Unit filename="CscopeView.cpp" />
+        <Unit filename="CscopeView.h" />
+        <Unit filename="manifest.xml" />
+        <Extensions>
+            <code_completion />
+            <envvars />
+            <debugger />
+            <lib_finder disable_auto="1" />
+        </Extensions>
+    </Project>
 </CodeBlocks_project_file>

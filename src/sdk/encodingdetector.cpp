@@ -23,9 +23,15 @@
 #include "nsUniversalDetector.h"
 #include <wx/encconv.h>
 
-EncodingDetector::EncodingDetector(const wxString& filename, bool useLog)
-        : nsUniversalDetector(NS_FILTER_ALL),
-        m_IsOK(false),
+/* ----------------------------------------------
+ *  Some detection code is borrowed from MadEdit,
+ *  but modified to suit C::B. Other portions are
+ *  using the Mozilla universal char detector.
+ * ---------------------------------------------- */
+
+EncodingDetector::EncodingDetector(const wxString& filename, bool useLog) :
+    nsUniversalDetector(NS_FILTER_ALL),
+    m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),
     m_BOMSizeInBytes(0),
@@ -35,9 +41,9 @@ EncodingDetector::EncodingDetector(const wxString& filename, bool useLog)
     m_IsOK = DetectEncoding(filename);
 }
 
-EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog)
-        : nsUniversalDetector(NS_FILTER_ALL),
-        m_IsOK(false),
+EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog) :
+    nsUniversalDetector(NS_FILTER_ALL),
+    m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),
     m_BOMSizeInBytes(0),
@@ -47,9 +53,9 @@ EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog)
     m_IsOK = DetectEncoding((wxByte*)fileLdr->GetData(), fileLdr->GetLength());
 }
 
-EncodingDetector::EncodingDetector(const wxByte* buffer, size_t size, bool useLog)
-        : nsUniversalDetector(NS_FILTER_ALL),
-        m_IsOK(false),
+EncodingDetector::EncodingDetector(const wxByte* buffer, size_t size, bool useLog) :
+    nsUniversalDetector(NS_FILTER_ALL),
+    m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),
     m_BOMSizeInBytes(0),
@@ -108,12 +114,12 @@ wxString EncodingDetector::GetWxStr() const
 const wxString& EncodingDetector::DoIt(const char* aBuf,
                                        PRUint32 aLen)
 {
-    this->Reset();
-    nsresult rv = this->HandleData(aBuf, aLen);
+    Reset();
+    nsresult rv = HandleData(aBuf, aLen);
     if (NS_FAILED(rv))
         mResult=_T("failed");
     else
-        this->DataEnd();
+        DataEnd();
     return mResult;
 }
 
@@ -124,7 +130,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (!buffer || size == 0)
     {
-        if(m_UseLog)
+        if (m_UseLog)
         {
             logmsg.Printf(_T("Encoding conversion has failed (buffer is empty)!"));
             logmgr->DebugLog(logmsg);
@@ -183,7 +189,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
         // but it's much, much faster than wxCSConv (at least on linux)
         wxEncodingConverter conv;
         wchar_t* tmp = new wchar_t[size + 4 - m_BOMSizeInBytes];
-        if(   conv.Init(m_Encoding, wxFONTENCODING_UNICODE)
+        if (   conv.Init(m_Encoding, wxFONTENCODING_UNICODE)
            && conv.Convert((char*)buffer, tmp) )
         {
             wideBuff = tmp;
@@ -202,7 +208,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (outlen == 0)
     {
-        if(m_UseLog)
+        if (m_UseLog)
         {
             logmsg.Printf(_T("Encoding conversion using settings has failed!\n"
                              "Encoding choosen was: %s (ID: %d)"),
@@ -218,7 +224,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
             // Conversion has failed. Let's try with system-default encoding.
             if (platform::windows)
             {
-                if(m_UseLog)
+                if (m_UseLog)
                 {
                     logmgr->DebugLog(_T("Trying system locale as fallback..."));
                 }
@@ -227,7 +233,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
             else
             {
                 // We can rely on the UTF-8 detection code ;-)
-                if(m_UseLog)
+                if (m_UseLog)
                 {
                     logmgr->DebugLog(_T("Trying ISO-8859-1 as fallback..."));
                 }
@@ -240,7 +246,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
             if (outlen == 0)
             {
-                if(m_UseLog)
+                if (m_UseLog)
                 {
                     logmsg.Printf(_T("Encoding conversion using system locale fallback has failed!\n"
                                      "Last encoding choosen was: %s (ID: %d)\n"
@@ -307,7 +313,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         // Bypass C::B's auto-detection
         m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
 
-        if(m_UseLog)
+        if (m_UseLog)
         {
             wxString msg;
             msg.Printf(_T("Warning: bypassing C::B's auto-detection!\n"
@@ -374,7 +380,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
 
         if (m_UseBOM)
         {
-            if(m_UseLog)
+            if (m_UseLog)
             {
                 wxString msg;
                 msg.Printf(_T("Detected encoding via BOM: %s (ID: %d)"),
@@ -389,11 +395,11 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
             {
             // if we still have no results try mozilla's detection
             m_Encoding = wxFontMapper::Get()->CharsetToEncoding(DoIt((char*)buffer, size), false);
-            if(m_Encoding == wxFONTENCODING_DEFAULT)
+            if (m_Encoding == wxFONTENCODING_DEFAULT)
             {
                 wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
                 m_Encoding = wxFontMapper::GetEncodingFromName(enc_name);
-                if(m_UseLog)
+                if (m_UseLog)
                 {
                     wxString msg;
                     msg.Printf(_T("Text seems to be pure ASCII!\n"
@@ -408,7 +414,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
                 // Use user-specified one; as a fallback
                 m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
 
-                if(m_UseLog)
+                if (m_UseLog)
                 {
                     wxString msg;
                     msg.Printf(_T("Warning: Using user specified encoding as fallback!\n"
@@ -424,7 +430,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
     }
 
-    if(m_UseLog)
+    if (m_UseLog)
     {
         wxString msg;
         msg.Printf(_T("Final encoding detected: %s (ID: %d)"),
@@ -434,94 +440,11 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
     }
 
     if (ConvertToWxString)
-    {
         ConvertToWxStr(buffer, size);
-    }
 
     return true;
-} // end of DetectEncoding
+}
 
-//bool EncodingDetector::DetectUTF8(const wxByte *byt, size_t size)
-//{
-//    /* The following detection code is based on modified code
-//    *  of MadEdit
-//    */
-//    size_t i = 0;
-//
-//    if (!byt)
-//        return false;
-//
-//    while (i < size)
-//    {
-//        if (byt[i] < 0x80)
-//        {
-//            ++i; // Continue searching for any possible UTF-8 encoded characters
-//        }
-//        else if (byt[i] <= 0xDF) // 1110xxxx 10xxxxxx
-//        {
-//            if (++i < size && IsUTF8Tail(byt[i]))
-//            {
-//                return true; // We would stop our search assuming the whole file is UTF-8
-//            }
-//            else if (i != size) // Possibly a malformed UTF-8 file
-//            {
-//                return false;
-//            }
-//        }
-//        else if (byt[i] <= 0xEF) // 1110xxxx 10xxxxxx 10xxxxxx
-//        {
-//            if ((++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i])))
-//            {
-//                return true; // We would stop our search assuming the whole file is UTF-8
-//            }
-//            else if(size != i)
-//            {
-//                return false;
-//            }
-//        }
-//        else if (byt[i] <= 0xF4) // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-//        {
-//            if ((++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i])))
-//            {
-//                return true;
-//            }
-//            else if(size != i)
-//            {
-//                return false;
-//            }
-//        }
-//        /* Begin: Extra code (not from MadEdit) */
-//        else if (byt[i] <= 0xFB)  // 111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-//        {
-//            if ((++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i]))
-//                && (++i < size && IsUTF8Tail(byt[i])))
-//            {
-//                return true;
-//            }
-//            else if(size != i)
-//            {
-//                return false;
-//            }
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//        /* End: Extra code (not from MadEdit) */
-//    }
-//
-//    return false;
-//}
-
-/* ==============================================
-*  Begin: Detection Code from MadEdit
-*         Modified to suit C::B
-*  ---------------------------------------------- */
 bool EncodingDetector::IsTextUTF16LE(const wxByte *text, size_t size)
 {
     if (size < 2)
@@ -533,21 +456,21 @@ bool EncodingDetector::IsTextUTF16LE(const wxByte *text, size_t size)
     size = size & 0x1FFFFFFE;   // to even
     while(size > 0)
     {
-        if(text[1] == 0)
+        if (text[1] == 0)
         {
-            if(text[0] == 0)
+            if (text[0] == 0)
                 return false;
             ok = true;
         }
-        else if(text[1] >= 0xD8 && text[1] <= 0xDB)
+        else if (text[1] >= 0xD8 && text[1] <= 0xDB)
         {
-            if(highsurrogate)
+            if (highsurrogate)
                 return false;
             highsurrogate = true;
         }
-        else if(text[1] >= 0xDC && text[1] <= 0xDF)
+        else if (text[1] >= 0xDC && text[1] <= 0xDF)
         {
-            if(!highsurrogate)
+            if (!highsurrogate)
                 return false;
             highsurrogate = false;
         }
@@ -571,21 +494,21 @@ bool EncodingDetector::IsTextUTF16BE(const wxByte *text, size_t size)
 
     while(size > 0)
     {
-        if(text[0] == 0)
+        if (text[0] == 0)
         {
-            if(text[1] == 0)
+            if (text[1] == 0)
                 return false;
             ok = true;
         }
-        else if(text[0] >= 0xD8 && text[0] <= 0xDB)
+        else if (text[0] >= 0xD8 && text[0] <= 0xDB)
         {
-            if(highsurrogate)
+            if (highsurrogate)
                 return false;
             highsurrogate = true;
         }
-        else if(text[0] >= 0xDC && text[0] <= 0xDF)
+        else if (text[0] >= 0xDC && text[0] <= 0xDF)
         {
-            if(!highsurrogate)
+            if (!highsurrogate)
                 return false;
             highsurrogate = false;
         }
@@ -596,10 +519,6 @@ bool EncodingDetector::IsTextUTF16BE(const wxByte *text, size_t size)
 
     return ok;
 }
-/* ----------------------------------------------
-*  End: Detection Code from MadEdit
-*       Modified to suit C::B
-*  ============================================== */
 
 bool EncodingDetector::DetectUTF16(const wxByte *byt, size_t size)
 {
@@ -616,24 +535,19 @@ bool EncodingDetector::DetectUTF16(const wxByte *byt, size_t size)
     return false;
 }
 
-
-/* ==============================================
-*  Begin: Detection Code from MadEdit
-*         Modified to suit C::B
-*  ---------------------------------------------- */
 bool EncodingDetector::IsTextUTF32LE(const wxByte *text, size_t size)
 {
-    size >>= 2;   // to count
+    size >>= 2; // to count
     if (size < 4)
         return false;
 
     wxUint32 ucs4, *p=(wxUint32 *)text;
 
-    for(size_t i = 0; i < size; i++, p++)
+    for (size_t i = 0; i < size; i++, p++)
     {
         ucs4 = wxINT32_SWAP_ON_BE(*p);
 
-        if(ucs4 <= 0 || ucs4 > 0x10FFFF)
+        if (ucs4 <= 0 || ucs4 > 0x10FFFF)
             return false;
     }
 
@@ -658,10 +572,6 @@ bool EncodingDetector::IsTextUTF32BE(const wxByte *text, size_t size)
 
     return true;
 }
-/* ----------------------------------------------
-*  End: Detection Code from MadEdit
-*       Modified to suit C::B
-*  ============================================== */
 
 bool EncodingDetector::DetectUTF32(const wxByte *byt, size_t size)
 {

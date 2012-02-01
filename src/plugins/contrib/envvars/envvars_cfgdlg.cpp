@@ -508,7 +508,7 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
   if (key.IsEmpty())
     return;
-  bool prevChecked = lstEnvVars->IsChecked(sel);
+  bool was_checked = lstEnvVars->IsChecked(sel);
 
   wxString value     = lstEnvVars->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
   wxString old_key   = key;
@@ -548,13 +548,13 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
     if (!nsEnvVars::EnvvarApply(key, value))
     {
       lstEnvVars->Check(sel, false); // Unset on UI to mark it's NOT set
-      prevChecked=false;
+      was_checked = false;
     }
   }
 
   // update the GUI to the (new/updated/same) key/value pair anyway
   lstEnvVars->SetString(sel, key + _T(" = ") + value);
-  lstEnvVars->Check(sel, prevChecked);
+  lstEnvVars->Check(sel, was_checked);
 }// OnEditEnvVarClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

@@ -18,6 +18,7 @@
     #include <wx/string.h>
     #include <wx/utils.h>
     #include <wx/xrc/xmlres.h>
+
     #include "manager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"

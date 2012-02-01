@@ -30,7 +30,7 @@ class LoaderBase : public AbstractJob
 
     void WaitReady()
     {
-        if(wait)
+        if (wait)
         {
             wait = false;
             sem.Wait();
@@ -84,9 +84,9 @@ public:
     void operator()()
     {
         unsigned int i = 20;
-        while(--i)
+        while (--i)
         {
-            if(Manager::IsAppShuttingDown()) // make sure we don't hang up the application for seconds
+            if (Manager::IsAppShuttingDown()) // make sure we don't hang up the application for seconds
                 break;
             wxMilliSleep(75);
         }
@@ -94,7 +94,7 @@ public:
     ~DelayedDelete()
     {
         wxLogNull nullLog; // leave this in place, DelayedDelete could in theory run after CodeBlocksApp::OnRun returns
-        if(wxFile::Exists(target))
+        if ( wxFile::Exists(target) )
             wxRemove(target);
     };
 };
@@ -112,7 +112,7 @@ public:
     void Alloc(size_t size)
     {
         std::auto_ptr<char> tmp(new char[len + size]);
-        if(ptr.get())
+        if (ptr.get())
             memcpy(tmp.get(), ptr.get(), len);
         ptr = tmp;
     };

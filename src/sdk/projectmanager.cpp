@@ -127,7 +127,7 @@ cbTreeCtrl::cbTreeCtrl() : wxTreeCtrl()
 
 cbTreeCtrl::cbTreeCtrl(wxWindow* parent, int id) :
     wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
-                wxTR_EDIT_LABELS | wxTR_DEFAULT_STYLE | wxTR_MULTIPLE | wxNO_BORDER)
+               wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS | wxTR_MULTIPLE | wxBORDER_NONE)
 {
     Compare = &filesSort;
 }

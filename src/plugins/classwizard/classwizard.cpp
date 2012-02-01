@@ -9,18 +9,18 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/fs_zip.h>
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/string.h>
-#include <wx/utils.h>
-#include <wx/xrc/xmlres.h>
-#include "cbproject.h"
-#include "configmanager.h"
-#include "globals.h"
-#include "logmanager.h"
-#include "manager.h"
-#include "projectmanager.h"
+    #include <wx/fs_zip.h>
+    #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
+    #include <wx/utils.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbproject.h"
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "logmanager.h"
+    #include "manager.h"
+    #include "projectmanager.h"
 #endif
 #include <wx/filesys.h>
 #include "classwizard.h"

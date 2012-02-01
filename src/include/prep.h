@@ -7,7 +7,7 @@
 #define PREP_H
 
 #ifndef wxMAJOR_VERSION
-#include <wx/version.h>
+    #include <wx/version.h>
 #endif
 
 #if !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__)

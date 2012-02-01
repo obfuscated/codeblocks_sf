@@ -79,9 +79,6 @@ CmdConfigDialog::CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin) : wxDialo
 	wxBoxSizer* bSizer43;
 	bSizer43 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer_toprow;
-	bSizer_toprow = new wxBoxSizer( wxHORIZONTAL );
-
 	m_staticText27 = new wxStaticText( tools_panel, wxID_ANY, _("Known Tools"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer43->Add( m_staticText27, 0, wxALL, 5 );
 
@@ -234,9 +231,9 @@ CmdConfigDialog::CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin) : wxDialo
 	env_sizer->Add( m_envvars, 0, wxALL|wxEXPAND, 1 );
 	prop_sizer->Add( env_sizer, 0, wxEXPAND, 5 );
 
-	
+
 	main_sizer->Add(button_sizer,0,wxALIGN_CENTER);
-	
+
 	this->SetSizer( main_sizer );
 	this->Layout();
 	this->Fit();

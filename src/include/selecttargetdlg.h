@@ -26,6 +26,7 @@ class SelectTargetDlg : public wxScrollingDialog
         void OnCheckboxSelection(wxCommandEvent& event);
         void OnHostApplicationButtonClick(wxCommandEvent& event);
         void UpdateSelected();
+
         cbProject* m_pProject;
         int m_Selected;
 

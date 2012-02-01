@@ -33,34 +33,34 @@ void CrashHandlerSaveEditorFiles(wxString& buf)
         path = ConfigManager::GetHomeFolder();
     }
     path << _T("\\cb-crash-recover");
-    if(!wxDirExists(path)) wxMkdir(path);
+    if (!wxDirExists(path)) wxMkdir(path);
 
     //make a sub-directory of the current date & time
     wxDateTime now = wxDateTime::Now();
     path << now.Format(_T("\\%Y%m%d-%H%M%S"));
 
     EditorManager* em = Manager::Get()->GetEditorManager();
-    if(em)
+    if (em)
     {
         bool AnyFileSaved = false;
         wxMkdir(path);
-        if(wxDirExists(path))
+        if (wxDirExists(path))
         {
-            for(int i = 0; i < em->GetEditorsCount(); ++i)
+            for (int i = 0; i < em->GetEditorsCount(); ++i)
             {
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
-                if(ed)
+                if (ed)
                 {
                     wxFileName fn(ed->GetFilename());
                     wxString fnpath = path + _T("/") + fn.GetFullName();
                     wxString newfnpath = fnpath;
                     // add number if filename already exists e.g. main.cpp.001, main.cpp.002, ...
                     int j = 1;
-                    while(wxFileExists(newfnpath))
+                    while (wxFileExists(newfnpath))
                     {
                         newfnpath = fnpath + wxString::Format(wxT(".%03d"),j);
                     }
-                    if(cbSaveToFile(newfnpath,
+                    if (cbSaveToFile(newfnpath,
                                     ed->GetControl()->GetText(),
                                     ed->GetEncoding(),
                                     ed->GetUseBom() ))
@@ -68,7 +68,7 @@ void CrashHandlerSaveEditorFiles(wxString& buf)
                 }
             }
 
-            if(AnyFileSaved)
+            if (AnyFileSaved)
             {
                 buf << _("The currently opened files have been saved to the directory\n");
                 buf << path;
@@ -87,14 +87,14 @@ LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
     static bool EditorFilesNotSaved = true;
     DWORD code = ExceptionInfo->ExceptionRecord->ExceptionCode;
 
-    if(code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_ILLEGAL_INSTRUCTION)
+    if (code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_ILLEGAL_INSTRUCTION)
         return EXCEPTION_CONTINUE_SEARCH;
 
     wxString buf;
     buf.Printf(_("The application encountered a crash at address %u.\n\n"),
                (unsigned int) ExceptionInfo->ContextRecord->Eip);
 
-    if(EditorFilesNotSaved)
+    if (EditorFilesNotSaved)
     {
         CrashHandlerSaveEditorFiles(buf);
         EditorFilesNotSaved = false;
@@ -138,7 +138,7 @@ CrashHandler::CrashHandler(bool bDisabled) : handler(0)
 
 CrashHandler::~CrashHandler()
 {
-    if(handler)
+    if (handler)
     {
         RemoveHandler_t RemoveHandler = (RemoveHandler_t) GetProcAddress(GetModuleHandle(_T("kernel32")), "RemoveVectoredExceptionHandler");
         RemoveHandler(handler);

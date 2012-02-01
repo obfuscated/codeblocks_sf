@@ -127,9 +127,7 @@ void InfoPane::ReorderTabs(CompareFunction cmp_f)
         else
         {
             if (pageIndex < 0)
-            {
                 AddPagePrivate(page.Item(i)->window, page.Item(i)->title, page.Item(i)->icon);
-            }
             if (index++ != pageIndex)
                 MovePage(page.Item(i)->window, index );
         }

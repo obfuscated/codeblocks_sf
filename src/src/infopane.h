@@ -60,7 +60,7 @@ class InfoPane : public cbAuiNotebook
 public:
 
     InfoPane(wxWindow* parent);
-    ~InfoPane();
+    virtual ~InfoPane();
 
     /*
     *  Show a tab, or bring it to the foreground if already shown.

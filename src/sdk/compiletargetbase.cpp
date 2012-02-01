@@ -303,9 +303,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 filename << fname.GetName() << _T(".") << Ext;
             }
             else
-            {
                 filename << fname.GetFullName();
-            }
             break;
         }
         default:

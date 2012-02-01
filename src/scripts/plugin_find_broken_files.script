@@ -87,7 +87,7 @@ class FindBrokenFilesPlugin extends cbScriptPlugin
         {
             ShowInfo(_T("The project has ") + broken_files + _T(" broken files:\n") + broken_files_str);
 
-            local msg   = _T("Do you want to remove them from the project now?");
+            local msg          = _T("Do you want to remove them from the project now?");
             local remove_files = Message(msg, _T("Broken Files Plugin"), ::wxICON_QUESTION | ::wxYES_NO);
             if (remove_files==::wxID_YES)
             {

@@ -1811,10 +1811,10 @@ bool cbEditor::FixFoldState()
     {
         int backupLength = m_foldBackup->GetLineCount();
         int realLength = m_pControl->GetLineCount();
-        if (backupLength == realLength) //It is supposed to be the same, but you never know :)
+        if (backupLength == realLength) // It is supposed to be the same, but you never know :)
         {
             ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-            if (mgr->ReadBool(_T("/folding/show_folds"), true)) //Only fix the folds if the folds are enabled
+            if (mgr->ReadBool(_T("/folding/show_folds"), true)) // Only fix the folds if the folds are enabled
             {
                 int count = m_pControl->GetLineCount();
                 for (int i = 0; i < count; ++i)
@@ -1956,52 +1956,51 @@ void cbEditor::ToggleAllFolds()
 
 void cbEditor::SetFoldingIndicator(int id)
 {
-    //Arrow
+    wxColor f(0xff, 0xff, 0xff); // foreground colour
+    wxColor b(0x80, 0x80, 0x80); // background colour
+    // Arrow
     if (id == 0)
     {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_ARROWDOWN,  f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_ARROW,      f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_BACKGROUND, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_BACKGROUND, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_ARROW,      f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN,  f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, f, b);
     }
-
-    //Circle
+    // Circle
     else if (id == 1)
     {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_CIRCLEMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_CIRCLEPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNERCURVE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_CIRCLEPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_CIRCLEMINUS,          f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_CIRCLEPLUS,           f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_VLINE,                f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_LCORNERCURVE,         f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_CIRCLEPLUSCONNECTED,  f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER,              f, b);
     }
-
-    //Square
+    // Square
     else if (id == 2)
     {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_BOXMINUS,          f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_BOXPLUS,           f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_VLINE,             f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_LCORNER,           f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_BOXPLUSCONNECTED,  f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER,           f, b);
     }
-
-    //Simple
+    // Simple
     else if (id == 3)
     {
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_MINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_MINUS,      f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_PLUS,       f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_BACKGROUND, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_BACKGROUND, f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_PLUS,       f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS,      f, b);
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, f, b);
     }
 }
 
@@ -2952,9 +2951,7 @@ void cbEditor::OnEditorChange(wxScintillaEvent& event)
 
 bool BraceIndent(wxString &indent, cbStyledTextCtrl* control, cbEditorInternalData *data)
 {
-    ConfigManager* configManager = Manager::Get()->GetConfigManager(_T("editor"));
-    bool braceIndent = configManager->ReadBool(_T("/brace_smart_indent"), true);
-    if (braceIndent)
+    if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_smart_indent"), true) )
     {
         int style = 0;
         switch(control->GetLexer())
@@ -3378,8 +3375,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         }
     }
 
-    bool braceCompletion = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true);
-    if ( braceCompletion )
+    if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true) )
     {
         if ( control->GetLexer() == wxSCI_LEX_CPP || control->GetLexer() == wxSCI_LEX_D )
         {

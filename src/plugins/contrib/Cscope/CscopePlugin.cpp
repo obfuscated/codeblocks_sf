@@ -243,9 +243,7 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
 	//create temporary file and save the file-list there
 	wxFileName projectfilename(prj->GetFilename());
 
-	list_file = prj->GetBasePath() +
-                projectfilename.GetName() +
-                _T(".cscope_file_list");
+	list_file = prj->GetBasePath() + projectfilename.GetName() + _T(".cscope_file_list");
 
 	wxFFile file(list_file, _T("w+b"));
 	if (!file.IsOpened())

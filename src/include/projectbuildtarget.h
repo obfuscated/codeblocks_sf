@@ -117,7 +117,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         virtual FilesList& GetFilesList(){ return m_Files; }
 
         /** @return The number of files in the target. */
-        int GetFilesCount(){  return m_Files.size(); }
+        int GetFilesCount(){ return m_Files.size(); }
 
         /** Access a file of the target.
           * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().
@@ -133,16 +133,17 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 
     private:
         friend class ProjectFile; // to allow it to add/remove files in FilesList
-        cbProject* m_Project;
-        wxString m_ExternalDeps;
-        wxString m_AdditionalOutputFiles;
-        BuildTargets m_TargetDeps;
-        FilesList m_Files;
+
+        cbProject*       m_Project;
+        wxString         m_ExternalDeps;
+        wxString         m_AdditionalOutputFiles;
+        BuildTargets     m_TargetDeps;
+        FilesList        m_Files;
         ProjectFileArray m_FileArray;
-        bool m_BuildWithAll; // obsolete: left just to convert old projects to use virtual targets
-        bool m_CreateStaticLib;
-        bool m_CreateDefFile;
-        bool m_UseConsoleRunner;
+        bool             m_BuildWithAll; // obsolete: left just to convert old projects to use virtual targets
+        bool             m_CreateStaticLib;
+        bool             m_CreateDefFile;
+        bool             m_UseConsoleRunner;
 };
 
 #endif // PROJECTBUILDTARGET_H
