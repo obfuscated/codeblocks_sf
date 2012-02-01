@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 7732 $
- * $Id: parser.cpp 7732 2012-01-29 06:18:20Z mortenmacfly $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/codecompletion/parser/parser.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include <sdk.h>
