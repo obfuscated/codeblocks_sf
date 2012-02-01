@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: traptable.S,v 1.1.1.1 2006/12/07 10:08:09 fbr Exp $
+ * $Id$
  *
  * This file defines the global Interrupt and Exception Table for the MPC 555
  * We use to Interrupt stacks
