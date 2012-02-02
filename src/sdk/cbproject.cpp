@@ -1683,10 +1683,10 @@ bool cbProject::CloseAllFiles(bool dontsave)
         if (f)
         {
             Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
-            delete f;
         }
         m_Files.erase(it);
         m_FileArray.Remove(*it);
+        delete f;
         it = m_Files.begin();
     }
     Manager::Get()->GetEditorManager()->ShowNotebook();
