@@ -3039,6 +3039,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                 }
 
                 CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+                locked = false;
 
                 // handle it if the token is a function/variable(i.e. is not a type)
                 if (isFuncOrVar)
