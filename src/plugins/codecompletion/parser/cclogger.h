@@ -134,7 +134,7 @@ private:
           THREAD_LOCKER_LEAVE(CS);       \
           CS.Leave();                    \
     }
-#elif CC_ENABLE_LOCKER_ASSERT
+#elif defined CC_ENABLE_LOCKER_ASSERT
     #define CC_LOCKER_TRACK_CS_ENTER(CS)  CS.Enter();
     #define CC_LOCKER_TRACK_CS_LEAVE(CS)  CS.Leave();
     #define CC_LOCKER_TRACK_MTX_LOCK(M)   cbAssert(M.Lock()==wxMUTEX_NO_ERROR);
