@@ -1625,6 +1625,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     bool HaveLastDlgPosition = false;
     bool wrapAround = false;
     int  data_start_initial = data->start;
+    bool wrapAroundNotification = false;
 
     while (!stop)
     {
@@ -1681,7 +1682,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
                 bool auto_wrap_around = data->autoWrapSearch;
                 if (auto_wrap_around)
-                    wxBell();
+                    wrapAroundNotification = true;
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
                     data->end = data_start_initial;
@@ -1697,6 +1698,13 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
         else
             break; // done - already wrapped around once
+
+        if (wrapAroundNotification)
+        {
+            wxBell();
+            InfoWindow::Display(_("Find action"), _("Reached the end of the document"), 1000);
+            wrapAroundNotification = false;
+        }
 
         foundcount++;
 
@@ -2248,6 +2256,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         StartPos = data->SearchInSelectionStart;
         EndPos = data->SearchInSelectionEnd;
     }
+    bool wrapAroundNotification = false;
     while (true) // loop while not found and user selects to start again from the top
     {
         int lengthFound = 0;
@@ -2318,7 +2327,8 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
                 bool auto_wrap_around = data->autoWrapSearch;
                 if (auto_wrap_around)
-                    wxBell();
+                    wrapAroundNotification = true;
+
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
                     wrapAround = true; // signal the wrap-around
@@ -2358,6 +2368,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 msg.Printf(_("Not found: %s"), data->findText.c_str());
                 cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
                 control->SetSCIFocus(true);
+                wrapAroundNotification = false;
                 break; // done
             }
         }
@@ -2366,11 +2377,19 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             wxString msg;
             msg.Printf(_("Not found: %s"), data->findText.c_str());
             cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
+            wrapAroundNotification = false;
             break; // done
         }
         else
             break; // done
     }
+
+    if (wrapAroundNotification)
+    {
+        wxBell();
+        InfoWindow::Display(_("Find action"), _("Reached the end of the document"), 1000);
+    }
+
     return pos;
 }
 
