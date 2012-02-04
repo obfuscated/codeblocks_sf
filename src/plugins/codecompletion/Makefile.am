@@ -15,6 +15,7 @@ libcodecompletion_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
 
 libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			ccoptionsprjdlg.cpp \
+			cctreectrl.cpp \
 			classbrowser.cpp \
 			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
@@ -37,6 +38,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 
 noinst_HEADERS = ccoptionsdlg.h \
 			ccoptionsprjdlg.h \
+			cctreectrl.h \
 			classbrowser.h \
 			classbrowserbuilderthread.h \
 			codecompletion.h \
