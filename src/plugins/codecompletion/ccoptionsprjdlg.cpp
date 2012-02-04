@@ -44,9 +44,7 @@ CCOptionsProjectDlg::CCOptionsProjectDlg(wxWindow* parent, cbProject* project, N
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     control->Clear();
     for (size_t i = 0; i < m_OldPaths.GetCount(); ++i)
-    {
         control->Append(m_OldPaths[i]);
-    }
 }
 
 CCOptionsProjectDlg::~CCOptionsProjectDlg()
@@ -58,9 +56,9 @@ void CCOptionsProjectDlg::OnAdd(wxCommandEvent& /*event*/)
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
 
     EditPathDlg dlg(this,
-            m_Project ? m_Project->GetBasePath() : _T(""),
-            m_Project ? m_Project->GetBasePath() : _T(""),
-            _("Add directory"));
+                    m_Project ? m_Project->GetBasePath() : _T(""),
+                    m_Project ? m_Project->GetBasePath() : _T(""),
+                    _("Add directory"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
@@ -78,9 +76,9 @@ void CCOptionsProjectDlg::OnEdit(wxCommandEvent& /*event*/)
         return;
 
     EditPathDlg dlg(this,
-            control->GetString(sel),
-            m_Project ? m_Project->GetBasePath() : _T(""),
-            _("Edit directory"));
+                    control->GetString(sel),
+                    m_Project ? m_Project->GetBasePath() : _T(""),
+                    _("Edit directory"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
@@ -114,9 +112,7 @@ void CCOptionsProjectDlg::OnApply()
     wxArrayString newpaths;
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     for (int i = 0; i < (int)control->GetCount(); ++i)
-    {
         newpaths.Add(control->GetString(i));
-    }
 
     if (m_OldPaths != newpaths)
     {
@@ -130,9 +126,9 @@ void CCOptionsProjectDlg::OnApply()
         pdirs = newpaths;
 
         cbMessageBox(_("You have changed the C/C++ parser search paths for this project.\n"
-                        "These paths will be taken into account for next parser runs.\n"
-                        "If you want them to take effect immediately, you will have to close "
-                        "and re-open your project."),
-                        _("Information"), wxICON_INFORMATION);
+                       "These paths will be taken into account for next parser runs.\n"
+                       "If you want them to take effect immediately, you will have to close "
+                       "and re-open your project."),
+                       _("Information"), wxICON_INFORMATION);
     }
 }

@@ -16,12 +16,12 @@ class cbProject;
 class ParserThreadedTask : public cbThreadedTask
 {
 public:
-    ParserThreadedTask(Parser* parser, wxCriticalSection& parserCS);
+    ParserThreadedTask(Parser* parser, wxMutex& parserCS);
     int Execute();
 
 private:
-    Parser*            m_Parser;
-    wxCriticalSection& m_ParserCritical;
+    Parser*  m_Parser;
+    wxMutex& m_ParserMutex;
 };
 
 class MarkFileAsLocalThreadedTask : public cbThreadedTask

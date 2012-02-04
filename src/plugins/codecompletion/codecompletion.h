@@ -184,7 +184,7 @@ private:
     void OnParserStart(wxCommandEvent& event);
 
     /** mouse hover event*/
-    void OnValueTooltip(CodeBlocksEvent& event);
+    void OnEditorTooltip(CodeBlocksEvent& event);
 
     /** receive event from SystemHeadersThread */
     void OnSystemHeadersThreadUpdate(wxCommandEvent& event);

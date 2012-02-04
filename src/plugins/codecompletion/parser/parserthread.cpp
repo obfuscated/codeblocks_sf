@@ -316,9 +316,7 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
         {
             wxString name = m_Tokenizer.GetToken();
             if (name == ParserConsts::opbrace)
-            {
                 name = wxEmptyString; // anonymous namespace
-            }
             else
             {
                 m_Tokenizer.SetState(tsSkipNone);
@@ -347,8 +345,8 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
         }
         else if (token == ParserConsts::clbrace)
         {
-            NameSpaceVec::reverse_iterator it = result.rbegin();
-            for ( ; it != result.rend(); ++it)
+            NameSpaceVec::reverse_iterator it;
+            for (it = result.rbegin(); it != result.rend(); ++it)
             {
                 NameSpace& ns = *it;
                 if (ns.EndLine == -1)

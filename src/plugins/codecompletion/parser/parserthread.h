@@ -16,6 +16,7 @@
 
 #include <cbthreadpool.h>
 #include <filemanager.h>
+#include <logmanager.h> // F()
 
 #include "cclogger.h"
 #include "tokenizer.h"
@@ -144,11 +145,11 @@ protected:
       */
     int Execute()
     {
-        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
         bool success = Parse();
 
-        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
 
         return success ? 0 : 1;
     }

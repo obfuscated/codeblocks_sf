@@ -11,18 +11,18 @@
 
 #include <map>
 
-#define CC_PARSER_PROFILE_TEST 1
+//#define CC_PARSER_PROFILE_TEST 1
 
 #if CC_PARSER_PROFILE_TEST
-#define CC_PROFILE_TIMER()                                                                          \
-    static ProfileTimerData __ptd;                                                                  \
-    static size_t __i = ProfileTimer::Registry(&__ptd, wxString(__PRETTY_FUNCTION__, wxConvUTF8));  \
-    __ptd.m_CallTimes += __i;                                                                       \
-    ProfileTimerHelper __profileTimerHelper(__ptd)
-#define CC_PROFILE_TIMER_LOG() ProfileTimer::Log()
+    #define CC_PROFILE_TIMER()                                                                          \
+        static ProfileTimerData __ptd;                                                                  \
+        static size_t __i = ProfileTimer::Registry(&__ptd, wxString(__PRETTY_FUNCTION__, wxConvUTF8));  \
+        __ptd.m_CallTimes += __i;                                                                       \
+        ProfileTimerHelper __profileTimerHelper(__ptd)
+    #define CC_PROFILE_TIMER_LOG() ProfileTimer::Log()
 #else
-#define CC_PROFILE_TIMER()
-#define CC_PROFILE_TIMER_LOG()
+    #define CC_PROFILE_TIMER()
+    #define CC_PROFILE_TIMER_LOG()
 #endif
 
 class ProfileTimerData

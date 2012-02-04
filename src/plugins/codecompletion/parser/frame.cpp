@@ -53,12 +53,12 @@ int idCCLogger = wxNewId();
 BEGIN_EVENT_TABLE(Frame, wxFrame)
     //(*EventTable(Frame)
     //*)
-    EVT_FIND(wxID_ANY, Frame::OnFindDialog)
-    EVT_FIND_NEXT(wxID_ANY, Frame::OnFindDialog)
-    EVT_FIND_REPLACE(wxID_ANY, Frame::OnFindDialog)
+    EVT_FIND(wxID_ANY,             Frame::OnFindDialog)
+    EVT_FIND_NEXT(wxID_ANY,        Frame::OnFindDialog)
+    EVT_FIND_REPLACE(wxID_ANY,     Frame::OnFindDialog)
     EVT_FIND_REPLACE_ALL(wxID_ANY, Frame::OnFindDialog)
-    EVT_FIND_CLOSE(wxID_ANY, Frame::OnFindDialog)
-    EVT_MENU(idCCLogger, Frame::OnCCLogger)
+    EVT_FIND_CLOSE(wxID_ANY,       Frame::OnFindDialog)
+    EVT_MENU(idCCLogger,           Frame::OnCCLogger)
 END_EVENT_TABLE()
 
 Frame::Frame(const wxString& main_file) :

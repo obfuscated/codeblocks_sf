@@ -53,31 +53,31 @@
 
 // class ParserThreadedTask
 
-ParserThreadedTask::ParserThreadedTask(Parser* parser, wxCriticalSection& parserCS) :
+ParserThreadedTask::ParserThreadedTask(Parser* parser, wxMutex& parserMTX) :
     m_Parser(parser),
-    m_ParserCritical(parserCS)
+    m_ParserMutex(parserMTX)
 {
 }
 
 int ParserThreadedTask::Execute()
 {
-    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
+    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
     StringList priorityHeaders(m_Parser->m_PriorityHeaders);
     StringList batchFiles(m_Parser->m_BatchParseFiles);
 
-    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
     if (!preDefs.IsEmpty())
         m_Parser->ParseBuffer(preDefs, false, false);
 
-    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
+    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     m_Parser->m_PredefinedMacros.Clear();
     m_Parser->m_IsPriority = true;
 
-    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
     while (!priorityHeaders.empty())
     {
@@ -85,7 +85,7 @@ int ParserThreadedTask::Execute()
         priorityHeaders.pop_front();
     }
 
-    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
+    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     m_Parser->m_PriorityHeaders.clear();
     m_Parser->m_IsPriority = false;
@@ -93,7 +93,7 @@ int ParserThreadedTask::Execute()
     if (m_Parser->m_IgnoreThreadEvents)
         m_Parser->m_IsFirstBatch = true;
 
-    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
     while (!batchFiles.empty())
     {
@@ -101,7 +101,7 @@ int ParserThreadedTask::Execute()
         batchFiles.pop_front();
     }
 
-    CC_LOCKER_TRACK_CS_ENTER(m_ParserCritical)
+    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     m_Parser->m_BatchParseFiles.clear();
 
@@ -111,7 +111,7 @@ int ParserThreadedTask::Execute()
         m_Parser->m_IsParsing = true;
     }
 
-    CC_LOCKER_TRACK_CS_LEAVE(m_ParserCritical);
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
     return 0;
 }
@@ -135,11 +135,13 @@ int MarkFileAsLocalThreadedTask::Execute()
 
         if (ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
         {
-            CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
+            TokensTree* tree = m_Parser->GetTokensTree();
 
-            m_Parser->GetTokensTree()->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, m_Project);
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-            CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+            tree->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, m_Project);
+
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
         }
     }
 

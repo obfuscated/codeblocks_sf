@@ -11,7 +11,7 @@
 
 #include "token.h"
 
-extern wxCriticalSection s_TokensTreeCritical;
+extern wxMutex s_TokensTreeMutex;
 
 class TokensTree
 {

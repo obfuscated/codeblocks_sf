@@ -171,9 +171,10 @@ bool CodeRefactoring::Parse()
     // handle local variables
     bool isLocalVariable = false;
 
-    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
-
     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
     Token* token = tree->at(*targetResult.begin());
     if (token)
     {
@@ -182,7 +183,7 @@ bool CodeRefactoring::Parse()
             isLocalVariable = true;
     }
 
-    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
 
     wxArrayString files;
     cbProject* project = m_NativeParser.GetProjectByEditor(editor);
@@ -289,13 +290,14 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
     Token* parentOfLocalVariable = nullptr;
     if (isLocalVariable)
     {
-        CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
-
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
         Token* token = tree->at(*targetResult.begin());
         parentOfLocalVariable = tree->at(token->m_ParentIndex);
 
-        CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
     }
 
     // now that list is filled, we'll search
@@ -388,9 +390,10 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                 {
                     bool do_continue = false;
 
-                    CC_LOCKER_TRACK_CS_ENTER(s_TokensTreeCritical)
-
                     TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+
+                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
                     Token* token = tree->at(*findIter);
                     if (token)
                     {
@@ -402,7 +405,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                         }
                     }
 
-                    CC_LOCKER_TRACK_CS_LEAVE(s_TokensTreeCritical);
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
 
                     if (do_continue) continue;
                 }

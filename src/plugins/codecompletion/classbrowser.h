@@ -6,13 +6,16 @@
 #ifndef CLASSBROWSER_H
 #define CLASSBROWSER_H
 
+#include <wx/panel.h>
+
 #include <settings.h> // SDK
 #include <cbplugin.h>
 #include <manager.h>
-#include <wx/panel.h>
+
+#include "cctreectrl.h"
+#include "classbrowserbuilderthread.h"
 #include "parser/parser.h"
 #include "parser/token.h"
-#include "classbrowserbuilderthread.h"
 
 class NativeParser;
 class wxComboBox;
@@ -25,18 +28,18 @@ class cbProject;
  */
 class ClassBrowser : public wxPanel
 {
-    friend class myTextCtrl;
 public:
     // class constructor
     ClassBrowser(wxWindow* parent, NativeParser* np);
     // class destructor
     virtual ~ClassBrowser();
-    const wxTreeCtrl* GetTree() { return m_Tree; }
-    void SetParser(ParserBase* parser);
-    const ParserBase& GetParser(){ return *m_Parser; }
-    const ParserBase* GetParserPtr() { return m_Parser; }
-    void UpdateView(bool checkHeaderSwap = false);
-    void UpdateSash();
+
+    const wxTreeCtrl* GetCCTreeCtrl() { return m_CCTreeCtrl; }
+    void  SetParser(ParserBase* parser);
+    const ParserBase& GetParser()     { return *m_Parser; }
+    const ParserBase* GetParserPtr()  { return  m_Parser; }
+    void  UpdateClassBrowserView(bool checkHeaderSwap = false);
+    void  UpdateSash();
 
 private:
     void OnTreeItemDoubleClick(wxTreeEvent& event);
@@ -58,22 +61,23 @@ private:
 
     void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
 
-    void BuildTree();
+    void ThreadedBuildTree();
 
-    void OnTreeItemSelected(wxTreeEvent& event);
     void OnTreeItemExpanding(wxTreeEvent& event);
 #ifndef CC_NO_COLLAPSE_ITEM
     void OnTreeItemCollapsing(wxTreeEvent& event);
 #endif // CC_NO_COLLAPSE_ITEM
+    void OnTreeSelChanged(wxTreeEvent& event);
 
     void OnMakeSelectItem(wxCommandEvent& event);
 
 private:
     NativeParser*              m_NativeParser;
-    CBTreeCtrl*                m_Tree;
-    CBTreeCtrl*                m_TreeBottom;
-    wxComboBox*                m_Search;
+    CCTreeCtrl*                m_CCTreeCtrl;
+    CCTreeCtrl*                m_CCTreeCtrlBottom;
     wxTreeCtrl*                m_TreeForPopupMenu;
+
+    wxComboBox*                m_Search;
     ParserBase*                m_Parser;
 
     // filtering

@@ -44,7 +44,7 @@
     #define TRACE2(format, args...)
 #endif
 
-wxCriticalSection s_TokensTreeCritical;
+wxMutex s_TokensTreeMutex;
 
 TokensTree::TokensTree() :
     m_Modified(false),
