@@ -69,7 +69,7 @@ private:
 #endif // CC_NO_COLLAPSE_ITEM
     void OnTreeSelChanged(wxTreeEvent& event);
 
-    void OnMakeSelectItem(wxCommandEvent& event);
+    void OnThreadEvent(wxCommandEvent& event);
 
 private:
     NativeParser*              m_NativeParser;

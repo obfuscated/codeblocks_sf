@@ -149,7 +149,7 @@ protected:
 
         bool success = Parse();
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         return success ? 0 : 1;
     }

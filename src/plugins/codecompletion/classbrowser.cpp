@@ -88,7 +88,7 @@ int idCBSortByAlpabet          = wxNewId();
 int idCBSortByKind             = wxNewId();
 int idCBSortByScope            = wxNewId();
 int idCBBottomTree             = wxNewId();
-int idCBMakeSelectItem         = wxNewId();
+int idThreadEvent              = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED  (XRCID("treeMembers"),      ClassBrowser::OnTreeItemDoubleClick)
@@ -122,7 +122,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBSortByScope,                            ClassBrowser::OnSetSortType)
     EVT_MENU(idCBBottomTree,                             ClassBrowser::OnCBViewMode)
 
-    EVT_COMMAND(idCBMakeSelectItem, wxEVT_COMMAND_ENTER, ClassBrowser::OnMakeSelectItem)
+    EVT_COMMAND(idThreadEvent, wxEVT_COMMAND_ENTER,      ClassBrowser::OnThreadEvent)
 END_EVENT_TABLE()
 
 // class constructor
@@ -134,8 +134,6 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     m_ClassBrowserSemaphore(0, 1),
     m_ClassBrowserBuilderThread(0)
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-
     wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
 
@@ -146,6 +144,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     m_CCTreeCtrl       = XRCCTRL(*this, "treeAll",     CCTreeCtrl);
     m_CCTreeCtrlBottom = XRCCTRL(*this, "treeMembers", CCTreeCtrl);
 
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
 
@@ -684,7 +683,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 
         count = tree->FindMatches(search, result, false, true);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
     if (count == 0)
@@ -699,7 +698,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 
         token = tree->at(*result.begin());
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
     else if (count > 1)
     {
@@ -716,7 +715,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                 int_selections.Add(*it);
             }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         }
         if (selections.GetCount() > 1)
         {
@@ -728,7 +727,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 
             token = tree->at(int_selections[sel]);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         }
         else if (selections.GetCount() == 1)
         {
@@ -738,7 +737,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             // back on 1 entry no need to show a selection
             token = tree->at(int_selections[0]);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         }
     }
 
@@ -811,19 +810,32 @@ void ClassBrowser::ThreadedBuildTree()
     if (Manager::IsAppShuttingDown() || !m_Parser)
         return;
 
-    CCLogger::Get()->DebugLog(wxT("ClassBrowser: Initiating build tree..."));
-
-    // tree shall only be  created in case of a new builder thread
-    bool create_tree = false;
+    TRACE(wxT("ClassBrowser: ThreadedBuildTree started."));
 
     // create the thread if needed
+    bool thread_needs_run = false;
     if (!m_ClassBrowserBuilderThread)
     {
-        m_ClassBrowserBuilderThread = new ClassBrowserBuilderThread(m_ClassBrowserSemaphore);
+        m_ClassBrowserBuilderThread = new ClassBrowserBuilderThread(this, m_ClassBrowserSemaphore);
         m_ClassBrowserBuilderThread->Create();
-        m_ClassBrowserBuilderThread->Run();
-        create_tree = true; // new builder thread - need to create new tree
+        thread_needs_run = true; // just created, so surely need to run it
     }
+
+    if (!thread_needs_run)
+        TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread..."));
+
+    bool thread_needs_resume = false;
+    while (   !thread_needs_run
+           &&  m_ClassBrowserBuilderThread->IsAlive()
+           &&  m_ClassBrowserBuilderThread->IsRunning()
+           && !m_ClassBrowserBuilderThread->IsPaused() )
+    {
+        thread_needs_resume = true;
+        m_ClassBrowserBuilderThread->Pause();
+        wxMilliSleep(20); // allow processing
+    }
+    if (thread_needs_resume)
+        TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused."));
 
     // initialise it
     m_ClassBrowserBuilderThread->Init(m_NativeParser,
@@ -833,12 +845,24 @@ void ClassBrowser::ThreadedBuildTree()
                                       m_ActiveProject,
                                       m_Parser->ClassBrowserOptions(),
                                       m_Parser->GetTokensTree(),
-                                      create_tree,
-                                      idCBMakeSelectItem);
+                                      idThreadEvent);
 
-    // and launch it
-    if (!create_tree)
-        m_ClassBrowserSemaphore.Post();
+    if      (thread_needs_run)
+    {
+        TRACE(wxT("ClassBrowser: Run ClassBrowserBuilderThread."));
+        m_ClassBrowserBuilderThread->Run();        // run newly created thread
+        m_ClassBrowserSemaphore.Post();            // ...and allow BuildTree
+    }
+    else if (thread_needs_resume)                  // no resume without run ;-)
+    {
+        if (   m_ClassBrowserBuilderThread->IsAlive()
+            && m_ClassBrowserBuilderThread->IsPaused() )
+        {
+            TRACE(wxT("ClassBrowser: Resume ClassBrowserBuilderThread."));
+            m_ClassBrowserBuilderThread->Resume(); // resume existing thread
+            m_ClassBrowserSemaphore.Post();        // ...and allow BuildTree
+        }
+    }
 }
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
@@ -871,8 +895,28 @@ void ClassBrowser::OnTreeSelChanged(wxTreeEvent& event)
 #endif // CC_NO_COLLAPSE_ITEM
 }
 
-void ClassBrowser::OnMakeSelectItem(wxCommandEvent& event)
+void ClassBrowser::OnThreadEvent(wxCommandEvent& event)
 {
-    if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
-        m_ClassBrowserBuilderThread->SelectItemRequired();
+    ClassBrowserBuilderThread::EThreadEvent query =
+        static_cast<ClassBrowserBuilderThread::EThreadEvent>(event.GetInt());
+
+    switch (query)
+    {
+      case ClassBrowserBuilderThread::selectItemRequired:
+      {
+          if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
+              m_ClassBrowserBuilderThread->SelectItemRequired();
+          break;
+      }
+      case ClassBrowserBuilderThread::buildTreeStart:
+      {
+          CCLogger::Get()->DebugLog(wxT("Updating class browser..."));
+          break;
+      }
+      case ClassBrowserBuilderThread::buildTreeEnd:
+      {
+          CCLogger::Get()->DebugLog(wxT("Class browser updated."));
+          break;
+      }
+    }
 }

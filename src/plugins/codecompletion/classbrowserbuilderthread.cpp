@@ -28,6 +28,8 @@
 
 #include "classbrowserbuilderthread.h"
 
+#define CBBT_SANITY_CHECK ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+
 #define CC_BUILDERTHREAD_DEBUG_OUTPUT 0
 
 #if CC_GLOBAL_DEBUG_OUTPUT == 1
@@ -57,48 +59,46 @@
     #define TRACE2(format, args...)
 #endif
 
-ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem) :
+ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler* evtHandler, wxSemaphore& sem) :
     wxThread(wxTHREAD_JOINABLE),
-    m_ClassBrowserBuilderThreadMutex(),
+    m_Parent(evtHandler),
     m_ClassBrowserSemaphore(sem),
+    m_ClassBrowserBuilderThreadMutex(),
     m_NativeParser(0),
     m_CCTreeCtrlTop(0),
     m_CCTreeCtrlBottom(0),
     m_UserData(0),
-    m_Options(),
+    m_BrowserOptions(),
     m_TokensTree(0),
     m_InitDone(false)
 {
-    //ctor
 }
 
 ClassBrowserBuilderThread::~ClassBrowserBuilderThread()
 {
-    //dtor
 }
 
-void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
+void ClassBrowserBuilderThread::Init(NativeParser*         np,
                                      CCTreeCtrl*           treeTop,
                                      CCTreeCtrl*           treeBottom,
                                      const wxString&       active_filename,
                                      void*                 user_data, // active project
-                                     const BrowserOptions& options,
-                                     TokensTree*           pTokensTree,
-                                     bool                  build_tree,
-                                     int                   idCBMakeSelectItem)
+                                     const BrowserOptions& bo,
+                                     TokensTree*           tt,
+                                     int                   idThreadEvent)
 {
     TRACE(_T("ClassBrowserBuilderThread::Init"));
 
     CC_LOCKER_TRACK_CBBT_MTX_LOCK(m_ClassBrowserBuilderThreadMutex);
 
-    m_NativeParser       = nativeParser;
-    m_CCTreeCtrlTop      = treeTop;
-    m_CCTreeCtrlBottom   = treeBottom;
-    m_ActiveFilename     = active_filename;
-    m_UserData           = user_data;
-    m_Options            = options;
-    m_TokensTree         = pTokensTree;
-    m_idCBMakeSelectItem = idCBMakeSelectItem;
+    m_NativeParser     = np;
+    m_CCTreeCtrlTop    = treeTop;
+    m_CCTreeCtrlBottom = treeBottom;
+    m_ActiveFilename   = active_filename;
+    m_UserData         = user_data;
+    m_BrowserOptions   = bo;
+    m_TokensTree       = tt;
+    m_idThreadEvent    = idThreadEvent;
 
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
@@ -106,7 +106,8 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
     TokensTree* tree = m_NativeParser->GetParser().GetTokensTree();
 
     // fill filter set for current-file-filter
-    if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
+    if (   m_BrowserOptions.displayFilter == bdfFile
+        && !m_ActiveFilename.IsEmpty() )
     {
         // m_ActiveFilename is the full filename up to the extension dot. No extension though.
         // get all filenames' indices matching our mask
@@ -123,9 +124,10 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
                 m_CurrentFileSet.insert(*it);
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
-    else if (m_Options.displayFilter == bdfProject && (user_data != 0))
+    else if (   m_BrowserOptions.displayFilter == bdfProject
+             && (user_data != 0) )
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
@@ -142,7 +144,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
                 m_CurrentFileSet.insert(fileIdx);
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
     if (!m_CurrentFileSet.empty())
@@ -166,16 +168,13 @@ void ClassBrowserBuilderThread::Init(NativeParser*         nativeParser,
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
-
-    if (build_tree)
-        BuildTree();
-
-    m_InitDone = true;
 
     CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
+
+// Thread function
 
 void* ClassBrowserBuilderThread::Entry()
 {
@@ -219,162 +218,13 @@ void* ClassBrowserBuilderThread::Entry()
     return 0;
 }
 
-void ClassBrowserBuilderThread::BuildTree()
-{
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
-        return;
-
-    if (!m_CCTreeCtrlTop || !m_CCTreeCtrlBottom || !m_NativeParser)
-        return; // Called before UI tree construction completed?!
-
-#ifdef CC_BUILDTREE_MEASURING
-    wxStopWatch sw;
-    wxStopWatch sw_total;
-#endif
-    m_CCTreeCtrlTop->SetImageList(m_NativeParser->GetImageList());
-    m_CCTreeCtrlBottom->SetImageList(m_NativeParser->GetImageList());
-
-    // Create initial root node, if not already there
-    wxTreeItemId root = m_CCTreeCtrlTop->GetRootItem();
-    if (!root.IsOk())
-    {
-        root = m_CCTreeCtrlTop->AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER, PARSER_IMG_SYMBOLS_FOLDER, new CCTreeCtrlData(sfRoot));
-        m_CCTreeCtrlTop->SetItemHasChildren(root);
-    }
-
-    m_CCTreeCtrlTop->SetCompareFunction(m_Options.sortType);
-    m_CCTreeCtrlBottom->SetCompareFunction(m_Options.sortType);
-
-    m_ExpandedVect.clear();
-    SaveExpandedItems(m_CCTreeCtrlTop, root, 0);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    SaveSelectedItem();
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    if (m_Options.treeMembers)
-    {
-        m_CCTreeCtrlBottom->Hide();
-        m_CCTreeCtrlBottom->Freeze();
-    }
-    m_CCTreeCtrlTop->Hide();
-    m_CCTreeCtrlTop->Freeze();
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    RemoveInvalidNodes(m_CCTreeCtrlTop, root);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    if (m_Options.treeMembers)
-    {
-        RemoveInvalidNodes(m_CCTreeCtrlBottom, m_CCTreeCtrlBottom->GetRootItem());
-#ifdef CC_BUILDTREE_MEASURING
-        CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
-        sw.Start();
-#endif
-    }
-
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
-        return;
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-#ifndef CC_NO_COLLAPSE_ITEM
-    // the tree is completely dynamic: it is populated when a node expands/collapses.
-    // so, by expanding the root node, we already instruct it to fill the top level :)
-    //
-    // this technique makes it really fast to draw (we only draw what's expanded) and
-    // has very minimum memory overhead since it contains as few items as possible.
-    // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
-
-    CollapseItem(root);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    // Bottleneck: Takes ~4 secs on C::B workspace:
-    m_CCTreeCtrlTop->Expand(root);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-#endif // CC_NO_COLLAPSE_ITEM
-
-    // seems like the "expand" event comes too late in wxGTK, so make it happen now
-    if (platform::gtk)
-        ExpandItem(root);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    ExpandSavedItems(m_CCTreeCtrlTop, root, 0);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    // Bottleneck: Takes ~4 secs on C::B workspace:
-    SelectSavedItem();
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    if (m_Options.treeMembers)
-    {
-        m_CCTreeCtrlBottom->Thaw();
-#ifdef CC_BUILDTREE_MEASURING
-        CCLogger::Get()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
-        sw.Start();
-#endif
-
-        m_CCTreeCtrlBottom->Show();
-#ifdef CC_BUILDTREE_MEASURING
-        CCLogger::Get()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
-        sw.Start();
-#endif
-    }
-
-    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem());
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    m_CCTreeCtrlTop->Thaw();
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
-    sw.Start();
-#endif
-
-    // Bottleneck: Takes ~4 secs on C::B workspace:
-    m_CCTreeCtrlTop->Show();
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
-    CCLogger::Get()->DebugLog(F(_T("BuildTree took : %ld ms in total"),sw_total.Time()));
-#endif
-}
+// Functions accessible from outside
 
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 {
     TRACE(_T("ClassBrowserBuilderThread::ExpandItem"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK || !item.IsOk())
         return;
 
     bool locked = false;
@@ -390,10 +240,10 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    CCTreeCtrlData* data = (CCTreeCtrlData*)m_CCTreeCtrlTop->GetItemData(item);
+    CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(item));
     m_TokensTree->RecalcInheritanceChain(data->m_Token);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (data)
     {
@@ -402,7 +252,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             case sfRoot:
             {
                 CreateSpecialFolders(m_CCTreeCtrlTop, item);
-                if( !(m_Options.displayFilter == bdfFile  && m_ActiveFilename.IsEmpty()) )
+                if( !(   m_BrowserOptions.displayFilter == bdfFile
+                      && m_ActiveFilename.IsEmpty() ) )
                     AddChildrenOf(m_CCTreeCtrlTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
                 break;
             }
@@ -416,7 +267,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                     case tkClass:
                     {
                         // add base and derived classes folders
-                        if (m_Options.showInheritance)
+                        if (m_BrowserOptions.showInheritance)
                         {
                             wxTreeItemId base = m_CCTreeCtrlTop->AppendItem(item, _("Base classes"),
                                                 PARSER_IMG_CLASS_FOLDER, PARSER_IMG_CLASS_FOLDER,
@@ -446,7 +297,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
         }
     }
 
-    if (m_NativeParser && !m_Options.treeMembers)
+    if (m_NativeParser && !m_BrowserOptions.treeMembers)
         AddMembersOf(m_CCTreeCtrlTop, item);
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms for %d items."),sw.Time(),m_CCTreeCtrlTop->GetCount()));
@@ -461,7 +312,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
 {
     TRACE(_T("ClassBrowserBuilderThread::CollapseItem"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK || !item.IsOk())
         return;
 
     bool locked = false;
@@ -487,7 +338,7 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 {
     TRACE(_T("ClassBrowserBuilderThread::SelectItem"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK || !item.IsOk())
         return;
 
     CC_LOCKER_TRACK_CBBT_MTX_LOCK(m_ClassBrowserBuilderThreadMutex)
@@ -496,8 +347,9 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     wxStopWatch sw;
 #endif
 
-    CCTreeCtrl* tree = (m_Options.treeMembers) ? m_CCTreeCtrlBottom : m_CCTreeCtrlTop;
-    if ( !(m_Options.displayFilter == bdfFile && m_ActiveFilename.IsEmpty()))
+    CCTreeCtrl* tree = (m_BrowserOptions.treeMembers) ? m_CCTreeCtrlBottom : m_CCTreeCtrlTop;
+    if ( !(   m_BrowserOptions.displayFilter == bdfFile
+           && m_ActiveFilename.IsEmpty() ) )
         AddMembersOf(tree, item);
 
 #ifdef CC_BUILDTREE_MEASURING
@@ -507,37 +359,198 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     CC_LOCKER_TRACK_CBBT_MTX_UNLOCK(m_ClassBrowserBuilderThreadMutex)
 }
 
-void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
+void ClassBrowserBuilderThread::SelectItemRequired()
 {
-    TRACE(_T("ClassBrowserBuilderThread::ExpandNamespaces"));
-
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (Manager::IsAppShuttingDown())
         return;
 
-    if (!m_Options.expandNS || !node.IsOk())
-        return;
-
-    wxTreeItemIdValue enumerationCookie;
-    wxTreeItemId existing = m_CCTreeCtrlTop->GetFirstChild(node, enumerationCookie);
-    while (existing.IsOk())
+    if (m_SelectItemRequired.IsOk())
     {
-        CCTreeCtrlData* data = (CCTreeCtrlData*)m_CCTreeCtrlTop->GetItemData(existing);
-        if (data && data->m_Token && data->m_Token->m_TokenKind == tkNamespace)
-        {
-//            CCLogger::Get()->DebugLog(F(_T("Auto-expanding: ") + data->m_Token->m_Name));
-            m_CCTreeCtrlTop->Expand(existing);
-            ExpandNamespaces(existing); // recurse
-        }
-
-        existing = m_CCTreeCtrlTop->GetNextSibling(existing);
+        m_CCTreeCtrlTop->SelectItem(m_SelectItemRequired);
+        m_CCTreeCtrlTop->EnsureVisible(m_SelectItemRequired);
     }
+}
+
+// Main worker functions
+
+void ClassBrowserBuilderThread::BuildTree()
+{
+    if (CBBT_SANITY_CHECK || !m_CCTreeCtrlTop || !m_CCTreeCtrlBottom || !m_NativeParser)
+        return; // Called before UI tree construction completed?!
+
+    wxCommandEvent e1(wxEVT_COMMAND_ENTER, m_idThreadEvent);
+    e1.SetInt(buildTreeStart);
+    m_Parent->AddPendingEvent(e1);
+
+#ifdef CC_BUILDTREE_MEASURING
+    wxStopWatch sw;
+    wxStopWatch sw_total;
+#endif
+    // 1.) Registration of images
+    m_CCTreeCtrlTop->SetImageList(m_NativeParser->GetImageList());
+    m_CCTreeCtrlBottom->SetImageList(m_NativeParser->GetImageList());
+
+    // 2.) Create initial root node, if not already there
+    wxTreeItemId root = m_CCTreeCtrlTop->GetRootItem();
+    if (!root.IsOk())
+    {
+        root = m_CCTreeCtrlTop->AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER, PARSER_IMG_SYMBOLS_FOLDER, new CCTreeCtrlData(sfRoot));
+        m_CCTreeCtrlTop->SetItemHasChildren(root);
+    }
+
+    // 3.) Update compare functions
+    m_CCTreeCtrlTop->SetCompareFunction(m_BrowserOptions.sortType);
+    m_CCTreeCtrlBottom->SetCompareFunction(m_BrowserOptions.sortType);
+
+    // 4.) Save expanded items to restore later
+    m_ExpandedVect.clear();
+    SaveExpandedItems(m_CCTreeCtrlTop, root, 0);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 5.) Save selected item to restore later
+    SaveSelectedItem();
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 6.) Hide&Freeze trees shown
+    if (m_BrowserOptions.treeMembers)
+    {
+        m_CCTreeCtrlBottom->Hide();
+        m_CCTreeCtrlBottom->Freeze();
+    }
+    m_CCTreeCtrlTop->Hide();
+    m_CCTreeCtrlTop->Freeze();
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 7.) Remove any nodes no longer valid (due to update)
+    RemoveInvalidNodes(m_CCTreeCtrlTop, root);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    if (m_BrowserOptions.treeMembers)
+    {
+        RemoveInvalidNodes(m_CCTreeCtrlBottom, m_CCTreeCtrlBottom->GetRootItem());
+#ifdef CC_BUILDTREE_MEASURING
+        CCLogger::Get()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
+        sw.Start();
+#endif
+    }
+
+    // Meanwhile, C::B might want to shutdown?!
+    if (CBBT_SANITY_CHECK)
+        return;
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+#ifndef CC_NO_COLLAPSE_ITEM
+    // the tree is completely dynamic: it is populated when a node expands/collapses.
+    // so, by expanding the root node, we already instruct it to fill the top level :)
+    //
+    // this technique makes it really fast to draw (we only draw what's expanded) and
+    // has very minimum memory overhead since it contains as few items as possible.
+    // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
+
+    // 8.) Collapse item
+    CollapseItem(root);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 9.) Expand item --> Bottleneck: Takes ~4 secs on C::B workspace
+    m_CCTreeCtrlTop->Expand(root);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+#endif // CC_NO_COLLAPSE_ITEM
+
+    // seems like the "expand" event comes too late in wxGTK, so make it happen now
+    if (platform::gtk)
+        ExpandItem(root);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 10.) Expand the items saved before
+    ExpandSavedItems(m_CCTreeCtrlTop, root, 0);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 11.) Select the item saved before --> Bottleneck: Takes ~4 secs on C::B workspace
+    SelectSavedItem();
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 12.) Show the bottom tree again (it's finished)
+    if (m_BrowserOptions.treeMembers)
+    {
+        m_CCTreeCtrlBottom->Thaw();
+#ifdef CC_BUILDTREE_MEASURING
+        CCLogger::Get()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
+        sw.Start();
+#endif
+
+        m_CCTreeCtrlBottom->Show();
+#ifdef CC_BUILDTREE_MEASURING
+        CCLogger::Get()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
+        sw.Start();
+#endif
+    }
+
+    // 13.) Expand namespaces
+    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem());
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    m_CCTreeCtrlTop->Thaw();
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+
+    // 14.) Show the top tree again (it's finished) --> Bottleneck: Takes ~4 secs on C::B workspace:
+    m_CCTreeCtrlTop->Show();
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
+    CCLogger::Get()->DebugLog(F(_T("BuildTree took : %ld ms in total"),sw_total.Time()));
+#endif
+
+    // Initialisation is done after Init() and at least *one* call to BuildTree().
+    // Also, in Init() m_InitDone is set to false, directly followed by a
+    // re-launch of the thread resulting in a call to BuildTree() due to
+    // posting the semaphore from ClassBrowser.
+    m_InitDone = true;
+
+    wxCommandEvent e2(wxEVT_COMMAND_ENTER, m_idThreadEvent);
+    e2.SetInt(buildTreeEnd);
+    m_Parent->AddPendingEvent(e2);
 }
 
 void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemId parent)
 {
     TRACE(_T("ClassBrowserBuilderThread::RemoveInvalidNodes"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
+    if (CBBT_SANITY_CHECK || !parent.IsOk())
         return;
 
     // recursively enters all existing nodes and deletes the node if the token it references
@@ -549,7 +562,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
     {
         bool removeCurrent = false;
         bool hasChildren = tree->ItemHasChildren(existing);
-        CCTreeCtrlData* data = (CCTreeCtrlData*)(tree->GetItemData(existing));
+        CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(tree->GetItemData(existing));
 
         if (tree == m_CCTreeCtrlBottom)
             removeCurrent = true;
@@ -561,11 +574,11 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
 
                 token = m_TokensTree->at(data->m_TokenIndex);
 
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
             }
-            if ( token != data->m_Token ||
-                (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket()) ||
-                !TokenMatchesFilter(data->m_Token))
+            if (    token != data->m_Token
+                || (data->m_Ticket && data->m_Ticket != data->m_Token->GetTicket())
+                || !TokenMatchesFilter(data->m_Token) )
             {
                 removeCurrent = true;
             }
@@ -597,12 +610,105 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
             }
         }
         else
-        {
-            RemoveInvalidNodes(tree, existing); // recurse
-        }
+            RemoveInvalidNodes(tree, existing); // re-curse
+
         if (existing.IsOk())
             existing = tree->GetPrevSibling(existing);
     }
+}
+
+void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
+{
+    TRACE(_T("ClassBrowserBuilderThread::ExpandNamespaces"));
+
+    if (CBBT_SANITY_CHECK || !m_BrowserOptions.expandNS || !node.IsOk())
+        return;
+
+    wxTreeItemIdValue enumerationCookie;
+    wxTreeItemId existing = m_CCTreeCtrlTop->GetFirstChild(node, enumerationCookie);
+    while (existing.IsOk())
+    {
+        CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(existing));
+        if (   data
+            && data->m_Token
+            && data->m_Token->m_TokenKind == tkNamespace )
+        {
+            TRACE(F(_T("Auto-expanding: ") + data->m_Token->m_Name));
+            m_CCTreeCtrlTop->Expand(existing);
+            ExpandNamespaces(existing); // re-curse
+        }
+
+        existing = m_CCTreeCtrlTop->GetNextSibling(existing);
+    }
+}
+
+// checks if there are respective children and colours the nodes
+bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeItemId parent)
+{
+    TRACE(_T("ClassBrowserBuilderThread::CreateSpecialFolders"));
+
+    bool hasGF = false;
+    bool hasGV = false;
+    bool hasGP = false;
+    bool hasTD = false;
+    bool hasGM = false;
+
+    // loop all tokens in global namespace and see if we have matches
+    TokensTree* tt = m_NativeParser->GetParser().GetTokensTree();
+
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
+    for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
+    {
+        Token* token = tt->at(*it);
+        if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
+        {
+            if      (!hasGF && token->m_TokenKind == tkFunction)
+                hasGF = true;
+            else if (!hasGM && token->m_TokenKind == tkMacro)
+                hasGM = true;
+            else if (!hasGV && token->m_TokenKind == tkVariable)
+                hasGV = true;
+            else if (!hasGP && token->m_TokenKind == tkPreprocessor)
+                hasGP = true;
+            else if (!hasTD && token->m_TokenKind == tkTypedef)
+                hasTD = true;
+        }
+
+        if (hasGF && hasGV && hasGP && hasTD && hasGM)
+            break; // we have everything, stop iterating...
+    }
+
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+
+    wxTreeItemId gfuncs  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global functions"),
+                           PARSER_IMG_FUNCS_FOLDER,   new CCTreeCtrlData(sfGFuncs,  0, tkFunction,     -1));
+    wxTreeItemId tdef    = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global typedefs"),
+                           PARSER_IMG_TYPEDEF_FOLDER, new CCTreeCtrlData(sfTypedef, 0, tkTypedef,      -1));
+    wxTreeItemId gvars   = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global variables"),
+                           PARSER_IMG_VARS_FOLDER,    new CCTreeCtrlData(sfGVars,   0, tkVariable,     -1));
+    wxTreeItemId preproc = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Preprocessor symbols"),
+                           PARSER_IMG_PREPROC_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkPreprocessor, -1));
+    wxTreeItemId gmacro  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global macros"),
+                           PARSER_IMG_MACRO_FOLDER,   new CCTreeCtrlData(sfMacro,   0, tkMacro,        -1));
+
+    bool bottom = m_BrowserOptions.treeMembers;
+    m_CCTreeCtrlTop->SetItemHasChildren(gfuncs,  !bottom && hasGF);
+    m_CCTreeCtrlTop->SetItemHasChildren(tdef,    !bottom && hasTD);
+    m_CCTreeCtrlTop->SetItemHasChildren(gvars,   !bottom && hasGV);
+    m_CCTreeCtrlTop->SetItemHasChildren(preproc, !bottom && hasGP);
+    m_CCTreeCtrlTop->SetItemHasChildren(gmacro,  !bottom && hasGM);
+
+    wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    wxColour grey  = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
+
+    tree->SetItemTextColour(gfuncs,  hasGF ? black : grey);
+    tree->SetItemTextColour(gvars,   hasGV ? black : grey);
+    tree->SetItemTextColour(preproc, hasGP ? black : grey);
+    tree->SetItemTextColour(tdef,    hasTD ? black : grey);
+    tree->SetItemTextColour(gmacro,  hasGM ? black : grey);
+
+    return hasGF || hasGV || hasGP || hasTD || hasGM;
 }
 
 wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CCTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CCTreeCtrlData* data)
@@ -636,7 +742,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
 {
     TRACE(_T("ClassBrowserBuilderThread::AddChildrenOf"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return false;
 
     Token* parentToken = 0;
@@ -647,7 +753,8 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
 
     if (parentTokenIdx == -1)
     {
-        if (m_Options.displayFilter == bdfWorkspace || m_Options.displayFilter == bdfEverything)
+        if (   m_BrowserOptions.displayFilter == bdfWorkspace
+            || m_BrowserOptions.displayFilter == bdfEverything )
             tokens = &m_TokensTree->m_GlobalNameSpace;
         else
             tokens = &m_CurrentGlobalTokensSet;
@@ -663,18 +770,19 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
         if (!parentTokenError) tokens = &parentToken->m_Children;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (parentTokenError) return false;
 
-    return AddNodes(tree, parent, *tokens, tokenKindMask, tokenScopeMask, m_Options.displayFilter == bdfEverything);
+    return AddNodes(tree, parent, *tokens, tokenKindMask, tokenScopeMask,
+                    m_BrowserOptions.displayFilter == bdfEverything);
 }
 
 bool ClassBrowserBuilderThread::AddAncestorsOf(CCTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
     TRACE(_T("ClassBrowserBuilderThread::AddAncestorsOf"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return false;
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
@@ -683,7 +791,7 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(CCTreeCtrl* tree, wxTreeItemId pa
     if (token)
         m_TokensTree->RecalcInheritanceChain(token);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (!token)
         return false;
@@ -695,7 +803,7 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CCTreeCtrl* tree, wxTreeItemId 
 {
     TRACE(_T("ClassBrowserBuilderThread::AddDescendantsOf"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return false;
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
@@ -704,179 +812,28 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CCTreeCtrl* tree, wxTreeItemId 
     if (token)
         m_TokensTree->RecalcInheritanceChain(token);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (!token)
         return false;
 
-    bool oldShowInheritance = m_Options.showInheritance;
-    m_Options.showInheritance = allowInheritance;
+    bool oldShowInheritance = m_BrowserOptions.showInheritance;
+    m_BrowserOptions.showInheritance = allowInheritance;
 
     bool ret = AddNodes(tree, parent, token->m_Descendants, tkClass | tkTypedef, 0, true);
 
-    m_Options.showInheritance = oldShowInheritance;
+    m_BrowserOptions.showInheritance = oldShowInheritance;
     return ret;
-}
-
-bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens,
-                                         short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
-{
-    TRACE(_T("ClassBrowserBuilderThread::AddNodes"));
-
-    int count = 0;
-    std::set<unsigned long, std::less<unsigned long> > tickets;
-
-    // Build temporary list of Token tickets - if the token's ticket is present
-    // among the parent node's children, it's a dupe, and we'll skip it.
-    if (parent.IsOk() && tree == m_CCTreeCtrlTop)
-    {
-        wxTreeItemIdValue cookie;
-        wxTreeItemId curchild = tree->GetFirstChild(parent,cookie);
-        while (curchild.IsOk())
-        {
-            CCTreeCtrlData* data = (CCTreeCtrlData*)(tree->GetItemData(curchild));
-            curchild = tree->GetNextSibling(curchild);
-            if (data && data->m_Ticket)
-                tickets.insert(data->m_Ticket);
-        }
-    }
-
-    TokenIdxSet::iterator end = tokens.end();
-    for (TokenIdxSet::iterator start = tokens.begin(); start != end; ++start)
-    {
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
-
-        Token* token = m_TokensTree->at(*start);
-
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
-
-        if (token &&
-            (token->m_TokenKind & tokenKindMask) &&
-            (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask) &&
-            (allowGlobals || token->m_IsLocal ||
-            TokenMatchesFilter(token)))
-        {
-            if (tree == m_CCTreeCtrlTop && tickets.find(token->GetTicket()) != tickets.end())
-                continue; // dupe
-            ++count;
-            int img = m_NativeParser->GetTokenKindImage(token);
-
-            wxString str = token->m_Name;
-            if (   (token->m_TokenKind == tkFunction)
-                || (token->m_TokenKind == tkConstructor)
-                || (token->m_TokenKind == tkDestructor)
-                || (token->m_TokenKind == tkMacro)
-                || (token->m_TokenKind == tkClass) )
-                str << token->GetFormattedArgs();
-            // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
-//            if (!token->m_ActualType.IsEmpty())
-//                 str = str + _T(" : ") + token->m_ActualType;
-            if (!token->m_BaseType.IsEmpty())
-                 str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
-
-            wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CCTreeCtrlData(sfToken, token, tokenKindMask));
-
-            // mark as expanding if it is a container
-            int kind = tkClass | tkNamespace | tkEnum;
-            if (token->m_TokenKind == tkClass)
-            {
-                if (!m_Options.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum | tkMacro;
-                tree->SetItemHasChildren(child, m_Options.showInheritance || TokenContainsChildrenOfKind(token, kind));
-            }
-            else if (token->m_TokenKind & (tkNamespace | tkEnum))
-            {
-                if (!m_Options.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator | tkMacro;
-                tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, kind));
-            }
-        }
-    }
-
-    tree->SortChildren(parent);
-//    tree->RemoveDoubles(parent);
-#ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("Added %d nodes"), count));
-#endif
-    return count != 0;
-}
-
-bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
-{
-    TRACE(_T("ClassBrowserBuilderThread::TokenMatchesFilter"));
-
-    if (!token || token->m_IsTemp)
-        return false;
-
-    if (    m_Options.displayFilter == bdfEverything
-        || (m_Options.displayFilter == bdfWorkspace && token->m_IsLocal) )
-        return true;
-
-    if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
-    {
-        if (m_CurrentTokenSet.find(token->m_Index) != m_CurrentTokenSet.end())
-            return true;
-
-        // we got to check all children of this token (recursively)
-        // to see if any of them matches the filter...
-        for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
-        {
-            if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
-
-            Token* token = m_TokensTree->at(*it);
-
-            if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
-
-            if (!token)
-                break;
-
-            if ( TokenMatchesFilter(token, locked) )
-                return true;
-        }
-    }
-    else if (m_Options.displayFilter == bdfProject && m_UserData)
-        return token->m_UserData == m_UserData;
-
-    return false;
-}
-
-bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int kind)
-{
-    TRACE(_T("ClassBrowserBuilderThread::TokenContainsChildrenOfKind"));
-
-    if (!token)
-        return false;
-
-    bool isOfKind = false;
-
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
-
-    TokensTree* tt = token->GetTree();
-    for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
-    {
-        Token* child = tt->at(*it);
-        if (child->m_TokenKind & kind)
-        {
-            isOfKind = true;
-            break;
-        }
-    }
-
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
-
-    return isOfKind;
 }
 
 void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node)
 {
     TRACE(_T("ClassBrowserBuilderThread::AddMembersOf"));
 
-   if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || !node.IsOk())
+    if (CBBT_SANITY_CHECK || !node.IsOk())
         return;
 
-    CCTreeCtrlData* data = (CCTreeCtrlData*)m_CCTreeCtrlTop->GetItemData(node);
+    CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(node));
 
     bool bottom = (tree == m_CCTreeCtrlBottom);
     if (bottom)
@@ -915,7 +872,8 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
             {
                 if (bottom)
                 {
-                    if (m_Options.sortType == bstKind && !(data->m_Token->m_TokenKind & tkEnum))
+                    if (   m_BrowserOptions.sortType == bstKind
+                        && !(data->m_Token->m_TokenKind & tkEnum))
                     {
                         wxTreeItemId rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
                         wxTreeItemId rootFuncs    = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
@@ -931,7 +889,8 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
 
                         firstItem = rootCtorDtor;
                     }
-                    else if (m_Options.sortType == bstScope && data->m_Token->m_TokenKind & tkClass)
+                    else if (   m_BrowserOptions.sortType == bstScope
+                             && data->m_Token->m_TokenKind & tkClass )
                     {
                         wxTreeItemId rootPublic    = tree->AppendItem(node, _("Public"), PARSER_IMG_CLASS_FOLDER);
                         wxTreeItemId rootProtected = tree->AppendItem(node, _("Protected"), PARSER_IMG_FUNCS_FOLDER);
@@ -996,87 +955,170 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
     }
 }
 
-// checks if there are respective children and colors the nodes
-bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeItemId parent)
+bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens,
+                                         short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
 {
-    TRACE(_T("ClassBrowserBuilderThread::CreateSpecialFolders"));
+    TRACE(_T("ClassBrowserBuilderThread::AddNodes"));
 
-    bool hasGF = false;
-    bool hasGV = false;
-    bool hasGP = false;
-    bool hasTD = false;
-    bool hasGM = false;
+    int count = 0;
+    std::set<unsigned long, std::less<unsigned long> > tickets;
 
-    // loop all tokens in global namespace and see if we have matches
-    TokensTree* tt = m_NativeParser->GetParser().GetTokensTree();
+    // Build temporary list of Token tickets - if the token's ticket is present
+    // among the parent node's children, it's a dupe, and we'll skip it.
+    if (parent.IsOk() && tree == m_CCTreeCtrlTop)
+    {
+        wxTreeItemIdValue cookie;
+        wxTreeItemId curchild = tree->GetFirstChild(parent,cookie);
+        while (curchild.IsOk())
+        {
+            CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(tree->GetItemData(curchild));
+            curchild = tree->GetNextSibling(curchild);
+            if (data && data->m_Ticket)
+                tickets.insert(data->m_Ticket);
+        }
+    }
+
+    TokenIdxSet::iterator end = tokens.end();
+    for (TokenIdxSet::iterator start = tokens.begin(); start != end; ++start)
+    {
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
+        Token* token = m_TokensTree->at(*start);
+
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+
+        if (    token
+            && (token->m_TokenKind & tokenKindMask)
+            && (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask)
+            && (allowGlobals || token->m_IsLocal || TokenMatchesFilter(token)) )
+        {
+            if (   tree == m_CCTreeCtrlTop
+                && tickets.find(token->GetTicket()) != tickets.end() )
+                continue; // dupe
+            ++count;
+            int img = m_NativeParser->GetTokenKindImage(token);
+
+            wxString str = token->m_Name;
+            if (   (token->m_TokenKind == tkFunction)
+                || (token->m_TokenKind == tkConstructor)
+                || (token->m_TokenKind == tkDestructor)
+                || (token->m_TokenKind == tkMacro)
+                || (token->m_TokenKind == tkClass) )
+                str << token->GetFormattedArgs();
+            // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
+//            if (!token->m_ActualType.IsEmpty())
+//                 str = str + _T(" : ") + token->m_ActualType;
+            if (!token->m_BaseType.IsEmpty())
+                 str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
+
+            wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CCTreeCtrlData(sfToken, token, tokenKindMask));
+
+            // mark as expanding if it is a container
+            int kind = tkClass | tkNamespace | tkEnum;
+            if (token->m_TokenKind == tkClass)
+            {
+                if (!m_BrowserOptions.treeMembers)
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum | tkMacro;
+                tree->SetItemHasChildren(child,    m_BrowserOptions.showInheritance
+                                                || TokenContainsChildrenOfKind(token, kind));
+            }
+            else if (token->m_TokenKind & (tkNamespace | tkEnum))
+            {
+                if (!m_BrowserOptions.treeMembers)
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator | tkMacro;
+                tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, kind));
+            }
+        }
+    }
+
+    tree->SortChildren(parent);
+//    tree->RemoveDoubles(parent);
+#ifdef CC_BUILDTREE_MEASURING
+    CCLogger::Get()->DebugLog(F(_T("Added %d nodes"), count));
+#endif
+    return count != 0;
+}
+
+bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
+{
+    TRACE(_T("ClassBrowserBuilderThread::TokenMatchesFilter"));
+
+    if (!token || token->m_IsTemp)
+        return false;
+
+    if (    m_BrowserOptions.displayFilter == bdfEverything
+        || (m_BrowserOptions.displayFilter == bdfWorkspace && token->m_IsLocal) )
+        return true;
+
+    if (m_BrowserOptions.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
+    {
+        if (m_CurrentTokenSet.find(token->m_Index) != m_CurrentTokenSet.end())
+            return true;
+
+        // we got to check all children of this token (recursively)
+        // to see if any of them matches the filter...
+        for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+        {
+            if (!locked)
+                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+
+            Token* token = m_TokensTree->at(*it);
+
+            if (!locked)
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+
+            if (!token)
+                break;
+
+            if ( TokenMatchesFilter(token, locked) )
+                return true;
+        }
+    }
+    else if (m_BrowserOptions.displayFilter == bdfProject && m_UserData)
+        return token->m_UserData == m_UserData;
+
+    return false;
+}
+
+bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int kind)
+{
+    TRACE(_T("ClassBrowserBuilderThread::TokenContainsChildrenOfKind"));
+
+    if (!token)
+        return false;
+
+    bool isOfKind = false;
+    TokensTree* tt = token->GetTree();
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
+    for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
     {
-        Token* token = tt->at(*it);
-        if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
+        Token* child = tt->at(*it);
+        if (child->m_TokenKind & kind)
         {
-            if      (!hasGF && token->m_TokenKind == tkFunction)
-                hasGF = true;
-            else if (!hasGM && token->m_TokenKind == tkMacro)
-                hasGM = true;
-            else if (!hasGV && token->m_TokenKind == tkVariable)
-                hasGV = true;
-            else if (!hasGP && token->m_TokenKind == tkPreprocessor)
-                hasGP = true;
-            else if (!hasTD && token->m_TokenKind == tkTypedef)
-                hasTD = true;
+            isOfKind = true;
+            break;
         }
-
-        if (hasGF && hasGV && hasGP && hasTD && hasGM)
-            break; // we have everything, stop iterating...
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-    wxTreeItemId gfuncs  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global functions"),
-                           PARSER_IMG_FUNCS_FOLDER,   new CCTreeCtrlData(sfGFuncs,  0, tkFunction,     -1));
-    wxTreeItemId tdef    = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global typedefs"),
-                           PARSER_IMG_TYPEDEF_FOLDER, new CCTreeCtrlData(sfTypedef, 0, tkTypedef,      -1));
-    wxTreeItemId gvars   = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global variables"),
-                           PARSER_IMG_VARS_FOLDER,    new CCTreeCtrlData(sfGVars,   0, tkVariable,     -1));
-    wxTreeItemId preproc = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Preprocessor symbols"),
-                           PARSER_IMG_PREPROC_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkPreprocessor, -1));
-    wxTreeItemId gmacro  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global macros"),
-                           PARSER_IMG_MACRO_FOLDER,   new CCTreeCtrlData(sfMacro,   0, tkMacro,        -1));
-
-    bool bottom = m_Options.treeMembers;
-    m_CCTreeCtrlTop->SetItemHasChildren(gfuncs,  !bottom && hasGF);
-    m_CCTreeCtrlTop->SetItemHasChildren(tdef,    !bottom && hasTD);
-    m_CCTreeCtrlTop->SetItemHasChildren(gvars,   !bottom && hasGV);
-    m_CCTreeCtrlTop->SetItemHasChildren(preproc, !bottom && hasGP);
-    m_CCTreeCtrlTop->SetItemHasChildren(gmacro,  !bottom && hasGM);
-
-    wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
-    wxColour grey  = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
-
-    tree->SetItemTextColour(gfuncs,  hasGF ? black : grey);
-    tree->SetItemTextColour(gvars,   hasGV ? black : grey);
-    tree->SetItemTextColour(preproc, hasGP ? black : grey);
-    tree->SetItemTextColour(tdef,    hasTD ? black : grey);
-    tree->SetItemTextColour(gmacro,  hasGM ? black : grey);
-
-    return hasGF || hasGV || hasGP || hasTD || hasGM;
+    return isOfKind;
 }
 
 void ClassBrowserBuilderThread::SaveExpandedItems(CCTreeCtrl* tree, wxTreeItemId parent, int level)
 {
     TRACE(_T("ClassBrowserBuilderThread::SaveExpandedItems"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return;
 
     wxTreeItemIdValue cookie;
     wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
     while (existing.IsOk())
     {
-        CCTreeCtrlData* data = (CCTreeCtrlData*)(tree->GetItemData(existing));
+        CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(tree->GetItemData(existing));
         if (tree->GetChildrenCount(existing,false) > 0)
         {
             m_ExpandedVect.push_back(CCTreeCtrlExpandedItemData(data, level));
@@ -1092,20 +1134,20 @@ void ClassBrowserBuilderThread::ExpandSavedItems(CCTreeCtrl* tree, wxTreeItemId 
 {
     TRACE(_T("ClassBrowserBuilderThread::ExpandSavedItems"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return;
 
     wxTreeItemIdValue cookie;
     wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
     while (existing.IsOk() && !m_ExpandedVect.empty())
     {
-        CCTreeCtrlData* data = (CCTreeCtrlData*)(tree->GetItemData(existing));
+        CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(tree->GetItemData(existing));
         CCTreeCtrlExpandedItemData saved = m_ExpandedVect.front();
 
-        if (level == saved.GetLevel() &&
-            wxStrcmp(data->m_TokenName, saved.GetData().m_TokenName) == 0 &&
-            data->m_TokenKind == saved.GetData().m_TokenKind &&
-            data->m_SpecialFolder == saved.GetData().m_SpecialFolder)
+        if (   level == saved.GetLevel()
+            && wxStrcmp(data->m_TokenName, saved.GetData().m_TokenName) == 0
+            && data->m_TokenKind == saved.GetData().m_TokenKind
+            && data->m_SpecialFolder == saved.GetData().m_SpecialFolder )
         {
             tree->Expand(existing);
 
@@ -1134,7 +1176,7 @@ void ClassBrowserBuilderThread::SaveSelectedItem()
 {
     TRACE(_T("ClassBrowserBuilderThread::SaveSelectedItem"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return;
 
     m_SelectedPath.clear();
@@ -1142,7 +1184,7 @@ void ClassBrowserBuilderThread::SaveSelectedItem()
     wxTreeItemId item = m_CCTreeCtrlTop->GetSelection();
     while (item.IsOk() && item != m_CCTreeCtrlTop->GetRootItem())
     {
-        CCTreeCtrlData* data = (CCTreeCtrlData*)m_CCTreeCtrlTop->GetItemData(item);
+        CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(item));
         m_SelectedPath.push_front(*data);
 
         item = m_CCTreeCtrlTop->GetItemParent(item);
@@ -1153,7 +1195,7 @@ void ClassBrowserBuilderThread::SelectSavedItem()
 {
     TRACE(_T("ClassBrowserBuilderThread::SelectSavedItem"));
 
-    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+    if (CBBT_SANITY_CHECK)
         return;
 
     wxTreeItemId parent = m_CCTreeCtrlTop->GetRootItem();
@@ -1163,37 +1205,30 @@ void ClassBrowserBuilderThread::SelectSavedItem()
 
     while (!m_SelectedPath.empty() && item.IsOk())
     {
-        CCTreeCtrlData* data = (CCTreeCtrlData*)m_CCTreeCtrlTop->GetItemData(item);
+        CCTreeCtrlData* data  = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(item));
         CCTreeCtrlData* saved = &m_SelectedPath.front();
 
-        if (data->m_SpecialFolder == saved->m_SpecialFolder &&
-            wxStrcmp(data->m_TokenName, saved->m_TokenName) == 0 &&
-            data->m_TokenKind == saved->m_TokenKind)
+        if (   data->m_SpecialFolder == saved->m_SpecialFolder
+            && wxStrcmp(data->m_TokenName, saved->m_TokenName) == 0
+            && data->m_TokenKind == saved->m_TokenKind )
         {
             wxTreeItemIdValue cookie;
             parent = item;
-            item = m_CCTreeCtrlTop->GetFirstChild(item, cookie);
+            item   = m_CCTreeCtrlTop->GetFirstChild(item, cookie);
             m_SelectedPath.pop_front();
         }
         else
             item = m_CCTreeCtrlTop->GetNextSibling(item);
     }
 
-    m_SelectItemRequired = parent;
-
-    wxCommandEvent event(wxEVT_COMMAND_ENTER, m_idCBMakeSelectItem);
-    m_CCTreeCtrlTop->GetEventHandler()->AddPendingEvent(event);
-    m_SelectedPath.clear();
-}
-
-void ClassBrowserBuilderThread::SelectItemRequired()
-{
-    if (Manager::IsAppShuttingDown())
-        return;
-
-    if (m_SelectItemRequired.IsOk())
+    if (parent.IsOk())
     {
-        m_CCTreeCtrlTop->SelectItem(m_SelectItemRequired);
-        m_CCTreeCtrlTop->EnsureVisible(m_SelectItemRequired);
+        m_SelectItemRequired = parent; // remember what item to select
+
+        wxCommandEvent e(wxEVT_COMMAND_ENTER, m_idThreadEvent);
+        e.SetInt(selectItemRequired);
+        m_Parent->AddPendingEvent(e);
     }
+
+    m_SelectedPath.clear();
 }

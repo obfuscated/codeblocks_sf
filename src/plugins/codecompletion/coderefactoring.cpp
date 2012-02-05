@@ -183,7 +183,7 @@ bool CodeRefactoring::Parse()
             isLocalVariable = true;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     wxArrayString files;
     cbProject* project = m_NativeParser.GetProjectByEditor(editor);
@@ -297,7 +297,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
         Token* token = tree->at(*targetResult.begin());
         parentOfLocalVariable = tree->at(token->m_ParentIndex);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
     // now that list is filled, we'll search
@@ -405,7 +405,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                         }
                     }
 
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
                     if (do_continue) continue;
                 }

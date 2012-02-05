@@ -1009,7 +1009,7 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
             if (m_NativeParser.LastAISearchWasGlobal())
             {
@@ -1474,7 +1474,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         success = 0;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return success;
 }
@@ -1511,7 +1511,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     if (result.empty())
     {
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         cbMessageBox(_("Can not find any file in parser's database."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -1546,7 +1546,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     if (arr.empty())
     {
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         cbMessageBox(_("No classes declared or no un-implemented class methods found."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -1610,7 +1610,7 @@ int CodeCompletion::DoAllMethodsImpl()
         success = 0;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return success;
 }
@@ -1840,7 +1840,7 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
                 if (m_NativeParser.ReparseFile(project, files.Last()))
                 {
                     ++reparseCount;
-                    TRACE(_T("OnReparsingTimer(): Reparsing file : ") + files.Last());
+                    TRACE(_T("OnReparsingTimer: Reparsing file : ") + files.Last());
                     if (files.Last() == curFile)
                     {
                         m_ToolbarNeedReparse = true;
@@ -1853,7 +1853,7 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
             }
 
             if (reparseCount)
-                CCLogger::Get()->DebugLog(F(_T("OnReparsingTimer(): Re-parsed %d files."), reparseCount));
+                CCLogger::Get()->DebugLog(F(_T("Re-parsed %d files."), reparseCount));
         }
 
         if (files.IsEmpty())
@@ -2119,7 +2119,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         FunctionsScopeVec& functionsScopes = funcdata->m_FunctionsScope;
         NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;
@@ -2515,7 +2515,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
             }
         }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         if (!msg.IsEmpty())
         {
@@ -2656,7 +2656,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         tree->clear();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
@@ -2854,7 +2854,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (selections.GetCount() > 1)
     {

@@ -755,9 +755,7 @@ void NativeParser::UpdateClassBrowser()
         && m_Parser->Done()
         && !Manager::IsAppShuttingDown())
     {
-        CCLogger::Get()->DebugLog(_T("Updating class browser..."));
         m_ClassBrowser->UpdateClassBrowserView();
-        CCLogger::Get()->DebugLog(_T("Class browser updated."));
     }
 }
 
@@ -1699,7 +1697,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
         int tokenIdx = -1;
 
         if (locked)
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
         locked = true;
@@ -1750,7 +1748,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         locked = false;
 
         if (   !buffer.IsEmpty()
@@ -1762,7 +1760,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
     }
 
     if (locked)
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return true;
 }
@@ -1789,7 +1787,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
             initLine = parent->m_ImplLineStart;
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         if (!parent)
             return false;
@@ -1846,7 +1844,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
                     }
                 }
 
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
             }
             return true;
         }
@@ -1908,7 +1906,7 @@ bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& se
         search_scope.insert(parentIdx);
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return true;
 }
@@ -1956,7 +1954,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
     // remove old temporaries
     tree->Clear();
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     RemoveLastFunctionChildren();
 
@@ -1980,7 +1978,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
         for (size_t i = 0; i < tree->size(); ++i)
             result.insert(i);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         return result.size();
     }
@@ -2156,7 +2154,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
         }
     }// for
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     typedCommas = commas;
     TRACE(_T("GetCallTips() : typedCommas=%d"), typedCommas);
@@ -2486,7 +2484,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
     // add additional search scopes???
@@ -2521,7 +2519,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
             ++it;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     //alwayser search the global scope.
     search_scope->insert(-1);
@@ -2992,7 +2990,7 @@ size_t NativeParser::ResolveActualType(wxString searchText, const TokenIdxSet& s
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         if (!initialScope.empty())
             result = initialScope;
@@ -3035,7 +3033,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     initialScope.erase(*it);
             }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
             if (!initialScope.empty())
                 continue;
@@ -3060,7 +3058,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
         else // case sensitive and full-match always (A / BB / CCC)
             GenerateResultSet(searchText, initialScope, initialResult, true, false);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         // now we should clear the initialScope.
         initialScope.clear();
@@ -3084,7 +3082,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                 bool isFuncOrVar = false;
 
                 if (locked)
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
                 locked = true;
 
@@ -3121,7 +3119,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                     parentIndex = token->m_Index;
                 }
 
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
                 locked = false;
 
                 // handle it if the token is a function/variable(i.e. is not a type)
@@ -3148,7 +3146,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                             currentTokenParent = tree->at(currentTokenParent->m_ParentIndex);
                         }
 
-                        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
                     }
 
                     // now get the tokens of variable/function.
@@ -3166,7 +3164,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
                             if (typeToken && !typeToken->m_TemplateMap.empty())
                                 m_TemplateMap = typeToken->m_TemplateMap;
 
-                            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
                             // and we need to add the template argument alias too.
                             AddTemplateAlias(*it2, actualTypeScope, initialScope, tree);
@@ -3182,7 +3180,7 @@ size_t NativeParser::ResolveExpression(std::queue<ParserComponent> components, c
             }// for
 
             if (locked)
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         }
         else
         {
@@ -3374,7 +3372,7 @@ bool NativeParser::BelongsToParentOrItsAncestors(TokensTree* tree, Token* token,
         belongsTo = parentToken->m_Ancestors.find(token->m_ParentIndex) != parentToken->m_Ancestors.end();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return belongsTo;
 }
@@ -3494,7 +3492,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
                     if (s_DebugSmartSense)
                         CCLogger::Get()->DebugLog(_T("FindCurrentFunctionStart() Can't determine functions opening brace..."));
 
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
                     return -1;
                 }
 
@@ -3510,11 +3508,11 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData, wxString* n
             CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Namespace='%s', proc='%s' (returning %d)"),
                                         m_LastNamespace.wx_str(), m_LastPROC.wx_str(), m_LastResult));
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         return m_LastResult;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(_T("FindCurrentFunctionStart() Can't determine current function..."));
@@ -3554,7 +3552,7 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
         // All functions that call this recursive FindAIMatches function, should already entered a critical section.
         FindAIMatches(ns, scope_result, -1, true, true, false, tkNamespace | tkClass | tkTypedef);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
     // if no scope, use global scope
@@ -3569,7 +3567,7 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
                           true, false, tkAnyFunction | tkClass);
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     return result.size();
 }
@@ -3963,7 +3961,7 @@ void NativeParser::CollectSS(const TokenIdxSet& searchScope, TokenIdxSet& actual
         }
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 }
 
 void NativeParser::AddTemplateAlias(const int& id, const TokenIdxSet& actualTypeScope,
@@ -3982,7 +3980,7 @@ void NativeParser::AddTemplateAlias(const int& id, const TokenIdxSet& actualType
                   && !typeToken->m_TemplateAlias.IsEmpty() )
         actualTypeStr = typeToken->m_TemplateAlias;
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     std::map<wxString, wxString>::iterator it = m_TemplateMap.find(actualTypeStr);
     if (it != m_TemplateMap.end())
@@ -4036,7 +4034,7 @@ void NativeParser::ResolveOperator(const OperatorType& tokenOperatorType, const 
             opInitialScope.insert(id);
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     // if we get nothing, just return.
     if (opInitialScope.empty())
@@ -4067,7 +4065,7 @@ void NativeParser::ResolveOperator(const OperatorType& tokenOperatorType, const 
     // All functions that call the recursive GenerateResultSet should already entered a critical section.
     GenerateResultSet(operatorStr, opInitialScope, opInitialResult);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     CollectSS(searchScope, opInitialScope, tree);
 
@@ -4083,7 +4081,7 @@ void NativeParser::ResolveOperator(const OperatorType& tokenOperatorType, const 
         if (token)
             type = token->m_BaseType;
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
         if (type.IsEmpty())
             continue;
@@ -4241,7 +4239,7 @@ void NativeParser::RemoveLastFunctionChildren()
             token->DeleteAllChildren();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 }
 
 void NativeParser::AddProjectToParser(cbProject* project)

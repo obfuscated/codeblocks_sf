@@ -141,7 +141,7 @@ int MarkFileAsLocalThreadedTask::Execute()
 
             tree->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, m_Project);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex);
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
         }
     }
 
