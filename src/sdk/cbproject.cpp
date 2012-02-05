@@ -1676,19 +1676,15 @@ bool cbProject::CloseAllFiles(bool dontsave)
 
     // now free the rest of the project files
     Manager::Get()->GetEditorManager()->HideNotebook();
-    FilesList::iterator it = m_Files.begin();
-    while (it != m_Files.end())
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
         ProjectFile* f = *it;
         if (f)
-        {
             Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath(),true);
-        }
-        m_Files.erase(it);
-        m_FileArray.Remove(*it);
         delete f;
-        it = m_Files.begin();
     }
+    m_FileArray.Clear();
+    m_Files.clear();
     Manager::Get()->GetEditorManager()->ShowNotebook();
 
     return true;
