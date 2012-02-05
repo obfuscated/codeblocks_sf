@@ -1281,6 +1281,9 @@
 		<Unit filename="plugins\codecompletion\ccoptionsprjdlg.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\cctreectrl.cpp">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\classbrowser.cpp">
 			<Option target="Code-completion" />
 		</Unit>
