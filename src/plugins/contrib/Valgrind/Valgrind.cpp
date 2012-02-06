@@ -19,6 +19,7 @@
 #include "manager.h"
 #include "logmanager.h"
 #include "projectmanager.h"
+#include "macrosmanager.h"
 #endif
 #include <wx/filefn.h>
 #include "tinyxml/tinyxml.h"
@@ -232,6 +233,8 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
 		{
 //			ExeTarget = Target->GetExecutableFilename(); /// hmmm : this doesn't return correct stuff !!!
 			ExeTarget = Target->GetOutputFilename();
+            MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
+            MacrosMgr->ReplaceMacros(ExeTarget, Target);
 		}
 	}
 	if(Target->GetCompilerOptions().Index(_T("-g")) == wxNOT_FOUND)
