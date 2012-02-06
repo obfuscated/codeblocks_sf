@@ -1169,6 +1169,30 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
                 fname.ClearExt();
                 outputFileName = fname.GetFullPath();
             }
+            if (   (prefixPolicy == tgfpPlatformDefault)
+                && (   (!platform::windows && target->GetTargetType() == ttDynamicLib)
+                    || (target->GetTargetType() == ttStaticLib) ) )
+            {
+                wxString compilerId = target->GetCompilerID();
+                Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+                if (compiler)
+                {
+                    wxFileName fname(outputFileName);
+                    wxString outputFileNameFile(fname.GetFullName());
+
+                    wxString compilerLibPrefix(compiler->GetSwitches().libPrefix);
+                    wxString outputFileNameWOPrefix;
+                    if (outputFileNameFile.StartsWith(compilerLibPrefix))
+                    {
+                        outputFileNameWOPrefix = outputFileNameFile.Mid(compilerLibPrefix.Len());
+                        if (!outputFileNameWOPrefix.IsEmpty())
+                        {
+                            fname.SetFullName(outputFileNameWOPrefix);
+                            outputFileName = fname.GetFullPath();
+                        }
+                    }
+                }
+            }
 
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", outputFileName);
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
