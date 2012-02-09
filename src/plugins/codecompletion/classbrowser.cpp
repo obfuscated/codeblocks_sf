@@ -165,9 +165,17 @@ ClassBrowser::~ClassBrowser()
 
     if (m_ClassBrowserBuilderThread)
     {
+        // tell the thread, that we want to terminate it, TestDestroy only works after Delete(), which should not
+        // be used on joinable threads
+        // if we disable the cc-plugin, we otherwise come to an infinite wait in the threads Entry()-function
+        m_ClassBrowserBuilderThread->RequestTermination();
+        // awake the thread
         m_ClassBrowserSemaphore.Post();
-        // m_ClassBrowserBuilderThread->Delete(); --> would delete it twice and leads to a warning
+        // free the system-resources
         m_ClassBrowserBuilderThread->Wait();
+        // according to the wxWidgets-documentation the wxThread object itself has to be deleted explicitely,
+        // to free the memory, if it is created on the heap, this is not done by Wait()
+        delete m_ClassBrowserBuilderThread;
     }
 }
 

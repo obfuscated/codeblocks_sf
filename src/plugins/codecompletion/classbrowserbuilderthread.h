@@ -39,6 +39,8 @@ public:
     // Called from external:
     void SelectItemRequired();
 
+    void RequestTermination(bool terminate = true) { m_TerminationRequested = terminate;}
+
 protected:
     virtual void* Entry();
 
@@ -100,6 +102,7 @@ private:
     ExpandedItemVect m_ExpandedVect;
     SelectedItemPath m_SelectedPath;
     bool             m_InitDone;
+    bool             m_TerminationRequested;
     int              m_idThreadEvent;
     wxTreeItemId     m_SelectItemRequired;
 };

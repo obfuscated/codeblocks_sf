@@ -687,7 +687,7 @@ void NativeParser::CreateClassBrowser()
 
     TRACE(_T("NativeParser::CreateClassBrowser()"));
 
-    bool m_ClassBrowserIsFloating = cfg->ReadBool(_T("/as_floating_window"), false);
+    m_ClassBrowserIsFloating = cfg->ReadBool(_T("/as_floating_window"), false);
 
     if (m_ClassBrowserIsFloating)
     {

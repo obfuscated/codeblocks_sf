@@ -28,7 +28,7 @@
 
 #include "classbrowserbuilderthread.h"
 
-#define CBBT_SANITY_CHECK ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
+#define CBBT_SANITY_CHECK ((!::wxIsMainThread() && m_TerminationRequested) || Manager::IsAppShuttingDown())
 
 #define CC_BUILDERTHREAD_DEBUG_OUTPUT 0
 
@@ -70,7 +70,9 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler* evtHandler, w
     m_UserData(0),
     m_BrowserOptions(),
     m_TokensTree(0),
-    m_InitDone(false)
+    m_InitDone(false),
+    m_TerminationRequested(false)
+
 {
 }
 
@@ -178,12 +180,12 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
 
 void* ClassBrowserBuilderThread::Entry()
 {
-    while (!TestDestroy() && !Manager::IsAppShuttingDown())
+    while (!m_TerminationRequested && !Manager::IsAppShuttingDown() )
     {
         // waits here, until the ClassBrowser unlocks
         m_ClassBrowserSemaphore.Wait();
 
-        if (TestDestroy() || Manager::IsAppShuttingDown())
+        if (m_TerminationRequested || Manager::IsAppShuttingDown() )
             break;
 
         if (platform::gtk)
