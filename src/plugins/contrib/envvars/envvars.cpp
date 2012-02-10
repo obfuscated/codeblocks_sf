@@ -69,7 +69,7 @@ EnvVars::~EnvVars()
 
 void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set)
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("SetProjectEnvvarSet")));
 #endif
 
@@ -88,7 +88,7 @@ void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set
 void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
                                    bool loading)
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectLoadingHook")));
 #endif
 
@@ -127,7 +127,7 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
 
 void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
 #endif
 
@@ -164,7 +164,7 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 
 void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectClosed")));
 #endif
 
@@ -193,7 +193,7 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 
 void EnvVars::OnAttach()
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnAttach")));
 #endif
 
@@ -283,7 +283,7 @@ void EnvVars::OnRelease(bool /*appShutDown*/)
 
 int EnvVars::Configure()
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("Configure")));
 #endif
 
@@ -316,12 +316,12 @@ cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
 
 void EnvVars::EnvvarSetWarning(const wxString& envvar_set)
 {
-#if TRACE_ENVVARS
+#if defined(TRACE_ENVVARS)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetWarning")));
 #endif
 
   wxString warning_msg;
   warning_msg.Printf(_("Warning: The project contained a reference to an envvar set\n"
-                       "('%s') that could not be found."), envvar_set.c_str());
+                       "('%s') that could not be found."), envvar_set.wx_str());
   cbMessageBox(warning_msg, _("EnvVars Plugin Warning"), wxICON_WARNING);
 }// EnvvarSetWarning
