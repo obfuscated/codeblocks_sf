@@ -27,6 +27,7 @@ class wxEvtHandler;
 
 extern bool           g_EnableDebugTrace; //!< Toggles tracing into file.
 extern const wxString g_DebugTraceFile;   //!< Trace file name (if above is enabled).
+extern long           g_idCCAddToken;
 extern long           g_idCCLogger;
 extern long           g_idCCDebugLogger;
 
@@ -34,7 +35,9 @@ class CCLogger
 {
 public:
     static CCLogger* Get();
-    void Init(wxEvtHandler* parent, int logId, int debugLogId);
+
+    void Init(wxEvtHandler* parent, int logId, int debugLogId, int addTokenId = -1);
+    void AddToken(const wxString& msg);
     void Log(const wxString& msg);
     void DebugLog(const wxString& msg);
 
@@ -52,6 +55,7 @@ private:
     wxEvtHandler* m_Parent;
     int           m_LogId;
     int           m_DebugLogId;
+    int           m_AddTokenId;
     wxMutex       m_CCLoggerMutex;
 };
 

@@ -21,6 +21,7 @@ std::auto_ptr<CCLogger> CCLogger::s_Inst;
 bool           g_EnableDebugTrace     = false;
 bool           g_EnableDebugTraceFile = false; // true
 const wxString g_DebugTraceFile       = wxEmptyString;
+long           g_idCCAddToken         = wxNewId();
 long           g_idCCLogger           = wxNewId();
 long           g_idCCDebugLogger      = wxNewId();
 #define TRACE_TO_FILE(msg)                                           \
@@ -48,8 +49,9 @@ long           g_idCCDebugLogger      = wxNewId();
 
 CCLogger::CCLogger() :
     m_Parent(nullptr),
-    m_LogId(0),
-    m_DebugLogId(0),
+    m_LogId(-1),
+    m_DebugLogId(-1),
+    m_AddTokenId(-1),
     m_CCLoggerMutex()
 {
 }
@@ -63,18 +65,34 @@ CCLogger::CCLogger() :
 }
 
 // Initialised from CodeCompletion constructor
-void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId)
+void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int addTokenId)
 {
     m_Parent     = parent;
     m_LogId      = logId;
     m_DebugLogId = debugLogId;
+    m_AddTokenId = addTokenId;
+}
+
+void CCLogger::AddToken(const wxString& msg)
+{
+    wxMutexLocker l(m_CCLoggerMutex);
+
+    if (!m_Parent || m_AddTokenId<1) return;
+
+    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_AddTokenId);
+    evt.SetString(msg);
+#if CC_PROCESS_LOG_EVENT_TO_PARENT
+    m_Parent->ProcessEvent(evt);
+#else
+    wxPostEvent(m_Parent, evt);
+#endif
 }
 
 void CCLogger::Log(const wxString& msg)
 {
     wxMutexLocker l(m_CCLoggerMutex);
 
-    if (!m_Parent) return;
+    if (!m_Parent || m_LogId<1) return;
 
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
     evt.SetString(msg);
@@ -89,7 +107,7 @@ void CCLogger::DebugLog(const wxString& msg)
 {
     wxMutexLocker l(m_CCLoggerMutex);
 
-    if (!m_Parent) return;
+    if (!m_Parent || m_DebugLogId<1) return;
 
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_DebugLogId);
     evt.SetString(msg);

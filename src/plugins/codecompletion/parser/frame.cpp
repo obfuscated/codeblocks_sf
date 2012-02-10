@@ -32,8 +32,8 @@
 //*)
 
 #include <wx/arrstr.h>
-#include <wx/busyinfo.h>
 #include <wx/filename.h>
+#include <wx/progdlg.h>
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 
@@ -48,22 +48,25 @@ namespace ParserTestAppGlobal
     extern wxArrayString s_filesParsed;
 }
 
-int idCCLogger = wxNewId();
+int idCCLogger   = wxNewId();
+int idCCAddToken = wxNewId();
 
 BEGIN_EVENT_TABLE(Frame, wxFrame)
     //(*EventTable(Frame)
     //*)
-    EVT_FIND(wxID_ANY,             Frame::OnFindDialog)
-    EVT_FIND_NEXT(wxID_ANY,        Frame::OnFindDialog)
-    EVT_FIND_REPLACE(wxID_ANY,     Frame::OnFindDialog)
-    EVT_FIND_REPLACE_ALL(wxID_ANY, Frame::OnFindDialog)
-    EVT_FIND_CLOSE(wxID_ANY,       Frame::OnFindDialog)
-    EVT_MENU(idCCLogger,           Frame::OnCCLogger)
+    EVT_FIND            (wxID_ANY,     Frame::OnFindDialog)
+    EVT_FIND_NEXT       (wxID_ANY,     Frame::OnFindDialog)
+    EVT_FIND_REPLACE    (wxID_ANY,     Frame::OnFindDialog)
+    EVT_FIND_REPLACE_ALL(wxID_ANY,     Frame::OnFindDialog)
+    EVT_FIND_CLOSE      (wxID_ANY,     Frame::OnFindDialog)
+    EVT_MENU            (idCCLogger,   Frame::OnCCLogger  )
+    EVT_MENU            (idCCAddToken, Frame::OnCCAddToken)
 END_EVENT_TABLE()
 
 Frame::Frame(const wxString& main_file) :
-    m_BusyInfo(NULL),
+    m_ProgDlg(NULL),
     m_MainFile(main_file),
+    m_CurrentFile(),
     m_LogCount(0),
     m_FRDlg(NULL)
 {
@@ -191,9 +194,9 @@ Frame::Frame(const wxString& main_file) :
                             gcc_base + _T("include")                                          + _T("\n") +
                             gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include-fixed")          + _T("\n"));
 
-    m_HeadersCtrl->SetValue(_T("<cstddef>,<w32api.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
+    m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 
-    CCLogger::Get()->Init(this, idCCLogger, idCCLogger);
+    CCLogger::Get()->Init(this, idCCLogger, idCCLogger, idCCAddToken);
     m_StatuBar->SetStatusText(_("Ready!"));
 }
 
@@ -226,20 +229,31 @@ void Frame::Start()
         while (tkz_hdr.HasMoreTokens())
         {
             wxString header = tkz_hdr.GetNextToken().Trim(false).Trim(true);
-            if (header.Len() <= 2) // error, at least "" or <> is required
-                continue;
 
-            header = header.SubString(1, header.Len()-2).Trim(false).Trim(true);
+            // Remove <> (if any)
+            int lt = header.Find(wxT('<')); int gt = header.Find(wxT('>'),true);
+            if (lt!=wxNOT_FOUND && gt!=wxNOT_FOUND && gt>lt)
+                header = header.AfterFirst(wxT('<')).BeforeLast(wxT('>'));
+            // Remove "" (if any)
+            int oq = header.Find(wxT('"')); int cq = header.Find(wxT('"'),true);
+            if (oq!=wxNOT_FOUND && cq!=wxNOT_FOUND && cq>oq)
+                header = header.AfterFirst(wxT('"')).BeforeLast(wxT('"'));
+
+            header = header.Trim(false).Trim(true);
+
             // Find the header files in include path's as provided
             // (practically the same as ParserBase::FindFileInIncludeDirs())
             for (size_t i=0; i<ParserTestAppGlobal::s_includeDirs.GetCount(); ++i)
             {
-                // Normalize the path (as in NormalizePath())
+                // Normalize the path (as in C::B's "NormalizePath()")
                 wxFileName f_header(header);
-                f_header.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, ParserTestAppGlobal::s_includeDirs[i]);
-                header = f_header.GetFullPath();
-                if ( ::wxFileExists(header) )
-                    ParserTestAppGlobal::s_fileQueue.Add(header);
+                wxString   base_path(ParserTestAppGlobal::s_includeDirs[i]);
+                if (f_header.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base_path))
+                {
+                    wxString this_header = f_header.GetFullPath();
+                    if ( ::wxFileExists(this_header) )
+                        ParserTestAppGlobal::s_fileQueue.Add(this_header);
+                }
             }
         }
     }
@@ -254,7 +268,12 @@ void Frame::Start()
         return;
     }
 
-    m_BusyInfo = new wxBusyInfo(_T("Please wait, operating..."));
+    Hide();
+
+    m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."), _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
+    m_ProgDlg->SetSize(640,100);
+    m_ProgDlg->Layout();
+    m_ProgDlg->CenterOnParent();
 
     m_LogCount = 0;
     m_LogCtrl->Clear();
@@ -269,48 +288,40 @@ void Frame::Start()
       if (file.IsEmpty()) continue;
 
       AppendToLog(_T("-----------I-n-t-e-r-i-m--L-o-g-----------"));
+      m_CurrentFile = file;
 
-      if (m_BusyInfo) { delete m_BusyInfo; m_BusyInfo = 0; }
-      m_BusyInfo = new wxBusyInfo(wxT("Please wait, operating '")+file+wxT("'..."));
-      wxTheApp->Yield();
+      m_ProgDlg->Update(-1, m_CurrentFile);
+      m_StatuBar->SetStatusText(m_CurrentFile);
 
-      m_StatuBar->SetStatusText(file);
-
-      ParserTest::Get()->Start(file);
-      ParserTestAppGlobal::s_filesParsed.Add(file); // done
+      ParserTest::Get()->Start(m_CurrentFile);
+      ParserTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
 
-    if (m_BusyInfo) { delete m_BusyInfo; m_BusyInfo = 0; }
-    m_BusyInfo = new wxBusyInfo(wxT("Please wait, creating tree log..."));
-    wxTheApp->Yield();
+    m_ProgDlg->Update(-1, wxT("Creating tree log..."));
     AppendToLog(_T("--------------T-r-e-e--L-o-g--------------\r\n"));
     ParserTest::Get()->PrintTree();
 
-    if (m_BusyInfo) { delete m_BusyInfo; m_BusyInfo = 0; }
-    m_BusyInfo = new wxBusyInfo(wxT("Please wait, creating list log..."));
-    wxTheApp->Yield();
+    m_ProgDlg->Update(-1, wxT("Creating list log..."));
     AppendToLog(_T("--------------L-i-s-t--L-o-g--------------\r\n"));
     ParserTest::Get()->PrintList();
 
     if (m_DoTreeCtrl->IsChecked())
     {
-      if (m_BusyInfo) { delete m_BusyInfo; m_BusyInfo = 0; }
-      m_BusyInfo = new wxBusyInfo(wxT("Please wait, serializing tree..."));
-      wxTheApp->Yield();
+      m_ProgDlg->Update(-1, wxT("Serializing tree..."));
 
       Freeze();
       m_TreeCtrl->SetValue( ParserTest::Get()->SerializeTree() );
       Thaw();
     }
 
-    if (m_BusyInfo) { delete m_BusyInfo; m_BusyInfo = 0; }
+    if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 
-    if (ParserTest::Get()->GetTokensTree())
-    {
+    Show();
+
+    TokensTree* tt = ParserTest::Get()->GetTokensTree();
+    if (tt)
         AppendToLog((wxString::Format(_("The parser contains %d tokens, found in %d files."),
-                                      ParserTest::Get()->GetTokensTree()->size(),
-                                      ParserTest::Get()->GetTokensTree()->m_FilesMap.size())));
-    }
+                                      tt->size(), tt->m_FilesMap.size())));
 }
 
 void Frame::AppendToLog(const wxString& log)
@@ -512,4 +523,11 @@ void Frame::OnCCLogger(wxCommandEvent& event)
     }
 
     AppendToLog(log);
+}
+
+void Frame::OnCCAddToken(wxCommandEvent& event)
+{
+    wxString log(event.GetString());
+
+    m_ProgDlg->Update(-1, m_CurrentFile + wxT("\n") + log);
 }

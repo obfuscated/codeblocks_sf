@@ -36,16 +36,22 @@
 #endif
 
 #ifdef CC_PARSER_TEST
+    #define ADDTOKEN(format, args...) \
+            CCLogger::Get()->AddToken(F(format, ##args))
     #define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
     #define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
 #else
     #if CC_PARSERTHREAD_DEBUG_OUTPUT == 1
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
         #define TRACE(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
         #define TRACE2(format, args...)
     #elif CC_PARSERTHREAD_DEBUG_OUTPUT == 2
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
         #define TRACE(format, args...)                                              \
             do                                                                      \
             {                                                                       \
@@ -56,6 +62,7 @@
         #define TRACE2(format, args...) \
             CCLogger::Get()->DebugLog(F(format, ##args))
     #else
+        #define ADDTOKEN(format, args...)
         #define TRACE(format, args...)
         #define TRACE2(format, args...)
     #endif
@@ -80,6 +87,7 @@ namespace ParserConsts
     const wxChar   eol_chr         (_T('\n'));
     const wxString space           (_T(" "));
     const wxChar   space_chr       (_T(' '));
+    const wxChar   tab_chr         (_T('\t'));
     const wxString equals          (_T("="));
     const wxString hash            (_T("#"));
     const wxChar   hash_chr        (_T('#'));
@@ -1232,7 +1240,10 @@ Token* ParserThread::DoAddToken(TokenKind kind,
                                 bool isImpl)
 {
     if (name.IsEmpty())
+    {
+        TRACE(_T("DoAddToken() : Token name is empty!"));
         return 0; // oops!
+    }
 
     Token* newToken = 0;
     wxString newname(name);
@@ -1370,6 +1381,8 @@ Token* ParserThread::DoAddToken(TokenKind kind,
           newToken->m_BaseType.wx_str(), m_TokensTree->at(newToken->m_ParentIndex) ?
           m_TokensTree->at(newToken->m_ParentIndex)->m_Name.wx_str() : wxEmptyString,
           newToken->m_ParentIndex);
+    ADDTOKEN(_T("Token: Index %7d Line %7d: Type: %s: -> '%s'"),
+             newToken->m_Index, line, newToken->GetTokenKindString().wx_str(), name.wx_str());
 
     // Notice: clears the queue "m_EncounteredTypeNamespaces"
     while (!m_EncounteredTypeNamespaces.empty())
@@ -1519,8 +1532,8 @@ void ParserThread::HandleUndefs()
     m_Tokenizer.SetState(oldState);
     if (!token.IsEmpty())
     {
-        Token* tk = TokenExists(token, NULL, tkPreprocessor);
-        if (tk != NULL)
+        Token* tk = TokenExists(token, nullptr, tkPreprocessor);
+        if (tk != nullptr)
             m_TokensTree->erase(tk);
     }
 
@@ -2673,10 +2686,12 @@ wxString ParserThread::GetClassFromMacro(const wxString& macro)
     wxString real(macro);
     if (GetRealTypeIfTokenIsMacro(real))
     {
-        Token* tk = TokenExists(real, NULL, tkClass);
+        Token* tk = TokenExists(real, nullptr, tkClass);
         if (tk)
             return tk->m_Name;
     }
+
+    TRACE(_T("GetClassFromMacro() : macro='%s' -> real='%s'."), macro.wx_str(), real.wx_str());
 
     return real;
 }
@@ -2688,7 +2703,7 @@ bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
     int count = 10;
     while (IS_ALIVE && --count > 0)
     {
-        tk = TokenExists(tokenName, NULL, tkPreprocessor);
+        tk = TokenExists(tokenName, nullptr, tkPreprocessor);
         if (   !tk
             || tk->m_FullType.IsEmpty()
             || tk->m_FullType == tokenName
@@ -2700,6 +2715,8 @@ bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
         tokenName = tk->m_FullType;
         tokenIsMacro = true;
     }
+
+    TRACE(_T("GetRealTypeIfTokenIsMacro() : tokenIsMacro=%s -> tokenName='%s'."), tokenIsMacro ? wxString(_T("yes")).wx_str() : wxString(_T("no")).wx_str(), tokenName.wx_str());
 
     return tokenIsMacro;
 }

@@ -21,7 +21,7 @@
 
 #include <wx/fdrepdlg.h>
 
-class wxBusyInfo;
+class wxProgressDialog;
 
 class Frame : public wxFrame
 {
@@ -51,6 +51,7 @@ private:
 
     void OnFindDialog(wxFindDialogEvent& event);
     void OnCCLogger(wxCommandEvent& event);
+    void OnCCAddToken(wxCommandEvent& event);
 
     //(*Declarations(Frame)
     wxTextCtrl* m_TreeCtrl;
@@ -64,9 +65,10 @@ private:
     wxFileDialog* m_OpenFile;
     //*)
 
-    wxBusyInfo*          m_BusyInfo;
+    wxProgressDialog*    m_ProgDlg;
 
     wxString             m_MainFile;
+    wxString             m_CurrentFile;
     size_t               m_LogCount;
 
     wxFindReplaceData    m_FRData;

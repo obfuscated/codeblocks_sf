@@ -1687,7 +1687,7 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
 
     // Replacement back
     wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - bufferLen;
-    TRACE(_T("ReplacetargetForReparse() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
+    TRACE(_T("ReplaceBufferForReparse() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
     memcpy(p, (const wxChar*)target, bufferLen * sizeof(wxChar));
 
     // Fix token index

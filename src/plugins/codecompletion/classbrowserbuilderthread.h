@@ -39,7 +39,7 @@ public:
     // Called from external:
     void SelectItemRequired();
 
-    void RequestTermination(bool terminate = true) { m_TerminationRequested = terminate;}
+    void RequestTermination(bool terminate = true) { m_TerminationRequested = terminate; }
 
 protected:
     virtual void* Entry();
