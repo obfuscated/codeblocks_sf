@@ -54,7 +54,7 @@ namespace nsEnvVars
   wxArrayString GetEnvvarsBySetPath(const wxString& set_path);
   /** Verifies if an envvars set really exists in the config
     * \param set_name Name of the set to query/find in the config
-    * \return Has the set ben found / does it exist in the config?
+    * \return Has the set been found / does it exist in the config?
     */
   bool          EnvvarSetExists(const wxString& set_name);
   /** Allows the user to veto overwriting an existing envvar with a new value
@@ -69,6 +69,12 @@ namespace nsEnvVars
     * \return Has the check listbox been updated successfully?
     */
   bool          EnvvarsClearUI(wxCheckListBox* lstEnvVars);
+  /** Checks, if an envvar is recursive, like PATH=%PATH%;C:\Folder
+    * \param key   envvar to check
+    * \param value value of the envvar to check for recursion
+    * \return Is this a recursive envvar?
+    */
+  bool          EnvvarIsRecursive(const wxString& key, const wxString& value);
   /** Discards an envvar
     * \param key envvar to discard (erase)
     * \return Has the envvar been discarded successfully?
@@ -86,7 +92,7 @@ namespace nsEnvVars
     * \return Have all envvars been applied successfully?
     */
   bool          EnvvarArrayApply(const wxArrayString& envvar,
-                                 wxCheckListBox* lstEnvVars = NULL);
+                                 wxCheckListBox*      lstEnvVars = NULL);
   /** Applies a specific envvar set from the config (without UI interaction)
     * \param set_name Name of the set to apply (maps to a path in the config)
     * \param even_if_active Apply the envvar set even if it is active (it might have changed!)
