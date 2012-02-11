@@ -8,8 +8,26 @@
 
 #include <wx/string.h>
 #include <wx/thread.h>
+#include <vector>
+#include <deque>
 
 #include "token.h"
+#include "searchtree.h"
+
+enum FileParsingStatus
+{
+    fpsNotParsed = 0,
+    fpsAssigned,
+    fpsBeingParsed,
+    fpsDone
+};
+
+typedef std::deque<int>                                          TokenIdxList;
+typedef std::vector<Token*>                                      TokenList;
+typedef SearchTree<TokenIdxSet>                                  TokenSearchTree;
+typedef BasicSearchTree                                          TokenFilenamesMap;
+typedef std::map< size_t, TokenIdxSet,       std::less<size_t> > TokenFilesMap;
+typedef std::map< size_t, FileParsingStatus, std::less<size_t> > TokenFilesStatus;
 
 extern wxMutex s_TokensTreeMutex;
 

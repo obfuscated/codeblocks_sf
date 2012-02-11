@@ -7,38 +7,15 @@
 #define TOKEN_H
 
 #include <wx/arrstr.h>
-#include <wx/dynarray.h> // WX_DEFINE_ARRAY
 #include <wx/string.h>
-
-#include <deque>
 #include <set>
-#include <vector>
-
-#include "searchtree.h"
-
-class wxEvtHandler;
+#include <map>
 
 class Token;
 class TokensTree;
 
-enum FileParsingStatus
-{
-    fpsNotParsed = 0,
-    fpsAssigned,
-    fpsBeingParsed,
-    fpsDone
-};
-
-WX_DEFINE_ARRAY(Token*, TokensArray);
-
-typedef std::vector<Token*>                                      TokenList;
-typedef std::deque<int>                                          TokenIdxList;
-typedef std::set< int, std::less<int> >                          TokenIdxSet;
-typedef SearchTree<TokenIdxSet>                                  TokenSearchTree;
-typedef BasicSearchTree                                          TokenFilenamesMap;
-typedef std::map< size_t, TokenIdxSet,       std::less<size_t> > TokenFilesMap;
-typedef std::map< size_t, FileParsingStatus, std::less<size_t> > TokenFilesStatus;
-typedef std::set< size_t, std::less<size_t> >                    TokenFilesSet;
+typedef std::set< int, std::less<int> >           TokenIdxSet;
+typedef std::set< size_t, std::less<size_t> >     TokenFilesSet;
 
 enum TokenScope
 {
