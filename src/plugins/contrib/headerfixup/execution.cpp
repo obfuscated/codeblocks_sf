@@ -8,8 +8,14 @@
  */
 
 //(*InternalHeaders(Execution)
-#include <wx/string.h>
+#include <wx/sizer.h>
+#include <wx/radiobox.h>
+#include <wx/checklst.h>
+#include <wx/checkbox.h>
 #include <wx/intl.h>
+#include <wx/button.h>
+#include <wx/string.h>
+#include <wx/gauge.h>
 //*)
 
 #include <wx/filename.h>

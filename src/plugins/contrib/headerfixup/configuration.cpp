@@ -131,6 +131,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   //*)
 
   m_BlockHeadersText = false;
+  m_Dirty            = false;
 
   ShowGroups();
 }// Configuration
@@ -218,7 +219,8 @@ void Configuration::SelectIdentifier(int Number)
 
 void Configuration::OnApply()
 {
-  m_Bindings.SaveBindings();
+  if (m_Dirty)
+    m_Bindings.SaveBindings();
 }// OnApply
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -246,6 +248,8 @@ void Configuration::OnBtnAddGroupClick(wxCommandEvent& /*event*/)
 
   Bindings::MappingsT& Map = m_Bindings.m_Groups[GroupName];
   SelectGroup(m_Groups->Append(GroupName,(void*)&Map));
+
+  m_Dirty = true;
 }// OnBtnAddGroupClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -260,6 +264,8 @@ void Configuration::OnBtnDeleteGroupClick(wxCommandEvent& /*event*/)
   m_Groups->Delete(m_Groups->GetSelection());
   m_Bindings.m_Groups.erase(GroupName);
   SelectGroup(m_Groups->GetSelection());
+
+  m_Dirty = true;
 }// OnBtnDeleteGroupClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -295,6 +301,8 @@ void Configuration::OnRenameGroup(wxCommandEvent& /*event*/)
   m_Bindings.m_Groups.erase(OldName);
   m_Groups->SetClientData(m_Groups->GetSelection(), (void*) &(m_Bindings.m_Groups[GroupName]) );
   SelectGroup(m_Groups->GetSelection());
+
+  m_Dirty = true;
 }// OnRenameGroup
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -309,6 +317,8 @@ void Configuration::OnBtnDefaultsClick(wxCommandEvent& /*event*/)
   m_Bindings.SetDefaults();
 
   ShowGroups();
+
+  m_Dirty = false;
 }// OnBtnDefaultsClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -350,6 +360,8 @@ void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& /*event*/)
   Bindings::MappingsT& Map = * ((Bindings::MappingsT*)m_Groups->GetClientData(m_Groups->GetSelection()));
   wxArrayString& Headers = Map[Identifier];
   SelectIdentifier(m_Identifiers->Append(Identifier,(void*)&Headers));
+
+  m_Dirty = true;
 }// OnBtnAddIdentifierClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -366,6 +378,8 @@ void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& /*event*/)
   Bindings::MappingsT& Map = * ((Bindings::MappingsT*)m_Groups->GetClientData(m_Groups->GetSelection()));
   Map.erase(Identifier);
   SelectIdentifier(m_Identifiers->GetSelection());
+
+  m_Dirty = true;
 }// OnBtnDeleteIdentifierClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -409,6 +423,8 @@ void Configuration::OnChangeIdentifier(wxCommandEvent& /*event*/)
   Map.erase(OldIdent);
   m_Identifiers->SetClientData(m_Identifiers->GetSelection(), (void*) &(Map[Identifier]) );
   SelectIdentifier(m_Identifiers->GetSelection());
+
+  m_Dirty = true;
 }// OnChangeIdentifier
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -434,4 +450,6 @@ void Configuration::OnHeadersText(wxCommandEvent& /*event*/)
   Headers->Clear();
   while ( Tokenizer.HasMoreTokens() )
     Headers->Add(Tokenizer.GetNextToken());
+
+  m_Dirty = true;
 }// OnHeadersText

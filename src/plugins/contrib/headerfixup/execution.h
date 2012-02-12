@@ -13,13 +13,14 @@
 #endif
 
 //(*Headers(Execution)
-#include <wx/gauge.h>
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
-#include <wx/sizer.h>
-#include <wx/button.h>
 #include "scrollingdialog.h"
-#include <wx/radiobox.h>
+class wxGauge;
+class wxCheckBox;
+class wxRadioBox;
+class wxBoxSizer;
+class wxButton;
+class wxStaticBoxSizer;
+class wxCheckListBox;
 //*)
 
 #include <wx/arrstr.h>
@@ -72,29 +73,29 @@ protected:
   //*)
 
   //(*Declarations(Execution)
-  wxButton* m_Exit;
-  wxGauge* m_Progress;
-  wxRadioBox* m_Scope;
-  wxButton* m_SelectNone;
+  wxCheckBox* m_Protocol;
   wxBoxSizer* sizMain;
+  wxRadioBox* m_Scope;
+  wxBoxSizer* sizRunExit;
+  wxButton* m_Invert;
+  wxBoxSizer* sizRight;
+  wxStaticBoxSizer* sizHeaderSets;
+  wxStaticBoxSizer* sizExecute;
   wxCheckBox* m_Ignore;
   wxBoxSizer* sizLeft;
-  wxCheckBox* m_FwdDecl;
-  wxCheckBox* m_Simulation;
-  wxButton* m_SelectAll;
-  wxBoxSizer* sizRunExit;
-  wxCheckListBox* m_Sets;
-  wxBoxSizer* sizAllNoneInvert;
-  wxCheckBox* m_Protocol;
-  wxRadioBox* m_FileType;
-  wxButton* m_Run;
-  wxBoxSizer* sizRight;
-  wxCheckBox* m_ObsoleteLog;
-  wxStaticBoxSizer* sizHeaderSets;
-  wxButton* m_Invert;
-  wxStaticBoxSizer* sizAdvancedOptions;
-  wxStaticBoxSizer* sizExecute;
   wxRadioBox* m_Options;
+  wxButton* m_Exit;
+  wxButton* m_SelectAll;
+  wxButton* m_SelectNone;
+  wxCheckBox* m_ObsoleteLog;
+  wxGauge* m_Progress;
+  wxStaticBoxSizer* sizAdvancedOptions;
+  wxButton* m_Run;
+  wxRadioBox* m_FileType;
+  wxCheckBox* m_Simulation;
+  wxBoxSizer* sizAllNoneInvert;
+  wxCheckBox* m_FwdDecl;
+  wxCheckListBox* m_Sets;
   //*)
 
 private:
