@@ -347,7 +347,7 @@ CfgMgrBldr::~CfgMgrBldr()
     delete volatile_doc;
 }
 
-void CfgMgrBldr::Close()
+void CfgMgrBldr::Flush()
 {
     if (doc)
     {
@@ -355,14 +355,22 @@ void CfgMgrBldr::Close()
         {
             if (!TinyXML::SaveDocument(cfg, doc))
                 // TODO (thomas#1#): add "retry" option
-                wxSafeShowMessage(_T("Could not save config file..."), _("Warning"));
+                wxSafeShowMessage(_("Warning"), _T("Could not save config file..."));
         }
         else
         {
             // implement WebDAV another time
         }
-        delete doc;
     }
+}
+
+void CfgMgrBldr::Close()
+{
+    Flush();
+
+    if (doc)
+        delete doc;
+
     doc = 0;
 }
 
@@ -722,6 +730,12 @@ void ConfigManager::DeleteAll()
     }
 }
 
+void ConfigManager::Flush()
+{
+    CfgMgrBldr * bld = CfgMgrBldr::Get();
+    wxCriticalSectionLocker(bld->cs);
+    bld->Flush();
+}
 
 /* ------------------------------------------------------------------------------------------------------------------
 *  Utility functions for writing nodes

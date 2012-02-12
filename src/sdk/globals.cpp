@@ -796,7 +796,6 @@ bool UsesCommonControls6()
 {
     bool result = false;
     HINSTANCE hinstDll;
-    DWORD dwVersion = 0;
     hinstDll = LoadLibrary(_T("comctl32.dll"));
     if (hinstDll)
     {
@@ -814,10 +813,7 @@ bool UsesCommonControls6()
             hr = (*pDllGetVersion)(&dvi);
 
             if (SUCCEEDED(hr))
-            {
-               dwVersion = MAKELONG(dvi.dwMinorVersion, dvi.dwMajorVersion);
                result = dvi.dwMajorVersion == 6;
-            }
         }
 
         FreeLibrary(hinstDll);

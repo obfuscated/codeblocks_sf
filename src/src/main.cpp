@@ -2734,6 +2734,7 @@ void MainFrame::OnFileSaveProjectAllProjects(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFileSaveAll(wxCommandEvent& /*event*/)
 {
+    Manager::Get()->GetConfigManager(_T("app"))->Flush();
     Manager::Get()->GetEditorManager()->SaveAll();
     Manager::Get()->GetProjectManager()->SaveAllProjects();
 
