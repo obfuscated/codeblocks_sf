@@ -44,7 +44,6 @@
 #include <filefilters.h>
 
 #include "compilergcc.h"
-#include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
 #include "globals.h"
@@ -216,7 +215,6 @@ int idMenuSelectTargetOther[MAX_TARGETS]; // initialized in ctor
 int idMenuNextError                                = XRCID("idCompilerMenuNextError");
 int idMenuPreviousError                            = XRCID("idCompilerMenuPreviousError");
 int idMenuClearErrors                              = XRCID("idCompilerMenuClearErrors");
-int idMenuExportMakefile = XRCID("idCompilerMenuExportMakefile");
 int idMenuSettings                                 = XRCID("idCompilerMenuSettings");
 
 int idToolTarget                                   = XRCID("idToolTarget");
@@ -264,7 +262,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(idMenuNextError,                     CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuPreviousError,                 CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuClearErrors,                   CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(idMenuExportMakefile, CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuSettings,                      CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idToolTarget,                        CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idToolTargetLabel,                   CompilerGCC::OnUpdateUI)
@@ -292,7 +289,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuNextError,                       CompilerGCC::Dispatcher)
     EVT_MENU(idMenuPreviousError,                   CompilerGCC::Dispatcher)
     EVT_MENU(idMenuClearErrors,                     CompilerGCC::Dispatcher)
-    EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
 
     EVT_TEXT_URL(idBuildLog,                        CompilerGCC::TextURL)
@@ -335,7 +331,6 @@ CompilerGCC::CompilerGCC() :
     m_LastBuildStep(true),
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
-    m_DeleteTempMakefile(true),
     m_IsWorkspaceOperation(false),
     m_IsCompileFileRequest(false),
     m_LogBuildProgressPercentage(false)
@@ -381,7 +376,6 @@ void CompilerGCC::OnAttach()
     m_Clean = false;
     m_Build = false;
     m_LastBuildStep = true;
-    m_DeleteTempMakefile = true;
     m_IsWorkspaceOperation = false;
     m_IsCompileFileRequest = false;
 
@@ -495,7 +489,6 @@ void CompilerGCC::OnRelease(bool appShutDown)
     // disable script functions
     ScriptBindings::gBuildLogId = -1;
 
-    DoDeleteTempMakefile();
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
     if (Manager::Get()->GetLogManager())
@@ -521,7 +514,6 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
     FreeProcesses();
 
-    DoDeleteTempMakefile();
     CompilerFactory::UnregisterCompilers();
 }
 
@@ -706,8 +698,6 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         OnPreviousError(event);
     else if (eventId == idMenuClearErrors)
         OnClearErrors(event);
-    else if (eventId == idMenuExportMakefile)
-        OnExportMakefile(event);
     else if (eventId == idMenuSettings)
         OnConfig(event);
 
@@ -954,7 +944,7 @@ bool CompilerGCC::CheckProject()
 
 void CompilerGCC::AskForActiveProject()
 {
-    m_Project = m_pBuildingProject
+    m_pProject = m_pBuildingProject
                 ? m_pBuildingProject
                 : Manager::Get()->GetProjectManager()->GetActiveProject();
 }
@@ -1503,14 +1493,6 @@ int CompilerGCC::DoGUIAskForTarget()
     return m_pProject->SelectTarget(m_RealTargetIndex);
 }
 
-void CompilerGCC::DoDeleteTempMakefile()
-{
-    // delete temp Makefile
-    if (m_DeleteTempMakefile && !m_LastTempMakefile.IsEmpty())
-        wxRemoveFile(m_LastTempMakefile);
-    m_LastTempMakefile = _T("");
-}
-
 bool CompilerGCC::UseMake(cbProject* project)
 {
     if (!project)
@@ -1546,66 +1528,6 @@ bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
         compiler = CompilerFactory::GetCompiler(idx);
     }
     return compiler && compiler->IsValid();
-}
-
-bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
-{
-    DoDeleteTempMakefile();
-
-    // display error about incorrect compile environment
-    if (!m_EnvironmentMsg.IsEmpty())
-    {
-        cbMessageBox(m_EnvironmentMsg, _("Error"), wxICON_ERROR);
-        m_EnvironmentMsg.Clear(); // once is enough, per session...
-    }
-
-    // verify current project
-    AskForActiveProject();
-    if (!m_pProject)
-        return false;
-
-    if ( UseMake() )
-    {
-        // if the project has a custom makefile, use that (i.e. don't create makefile)
-        if (temporary && m_pProject->IsMakefileCustom())
-        {
-            m_LastTempMakefile = m_pProject->GetMakefile();
-            m_DeleteTempMakefile = false;
-            return true;
-        }
-
-        // invoke Makefile generation
-        if (temporary)
-            m_LastTempMakefile = wxFileName::CreateTempFileName(_T("cbmk"), (wxFile*)0L);
-        else
-        {
-            m_LastTempMakefile = makefile;
-            if (m_LastTempMakefile.IsEmpty())
-            {
-                m_LastTempMakefile = ProjectMakefile();
-                if (m_LastTempMakefile.IsEmpty())
-                    m_LastTempMakefile = _T("Makefile");
-            }
-        }
-    }
-
-    PrintBanner(baBuild);
-    wxSetWorkingDirectory(m_pProject->GetBasePath());
-
-    if ( UseMake() )
-    {
-        MakefileGenerator generator(this, m_pProject, m_LastTempMakefile, m_PageIndex);
-        bool ret = generator.CreateMakefile();
-
-        // if exporting Makefile, reset variable so that it's not deleted on
-        // next Makefile generation :)
-        if (!temporary)
-            m_LastTempMakefile = _T("");
-        m_DeleteTempMakefile = temporary;
-
-        return ret;
-    }
-    return true;
 }
 
 void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTarget* target)
@@ -1934,9 +1856,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     #else
     Manager::Get()->GetLogManager()->Log(F(_("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str()), m_PageIndex);
     #endif
-    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target, true));
+    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_pProject, target, true));
 
-    m_Project->SetCurrentlyCompilingTarget(0);
+    m_pProject->SetCurrentlyCompilingTarget(0);
     return 0;
 }
 
@@ -2063,39 +1985,6 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
         return -1;
     }
     return 0;
-}
-
-void CompilerGCC::OnExportMakefile(wxCommandEvent& /*event*/)
-{
-    cbMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"
-                    "With all the updates from the last couple of months, the makefile exporter "
-                    "is not anymore in-sync with the rest of the build process.\n"
-                    "We are sorry for the inconvenience..."),
-                    _T("Warning"),
-                    wxICON_WARNING);
-    return;
-
-    if (!CompilerValid())
-        return;
-    wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Export Makefile"), ProjectMakefile());
-    if (makefile.IsEmpty())
-        return;
-
-    wxSetWorkingDirectory(m_Project->GetBasePath());
-    if ( UseMake() )
-        DoCreateMakefile(false, makefile);
-    else
-    {
-        MakefileGenerator generator(this, m_Project, makefile, m_PageIndex);
-        generator.CreateMakefile();
-    }
-    wxString msg;
-    #if wxCHECK_VERSION(2, 9, 0)
-    msg.Printf(_("\"%s\" has been exported in the same directory as the project file."), makefile.wx_str());
-    #else
-    msg.Printf(_("\"%s\" has been exported in the same directory as the project file."), makefile.c_str());
-    #endif
-    cbMessageBox(msg);
 }
 
 void CompilerGCC::InitBuildState(BuildJob job, const wxString& target)
@@ -2845,7 +2734,7 @@ int CompilerGCC::KillProcess()
             continue;
 
         #if defined(WIN32) && defined(ENABLE_SIGTERM)
-            ::GenerateConsoleCtrlEvent(0, m_Pid[i]);
+            ::GenerateConsoleCtrlEvent(0, m_pPid[i]);
         #endif
 
         // Close input pipe
@@ -2938,9 +2827,6 @@ int CompilerGCC::CompileFile(const wxString& file)
     if (!bt)
         return -2;
 
-    if ( UseMake() ) // compile file using make and a (custom) Makefile
-        return CompileFileWithMake(pf, bt);
-
     return CompileFileDefault(m_pProject, pf, bt); // compile file using default build system
 }
 
@@ -2961,23 +2847,6 @@ int CompilerGCC::CompileFileWithoutProject(const wxString& file)
     DirectCommands dc(this, compiler, 0, m_PageIndex);
     wxArrayString compile = dc.GetCompileSingleFileCommand(file);
     AddToCommandQueue(compile);
-
-    return DoRunQueue();
-}
-
-int CompilerGCC::CompileFileWithMake(ProjectFile* pf, ProjectBuildTarget* bt)
-{
-    wxFileName tmp = pf->GetObjName();
-    wxFileName o_file(bt->GetObjectOutput() + wxFILE_SEP_PATH + tmp.GetFullPath());
-    wxString fname = UnixFilename(o_file.GetFullPath());
-    MakefileGenerator mg(this, 0, _T(""), 0);
-    mg.ConvertToMakefileFriendly(fname, true);
-
-    Manager::Get()->GetMacrosManager()->Reset();
-
-    wxString cmd = GetMakeCommandFor(mcCompileFile, m_pProject, bt);
-    cmd.Replace(_T("$file"), fname);
-    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_pProject, bt));
 
     return DoRunQueue();
 }
@@ -3272,8 +3141,6 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuNextError, !running && (prj || ed) && m_Errors.HasNextError());
         mbar->Enable(idMenuPreviousError, !running && (prj || ed) && m_Errors.HasPreviousError());
 //        mbar->Enable(idMenuClearErrors, cnt);
-
-        mbar->Enable(idMenuExportMakefile, false);// !running && prj);
 
         // Project menu
         mbar->Enable(idMenuProjectCompilerOptions, !running && prj);

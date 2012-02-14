@@ -1742,12 +1742,6 @@
 		<Unit filename="plugins\compilergcc\directcommands.h">
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins\compilergcc\makefilegenerator.cpp">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins\compilergcc\makefilegenerator.h">
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins\compilergcc\resources\advanced_compiler_options.xrc">
 			<Option target="Compiler" />
 		</Unit>

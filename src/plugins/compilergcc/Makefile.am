@@ -46,8 +46,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerGNUPOWERPC.cpp \
 			compilerGNUTRICORE.cpp \
 			compilerTcc.cpp \
-			directcommands.cpp \
-			makefilegenerator.cpp
+			directcommands.cpp
 
 noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerBCC.h \
@@ -77,8 +76,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerGNUPOWERPC.h \
 			compilerGNUTRICORE.h \
 			compilerTcc.h \
-			directcommands.h \
-			makefilegenerator.h
+			directcommands.h
 
 EXTRA_DIST = compilerMSVC8.h \
 			compilerMSVC10.h \

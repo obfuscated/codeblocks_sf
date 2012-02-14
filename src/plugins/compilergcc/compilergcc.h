@@ -109,7 +109,6 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int RebuildWorkspace(const wxString& target = wxEmptyString);
         virtual int CompileFile(const wxString& file);
         virtual int CompileFileWithoutProject(const wxString& file);
-        virtual int CompileFileWithMake(ProjectFile* pf, ProjectBuildTarget* bt);
         virtual int CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt);
         virtual int KillProcess();
         virtual bool IsRunning() const;
@@ -143,7 +142,6 @@ class CompilerGCC : public cbCompilerPlugin
         void OnNextError(wxCommandEvent& event);
         void OnPreviousError(wxCommandEvent& event);
         void OnClearErrors(wxCommandEvent& event);
-        void OnExportMakefile(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnConfig(wxCommandEvent& event);
     private:
@@ -177,8 +175,6 @@ class CompilerGCC : public cbCompilerPlugin
         void NotifyCleanProject(const wxString& target);
         void NotifyCleanWorkspace();
         int DoRunQueue();
-        bool DoCreateMakefile(bool temporary = true, const wxString& makefile = _T(""));
-        void DoDeleteTempMakefile();
         void DoClearTargetMenu();
         void DoRecreateTargetMenu();
         void DoUpdateTargetMenu(int targetIndex);
@@ -298,10 +294,6 @@ class CompilerGCC : public cbCompilerPlugin
         // to decide if post-build steps should run
         bool m_RunTargetPostBuild;
         bool m_RunProjectPostBuild;
-
-        wxString m_OriginalPath;
-        wxString m_LastTempMakefile;
-        bool m_DeleteTempMakefile;
 
         bool m_IsWorkspaceOperation; // true for workspace commands
         bool m_IsCompileFileRequest; // true for plugin compile file requests
