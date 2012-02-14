@@ -2,8 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code::Blocks" />
-		<Option pch_mode="2" />
+		<Option title="Code::Blocks wx2.8.x" />
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
@@ -31,9 +30,6 @@
 				<Compiler>
 					<Add directory="include\tinyxml" />
 				</Compiler>
-				<Linker>
-					<Add option="-r" />
-				</Linker>
 			</Target>
 			<Target title="AutoRevision">
 				<Option output="build_tools\autorevision\autorevision" prefix_auto="1" extension_auto="1" />
@@ -69,9 +65,6 @@
 					<Add directory="include\scripting\include" />
 					<Add directory="include\scripting\squirrel" />
 				</Compiler>
-				<Linker>
-					<Add option="-r" />
-				</Linker>
 			</Target>
 			<Target title="Squirrel std lib">
 				<Option output="sdk\scripting\lib\sqstdlib" prefix_auto="1" extension_auto="1" />
@@ -84,9 +77,6 @@
 					<Add directory="include\scripting\include" />
 					<Add directory="include\scripting\sqstdlib" />
 				</Compiler>
-				<Linker>
-					<Add option="-r" />
-				</Linker>
 			</Target>
 			<Target title="SqPlus">
 				<Option output="sdk\scripting\lib\sqplus" prefix_auto="1" extension_auto="1" />
@@ -99,9 +89,6 @@
 					<Add directory="include\scripting\include" />
 					<Add directory="include\scripting\sqplus" />
 				</Compiler>
-				<Linker>
-					<Add option="-r" />
-				</Linker>
 			</Target>
 			<Target title="scintilla">
 				<Option output="devel\wxscintilla_cb" prefix_auto="1" extension_auto="1" />
@@ -158,7 +145,7 @@
 				<Option external_deps="base\tinyxml\libtxml.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;devel\libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -205,7 +192,7 @@
 				<Option external_deps="devel\libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
