@@ -40,6 +40,12 @@ CompilerMessages::CompilerMessages(const wxArrayString& titles, const wxArrayInt
 CompilerMessages::~CompilerMessages()
 {
 	//dtor
+	Disconnect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &CompilerMessages::OnClick);
+    Disconnect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &CompilerMessages::OnDoubleClick);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
