@@ -3533,7 +3533,7 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
     if (procName.IsEmpty())
         return 0;
 
-    TokensTree* tree = m_Parser->GetTokensTree(); // the one used inside FindAIMatches and GenerateResultSet
+//    TokensTree* tree = m_Parser->GetTokensTree(); // the one used inside FindAIMatches and GenerateResultSet
 
     // add current scope
     if (!scopeName.IsEmpty())
@@ -4231,7 +4231,7 @@ void NativeParser::RemoveLastFunctionChildren()
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    Token* token = m_Parser->GetTokensTree()->at(m_LastFuncTokenIdx);
+    Token* token = tree->at(m_LastFuncTokenIdx);
     if (token)
     {
         m_LastFuncTokenIdx = -1;

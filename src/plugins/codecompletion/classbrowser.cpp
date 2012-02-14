@@ -521,7 +521,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
-            TokensTree* tree = m_Parser->GetTokensTree(); // the one used inside CCDebugInfo
+//            TokensTree* tree = m_Parser->GetTokensTree(); // the one used inside CCDebugInfo
 
             CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 

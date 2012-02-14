@@ -112,11 +112,15 @@ void ParserTest::PrintTree()
     if (!m_pTokensTree) return;
 
     TokenList& tokens = m_pTokensTree->m_Tokens;
-    for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
+    for (TokenList::iterator it=tokens.begin(); it!=tokens.end(); ++it)
     {
-        Token* parent = m_pTokensTree->at((*it)->m_ParentIndex);
-        if (!parent)
-            PrintTokenTree(*it);
+        Token* token = (*it);
+        if (token)
+        {
+          Token* parent = m_pTokensTree->at(token->m_ParentIndex);
+          if (!parent)
+              PrintTokenTree(token);
+        }
     }
 }
 
@@ -134,10 +138,10 @@ void ParserTest::PrintTokenTree(Token* token)
     CCLogger::Get()->Log(log);
 
     TokenIdxSet& ids = token->m_Children;
-    for (TokenIdxSet::iterator it = ids.begin(); it != ids.end(); it++)
+    for (TokenIdxSet::iterator it=ids.begin(); it!=ids.end(); ++it)
     {
         Token* token = m_pTokensTree->at(*it);
-        PrintTokenTree(token);
+        PrintTokenTree(token); // recursion
     }
 }
 
@@ -146,12 +150,18 @@ void ParserTest::PrintList()
     if (!m_pTokensTree) return;
 
     TokenList& tokens = m_pTokensTree->m_Tokens;
-    for (TokenList::iterator it = tokens.begin(); it != tokens.end(); it++)
+    for (TokenList::iterator it=tokens.begin(); it!=tokens.end(); ++it)
     {
-        wxString log;
-        log << (*it)->GetTokenKindString() << _T(" ") << (*it)->DisplayName() << _T("\t[") << (*it)->m_Line;
-        log << _T(",") << (*it)->m_ImplLine << _T("]");
-        CCLogger::Get()->Log(log);
+        Token* token = (*it);
+        if (token)
+        {
+            wxString log;
+            log << token->GetTokenKindString() << _T(" ")
+                << token->DisplayName()        << _T("\t[")
+                << token->m_Line               << _T(",")
+                << token->m_ImplLine           << _T("]");
+            CCLogger::Get()->Log(log);
+        }
     }
 }
 

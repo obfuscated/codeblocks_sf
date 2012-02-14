@@ -8,14 +8,15 @@
 
 #include <wx/arrstr.h>
 #include <wx/string.h>
+
 #include <set>
 #include <map>
 
 class Token;
 class TokensTree;
 
-typedef std::set< int, std::less<int> >           TokenIdxSet;
-typedef std::set< size_t, std::less<size_t> >     TokenFilesSet;
+typedef std::set< int,    std::less<int>    > TokenIdxSet;
+typedef std::set< size_t, std::less<size_t> > TokenFilesSet;
 
 enum TokenScope
 {

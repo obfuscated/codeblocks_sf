@@ -8,6 +8,7 @@
 
 #include <wx/string.h>
 #include <wx/thread.h>
+
 #include <vector>
 #include <deque>
 

@@ -1446,7 +1446,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 
     int success = -6;
 
-    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree(); // The one used inside InsertClassMethodDlg
+//    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree(); // The one used inside InsertClassMethodDlg
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
