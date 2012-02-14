@@ -42,6 +42,7 @@
 #include <cbeditor.h>
 #include <annoyingdialog.h>
 #include <filefilters.h>
+#include <infowindow.h>
 
 #include "compilergcc.h"
 #include "compileroptionsdlg.h"
