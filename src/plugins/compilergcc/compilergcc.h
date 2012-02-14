@@ -108,6 +108,9 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int BuildWorkspace(const wxString& target = wxEmptyString);
         virtual int RebuildWorkspace(const wxString& target = wxEmptyString);
         virtual int CompileFile(const wxString& file);
+        virtual int CompileFileWithoutProject(const wxString& file);
+        virtual int CompileFileWithMake(ProjectFile* pf, ProjectBuildTarget* bt);
+        virtual int CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt);
         virtual int KillProcess();
         virtual bool IsRunning() const;
         virtual int GetExitCode() const { return m_LastExitCode; }
@@ -307,6 +310,7 @@ class CompilerGCC : public cbCompilerPlugin
         bool m_DeleteTempMakefile;
 
         bool m_IsWorkspaceOperation; // true for workspace commands
+        bool m_IsCompileFileRequest; // true for plugin compile file requests
 
         wxString m_BuildLogFilename;
         wxString m_BuildLogTitle;

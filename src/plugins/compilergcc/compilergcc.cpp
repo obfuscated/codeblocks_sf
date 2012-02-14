@@ -337,6 +337,7 @@ CompilerGCC::CompilerGCC() :
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true),
     m_IsWorkspaceOperation(false),
+    m_IsCompileFileRequest(false),
     m_LogBuildProgressPercentage(false)
 {
     if (!Manager::LoadResource(_T("compiler.zip")))
@@ -382,6 +383,7 @@ void CompilerGCC::OnAttach()
     m_LastBuildStep = true;
     m_DeleteTempMakefile = true;
     m_IsWorkspaceOperation = false;
+    m_IsCompileFileRequest = false;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
@@ -2971,68 +2973,79 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
 int CompilerGCC::CompileFile(const wxString& file)
 {
     ProjectBuildTarget* target = NULL;
-    if (CheckProject())
+    if ( CheckProject() )
         target = m_Project->GetBuildTarget(m_Project->GetActiveBuildTarget());
 
     DoPrepareQueue();
-    if (!CompilerValid(target))
+    if ( !CompilerValid(target) )
         return -1;
 
     ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
-    bool useMake = UseMake();
 
-    if (!pf)
-    {
-        // compile single file not belonging to a project
-        Manager::Get()->GetEditorManager()->Save(file);
-
-        // switch to the default compiler
-        SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
-        Manager::Get()->GetMacrosManager()->Reset();
-
-        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-        if (compiler)
-            compiler->Init(0);
-
-        // TODO (Morten#5#): Why is m_CompilerID used for initialisation, but the default compiler for compiling (DirectCommands)???
-        // get compile commands for file (always linked as console-executable)
-        DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
-        wxArrayString compile = dc.GetCompileSingleFileCommand(file);
-        AddToCommandQueue(compile);
-
-        return DoRunQueue();
-    }
+    if (!pf) // compile single file not belonging to a project
+        return CompileFileWithoutProject(file);
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
 
     if (!bt)
         return -2;
-    if (useMake)
-    {
-        wxFileName tmp = pf->GetObjName();
-        wxFileName o_file(bt->GetObjectOutput() + wxFILE_SEP_PATH + tmp.GetFullPath());
-        wxString fname = UnixFilename(o_file.GetFullPath());
-        MakefileGenerator mg(this, 0, _T(""), 0);
-        mg.ConvertToMakefileFriendly(fname, true);
 
-        Manager::Get()->GetMacrosManager()->Reset();
+    if ( UseMake() ) // compile file using make and a (custom) Makefile
+        return CompileFileWithMake(pf, bt);
 
-        wxString cmd = GetMakeCommandFor(mcCompileFile, m_Project, bt);
-        cmd.Replace(_T("$file"), fname);
-        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, bt));
-    }
-    else
-    {
-        Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
-        if (compiler)
-            compiler->Init(m_Project);
+    return CompileFileDefault(m_Project, pf, bt); // compile file using default build system
+}
 
-        DirectCommands dc(this, compiler, m_Project, m_PageIndex);
-        wxArrayString compile = dc.CompileFile(bt, pf);
-        AddToCommandQueue(compile);
-    }
+int CompilerGCC::CompileFileWithoutProject(const wxString& file)
+{
+    // compile single file not belonging to a project
+    Manager::Get()->GetEditorManager()->Save(file);
+
+    // switch to the default compiler
+    SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
+    Manager::Get()->GetMacrosManager()->Reset();
+
+    Compiler* compiler = CompilerFactory::GetDefaultCompiler();
+    if (compiler)
+        compiler->Init(0);
+
+    // get compile commands for file (always linked as console-executable)
+    DirectCommands dc(this, compiler, 0, m_PageIndex);
+    wxArrayString compile = dc.GetCompileSingleFileCommand(file);
+    AddToCommandQueue(compile);
+
+    return DoRunQueue();
+}
+
+int CompilerGCC::CompileFileWithMake(ProjectFile* pf, ProjectBuildTarget* bt)
+{
+    wxFileName tmp = pf->GetObjName();
+    wxFileName o_file(bt->GetObjectOutput() + wxFILE_SEP_PATH + tmp.GetFullPath());
+    wxString fname = UnixFilename(o_file.GetFullPath());
+    MakefileGenerator mg(this, 0, _T(""), 0);
+    mg.ConvertToMakefileFriendly(fname, true);
+
+    Manager::Get()->GetMacrosManager()->Reset();
+
+    wxString cmd = GetMakeCommandFor(mcCompileFile, m_Project, bt);
+    cmd.Replace(_T("$file"), fname);
+    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, bt));
+
+    return DoRunQueue();
+}
+
+int CompilerGCC::CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt)
+{
+    Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+    if (compiler)
+        compiler->Init(project);
+
+    DirectCommands dc(this, compiler, project, m_PageIndex);
+    wxArrayString compile = dc.CompileFile(bt, pf);
+    AddToCommandQueue(compile);
+
     return DoRunQueue();
 }
 
@@ -3369,20 +3382,48 @@ void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
 {
     cbProject*  prj = event.GetProject();
     EditorBase* eb  = event.GetEditor();
-    if (prj && eb)
+    if (!prj || !eb)
     {
-        const wxString& ed_filename = eb->GetFilename();
-        wxFileName wx_filename;
-        wx_filename.Assign(ed_filename);
-        wx_filename.MakeRelativeTo( prj->GetBasePath() );
-
-        wxString filepath = wx_filename.GetFullPath();
-        if (!filepath.IsEmpty())
-        {
-            Manager::Get()->GetProjectManager()->SetProject(prj, false);
-            CompileFile( UnixFilename(filepath) );
-        }
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Compile file request skipped due to missing project or editor."));
+        return;
     }
+
+    const wxString& ed_filename = eb->GetFilename();
+    wxFileName wx_filename;
+    wx_filename.Assign(ed_filename);
+    wx_filename.MakeRelativeTo( prj->GetBasePath() );
+
+    wxString filepath = wx_filename.GetFullPath();
+    if (filepath.IsEmpty())
+    {
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Compile file request skipped due to unresolvable file."));
+        return;
+    }
+
+    m_IsCompileFileRequest = true;
+
+    ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filepath), true, false);
+    if (!pf || !pf->buildTargets.GetCount())
+    {
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Skipping incoming compile file request for '%s' (no project file or build targets)."), filepath.wx_str()));
+        return;
+    }
+
+    ProjectBuildTarget* bt = 0;
+    if (pf->buildTargets.GetCount() == 1)
+        bt = prj->GetBuildTarget(pf->buildTargets[0]);
+    else // belongs to two or more build targets, but maybe a valid virtual target is selected
+        bt = prj->GetBuildTarget(m_RealTargetIndex); // pick the selected target
+    if (!bt)
+    {
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Skipping incoming compile file request for '%s' (no build target)."), filepath.wx_str()));
+        return;
+    }
+
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Executing incoming compile file request for '%s'."), filepath.wx_str()));
+    CompileFileDefault(prj, pf, bt);
+
+    m_IsCompileFileRequest = false;
 }
 
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
@@ -3622,11 +3663,16 @@ void CompilerGCC::SaveBuildLog()
     if (!Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false))
         return;
 
+    if (m_BuildLogFilename.IsEmpty())
+        return;
+
     // NOTE: if we want to add a CSS later on, we 'd have to edit:
     //       - this function and
     //       - LogMessage()
 
     wxFile f(m_BuildLogFilename, wxFile::write);
+    if (!f.IsOpened())
+        return;
 
     // first output the standard header blurb
     f.Write(_T("<html>\n"));
