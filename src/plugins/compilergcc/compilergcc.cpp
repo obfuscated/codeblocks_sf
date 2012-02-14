@@ -10,7 +10,7 @@
 #include <sdk.h>
 
 #include <wx/frame.h> // GetMenuBar
-#include <wx/gauge.h>     // Needs to be before compilergcc.h if NOPCH on wxMSW
+#include <wx/gauge.h> // Needs to be before compilergcc.h if NOPCH on wxMSW
 #include <wx/listctrl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/sizer.h>
@@ -728,148 +728,115 @@ void CompilerGCC::TextURL(wxTextUrlEvent& event)
 
 void CompilerGCC::SetupEnvironment()
 {
-    if (!CompilerFactory::GetCompiler(m_CompilerId))
-        return;
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
-    m_EnvironmentMsg.Clear();
-
-    wxString path;
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment...")));
-
-    // reset PATH to original value
-    if (!m_OriginalPath.IsEmpty())
-        wxSetEnv(_T("PATH"), m_OriginalPath);
-
-    // look for valid compiler in path
-    if (wxGetEnv(_T("PATH"), &path))
-    {
-        if (m_OriginalPath.IsEmpty())
-            m_OriginalPath = path;
-
-        SetEnvironmentForCompiler(m_CompilerId, path);
-    }
-    else
-        m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
-                    "This can't be good. There may be problems running "
-                    "system commands and the application might not behave "
-                    "the way it was designed to...");
-//    wxGetEnv("PATH", &path);
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str()));
-}
-
-void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPath)
-{
-    Compiler* compiler = CompilerFactory::GetCompiler(id);
     if (!compiler)
         return;
 
-    wxString sep = wxFileName::GetPathSeparator();
+    wxString currentPath;
+    if ( !wxGetEnv(_T("PATH"), &currentPath) )
+    {
+        InfoWindow::Display(_("Environment error"),
+                            _("Could not read the PATH environment variable!\n"
+                              "This can't be good. There may be problems running\n"
+                              "system commands and the application might not behave\n"
+                              "the way it was designed to..."),
+                            15000, 3000);
+        return;
+    }
 
+//    Manager::Get()->GetLogManager()->DebugLogError(_T("PATH environment:"));
+//    Manager::Get()->GetLogManager()->DebugLogError(currentPath);
+
+    const wxString pathApp  = platform::windows ? _T(";") : _T(":");
+    const wxString pathSep  = wxFileName::GetPathSeparator(); // "\" or "/"
+    const bool     caseSens = !(platform::windows);
+
+    wxString      cApp       = compiler->GetPrograms().C;
+    wxArrayString extraPaths = compiler->GetExtraPaths();
+    wxString      extraPathsBinPath(wxEmptyString);
+
+    // Get configured masterpath, expand macros and remove trailing seperators
     wxString masterPath = compiler->GetMasterPath();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-    while (masterPath.Last() == '\\' || masterPath.Last() == '/')
+    while ( (masterPath.Last() == '\\') || (masterPath.Last() == '/') )
         masterPath.RemoveLast();
-    wxString gcc = compiler->GetPrograms().C;
-    wxArrayString extraPaths = compiler->GetExtraPaths();
 
+    // Compile new PATH list...
     wxPathList pathList;
-    pathList.Add(masterPath + sep + _T("bin"));
-    for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
+    // [1] Pre-pend "master path" and "master path\bin"...
+    if ( !masterPath.Trim().IsEmpty() ) // Would be very bad, if it *is* empty
     {
-        if (!extraPaths[i].IsEmpty())
+        pathList.Add(masterPath + pathSep + _T("bin"));
+        pathList.Add(masterPath); // in case there is no "bin" sub-folder
+    }
+    // [2] Get configured extrapath(s), expand macros and remove trailing seperators
+    for (size_t i=0; i<extraPaths.GetCount(); ++i)
+    {
+        wxString extraPath = extraPaths[i];
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPath);
+        while (extraPath.Last() == '\\' || extraPath.Last() == '/')
+            extraPath.RemoveLast();
+        if (!extraPath.Trim().IsEmpty())
         {
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPaths[i]);
-            pathList.Add(extraPaths[i]);
+            // Remember, if we found the C application in the extra path's:
+            if (   extraPathsBinPath.IsEmpty()
+                && wxFileExists(extraPath + pathSep + cApp ) )
+                extraPathsBinPath = extraPath;
+            pathList.Add(extraPath);
         }
     }
-    pathList.AddEnvList(_T("PATH"));
-    wxString binPath = pathList.FindAbsoluteValidPath(gcc);
-    bool caseSensitive = !(platform::windows);
-    // it seems, under Win32, the above command doesn't search in paths with spaces...
-    // look directly for the file in question in masterPath
-    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
-    {
-        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
-            binPath = masterPath + sep + _T("bin");
-        else if (wxFileExists(masterPath + sep + gcc))
-            binPath = masterPath;
-        else
-        {
-            for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
-            {
-                if (!extraPaths[i].IsEmpty())
-                {
-                    if (wxFileExists(extraPaths[i] + sep + gcc))
-                    {
-                        binPath = extraPaths[i];
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    // [3] Append what has already been in the PATH envvar...
+    // If we do it this way, paths are automatically normalized and doubles are removed
+    wxPathList pathArray;
+    pathArray.AddEnvList(_T("PATH"));
+    pathList.Add(pathArray);
 
-    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
+    // Try to locate the path to the C compiler:
+    wxString binPath = pathList.FindAbsoluteValidPath(cApp);
+
+    // It seems, under Win32, the above command doesn't search in paths with spaces...
+    // Look directly for the file in question in masterPath if it is not already found.
+    if (    binPath.IsEmpty()
+        || (pathList.Index(wxPathOnly(binPath), caseSens)==wxNOT_FOUND) )
     {
-        m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
-        #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str()));
-        #endif
+        if      (wxFileExists(masterPath + pathSep + _T("bin") + pathSep + cApp))
+            binPath = masterPath + pathSep + _T("bin");
+        else if (wxFileExists(masterPath + pathSep + cApp))
+            binPath = masterPath;
+        else if (!extraPathsBinPath.IsEmpty())
+            binPath = extraPathsBinPath;
     }
     else
+        binPath = wxPathOnly(binPath);
+
+    /* TODO (jens#1#): Is the above correct ?
+       Or should we search in the whole systempath (pathList in this case) for the executable? */
+    // Try again...
+    if (binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND))
     {
-        m_EnvironmentMsg.Clear();
-        wxString path_sep;
-        if (platform::windows)
-            path_sep = _T(";");
-        else
-            path_sep = _T(":");
+        InfoWindow::Display(_("Environment error"),
+                            _("Can't find compiler executable in your configured search path's for ") + compiler->GetName() + _T('\n'));
+        Manager::Get()->GetLogManager()->DebugLogError(F(_T("Can't find compiler executable in your configured search path's (for %s)..."), compiler->GetName().wx_str()));
 
-        /* Store the PATH variable in an array. This will be used to
-         * locate duplicate entries. */
-        wxArrayString envPathArr = GetArrayFromString(envPath, path_sep);
+        return; // Failed to locate compiler executable in path's as provided!
+    }
 
-        // add extra compiler paths and masterpath to PATH
-        // and make sure they come before rest of path, because otherwise different
-        // versions of the executables might lead to problems
-        // => masterPath + extraPath + PATH
-        wxString oldpath = envPath;
-        envPath.Clear();
-        for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
-        {
-            if (!extraPaths[i].IsEmpty())
-            {
-                int index = envPathArr.Index(extraPaths[i], caseSensitive);
-                if (index != wxNOT_FOUND)
-                    envPathArr.RemoveAt(index);
+    // Convert the pathList into a string to apply.
+    wxString envPath(binPath); // make sure the bin-path we found is in front
+    // and remove it from pathList
+    pathList.Remove(binPath);
+    for (size_t i=0; i<pathList.GetCount(); ++i)
+        envPath += ( pathApp + pathList[i] );
 
-                envPath += extraPaths[i] + path_sep;
-            }
-        }
+//    Manager::Get()->GetLogManager()->DebugLogError(_T("Updating compiler PATH environment:"));
+//    Manager::Get()->GetLogManager()->DebugLogError(envPath);
 
-        // add bin path to PATH env. var.
-        wxString pathCheck = masterPath + sep + _T("bin");
-        if  (wxFileExists(pathCheck + sep + gcc))
-        {
-            int index = envPathArr.Index(pathCheck, caseSensitive);
-            if (index != wxNOT_FOUND)
-                envPathArr.RemoveAt(index);
-
-            envPath = masterPath + sep + _T("bin") + path_sep + envPath;
-        }
-        else if (wxFileExists(masterPath + sep + gcc))
-        {
-            int index = envPathArr.Index(masterPath, caseSensitive);
-            if (index != wxNOT_FOUND)
-                envPathArr.RemoveAt(index);
-
-            envPath = masterPath + path_sep + envPath;
-        }
-        envPath = envPath + GetStringFromArray(envPathArr, path_sep, false);
-//        Manager::Get()->GetLogManager()->Log(F(_T("Changing PATH from %s to %s"), oldpath.c_str(), envPath.c_str()));
-        wxSetEnv(_T("PATH"), envPath);
+    if ( !wxSetEnv(_T("PATH"), envPath) )
+    {
+        InfoWindow::Display(_("Environment error"),
+                            _("Can't set PATH environment variable! That's bad and the compiler might not work."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Can't set PATH environment variable! That's bad and the compiler might not work.\n"));
     }
 }
 

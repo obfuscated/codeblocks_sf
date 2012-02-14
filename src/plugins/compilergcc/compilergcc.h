@@ -133,7 +133,6 @@ class CompilerGCC : public cbCompilerPlugin
         void OnCompileAll(wxCommandEvent& event);
         void OnRebuildAll(wxCommandEvent& event);
         void OnCleanAll(wxCommandEvent& event);
-//        void OnDistClean(wxCommandEvent& event);
         void OnClean(wxCommandEvent& event);
         void OnRun(wxCommandEvent& event);
         void OnProjectCompilerOptions(wxCommandEvent& event);
@@ -144,7 +143,6 @@ class CompilerGCC : public cbCompilerPlugin
         void OnNextError(wxCommandEvent& event);
         void OnPreviousError(wxCommandEvent& event);
         void OnClearErrors(wxCommandEvent& event);
-//        void OnCreateDist(wxCommandEvent& event);
         void OnExportMakefile(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnConfig(wxCommandEvent& event);
@@ -164,7 +162,6 @@ class CompilerGCC : public cbCompilerPlugin
         int GetActiveProcessCount() const;
 
         void SetupEnvironment();
-        void SetEnvironmentForCompiler(const wxString& id, wxString& envPath);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectLoaded(CodeBlocksEvent& event);
         void OnProjectUnloaded(CodeBlocksEvent& event);
@@ -232,8 +229,8 @@ class CompilerGCC : public cbCompilerPlugin
         // active target, currently building project or active project
         wxString GetCurrentCompilerID(ProjectBuildTarget* target);
 
-		// returns a string valid to be used as LD_LIBRARY_PATH (or equivalent)
-		wxString GetDynamicLinkerPathForTarget(ProjectBuildTarget* target);
+        // returns a string valid to be used as LD_LIBRARY_PATH (or equivalent)
+        wxString GetDynamicLinkerPathForTarget(ProjectBuildTarget* target);
 
         // when a build is about to start, a preprocessing step runs
         // in PreprocessJob(), that fills m_BuildJobTargetsList with
