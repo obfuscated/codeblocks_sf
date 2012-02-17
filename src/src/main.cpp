@@ -1341,7 +1341,7 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
                 theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
                 theToken.ToULong(&j);
                 // we filter out the hidden/show state
-                theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+                theToken=wxString::Format(_("state=%lu"),j & wxAuiPaneInfo::optionHidden);
             }
                arLayout1.Add(theToken);
         }
@@ -1360,7 +1360,7 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
                 theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
                 theToken.ToULong(&j);
                 // we filter out the hidden/show state
-                theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+                theToken=wxString::Format(_("state=%lu"),j & wxAuiPaneInfo::optionHidden);
             }
                arLayout2.Add(theToken);
         }
@@ -2056,10 +2056,10 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
         {
             links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%zu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       i + 1);
             links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a>"),
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%zu\">%s</a>"),
                                       i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
             links << _T("</td></tr>\n");
         }
@@ -2079,10 +2079,10 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
         {
             links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%zu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       i + 1);
             links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a>"),
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%zu\">%s</a>"),
                                       i + 1, m_pFilesHistory->GetHistoryFile(i).c_str());
             links << _T("</td></tr>\n");
         }
@@ -2140,7 +2140,7 @@ void MainFrame::InitializeRecentFilesHistory()
                 for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
                 {
                     recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_CBFILE01 + i,
-                        wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
+                        wxString::Format(_T("&%zu "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
                 }
             }
         }
@@ -2162,7 +2162,7 @@ void MainFrame::InitializeRecentFilesHistory()
                 for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
                 {
                     recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_CBFILE17 + i,
-                        wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
+                        wxString::Format(_T("&%zu "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
                 }
             }
         }
@@ -2218,7 +2218,7 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
             for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
             {
                 recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_CBFILE01 + i,
-                    wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
+                    wxString::Format(_T("&%zu "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
             }
         }
     }
@@ -2278,7 +2278,7 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
             for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
             {
                 recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_CBFILE17 + i,
-                    wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
+                    wxString::Format(_T("&%zu "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
             }
         }
     }
