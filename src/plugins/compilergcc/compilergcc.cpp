@@ -1535,23 +1535,17 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
     if (action ==  baClean)
         Action = _("Clean");
 
+    wxString compilerName(_("unknown"));
+    Compiler *compiler = CompilerFactory::GetCompiler(GetCurrentCompilerID(target));
+    if (compiler)
+        compilerName = compiler->GetName();
+
+    wxString targetName = target ? target->GetTitle() : wxString(_("\"no target\""));
+    wxString projectName = prj ? prj->GetTitle() : wxString(_("\"no project\""));
+
     wxString banner;
-    banner.Printf(_("-------------- %s: %s in %s ---------------"),
-                    Action.wx_str(),
-                    target
-                        ? target->GetTitle().wx_str()
-                    #if wxCHECK_VERSION(2, 9, 0)
-                        : _("\"no target\"").wx_str(),
-                    #else
-                        : _("\"no target\""),
-                    #endif
-                    prj
-                        ? prj->GetTitle().wx_str()
-                    #if wxCHECK_VERSION(2, 9, 0)
-                        : _("\"no project\"").wx_str() );
-                    #else
-                        : _("\"no project\"") );
-                    #endif
+    banner.Printf(_("-------------- %s: %s in %s (compiler: %s)---------------"),
+                  Action.wx_str(), targetName.wx_str(), projectName.wx_str(), compilerName.wx_str());
     LogMessage(banner, cltNormal, ltAll, false, true);
 }
 
