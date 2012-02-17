@@ -189,7 +189,7 @@ void Valgrind::ProcessStack(const TiXmlElement& Stack, const wxString& What)
 	} // end while
 } // end of ProcessStack
 
-bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
+bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& CommandLineArguments)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
@@ -243,13 +243,10 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
 	}
 	else
 	{
-		if(TType == ttExecutable || ttConsoleOnly)
-		{
-//			ExeTarget = Target->GetExecutableFilename(); /// hmmm : this doesn't return correct stuff !!!
-			ExeTarget = Target->GetOutputFilename();
-            MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
-            MacrosMgr->ReplaceMacros(ExeTarget, Target);
-		}
+        ExeTarget = Project->GetBasePath() + Target->GetOutputFilename();
+        MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
+        MacrosMgr->ReplaceMacros(ExeTarget, Target);
+        WorkDir = Target->GetWorkingDir();
 	}
 // Disable this check, because it is not a real requirement.
 // And also it breaks if the -g option is set for the project, not for the target!
@@ -298,12 +295,16 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 {
 	wxString ExeTarget;
 	wxString CommandLineArguments;
-	if(!CheckRequirements(ExeTarget, CommandLineArguments))
+	wxString WorkDir;
+	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments))
 	{
 		return;
 	}
 	long Version = DoValgrindVersion();
-	const wxString XmlOutputFile = _T("ValgrindOut.xml");
+
+	cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+	const wxString XmlOutputFile = Project->GetBasePath() + _T("ValgrindOut.xml");
 	wxString XmlOutputCommand;
 	if(Version >= 350)
 	{
@@ -315,7 +316,10 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 //	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
 	wxArrayString Output, Errors;
+	wxString OldWorkDir = wxGetCwd();
+	wxSetWorkingDirectory(WorkDir);
 	wxExecute(CommandLine, Output, Errors);
+	wxSetWorkingDirectory(OldWorkDir);
 	size_t Count = Output.GetCount();
 	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
 	{
@@ -389,7 +393,8 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 {
 	wxString ExeTarget;
 	wxString CommandLineArguments;
-	if(!CheckRequirements(ExeTarget, CommandLineArguments))
+	wxString WorkDir;
+	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments))
 	{
 		return;
 	}
