@@ -210,7 +210,17 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
 		return false;
 	}
 	// let's get the target
-	ProjectBuildTarget* Target = Project->GetBuildTarget(strTarget); // NOT const because of GetNativeFilename() :-(
+	ProjectBuildTarget* Target =  nullptr; //Project->GetBuildTarget(strTarget); // NOT const because of GetNativeFilename() :-(
+    if (!Project->BuildTargetValid(strTarget, false))
+    {
+        int tgtIdx = Project->SelectTarget();
+        if (tgtIdx == -1)
+            return false;
+        Target = Project->GetBuildTarget(tgtIdx);
+        strTarget = Target->GetTitle();
+    }
+    else
+        Target = Project->GetBuildTarget(strTarget);
 	if(!Target)
 	{
 		wxString msg = _("You need to have an (executable) target in your open project\nbefore using the plugin!");
@@ -237,13 +247,15 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
             MacrosMgr->ReplaceMacros(ExeTarget, Target);
 		}
 	}
-	if(Target->GetCompilerOptions().Index(_T("-g")) == wxNOT_FOUND)
-	{
-		wxString msg = _("Your target needs to have been compiled with the -g option\nbefore using the plugin!");
-		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return false;
-	}
+// Disable this check, because it is not a real requirement.
+// And also it breaks if the -g option is set for the project, not for the target!
+//	if(Target->GetCompilerOptions().Index(_T("-g")) == wxNOT_FOUND)
+//	{
+//		wxString msg = _("Your target needs to have been compiled with the -g option\nbefore using the plugin!");
+//		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+//		Manager::Get()->GetLogManager()->DebugLog(msg);
+//		return false;
+//	}
 	CommandLineArguments = Target->GetExecutionParameters();
 	return true;
 }  // end of CheckRequirements
