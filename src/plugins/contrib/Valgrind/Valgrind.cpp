@@ -210,17 +210,21 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
 		return false;
 	}
 	// let's get the target
-	ProjectBuildTarget* Target =  nullptr; //Project->GetBuildTarget(strTarget); // NOT const because of GetNativeFilename() :-(
+    ProjectBuildTarget* Target =  nullptr; //Project->GetBuildTarget(strTarget); // NOT const because of GetNativeFilename() :-(
     if (!Project->BuildTargetValid(strTarget, false))
     {
-        int tgtIdx = Project->SelectTarget();
+        const int tgtIdx = Project->SelectTarget();
         if (tgtIdx == -1)
+        {
             return false;
+        }
         Target = Project->GetBuildTarget(tgtIdx);
         strTarget = Target->GetTitle();
     }
     else
+    {
         Target = Project->GetBuildTarget(strTarget);
+    }
 	if(!Target)
 	{
 		wxString msg = _("You need to have an (executable) target in your open project\nbefore using the plugin!");
