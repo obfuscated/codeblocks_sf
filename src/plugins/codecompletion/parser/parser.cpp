@@ -283,7 +283,7 @@ wxArrayString ParserBase::FindFileInIncludeDirs(const wxString& file, bool first
     }
 
     TRACE(_T("FindFileInIncludeDirs() : Searching %s"), file.wx_str());
-    TRACE(_T("FindFileInIncludeDirs() : Found %zu"), FoundSet.GetCount());
+    TRACE(_T("FindFileInIncludeDirs() : Found %lu"), static_cast<unsigned long>(FoundSet.GetCount()));
 
     return FoundSet;
 }
@@ -913,11 +913,11 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-        parseEndLog.Printf(_T("Project '%s' parsing stage done (%zu total parsed files, ")
-                           _T("%zu tokens in %ld minute(s), %ld.%03ld seconds)."),
+        parseEndLog.Printf(_T("Project '%s' parsing stage done (%lu total parsed files, ")
+                           _T("%lu tokens in %ld minute(s), %ld.%03ld seconds)."),
                            m_Project    ? m_Project->GetTitle().wx_str()  : wxString(_T("*NONE*")).wx_str(),
-                           m_TokensTree ? m_TokensTree->m_FilesMap.size() : 0,
-                           m_TokensTree ? m_TokensTree->realsize()        : 0,
+                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->m_FilesMap.size()) : 0,
+                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->realsize())        : 0,
                            (m_LastStopWatchTime / 60000),
                            (m_LastStopWatchTime / 1000) % 60,
                            (m_LastStopWatchTime % 1000) );
