@@ -31,12 +31,14 @@
 namespace
 {
     PluginRegistrant<Valgrind> reg(_T("Valgrind"));
-	int IdMemCheck = wxNewId();
+	int IdMemCheckRun = wxNewId();
+	int IdMemCheckOpenLog = wxNewId();
 	int IdCacheGrind = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(Valgrind, cbPlugin)
-	EVT_MENU(IdMemCheck, Valgrind::OnMemCheck)
+	EVT_MENU(IdMemCheckRun, Valgrind::OnMemCheckRun)
+	EVT_MENU(IdMemCheckOpenLog, Valgrind::OnMemCheckOpenLog)
 	EVT_MENU(IdCacheGrind, Valgrind::OnCachegrind)
 END_EVENT_TABLE()
 
@@ -128,8 +130,10 @@ void Valgrind::BuildMenu(wxMenuBar* MenuBar)
 	wxMenu* Menu = new wxMenu;
 	if(MenuBar->Insert(MenusCount - 1, Menu, _("Valgrind")))
 	{ // let's add all the menu entries
-		Menu->Append(IdMemCheck, _("Run Valgrind::MemCheck"), _("Run Valgrind::MemCheck"));
-		Menu->Append(IdCacheGrind, _("Run Valrind::Cachegrind"), _("Run Valrind::Cachegrind"));
+		Menu->Append(IdMemCheckRun, _("Run MemCheck"), _("Run MemCheck"));
+		Menu->Append(IdMemCheckOpenLog, _("Open MemCheck Xml log file"), _("Open MemCheck Xml log file"));
+		Menu->AppendSeparator();
+		Menu->Append(IdCacheGrind, _("Run Cachegrind"), _("Run Cachegrind"));
 	}
 } // end of BuildMenu
 
@@ -306,7 +310,78 @@ long Valgrind::DoValgrindVersion()
 	return VersionValue;
 } // end of DoValgrindVersion
 
-void Valgrind::OnMemCheck(wxCommandEvent& )
+void Valgrind::ParseMemCheckXML(TiXmlDocument &Doc)
+{
+    if (Doc.Error())
+        return;
+    m_ListLog->Clear();
+
+    wxArrayString Arr;
+    int Errors = 0;
+    TiXmlHandle Handle(&Doc);
+    Handle = Handle.FirstChildElement("valgrindoutput");
+    for (const TiXmlElement* Error = Handle.FirstChildElement("error").ToElement(); Error;
+            Error = Error->NextSiblingElement("error"), Errors++)
+    {
+        wxString WhatValue, KindValue;
+        if (const TiXmlElement* What = Error->FirstChildElement("xwhat"))
+        {	// style use since Valgrind 3.5.0
+            if (const TiXmlElement* Text = What->FirstChildElement("text"))
+            {
+                WhatValue = wxString::FromAscii(Text->GetText());
+            }
+        }
+        else if (const TiXmlElement* What = Error->FirstChildElement("what"))
+        {
+            WhatValue = wxString::FromAscii(What->GetText());
+        }
+        if (const TiXmlElement *Kind = Error->FirstChildElement("kind"))
+            KindValue = wxString::FromAscii(Kind->GetText());
+
+        Arr.Clear();
+        Arr.Add(KindValue);
+        Arr.Add(wxT("===="));
+        Arr.Add(WhatValue);
+        m_ListLog->Append(Arr, Logger::error);
+
+        // process the first stack
+        const TiXmlElement* Stack = Error->FirstChildElement("stack");
+        if (Stack)
+        {
+            ProcessStack(*Stack, true);
+            if (const TiXmlElement *AuxWhat = Error->FirstChildElement("auxwhat"))
+            {
+                Arr.Clear();
+                Arr.Add(wxEmptyString);
+                Arr.Add(wxEmptyString);
+                Arr.Add(wxString::FromAscii(AuxWhat->GetText()));
+                m_ListLog->Append(Arr, Logger::warning);
+            }
+            Stack = Stack->NextSiblingElement("stack");
+            if (Stack)
+                ProcessStack(*Stack, false);
+        }
+
+    } // end for
+    if (Errors > 0)
+    {
+        Arr.Clear();
+        Arr.Add(wxEmptyString);
+        Arr.Add(wxEmptyString);
+        Arr.Add(wxString::Format(_("Valgrind found %d errors!"), Errors));
+        m_ListLog->Append(Arr, Logger::error);
+
+        if (Manager::Get()->GetLogManager())
+        {
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
+            Manager::Get()->ProcessEvent(evtSwitch);
+        }
+        m_ListLog->Fit();
+    }
+}
+
+
+void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
 {
 	wxString ExeTarget;
 	wxString CommandLineArguments;
@@ -355,77 +430,32 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 	} // end for : idx: idxCount
 	if(UseXml)
 	{
-		TiXmlDocument Doc;
-		if(Version >= 350)
-		{
-			Doc.LoadFile(XmlOutputFile.ToAscii());
-		}
-		else
-		{
-			Doc.Parse(Xml.ToAscii());
-		}
-		if(!Doc.Error())
-		{
-			bool ErrorsPresent = false;
-			TiXmlHandle Handle(&Doc);
-			Handle = Handle.FirstChildElement("valgrindoutput");
-			for(const TiXmlElement* Error = Handle.FirstChildElement("error").ToElement(); Error;
-					Error = Error->NextSiblingElement("error"))
-			{
-				ErrorsPresent = true;
-				wxString WhatValue, KindValue;
-				if(const TiXmlElement* What = Error->FirstChildElement("xwhat"))
-				{	// style use since Valgrind 3.5.0
-					if(const TiXmlElement* Text = What->FirstChildElement("text"))
-					{
-						WhatValue = wxString::FromAscii(Text->GetText());
-					}
-				}
-				else if(const TiXmlElement* What = Error->FirstChildElement("what"))
-				{
-					WhatValue = wxString::FromAscii(What->GetText());
-				}
-                if (const TiXmlElement *Kind = Error->FirstChildElement("kind"))
-                    KindValue = wxString::FromAscii(Kind->GetText());
-
-                wxArrayString Arr;
-                Arr.Add(KindValue);
-                Arr.Add(wxT("===="));
-                Arr.Add(WhatValue);
-                m_ListLog->Append(Arr, Logger::error);
-
-				// process the first stack
-                const TiXmlElement* Stack = Error->FirstChildElement("stack");
-				if(Stack)
-				{
-					ProcessStack(*Stack, true);
-                    if (const TiXmlElement *AuxWhat = Error->FirstChildElement("auxwhat"))
-                    {
-                        Arr.Clear();
-                        Arr.Add(wxEmptyString);
-                        Arr.Add(wxEmptyString);
-                        Arr.Add(wxString::FromAscii(AuxWhat->GetText()));
-                        m_ListLog->Append(Arr, Logger::warning);
-                    }
-                    Stack = Stack->NextSiblingElement("stack");
-                    if (Stack)
-                        ProcessStack(*Stack, false);
-				}
-
-			} // end for
-			if(ErrorsPresent)
-			{
-				if(Manager::Get()->GetLogManager())
-				{
-					CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
-					Manager::Get()->ProcessEvent(evtSwitch);
-				}
-				m_ListLog->Fit();
-			}
-		}
-		// loop over the errors
+        TiXmlDocument Doc;
+        if(Version >= 350)
+        {
+            Doc.LoadFile(XmlOutputFile.ToAscii());
+        }
+        else
+        {
+            Doc.Parse(Xml.ToAscii());
+        }
+        ParseMemCheckXML(Doc);
 	}
 } // end of OnMemCheck
+
+void Valgrind::OnMemCheckOpenLog(wxCommandEvent& /*event*/)
+{
+    wxFileDialog Dialog(Manager::Get()->GetAppFrame(), _("Choose XML log file"),
+                        wxEmptyString, wxEmptyString,
+                        wxT("*.xml"), wxFD_OPEN);
+    if (Dialog.ShowModal() == wxID_OK)
+    {
+        TiXmlDocument Doc;
+        wxString FileName = Dialog.GetPath();
+        Doc.LoadFile(FileName.ToAscii());
+        ParseMemCheckXML(Doc);
+    }
+}
 
 void Valgrind::OnCachegrind(wxCommandEvent& )
 {

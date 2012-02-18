@@ -14,6 +14,7 @@
 
 class TextCtrlLogger;
 class ValgrindListLog;
+class TiXmlDocument;
 class TiXmlElement;
 
 class Valgrind : public cbPlugin
@@ -31,9 +32,13 @@ private:
 	void AppendToLog(const wxString& Text);
 	void ProcessStack(const TiXmlElement& Stack, bool AddHeader);
 	long DoValgrindVersion();
-	void OnMemCheck(wxCommandEvent& );
-	void OnCachegrind(wxCommandEvent& );
+	void ParseMemCheckXML(TiXmlDocument &Doc);
 
+	void OnMemCheckRun(wxCommandEvent& event);
+	void OnMemCheckOpenLog(wxCommandEvent& event);
+	void OnCachegrind(wxCommandEvent& event);
+
+private:
 	TextCtrlLogger*	m_ValgrindLog;	//!< log tab in the message pane
 	ValgrindListLog* m_ListLog;		//!< log tab to click/double click to take you to offending line of code
 	int				m_LogPageIndex;	//!< index of our log tab (can this change during run time ??)
