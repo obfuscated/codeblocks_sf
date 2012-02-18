@@ -21,6 +21,7 @@ public:
 	~ValgrindListLog();
 	wxWindow* CreateControl(wxWindow* Parent);
 
+    void Fit();
 private:
 	void OnDoubleClick(wxCommandEvent& Event);
 	void SyncEditor(int selIndex);

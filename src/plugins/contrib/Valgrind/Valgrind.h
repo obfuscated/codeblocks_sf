@@ -29,7 +29,7 @@ public:
 private:
 	void WriteToLog(const wxString& Text);
 	void AppendToLog(const wxString& Text);
-	void ProcessStack(const TiXmlElement& Stack, const wxString& What);
+	void ProcessStack(const TiXmlElement& Stack, bool AddHeader);
 	long DoValgrindVersion();
 	void OnMemCheck(wxCommandEvent& );
 	void OnCachegrind(wxCommandEvent& );

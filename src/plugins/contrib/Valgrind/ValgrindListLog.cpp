@@ -94,3 +94,10 @@ void ValgrindListLog::SyncEditor(int SelIndex)
 		Control->EnsureVisible(Line);
 	}
 }
+
+void ValgrindListLog::Fit()
+{
+    int columns = control->GetColumnCount();
+    for (int ii = 0; ii < columns; ++ii)
+        control->SetColumnWidth(ii, wxLIST_AUTOSIZE);
+}

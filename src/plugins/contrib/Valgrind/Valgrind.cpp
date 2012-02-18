@@ -159,34 +159,49 @@ Manager::Get()->ProcessEvent(evtShow);
     }
 } // end of AppendToLog
 
-void Valgrind::ProcessStack(const TiXmlElement& Stack, const wxString& What)
+void Valgrind::ProcessStack(const TiXmlElement& Stack, bool AddHeader)
 {
-	// start by doing the first frame (that contains dir/file/line)
-	for(const TiXmlElement* Frame = Stack.FirstChildElement("frame"); Frame;
-		Frame = Frame->NextSiblingElement("frame"))
-	{
-		const TiXmlElement* Dir = Frame->FirstChildElement("dir");
-		const TiXmlElement* File = Frame->FirstChildElement("file");
-		const TiXmlElement* Line = Frame->FirstChildElement("line");
-		const TiXmlElement* Function = Frame->FirstChildElement("fn");
-		if(Dir && File && Line)
-		{
-			const wxString FullName = wxString::FromAscii(Dir->GetText()) + _("/") + wxString::FromAscii(File->GetText());
-			wxArrayString Arr;
-			if(Function)
-			{
-				Arr.Add(FullName);
-				Arr.Add(_(""));
-				Arr.Add(_("In function '") + wxString::FromAscii(Function->GetText()) + _("' :"));
-				m_ListLog->Append(Arr);
-			}
-			Arr.Clear();
-			Arr.Add(FullName);
-			Arr.Add(wxString::FromAscii(Line->GetText()));
-			Arr.Add(What);
-			m_ListLog->Append(Arr);
-		}
-	} // end while
+    wxArrayString Arr;
+    if (AddHeader)
+    {
+        Arr.Add(wxEmptyString);
+        Arr.Add(wxEmptyString);
+        Arr.Add(_("Call stack:"));
+        m_ListLog->Append(Arr);
+    }
+
+    // start by doing the first frame (that contains dir/file/line)
+    for(const TiXmlElement* Frame = Stack.FirstChildElement("frame"); Frame;
+        Frame = Frame->NextSiblingElement("frame"))
+    {
+        const TiXmlElement* Dir = Frame->FirstChildElement("dir");
+        const TiXmlElement* File = Frame->FirstChildElement("file");
+        const TiXmlElement* Line = Frame->FirstChildElement("line");
+        const TiXmlElement* Function = Frame->FirstChildElement("fn");
+        const TiXmlElement* IP = Frame->FirstChildElement("ip");
+
+        if (!Function)
+            continue;
+
+        wxString FullName;
+        if (Dir && File)
+            FullName = wxString::FromAscii(Dir->GetText()) + _("/") + wxString::FromAscii(File->GetText());
+        else if (const TiXmlElement* Obj = Frame->FirstChildElement("obj"))
+            FullName = wxString::FromAscii(Obj->GetText());
+
+        Arr.Clear();
+        Arr.Add(FullName);
+        if (Line)
+            Arr.Add(wxString::FromAscii(Line->GetText()));
+        else
+            Arr.Add(wxEmptyString);
+        wxString StrFunction;
+        if (IP)
+            StrFunction = wxString::FromAscii(IP->GetText()) + wxT(": ");
+        StrFunction += wxString::FromAscii(Function->GetText());
+        Arr.Add(StrFunction);
+        m_ListLog->Append(Arr);
+    } // end while
 } // end of ProcessStack
 
 bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& CommandLineArguments)
@@ -311,7 +326,7 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 		XmlOutputCommand = _T(" --xml-file=") + XmlOutputFile;
 	}
 	const bool UseXml = true;
-	wxString CommandLine = _T("valgrind --leak-check=yes --xml=yes") + XmlOutputCommand + _T(" \"")
+	wxString CommandLine = _T("valgrind --leak-check=yes --track-origins=yes --xml=yes") + XmlOutputCommand + _T(" \"")
 		+ ExeTarget + _T("\" ") + CommandLineArguments;
 //	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
@@ -358,7 +373,7 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 					Error = Error->NextSiblingElement("error"))
 			{
 				ErrorsPresent = true;
-				wxString WhatValue;
+				wxString WhatValue, KindValue;
 				if(const TiXmlElement* What = Error->FirstChildElement("xwhat"))
 				{	// style use since Valgrind 3.5.0
 					if(const TiXmlElement* Text = What->FirstChildElement("text"))
@@ -370,11 +385,33 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 				{
 					WhatValue = wxString::FromAscii(What->GetText());
 				}
+                if (const TiXmlElement *Kind = Error->FirstChildElement("kind"))
+                    KindValue = wxString::FromAscii(Kind->GetText());
+
+                wxArrayString Arr;
+                Arr.Add(KindValue);
+                Arr.Add(wxT("===="));
+                Arr.Add(WhatValue);
+                m_ListLog->Append(Arr, Logger::error);
+
 				// process the first stack
-				if(const TiXmlElement* Stack = Error->FirstChildElement("stack"))
+                const TiXmlElement* Stack = Error->FirstChildElement("stack");
+				if(Stack)
 				{
-					ProcessStack(*Stack, WhatValue);
+					ProcessStack(*Stack, true);
+                    if (const TiXmlElement *AuxWhat = Error->FirstChildElement("auxwhat"))
+                    {
+                        Arr.Clear();
+                        Arr.Add(wxEmptyString);
+                        Arr.Add(wxEmptyString);
+                        Arr.Add(wxString::FromAscii(AuxWhat->GetText()));
+                        m_ListLog->Append(Arr, Logger::warning);
+                    }
+                    Stack = Stack->NextSiblingElement("stack");
+                    if (Stack)
+                        ProcessStack(*Stack, false);
 				}
+
 			} // end for
 			if(ErrorsPresent)
 			{
@@ -383,6 +420,7 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 					CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
 					Manager::Get()->ProcessEvent(evtSwitch);
 				}
+				m_ListLog->Fit();
 			}
 		}
 		// loop over the errors
