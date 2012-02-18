@@ -138,6 +138,7 @@ bool DDEConnection::OnExecute(const wxString& /*topic*/, wxChar *data, int /*siz
             m_Frame->Raise();
         return true;
     }
+    wxSafeShowMessage(wxT("Warning"),wxString::Format(wxT("DDE topic %s not handled."),strData.wx_str()));
     return false;
 }
 
@@ -295,9 +296,7 @@ bool CodeBlocksApp::LoadConfig()
     wxString data(wxT(APP_PREFIX));
 
     if (platform::windows)
-    {
         data.assign(GetAppPath());
-    }
     else if (platform::macosx)
     {
         data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
@@ -313,9 +312,7 @@ bool CodeBlocksApp::LoadConfig()
 
 
     if (!m_Prefix.IsEmpty())        // --prefix command line switch overrides builtin value
-    {
         data = m_Prefix;
-    }
     else                            // also, check for environment
     {
 
@@ -360,7 +357,6 @@ void CodeBlocksApp::InitAssociations()
                 Associations::SetAll();
                 break;
             };
-
         }
     }
 #endif
@@ -400,9 +396,9 @@ bool CodeBlocksApp::InitXRCStuff()
                       "set the CODEBLOCKS_DATA_DIR environment variable "
                       "to point where %s is installed,\n"
                       "or try re-installing the application..."),
-                   appglobals::AppName.c_str(),
-                   ConfigManager::ReadDataPath().c_str(),
-                   appglobals::AppName.c_str());
+                   appglobals::AppName.wx_str(),
+                   ConfigManager::ReadDataPath().wx_str(),
+                   appglobals::AppName.wx_str());
         cbMessageBox(msg);
 
         return false;
@@ -412,17 +408,14 @@ bool CodeBlocksApp::InitXRCStuff()
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
-    CompileTimeAssertion<wxMinimumVersion<2,6>::eval>::Assert();
+    CompileTimeAssertion<wxMinimumVersion<2,8,9>::eval>::Assert();
 
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
 
     if (g_DDEServer && m_DDE)
-    {
-        // Set m_Frame in DDE-Server
-        g_DDEServer->SetFrame(frame);
-    }
+        g_DDEServer->SetFrame(frame); // Set m_Frame in DDE-Server
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
@@ -545,19 +538,15 @@ bool CodeBlocksApp::OnInit()
             // Create a new client
             DDEClient *client = new DDEClient;
             DDEConnection* connection = 0l;
-            #if wxCHECK_VERSION(2, 9, 0)
             connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().wx_str()), DDE_TOPIC);
-            #else
-            connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().c_str()), DDE_TOPIC);
-            #endif
 
             if (connection)
             {
                 wxArrayString strFilesInCommandLine;
                 parser.SetCmdLine(argc, argv);
 
-                // search for valid filenames passed as argument on commandline
-                // we cann not use "FileTypeOf" here, because it can crash if it tries to Get the projectmanager,
+                // search for valid filenames passed as argument on command line
+                // we can not use "FileTypeOf" here, because it can crash if it tries to Get the projectmanager,
                 // before the MainFrame exists
                 if (parser.Parse(false) == 0)
                 {
@@ -608,17 +597,13 @@ bool CodeBlocksApp::OnInit()
         if (m_DDE && !m_Batch)
         {
             g_DDEServer = new DDEServer(0L);
-            #if wxCHECK_VERSION(2, 9, 0)
             g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().wx_str()));
-            #else
-            g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().c_str()));
-            #endif
         }
         m_pSingleInstance = 0;
         if (   Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true)
             && !parser.Found(_T("multiple-instance")) )
         {
-            const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().c_str());
+            const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().wx_str());
 
             m_pSingleInstance = new wxSingleInstanceChecker(name, ConfigManager::GetTempFolder());
             if (m_pSingleInstance->IsAnotherRunning())
@@ -823,7 +808,7 @@ void CodeBlocksApp::OnFatalException()
         report.Process();
 #else
     cbMessageBox(wxString::Format(_("Something has gone wrong inside %s and it will terminate immediately.\n"
-                                    "We are sorry for the inconvenience..."), appglobals::AppName.c_str()));
+                                    "We are sorry for the inconvenience..."), appglobals::AppName.wx_str()));
 #endif
 }
 
@@ -1083,21 +1068,21 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
                     wxLog::EnableLogging(parser.Found(_T("verbose")));
 
-                    if (parser.Found(_T("personality"), &val) ||
-                        parser.Found(_T("profile"), &val))
+                    if (   parser.Found(_T("personality"), &val)
+                        || parser.Found(_T("profile"),     &val) )
                     {
                         SetupPersonality(val);
                     }
 
                     // batch jobs
-                    m_BatchNotify = parser.Found(_T("batch-build-notify"));
+                    m_BatchNotify          = parser.Found(_T("batch-build-notify"));
                     m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
-                    m_Build = parser.Found(_T("build"));
-                    m_ReBuild = parser.Found(_T("rebuild"));
-                    m_Clean = parser.Found(_T("clean"));
+                    m_Build                = parser.Found(_T("build"));
+                    m_ReBuild              = parser.Found(_T("rebuild"));
+                    m_Clean                = parser.Found(_T("clean"));
                     parser.Found(_T("target"), &m_BatchTarget);
                     parser.Found(_T("script"), &m_Script);
-                    parser.Found(_T("file"), &m_AutoFile);
+                    parser.Found(_T("file"),   &m_AutoFile);
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild || m_Clean;
 
@@ -1137,17 +1122,13 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
             Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
     }
     else
-    {
         Manager::Get()->GetPersonalityManager()->SetPersonality(personality, true);
-    }
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 {
     for (size_t i = 0; i < s_DelayedFilesToOpen.GetCount(); ++i)
-    {
         frame->Open(s_DelayedFilesToOpen[i], true);
-    }
     s_DelayedFilesToOpen.Clear();
 
     // --file foo.cpp[:line]
