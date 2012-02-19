@@ -1949,6 +1949,12 @@
 		<Unit filename="plugins\projectsimporter\devcpploader.h">
 			<Option target="Projects-workspaces importer" />
 		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc10loader.cpp">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
+		<Unit filename="plugins\projectsimporter\msvc10loader.h">
+			<Option target="Projects-workspaces importer" />
+		</Unit>
 		<Unit filename="plugins\projectsimporter\msvc7loader.cpp">
 			<Option target="Projects-workspaces importer" />
 		</Unit>

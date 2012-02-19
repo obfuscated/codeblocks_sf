@@ -31,6 +31,7 @@
 #include "projectsimporter.h"
 #include "devcpploader.h"
 #include "msvc7loader.h"
+#include "msvc10loader.h"
 #include "msvc7workspaceloader.h"
 #include "msvcloader.h"
 #include "msvcworkspaceloader.h"
@@ -40,7 +41,7 @@
 // this auto-registers the plugin
 namespace
 {
-PluginRegistrant<ProjectsImporter> reg(_T("ProjectsImporter"));
+    PluginRegistrant<ProjectsImporter> reg(_T("ProjectsImporter"));
 }
 
 ProjectsImporter::ProjectsImporter()
@@ -109,7 +110,8 @@ bool ProjectsImporter::CanHandleFile(const wxString& filename) const
             || ft == ftMSVC6Project
             || ft == ftMSVC6Workspace
             || ft == ftMSVC7Project
-            || ft == ftMSVC7Workspace );
+            || ft == ftMSVC7Workspace
+            || ft == ftMSVC10Project );
 }
 
 int ProjectsImporter::OpenFile(const wxString& filename)
@@ -120,6 +122,7 @@ int ProjectsImporter::OpenFile(const wxString& filename)
         case ftDevCppProject: // fallthrough
         case ftMSVC6Project:  // fallthrough
         case ftMSVC7Project:  // fallthrough
+        case ftMSVC10Project: // fallthrough
         case ftXcode1Project: // fallthrough
         case ftXcode2Project: // fallthrough
             return LoadProject(filename);
@@ -168,6 +171,8 @@ int ProjectsImporter::LoadProject(const wxString& filename)
                 loader = new MSVCLoader(prj); break;
             case ftMSVC7Project:
                 loader = new MSVC7Loader(prj); break;
+            case ftMSVC10Project:
+                loader = new MSVC10Loader(prj); break;
             case ftXcode1Project: /* placeholder, fallthrough (for now) */
             case ftXcode2Project: /* placeholder, fallthrough (for now) */
             default:

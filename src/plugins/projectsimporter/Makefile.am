@@ -16,6 +16,7 @@ libprojectsimporter_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
 
 libprojectsimporter_la_SOURCES = projectsimporter.cpp \
 				devcpploader.cpp \
+				msvc10loader.cpp \
 				msvc7loader.cpp \
 				msvc7workspaceloader.cpp \
 				msvcloader.cpp \
@@ -24,6 +25,7 @@ libprojectsimporter_la_SOURCES = projectsimporter.cpp \
 
 noinst_HEADERS = projectsimporter.h \
 				devcpploader.h \
+				msvc10loader.h \
 				msvc7loader.h \
 				msvc7workspaceloader.h \
 				msvcloader.h \

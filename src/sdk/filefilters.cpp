@@ -35,6 +35,7 @@ void FileFilters::AddDefaultFileFilters()
     Add(_("MS Visual Studio 7.0+ solution files"), _T("*.sln"));
     Add(_("Apple Xcode 1.x project bundles"),      _T("*.xcode"));
     Add(_("Apple Xcode 2.x project bundles"),      _T("*.xcodeproj"));
+    Add(_("MS Visual Studio 10.0+ project files"), _T("*.vcxproj"));
 }
 
 bool FileFilters::Add(const wxString& name, const wxString& mask)
@@ -147,6 +148,7 @@ const wxString FileFilters::CODEBLOCKS_EXT          = _T("cbp");
 const wxString FileFilters::DEVCPP_EXT              = _T("dev");
 const wxString FileFilters::MSVC6_EXT               = _T("dsp");
 const wxString FileFilters::MSVC7_EXT               = _T("vcproj");
+const wxString FileFilters::MSVC10_EXT              = _T("vcxproj");
 const wxString FileFilters::MSVC6_WORKSPACE_EXT     = _T("dsw");
 const wxString FileFilters::MSVC7_WORKSPACE_EXT     = _T("sln");
 const wxString FileFilters::XCODE1_EXT              = _T("xcode");
@@ -201,6 +203,7 @@ const wxString FileFilters::CODEBLOCKS_DOT_EXT      = _T('.') + FileFilters::COD
 const wxString FileFilters::DEVCPP_DOT_EXT          = _T('.') + FileFilters::DEVCPP_EXT;
 const wxString FileFilters::MSVC6_DOT_EXT           = _T('.') + FileFilters::MSVC6_EXT;
 const wxString FileFilters::MSVC7_DOT_EXT           = _T('.') + FileFilters::MSVC7_EXT;
+const wxString FileFilters::MSVC10_DOT_EXT          = _T('.') + FileFilters::MSVC10_EXT;
 const wxString FileFilters::MSVC6_WORKSPACE_DOT_EXT = _T('.') + FileFilters::MSVC6_WORKSPACE_EXT;
 const wxString FileFilters::MSVC7_WORKSPACE_DOT_EXT = _T('.') + FileFilters::MSVC7_WORKSPACE_EXT;
 const wxString FileFilters::XCODE1_DOT_EXT          = _T('.') + FileFilters::XCODE1_EXT;

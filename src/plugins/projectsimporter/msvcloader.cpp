@@ -592,6 +592,11 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
             {
                 // do nothing (ignore silently)
             }
+            else if (opt.Matches(_T("/dll")))
+            {
+                opt = opt.Mid(4);
+                target->AddLinkerOption(_T("--dll ") + RemoveQuotes(opt));
+            }
             else if (opt.StartsWith(_T("/out:")))
             {
                 // do nothing; it is handled below, in common options

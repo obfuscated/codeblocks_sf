@@ -49,6 +49,7 @@ enum FileType
     ftDevCppProject,
     ftMSVC6Project,
     ftMSVC7Project,
+    ftMSVC10Project,
     ftMSVC6Workspace,
     ftMSVC7Workspace,
     ftXcode1Project,

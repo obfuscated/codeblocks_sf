@@ -353,7 +353,10 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 tmp = arr[i];
                 if (tmp.Right(4).CmpNoCase(_T(".lib")) == 0)
                     tmp.Remove(tmp.Length() - 4);
-                bt->AddLinkLib(tmp);
+                if ((tmp == _T("/dll")) || (tmp == _T("/DLL")))
+                    bt->AddLinkerOption(_T("--dll"));
+                else
+                    bt->AddLinkLib(tmp);
             }
 
             if (!m_ConvertSwitches)
@@ -576,6 +579,57 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
         while (file)
         {
             wxString fname = ReplaceMSVCMacros(cbC2U(file->Attribute("RelativePath")));
+
+            TiXmlElement* conf = file->FirstChildElement("FileConfiguration");
+            while (conf)
+            {
+                // find the target to which it applies
+                wxString sTargetName = cbC2U(conf->Attribute("Name"));
+                sTargetName.Replace(_T("|"), _T(" "), true);
+                ProjectBuildTarget* bt = m_pProject->GetBuildTarget(sTargetName);
+
+                TiXmlElement* tool = conf->FirstChildElement("Tool");
+                while (tool)
+                {
+                    // get additional include directories
+                    wxString sAdditionalInclude;
+                    sAdditionalInclude = cbC2U(tool->Attribute("AdditionalIncludeDirectories"));
+
+                    if (sAdditionalInclude.Len() > 0)
+                    {
+                        // we have to add the additionnal include directories.
+                        // parse the different include directories (comma separated)
+                        int iStart;
+                        int iCommaPosition;
+                        iStart = 0;
+                        iCommaPosition = sAdditionalInclude.Find(_T(","));
+                        do
+                        {
+                            int iEnd;
+                            if (iCommaPosition != wxNOT_FOUND)
+                            {
+                                iEnd = iCommaPosition - 1;
+                                if (iEnd < iStart) iEnd = iStart;
+                            }
+                            else
+                                iEnd = sAdditionalInclude.Len() - 1;
+
+                            wxString sInclude = sAdditionalInclude.Mid(iStart, iEnd - iStart + 1);
+                            if (bt)
+                                bt->AddIncludeDir(sInclude);
+
+                            // remove the directory from the include list
+                            sAdditionalInclude = sAdditionalInclude.Mid(iEnd + 2);
+                            iCommaPosition = sAdditionalInclude.Find(_T(","));
+                        } while (sAdditionalInclude.Len() > 0);
+                    }
+
+                    tool = tool->NextSiblingElement();
+                }
+
+                conf = conf->NextSiblingElement("FileConfiguration");
+            }
+
             if ((!fname.IsEmpty()) && (fname != _T(".\\")))
             {
                 if (fname.StartsWith(_T(".\\")))

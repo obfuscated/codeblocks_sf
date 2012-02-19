@@ -266,6 +266,9 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::MSVC7_EXT))
         return ftMSVC7Project;
 
+    else if (ext.IsSameAs(FileFilters::MSVC10_EXT))
+        return ftMSVC10Project;
+
     else if (ext.IsSameAs(FileFilters::MSVC6_WORKSPACE_EXT))
         return ftMSVC6Workspace;
 

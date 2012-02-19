@@ -33,12 +33,15 @@ MSVCWorkspaceBase::~MSVCWorkspaceBase()
 void MSVCWorkspaceBase::registerProject(const wxString& projectID, cbProject* project)
 {
     // just set the initial project dependencies as empty and register the idcode
+    Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("MSVC import: registered project uuid=%s"), projectID.c_str()));
     _projects[projectID.Lower()] = ProjectRecord(project);
 }
 
 void MSVCWorkspaceBase::addDependency(const wxString& projectID, const wxString& dependencyID)
 {
     // add the dependency to the last project
+    Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("MSVC import: Add dependency uuid=%s, key[1]=%s"), projectID.c_str(), dependencyID.c_str()));
+
     HashProjects::iterator it = _projects.find(projectID.Lower());
     if (it != _projects.end())
     {
