@@ -334,13 +334,24 @@ FileType FileTypeOf(const wxString& filename)
     return ftOther;
 }
 
-void DoRememberSelectedNode(wxTreeCtrl* tree, wxString& selectedItemPath)
+void DoRememberSelectedNodes(wxTreeCtrl* tree, wxArrayString& selectedItemPaths)
 {
-    wxTreeItemId item = tree->GetSelection();
-    while(item.IsOk())
+    wxArrayTreeItemIds items;
+
+    if (tree->GetSelections(items) < 1 )
+        return;
+
+    for (size_t i=0; i < items.GetCount(); ++i)
     {
-        selectedItemPath = _T("/") + tree->GetItemText(item) + selectedItemPath;
-        item = tree->GetItemParent(item);
+        wxString path = wxEmptyString;
+        wxTreeItemId item = items[i];
+        while(item.IsOk())
+        {
+            path = _T("/") + tree->GetItemText(item) + path;
+            item = tree->GetItemParent(item);
+        }
+        if (path != wxEmptyString)
+            selectedItemPaths.Add(path);
     }
 }
 
@@ -457,7 +468,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
     }
 }
 
-void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& selectedItemPath)
+void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths)
 {
     nodePaths.Clear();
     if (!parent.IsOk() || !tree || !tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
@@ -466,11 +477,11 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
     if (!DoRememberExpandedNodes(tree, parent, nodePaths, tmp))
         nodePaths.Add(tmp); // just the tree root
 
-    selectedItemPath.clear();
-    DoRememberSelectedNode(tree, selectedItemPath);
+    selectedItemPaths.Clear();
+    DoRememberSelectedNodes(tree, selectedItemPaths);
 }
 
-void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& selectedItemPath)
+void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths)
 {
     if (!parent.IsOk() || !tree)
         return;
@@ -482,8 +493,9 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
         DoExpandRememberedNode(tree, parent, nodePaths[i]);
     nodePaths.Clear();
-    DoSelectRememberedNode(tree, tree->GetRootItem(), selectedItemPath);
-    selectedItemPath.clear();
+    for (unsigned int i = 0; i < selectedItemPaths.GetCount(); ++i)
+        DoSelectRememberedNode(tree, tree->GetRootItem(), selectedItemPaths[i]);
+    selectedItemPaths.Clear();
 }
 
 bool CreateDirRecursively(const wxString& full_path, int perms)

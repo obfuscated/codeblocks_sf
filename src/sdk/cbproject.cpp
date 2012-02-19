@@ -1553,12 +1553,12 @@ void cbProject::RenameInTree(const wxString &newname)
 
 void cbProject::SaveTreeState(wxTreeCtrl* tree)
 {
-    ::SaveTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNode);
+    ::SaveTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNodes);
 }
 
 void cbProject::RestoreTreeState(wxTreeCtrl* tree)
 {
-    ::RestoreTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNode);
+    ::RestoreTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNodes);
 }
 
 const wxString& cbProject::GetMakefile()
