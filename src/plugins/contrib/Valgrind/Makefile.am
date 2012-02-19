@@ -13,9 +13,12 @@ libValgrind_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoi
 libValgrind_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libValgrind_la_SOURCES = Valgrind.cpp \
-            ValgrindListLog.cpp
+			ValgrindListLog.cpp \
+			valgrind_config.cpp
 
 noinst_HEADERS = Valgrind.h \
-            ValgrindListLog.h
+			ValgrindListLog.h \
+			valgrind_config.h
 
-EXTRA_DIST = $(srcdir)/*.cbp
+EXTRA_DIST = $(srcdir)/*.cbp \
+		wxsmith/valgrind_config_panel.wxs

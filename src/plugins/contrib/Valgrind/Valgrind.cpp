@@ -10,12 +10,15 @@
 #ifndef CB_PRECOMP
 #include <wx/arrstr.h>
 #include <wx/dir.h>
+#include <wx/filedlg.h>
+#include <wx/frame.h>
 #include <wx/fs_zip.h>
 #include <wx/intl.h>
 #include <wx/menu.h>
 #include <wx/string.h>
 #include <wx/xrc/xmlres.h>
 #include "cbproject.h"
+#include "configmanager.h"
 #include "manager.h"
 #include "logmanager.h"
 #include "projectmanager.h"
@@ -26,6 +29,7 @@
 #include "loggers.h"
 #include "Valgrind.h"
 #include "ValgrindListLog.h"
+#include "valgrind_config.h"
 
 // Register the plugin
 namespace
@@ -136,6 +140,13 @@ void Valgrind::BuildMenu(wxMenuBar* MenuBar)
 		Menu->Append(IdCacheGrind, _("Run Cachegrind"), _("Run Cachegrind"));
 	}
 } // end of BuildMenu
+
+cbConfigurationPanel* Valgrind::GetConfigurationPanel(wxWindow* parent)
+{
+    ValgrindConfigurationPanel* dlg = new ValgrindConfigurationPanel(parent);
+    return dlg;
+}
+
 
 void Valgrind::WriteToLog(const wxString& Text)
 {
@@ -282,7 +293,7 @@ bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& Command
 
 long Valgrind::DoValgrindVersion()
 {
-	wxString CommandLine = _("valgrind --version");
+	wxString CommandLine = GetValgrindExecutablePath() + wxT(" --version");
 	WriteToLog(CommandLine);
 	wxArrayString Output, Errors;
 	wxExecute(CommandLine, Output, Errors);
@@ -380,6 +391,48 @@ void Valgrind::ParseMemCheckXML(TiXmlDocument &Doc)
     }
 }
 
+wxString Valgrind::GetValgrindExecutablePath()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("valgrind"));
+    return cfg->Read(wxT("/exec_path"), wxT("valgrind"));
+}
+
+wxString Valgrind::BuildMemCheckCmd()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("valgrind"));
+
+    wxString Cmd = GetValgrindExecutablePath();
+    Cmd += wxT(" ") + cfg->Read(wxT("/memcheck_args"), wxEmptyString);
+    if (cfg->ReadBool(wxT("/memcheck_full"), true))
+    {
+        Cmd += wxT(" --leak-check=full");
+    }
+    else
+    {
+        Cmd += wxT(" --leak-check=yes");
+    }
+    if (cfg->ReadBool(wxT("/memcheck_track_origins"), true))
+    {
+        Cmd += wxT(" --track-origins=yes");
+    }
+    if (cfg->ReadBool(wxT("/memcheck_reachable"), false))
+    {
+        Cmd += wxT(" --show-reachable=yes");
+    }
+
+    return Cmd;
+}
+
+wxString Valgrind::BuildCacheGrindCmd()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("valgrind"));
+
+    wxString Cmd = GetValgrindExecutablePath();
+    Cmd += wxT(" ") + cfg->Read(wxT("/cachegrind_args"), wxEmptyString);
+    Cmd += wxT(" --tool=cachegrind");
+    return Cmd;
+}
+
 
 void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
 {
@@ -401,9 +454,9 @@ void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
 		XmlOutputCommand = _T(" --xml-file=") + XmlOutputFile;
 	}
 	const bool UseXml = true;
-	wxString CommandLine = _T("valgrind --leak-check=yes --track-origins=yes --xml=yes") + XmlOutputCommand + _T(" \"")
-		+ ExeTarget + _T("\" ") + CommandLineArguments;
-//	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
+    wxString CommandLine = BuildMemCheckCmd() + wxT(" --xml=yes") + XmlOutputCommand + _T(" \"");
+    CommandLine += ExeTarget + _T("\" ") + CommandLineArguments;
+
 	AppendToLog(CommandLine);
 	wxArrayString Output, Errors;
 	wxString OldWorkDir = wxGetCwd();
@@ -468,7 +521,7 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 	}
 	DoValgrindVersion();
 //	wxString CommandLine = _("valgrind --tool=cachegrind --cachegrind-out-file=\"./") + ExeTarget + _(".cachegrind.out\" \"") + ExeTarget + _("\" ") + CommandLineArguments;
-	wxString CommandLine = _T("valgrind --tool=cachegrind \"") + ExeTarget + _T("\" ") + CommandLineArguments;
+	wxString CommandLine = BuildCacheGrindCmd() + wxT(" \"") + ExeTarget + _T("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
 	wxArrayString Output, Errors;
 	wxString CurrentDirName = ::wxGetCwd();

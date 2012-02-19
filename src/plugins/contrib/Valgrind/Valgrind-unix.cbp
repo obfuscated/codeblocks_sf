@@ -40,16 +40,25 @@
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/Valgrind.zip resources/manifest.xml" />
+			<Add after="./update" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Valgrind.cpp" />
 		<Unit filename="Valgrind.h" />
 		<Unit filename="ValgrindListLog.cpp" />
 		<Unit filename="ValgrindListLog.h" />
+		<Unit filename="valgrind_config.cpp" />
+		<Unit filename="valgrind_config.h" />
+		<Unit filename="wxsmith/valgrind_config_panel.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/valgrind_config_panel.wxs" src="valgrind_config.cpp" hdr="valgrind_config.h" fwddecl="1" i18n="1" name="ValgrindConfigurationPanel" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

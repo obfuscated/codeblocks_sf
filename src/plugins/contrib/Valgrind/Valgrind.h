@@ -27,12 +27,19 @@ public:
 	bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
 	void OnAttach(); // fires when the plugin is attached to the application
 	void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+
+    int GetConfigurationPriority() const { return 50; }
+    int GetConfigurationGroup() const { return cgCompiler; }
+	cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 private:
 	void WriteToLog(const wxString& Text);
 	void AppendToLog(const wxString& Text);
 	void ProcessStack(const TiXmlElement& Stack, bool AddHeader);
 	long DoValgrindVersion();
 	void ParseMemCheckXML(TiXmlDocument &Doc);
+	wxString BuildMemCheckCmd();
+	wxString BuildCacheGrindCmd();
+	wxString GetValgrindExecutablePath();
 
 	void OnMemCheckRun(wxCommandEvent& event);
 	void OnMemCheckOpenLog(wxCommandEvent& event);
