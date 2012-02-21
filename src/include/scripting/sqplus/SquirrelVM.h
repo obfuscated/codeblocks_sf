@@ -30,16 +30,16 @@ class SquirrelVM
 public:
     // C::B patch: Add additional initilisation flags
 	static void Init(SquirrelInitFlags flags = sqifAll);
-	static BOOL IsInitialized(){return _VM == NULL?FALSE:TRUE;}
+	static BOOL_T IsInitialized(){return _VM == NULL?FALSE:TRUE;}
 	static void Shutdown();
 	static void Cleanup();
-	static BOOL Update(); //debugger and maybe GC later
+	static BOOL_T Update(); //debugger and maybe GC later
 	static SquirrelObject CompileScript(const SQChar *s);
 	static SquirrelObject CompileBuffer(const SQChar *s,const SQChar * debugInfo=sqT("console_buffer"));
 	static SquirrelObject RunScript(const SquirrelObject &o,SquirrelObject *_this = NULL);
 	static void PrintFunc(HSQUIRRELVM v,const SQChar* s,...);
-	static BOOL BeginCall(const SquirrelObject &func);
-	static BOOL BeginCall(const SquirrelObject &func,SquirrelObject &_this);
+	static BOOL_T BeginCall(const SquirrelObject &func);
+	static BOOL_T BeginCall(const SquirrelObject &func,SquirrelObject &_this);
 	static void PushParam(const SquirrelObject &o);
 	static void PushParam(const SQChar *s);
 	static void PushParam(SQInteger n);
@@ -48,7 +48,7 @@ public:
 	static void PushParamNull();
 	static SquirrelObject EndCall();
 	static SquirrelObject CreateString(const SQChar *s);
-	static SquirrelObject CreateTable();	
+	static SquirrelObject CreateTable();
 	static SquirrelObject CreateArray(SQInteger size);
 	static SquirrelObject CreateInstance(SquirrelObject &oclass); // oclass is an existing class. Create an 'instance' (OT_INSTANCE) of oclass.
 	static SquirrelObject CreateFunction(SQFUNCTION func);
@@ -73,13 +73,13 @@ public:
     _root = vmSys._root;
   } // SetVMSys
 
-  static void PushValue(INT val) {
+  static void PushValue(INT_T val) {
     sq_pushinteger(_VM,val);
   } // PushValue
-  static void PushValue(FLOAT val) {
+  static void PushValue(FLOAT_T val) {
     sq_pushfloat(_VM,val);
   } // PushValue
-  static void PushValue(bool val) { // Compiler treats SQBool as INT.
+  static void PushValue(bool val) { // Compiler treats SQBool as INT_T.
     sq_pushbool(_VM,val);
   } // PushValue
   static void PushValue(SQChar * val) {
@@ -112,10 +112,10 @@ private:
 };
 
 template<typename T>
-inline BOOL SquirrelObject::ArrayAppend(T item) {
+inline BOOL_T SquirrelObject::ArrayAppend(T item) {
   sq_pushobject(SquirrelVM::_VM,GetObjectHandle());
   SquirrelVM::PushValue(item);
-  BOOL res = sq_arrayappend(SquirrelVM::_VM,-2) == SQ_OK;
+  BOOL_T res = sq_arrayappend(SquirrelVM::_VM,-2) == SQ_OK;
   sq_pop(SquirrelVM::_VM,1);
   return res;
 } // ArrayAppend
