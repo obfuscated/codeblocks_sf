@@ -24,7 +24,7 @@ class DLLIMPORT IncrementalSelectListDlg : public wxScrollingDialog
                                  const wxString& message = wxEmptyString);
         virtual ~IncrementalSelectListDlg();
         wxString GetStringSelection();
-        long GetSelection();
+        wxIntPtr GetSelection();
     protected:
         void FillList();
         void OnSearch(wxCommandEvent& event);

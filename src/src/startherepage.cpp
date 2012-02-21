@@ -43,9 +43,7 @@ class MyHtmlWin : public wxHtmlWindow
             if (m_pOwner)
             {
                 if (!m_pOwner->LinkClicked(link))
-                {
                     wxLaunchDefaultBrowser(link.GetHref());
-                }
             }
         }
     private:

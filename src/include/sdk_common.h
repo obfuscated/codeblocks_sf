@@ -22,6 +22,9 @@
     #endif
 #endif // __GNUC__ && !__APPLE__
 
+#if defined(NOPCH)
+    #undef CB_PRECOMP
+#endif // NOPCH
 
 #if ( defined(CB_PRECOMP) && !defined(WX_PRECOMP) )
     #define WX_PRECOMP
