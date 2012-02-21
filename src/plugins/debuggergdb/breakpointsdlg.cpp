@@ -109,7 +109,7 @@ void BreakpointsDlg::FillBreakpoints()
 			m_pList->SetItem(m_pList->GetItemCount() - 1, 1, bp->filename);
 			m_pList->SetItem(m_pList->GetItemCount() - 1, 2, wxString::Format(_T("%d"), bp->line + 1));
         }
-        m_pList->SetItemData(m_pList->GetItemCount() - 1, (long)bp);
+        m_pList->SetItemData(m_pList->GetItemCount() - 1, (wxIntPtr)bp);
     }
     m_pList->SetColumnWidth(0, wxLIST_AUTOSIZE);
     m_pList->SetColumnWidth(1, wxLIST_AUTOSIZE);

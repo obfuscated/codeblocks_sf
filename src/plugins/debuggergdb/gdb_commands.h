@@ -1025,22 +1025,36 @@ class GdbCmd_Backtrace : public DebuggerCmd
                 if (reBTX.Matches(lines[i]))
                 {
 //                    m_pDriver->DebugLog(_T("MATCH!"));
+                    #if defined(_WIN64)
+                    reBTX.GetMatch(lines[i], 1).ToULongLong(&sf.number);
+                    reBTX.GetMatch(lines[i], 2).ToULongLong(&sf.address, 16);
+                    #else
                     reBTX.GetMatch(lines[i], 1).ToULong(&sf.number);
                     reBTX.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
+                    #endif
                     sf.function = reBTX.GetMatch(lines[i], 3) + reBTX.GetMatch(lines[i], 4);
                     matched = true;
                 }
                 else if (reBT1.Matches(lines[i]))
                 {
 //                    m_pDriver->DebugLog(_T("MATCH!"));
+                    #if defined(_WIN64)
+                    reBT1.GetMatch(lines[i], 1).ToULongLong(&sf.number);
+                    reBT1.GetMatch(lines[i], 2).ToULongLong(&sf.address, 16);
+                    #else
                     reBT1.GetMatch(lines[i], 1).ToULong(&sf.number);
                     reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
+                    #endif
                     sf.function = reBT1.GetMatch(lines[i], 3) + reBT1.GetMatch(lines[i], 4);
                     matched = true;
                 }
                 else if (reBT0.Matches(lines[i]))
                 {
+                    #if defined(_WIN64)
+                    reBT0.GetMatch(lines[i], 1).ToULongLong(&sf.number);
+                    #else
                     reBT0.GetMatch(lines[i], 1).ToULong(&sf.number);
+                    #endif
                     sf.address = 0;
                     sf.function = reBT0.GetMatch(lines[i], 2) + reBT0.GetMatch(lines[i], 3);
                     matched = true;

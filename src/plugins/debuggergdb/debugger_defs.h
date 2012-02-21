@@ -221,8 +221,10 @@ struct StackFrame
         line.Clear();
     }
     bool valid; ///< Is this stack frame valid?
-    unsigned long int number; ///< Stack frame's number (used in backtraces).
-    unsigned long int address; ///< Stack frame's address.
+    // 64 bit compatibility: don't use unsigned long int here:
+    size_t number; ///< Stack frame's number (used in backtraces).
+    // ...and here:
+    size_t address; ///< Stack frame's address.
     wxString function; ///< Current function name.
     wxString file; ///< Current file.
     wxString line; ///< Current line in file.

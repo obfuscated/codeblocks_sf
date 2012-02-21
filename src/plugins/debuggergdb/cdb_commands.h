@@ -414,8 +414,14 @@ class CdbCmd_Backtrace : public DebuggerCmd
                 {
                     StackFrame sf;
                     sf.valid = true;
+                    #if defined(_WIN64)
+                    size_t number, address;
+                    reBT1.GetMatch(lines[i], 1).ToULongLong(&sf.number);
+                    reBT1.GetMatch(lines[i], 2).ToULongLong(&sf.address, 16); // match 2 or 3 ???
+                    #else
                     reBT1.GetMatch(lines[i], 1).ToULong(&sf.number);
                     reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
+                    #endif
                     sf.function = reBT1.GetMatch(lines[i], 4);
                     // do we have file/line info?
                     if (reBT2.Matches(lines[i]))
