@@ -29,7 +29,48 @@ X_PRJ_FILE_PROJ  ICON "src/resources/icons/proj.ico"
 
 // wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"
 // is the only thing needed from:
-#include <wx/msw/wx.rc>
+//#include <wx/msw/wx.rc>
 // additional icons contributed due to this include are commented above
 
-//1 24 "setup/codeblocks.exe.manifest"
+#include <windows.h>
+#include <wx/msw/rcdefs.h>
+
+///////////////////////////////////////////////////////////////////////////////
+// Specify the processor archtecture (wxWidgets seems not to do this correctly)
+#if defined   _M_AMD64
+  #if !defined WX_CPU_AMD64
+    #define WX_CPU_AMD64
+  #endif
+#elif defined _M_IA64
+  #if !defined WX_CPU_IA64
+    #define WX_CPU_IA64
+  #endif
+#elif defined _M_IX86 || defined _X86_
+  #if !defined WX_CPU_X86
+    #define WX_CPU_X86
+  #endif
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// Manifest file
+#if !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)
+  // see "about isolated applications" topic in MSDN
+  #ifndef wxMANIFEST_ID
+    #ifdef ISOLATION_AWARE_ENABLED
+      #define wxMANIFEST_ID ISOLATIONAWARE_MANIFEST_RESOURCE_ID
+    #else
+      #define wxMANIFEST_ID CREATEPROCESS_MANIFEST_RESOURCE_ID
+    #endif
+  #endif
+/*
+  #if defined(WX_CPU_AMD64)
+    wxMANIFEST_ID RT_MANIFEST "amd64.manifest"
+  #elif defined(WX_CPU_IA64)
+    wxMANIFEST_ID RT_MANIFEST "ia64.manifest"
+  #elif defined(WX_CPU_X86)
+    wxMANIFEST_ID RT_MANIFEST "x86.manifest"
+  #else
+    #warning No platform defined! Unable to embed manifest file.
+  #endif
+*/
+#endif // !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)
