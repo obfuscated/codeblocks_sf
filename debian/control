@@ -272,7 +272,8 @@ Description: Code::Blocks development libraries (SDK)
 Package: codeblocks-headers
 Architecture: all
 Depends: ${misc:Depends}
- , codeblocks-dev (= ${source:Version})
+ , codeblocks-dev (>= ${source:Version})
+ , codeblocks-dev (<< ${source:Version}.1~)
 Conflicts: codeblocks-dev (<< ${source:Version})
 Description: Code::Blocks development headers (SDK)
  Code::Blocks is the open-source, cross-platform Integrated Development
@@ -316,7 +317,8 @@ Description: Code::Blocks development libraries for wxContribItems
 Package: codeblocks-wxcontrib-headers
 Architecture: all
 Depends: ${misc:Depends}
- , codeblocks-wxcontrib-dev (= ${source:Version})
+ , codeblocks-wxcontrib-dev (>= ${source:Version})
+ , codeblocks-wxcontrib-dev (<< ${source:Version}.1~)
 Conflicts: codeblocks-wxcontrib-dev (<< ${source:Version})
 Description: Code::Blocks development headers for wxContribItems
  This package contains the development headers for the wxContribItems used by wxSmith .
@@ -399,7 +401,8 @@ Description: wxSmith development files (libraries)
 Package: wxsmith-headers
 Architecture: all
 Depends: ${misc:Depends}
- , wxsmith-dev (= ${source:Version})
+ , wxsmith-dev (>= ${source:Version})
+ , wxsmith-dev (<< ${source:Version}.1~)
 Conflicts: wxsmith-dev (<< ${source:Version})
 Description: wxSmith development files (headers)
  Code::Blocks is the open-source, cross-platform Integrated Development
