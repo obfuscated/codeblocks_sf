@@ -1,5 +1,5 @@
 Source: codeblocks
-Section: devel
+Section: x11
 Priority: optional
 Maintainer: Jens Lody <jens@codeblocks.org>
 Homepage: http://www.codeblocks.org
@@ -70,9 +70,6 @@ Depends: ${shlibs:Depends}
  , ${misc:Depends}
  , binutils (>= 2.14.90.0.7)
  , file
- , libmagic1
- , libncurses5
- , zlib1g
 Recommends: codeblocks
 Description: Code::Blocks shared libraries
  Code::Blocks is the open-source, cross-platform Integrated Development
@@ -173,7 +170,10 @@ Description: contrib plugins for Code::Blocks IDE
 Package: codeblocks-libwxcontrib0
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}, ${misc:Depends}, binutils (>= 2.14.90.0.7), file, libmagic1, libncurses5, zlib1g
+Depends: ${shlibs:Depends}
+ , ${misc:Depends}
+ , binutils (>= 2.14.90.0.7)
+ , file
 Description: Code::Blocks shared libraries for wxContribItems
  This package contains the shared libraries for the wxContribItems used by wxSmith .
  Contrib items included in this package are:
@@ -297,7 +297,8 @@ Description: Code::Blocks development headers (SDK)
 Package: codeblocks-wxcontrib-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, codeblocks-libwxcontrib0 (= ${binary:Version})
+Depends: ${misc:Depends}
+ , codeblocks-libwxcontrib0 (= ${binary:Version})
 Description: Code::Blocks development libraries for wxContribItems
  This package contains the development libraries for the wxContribItems used by wxSmith .
  Items included in this package are:
@@ -307,13 +308,15 @@ Description: Code::Blocks development libraries for wxContribItems
     * wxImagePanel
     * wxSpeedButton
     * wxCustomButton
+    * wxLED
  .
  This package contains the development libraries needed to use the wxContribItems in own
  programs.
 
 Package: codeblocks-wxcontrib-headers
 Architecture: all
-Depends: ${misc:Depends}, codeblocks-wxcontrib-dev (= ${source:Version})
+Depends: ${misc:Depends}
+ , codeblocks-wxcontrib-dev (= ${source:Version})
 Conflicts: codeblocks-wxcontrib-dev (<< ${source:Version})
 Description: Code::Blocks development headers for wxContribItems
  This package contains the development headers for the wxContribItems used by wxSmith .
@@ -324,6 +327,7 @@ Description: Code::Blocks development headers for wxContribItems
     * wxImagePanel
     * wxSpeedButton
     * wxCustomButton
+    * wxLED
  .
  This package contains the development headers needed to use the wxContribItems in own
  programs.
@@ -369,7 +373,8 @@ Description: wxSmith development metapackage
 Package: wxsmith-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libcodeblocks0 (= ${binary:Version})
+Depends: ${misc:Depends}
+ , libcodeblocks0 (= ${binary:Version})
 Replaces: libwxsmithlib0-dev
 Description: wxSmith development files (libraries)
  Code::Blocks is the open-source, cross-platform Integrated Development
