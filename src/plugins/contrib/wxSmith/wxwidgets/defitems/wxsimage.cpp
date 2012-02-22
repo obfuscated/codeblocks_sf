@@ -23,6 +23,7 @@
 
 
 #include "wxsimage.h"
+#include "../properties/wxsimagelisteditordlg.h"
 
 namespace
 {
@@ -225,7 +226,7 @@ wxBitmap wxsImage::GetPreview(void)
     	return wxNullBitmap;
     }
 
-    wxsImageListDlg::ArrayToBitmap(m_ImageData, bmp);
+    wxsImageListEditorDlg::ArrayToBitmap(m_ImageData, bmp);
     return bmp;
 }
 

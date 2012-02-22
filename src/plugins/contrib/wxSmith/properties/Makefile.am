@@ -16,6 +16,7 @@ libwxsmith_properties_la_SOURCES = \
 ./wxsboolproperty.cpp \
 ./wxspropertystream.cpp \
 ./wxsflagsproperty.cpp \
+./wxsfloatproperty.cpp \
 ./wxsemptyproperty.cpp \
 ./wxsstringproperty.cpp \
 ./wxslongproperty.cpp \
@@ -25,7 +26,8 @@ libwxsmith_properties_la_SOURCES = \
 ./wxsproperty.cpp \
 ./wxspropertygridmanager.cpp \
 ./wxscustomeditorproperty.cpp \
-./wxspropertycontainer.cpp
+./wxspropertycontainer.cpp \
+./wxseditenumproperty.cpp
 
 sdkdir=$(includedir)/wxsmith/properties
 
@@ -35,6 +37,7 @@ sdk_HEADERS = \
 ./wxsboolproperty.h \
 ./wxspropertystream.h \
 ./wxsflagsproperty.h \
+./wxsfloatproperty.h \
 ./wxsemptyproperty.h \
 ./wxslongproperty.h \
 ./wxsarraystringeditordlg.h \
@@ -44,4 +47,5 @@ sdk_HEADERS = \
 ./wxsquickpropspanel.h \
 ./wxsproperty.h \
 ./wxspropertygridmanager.h \
-./wxscustomeditorproperty.h
+./wxscustomeditorproperty.h \
+./wxseditenumproperty.h

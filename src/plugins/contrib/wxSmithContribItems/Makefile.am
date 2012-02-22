@@ -1,5 +1,3 @@
-SUBDIRS = wxchart/wxchart-1.0 wxflatnotebook/wxFlatNotebook wxthings/wxthings .
-
 AM_CPPFLAGS = -DWXMAKINGDLL_PROPGRID -DwxPG_USE_WXMODULE=0
 
 INCLUDES = $(WX_CXXFLAGS) \
@@ -7,9 +5,21 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith \
-		-I$(srcdir)/wxchart/wxchart-1.0/include \
-		-I$(srcdir)/wxflatnotebook/wxFlatNotebook/include \
-		-I$(srcdir)/wxthings/wxthings/include
+		-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets \
+		-I$(top_srcdir)/src/plugins/contrib/wxSmith/wxwidgets/properties \
+		-I$(top_srcdir)/src/plugins/contrib/wxSmith/properties \
+		-I$(srcdir)/../wxContribItems/wxchart/include \
+		-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \
+		-I$(srcdir)/../wxContribItems/wxImagePanel/include \
+		-I$(srcdir)/../wxContribItems/wxthings/include \
+		-I$(srcdir)/../wxContribItems/KWIC/include \
+		-I$(srcdir)/../wxContribItems/wxTreeList/include \
+		-I$(srcdir)/../wxContribItems/wxSpeedButton \
+		-I$(srcdir)/../wxContribItems/wxled/gizmosled/include \
+		-I$(srcdir)/../wxContribItems/wxled/lcdWindow/include \
+		-I$(srcdir)/../wxContribItems/wxled/led/include \
+		-I$(srcdir)/../wxContribItems/wxled/ledpanel/include
+
 
 pluginlibdir = $(pkglibdir)/plugins
 
@@ -19,18 +29,28 @@ libwxsmithcontribitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-unde
 
 libwxsmithcontribitems_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
 		       ../wxSmith/libwxsmithlib.la \
-			wxchart/wxchart-1.0/libwxchartctrl.la \
-			wxflatnotebook/wxFlatNotebook/libwxflatnotebook.la \
-			wxthings/wxthings/libwxcustombutton.la
+			../wxContribItems/wxchart/libwxchartctrl.la \
+			../wxContribItems/wxFlatNotebook/libwxflatnotebook.la \
+			../wxContribItems/wxImagePanel/libwximagepanel.la \
+			../wxContribItems/wxSpeedButton/libwxspeedbutton.la \
+			../wxContribItems/KWIC/libwxkwic.la \
+			../wxContribItems/wxTreeList/libwxtreelist.la \
+			../wxContribItems/wxthings/libwxcustombutton.la \
+			../wxContribItems/wxled/libwxled.la
 
-EXTRA_DIST = $(srcdir)/wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
-		$(srcdir)/wxchart/wxchart-1.0/include/wx/chartart/*.bmp \
-		$(srcdir)/wxchart/*.xpm \
+EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxchart/*.png \
+		$(srcdir)/wximagebutton/*.xpm \
+		$(srcdir)/wximagepanel/*.xpm \
+		$(srcdir)/wxspeedbutton/*.xpm \
 		$(srcdir)/wxthings/*.xpm \
 		$(srcdir)/wxthings/*.png \
 		$(srcdir)/wxflatnotebook/images/*.xpm \
 		$(srcdir)/wxflatnotebook/images/*.png \
+		$(srcdir)/wxSmithKWIC/images/*.xpm \
+		$(srcdir)/wxtreelist/images/*.xpm \
+		$(srcdir)/wxgbsizer/images/*.xpm \
+		$(srcdir)/wxled/images/*.xpm \
 		$(srcdir)/*.cbp \
 		manifest.xml
 
@@ -44,13 +64,44 @@ libwxsmithcontribitems_la_SOURCES = \
 ./wxflatnotebook/wxsFlatNotebook.cpp \
 ./wxchart/wxschart.cpp \
 ./wxthings/wxscustombutton.cpp \
+./wximagebutton/wxsimagebutton.cpp \
+./wximagepanel/wxsimagepanel.cpp \
+./wxspeedbutton/wxsSpeedButton.cpp \
+./wxSmithKWIC/wxsangularmeter.cpp \
+./wxSmithKWIC/wxsangularregulator.cpp \
+./wxSmithKWIC/wxsbmpcheckbox.cpp \
+./wxSmithKWIC/wxsbmpswitcher.cpp \
+./wxSmithKWIC/wxslcdclock.cpp \
+./wxSmithKWIC/wxslcddisplay.cpp \
+./wxSmithKWIC/wxslinearmeter.cpp \
+./wxSmithKWIC/wxslinearregulator.cpp \
+./wxtreelist/wxsTreeListCtrl.cpp \
+./wxgbsizer/wxsGridBagSizer.cpp \
+./wxled/wxsLcdWindow.cpp \
+./wxled/wxsLed.cpp \
+./wxled/wxsLedNumber.cpp \
+./wxled/wxsLedPanel.cpp \
 ./wxSmithContribItems.cpp
-
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = wxsmith-contrib.pc
 
 noinst_HEADERS = \
 ./wxflatnotebook/wxsFlatNotebook.h \
 ./wxchart/wxschart.h \
 ./wxthings/wxscustombutton.h \
+./wximagebutton/wxsimagebutton.h \
+./wximagepanel/wxsimagepanel.h \
+./wxspeedbutton/wxsSpeedButton.h \
+./wxSmithKWIC/wxsangularmeter.h \
+./wxSmithKWIC/wxsangularregulator.h \
+./wxSmithKWIC/wxsbmpcheckbox.h \
+./wxSmithKWIC/wxsbmpswitcher.h \
+./wxSmithKWIC/wxslcdclock.h \
+./wxSmithKWIC/wxslcddisplay.h \
+./wxSmithKWIC/wxslinearmeter.h \
+./wxSmithKWIC/wxslinearregulator.h \
+./wxtreelist/wxsTreeListCtrl.h \
+./wxgbsizer/wxsGridBagSizer.h \
+./wxled/wxsLcdWindow.h \
+./wxled/wxsLed.h \
+./wxled/wxsLedNumber.h \
+./wxled/wxsLedPanel.h \
 ./wxSmithContribItems.h

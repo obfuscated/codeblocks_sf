@@ -18,5 +18,7 @@
 #include "wxsemptyproperty.h"
 #include "wxsenumproperty.h"
 #include "wxsflagsproperty.h"
+#include "wxsfloatproperty.h"
 #include "wxslongproperty.h"
 #include "wxsstringproperty.h"
+#include "wxseditenumproperty.h"

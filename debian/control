@@ -21,7 +21,6 @@ Standards-Version: 3.9.1
 
 Package: codeblocks
 Architecture: any
-Section: devel
 Depends: ${shlibs:Depends}
  , ${misc:Depends}
  , codeblocks-common (= ${source:Version})
@@ -171,6 +170,22 @@ Description: contrib plugins for Code::Blocks IDE
     * wxSmith contrib items
     * wxSmith AUI
 
+Package: codeblocks-libwxcontrib0
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}, binutils (>= 2.14.90.0.7), file, libmagic1, libncurses5, zlib1g
+Description: Code::Blocks shared libraries for wxContribItems
+ This package contains the shared libraries for the wxContribItems used by wxSmith .
+ Contrib items included in this package are:
+    * KWIC
+    * wxChartCtrl
+    * wxFlatNotebook
+    * wxImagePanel
+    * wxSpeedButton
+    * wxTreeList
+    * wxCustomButton
+    * wxLED
+
 Package: codeblocks-contrib-common
 Architecture: all
 Depends: ${misc:Depends}
@@ -257,6 +272,7 @@ Description: Code::Blocks development libraries (SDK)
 Package: codeblocks-headers
 Architecture: all
 Depends: ${misc:Depends}
+ , codeblocks-dev (= ${source:Version})
 Conflicts: codeblocks-dev (<< ${source:Version})
 Description: Code::Blocks development headers (SDK)
  Code::Blocks is the open-source, cross-platform Integrated Development
@@ -275,8 +291,42 @@ Description: Code::Blocks development headers (SDK)
     * Extensible wizard based on scripts
     * Autosave (saves your work in the unfortunate case of a crash)
  .
- This package contains the development heasders for creating plugins
+ This package contains the development headers for creating plugins
  for the Code::Blocks IDE.
+
+Package: codeblocks-wxcontrib-dev
+Architecture: any
+Section: libdevel
+Depends: ${misc:Depends}, codeblocks-libwxcontrib0 (= ${binary:Version})
+Description: Code::Blocks development libraries for wxContribItems
+ This package contains the development libraries for the wxContribItems used by wxSmith .
+ Items included in this package are:
+    * KWIC
+    * wxChartCtrl
+    * wxFlatNotebook
+    * wxImagePanel
+    * wxSpeedButton
+    * wxCustomButton
+ .
+ This package contains the development libraries needed to use the wxContribItems in own
+ programs.
+
+Package: codeblocks-wxcontrib-headers
+Architecture: all
+Depends: ${misc:Depends}, codeblocks-wxcontrib-dev (= ${source:Version})
+Conflicts: codeblocks-wxcontrib-dev (<< ${source:Version})
+Description: Code::Blocks development headers for wxContribItems
+ This package contains the development headers for the wxContribItems used by wxSmith .
+ Items included in this package are:
+    * KWIC
+    * wxChartCtrl
+    * wxFlatNotebook
+    * wxImagePanel
+    * wxSpeedButton
+    * wxCustomButton
+ .
+ This package contains the development headers needed to use the wxContribItems in own
+ programs.
 
 Package: libwxsmithlib0
 Architecture: any
@@ -319,7 +369,7 @@ Description: wxSmith development metapackage
 Package: wxsmith-dev
 Architecture: any
 Section: libdevel
-Depends: ${misc:Depends}, libcodeblocks0 (= ${binary:Version}), wxsmith-headers (= ${source:Version})
+Depends: ${misc:Depends}, libcodeblocks0 (= ${binary:Version})
 Replaces: libwxsmithlib0-dev
 Description: wxSmith development files (libraries)
  Code::Blocks is the open-source, cross-platform Integrated Development
@@ -344,6 +394,7 @@ Description: wxSmith development files (libraries)
 Package: wxsmith-headers
 Architecture: all
 Depends: ${misc:Depends}
+ , wxsmith-dev (= ${source:Version})
 Conflicts: wxsmith-dev (<< ${source:Version})
 Description: wxSmith development files (headers)
  Code::Blocks is the open-source, cross-platform Integrated Development

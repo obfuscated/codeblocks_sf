@@ -787,6 +787,13 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                             break;
                         }
 
+                        case _T('f'):
+                        {
+                            double F = va_arg(ap,double);
+                            Result << F;
+                            break;
+                        }
+
                         case _T('i'):
                         {
                             wxsBitmapIconData* Image = va_arg(ap,wxsBitmapIconData*);

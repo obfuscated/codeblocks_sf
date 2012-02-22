@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxSmithSTC - Styled Text Control" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxSTC">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel\wxSTC" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC\wxSTC" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log -na -ns -nd" />
+				<Option host_application="codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option createStaticLib="1" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-D__WX__" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-DWXMAKINGDLL_STC" />
+					<Add directory="stc" />
+					<Add directory="stc\include" />
+					<Add directory="stc\scintilla\include" />
+					<Add directory="stc\scintilla\src" />
+				</Compiler>
+				<Linker>
+					<Add library="gdi32" />
+				</Linker>
+			</Target>
+			<Target title="wxSTEdit">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel\wxSTEdit" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC\wxSTEdit" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log -na -ns -nd" />
+				<Option host_application="codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option createStaticLib="1" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-D__WX__" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-DWXMAKINGDLL_STEDIT" />
+					<Add directory="stedit\include" />
+					<Add directory="stc\include" />
+				</Compiler>
+				<Linker>
+					<Add library="gdi32" />
+					<Add library="wxSTC" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
+			</Target>
+			<Target title="wxSmithSTC">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel\share\codeblocks\plugins\wxSmithSTC" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log -na -ns -nd" />
+				<Option host_application="codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=0" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\sdk\wxpropgrid\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="..\wxSmith\properties" />
+					<Add directory="..\wxSmith\wxwidgets" />
+					<Add directory="..\wxSmith\wxwidgets\properties" />
+					<Add directory="stedit\include" />
+					<Add directory="stc\include" />
+					<Add directory="images" />
+				</Compiler>
+				<Linker>
+					<Add library="wxSTC" />
+					<Add library="wxSTEdit" />
+					<Add library="wxsmithlib" />
+					<Add library="wxpropgrid" />
+					<Add library="codeblocks" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithSTC.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSTC;wxSTEdit;wxSmithSTC;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#wx.include)" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--export-all-symbols" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="images\RTF16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images\RTF32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images\STC16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images\STC32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images\STE16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images\STE32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="stc\PlatWX.cpp">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\PlatWX.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\ScintillaWX.cpp">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\ScintillaWX.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\include\wx\stc\stc.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\Accessor.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\KeyWords.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\Platform.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\PropSet.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\SString.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\SciLexer.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\Scintilla.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\ScintillaWidget.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\include\WindowAccessor.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\AutoComplete.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\AutoComplete.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CallTip.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CallTip.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CellBuffer.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CellBuffer.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CharClassify.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\CharClassify.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ContractionState.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ContractionState.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Document.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Document.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\DocumentAccessor.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\DocumentAccessor.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Editor.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Editor.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ExternalLexer.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ExternalLexer.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Indicator.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Indicator.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\KeyMap.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\KeyMap.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\KeyWords.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAPDL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAU3.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAVE.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAda.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAsm.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexAsn1.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexBaan.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexBash.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexBasic.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexBullant.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCLW.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCPP.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCSS.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCaml.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexConf.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCrontab.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexCsound.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexEScript.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexEiffel.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexErlang.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexFlagship.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexForth.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexFortran.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexGui4Cli.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexHTML.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexHaskell.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexInno.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexKix.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexLisp.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexLout.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexLua.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexMMIXAL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexMPT.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexMSSQL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexMatlab.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexMetapost.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexNsis.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexOpal.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexOthers.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPB.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPOV.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPS.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPascal.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPerl.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexPython.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexRebol.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexRuby.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexSQL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexScriptol.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexSmalltalk.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexSpecman.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexSpice.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexTADS3.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexTCL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexTeX.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexVB.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexVHDL.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexVerilog.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LexYAML.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LineMarker.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\LineMarker.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\PropSet.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\RESearch.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\RESearch.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\SVector.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ScintillaBase.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ScintillaBase.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Style.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\Style.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\StyleContext.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\StyleContext.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\UniConversion.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\UniConversion.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ViewStyle.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\ViewStyle.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\WindowAccessor.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\XPM.cxx">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\scintilla\src\XPM.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\stc.cpp">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\stc_cw.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\stc_cw_d.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\stc_cwc.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stc\stc_cwc_d.h">
+			<Option target="wxSTC" />
+		</Unit>
+		<Unit filename="stedit\art\copy.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\cross.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\cut.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\find.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\finddown.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\findnext.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\findup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\new.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\open.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\paste.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\pencil.ico">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\pencil16.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\pencil32.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\print.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\print_page_setup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\print_preview.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\print_setup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\redo.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\replace.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\save.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\saveall.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\saveas.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\undo.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\art\x_red.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\precomp.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\precomp.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steart.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stedit.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stedit.xrc">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stedlgs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stedlgs_wdr.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stedlgs_wdr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steexprt.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stefindr.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steframe.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stelangs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stemenum.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stenoteb.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steopts.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steprefs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steprint.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steshell.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stesplit.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\stestyls.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\wxext.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\wxext.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="wxsRichTextCtrl.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsRichTextCtrl.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSTEditor.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSTEditor.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsScintilla.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsScintilla.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSmithSTC.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSmithSTC.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

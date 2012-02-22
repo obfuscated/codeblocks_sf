@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxSpeedButton
+Description: SpeedButton also used for the wxSmith Contrib Items
+Version: @VERSION@
+Libs: -L${libdir} -lwxspeedbutton
+Cflags: -fPIC -I${includedir}/wxSpeedButton
+

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxScrollingDialog" name="wxsImageComboEditorDlg">
+		<title>wxBitmapComboBox Editor</title>
+		<minsize>-1,-1</minsize>
+		<maxsize>-1,-1</maxsize>
+		<id_arg>0</id_arg>
+		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE</style>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer13" member="no">
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+									<label>Combo-Box</label>
+									<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTreeCtrl" name="ID_TREECTRL1" variable="m_pTree" member="yes">
+									<image_list></image_list>
+									<tree_items>
+										<item>m_pTree</item>
+										<item></item>
+									</tree_items>
+									<items_text>
+										<item2>m_pTree</item2>
+										<item2></item2>
+									</items_text>
+									<pos>0,32</pos>
+									<size>240,272</size>
+									<style>wxTR_EDIT_LABELS|wxTR_NO_BUTTONS|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxRAISED_BORDER</style>
+									<handler function="OnTreeSelectionChanged" entry="EVT_TREE_SEL_CHANGED" />
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+									<label>Edit Items</label>
+									<pos>264,8</pos>
+									<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON1" variable="m_pBtnAddItem" member="yes">
+											<bitmap stock_id="wxART_ADD_BOOKMARK" />
+											<default>1</default>
+											<size>32,32</size>
+											<handler function="OnBtnAddItemClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+											<label>Add Item</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer5" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON2" variable="m_pBtnMoveUp" member="yes">
+											<bitmap stock_id="wxART_GO_UP" />
+											<default>1</default>
+											<size>32,32</size>
+											<handler function="OnBtnMoveUpClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+											<label>Move Item Up</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer6" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON3" variable="m_pBtnMoveDown" member="yes">
+											<bitmap stock_id="wxART_GO_DOWN" />
+											<default>1</default>
+											<size>32,32</size>
+											<handler function="OnBtnMoveDownClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+											<label>Move Item Down</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer7" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON4" variable="m_pBtnDeleteItem" member="yes">
+											<bitmap stock_id="wxART_DEL_BOOKMARK" />
+											<size>32,32</size>
+											<handler function="OnBtnDeleteItemClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+											<label>Delete Item</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer8" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON5" variable="m_pBtnDeleteAll" member="yes">
+											<bitmap stock_id="wxART_DELETE" />
+											<size>32,32</size>
+											<handler function="OnBtnDeleteAllClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+											<label>Delete All Items</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer9" member="no">
+									<object class="sizeritem">
+										<object class="wxBitmapButton" name="ID_BITMAPBUTTON6" variable="m_pBtnEditItem" member="yes">
+											<bitmap stock_id="wxART_HELP_SETTINGS" />
+											<default>1</default>
+											<size>32,32</size>
+											<handler function="OnBtnEditItemClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
+											<label>Edit Item Text</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer10" member="no">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer11" member="no">
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+													<label>Image-List</label>
+													<pos>256,240</pos>
+													<style>wxST_NO_AUTORESIZE</style>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer12" member="no">
+											<object class="sizeritem">
+												<object class="wxComboBox" name="ID_COMBOBOX1" subclass="wxBitmapComboBox" variable="m_pCmbImage" member="yes">
+													<pos>256,272</pos>
+													<size>100,22</size>
+													<style>wxCB_READONLY</style>
+													<handler function="OnCmbImageSelect" entry="EVT_COMBOBOX" />
+												</object>
+												<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
+													<label>Item Image</label>
+													<pos>352,276</pos>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									</object>
+								</object>
+								<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer14" member="no">
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON1" variable="m_pBtnOK" member="yes">
+							<label>OK</label>
+							<default>1</default>
+							<pos>64,320</pos>
+							<handler function="OnBtnOKClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON2" variable="m_pBtnCancel" member="yes">
+							<label>Cancel</label>
+							<pos>272,320</pos>
+							<handler function="OnBtnCancelClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>

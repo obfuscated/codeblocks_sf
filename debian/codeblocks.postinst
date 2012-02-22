@@ -30,4 +30,6 @@ if [ "$1" = configure ]; then
     done
 fi
 
+#DEBHELPER#
+
 exit 0

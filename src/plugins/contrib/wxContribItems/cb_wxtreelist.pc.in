@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxTreeListCtrl
+Description: TreeListCtrl also used for the wxSmith Contrib Items
+Version: @VERSION@
+Libs: -L${libdir} -lwxtreelist
+Cflags: -fPIC -I${includedir}/wxTreeList
+

@@ -25,10 +25,14 @@ libwxsmith_wxwidgets_properties_la_SOURCES = \
 ./wxsdimensionproperty.cpp \
 ./wxsbitmapiconproperty.cpp \
 ./wxssimplefonteditordlg.cpp \
-./wxseditenumproperty.cpp \
-./wxsimagelistdlg.cpp \
+./wxsimagelisteditordlg.cpp \
 ./wxsimagelistproperty.cpp \
-./wxsimageproperty.cpp
+./wxsimageproperty.cpp \
+./wxsimagecomboeditordlg.cpp \
+./wxsimagecomboproperty.cpp \
+./wxsimagetreeeditordlg.cpp \
+./wxsimagetreeproperty.cpp
+
 
 sdkdir=$(includedir)/wxsmith/wxwidgets/properties/
 
@@ -46,8 +50,11 @@ sdk_HEADERS = \
 ./wxsfontfaceeditordlg.h \
 ./wxsbitmapiconeditordlg.h \
 ./wxssimplefonteditordlg.h \
-./wxseditenumproperty.h \
-./wxsimagelistdlg.h \
+./wxsimagelisteditordlg.h \
 ./wxsimagelistproperty.h \
-./wxsimageproperty.h
+./wxsimageproperty.h \
+./wxsimagecomboeditordlg.h \
+./wxsimagecomboproperty.h \
+./wxsimagetreeeditordlg.h \
+./wxsimagetreeproperty.h
 

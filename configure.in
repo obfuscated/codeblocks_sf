@@ -427,6 +427,31 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/ToolsPlus/Resources/Makefile
 	src/plugins/contrib/Valgrind/Makefile
 	src/plugins/contrib/Valgrind/resources/Makefile
+	src/plugins/contrib/wxContribItems/Makefile
+	src/plugins/contrib/wxContribItems/wxsmith-contrib.pc
+	src/plugins/contrib/wxContribItems/cb_wxcontrib.pc
+	src/plugins/contrib/wxContribItems/cb_wxchartctrl.pc
+	src/plugins/contrib/wxContribItems/cb_wxcustombutton.pc
+	src/plugins/contrib/wxContribItems/cb_wximagepanel.pc
+	src/plugins/contrib/wxContribItems/cb_wxflatnotebook.pc
+	src/plugins/contrib/wxContribItems/cb_wxspeedbutton.pc
+	src/plugins/contrib/wxContribItems/cb_wxKWIC.pc
+	src/plugins/contrib/wxContribItems/cb_wxtreelist.pc
+	src/plugins/contrib/wxContribItems/cb_wxled.pc
+	src/plugins/contrib/wxContribItems/wxchart/Makefile
+	src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile
+	src/plugins/contrib/wxContribItems/wxImagePanel/Makefile
+	src/plugins/contrib/wxContribItems/wxthings/Makefile
+	src/plugins/contrib/wxContribItems/wxSpeedButton/Makefile
+	src/plugins/contrib/wxContribItems/KWIC/Makefile
+	src/plugins/contrib/wxContribItems/KWIC/include/wx/KWIC/Makefile
+	src/plugins/contrib/wxContribItems/KWIC/include/wx/xrc/Makefile
+	src/plugins/contrib/wxContribItems/wxTreeList/Makefile
+	src/plugins/contrib/wxContribItems/wxled/Makefile
+	src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
+	src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile
+	src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
+	src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/wxsmith.pc
 	src/plugins/contrib/wxSmith/plugin/Makefile
@@ -436,10 +461,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/defitems/Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/icons/Makefile
 	src/plugins/contrib/wxSmithContribItems/Makefile
-	src/plugins/contrib/wxSmithContribItems/wxsmith-contrib.pc
-	src/plugins/contrib/wxSmithContribItems/wxchart/wxchart-1.0/Makefile
-	src/plugins/contrib/wxSmithContribItems/wxflatnotebook/wxFlatNotebook/Makefile
-	src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/Makefile
 	src/plugins/contrib/wxSmithAui/Makefile
 	src/plugins/contrib/wxSmithAui/wxsmithaui.pc
 	src/plugins/contrib/lib_finder/Makefile

@@ -1,4 +1,6 @@
-usr/bin/{codeblocks,cb_console_runner,cb_share_config}
+usr/bin/codeblocks
+usr/bin/cb_console_runner
+usr/bin/cb_share_config
 
 usr/lib/codeblocks/plugins/libabbreviations.so
 usr/lib/codeblocks/plugins/libastyle.so

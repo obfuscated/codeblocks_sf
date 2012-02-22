@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+
+<!-- RCS-ID: $Id: Bakefiles.bkgen 7551 2011-11-01 18:13:27Z jenslody $ -->
+
+<bakefile-gen>
+
+    <include file="../../../build/bakefiles/presets/wxcode.bkgen"/>
+
+    <!-- you probably need to edit only this tag -->
+    <input>wxthings.bkl</input>
+
+</bakefile-gen>

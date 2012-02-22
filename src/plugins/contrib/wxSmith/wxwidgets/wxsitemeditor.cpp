@@ -641,7 +641,20 @@ namespace
     }
 
     WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
+
+    int CategorySort(ItemsT* it1, ItemsT* it2)
+    {
+        if (it1->Item(0)->Category.IsSameAs(_T("Standard")))
+            return -1;
+
+        if (it2->Item(0)->Category.IsSameAs(_T("Standard")))
+            return 1;
+
+        return wxStrcmp(it1->Item(0)->Category, it2->Item(0)->Category);
+    }
+
     WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
+    WX_DEFINE_SORTED_ARRAY(ItemsT*,ArrayOfItemsT);
 }
 
 void wxsItemEditor::BuildPalette(wxNotebook* Palette)
@@ -653,6 +666,7 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
     // it will be done using multimap (map of arrays)
 
     MapT Map;
+    ArrayOfItemsT aoi(CategorySort);
 
     for ( const wxsItemInfo* Info = wxsItemFactory::GetFirstInfo(); Info; Info = wxsItemFactory::GetNextInfo() )
     {
@@ -664,17 +678,20 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
 
     for ( MapT::iterator i = Map.begin(); i!=Map.end(); ++i )
     {
+        aoi.Add(&(i->second));
+    }
+    for (size_t i = 0; i < aoi.Count(); ++i)
+    {
+        ItemsT* Items = aoi.Item(i);
+        Items->Sort(PrioritySort);
         wxScrolledWindow* CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
         CurrentPanel->SetScrollRate(1,0);
-        Palette->AddPage(CurrentPanel,i->first);
+        Palette->AddPage(CurrentPanel,Items->Item(0)->Category);
         wxSizer* RowSizer = new wxBoxSizer(wxHORIZONTAL);
 
-        ItemsT& Items = i->second;
-        Items.Sort(PrioritySort);
-
-        for ( size_t j=Items.Count(); j-->0; )
+        for ( size_t j=Items->Count(); j-->0; )
         {
-            const wxsItemInfo* Info = Items[j];
+            const wxsItemInfo* Info = Items->Item(j);
             const wxBitmap& Icon = ( PalIconSize() == 16L ) ? Info->Icon16 : Info->Icon32;
 
             if ( AllowNonXRCItems || Info->AllowInXRC )

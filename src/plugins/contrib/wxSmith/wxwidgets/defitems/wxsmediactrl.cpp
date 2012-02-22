@@ -22,6 +22,9 @@
 */
 
 #include "wxsmediactrl.h"
+
+#if wxUSE_MEDIACTRL
+
 #include "wx/mediactrl.h"
 
 
@@ -204,4 +207,6 @@ void wxsMediaCtrl::OnEnumWidgetProperties(long flags)
 	WXS_ENUM(wxsMediaCtrl, m_iControls, _("Controls"), _T("controls"), ControlStates, ControlNames, wxMEDIACTRLPLAYERCONTROLS_DEFAULT)
 	WXS_ENUM(wxsMediaCtrl, m_iVolume,  _("Volume"), _T("volume"), VolumeLevels, VolumeNames, 5)
 }
+
+#endif // wxUSE_MEDIACTRL
 

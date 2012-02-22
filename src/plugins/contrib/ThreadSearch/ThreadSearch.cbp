@@ -55,7 +55,7 @@
 			<Add directory="..\..\..\include\mozilla_chardet" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\wxSmithContribItems\wxthings\wxthings\include" />
+			<Add directory="..\wxContribItems\wxthings\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-mthreads" />

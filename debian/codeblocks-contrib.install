@@ -37,5 +37,4 @@ usr/lib/codeblocks/plugins/libwxsmithcontribitems.so
 usr/lib/codeblocks/plugins/libwxSmithAui.so
 
 ../lintian/codeblocks-contrib  usr/share/lintian/overrides/
-usr/lib/wxSmithContribItems/*.so*
-usr/lib/pkgconfig/{wxsmith-contrib.pc,wxsmithaui.pc} usr/lib/pkgconfig/
+usr/lib/pkgconfig/wxsmithaui.pc usr/lib/pkgconfig/

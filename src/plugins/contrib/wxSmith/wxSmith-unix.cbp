@@ -121,6 +121,12 @@
 		<Unit filename="properties/wxsflagsproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="properties/wxsfloatproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties/wxsfloatproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="properties/wxslongproperty.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -392,6 +398,12 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsdirdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsdirpickerctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsdirpickerctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsfiledialog.cpp">
@@ -898,10 +910,22 @@
 		<Unit filename="wxwidgets/properties/wxsfontproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets/properties/wxsimagelistdlg.cpp">
+		<Unit filename="wxwidgets/properties/wxsimagecomboeditordlg.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets/properties/wxsimagelistdlg.h">
+		<Unit filename="wxwidgets/properties/wxsimagecomboeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagecomboproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagecomboproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelisteditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelisteditordlg.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxsimagelistproperty.cpp">
@@ -914,6 +938,18 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxsimageproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagetreeeditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagetreeeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagetreeproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagetreeproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxspositionsizeproperty.cpp">
@@ -1190,7 +1226,9 @@
 					<wxScrollingDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets/properties/wxsfonteditordlg.h" fwddecl="0" i18n="1" name="wxsFontEditorDlg" language="CPP" />
 					<wxScrollingDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets/properties/wxsfontfaceeditordlg.h" fwddecl="0" i18n="1" name="wxsFontFaceEditorDlg" language="CPP" />
 					<wxScrollingDialog wxs="wxsmith/wxsSimpleFontEditorDlg.wxs" src="wxwidgets/properties/wxssimplefonteditordlg.cpp" hdr="wxwidgets/properties/wxssimplefonteditordlg.h" fwddecl="0" i18n="1" name="wxsSimpleFontEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/wxsImageListDlg.wxs" src="wxwidgets/properties/wxsimagelistdlg.cpp" hdr="wxwidgets/properties/wxsimagelistdlg.h" fwddecl="0" i18n="1" name="wxsImageListDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsImageListEditorDlg.wxs" src="wxwidgets/properties/wxsimagelisteditordlg.cpp" hdr="wxwidgets/properties/wxsimagelisteditordlg.h" fwddecl="0" i18n="1" name="wxsImageListEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsImageComboEditorDlg.wxs" src="wxwidgets/properties/wxsimagecomboeditordlg.cpp" hdr="wxwidgets/properties/wxsimagecomboeditordlg.h" fwddecl="0" i18n="1" name="wxsImageComboEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/wxsImageTreeEditorDlg.wxs" src="wxwidgets/properties/wxsimagetreeeditordlg.cpp" hdr="wxwidgets/properties/wxsimagetreeeditordlg.h" fwddecl="0" i18n="1" name="wxsImageTreeEditorDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/wxWidgetsGUIConfigPanel.wxs" src="wxwidgets/wxwidgetsguiconfigpanel.cpp" hdr="wxwidgets/wxwidgetsguiconfigpanel.h" fwddecl="0" i18n="1" name="wxWidgetsGUIConfigPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSizerParentQP.wxs" src="wxwidgets/wxssizerparentqp.cpp" hdr="wxwidgets/wxssizerparentqp.h" fwddecl="0" i18n="1" name="wxsSizerParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsNotebookParentQP.wxs" src="wxwidgets/defitems/wxsnotebook.cpp" hdr="wxwidgets/defitems/wxsnotebook.cpp" fwddecl="0" i18n="1" name="wxsNotebookParentQP" language="CPP" />

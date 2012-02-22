@@ -1,8 +1,17 @@
-usr/share/{icons,pixmaps,mime,applications}
-usr/share/man/man1/{codeblocks.1,cb_console_runner.1,cb_share_config.1}
+usr/share/icons
+usr/share/pixmaps
+usr/share/mime
+usr/share/applications
+
+usr/share/man/man1/codeblocks.1
+usr/share/man/man1/cb_console_runner.1
+usr/share/man/man1/cb_share_config.1
 
 usr/share/codeblocks/icons/
-usr/share/codeblocks/images/{*.png,16x16,codecompletion,settings}
+usr/share/codeblocks/images/*.png
+usr/share/codeblocks/images/16x16
+usr/share/codeblocks/images/codecompletion
+usr/share/codeblocks/images/settings
 usr/share/codeblocks/lexers
 usr/share/codeblocks/scripts
 usr/share/codeblocks/templates

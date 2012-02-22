@@ -29,12 +29,8 @@
 //(*InternalHeaders(wxsToolBarEditor)
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
+#include <wx/image.h>
 #include <wx/string.h>
 //*)
 
@@ -77,7 +73,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 {
     wxWindowID id = wxID_ANY;
 	//(*Initialize(wxsToolBarEditor)
-	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxPanel"));
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Content"));
 	m_Content = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
@@ -112,12 +108,12 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 	FlexGridSizer1->Add(m_Label, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Bitmap:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
 	FlexGridSizer1->Add(StaticText4, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 4);
-	m_Bitmap = new wxBitmapButton(this, ID_BITMAPBUTTON1, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),_T("wxART_TOOLBAR")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
+	m_Bitmap = new wxBitmapButton(this, ID_BITMAPBUTTON1, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),wxART_TOOLBAR), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
 	m_Bitmap->SetDefault();
 	FlexGridSizer1->Add(m_Bitmap, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("Disabled bitmap:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
 	FlexGridSizer1->Add(StaticText5, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 4);
-	m_Bitmap2 = new wxBitmapButton(this, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),_T("wxART_BUTTON_C")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
+	m_Bitmap2 = new wxBitmapButton(this, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
 	m_Bitmap2->SetDefault();
 	FlexGridSizer1->Add(m_Bitmap2, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Tooltip:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
@@ -147,6 +143,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
+
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&wxsToolBarEditor::Onm_ContentSelect);
 	Connect(ID_RADIOBUTTON1,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsToolBarEditor::OnTypeChanged);
 	Connect(ID_RADIOBUTTON2,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsToolBarEditor::OnTypeChanged);
@@ -436,7 +433,8 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
             m_Label->Enable(!IsSeparator);
             m_Label->SetValue(m_Selected->m_Label);
             m_Bitmap->Enable(!IsSeparator);
-            if ( m_Selected->m_Bitmap.IsEmpty() )
+			// A bitmap created from code can't be rendered easily here, so show the default for that case, too
+            if ( m_Selected->m_Bitmap.IsEmpty() || !m_Selected->m_Bitmap.CodeText.IsEmpty())
             {
                 m_Bitmap->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),_T("wxART_TOOLBAR")));
             }

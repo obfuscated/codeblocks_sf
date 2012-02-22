@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="0"  release="0" />
+    <Plugin name="wxsSmithPlot">
+        <Value title="wxsSmithPlot - Curve Plotting" />
+        <Value version="1.0" />
+        <Value description="A Component To Plot Computed Curves" />
+        <Value author="" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

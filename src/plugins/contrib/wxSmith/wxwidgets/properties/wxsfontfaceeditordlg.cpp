@@ -24,8 +24,8 @@
 #include <wx/fontdlg.h>
 
 //(*InternalHeaders(wxsFontFaceEditorDlg)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(wxsFontFaceEditorDlg)

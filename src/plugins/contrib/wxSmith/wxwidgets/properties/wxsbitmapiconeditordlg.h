@@ -54,6 +54,8 @@ class wxsBitmapIconEditorDlg: public wxScrollingDialog
 		static const long ID_COMBOBOX2;
 		static const long ID_STATICTEXT2;
 		static const long ID_COMBOBOX1;
+		static const long ID_RADIOBUTTON4;
+		static const long ID_TEXTCTRL2;
 		static const long ID_STATICBITMAP1;
 		static const long ID_BUTTON1;
 		//*)
@@ -67,6 +69,8 @@ class wxsBitmapIconEditorDlg: public wxScrollingDialog
 		void OnButton3Click(wxCommandEvent& event);
 		void OnArtIdSelect(wxCommandEvent& event);
 		void OnUpdatePreview(wxCommandEvent& event);
+		void OnOtherTextText(wxCommandEvent& event);
+		void OnCodeTextText(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(wxsBitmapIconEditorDlg)
@@ -74,8 +78,10 @@ class wxsBitmapIconEditorDlg: public wxScrollingDialog
 		wxStaticBoxSizer* StaticBoxSizer2;
 		wxStaticBitmap* Preview;
 		wxRadioButton* ImageArt;
+		wxRadioButton* ImageCode;
 		wxBoxSizer* BoxSizer5;
 		wxStaticText* StaticText2;
+		wxTextCtrl* CodeText;
 		wxButton* Button1;
 		wxTextCtrl* FileName;
 		wxFlexGridSizer* FlexGridSizer2;

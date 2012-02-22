@@ -28,8 +28,6 @@ namespace
 
     WXS_ST_BEGIN(wxsScrolledWindowStyles,_T("wxHSCROLL|wxVSCROLL"))
         WXS_ST_CATEGORY("wxScrolledWindow")
-        WXS_ST(wxHSCROLL)
-        WXS_ST(wxVSCROLL)
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 

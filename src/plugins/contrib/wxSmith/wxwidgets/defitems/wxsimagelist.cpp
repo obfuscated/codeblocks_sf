@@ -22,6 +22,7 @@
 */
 
 #include "wxsimagelist.h"
+#include "../properties/wxsimagelisteditordlg.h"
 
 namespace
 {
@@ -63,14 +64,14 @@ void wxsImageList::OnBuildCreatingCode()
 {
     int         i;
     wxString    inc;
-    wxString    vname;                  // this variable name
-    wxString    bname;                  // name of the bitmap variable
-    wxString    fbase;                  // base name of XPM file without dirs or extension
-    wxString    fabs;                   // absolute name of XPM file
+    wxString    vname;             // this variable name
+    wxString    bname;            // name of the bitmap variable
+    wxString    fbase;               // base name of XPM file without dirs or extension
+    wxString    fabs;                 // absolute name of XPM file
     wxString    frel;                   // relative
-    wxString    dname;                  // name of XPM data array
-    wxBitmap  bmp;                    // preview bitmap saved as XPM
-    wxString    ss, tt;                 // general use
+    wxString    dname;            // name of XPM data array
+    wxBitmap  bmp;                // preview bitmap saved as XPM
+    wxString    ss, tt;                // general use
 
     // have we already been here?
     if(m_IsBuilt){
@@ -325,7 +326,7 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
     }
 
 	// turn that data block into a bitmap
-    wxsImageListDlg::ArrayToBitmap(aa, bmp);
+    wxsImageListEditorDlg::ArrayToBitmap(aa, bmp);
 
 	// done
     return bmp;
@@ -340,7 +341,7 @@ wxBitmap wxsImageList::GetPreview(int inIndex)
 void wxsImageList::GetImageList(wxImageList &aImageList)
 {
     aImageList.RemoveAll();
-    wxsImageListDlg::ArrayToImageList(m_ImageData, aImageList);
+    wxsImageListEditorDlg::ArrayToImageList(m_ImageData, aImageList);
 }
 
 /*! \brief This just exposes the "OnBuildCreatingCode()" method.

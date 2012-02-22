@@ -22,7 +22,7 @@
 */
 
 #include "wxsimageproperty.h"
-#include "wxsimagelistdlg.h"
+#include "wxsimagelisteditordlg.h"
 #include <globals.h>
 
 // Helper macro for fetching variable
@@ -38,7 +38,7 @@ wxsImageProperty::wxsImageProperty(const wxString &PGName, const wxString &_Data
 /*! \brief Show the image editor.
  *
  * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
- * \return bool	True on succes, otherwise false.
+ * \return bool	True on success, otherwise false.
  *
  */
 bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
@@ -49,7 +49,7 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
     wxBitmap                				bmp;
     wxString                				ss;
 
-	// show the dialog, exit immediately if canceled
+	// show the dialog, exit immediately if cancelled
     n = dlg.ShowModal();
     if(n != wxID_OK){
     	return false;
@@ -63,7 +63,7 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
 	// get a preview image and store it as an array of XPM data
     else{
         bmp = data.GetPreview(wxDefaultSize);
-        wxsImageListDlg::BitmapToArray(bmp, VALUE);
+        wxsImageListEditorDlg::BitmapToArray(bmp, VALUE);
     }
 
 	// done
@@ -74,7 +74,7 @@ bool wxsImageProperty::ShowEditor(wxsPropertyContainer *Object)
  *
  * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
  * \param Element TiXmlElement*				A pointer to a TiXmlElement object.
- * \return bool	True on succes, otherwise false.
+ * \return bool	True on success, otherwise false.
  *
  */
 bool wxsImageProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *Element)
@@ -162,7 +162,7 @@ bool wxsImageProperty::PropStreamWrite(wxsPropertyContainer *Object, wxsProperty
     return true;
 }
 
-/*! \brief Get the image as a string.
+/*! \brief Get a string to display in the text field..
  *
  * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
  * \return wxString	The image string.

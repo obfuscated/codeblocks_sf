@@ -20,6 +20,8 @@
 #ifndef WXMEDIACTRL_H
 #define WXMEDIACTRL_H
 
+#if wxUSE_MEDIACTRL
+
 #include "../wxswidget.h"
 
 /** \brief Class for wxMediaCtrl widget */
@@ -44,5 +46,7 @@ class wxsMediaCtrl: public wxsWidget
 //		wxValidator 		m_validator;				//!< The control validator.
 
 };
+
+#endif // wxUSE_MEDIACTRL
 
 #endif // WXMEDIACTRL_H

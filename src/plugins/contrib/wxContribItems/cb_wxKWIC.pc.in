@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxKWIX
+Description: KWIC for wxWidgets  also used for the wxSmith Contrib Items
+Version: @VERSION@
+Libs: -L${libdir} -lwxkwic
+Cflags: -fPIC -I${includedir}/KWIC/include
+

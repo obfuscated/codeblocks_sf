@@ -38,7 +38,7 @@ class wxsImageListProperty: public wxsCustomEditorProperty
 
         /** \brief Ctor
          *  \param PGName       		The name of this property in the Property Grid.
-         *  \param DataName     	The name of this property in data stuctures.
+         *  \param DataName     	The name of this property in data structures.
          *  \param DataSubName  The name applied for each array element.
          *  \param Offset       			The offset of the value (returned from wxsOFFSET macro).
 		 *  \param Priority int			The item's priority.
@@ -65,12 +65,12 @@ class wxsImageListProperty: public wxsCustomEditorProperty
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
 	private:
-        long Offset;
-        wxString DataSubName;
-        wxString DataName;
+        long Offset;								//!< The offset of a variable in this class.
+        wxString DataSubName;		//!< The name to use for sub-item entries in XML
+        wxString DataName;				//!< The name to use for item entries in XML.
 };
 
-/** \addtogroup properties_macros
+/** \addtogroup ext_properties_macros
  *  \{ */
 
 /** \brief Macro automatically declaring wxImageList property
@@ -80,7 +80,7 @@ class wxsImageListProperty: public wxsCustomEditorProperty
  *  \param DataName name used in Xml / Data Streams
  */
 #define WXS_IMAGELIST(ClassName,VarName,PGName,DataName) \
-    { static wxsImageListProperty _Property(PGName,DataName,_("Item"),wxsOFFSET(ClassName,VarName)); \
+    { static wxsImageListProperty _Property(PGName,DataName,_("item"),wxsOFFSET(ClassName,VarName)); \
       Property(_Property); }
 
 /** \brief Macro automatically declaring wxImageList property with custom priority
@@ -91,7 +91,7 @@ class wxsImageListProperty: public wxsCustomEditorProperty
  *  \param Priority priority of property
  */
 #define WXS_IMAGELIST_P(ClassName,VarName,PGName,DataName,Priority) \
-    { static wxsImageListProperty _Property(PGName,DataName,_("Item"),wxsOFFSET(ClassName,VarName),Priority); \
+    { static wxsImageListProperty _Property(PGName,DataName,_("item"),wxsOFFSET(ClassName,VarName),Priority); \
       Property(_Property); }
 
 /** \} */

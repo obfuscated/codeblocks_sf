@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxImagePanel
+Description: wxImagePanel also used for the wxSmith Contrib Items
+Version: @VERSION@
+Libs: -L${libdir} -lwximagepanel
+Cflags: -fPIC -I${includedir}/wxImagePanel/include
+

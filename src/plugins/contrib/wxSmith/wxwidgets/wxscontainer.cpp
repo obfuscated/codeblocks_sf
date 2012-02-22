@@ -209,21 +209,32 @@ void wxsContainer::AddChildrenCode()
                 wxsItem* Child = GetChild(i);
                 if ( Child->GetType() == wxsTSizer )
                 {
-                    wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
                     if ( GetBaseProps()->m_Size.IsDefault )
                     {
+                        wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
                         #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%sFit(%O);\n"),ChildAccessPrefix.wx_str());
                         #else
                         Codef(_T("%sFit(%O);\n"),ChildAccessPrefix.c_str());
                         #endif
-                    }
 
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
-                    #else
-                    Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.c_str());
-                    #endif
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
+                        #else
+                        Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.c_str());
+                        #endif
+                    }
+                    else
+                    {
+                        wxString ChildVarName = Child->GetVarName();
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("SetSizer(%s);\n"), ChildVarName.wx_str());
+                        #else
+                        Codef(_T("SetSizer(%s);\n"), ChildVarName.c_str());
+                        #endif
+
+                        Codef(_T("Layout();\n"));
+                    }
                 }
             }
 

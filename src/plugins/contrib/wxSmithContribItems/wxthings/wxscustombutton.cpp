@@ -38,7 +38,7 @@ namespace
         _T("jlabenski@gmail.com"),
         _T("http://wxcode.sourceforge.net/showcomp.php?name=wxThings"),
         _T("Contrib"),
-        50,
+        90,
         _T("Button"),
         wxsCPP,
         1, 0,

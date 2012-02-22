@@ -34,7 +34,6 @@ namespace
         WXS_ST(wxTE_MULTILINE)
         WXS_ST(wxTE_PASSWORD)
         WXS_ST(wxTE_READONLY)
-        WXS_ST(wxHSCROLL)
         WXS_ST(wxTE_RICH)
         WXS_ST(wxTE_RICH2)
         WXS_ST(wxTE_AUTO_URL)

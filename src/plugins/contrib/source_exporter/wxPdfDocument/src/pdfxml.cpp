@@ -1079,8 +1079,9 @@ wxPdfDocument::PrepareXmlCell(wxXmlNode* node, wxPdfCellContext& context)
         wxString s;
         if (name == wxT("msg"))
         {
-          s = wxGetTranslation(GetNodeContent(child));
-        }
+          s = GetNodeContent(child);
+          if (m_translate) s = wxGetTranslation(s);
+         }
         else
         {
           s = child->GetContent();
@@ -1215,6 +1216,22 @@ wxPdfDocument::WriteXml(const wxString& xmlString)
     wxLogDebug(wxString(wxT("wxPdfDocument::WriteXml: ")) +
                wxString(_("Unable to load markup string.")));
   }
+}
+
+void
+wxPdfDocument::WriteXml(wxXmlNode* node)
+{
+  if (GetLineHeight() == 0)
+  {
+    SetLineHeight(GetFontSize()*1.25 / GetScaleFactor());
+  }
+  double maxWidth = GetPageWidth() - GetRightMargin() - GetX();
+  wxPdfCellContext context(maxWidth, wxPDF_ALIGN_LEFT);
+  double saveX = GetX();
+  double saveY = GetY();
+  PrepareXmlCell(node, context);
+  SetXY(saveX, saveY);
+  WriteXmlCell(node, context);
 }
 
 void
@@ -1730,7 +1747,8 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
         wxString s;
         if (name == wxT("msg"))
         {
-          s = wxGetTranslation(GetNodeContent(child));
+          s = GetNodeContent(child);
+          if (m_translate) s = wxGetTranslation(s);
         }
         else
         {

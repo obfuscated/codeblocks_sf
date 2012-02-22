@@ -52,7 +52,7 @@
 			<Add directory="..\..\..\include\scripting\sqplus" />
 			<Add directory="..\..\..\include\scripting\squirrel" />
 			<Add directory="..\..\..\include\scripting\bindings" />
-			<Add directory="..\wxSmithContribItems\wxflatnotebook\wxFlatNotebook\include" />
+			<Add directory="..\wxContribItems\wxFlatNotebook\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
 		</Compiler>
 		<ResourceCompiler>

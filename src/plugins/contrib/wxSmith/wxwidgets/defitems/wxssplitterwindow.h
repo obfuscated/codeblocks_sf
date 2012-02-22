@@ -41,6 +41,7 @@ class wxsSplitterWindow: public wxsContainer
         long SashPos;
         long MinSize;
         long Orientation;
+        double SashGravity;
 };
 
 

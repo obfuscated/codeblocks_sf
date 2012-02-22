@@ -44,7 +44,7 @@ namespace
         _T("paolo_gava@hotmail.com"),   // Author's email
         _T("http://wxcode.sourceforge.net/components/wxchart/"),    // Item's homepage
         _T("Contrib"),                  // Category in palette
-        80,                             // Priority in palette
+        100,                             // Priority in palette
         _T("Chart"),                    // Base part of names for new items
         wxsCPP,                         // List of coding languages supported by this item
         1, 0,                           // Version

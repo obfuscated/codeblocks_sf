@@ -1,3 +1,16 @@
+codeblocks (10.05svn7641) unstable; urgency=low
+
+  * Linux build-fixes; moved wxSmithKWIC into wxContribItems and
+    splitted it into the items lib and the wxSmith part
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 21 Dec 2011 10:14:46 +0100
+
+codeblocks (10.05svn6916) unstable; urgency=low
+
+  * New svn revision
+
+ -- Jens Lody <jens@codeblocks.org>  Wed, 12 Jan 2011 11:12:27 +0000
+
 codeblocks (10.05svn6787) unstable; urgency=low
 
   * New svn revision

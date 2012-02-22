@@ -53,7 +53,8 @@ wxsSplitterWindow::wxsSplitterWindow(wxsItemResData* Data):
     wxsContainer(Data,&Reg.Info,wxsSplitterWindowEvents,wxsSplitterWindowStyles),
     SashPos(0),
     MinSize(10),
-    Orientation(wxHORIZONTAL)
+    Orientation(wxHORIZONTAL),
+    SashGravity(0.5f)
 {
 }
 
@@ -89,6 +90,7 @@ wxObject* wxsSplitterWindow::OnBuildPreview(wxWindow* Parent,long Flags)
                 wxDynamicCast(GetChild(1)->GetLastPreview(),wxWindow),
                 SashPos);
         }
+        Splitter->SetSashGravity(SashGravity);
 
         // Some trick to faster relayout splitter window
         Splitter->OnInternalIdle();
@@ -108,6 +110,7 @@ void wxsSplitterWindow::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             BuildSetupWindowCode();
             if ( MinSize != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
+            Codef(_T("%ASetSashGravity(%f);\n"),SashGravity);
             AddChildrenCode();
             if ( GetChildCount() == 0 )
             {
@@ -137,6 +140,7 @@ void wxsSplitterWindow::OnEnumContainerProperties(long Flags)
     static const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), 0 };
 
     WXS_LONG(wxsSplitterWindow,SashPos,_("Sash position"),_T("sashpos"),0);
+    WXS_FLOAT(wxsSplitterWindow,SashGravity,_("Sash gravity"), _T("sashgravity"), 0.5);
     WXS_LONG(wxsSplitterWindow,MinSize,_("Min. pane size"),_T("minsize"),-1);
     WXS_ENUM(wxsSplitterWindow,Orientation,_("Orientation"),_T("orientation"),OrientValues,OrientNames,wxHORIZONTAL);
 }

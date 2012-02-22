@@ -1,0 +1,129 @@
+<?xml version="1.0" ?>
+
+<!-- RCS-ID: $Id: wxchart.bkl 7551 2011-11-01 18:13:27Z jenslody $ -->
+
+<makefile>
+
+	<!-- Some defaults for the variables used by wxCode bakefiles -->
+	<set var="WXCODE_BAKEFILEDIR">../../../build/bakefiles</set>
+	<include file="$(WXCODE_BAKEFILEDIR)/defaults.bkl"/>
+
+
+	<!-- Settings for this component -->
+	<!-- =========================== -->
+
+	<!-- this is the name of the folder which contains this component and thus
+	     should always be in lowercase -->
+	<set var="COMP_NAME">wxchart</set>
+
+	<!-- COMP_SRC must list the component's sources with path relative to ../src -->
+	<!-- COMP_HDR must list the component's headers with path relative to ../include -->
+    <set var="COMP_SRC">
+            axis.cpp
+            bar3dchartpoints.cpp
+            barchartpoints.cpp
+            chartcolors.cpp
+            chart.cpp
+            chartctrl.cpp
+            chartwindow.cpp
+            label.cpp
+            legend.cpp
+            legendwindow.cpp
+            pie3dchartpoints.cpp
+            piechartpoints.cpp
+            points.cpp
+            xaxis.cpp
+            xaxiswindow.cpp
+            yaxis.cpp
+            yaxiswindow.cpp
+    </set>
+    <set var="COMP_HDR">
+            wx/axis.h
+            wx/bar3dchartpoints.h
+            wx/barchartpoints.h
+            wx/chartcolors.h
+            wx/chartctrl.h
+            wx/chartdef.h
+            wx/chart.h
+            wx/chartpoints.h
+            wx/chartpointstypes.h
+            wx/charttypes.h
+            wx/chartwindow.h
+            wx/label.h
+            wx/legend.h
+            wx/legendwindow.h
+            wx/pie3dchartpoints.h
+            wx/piechartpoints.h
+            wx/points.h
+            wx/xaxis.h
+            wx/xaxiswindow.h
+            wx/yaxis.h
+            wx/yaxiswindow.h
+    </set>
+
+    <!--
+    <set var="COMP_BITMAP_DIR">$(COMP_BASEPATH)/src/bitmap</set>
+    <set var="COMP_BITMAP_SRC"></set>
+    <set var="COMP_BITMAP_HDR">
+            chart_zin.bmp
+            chart_zin.xpm
+            chart_zot.bmp
+            chart_zot.xpm
+    </set>
+    -->
+    
+	<!-- the folder where component sample sources and headers are kept.
+	     NOTE: *never* use something like "../samples" since some formats (like autoconf)
+	           have makefiles which are not placed in the "build" subfolder but directly
+	           in the component root folder; to refer to the component's root folder use
+			   $(COMP_BASE_PATH) which is set to ".." for win32 makefiles and "." for
+			   autoconf -->
+	<set var="COMP_SAMPLE_DIR">$(COMP_BASEPATH)/samples</set>
+
+	<!-- both the COMP_SAMPLE_SRC and COMP_SAMPLE_HDR must list the sample's files with
+         path relative to COMP_SAMPLE_DIR -->
+	<set var="COMP_SAMPLE_SRC">wxchart.cpp</set>
+	<set var="COMP_SAMPLE_HDR"></set>
+
+
+	<!-- The wxCode bakefile to include after the definition of the COMP_XXXX variables... -->
+	<include file="$(WXCODE_BAKEFILEDIR)/wxcode.bkl"/>
+
+	<!-- The real target: wxcode.bkl does not declare a real target but a template called
+	     "complib". In this way modifications are allowed to the basic template. -->
+	<lib id="wxchart_lib" template="complib" cond="WX_SHARED=='0'"/>
+	<dll id="wxchart_dll" template="compdll" cond="WX_SHARED=='1'">
+
+		<!-- remove the libraries which are not required by your project -->
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+	</dll>
+
+	<!-- this makes the MSVC6 project files much nicer... -->
+	<set var="MSVC6PRJ_MERGED_TARGETS">wxchart=wxchart_lib+wxchart_dll</set>
+
+
+
+	<!-- Samples for this component -->
+	<!-- ========================== -->
+
+	<!-- The sample of the component: as for the LIB target, this exe derives
+	     from a template contained in templates.bkl which can be modified here.
+         There are templates compsample, compsample2, compsample3, compsample4
+         defined for up to four samples. The variables used for each sample are
+         COMP_SAMPLE_DIR[2,3,4] for the path to each sample
+         COMP_SAMPLE_HDR[2,3,4] for the header files for each sample
+         COMP_SAMPLE_SRC[2,3,4] for the source files for each sample
+         Each compsample[N] implicitly uses the variables COMP_SAMPLE_XXX[N]
+         with the corresponding sample index N.
+    -->
+
+	<exe id="minimal" template="compsample">
+		<library>wxchart_lib</library>
+
+		<!-- remove the libraries which are not required by your project -->
+		<wx-lib>core</wx-lib>
+		<wx-lib>base</wx-lib>
+	</exe>
+
+</makefile>

@@ -63,7 +63,7 @@ MAYBE_KEYBINDER=keybinder
 endif
 
 if BUILD_LIBFINDER
-MAYBE_LIBFINDER=wxSmith wxSmithContribItems lib_finder
+MAYBE_LIBFINDER=wxContribItems lib_finder
 endif
 
 if BUILD_PROFILER
@@ -91,7 +91,7 @@ MAYBE_SYMTAB=symtab
 endif
 
 if BUILD_THREADSEARCH
-MAYBE_THREADSEARCH=wxSmith wxSmithContribItems ThreadSearch
+MAYBE_THREADSEARCH=wxContribItems ThreadSearch
 endif
 
 if BUILD_TOOLSPLUS
@@ -102,16 +102,20 @@ if BUILD_VALGRIND
 MAYBE_VALGRIND=Valgrind
 endif
 
+if BUILD_WXCONTRIB
+MAYBE_WXCONTRIB=wxContribItems
+endif
+
 if BUILD_WXSMITH
 MAYBE_WXSMITH=wxSmith
 endif
 
 if BUILD_WXSMITHCONTRIB
-MAYBE_WXSMITHCONTRIB=wxSmith  wxSmithContribItems
+MAYBE_WXSMITHCONTRIB=wxSmith wxContribItems wxSmithContribItems
 endif
 
 if BUILD_WXSMITHAUI
-MAYBE_WXSMITHAUI=wxSmith wxSmithContribItems  wxSmithAui
+MAYBE_WXSMITHAUI=wxSmith wxSmithAui
 endif
 
 if BUILD_HEXEDITOR
@@ -170,6 +174,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_TOOLSPLUS) \
 		$(MAYBE_VALGRIND) \
+		$(MAYBE_WXCONTRIB) \
 		$(MAYBE_WXSMITH) \
 		$(MAYBE_WXSMITHCONTRIB) \
 		$(MAYBE_WXSMITHAUI)
@@ -207,6 +212,7 @@ DIST_SUBDIRS = AutoVersioning \
 		ThreadSearch \
 		ToolsPlus \
 		Valgrind \
+		wxContribItems \
 		wxSmith \
 		wxSmithContribItems \
 		wxSmithAui

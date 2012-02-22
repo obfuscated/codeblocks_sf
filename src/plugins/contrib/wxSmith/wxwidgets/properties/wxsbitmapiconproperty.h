@@ -39,6 +39,7 @@ struct wxsBitmapIconData
     wxString Id;
     wxString Client;
     wxString FileName;
+    wxString CodeText;
 
     /** \brief Generating preview for this bitmap / icon */
     wxBitmap GetPreview(const wxSize& Size,const wxString& DefaultClient = wxART_OTHER);

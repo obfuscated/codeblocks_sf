@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxScrollingDialog" name="wxsImageTreeEditorDlg">
+		<title>Tree Item Editor</title>
+		<size>480,468</size>
+		<font>
+			<size>8</size>
+			<style>normal</style>
+			<weight>normal</weight>
+			<underlined>0</underlined>
+			<family>swiss</family>
+			<face>Arial</face>
+		</font>
+		<id_arg>0</id_arg>
+		<object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="yes">
+			<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+				<orient>wxVERTICAL</orient>
+				<object class="sizeritem">
+					<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+						<object class="sizeritem">
+							<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+								<label>Edit Tree Items</label>
+								<pos>0,0</pos>
+								<size>400,20</size>
+								<font>
+									<size>10</size>
+									<style>normal</style>
+									<weight>bold</weight>
+									<underlined>0</underlined>
+									<family>swiss</family>
+									<face>Arial</face>
+								</font>
+								<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
+							</object>
+							<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						</object>
+					</object>
+					<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				</object>
+				<object class="sizeritem">
+					<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+						<object class="sizeritem">
+							<object class="wxBoxSizer" variable="BoxSizer5" member="no">
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+										<label>tree-name</label>
+										<object class="sizeritem">
+											<object class="wxTreeCtrl" name="ID_TREECTRL1" variable="Tree1" member="yes">
+												<image_list></image_list>
+												<tree_items>
+													<item>Tree1</item>
+													<item></item>
+												</tree_items>
+												<items_text>
+													<item2>Tree1</item2>
+													<item2></item2>
+												</items_text>
+												<pos>2,36</pos>
+												<size>246,359</size>
+												<style>wxTR_EDIT_LABELS|wxTR_DEFAULT_STYLE</style>
+												<handler function="OnTreeCtrl1SelectionChanged" entry="EVT_TREE_SEL_CHANGED" />
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<border>5</border>
+								</object>
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						</object>
+						<object class="sizeritem">
+							<object class="wxBoxSizer" variable="BoxSizer6" member="no">
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+										<label>Attributes</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer7" member="no">
+												<object class="sizeritem">
+													<object class="wxImageButton" name="ID_IMAGEBUTTON1" variable="bAddItem" member="yes">
+														<image_list>ImageList1</image_list>
+														<label_index>0</label_index>
+														<disabled_index></disabled_index>
+														<selected_index></selected_index>
+														<focus_index></focus_index>
+														<pos>256,36</pos>
+														<size>24,23</size>
+														<tooltip>Add A New Item</tooltip>
+														<handler function="OnbAddItemClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="wxID_ANY" variable="StaticText2" member="yes">
+														<label>Add Item</label>
+														<pos>290,40</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer8" member="no">
+												<object class="sizeritem">
+													<object class="wxImageButton" name="ID_IMAGEBUTTON2" variable="bAddSubItem" member="yes">
+														<image_list>ImageList1</image_list>
+														<label_index>1</label_index>
+														<disabled_index></disabled_index>
+														<selected_index></selected_index>
+														<focus_index></focus_index>
+														<pos>256,66</pos>
+														<size>24,23</size>
+														<tooltip>Add A New Child</tooltip>
+														<handler function="OnbAddSubItemClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+														<label>Add Sub-Item</label>
+														<pos>290,70</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer9" member="no">
+												<object class="sizeritem">
+													<object class="wxImageButton" name="ID_IMAGEBUTTON3" variable="bDelItem" member="yes">
+														<image_list>ImageList1</image_list>
+														<label_index>2</label_index>
+														<disabled_index></disabled_index>
+														<selected_index></selected_index>
+														<focus_index></focus_index>
+														<pos>256,96</pos>
+														<size>24,23</size>
+														<tooltip>Delete Current Item</tooltip>
+														<handler function="OnbDelItemClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+														<label>Delete Current Item</label>
+														<pos>290,100</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer10" member="no">
+												<object class="sizeritem">
+													<object class="wxImageButton" name="ID_IMAGEBUTTON4" variable="bDelAllItems" member="yes">
+														<image_list>ImageList1</image_list>
+														<label_index>3</label_index>
+														<disabled_index></disabled_index>
+														<selected_index></selected_index>
+														<focus_index></focus_index>
+														<pos>256,126</pos>
+														<size>24,23</size>
+														<tooltip>Delete All Items</tooltip>
+														<handler function="OnbDelAllItemsClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+														<label>Delete All Items</label>
+														<pos>290,130</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer11" member="no">
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON3" variable="bItemColor" member="yes">
+														<label>C</label>
+														<pos>256,156</pos>
+														<size>24,24</size>
+														<font>
+															<size>10</size>
+															<style>normal</style>
+															<weight>bold</weight>
+															<underlined>0</underlined>
+															<family>swiss</family>
+															<face>Arial Black</face>
+														</font>
+														<tooltip>Set Item Text Color</tooltip>
+														<handler function="OnbItemColorClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+														<label>Set Item Text Color</label>
+														<pos>290,160</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer12" member="no">
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX1" variable="cxItemBold" member="yes">
+														<label>    Set Item Text Bold</label>
+														<pos>262,192</pos>
+														<tooltip>Set Item Text Bold</tooltip>
+														<handler function="OncxItemBoldClick" entry="EVT_CHECKBOX" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer" variable="BoxSizer13" member="no">
+												<object class="sizeritem">
+													<object class="wxImageButton" name="ID_IMAGEBUTTON5" variable="bEditItem" member="yes">
+														<image_list>ImageList1</image_list>
+														<label_index>4</label_index>
+														<disabled_index></disabled_index>
+														<selected_index></selected_index>
+														<focus_index></focus_index>
+														<pos>256,216</pos>
+														<size>24,23</size>
+														<tooltip>Start Editor On Current Item</tooltip>
+														<handler function="OnbEditItemClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText11" member="yes">
+														<label>Edit Current Item</label>
+														<pos>290,220</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxGridSizer" variable="GridSizer1" member="no">
+												<cols>2</cols>
+												<rows>5</rows>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText12" member="yes">
+														<label>Image-List</label>
+														<pos>256,272</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT13" variable="StaticText13" member="yes">
+														<label>Label</label>
+														<pos>310,272</pos>
+														<size>82,14</size>
+														<fg>#0000FF</fg>
+														<style>wxST_NO_AUTORESIZE</style>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxBitmapComboBox" name="ID_COMBOBOX1" variable="cbNormal" member="yes">
+														<mImageList></mImageList>
+														<mItems>
+															<item>cbNormal</item>
+															<item></item>
+														</mItems>
+														<mItemsText>
+															<item2>cbNormal</item2>
+															<item2></item2>
+														</mItemsText>
+														<pos>256,296</pos>
+														<size>48,22</size>
+														<style>wxCB_READONLY</style>
+														<handler function="OncbNormalSelect" entry="EVT_COMBOBOX" />
+													</object>
+													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+														<label>Normal Image</label>
+														<pos>310,300</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxBitmapComboBox" name="ID_COMBOBOX2" variable="cbSelected" member="yes">
+														<mImageList></mImageList>
+														<mItems>
+															<item>cbSelected</item>
+															<item></item>
+														</mItems>
+														<mItemsText>
+															<item2>cbSelected</item2>
+															<item2></item2>
+														</mItemsText>
+														<pos>256,326</pos>
+														<size>48,22</size>
+														<style>wxCB_READONLY</style>
+														<handler function="OncbSelectedSelect" entry="EVT_COMBOBOX" />
+													</object>
+													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
+														<label>Selected Image</label>
+														<pos>310,330</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxBitmapComboBox" name="ID_COMBOBOX3" variable="cbExpanded" member="yes">
+														<mImageList></mImageList>
+														<mItems>
+															<item>cbExpanded</item>
+															<item></item>
+														</mItems>
+														<mItemsText>
+															<item2>cbExpanded</item2>
+															<item2></item2>
+														</mItemsText>
+														<pos>256,356</pos>
+														<size>48,22</size>
+														<style>wxCB_READONLY</style>
+														<handler function="OncbExpandedSelect" entry="EVT_COMBOBOX" />
+													</object>
+													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+														<label>Expanded Image</label>
+														<pos>310,360</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxBitmapComboBox" name="ID_COMBOBOX4" variable="cbSelExpanded" member="yes">
+														<mImageList></mImageList>
+														<mItems>
+															<item>cbSelExpanded</item>
+															<item></item>
+														</mItems>
+														<mItemsText>
+															<item2>cbSelExpanded</item2>
+															<item2></item2>
+														</mItemsText>
+														<pos>256,386</pos>
+														<size>48,22</size>
+														<style>wxCB_READONLY</style>
+														<handler function="OncbSelExpandedSelect" entry="EVT_COMBOBOX" />
+													</object>
+													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>3</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
+														<label>Sel+Exp Image</label>
+														<pos>310,390</pos>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>3</border>
+												</object>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<border>5</border>
+								</object>
+							</object>
+							<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						</object>
+					</object>
+					<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				</object>
+				<object class="sizeritem">
+					<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+						<object class="sizeritem">
+							<object class="wxButton" name="ID_BUTTON1" variable="bOK" member="yes">
+								<label>OK</label>
+								<default>1</default>
+								<pos>48,440</pos>
+								<handler function="OnbOKClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+							<border>5</border>
+						</object>
+						<object class="spacer">
+							<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+						<object class="sizeritem">
+							<object class="wxButton" name="ID_BUTTON2" variable="bCancel" member="yes">
+								<label>Cancel</label>
+								<pos>280,440</pos>
+								<handler function="OnbCancelClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+							<border>5</border>
+						</object>
+					</object>
+					<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				</object>
+			</object>
+		</object>
+		<object class="wxImageList" variable="ImageList1" member="yes">
+			<image_list>
+				<item>16</item>
+				<item>16</item>
+				<item>static char * xpm_data[] = {</item>
+				<item>&quot;16 16 3 1&quot;,</item>
+				<item>&quot; &#x09;c None&quot;,</item>
+				<item>&quot;.&#x09;c #000000&quot;,</item>
+				<item>&quot;+&#x09;c #00C000&quot;,</item>
+				<item>&quot;        ....... &quot;,</item>
+				<item>&quot;        .+++++. &quot;,</item>
+				<item>&quot;   ..   .+++++. &quot;,</item>
+				<item>&quot;   ..   .+++++. &quot;,</item>
+				<item>&quot; ...... .+++++. &quot;,</item>
+				<item>&quot; ...... .+++++. &quot;,</item>
+				<item>&quot;   ..   .+++++. &quot;,</item>
+				<item>&quot;   ..   .+++++. &quot;,</item>
+				<item>&quot;        .+++++. &quot;,</item>
+				<item>&quot;        .+++++. &quot;,</item>
+				<item>&quot;        .+++++. &quot;,</item>
+				<item>&quot;        .+++++. &quot;,</item>
+				<item>&quot;        .++.++. &quot;,</item>
+				<item>&quot;        .+. .+. &quot;,</item>
+				<item>&quot;        ..   .. &quot;,</item>
+				<item>&quot;................&quot;};</item>
+				<item>static const char *xpm_data[] = {</item>
+				<item>&quot;16 16 4 1&quot;,</item>
+				<item>&quot;o c Black&quot;,</item>
+				<item>&quot;. c #000080&quot;,</item>
+				<item>&quot;X c #0000FF&quot;,</item>
+				<item>&quot;_ c None&quot;,</item>
+				<item>&quot;________......._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;___oo___.XXXXX._&quot;,</item>
+				<item>&quot;___oo___.XXXXX._&quot;,</item>
+				<item>&quot;_oooooo_.XXXXX._&quot;,</item>
+				<item>&quot;_oooooo_.XXXXX._&quot;,</item>
+				<item>&quot;___oo___.XXXXX._&quot;,</item>
+				<item>&quot;___oo___.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XX.XX._&quot;,</item>
+				<item>&quot;________.X._.X._&quot;,</item>
+				<item>&quot;________..___.._&quot;,</item>
+				<item>&quot;oooooooooooooooo&quot;</item>
+				<item>};</item>
+				<item>static const char *xpm_data[] = {</item>
+				<item>&quot;16 16 3 1&quot;,</item>
+				<item>&quot;. c Black&quot;,</item>
+				<item>&quot;_ c None&quot;,</item>
+				<item>&quot;X c #FF4040&quot;,</item>
+				<item>&quot;________......._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;__.___._.XXXXX._&quot;,</item>
+				<item>&quot;__.._.._.XXXXX._&quot;,</item>
+				<item>&quot;___...__.XXXXX._&quot;,</item>
+				<item>&quot;____.___.XXXXX._&quot;,</item>
+				<item>&quot;___...__.XXXXX._&quot;,</item>
+				<item>&quot;__.._.._.XXXXX._&quot;,</item>
+				<item>&quot;__.___._.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XX.XX._&quot;,</item>
+				<item>&quot;________.X._.X._&quot;,</item>
+				<item>&quot;________..___.._&quot;,</item>
+				<item>&quot;................&quot;</item>
+				<item>};</item>
+				<item>static const char *xpm_data[] = {</item>
+				<item>&quot;16 16 22 1&quot;,</item>
+				<item>&quot;4 c Black&quot;,</item>
+				<item>&quot;3 c #A5AEBD&quot;,</item>
+				<item>&quot;= c #5478B4&quot;,</item>
+				<item>&quot;1 c #95A3BB&quot;,</item>
+				<item>&quot;O c #9AA7BC&quot;,</item>
+				<item>&quot;: c #758EB7&quot;,</item>
+				<item>&quot;$ c #6986B6&quot;,</item>
+				<item>&quot;# c #4971B2&quot;,</item>
+				<item>&quot;* c #8A9CBA&quot;,</item>
+				<item>&quot;X c #8598B9&quot;,</item>
+				<item>&quot;o c #ABB2BE&quot;,</item>
+				<item>&quot;; c #7F95B9&quot;,</item>
+				<item>&quot;- c #4E74B3&quot;,</item>
+				<item>&quot;2 c #A0ABBC&quot;,</item>
+				<item>&quot;+ c #6F8AB7&quot;,</item>
+				<item>&quot;_ c None&quot;,</item>
+				<item>&quot;. c #B5B9BF&quot;,</item>
+				<item>&quot;@ c #3E69B1&quot;,</item>
+				<item>&quot;&lt; c #90A0BA&quot;,</item>
+				<item>&quot;&gt; c #6483B5&quot;,</item>
+				<item>&quot;, c #5A7BB4&quot;,</item>
+				<item>&quot;&amp; c #5F7FB5&quot;,</item>
+				<item>&quot;________________&quot;,</item>
+				<item>&quot;____.Xo______OO_&quot;,</item>
+				<item>&quot;____+@#.____$@&amp;_&quot;,</item>
+				<item>&quot;____*@@X__.=@=o_&quot;,</item>
+				<item>&quot;_____-@-_.=@=.__&quot;,</item>
+				<item>&quot;_____;@@X=@=.___&quot;,</item>
+				<item>&quot;_____.#@@@$.____&quot;,</item>
+				<item>&quot;______:@@&gt;______&quot;,</item>
+				<item>&quot;_____:@@@+______&quot;,</item>
+				<item>&quot;___.,@#&amp;@@._____&quot;,</item>
+				<item>&quot;__o=@=oO@@&lt;_____&quot;,</item>
+				<item>&quot;_1#@=._.@@-_____&quot;,</item>
+				<item>&quot;*@@$____&gt;@@2____&quot;,</item>
+				<item>&quot;:#*_____3#,.____&quot;,</item>
+				<item>&quot;________________&quot;,</item>
+				<item>&quot;4444444444444444&quot;</item>
+				<item>};</item>
+				<item>static const char *xpm_data[] = {</item>
+				<item>&quot;16 16 2 1&quot;,</item>
+				<item>&quot;. c Black&quot;,</item>
+				<item>&quot;_ c None&quot;,</item>
+				<item>&quot;________________&quot;,</item>
+				<item>&quot;______..________&quot;,</item>
+				<item>&quot;______..._______&quot;,</item>
+				<item>&quot;_____...._______&quot;,</item>
+				<item>&quot;_____._...______&quot;,</item>
+				<item>&quot;____.._...______&quot;,</item>
+				<item>&quot;____.___..______&quot;,</item>
+				<item>&quot;___..___..._____&quot;,</item>
+				<item>&quot;___._____.._____&quot;,</item>
+				<item>&quot;___.........____&quot;,</item>
+				<item>&quot;__.._____...____&quot;,</item>
+				<item>&quot;__._______...___&quot;,</item>
+				<item>&quot;_.._______...___&quot;,</item>
+				<item>&quot;_....___......._&quot;,</item>
+				<item>&quot;________________&quot;,</item>
+				<item>&quot;................&quot;</item>
+				<item>};</item>
+			</image_list>
+			<image_text>
+				<item2>16</item2>
+				<item2>16</item2>
+				<item2>static char * xpm_data[] = {</item2>
+				<item2>&quot;16 16 3 1&quot;,</item2>
+				<item2>&quot; &#x09;c None&quot;,</item2>
+				<item2>&quot;.&#x09;c #000000&quot;,</item2>
+				<item2>&quot;+&#x09;c #00C000&quot;,</item2>
+				<item2>&quot;        ....... &quot;,</item2>
+				<item2>&quot;        .+++++. &quot;,</item2>
+				<item2>&quot;   ..   .+++++. &quot;,</item2>
+				<item2>&quot;   ..   .+++++. &quot;,</item2>
+				<item2>&quot; ...... .+++++. &quot;,</item2>
+				<item2>&quot; ...... .+++++. &quot;,</item2>
+				<item2>&quot;   ..   .+++++. &quot;,</item2>
+				<item2>&quot;   ..   .+++++. &quot;,</item2>
+				<item2>&quot;        .+++++. &quot;,</item2>
+				<item2>&quot;        .+++++. &quot;,</item2>
+				<item2>&quot;        .+++++. &quot;,</item2>
+				<item2>&quot;        .+++++. &quot;,</item2>
+				<item2>&quot;        .++.++. &quot;,</item2>
+				<item2>&quot;        .+. .+. &quot;,</item2>
+				<item2>&quot;        ..   .. &quot;,</item2>
+				<item2>&quot;................&quot;};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;16 16 4 1&quot;,</item2>
+				<item2>&quot;o c Black&quot;,</item2>
+				<item2>&quot;. c #000080&quot;,</item2>
+				<item2>&quot;X c #0000FF&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________......._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;___oo___.XXXXX._&quot;,</item2>
+				<item2>&quot;___oo___.XXXXX._&quot;,</item2>
+				<item2>&quot;_oooooo_.XXXXX._&quot;,</item2>
+				<item2>&quot;_oooooo_.XXXXX._&quot;,</item2>
+				<item2>&quot;___oo___.XXXXX._&quot;,</item2>
+				<item2>&quot;___oo___.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XX.XX._&quot;,</item2>
+				<item2>&quot;________.X._.X._&quot;,</item2>
+				<item2>&quot;________..___.._&quot;,</item2>
+				<item2>&quot;oooooooooooooooo&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;16 16 3 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;X c #FF4040&quot;,</item2>
+				<item2>&quot;________......._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;__.___._.XXXXX._&quot;,</item2>
+				<item2>&quot;__.._.._.XXXXX._&quot;,</item2>
+				<item2>&quot;___...__.XXXXX._&quot;,</item2>
+				<item2>&quot;____.___.XXXXX._&quot;,</item2>
+				<item2>&quot;___...__.XXXXX._&quot;,</item2>
+				<item2>&quot;__.._.._.XXXXX._&quot;,</item2>
+				<item2>&quot;__.___._.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XX.XX._&quot;,</item2>
+				<item2>&quot;________.X._.X._&quot;,</item2>
+				<item2>&quot;________..___.._&quot;,</item2>
+				<item2>&quot;................&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;16 16 22 1&quot;,</item2>
+				<item2>&quot;4 c Black&quot;,</item2>
+				<item2>&quot;3 c #A5AEBD&quot;,</item2>
+				<item2>&quot;= c #5478B4&quot;,</item2>
+				<item2>&quot;1 c #95A3BB&quot;,</item2>
+				<item2>&quot;O c #9AA7BC&quot;,</item2>
+				<item2>&quot;: c #758EB7&quot;,</item2>
+				<item2>&quot;$ c #6986B6&quot;,</item2>
+				<item2>&quot;# c #4971B2&quot;,</item2>
+				<item2>&quot;* c #8A9CBA&quot;,</item2>
+				<item2>&quot;X c #8598B9&quot;,</item2>
+				<item2>&quot;o c #ABB2BE&quot;,</item2>
+				<item2>&quot;; c #7F95B9&quot;,</item2>
+				<item2>&quot;- c #4E74B3&quot;,</item2>
+				<item2>&quot;2 c #A0ABBC&quot;,</item2>
+				<item2>&quot;+ c #6F8AB7&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;. c #B5B9BF&quot;,</item2>
+				<item2>&quot;@ c #3E69B1&quot;,</item2>
+				<item2>&quot;&lt; c #90A0BA&quot;,</item2>
+				<item2>&quot;&gt; c #6483B5&quot;,</item2>
+				<item2>&quot;, c #5A7BB4&quot;,</item2>
+				<item2>&quot;&amp; c #5F7FB5&quot;,</item2>
+				<item2>&quot;________________&quot;,</item2>
+				<item2>&quot;____.Xo______OO_&quot;,</item2>
+				<item2>&quot;____+@#.____$@&amp;_&quot;,</item2>
+				<item2>&quot;____*@@X__.=@=o_&quot;,</item2>
+				<item2>&quot;_____-@-_.=@=.__&quot;,</item2>
+				<item2>&quot;_____;@@X=@=.___&quot;,</item2>
+				<item2>&quot;_____.#@@@$.____&quot;,</item2>
+				<item2>&quot;______:@@&gt;______&quot;,</item2>
+				<item2>&quot;_____:@@@+______&quot;,</item2>
+				<item2>&quot;___.,@#&amp;@@._____&quot;,</item2>
+				<item2>&quot;__o=@=oO@@&lt;_____&quot;,</item2>
+				<item2>&quot;_1#@=._.@@-_____&quot;,</item2>
+				<item2>&quot;*@@$____&gt;@@2____&quot;,</item2>
+				<item2>&quot;:#*_____3#,.____&quot;,</item2>
+				<item2>&quot;________________&quot;,</item2>
+				<item2>&quot;4444444444444444&quot;</item2>
+				<item2>};</item2>
+				<item2>static const char *xpm_data[] = {</item2>
+				<item2>&quot;16 16 2 1&quot;,</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________________&quot;,</item2>
+				<item2>&quot;______..________&quot;,</item2>
+				<item2>&quot;______..._______&quot;,</item2>
+				<item2>&quot;_____...._______&quot;,</item2>
+				<item2>&quot;_____._...______&quot;,</item2>
+				<item2>&quot;____.._...______&quot;,</item2>
+				<item2>&quot;____.___..______&quot;,</item2>
+				<item2>&quot;___..___..._____&quot;,</item2>
+				<item2>&quot;___._____.._____&quot;,</item2>
+				<item2>&quot;___.........____&quot;,</item2>
+				<item2>&quot;__.._____...____&quot;,</item2>
+				<item2>&quot;__._______...___&quot;,</item2>
+				<item2>&quot;_.._______...___&quot;,</item2>
+				<item2>&quot;_....___......._&quot;,</item2>
+				<item2>&quot;________________&quot;,</item2>
+				<item2>&quot;................&quot;</item2>
+				<item2>};</item2>
+			</image_text>
+			<image_count>5</image_count>
+		</object>
+	</object>
+</wxsmith>

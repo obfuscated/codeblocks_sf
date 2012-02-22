@@ -28,15 +28,15 @@
 #include "wxstoolbar.h"
 
 //(*Headers(wxsToolBarEditor)
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
-#include <wx/listbox.h>
-#include <wx/panel.h>
-#include <wx/radiobut.h>
 #include <wx/sizer.h>
-#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/listbox.h>
+#include <wx/statline.h>
+#include <wx/radiobut.h>
+#include <wx/panel.h>
+#include <wx/bmpbuttn.h>
+#include <wx/button.h>
 //*)
 
 class wxsToolBarEditor: public wxPanel
@@ -89,36 +89,36 @@ class wxsToolBarEditor: public wxPanel
 		//*)
 
 		//(*Declarations(wxsToolBarEditor)
-		wxBoxSizer* BoxSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxListBox* m_Content;
 		wxStaticBoxSizer* StaticBoxSizer2;
-		wxGridSizer* GridSizer1;
-		wxRadioButton* m_TypeNormal;
-		wxRadioButton* m_TypeSeparator;
-		wxRadioButton* m_TypeRadio;
-		wxRadioButton* m_TypeCheck;
-		wxStaticLine* StaticLine1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxStaticText* StaticText6;
-		wxTextCtrl* m_Id;
-		wxStaticText* StaticText1;
-		wxTextCtrl* m_Label;
-		wxStaticText* StaticText4;
-		wxBitmapButton* m_Bitmap;
-		wxStaticText* StaticText5;
 		wxBitmapButton* m_Bitmap2;
-		wxStaticText* StaticText2;
-		wxTextCtrl* m_ToolTip;
-		wxStaticText* StaticText3;
-		wxTextCtrl* m_HelpText;
-		wxStaticLine* StaticLine2;
-		wxBoxSizer* BoxSizer3;
-		wxButton* Button3;
 		wxButton* Button4;
-		wxBoxSizer* BoxSizer2;
+		wxStaticText* StaticText2;
+		wxTextCtrl* m_HelpText;
+		wxRadioButton* m_TypeNormal;
 		wxButton* Button1;
+		wxStaticText* StaticText6;
+		wxRadioButton* m_TypeRadio;
+		wxStaticText* StaticText1;
+		wxBoxSizer* BoxSizer2;
+		wxStaticText* StaticText3;
 		wxButton* Button2;
+		wxBitmapButton* m_Bitmap;
+		wxStaticLine* StaticLine2;
+		wxRadioButton* m_TypeCheck;
+		wxRadioButton* m_TypeSeparator;
+		wxButton* Button3;
+		wxGridSizer* GridSizer1;
+		wxStaticText* StaticText5;
+		wxStaticLine* StaticLine1;
+		wxBoxSizer* BoxSizer1;
+		wxTextCtrl* m_ToolTip;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
+		wxBoxSizer* BoxSizer3;
+		wxStaticText* StaticText4;
+		wxListBox* m_Content;
+		wxTextCtrl* m_Label;
+		wxTextCtrl* m_Id;
 		//*)
 
         enum ItemType

@@ -281,6 +281,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [false])
 	AM_CONDITIONAL([BUILD_TOOLSPLUS], [false])
 	AM_CONDITIONAL([BUILD_VALGRIND], [false])
+	AM_CONDITIONAL([BUILD_WXCONTRIB], [false])
 	AM_CONDITIONAL([BUILD_WXSMITH], [false])
 	AM_CONDITIONAL([BUILD_WXSMITHCONTRIB], [false])
 	AM_CONDITIONAL([BUILD_WXSMITHAUI], [false])
@@ -319,6 +320,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_THREADSEARCH], [true])
 	AM_CONDITIONAL([BUILD_TOOLSPLUS], [true])
 	AM_CONDITIONAL([BUILD_VALGRIND], [true])
+	AM_CONDITIONAL([BUILD_WXCONTRIB], [true])
 	AM_CONDITIONAL([BUILD_WXSMITH], [true])
 	AM_CONDITIONAL([BUILD_WXSMITHCONTRIB], [true])
 	AM_CONDITIONAL([BUILD_WXSMITHAUI], [true])
@@ -343,7 +345,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
   [                        		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, spellchecker, symtab, ]
-  [                        		     ThreadSearch, ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui ],
+  [                        		     ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
@@ -433,6 +435,9 @@ do
 		;;
 	Valgrind)
 		AM_CONDITIONAL([BUILD_VALGRIND], [true])
+		;;
+	wxcontrib)
+		AM_CONDITIONAL([BUILD_WXCONTRIB], [true])
 		;;
 	wxsmith)
 		AM_CONDITIONAL([BUILD_WXSMITH], [true])
@@ -539,6 +544,9 @@ do
 	-Valgrind)
 		AM_CONDITIONAL([BUILD_VALGRIND], [false])
 		;;
+	-wxcontrib)
+		AM_CONDITIONAL([BUILD_WXCONTRIB], [false])
+		;;
 	-wxsmith)
 		AM_CONDITIONAL([BUILD_WXSMITH], [false])
 		;;
@@ -603,6 +611,7 @@ AC_SUBST(BUILD_SPELLCHECKER)
 AC_SUBST(BUILD_THREADSEARCH)
 AC_SUBST(BUILD_TOOLSPLUS)
 AC_SUBST(BUILD_VALGRIND)
+AC_SUBST(BUILD_WXCONTRIB)
 AC_SUBST(BUILD_WXSMITH)
 AC_SUBST(BUILD_WXSMITHCONTRIB)
 AC_SUBST(BUILD_WXSMITHAUI)

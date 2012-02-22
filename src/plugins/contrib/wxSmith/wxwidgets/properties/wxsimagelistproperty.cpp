@@ -22,7 +22,7 @@
 */
 
 #include "wxsimagelistproperty.h"
-#include "wxsimagelistdlg.h"
+#include "wxsimagelisteditordlg.h"
 
 #include <globals.h>
 
@@ -38,10 +38,17 @@ wxsImageListProperty::wxsImageListProperty(const wxString& PGName,const wxString
 
 bool wxsImageListProperty::ShowEditor(wxsPropertyContainer* Object)
 {
-    wxsImageListDlg Dlg(0);
+    wxsImageListEditorDlg Dlg(0);
     return Dlg.Execute(DataName, VALUE);
 }
 
+/*! \brief Read XML data.
+ *
+ * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
+ * \param Element TiXmlElement*				A pointer to a TiXmlElement object.
+ * \return bool	True on succes, otherwise false.
+ *
+ */
 bool wxsImageListProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
     VALUE.Clear();
@@ -68,6 +75,13 @@ bool wxsImageListProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* El
     return true;
 }
 
+/*! \brief Write XML data.
+ *
+ * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
+ * \param Element TiXmlElement*				A pointer to a TiXmlElement object.
+ * \return bool	True if count != 0, false otherwise.
+ *
+ */
 bool wxsImageListProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
     size_t Count = VALUE.Count();
@@ -78,6 +92,13 @@ bool wxsImageListProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* E
     return Count != 0;
 }
 
+/*! \brief Read from a property stream.
+ *
+ * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
+ * \param Stream wxsPropertyStream*		A pointer to a wxsPropertyStream object.
+ * \return bool	Always returns true.
+ *
+ */
 bool wxsImageListProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
     VALUE.Clear();
@@ -92,6 +113,13 @@ bool wxsImageListProperty::PropStreamRead(wxsPropertyContainer* Object,wxsProper
     return true;
 }
 
+/*! \brief Write to the property stream.
+ *
+ * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
+ * \param Stream wxsPropertyStream*		A pointer to a wxsPropertyStream object.
+ * \return bool	Always returns true.
+ *
+ */
 bool wxsImageListProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
     Stream->SubCategory(GetDataName());
@@ -104,6 +132,12 @@ bool wxsImageListProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPrope
     return true;
 }
 
+/*! \brief Get a string to display in the text field..
+ *
+ * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
+ * \return wxString	The image string.
+ *
+ */
 wxString wxsImageListProperty::GetStr(wxsPropertyContainer* Object)
 {
     wxString Result;

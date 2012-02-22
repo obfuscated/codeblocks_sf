@@ -1,7 +1,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
-includedir=@includedir@
+includedir=@includedir@/wxsmith
 datarootdir = @datarootdir@
 sharedir=@datadir@
 
@@ -9,5 +9,4 @@ Name: wxSmith
 Description: RAD-tool for the Code::Blocks IDE
 Version: @VERSION@
 Libs: -L${libdir} -lwxsmithlib
-Cflags: -fPIC -I${includedir}/wxsmith \
-			-I${includedir}/wxsmith/contrib/include
+Cflags: -fPIC -I${includedir}
