@@ -44,27 +44,27 @@ extern "C" {
 #endif
 
 #ifdef _SQ64
-    #ifdef _MSC_VER
-        typedef __int64 SQInteger;
-        typedef unsigned __int64 SQUnsignedInteger;
-        typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
-    // C::B patch: For Win64 build with GCC
-    #elif defined(__GNUC__) && defined(_WIN64)
-        typedef long long SQInteger;
-        typedef unsigned long long SQUnsignedInteger;
-        typedef unsigned long long SQHash; /* should be the same size of a pointer */
-    // C::B patch: All other 64-bit platforms
-    #else
-        typedef long SQInteger;
-        typedef unsigned long SQUnsignedInteger;
-        typedef unsigned long SQHash; /*should be the same size of a pointer*/
-    #endif
-    typedef int SQInt32;
+#ifdef _MSC_VER
+typedef __int64 SQInteger;
+typedef unsigned __int64 SQUnsignedInteger;
+typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
+// C::B patch: For Win64 build with GCC
+#elif defined(__GNUC__) && defined(_WIN64)
+typedef long long SQInteger;
+typedef unsigned long long SQUnsignedInteger;
+typedef unsigned long long SQHash; /* should be the same size of a pointer */
+// C::B patch: All other 64-bit platforms
 #else
-    typedef int SQInteger;
-    typedef int SQInt32; /*must be 32 bits(also on 64bits processors)*/
-    typedef unsigned int SQUnsignedInteger;
-    typedef unsigned int SQHash; /*should be the same size of a pointer*/
+typedef long SQInteger;
+typedef unsigned long SQUnsignedInteger;
+typedef unsigned long SQHash; /*should be the same size of a pointer*/
+#endif
+typedef int SQInt32;
+#else
+typedef int SQInteger;
+typedef int SQInt32; /*must be 32 bits(also on 64bits processors)*/
+typedef unsigned int SQUnsignedInteger;
+typedef unsigned int SQHash; /*should be the same size of a pointer*/
 #endif
 
 

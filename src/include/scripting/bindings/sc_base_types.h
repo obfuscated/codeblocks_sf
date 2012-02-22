@@ -8,7 +8,6 @@
 
 #include <wx/string.h>
 #include <wx/arrstr.h>
-
 #include <globals.h>
 #include <settings.h>
 #include <manager.h>

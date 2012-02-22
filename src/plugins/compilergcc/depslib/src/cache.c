@@ -4,7 +4,7 @@
  * This file is part of depslib.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications
+ * freely, as long as this copyright notice is retained and modifications 
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -134,13 +134,8 @@ void cache_read(const char *path)
 			h->includes = list_new(h->includes, buf + 1, 0);
 			continue;
 		}
-
-		// C::B patch: Compatibility with 64 bit compiler / OS
-		#if defined(_WIN64)
-		sscanf(buf, "%I64d %n", &timeval, &n);
-		#else
+		
 		sscanf(buf, "%ld %n", &timeval, &n);
-		#endif
 		h = hdr_enter (buf + n);
 		h->time = timeval;
 	}
@@ -166,12 +161,7 @@ void cache_write(const char *path)
 	for (h = hdrlist; h; h = h->next)
 	{
 		LIST *l;
-		// C::B patch: Compatibility with 64 bit compiler / OS
-		#if defined(_WIN64)
-		fprintf(f, "%I64d %s\n", h->time, h->file);
-		#else
 		fprintf(f, "%ld %s\n", h->time, h->file);
-		#endif
 		for (l = h->includes; l; l = list_next (l))
 		{
 			fprintf(f, "\t%s\n", l->string);

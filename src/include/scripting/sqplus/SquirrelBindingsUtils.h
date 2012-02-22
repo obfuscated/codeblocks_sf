@@ -103,7 +103,7 @@ struct SquirrelClassDecl __##classname##_decl = {  \
 
 
 #define _DECL_NATIVE_CONSTRUCTION(classname,cppclass) \
-	BOOL_T push_##classname(cppclass &quat); \
+	BOOL push_##classname(cppclass &quat); \
 	SquirrelObject new_##classname(cppclass &quat);
 
 #define _IMPL_NATIVE_CONSTRUCTION(classname,cppclass) \
@@ -115,7 +115,7 @@ static SQInteger classname##_release_hook(SQUserPointer p, SQInteger size) \
 	} \
 	return 0; \
 } \
-BOOL_T push_##classname(cppclass &quat) \
+BOOL push_##classname(cppclass &quat) \
 { \
 	cppclass *newquat = new cppclass; \
 	*newquat = quat; \
@@ -141,11 +141,11 @@ SQInteger construct_##classname(cppclass *p) \
 	return 1; \
 }
 
-BOOL_T CreateStaticClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
-BOOL_T CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn);
-BOOL_T CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
-BOOL_T InitScriptClasses(HSQUIRRELVM v);
-BOOL_T CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook);
+BOOL CreateStaticClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
+BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn);
+BOOL CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd);
+BOOL InitScriptClasses(HSQUIRRELVM v);
+BOOL CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook);
 
 #endif // SQUIRREL_BINDINGS_UTILS_H
 

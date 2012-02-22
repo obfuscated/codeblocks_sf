@@ -36,7 +36,7 @@
 #include "pluginsconfigurationdlg.h" // class's header file
 
 #if wxCHECK_VERSION(2, 9, 1)
-int wxCALLBACK sortByTitle(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*sortData*/)
+int wxCALLBACK sortByTitle(long item1, long item2, wxIntPtr /*sortData*/)
 #else
 int wxCALLBACK sortByTitle(long item1, long item2, long /*sortData*/)
 #endif
@@ -141,7 +141,7 @@ void PluginsConfigurationDlg::FillList()
         list->SetItem(idx, 1, elem->info.version);
         list->SetItem(idx, 2, elem->plugin->IsAttached() ? _("Yes") : _("No"));
         list->SetItem(idx, 3, UnixFilename(elem->fileName));
-        list->SetItemData(idx, (wxIntPtr)elem);
+        list->SetItemData(idx, (long)elem);
 
         if (!elem->plugin->IsAttached())
             list->SetItemTextColour(idx, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));

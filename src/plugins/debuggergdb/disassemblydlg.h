@@ -19,15 +19,15 @@ class DisassemblyDlg : public wxPanel
         virtual ~DisassemblyDlg();
 
         void Clear(const StackFrame& frame);
-        void AddAssemblerLine(size_t addr, const wxString& line);
-        void SetActiveAddress(size_t addr);
+        void AddAssemblerLine(unsigned long int addr, const wxString& line);
+        void SetActiveAddress(unsigned long int addr);
     protected:
         void OnSave(wxCommandEvent& event);
         void OnRefresh(wxCommandEvent& event);
 
         DebuggerGDB* m_pDbg;
         wxScintilla* m_pCode;
-        size_t m_LastActiveAddr;
+        unsigned long int m_LastActiveAddr;
         bool m_HasActiveAddr;
         wxString m_FrameFunction;
         wxString m_FrameAddress;

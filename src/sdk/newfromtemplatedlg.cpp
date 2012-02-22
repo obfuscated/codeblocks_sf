@@ -192,7 +192,7 @@ void NewFromTemplateDlg::BuildCategoriesFor(TemplateOutputType otype, wxChoice* 
 }
 
 #if wxCHECK_VERSION(2, 9, 1)
-int wxCALLBACK SortTemplates(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*sortData*/)
+int wxCALLBACK SortTemplates(long item1, long item2, wxIntPtr /*sortData*/)
 #else
 int wxCALLBACK SortTemplates(long item1, long item2, long /*sortData*/)
 #endif
@@ -250,7 +250,7 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
                 int index = list->InsertItem(0, plugin->GetTitle(w), idx);
                 if (index != -1)
                 {
-                    list->SetItemData(index, (wxIntPtr)(new ListItemData(0, plugin, w)));
+                    list->SetItemData(index, (long)(new ListItemData(0, plugin, w)));
                     // if the script exists in the user's configuration, mark that it's been customized
                     wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + plugin->GetScriptFilename(w);
                     if (wxFileExists(script))
@@ -262,7 +262,7 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
         }
     }
 
-    list->SortItems(SortTemplates, (wxIntPtr)0);
+    list->SortItems(SortTemplates, 0);
 }
 
 wxListCtrl* NewFromTemplateDlg::GetVisibleListCtrl()

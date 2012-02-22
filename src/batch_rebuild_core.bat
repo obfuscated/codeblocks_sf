@@ -16,12 +16,8 @@ if not exist "%GCC_ROOT%" goto ErrNoGCC
 set PATH=%CB_ROOT%;%GCC_ROOT%;%PATH%
 
 set START_CMD=start "Code::Blocks Build" /D%~dp0 /min /b
-set CB_EXE="%CB_ROOT%\codeblocks.exe"
-set CB_PARAMS=--batch-build-notify --no-batch-window-close
-set CB_CMD=--rebuild "%~dp0CodeBlocks.cbp"
 
-set CB_TARGET=--target=All
-%START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
+%START_CMD% "%CB_ROOT%\codeblocks.exe" --batch-build-notify --no-batch-window-close --target=All --rebuild "%~dp0CodeBlocks.cbp"
 echo Do not forget to run "update.bat" after successful build!
 goto TheEnd
 

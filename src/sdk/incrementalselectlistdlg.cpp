@@ -113,13 +113,13 @@ wxString IncrementalSelectListDlg::GetStringSelection()
     return m_List->GetStringSelection();
 }
 
-wxIntPtr IncrementalSelectListDlg::GetSelection()
+long IncrementalSelectListDlg::GetSelection()
 {
     int selection = m_List->GetSelection();
     if (selection == wxNOT_FOUND)
         return wxNOT_FOUND;
 
-    return reinterpret_cast<wxIntPtr>(m_List->GetClientData(selection));
+    return reinterpret_cast<long>(m_List->GetClientData(selection));
 }
 
 void IncrementalSelectListDlg::FillList()

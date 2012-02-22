@@ -39,9 +39,9 @@ class ProgressDialog : public wxProgressDialog
             cbThrow(_T("ProgressDialog copy constructor should never be called!"));
         }
 
-        bool Update(int value, const wxString& newmsg)
+        bool Update(int val, const wxString& msg)
         {
-            return wxProgressDialog::Update(value, newmsg, 0);
+            return wxProgressDialog::Update(val, msg, 0);
         }
 };
 

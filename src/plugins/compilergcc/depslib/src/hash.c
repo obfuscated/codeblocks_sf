@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications
+ * freely, as long as this copyright notice is retained and modifications 
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -21,8 +21,8 @@
  * This file is part of Jam - see jam.c for Copyright information.
  */
 
-/*
- * hash.c - simple in-memory hashing routines
+/* 
+ * hash.c - simple in-memory hashing routines 
  *
  * External routines:
  *
@@ -64,7 +64,7 @@ typedef struct item {
 
 # define MAX_LISTS 32
 
-struct hash
+struct hash 
 {
 	/*
 	 * the hash table, just an array of item pointers
@@ -80,7 +80,7 @@ struct hash
 	/*
 	 * the array of records, maintained by these routines
 	 * essentially a microallocator
-	 */
+	 */ 
 	struct {
 		int more;	/* how many more ITEMs fit in lists[ list ] */
 		char *next;	/* where to put more ITEMs in lists[ list ] */
@@ -130,14 +130,14 @@ hashitem(
 	base = hp->tab.base + ( keyval % hp->tab.nel );
 
 	for( i = *base; i; i = i->hdr.next )
-	    if( keyval == i->hdr.keyval &&
+	    if( keyval == i->hdr.keyval && 
 		!strcmp( i->data.key, (*data)->key ) )
 	{
 		*data = &i->data;
 		return !0;
 	}
 
-	if( enter )
+	if( enter ) 
 	{
 		i = (ITEM *)hp->items.next;
 		hp->items.next += hp->items.size;
@@ -200,7 +200,7 @@ static void hashrehash( register struct hash *hp )
  */
 
 struct hash *
-hashinit(
+hashinit( 
 	int datalen,
 	const char *name )
 {
@@ -265,14 +265,11 @@ hashstat( struct hash *hp )
 
 #ifdef __LP64__ // avoid warning on 64-bit machines
 	printf( "%s table: %d+%d+%d (%dK+%luK) items+table+hash, %f density\n",
-// C::B patch: Compatibility with 64 bit compiler / OS
-#elif defined(_WIN64)
-	printf( "%s table: %d+%d+%d (%dK+%I64dK) items+table+hash, %f density\n",
 #else
 	printf( "%s table: %d+%d+%d (%dK+%dK) items+table+hash, %f density\n",
 #endif
-		hp->name,
-		count,
+		hp->name, 
+		count, 
 		hp->items.nel,
 		hp->tab.nel,
 		hp->items.nel * hp->items.size / 1024,

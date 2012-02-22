@@ -47,16 +47,6 @@ static int Call(Callee & callee,RT (Callee::*func)() const,HSQUIRRELVM v,int /*i
   return 1;
 }
 
-// C::B patch: so it builds on 64bit
-#ifdef _WIN64
-template <typename Callee>
-static int Call(Callee & callee,RT (Callee::*func)() const,HSQUIRRELVM v,SQInteger /*index*/) {
-  RT ret = (callee.*func)();
-  Push(v,ret);
-  return 1;
-}
-#endif
-
 template <typename Callee,typename P1>
 static int Call(Callee & callee,RT (Callee::*func)(P1) const,HSQUIRRELVM v,int index) {
   sq_argassert(1,index + 0);

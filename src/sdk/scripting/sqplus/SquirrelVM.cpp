@@ -53,7 +53,7 @@ void SquirrelVM::Init(SquirrelInitFlags flags)
 	//TODO error handler, compiler error handler
 }
 
-BOOL_T SquirrelVM::Update()
+BOOL SquirrelVM::Update()
 {
 	//update remote debugger
 	return TRUE;
@@ -136,7 +136,7 @@ SquirrelObject SquirrelVM::RunScript(const SquirrelObject &o,SquirrelObject *_th
 }
 
 
-BOOL_T SquirrelVM::BeginCall(const SquirrelObject &func)
+BOOL SquirrelVM::BeginCall(const SquirrelObject &func)
 {
 	if(_CallState != -1)
 		return FALSE;
@@ -146,7 +146,7 @@ BOOL_T SquirrelVM::BeginCall(const SquirrelObject &func)
 	return TRUE;
 }
 
-BOOL_T SquirrelVM::BeginCall(const SquirrelObject &func,SquirrelObject &_this)
+BOOL SquirrelVM::BeginCall(const SquirrelObject &func,SquirrelObject &_this)
 {
 	if(_CallState != -1)
 		throw SquirrelError(sqT("call already initialized"));

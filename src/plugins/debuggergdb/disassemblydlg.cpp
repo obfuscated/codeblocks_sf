@@ -113,7 +113,7 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }
 
-void DisassemblyDlg::AddAssemblerLine(size_t addr, const wxString& line)
+void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -128,7 +128,7 @@ void DisassemblyDlg::AddAssemblerLine(size_t addr, const wxString& line)
     m_pCode->SetReadOnly(true);
 }
 
-void DisassemblyDlg::SetActiveAddress(size_t addr)
+void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
 {
     if (m_HasActiveAddr && addr == m_LastActiveAddr)
         return;

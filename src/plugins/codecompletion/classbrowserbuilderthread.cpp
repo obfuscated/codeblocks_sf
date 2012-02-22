@@ -737,7 +737,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CCTreeCtrl* tree, wxTr
         }
         existing = tree->GetNextChild(parent, cookie);
     }
-    return tree->AppendItem(parent, name, imgIndex, imgIndex, data);
+        return tree->AppendItem(parent, name, imgIndex, imgIndex, data);
 }
 
 bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask, int tokenScopeMask)
