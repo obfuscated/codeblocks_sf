@@ -23,7 +23,7 @@
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
 		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp">
-			<Depends filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/MouseSap/MouseSap-unix.cbp" />
 		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman-unix.cbp" />
@@ -37,8 +37,10 @@
 		</Project>
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus-unix.cbp" />
 		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp">
+			<Depends filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
 			<Depends filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp">
