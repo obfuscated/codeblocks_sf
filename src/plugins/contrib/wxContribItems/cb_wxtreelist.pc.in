@@ -9,5 +9,5 @@ Name: wxTreeListCtrl
 Description: TreeListCtrl also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxtreelist
-Cflags: -fPIC -I${includedir}/wxTreeList
+Cflags: -fPIC -I${includedir}/wxTreeList/include
 
