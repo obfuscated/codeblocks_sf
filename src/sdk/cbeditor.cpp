@@ -1113,13 +1113,21 @@ void cbEditor::Split(cbEditor::SplitType split)
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
+    // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    Thaw();
+    #endif
     // parent both controls under the splitter
     m_pControl->Reparent(m_pSplitter);
     m_pControl2->Reparent(m_pSplitter);
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    Freeze();
+    #endif
 
     // add the splitter in the sizer
     m_pSizer->SetDimension(0, 0, GetSize().x, GetSize().y);
     m_pSizer->Add(m_pSplitter, 1, wxEXPAND);
+
     m_pSizer->Layout();
 
     // split as needed
@@ -1165,8 +1173,16 @@ void cbEditor::Unsplit()
 
     // remove the splitter from the sizer
     m_pSizer->Detach(m_pSplitter);
+
+    // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    Thaw();
+    #endif
     // parent the left control under this
     m_pControl->Reparent(this);
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    Freeze();
+    #endif
     // add it in the sizer
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     // destroy the splitter and right control
