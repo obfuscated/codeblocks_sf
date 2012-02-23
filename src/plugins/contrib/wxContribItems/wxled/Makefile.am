@@ -23,6 +23,3 @@ libwxled_la_SOURCES = \
 ./ledpanel/src/matrixobject.cpp \
 ./ledpanel/src/wxledfont.cpp \
 ./ledpanel/src/wxledpanel.cpp
-
-EXTRA_DIST = README
-
