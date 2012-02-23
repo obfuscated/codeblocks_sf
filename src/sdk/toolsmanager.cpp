@@ -14,6 +14,7 @@
     #include <wx/process.h>
     #include <wx/menu.h>
     #include <wx/msgdlg.h>
+
     #include "toolsmanager.h"
     #include "manager.h"
     #include "macrosmanager.h"
@@ -171,7 +172,7 @@ bool ToolsManager::Execute(const cbTool* tool)
     }
     else
     {
-        m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir);
+        m_pProcess = new PipedProcess(&m_pProcess, this, idToolProcess, pipe, dir);
         m_Pid = wxExecute(cmdline, flags, m_pProcess);
 
         if (!m_Pid)

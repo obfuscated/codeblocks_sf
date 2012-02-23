@@ -294,6 +294,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC() :
+    m_CompilerProcessList(),
     m_RealTargetsStartIndex(0),
     m_RealTargetIndex(0),
     m_PageIndex(-1),
@@ -303,11 +304,7 @@ CompilerGCC::CompilerGCC() :
     m_TargetIndex(-1),
     m_pErrorsMenu(0L),
     m_pProject(0L),
-    m_ppProcesses(0),
-    m_ParallelProcessCount(1),
     m_pTbar(0L),
-    m_pPid(0),
-    m_pProcessOutputFiles(0),
     m_pLog(0L),
     m_pListLog(0L),
     m_pToolTarget(0L),
@@ -348,11 +345,7 @@ void CompilerGCC::OnAttach()
     m_TargetIndex = -1;
     m_pErrorsMenu = 0L;
     m_pProject = 0L;
-    m_ppProcesses = 0;
-    m_ParallelProcessCount = 1;
     m_pTbar = 0L;
-    m_pPid = 0;
-    m_pProcessOutputFiles = 0;
     m_pLog = 0L;
     m_pListLog = 0L;
     m_pToolTarget = 0L;
@@ -1059,26 +1052,21 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 void CompilerGCC::AllocProcesses()
 {
     // create the parallel processes array
-    m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
-    m_ppProcesses = new wxProcess*[m_ParallelProcessCount];
-    m_pPid = new long int[m_ParallelProcessCount];
-    m_pProcessOutputFiles = new wxString[m_ParallelProcessCount];
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    size_t parallel_processes = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
+    m_CompilerProcessList.resize(parallel_processes);
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        m_ppProcesses[i] = 0;
-        m_pPid[i] = 0;
+        m_CompilerProcessList.at(i).pProcess = 0;
+        m_CompilerProcessList.at(i).PID      = 0;
     }
 }
 
 void CompilerGCC::FreeProcesses()
 {
     // free the parallel processes array
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
-        Delete(m_ppProcesses[i]);
-
-    DeleteArray(m_ppProcesses);
-    DeleteArray(m_pPid);
-    DeleteArray(m_pProcessOutputFiles);
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+        Delete(m_CompilerProcessList.at(i).pProcess);
+    m_CompilerProcessList.clear();
 }
 
 bool CompilerGCC::ReAllocProcesses()
@@ -1091,25 +1079,29 @@ bool CompilerGCC::ReAllocProcesses()
 bool CompilerGCC::IsProcessRunning(int idx) const
 {
     // invalid process index
-    if (!m_ppProcesses || idx >= (int)m_ParallelProcessCount)
+    if (m_CompilerProcessList.empty() || idx >= (int)m_CompilerProcessList.size())
         return false;
+
     // specific process
     if (idx >= 0)
-        return m_ppProcesses[idx] != 0;
-    // any process (-1)
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+        return (m_CompilerProcessList.at(static_cast<size_t>(idx)).pProcess != 0);
+
+    // any process (idx = -1)
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        if (m_ppProcesses[i] != 0)
+        if (m_CompilerProcessList.at(i).pProcess != 0)
             return true;
     }
+
     return false;
 }
 
 int CompilerGCC::GetNextAvailableProcessIndex() const
 {
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        if ((m_ppProcesses[i] == 0) && (m_pPid[i] == 0))
+        if (   (m_CompilerProcessList.at(i).pProcess == 0)
+            && (m_CompilerProcessList.at(i).PID      == 0) )
             return i;
     }
     return -1;
@@ -1118,9 +1110,9 @@ int CompilerGCC::GetNextAvailableProcessIndex() const
 int CompilerGCC::GetActiveProcessCount() const
 {
     size_t count = 0;
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        if (m_ppProcesses[i] != 0)
+        if (m_CompilerProcessList.at(i).pProcess != 0)
             ++count;
     }
     return count;
@@ -1247,15 +1239,21 @@ int CompilerGCC::DoRunQueue()
     }
 
     // create a new process
-    m_pProcessOutputFiles[procIndex] = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString();
-    m_ppProcesses[procIndex] = new PipedProcess((void**)&m_ppProcesses[procIndex], this, idGCCProcess1 + procIndex, pipe, dir);
-    m_pPid[procIndex] = wxExecute(cmd->command, flags, m_ppProcesses[procIndex]);
-    if ( !m_pPid[procIndex] )
+
+    m_CompilerProcessList.at(procIndex).OutputFile =
+        (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename()
+                                     : wxString(wxEmptyString);
+    m_CompilerProcessList.at(procIndex).pProcess =
+        new PipedProcess(&(m_CompilerProcessList.at(procIndex).pProcess), this, idGCCProcess1 + procIndex, pipe, dir);
+    m_CompilerProcessList.at(procIndex).PID     =
+        wxExecute(cmd->command, flags, m_CompilerProcessList.at(procIndex).pProcess);
+
+    if ( !m_CompilerProcessList.at(procIndex).PID )
     {
-        wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."), cmd->command.wx_str(), wxGetCwd().wx_str());
+        wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."),
+                                        cmd->command.wx_str(), wxGetCwd().wx_str());
         LogMessage(err, cltError);
-        delete m_ppProcesses[procIndex];
-        m_ppProcesses[procIndex] = 0;
+        Delete(m_CompilerProcessList.at(procIndex).pProcess);
         m_CommandQueue.Clear();
         ResetBuildState();
     }
@@ -2658,20 +2656,20 @@ int CompilerGCC::KillProcess()
 
     m_CommandQueue.Clear();
 
-    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        if (!m_ppProcesses[i])
+        if (!m_CompilerProcessList.at(i).pProcess)
             continue;
 
         #if defined(WIN32) && defined(ENABLE_SIGTERM)
-            ::GenerateConsoleCtrlEvent(0, m_pPid[i]);
+            ::GenerateConsoleCtrlEvent(0, m_CompilerProcessList.at(i).PID);
         #endif
 
         // Close input pipe
-        m_ppProcesses[i]->CloseOutput();
-        ((PipedProcess*) m_ppProcesses[i])->ForfeitStreams();
+        m_CompilerProcessList.at(i).pProcess->CloseOutput();
+        ((PipedProcess*) m_CompilerProcessList.at(i).pProcess)->ForfeitStreams();
 
-        ret = wxProcess::Kill(m_pPid[i], wxSIGTERM);
+        ret = wxProcess::Kill(m_CompilerProcessList.at(i).PID, wxSIGTERM);
 
         if (!platform::windows)
         {
@@ -2800,9 +2798,10 @@ void CompilerGCC::OnIdle(wxIdleEvent& event)
 {
     if (IsProcessRunning())
     {
-        for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+        for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
         {
-            if ((m_ppProcesses[i] != 0) && ((PipedProcess*)m_ppProcesses[i])->HasInput())
+            if (   (m_CompilerProcessList.at(i).pProcess != 0)
+                && (static_cast<PipedProcess*>(m_CompilerProcessList.at(i).pProcess))->HasInput() )
             {
                 event.RequestMore();
                 break;
@@ -3457,13 +3456,16 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 {
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode));
     m_timerIdleWakeUp.Stop();
-    m_pPid[procIndex] = 0;
-    m_ppProcesses[procIndex] = 0;
+    m_CompilerProcessList.at(procIndex).PID      = 0;
+    m_CompilerProcessList.at(procIndex).pProcess = 0;
     m_LastExitCode = exitCode;
 
-    if (exitCode == 0 && !m_pProcessOutputFiles[procIndex].IsEmpty())
+    wxString oFile = m_CompilerProcessList.at(procIndex).OutputFile;
+    if (exitCode == 0 && !oFile.IsEmpty())
     {
-        wxFFile f(m_pProcessOutputFiles[procIndex].wx_str(), _T("r"));
+        wxLogNull silence; // In case opening the file fails
+        // HERE TODO HERE
+        wxFFile f(oFile.wx_str(), _T("r"));
         if (f.IsOpened())
         {
             size_t size = f.Length();

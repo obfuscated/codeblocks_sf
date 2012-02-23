@@ -1034,7 +1034,7 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
         return -1;
 
     // start the gdb process
-    m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, cwd);
+    m_pProcess = new PipedProcess(&m_pProcess, this, idGDBProcess, true, cwd);
     Manager::Get()->GetLogManager()->Log(_("Starting debugger: "), m_PageIndex);
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 

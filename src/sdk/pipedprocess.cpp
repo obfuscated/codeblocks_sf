@@ -16,8 +16,6 @@
     #include "globals.h"
 #endif
 
-
-
 // The folowing class is created to override wxTextStream::ReadLine()
 class cbTextInputStream : public wxTextInputStream
 {
@@ -64,9 +62,7 @@ class cbTextInputStream : public wxTextInputStream
                         return wbuf[0];
                 }
                 else
-                {
                     return m_lastBytes[inlen]; // C::B fix (?)
-                }
             }
             // there should be no encoding which requires more than nine bytes for one character...
             return wxEOT;
@@ -112,7 +108,7 @@ BEGIN_EVENT_TABLE(PipedProcess, wxProcess)
 END_EVENT_TABLE()
 
 // class constructor
-PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
+PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
     : wxProcess(parent, id),
     m_Parent(parent),
     m_Id(id),
@@ -228,6 +224,6 @@ void PipedProcess::OnTimer(wxTimerEvent& /*event*/)
 
 void PipedProcess::OnIdle(wxIdleEvent& /*event*/)
 {
-    while (HasInput())
+    while ( HasInput() )
         ;
 }

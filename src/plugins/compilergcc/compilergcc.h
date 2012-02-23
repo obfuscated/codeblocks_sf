@@ -6,22 +6,24 @@
 #ifndef COMPILERGCC_H
 #define COMPILERGCC_H
 
+#include <wx/choice.h>
+#include <wx/dynarray.h>
+#include <wx/process.h>
+#include <wx/timer.h>
+
 #include <queue>
 
-#include <settings.h> // SDK
-#include <sdk_events.h>
-#include <compileoptionsbase.h>
 #include <cbplugin.h>
 #include <cbproject.h>
+#include <compileoptionsbase.h>
+#include <compilerfactory.h>
 #include <logger.h>
+#include <sdk_events.h>
+#include <settings.h> // SDK
+
 #include "compilermessages.h"
-#include <wx/process.h>
-#include <wx/dynarray.h>
 #include "compilererrors.h"
 #include "compiler_defs.h"
-#include <compilerfactory.h>
-#include <wx/timer.h>
-#include <wx/choice.h>
 
 #define MAX_TARGETS 128
 
@@ -75,11 +77,13 @@ enum BuildAction
     baBuild
 };
 
-class wxTimerEvent;
 class wxComboBox;
-class wxStaticText;
 class wxGauge;
+class wxStaticText;
+class wxTimerEvent;
+
 class BuildLogger;
+class PipedProcess;
 
 class CompilerGCC : public cbCompilerPlugin
 {
@@ -246,6 +250,15 @@ class CompilerGCC : public cbCompilerPlugin
         BuildJobTarget GetNextJob();
         BuildJobTarget& PeekNextJob();
 
+        struct CompilerProcess
+        {
+            PipedProcess* pProcess;
+            wxString      OutputFile;
+            long int      PID;
+        };
+        typedef std::vector<CompilerProcess> CompilerProcessList;
+        CompilerProcessList m_CompilerProcessList;
+
         wxArrayString       m_Targets; // list of targets contained in the active project
         int                 m_RealTargetsStartIndex;
         int                 m_RealTargetIndex;
@@ -259,11 +272,7 @@ class CompilerGCC : public cbCompilerPlugin
         int                 m_TargetIndex;
         wxMenu*             m_pErrorsMenu;
         cbProject*          m_pProject;
-        wxProcess**         m_ppProcesses;
-        size_t              m_ParallelProcessCount;
         wxToolBar*          m_pTbar;
-        long int*           m_pPid;
-        wxString*           m_pProcessOutputFiles;
         wxTimer             m_timerIdleWakeUp;
         BuildLogger*        m_pLog;
         CompilerMessages*   m_pListLog;
