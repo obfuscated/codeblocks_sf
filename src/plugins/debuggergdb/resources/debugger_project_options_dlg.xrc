@@ -81,6 +81,7 @@
 										<object class="sizeritem">
 											<object class="wxFlexGridSizer">
 												<cols>2</cols>
+												<rows>4</rows>
 												<vgap>4</vgap>
 												<hgap>4</hgap>
 												<growablecols>1</growablecols>
@@ -222,7 +223,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtCmdsBefore">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
@@ -237,7 +238,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtCmds">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
@@ -279,7 +280,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtShellCmdsBefore">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
@@ -294,7 +295,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtShellCmdsAfter">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>

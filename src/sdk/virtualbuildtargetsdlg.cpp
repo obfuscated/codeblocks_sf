@@ -51,7 +51,9 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*
     // fill aliases
     wxArrayString virtuals = m_pProject->GetVirtualBuildTargets();
     lstAliases->Set(virtuals);
-    lstAliases->SetSelection(0);
+
+    if (lstAliases->GetCount() > 0)
+        lstAliases->SetSelection(0);
 
     // fill build targets
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
