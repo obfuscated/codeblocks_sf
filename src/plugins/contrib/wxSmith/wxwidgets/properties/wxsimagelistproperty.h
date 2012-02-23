@@ -37,11 +37,11 @@ class wxsImageListProperty: public wxsCustomEditorProperty
 	public:
 
         /** \brief Ctor
-         *  \param PGName       		The name of this property in the Property Grid.
-         *  \param DataName     	The name of this property in data structures.
+         *  \param PGName       The name of this property in the Property Grid.
+         *  \param DataName     The name of this property in data structures.
          *  \param DataSubName  The name applied for each array element.
-         *  \param Offset       			The offset of the value (returned from wxsOFFSET macro).
-		 *  \param Priority int			The item's priority.
+         *  \param Offset       The offset of the value (returned from wxsOFFSET macro).
+		 *  \param Priority int	The item's priority.
          */
 		wxsImageListProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
 
@@ -65,9 +65,9 @@ class wxsImageListProperty: public wxsCustomEditorProperty
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
 	private:
-        long Offset;								//!< The offset of a variable in this class.
+        long Offset;				//!< The offset of a variable in this class.
         wxString DataSubName;		//!< The name to use for sub-item entries in XML
-        wxString DataName;				//!< The name to use for item entries in XML.
+        wxString DataName;			//!< The name to use for item entries in XML.
 };
 
 /** \addtogroup ext_properties_macros

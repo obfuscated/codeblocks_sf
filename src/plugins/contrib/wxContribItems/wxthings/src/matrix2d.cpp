@@ -9,7 +9,7 @@
 #include "precomp.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -18,16 +18,16 @@
 #include "wx/things/matrix2d.h"
 
 #ifndef WX_PRECOMP
-    #include "wx/object.h"
-    #include "wx/string.h"
-    #include "wx/dynarray.h"    // for wxArrayInt
-    #include "wx/utils.h"
-    #include "wx/msgdlg.h"
+    #include <wx/object.h>
+    #include <wx/string.h>
+    #include <wx/dynarray.h>    // for wxArrayInt
+    #include <wx/utils.h>
+    #include <wx/msgdlg.h>
 #endif
 
-#include "wx/file.h"
-#include "wx/wfstream.h"
-#include "wx/txtstrm.h"
+#include <wx/file.h>
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
 
 #include <math.h>
 #include <stdlib.h>

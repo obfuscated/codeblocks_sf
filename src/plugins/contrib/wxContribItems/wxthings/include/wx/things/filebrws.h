@@ -12,28 +12,28 @@
 
 #include "wx/things/thingdef.h"
 
-#include "wx/listctrl.h"
-#include "wx/dirctrl.h"
-#include "wx/filedlg.h"
-#include "wx/textdlg.h"
-#include "wx/generic/filedlgg.h"
+#include <wx/listctrl.h>
+#include <wx/dirctrl.h>
+#include <wx/filedlg.h>
+#include <wx/textdlg.h>
+#include <wx/generic/filedlgg.h>
 
-class WXDLLEXPORT wxCheckBox;
-class WXDLLEXPORT wxComboBox;
-class WXDLLEXPORT wxTreeEvent;
-class WXDLLEXPORT wxSplitterWindow;
-class WXDLLEXPORT wxGenericDirCtrl;
-class WXDLLEXPORT wxListCtrl;
-class WXDLLEXPORT wxListEvent;
-class WXDLLEXPORT wxToolBar;
-class WXDLLEXPORT wxBitmapButton;
-class WXDLLEXPORT wxConfigBase;
-class WXDLLEXPORT wxFileCtrl;
-class WXDLLEXPORT wxFileName;
+class WXDLLIMPEXP_FWD_BASE wxConfigBase;
+class WXDLLIMPEXP_FWD_CORE wxCheckBox;
+class WXDLLIMPEXP_FWD_CORE wxComboBox;
+class WXDLLIMPEXP_FWD_CORE wxTreeEvent;
+class WXDLLIMPEXP_FWD_CORE wxSplitterWindow;
+class WXDLLIMPEXP_FWD_CORE wxGenericDirCtrl;
+class WXDLLIMPEXP_FWD_CORE wxListCtrl;
+class WXDLLIMPEXP_FWD_CORE wxListEvent;
+class WXDLLIMPEXP_FWD_CORE wxToolBar;
+class WXDLLIMPEXP_FWD_CORE wxBitmapButton;
+class WXDLLIMPEXP_FWD_CORE wxFileCtrl;
+class WXDLLIMPEXP_FWD_CORE wxFileName;
 
-class WXDLLIMPEXP_THINGS wxFileBrowser;
+class WXDLLIMPEXP_FWD_THINGS wxFileBrowser;
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY_WITH_DECL(wxFileData, wxArrayFileData, class WXDLLIMPEXP_THINGS);
 
 //----------------------------------------------------------------------------

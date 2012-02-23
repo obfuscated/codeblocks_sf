@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		fnb_customize_dlg.cpp 
+// Name:		fnb_customize_dlg.cpp
 // Purpose:     customise dialog used by wxFlatNotebook
 // Author:      Eran Ifrah <eran.ifrah@gmail.com>
 // Created:     30/12/2005
@@ -15,7 +15,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-wxFNBCustomizeDialog::wxFNBCustomizeDialog( wxWindow* parent, long options, int id, wxString title, wxPoint pos, wxSize size, int style ) 
+wxFNBCustomizeDialog::wxFNBCustomizeDialog( wxWindow* parent, long options, int id, wxString title, wxPoint pos, wxSize size, int style )
 : wxDialog( parent, id, title, pos, size, style )
 , m_options(options)
 {
@@ -24,18 +24,18 @@ wxFNBCustomizeDialog::wxFNBCustomizeDialog( wxWindow* parent, long options, int 
 	SetSizer( mainSizer );
 
 	mainSizer->Add( CreateOptionsPage(), 1, wxEXPAND | wxALL, 5 );
-	
+
 	m_staticline2 = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
 	mainSizer->Add( m_staticline2, 0, wxALL|wxEXPAND, 5 );
-	
+
 	wxBoxSizer* btnSizer;
 	btnSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_close = new wxButton( this, wxID_ANY, wxT("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	m_close = new wxButton( this, wxID_CLOSE, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
 	btnSizer->Add( m_close, 0, wxALL, 5 );
-	
+
 	mainSizer->Add( btnSizer, 0, wxALIGN_CENTER, 5 );
-	
+
 	this->Layout();
 	GetSizer()->Fit(this);
 
@@ -44,7 +44,7 @@ wxFNBCustomizeDialog::wxFNBCustomizeDialog( wxWindow* parent, long options, int 
 
 void wxFNBCustomizeDialog::ConnectEvents()
 {
-	m_close->Connect(wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxFNBCustomizeDialog::OnClose), NULL, this);
+	m_close->Connect(wxID_CLOSE, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(wxFNBCustomizeDialog::OnClose), NULL, this);
 
 	// Connect all checkbox & radiobox controls to the same handler
 	if( m_styles ){
@@ -84,13 +84,13 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 	mainSizer = new wxBoxSizer( wxVERTICAL );
 	page->SetSizer( mainSizer );
 
-	wxString m_stylesChoices[] = { wxT("Default"), wxT("Visual Studio 8.0"), wxT("Visual Studio 7.10"), wxT("Fancy Tabs"), wxT("Firefox 2") };
+	wxString m_stylesChoices[] = { _("Default"), wxT("Visual Studio 8.0"), wxT("Visual Studio 7.10"), wxT("Fancy Tabs"), wxT("Firefox 2") };
 	int m_stylesNChoices = sizeof( m_stylesChoices ) / sizeof( wxString );
 
 	// Set the selected tabs' style
 	int selection = 0;
 	bool enableGrad = false, enableColorTab = false;
-	
+
 	if (pc->HasFlag(wxFNB_FF2) ){
 		selection = 4;
 		enableGrad = true; enableColorTab = false;
@@ -110,7 +110,7 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 
 	// can we customize the tab's style?
 	if( m_options & wxFNB_CUSTOM_TAB_LOOK ){
-		m_styles = new wxRadioBox( page, wxID_ANY, wxT("Visual Style:"), wxDefaultPosition, wxDefaultSize, m_stylesNChoices, m_stylesChoices, 3, wxRA_SPECIFY_COLS );
+		m_styles = new wxRadioBox( page, wxID_ANY, _("Visual Style:"), wxDefaultPosition, wxDefaultSize, m_stylesNChoices, m_stylesChoices, 3, wxRA_SPECIFY_COLS );
 		m_styles->SetSelection(selection);
 		mainSizer->Add( m_styles, 0, wxALL|wxEXPAND, 5 );
 	}else{
@@ -119,9 +119,9 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 
 	// can we customize the tab's orientation?
 	if( m_options & wxFNB_CUSTOM_ORIENTATION ){
-		wxString m_tabVPositionChoices[] = { wxT("Upper Tabs"), wxT("Bottom Tabs") };
+		wxString m_tabVPositionChoices[] = { _("Upper Tabs"), _("Bottom Tabs") };
 		int m_tabVPositionNChoices = sizeof( m_tabVPositionChoices ) / sizeof( wxString );
-		m_tabVPosition = new wxRadioBox( page, wxID_ANY, wxT("Tab Positioning:"), wxDefaultPosition, wxDefaultSize, m_tabVPositionNChoices, m_tabVPositionChoices, 2, wxRA_SPECIFY_COLS );
+		m_tabVPosition = new wxRadioBox( page, wxID_ANY, _("Tab Positioning:"), wxDefaultPosition, wxDefaultSize, m_tabVPositionNChoices, m_tabVPositionChoices, 2, wxRA_SPECIFY_COLS );
 		m_tabVPosition->SetSelection(pc->HasFlag(wxFNB_BOTTOM) ? 1 : 0);
 		mainSizer->Add( m_tabVPosition, 0, wxALL|wxEXPAND, 5 );
 	}else{
@@ -129,9 +129,9 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 	}
 
 	// there is no harm in showing this always
-	wxString navigationStyle [] = { wxT("Rotation Arrows"), wxT("Drop Down Tab List"), wxT("None") };
+	wxString navigationStyle [] = { _("Rotation Arrows"), _("Drop Down Tab List"), _("None") };
 	int nChoices = sizeof( navigationStyle ) / sizeof( wxString );
-	m_navigationStyle = new wxRadioBox( page, wxID_ANY, wxT("Navigation Style:"), wxDefaultPosition, wxDefaultSize, nChoices, navigationStyle, 3, wxRA_SPECIFY_COLS );
+	m_navigationStyle = new wxRadioBox( page, wxID_ANY, _("Navigation Style:"), wxDefaultPosition, wxDefaultSize, nChoices, navigationStyle, 3, wxRA_SPECIFY_COLS );
 
 	if(pc->HasFlag(wxFNB_DROPDOWN_TABS_LIST)){
 		m_navigationStyle->SetSelection(1);
@@ -144,53 +144,53 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 	mainSizer->Add( m_navigationStyle, 0, wxALL|wxEXPAND, 5 );
 
 	wxStaticBoxSizer* sbSizer2;
-	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( page, -1, wxT("General:") ), wxVERTICAL );
-	
+	sbSizer2 = new wxStaticBoxSizer( new wxStaticBox( page, -1, _("General:") ), wxVERTICAL );
+
 	wxGridSizer* gSizer1;
 	gSizer1 = new wxGridSizer( 3, 2, 0, 0 );
-	
-	m_tabBorder = new wxCheckBox( page, wxID_ANY, wxT("Draw Thin Border Around Tab Area"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	m_tabBorder = new wxCheckBox( page, wxID_ANY, _("Draw Thin Border Around Tab Area"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_tabBorder->SetValue(pc->HasFlag(wxFNB_TABS_BORDER_SIMPLE));
 	gSizer1->Add( m_tabBorder, 0, wxALL, 5 );
-	
+
 	// do we allow customizing close button options? ( in all forms: dclick, middle click, on tab and right side)
-	m_hideCloseButton = new wxCheckBox( page, wxID_ANY, wxT("Hide Close Button"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_hideCloseButton = new wxCheckBox( page, wxID_ANY, _("Hide Close Button"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_hideCloseButton->SetValue(pc->HasFlag(wxFNB_NO_X_BUTTON));
 	m_hideCloseButton->Enable(m_options & wxFNB_CUSTOM_CLOSE_BUTTON ? true : false);
 	gSizer1->Add( m_hideCloseButton, 0, wxALL, 5 );
 
-	m_mouseMiddleCloseTab = new wxCheckBox( page, wxID_ANY, wxT("Mouse Middle Button Closes Tab"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_mouseMiddleCloseTab = new wxCheckBox( page, wxID_ANY, _("Mouse Middle Button Closes Tab"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_mouseMiddleCloseTab->SetValue(pc->HasFlag(wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
 	m_mouseMiddleCloseTab->Enable(m_options & wxFNB_CUSTOM_CLOSE_BUTTON ? true : false);
 	gSizer1->Add( m_mouseMiddleCloseTab, 0, wxALL, 5 );
 
-	m_xButtonOnTab = new wxCheckBox( page, wxID_ANY, wxT("Place Close Button On Active Tab"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_xButtonOnTab = new wxCheckBox( page, wxID_ANY, _("Place Close Button On Active Tab"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_xButtonOnTab->SetValue(pc->HasFlag(wxFNB_X_ON_TAB));
 	m_xButtonOnTab->Enable(m_options & wxFNB_CUSTOM_CLOSE_BUTTON ? true : false);
 	gSizer1->Add( m_xButtonOnTab, 0, wxALL, 5 );
 
-	m_dlbClickCloseTab = new wxCheckBox( page, wxID_ANY, wxT("Double Click Closes Tab"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_dlbClickCloseTab = new wxCheckBox( page, wxID_ANY, _("Double Click Closes Tab"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_dlbClickCloseTab->SetValue(pc->HasFlag(wxFNB_DCLICK_CLOSES_TABS));
 	m_dlbClickCloseTab->Enable(m_options & wxFNB_CUSTOM_CLOSE_BUTTON ? true : false);
 	gSizer1->Add( m_dlbClickCloseTab, 0, wxALL, 5 );
 
-	m_smartTabbing = new wxCheckBox( page, wxID_ANY, wxT("Enable Smart Tabbing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_smartTabbing = new wxCheckBox( page, wxID_ANY, _("Enable Smart Tabbing"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_smartTabbing->SetValue(pc->HasFlag(wxFNB_SMART_TABS));
 	gSizer1->Add( m_smartTabbing, 0, wxALL, 5 );
-	
+
 	sbSizer2->Add( gSizer1, 0, wxEXPAND, 5 );
-	
+
 	mainSizer->Add( sbSizer2, 0, wxALL|wxEXPAND, 5 );
-	
+
 	if(m_options & wxFNB_CUSTOM_LOCAL_DRAG){
 		wxStaticBoxSizer* sbSizer4;
-		sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( page, -1, wxT("Drag And Drop:") ), wxHORIZONTAL );
-		m_allowDragAndDrop = new wxCheckBox( page, wxID_ANY, wxT("Enable Drag And Drop"), wxDefaultPosition, wxDefaultSize, 0 );
+		sbSizer4 = new wxStaticBoxSizer( new wxStaticBox( page, -1, _("Drag And Drop:") ), wxHORIZONTAL );
+		m_allowDragAndDrop = new wxCheckBox( page, wxID_ANY, _("Enable Drag And Drop"), wxDefaultPosition, wxDefaultSize, 0 );
 		m_allowDragAndDrop->SetValue(!pc->HasFlag(wxFNB_NODRAG));
 
 		sbSizer4->Add( m_allowDragAndDrop, 0, wxALL, 5 );
 
-		m_foreignDnD = new wxCheckBox( page, wxID_ANY, wxT("Allow Drag And Drop from other notebooks"), wxDefaultPosition, wxDefaultSize, 0 );
+		m_foreignDnD = new wxCheckBox( page, wxID_ANY, _("Allow Drag And Drop from other notebooks"), wxDefaultPosition, wxDefaultSize, 0 );
 		m_foreignDnD->SetValue(pc->HasFlag(wxFNB_ALLOW_FOREIGN_DND));
 		m_foreignDnD->Enable(m_allowDragAndDrop->IsChecked() && m_options & wxFNB_CUSTOM_FOREIGN_DRAG);
 		sbSizer4->Add( m_foreignDnD, 0, wxALL, 5 );
@@ -199,19 +199,19 @@ wxPanel *wxFNBCustomizeDialog::CreateOptionsPage()
 	}else{
 		m_allowDragAndDrop = NULL;
 		m_foreignDnD = NULL;
-	}	
+	}
 
 	wxStaticBoxSizer* sbSizer5;
-	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( page, -1, wxT("Effects:") ), wxHORIZONTAL );
-	
-	m_gradient = new wxCheckBox( page, wxID_ANY, wxT("Use Gradient painting for tabs area"), wxDefaultPosition, wxDefaultSize, 0 );
+	sbSizer5 = new wxStaticBoxSizer( new wxStaticBox( page, -1, _("Effects:") ), wxHORIZONTAL );
+
+	m_gradient = new wxCheckBox( page, wxID_ANY, _("Use Gradient painting for tabs area"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_gradient->SetValue(pc->HasFlag(wxFNB_BACKGROUND_GRADIENT));
 	sbSizer5->Add( m_gradient, 0, wxALL, 5 );
-	
-	m_colorfulTab = new wxCheckBox( page, wxID_ANY, wxT("Set Random Colour for Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	m_colorfulTab = new wxCheckBox( page, wxID_ANY, _("Set Random Colour for Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_colorfulTab->SetValue(pc->HasFlag(wxFNB_COLORFUL_TABS));
 	sbSizer5->Add( m_colorfulTab, 0, wxALL, 5 );
-	
+
 	mainSizer->Add( sbSizer5, 0, wxALL|wxEXPAND, 5 );
 	m_colorfulTab->Enable(enableColorTab);
 	m_gradient->Enable(enableGrad);
@@ -342,7 +342,7 @@ void wxFNBCustomizeDialog::OnStyle(wxCommandEvent &event)
 			style &= ~(wxFNB_SMART_TABS);
 		}
 	}
-	
+
 	if(obj == m_allowDragAndDrop){
 		if(event.IsChecked()){
 			m_foreignDnD->Enable(m_options & wxFNB_CUSTOM_FOREIGN_DRAG ? true : false);
@@ -380,5 +380,3 @@ void wxFNBCustomizeDialog::OnStyle(wxCommandEvent &event)
 	bookWin->SetWindowStyleFlag(style);
 	bookWin->Refresh();
 }
-
-

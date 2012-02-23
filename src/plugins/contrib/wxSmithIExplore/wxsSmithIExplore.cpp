@@ -24,6 +24,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #include <configurationpanel.h>
+
 #include "wxsSmithIExplore.h"
 
 // Register the plugin with Code::Blocks.

@@ -4,7 +4,7 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: thingdef.h 7551 2011-11-01 18:13:27Z jenslody $
+// RCS-ID:      $Id: thingdef.h,v 1.3 2006/08/24 19:35:58 jrl1 Exp $
 // Copyright:   (c) John Labenski
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@
 #ifndef __WX_THINGDEF_H__
 #define __WX_THINGDEF_H__
 
-#include "wx/defs.h"
+#include <wx/defs.h>
 
 //-----------------------------------------------------------------------------
 // The version of wxThings
@@ -48,11 +48,18 @@
     #define WXDLLIMPEXP_DATA_THINGS(type) type
 #endif
 
+// Forward declare all wxThings classes with this macro
+#if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
+    #define WXDLLIMPEXP_FWD_THINGS
+#else
+    #define WXDLLIMPEXP_FWD_THINGS WXDLLIMPEXP_THINGS
+#endif
+
 // ----------------------------------------------------------------------------
 // wxWidgets backwards compatibility macros
 // ----------------------------------------------------------------------------
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 #ifndef WX_DECLARE_OBJARRAY_WITH_DECL // for wx2.4 backwards compatibility
     #define WX_DECLARE_OBJARRAY_WITH_DECL(T, name, expmode) WX_DECLARE_USER_EXPORTED_OBJARRAY(T, name, WXDLLIMPEXP_THINGS)
 #endif

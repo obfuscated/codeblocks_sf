@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -19,14 +19,14 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include <wx/wx.h>
 #endif
 
-#include "wx/buffer.h"
-#include "wx/image.h"
-#include "wx/splitter.h"
-#include "wx/tglbtn.h"
-#include "wx/notebook.h"
+#include <wx/buffer.h>
+#include <wx/image.h>
+#include <wx/splitter.h>
+#include <wx/tglbtn.h>
+#include <wx/notebook.h>
 #include "wx/things/toggle.h"
 #include "wx/things/spinctld.h"
 #include "wx/things/menubtn.h"
@@ -443,7 +443,7 @@ void MyFrame::OnMenu(wxCommandEvent &event)
 void MyFrame::OnComboBox(wxCommandEvent &event)
 {
     if (CheckControlId(event.GetId()))
-        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_COMBOBOX(id %d) val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_COMBOBOX(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 
 void MyFrame::OnFileBrowser(wxFileBrowserEvent &event)
@@ -462,7 +462,7 @@ void MyFrame::OnFileBrowser(wxFileBrowserEvent &event)
     else
         evtTypeStr = wxT("UNKNOWN EVENT TYPE!");
 
-    m_textCtrl->AppendText(wxString::Format(wxT("%s %s(id %d) val %ld\n"), wxNow().c_str(), evtTypeStr.c_str(), event.GetId(), event.GetInt()));
+    m_textCtrl->AppendText(wxString::Format(wxT("%s %s(id %d) val %d str '%s'\n"), wxNow().c_str(), evtTypeStr.c_str(), event.GetId(), event.GetInt(), event.GetFilePath().c_str()));
 }
 
 // ============================================================================

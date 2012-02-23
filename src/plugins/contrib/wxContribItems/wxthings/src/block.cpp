@@ -10,14 +10,14 @@
 #include "precomp.h"
 
 // For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    //#include "wx/object.h"
+    //#include <wx/object.h>
 #endif // WX_PRECOMP
 
 #include "wx/things/block.h"
@@ -30,7 +30,7 @@
 wxBlockInt const wxEmptyBlockInt(0, 0, -1, -1);
 wxBlockDouble const wxEmptyBlockDouble(0, 0, -1, -1);
 
-#include "wx/arrimpl.cpp"
+#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxArrayBlockInt);
 WX_DEFINE_OBJARRAY(wxArrayBlockDouble);
 WX_DEFINE_OBJARRAY(wxArrayBlockIntSelection);

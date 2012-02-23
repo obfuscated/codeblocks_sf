@@ -10,7 +10,7 @@
 #ifndef __wxBLOCK_H__
 #define __wxBLOCK_H__
 
-#include "wx/geometry.h"
+#include <wx/geometry.h>
 #include "wx/things/thingdef.h"
 
 //#define USE_wxRANGE
@@ -23,12 +23,12 @@
 //       because the double blocks need to match up at the edges and x+width
 //       does not always exactly equal the edge of an adjoining block
 
-class WXDLLIMPEXP_THINGS wxBlockInt;
-class WXDLLIMPEXP_THINGS wxBlockDouble;
-class WXDLLIMPEXP_THINGS wxBlockIntSelection;
-class WXDLLIMPEXP_THINGS wxBlockDoubleSelection;
+class WXDLLIMPEXP_FWD_THINGS wxBlockInt;
+class WXDLLIMPEXP_FWD_THINGS wxBlockDouble;
+class WXDLLIMPEXP_FWD_THINGS wxBlockIntSelection;
+class WXDLLIMPEXP_FWD_THINGS wxBlockDoubleSelection;
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockInt, wxArrayBlockInt, class WXDLLIMPEXP_THINGS);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockDouble, wxArrayBlockDouble, class WXDLLIMPEXP_THINGS);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockIntSelection, wxArrayBlockIntSelection, class WXDLLIMPEXP_THINGS);
@@ -57,10 +57,10 @@ enum wxBlockSort_Type
 };
 
 // functions to sort an array of blocks from any corner
-extern void wxArrayBlockIntSort(wxArrayBlockInt &blocks,
+WXDLLIMPEXP_THINGS void wxArrayBlockIntSort(wxArrayBlockInt &blocks,
                                 wxBlockSort_Type type = wxBLOCKSORT_TOPLEFT_BOTTOMRIGHT);
 
-extern void wxArrayBlockDoubleSort(wxArrayBlockDouble &blocks,
+WXDLLIMPEXP_THINGS void wxArrayBlockDoubleSort(wxArrayBlockDouble &blocks,
                                    wxBlockSort_Type type = wxBLOCKSORT_TOPLEFT_BOTTOMRIGHT);
 
 //=============================================================================

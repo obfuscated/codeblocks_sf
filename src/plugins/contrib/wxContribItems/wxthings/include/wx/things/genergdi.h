@@ -11,14 +11,14 @@
 #ifndef _WX_GENERGDI_H_
 #define _WX_GENERGDI_H_
 
-#include "wx/colour.h"
-#include "wx/pen.h"
-#include "wx/brush.h"
+#include <wx/colour.h>
+#include <wx/pen.h>
+#include <wx/brush.h>
 #include "wx/things/thingdef.h"
 
-class WXDLLIMPEXP_THINGS wxGenericColour;
-class WXDLLIMPEXP_THINGS wxGenericPen;
-class WXDLLIMPEXP_THINGS wxGenericBrush;
+class WXDLLIMPEXP_FWD_THINGS wxGenericColour;
+class WXDLLIMPEXP_FWD_THINGS wxGenericPen;
+class WXDLLIMPEXP_FWD_THINGS wxGenericBrush;
 
 // Uncreated and invalid versions of the generic colour, pen, and brush
 WXDLLIMPEXP_DATA_THINGS(extern const wxGenericColour) wxNullGenericColour;
@@ -34,8 +34,11 @@ WX_DECLARE_OBJARRAY_WITH_DECL(wxGenericBrush,  wxArrayGenericBrush,  class WXDLL
 
 #if !wxCHECK_VERSION(2,9,0)
 
+    typedef int wxPenStyle;
     typedef int wxPenCap;
     typedef int wxPenJoin;
+
+    #define wxPENSTYLE_SOLID wxSOLID
 
 #endif
 
@@ -70,7 +73,7 @@ public:
 
     // -----------------------------------------------------------------------
     // (re)Create this colour, unrefing this colour first.
-    //    Use these to detach this colour from it's refed copies.
+    //    Use these to detach this colour from its refed copies.
     void Create( const wxGenericColour& c );
     void Create( const wxColour& c);
     void Create( unsigned char red = 0, unsigned char green = 0,
@@ -157,10 +160,10 @@ public:
     wxGenericPen() : wxObject() {}
     wxGenericPen( const wxGenericPen &pen ) : wxObject() { Create(pen); }
     wxGenericPen( const wxPen &pen ) : wxObject() { Create(pen); }
-    wxGenericPen( const wxGenericColour &colour, int width = 1, int style = wxSOLID,
+    wxGenericPen( const wxGenericColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
                     { Create(colour, width, style, cap, join); }
-    wxGenericPen( const wxColour &colour, int width = 1, int style = wxSOLID,
+    wxGenericPen( const wxColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                   wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND ) : wxObject()
                     { Create(colour, width, style, cap, join); }
 
@@ -172,12 +175,12 @@ public:
 
     // -----------------------------------------------------------------------
     // (re)Create this pen, unrefing this pen first.
-    //    Use these to detach this pen from it's refed copies.
+    //    Use these to detach this pen from its refed copies.
     void Create( const wxGenericPen &pen );
     void Create( const wxPen &pen );
-    void Create( const wxGenericColour &colour, int width = 1, int style = wxSOLID,
+    void Create( const wxGenericColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
-    void Create( const wxColour &colour, int width = 1, int style = wxSOLID,
+    void Create( const wxColour &colour, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID,
                 wxPenCap cap = wxCAP_ROUND, wxPenJoin join = wxJOIN_ROUND );
 
     // -----------------------------------------------------------------------
@@ -190,7 +193,7 @@ public:
     void SetColour( int red, int green, int blue, int alpha=255 );
     void SetCap( wxPenCap capStyle );
     void SetJoin( wxPenJoin joinStyle );
-    void SetStyle( int style );
+    void SetStyle( wxPenStyle style );
     void SetWidth( int width );
     void SetDashes( int number_of_dashes, const wxDash *dash );
 
@@ -201,7 +204,7 @@ public:
     wxGenericColour GetGenericColour() const;
     wxColour GetColour() const;
     int GetWidth() const;
-    int GetStyle() const;
+    wxPenStyle GetStyle() const;
     wxPenCap GetCap() const;
     wxPenJoin GetJoin() const;
     int GetDashes(wxDash **ptr) const;
@@ -260,7 +263,7 @@ public:
 
     // -----------------------------------------------------------------------
     // (re)Create this brush, unrefing this pen first.
-    //    Use these to detach this pen from it's refed copies.
+    //    Use these to detach this pen from its refed copies.
     void Create( const wxGenericBrush &brush );
     void Create( const wxBrush &brush );
     void Create( const wxGenericColour &colour, int style = wxSOLID );

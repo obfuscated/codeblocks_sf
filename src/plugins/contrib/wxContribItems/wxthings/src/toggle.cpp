@@ -12,24 +12,24 @@
 #include "precomp.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/control.h"
-    #include "wx/settings.h"
-    #include "wx/bitmap.h"
-    #include "wx/timer.h"
-    #include "wx/dc.h"
-    #include "wx/dcclient.h"
+    #include <wx/control.h>
+    #include <wx/settings.h>
+    #include <wx/bitmap.h>
+    #include <wx/timer.h>
+    #include <wx/dc.h>
+    #include <wx/dcclient.h>
 #endif // WX_PRECOMP
 
-#include "wx/tglbtn.h"
-#include "wx/image.h"
-#include "wx/renderer.h"
+#include <wx/tglbtn.h>
+#include <wx/image.h>
+#include <wx/renderer.h>
 #include "wx/things/toggle.h"
 
 // ==========================================================================

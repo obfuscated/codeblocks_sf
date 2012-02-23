@@ -69,7 +69,7 @@ class wxsImageProperty: public wxsCustomEditorProperty
         wxString DataName;
 };
 
-/** \addtogroup properties_macros
+/** \addtogroup ext_properties_macros
  *  \{ */
 
 /** \brief Macro automatically declaring wxImage property

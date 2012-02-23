@@ -12,20 +12,20 @@
 #include "precomp.h"
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/control.h"
-    #include "wx/menu.h"
-    #include "wx/settings.h"
-    #include "wx/bitmap.h"
-    #include "wx/dc.h"
-    #include "wx/dcclient.h"
-    #include "wx/scrolwin.h"
+    #include <wx/control.h>
+    #include <wx/menu.h>
+    #include <wx/settings.h>
+    #include <wx/bitmap.h>
+    #include <wx/dc.h>
+    #include <wx/dcclient.h>
+    #include <wx/scrolwin.h>
 #endif // WX_PRECOMP
 
 #include "wx/things/bmpcombo.h"
@@ -465,7 +465,7 @@ int wxBmpComboBox::Append(const wxString &label, const wxBitmap &bitmap)
 
 int wxBmpComboBox::Insert(const wxString &label, const wxBitmap &bitmap, unsigned int n)
 {
-    wxCHECK_MSG(int(n)<GetCount(), wxNOT_FOUND, wxT("invalid index"));
+    wxCHECK_MSG(int(n) < (int)GetCount(), wxNOT_FOUND, wxT("invalid index"));
 
     m_labels.Insert(label, n);
     m_bitmaps.Insert(new wxBitmap(bitmap), n);
@@ -487,7 +487,7 @@ void wxBmpComboBox::Clear()
 
 void wxBmpComboBox::Delete( unsigned int n, unsigned int count )
 {
-    wxCHECK_RET(int(n+count)<=GetCount(), wxT("invalid index"));
+    wxCHECK_RET(int(n+count) <= (int)GetCount(), wxT("invalid index"));
 
     for (unsigned int i=0; i<count; i++)
     {

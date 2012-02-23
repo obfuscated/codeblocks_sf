@@ -137,7 +137,7 @@ class wxsItemResData
         inline int GetPropertiesFilter() { return m_PropertiesFilter; }
 
         /** \brief Getting name of wxs file (global path) */
-        inline const wxString& GetWxsFileName() { return m_SrcFileName; } // TODO (Loaden#2#) should be m_WxsFileName ??
+        inline const wxString& GetWxsFileName() { return m_WxsFileName; }
 
         /** \brief Getting name of source file (global path) */
         inline const wxString& GetSrcFileName() { return m_SrcFileName; }

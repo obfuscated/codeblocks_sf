@@ -38,12 +38,12 @@ Differences to wxSpinCtrl:
 #ifndef __wxSPINCTRLDBL_H__
 #define __wxSPINCTRLDBL_H__
 
-#include "wx/spinbutt.h"
-#include "wx/spinctrl.h" // for EVT_SPINCTRL
+#include <wx/spinbutt.h>
+#include <wx/spinctrl.h> // for EVT_SPINCTRL
 #include "wx/things/thingdef.h"
 
-class WXDLLEXPORT wxTextCtrl;
-class WXDLLIMPEXP_THINGS wxSpinCtrlDblTextCtrl;
+class WXDLLIMPEXP_FWD_CORE wxTextCtrl;
+class WXDLLIMPEXP_FWD_THINGS wxSpinCtrlDblTextCtrl;
 
 enum
 {

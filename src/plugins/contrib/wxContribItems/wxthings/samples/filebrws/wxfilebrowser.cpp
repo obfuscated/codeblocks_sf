@@ -10,7 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -19,13 +19,13 @@
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include <wx/wx.h>
 #endif
 
-#include "wx/buffer.h"
-#include "wx/image.h"
-#include "wx/splitter.h"
-#include "wx/notebook.h"
+#include <wx/buffer.h>
+#include <wx/image.h>
+#include <wx/splitter.h>
+#include <wx/notebook.h>
 #include "wx/things/filebrws.h"
 
 /* XPM */
@@ -155,6 +155,8 @@ IMPLEMENT_APP(MyApp)
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
        : wxFrame(NULL, -1, title, pos, size, style)
 {
+    SetIcon(wxICON(mondrian));
+
     wxMenu *menuFile = new wxMenu;
     menuFile->Append(Minimal_GenericFileDlg, wxT("Generic File Dialog..."));
     menuFile->AppendSeparator();
@@ -220,7 +222,7 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
     wxMessageBox(msg, _T("About wxFileBrowser"), wxOK | wxICON_INFORMATION, this);
 }
 
-//#include "wx/log.h"
+//#include <wx/log.h>
 
 void MyFrame::OnGenericFileDlg( wxCommandEvent &WXUNUSED(event) )
 {

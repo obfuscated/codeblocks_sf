@@ -10,7 +10,7 @@
 #ifndef __WXIMAGER_GEOMETRY_H__
 #define __WXIMAGER_GEOMETRY_H__
 
-#include "wx/geometry.h"
+#include <wx/geometry.h>
 #include "wx/things/thingdef.h"
 
 #define wxGEOMETRY_INF 1E100
@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // wxRay2DDouble uses point slope line format
 //
-//    y = mx+b, m=(x-x0)/(y-y0)
+//    y = mx+b, m=(y-y0)/(x-x0)
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_THINGS wxRay2DDouble : public wxPoint2DDouble
@@ -159,7 +159,7 @@ public :
 //-----------------------------------------------------------------------------
 // wxLine2DInt uses point slope line format
 //
-//    y = mx+b, m=(x-x0)/(y-y0)
+//    y = mx+b, m=(y-y0)/(x-x0)
 //-----------------------------------------------------------------------------
 /*
 class WXDLLIMPEXP_THINGS wxLine2DInt : wxRect2DInt

@@ -12,12 +12,12 @@
 
 #include "wx/things/thingdef.h"
 
-class WXDLLIMPEXP_THINGS wxRangeInt;
-class WXDLLIMPEXP_THINGS wxRangeDouble;
-class WXDLLIMPEXP_THINGS wxRangeIntSelection;
-class WXDLLIMPEXP_THINGS wxRangeDoubleSelection;
+class WXDLLIMPEXP_FWD_THINGS wxRangeInt;
+class WXDLLIMPEXP_FWD_THINGS wxRangeDouble;
+class WXDLLIMPEXP_FWD_THINGS wxRangeIntSelection;
+class WXDLLIMPEXP_FWD_THINGS wxRangeDoubleSelection;
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY_WITH_DECL(wxRangeInt, wxArrayRangeInt, class WXDLLIMPEXP_THINGS);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxRangeDouble, wxArrayRangeDouble, class WXDLLIMPEXP_THINGS);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxRangeIntSelection, wxArrayRangeIntSelection, class WXDLLIMPEXP_THINGS);
@@ -52,7 +52,7 @@ public:
     inline bool IsEmpty() const { return m_min > m_max; }
 
     // Swap the min and max values
-    inline void SwapMinMax() { register int temp = m_min; m_min = m_max; m_max = temp; }
+    inline void SwapMinMax() { int temp = m_min; m_min = m_max; m_max = temp; }
 
     // returns -1 for i < min, 0 for in range, +1 for i > m_max
     inline int Position(int i) const { return i < m_min ? -1 : (i > m_max ? 1 : 0); }
@@ -203,7 +203,7 @@ public:
     inline bool IsEmpty() const { return m_min > m_max; }
 
     // Swap the min and max values
-    inline void SwapMinMax() { register wxDouble temp = m_min; m_min = m_max; m_max = temp; }
+    inline void SwapMinMax() { wxDouble temp = m_min; m_min = m_max; m_max = temp; }
 
     // returns -1 for i < min, 0 for in range, +1 for i > m_max
     inline int Position(wxDouble i) const { return i < m_min ? -1 : (i > m_max ? 1 : 0); }

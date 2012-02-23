@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		wxFlatNotebook.cpp 
+// Name:		wxFlatNotebook.cpp
 // Purpose:     generic implementation of flat style notebook class.
 // Author:      Eran Ifrah <eran.ifrah@gmail.com>
 // Modified by: Priyank Bolia <soft@priyank.in>
@@ -53,7 +53,7 @@ wxString WhereToString( int where )
 	}
 	return whereMap[where];
 }
-#endif 
+#endif
 
 //-------------------------------------------------------------------
 // Provide user with a nice feedback when tab is being dragged
@@ -151,7 +151,7 @@ bool wxFlatNotebook::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos,
 	tabHeight += 6;
 #endif
 	m_pages->SetSizeHints(wxSize(-1, tabHeight));
-	
+
 	// Add the tab container to the sizer
 	m_mainSizer->Insert(0, m_pages, 0, wxEXPAND);
 	m_mainSizer->Layout();
@@ -465,7 +465,7 @@ void wxFlatNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 			{
 				m_popupWin = new wxTabNavigatorWindow( this );
 				m_popupWin->ShowModal();
-				m_popupWin->Destroy(); 
+				m_popupWin->Destroy();
 				SetSelection((size_t)GetSelection());
 				m_popupWin = NULL;
 			}
@@ -642,7 +642,7 @@ void wxFlatNotebook::SetDisableTextColour(const wxColour& disable)
 {
 	m_pages->m_disableTextColor = disable;
 }
-	
+
 
 /// Gets first gradient colour
 const wxColour& wxFlatNotebook::GetGradientColorFrom()
@@ -839,7 +839,7 @@ void wxPageContainer::PopPageHistory(int page)
 		where = m_history.Index(page);
 	}
 
-	//update values 
+	//update values
 	if(tabIdx != wxNOT_FOUND){
 		for(size_t i=0; i<m_history.size(); i++){
 			int &tt = m_history.Item(i);
@@ -899,7 +899,7 @@ void wxPageContainer::OnSize(wxSizeEvent& WXUNUSED(event))
 
 	int from = 0;
 	int page = GetSelection();
-	for(; from<m_nFrom; from++) 
+	for(; from<m_nFrom; from++)
 	{
 		vTabInfo.clear();
 		render->NumberTabsCanFit( this, vTabInfo, from );
@@ -930,7 +930,7 @@ void wxPageContainer::OnMiddleDown(wxMouseEvent& event)
 		}
 	default:
 		break;
-	}   
+	}
 
 	event.Skip();
 }
@@ -959,7 +959,7 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
                         if( style & wxFNB_CUSTOM_DLG ){
                                 if( !m_customMenu ){
                                         m_customMenu = new wxMenu();
-                                        wxMenuItem *item = new wxMenuItem(m_customMenu, wxID_ANY, wxT("Properties..."));
+                                        wxMenuItem *item = new wxMenuItem(m_customMenu, wxID_ANY, _("Properties..."));
                                         m_customMenu->Append(item);
                                         Connect( item->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( wxPageContainer::OnShowCustomizeDialog ));
                                 }
@@ -997,7 +997,7 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
 
 		}
 		break;
-	
+
 	default:
 		break;
 	}
@@ -1163,7 +1163,7 @@ void wxPageContainer::OnLeftUp(wxMouseEvent& event)
 int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabIdx)
 {
 	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() );
-	
+
 	wxRect rect = GetClientRect();
 	int btnLeftPos = render->GetLeftButtonPos(this);
 	int btnRightPos = render->GetRightButtonPos(this);
@@ -1240,9 +1240,9 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 		else
 		{
 
-			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y, 
+			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y,
 				pgInfo.GetSize().x, pgInfo.GetSize().y);
-			
+
 			if(InsideRect(tabRect, pt))
 			{
 				// We have a match
@@ -1346,7 +1346,7 @@ void wxPageContainer::DoDeletePage(size_t page)
 		m_iActivePage = GetPreviousSelection();
 		//PopPageHistory(m_iActivePage);
  	}
-	
+
 	m_pagesInfoVec.RemoveAt(page);
 
 	if(m_iActivePage == wxNOT_FOUND && m_pagesInfoVec.Count() > 0){
@@ -1391,7 +1391,7 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 		const int savePreviewId = m_nTabPreviewId;
 
 		long style = GetParent()->GetWindowStyleFlag();
- 
+
 		m_nXButtonStatus = wxFNB_BTN_NONE;
 		m_nRightButtonStatus = wxFNB_BTN_NONE;
 		m_nLeftButtonStatus = wxFNB_BTN_NONE;
@@ -1500,7 +1500,7 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 		const bool bRedrawRight = m_nRightButtonStatus != rightButtonStatus;
 		const bool bRedrawLeft = m_nLeftButtonStatus != leftButtonStatus;
 		const bool bRedrawTabX = m_nTabXButtonStatus != xTabButtonStatus;
-		
+
 		wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() );
 
 		if (bRedrawTab || bRedrawX || bRedrawRight || bRedrawLeft || bRedrawTabX || bRedrawDropArrow)
@@ -1659,12 +1659,19 @@ wxDragResult wxPageContainer::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, w
 	if(!((wxPageContainer *)wnd_oldContainer)->m_pagesInfoVec[nTabPage].GetEnabled())
 		return wxDragCancel;
 
+#if wxVERSION_NUMBER < 2900
 	wxLogTrace(wxTraceMask(), _("Old Page Index = %i"), nTabPage);
+#endif
+
 	wxPageContainer * oldContainer = (wxPageContainer *)wnd_oldContainer;
 	int nIndex = -1;
 	wxPageInfo pgInfo;
 	int where = HitTest(wxPoint(x, y), pgInfo, nIndex);
+
+#if wxVERSION_NUMBER < 2900
 	wxLogTrace(wxTraceMask(), _("OnDropTarget: index by HitTest = %i"), nIndex);
+#endif
+
 	wxFlatNotebook * oldNotebook = (wxFlatNotebook *)oldContainer->GetParent();
 	wxFlatNotebook * newNotebook = (wxFlatNotebook *)GetParent();
 
@@ -1701,7 +1708,7 @@ wxDragResult wxPageContainer::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, w
 				// to the new notebook
 				int newIndx( wxNOT_FOUND );
 
-				if( m_ImageList ) 
+				if( m_ImageList )
 				{
 					int imageindex = oldContainer->GetPageImageIndex(nTabPage);
 					if( imageindex >= 0 )
@@ -1711,7 +1718,7 @@ wxDragResult wxPageContainer::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, w
 						newIndx = static_cast<int>(m_ImageList->GetCount() - 1);
 					}
 				}
-				
+
 				oldNotebook->RemovePage( nTabPage );
 				window->Reparent( newNotebook );
 				newNotebook->InsertPage(nIndex, window, caption, true, newIndx);

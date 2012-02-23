@@ -64,14 +64,14 @@ void wxsImageList::OnBuildCreatingCode()
 {
     int         i;
     wxString    inc;
-    wxString    vname;             // this variable name
-    wxString    bname;            // name of the bitmap variable
-    wxString    fbase;               // base name of XPM file without dirs or extension
-    wxString    fabs;                 // absolute name of XPM file
-    wxString    frel;                   // relative
-    wxString    dname;            // name of XPM data array
-    wxBitmap  bmp;                // preview bitmap saved as XPM
-    wxString    ss, tt;                // general use
+    wxString    vname;  // this variable name
+    wxString    bname;  // name of the bitmap variable
+    wxString    fbase;  // base name of XPM file without dirs or extension
+    wxString    fabs;   // absolute name of XPM file
+    wxString    frel;   // relative
+    wxString    dname;  // name of XPM data array
+    wxBitmap    bmp;    // preview bitmap saved as XPM
+    wxString    ss, tt; // general use
 
     // have we already been here?
     if(m_IsBuilt){

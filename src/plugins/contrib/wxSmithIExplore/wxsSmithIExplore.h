@@ -101,7 +101,6 @@ class wxsSmithIExplore : public cbPlugin
 		  *         behaviour is undefined...
 		  */
         virtual void OnRelease(bool appShutDown);
-
 };
 
 #endif      // WXSSMITHIEXPLORE_H_INCLUDED

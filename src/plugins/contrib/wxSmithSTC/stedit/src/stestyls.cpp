@@ -717,7 +717,7 @@ wxString wxSTEditorStyles::LoadConfig( wxConfigBase &config,
 
     if (config.GetFirstEntry(key, index))
     {
-        do 
+        do
         {
             if (config.Read(key, &value))
             {

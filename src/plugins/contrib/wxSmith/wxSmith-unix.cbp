@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="wxSmithLib">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/libwxsmithlib" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/wxsmithlib" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />

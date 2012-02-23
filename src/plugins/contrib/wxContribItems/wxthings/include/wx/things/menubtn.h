@@ -28,9 +28,8 @@ Create the button with either a text or bitmap label.
 #include "wx/things/thingdef.h"
 #include "wx/things/toggle.h"
 
-class WXDLLEXPORT wxMenu;
-class WXDLLEXPORT wxBitmap;
-class WXDLLIMPEXP_THINGS wxCustomButton;
+class WXDLLIMPEXP_FWD_CORE wxMenu;
+class WXDLLIMPEXP_FWD_CORE wxBitmap;
 
 //-----------------------------------------------------------------------------
 // wxMenuButton styles

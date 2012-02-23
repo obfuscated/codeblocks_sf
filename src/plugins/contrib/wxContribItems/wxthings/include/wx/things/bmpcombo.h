@@ -31,14 +31,13 @@ arrows.
 
 #if wxUSE_POPUPWIN
 
-class WXDLLEXPORT wxMenu;
-class WXDLLEXPORT wxBitmap;
-class WXDLLEXPORT wxKeyEvent;
-class WXDLLEXPORT wxPaintEvent;
-class WXDLLEXPORT wxDC;
-class WXDLLIMPEXP_THINGS wxCustomButton;
-class WXDLLIMPEXP_THINGS wxBmpComboPopupChild;
-class WXDLLIMPEXP_THINGS wxBmpComboLabel;
+class WXDLLIMPEXP_FWD_CORE wxMenu;
+class WXDLLIMPEXP_FWD_CORE wxBitmap;
+class WXDLLIMPEXP_FWD_CORE wxKeyEvent;
+class WXDLLIMPEXP_FWD_CORE wxPaintEvent;
+class WXDLLIMPEXP_FWD_CORE wxDC;
+class WXDLLIMPEXP_FWD_THINGS wxBmpComboPopupChild;
+class WXDLLIMPEXP_FWD_THINGS wxBmpComboLabel;
 
 enum wxBmpComboBox_Style
 {

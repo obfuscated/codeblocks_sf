@@ -129,7 +129,7 @@ class wxsProperty
          */
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index) { return false; }
 
-        /** \brief Fuunction reading value from xml element
+        /** \brief Function reading value from xml element
          *
          * \param Object class where data should be stored
          * \param Element Xml element for this property, may be 0 - in such case,

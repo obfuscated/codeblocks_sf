@@ -27,7 +27,9 @@
 #include    "../wxsitemresdata.h"
 #include "../wxstool.h"
 
-/** \brief Class for the wxsImageList widget */
+/** \brief Class for the wxsImageList widget
+ *	\note For reasons unknown, GCC emits warnings that the images are declared but not used when "Use Include File" is set.
+ */
 class wxsImageList : public wxsTool
 {
     public:

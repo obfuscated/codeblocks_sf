@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		fnb_customize_dlg.h 
+// Name:		fnb_customize_dlg.h
 // Purpose:     declaration of the customize dialog used by wxFlatNotebook
 // Author:      Eran Ifrah <erani.ifrah@gmail.com>
 // Created:     30/12/2005
@@ -22,7 +22,7 @@ class wxRadioBox;
 ///////////////////////////////////////////////////////////////////////////////
 /// Class wxFNBCustomizeDialog
 ///////////////////////////////////////////////////////////////////////////////
-class WXDLLIMPEXP_FNB wxFNBCustomizeDialog : public wxDialog 
+class WXDLLIMPEXP_FNB wxFNBCustomizeDialog : public wxDialog
 {
 protected:
 	wxStaticLine* m_staticline2;
@@ -45,7 +45,7 @@ protected:
 	wxCheckBox* m_colorfulTab;
 
 public:
-	wxFNBCustomizeDialog( wxWindow* parent, long options, int id = wxID_ANY, wxString title = wxT("Customize"), wxPoint pos = wxDefaultPosition, wxSize size = wxDefaultSize, int style = wxDEFAULT_DIALOG_STYLE );
+	wxFNBCustomizeDialog( wxWindow* parent, long options, int id = wxID_ANY, wxString title = _("Customize"), wxPoint pos = wxDefaultPosition, wxSize size = wxDefaultSize, int style = wxDEFAULT_DIALOG_STYLE );
 
 protected:
 	void OnClose(wxCommandEvent &event);

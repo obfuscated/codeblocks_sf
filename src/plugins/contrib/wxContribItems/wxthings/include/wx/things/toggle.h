@@ -61,7 +61,7 @@ The disabled bitmap it automatically created by dithering with the background,
     the others just copy the bitmap in the constructor. The control assumes they
     are all the same size.
 
-You have to #include "wx/tglbtn.h" for EVT_TOGGLEBUTTON
+You have to #include <wx/tglbtn.h> for EVT_TOGGLEBUTTON
 
 */
 
@@ -70,8 +70,8 @@ You have to #include "wx/tglbtn.h" for EVT_TOGGLEBUTTON
 
 #include "wx/things/thingdef.h"
 
-class WXDLLEXPORT wxTimer;
-class WXDLLEXPORT wxTimerEvent;
+class WXDLLIMPEXP_FWD_BASE wxTimer;
+class WXDLLIMPEXP_FWD_BASE wxTimerEvent;
 
 //-----------------------------------------------------------------------------
 // wxCustomButton styles
