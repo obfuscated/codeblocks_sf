@@ -134,7 +134,7 @@ void ProjectBuildTarget::SetUseConsoleRunner(bool useIt)
     }
 }
 
-void ProjectBuildTarget::SetTargetType(const TargetType& pt)
+void ProjectBuildTarget::SetTargetType(TargetType pt)
 {
     TargetType ttold = GetTargetType();
     CompileTargetBase::SetTargetType(pt);

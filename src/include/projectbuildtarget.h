@@ -100,7 +100,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
           * @param useIt If true, ConsoleRunner is used else it is not. */
         virtual void SetUseConsoleRunner(bool useIt);
 
-        virtual void SetTargetType(const TargetType& pt); // overriden
+        virtual void SetTargetType(TargetType pt); // overriden
 
         /** Targets to be compiled (if necessary) before this one.
           * Add a target to the list of dependencies of this target. Be careful
