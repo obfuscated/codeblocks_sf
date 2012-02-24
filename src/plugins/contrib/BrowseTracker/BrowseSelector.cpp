@@ -22,12 +22,12 @@
 #include <wx/listctrl.h>
 #include <wx/listbox.h>
 #include <wx/image.h>
+#include <wx/dcclient.h>
 
 // Popup dialog xpm
 extern unsigned char signpost_alpha[];
 extern const char *signpost_xpm[];
 
-#include <wx/sizer.h>
 #include <wx/sizer.h>
 #include <wx/dcmemory.h>
 #include <wx/font.h>
