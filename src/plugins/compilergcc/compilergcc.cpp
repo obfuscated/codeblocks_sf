@@ -3460,11 +3460,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     m_CompilerProcessList.at(procIndex).pProcess = 0;
     m_LastExitCode = exitCode;
 
-    wxString oFile = m_CompilerProcessList.at(procIndex).OutputFile;
+    wxString oFile = UnixFilename(m_CompilerProcessList.at(procIndex).OutputFile);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(oFile); // might contain macros!
     if (exitCode == 0 && !oFile.IsEmpty())
     {
         wxLogNull silence; // In case opening the file fails
-        // HERE TODO HERE
         wxFFile f(oFile.wx_str(), _T("r"));
         if (f.IsOpened())
         {

@@ -80,7 +80,6 @@ enum BuildAction
 class wxComboBox;
 class wxGauge;
 class wxStaticText;
-class wxTimerEvent;
 
 class BuildLogger;
 class PipedProcess;
