@@ -3,12 +3,11 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#include <wx/dc.h>
+
 #include <wx/window.h>
 #include <wx/gdicmn.h>
 #include <wx/string.h>
 #include <wx/settings.h>
-#include <wx/dcclient.h>
 #include <wx/image.h>
 #include "cbauibook.h"
 #include "prep.h"
@@ -19,7 +18,16 @@
     #include <gtk/gtk.h>
     #undef GSocket
     #include <wx/artprov.h>
-#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+#endif
+
+#if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    #include <wx/gtk/dc.h>
+    #include <wx/gtk/dcclient.h>
+#else
+    #include <wx/dc.h>
+    #include <wx/dcclient.h>
+#endif
+
 // Some general constants:
 namespace
 {
@@ -511,9 +519,15 @@ wxAuiTabArt* NbStyleGTK::Clone()
 {
     NbStyleGTK* clone = new NbStyleGTK();
 
+#if wxCHECK_VERSION(2, 9, 3)
+    clone->SetNormalFont(m_normalFont);
+    clone->SetSelectedFont(m_normalFont);
+    clone->SetMeasuringFont(m_normalFont);
+#else
     clone->SetNormalFont(m_normal_font);
     clone->SetSelectedFont(m_normal_font);
     clone->SetMeasuringFont(m_normal_font);
+#endif
 
     return clone;
 }
@@ -539,7 +553,13 @@ void NbStyleGTK::DrawBackground(wxDC& dc, wxWindow* wnd, const wxRect& rect)
         if(nb)
             nb->SetTabCtrlHeight(-1);
     }
-    gtk_style_apply_default_background(style_notebook, dc.GetGDKWindow(), 1, GTK_STATE_NORMAL, nullptr,
+#if wxCHECK_VERSION(2, 9, 0)
+    wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
+    GdkWindow* pWin = impldc->GetGDKWindow();
+#else
+    GdkWindow* pWin = dc.GetGDKWindow();
+#endif
+    gtk_style_apply_default_background(style_notebook, pWin, 1, GTK_STATE_NORMAL, nullptr,
                                        rect.x, rect.y, rect.width, rect.height);
 }
 
@@ -551,15 +571,22 @@ wxRect DrawSimpleButton(wxDC& dc, GtkWidget *widget, int button_state, wxRect co
     r.width = r.height;
     r.x = in_rect.x + in_rect.width - r.width;
 
+#if wxCHECK_VERSION(2, 9, 0)
+    wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
+    GdkWindow* pWin = impldc->GetGDKWindow();
+#else
+    GdkWindow* pWin = dc.GetGDKWindow();
+#endif
+
     if (button_state == wxAUI_BUTTON_STATE_HOVER)
     {
-        gtk_paint_box(get_style_button(), dc.GetGDKWindow(),
+        gtk_paint_box(get_style_button(), pWin,
                       GTK_STATE_PRELIGHT, GTK_SHADOW_OUT, nullptr, widget, "button",
                       r.x, r.y, r.width, r.height);
     }
     else if (button_state == wxAUI_BUTTON_STATE_PRESSED)
     {
-        gtk_paint_box(get_style_button(), dc.GetGDKWindow(),
+        gtk_paint_box(get_style_button(), pWin,
                       GTK_STATE_ACTIVE, GTK_SHADOW_IN, nullptr, widget, "button",
                       r.x, r.y, r.width, r.height);
     }
@@ -606,19 +633,26 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
     area.width = ((tab_rect.x > 20)  && !page.active) ? clip_width - m_TabVBorder : clip_width;
     area.height = page.active ? tab_rect.height : tab_rect.height + m_Ythickness;
 
+#if wxCHECK_VERSION(2, 9, 0)
+    wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
+    GdkWindow* pWin = impldc->GetGDKWindow();
+#else
+    GdkWindow* pWin = dc.GetGDKWindow();
+#endif
+
     // if page is active, we draw a box without border, in some styles the gap is transparent (e.g. Human)
     // and a line would be visible at the bottom of the tab
-    gtk_paint_box(style_notebook, dc.GetGDKWindow(), GTK_STATE_NORMAL,page.active?GTK_SHADOW_NONE:GTK_SHADOW_OUT,
+    gtk_paint_box(style_notebook, pWin, GTK_STATE_NORMAL,page.active?GTK_SHADOW_NONE:GTK_SHADOW_OUT,
                   NULL, widget, "notebook",
                   window_rect.x, in_rect.y + in_rect.height - 3 * m_Ythickness, window_rect.width, 4 * m_Ythickness);
     if (page.active)
     {
-        gtk_paint_box_gap(style_notebook, dc.GetGDKWindow(), GTK_STATE_NORMAL, GTK_SHADOW_OUT,
+        gtk_paint_box_gap(style_notebook, pWin, GTK_STATE_NORMAL, GTK_SHADOW_OUT,
                           NULL, widget, "notebook",
                           window_rect.x, in_rect.y + in_rect.height - 3 * m_Ythickness, window_rect.width, 4 * m_Ythickness,
                           GTK_POS_TOP, tab_rect.x - 1 , tab_rect.width);
     }
-    gtk_paint_extension(style_notebook, dc.GetGDKWindow(),
+    gtk_paint_extension(style_notebook, pWin,
                        page.active ? GTK_STATE_NORMAL : GTK_STATE_ACTIVE, GTK_SHADOW_OUT,
                        &area, widget, "tab",
                        tab_rect.x, page.active ? tab_rect.y : tab_rect.y + m_Ythickness,
@@ -645,7 +679,11 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
 
     wxCoord textW, textH, textY;
 
+#if wxCHECK_VERSION(2, 9, 3)
+    dc.SetFont(m_normalFont);
+#else
     dc.SetFont(m_normal_font);
+#endif
     dc.GetTextExtent(page.caption, &textW, &textH);
     textY = tab_rect.y + (tab_rect.height - textH) / 2;
     if(!page.active)
@@ -668,7 +706,7 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
         // clipping seems not to work here, so we we have to recalc the focus-area manually
         if((focus_area.x + focus_area.width) > (area.x + area.width))
             focus_area.width = area.x + area.width - focus_area.x + focus_width;
-        gtk_paint_focus (style_notebook, dc.GetGDKWindow(),
+        gtk_paint_focus (style_notebook, pWin,
                          GTK_STATE_ACTIVE, &area, widget, "tab",
                          focus_area.x, focus_area.y, focus_area.width, focus_area.height);
     }
@@ -698,13 +736,13 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
 
         if (close_button_state == wxAUI_BUTTON_STATE_HOVER)
         {
-            gtk_paint_box(style_button, dc.GetGDKWindow(),
+            gtk_paint_box(style_button, pWin,
                           GTK_STATE_PRELIGHT, GTK_SHADOW_OUT, &area, widget, "button",
                           rect.x, rect.y, rect.width, rect.height);
         }
         else if (close_button_state == wxAUI_BUTTON_STATE_PRESSED)
         {
-            gtk_paint_box(style_button, dc.GetGDKWindow(),
+            gtk_paint_box(style_button, pWin,
                           GTK_STATE_ACTIVE, GTK_SHADOW_IN, &area, widget, "button",
                           rect.x, rect.y, rect.width, rect.height);
         }
@@ -771,7 +809,13 @@ wxRect DrawSimpleArrow(wxDC& dc,
     out_rect.width = scroll_arrow_hlength;
     out_rect.height = scroll_arrow_vlength;
 
-    gtk_paint_arrow (get_style_button(), dc.GetGDKWindow(), state, shadow, nullptr, widget, "notebook",
+#if wxCHECK_VERSION(2, 9, 0)
+    wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
+    GdkWindow* pWin = impldc->GetGDKWindow();
+#else
+    GdkWindow* pWin = dc.GetGDKWindow();
+#endif
+    gtk_paint_arrow (get_style_button(), pWin, state, shadow, nullptr, widget, "notebook",
                      arrow_type, TRUE, out_rect.x, out_rect.y, out_rect.width, out_rect.height);
 
     return out_rect;
@@ -831,7 +875,14 @@ void NbStyleGTK::DrawButton(wxDC& dc, wxWindow* wnd, const wxRect& in_rect, int 
 
                 ArrowStateAndShadow(button_state, state, shadow);
 
-                gtk_paint_arrow(get_style_notebook(), dc.GetGDKWindow(), state,
+#if wxCHECK_VERSION(2, 9, 0)
+                wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
+                GdkWindow* pWin = impldc->GetGDKWindow();
+#else
+                GdkWindow* pWin = dc.GetGDKWindow();
+#endif
+
+                gtk_paint_arrow(get_style_notebook(), pWin, state,
                                 shadow, nullptr, widget, "notebook",
                                 GTK_ARROW_DOWN, TRUE,
                                 arrow.x, arrow.y, arrow.width, arrow.height);
@@ -847,8 +898,13 @@ int NbStyleGTK::GetBestTabCtrlSize(wxWindow* wnd,
                                     const wxAuiNotebookPageArray& pages,
                                     const wxSize& required_bmp_size)
 {
+#if wxCHECK_VERSION(2, 9, 3)
+    SetMeasuringFont(m_normalFont);
+    SetSelectedFont(m_normalFont);
+#else
     SetMeasuringFont(m_normal_font);
     SetSelectedFont(m_normal_font);
+#endif
     int tab_height = 3 * get_style_notebook()->ythickness + wxAuiDefaultTabArt::GetBestTabCtrlSize(wnd, pages, required_bmp_size);
     return tab_height;
 }
