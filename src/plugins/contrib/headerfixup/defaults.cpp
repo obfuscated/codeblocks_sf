@@ -8,6 +8,7 @@
  */
 
 #include "bindings.h"
+#include "globals.h"
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -15,1810 +16,2276 @@ void Bindings::SetDefaults()
 {
   SetDefaultsCodeBlocks();
   SetDefaultsWxWidgets();
+  SetDefaultsSTL();
+  SetDefaultsCLibrary();
 }
 
 void Bindings::SetDefaultsCodeBlocks()
 {
-  AddBinding(_T("CodeBlocks"),_T("AbstractJob"),                  _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("AddBuildTarget"),               _T("projectbuildtarget.h"));
-  AddBinding(_T("CodeBlocks"),_T("AddFile"),                      _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("Agony"),                        _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("AnnoyingDialog"),               _T("annoyingdialog.h"));
-  AddBinding(_T("CodeBlocks"),_T("AppendArray"),                  _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("AutoBuffer"),                   _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("AutoDetectCompilers"),          _T("autodetectcompilers.h"));
-  AddBinding(_T("CodeBlocks"),_T("BackgroundThread"),             _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("BackgroundThreadPool"),         _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("BlkAllc"),                      _T("blockallocated.h"));
-  AddBinding(_T("CodeBlocks"),_T("BlockAllocated"),               _T("blockallocated.h"));
-  AddBinding(_T("CodeBlocks"),_T("BlockAllocator"),               _T("blockallocated.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbAssert"),                     _T("cbexception.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbC2U"),                        _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbCodeCompletionPlugin"),       _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbCompilerPlugin"),             _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbConfigurationDialog"),        _T("configurationpanel.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbConfigurationPanel"),         _T("configurationpanel.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbDebuggerPlugin"),             _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbDirAccessCheck"),             _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbEditor"),                     _T("cbeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbEditorPrintout"),             _T("cbeditorprintout.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbEventFunctor"),               _T("cbfunctor.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbException"),                  _T("cbexception.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbExecuteProcess"),             _T("cbexecute.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbLoadBitmap"),                 _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbMessageBox"),                 _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbMimePlugin"),                 _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbPlugin"),                     _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbProject"),                    _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbRead"),                       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbReadFileContents"),           _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbSaveTinyXMLDocument"),        _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbSaveToFile"),                 _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbStyledTextCtrl"),             _T("cbeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbSyncExecute"),                _T("cbexecute.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbThreadedTask"),               _T("cbthreadtask.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbThreadPool"),                 _T("cbthreadpool.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbThrow"),                      _T("cbexception.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbTool"),                       _T("cbtool.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbToolPlugin"),                 _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbU2C"),                        _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbWizardPlugin"),               _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbWorkerThread"),               _T("cbthreadpool_extras.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbWorkspace"),                  _T("cbworkspace.h"));
-  AddBinding(_T("CodeBlocks"),_T("cbWrite"),                      _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("CfgMgrBldr"),                   _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgCompiler"),                   _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgContribPlugin"),              _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgCorePlugin"),                 _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgDebugger"),                   _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgEditor"),                     _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("cgUnknown"),                    _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("ChooseDirectory"),              _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("clogFull"),                     _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("clogNone"),                     _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("clogSimple"),                   _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("cltError"),                     _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("cltInfo"),                      _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("cltNormal"),                    _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("cltWarning"),                   _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CodeBlocksDockEvent"),          _T("sdk_events.h"));
-  AddBinding(_T("CodeBlocks"),_T("CodeBlocksEvent"),              _T("sdk_events.h"));
-  AddBinding(_T("CodeBlocks"),_T("CodeBlocksLayoutEvent"),        _T("sdk_events.h"));
-  AddBinding(_T("CodeBlocks"),_T("CodeBlocksLogEvent"),           _T("sdk_events.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompileOptionsBase"),           _T("compileoptionsbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("Compiler"),                     _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerCommandGenerator"),     _T("compilercommandgenerator.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerFactory"),              _T("compilerfactory.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerOptions"),              _T("compileroptions.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerPrograms"),             _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerSwitches"),             _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerTool"),                 _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompilerToolsVector"),          _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompileTargetBase"),            _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("CompOption"),                   _T("compileroptions.h"));
-  AddBinding(_T("CodeBlocks"),_T("ConfigManager"),                _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("ConfigureToolsDlg"),            _T("configuretoolsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("ConfigManagerContainer"),       _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("ConfirmReplaceDlg"),            _T("confirmreplacedlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("CreateDir"),                    _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("CreateDirRecursively"),         _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("CSS"),                          _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("Death"),                        _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("DelayedDelete"),                _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("DetectEncodingAndConvert"),     _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("DuplicateBuildTarget"),         _T("projectbuildtarget.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditArrayFileDlg"),             _T("editarrayfiledlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditArrayOrderDlg"),            _T("editarrayorderdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditArrayStringDlg"),           _T("editarraystringdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditKeywordsDlg"),              _T("editkeywordsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorBase"),                   _T("editorbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorColourSet"),              _T("editorcolourset.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorConfigurationDlg"),       _T("editorconfigurationdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorHooks"),                  _T("editor_hooks.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorLexerLoader"),            _T("editorlexerloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditorManager"),                _T("editormanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditPairDlg"),                  _T("editpairdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditPathDlg"),                  _T("editpathdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EditToolDlg"),                  _T("edittooldlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("EncodingDetector"),             _T("encodingdetector.h"));
-  AddBinding(_T("CodeBlocks"),_T("ExternalDepsDlg"),              _T("externaldepsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileGroups"),                   _T("filegroupsandmasks.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileLoader"),                   _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileLogger"),                   _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileManager"),                  _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileSet"),                      _T("projecttemplateloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileSetFile"),                  _T("projecttemplateloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("FilesGroupsAndMasks"),          _T("filegroupsandmasks.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileTreeData"),                 _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileType"),                     _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileTypeOf"),                   _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("FindDlg"),                      _T("finddlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("FindReplaceBase"),              _T("findreplacebase.h"));
-  AddBinding(_T("CodeBlocks"),_T("GenericMultiLineNotesDlg"),     _T("genericmultilinenotesdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetActiveEditor"),              _T("editorbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetActiveProject"),             _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetArrayFromString"),           _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetBuiltinActiveEditor"),       _T("cbeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetBuiltinEditor"),             _T("cbeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetBuildTarget"),               _T("projectbuildtarget.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetColourSet"),                 _T("editorcolourset.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetConfigManager"),             _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetConfigurationPanel"),        _T("configurationpanel.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetCurrentlyCompilingTarget"),  _T("projectbuildtarget.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetEditor"),                    _T("editorbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetEditorManager"),             _T("editormanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetFile"),                      _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetFileByFilename"),            _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetFileManager"),               _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetLogManager"),                _T("logmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetMacrosManager"),             _T("macrosmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetMessageManager"),            _T("messagemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetNotebook"),                  _T("wx/wxFlatNotebook/wxFlatNotebook.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetParentProject"),             _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetPersonalityManager"),        _T("personalitymanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetPlatformsFromString"),       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetPluginManager"),             _T("pluginmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetProjectConfigurationPanel"), _T("configurationpanel.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetProjectFile"),               _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetProjectManager"),            _T("projectmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetProjects"),                  _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetScriptingManager"),          _T("scriptingmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetStringFromArray"),           _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetStringFromPlatforms"),       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetToolsManager"),              _T("toolsmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetTopEditor"),                 _T("gettopeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetUserVariableManager"),       _T("uservarmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("GetWorkspace"),                 _T("cbworkspace.h"));
-  AddBinding(_T("CodeBlocks"),_T("HTMLFileLogger"),               _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("IBaseLoader"),                  _T("ibaseloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("IBaseWorkspaceLoader"),         _T("ibaseworkspaceloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("ID"),                           _T("id.h"));
-  AddBinding(_T("CodeBlocks"),_T("IEventFunctorBase"),            _T("cbfunctor.h"));
-  AddBinding(_T("CodeBlocks"),_T("IFunctorBase"),                 _T("cbfunctor.h"));
-  AddBinding(_T("CodeBlocks"),_T("ImportersGlobals"),             _T("importer_globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("IncrementalSelectListDlg"),     _T("incrementalselectlistdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("InfoWindow"),                   _T("infowindow.h"));
-  AddBinding(_T("CodeBlocks"),_T("IsBuiltinOpen"),                _T("cbeditor.h"));
-  AddBinding(_T("CodeBlocks"),_T("ISerializable"),                _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("IsOpen"),                       _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("IsWindowReallyShown"),          _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("JobQueue"),                     _T("backgroundthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileLoader"),                   _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("FileTreeData"),                 _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("ListCtrlLogger"),               _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("LoaderBase"),                   _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("LoadPNGWindows2000Hack"),       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("LoadProject"),                  _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("Logger"),                       _T("logger.h"));
-  AddBinding(_T("CodeBlocks"),_T("LogManager"),                   _T("logmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("LogSlot"),                      _T("logmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("MacrosManager"),                _T("macrosmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("MakeCommand"),                  _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ManagedThread"),                _T("managerthread.h"));
-  AddBinding(_T("CodeBlocks"),_T("Manager"),                      _T("manager.h"));
-  AddBinding(_T("CodeBlocks"),_T("MenuItemsManager"),             _T("menuitemsmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("MessageManager"),               _T("messagemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("Mgr"),                          _T("manager.h"));
-  AddBinding(_T("CodeBlocks"),_T("MiscTreeItemData"),             _T("misctreeitemdata.h"));
-  AddBinding(_T("CodeBlocks"),_T("MultiSelectDlg"),               _T("multiselectdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("NewFromTemplateDlg"),           _T("newfromtemplatedlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("NewProject"),                   _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("NormalizePath"),                _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("NotifyMissingFile"),            _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("NullLoader"),                   _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("NullLogger"),                   _T("logger.h"));
-  AddBinding(_T("CodeBlocks"),_T("OptionColour"),                 _T("editorcolourset.h"));
-  AddBinding(_T("CodeBlocks"),_T("OptionSet"),                    _T("editorcolourset.h"));
-  AddBinding(_T("CodeBlocks"),_T("PCHMode"),                      _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("pchObjectDir"),                 _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("pchSourceDir"),                 _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("pchSourceFile"),                _T("cbproject.h"));
-  AddBinding(_T("CodeBlocks"),_T("PlaceWindow"),                  _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("PersonalityManager"),           _T("personalitymanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("pfCustomBuild"),                _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("pfDetails"),                    _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("PipedProcess"),                 _T("pipedprocess.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginElement"),                _T("pluginmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginInfo"),                   _T("pluginmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginManager"),                _T("pluginmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginRegistrant"),             _T("cbplugin.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginsConfigurationDlg"),      _T("pluginsconfigurationdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("PluginType"),                   _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectBuildTarget"),           _T("projectbuildtarget.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectDepsDlg"),               _T("projectdepsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectFile"),                  _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectFileOptionsDlg"),        _T("projectfileoptionsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectFilesVector"),           _T("projectfile.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectLayoutLoader"),          _T("projectlayoutloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectLoader"),                _T("projectloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectLoaderHooks"),           _T("projectloader_hooks.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectManager"),               _T("projectmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectOptionsDlg"),            _T("projectoptionsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectsFileMasksDlg"),         _T("projectsfilemasksdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("ProjectTemplateLoader"),        _T("projecttemplateloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptCodeCompletion"),             _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptCompiler"),                   _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptDebugger"),                   _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptMime"),                       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptNone"),                       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptOther"),                      _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptTool"),                       _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ptWizard"),                     _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("QuoteStringIfNeeded"),          _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("RegExStruct"),                  _T("compiler.h"));
-  AddBinding(_T("CodeBlocks"),_T("ReplaceDlg"),                   _T("replacedlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("RestoreTreeState"),             _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("SaveTreeState"),                _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("ScriptingManager"),             _T("scriptingmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("ScriptSecurityWarningDlg"),     _T("scriptsecuritywarningdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdAllGlobal"),                  _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdAllKnown"),                   _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdAllUser"),                    _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdBase"),                       _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdConfig"),                     _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdCurrent"),                    _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdDataGlobal"),                 _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdDataUser"),                   _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdHome"),                       _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdPath"),                       _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdPluginsGlobal"),              _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdPluginsUser"),                _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdScriptsGlobal"),              _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdScriptsUser"),                _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("sdTemp"),                       _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("SearchDirs"),                   _T("configmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("SearchResultsLog"),             _T("searchresultslog.h"));
-  AddBinding(_T("CodeBlocks"),_T("SelectTargetDlg"),              _T("selecttargetdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("SeqDelete"),                    _T("safedelete.h"));
-  AddBinding(_T("CodeBlocks"),_T("Stacker"),                      _T("infowindow.h"));
-  AddBinding(_T("CodeBlocks"),_T("StdoutLogger"),                 _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("TemplateManager"),              _T("templatemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("TemplateOption"),               _T("projecttemplateloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("TextCtrlLogger"),               _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("TimestampTextCtrlLogger"),      _T("loggers.h"));
-  AddBinding(_T("CodeBlocks"),_T("ToolsManager"),                 _T("toolsmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttCommandsOnly"),               _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttConsoleOnly"),                _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttDynamicLib"),                 _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttExecutable"),                 _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttNative"),                     _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("ttStaticLib"),                  _T("compiletargetbase.h"));
-  AddBinding(_T("CodeBlocks"),_T("UnixFilename"),                 _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("URLEncode"),                    _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("URLLoader"),                    _T("filemanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("UsesCommonControls6"),          _T("globals.h"));
-  AddBinding(_T("CodeBlocks"),_T("UserVariableManager"),          _T("uservarmanager.h"));
-  AddBinding(_T("CodeBlocks"),_T("VirtualBuildTargetsDlg"),       _T("virtualbuildtargetsdlg.h"));
-  AddBinding(_T("CodeBlocks"),_T("WorkspaceLoader"),              _T("workspaceloader.h"));
-  AddBinding(_T("CodeBlocks"),_T("wxToolBarAddOnXmlHandler"),     _T("xtra_res.h"));
-  AddBinding(_T("CodeBlocks"),_T("wxBase64"),                     _T("base64.h"));
-  AddBinding(_T("CodeBlocks"),_T("wxCrc32"),                      _T("crc32.h"));
+    wxString strCodeBlocks = _T(
+    "AbstractJob;backgroundthread.h|"
+    "AddBuildTarget;projectbuildtarget.h|"
+    "AddFile;projectfile.h|"
+    "Agony;backgroundthread.h|"
+    "AnnoyingDialog;annoyingdialog.h|"
+    "AppendArray;globals.h|"
+    "AutoBuffer;filemanager.h|"
+    "AutoDetectCompilers;autodetectcompilers.h|"
+    "BackgroundThread;backgroundthread.h|"
+    "BackgroundThreadPool;backgroundthread.h|"
+    "BlkAllc;blockallocated.h|"
+    "BlockAllocated;blockallocated.h|"
+    "BlockAllocator;blockallocated.h|"
+    "cbAssert;cbexception.h|"
+    "cbC2U;globals.h|"
+    "cbCodeCompletionPlugin;cbplugin.h|"
+    "cbCompilerPlugin;cbplugin.h|"
+    "cbConfigurationDialog;configurationpanel.h|"
+    "cbConfigurationPanel;configurationpanel.h|"
+    "cbDebuggerPlugin;cbplugin.h|"
+    "cbDirAccessCheck;globals.h|"
+    "cbEditor;cbeditor.h|"
+    "cbEditorPrintout;cbeditorprintout.h|"
+    "cbEventFunctor;cbfunctor.h|"
+    "cbException;cbexception.h|"
+    "cbExecuteProcess;cbexecute.h|"
+    "cbLoadBitmap;globals.h|"
+    "cbMessageBox;globals.h|"
+    "cbMimePlugin;cbplugin.h|"
+    "cbPlugin;cbplugin.h|"
+    "cbProject;cbproject.h|"
+    "cbRead;globals.h|"
+    "cbReadFileContents;globals.h|"
+    "cbSaveTinyXMLDocument;globals.h|"
+    "cbSaveToFile;globals.h|"
+    "cbStyledTextCtrl;cbeditor.h|"
+    "cbSyncExecute;cbexecute.h|"
+    "cbThreadedTask;cbthreadtask.h|"
+    "cbThreadPool;cbthreadpool.h|"
+    "cbThrow;cbexception.h|"
+    "cbTool;cbtool.h|"
+    "cbToolPlugin;cbplugin.h|"
+    "cbU2C;globals.h|"
+    "cbWizardPlugin;cbplugin.h|"
+    "cbWorkerThread;cbthreadpool_extras.h|"
+    "cbWorkspace;cbworkspace.h|"
+    "cbWrite;globals.h|"
+    "CfgMgrBldr;configmanager.h|"
+    "cgCompiler;cbplugin.h|"
+    "cgContribPlugin;cbplugin.h|"
+    "cgCorePlugin;cbplugin.h|"
+    "cgEditor;cbplugin.h|"
+    "cgUnknown;cbplugin.h|"
+    "ChooseDirectory;globals.h|"
+    "clogFull;compiler.h|"
+    "clogNone;compiler.h|"
+    "clogSimple;compiler.h|"
+    "cltError;compiler.h|"
+    "cltInfo;compiler.h|"
+    "cltNormal;compiler.h|"
+    "cltWarning;compiler.h|"
+    "CodeBlocksDockEvent;sdk_events.h|"
+    "CodeBlocksEvent;sdk_events.h|"
+    "CodeBlocksLayoutEvent;sdk_events.h|"
+    "CodeBlocksLogEvent;sdk_events.h|"
+    "CompileOptionsBase;compileoptionsbase.h|"
+    "Compiler;compiler.h|"
+    "CompilerCommandGenerator;compilercommandgenerator.h|"
+    "CompilerFactory;compilerfactory.h|"
+    "CompilerOptions;compileroptions.h|"
+    "CompilerPrograms;compiler.h|"
+    "CompilerSwitches;compiler.h|"
+    "CompilerTool;compiler.h|"
+    "CompilerToolsVector;compiler.h|"
+    "CompileTargetBase;compiletargetbase.h|"
+    "CompOption;compileroptions.h|"
+    "ConfigManager;configmanager.h|"
+    "ConfigureToolsDlg;configuretoolsdlg.h|"
+    "ConfigManagerContainer;configmanager.h|"
+    "ConfirmReplaceDlg;confirmreplacedlg.h|"
+    "CreateDir;globals.h|"
+    "CreateDirRecursively;globals.h|"
+    "CSS;loggers.h|"
+    "Death;backgroundthread.h|"
+    "DelayedDelete;filemanager.h|"
+    "DetectEncodingAndConvert;globals.h|"
+    "DuplicateBuildTarget;projectbuildtarget.h|"
+    "EditArrayFileDlg;editarrayfiledlg.h|"
+    "EditArrayOrderDlg;editarrayorderdlg.h|"
+    "EditArrayStringDlg;editarraystringdlg.h|"
+    "EditKeywordsDlg;editkeywordsdlg.h|"
+    "EditorBase;editorbase.h|"
+    "EditorColourSet;editorcolourset.h|"
+    "EditorConfigurationDlg;editorconfigurationdlg.h|"
+    "EditorHooks;editor_hooks.h|"
+    "EditorLexerLoader;editorlexerloader.h|"
+    "EditorManager;editormanager.h|"
+    "EditPairDlg;editpairdlg.h|"
+    "EditPathDlg;editpathdlg.h|"
+    "EditToolDlg;edittooldlg.h|"
+    "EncodingDetector;encodingdetector.h|"
+    "ExternalDepsDlg;externaldepsdlg.h|"
+    "FileGroups;filegroupsandmasks.h|"
+    "FileLoader;filemanager.h|"
+    "FileLogger;loggers.h|"
+    "FileManager;filemanager.h|"
+    "FileSet;projecttemplateloader.h|"
+    "FileSetFile;projecttemplateloader.h|"
+    "FilesGroupsAndMasks;filegroupsandmasks.h|"
+    "FileTreeData;cbproject.h|"
+    "FileType;globals.h|"
+    "FileTypeOf;globals.h|"
+    "FindDlg;finddlg.h|"
+    "FindReplaceBase;findreplacebase.h|"
+    "GenericMultiLineNotesDlg;genericmultilinenotesdlg.h|"
+    "GetActiveEditor;editorbase.h|"
+    "GetActiveProject;cbproject.h|"
+    "GetArrayFromString;globals.h|"
+    "GetBuiltinActiveEditor;cbeditor.h|"
+    "GetBuiltinEditor;cbeditor.h|"
+    "GetBuildTarget;projectbuildtarget.h|"
+    "GetColourSet;editorcolourset.h|"
+    "GetConfigManager;configmanager.h|"
+    "GetConfigurationPanel;configurationpanel.h|"
+    "GetCurrentlyCompilingTarget;projectbuildtarget.h|"
+    "GetEditor;editorbase.h|"
+    "GetEditorManager;editormanager.h|"
+    "GetFile;projectfile.h|"
+    "GetFileByFilename;projectfile.h|"
+    "GetFileManager;filemanager.h|"
+    "GetLogManager;logmanager.h|"
+    "GetMacrosManager;macrosmanager.h|"
+    "GetMessageManager;messagemanager.h|"
+    "GetNotebook;wx/wxFlatNotebook/wxFlatNotebook.h|"
+    "GetParentProject;cbproject.h|"
+    "GetPersonalityManager;personalitymanager.h|"
+    "GetPlatformsFromString;globals.h|"
+    "GetPluginManager;pluginmanager.h|"
+    "GetProjectConfigurationPanel;configurationpanel.h|"
+    "GetProjectFile;projectfile.h|"
+    "GetProjectManager;projectmanager.h|"
+    "GetProjects;cbproject.h|"
+    "GetScriptingManager;scriptingmanager.h|"
+    "GetStringFromArray;globals.h|"
+    "GetStringFromPlatforms;globals.h|"
+    "GetToolsManager;toolsmanager.h|"
+    "GetTopEditor;gettopeditor.h|"
+    "GetUserVariableManager;uservarmanager.h|"
+    "GetWorkspace;cbworkspace.h|"
+    "HTMLFileLogger;loggers.h|"
+    "IBaseLoader;ibaseloader.h|"
+    "IBaseWorkspaceLoader;ibaseworkspaceloader.h|"
+    "ID;id.h|"
+    "IEventFunctorBase;cbfunctor.h|"
+    "IFunctorBase;cbfunctor.h|"
+    "ImportersGlobals;importer_globals.h|"
+    "IncrementalSelectListDlg;incrementalselectlistdlg.h|"
+    "InfoWindow;infowindow.h|"
+    "IsBuiltinOpen;cbeditor.h|"
+    "ISerializable;configmanager.h|"
+    "IsOpen;cbproject.h|"
+    "IsWindowReallyShown;globals.h|"
+    "JobQueue;backgroundthread.h|"
+    "FileLoader;filemanager.h|"
+    "FileTreeData;cbproject.h|"
+    "ListCtrlLogger;loggers.h|"
+    "LoaderBase;filemanager.h|"
+    "LoadPNGWindows2000Hack;globals.h|"
+    "LoadProject;cbproject.h|"
+    "Logger;logger.h|"
+    "LogManager;logmanager.h|"
+    "LogSlot;logmanager.h|"
+    "MacrosManager;macrosmanager.h|"
+    "MakeCommand;compiletargetbase.h|"
+    "ManagedThread;managerthread.h|"
+    "Manager;manager.h|"
+    "MenuItemsManager;menuitemsmanager.h|"
+    "MessageManager;messagemanager.h|"
+    "Mgr;manager.h|"
+    "MiscTreeItemData;misctreeitemdata.h|"
+    "MultiSelectDlg;multiselectdlg.h|"
+    "NewFromTemplateDlg;newfromtemplatedlg.h|"
+    "NewProject;cbproject.h|"
+    "NormalizePath;globals.h|"
+    "NotifyMissingFile;globals.h|"
+    "NullLoader;filemanager.h|"
+    "NullLogger;logger.h|"
+    "OptionColour;editorcolourset.h|"
+    "OptionSet;editorcolourset.h|"
+    "PCHMode;cbproject.h|"
+    "pchObjectDir;cbproject.h|"
+    "pchSourceDir;cbproject.h|"
+    "pchSourceFile;cbproject.h|"
+    "PlaceWindow;globals.h|"
+    "PersonalityManager;personalitymanager.h|"
+    "pfCustomBuild;projectfile.h|"
+    "pfDetails;projectfile.h|"
+    "PipedProcess;pipedprocess.h|"
+    "PluginElement;pluginmanager.h|"
+    "PluginInfo;pluginmanager.h|"
+    "PluginManager;pluginmanager.h|"
+    "PluginRegistrant;cbplugin.h|"
+    "PluginsConfigurationDlg;pluginsconfigurationdlg.h|"
+    "PluginType;globals.h|"
+    "ProjectBuildTarget;projectbuildtarget.h|"
+    "ProjectDepsDlg;projectdepsdlg.h|"
+    "ProjectFile;projectfile.h|"
+    "ProjectFileOptionsDlg;projectfileoptionsdlg.h|"
+    "ProjectFilesVector;projectfile.h|"
+    "ProjectLayoutLoader;projectlayoutloader.h|"
+    "ProjectLoader;projectloader.h|"
+    "ProjectLoaderHooks;projectloader_hooks.h|"
+    "ProjectManager;projectmanager.h|"
+    "ProjectOptionsDlg;projectoptionsdlg.h|"
+    "ProjectsFileMasksDlg;projectsfilemasksdlg.h|"
+    "ProjectTemplateLoader;projecttemplateloader.h|"
+    "ptCodeCompletion;globals.h|"
+    "ptCompiler;globals.h|"
+    "ptDebugger;globals.h|"
+    "ptMime;globals.h|"
+    "ptNone;globals.h|"
+    "ptOther;globals.h|"
+    "ptTool;globals.h|"
+    "ptWizard;globals.h|"
+    "QuoteStringIfNeeded;globals.h|"
+    "RegExStruct;compiler.h|"
+    "ReplaceDlg;replacedlg.h|"
+    "RestoreTreeState;globals.h|"
+    "SaveTreeState;globals.h|"
+    "ScriptingManager;scriptingmanager.h|"
+    "ScriptSecurityWarningDlg;scriptsecuritywarningdlg.h|"
+    "sdAllGlobal;configmanager.h|"
+    "sdAllKnown;configmanager.h|"
+    "sdAllUser;configmanager.h|"
+    "sdBase;configmanager.h|"
+    "sdConfig;configmanager.h|"
+    "sdCurrent;configmanager.h|"
+    "sdDataGlobal;configmanager.h|"
+    "sdDataUser;configmanager.h|"
+    "sdHome;configmanager.h|"
+    "sdPath;configmanager.h|"
+    "sdPluginsGlobal;configmanager.h|"
+    "sdPluginsUser;configmanager.h|"
+    "sdScriptsGlobal;configmanager.h|"
+    "sdScriptsUser;configmanager.h|"
+    "sdTemp;configmanager.h|"
+    "SearchDirs;configmanager.h|"
+    "SearchResultsLog;searchresultslog.h|"
+    "SelectTargetDlg;selecttargetdlg.h|"
+    "SeqDelete;safedelete.h|"
+    "Stacker;infowindow.h|"
+    "StdoutLogger;loggers.h|"
+    "TemplateManager;templatemanager.h|"
+    "TemplateOption;projecttemplateloader.h|"
+    "TextCtrlLogger;loggers.h|"
+    "TimestampTextCtrlLogger;loggers.h|"
+    "ToolsManager;toolsmanager.h|"
+    "ttCommandsOnly;compiletargetbase.h|"
+    "ttConsoleOnly;compiletargetbase.h|"
+    "ttDynamicLib;compiletargetbase.h|"
+    "ttExecutable;compiletargetbase.h|"
+    "ttNative;compiletargetbase.h|"
+    "ttStaticLib;compiletargetbase.h|"
+    "UnixFilename;globals.h|"
+    "URLEncode;globals.h|"
+    "URLLoader;filemanager.h|"
+    "UsesCommonControls6;globals.h|"
+    "UserVariableManager;uservarmanager.h|"
+    "VirtualBuildTargetsDlg;virtualbuildtargetsdlg.h|"
+    "WorkspaceLoader;workspaceloader.h|"
+    "wxToolBarAddOnXmlHandler;xtra_res.h|"
+    "wxBase64;base64.h|"
+    "wxCrc32;crc32.h");
+
+    wxArrayString arCodeBlocks = GetArrayFromString(strCodeBlocks, _T("|"));
+    for(int i = 0; i < arCodeBlocks.GetCount();i++)
+    {
+        wxArrayString arTmp = GetArrayFromString(arCodeBlocks.Item(i), _T(";"));
+        AddBinding(_T("CodeBlocks"), arTmp.Item(0), arTmp.Item(1) );
+    }
 }// SetDefaultsCodeBlocks
 
 void Bindings::SetDefaultsWxWidgets()
 {
-  // All macros
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_APP"),                  _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_CLASS"),                _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_ABSTRACT_CLASS"),       _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_DYNAMIC_CLASS"),        _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_EVENT_TYPE"),           _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_EVENT_MACRO"),          _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DECLARE_EVENT_TABLE_ENTRY"),    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_APP"),                _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_ABSTRACT_CLASS"),     _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_ABSTRACT_CLASS2"),    _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_CLASS"),              _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_CLASS2"),             _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_DYNAMIC_CLASS"),      _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("IMPLEMENT_DYNAMIC_CLASS2"),     _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("DEFINE_EVENT_TYPE"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("BEGIN_EVENT_TABLE"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("END_EVENT_TABLE"),              _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_CUSTOM"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_CUSTOM_RANGE"),             _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_COMMAND"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_COMMAND_RANGE"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_NOTIFY"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_NOTIFY_RANGE"),             _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_BUTTON"),                   _T("wx/button.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_CHECKBOX"),                 _T("wx/checkbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_CHOICE"),                   _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_CHOICE"),                   _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_COMBOBOX"),                 _T("wx/combobox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_LISTBOX"),                  _T("wx/listbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_LISTBOX_DCLICK"),           _T("wx/listbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_RADIOBOX"),                 _T("wx/radiobox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_RADIOBUTTON"),              _T("wx/radiobut.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_SCROLLBAR"),                _T("wx/scrolbar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_SLIDER"),                   _T("wx/slider.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("EVT_TOGGLEBUTTON"),             _T("wx/tglbtn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_APPEND_ARRAY"),              _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_CLEAR_ARRAY"),               _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DECLARE_OBJARRAY"),          _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DEFINE_ARRAY"),              _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DEFINE_OBJARRAY"),           _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DEFINE_SORTED_ARRAY"),       _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DECLARE_STRING_HASH_MAP"),   _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DECLARE_HASH_MAP"),          _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxASSERT"),                     _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxASSERT_MIN_BITSIZE"),         _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxASSERT_MSG"),                 _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBITMAP"),                     _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCOMPILE_TIME_ASSERT"),        _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCOMPILE_TIME_ASSERT2"),       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE"),          _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE_MEMBER"),   _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_LOCKER"),           _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDYNLIB_FUNCTION"),            _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxENTER_CRIT_SECT"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFAIL"),                       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFAIL_MSG"),                   _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxICON"),                       _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLEAVE_CRIT_SECT"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLL"),                         _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTRANSLATE"),                  _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxULL"),                        _T("wx/longlong.h"));
+    /////////////
+    // v 2.6.4 //
+    /////////////
 
-  // All ::wx methods
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBeginBusyCursor"),            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBell"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClientDisplayRect"),          _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClipboardOpen"),              _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCloseClipboard"),             _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxColourDisplay"),              _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxConcatFiles"),                _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCopyFile"),                   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCreateDynamicObject"),        _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCreateFileTipProvider"),      _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDDECleanUp"),                 _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDDEInitialize"),              _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugMsg"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDirExists"),                  _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDirSelector"),                _T("wx/dirdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDisplayDepth"),               _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDisplaySize"),                _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDisplaySizeMM"),              _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDos2UnixFilename"),           _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDROP_ICON"),                  _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEmptyClipboard"),             _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEnableTopLevelWindows"),      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEndBusyCursor"),              _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEntry"),                      _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEnumClipboardFormats"),       _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxError"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxExecute"),                    _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxExit"),                       _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFatalError"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileExists"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileModificationTime"),       _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileNameFromPath"),           _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileSelector"),               _T("wx/filedlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindFirstFile"),              _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindMenuItemId"),             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindNextFile"),               _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindWindowAtPoint"),          _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindWindowAtPointer"),        _T("wx/windows.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindWindowByLabel"),          _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindWindowByName"),           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetActiveWindow"),            _T("wx/windows.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetApp"),                     _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetBatteryState"),            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetClipboardData"),           _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetClipboardFormatName"),     _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetColourFromUser"),          _T("wx/colordlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetCwd"),                     _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetDiskSpace"),               _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetDisplayName"),             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetElapsedTime"),             _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetEmailAddress"),            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetFileKind"),                _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetFontFromUser"),            _T("wx/fontdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetFreeMemory"),              _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetFullHostName"),            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetHomeDir"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetHostName"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetKeyState"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetLocalTime"),               _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetLocalTimeMillis"),         _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetMousePosition"),           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetMouseState"),              _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetMultipleChoice"),          _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetMultipleChoices"),         _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetNumberFromUser"),          _T("wx/numdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetOsDescription"),           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetOSDirectory"),             _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetOsVersion"),               _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPasswordFromUser"),        _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPowerType"),               _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterCommand"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterFile"),             _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterMode"),             _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterOptions"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterOrientation"),      _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterPreviewCommand"),   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterScaling"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetPrinterTranslation"),      _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetProcessId"),               _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetResource"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetSingleChoice"),            _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetSingleChoiceData"),        _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetSingleChoiceIndex"),       _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetStockLabel"),              _T("wx/stockitem.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetTempFileName"),            _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetTextFromUser"),            _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetTopLevelParent"),          _T("wx/window.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetTranslation"),             _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetUserHome"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetUserId"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetUserName"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetUTCTime"),                 _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetWorkingDirectory"),        _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHandleFatalExceptions"),      _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxInitAllImageHandlers"),       _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxInitialize"),                 _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsAbsolutePath"),             _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsBusy"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsClipboardFormatAvailable"), _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsDebuggerRunning"),          _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsEmpty"),                    _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsMainThread"),               _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsWild"),                     _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxKill"),                       _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLaunchDefaultBrowser"),       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLoadUserResource"),           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogDebug"),                   _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogError"),                   _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogFatalError"),              _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogMessage"),                 _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogStatus"),                  _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogSysError"),                _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogTrace"),                   _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogVerbose"),                 _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogWarning"),                 _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMakeMetafilePlaceable"),      _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMatchWild"),                  _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMessageBox"),                 _T("wx/msgdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMicroSleep"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMilliSleep"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMkdir"),                      _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMutexGuiEnter"),              _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMutexGuiLeave"),              _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNewId"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNow"),                        _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxOnAssert"),                   _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxOpenClipboard"),              _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxParseCommonDialogsFilter"),   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPathOnly"),                   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPostDelete"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPostEvent"),                  _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegisterClipboardFormat"),    _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegisterId"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRemoveFile"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRenameFile"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRmdir"),                      _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSafeShowMessage"),            _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSafeYield"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetClipboardData"),           _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetCursor"),                  _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetDisplayName"),             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterCommand"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterFile"),             _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterMode"),             _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterOptions"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterOrientation"),      _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterPreviewCommand"),   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterScaling"),          _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetPrinterTranslation"),      _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetWorkingDirectory"),        _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxShell"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxShowTip"),                    _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxShutdown"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSleep"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSnprintf"),                   _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSplitPath"),                  _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStartTimer"),                 _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStrcmp"),                     _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStricmp"),                    _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringEq"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStripMenuCodes"),             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStrlen"),                     _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSysErrorCode"),               _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSysErrorMsg"),                _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTrace"),                      _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTraceLevel"),                 _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTransferFileToStream"),       _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTransferStreamToFile"),       _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTrap"),                       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxUninitialize"),               _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxUnix2DosFilename"),           _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxUsleep"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVsnprintf"),                  _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWakeUpIdle"),                 _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWriteResource"),              _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxYield"),                      _T("wx/app.h"));
+    // All macros
+    wxString strWxWidgets_2_6_4 = _T(
+    "DECLARE_APP;wx/app.h|"
+    "DECLARE_CLASS;wx/object.h|"
+    "DECLARE_ABSTRACT_CLASS;wx/object.h|"
+    "DECLARE_DYNAMIC_CLASS;wx/object.h|"
+    "DECLARE_EVENT_TYPE;wx/event.h|"
+    "DECLARE_EVENT_MACRO;wx/event.h|"
+    "DECLARE_EVENT_TABLE_ENTRY;wx/event.h|"
+    "IMPLEMENT_APP;wx/app.h|"
+    "IMPLEMENT_ABSTRACT_CLASS;wx/object.h|"
+    "IMPLEMENT_ABSTRACT_CLASS2;wx/object.h|"
+    "IMPLEMENT_CLASS;wx/object.h|"
+    "IMPLEMENT_CLASS2;wx/object.h|"
+    "IMPLEMENT_DYNAMIC_CLASS;wx/object.h|"
+    "IMPLEMENT_DYNAMIC_CLASS2;wx/object.h|"
+    "DEFINE_EVENT_TYPE;wx/event.h|"
+    "BEGIN_EVENT_TABLE;wx/event.h|"
+    "END_EVENT_TABLE;wx/event.h|"
+    "EVT_CUSTOM;wx/event.h|"
+    "EVT_CUSTOM_RANGE;wx/event.h|"
+    "EVT_COMMAND;wx/event.h|"
+    "EVT_COMMAND_RANGE;wx/event.h|"
+    "EVT_NOTIFY;wx/event.h|"
+    "EVT_NOTIFY_RANGE;wx/event.h|"
+    "EVT_BUTTON;wx/button.h|"
+    "EVT_CHECKBOX;wx/checkbox.h|"
+    "EVT_CHOICE;wx/choice.h|"
+    "EVT_CHOICE;wx/choice.h|"
+    "EVT_COMBOBOX;wx/combobox.h|"
+    "EVT_LISTBOX;wx/listbox.h|"
+    "EVT_LISTBOX_DCLICK;wx/listbox.h|"
+    "EVT_RADIOBOX;wx/radiobox.h|"
+    "EVT_RADIOBUTTON;wx/radiobut.h|"
+    "EVT_SCROLLBAR;wx/scrolbar.h|"
+    "EVT_SLIDER;wx/slider.h|"
+    "EVT_TOGGLEBUTTON;wx/tglbtn.h|"
+    "WX_APPEND_ARRAY;wx/dynarray.h|"
+    "WX_CLEAR_ARRAY;wx/dynarray.h|"
+    "WX_DECLARE_OBJARRAY;wx/dynarray.h|"
+    "WX_DEFINE_ARRAY;wx/dynarray.h|"
+    "WX_DEFINE_OBJARRAY;wx/dynarray.h|"
+    "WX_DEFINE_SORTED_ARRAY;wx/dynarray.h|"
+    "WX_DECLARE_STRING_HASH_MAP;wx/hashmap.h|"
+    "WX_DECLARE_HASH_MAP;wx/hashmap.h|"
+    "wxASSERT;wx/debug.h|"
+    "wxASSERT_MIN_BITSIZE;wx/debug.h|"
+    "wxASSERT_MSG;wx/debug.h|"
+    "wxBITMAP;wx/gdicmn.h|"
+    "wxCOMPILE_TIME_ASSERT;wx/debug.h|"
+    "wxCOMPILE_TIME_ASSERT2;wx/debug.h|"
+    "wxCRIT_SECT_DECLARE;wx/thread.h|"
+    "wxCRIT_SECT_DECLARE_MEMBER;wx/thread.h|"
+    "wxCRIT_SECT_LOCKER;wx/thread.h|"
+    "wxDYNLIB_FUNCTION;wx/dynlib.h|"
+    "wxENTER_CRIT_SECT;wx/thread.h|"
+    "wxFAIL;wx/debug.h|"
+    "wxFAIL_MSG;wx/debug.h|"
+    "wxICON;wx/gdicmn.h|"
+    "wxLEAVE_CRIT_SECT;wx/thread.h|"
+    "wxLL;wx/longlong.h|"
+    "wxTRANSLATE;wx/intl.h|"
+    "wxULL;wx/longlong.h|"
 
-  // All ::wx classes
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxAcceleratorEntry"),           _T("wx/accel.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxAcceleratorTable"),           _T("wx/accel.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxAccessible"),                 _T("wx/access.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxActivateEvent"),              _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxApp"),                        _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveClassFactory"),        _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveEntry"),               _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveInputStream"),         _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveIterator"),            _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveNotifier"),            _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArchiveOutputStream"),        _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArray"),                      _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArrayString"),                _T("wx/arrstr.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxArtProvider"),                _T("wx/artprov.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxAutomationObject"),           _T("wx/msw/ole/automtn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBitmap"),                     _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBitmapButton"),               _T("wx/bmpbuttn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBitmapDataObject"),           _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBitmapHandler"),              _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBoxSizer"),                   _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBrush"),                      _T("wx/brush.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBrushList"),                  _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBufferedDC"),                 _T("wx/dcbuffer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBufferedInputStream"),        _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBufferedOutputStream"),       _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBufferedPaintDC"),            _T("wx/dcbuffer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBusyCursor"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxBusyInfo"),                   _T("wx/busyinfo.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxButton"),                     _T("wx/button.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCalculateLayoutEvent"),       _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCalendarCtrl"),               _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCalendarDateAttr"),           _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCalendarEvent"),              _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCaret"),                      _T("wx/caret.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCheckBox"),                   _T("wx/checkbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCheckListBox"),               _T("wx/checklst.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxChoice"),                     _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxChoicebook"),                 _T("wx/choicebk.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClassInfo"),                  _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClient"),                     _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClientData"),                 _T("wx/clntdata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClientDataContainer"),        _T("wx/clntdata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClientDC"),                   _T("wx/dcclient.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxClipboard"),                  _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCloseEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCmdLineParser"),              _T("wx/cmdline.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxColour"),                     _T("wx/colour.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxColourData"),                 _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxColourDatabase"),             _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxColourDialog"),               _T("wx/colordlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxComboBox"),                   _T("wx/combobox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCommand"),                    _T("wx/cmdproc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCommandEvent"),               _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCommandProcessor"),           _T("wx/cmdproc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCondition"),                  _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxConfigBase"),                 _T("wx/config.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxConnection"),                 _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxContextHelp"),                _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxContextHelpButton"),          _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxContextMenuEvent"),           _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxControl"),                    _T("wx/control.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxControlWithItems"),           _T("wx/ctrlsub.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCountingOutputStream"),       _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCriticalSection"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCriticalSectionLocker"),      _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCSConv"),                     _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCurrentTipProvider"),         _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCursor"),                     _T("wx/cursor.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCustomDataObject"),           _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataFormat"),                 _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataInputStream"),            _T("wx/datstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataObject"),                 _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataObjectComposite"),        _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataObjectSimple"),           _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDataOutputStream"),           _T("wx/datstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDateEvent"),                  _T("wx/dateevt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDatePickerCtrl"),             _T("wx/datectrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDateSpan"),                   _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDateTime"),                   _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDb"),                         _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbColDataPtr"),               _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbColDef"),                   _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbColFor"),                   _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbColInf"),                   _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbConnectInf"),               _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbGridColInfo"),              _T("wx/dbgrid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbGridTableBase"),            _T("wx/dbgrid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbIdxDef"),                   _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbInf"),                      _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbTable"),                    _T("wx/dbtable.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDbTableInf"),                 _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDC"),                         _T("wx/dc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDCClipper"),                  _T("wx/dc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDDEClient"),                  _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDDEConnection"),              _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDDEServer"),                  _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugContext"),               _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugReport"),                _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugReportCompress"),        _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugReportPreview"),         _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugReportUpload"),          _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDebugStreamBuf"),             _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDelegateRendererNative"),     _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDialog"),                     _T("wx/dialog.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDialUpEvent"),                _T("wx/dialup.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDialUpManager"),              _T("wx/dialup.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDir"),                        _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDirDialog"),                  _T("wx/dirdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDirTraverser"),               _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDisplay"),                    _T("wx/display.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDllLoader"),                  _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocChildFrame"),              _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocManager"),                 _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocMDIChildFrame"),           _T("wx/docmdi.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocMDIParentFrame"),          _T("wx/docmdi.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocParentFrame"),             _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocTemplate"),                _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDocument"),                   _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDragImage"),                  _T("wx/dragimag.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDragResult"),                 _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDropFilesEvent"),             _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDropSource"),                 _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDropTarget"),                 _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDynamicLibrary"),             _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDynamicLibraryDetails"),      _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEncodingConverter"),          _T("wx/encconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEraseEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEvent"),                      _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxEvtHandler"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFFile"),                      _T("wx/ffile.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFFileInputStream"),           _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFFileOutputStream"),          _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFFileStream"),                _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFile"),                       _T("wx/file.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileConfig"),                 _T("wx/fileconf.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileDataObject"),             _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileDialog"),                 _T("wx/filedlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileDropTarget"),             _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileHistory"),                _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileInputStream"),            _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileName"),                   _T("wx/filename.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileOutputStream"),           _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileStream"),                 _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileSystem"),                 _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileSystemHandler"),          _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFileType"),                   _T("wx/mimetype.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFilterInputStream"),          _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFilterOutputStream"),         _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindDialogEvent"),            _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindReplaceData"),            _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFindReplaceDialog"),          _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFinite"),                     _T("wx/math.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFlexGridSizer"),              _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFocusEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFont"),                       _T("wx/font.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFontData"),                   _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFontDialog"),                 _T("wx/fontdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFontEnumerator"),             _T("wx/fontenum.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFontList"),                   _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFontMapper"),                 _T("wx/fontmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFrame"),                      _T("wx/frame.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFSFile"),                     _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFTP"),                        _T("wx/protocol/ftp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGauge"),                      _T("wx/gauge.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGBPosition"),                 _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGBSizerItem"),                _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGBSpan"),                     _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGDIObject"),                  _T("wx/gdiobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGenericDirCtrl"),             _T("wx/dirctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGenericValidator"),           _T("wx/valgen.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetenv"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGetVariantCast"),             _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGLCanvas"),                   _T("wx/glcanvas.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGLContext"),                  _T("wx/glcanvas.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGrid"),                       _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridBagSizer"),               _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellAttr"),               _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellBoolEditor"),         _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellBoolRenderer"),       _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellChoiceEditor"),       _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellEditor"),             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellFloatEditor"),        _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellFloatRenderer"),      _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellNumberEditor"),       _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellNumberRenderer"),     _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellRenderer"),           _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellStringRenderer"),     _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridCellTextEditor"),         _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridEditorCreatedEvent"),     _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridEvent"),                  _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridRangeSelectEvent"),       _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridSizeEvent"),              _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridSizer"),                  _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxGridTableBase"),              _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHashMap"),                    _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHashSet"),                    _T("wx/hashset.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHashTable"),                  _T("wx/hash.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHelpController"),             _T("wx/help.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHelpControllerHelpProvider"), _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHelpEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHelpProvider"),               _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlCell"),                   _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlColourCell"),             _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlContainerCell"),          _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlDCRenderer"),             _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlEasyPrinting"),           _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlFilter"),                 _T("wx/html/htmlfilt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlHelpController"),         _T("wx/html/helpctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlHelpData"),               _T("wx/html/helpdata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlHelpFrame"),              _T("wx/html/helpfrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlLinkInfo"),               _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlListBox"),                _T("wx/htmllbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlParser"),                 _T("wx/html/htmlpars.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlPrintout"),               _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlTag"),                    _T("wx/html/htmltag.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlTagHandler"),             _T("wx/html/htmlpars.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlTagsModule"),             _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlWidgetCell"),             _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlWindow"),                 _T("wx/html/htmlwin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlWinParser"),              _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHtmlWinTagHandler"),          _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxHTTP"),                       _T("wx/protocol/http.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIcon"),                       _T("wx/icon.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIconBundle"),                 _T("wx/iconbndl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIconizeEvent"),               _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIconLocation"),               _T("wx/iconloc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIdleEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxImage"),                      _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxImageHandler"),               _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxImageList"),                  _T("wx/imaglist.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIndividualLayoutConstraint"), _T("wx/layout.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxInitDialogEvent"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxInputStream"),                _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIPaddress"),                  _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIPV4address"),                _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxIsNaN"),                      _T("wx/math.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxJoystick"),                   _T("wx/joystick.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxJoystickEvent"),              _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxKeyEvent"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLayoutAlgorithm"),            _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLayoutConstraints"),          _T("wx/layout.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxList"),                       _T("wx/list.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListbook"),                   _T("wx/listbook.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListCtrl"),                   _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListEvent"),                  _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListItem"),                   _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListItemAttr"),               _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListView"),                   _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLocale"),                     _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLog"),                        _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogChain"),                   _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogGui"),                     _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogNull"),                    _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogPassThrough"),             _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogStderr"),                  _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogStream"),                  _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogTextCtrl"),                _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLogWindow"),                  _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLongLong"),                   _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLongLongFmtSpec"),            _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMask"),                       _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMaximizeEvent"),              _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConv"),                     _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConvFile"),                 _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConvUTF16"),                _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConvUTF32"),                _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConvUTF7"),                 _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMBConvUTF8"),                 _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMDIChildFrame"),              _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMDIClientWindow"),            _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMDIParentFrame"),             _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMediaCtrl"),                  _T("wx/mediactrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMediaEvent"),                 _T("wx/mediactrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMemoryBuffer"),               _T("wx/buffer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMemoryDC"),                   _T("wx/dcmemory.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMemoryFSHandler"),            _T("wx/fs_mem.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMemoryInputStream"),          _T("wx/mstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMemoryOutputStream"),         _T("wx/mstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMenu"),                       _T("wx/menu.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMenuBar"),                    _T("wx/menu.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMenuEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMenuItem"),                   _T("wx/menuitem.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMessageDialog"),              _T("wx/msgdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMetafile"),                   _T("wx/metafile.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMetafileDC"),                 _T("wx/metafile.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMimeTypesManager"),           _T("wx/mimetype.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMiniFrame"),                  _T("wx/minifram.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMirrorDC"),                   _T("wx/dcmirror.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxModule"),                     _T("wx/module.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMouseCaptureChangedEvent"),   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMouseEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMoveEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMultiChoiceDialog"),          _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMutex"),                      _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxMutexLocker"),                _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNode"),                       _T("wx/list.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNotebook"),                   _T("wx/notebook.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNotebookEvent"),              _T("wx/notebook.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNotebookSizer"),              _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxNotifyEvent"),                _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxObjArray"),                   _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxObject"),                     _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxObjectRefData"),              _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxOpenErrorTraverser"),         _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxOutputStream"),               _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPageSetupDialog"),            _T("wx/printdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPageSetupDialogData"),        _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPaintDC"),                    _T("wx/dcclient.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPaintEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPalette"),                    _T("wx/palette.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPanel"),                      _T("wx/panel.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPaperSize"),                  _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPasswordEntryDialog"),        _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPathList"),                   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPen"),                        _T("wx/pen.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPenList"),                    _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPoint"),                      _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPostScriptDC"),               _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPreviewCanvas"),              _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPreviewControlBar"),          _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPreviewFrame"),               _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrintData"),                  _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrintDialog"),                _T("wx/printdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrintDialogData"),            _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrinter"),                    _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrinterDC"),                  _T("wx/dcprint.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrintout"),                   _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPrintPreview"),               _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxProcess"),                    _T("wx/process.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxProgressDialog"),             _T("wx/progdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxPropertySheetDialog"),        _T("wx/propdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxProtocol"),                   _T("wx/protocol/protocol.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxQuantize"),                   _T("wx/quantize.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxQueryLayoutInfoEvent"),       _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRadioBox"),                   _T("wx/radiobox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRadioButton"),                _T("wx/radiobut.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRealPoint"),                  _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRect"),                       _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRecursionGuard"),             _T("wx/recguard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRecursionGuardFlag"),         _T("wx/recguard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegEx"),                      _T("wx/regex.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegion"),                     _T("wx/region.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegionIterator"),             _T("wx/region.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRegKey"),                     _T("wx/msw/registry.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRendererNative"),             _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxRendererVersion"),            _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSashEvent"),                  _T("wx/sashwin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSashLayoutWindow"),           _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSashWindow"),                 _T("wx/sashwin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScopedArray"),                _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScopedPtr"),                  _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScopedTiedPtr"),              _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScreenDC"),                   _T("wx/dcscreen.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScrollBar"),                  _T("wx/scrolbar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScrolledWindow"),             _T("wx/scrolwin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScrollEvent"),                _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxScrollWinEvent"),             _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSemaphore"),                  _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxServer"),                     _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetCursorEvent"),             _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSetEnv"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSimpleHelpProvider"),         _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSingleChoiceDialog"),         _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSingleInstanceChecker"),      _T("wx/snglinst.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSize"),                       _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSizeEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSizer"),                      _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSizerFlags"),                 _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSizerItem"),                  _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSlider"),                     _T("wx/slider.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSockAddress"),                _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketBase"),                 _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketClient"),               _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketEvent"),                _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketInputStream"),          _T("wx/sckstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketOutputStream"),         _T("wx/sckstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSocketServer"),               _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSound"),                      _T("wx/sound.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSpinButton"),                 _T("wx/spinbutt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSpinCtrl"),                   _T("wx/spinctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSpinEvent"),                  _T("wx/spinctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSplashScreen"),               _T("wx/splash.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSplitterEvent"),              _T("wx/splitter.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSplitterRenderParams"),       _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSplitterWindow"),             _T("wx/splitter.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStackFrame"),                 _T("wx/stackwalk.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStackWalker"),                _T("wx/stackwalk.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStandardPaths"),              _T("wx/stdpaths.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStaticBitmap"),               _T("wx/statbmp.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStaticBox"),                  _T("wx/statbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStaticLine"),                 _T("wx/statline.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStaticText"),                 _T("wx/stattext.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStatusBar"),                  _T("wx/statusbr.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStdDialogButtonSizer"),       _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStopWatch"),                  _T("wx/stopwatch.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStreamBase"),                 _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStreamBuffer"),               _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStreamToTextRedirector"),     _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxString"),                     _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringBuffer"),               _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringBufferLength"),         _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringClientData"),           _T("clntdata.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringInputStream"),          _T("wx/sstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringOutputStream"),         _T("wx/sstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxStringTokenizer"),            _T("wx/tokenzr.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSystemOptions"),              _T("wx/sysopt.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxSystemSettings"),             _T("wx/settings.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTaskBarIcon"),                _T("wx/taskbar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTCPClient"),                  _T("wx/sckipc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTCPServer"),                  _T("wx/sckipc.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTempFile"),                   _T("wx/file.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTempFileOutputStream"),       _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextAttr"),                   _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextCtrl"),                   _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextDataObject"),             _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextDropTarget"),             _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextEntryDialog"),            _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextFile"),                   _T("wx/textfile.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextInputStream"),            _T("wx/txtstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextOutputStream"),           _T("wx/txtstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTextValidator"),              _T("wx/valtext.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTheClipboard"),               _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxThread"),                     _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxThreadHelper"),               _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTimer"),                      _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTimerEvent"),                 _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTimeSpan"),                   _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTipProvider"),                _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTipWindow"),                  _T("wx/tipwin.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxToggleButton"),               _T("wx/tglbtn.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxToolBar"),                    _T("wx/toolbar.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxToolTip"),                    _T("wx/tooltip.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTopLevelWindow"),             _T("wx/toplevel.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTreeCtrl"),                   _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTreeEvent"),                  _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTreeItemData"),               _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxUnsetEnv"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxUpdateUIEvent"),              _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxURI"),                        _T("wx/uri.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxURL"),                        _T("wx/url.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVaCopy"),                     _T("wx/defs.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxValidator"),                  _T("wx/validate.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVariant"),                    _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVariantData"),                _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxView"),                       _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVListBox"),                   _T("wx/vlbox.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxVScrolledWindow"),            _T("wx/vscroll.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWindow"),                     _T("wx/window.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWizard"),                     _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWizardEvent"),                _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWizardPage"),                 _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxWizardPageSimple"),           _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxXmlResource"),                _T("wx/xrc/xmlres.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxXmlResourceHandler"),         _T("wx/xrc/xmlres.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZipClassFactory"),            _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZipEntry"),                   _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZipInputStream"),             _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZipNotifier"),                _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZipOutputStream"),            _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZlibInputStream"),            _T("wx/zstream.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxZlibOutputStream"),           _T("wx/zstream.h"));
+    // All ::wx methods
+    "wxBeginBusyCursor;wx/utils.h|"
+    "wxBell;wx/utils.h|"
+    "wxClientDisplayRect;wx/gdicmn.h|"
+    "wxClipboardOpen;wx/clipbrd.h|"
+    "wxCloseClipboard;wx/clipbrd.h|"
+    "wxColourDisplay;wx/gdicmn.h|"
+    "wxConcatFiles;wx/filefn.h|"
+    "wxCopyFile;wx/filefn.h|"
+    "wxCreateDynamicObject;wx/object.h|"
+    "wxCreateFileTipProvider;wx/tipdlg.h|"
+    "wxDDECleanUp;wx/dde.h|"
+    "wxDDEInitialize;wx/dde.h|"
+    "wxDebugMsg;wx/utils.h|"
+    "wxDirExists;wx/filefn.h|"
+    "wxDirSelector;wx/dirdlg.h|"
+    "wxDisplayDepth;wx/gdicmn.h|"
+    "wxDisplaySize;wx/gdicmn.h|"
+    "wxDisplaySizeMM;wx/gdicmn.h|"
+    "wxDos2UnixFilename;wx/filefn.h|"
+    "wxDROP_ICON;wx/dnd.h|"
+    "wxEmptyClipboard;wx/clipbrd.h|"
+    "wxEnableTopLevelWindows;wx/utils.h|"
+    "wxEndBusyCursor;wx/utils.h|"
+    "wxEntry;wx/app.h|"
+    "wxEnumClipboardFormats;wx/clipbrd.h|"
+    "wxError;wx/utils.h|"
+    "wxExecute;wx/utils.h|"
+    "wxExit;wx/app.h|"
+    "wxFatalError;wx/utils.h|"
+    "wxFileExists;wx/filefn.h|"
+    "wxFileModificationTime;wx/filefn.h|"
+    "wxFileNameFromPath;wx/filefn.h|"
+    "wxFileSelector;wx/filedlg.h|"
+    "wxFindFirstFile;wx/filefn.h|"
+    "wxFindMenuItemId;wx/utils.h|"
+    "wxFindNextFile;wx/filefn.h|"
+    "wxFindWindowAtPoint;wx/utils.h|"
+    "wxFindWindowAtPointer;wx/windows.h|"
+    "wxFindWindowByLabel;wx/utils.h|"
+    "wxFindWindowByName;wx/utils.h|"
+    "wxGetActiveWindow;wx/windows.h|"
+    "wxGetApp;wx/app.h|"
+    "wxGetBatteryState;wx/utils.h|"
+    "wxGetClipboardData;wx/clipbrd.h|"
+    "wxGetClipboardFormatName;wx/clipbrd.h|"
+    "wxGetColourFromUser;wx/colordlg.h|"
+    "wxGetCwd;wx/filefn.h|"
+    "wxGetDiskSpace;wx/filefn.h|"
+    "wxGetDisplayName;wx/utils.h|"
+    "wxGetElapsedTime;wx/timer.h|"
+    "wxGetEmailAddress;wx/utils.h|"
+    "wxGetFileKind;wx/filefn.h|"
+    "wxGetFontFromUser;wx/fontdlg.h|"
+    "wxGetFreeMemory;wx/utils.h|"
+    "wxGetFullHostName;wx/utils.h|"
+    "wxGetHomeDir;wx/utils.h|"
+    "wxGetHostName;wx/utils.h|"
+    "wxGetKeyState;wx/utils.h|"
+    "wxGetLocalTime;wx/timer.h|"
+    "wxGetLocalTimeMillis;wx/timer.h|"
+    "wxGetMousePosition;wx/utils.h|"
+    "wxGetMouseState;wx/utils.h|"
+    "wxGetMultipleChoice;wx/choicdlg.h|"
+    "wxGetMultipleChoices;wx/choicdlg.h|"
+    "wxGetNumberFromUser;wx/numdlg.h|"
+    "wxGetOsDescription;wx/utils.h|"
+    "wxGetOSDirectory;wx/filefn.h|"
+    "wxGetOsVersion;wx/utils.h|"
+    "wxGetPasswordFromUser;wx/textdlg.h|"
+    "wxGetPowerType;wx/utils.h|"
+    "wxGetPrinterCommand;wx/dcps.h|"
+    "wxGetPrinterFile;wx/dcps.h|"
+    "wxGetPrinterMode;wx/dcps.h|"
+    "wxGetPrinterOptions;wx/dcps.h|"
+    "wxGetPrinterOrientation;wx/dcps.h|"
+    "wxGetPrinterPreviewCommand;wx/dcps.h|"
+    "wxGetPrinterScaling;wx/dcps.h|"
+    "wxGetPrinterTranslation;wx/dcps.h|"
+    "wxGetProcessId;wx/utils.h|"
+    "wxGetResource;wx/utils.h|"
+    "wxGetSingleChoice;wx/choicdlg.h|"
+    "wxGetSingleChoiceData;wx/choicdlg.h|"
+    "wxGetSingleChoiceIndex;wx/choicdlg.h|"
+    "wxGetStockLabel;wx/stockitem.h|"
+    "wxGetTempFileName;wx/filefn.h|"
+    "wxGetTextFromUser;wx/textdlg.h|"
+    "wxGetTopLevelParent;wx/window.h|"
+    "wxGetTranslation;wx/intl.h|"
+    "wxGetUserHome;wx/utils.h|"
+    "wxGetUserId;wx/utils.h|"
+    "wxGetUserName;wx/utils.h|"
+    "wxGetUTCTime;wx/timer.h|"
+    "wxGetWorkingDirectory;wx/filefn.h|"
+    "wxHandleFatalExceptions;wx/app.h|"
+    "wxInitAllImageHandlers;wx/image.h|"
+    "wxInitialize;wx/app.h|"
+    "wxIsAbsolutePath;wx/filefn.h|"
+    "wxIsBusy;wx/utils.h|"
+    "wxIsClipboardFormatAvailable;wx/clipbrd.h|"
+    "wxIsDebuggerRunning;wx/debug.h|"
+    "wxIsEmpty;wx/wxchar.h|"
+    "wxIsMainThread;wx/thread.h|"
+    "wxIsWild;wx/filefn.h|"
+    "wxKill;wx/app.h|"
+    "wxLaunchDefaultBrowser;wx/utils.h|"
+    "wxLoadUserResource;wx/utils.h|"
+    "wxLogDebug;wx/log.h|"
+    "wxLogError;wx/log.h|"
+    "wxLogFatalError;wx/log.h|"
+    "wxLogMessage;wx/log.h|"
+    "wxLogStatus;wx/log.h|"
+    "wxLogSysError;wx/log.h|"
+    "wxLogTrace;wx/log.h|"
+    "wxLogVerbose;wx/log.h|"
+    "wxLogWarning;wx/log.h|"
+    "wxMakeMetafilePlaceable;wx/gdicmn.h|"
+    "wxMatchWild;wx/filefn.h|"
+    "wxMessageBox;wx/msgdlg.h|"
+    "wxMicroSleep;wx/utils.h|"
+    "wxMilliSleep;wx/utils.h|"
+    "wxMkdir;wx/filefn.h|"
+    "wxMutexGuiEnter;wx/thread.h|"
+    "wxMutexGuiLeave;wx/thread.h|"
+    "wxNewId;wx/utils.h|"
+    "wxNow;wx/utils.h|"
+    "wxOnAssert;wx/debug.h|"
+    "wxOpenClipboard;wx/clipbrd.h|"
+    "wxParseCommonDialogsFilter;wx/filefn.h|"
+    "wxPathOnly;wx/filefn.h|"
+    "wxPostDelete;wx/utils.h|"
+    "wxPostEvent;wx/app.h|"
+    "wxRegisterClipboardFormat;wx/clipbrd.h|"
+    "wxRegisterId;wx/utils.h|"
+    "wxRemoveFile;wx/filefn.h|"
+    "wxRenameFile;wx/filefn.h|"
+    "wxRmdir;wx/filefn.h|"
+    "wxSafeShowMessage;wx/log.h|"
+    "wxSafeYield;wx/utils.h|"
+    "wxSetClipboardData;wx/clipbrd.h|"
+    "wxSetCursor;wx/gdicmn.h|"
+    "wxSetDisplayName;wx/utils.h|"
+    "wxSetPrinterCommand;wx/dcps.h|"
+    "wxSetPrinterFile;wx/dcps.h|"
+    "wxSetPrinterMode;wx/dcps.h|"
+    "wxSetPrinterOptions;wx/dcps.h|"
+    "wxSetPrinterOrientation;wx/dcps.h|"
+    "wxSetPrinterPreviewCommand;wx/dcps.h|"
+    "wxSetPrinterScaling;wx/dcps.h|"
+    "wxSetPrinterTranslation;wx/dcps.h|"
+    "wxSetWorkingDirectory;wx/filefn.h|"
+    "wxShell;wx/utils.h|"
+    "wxShowTip;wx/tipdlg.h|"
+    "wxShutdown;wx/utils.h|"
+    "wxSleep;wx/utils.h|"
+    "wxSnprintf;wx/wxchar.h|"
+    "wxSplitPath;wx/filefn.h|"
+    "wxStartTimer;wx/timer.h|"
+    "wxStrcmp;wx/wxchar.h|"
+    "wxStricmp;wx/wxchar.h|"
+    "wxStringEq;wx/utils.h|"
+    "wxStripMenuCodes;wx/utils.h|"
+    "wxStrlen;wx/wxchar.h|"
+    "wxSysErrorCode;wx/log.h|"
+    "wxSysErrorMsg;wx/log.h|"
+    "wxTrace;wx/memory.h|"
+    "wxTraceLevel;wx/memory.h|"
+    "wxTransferFileToStream;wx/docview.h|"
+    "wxTransferStreamToFile;wx/docview.h|"
+    "wxTrap;wx/debug.h|"
+    "wxUninitialize;wx/app.h|"
+    "wxUnix2DosFilename;wx/filefn.h|"
+    "wxUsleep;wx/utils.h|"
+    "wxVsnprintf;wx/wxchar.h|"
+    "wxWakeUpIdle;wx/app.h|"
+    "wxWriteResource;wx/utils.h|"
+    "wxYield;wx/app.h|"
 
-  // All macros
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_APP"),                        _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_ABSTRACT_CLASS"),             _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_CLASS"),                      _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_DYNAMIC_CLASS"),              _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_APP"),                      _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_ABSTRACT_CLASS"),           _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_ABSTRACT_CLASS2"),          _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_CLASS"),                    _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_CLASS2"),                   _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_DYNAMIC_CLASS"),            _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("IMPLEMENT_DYNAMIC_CLASS2"),           _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_EVENT_TYPE"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_EVENT_MACRO"),                _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DECLARE_EVENT_TABLE_ENTRY"),          _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("DEFINE_EVENT_TYPE"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("BEGIN_EVENT_TABLE"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("END_EVENT_TABLE"),                    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_CUSTOM"),                         _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_CUSTOM_RANGE"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_COMMAND"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_COMMAND_RANGE"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_NOTIFY"),                         _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_NOTIFY_RANGE"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_BUTTON"),                         _T("wx/button.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_CHECKBOX"),                       _T("wx/checkbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_CHOICE"),                         _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_CHOICE"),                         _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_COMBOBOX"),                       _T("wx/combobox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_LISTBOX"),                        _T("wx/listbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_LISTBOX_DCLICK"),                 _T("wx/listbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_RADIOBOX"),                       _T("wx/radiobox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_RADIOBUTTON"),                    _T("wx/radiobut.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_SCROLLBAR"),                      _T("wx/scrolbar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_SLIDER"),                         _T("wx/slider.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("EVT_TOGGLEBUTTON"),                   _T("wx/tglbtn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_APPEND_ARRAY"),                    _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_PREPEND_ARRAY"),                   _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_CLEAR_ARRAY"),                     _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DECLARE_OBJARRAY"),                _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_ARRAY"),                    _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_OBJARRAY"),                 _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_SORTED_ARRAY"),             _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DECLARE_STRING_HASH_MAP"),         _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DECLARE_HASH_MAP"),                _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT"),                           _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT_MIN_BITSIZE"),               _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT_MSG"),                       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBITMAP"),                           _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCOMPILE_TIME_ASSERT"),              _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCOMPILE_TIME_ASSERT2"),             _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE"),                _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE_MEMBER"),         _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_LOCKER"),                 _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDYNLIB_FUNCTION"),                  _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxENTER_CRIT_SECT"),                  _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL"),                             _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL_MSG"),                         _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxICON"),                             _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLEAVE_CRIT_SECT"),                  _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLL"),                               _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTRANSLATE"),                        _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxULL"),                              _T("wx/longlong.h"));
+    // All ::wx classes
+    "wxAcceleratorEntry;wx/accel.h|"
+    "wxAcceleratorTable;wx/accel.h|"
+    "wxAccessible;wx/access.h|"
+    "wxActivateEvent;wx/event.h|"
+    "wxApp;wx/app.h|"
+    "wxArchiveClassFactory;wx/archive.h|"
+    "wxArchiveEntry;wx/archive.h|"
+    "wxArchiveInputStream;wx/archive.h|"
+    "wxArchiveIterator;wx/archive.h|"
+    "wxArchiveNotifier;wx/archive.h|"
+    "wxArchiveOutputStream;wx/archive.h|"
+    "wxArray;wx/dynarray.h|"
+    "wxArrayString;wx/arrstr.h|"
+    "wxArtProvider;wx/artprov.h|"
+    "wxAutomationObject;wx/msw/ole/automtn.h|"
+    "wxBitmap;wx/bitmap.h|"
+    "wxBitmapButton;wx/bmpbuttn.h|"
+    "wxBitmapDataObject;wx/dataobj.h|"
+    "wxBitmapHandler;wx/bitmap.h|"
+    "wxBoxSizer;wx/sizer.h|"
+    "wxBrush;wx/brush.h|"
+    "wxBrushList;wx/gdicmn.h|"
+    "wxBufferedDC;wx/dcbuffer.h|"
+    "wxBufferedInputStream;wx/stream.h|"
+    "wxBufferedOutputStream;wx/stream.h|"
+    "wxBufferedPaintDC;wx/dcbuffer.h|"
+    "wxBusyCursor;wx/utils.h|"
+    "wxBusyInfo;wx/busyinfo.h|"
+    "wxButton;wx/button.h|"
+    "wxCalculateLayoutEvent;wx/laywin.h|"
+    "wxCalendarCtrl;wx/calctrl.h|"
+    "wxCalendarDateAttr;wx/calctrl.h|"
+    "wxCalendarEvent;wx/calctrl.h|"
+    "wxCaret;wx/caret.h|"
+    "wxCheckBox;wx/checkbox.h|"
+    "wxCheckListBox;wx/checklst.h|"
+    "wxChoice;wx/choice.h|"
+    "wxChoicebook;wx/choicebk.h|"
+    "wxClassInfo;wx/object.h|"
+    "wxClient;wx/ipc.h|"
+    "wxClientData;wx/clntdata.h|"
+    "wxClientDataContainer;wx/clntdata.h|"
+    "wxClientDC;wx/dcclient.h|"
+    "wxClipboard;wx/clipbrd.h|"
+    "wxCloseEvent;wx/event.h|"
+    "wxCmdLineParser;wx/cmdline.h|"
+    "wxColour;wx/colour.h|"
+    "wxColourData;wx/cmndata.h|"
+    "wxColourDatabase;wx/gdicmn.h|"
+    "wxColourDialog;wx/colordlg.h|"
+    "wxComboBox;wx/combobox.h|"
+    "wxCommand;wx/cmdproc.h|"
+    "wxCommandEvent;wx/event.h|"
+    "wxCommandProcessor;wx/cmdproc.h|"
+    "wxCondition;wx/thread.h|"
+    "wxConfigBase;wx/config.h|"
+    "wxConnection;wx/ipc.h|"
+    "wxContextHelp;wx/cshelp.h|"
+    "wxContextHelpButton;wx/cshelp.h|"
+    "wxContextMenuEvent;wx/event.h|"
+    "wxControl;wx/control.h|"
+    "wxControlWithItems;wx/ctrlsub.h|"
+    "wxCountingOutputStream;wx/stream.h|"
+    "wxCriticalSection;wx/thread.h|"
+    "wxCriticalSectionLocker;wx/thread.h|"
+    "wxCSConv;wx/strconv.h|"
+    "wxCurrentTipProvider;wx/tipdlg.h|"
+    "wxCursor;wx/cursor.h|"
+    "wxCustomDataObject;wx/dataobj.h|"
+    "wxDataFormat;wx/dataobj.h|"
+    "wxDataInputStream;wx/datstrm.h|"
+    "wxDataObject;wx/dataobj.h|"
+    "wxDataObjectComposite;wx/dataobj.h|"
+    "wxDataObjectSimple;wx/dataobj.h|"
+    "wxDataOutputStream;wx/datstrm.h|"
+    "wxDateEvent;wx/dateevt.h|"
+    "wxDatePickerCtrl;wx/datectrl.h|"
+    "wxDateSpan;wx/datetime.h|"
+    "wxDateTime;wx/datetime.h|"
+    "wxDb;wx/db.h|"
+    "wxDbColDataPtr;wx/db.h|"
+    "wxDbColDef;wx/db.h|"
+    "wxDbColFor;wx/db.h|"
+    "wxDbColInf;wx/db.h|"
+    "wxDbConnectInf;wx/db.h|"
+    "wxDbGridColInfo;wx/dbgrid.h|"
+    "wxDbGridTableBase;wx/dbgrid.h|"
+    "wxDbIdxDef;wx/db.h|"
+    "wxDbInf;wx/db.h|"
+    "wxDbTable;wx/dbtable.h|"
+    "wxDbTableInf;wx/db.h|"
+    "wxDC;wx/dc.h|"
+    "wxDCClipper;wx/dc.h|"
+    "wxDDEClient;wx/dde.h|"
+    "wxDDEConnection;wx/dde.h|"
+    "wxDDEServer;wx/dde.h|"
+    "wxDebugContext;wx/memory.h|"
+    "wxDebugReport;wx/debugrpt.h|"
+    "wxDebugReportCompress;wx/debugrpt.h|"
+    "wxDebugReportPreview;wx/debugrpt.h|"
+    "wxDebugReportUpload;wx/debugrpt.h|"
+    "wxDebugStreamBuf;wx/memory.h|"
+    "wxDelegateRendererNative;wx/renderer.h|"
+    "wxDialog;wx/dialog.h|"
+    "wxDialUpEvent;wx/dialup.h|"
+    "wxDialUpManager;wx/dialup.h|"
+    "wxDir;wx/dir.h|"
+    "wxDirDialog;wx/dirdlg.h|"
+    "wxDirTraverser;wx/dir.h|"
+    "wxDisplay;wx/display.h|"
+    "wxDllLoader;wx/dynlib.h|"
+    "wxDocChildFrame;wx/docview.h|"
+    "wxDocManager;wx/docview.h|"
+    "wxDocMDIChildFrame;wx/docmdi.h|"
+    "wxDocMDIParentFrame;wx/docmdi.h|"
+    "wxDocParentFrame;wx/docview.h|"
+    "wxDocTemplate;wx/docview.h|"
+    "wxDocument;wx/docview.h|"
+    "wxDragImage;wx/dragimag.h|"
+    "wxDragResult;wx/dnd.h|"
+    "wxDropFilesEvent;wx/event.h|"
+    "wxDropSource;wx/dnd.h|"
+    "wxDropTarget;wx/dnd.h|"
+    "wxDynamicLibrary;wx/dynlib.h|"
+    "wxDynamicLibraryDetails;wx/dynlib.h|"
+    "wxEncodingConverter;wx/encconv.h|"
+    "wxEraseEvent;wx/event.h|"
+    "wxEvent;wx/event.h|"
+    "wxEvtHandler;wx/event.h|"
+    "wxFFile;wx/ffile.h|"
+    "wxFFileInputStream;wx/wfstream.h|"
+    "wxFFileOutputStream;wx/wfstream.h|"
+    "wxFFileStream;wx/wfstream.h|"
+    "wxFile;wx/file.h|"
+    "wxFileConfig;wx/fileconf.h|"
+    "wxFileDataObject;wx/dataobj.h|"
+    "wxFileDialog;wx/filedlg.h|"
+    "wxFileDropTarget;wx/dnd.h|"
+    "wxFileHistory;wx/docview.h|"
+    "wxFileInputStream;wx/wfstream.h|"
+    "wxFileName;wx/filename.h|"
+    "wxFileOutputStream;wx/wfstream.h|"
+    "wxFileStream;wx/wfstream.h|"
+    "wxFileSystem;wx/filesys.h|"
+    "wxFileSystemHandler;wx/filesys.h|"
+    "wxFileType;wx/mimetype.h|"
+    "wxFilterInputStream;wx/stream.h|"
+    "wxFilterOutputStream;wx/stream.h|"
+    "wxFindDialogEvent;wx/fdrepdlg.h|"
+    "wxFindReplaceData;wx/fdrepdlg.h|"
+    "wxFindReplaceDialog;wx/fdrepdlg.h|"
+    "wxFinite;wx/math.h|"
+    "wxFlexGridSizer;wx/sizer.h|"
+    "wxFocusEvent;wx/event.h|"
+    "wxFont;wx/font.h|"
+    "wxFontData;wx/cmndata.h|"
+    "wxFontDialog;wx/fontdlg.h|"
+    "wxFontEnumerator;wx/fontenum.h|"
+    "wxFontList;wx/gdicmn.h|"
+    "wxFontMapper;wx/fontmap.h|"
+    "wxFrame;wx/frame.h|"
+    "wxFSFile;wx/filesys.h|"
+    "wxFTP;wx/protocol/ftp.h|"
+    "wxGauge;wx/gauge.h|"
+    "wxGBPosition;wx/gbsizer.h|"
+    "wxGBSizerItem;wx/gbsizer.h|"
+    "wxGBSpan;wx/gbsizer.h|"
+    "wxGDIObject;wx/gdiobj.h|"
+    "wxGenericDirCtrl;wx/dirctrl.h|"
+    "wxGenericValidator;wx/valgen.h|"
+    "wxGetenv;wx/utils.h|"
+    "wxGetVariantCast;wx/variant.h|"
+    "wxGLCanvas;wx/glcanvas.h|"
+    "wxGLContext;wx/glcanvas.h|"
+    "wxGrid;wx/grid.h|"
+    "wxGridBagSizer;wx/gbsizer.h|"
+    "wxGridCellAttr;wx/grid.h|"
+    "wxGridCellBoolEditor;wx/grid.h|"
+    "wxGridCellBoolRenderer;wx/grid.h|"
+    "wxGridCellChoiceEditor;wx/grid.h|"
+    "wxGridCellEditor;wx/grid.h|"
+    "wxGridCellFloatEditor;wx/grid.h|"
+    "wxGridCellFloatRenderer;wx/grid.h|"
+    "wxGridCellNumberEditor;wx/grid.h|"
+    "wxGridCellNumberRenderer;wx/grid.h|"
+    "wxGridCellRenderer;wx/grid.h|"
+    "wxGridCellStringRenderer;wx/grid.h|"
+    "wxGridCellTextEditor;wx/grid.h|"
+    "wxGridEditorCreatedEvent;wx/grid.h|"
+    "wxGridEvent;wx/grid.h|"
+    "wxGridRangeSelectEvent;wx/grid.h|"
+    "wxGridSizeEvent;wx/grid.h|"
+    "wxGridSizer;wx/sizer.h|"
+    "wxGridTableBase;wx/grid.h|"
+    "wxHashMap;wx/hashmap.h|"
+    "wxHashSet;wx/hashset.h|"
+    "wxHashTable;wx/hash.h|"
+    "wxHelpController;wx/help.h|"
+    "wxHelpControllerHelpProvider;wx/cshelp.h|"
+    "wxHelpEvent;wx/event.h|"
+    "wxHelpProvider;wx/cshelp.h|"
+    "wxHtmlCell;wx/html/htmlcell.h|"
+    "wxHtmlColourCell;wx/html/htmlcell.h|"
+    "wxHtmlContainerCell;wx/html/htmlcell.h|"
+    "wxHtmlDCRenderer;wx/html/htmprint.h|"
+    "wxHtmlEasyPrinting;wx/html/htmprint.h|"
+    "wxHtmlFilter;wx/html/htmlfilt.h|"
+    "wxHtmlHelpController;wx/html/helpctrl.h|"
+    "wxHtmlHelpData;wx/html/helpdata.h|"
+    "wxHtmlHelpFrame;wx/html/helpfrm.h|"
+    "wxHtmlLinkInfo;wx/html/htmlcell.h|"
+    "wxHtmlListBox;wx/htmllbox.h|"
+    "wxHtmlParser;wx/html/htmlpars.h|"
+    "wxHtmlPrintout;wx/html/htmprint.h|"
+    "wxHtmlTag;wx/html/htmltag.h|"
+    "wxHtmlTagHandler;wx/html/htmlpars.h|"
+    "wxHtmlTagsModule;wx/html/winpars.h|"
+    "wxHtmlWidgetCell;wx/html/htmlcell.h|"
+    "wxHtmlWindow;wx/html/htmlwin.h|"
+    "wxHtmlWinParser;wx/html/winpars.h|"
+    "wxHtmlWinTagHandler;wx/html/winpars.h|"
+    "wxHTTP;wx/protocol/http.h|"
+    "wxIcon;wx/icon.h|"
+    "wxIconBundle;wx/iconbndl.h|"
+    "wxIconizeEvent;wx/event.h|"
+    "wxIconLocation;wx/iconloc.h|"
+    "wxIdleEvent;wx/event.h|"
+    "wxImage;wx/image.h|"
+    "wxImageHandler;wx/image.h|"
+    "wxImageList;wx/imaglist.h|"
+    "wxIndividualLayoutConstraint;wx/layout.h|"
+    "wxInitDialogEvent;wx/event.h|"
+    "wxInputStream;wx/stream.h|"
+    "wxIPaddress;wx/socket.h|"
+    "wxIPV4address;wx/socket.h|"
+    "wxIsNaN;wx/math.h|"
+    "wxJoystick;wx/joystick.h|"
+    "wxJoystickEvent;wx/event.h|"
+    "wxKeyEvent;wx/event.h|"
+    "wxLayoutAlgorithm;wx/laywin.h|"
+    "wxLayoutConstraints;wx/layout.h|"
+    "wxList;wx/list.h|"
+    "wxListbook;wx/listbook.h|"
+    "wxListCtrl;wx/listctrl.h|"
+    "wxListEvent;wx/listctrl.h|"
+    "wxListItem;wx/listctrl.h|"
+    "wxListItemAttr;wx/listctrl.h|"
+    "wxListView;wx/listctrl.h|"
+    "wxLocale;wx/intl.h|"
+    "wxLog;wx/log.h|"
+    "wxLogChain;wx/log.h|"
+    "wxLogGui;wx/log.h|"
+    "wxLogNull;wx/log.h|"
+    "wxLogPassThrough;wx/log.h|"
+    "wxLogStderr;wx/log.h|"
+    "wxLogStream;wx/log.h|"
+    "wxLogTextCtrl;wx/log.h|"
+    "wxLogWindow;wx/log.h|"
+    "wxLongLong;wx/longlong.h|"
+    "wxLongLongFmtSpec;wx/longlong.h|"
+    "wxMask;wx/bitmap.h|"
+    "wxMaximizeEvent;wx/event.h|"
+    "wxMBConv;wx/strconv.h|"
+    "wxMBConvFile;wx/strconv.h|"
+    "wxMBConvUTF16;wx/strconv.h|"
+    "wxMBConvUTF32;wx/strconv.h|"
+    "wxMBConvUTF7;wx/strconv.h|"
+    "wxMBConvUTF8;wx/strconv.h|"
+    "wxMDIChildFrame;wx/mdi.h|"
+    "wxMDIClientWindow;wx/mdi.h|"
+    "wxMDIParentFrame;wx/mdi.h|"
+    "wxMediaCtrl;wx/mediactrl.h|"
+    "wxMediaEvent;wx/mediactrl.h|"
+    "wxMemoryBuffer;wx/buffer.h|"
+    "wxMemoryDC;wx/dcmemory.h|"
+    "wxMemoryFSHandler;wx/fs_mem.h|"
+    "wxMemoryInputStream;wx/mstream.h|"
+    "wxMemoryOutputStream;wx/mstream.h|"
+    "wxMenu;wx/menu.h|"
+    "wxMenuBar;wx/menu.h|"
+    "wxMenuEvent;wx/event.h|"
+    "wxMenuItem;wx/menuitem.h|"
+    "wxMessageDialog;wx/msgdlg.h|"
+    "wxMetafile;wx/metafile.h|"
+    "wxMetafileDC;wx/metafile.h|"
+    "wxMimeTypesManager;wx/mimetype.h|"
+    "wxMiniFrame;wx/minifram.h|"
+    "wxMirrorDC;wx/dcmirror.h|"
+    "wxModule;wx/module.h|"
+    "wxMouseCaptureChangedEvent;wx/event.h|"
+    "wxMouseEvent;wx/event.h|"
+    "wxMoveEvent;wx/event.h|"
+    "wxMultiChoiceDialog;wx/choicdlg.h|"
+    "wxMutex;wx/thread.h|"
+    "wxMutexLocker;wx/thread.h|"
+    "wxNode;wx/list.h|"
+    "wxNotebook;wx/notebook.h|"
+    "wxNotebookEvent;wx/notebook.h|"
+    "wxNotebookSizer;wx/sizer.h|"
+    "wxNotifyEvent;wx/event.h|"
+    "wxObjArray;wx/dynarray.h|"
+    "wxObject;wx/object.h|"
+    "wxObjectRefData;wx/object.h|"
+    "wxOpenErrorTraverser;wx/dir.h|"
+    "wxOutputStream;wx/stream.h|"
+    "wxPageSetupDialog;wx/printdlg.h|"
+    "wxPageSetupDialogData;wx/cmndata.h|"
+    "wxPaintDC;wx/dcclient.h|"
+    "wxPaintEvent;wx/event.h|"
+    "wxPalette;wx/palette.h|"
+    "wxPanel;wx/panel.h|"
+    "wxPaperSize;wx/cmndata.h|"
+    "wxPasswordEntryDialog;wx/textdlg.h|"
+    "wxPathList;wx/filefn.h|"
+    "wxPen;wx/pen.h|"
+    "wxPenList;wx/gdicmn.h|"
+    "wxPoint;wx/gdicmn.h|"
+    "wxPostScriptDC;wx/dcps.h|"
+    "wxPreviewCanvas;wx/print.h|"
+    "wxPreviewControlBar;wx/print.h|"
+    "wxPreviewFrame;wx/print.h|"
+    "wxPrintData;wx/cmndata.h|"
+    "wxPrintDialog;wx/printdlg.h|"
+    "wxPrintDialogData;wx/cmndata.h|"
+    "wxPrinter;wx/print.h|"
+    "wxPrinterDC;wx/dcprint.h|"
+    "wxPrintout;wx/print.h|"
+    "wxPrintPreview;wx/print.h|"
+    "wxProcess;wx/process.h|"
+    "wxProgressDialog;wx/progdlg.h|"
+    "wxPropertySheetDialog;wx/propdlg.h|"
+    "wxProtocol;wx/protocol/protocol.h|"
+    "wxQuantize;wx/quantize.h|"
+    "wxQueryLayoutInfoEvent;wx/laywin.h|"
+    "wxRadioBox;wx/radiobox.h|"
+    "wxRadioButton;wx/radiobut.h|"
+    "wxRealPoint;wx/gdicmn.h|"
+    "wxRect;wx/gdicmn.h|"
+    "wxRecursionGuard;wx/recguard.h|"
+    "wxRecursionGuardFlag;wx/recguard.h|"
+    "wxRegEx;wx/regex.h|"
+    "wxRegion;wx/region.h|"
+    "wxRegionIterator;wx/region.h|"
+    "wxRegKey;wx/msw/registry.h|"
+    "wxRendererNative;wx/renderer.h|"
+    "wxRendererVersion;wx/renderer.h|"
+    "wxSashEvent;wx/sashwin.h|"
+    "wxSashLayoutWindow;wx/laywin.h|"
+    "wxSashWindow;wx/sashwin.h|"
+    "wxScopedArray;wx/ptr_scpd.h|"
+    "wxScopedPtr;wx/ptr_scpd.h|"
+    "wxScopedTiedPtr;wx/ptr_scpd.h|"
+    "wxScreenDC;wx/dcscreen.h|"
+    "wxScrollBar;wx/scrolbar.h|"
+    "wxScrolledWindow;wx/scrolwin.h|"
+    "wxScrollEvent;wx/event.h|"
+    "wxScrollWinEvent;wx/event.h|"
+    "wxSemaphore;wx/thread.h|"
+    "wxServer;wx/ipc.h|"
+    "wxSetCursorEvent;wx/event.h|"
+    "wxSetEnv;wx/utils.h|"
+    "wxSimpleHelpProvider;wx/cshelp.h|"
+    "wxSingleChoiceDialog;wx/choicdlg.h|"
+    "wxSingleInstanceChecker;wx/snglinst.h|"
+    "wxSize;wx/gdicmn.h|"
+    "wxSizeEvent;wx/event.h|"
+    "wxSizer;wx/sizer.h|"
+    "wxSizerFlags;wx/sizer.h|"
+    "wxSizerItem;wx/sizer.h|"
+    "wxSlider;wx/slider.h|"
+    "wxSockAddress;wx/socket.h|"
+    "wxSocketBase;wx/socket.h|"
+    "wxSocketClient;wx/socket.h|"
+    "wxSocketEvent;wx/socket.h|"
+    "wxSocketInputStream;wx/sckstrm.h|"
+    "wxSocketOutputStream;wx/sckstrm.h|"
+    "wxSocketServer;wx/socket.h|"
+    "wxSound;wx/sound.h|"
+    "wxSpinButton;wx/spinbutt.h|"
+    "wxSpinCtrl;wx/spinctrl.h|"
+    "wxSpinEvent;wx/spinctrl.h|"
+    "wxSplashScreen;wx/splash.h|"
+    "wxSplitterEvent;wx/splitter.h|"
+    "wxSplitterRenderParams;wx/renderer.h|"
+    "wxSplitterWindow;wx/splitter.h|"
+    "wxStackFrame;wx/stackwalk.h|"
+    "wxStackWalker;wx/stackwalk.h|"
+    "wxStandardPaths;wx/stdpaths.h|"
+    "wxStaticBitmap;wx/statbmp.h|"
+    "wxStaticBox;wx/statbox.h|"
+    "wxStaticLine;wx/statline.h|"
+    "wxStaticText;wx/stattext.h|"
+    "wxStatusBar;wx/statusbr.h|"
+    "wxStdDialogButtonSizer;wx/sizer.h|"
+    "wxStopWatch;wx/stopwatch.h|"
+    "wxStreamBase;wx/stream.h|"
+    "wxStreamBuffer;wx/stream.h|"
+    "wxStreamToTextRedirector;wx/textctrl.h|"
+    "wxString;wx/string.h|"
+    "wxStringBuffer;wx/string.h|"
+    "wxStringBufferLength;wx/string.h|"
+    "wxStringClientData;clntdata.h|"
+    "wxStringInputStream;wx/sstream.h|"
+    "wxStringOutputStream;wx/sstream.h|"
+    "wxStringTokenizer;wx/tokenzr.h|"
+    "wxSystemOptions;wx/sysopt.h|"
+    "wxSystemSettings;wx/settings.h|"
+    "wxTaskBarIcon;wx/taskbar.h|"
+    "wxTCPClient;wx/sckipc.h|"
+    "wxTCPServer;wx/sckipc.h|"
+    "wxTempFile;wx/file.h|"
+    "wxTempFileOutputStream;wx/wfstream.h|"
+    "wxTextAttr;wx/textctrl.h|"
+    "wxTextCtrl;wx/textctrl.h|"
+    "wxTextDataObject;wx/dataobj.h|"
+    "wxTextDropTarget;wx/dnd.h|"
+    "wxTextEntryDialog;wx/textdlg.h|"
+    "wxTextFile;wx/textfile.h|"
+    "wxTextInputStream;wx/txtstrm.h|"
+    "wxTextOutputStream;wx/txtstrm.h|"
+    "wxTextValidator;wx/valtext.h|"
+    "wxTheClipboard;wx/clipbrd.h|"
+    "wxThread;wx/thread.h|"
+    "wxThreadHelper;wx/thread.h|"
+    "wxTimer;wx/timer.h|"
+    "wxTimerEvent;wx/timer.h|"
+    "wxTimeSpan;wx/datetime.h|"
+    "wxTipProvider;wx/tipdlg.h|"
+    "wxTipWindow;wx/tipwin.h|"
+    "wxToggleButton;wx/tglbtn.h|"
+    "wxToolBar;wx/toolbar.h|"
+    "wxToolTip;wx/tooltip.h|"
+    "wxTopLevelWindow;wx/toplevel.h|"
+    "wxTreeCtrl;wx/treectrl.h|"
+    "wxTreeEvent;wx/treectrl.h|"
+    "wxTreeItemData;wx/treectrl.h|"
+    "wxUnsetEnv;wx/utils.h|"
+    "wxUpdateUIEvent;wx/event.h|"
+    "wxURI;wx/uri.h|"
+    "wxURL;wx/url.h|"
+    "wxVaCopy;wx/defs.h|"
+    "wxValidator;wx/validate.h|"
+    "wxVariant;wx/variant.h|"
+    "wxVariantData;wx/variant.h|"
+    "wxView;wx/docview.h|"
+    "wxVListBox;wx/vlbox.h|"
+    "wxVScrolledWindow;wx/vscroll.h|"
+    "wxWindow;wx/window.h|"
+    "wxWizard;wx/wizard.h|"
+    "wxWizardEvent;wx/wizard.h|"
+    "wxWizardPage;wx/wizard.h|"
+    "wxWizardPageSimple;wx/wizard.h|"
+    "wxXmlResource;wx/xrc/xmlres.h|"
+    "wxXmlResourceHandler;wx/xrc/xmlres.h|"
+    "wxZipClassFactory;wx/zipstrm.h|"
+    "wxZipEntry;wx/zipstrm.h|"
+    "wxZipInputStream;wx/zipstrm.h|"
+    "wxZipNotifier;wx/zipstrm.h|"
+    "wxZipOutputStream;wx/zipstrm.h|"
+    "wxZlibInputStream;wx/zstream.h|"
+    "wxZlibOutputStream;wx/zstream.h");
 
-  // All ::wx methods
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAboutBox"),                         _T("wx/aboutdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBeginBusyCursor"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBell"),                             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClientDisplayRect"),                _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClipboardOpen"),                    _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCloseClipboard"),                   _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourDisplay"),                    _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxConcatFiles"),                      _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCopyFile"),                         _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCreateDynamicObject"),              _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCreateFileTipProvider"),            _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDDECleanUp"),                       _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDDEInitialize"),                    _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugMsg"),                         _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDirExists"),                        _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDirSelector"),                      _T("wx/dirdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDisplayDepth"),                     _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDisplaySize"),                      _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDisplaySizeMM"),                    _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDos2UnixFilename"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDROP_ICON"),                        _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEmptyClipboard"),                   _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEnableTopLevelWindows"),            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEndBusyCursor"),                    _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEntry"),                            _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEntryCleanup"),                     _T("wx/init.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEntryStart"),                       _T("wx/init.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEnumClipboardFormats"),             _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxError"),                            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxExecute"),                          _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxExit"),                             _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFatalError"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileExists"),                       _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileModificationTime"),             _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileNameFromPath"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileSelector"),                     _T("wx/filedlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindFirstFile"),                    _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindMenuItemId"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindNextFile"),                     _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindWindowAtPoint"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindWindowAtPointer"),              _T("wx/windows.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindWindowByLabel"),                _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindWindowByName"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGenericAboutBox"),                  _T("wx/aboutdlg.h\nwx/generic/aboutdlgg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetActiveWindow"),                  _T("wx/windows.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetApp"),                           _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetBatteryState"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetClipboardData"),                 _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetClipboardFormatName"),           _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetColourFromUser"),                _T("wx/colordlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetCwd"),                           _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetDiskSpace"),                     _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetDisplayName"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetElapsedTime"),                   _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetEmailAddress"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetFileKind"),                      _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetFontFromUser"),                  _T("wx/fontdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetFreeMemory"),                    _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetFullHostName"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetHomeDir"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetHostName"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetKeyState"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetLocalTime"),                     _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetLocalTimeMillis"),               _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetMousePosition"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetMouseState"),                    _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetMultipleChoice"),                _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetMultipleChoices"),               _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetNumberFromUser"),                _T("wx/numdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetOsDescription"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetOSDirectory"),                   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetOsVersion"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPasswordFromUser"),              _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPowerType"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterCommand"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterFile"),                   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterMode"),                   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterOptions"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterOrientation"),            _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterPreviewCommand"),         _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterScaling"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetPrinterTranslation"),            _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetProcessId"),                     _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetResource"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetSingleChoice"),                  _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetSingleChoiceData"),              _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetSingleChoiceIndex"),             _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetStockLabel"),                    _T("wx/stockitem.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetTempFileName"),                  _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetTextFromUser"),                  _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetTopLevelParent"),                _T("wx/window.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetTranslation"),                   _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetUserHome"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetUserId"),                        _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetUserName"),                      _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetUTCTime"),                       _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetWorkingDirectory"),              _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHandleFatalExceptions"),            _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxInitAllImageHandlers"),             _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxInitialize"),                       _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsAbsolutePath"),                   _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsBusy"),                           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsClipboardFormatAvailable"),       _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsDebuggerRunning"),                _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsEmpty"),                          _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsMainThread"),                     _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsPlatform64Bit"),                  _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsPlatformLittleEndian"),           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsWild"),                           _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxKill"),                             _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLaunchDefaultBrowser"),             _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLoadUserResource"),                 _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogDebug"),                         _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogError"),                         _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogFatalError"),                    _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogMessage"),                       _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogStatus"),                        _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogSysError"),                      _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogTrace"),                         _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogVerbose"),                       _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogWarning"),                       _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMakeMetafilePlaceable"),            _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMatchWild"),                        _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMessageBox"),                       _T("wx/msgdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMicroSleep"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMilliSleep"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMkdir"),                            _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMutexGuiEnter"),                    _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMutexGuiLeave"),                    _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNewId"),                            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNow"),                              _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxOnAssert"),                         _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxOpenClipboard"),                    _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxParseCommonDialogsFilter"),         _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPathOnly"),                         _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPostDelete"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPostEvent"),                        _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegisterClipboardFormat"),          _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegisterId"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRemoveFile"),                       _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRenameFile"),                       _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRmdir"),                            _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSafeShowMessage"),                  _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSafeYield"),                        _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetClipboardData"),                 _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetCursor"),                        _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetDisplayName"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterCommand"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterFile"),                   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterMode"),                   _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterOptions"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterOrientation"),            _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterPreviewCommand"),         _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterScaling"),                _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetPrinterTranslation"),            _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetWorkingDirectory"),              _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxShell"),                            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxShowTip"),                          _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxShutdown"),                         _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSleep"),                            _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSnprintf"),                         _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSplitPath"),                        _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStartTimer"),                       _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStrcmp"),                           _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStricmp"),                          _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringEq"),                         _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringMatch"),                      _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringTokenize"),                   _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStripMenuCodes"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStrlen"),                           _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSysErrorCode"),                     _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSysErrorMsg"),                      _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTrace"),                            _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTraceLevel"),                       _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTransferFileToStream"),             _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTransferStreamToFile"),             _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTrap"),                             _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxUninitialize"),                     _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxUnix2DosFilename"),                 _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxUsleep"),                           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVsnprintf"),                        _T("wx/wxchar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWakeUpIdle"),                       _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWriteResource"),                    _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxYield"),                            _T("wx/app.h"));
+    wxArrayString arWxWidgets_2_6_4 = GetArrayFromString(strWxWidgets_2_6_4, _T("|"));
+    for(int i = 0; i < arWxWidgets_2_6_4.GetCount();i++)
+    {
+        wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_6_4.Item(i), _T(";"));
+        AddBinding(_T("wxWidgets_2_6_4"), arTmp.Item(0), arTmp.Item(1) );
+    }
 
-  // All ::wx classes
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAboutDialogInfo"),                  _T("wx/aboutdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAcceleratorEntry"),                 _T("wx/accel.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAcceleratorTable"),                 _T("wx/accel.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAccessible"),                       _T("wx/access.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxActivateEvent"),                    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxActiveXContainer"),                 _T("wx/msw/ole/activex.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxActiveXEvent"),                     _T("wx/msw/ole/activex.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAnimation"),                        _T("wx/animate.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAnimationCtrl"),                    _T("wx/animate.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxApp"),                              _T("wx/app.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAppTraits"),                        _T("wx/apptrait.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveClassFactory"),              _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveEntry"),                     _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveInputStream"),               _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveIterator"),                  _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveNotifier"),                  _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArchiveOutputStream"),              _T("wx/archive.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArray"),                            _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArrayString"),                      _T("wx/arrstr.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxArtProvider"),                      _T("wx/artprov.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAuiDockArt"),                       _T("wx/aui/dockart.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAuiTabArt"),                        _T("wx/aui/auibook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAuiManager"),                       _T("wx/aui/aui.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAuiNotebook"),                      _T("wx/aui/auibook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAuiPaneInfo"),                      _T("wx/aui/aui.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxAutomationObject"),                 _T("wx/msw/ole/automtn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBitmap"),                           _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBitmapButton"),                     _T("wx/bmpbuttn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBitmapComboBox"),                   _T("wx/bmpcbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBitmapDataObject"),                 _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBitmapHandler"),                    _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBoxSizer"),                         _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBrush"),                            _T("wx/brush.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBrushList"),                        _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBufferedDC"),                       _T("wx/dcbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBufferedInputStream"),              _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBufferedOutputStream"),             _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBufferedPaintDC"),                  _T("wx/dcbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBusyCursor"),                       _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxBusyInfo"),                         _T("wx/busyinfo.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxButton"),                           _T("wx/button.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCalculateLayoutEvent"),             _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCalendarCtrl"),                     _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCalendarDateAttr"),                 _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCalendarEvent"),                    _T("wx/calctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCaret"),                            _T("wx/caret.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCheckBox"),                         _T("wx/checkbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCheckListBox"),                     _T("wx/checklst.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxChildFocusEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxChoice"),                           _T("wx/choice.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxChoicebook"),                       _T("wx/choicebk.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClassInfo"),                        _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClient"),                           _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClientData"),                       _T("wx/clntdata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClientDataContainer"),              _T("wx/clntdata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClientDC"),                         _T("wx/dcclient.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClipboard"),                        _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxClipboardTextEvent"),               _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCloseEvent"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCmdLineParser"),                    _T("wx/cmdline.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCollapsiblePane"),                  _T("wx/collpane.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCollapsiblePaneEvent"),             _T("wx/collpane.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColour"),                           _T("wx/colour.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourData"),                       _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourDatabase"),                   _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourDialog"),                     _T("wx/colordlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourPickerCtrl"),                 _T("wx/clrpicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxColourPickerEvent"),                _T("wx/clrpicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxComboBox"),                         _T("wx/combobox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxComboCtrl"),                        _T("wx/combo.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxComboPopup"),                       _T("wx/combo.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCommand"),                          _T("wx/cmdproc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCommandEvent"),                     _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCommandProcessor"),                 _T("wx/cmdproc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCondition"),                        _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxConfigBase"),                       _T("wx/config.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxConnection"),                       _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxContextHelp"),                      _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxContextHelpButton"),                _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxContextMenuEvent"),                 _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxControl"),                          _T("wx/control.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxControlWithItems"),                 _T("wx/ctrlsub.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCountingOutputStream"),             _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCriticalSection"),                  _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCriticalSectionLocker"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCSConv"),                           _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCursor"),                           _T("wx/cursor.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCustomDataObject"),                 _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataFormat"),                       _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDatagramSocket"),                   _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataInputStream"),                  _T("wx/datstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataObject"),                       _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataObjectComposite"),              _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataObjectSimple"),                 _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataOutputStream"),                 _T("wx/datstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewColumn"),                   _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewCtrl"),                     _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewEvent"),                    _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewListModelNotifier"),        _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewModel"),                    _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewListModel"),                _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewSortedListModel"),          _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewRenderer"),                 _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewTextRenderer"),             _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewProgressRenderer"),         _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewToggleRenderer"),           _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewBitmapRenderer"),           _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewDateRenderer"),             _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDataViewCustomRenderer"),           _T("wx/dataview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDateEvent"),                        _T("wx/dateevt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDatePickerCtrl"),                   _T("wx/datectrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDateSpan"),                         _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDateTime"),                         _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDb"),                               _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbColDataPtr"),                     _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbColDef"),                         _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbColFor"),                         _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbColInf"),                         _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbConnectInf"),                     _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbGridColInfo"),                    _T("wx/dbgrid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbGridTableBase"),                  _T("wx/dbgrid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbIdxDef"),                         _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbInf"),                            _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbTable"),                          _T("wx/dbtable.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDbTableInf"),                       _T("wx/db.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDC"),                               _T("wx/dc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDCClipper"),                        _T("wx/dc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDDEClient"),                        _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDDEConnection"),                    _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDDEServer"),                        _T("wx/dde.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugContext"),                     _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugReport"),                      _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugReportCompress"),              _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugReportPreview"),               _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugReportPreviewStd"),            _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugReportUpload"),                _T("wx/debugrpt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDebugStreamBuf"),                   _T("wx/memory.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDelegateRendererNative"),           _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDialog"),                           _T("wx/dialog.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDialUpEvent"),                      _T("wx/dialup.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDialUpManager"),                    _T("wx/dialup.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDir"),                              _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDirDialog"),                        _T("wx/dirdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDirPickerCtrl"),                    _T("wx/filepicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDirTraverser"),                     _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDisplay"),                          _T("wx/display.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDllLoader"),                        _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocChildFrame"),                    _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocManager"),                       _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocMDIChildFrame"),                 _T("wx/docmdi.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocMDIParentFrame"),                _T("wx/docmdi.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocParentFrame"),                   _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocTemplate"),                      _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDocument"),                         _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDragImage"),                        _T("wx/dragimag.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDragResult"),                       _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDropFilesEvent"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDropSource"),                       _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDropTarget"),                       _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDynamicLibrary"),                   _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDynamicLibraryDetails"),            _T("wx/dynlib.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEncodingConverter"),                _T("wx/encconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEraseEvent"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEvent"),                            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxEvtHandler"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFFile"),                            _T("wx/ffile.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFFileInputStream"),                 _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFFileOutputStream"),                _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFFileStream"),                      _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFile"),                             _T("wx/file.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileConfig"),                       _T("wx/fileconf.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileDataObject"),                   _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileDialog"),                       _T("wx/filedlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileDropTarget"),                   _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileHistory"),                      _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileInputStream"),                  _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileName"),                         _T("wx/filename.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileOutputStream"),                 _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFilePickerCtrl"),                   _T("wx/filepicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileDirPickerEvent"),               _T("wx/filepicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileStream"),                       _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileSystem"),                       _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileSystemHandler"),                _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFileType"),                         _T("wx/mimetype.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFilterClassFactory"),               _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFilterInputStream"),                _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFilterOutputStream"),               _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindDialogEvent"),                  _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindReplaceData"),                  _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFindReplaceDialog"),                _T("wx/fdrepdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFinite"),                           _T("wx/math.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFlexGridSizer"),                    _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFocusEvent"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFont"),                             _T("wx/font.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontData"),                         _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontDialog"),                       _T("wx/fontdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontEnumerator"),                   _T("wx/fontenum.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontList"),                         _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontMapper"),                       _T("wx/fontmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontPickerCtrl"),                   _T("wx/fontpicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFontPickerEvent"),                  _T("wx/fontpicker.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFrame"),                            _T("wx/frame.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFSFile"),                           _T("wx/filesys.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFTP"),                              _T("wx/protocol/ftp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGauge"),                            _T("wx/gauge.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGBPosition"),                       _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGBSizerItem"),                      _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGBSpan"),                           _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGDIObject"),                        _T("wx/gdiobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGenericDirCtrl"),                   _T("wx/dirctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGenericValidator"),                 _T("wx/valgen.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetenv"),                           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGetVariantCast"),                   _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGLCanvas"),                         _T("wx/glcanvas.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGLContext"),                        _T("wx/glcanvas.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsBrush"),                    _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsContext"),                  _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsFont"),                     _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsMatrix"),                   _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsObject"),                   _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsPath"),                     _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsPen"),                      _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGraphicsRenderer"),                 _T("wx/graphics.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGrid"),                             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridBagSizer"),                     _T("wx/gbsizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellAttr"),                     _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellBoolEditor"),               _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellBoolRenderer"),             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellChoiceEditor"),             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellEditor"),                   _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellRenderer"),                 _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellFloatEditor"),              _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellFloatRenderer"),            _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellNumberEditor"),             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellNumberRenderer"),           _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellStringRenderer"),           _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridCellTextEditor"),               _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridEditorCreatedEvent"),           _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridEvent"),                        _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridRangeSelectEvent"),             _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridSizeEvent"),                    _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridSizer"),                        _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxGridTableBase"),                    _T("wx/grid.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHashMap"),                          _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHashSet"),                          _T("wx/hashset.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHashTable"),                        _T("wx/hash.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHelpController"),                   _T("wx/help.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHelpControllerHelpProvider"),       _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHelpEvent"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHelpProvider"),                     _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlCell"),                         _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlCellEvent"),                    _T("wx/html/htmlwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlColourCell"),                   _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlContainerCell"),                _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlDCRenderer"),                   _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlEasyPrinting"),                 _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlFilter"),                       _T("wx/html/htmlfilt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlHelpController"),               _T("wx/html/helpctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlHelpData"),                     _T("wx/html/helpdata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlHelpDialog"),                   _T("wx/html/helpdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlHelpFrame"),                    _T("wx/html/helpfrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlHelpWindow"),                   _T("wx/html/helpwnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlModalHelp"),                    _T("wx/html/helpctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlLinkInfo"),                     _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlLinkEvent"),                    _T("wx/html/htmlwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlListBox"),                      _T("wx/htmllbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlParser"),                       _T("wx/html/htmlpars.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlPrintout"),                     _T("wx/html/htmprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlTag"),                          _T("wx/html/htmltag.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlTagHandler"),                   _T("wx/html/htmlpars.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlTagsModule"),                   _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlWidgetCell"),                   _T("wx/html/htmlcell.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlWindow"),                       _T("wx/html/htmlwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlWinParser"),                    _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHtmlWinTagHandler"),                _T("wx/html/winpars.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHTTP"),                             _T("wx/protocol/http.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHyperlinkCtrl"),                    _T("wx/hyperlink.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxHyperlinkEvent"),                   _T("wx/hyperlink.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIcon"),                             _T("wx/icon.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIconBundle"),                       _T("wx/iconbndl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIconizeEvent"),                     _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIconLocation"),                     _T("wx/iconloc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIdleEvent"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxImage"),                            _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxImageHandler"),                     _T("wx/image.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxImageList"),                        _T("wx/imaglist.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIndividualLayoutConstraint"),       _T("wx/layout.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxInitDialogEvent"),                  _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxInputStream"),                      _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIPaddress"),                        _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIPV4address"),                      _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxIsNaN"),                            _T("wx/math.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxJoystick"),                         _T("wx/joystick.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxJoystickEvent"),                    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxKeyEvent"),                         _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLayoutAlgorithm"),                  _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLayoutConstraints"),                _T("wx/layout.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxList"),                             _T("wx/list.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListbook"),                         _T("wx/listbook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListBox"),                          _T("wx/listbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListCtrl"),                         _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListEvent"),                        _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListItem"),                         _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListItemAttr"),                     _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListView"),                         _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLocale"),                           _T("wx/intl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLog"),                              _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogChain"),                         _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogGui"),                           _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogNull"),                          _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogPassThrough"),                   _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogStderr"),                        _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogStream"),                        _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogTextCtrl"),                      _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLogWindow"),                        _T("wx/log.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLongLong"),                         _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLongLongFmtSpec"),                  _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMask"),                             _T("wx/bitmap.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMaximizeEvent"),                    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConv"),                           _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConvFile"),                       _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConvUTF16"),                      _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConvUTF32"),                      _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConvUTF7"),                       _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMBConvUTF8"),                       _T("wx/strconv.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMDIChildFrame"),                    _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMDIClientWindow"),                  _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMDIParentFrame"),                   _T("wx/mdi.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMediaCtrl"),                        _T("wx/mediactrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMediaEvent"),                       _T("wx/mediactrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMemoryBuffer"),                     _T("wx/buffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMemoryDC"),                         _T("wx/dcmemory.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMemoryFSHandler"),                  _T("wx/fs_mem.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMemoryInputStream"),                _T("wx/mstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMemoryOutputStream"),               _T("wx/mstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMenu"),                             _T("wx/menu.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMenuBar"),                          _T("wx/menu.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMenuEvent"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMenuItem"),                         _T("wx/menuitem.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMessageDialog"),                    _T("wx/msgdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMetafile"),                         _T("wx/metafile.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMetafileDC"),                       _T("wx/metafile.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMimeTypesManager"),                 _T("wx/mimetype.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMiniFrame"),                        _T("wx/minifram.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMirrorDC"),                         _T("wx/dcmirror.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxModule"),                           _T("wx/module.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMouseCaptureChangedEvent"),         _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMouseCaptureLostEvent"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMouseEvent"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMoveEvent"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMultiChoiceDialog"),                _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMutex"),                            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxMutexLocker"),                      _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNode"),                             _T("wx/list.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNotebook"),                         _T("wx/notebook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNotebookEvent"),                    _T("wx/notebook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNotebookSizer"),                    _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxNotifyEvent"),                      _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxObjArray"),                         _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxObject"),                           _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxObjectRefData"),                    _T("wx/object.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxOpenErrorTraverser"),               _T("wx/dir.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxOutputStream"),                     _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxOwnerDrawnComboBox"),               _T("wx/odcombo.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPageSetupDialog"),                  _T("wx/printdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPageSetupDialogData"),              _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPaintDC"),                          _T("wx/dcclient.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPaintEvent"),                       _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPalette"),                          _T("wx/palette.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPanel"),                            _T("wx/panel.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPaperSize"),                        _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPasswordEntryDialog"),              _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPathList"),                         _T("wx/filefn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPen"),                              _T("wx/pen.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPenList"),                          _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPickerBase"),                       _T("wx/pickerbase.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPlatformInfo"),                     _T("wx/platinfo.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPoint"),                            _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPostScriptDC"),                     _T("wx/dcps.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPowerEvent"),                       _T("wx/power.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPreviewCanvas"),                    _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPreviewControlBar"),                _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPreviewFrame"),                     _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrintData"),                        _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrintDialog"),                      _T("wx/printdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrintDialogData"),                  _T("wx/cmndata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrinter"),                          _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrinterDC"),                        _T("wx/dcprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrintout"),                         _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPrintPreview"),                     _T("wx/print.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxProcess"),                          _T("wx/process.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxProcessEvent"),                     _T("wx/process.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxProgressDialog"),                   _T("wx/progdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxPropertySheetDialog"),              _T("wx/propdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxProtocol"),                         _T("wx/protocol/protocol.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxQuantize"),                         _T("wx/quantize.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxQueryLayoutInfoEvent"),             _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRadioBox"),                         _T("wx/radiobox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRadioButton"),                      _T("wx/radiobut.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRealPoint"),                        _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRect"),                             _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRecursionGuard"),                   _T("wx/recguard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRecursionGuardFlag"),               _T("wx/recguard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegEx"),                            _T("wx/regex.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegion"),                           _T("wx/region.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegionIterator"),                   _T("wx/region.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRegKey"),                           _T("wx/msw/registry.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRendererNative"),                   _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRendererVersion"),                  _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextAttr"),                     _T("wx/richtext/richtextbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextBuffer"),                   _T("wx/richtext/richtextbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextCharacterStyleDefinition"), _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextCtrl"),                     _T("wx/richtext/richtextctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextEvent"),                    _T("wx/richtext/richtextctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextFileHandler"),              _T("wx/richtext/richtextbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextFormattingDialog"),         _T("wx/richtext/richtextformatdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextFormattingDialogFactory"),  _T("wx/richtext/richtextformatdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextHeaderFooterData"),         _T("wx/richtext/richtextprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextHTMLHandler"),              _T("wx/richtext/richtexthtml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextListStyleDefinition"),      _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextParagraphStyleDefinition"), _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextPrinting"),                 _T("wx/richtext/richtextprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextPrintout"),                 _T("wx/richtext/richtextprint.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextRange"),                    _T("wx/richtext/richtextbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleDefinition"),          _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleComboCtrl"),           _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleListBox"),             _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleListCtrl"),            _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleOrganiserDialog"),     _T("wx/richtext/richtextstyledlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextStyleSheet"),               _T("wx/richtext/richtextstyles.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxRichTextXMLHandler"),               _T("wx/richtext/richtextxml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSashEvent"),                        _T("wx/sashwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSashLayoutWindow"),                 _T("wx/laywin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSashWindow"),                       _T("wx/sashwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScopedArray"),                      _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScopedPtr"),                        _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScopedTiedPtr"),                    _T("wx/ptr_scpd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScreenDC"),                         _T("wx/dcscreen.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScrollBar"),                        _T("wx/scrolbar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScrolledWindow"),                   _T("wx/scrolwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScrollEvent"),                      _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxScrollWinEvent"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSearchCtrl"),                       _T("wx/srchctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSemaphore"),                        _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxServer"),                           _T("wx/ipc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetCursorEvent"),                   _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSetEnv"),                           _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSimpleHelpProvider"),               _T("wx/cshelp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSimpleHtmlListBox"),                _T("wx/htmllbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSingleChoiceDialog"),               _T("wx/choicdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSingleInstanceChecker"),            _T("wx/snglinst.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSize"),                             _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSizeEvent"),                        _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSizer"),                            _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSizerFlags"),                       _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSizerItem"),                        _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSlider"),                           _T("wx/slider.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSockAddress"),                      _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketBase"),                       _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketClient"),                     _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketEvent"),                      _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketInputStream"),                _T("wx/sckstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketOutputStream"),               _T("wx/sckstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSocketServer"),                     _T("wx/socket.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSound"),                            _T("wx/sound.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSpinButton"),                       _T("wx/spinbutt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSpinCtrl"),                         _T("wx/spinctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSpinEvent"),                        _T("wx/spinctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSplashScreen"),                     _T("wx/splash.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSplitterEvent"),                    _T("wx/splitter.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSplitterRenderParams"),             _T("wx/renderer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSplitterWindow"),                   _T("wx/splitter.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStackFrame"),                       _T("wx/stackwalk.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStackWalker"),                      _T("wx/stackwalk.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStandardPaths"),                    _T("wx/stdpaths.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStaticBitmap"),                     _T("wx/statbmp.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStaticBox"),                        _T("wx/statbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStaticBoxSizer"),                   _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStaticLine"),                       _T("wx/statline.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStaticText"),                       _T("wx/stattext.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStatusBar"),                        _T("wx/statusbr.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStdDialogButtonSizer"),             _T("wx/sizer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStopWatch"),                        _T("wx/stopwatch.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStreamBase"),                       _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStreamBuffer"),                     _T("wx/stream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStreamToTextRedirector"),           _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxString"),                           _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringBuffer"),                     _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringBufferLength"),               _T("wx/string.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringClientData"),                 _T("clntdata.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringInputStream"),                _T("wx/sstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringOutputStream"),               _T("wx/sstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxStringTokenizer"),                  _T("wx/tokenzr.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSymbolPickerDialog"),               _T("wx/richtext/richtextsymboldlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSysColourChangedEvent"),            _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSystemOptions"),                    _T("wx/sysopt.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxSystemSettings"),                   _T("wx/settings.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTarClassFactory"),                  _T("wx/tarstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTarEntry"),                         _T("wx/tarstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTarInputStream"),                   _T("wx/tarstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTarOutputStream"),                  _T("wx/tarstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTaskBarIcon"),                      _T("wx/taskbar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTCPClient"),                        _T("wx/sckipc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTCPServer"),                        _T("wx/sckipc.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTempFile"),                         _T("wx/file.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTempFileOutputStream"),             _T("wx/wfstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextAttr"),                         _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextAttrEx"),                       _T("wx/richtext/richtextbuffer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextCtrl"),                         _T("wx/textctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextDataObject"),                   _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextDropTarget"),                   _T("wx/dnd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextEntryDialog"),                  _T("wx/textdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextFile"),                         _T("wx/textfile.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextInputStream"),                  _T("wx/txtstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextOutputStream"),                 _T("wx/txtstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTextValidator"),                    _T("wx/valtext.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTheClipboard"),                     _T("wx/clipbrd.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxThread"),                           _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxThreadHelper"),                     _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTimer"),                            _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTimerEvent"),                       _T("wx/timer.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTimeSpan"),                         _T("wx/datetime.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTipProvider"),                      _T("wx/tipdlg.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTipWindow"),                        _T("wx/tipwin.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxToggleButton"),                     _T("wx/tglbtn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxToolBar"),                          _T("wx/toolbar.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxToolbook"),                         _T("wx/toolbook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxToolTip"),                          _T("wx/tooltip.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTopLevelWindow"),                   _T("wx/toplevel.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreebook"),                         _T("wx/treebook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreebookEvent"),                    _T("wx/treebook.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreeCtrl"),                         _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreeEvent"),                        _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreeItemData"),                     _T("wx/treectrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTreeItemId"),                       _T("wx/treebase.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxUnsetEnv"),                         _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxUpdateUIEvent"),                    _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxURI"),                              _T("wx/uri.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxURL"),                              _T("wx/url.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxURLDataObject"),                    _T("wx/dataobj.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVaCopy"),                           _T("wx/defs.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxValidator"),                        _T("wx/validate.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVariant"),                          _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVariantData"),                      _T("wx/variant.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxView"),                             _T("wx/docview.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVListBox"),                         _T("wx/vlbox.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxVScrolledWindow"),                  _T("wx/vscroll.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindow"),                           _T("wx/window.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindowUpdateLocker"),               _T("wx/wupdlock.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindowCreateEvent"),                _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindowDC"),                         _T("wx/dcclient.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindowDestroyEvent"),               _T("wx/event.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWindowDisabler"),                   _T("wx/utils.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizard"),                           _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardEvent"),                      _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardPage"),                       _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardPageSimple"),                 _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlDocument"),                      _T("wx/xml/xml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlNode"),                          _T("wx/xml/xml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlProperty"),                      _T("wx/xml/xml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlResource"),                      _T("wx/xrc/xmlres.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlResourceHandler"),               _T("wx/xrc/xmlres.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipClassFactory"),                  _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipEntry"),                         _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipInputStream"),                   _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipNotifier"),                      _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipOutputStream"),                  _T("wx/zipstrm.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZlibInputStream"),                  _T("wx/zstream.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxZlibOutputStream"),                 _T("wx/zstream.h"));
+    /////////////
+    // v 2.8.8 //
+    /////////////
+
+    // All macros
+    wxString strWxWidgets_2_8_8 = _T(
+    "DECLARE_APP;wx/app.h|"
+    "DECLARE_ABSTRACT_CLASS;wx/object.h|"
+    "DECLARE_CLASS;wx/object.h|"
+    "DECLARE_DYNAMIC_CLASS;wx/object.h|"
+    "IMPLEMENT_APP;wx/app.h|"
+    "IMPLEMENT_ABSTRACT_CLASS;wx/object.h|"
+    "IMPLEMENT_ABSTRACT_CLASS2;wx/object.h|"
+    "IMPLEMENT_CLASS;wx/object.h|"
+    "IMPLEMENT_CLASS2;wx/object.h|"
+    "IMPLEMENT_DYNAMIC_CLASS;wx/object.h|"
+    "IMPLEMENT_DYNAMIC_CLASS2;wx/object.h|"
+    "DECLARE_EVENT_TYPE;wx/event.h|"
+    "DECLARE_EVENT_MACRO;wx/event.h|"
+    "DECLARE_EVENT_TABLE_ENTRY;wx/event.h|"
+    "DEFINE_EVENT_TYPE;wx/event.h|"
+    "BEGIN_EVENT_TABLE;wx/event.h|"
+    "END_EVENT_TABLE;wx/event.h|"
+    "EVT_CUSTOM;wx/event.h|"
+    "EVT_CUSTOM_RANGE;wx/event.h|"
+    "EVT_COMMAND;wx/event.h|"
+    "EVT_COMMAND_RANGE;wx/event.h|"
+    "EVT_NOTIFY;wx/event.h|"
+    "EVT_NOTIFY_RANGE;wx/event.h|"
+    "EVT_BUTTON;wx/button.h|"
+    "EVT_CHECKBOX;wx/checkbox.h|"
+    "EVT_CHOICE;wx/choice.h|"
+    "EVT_CHOICE;wx/choice.h|"
+    "EVT_COMBOBOX;wx/combobox.h|"
+    "EVT_LISTBOX;wx/listbox.h|"
+    "EVT_LISTBOX_DCLICK;wx/listbox.h|"
+    "EVT_RADIOBOX;wx/radiobox.h|"
+    "EVT_RADIOBUTTON;wx/radiobut.h|"
+    "EVT_SCROLLBAR;wx/scrolbar.h|"
+    "EVT_SLIDER;wx/slider.h|"
+    "EVT_TOGGLEBUTTON;wx/tglbtn.h|"
+    "WX_APPEND_ARRAY;wx/dynarray.h|"
+    "WX_PREPEND_ARRAY;wx/dynarray.h|"
+    "WX_CLEAR_ARRAY;wx/dynarray.h|"
+    "WX_DECLARE_OBJARRAY;wx/dynarray.h|"
+    "WX_DEFINE_ARRAY;wx/dynarray.h|"
+    "WX_DEFINE_OBJARRAY;wx/dynarray.h|"
+    "WX_DEFINE_SORTED_ARRAY;wx/dynarray.h|"
+    "WX_DECLARE_STRING_HASH_MAP;wx/hashmap.h|"
+    "WX_DECLARE_HASH_MAP;wx/hashmap.h|"
+    "wxASSERT;wx/debug.h|"
+    "wxASSERT_MIN_BITSIZE;wx/debug.h|"
+    "wxASSERT_MSG;wx/debug.h|"
+    "wxBITMAP;wx/gdicmn.h|"
+    "wxCOMPILE_TIME_ASSERT;wx/debug.h|"
+    "wxCOMPILE_TIME_ASSERT2;wx/debug.h|"
+    "wxCRIT_SECT_DECLARE;wx/thread.h|"
+    "wxCRIT_SECT_DECLARE_MEMBER;wx/thread.h|"
+    "wxCRIT_SECT_LOCKER;wx/thread.h|"
+    "wxDYNLIB_FUNCTION;wx/dynlib.h|"
+    "wxENTER_CRIT_SECT;wx/thread.h|"
+    "wxFAIL;wx/debug.h|"
+    "wxFAIL_MSG;wx/debug.h|"
+    "wxICON;wx/gdicmn.h|"
+    "wxLEAVE_CRIT_SECT;wx/thread.h|"
+    "wxLL;wx/longlong.h|"
+    "wxTRANSLATE;wx/intl.h|"
+    "wxULL;wx/longlong.h|"
+
+    // All ::wx methods
+    "wxAboutBox;wx/aboutdlg.h|"
+    "wxBeginBusyCursor;wx/utils.h|"
+    "wxBell;wx/utils.h|"
+    "wxClientDisplayRect;wx/gdicmn.h|"
+    "wxClipboardOpen;wx/clipbrd.h|"
+    "wxCloseClipboard;wx/clipbrd.h|"
+    "wxColourDisplay;wx/gdicmn.h|"
+    "wxConcatFiles;wx/filefn.h|"
+    "wxCopyFile;wx/filefn.h|"
+    "wxCreateDynamicObject;wx/object.h|"
+    "wxCreateFileTipProvider;wx/tipdlg.h|"
+    "wxDDECleanUp;wx/dde.h|"
+    "wxDDEInitialize;wx/dde.h|"
+    "wxDebugMsg;wx/utils.h|"
+    "wxDirExists;wx/filefn.h|"
+    "wxDirSelector;wx/dirdlg.h|"
+    "wxDisplayDepth;wx/gdicmn.h|"
+    "wxDisplaySize;wx/gdicmn.h|"
+    "wxDisplaySizeMM;wx/gdicmn.h|"
+    "wxDos2UnixFilename;wx/filefn.h|"
+    "wxDROP_ICON;wx/dnd.h|"
+    "wxEmptyClipboard;wx/clipbrd.h|"
+    "wxEnableTopLevelWindows;wx/utils.h|"
+    "wxEndBusyCursor;wx/utils.h|"
+    "wxEntry;wx/app.h|"
+    "wxEntryCleanup;wx/init.h|"
+    "wxEntryStart;wx/init.h|"
+    "wxEnumClipboardFormats;wx/clipbrd.h|"
+    "wxError;wx/utils.h|"
+    "wxExecute;wx/utils.h|"
+    "wxExit;wx/app.h|"
+    "wxFatalError;wx/utils.h|"
+    "wxFileExists;wx/filefn.h|"
+    "wxFileModificationTime;wx/filefn.h|"
+    "wxFileNameFromPath;wx/filefn.h|"
+    "wxFileSelector;wx/filedlg.h|"
+    "wxFindFirstFile;wx/filefn.h|"
+    "wxFindMenuItemId;wx/utils.h|"
+    "wxFindNextFile;wx/filefn.h|"
+    "wxFindWindowAtPoint;wx/utils.h|"
+    "wxFindWindowAtPointer;wx/windows.h|"
+    "wxFindWindowByLabel;wx/utils.h|"
+    "wxFindWindowByName;wx/utils.h|"
+    "wxGenericAboutBox;wx/aboutdlg.h\nwx/generic/aboutdlgg.h|"
+    "wxGetActiveWindow;wx/windows.h|"
+    "wxGetApp;wx/app.h|"
+    "wxGetBatteryState;wx/utils.h|"
+    "wxGetClipboardData;wx/clipbrd.h|"
+    "wxGetClipboardFormatName;wx/clipbrd.h|"
+    "wxGetColourFromUser;wx/colordlg.h|"
+    "wxGetCwd;wx/filefn.h|"
+    "wxGetDiskSpace;wx/filefn.h|"
+    "wxGetDisplayName;wx/utils.h|"
+    "wxGetElapsedTime;wx/timer.h|"
+    "wxGetEmailAddress;wx/utils.h|"
+    "wxGetFileKind;wx/filefn.h|"
+    "wxGetFontFromUser;wx/fontdlg.h|"
+    "wxGetFreeMemory;wx/utils.h|"
+    "wxGetFullHostName;wx/utils.h|"
+    "wxGetHomeDir;wx/utils.h|"
+    "wxGetHostName;wx/utils.h|"
+    "wxGetKeyState;wx/utils.h|"
+    "wxGetLocalTime;wx/timer.h|"
+    "wxGetLocalTimeMillis;wx/timer.h|"
+    "wxGetMousePosition;wx/utils.h|"
+    "wxGetMouseState;wx/utils.h|"
+    "wxGetMultipleChoice;wx/choicdlg.h|"
+    "wxGetMultipleChoices;wx/choicdlg.h|"
+    "wxGetNumberFromUser;wx/numdlg.h|"
+    "wxGetOsDescription;wx/utils.h|"
+    "wxGetOSDirectory;wx/filefn.h|"
+    "wxGetOsVersion;wx/utils.h|"
+    "wxGetPasswordFromUser;wx/textdlg.h|"
+    "wxGetPowerType;wx/utils.h|"
+    "wxGetPrinterCommand;wx/dcps.h|"
+    "wxGetPrinterFile;wx/dcps.h|"
+    "wxGetPrinterMode;wx/dcps.h|"
+    "wxGetPrinterOptions;wx/dcps.h|"
+    "wxGetPrinterOrientation;wx/dcps.h|"
+    "wxGetPrinterPreviewCommand;wx/dcps.h|"
+    "wxGetPrinterScaling;wx/dcps.h|"
+    "wxGetPrinterTranslation;wx/dcps.h|"
+    "wxGetProcessId;wx/utils.h|"
+    "wxGetResource;wx/utils.h|"
+    "wxGetSingleChoice;wx/choicdlg.h|"
+    "wxGetSingleChoiceData;wx/choicdlg.h|"
+    "wxGetSingleChoiceIndex;wx/choicdlg.h|"
+    "wxGetStockLabel;wx/stockitem.h|"
+    "wxGetTempFileName;wx/filefn.h|"
+    "wxGetTextFromUser;wx/textdlg.h|"
+    "wxGetTopLevelParent;wx/window.h|"
+    "wxGetTranslation;wx/intl.h|"
+    "wxGetUserHome;wx/utils.h|"
+    "wxGetUserId;wx/utils.h|"
+    "wxGetUserName;wx/utils.h|"
+    "wxGetUTCTime;wx/timer.h|"
+    "wxGetWorkingDirectory;wx/filefn.h|"
+    "wxHandleFatalExceptions;wx/app.h|"
+    "wxInitAllImageHandlers;wx/image.h|"
+    "wxInitialize;wx/app.h|"
+    "wxIsAbsolutePath;wx/filefn.h|"
+    "wxIsBusy;wx/utils.h|"
+    "wxIsClipboardFormatAvailable;wx/clipbrd.h|"
+    "wxIsDebuggerRunning;wx/debug.h|"
+    "wxIsEmpty;wx/wxchar.h|"
+    "wxIsMainThread;wx/thread.h|"
+    "wxIsPlatform64Bit;wx/utils.h|"
+    "wxIsPlatformLittleEndian;wx/utils.h|"
+    "wxIsWild;wx/filefn.h|"
+    "wxKill;wx/app.h|"
+    "wxLaunchDefaultBrowser;wx/utils.h|"
+    "wxLoadUserResource;wx/utils.h|"
+    "wxLogDebug;wx/log.h|"
+    "wxLogError;wx/log.h|"
+    "wxLogFatalError;wx/log.h|"
+    "wxLogMessage;wx/log.h|"
+    "wxLogStatus;wx/log.h|"
+    "wxLogSysError;wx/log.h|"
+    "wxLogTrace;wx/log.h|"
+    "wxLogVerbose;wx/log.h|"
+    "wxLogWarning;wx/log.h|"
+    "wxMakeMetafilePlaceable;wx/gdicmn.h|"
+    "wxMatchWild;wx/filefn.h|"
+    "wxMessageBox;wx/msgdlg.h|"
+    "wxMicroSleep;wx/utils.h|"
+    "wxMilliSleep;wx/utils.h|"
+    "wxMkdir;wx/filefn.h|"
+    "wxMutexGuiEnter;wx/thread.h|"
+    "wxMutexGuiLeave;wx/thread.h|"
+    "wxNewId;wx/utils.h|"
+    "wxNow;wx/utils.h|"
+    "wxOnAssert;wx/debug.h|"
+    "wxOpenClipboard;wx/clipbrd.h|"
+    "wxParseCommonDialogsFilter;wx/filefn.h|"
+    "wxPathOnly;wx/filefn.h|"
+    "wxPostDelete;wx/utils.h|"
+    "wxPostEvent;wx/app.h|"
+    "wxRegisterClipboardFormat;wx/clipbrd.h|"
+    "wxRegisterId;wx/utils.h|"
+    "wxRemoveFile;wx/filefn.h|"
+    "wxRenameFile;wx/filefn.h|"
+    "wxRmdir;wx/filefn.h|"
+    "wxSafeShowMessage;wx/log.h|"
+    "wxSafeYield;wx/utils.h|"
+    "wxSetClipboardData;wx/clipbrd.h|"
+    "wxSetCursor;wx/gdicmn.h|"
+    "wxSetDisplayName;wx/utils.h|"
+    "wxSetPrinterCommand;wx/dcps.h|"
+    "wxSetPrinterFile;wx/dcps.h|"
+    "wxSetPrinterMode;wx/dcps.h|"
+    "wxSetPrinterOptions;wx/dcps.h|"
+    "wxSetPrinterOrientation;wx/dcps.h|"
+    "wxSetPrinterPreviewCommand;wx/dcps.h|"
+    "wxSetPrinterScaling;wx/dcps.h|"
+    "wxSetPrinterTranslation;wx/dcps.h|"
+    "wxSetWorkingDirectory;wx/filefn.h|"
+    "wxShell;wx/utils.h|"
+    "wxShowTip;wx/tipdlg.h|"
+    "wxShutdown;wx/utils.h|"
+    "wxSleep;wx/utils.h|"
+    "wxSnprintf;wx/wxchar.h|"
+    "wxSplitPath;wx/filefn.h|"
+    "wxStartTimer;wx/timer.h|"
+    "wxStrcmp;wx/wxchar.h|"
+    "wxStricmp;wx/wxchar.h|"
+    "wxStringEq;wx/string.h|"
+    "wxStringMatch;wx/string.h|"
+    "wxStringTokenize;wx/string.h|"
+    "wxStripMenuCodes;wx/utils.h|"
+    "wxStrlen;wx/wxchar.h|"
+    "wxSysErrorCode;wx/log.h|"
+    "wxSysErrorMsg;wx/log.h|"
+    "wxTrace;wx/memory.h|"
+    "wxTraceLevel;wx/memory.h|"
+    "wxTransferFileToStream;wx/docview.h|"
+    "wxTransferStreamToFile;wx/docview.h|"
+    "wxTrap;wx/debug.h|"
+    "wxUninitialize;wx/app.h|"
+    "wxUnix2DosFilename;wx/filefn.h|"
+    "wxUsleep;wx/utils.h|"
+    "wxVsnprintf;wx/wxchar.h|"
+    "wxWakeUpIdle;wx/app.h|"
+    "wxWriteResource;wx/utils.h|"
+    "wxYield;wx/app.h|"
+
+    // All ::wx classes
+    "wxAboutDialogInfo;wx/aboutdlg.h|"
+    "wxAcceleratorEntry;wx/accel.h|"
+    "wxAcceleratorTable;wx/accel.h|"
+    "wxAccessible;wx/access.h|"
+    "wxActivateEvent;wx/event.h|"
+    "wxActiveXContainer;wx/msw/ole/activex.h|"
+    "wxActiveXEvent;wx/msw/ole/activex.h|"
+    "wxAnimation;wx/animate.h|"
+    "wxAnimationCtrl;wx/animate.h|"
+    "wxApp;wx/app.h|"
+    "wxAppTraits;wx/apptrait.h|"
+    "wxArchiveClassFactory;wx/archive.h|"
+    "wxArchiveEntry;wx/archive.h|"
+    "wxArchiveInputStream;wx/archive.h|"
+    "wxArchiveIterator;wx/archive.h|"
+    "wxArchiveNotifier;wx/archive.h|"
+    "wxArchiveOutputStream;wx/archive.h|"
+    "wxArray;wx/dynarray.h|"
+    "wxArrayString;wx/arrstr.h|"
+    "wxArtProvider;wx/artprov.h|"
+    "wxAuiDockArt;wx/aui/dockart.h|"
+    "wxAuiTabArt;wx/aui/auibook.h|"
+    "wxAuiManager;wx/aui/aui.h|"
+    "wxAuiNotebook;wx/aui/auibook.h|"
+    "wxAuiPaneInfo;wx/aui/aui.h|"
+    "wxAutomationObject;wx/msw/ole/automtn.h|"
+    "wxBitmap;wx/bitmap.h|"
+    "wxBitmapButton;wx/bmpbuttn.h|"
+    "wxBitmapComboBox;wx/bmpcbox.h|"
+    "wxBitmapDataObject;wx/dataobj.h|"
+    "wxBitmapHandler;wx/bitmap.h|"
+    "wxBoxSizer;wx/sizer.h|"
+    "wxBrush;wx/brush.h|"
+    "wxBrushList;wx/gdicmn.h|"
+    "wxBufferedDC;wx/dcbuffer.h|"
+    "wxBufferedInputStream;wx/stream.h|"
+    "wxBufferedOutputStream;wx/stream.h|"
+    "wxBufferedPaintDC;wx/dcbuffer.h|"
+    "wxBusyCursor;wx/utils.h|"
+    "wxBusyInfo;wx/busyinfo.h|"
+    "wxButton;wx/button.h|"
+    "wxCalculateLayoutEvent;wx/laywin.h|"
+    "wxCalendarCtrl;wx/calctrl.h|"
+    "wxCalendarDateAttr;wx/calctrl.h|"
+    "wxCalendarEvent;wx/calctrl.h|"
+    "wxCaret;wx/caret.h|"
+    "wxCheckBox;wx/checkbox.h|"
+    "wxCheckListBox;wx/checklst.h|"
+    "wxChildFocusEvent;wx/event.h|"
+    "wxChoice;wx/choice.h|"
+    "wxChoicebook;wx/choicebk.h|"
+    "wxClassInfo;wx/object.h|"
+    "wxClient;wx/ipc.h|"
+    "wxClientData;wx/clntdata.h|"
+    "wxClientDataContainer;wx/clntdata.h|"
+    "wxClientDC;wx/dcclient.h|"
+    "wxClipboard;wx/clipbrd.h|"
+    "wxClipboardTextEvent;wx/event.h|"
+    "wxCloseEvent;wx/event.h|"
+    "wxCmdLineParser;wx/cmdline.h|"
+    "wxCollapsiblePane;wx/collpane.h|"
+    "wxCollapsiblePaneEvent;wx/collpane.h|"
+    "wxColour;wx/colour.h|"
+    "wxColourData;wx/cmndata.h|"
+    "wxColourDatabase;wx/gdicmn.h|"
+    "wxColourDialog;wx/colordlg.h|"
+    "wxColourPickerCtrl;wx/clrpicker.h|"
+    "wxColourPickerEvent;wx/clrpicker.h|"
+    "wxComboBox;wx/combobox.h|"
+    "wxComboCtrl;wx/combo.h|"
+    "wxComboPopup;wx/combo.h|"
+    "wxCommand;wx/cmdproc.h|"
+    "wxCommandEvent;wx/event.h|"
+    "wxCommandProcessor;wx/cmdproc.h|"
+    "wxCondition;wx/thread.h|"
+    "wxConfigBase;wx/config.h|"
+    "wxConnection;wx/ipc.h|"
+    "wxContextHelp;wx/cshelp.h|"
+    "wxContextHelpButton;wx/cshelp.h|"
+    "wxContextMenuEvent;wx/event.h|"
+    "wxControl;wx/control.h|"
+    "wxControlWithItems;wx/ctrlsub.h|"
+    "wxCountingOutputStream;wx/stream.h|"
+    "wxCriticalSection;wx/thread.h|"
+    "wxCriticalSectionLocker;wx/thread.h|"
+    "wxCSConv;wx/strconv.h|"
+    "wxCursor;wx/cursor.h|"
+    "wxCustomDataObject;wx/dataobj.h|"
+    "wxDataFormat;wx/dataobj.h|"
+    "wxDatagramSocket;wx/socket.h|"
+    "wxDataInputStream;wx/datstrm.h|"
+    "wxDataObject;wx/dataobj.h|"
+    "wxDataObjectComposite;wx/dataobj.h|"
+    "wxDataObjectSimple;wx/dataobj.h|"
+    "wxDataOutputStream;wx/datstrm.h|"
+    "wxDataViewColumn;wx/dataview.h|"
+    "wxDataViewCtrl;wx/dataview.h|"
+    "wxDataViewEvent;wx/dataview.h|"
+    "wxDataViewListModelNotifier;wx/dataview.h|"
+    "wxDataViewModel;wx/dataview.h|"
+    "wxDataViewListModel;wx/dataview.h|"
+    "wxDataViewSortedListModel;wx/dataview.h|"
+    "wxDataViewRenderer;wx/dataview.h|"
+    "wxDataViewTextRenderer;wx/dataview.h|"
+    "wxDataViewProgressRenderer;wx/dataview.h|"
+    "wxDataViewToggleRenderer;wx/dataview.h|"
+    "wxDataViewBitmapRenderer;wx/dataview.h|"
+    "wxDataViewDateRenderer;wx/dataview.h|"
+    "wxDataViewCustomRenderer;wx/dataview.h|"
+    "wxDateEvent;wx/dateevt.h|"
+    "wxDatePickerCtrl;wx/datectrl.h|"
+    "wxDateSpan;wx/datetime.h|"
+    "wxDateTime;wx/datetime.h|"
+    "wxDb;wx/db.h|"
+    "wxDbColDataPtr;wx/db.h|"
+    "wxDbColDef;wx/db.h|"
+    "wxDbColFor;wx/db.h|"
+    "wxDbColInf;wx/db.h|"
+    "wxDbConnectInf;wx/db.h|"
+    "wxDbGridColInfo;wx/dbgrid.h|"
+    "wxDbGridTableBase;wx/dbgrid.h|"
+    "wxDbIdxDef;wx/db.h|"
+    "wxDbInf;wx/db.h|"
+    "wxDbTable;wx/dbtable.h|"
+    "wxDbTableInf;wx/db.h|"
+    "wxDC;wx/dc.h|"
+    "wxDCClipper;wx/dc.h|"
+    "wxDDEClient;wx/dde.h|"
+    "wxDDEConnection;wx/dde.h|"
+    "wxDDEServer;wx/dde.h|"
+    "wxDebugContext;wx/memory.h|"
+    "wxDebugReport;wx/debugrpt.h|"
+    "wxDebugReportCompress;wx/debugrpt.h|"
+    "wxDebugReportPreview;wx/debugrpt.h|"
+    "wxDebugReportPreviewStd;wx/debugrpt.h|"
+    "wxDebugReportUpload;wx/debugrpt.h|"
+    "wxDebugStreamBuf;wx/memory.h|"
+    "wxDelegateRendererNative;wx/renderer.h|"
+    "wxDialog;wx/dialog.h|"
+    "wxDialUpEvent;wx/dialup.h|"
+    "wxDialUpManager;wx/dialup.h|"
+    "wxDir;wx/dir.h|"
+    "wxDirDialog;wx/dirdlg.h|"
+    "wxDirPickerCtrl;wx/filepicker.h|"
+    "wxDirTraverser;wx/dir.h|"
+    "wxDisplay;wx/display.h|"
+    "wxDllLoader;wx/dynlib.h|"
+    "wxDocChildFrame;wx/docview.h|"
+    "wxDocManager;wx/docview.h|"
+    "wxDocMDIChildFrame;wx/docmdi.h|"
+    "wxDocMDIParentFrame;wx/docmdi.h|"
+    "wxDocParentFrame;wx/docview.h|"
+    "wxDocTemplate;wx/docview.h|"
+    "wxDocument;wx/docview.h|"
+    "wxDragImage;wx/dragimag.h|"
+    "wxDragResult;wx/dnd.h|"
+    "wxDropFilesEvent;wx/event.h|"
+    "wxDropSource;wx/dnd.h|"
+    "wxDropTarget;wx/dnd.h|"
+    "wxDynamicLibrary;wx/dynlib.h|"
+    "wxDynamicLibraryDetails;wx/dynlib.h|"
+    "wxEncodingConverter;wx/encconv.h|"
+    "wxEraseEvent;wx/event.h|"
+    "wxEvent;wx/event.h|"
+    "wxEvtHandler;wx/event.h|"
+    "wxFFile;wx/ffile.h|"
+    "wxFFileInputStream;wx/wfstream.h|"
+    "wxFFileOutputStream;wx/wfstream.h|"
+    "wxFFileStream;wx/wfstream.h|"
+    "wxFile;wx/file.h|"
+    "wxFileConfig;wx/fileconf.h|"
+    "wxFileDataObject;wx/dataobj.h|"
+    "wxFileDialog;wx/filedlg.h|"
+    "wxFileDropTarget;wx/dnd.h|"
+    "wxFileHistory;wx/docview.h|"
+    "wxFileInputStream;wx/wfstream.h|"
+    "wxFileName;wx/filename.h|"
+    "wxFileOutputStream;wx/wfstream.h|"
+    "wxFilePickerCtrl;wx/filepicker.h|"
+    "wxFileDirPickerEvent;wx/filepicker.h|"
+    "wxFileStream;wx/wfstream.h|"
+    "wxFileSystem;wx/filesys.h|"
+    "wxFileSystemHandler;wx/filesys.h|"
+    "wxFileType;wx/mimetype.h|"
+    "wxFilterClassFactory;wx/stream.h|"
+    "wxFilterInputStream;wx/stream.h|"
+    "wxFilterOutputStream;wx/stream.h|"
+    "wxFindDialogEvent;wx/fdrepdlg.h|"
+    "wxFindReplaceData;wx/fdrepdlg.h|"
+    "wxFindReplaceDialog;wx/fdrepdlg.h|"
+    "wxFinite;wx/math.h|"
+    "wxFlexGridSizer;wx/sizer.h|"
+    "wxFocusEvent;wx/event.h|"
+    "wxFont;wx/font.h|"
+    "wxFontData;wx/cmndata.h|"
+    "wxFontDialog;wx/fontdlg.h|"
+    "wxFontEnumerator;wx/fontenum.h|"
+    "wxFontList;wx/gdicmn.h|"
+    "wxFontMapper;wx/fontmap.h|"
+    "wxFontPickerCtrl;wx/fontpicker.h|"
+    "wxFontPickerEvent;wx/fontpicker.h|"
+    "wxFrame;wx/frame.h|"
+    "wxFSFile;wx/filesys.h|"
+    "wxFTP;wx/protocol/ftp.h|"
+    "wxGauge;wx/gauge.h|"
+    "wxGBPosition;wx/gbsizer.h|"
+    "wxGBSizerItem;wx/gbsizer.h|"
+    "wxGBSpan;wx/gbsizer.h|"
+    "wxGDIObject;wx/gdiobj.h|"
+    "wxGenericDirCtrl;wx/dirctrl.h|"
+    "wxGenericValidator;wx/valgen.h|"
+    "wxGetenv;wx/utils.h|"
+    "wxGetVariantCast;wx/variant.h|"
+    "wxGLCanvas;wx/glcanvas.h|"
+    "wxGLContext;wx/glcanvas.h|"
+    "wxGraphicsBrush;wx/graphics.h|"
+    "wxGraphicsContext;wx/graphics.h|"
+    "wxGraphicsFont;wx/graphics.h|"
+    "wxGraphicsMatrix;wx/graphics.h|"
+    "wxGraphicsObject;wx/graphics.h|"
+    "wxGraphicsPath;wx/graphics.h|"
+    "wxGraphicsPen;wx/graphics.h|"
+    "wxGraphicsRenderer;wx/graphics.h|"
+    "wxGrid;wx/grid.h|"
+    "wxGridBagSizer;wx/gbsizer.h|"
+    "wxGridCellAttr;wx/grid.h|"
+    "wxGridCellBoolEditor;wx/grid.h|"
+    "wxGridCellBoolRenderer;wx/grid.h|"
+    "wxGridCellChoiceEditor;wx/grid.h|"
+    "wxGridCellEditor;wx/grid.h|"
+    "wxGridCellRenderer;wx/grid.h|"
+    "wxGridCellFloatEditor;wx/grid.h|"
+    "wxGridCellFloatRenderer;wx/grid.h|"
+    "wxGridCellNumberEditor;wx/grid.h|"
+    "wxGridCellNumberRenderer;wx/grid.h|"
+    "wxGridCellStringRenderer;wx/grid.h|"
+    "wxGridCellTextEditor;wx/grid.h|"
+    "wxGridEditorCreatedEvent;wx/grid.h|"
+    "wxGridEvent;wx/grid.h|"
+    "wxGridRangeSelectEvent;wx/grid.h|"
+    "wxGridSizeEvent;wx/grid.h|"
+    "wxGridSizer;wx/sizer.h|"
+    "wxGridTableBase;wx/grid.h|"
+    "wxHashMap;wx/hashmap.h|"
+    "wxHashSet;wx/hashset.h|"
+    "wxHashTable;wx/hash.h|"
+    "wxHelpController;wx/help.h|"
+    "wxHelpControllerHelpProvider;wx/cshelp.h|"
+    "wxHelpEvent;wx/event.h|"
+    "wxHelpProvider;wx/cshelp.h|"
+    "wxHtmlCell;wx/html/htmlcell.h|"
+    "wxHtmlCellEvent;wx/html/htmlwin.h|"
+    "wxHtmlColourCell;wx/html/htmlcell.h|"
+    "wxHtmlContainerCell;wx/html/htmlcell.h|"
+    "wxHtmlDCRenderer;wx/html/htmprint.h|"
+    "wxHtmlEasyPrinting;wx/html/htmprint.h|"
+    "wxHtmlFilter;wx/html/htmlfilt.h|"
+    "wxHtmlHelpController;wx/html/helpctrl.h|"
+    "wxHtmlHelpData;wx/html/helpdata.h|"
+    "wxHtmlHelpDialog;wx/html/helpdlg.h|"
+    "wxHtmlHelpFrame;wx/html/helpfrm.h|"
+    "wxHtmlHelpWindow;wx/html/helpwnd.h|"
+    "wxHtmlModalHelp;wx/html/helpctrl.h|"
+    "wxHtmlLinkInfo;wx/html/htmlcell.h|"
+    "wxHtmlLinkEvent;wx/html/htmlwin.h|"
+    "wxHtmlListBox;wx/htmllbox.h|"
+    "wxHtmlParser;wx/html/htmlpars.h|"
+    "wxHtmlPrintout;wx/html/htmprint.h|"
+    "wxHtmlTag;wx/html/htmltag.h|"
+    "wxHtmlTagHandler;wx/html/htmlpars.h|"
+    "wxHtmlTagsModule;wx/html/winpars.h|"
+    "wxHtmlWidgetCell;wx/html/htmlcell.h|"
+    "wxHtmlWindow;wx/html/htmlwin.h|"
+    "wxHtmlWinParser;wx/html/winpars.h|"
+    "wxHtmlWinTagHandler;wx/html/winpars.h|"
+    "wxHTTP;wx/protocol/http.h|"
+    "wxHyperlinkCtrl;wx/hyperlink.h|"
+    "wxHyperlinkEvent;wx/hyperlink.h|"
+    "wxIcon;wx/icon.h|"
+    "wxIconBundle;wx/iconbndl.h|"
+    "wxIconizeEvent;wx/event.h|"
+    "wxIconLocation;wx/iconloc.h|"
+    "wxIdleEvent;wx/event.h|"
+    "wxImage;wx/image.h|"
+    "wxImageHandler;wx/image.h|"
+    "wxImageList;wx/imaglist.h|"
+    "wxIndividualLayoutConstraint;wx/layout.h|"
+    "wxInitDialogEvent;wx/event.h|"
+    "wxInputStream;wx/stream.h|"
+    "wxIPaddress;wx/socket.h|"
+    "wxIPV4address;wx/socket.h|"
+    "wxIsNaN;wx/math.h|"
+    "wxJoystick;wx/joystick.h|"
+    "wxJoystickEvent;wx/event.h|"
+    "wxKeyEvent;wx/event.h|"
+    "wxLayoutAlgorithm;wx/laywin.h|"
+    "wxLayoutConstraints;wx/layout.h|"
+    "wxList;wx/list.h|"
+    "wxListbook;wx/listbook.h|"
+    "wxListBox;wx/listbox.h|"
+    "wxListCtrl;wx/listctrl.h|"
+    "wxListEvent;wx/listctrl.h|"
+    "wxListItem;wx/listctrl.h|"
+    "wxListItemAttr;wx/listctrl.h|"
+    "wxListView;wx/listctrl.h|"
+    "wxLocale;wx/intl.h|"
+    "wxLog;wx/log.h|"
+    "wxLogChain;wx/log.h|"
+    "wxLogGui;wx/log.h|"
+    "wxLogNull;wx/log.h|"
+    "wxLogPassThrough;wx/log.h|"
+    "wxLogStderr;wx/log.h|"
+    "wxLogStream;wx/log.h|"
+    "wxLogTextCtrl;wx/log.h|"
+    "wxLogWindow;wx/log.h|"
+    "wxLongLong;wx/longlong.h|"
+    "wxLongLongFmtSpec;wx/longlong.h|"
+    "wxMask;wx/bitmap.h|"
+    "wxMaximizeEvent;wx/event.h|"
+    "wxMBConv;wx/strconv.h|"
+    "wxMBConvFile;wx/strconv.h|"
+    "wxMBConvUTF16;wx/strconv.h|"
+    "wxMBConvUTF32;wx/strconv.h|"
+    "wxMBConvUTF7;wx/strconv.h|"
+    "wxMBConvUTF8;wx/strconv.h|"
+    "wxMDIChildFrame;wx/mdi.h|"
+    "wxMDIClientWindow;wx/mdi.h|"
+    "wxMDIParentFrame;wx/mdi.h|"
+    "wxMediaCtrl;wx/mediactrl.h|"
+    "wxMediaEvent;wx/mediactrl.h|"
+    "wxMemoryBuffer;wx/buffer.h|"
+    "wxMemoryDC;wx/dcmemory.h|"
+    "wxMemoryFSHandler;wx/fs_mem.h|"
+    "wxMemoryInputStream;wx/mstream.h|"
+    "wxMemoryOutputStream;wx/mstream.h|"
+    "wxMenu;wx/menu.h|"
+    "wxMenuBar;wx/menu.h|"
+    "wxMenuEvent;wx/event.h|"
+    "wxMenuItem;wx/menuitem.h|"
+    "wxMessageDialog;wx/msgdlg.h|"
+    "wxMetafile;wx/metafile.h|"
+    "wxMetafileDC;wx/metafile.h|"
+    "wxMimeTypesManager;wx/mimetype.h|"
+    "wxMiniFrame;wx/minifram.h|"
+    "wxMirrorDC;wx/dcmirror.h|"
+    "wxModule;wx/module.h|"
+    "wxMouseCaptureChangedEvent;wx/event.h|"
+    "wxMouseCaptureLostEvent;wx/event.h|"
+    "wxMouseEvent;wx/event.h|"
+    "wxMoveEvent;wx/event.h|"
+    "wxMultiChoiceDialog;wx/choicdlg.h|"
+    "wxMutex;wx/thread.h|"
+    "wxMutexLocker;wx/thread.h|"
+    "wxNode;wx/list.h|"
+    "wxNotebook;wx/notebook.h|"
+    "wxNotebookEvent;wx/notebook.h|"
+    "wxNotebookSizer;wx/sizer.h|"
+    "wxNotifyEvent;wx/event.h|"
+    "wxObjArray;wx/dynarray.h|"
+    "wxObject;wx/object.h|"
+    "wxObjectRefData;wx/object.h|"
+    "wxOpenErrorTraverser;wx/dir.h|"
+    "wxOutputStream;wx/stream.h|"
+    "wxOwnerDrawnComboBox;wx/odcombo.h|"
+    "wxPageSetupDialog;wx/printdlg.h|"
+    "wxPageSetupDialogData;wx/cmndata.h|"
+    "wxPaintDC;wx/dcclient.h|"
+    "wxPaintEvent;wx/event.h|"
+    "wxPalette;wx/palette.h|"
+    "wxPanel;wx/panel.h|"
+    "wxPaperSize;wx/cmndata.h|"
+    "wxPasswordEntryDialog;wx/textdlg.h|"
+    "wxPathList;wx/filefn.h|"
+    "wxPen;wx/pen.h|"
+    "wxPenList;wx/gdicmn.h|"
+    "wxPickerBase;wx/pickerbase.h|"
+    "wxPlatformInfo;wx/platinfo.h|"
+    "wxPoint;wx/gdicmn.h|"
+    "wxPostScriptDC;wx/dcps.h|"
+    "wxPowerEvent;wx/power.h|"
+    "wxPreviewCanvas;wx/print.h|"
+    "wxPreviewControlBar;wx/print.h|"
+    "wxPreviewFrame;wx/print.h|"
+    "wxPrintData;wx/cmndata.h|"
+    "wxPrintDialog;wx/printdlg.h|"
+    "wxPrintDialogData;wx/cmndata.h|"
+    "wxPrinter;wx/print.h|"
+    "wxPrinterDC;wx/dcprint.h|"
+    "wxPrintout;wx/print.h|"
+    "wxPrintPreview;wx/print.h|"
+    "wxProcess;wx/process.h|"
+    "wxProcessEvent;wx/process.h|"
+    "wxProgressDialog;wx/progdlg.h|"
+    "wxPropertySheetDialog;wx/propdlg.h|"
+    "wxProtocol;wx/protocol/protocol.h|"
+    "wxQuantize;wx/quantize.h|"
+    "wxQueryLayoutInfoEvent;wx/laywin.h|"
+    "wxRadioBox;wx/radiobox.h|"
+    "wxRadioButton;wx/radiobut.h|"
+    "wxRealPoint;wx/gdicmn.h|"
+    "wxRect;wx/gdicmn.h|"
+    "wxRecursionGuard;wx/recguard.h|"
+    "wxRecursionGuardFlag;wx/recguard.h|"
+    "wxRegEx;wx/regex.h|"
+    "wxRegion;wx/region.h|"
+    "wxRegionIterator;wx/region.h|"
+    "wxRegKey;wx/msw/registry.h|"
+    "wxRendererNative;wx/renderer.h|"
+    "wxRendererVersion;wx/renderer.h|"
+    "wxRichTextAttr;wx/richtext/richtextbuffer.h|"
+    "wxRichTextBuffer;wx/richtext/richtextbuffer.h|"
+    "wxRichTextCharacterStyleDefinition;wx/richtext/richtextstyles.h|"
+    "wxRichTextCtrl;wx/richtext/richtextctrl.h|"
+    "wxRichTextEvent;wx/richtext/richtextctrl.h|"
+    "wxRichTextFileHandler;wx/richtext/richtextbuffer.h|"
+    "wxRichTextFormattingDialog;wx/richtext/richtextformatdlg.h|"
+    "wxRichTextFormattingDialogFactory;wx/richtext/richtextformatdlg.h|"
+    "wxRichTextHeaderFooterData;wx/richtext/richtextprint.h|"
+    "wxRichTextHTMLHandler;wx/richtext/richtexthtml.h|"
+    "wxRichTextListStyleDefinition;wx/richtext/richtextstyles.h|"
+    "wxRichTextParagraphStyleDefinition;wx/richtext/richtextstyles.h|"
+    "wxRichTextPrinting;wx/richtext/richtextprint.h|"
+    "wxRichTextPrintout;wx/richtext/richtextprint.h|"
+    "wxRichTextRange;wx/richtext/richtextbuffer.h|"
+    "wxRichTextStyleDefinition;wx/richtext/richtextstyles.h|"
+    "wxRichTextStyleComboCtrl;wx/richtext/richtextstyles.h|"
+    "wxRichTextStyleListBox;wx/richtext/richtextstyles.h|"
+    "wxRichTextStyleListCtrl;wx/richtext/richtextstyles.h|"
+    "wxRichTextStyleOrganiserDialog;wx/richtext/richtextstyledlg.h|"
+    "wxRichTextStyleSheet;wx/richtext/richtextstyles.h|"
+    "wxRichTextXMLHandler;wx/richtext/richtextxml.h|"
+    "wxSashEvent;wx/sashwin.h|"
+    "wxSashLayoutWindow;wx/laywin.h|"
+    "wxSashWindow;wx/sashwin.h|"
+    "wxScopedArray;wx/ptr_scpd.h|"
+    "wxScopedPtr;wx/ptr_scpd.h|"
+    "wxScopedTiedPtr;wx/ptr_scpd.h|"
+    "wxScreenDC;wx/dcscreen.h|"
+    "wxScrollBar;wx/scrolbar.h|"
+    "wxScrolledWindow;wx/scrolwin.h|"
+    "wxScrollEvent;wx/event.h|"
+    "wxScrollWinEvent;wx/event.h|"
+    "wxSearchCtrl;wx/srchctrl.h|"
+    "wxSemaphore;wx/thread.h|"
+    "wxServer;wx/ipc.h|"
+    "wxSetCursorEvent;wx/event.h|"
+    "wxSetEnv;wx/utils.h|"
+    "wxSimpleHelpProvider;wx/cshelp.h|"
+    "wxSimpleHtmlListBox;wx/htmllbox.h|"
+    "wxSingleChoiceDialog;wx/choicdlg.h|"
+    "wxSingleInstanceChecker;wx/snglinst.h|"
+    "wxSize;wx/gdicmn.h|"
+    "wxSizeEvent;wx/event.h|"
+    "wxSizer;wx/sizer.h|"
+    "wxSizerFlags;wx/sizer.h|"
+    "wxSizerItem;wx/sizer.h|"
+    "wxSlider;wx/slider.h|"
+    "wxSockAddress;wx/socket.h|"
+    "wxSocketBase;wx/socket.h|"
+    "wxSocketClient;wx/socket.h|"
+    "wxSocketEvent;wx/socket.h|"
+    "wxSocketInputStream;wx/sckstrm.h|"
+    "wxSocketOutputStream;wx/sckstrm.h|"
+    "wxSocketServer;wx/socket.h|"
+    "wxSound;wx/sound.h|"
+    "wxSpinButton;wx/spinbutt.h|"
+    "wxSpinCtrl;wx/spinctrl.h|"
+    "wxSpinEvent;wx/spinctrl.h|"
+    "wxSplashScreen;wx/splash.h|"
+    "wxSplitterEvent;wx/splitter.h|"
+    "wxSplitterRenderParams;wx/renderer.h|"
+    "wxSplitterWindow;wx/splitter.h|"
+    "wxStackFrame;wx/stackwalk.h|"
+    "wxStackWalker;wx/stackwalk.h|"
+    "wxStandardPaths;wx/stdpaths.h|"
+    "wxStaticBitmap;wx/statbmp.h|"
+    "wxStaticBox;wx/statbox.h|"
+    "wxStaticBoxSizer;wx/sizer.h|"
+    "wxStaticLine;wx/statline.h|"
+    "wxStaticText;wx/stattext.h|"
+    "wxStatusBar;wx/statusbr.h|"
+    "wxStdDialogButtonSizer;wx/sizer.h|"
+    "wxStopWatch;wx/stopwatch.h|"
+    "wxStreamBase;wx/stream.h|"
+    "wxStreamBuffer;wx/stream.h|"
+    "wxStreamToTextRedirector;wx/textctrl.h|"
+    "wxString;wx/string.h|"
+    "wxStringBuffer;wx/string.h|"
+    "wxStringBufferLength;wx/string.h|"
+    "wxStringClientData;clntdata.h|"
+    "wxStringInputStream;wx/sstream.h|"
+    "wxStringOutputStream;wx/sstream.h|"
+    "wxStringTokenizer;wx/tokenzr.h|"
+    "wxSymbolPickerDialog;wx/richtext/richtextsymboldlg.h|"
+    "wxSysColourChangedEvent;wx/event.h|"
+    "wxSystemOptions;wx/sysopt.h|"
+    "wxSystemSettings;wx/settings.h|"
+    "wxTarClassFactory;wx/tarstrm.h|"
+    "wxTarEntry;wx/tarstrm.h|"
+    "wxTarInputStream;wx/tarstrm.h|"
+    "wxTarOutputStream;wx/tarstrm.h|"
+    "wxTaskBarIcon;wx/taskbar.h|"
+    "wxTCPClient;wx/sckipc.h|"
+    "wxTCPServer;wx/sckipc.h|"
+    "wxTempFile;wx/file.h|"
+    "wxTempFileOutputStream;wx/wfstream.h|"
+    "wxTextAttr;wx/textctrl.h|"
+    "wxTextAttrEx;wx/richtext/richtextbuffer.h|"
+    "wxTextCtrl;wx/textctrl.h|"
+    "wxTextDataObject;wx/dataobj.h|"
+    "wxTextDropTarget;wx/dnd.h|"
+    "wxTextEntryDialog;wx/textdlg.h|"
+    "wxTextFile;wx/textfile.h|"
+    "wxTextInputStream;wx/txtstrm.h|"
+    "wxTextOutputStream;wx/txtstrm.h|"
+    "wxTextValidator;wx/valtext.h|"
+    "wxTheClipboard;wx/clipbrd.h|"
+    "wxThread;wx/thread.h|"
+    "wxThreadHelper;wx/thread.h|"
+    "wxTimer;wx/timer.h|"
+    "wxTimerEvent;wx/timer.h|"
+    "wxTimeSpan;wx/datetime.h|"
+    "wxTipProvider;wx/tipdlg.h|"
+    "wxTipWindow;wx/tipwin.h|"
+    "wxToggleButton;wx/tglbtn.h|"
+    "wxToolBar;wx/toolbar.h|"
+    "wxToolbook;wx/toolbook.h|"
+    "wxToolTip;wx/tooltip.h|"
+    "wxTopLevelWindow;wx/toplevel.h|"
+    "wxTreebook;wx/treebook.h|"
+    "wxTreebookEvent;wx/treebook.h|"
+    "wxTreeCtrl;wx/treectrl.h|"
+    "wxTreeEvent;wx/treectrl.h|"
+    "wxTreeItemData;wx/treectrl.h|"
+    "wxTreeItemId;wx/treebase.h|"
+    "wxUnsetEnv;wx/utils.h|"
+    "wxUpdateUIEvent;wx/event.h|"
+    "wxURI;wx/uri.h|"
+    "wxURL;wx/url.h|"
+    "wxURLDataObject;wx/dataobj.h|"
+    "wxVaCopy;wx/defs.h|"
+    "wxValidator;wx/validate.h|"
+    "wxVariant;wx/variant.h|"
+    "wxVariantData;wx/variant.h|"
+    "wxView;wx/docview.h|"
+    "wxVListBox;wx/vlbox.h|"
+    "wxVScrolledWindow;wx/vscroll.h|"
+    "wxWindow;wx/window.h|"
+    "wxWindowUpdateLocker;wx/wupdlock.h|"
+    "wxWindowCreateEvent;wx/event.h|"
+    "wxWindowDC;wx/dcclient.h|"
+    "wxWindowDestroyEvent;wx/event.h|"
+    "wxWindowDisabler;wx/utils.h|"
+    "wxWizard;wx/wizard.h|"
+    "wxWizardEvent;wx/wizard.h|"
+    "wxWizardPage;wx/wizard.h|"
+    "wxWizardPageSimple;wx/wizard.h|"
+    "wxXmlDocument;wx/xml/xml.h|"
+    "wxXmlNode;wx/xml/xml.h|"
+    "wxXmlProperty;wx/xml/xml.h|"
+    "wxXmlResource;wx/xrc/xmlres.h|"
+    "wxXmlResourceHandler;wx/xrc/xmlres.h|"
+    "wxZipClassFactory;wx/zipstrm.h|"
+    "wxZipEntry;wx/zipstrm.h|"
+    "wxZipInputStream;wx/zipstrm.h|"
+    "wxZipNotifier;wx/zipstrm.h|"
+    "wxZipOutputStream;wx/zipstrm.h|"
+    "wxZlibInputStream;wx/zstream.h|"
+    "wxZlibOutputStream;wx/zstream.h");
+
+    wxArrayString arWxWidgets_2_8_8 = GetArrayFromString(strWxWidgets_2_8_8, _T("|"));
+    for(int i = 0; i < arWxWidgets_2_8_8.GetCount();i++)
+    {
+        wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_8_8.Item(i), _T(";"));
+        AddBinding(_T("wxWidgets_2_8_8"), arTmp.Item(0), arTmp.Item(1) );
+    }
 }// SetDefaultsWxWidgets
+
+void Bindings::SetDefaultsSTL()
+{
+  AddBinding(_T("STL"),_T("adjacent_find"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("binary_search"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_copy"),                       _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_copy_backward"),              _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_fill_n"),                     _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_generate_n"),                 _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_merge"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_remove_copy"),                _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_remove_copy_if"),             _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_replace_copy"),               _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_replace_copy_if"),            _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_reverse_copy"),               _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_rotate_copy"),                _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_set_difference"),             _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_set_intersection"),           _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_set_symmetric_difference"),   _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_set_union"),                  _T("algorithm"));
+  AddBinding(_T("STL"),_T("checked_unique_copy"),                _T("algorithm"));
+  AddBinding(_T("STL"),_T("copy"),                               _T("algorithm"));
+  AddBinding(_T("STL"),_T("copy_backward"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("count"),                              _T("algorithm"));
+  AddBinding(_T("STL"),_T("count_if"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("equal"),                              _T("algorithm"));
+  AddBinding(_T("STL"),_T("equal_range"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("fill"),                               _T("algorithm"));
+  AddBinding(_T("STL"),_T("fill_n"),                             _T("algorithm"));
+  AddBinding(_T("STL"),_T("find"),                               _T("algorithm"));
+  AddBinding(_T("STL"),_T("find_end"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("find_first_of"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("find_if"),                            _T("algorithm"));
+  AddBinding(_T("STL"),_T("for_each"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("generate"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("generate_n"),                         _T("algorithm"));
+  AddBinding(_T("STL"),_T("includes"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("inplace_merge"),                      _T("algorithm"));
+  AddBinding(_T("STL"),_T("iter_swap"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("lexicographical_compare"),            _T("algorithm"));
+  AddBinding(_T("STL"),_T("lower_bound"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("make_heap"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("max"),                                _T("algorithm"));
+  AddBinding(_T("STL"),_T("max_element"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("merge"),                              _T("algorithm"));
+  AddBinding(_T("STL"),_T("min"),                                _T("algorithm"));
+  AddBinding(_T("STL"),_T("min_element"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("mismatch"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("next_permutation"),                   _T("algorithm"));
+  AddBinding(_T("STL"),_T("nth_element"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("partial_sort"),                       _T("algorithm"));
+  AddBinding(_T("STL"),_T("partial_sort_copy"),                  _T("algorithm"));
+  AddBinding(_T("STL"),_T("partition"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("pop_heap"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("prev_permutation"),                   _T("algorithm"));
+  AddBinding(_T("STL"),_T("push_heap"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("random_shuffle"),                     _T("algorithm"));
+  AddBinding(_T("STL"),_T("remove"),                             _T("algorithm"));
+  AddBinding(_T("STL"),_T("remove_copy"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("remove_copy_if"),                     _T("algorithm"));
+  AddBinding(_T("STL"),_T("remove_if"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("replace"),                            _T("algorithm"));
+  AddBinding(_T("STL"),_T("replace_copy"),                       _T("algorithm"));
+  AddBinding(_T("STL"),_T("replace_copy_if"),                    _T("algorithm"));
+  AddBinding(_T("STL"),_T("replace_if"),                         _T("algorithm"));
+  AddBinding(_T("STL"),_T("reverse"),                            _T("algorithm"));
+  AddBinding(_T("STL"),_T("reverse_copy"),                       _T("algorithm"));
+  AddBinding(_T("STL"),_T("rotate"),                             _T("algorithm"));
+  AddBinding(_T("STL"),_T("rotate_copy"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("search"),                             _T("algorithm"));
+  AddBinding(_T("STL"),_T("search_n"),                           _T("algorithm"));
+  AddBinding(_T("STL"),_T("set_difference"),                     _T("algorithm"));
+  AddBinding(_T("STL"),_T("set_intersection"),                   _T("algorithm"));
+  AddBinding(_T("STL"),_T("set_symmetric_difference"),           _T("algorithm"));
+  AddBinding(_T("STL"),_T("set_union"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("sort"),                               _T("algorithm"));
+  AddBinding(_T("STL"),_T("sort_heap"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("stable_partition"),                   _T("algorithm"));
+  AddBinding(_T("STL"),_T("stable_sort"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("swap"),                               _T("algorithm"));
+  AddBinding(_T("STL"),_T("swap_ranges"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("transform"),                          _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_copy"),                     _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_copy_backward"),            _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_fill_n"),                   _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_generate_n"),               _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_merge"),                    _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_remove_copy"),              _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_remove_copy_if"),           _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_replace_copy"),             _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_replace_copy_if"),          _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_reverse_copy"),             _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_rotate_copy"),              _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_set_difference"),           _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_set_intersection"),         _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_set_symmetric_difference"), _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_set_union"),                _T("algorithm"));
+  AddBinding(_T("STL"),_T("unchecked_unique_copy"),              _T("algorithm"));
+  AddBinding(_T("STL"),_T("unique"),                             _T("algorithm"));
+  AddBinding(_T("STL"),_T("unique_copy"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("upper_bound"),                        _T("algorithm"));
+  AddBinding(_T("STL"),_T("bitset"),                             _T("bitset"));
+  AddBinding(_T("STL"),_T("arg"),                                _T("complex"));
+  AddBinding(_T("STL"),_T("complex"),                            _T("complex"));
+  AddBinding(_T("STL"),_T("conj"),                               _T("complex"));
+  AddBinding(_T("STL"),_T("imag"),                               _T("complex"));
+  AddBinding(_T("STL"),_T("norm"),                               _T("complex"));
+  AddBinding(_T("STL"),_T("polar"),                              _T("complex"));
+  AddBinding(_T("STL"),_T("real"),                               _T("complex"));
+  AddBinding(_T("STL"),_T("deque"),                              _T("deque"));
+  AddBinding(_T("STL"),_T("bad_exception"),                      _T("exception"));
+  AddBinding(_T("STL"),_T("exception"),                          _T("exception"));
+  AddBinding(_T("STL"),_T("set_terminate"),                      _T("exception"));
+  AddBinding(_T("STL"),_T("set_unexpected"),                     _T("exception"));
+  AddBinding(_T("STL"),_T("terminate"),                          _T("exception"));
+  AddBinding(_T("STL"),_T("terminate_handler"),                  _T("exception"));
+  AddBinding(_T("STL"),_T("uncaught_exception"),                 _T("exception"));
+  AddBinding(_T("STL"),_T("unexpected"),                         _T("exception"));
+  AddBinding(_T("STL"),_T("unexpected_handler"),                 _T("exception"));
+  AddBinding(_T("STL"),_T("basic_filebuf"),                      _T("fstream"));
+  AddBinding(_T("STL"),_T("basic_fstream"),                      _T("fstream"));
+  AddBinding(_T("STL"),_T("basic_ifstream"),                     _T("fstream"));
+  AddBinding(_T("STL"),_T("basic_ofstream"),                     _T("fstream"));
+  AddBinding(_T("STL"),_T("filebuf"),                            _T("fstream"));
+  AddBinding(_T("STL"),_T("fstream"),                            _T("fstream"));
+  AddBinding(_T("STL"),_T("ifstream"),                           _T("fstream"));
+  AddBinding(_T("STL"),_T("ofstream"),                           _T("fstream"));
+  AddBinding(_T("STL"),_T("wfilebuf"),                           _T("fstream"));
+  AddBinding(_T("STL"),_T("wfstream"),                           _T("fstream"));
+  AddBinding(_T("STL"),_T("wifstream"),                          _T("fstream"));
+  AddBinding(_T("STL"),_T("wofstream"),                          _T("fstream"));
+  AddBinding(_T("STL"),_T("binary_function"),                    _T("functional"));
+  AddBinding(_T("STL"),_T("binary_negate"),                      _T("functional"));
+  AddBinding(_T("STL"),_T("bind1st"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("bind2nd"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("binder1st"),                          _T("functional"));
+  AddBinding(_T("STL"),_T("binder2nd"),                          _T("functional"));
+  AddBinding(_T("STL"),_T("const_mem_fun_ref_t"),                _T("functional"));
+  AddBinding(_T("STL"),_T("const_mem_fun_t"),                    _T("functional"));
+  AddBinding(_T("STL"),_T("const_mem_fun1_ref_t"),               _T("functional"));
+  AddBinding(_T("STL"),_T("const_mem_fun1_t"),                   _T("functional"));
+  AddBinding(_T("STL"),_T("divides"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("equal_to"),                           _T("functional"));
+  AddBinding(_T("STL"),_T("greater"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("greater_equal"),                      _T("functional"));
+  AddBinding(_T("STL"),_T("less"),                               _T("functional"));
+  AddBinding(_T("STL"),_T("less_equal"),                         _T("functional"));
+  AddBinding(_T("STL"),_T("logical_and"),                        _T("functional"));
+  AddBinding(_T("STL"),_T("logical_not"),                        _T("functional"));
+  AddBinding(_T("STL"),_T("logical_or"),                         _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun_ref"),                        _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun_ref_t"),                      _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun_t"),                          _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun1_ref_t"),                     _T("functional"));
+  AddBinding(_T("STL"),_T("mem_fun1_t"),                         _T("functional"));
+  AddBinding(_T("STL"),_T("minus"),                              _T("functional"));
+  AddBinding(_T("STL"),_T("modulus"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("multiplies"),                         _T("functional"));
+  AddBinding(_T("STL"),_T("negate"),                             _T("functional"));
+  AddBinding(_T("STL"),_T("not_equal_to"),                       _T("functional"));
+  AddBinding(_T("STL"),_T("not1"),                               _T("functional"));
+  AddBinding(_T("STL"),_T("not2"),                               _T("functional"));
+  AddBinding(_T("STL"),_T("plus"),                               _T("functional"));
+  AddBinding(_T("STL"),_T("pointer_to_binary_function"),         _T("functional"));
+  AddBinding(_T("STL"),_T("pointer_to_unary_function"),          _T("functional"));
+  AddBinding(_T("STL"),_T("ptr_fun"),                            _T("functional"));
+  AddBinding(_T("STL"),_T("unary_function"),                     _T("functional"));
+  AddBinding(_T("STL"),_T("unary_negate"),                       _T("functional"));
+  AddBinding(_T("STL"),_T("hash_compare"),                       _T("hash_map"));
+  AddBinding(_T("STL"),_T("hash_map"),                           _T("hash_map"));
+  AddBinding(_T("STL"),_T("hash_multimap"),                      _T("hash_map"));
+  AddBinding(_T("STL"),_T("value_compare"),                      _T("hash_map"));
+  AddBinding(_T("STL"),_T("hash_multiset"),                      _T("hash_set"));
+  AddBinding(_T("STL"),_T("hash_set"),                           _T("hash_set"));
+  AddBinding(_T("STL"),_T("get_money"),                          _T("iomanip"));
+  AddBinding(_T("STL"),_T("get_time"),                           _T("iomanip"));
+  AddBinding(_T("STL"),_T("put_money"),                          _T("iomanip"));
+  AddBinding(_T("STL"),_T("put_time"),                           _T("iomanip"));
+  AddBinding(_T("STL"),_T("resetiosflags"),                      _T("iomanip"));
+  AddBinding(_T("STL"),_T("setbase"),                            _T("iomanip"));
+  AddBinding(_T("STL"),_T("setfill"),                            _T("iomanip"));
+  AddBinding(_T("STL"),_T("setiosflags"),                        _T("iomanip"));
+  AddBinding(_T("STL"),_T("setprecision"),                       _T("iomanip"));
+  AddBinding(_T("STL"),_T("setw"),                               _T("iomanip"));
+  AddBinding(_T("STL"),_T("cerr"),                               _T("iostream"));
+  AddBinding(_T("STL"),_T("cin"),                                _T("iostream"));
+  AddBinding(_T("STL"),_T("clog"),                               _T("iostream"));
+  AddBinding(_T("STL"),_T("cout"),                               _T("iostream"));
+  AddBinding(_T("STL"),_T("endl"),                               _T("iostream"));
+  AddBinding(_T("STL"),_T("istream"),                            _T("iostream"));
+  AddBinding(_T("STL"),_T("ostream"),                            _T("iostream"));
+  AddBinding(_T("STL"),_T("wcerr"),                              _T("iostream"));
+  AddBinding(_T("STL"),_T("wcin"),                               _T("iostream"));
+  AddBinding(_T("STL"),_T("wclog"),                              _T("iostream"));
+  AddBinding(_T("STL"),_T("wcout"),                              _T("iostream"));
+  AddBinding(_T("STL"),_T("advance"),                            _T("iterator"));
+  AddBinding(_T("STL"),_T("back_inserter"),                      _T("iterator"));
+  AddBinding(_T("STL"),_T("distance"),                           _T("iterator"));
+  AddBinding(_T("STL"),_T("front_inserter"),                     _T("iterator"));
+  AddBinding(_T("STL"),_T("inserter"),                           _T("iterator"));
+  AddBinding(_T("STL"),_T("make_move_iterator"),                 _T("iterator"));
+  AddBinding(_T("STL"),_T("back_insert_iterator"),               _T("iterator"));
+  AddBinding(_T("STL"),_T("bidirectional_iterator_tag"),         _T("iterator"));
+  AddBinding(_T("STL"),_T("checked_array_iterator"),             _T("iterator"));
+  AddBinding(_T("STL"),_T("forward_iterator_tag"),               _T("iterator"));
+  AddBinding(_T("STL"),_T("front_insert_iterator"),              _T("iterator"));
+  AddBinding(_T("STL"),_T("input_iterator_tag"),                 _T("iterator"));
+  AddBinding(_T("STL"),_T("insert_iterator"),                    _T("iterator"));
+  AddBinding(_T("STL"),_T("istream_iterator"),                   _T("iterator"));
+  AddBinding(_T("STL"),_T("istreambuf_iterator"),                _T("iterator"));
+  AddBinding(_T("STL"),_T("iterator"),                           _T("iterator"));
+  AddBinding(_T("STL"),_T("iterator_traits"),                    _T("iterator"));
+  AddBinding(_T("STL"),_T("move_iterator"),                      _T("iterator"));
+  AddBinding(_T("STL"),_T("ostream_iterator"),                   _T("iterator"));
+  AddBinding(_T("STL"),_T("ostreambuf_iterator"),                _T("iterator"));
+  AddBinding(_T("STL"),_T("output_iterator_tag"),                _T("iterator"));
+  AddBinding(_T("STL"),_T("random_access_iterator_tag"),         _T("iterator"));
+  AddBinding(_T("STL"),_T("reverse_iterator"),                   _T("iterator"));
+  AddBinding(_T("STL"),_T("float_denorm_style"),                 _T("limits"));
+  AddBinding(_T("STL"),_T("float_round_style"),                  _T("limits"));
+  AddBinding(_T("STL"),_T("numeric_limits"),                     _T("limits"));
+  AddBinding(_T("STL"),_T("list"),                               _T("list"));
+  AddBinding(_T("STL"),_T("codecvt"),                            _T("locale"));
+  AddBinding(_T("STL"),_T("codecvt_base"),                       _T("locale"));
+  AddBinding(_T("STL"),_T("codecvt_byname"),                     _T("locale"));
+  AddBinding(_T("STL"),_T("collate"),                            _T("locale"));
+  AddBinding(_T("STL"),_T("collate_byname"),                     _T("locale"));
+  AddBinding(_T("STL"),_T("ctype"),                              _T("locale"));
+  AddBinding(_T("STL"),_T("ctype_base"),                         _T("locale"));
+  AddBinding(_T("STL"),_T("ctype_byname"),                       _T("locale"));
+  AddBinding(_T("STL"),_T("locale"),                             _T("locale"));
+  AddBinding(_T("STL"),_T("messages"),                           _T("locale"));
+  AddBinding(_T("STL"),_T("messages_base"),                      _T("locale"));
+  AddBinding(_T("STL"),_T("messages_byname"),                    _T("locale"));
+  AddBinding(_T("STL"),_T("money_base"),                         _T("locale"));
+  AddBinding(_T("STL"),_T("money_get"),                          _T("locale"));
+  AddBinding(_T("STL"),_T("money_put"),                          _T("locale"));
+  AddBinding(_T("STL"),_T("moneypunct"),                         _T("locale"));
+  AddBinding(_T("STL"),_T("moneypunct_byname"),                  _T("locale"));
+  AddBinding(_T("STL"),_T("num_get"),                            _T("locale"));
+  AddBinding(_T("STL"),_T("num_put"),                            _T("locale"));
+  AddBinding(_T("STL"),_T("numpunct"),                           _T("locale"));
+  AddBinding(_T("STL"),_T("numpunct_byname"),                    _T("locale"));
+  AddBinding(_T("STL"),_T("time_base"),                          _T("locale"));
+  AddBinding(_T("STL"),_T("time_get"),                           _T("locale"));
+  AddBinding(_T("STL"),_T("time_put_byname"),                    _T("locale"));
+  AddBinding(_T("STL"),_T("map"),                                _T("map"));
+  AddBinding(_T("STL"),_T("multimap"),                           _T("map"));
+  AddBinding(_T("STL"),_T("value_compare"),                      _T("map"));
+  AddBinding(_T("STL"),_T("allocator"),                          _T("memory"));
+  AddBinding(_T("STL"),_T("auto_ptr"),                           _T("memory"));
+  AddBinding(_T("STL"),_T("checked_uninitialized_fill_n"),       _T("memory"));
+  AddBinding(_T("STL"),_T("get_temporary_buffer"),               _T("memory"));
+  AddBinding(_T("STL"),_T("raw_storage_iterator "),              _T("memory"));
+  AddBinding(_T("STL"),_T("return_temporary_buffer"),            _T("memory"));
+  AddBinding(_T("STL"),_T("unchecked_uninitialized_fill_n"),     _T("memory"));
+  AddBinding(_T("STL"),_T("uninitialized_copy"),                 _T("memory"));
+  AddBinding(_T("STL"),_T("uninitialized_fill"),                 _T("memory"));
+  AddBinding(_T("STL"),_T("uninitialized_fill_n"),               _T("memory"));
+  AddBinding(_T("STL"),_T("accumulate"),                         _T("numeric"));
+  AddBinding(_T("STL"),_T("adjacent_difference"),                _T("numeric"));
+  AddBinding(_T("STL"),_T("checked_adjacent_difference"),        _T("numeric"));
+  AddBinding(_T("STL"),_T("checked_partial_sum"),                _T("numeric"));
+  AddBinding(_T("STL"),_T("inner_product"),                      _T("numeric"));
+  AddBinding(_T("STL"),_T("partial_sum"),                        _T("numeric"));
+  AddBinding(_T("STL"),_T("unchecked_adjacent_difference"),      _T("numeric"));
+  AddBinding(_T("STL"),_T("unchecked_partial_sum"),              _T("numeric"));
+  AddBinding(_T("STL"),_T("priority_queue "),                    _T("queue"));
+  AddBinding(_T("STL"),_T("queue"),                              _T("queue"));
+  AddBinding(_T("STL"),_T("multiset"),                           _T("set"));
+  AddBinding(_T("STL"),_T("set"),                                _T("set"));
+  AddBinding(_T("STL"),_T("basic_istringstream"),                _T("sstream"));
+  AddBinding(_T("STL"),_T("basic_ostringstream"),                _T("sstream"));
+  AddBinding(_T("STL"),_T("basic_stringbuf"),                    _T("sstream"));
+  AddBinding(_T("STL"),_T("basic_stringstream"),                 _T("sstream"));
+  AddBinding(_T("STL"),_T("istringstream"),                      _T("sstream"));
+  AddBinding(_T("STL"),_T("ostringstream"),                      _T("sstream"));
+  AddBinding(_T("STL"),_T("stringbuf"),                          _T("sstream"));
+  AddBinding(_T("STL"),_T("stringstream"),                       _T("sstream"));
+  AddBinding(_T("STL"),_T("wistringstream"),                     _T("sstream"));
+  AddBinding(_T("STL"),_T("wostringstream"),                     _T("sstream"));
+  AddBinding(_T("STL"),_T("wstringbuf"),                         _T("sstream"));
+  AddBinding(_T("STL"),_T("wstringstream"),                      _T("sstream"));
+  AddBinding(_T("STL"),_T("stack"),                              _T("stack"));
+  AddBinding(_T("STL"),_T("domain_error"),                       _T("stdexcept"));
+  AddBinding(_T("STL"),_T("invalid_argument "),                  _T("stdexcept"));
+  AddBinding(_T("STL"),_T("length_error"),                       _T("stdexcept"));
+  AddBinding(_T("STL"),_T("logic_error"),                        _T("stdexcept"));
+  AddBinding(_T("STL"),_T("out_of_range"),                       _T("stdexcept"));
+  AddBinding(_T("STL"),_T("overflow_error"),                     _T("stdexcept"));
+  AddBinding(_T("STL"),_T("range_error"),                        _T("stdexcept"));
+  AddBinding(_T("STL"),_T("runtime_error "),                     _T("stdexcept"));
+  AddBinding(_T("STL"),_T("underflow_error "),                   _T("stdexcept"));
+  AddBinding(_T("STL"),_T("basic_streambuf"),                    _T("streambuf"));
+  AddBinding(_T("STL"),_T("streambuf"),                          _T("streambuf"));
+  AddBinding(_T("STL"),_T("wstreambuf"),                         _T("streambuf"));
+  AddBinding(_T("STL"),_T("basic_string"),                       _T("string"));
+  AddBinding(_T("STL"),_T("char_traits"),                        _T("string"));
+  AddBinding(_T("STL"),_T("string"),                             _T("string"));
+  AddBinding(_T("STL"),_T("wstring"),                            _T("string"));
+  AddBinding(_T("STL"),_T("istrstream"),                         _T("strstream"));
+  AddBinding(_T("STL"),_T("ostrstream"),                         _T("strstream"));
+  AddBinding(_T("STL"),_T("strstream"),                          _T("strstream"));
+  AddBinding(_T("STL"),_T("strstreambuf"),                       _T("strstream"));
+  AddBinding(_T("STL"),_T("pair"),                               _T("utility"));
+  AddBinding(_T("STL"),_T("make_pair"),                          _T("utility"));
+  AddBinding(_T("STL"),_T("gslice"),                             _T("valarray"));
+  AddBinding(_T("STL"),_T("gslice_array"),                       _T("valarray"));
+  AddBinding(_T("STL"),_T("indirect_array"),                     _T("valarray"));
+  AddBinding(_T("STL"),_T("mask_array"),                         _T("valarray"));
+  AddBinding(_T("STL"),_T("slice"),                              _T("valarray"));
+  AddBinding(_T("STL"),_T("slice_array"),                        _T("valarray"));
+  AddBinding(_T("STL"),_T("valarray"),                           _T("valarray"));
+  AddBinding(_T("STL"),_T("vector"),                             _T("vector"));
+}// SetDefaultsSTL
+
+void Bindings::SetDefaultsCLibrary()
+{
+  AddBinding(_T("C_Library"),_T("assert"),     _T("cassert"));
+  AddBinding(_T("C_Library"),_T("isalnum"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isalpha"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("iscntrl"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isdigit"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isgraph"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("islower"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isprint"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("ispunct"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isspace"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isupper"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("isxdigit"),   _T("cctype"));
+  AddBinding(_T("C_Library"),_T("tolower"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("toupper"),    _T("cctype"));
+  AddBinding(_T("C_Library"),_T("setlocale"),  _T("clocale"));
+  AddBinding(_T("C_Library"),_T("localeconv"), _T("clocale"));
+  AddBinding(_T("C_Library"),_T("fclose"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fopen"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fflush"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("freopen"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("setbuf"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("setvbuf"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fprintf"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fscan"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("printf"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("scanf"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("sprintf"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("sscanf"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("vfprintf"),   _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("vprintf"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("vsprintf"),   _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fgetc"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fgets"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fputc"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fputs"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("getc"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("getchar"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("gets"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("putc"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("putchar"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("puts"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("ungetc"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fread"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fwrite"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fgetpos"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fseek"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("fsetpos"),    _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("ftell"),      _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("rewind"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("clearerr"),   _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("feof"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("ferror"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("perrer"),     _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("FILE"),       _T("cstdio"));
+  AddBinding(_T("C_Library"),_T("abort"),      _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("abs"),        _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("atexit"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("atof"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("atoi"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("atol"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("bsearch"),    _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("calloc"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("div"),        _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("exit"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("free"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("getenv"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("labs"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("ldiv"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("malloc"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("mblen"),      _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("mbstowcs"),   _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("mbtowc"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("qsort"),      _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("rand"),       _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("realloc"),    _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("srand"),      _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("strtod"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("strtol"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("strtoul"),    _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("system"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("wcstombs"),   _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("wctomb"),     _T("cstdlib"));
+  AddBinding(_T("C_Library"),_T("memchr"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("memcmp"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("memcpy"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("memmove"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("memset"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strcat"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strchr"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strcmp"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strcoll"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strcpy"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strcspn"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strerror"),   _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strlen"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strncat"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strncmp"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strncpy"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strpbrk"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strrchr"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strspn"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strstr"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strtok"),     _T("cstring"));
+  AddBinding(_T("C_Library"),_T("strxfrm"),    _T("cstring"));
+  AddBinding(_T("C_Library"),_T("asctime"),    _T("ctime"));
+  AddBinding(_T("C_Library"),_T("clock"),      _T("ctime"));
+  AddBinding(_T("C_Library"),_T("ctime"),      _T("ctime"));
+  AddBinding(_T("C_Library"),_T("difftime"),   _T("ctime"));
+  AddBinding(_T("C_Library"),_T("gmtime"),     _T("ctime"));
+  AddBinding(_T("C_Library"),_T("localtime"),  _T("ctime"));
+  AddBinding(_T("C_Library"),_T("mktime"),     _T("ctime"));
+  AddBinding(_T("C_Library"),_T("strftime"),   _T("ctime"));
+  AddBinding(_T("C_Library"),_T("time"),       _T("ctime"));
+}// SetDefaultsCLibrary

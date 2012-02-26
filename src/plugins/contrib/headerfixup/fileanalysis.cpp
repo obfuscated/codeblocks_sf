@@ -134,13 +134,13 @@ wxString FileAnalysis::GetEOL()
   wxString EOL = _T('\n');
 
   // Detect end-of-line style to prevent inconsistent EOLs
-  for ( int i=0; i<m_FileContent.Length(); i++ )
+  for ( size_t i=0; i<m_FileContent.Len(); i++ )
   {
     if (   m_FileContent.GetChar(i)==_T('\n')
         || m_FileContent.GetChar(i)==_T('\r') )
     {
       EOL = m_FileContent.GetChar(i);
-      if ( ++i<m_FileContent.Length() )
+      if ( ++i<m_FileContent.Len() )
       {
         if (   m_FileContent.GetChar(i)==_T('\n')
             || m_FileContent.GetChar(i)==_T('\r') )

@@ -49,6 +49,10 @@ private:
   void SetDefaultsCodeBlocks();
   /** \brief Initializing wxWidgets bindings with default values */
   void SetDefaultsWxWidgets();
+  /** \brief Initializing STL bindings with default values */
+  void SetDefaultsSTL();
+  /** \brief Initializing C_Library bindings with default values */
+  void SetDefaultsCLibrary();
 
   WX_DECLARE_STRING_HASH_MAP(wxArrayString,MappingsT);
   WX_DECLARE_STRING_HASH_MAP(MappingsT,GroupsT);
