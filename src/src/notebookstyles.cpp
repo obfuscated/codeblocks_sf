@@ -141,13 +141,6 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     int drawn_tab_height = border_points[0].y - border_points[1].y;
 
     int text_offset = tab_x + 8;
-    int close_button_width = 0;
-    if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
-#if wxCHECK_VERSION(2, 9, 3)
-        close_button_width = m_activeCloseBmp.GetWidth();
-#else
-        close_button_width = m_active_close_bmp.GetWidth();
-#endif
 
     int bitmap_offset = 0;
     if (page.bitmap.IsOk())
