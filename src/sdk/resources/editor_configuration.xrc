@@ -271,6 +271,12 @@
                                                                                 </object>
                                                                                 <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                                             </object>
+                                                                            <object class="sizeritem">
+                                                                                <object class="wxCheckBox" name="chkSelectionBraceCompletion">
+                                                                                    <label>Selection brace completion</label>
+                                                                                </object>
+                                                                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                                            </object>
                                                                         </object>
                                                                         <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                                         <border>4</border>

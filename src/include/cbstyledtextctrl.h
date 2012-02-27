@@ -22,6 +22,7 @@ class cbStyledTextCtrl : public wxScintilla
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
         virtual ~cbStyledTextCtrl();
         wxDateTime GetLastFocusTime() const {return m_lastFocusTime;}
+        wxString GetLastSelectedText() const {return m_lastSelectedText;}
 
         void EnableTabSmartJump(bool enable = true);
         bool IsCharacter(int style);
@@ -29,6 +30,7 @@ class cbStyledTextCtrl : public wxScintilla
         bool IsPreprocessor(int style);
         bool IsComment(int style);
         void CallTipCancel();
+        bool IsBraceShortcutActive();
 
         static std::map<int, std::set<int> > &GetCharacterLexerStyles();
         static std::map<int, std::set<int> > &GetStringLexerStyles();
@@ -52,6 +54,8 @@ class cbStyledTextCtrl : public wxScintilla
         int m_bracePosition;
         int m_lastPosition;
         bool m_tabSmartJump;
+        wxString m_lastSelectedText;
+        bool m_braceShortcutState;
 
         static std::map<int, std::set<int> > CharacterLexerStyles, StringLexerStyles, PreprocessorLexerStyles, CommentLexerStyles;
 

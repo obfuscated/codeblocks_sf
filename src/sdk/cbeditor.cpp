@@ -3027,6 +3027,110 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     static int autoUnIndentValue = -1;
     static int autoUnIndentLine = -1;
 
+    bool SelectionBraceCompletion = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false);
+    if ((SelectionBraceCompletion || control->IsBraceShortcutActive()) && !control->GetLastSelectedText().IsEmpty())
+    {
+        wxString selectedText = control->GetLastSelectedText();
+        switch (ch)
+        {
+            case _T('\''):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                selectedText.Replace(wxT("\\'"), wxT("'"));
+                selectedText.Replace(wxT("'"), wxT("\\'"));
+                control->AddText(wxT("'") + selectedText + wxT("'"));
+                control->EndUndoAction();
+                return;
+            }
+            case _T('"'):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                selectedText.Replace(wxT("\\\""), wxT("\""));
+                selectedText.Replace(wxT("\""), wxT("\\\""));
+                control->AddText(wxT("\"") + selectedText + wxT("\""));
+                control->SetSelectionVoid(pos - 1, pos + selectedText.Length() + 1);
+                int startLine = control->LineFromPosition(control->GetSelectionStart());
+                int endLine = control->LineFromPosition(control->GetSelectionEnd());
+                if (startLine != endLine)
+                {
+                    int selectionEnd = pos + selectedText.Length() + 1;
+                    for (int i = endLine; i > startLine; i--)
+                    {
+                        control->Home();
+                        for (int j = control->GetCurrentPos(); control->GetCharAt(j) == _T(' ') || control->GetCharAt(j) == _T('\t'); j++)
+                            control->CharRight();
+                        control->AddText(wxT("\""));
+                        control->SetEmptySelection(control->GetLineEndPosition(i - 1));
+                        control->AddText(wxT("\""));
+                        selectionEnd += control->GetIndent() + 2;
+                    }
+                    control->SetSelectionVoid(pos - 1, selectionEnd);
+                }
+                control->EndUndoAction();
+                return;
+            }
+            case _T('('):
+            case _T(')'):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                control->InsertText(pos - 1, wxT("(") + selectedText + wxT(")"));
+                if (ch == _T(')'))
+                    control->SetEmptySelection(pos + selectedText.Length() + 1);
+                control->EndUndoAction();
+                return;
+            }
+            case _T('['):
+            case _T(']'):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                control->InsertText(pos - 1, wxT("[") + selectedText + wxT("]"));
+                if (ch == _T(']'))
+                    control->SetEmptySelection(pos + selectedText.Length() + 1);
+                control->EndUndoAction();
+                return;
+            }
+            case _T('<'):
+            case _T('>'):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                control->InsertText(pos - 1, wxT("<") + selectedText + wxT(">"));
+                if (ch == _T('>'))
+                    control->SetEmptySelection(pos + selectedText.Length() + 1);
+                control->EndUndoAction();
+                return;
+            }
+            case _T('{'):
+            case _T('}'):
+            {
+                control->BeginUndoAction();
+                control->DeleteBack();
+                control->AddText(selectedText);
+                control->SetSelectionVoid(pos - 1, pos + selectedText.Length() - 1);
+                int startLine = control->LineFromPosition(control->GetSelectionStart());
+                int endLine = control->LineFromPosition(control->GetSelectionEnd());
+                if (startLine == endLine)
+                    control->Home();
+                control->Tab();
+                control->SetEmptySelection(control->GetLineEndPosition(endLine));
+                control->NewLine();
+                control->BackTab();
+                control->AddText(wxT("}"));
+                control->SetEmptySelection(control->GetLineEndPosition(startLine - 1));
+                control->NewLine();
+                control->InsertText(control->GetCurrentPos(), wxT("{"));
+                if (ch == _T('}'))
+                    control->SetEmptySelection(control->GetLineEndPosition(endLine + 2));
+                control->EndUndoAction();
+                return;
+            }
+        }
+    } // SelectionBraceCompletion
+
     // indent
     if (ch == _T('\n'))
     {
