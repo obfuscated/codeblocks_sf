@@ -744,6 +744,12 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
     if (type == mtEditorManager)
     {
+        if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+        {
+            if (ParserCommon::FileType(ed->GetShortName()) == ParserCommon::ftOther)
+                return;
+        }
+
         wxString NameUnderCursor;
         bool IsInclude = false;
         const bool nameUnderCursor = CodeCompletionHelper::EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
@@ -1373,6 +1379,9 @@ void CodeCompletion::ShowCallTip()
     if (!ed)
         return;
 
+    if (ParserCommon::FileType(ed->GetShortName()) == ParserCommon::ftOther)
+        return;
+
     // calculate the size of the calltips window
     int pos = ed->GetControl()->GetCurrentPos();
     wxPoint p = ed->GetControl()->PointFromPosition(pos); // relative point
@@ -1620,6 +1629,9 @@ void CodeCompletion::DoCodeComplete()
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
+        return;
+
+    if (ParserCommon::FileType(ed->GetShortName()) == ParserCommon::ftOther)
         return;
 
     TRACE(_T("DoCodeComplete"));
@@ -2457,6 +2469,11 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         return;
     }
 
+    if (ParserCommon::FileType(ed->GetShortName()) == ParserCommon::ftOther)
+    {
+        event.Skip();
+        return;
+    }
 
     if (ed->GetControl()->CallTipActive())
         ed->GetControl()->CallTipCancel();
@@ -3032,6 +3049,12 @@ void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
 void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 {
     if (!IsAttached() || !m_InitDone || !m_UseCodeCompletion)
+    {
+        event.Skip();
+        return;
+    }
+
+    if (ParserCommon::FileType(editor->GetShortName()) == ParserCommon::ftOther)
     {
         event.Skip();
         return;
