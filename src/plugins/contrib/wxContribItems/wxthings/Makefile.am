@@ -18,3 +18,4 @@ sdk_HEADERS = \
 ./include/wx/things/toggle.h \
 ./include/wx/things/thingdef.h
 
+EXTRA_DIST = ./src/precomp.cpp ./src/precomp.h
