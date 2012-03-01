@@ -22,6 +22,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			coderefactoring.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
+			nativeparser_base.cpp \
 			selectincludefile.cpp \
 			systemheadersthread.cpp \
 			parser/ccdebuginfo.cpp \
@@ -45,6 +46,7 @@ noinst_HEADERS = ccoptionsdlg.h \
 			coderefactoring.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
+			nativeparser_base.h \
 			selectincludefile.h \
 			systemheadersthread.h \
 			parser/ccdebuginfo.h \

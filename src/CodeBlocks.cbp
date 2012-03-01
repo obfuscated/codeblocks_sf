@@ -1310,6 +1310,12 @@
 		<Unit filename="plugins\codecompletion\nativeparser.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser_base.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins\codecompletion\nativeparser_base.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\parser\ccdebuginfo.cpp">
 			<Option target="Code-completion" />
 		</Unit>

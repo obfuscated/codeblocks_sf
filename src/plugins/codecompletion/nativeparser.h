@@ -6,6 +6,7 @@
 #ifndef NATIVEPARSER_H
 #define NATIVEPARSER_H
 
+#include "nativeparser_base.h"
 #include "parser/parser.h"
 
 #include <queue>
@@ -33,24 +34,11 @@ WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, Parsers
 
 typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 
-/** divide a statement to several pieces(parser component), each component has a type member*/
-enum ParserTokenType
+/** Search location combination, a pointer to cbStyledTextCtrl and a filename is enough */
+struct ccSearchData
 {
-    pttUndefine = 0,
-    pttSearchText,
-    pttClass,
-    pttNamespace,
-    pttFunction,
-};
-
-/** the delimiter separating two Parser Component, See ParserComponent struct for more details */
-enum OperatorType
-{
-    otOperatorUndefine = 0,
-    otOperatorSquare,
-    otOperatorParentheses,
-    otOperatorPointer,
-    otOperatorStar
+    cbStyledTextCtrl* control;
+    wxString          file;
 };
 
 /** Symbol browser tree showing option */
@@ -60,50 +48,18 @@ enum BrowserViewMode
     bvmInheritance
 };
 
-/** @brief a long statement can be divided to a ParserComponent chain.
- *
- * e.g. for a statement like below:
- * Ogre::Root::getSingleton().|
- *
- *  a chains of four ParserComponents will be generated and list below:
- *  Ogre             [pttNamespace]
- *  Root             [pttClass]
- *  getSingleton     [pttFunction]
- *  (empty space)    [pttSearchText]
- */
-struct ParserComponent
-{
-    wxString        component;  /// name
-    ParserTokenType tokenType;  /// type
-    OperatorType    tokenOperatorType;/// operator type
-
-    ParserComponent() { Clear(); }
-    void Clear()
-    {
-        component         = wxEmptyString;
-        tokenType         = pttUndefine;
-        tokenOperatorType = otOperatorUndefine;
-    }
-};
-
-/** Search location combination, a pointer to cbStyledTextCtrl and a filename is enough */
-struct ccSearchData
-{
-    cbStyledTextCtrl* control;
-    wxString file;
-};
-
 /** @brief NativeParser class is just like a manager class to control Parser objects.
  *
  * Normally, Each C::B Project (cbp) will have an associated Parser object.
  * In another mode, all C::B project belong to a C::B workspace share a single Parser object.
  * Nativeparser will manage all the Parser objects.
  */
-class NativeParser : public wxEvtHandler
+class NativeParser : public wxEvtHandler, NativeParserBase
 {
 public:
     /** Constructor */
     NativeParser();
+
     /** Destructor */
     ~NativeParser();
 
@@ -147,16 +103,19 @@ public:
     /** Get current project by active editor or just return active project */
     cbProject* GetCurrentProject();
 
-    /** Return true if all the parser's batch-parse stages finished, otherwise return false*/
-    bool Done();
-
     /** Return true if use one Parser per whole workspace */
     bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
+
+    /** Return true if all the parser's batch-parse stages finished, otherwise return false*/
+    bool Done();
 
     /** Used to support Symbol browser and codecompletion UI
      *  Image list is used to initialize the symbol browser tree node image.
      */
     wxImageList* GetImageList() { return m_ImageList; }
+
+    /** Returns the image assigned to a specific token for a symbol browser
+     */
     int GetTokenKindImage(Token* token);
 
     /** Get the implementation file path if the input is a header file. or Get the header file path
@@ -173,6 +132,7 @@ public:
     void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 
     // the functions below are handling and managing Parser object
+
     /** Dynamically allocate a Parser object for the input C::B project
      * @param project C::B project
      * @return Parser pointer of the project.
@@ -233,12 +193,6 @@ public:
     size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool isPrefix = true,
                          bool caseSensitive = false, int caretPos = -1);
 
-    /** Returns the start and end of the call-tip highlight region. */
-    void GetCallTipHighlight(const wxString& calltip, int* start, int* end, int typedCommas);
-
-    /** count commas in lineText (nesting parentheses)*/
-    int CountCommas(const wxString& calltip, int start);
-
     /** Call tips are when you mouse pointer hover some statement and show the information of statement below caret.
      * these tips information could be:
      * the prototypes information of the current function,
@@ -266,10 +220,13 @@ public:
     // The function below is used to manage symbols browser
     /** return active class browser pointer*/
     ClassBrowser* GetClassBrowser() const { return m_ClassBrowser; }
+
     /** create the class browser */
     void CreateClassBrowser();
+
     /** remove the class browser */
     void RemoveClassBrowser(bool appShutDown = false);
+
     /** update the class browser tree*/
     void UpdateClassBrowser();
 
@@ -309,26 +266,6 @@ protected:
     void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
     void SetTokenKindImage(int kind, const wxIcon& icon);
 
-    /** returns the editor's position where the current function scope starts.
-     * optionally, returns the function's namespace (ends in double-colon ::) and name and token
-     * @param searchData search data struct pointer
-     * @param nameSpace get the namespace modifier
-     * @param procName get the function name
-     * @param functionToken get the token of current function
-     * @param caretPos caret position in cbeditor
-     * @return current function line number
-     */
-    int FindCurrentFunctionStart(ccSearchData* searchData, wxString* nameSpace = 0L, wxString* procName = 0L,
-                                 int* functionIndex = 0L, int caretPos = -1);
-
-    /** return all the tokens matching the current function(hopefully, just one)
-     * @param editor editor pointer
-     * @param result output result containing all the Token index
-     * @param caretPos -1 if the current caret position is used.
-     * @return number of result Tokens
-     */
-    size_t FindCurrentFunctionToken(ccSearchData* searchData, TokenIdxSet& result, int caretPos = -1);
-
     /** set the class browser view mode*/
     void SetCBViewMode(const BrowserViewMode& mode);
 
@@ -357,68 +294,34 @@ private:
               TokenIdxSet* search_scope = 0,
               int caretPos = -1);
 
-    /**@brief Artificial Intelligence Matching
-    *
-    * All functions that call this recursive function, should already entered a critical section.
-    *
-    * match (consume) the ParserComponent queue from left to right,
-    * the output result becomes the search scope of the next match.
-    * finally, give the result matching the last ParserComponent.
-    * @param components input ParserComponent queue
-    * @param parentTokenIdx, initial search scope of the left most component
-    * @param fullMatch the result should be a full text match or prefix match
-    * @return matching token number
-    */
-    size_t FindAIMatches(std::queue<ParserComponent> components,
-                         TokenIdxSet& result,
-                         int parentTokenIdx = -1,
-                         bool isPrefix = false,
-                         bool caseSensitive = false,
-                         bool use_inheritance = true,
-                         short int kindMask = 0xFFFF,
-                         TokenIdxSet* search_scope = 0);
-
-    /** @brief break a statement to several ParserComponents, and store them in a queue.
-     * @param actual a statement string to be divided.
-     * @param components output variable containing the queue.
-     * @return number of ParserComponent
+    /** return all the tokens matching the current function(hopefully, just one)
+     * @param editor editor pointer
+     * @param result output result containing all the Token index
+     * @param caretPos -1 if the current caret position is used.
+     * @return number of result Tokens
      */
-    size_t BreakUpComponents(const wxString& actual, std::queue<ParserComponent>& components);
+    size_t FindCurrentFunctionToken(ccSearchData* searchData, TokenIdxSet& result, int caretPos = -1);
 
-    /** Decides if the token belongs to its parent or one of its ancestors */
-    bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
-
-    /** Generate the matching results under the Parent Token index set
-     *
-     * All functions that call this recursive function, should already entered a critical section.
-     *
-     * @param tree TokensTree pointer
-     * @param target Scope (defined in TokenIdxSet)
-     * @param result result token index set
-     * @param isPrefix whether a full match is used or only do a prefix match
-     * @param kindMask define the result tokens filter, such as only class type is OK
-     * @return result token set number
+    /** returns the editor's position where the current function scope starts.
+     * optionally, returns the function's namespace (ends in double-colon ::) and name and token
+     * @param searchData search data struct pointer
+     * @param nameSpace get the namespace modifier
+     * @param procName get the function name
+     * @param functionToken get the token of current function
+     * @param caretPos caret position in cbeditor
+     * @return current function line number
      */
-    size_t GenerateResultSet(TokensTree*     tree,
-                             const wxString& target,
-                             int             parentIdx,
-                             TokenIdxSet&    result,
-                             bool            caseSens = true,
-                             bool            isPrefix = false,
-                             short int       kindMask = 0xFFFF);
+    int FindCurrentFunctionStart(ccSearchData* searchData,
+                                 wxString*     nameSpace = 0L,
+                                 wxString*     procName = 0L,
+                                 int*          functionIndex = 0L,
+                                 int           caretPos = -1);
 
-    /** This function is just like the one above, especially that no Tokenstree information is used
-     * So, it use the current parser's Tokenstree.
-     *
-     * All functions that call this recursive function, should already entered a critical section.
-     *
-     */
-    size_t GenerateResultSet(const wxString&    target,
-                             const TokenIdxSet& ptrParentID,
-                             TokenIdxSet&       result,
-                             bool               caseSens = true,
-                             bool               isPrefix = false,
-                             short int          kindMask = 0xFFFF);
+    /** helper function for statement parsing*/
+    bool SkipWhitespaceForward(cbEditor* editor, int& pos);
+
+    /** helper function for statement parsing*/
+    bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
 
     /** used in CodeCompletion suggestion list to boost the performance, we use a caches*/
     bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
@@ -444,18 +347,6 @@ private:
      * @param caretPos caret position, if not specified, we use the current caret position
      */
     bool ParseLocalBlock(ccSearchData* searchData, int caretPos = -1);
-
-    /** helper function to split the statement*/
-    unsigned int FindCCTokenStart(const wxString& line);
-
-    /** helper function to read the next CCToken */
-    wxString GetNextCCToken(const wxString& line, unsigned int& startAt, OperatorType& tokenOperatroType);
-
-    /** helper function to split the statement*/
-    wxString GetCCToken(wxString& line, ParserTokenType& tokenType, OperatorType& tokenOperatroType);
-
-    /** helper function to split the statement*/
-    void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
 
     /** collect the compiler default header file search directories */
     bool AddCompilerDirs(cbProject* project, ParserBase* parser);
@@ -491,92 +382,8 @@ private:
      */
     void OnEditorClosed(EditorBase* editor);
 
-    /** helper function for statement parsing*/
-    bool SkipWhitespaceForward(cbEditor* editor, int& pos);
-
-    /** helper function for statement parsing*/
-    bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
-
-    /** Get the Type information of the searchText string
-     * @param searchText input search text
-     * @param searchScope search scope defined in TokenIdxSet format
-     * @param result result token specify the Type of searchText
-     */
-    size_t ResolveActualType(wxString searchText, const TokenIdxSet& searchScope, TokenIdxSet& result);
-
-    /** A statement(expression) is expressed by a ParserComponent queue
-     *  We do a match from the left of the queue one by one.
-     *
-     * @param components expression structure expressed in std::queue<ParserComponent>
-     * @param searchScope search scope defined by TokenIdxSet
-     * @param caseSense case sensitive match
-     * @param isPrefix match type( full match or prefix match)
-     * @return result tokens count
-     */
-    size_t ResolveExpression(std::queue<ParserComponent> components,
-                             const TokenIdxSet& searchScope,
-                             TokenIdxSet& result,
-                             bool caseSense = true,
-                             bool isPrefix = false);
-
-    /** Collect search scopes, add the searchScopes's parent scope
-     * @param searchScope input search scope
-     * @param actualTypeScope returned search scope
-     * @param tree TokensTree pointer
-     */
-    void CollectSS(const TokenIdxSet& searchScope,
-                   TokenIdxSet& actualTypeScope,
-                   TokensTree* tree);
-
-    /** add template parameter, get the actual parameter from the formal parameter list
-     * @param id template token id
-     * @param actualTypeScope search scope
-     * @param initialScope resolved result
-     * @param tree Tokenstree pointer.
-     */
-    void AddTemplateAlias(const int& id,
-                          const TokenIdxSet& actualTypeScope,
-                          TokenIdxSet& initialScope,
-                          TokensTree* tree);
-
-    /** resolve template map [formal parameter] to [actual parameter]
-     * @param searchStr input Search String
-     * @param actualtypeScope Token type(actual parameter)
-     * @param initialScope search scope
-     */
-    void ResolveTemplateMap(const wxString& searchStr,
-                            const TokenIdxSet& actualTypeScope,
-                            TokenIdxSet& initialScope);
-
-    /** used to solve the overloaded operator functions return type
-     * @param tokenOperatorType overloaded operator type, could be [], (), ->
-     * @param tokens input tokens set
-     * @param tree Tokenstree pointer
-     * @param searchScope search scope
-     * @param result output result
-     */
-    void ResolveOperator(const OperatorType& tokenOperatorType,
-                         const TokenIdxSet& tokens,
-                         TokensTree* tree,
-                         const TokenIdxSet& searchScope,
-                         TokenIdxSet& result);
-
-    /** used to get the correct token index in current line, e.g. class A { void test() { | } };
-     * @param tokens all current file's function and class
-     * @param curLine the line of the current position
-     */
-    int GetTokenFromCurrentLine(const TokenIdxSet& tokens, size_t curLine, size_t fileIdx);
-
-    /** For GetCallTips()
-     * No critical section needed in this recursive function!
-     * All functions that call this recursive function, should already entered a critical section. */
-    bool PrettyPrintToken(wxString &result, Token const &token, TokensTree const &tokens, bool root = true);
-
     /** Init cc search member variables */
     void InitCCSearchVariables();
-
-    /** Remove the last function's childrens */
-    void RemoveLastFunctionChildren();
 
     /** Add all project files to parser */
     void AddProjectToParser(cbProject* project);
@@ -592,23 +399,6 @@ private:
     ParserBase*                  m_TempParser;
     ParserBase*                  m_Parser;
 
-    /* CC Search Member Variables => START */
-    int                          m_EditorStartWord;
-    int                          m_EditorEndWord;
-    wxString                     m_CCItems;
-    int                          m_LastFuncTokenIdx;      /// saved the function token's index, for remove all local variable
-    ParserComponent              m_LastComponent;
-    cbStyledTextCtrl*            m_LastControl;
-    int                          m_LastFunctionIndex;
-    int                          m_LastLine;
-    int                          m_LastResult;
-    wxString                     m_LastFile;
-    wxString                     m_LastNamespace;
-    wxString                     m_LastPROC;
-    bool                         m_LastAISearchWasGlobal; /// true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
-    wxString                     m_LastAIGlobalSearch;    /// same case like above, it holds the search string
-    /* CC Search Member Variables => END */
-
     wxTimer                      m_TimerParsingOneByOne;
     ClassBrowser*                m_ClassBrowser;
     bool                         m_ClassBrowserIsFloating;
@@ -617,9 +407,24 @@ private:
     wxImageList*                 m_ImageList;
 
     wxArrayString                m_StandaloneFiles;
-    std::map<wxString, wxString> m_TemplateMap;
     bool                         m_ParserPerWorkspace;
     std::set<cbProject*>         m_ParsedProjects;
+
+    /* CC Search Member Variables => START */
+    wxString          m_CCItems;
+    int               m_EditorStartWord;
+    int               m_EditorEndWord;
+    wxString          m_LastAIGlobalSearch;    /// same case like above, it holds the search string
+    bool              m_LastAISearchWasGlobal; /// true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
+    cbStyledTextCtrl* m_LastControl;
+    wxString          m_LastFile;
+    int               m_LastFunctionIndex;
+    int               m_LastFuncTokenIdx;      /// saved the function token's index, for remove all local variable
+    int               m_LastLine;
+    wxString          m_LastNamespace;
+    wxString          m_LastPROC;
+    int               m_LastResult;
+    /* CC Search Member Variables => END */
 };
 
 #endif // NATIVEPARSER_H
