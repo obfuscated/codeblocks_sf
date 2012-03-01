@@ -188,7 +188,7 @@
 					<Add directory="include/scripting/bindings" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -206,7 +206,7 @@
 					<Add directory="plugins/astyle/astyle" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -223,7 +223,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -254,7 +254,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add library="depslib29" />
 					<Add directory="devel29" />
@@ -275,7 +275,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -294,7 +294,7 @@
 					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -311,7 +311,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -328,7 +328,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -345,7 +345,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -363,7 +363,7 @@
 					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -382,7 +382,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -400,7 +400,7 @@
 					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.9 --libs`" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -451,15 +451,15 @@
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />
 			<Add option="-fPIC" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --version=2.9 --cflags`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
-			<Add option="`wx-config --libs aui,propgrid`" />
+			<Add option="`wx-config --version=2.9 --libs`" />
+			<Add option="`wx-config --version=2.9 --libs aui,propgrid`" />
 			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">
