@@ -296,6 +296,10 @@ class cbAuiNotebook : public wxAuiNotebook
          * is set in next OnIdle-call
          */
         bool m_SetZoomOnIdle;
+        /** \brief If true, MinimizeFreeSpace is called
+         * in next OnIdle-call
+         */
+        bool m_MinimizeFreeSpaceOnIdle;
         /** \brief Holds the id of the dwell timer
          */
         long m_IdNoteBookTimer;

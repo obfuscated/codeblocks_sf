@@ -64,7 +64,9 @@ cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& po
           m_AllowToolTips(false),
           m_OverTabCtrl(false),
           m_SetZoomOnIdle(false),
-          m_IdNoteBookTimer(wxNewId())
+          m_MinimizeFreeSpaceOnIdle(false),
+          m_IdNoteBookTimer(wxNewId()),
+          m_TabCtrlSize(wxDefaultSize)
 {
     //ctor
 #ifdef __WXGTK__
@@ -219,6 +221,15 @@ void cbAuiNotebook::OnIdle(wxIdleEvent& /*event*/)
                 static_cast<cbEditor*>(win)->SetZoom(zoom);
         }
     }
+
+    if (m_MinimizeFreeSpaceOnIdle)
+    {
+        m_MinimizeFreeSpaceOnIdle = false;
+        UpdateTabControlsArray();
+        for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
+            MinimizeFreeSpace(m_TabCtrls[i]);
+    }
+
 }
 
 void cbAuiNotebook::AllowToolTips(bool allow)
@@ -472,10 +483,11 @@ void cbAuiNotebook::OnResize(wxSizeEvent& event)
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
         if (nb)
         {
-            if(nb->m_TabCtrlSize == wxDefaultSize)
+            if(nb->m_TabCtrlSize != event.GetSize())
+            {
                 nb->m_TabCtrlSize = event.GetSize();
-            nb->m_TabCtrlSize = event.GetSize();
-            nb->MinimizeFreeSpace(tabCtrl);
+                nb->MinimizeFreeSpace();
+            }
         }
     }
     event.Skip();
@@ -528,28 +540,20 @@ void cbAuiNotebook::SetTabToolTip(wxWindow* win, wxString msg)
 
 void cbAuiNotebook::MinimizeFreeSpace()
 {
-    if (GetPageCount() < 1)
+    if (GetPageCount() < 2)
         return;
-    UpdateTabControlsArray();
-    for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
-        MinimizeFreeSpace(m_TabCtrls[i]);
+    m_MinimizeFreeSpaceOnIdle = true;
 }
 
 void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
 {
-    if (!tabCtrl || tabCtrl->GetPageCount() < 1)
+    if (!tabCtrl || tabCtrl->GetPageCount() < 2 || !IsWindowReallyShown(this))
         return;
 
     int ctrl_idx = tabCtrl->GetActivePage();
     wxWindow* win = GetPage(ctrl_idx);
     if (win)
     {
-        // If we open a project or a workspace, it can happen, that the tabCtrl is not yet rendered.
-        // in this case IsTabVisible always returns true and does not work correctly therefore.
-        // So we force a paint event here to render the tabCtrl
-        // a little hacky, but it works
-        wxPaintEvent event;
-        tabCtrl->GetEventHandler()->ProcessEvent(event);
         int tabOffset = tabCtrl->GetTabOffset();
 
         wxClientDC dc(win);
@@ -566,8 +570,9 @@ void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
                 }
             }
         }
-        while (tabOffset > 0 && tabCtrl->IsTabVisible(lastTabIdx, tabOffset-1, & dc, win))
-            --tabOffset;
+        while (tabOffset > 0 && tabCtrl->IsTabVisible(lastTabIdx, tabOffset-1, & dc, win) )
+                --tabOffset;
+
         tabCtrl->SetTabOffset(tabOffset);
     }
     tabCtrl->Refresh();
