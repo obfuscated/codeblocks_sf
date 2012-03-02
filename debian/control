@@ -122,6 +122,7 @@ Depends: ${shlibs:Depends}
  , ${misc:Depends}
  , codeblocks (= ${binary:Version})
  , libwxsmithlib0 (= ${binary:Version})
+ , codeblocks-libwxcontrib0 (= ${binary:Version})
  , codeblocks-contrib-common (= ${source:Version})
 Recommends:
  valgrind
