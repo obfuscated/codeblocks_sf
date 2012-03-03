@@ -21,6 +21,7 @@
 #include <wx/panel.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/wxscintilla.h>
 
 #include <globals.h>
 #include <cbexception.h>
@@ -32,6 +33,7 @@
 #include <compiler.h>
 #include <cbproject.h>
 #include <projectbuildtarget.h>
+#include <prep.h>
 #include <filefilters.h>
 #include <infowindow.h>
 
