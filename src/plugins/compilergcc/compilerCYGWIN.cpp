@@ -35,9 +35,12 @@ void CompilerCYGWIN::Reset()
 {
     CompilerMINGW::Reset();
 
-    m_Programs.C = _T("gcc.exe");
-    m_Programs.CPP = _T("g++.exe");
-    m_Programs.LD = _T("g++.exe");
+    // NOTE: Cygwin's gcc.exe maybe a file link and
+    // is not a good default name for running via cmd.exe
+    // TODO: May also be gcc-4.exe!!!
+    m_Programs.C = _T("gcc-3.exe");
+    m_Programs.CPP = _T("g++-3.exe");
+    m_Programs.LD = _T("g++-3.exe");
     m_Programs.DBG = _T("gdb.exe");
     m_Programs.LIB = _T("ar.exe");
     m_Programs.WINDRES = _T("windres.exe");
@@ -50,22 +53,54 @@ void CompilerCYGWIN::Reset()
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 {
+    AutoDetectResult ret = adrGuessed;
     m_MasterPath = _T("C:\\Cygwin"); // just a guess
+    wxString tempMasterPath(m_MasterPath);
+    bool validInstallationDir = false;
 
     // look in registry for Cygwin
 
     wxRegKey key; // defaults to HKCR
-    key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
+    key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup"));
     if (key.Exists() && key.Open(wxRegKey::Read))
     {
-        // found; read it
-        key.QueryValue(_T("native"), m_MasterPath);
+        // found CygWin version 1.7 or newer; read it
+        key.QueryValue(_T("rootdir"), tempMasterPath);
+        if (wxDirExists(tempMasterPath + wxFILE_SEP_PATH + _T("bin")))
+                validInstallationDir = true;
     }
-    AutoDetectResult ret = wxFileExists(m_MasterPath + wxFILE_SEP_PATH +
-                                        _T("bin") + wxFILE_SEP_PATH +
-                                        m_Programs.C)
-                            ? adrDetected
-                            : adrGuessed;
+    if (!validInstallationDir)
+    {
+        key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
+        if (key.Exists() && key.Open(wxRegKey::Read))
+        {
+            // found CygWin version 1.5 or older; read it
+            key.QueryValue(_T("native"), tempMasterPath);
+            if ( wxDirExists(tempMasterPath + wxFILE_SEP_PATH + _T("bin")) )
+                validInstallationDir = true;
+        }
+    }
+
+    if (!validInstallationDir)
+        return ret;
+
+    wxString cProgramDir = tempMasterPath + wxFILE_SEP_PATH + _T("bin") + wxFILE_SEP_PATH;
+    wxString cProgramFullname = cProgramDir + m_Programs.C;
+    if ( !wxFileExists(cProgramFullname) )
+        return ret;
+
+    wxFile pfFile(cProgramFullname);
+    if ( !pfFile.IsOpened() )
+       return ret;
+
+    char buffer[10] = {0};
+    pfFile.Read(buffer,10);
+    if (memcmp("!<symlink>", buffer, 10) != 0)
+    {
+        m_MasterPath = tempMasterPath;
+        ret = adrDetected;
+    }
+
     return ret;
 }
 
