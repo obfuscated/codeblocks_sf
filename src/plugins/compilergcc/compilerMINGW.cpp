@@ -371,7 +371,16 @@ void CompilerMINGW::SetVersionString()
     }
 
 //    Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Issuing command: ") + gcc_command);
-    long result = wxExecute(gcc_command + _T(" --version"), output, errors, wxEXEC_NODISABLE);
+
+    int flags = wxEXEC_SYNC;
+#if wxCHECK_VERSION(2, 9, 0)
+    // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
+    // that occurs from time to time on wx2.9
+    flags |= wxEXEC_NOEVENTS;
+#else
+    flags |= wxEXEC_NODISABLE;
+#endif
+    long result = wxExecute(gcc_command + _T(" --version"), output, errors, flags );
     if(result != 0)
     {
 //        Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Error executing command."));
