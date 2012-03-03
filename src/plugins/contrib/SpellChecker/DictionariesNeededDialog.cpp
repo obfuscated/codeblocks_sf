@@ -15,7 +15,7 @@ AnnoyingDialog(_("Dictionaries needed!"),_("SpellChecker needs a dictionary to w
         wxSizerItemList& childs = outerSizer->GetChildren();
         wxSizer *mainArea = childs[0]->GetSizer();
 
-        wxHyperlinkCtrl *hyperlink1 = new wxHyperlinkCtrl( this, wxID_ANY, _("How to configure SpellChecker?"), _T("http://wiki.codeblocks.org/index.php?title=SpellChecker"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+        wxHyperlinkCtrl *hyperlink1 = new wxHyperlinkCtrl( this, wxID_ANY, _("How to configure SpellChecker?"), _T("http://wiki.codeblocks.org/index.php?title=SpellChecker_plugin"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 
         mainArea->Add(hyperlink1, 0, wxALL, 5);
 

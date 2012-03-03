@@ -143,8 +143,8 @@
 			<object class="sizeritem">
 				<object class="wxHyperlinkCtrl" name="ID_HYPERLINKCTRL1">
 					<label>How to configure SpellChecker?</label>
-					<url>http://wiki.codeblocks.org/index.php?title=SpellChecker</url>
-					<tooltip>Get help from http://wiki.codeblocks.org/index.php?title=SpellChecker</tooltip>
+					<url>http://wiki.codeblocks.org/index.php?title=SpellChecker_plugin</url>
+					<tooltip>Get help from http://wiki.codeblocks.org/index.php?title=SpellChecker_plugin</tooltip>
 				</object>
 				<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 				<border>5</border>
