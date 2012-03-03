@@ -212,13 +212,15 @@ case $WX_BASENAME in
     ;;
 esac
 
-AC_MSG_CHECKING([for wxWidgets >= 2.9])
+AC_MSG_CHECKING([for wxWidgets >= 2.9.0])
 AM_CONDITIONAL([HAVE_WX29], [test $WX_VERSION_MAJOR -gt 2 || test $WX_VERSION_MAJOR -eq 2 && test $WX_VERSION_MINOR -ge 9])
-AC_MSG_RESULT($HAVE_WX29)
 
 if test "x$HAVE_WX29_TRUE" = "x" ; then
-    AC_MSG_NOTICE([Set extra libs for wx 2.9])
+    AC_MSG_RESULT(yes (version $WX_VERSION))
+    AC_MSG_NOTICE([(Re)setting libs for wxWidgets $WX_VERSION])
     WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid`
+else
+    AC_MSG_RESULT(no)
 fi
 
 AC_SUBST(WX_GTK2_CFLAGS)

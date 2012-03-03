@@ -88,8 +88,8 @@ cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.gdb output29/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel29/share/codeblocks > /dev/null
 cp -f tips.txt output29/share/codeblocks > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output29 > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel29 > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner29${EXEEXT} output29/cb_console_runner${EXEEXT} > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner29${EXEEXT} devel29/cb_console_runner${EXEEXT} > /dev/null
 cp -f devel29/codeblocks${EXEEXT} output29 > /dev/null
 # cp -f devel29/cb_share_config${EXEEXT} output29 > /dev/null
 cp -f devel29/*.${LIBEXT} output29 > /dev/null
