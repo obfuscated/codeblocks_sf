@@ -738,9 +738,9 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     wxString eol_str;
     switch (eolmode)
     {
-      case 1:  eol_str = _T("\r"); break;
-      case 2:  eol_str = _T("\n"); break;
-      default: eol_str = _T("\r\n");
+      case wxSCI_EOL_CR:  eol_str = _T("\r"); break;
+      case wxSCI_EOL_LF:  eol_str = _T("\n"); break;
+      default:            eol_str = _T("\r\n"); // means wxSCI_EOL_CRLF
     }
 
     if ( cbWrite(f, contents + eol_str, wxFONTENCODING_UTF8) )
