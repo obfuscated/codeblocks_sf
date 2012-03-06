@@ -1231,14 +1231,9 @@ void MainFrame::SaveWindowState()
         wxString key = wxString::Format(_T("/main_frame/layout/view%d/"), count);
         Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("name"), it->first);
         Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("data"), it->second);
-        #if wxCHECK_VERSION(2, 9, 1)
-        if(m_LayoutMessagePane[it->first].IsEmpty())
-        #else
-        if(m_LayoutMessagePane[it->first])
-        #endif
-        {
+
+        if (!m_LayoutMessagePane[it->first].IsEmpty())
             Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("dataMessagePane"), m_LayoutMessagePane[it->first]);
-        }
     }
 
     // save manager and messages selected page
