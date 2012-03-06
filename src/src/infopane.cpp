@@ -334,8 +334,8 @@ void InfoPane::OnCloseClicked(wxAuiNotebookEvent& event)
 {
     if (event.GetSelection() == -1)
         return;
-    // veto the close-event, becauyse we don't want to remove the page (just toggle it)
-    // this avoids an assert-message in dewbug-build (and wx2.9)
+    // veto the close-event, because we don't want to remove the page (just toggle it)
+    // this avoids an assert-message in debug-build (and wx2.9)
     event.Veto();
     // toggle the notebook, that sends the event
     Toggle(GetPageIndexByWindow(GetPage(event.GetSelection())));
