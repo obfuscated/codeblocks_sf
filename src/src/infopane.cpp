@@ -354,7 +354,10 @@ void InfoPane::DoShowContextMenu()
     else
     	menu.FindItem(idNB_TabTop)->Enable(false);
 
-    if (page.Item(GetPageIndexByWindow(GetPage(GetSelection())))->islogger)
+    int selection = GetSelection();
+    if (selection >= 0 &&
+        selection < GetPageCount() &&
+        page.Item(GetPageIndexByWindow(GetPage(GetSelection())))->islogger)
     {
         menu.AppendSeparator();
         menu.Append(idCopyAllToClipboard, _("Copy contents to clipboard"));
