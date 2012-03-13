@@ -1888,7 +1888,7 @@ bool CompilerGCC::DoCleanWithMake(const wxString& cmd, bool showOutput)
     if (showOutput)
     {
         for(size_t i = 0; i < output.GetCount(); i++)
-            Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].wx_str(), m_PageIndex));
+            Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].wx_str()), m_PageIndex);
         for(size_t i = 0; i < errors.GetCount(); i++)
             Manager::Get()->GetLogManager()->Log(F(_("%s"), errors[i].wx_str()), m_PageIndex);
     }

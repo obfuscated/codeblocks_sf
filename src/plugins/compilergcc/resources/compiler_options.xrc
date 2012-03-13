@@ -1041,11 +1041,14 @@
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT28">
 																<label>Silent build:</label>
+																<hidden>1</hidden>
 															</object>
 															<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 														</object>
 														<object class="sizeritem">
-															<object class="wxTextCtrl" name="txtMakeCmd_SilentBuild" />
+															<object class="wxTextCtrl" name="txtMakeCmd_SilentBuild">
+																<hidden>1</hidden>
+															</object>
 															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>8</border>
 														</object>

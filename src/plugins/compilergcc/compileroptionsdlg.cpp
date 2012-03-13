@@ -172,7 +172,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_TEXT(                  XRCID("txtMakeCmd_Clean"),               CompilerOptionsDlg::OnDirty)
 //    EVT_TEXT(                  XRCID("txtMakeCmd_DistClean"),           CompilerOptionsDlg::OnDirty)
     EVT_TEXT(                  XRCID("txtMakeCmd_AskRebuildNeeded"),    CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMakeCmd_SilentBuild"),         CompilerOptionsDlg::OnDirty)
+//    EVT_TEXT(                  XRCID("txtMakeCmd_SilentBuild"),         CompilerOptionsDlg::OnDirty)
     EVT_CHAR_HOOK(CompilerOptionsDlg::OnMyCharHook)
 END_EVENT_TABLE()
 
@@ -954,7 +954,8 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pProject->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
             m_pProject->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
             m_pProject->SetMakeCommandFor(mcAskRebuildNeeded, XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->GetValue());
-            m_pProject->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
+//            m_pProject->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
+            m_pProject->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue() + _T(" > $(CMD_NULL)"));
         }
         else
         {
@@ -979,7 +980,8 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pTarget->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
             m_pTarget->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
             m_pTarget->SetMakeCommandFor(mcAskRebuildNeeded, XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->GetValue());
-            m_pTarget->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
+//            m_pTarget->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
+            m_pTarget->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->GetValue() + _T(" > $(CMD_NULL)"));
         }
     }
 } // DoSaveOptions
