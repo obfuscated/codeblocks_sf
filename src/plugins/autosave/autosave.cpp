@@ -18,6 +18,7 @@
     #include <wx/xrc/xmlres.h>
     #include "cbeditor.h"
     #include "cbproject.h"
+    #include "cbworkspace.h"
     #include "configmanager.h"
     #include "editormanager.h"
     #include "globals.h"
@@ -25,7 +26,10 @@
     #include "projectmanager.h"
     #include "manager.h"
     #include "sdk_events.h"
+    #include "workspaceloader.h"
 #endif
+
+#include <algorithm>
 #include "cbstyledtextctrl.h"
 
 #include "projectloader.h"
@@ -85,73 +89,107 @@ void Autosave::OnRelease(bool /*appShutDown*/)
     timer2 = 0;
 }
 
+void Autosave::SaveProject(cbProject *p, int method)
+{
+    PluginManager *plm = Manager::Get()->GetPluginManager();
+    switch(method)
+    {
+        case 0:
+        {
+            if(p->GetModified())
+            {
+                if(::wxRenameFile(p->GetFilename(), p->GetFilename() + _T(".bak")))
+                    if(p->Save())
+                    {
+                        CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
+                        plm->NotifyPlugins(e);
+                    }
+            }
+            wxFileName file = p->GetFilename();
+            file.SetExt(_T("layout"));
+            wxString filename = file.GetFullPath();
+            if(::wxRenameFile(filename, filename + _T(".bak")))
+                p->SaveLayout();
+            break;
+        }
+        case 1:
+        {
+            if(p->GetModified() && p->Save())
+            {
+                CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
+                plm->NotifyPlugins(e);
+            }
+            p->SaveLayout();
+            break;
+        }
+        case 2:
+        case 3: // doesn't really make sense to keep so many versions of a project file
+        {
+            if (p->IsLoaded() == false)
+                return;
+            if(p->GetModified())
+            {
+                ProjectLoader loader(p);
+                if(loader.Save(p->GetFilename() + _T(".save")))
+                {
+                    CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
+                    plm->NotifyPlugins(e);
+                }
+                p->SetModified(); // the actual project file is still not updated!
+            }
+            wxFileName file = wxFileName(p->GetFilename());
+            file.SetExt(_T("layout"));
+            wxString filename = file.GetFullPath();
+            wxString temp = filename + _T(".temp");
+            wxString save = filename + _T(".save");
+            if(::wxFileExists(filename) && ::wxCopyFile(filename, temp))
+            {
+                p->SaveLayout();
+                ::wxRenameFile(filename, save);
+                ::wxRenameFile(temp, filename);
+            }
+            break;
+        }
+    }
+}
+
 void Autosave::OnTimer(wxTimerEvent& e)
 {
     if(e.GetId() == 10000)
     {
-        PluginManager *plm = Manager::Get()->GetPluginManager();
         int method = Manager::Get()->GetConfigManager(_T("autosave"))->ReadInt(_T("method"));
+        bool allProjects = Manager::Get()->GetConfigManager(_T("autosave"))->ReadBool(_T("all_projects"), true);
+        bool doWorkspace = Manager::Get()->GetConfigManager(_T("autosave"))->ReadBool(_T("do_workspace"), true);
         ProjectManager *pm = Manager::Get()->GetProjectManager();
-        if(pm && pm->GetActiveProject())
+        if(pm)// && pm->GetActiveProject())
         {
-            if(cbProject * p = pm->GetActiveProject())
+            if (allProjects)
+            {
+                ProjectsArray *projects = pm->GetProjects();
+                for (size_t ii = 0; ii < projects->GetCount(); ++ii)
+                    SaveProject((*projects)[ii], method);
+            }
+            else if(cbProject *p = pm->GetActiveProject())
+                SaveProject(p, method);
+
+            cbWorkspace *workspace = pm->GetWorkspace();
+            if (doWorkspace && workspace && workspace->GetModified())
             {
                 switch(method)
                 {
                     case 0:
-                    {
-                        if(p->GetModified())
-                        {
-                            if(::wxRenameFile(p->GetFilename(), p->GetFilename() + _T(".bak")))
-                                if(p->Save())
-                                {
-                                    CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
-                                    plm->NotifyPlugins(e);
-                                }
-                        }
-                        wxFileName file = p->GetFilename();
-                        file.SetExt(_T("layout"));
-                        wxString filename = file.GetFullPath();
-                        if(::wxRenameFile(filename, filename + _T(".bak")))
-                            p->SaveLayout();
+                        if(::wxRenameFile(workspace->GetFilename(), workspace->GetFilename() + _T(".bak")))
+                            workspace->Save();
                         break;
-                    }
                     case 1:
-                    {
-                        if(p->GetModified() && p->Save())
-                        {
-                            CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
-                            plm->NotifyPlugins(e);
-                        }
-                        p->SaveLayout();
+                        workspace->Save();
                         break;
-                    }
                     case 2:
-                    case 3: // doesn't really make sense to keep so many versions of a project file
+                    case 3:
                     {
-                        if (p->IsLoaded() == false)
-                            return;
-                        if(p->GetModified())
-                        {
-                            ProjectLoader loader(p);
-                            if(loader.Save(p->GetFilename() + _T(".save")))
-                            {
-                                CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
-                                plm->NotifyPlugins(e);
-                            }
-                            p->SetModified(); // the actual project file is still not updated!
-                        }
-                        wxFileName file = wxFileName(p->GetFilename());
-                        file.SetExt(_T("layout"));
-                        wxString filename = file.GetFullPath();
-                        wxString temp = filename + _T(".temp");
-                        wxString save = filename + _T(".save");
-                        if(::wxFileExists(filename) && ::wxCopyFile(filename, temp))
-                        {
-                            p->SaveLayout();
-                            ::wxRenameFile(filename, save);
-                            ::wxRenameFile(temp, filename);
-                        }
+                        WorkspaceLoader loader;
+                        loader.Save(workspace->GetTitle(), workspace->GetFilename() + wxT(".save"));
+                        workspace->SetModified(true);
                         break;
                     }
                 }
@@ -236,6 +274,10 @@ int Autosave::Configure()
 }
 
 
+BEGIN_EVENT_TABLE(AutosaveConfigDlg, cbConfigurationPanel)
+    EVT_CHECKBOX(XRCID("do_project"), AutosaveConfigDlg::OnProjectsChecked)
+    EVT_CHECKBOX(XRCID("do_sources"), AutosaveConfigDlg::OnSourceChecked)
+END_EVENT_TABLE()
 
 AutosaveConfigDlg::AutosaveConfigDlg(wxWindow* parent, Autosave* plug) : plugin(plug)
 {
@@ -248,10 +290,22 @@ void AutosaveConfigDlg::LoadSettings()
 {
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("autosave"));
 
-    XRCCTRL(*this, "do_project", wxCheckBox)->SetValue(cfg->ReadBool(_T("do_project")));
-    XRCCTRL(*this, "do_sources", wxCheckBox)->SetValue(cfg->ReadBool(_T("do_sources")));
-    XRCCTRL(*this, "project_mins", wxTextCtrl)->SetValue(wxString::Format(_T("%d"), cfg->ReadInt(_T("project_mins"))));
-    XRCCTRL(*this, "source_mins", wxTextCtrl)->SetValue(wxString::Format(_T("%d"), cfg->ReadInt(_T("source_mins"))));
+    bool doProjects = cfg->ReadBool(_T("do_project"));
+    bool doSources = cfg->ReadBool(_T("do_sources"));
+    XRCCTRL(*this, "do_project", wxCheckBox)->SetValue(doProjects);
+    XRCCTRL(*this, "do_sources", wxCheckBox)->SetValue(doSources);
+    XRCCTRL(*this, "do_workspace", wxCheckBox)->SetValue(cfg->ReadBool(_T("do_workspace"), true));
+    XRCCTRL(*this, "all_projects", wxCheckBox)->SetValue(cfg->ReadBool(_T("all_projects"), true));
+    int minsProjects = std::max(cfg->ReadInt(_T("project_mins"), 1), 1);
+    int minsSources = std::max(cfg->ReadInt(_T("source_mins"), 1), 1);
+    XRCCTRL(*this, "project_mins", wxTextCtrl)->SetValue(wxString::Format(_T("%d"), minsProjects));
+    XRCCTRL(*this, "source_mins", wxTextCtrl)->SetValue(wxString::Format(_T("%d"), minsSources));
+
+    XRCCTRL(*this, "do_workspace", wxCheckBox)->Enable(doProjects);
+    XRCCTRL(*this, "all_projects", wxCheckBox)->Enable(doProjects);
+    XRCCTRL(*this, "project_mins", wxTextCtrl)->Enable(doProjects);
+
+    XRCCTRL(*this, "source_mins", wxTextCtrl)->Enable(doSources);
 
     XRCCTRL(*this, "method", wxChoice)->SetSelection(cfg->ReadInt(_T("method"), 2));
 }
@@ -262,11 +316,18 @@ void AutosaveConfigDlg::SaveSettings()
 
     cfg->Write(_T("do_project"), (bool) XRCCTRL(*this, "do_project", wxCheckBox)->GetValue());
     cfg->Write(_T("do_sources"), (bool) XRCCTRL(*this, "do_sources", wxCheckBox)->GetValue());
+    cfg->Write(_T("do_workspace"), (bool) XRCCTRL(*this, "do_workspace", wxCheckBox)->GetValue());
+    cfg->Write(_T("all_projects"), (bool) XRCCTRL(*this, "all_projects", wxCheckBox)->GetValue());
 
     long pm, sm;
 
     XRCCTRL(*this, "project_mins", wxTextCtrl)->GetValue().ToLong(&pm);
     XRCCTRL(*this, "source_mins", wxTextCtrl)->GetValue().ToLong(&sm);
+
+    if (pm < 1)
+        pm = 1;
+    if (sm < 1)
+        sm = 1;
 
     cfg->Write(_T("project_mins"), (int) pm);
     cfg->Write(_T("source_mins"), (int) sm);
@@ -276,8 +337,15 @@ void AutosaveConfigDlg::SaveSettings()
     plugin->Start();
 }
 
+void AutosaveConfigDlg::OnProjectsChecked(wxCommandEvent &event)
+{
+    XRCCTRL(*this, "project_mins", wxTextCtrl)->Enable(event.IsChecked());
+    XRCCTRL(*this, "do_workspace", wxCheckBox)->Enable(event.IsChecked());
+    XRCCTRL(*this, "all_projects", wxCheckBox)->Enable(event.IsChecked());
+}
 
-
-
-
+void AutosaveConfigDlg::OnSourceChecked(wxCommandEvent &event)
+{
+    XRCCTRL(*this, "source_mins", wxTextCtrl)->Enable(event.IsChecked());
+}
 

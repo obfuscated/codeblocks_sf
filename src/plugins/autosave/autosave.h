@@ -34,6 +34,7 @@ class Autosave : public cbPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 		virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
         void OnTimer(wxTimerEvent& event);
+        void SaveProject(cbProject *p, int method);
     DECLARE_EVENT_TABLE()
 };
 
@@ -51,8 +52,12 @@ class AutosaveConfigDlg : public cbConfigurationPanel
         virtual void OnApply(){ SaveSettings(); }
         virtual void OnCancel(){}
 	private:
+	    void OnProjectsChecked(wxCommandEvent &event);
+	    void OnSourceChecked(wxCommandEvent &event);
+	private:
         void LoadSettings();
         void SaveSettings();
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // AUTOSAVE_H
