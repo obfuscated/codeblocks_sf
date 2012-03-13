@@ -1,7 +1,7 @@
 #include "directorymonitor.h"
 #include <vector>
 #include "se_globals.h"
- 
+
 #include <iostream>
 
 DEFINE_EVENT_TYPE(wxEVT_MONITOR_NOTIFY)
@@ -155,7 +155,11 @@ public:
 
         bool quit=false;
         m_active_count=0;
-        while(!(quit && m_active_count==0))
+//        while(!(quit && m_active_count==0))
+        // (hopefully) temporary fix for broken gamin and/or kernel
+        // auto-update does not work anyway, but without this, C::B
+        // hangs on close
+        while(!quit)
         {
             int result=fd.do_select();
             if(result<0)
