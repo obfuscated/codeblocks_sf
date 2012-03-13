@@ -122,8 +122,11 @@
                 error_line="37" />
     <LanguageAttributes
         LineComment="--"
+        DoxygenLineComment="--!"
         StreamCommentStart=""
         StreamCommentEnd=""
+        DoxygenStreamCommentStart=""
+        DoxygenStreamCommentEnd=""
         BoxCommentStart="--"
         BoxCommentMid="--"
         BoxCommentEnd="--"

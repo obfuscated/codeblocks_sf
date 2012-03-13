@@ -827,12 +827,15 @@ void EditorColourSet::SetCommentToken(HighlightLanguage lang, CommentToken token
 CommentToken EditorColourSet::GetCommentToken(HighlightLanguage lang)
 {
     CommentToken com;
-    com.lineComment        = _T("");
-    com.streamCommentStart = _T("");
-    com.streamCommentEnd   = _T("");
-    com.boxCommentStart    = _T("");
-    com.boxCommentMid      = _T("");
-    com.boxCommentEnd      = _T("");
+    com.lineComment               = _T("");
+    com.doxygenLineComment        = _T("");
+    com.streamCommentStart        = _T("");
+    com.streamCommentEnd          = _T("");
+    com.doxygenStreamCommentStart = _T("");
+    com.doxygenStreamCommentEnd   = _T("");
+    com.boxCommentStart           = _T("");
+    com.boxCommentMid             = _T("");
+    com.boxCommentEnd             = _T("");
 
     if (lang != HL_NONE)
     {

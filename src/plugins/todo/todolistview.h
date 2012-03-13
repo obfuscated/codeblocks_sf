@@ -32,23 +32,6 @@ struct ToDoItem
     int priority;
 };
 
-class Comment
-{
-    public:
-        Comment()
-        {
-            m_posBegin = 0;
-            m_posEnd = 0;
-            m_isC = false;
-        }
-        ~Comment()
-        {
-        }
-        wxString m_comment;
-        int m_posBegin;
-        int m_posEnd;
-        bool m_isC;
-};
 typedef map<wxString,vector<ToDoItem> > TodoItemsMap;
 
 WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
@@ -100,8 +83,8 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
         void ParseFile(const wxString& filename);
         void ParseBuffer(const wxString& buffer, const wxString& filename);
         int CalculateLineNumber(const wxString& buffer, int upTo);
-        bool FindNextComment(const wxString& buffer, Comment *previous);
         void FocusEntry(size_t index);
+        void SkipSpaces(const wxString& buffer, size_t &pos);
 
         void OnComboChange(wxCommandEvent& event);
         void OnListItemSelected(wxCommandEvent& event);

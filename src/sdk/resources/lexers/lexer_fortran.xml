@@ -161,8 +161,11 @@ numeric_storage_size output_unit "/>
 						error_line="23"/>
                 <LanguageAttributes
                     LineComment="!"
+                    DoxygenLineComment="!>"
                     StreamCommentStart=""
                     StreamCommentEnd=""
+                    DoxygenStreamCommentStart=""
+                    DoxygenStreamCommentEnd=""
                     BoxCommentStart=""
                     BoxCommentMid=""
                     BoxCommentEnd=""

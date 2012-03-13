@@ -43,8 +43,11 @@ WX_DEFINE_ARRAY(OptionColour*, OptionColours);
 
 struct CommentToken {
     wxString lineComment;
+    wxString doxygenLineComment;
     wxString streamCommentStart;
     wxString streamCommentEnd;
+    wxString doxygenStreamCommentStart;
+    wxString doxygenStreamCommentEnd;
     wxString boxCommentStart;
     wxString boxCommentMid;
     wxString boxCommentEnd;

@@ -147,8 +147,11 @@
                         error_line="23"/>
                 <LanguageAttributes
                     LineComment="//"
+                    DoxygenLineComment="///"
                     StreamCommentStart="/*"
                     StreamCommentEnd="*/"
+                    DoxygenStreamCommentStart="/**"
+                    DoxygenStreamCommentEnd="*/"
                     BoxCommentStart="/* "
                     BoxCommentMid=" * "
                     BoxCommentEnd=" */"

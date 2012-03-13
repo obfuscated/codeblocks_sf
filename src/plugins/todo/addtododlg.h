@@ -6,6 +6,8 @@
 #ifndef ADDTODODLG_H
 #define ADDTODODLG_H
 
+#include <bitset>
+
 #include <wx/string.h>
 
 #include "scrollingdialog.h"
@@ -23,19 +25,18 @@ enum ToDoPosition
 
 enum ToDoCommentType
 {
-    tdctCpp = 0, // C++ style,
-    tdctC,       // C style
-    tdctDoxygenC, // Doxygen C style
-    tdctDoxygenCPP, // Doxygen CPP style
-    tdctWarning, // compiler warning
-    tdctError,   // compiler error
-    tdctFortran  // Fortran style
+    tdctLine = 0,      // line comments (for example C++ style)
+    tdctStream,        // Stream comments (for example C style)
+    tdctDoxygenLine,   // Doxygen line comment
+    tdctDoxygenStream, // Doxygen stream comment
+    tdctWarning,       // compiler warning
+    tdctError          // compiler error
 };
 
 class AddTodoDlg : public wxScrollingDialog
 {
     public:
-        AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types);
+        AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types, std::bitset<(int)tdctError+1> supportedTdcts);
         ~AddTodoDlg();
 
         wxString GetText() const;
@@ -54,6 +55,7 @@ class AddTodoDlg : public wxScrollingDialog
 
         wxArrayString m_Users;
         wxArrayString m_Types;
+        std::bitset<(int)tdctError+1> m_supportedTdcts;
         DECLARE_EVENT_TABLE()
 };
 

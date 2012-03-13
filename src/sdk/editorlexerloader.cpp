@@ -216,8 +216,11 @@ void EditorLexerLoader::DoLangAttributes(HighlightLanguage language, TiXmlElemen
 
     CommentToken token;
     token.lineComment = wxString( attribs->Attribute("LineComment"), wxConvUTF8 );
+    token.doxygenLineComment = wxString( attribs->Attribute("DoxygenLineComment"), wxConvUTF8 );
     token.streamCommentStart = wxString( attribs->Attribute("StreamCommentStart"), wxConvUTF8 );
     token.streamCommentEnd = wxString( attribs->Attribute("StreamCommentEnd"), wxConvUTF8 );
+    token.doxygenStreamCommentStart = wxString( attribs->Attribute("DoxygenStreamCommentStart"), wxConvUTF8 );
+    token.doxygenStreamCommentEnd = wxString( attribs->Attribute("DoxygenStreamCommentEnd"), wxConvUTF8 );
     token.boxCommentStart = wxString( attribs->Attribute("BoxCommentStart"), wxConvUTF8 );
     token.boxCommentMid = wxString( attribs->Attribute("BoxCommentMid"), wxConvUTF8 );
     token.boxCommentEnd = wxString( attribs->Attribute("BoxCommentEnd"), wxConvUTF8 );

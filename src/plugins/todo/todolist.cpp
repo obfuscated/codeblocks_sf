@@ -314,8 +314,24 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     if (!ed)
         return;
 
+    HighlightLanguage hlang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
+    bool edIsCCpp = (hlang == _T("C/C++"));
+
+    CommentToken token = Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken(ed->GetLanguage());
+    bool hasStreamComments = not token.streamCommentStart.IsEmpty();
+    bool hasLineComments = not token.lineComment.IsEmpty();
+
+    if (!(edIsCCpp||hasLineComments||hasStreamComments))
+        return;
+    std::bitset<(int)tdctError+1> supportedTdcts;
+    supportedTdcts[tdctLine] = !(token.lineComment.IsEmpty());
+    supportedTdcts[tdctStream] = !(token.streamCommentStart.IsEmpty());
+    supportedTdcts[tdctDoxygenLine] = !(token.doxygenLineComment.IsEmpty());
+    supportedTdcts[tdctDoxygenStream] = !(token.doxygenStreamCommentStart.IsEmpty());
+    supportedTdcts[tdctWarning] = edIsCCpp;
+    supportedTdcts[tdctError] = edIsCCpp;
     // display todo dialog
-    AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Users, m_Types);
+    AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Users, m_Types, supportedTdcts );
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -338,7 +354,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         // is somewhere in the middle of a line of code; this would result
         // in everything after the insertion point to turn into comments
         // let's double check this with the user
-        if (idx != control->GetLineEndPosition(line))
+        if (idx != control->GetLineEndPosition(line) && (CmtType != tdctStream) && (CmtType != tdctDoxygenStream))
         {
             // let's ask the user, and present as options
             // keep cpp style at current position, switch to c style, add the todo at the end (keeping cpp style)
@@ -346,18 +362,27 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
             // future idea : check if there's any non white space character
             // if yes -> in the middle of code
             // if no -> then only whitespace after the insertion point -> no harm to turn that into comments
-            AskTypeDlg dlg(Manager::Get()->GetAppWindow());
+            wxString streamStart = token.streamCommentStart, streamEnd = token.streamCommentEnd;
+            if (CmtType == tdctDoxygenLine && !token.doxygenStreamCommentStart.IsEmpty())
+            {
+                streamStart = token.doxygenStreamCommentStart;
+                streamEnd = token.doxygenStreamCommentEnd;
+            }
+            AskTypeDlg dlg(Manager::Get()->GetAppWindow(), streamStart, streamEnd);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() != wxID_OK)
                 return;
             switch(dlg.GetTypeCorrection())
             {
-                case tcCppStay:
+                case tcStay:
                     break; // do nothing, leave things as they are
-                case tcCpp2C:
-                    CmtType = tdctC;
+                case tcSwitch:
+                    if (CmtType == tdctDoxygenLine)
+                        CmtType = tdctDoxygenStream;
+                    else
+                        CmtType = tdctStream;
                     break;
-                case tcCppMove:
+                case tcMove:
                 default:
                     idx = control->GetLineEndPosition(line);
                     break;
@@ -391,28 +416,27 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     // start with the comment
     switch(CmtType)
     {
-        case tdctFortran:
-            buffer << _T("!// ");
+        default:
+        case tdctLine:
+            buffer << token.lineComment;
             break;
-        case tdctCpp:
-            buffer << _T("// ");
+        case tdctDoxygenLine:
+            buffer << token.doxygenLineComment;
             break;
-        case tdctDoxygenC:
-            buffer << _T("/** ");
-            break;
-        case tdctDoxygenCPP:
-            buffer << _T("/// ");
+        case tdctDoxygenStream:
+            buffer << token.doxygenStreamCommentStart;
             break;
         case tdctWarning:
-            buffer << _T("#warning ");
+            buffer << _T("#warning");
             break;
         case tdctError:
-            buffer << _T("#error ");
+            buffer << _T("#error");
             break;
-        default:
-            buffer << _T("/* ");
+        case tdctStream:
+            buffer << token.streamCommentStart;
             break;
     } // end switch
+    buffer << _T(" ");
 
     // continue with the type
     buffer << dlg.GetType() << _T(" ");
@@ -422,24 +446,38 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
 
     wxString text = dlg.GetText();
-    if ( (CmtType != tdctC) && (CmtType != tdctDoxygenC) )
+
+    // make sure that multi-line notes, don't break the todo
+    if ( (CmtType == tdctWarning) || (CmtType == tdctError) )
     {
-        // make sure that multi-line notes, don't break the todo
         if (text.Replace(_T("\r\n"), _T("\\\r\n")) == 0)
             text.Replace(_T("\n"), _T("\\\n"));
         // now see if there were already a backslash before newline
         if (text.Replace(_T("\\\\\r\n"), _T("\\\r\n")) == 0)
             text.Replace(_T("\\\\\n"), _T("\\\n"));
     }
+    else if (CmtType == tdctLine || (CmtType == tdctDoxygenLine))
+    {
+        wxString lc;
+        if (CmtType == tdctLine)
+            lc = token.lineComment;
+        else
+            lc = token.doxygenLineComment;
+        // comment every line from the todo text
+        if ( text.Replace(_T("\r\n"), _T("\r\n")+lc) == 0 )
+            text.Replace(_T("\n"), _T("\n")+lc);
+        // indicate (on the first line) that there is some more text
+        if ( text.Replace(_T("\r\n"), _T(" ...\r\n"),false) == 0 )
+            text.Replace(_T("\n"), _T(" ...\n"),false);
+    }
 
     // add the actual text
     buffer << text;
 
-    if ( (CmtType == tdctWarning) || (CmtType == tdctError) )
-        buffer << _T("");
-
-    else if ( (CmtType == tdctC) || (CmtType == tdctDoxygenC) )
-        buffer << _T(" */");
+    if ( CmtType == tdctStream )
+        buffer << _T(" ") << token.streamCommentEnd;
+    if ( CmtType == tdctDoxygenStream )
+        buffer << _T(" ") << token.doxygenStreamCommentEnd;
 
     // add newline char(s), only if dlg.GetPosition() != tdpCurrent
     if (dlg.GetPosition() != tdpCurrent)

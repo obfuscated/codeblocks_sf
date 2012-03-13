@@ -28,9 +28,10 @@ BEGIN_EVENT_TABLE(AddTodoDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btDelType"), AddTodoDlg::OnDelType)
 END_EVENT_TABLE()
 
-AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types) :
+AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types, std::bitset<(int)tdctError+1> supportedTdcts) :
     m_Users(users),
-    m_Types(types)
+    m_Types(types),
+    m_supportedTdcts(supportedTdcts)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAddToDo"),_T("wxScrollingDialog"));
 
@@ -88,12 +89,28 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
         cmb->SetSelection(0);
 
     cmb = XRCCTRL(*this, "chcStyle", wxChoice);
+    cmb->Clear();
+    if (m_supportedTdcts[(int)tdctLine])
+        cmb->Append(_T("Line comment"));
+    if (m_supportedTdcts[(int)tdctStream])
+        cmb->Append(_T("Stream comment"));
+    if (m_supportedTdcts[(int)tdctDoxygenLine])
+        cmb->Append(_T("Doxygen line comment"));
+    if (m_supportedTdcts[(int)tdctDoxygenStream])
+        cmb->Append(_T("Doxygen stream comment"));
+    if (m_supportedTdcts[(int)tdctWarning])
+        cmb->Append(_T("Compiler warning"));
+    if (m_supportedTdcts[(int)tdctError])
+            cmb->Append(_T("Compiler error"));
+
     if (!lastStyle.IsEmpty())
     {
         int sel = cmb->FindString(lastStyle, true);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
+    else
+        cmb->SetSelection(0);
 
     cmb = XRCCTRL(*this, "chcPosition", wxChoice);
     if (!lastPos.IsEmpty())
@@ -141,7 +158,16 @@ wxString AddTodoDlg::GetType() const
 
 ToDoCommentType AddTodoDlg::GetCommentType() const
 {
-    return (ToDoCommentType)(XRCCTRL(*this, "chcStyle", wxChoice)->GetSelection());
+    wxChoice* cmb = XRCCTRL(*this, "chcStyle", wxChoice);
+
+    int sel = cmb->GetSelection();
+    for ( int i = 0; i < (int)tdctError ; i++)
+    {
+        if (!m_supportedTdcts[i] && sel >= i)
+            sel++;
+    }
+
+    return (ToDoCommentType)(sel);
 }
 
 void AddTodoDlg::EndModal(int retVal)

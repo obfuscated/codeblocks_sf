@@ -36,6 +36,7 @@
 
 #include "cbstyledtextctrl.h"
 #include "encodingdetector.h"
+#include "editorcolourset.h"
 
 #include "todolistview.h"
 
@@ -386,158 +387,164 @@ void ToDoListView::ParseFile(const wxString& filename)
 
     delete fileBuffer;
 }
-
+void ToDoListView::SkipSpaces(const wxString& buffer, size_t &pos)
+{
+    wxChar c = buffer[pos];
+    while ( c == _T(' ') || c == _T('\t') )
+        c = buffer[++pos];
+}
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
     // this is the actual workhorse...
 
+    HighlightLanguage hlang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageForFilename(filename);
+    CommentToken cmttoken = Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken(hlang);
+    wxString langName = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(hlang);
+
     m_ItemsMap[filename].clear();
 
-    // initialize one Comment class and reuse it
-    Comment current;
-
     wxArrayString allowedTypes;
-    for (size_t t=0; t<m_Types.Count(); t++)
+    size_t t = 0;
+    while(t < m_Types.Count())
     {
-        if (m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
+        if(m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
             allowedTypes.Add(m_Types.Item(t));
+        t++;
     }
-    if (allowedTypes.IsEmpty())
+
+    wxArrayString startStrings;
+    if (langName == _T("C/C++") )
     {
-        Manager::Get()->GetLogManager()->Log(_T("ToDoList: Warning: No to-do types selected to search for, nothing to do."));
+        startStrings.Add(_T("#warning"));
+        startStrings.Add(_T("#error"));
+    }
+    if (!cmttoken.doxygenLineComment.IsEmpty())
+        startStrings.Add(cmttoken.doxygenLineComment);
+    if (!cmttoken.doxygenStreamCommentStart.IsEmpty())
+        startStrings.Add(cmttoken.doxygenStreamCommentStart);
+
+    if ( !cmttoken.lineComment.IsEmpty() )
+        startStrings.Add(cmttoken.lineComment);
+    if ( !cmttoken.streamCommentStart.IsEmpty() )
+        startStrings.Add(cmttoken.streamCommentStart);
+    if ( startStrings.IsEmpty() || allowedTypes.IsEmpty() )
+    {
+        Manager::Get()->GetLogManager()->Log(_T("ToDoList: Warning: No to-do types or comment symbols selected to search for, nothing to do."));
         return;
     }
 
-    //find parse for comments
-    while ( FindNextComment(buffer, &current) )
+
+    size_t pos = 0;
+    while( 1 )
     {
-
-        // ok, we look for two basic kinds of todo entries in the text
-        // our version...
-        // TODO (mandrav#0#): Implement code to do this and the other...
-        // and a generic version...
-        // TODO: Implement code to do this and the other...
-
-        for (unsigned int i=0; i<allowedTypes.GetCount(); ++i)
+        int cmtStart = buffer.length();
+        unsigned int cmtType;
+        for (unsigned int i = 0; i < startStrings.GetCount() ; ++i)
         {
-            //Manager::Get()->GetLogManager()->DebugLog(allowedTypes.Item(i));
-
-            // ok, start parsing now...
-            int pos = current.m_comment.find(allowedTypes[i], 0);
-            while (pos != -1)
+            int p = buffer.find(startStrings[i], pos);
+            if ( p != wxNOT_FOUND )
             {
-                // keep a temp copy of pos to work with
-                int idx = pos;
-
-                //#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
-
-                //Manager::Get()->GetLogManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", m_isC ? "C" : "C++", allowedTypes[i].c_str(), pos);
-
-                ToDoItem item;
-                item.type = allowedTypes[i];
-                item.filename = filename;
-
-                idx = pos + allowedTypes[i].Length();
-
-                wxString allowedChars = _T(" \t/*");
-                wxChar c = _T('\0');
-
-                //Manager::Get()->GetLogManager()->DebugLog("1");
-                // skip to next non-blank char
-                while (idx < (int)current.m_comment.Length())
+                if (p < cmtStart)
                 {
-                    c = current.m_comment.GetChar(idx);
-                    if (c != _T(' ') && c != _T('\t') && c != _T('\n'))
-                        break;
-                    ++idx;
+                    cmtStart = p;
+                    cmtType = i;
                 }
-                //Manager::Get()->GetLogManager()->DebugLog("2");
-                // is it ours or generic todo?
-                if (c == _T('('))
+                else if ( p == cmtStart && startStrings[i].length() > startStrings[cmtType].length() )
                 {
-                    // it's ours, find user and/or priority
-                    ++idx; // skip (
-                    while (idx < (int)current.m_comment.Length())
-                    {
-                        wxChar c1 = current.m_comment.GetChar(idx);
-                        if (c1 != _T('#') && c1 != _T(')'))
-                        {
-                            // a little logic doesn't hurt ;)
+                    cmtType = i;
+                }
+                //Manager::Get()->GetLogManager()->DebugLog(_T("found startString: ")+ startStrings[cmtType] + wxString::Format(_T(", len=%d"),startStrings[cmtType].length()));
+            }
+        }
+        // none of the search strings found so end the loop now
+        if (cmtStart == (int)buffer.length())
+            break;
 
-                            if (c1 == _T(' ') || c1 == _T('\t') || c1 == _T('\r') || c1 == _T('\n'))
-                            {
-                                // allow one consecutive space
-                                if (item.user.Last() != _T(' '))
-                                    item.user << _T(' ');
-                            }
-                            else
-                                item.user << c1;
-                        }
-                        else if (c1 == _T('#'))
+        pos = cmtStart + startStrings[cmtType].length();
+        SkipSpaces(buffer, pos);
+
+        for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
+        {
+            if (buffer.find(allowedTypes[i], pos) != pos)
+                continue;
+            pos += allowedTypes[i].length();
+            SkipSpaces(buffer, pos);
+
+            ToDoItem item;
+            item.type = allowedTypes[i];
+            item.filename = filename;
+
+
+            // ok, we look for two basic kinds of todo entries in the text
+            // our version...
+            // TODO (mandrav#0#): Implement code to do this and the other...
+            // and a generic version...
+            // TODO: Implement code to do this and the other...
+
+            wxChar c = buffer.GetChar(pos);
+            // is it ours or generic todo?
+            if (c == _T('('))
+            {
+                // it's ours, find user and/or priority
+                ++pos;
+                while(pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n'))
+                {
+                    wxChar c1 = buffer.GetChar(pos);
+                    if (c1 != _T('#') && c1 != _T(')'))
+                    {
+                        // a little logic doesn't hurt ;)
+                        if (c1 == _T(' ') || c1 == _T('\t'))
                         {
-                            // look for priority
-                            c1 = current.m_comment.GetChar(++idx);
-                            allowedChars = _T("0123456789");
-                            if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
-                                item.priorityStr << c1;
-                            // skip to start of text
-                            while (idx < (int)current.m_comment.Length())
-                            {
-                                wxChar c2 = current.m_comment.GetChar(idx++);
-                                if (c2 == _T(')') || c2 == _T('\r') || c2 == _T('\n'))
-                                    break;
-                            }
-                            break;
+                            // allow one consecutive space
+                            if (item.user.Last() != _T(' '))
+                                item.user << _T(' ');
                         }
                         else
-                            break;
-                        ++idx;
+                            item.user << c1;
                     }
-                }
-                //Manager::Get()->GetLogManager()->DebugLog("3");
-                // ok, we 've reached the actual todo text :)
-                // take everything up to the end of line or end of comment (if m_isC)
-                wxChar lastChar = _T('\0');
-                if (current.m_comment.GetChar(idx) == _T(':'))
-                    ++idx;
-                while (idx < (int)current.m_comment.Length())
-                {
-                    wxChar c1 = current.m_comment.GetChar(idx++);
-                    if (c1 == _T('\r') || c1 == _T('\n'))
-                        break;
-                    if (current.m_isC && c1 == _T('/') && lastChar == _T('*'))
+                    else if (c1 == _T('#'))
                     {
-                        // remove last char '*'
-                        item.text.RemoveLast();
+                        // look for priority
+                        c1 = buffer.GetChar(++pos);
+                        const wxString allowedChars = _T("0123456789");
+                        if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
+                            item.priorityStr << c1;
+                        // skip to start of text
+                        while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
+                        {
+                            wxChar c2 = buffer.GetChar(pos++);
+                            if (c2 == _T(')'))
+                                break;
+                        }
                         break;
-                    }
-                    if (c1 == _T(' ') || c1 == _T('\t'))
-                    {
-                        // allow one consecutive space
-                        if (item.text.IsEmpty() || item.text.Last() != _T(' '))
-                            item.text << _T(' ');
                     }
                     else
-                        item.text << c1;
-                    lastChar = c1;
+                        break;
+                    ++pos;
                 }
-                //Manager::Get()->GetLogManager()->DebugLog("4");
-                // do some clean-up
-                item.text.Trim();
-                item.text.Trim(false);
-                item.user.Trim();
-                item.user.Trim(false);
-                item.line = CalculateLineNumber(buffer, current.m_posBegin + pos);
-                item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
-                m_ItemsMap[filename].push_back(item);
-                m_Items.Add(item);
-
-                pos = current.m_comment.find(allowedTypes[i], idx);
-                //Manager::Get()->GetLogManager()->DebugLog("Found it at %d", pos);
             }
+            // ok, we 've reached the actual todo text :)
+            // take everything up to the end of line
+            if( buffer.GetChar(pos) == _T(':'))
+                ++pos;
+            size_t idx = pos;
+            while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
+                idx++;
+            item.text = buffer.Mid(pos, idx-pos);
 
+            // do some clean-up
+            item.text.Trim();
+            item.text.Trim(false);
+            item.user.Trim();
+            item.user.Trim(false);
+            item.line = CalculateLineNumber(buffer, pos);
+            item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
+            m_ItemsMap[filename].push_back(item);
+            m_Items.Add(item);
+
+            pos = idx;
         }
-        //current.logFile.Write();
+        pos ++;
     }
 }
 
@@ -563,66 +570,6 @@ void ToDoListView::FocusEntry(size_t index)
         control->EnsureVisible(index);
     }
 }
-
-
-bool ToDoListView::FindNextComment(const wxString& buffer, Comment * previous)
-{
-    wxString Str;
-    bool valid = false;
-    while(!valid)
-    {
-        // find beginning of next comment, aka "/"
-        Str = _("/");
-        previous->m_posBegin = buffer.find(Str, previous->m_posEnd);
-        if (previous->m_posBegin != -1)
-        {
-            //Test for C++ style
-            Str = _("/");
-            if (buffer.GetChar(previous->m_posBegin + 1) == Str)
-            {
-                // is is Single line so find the end
-                Str = _("\n");
-                previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
-                if (previous->m_posEnd == -1)
-                    previous->m_posEnd = buffer.Len() - 2; //file ended without newline
-
-                previous->m_isC = false;
-                valid = true;
-            }
-            //Test for C style
-            else
-            {
-                Str = _("*");
-                if (buffer.GetChar(previous->m_posBegin + 1) == Str)
-                {
-                    // is is Multiline so find the end
-                    Str = _("*/");
-                    previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
-                    if (previous->m_posEnd == -1)
-                        return false; //comment end not found
-
-                    previous->m_isC = true;
-                    previous->m_posEnd = previous->m_posEnd + 1;
-                    valid = true;
-                }
-                //It is not a valid comment so search some more
-                else
-                {
-                    previous->m_posEnd = previous->m_posBegin + 1;
-                    valid = false;
-                }
-            }
-        }
-        else
-            return false;
-
-    }
-    previous->m_comment = buffer.Mid(previous->m_posBegin, (previous->m_posEnd - previous->m_posBegin) + 1);
-    return true;
-}
-
-
-
 void ToDoListView::OnComboChange(wxCommandEvent& event)
 {
     Manager::Get()->GetConfigManager( _T("todo_list"))->Write(_T("source"), m_pSource->GetSelection() );
