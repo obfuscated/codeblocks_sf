@@ -213,7 +213,7 @@ case $WX_BASENAME in
 esac
 
 AC_MSG_CHECKING([for wxWidgets >= 2.9.0])
-AM_CONDITIONAL([HAVE_WX29], [test $WX_VERSION_MAJOR -gt 2 || test $WX_VERSION_MAJOR -eq 2 && test $WX_VERSION_MINOR -ge 9])
+AM_CONDITIONAL([HAVE_WX29], [test $wx_config_major_version -gt 2 || test $wx_config_major_version -eq 2 && test $wx_config_minor_version -ge 9])
 
 if test "x$HAVE_WX29_TRUE" = "x" ; then
     AC_MSG_RESULT(yes (version $WX_VERSION))
