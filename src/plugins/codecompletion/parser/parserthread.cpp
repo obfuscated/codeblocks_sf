@@ -969,7 +969,7 @@ void ParserThread::DoParse()
 
                     if (id != -1)
                     {
-                        HandleMacro(id, peek);
+                        HandleMacroExpansion(id, peek);
                         m_Str.Clear();
                     }
                     else
@@ -2402,12 +2402,12 @@ void ParserThread::HandleTypedef()
     }
 }
 
-void ParserThread::HandleMacro(int id, const wxString &peek)
+void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
 {
     Token* tk = m_TokensTree->at(id);
     if (tk)
     {
-        TRACE(_T("HandleMacro() : Adding token '%s' (peek='%s')"), tk->m_Name.wx_str(), peek.wx_str());
+        TRACE(_T("HandleMacroExpansion() : Adding token '%s' (peek='%s')"), tk->m_Name.wx_str(), peek.wx_str());
         DoAddToken(tkMacro, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
 
         if (m_Options.parseComplexMacros)

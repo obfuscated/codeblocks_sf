@@ -69,6 +69,7 @@
 typedef std::set<wxString>  StringSet;
 typedef std::list<wxString> StringList;
 
+/** Tree data associate with the symbol tree item */
 class ClassTreeData : public wxTreeItemData
 {
 public:
@@ -79,30 +80,34 @@ private:
     Token* m_Token;
 };
 
+
+/** Setting of the Parser, some of them will be passed down to ParserthreadOptions */
 struct ParserOptions
 {
-    bool followLocalIncludes;
-    bool followGlobalIncludes;
-    bool caseSensitive;
-    bool wantPreprocessor;
-    bool useSmartSense;
-    bool whileTyping;
-    bool parseComplexMacros;
+    bool followLocalIncludes;     /// parse XXX.h in directive #include "XXX.h"
+    bool followGlobalIncludes;    /// parse XXX.h in directive #include <XXX.h>
+    bool caseSensitive;           /// case sensitive in MarkItemsByAI
+    bool wantPreprocessor;        /// handle preprocessor directive in Tokenizer class
+    bool useSmartSense;           /// use real AI(scope sequence match) or not(plain text match)
+    bool whileTyping;             /// reparse the active editor while editing
+    bool parseComplexMacros;      /// this will let the Tokenizer to recursive expand macros
 };
 
+/**  specify the scope of the shown symbols */
 enum BrowserDisplayFilter
 {
-    bdfFile = 0,
-    bdfProject,
-    bdfWorkspace,
-    bdfEverything
+    bdfFile = 0,  ///display symbols of current file
+    bdfProject,   ///display symbols of current project
+    bdfWorkspace, ///display symbols of current workspace
+    bdfEverything ///display every symbols
 };
 
+/**  specify the sort order of the symbol tree nodes */
 enum BrowserSortType
 {
-    bstAlphabet = 0,
-    bstKind,
-    bstScope,
+    bstAlphabet = 0, ///alphabet
+    bstKind,         ///class, function, macros
+    bstScope,        ///public, protected, private
     bstNone
 };
 

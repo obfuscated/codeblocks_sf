@@ -204,11 +204,11 @@ protected:
     /** handle typedef directive */
     void HandleTypedef();
 
-    /** handle macro definition
+    /** handle macro expansion
       * @param id token id in Tokenstree
       * @param peek macro body
       */
-    void HandleMacro(int id, const wxString& peek);
+    void HandleMacroExpansion(int id, const wxString& peek);
 
     /** eg: class ClassA{...} varA, varB, varC
       * This function will read the "varA, varB, varC"
