@@ -87,7 +87,6 @@
 							<object class="sizeritem">
 								<object class="wxNotebook" name="nbMain">
 									<size>600,-1</size>
-									<style>wxNB_DEFAULT</style>
 									<object class="notebookpage">
 										<object class="wxPanel" name="tabCompiler">
 											<object class="wxBoxSizer">

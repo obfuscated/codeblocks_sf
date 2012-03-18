@@ -538,6 +538,7 @@ bool CodeBlocksApp::OnInit()
             // Create a new client
             DDEClient *client = new DDEClient;
             DDEConnection* connection = 0l;
+            wxLogNull ln; // own error checking implemented -> avoid debug warnings
             connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().wx_str()), DDE_TOPIC);
 
             if (connection)
@@ -586,8 +587,8 @@ bool CodeBlocksApp::OnInit()
                 connection->Disconnect();
                 delete connection;
                 delete client;
-                // return false to end the application
 
+                // return false to end the application
                 return false;
             }
             // free memory DDE-/IPC-clients, if we are here connection could not be established and there is no need to free it

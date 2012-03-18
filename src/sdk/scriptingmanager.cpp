@@ -117,6 +117,8 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 {
 //    wxCriticalSectionLocker c(cs);
 
+    wxLogNull ln; // own error checking implemented -> avoid debug warnings
+
     wxString fname(filename);
     wxFile f(fname); // try to open
     if (!f.IsOpened())
