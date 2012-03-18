@@ -27,10 +27,12 @@
   #include "logmanager.h"
   #include "sdk_events.h"
 #endif
-#include "cbstyledtextctrl.h"
+
 
 #include "addtododlg.h"
 #include "asktypedlg.h"
+#include "cbstyledtextctrl.h"
+#include "editorcolourset.h"
 #include "todolist.h"
 #include "todolistview.h"
 #include "todosettingsdlg.h"
