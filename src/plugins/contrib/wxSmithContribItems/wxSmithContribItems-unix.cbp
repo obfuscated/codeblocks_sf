@@ -99,7 +99,6 @@
 		<Unit filename="wxSmithKWIC/images/linmet32.xpm" />
 		<Unit filename="wxSmithKWIC/images/linreg16.xpm" />
 		<Unit filename="wxSmithKWIC/images/linreg32.xpm" />
-		<Unit filename="wxSmithKWIC/wxSmithKWIC.h" />
 		<Unit filename="wxSmithKWIC/wxsangularmeter.cpp" />
 		<Unit filename="wxSmithKWIC/wxsangularmeter.h" />
 		<Unit filename="wxSmithKWIC/wxsangularregulator.cpp" />

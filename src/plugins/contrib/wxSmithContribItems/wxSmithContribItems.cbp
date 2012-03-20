@@ -111,7 +111,6 @@
 		<Unit filename="wxSmithKWIC\images\linmet32.xpm" />
 		<Unit filename="wxSmithKWIC\images\linreg16.xpm" />
 		<Unit filename="wxSmithKWIC\images\linreg32.xpm" />
-		<Unit filename="wxSmithKWIC\wxSmithKWIC.h" />
 		<Unit filename="wxSmithKWIC\wxsangularmeter.cpp" />
 		<Unit filename="wxSmithKWIC\wxsangularmeter.h" />
 		<Unit filename="wxSmithKWIC\wxsangularregulator.cpp" />
@@ -144,12 +143,12 @@
 		<Unit filename="wxgbsizer\images\wxGridBagSizer32.xpm" />
 		<Unit filename="wxgbsizer\wxsGridBagSizer.cpp" />
 		<Unit filename="wxgbsizer\wxsGridBagSizer.h" />
-		<Unit filename="wximagebutton\ImageButton16.xpm" />
-		<Unit filename="wximagebutton\ImageButton32.xpm" />
+		<Unit filename="wximagebutton\wxImageButton16.xpm" />
+		<Unit filename="wximagebutton\wxImageButton32.xpm" />
 		<Unit filename="wximagebutton\wxsImageButton.cpp" />
 		<Unit filename="wximagebutton\wxsImageButton.h" />
-		<Unit filename="wximagepanel\ImagePanel16.xpm" />
-		<Unit filename="wximagepanel\ImagePanel32.xpm" />
+		<Unit filename="wximagepanel\wxImagePanel16.xpm" />
+		<Unit filename="wximagepanel\wxImagePanel32.xpm" />
 		<Unit filename="wximagepanel\wxsimagepanel.cpp" />
 		<Unit filename="wximagepanel\wxsimagepanel.h" />
 		<Unit filename="wxled\images\LedNumber16.xpm" />
