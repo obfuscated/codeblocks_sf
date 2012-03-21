@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OnlineSpellCheckingConfigurationFile>
+    <Language name="Plain text" index="0" />
     <Language name="LaTeX"   index="0,4,5" />
     <Language name="VHDL"    index="1,2" />
     <Language name="Verilog" index="1,2,3" />

@@ -94,7 +94,7 @@ void SpellCheckerStatusField::OnRightUp(wxMouseEvent &event)
     wxMenu *popup = new wxMenu();
     std::vector<wxString> dicts = m_sccfg->GetPossibleDictionaries();
     for ( unsigned int i = 0 ; i < dicts.size()&& i < LANGS ; i++ )
-        popup->Append( idCommand[i], dicts[i], _T(""), wxITEM_CHECK)->Check(dicts[i] == m_sccfg->GetDictionaryName() );
+        popup->Append( idCommand[i], m_sccfg->GetLanguageName(dicts[i]), _T(""), wxITEM_CHECK)->Check(dicts[i] == m_sccfg->GetDictionaryName() );
     popup->AppendSeparator();
     wxMenuItem *mnuItm = popup->Append( idEditPersonalDictionary, _T("Edit personal dictionary"), _T(""));
     mnuItm->Enable( wxFile::Exists(m_sccfg->GetPersonalDictionaryFilename()) );

@@ -24,8 +24,7 @@
 wxThes::~wxThes()
 {
     //dtor
-    if ( m_pMT )
-        delete m_pMT;
+    delete m_pMT;
     m_pMT = NULL;
 }
 wxThes::wxThes(const wxString idxpath, const wxString datpath):

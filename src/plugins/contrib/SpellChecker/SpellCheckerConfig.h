@@ -20,6 +20,7 @@
 #define SPELLCHECKERCONFIG_H
 
 #include <vector>
+#include <map>
 #include <wx/string.h>
 
 class SpellCheckerPlugin;
@@ -36,6 +37,7 @@ class SpellCheckerConfig
         void SetDictionaryName(wxString val);
         void Load();
         void Save();
+        wxString GetLanguageName(const wxString& language_id);
 
         void ScanForDictionaries();
 
@@ -55,6 +57,7 @@ class SpellCheckerConfig
         const wxString GetRawThesaurusPath()const;
         const wxString GetRawBitmapPath()const;
         void ScanForDictionaries(const wxString &path);
+        void PopulateLanguageNamesMap();
     protected:
     private:
         wxString m_DictPath;
@@ -64,6 +67,7 @@ class SpellCheckerConfig
         wxString m_strDictionaryName;
         std::vector<wxString> m_dictionaries;
         int selectedDictionary;
+        std::map<wxString, wxString> m_LanguageNamesMap;
 
         SpellCheckerPlugin *m_pPlugin;
 };

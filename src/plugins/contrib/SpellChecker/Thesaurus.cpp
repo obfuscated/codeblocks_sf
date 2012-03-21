@@ -44,16 +44,13 @@ Thesaurus::Thesaurus(wxWindow *dialogsparent,const wxString idxpath, const wxStr
 Thesaurus::~Thesaurus()
 {
     //dtor
-    if ( m_pT )
-        delete m_pT;
-
+    delete m_pT;
     m_pT = NULL;
 }
 
 void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
 {
-    if ( m_pT )
-        delete m_pT;
+    delete m_pT;
     m_pT = NULL;
     m_ok = false;
 

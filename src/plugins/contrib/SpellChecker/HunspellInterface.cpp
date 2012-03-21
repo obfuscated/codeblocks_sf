@@ -45,11 +45,8 @@ HunspellInterface::~HunspellInterface()
 
   UninitializeSpellCheckEngine();
 
-  if (m_pSpellUserInterface != NULL)
-  {
-    delete m_pSpellUserInterface;
-    m_pSpellUserInterface = NULL;
-  }
+  delete m_pSpellUserInterface;
+  m_pSpellUserInterface = NULL;
 }
 
 int HunspellInterface::InitializeSpellCheckEngine()
@@ -262,9 +259,9 @@ void HunspellInterface::PopulateDictionaryMap(StringToStringMap* pLookupMap, con
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Danish (Denmark)"), _T("da_DK"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Austria)"), _T("de_AT"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Switzerland)"), _T("de_CH"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany- orig dict)"), _T("de_DE"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-old & neu ortho.)"), _T("de_DE_comb"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-neu ortho.)"), _T("de_DE_neu"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-orig dict)"), _T("de_DE"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-old & neu ortho)"), _T("de_DE_comb"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("German (Germany-neu ortho)"), _T("de_DE_neu"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Greek (Greece)"), _T("el_GR"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (Australia)"), _T("en_AU"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("English (Canada)"), _T("en_CA"));
@@ -303,16 +300,16 @@ void HunspellInterface::PopulateDictionaryMap(StringToStringMap* pLookupMap, con
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Russian (Russia)"), _T("ru_RU"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Russian ye (Russia)"), _T("ru_RU_ie"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Russian yo (Russia)"), _T("ru_RU_yo"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Kiswahili (Africa)"), _T("rw_RW"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Kinyarwanda (Rwanda)"), _T("rw_RW"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Slovak (Slovakia)"), _T("sk_SK"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Slovenian (Slovenia)"), _T("sl_SI"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Swedish (Sweden)"), _T("sv_SE"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Kiswahili (Africa)"), _T("sw_KE"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Swahili (Kenya)"), _T("sw_KE"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Tetum (Indonesia)"), _T("tet_ID"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Tagalog (Philippines)"), _T("tl_PH"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Setswana (Africa)"), _T("tn_ZA"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Tswana (South Africa)"), _T("tn_ZA"));
   AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Ukrainian (Ukraine)"), _T("uk_UA"));
-  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Zulu (Africa)"), _T("zu_ZA"));
+  AddDictionaryElement(pLookupMap, strDictionaryPath, _T("Zulu (South Africa)"), _T("zu_ZA"));
 
   // Add the custom MySpell dictionary entries to the map
   StringToStringMap::iterator start = m_CustomMySpellDictionaryMap.begin();

@@ -201,12 +201,10 @@ void SpellCheckerPlugin::OnRelease(bool appShutDown)
     //delete m_pOnlineChecker;
     m_pOnlineChecker = NULL;
 
-    if ( m_pThesaurus )
-        delete m_pThesaurus;
+    delete m_pThesaurus;
     m_pThesaurus = NULL;
 
-    if ( m_sccfg )
-        delete m_sccfg;
+    delete m_sccfg;
     m_sccfg = NULL;
 
 
@@ -345,21 +343,10 @@ void SpellCheckerPlugin::OnSpelling(wxCommandEvent &event)
 }
 void SpellCheckerPlugin::OnUpdateSpelling(wxUpdateUIEvent &event)
 {
-    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( ed )
-    {
-        cbStyledTextCtrl *stc = ed->GetControl();
-        if ( stc )
-        {
-            wxString str = stc->GetSelectedText();
-            if ( !str.IsEmpty() )
-            {
-                event.Enable(true);
-                return;
-            }
-        }
-    }
-    event.Enable(false);
+    if ( ActiveEditorHasTextSelected() )
+        event.Enable(true);
+    else
+        event.Enable(false);
 }
 void SpellCheckerPlugin::OnThesaurus(wxCommandEvent &event)
 {
@@ -405,21 +392,26 @@ void SpellCheckerPlugin::OnThesaurus(wxCommandEvent &event)
 }
 void SpellCheckerPlugin::OnUpdateThesaurus(wxUpdateUIEvent &event)
 {
+    if ( ActiveEditorHasTextSelected() && m_pThesaurus->IsOk() )
+        event.Enable(true);
+    else
+        event.Enable(false);
+}
+
+bool SpellCheckerPlugin::ActiveEditorHasTextSelected(void)
+{
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( ed && m_pThesaurus->IsOk() )
+    if ( ed )
     {
         cbStyledTextCtrl *stc = ed->GetControl();
         if ( stc )
         {
             wxString str = stc->GetSelectedText();
             if ( !str.IsEmpty() )
-            {
-                event.Enable(true);
-                return;
-            }
+                return true;
         }
     }
-    event.Enable(false);
+    return false;
 }
 
 void SpellCheckerPlugin::OnReplaceBySuggestion(wxCommandEvent &event)
@@ -523,7 +515,7 @@ void SpellCheckerPlugin::OnEditorSaved(CodeBlocksEvent& event)
     if ( !eb )
         return;
 
-    // the personal dictionary (with the current language gets saved ->
+    // the personal dictionary (with the current language) gets saved ->
     // reload its content into SpellChecker
     if ( eb->GetFilename() == m_sccfg->GetPersonalDictionaryFilename() )
     {

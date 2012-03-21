@@ -159,6 +159,7 @@ class SpellCheckerPlugin : public cbPlugin
         void SavePersonalDictionary();
         void OnEditorSaved(CodeBlocksEvent& event);
         //void OnRightUpOverStatus(wxMouseEvent &event);
+        bool ActiveEditorHasTextSelected(void);
 
     public:
         void EditPersonalDictionary();

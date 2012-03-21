@@ -39,6 +39,7 @@ SpellCheckerConfig::SpellCheckerConfig(SpellCheckerPlugin *plugin)
 {
     Load();
     ScanForDictionaries();
+    PopulateLanguageNamesMap();
 }
 
 SpellCheckerConfig::~SpellCheckerConfig()
@@ -166,4 +167,78 @@ void SpellCheckerConfig::Save()
         cfg->Write(CFG_SPELLCHECK_BITMAPS_PATH, m_BitmPath);
     }
     m_pPlugin->ReloadSettings();
+}
+
+void SpellCheckerConfig::PopulateLanguageNamesMap()
+{
+    m_LanguageNamesMap[_T("af_ZA")] = _T("Afrikaans (South Africa)");
+    m_LanguageNamesMap[_T("bg_BG")] = _T("Bulgarian (Bulgaria)");
+    m_LanguageNamesMap[_T("ca_ES")] = _T("Catalan (Spain)");
+    m_LanguageNamesMap[_T("cz_CZ")] = _T("Czech (Czech Republic)");
+    m_LanguageNamesMap[_T("cy_GB")] = _T("Welsh (Wales)");
+    m_LanguageNamesMap[_T("da_DK")] = _T("Danish (Denmark)");
+    m_LanguageNamesMap[_T("de_AT")] = _T("German (Austria)");
+    m_LanguageNamesMap[_T("de_CH")] = _T("German (Switzerland)");
+    m_LanguageNamesMap[_T("de_DE")] = _T("German (Germany-orig dict)");
+    m_LanguageNamesMap[_T("de_DE_comb")] =_T("German (Germany-old & neu ortho)");
+    m_LanguageNamesMap[_T("de_DE_neu")] =_T("German (Germany-neu ortho)");
+    m_LanguageNamesMap[_T("el_GR")] = _T("Greek (Greece)");
+    m_LanguageNamesMap[_T("en_AU")] = _T("English (Australia)");
+    m_LanguageNamesMap[_T("en_CA")] = _T("English (Canada)");
+    m_LanguageNamesMap[_T("en_GB")] = _T("English (United Kingdom)");
+    m_LanguageNamesMap[_T("en_NZ")] = _T("English (New Zealand)");
+    m_LanguageNamesMap[_T("en_US")] = _T("English (United States)");
+    m_LanguageNamesMap[_T("eo_l3")] = _T("Esperanto (Anywhere)");
+    m_LanguageNamesMap[_T("es_ES")] = _T("Spanish (Spain-etal)");
+    m_LanguageNamesMap[_T("es_MX")] = _T("Spanish (Mexico)");
+    m_LanguageNamesMap[_T("fo_FO")] = _T("Faroese (Faroese Islands)");
+    m_LanguageNamesMap[_T("fr_FR")] = _T("French (France)");
+    m_LanguageNamesMap[_T("ga_IE")] = _T("Irish (Ireland)");
+    m_LanguageNamesMap[_T("gd_GB")] = _T("Scottish Gaelic (Scotland)");
+    m_LanguageNamesMap[_T("gl_ES")] = _T("Galician (Spain)");
+    m_LanguageNamesMap[_T("he_IL")] = _T("Hebrew (Israel)");
+    m_LanguageNamesMap[_T("hr_HR")] = _T("Croatian (Croatia)");
+    m_LanguageNamesMap[_T("hu_HU")] = _T("Hungarian (Hungaria)");
+    m_LanguageNamesMap[_T("ia")] =_T("Interligua (x-register)");
+    m_LanguageNamesMap[_T("id_ID")] = _T("Indonesian (Indonesia)");
+    m_LanguageNamesMap[_T("it_IT")] = _T("Italian (Italy)");
+    m_LanguageNamesMap[_T("la")] =_T("Latin (x-register)");
+    m_LanguageNamesMap[_T("lt_LT")] = _T("Lithuanian (Lithuania)");
+    m_LanguageNamesMap[_T("lv_LV")] = _T("Latvian (Latvia)");
+    m_LanguageNamesMap[_T("mg_MG")] = _T("Malagasy (Madagascar)");
+    m_LanguageNamesMap[_T("mi_NZ")] = _T("Maori (New Zealand)");
+    m_LanguageNamesMap[_T("ms_MY")] = _T("Malay (Malaysia)");
+    m_LanguageNamesMap[_T("nb_NO")] = _T("Norwegian Bokmaal (Norway)");
+    m_LanguageNamesMap[_T("nl_NL")] = _T("Dutch (Nederlands)");
+    m_LanguageNamesMap[_T("nn_NO")] = _T("Norwegian Nynorsk (Norway)");
+    m_LanguageNamesMap[_T("ny_MW")] = _T("Chichewa (Malawi)");
+    m_LanguageNamesMap[_T("pl_PL")] = _T("Polish (Poland)");
+    m_LanguageNamesMap[_T("pt_BR")] = _T("Portuguese (Brazil)");
+    m_LanguageNamesMap[_T("pt_PT")] = _T("Portuguese (Portugal)");
+    m_LanguageNamesMap[_T("ro_RO")] = _T("Romanian (Romania)");
+    m_LanguageNamesMap[_T("ru_RU")] = _T("Russian (Russia)");
+    m_LanguageNamesMap[_T("ru_RU_ye")] =_T("Russian ye (Russia)");
+    m_LanguageNamesMap[_T("ru_RU_yo")] =_T("Russian yo (Russia)");
+    m_LanguageNamesMap[_T("rw_RW")] = _T("Kinyarwanda (Rwanda)");
+    m_LanguageNamesMap[_T("sk_SK")] = _T("Slovak (Slovakia)");
+    m_LanguageNamesMap[_T("sl_SI")] = _T("Slovenian (Slovenia)");
+    m_LanguageNamesMap[_T("sv_SW")] = _T("Swedish (Sweden)");
+    m_LanguageNamesMap[_T("sw_KE")] = _T("Swahili (Kenya)");
+    m_LanguageNamesMap[_T("tet_ID")] = _T("Tetum (Indonesia)");
+    m_LanguageNamesMap[_T("tl_PH")] = _T("Tagalog (Philippines)");
+    m_LanguageNamesMap[_T("tn_ZA")] = _T("Tswana (South Africa)");
+    m_LanguageNamesMap[_T("uk_UA")] = _T("Ukrainian (Ukraine)");
+    m_LanguageNamesMap[_T("zu_ZA")] = _T("Zulu (South Africa)");
+}
+wxString SpellCheckerConfig::GetLanguageName(const wxString& language_id)
+{
+    std::map<wxString, wxString>::iterator it;
+
+    if(language_id.empty())
+        return language_id;
+
+    it = m_LanguageNamesMap.find(language_id);
+    if (it != m_LanguageNamesMap.end() )
+        return it->second;
+    return language_id;
 }
