@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSpellChecker">
-				<Option output=".libs/libwxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../../.objs/plugins/contrib/SpellChecker" />
 				<Option type="2" />
@@ -29,8 +29,8 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="wxspellchecker/include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -40,7 +40,7 @@
 				</Linker>
 			</Target>
 			<Target title="plugin">
-				<Option output="../../../devel/share/codeblocks/plugins/libSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -58,16 +58,15 @@
 					<Add option="-fPIC" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
-					<Add directory="wxspellchecker/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
-					<Add option="-lwxSpellChecker" />
 					<Add option="`pkg-config hunspell --libs`" />
+					<Add library="wxSpellChecker" />
 					<Add library="codeblocks" />
-					<Add directory=".libs" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
@@ -236,7 +235,6 @@
 			<debugger />
 			<wxsmith version="1">
 				<resources>
-					<wxDialog wxs="wxsmith/ThesaurusDialog.wxs" src="ThesaurusDialog.cpp" hdr="ThesaurusDialog.h" xrc="ThesaurusDialog.xrc" fwddecl="0" i18n="1" name="ThesaurusDialog" language="CPP" />
 					<wxPanel wxs="wxsmith/SpellCheckSettingsPanel.wxs" src="SpellCheckSettingsPanel.cpp" hdr="SpellCheckSettingsPanel.h" xrc="SpellCheckSettingsPanel.xrc" fwddecl="0" i18n="1" name="SpellCheckSettingsPanel" language="CPP" />
 				</resources>
 			</wxsmith>

@@ -22,7 +22,7 @@
 
 // default encoding and keystring
 #define SPELL_ENCODING  "ISO8859-1"
-#define SPELL_KEYSTRING "qwertyuiop|asdfghjkl|zxcvbnm" 
+#define SPELL_KEYSTRING "qwertyuiop|asdfghjkl|zxcvbnm"
 
 // default morphological fields
 #define MORPH_STEM        "st:"
@@ -109,13 +109,6 @@ LIBHUNSPELL_DLL_EXPORTED int uniqlist(char ** list, int n);
 // free character array list
 LIBHUNSPELL_DLL_EXPORTED void freelist(char *** list, int n);
 
-// character encoding information
-struct cs_info {
-  unsigned char ccase;
-  unsigned char clower;
-  unsigned char cupper;
-};
-
 // Unicode character encoding information
 struct unicode_info {
   unsigned short c;
@@ -123,10 +116,11 @@ struct unicode_info {
   unsigned short clower;
 };
 
-struct unicode_info2 {
-  char cletter;
-  unsigned short cupper;
-  unsigned short clower;
+// character encoding information
+struct cs_info {
+  unsigned char ccase;
+  unsigned char clower;
+  unsigned char cupper;
 };
 
 LIBHUNSPELL_DLL_EXPORTED int initialize_utf_tbl();
@@ -135,22 +129,7 @@ LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetoupper(unsigned short c, int lan
 LIBHUNSPELL_DLL_EXPORTED unsigned short unicodetolower(unsigned short c, int langnum);
 LIBHUNSPELL_DLL_EXPORTED int unicodeisalpha(unsigned short c);
 
-struct enc_entry {
-  const char * enc_name;
-  struct cs_info * cs_table;
-};
-
-// language to encoding default map
-
-struct lang_map {
-  const char * lang;
-  const char * def_enc;
-  int num;
-};
-
 LIBHUNSPELL_DLL_EXPORTED struct cs_info * get_current_cs(const char * es);
-
-LIBHUNSPELL_DLL_EXPORTED const char * get_default_enc(const char * lang);
 
 // get language identifiers of language codes
 LIBHUNSPELL_DLL_EXPORTED int get_lang_num(const char * lang);
@@ -219,9 +198,9 @@ LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry *h)
     if (!h->var)
         ret = NULL;
     else if (h->var & H_OPT_ALIASM)
-        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
-    else 
-        ret = &(h->word[0]) + h->blen + 1;
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
+    else
+        ret = HENTRY_WORD(h) + h->blen + 1;
     return ret;
 }
 
@@ -232,9 +211,9 @@ LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA2(const struct hentry *h)
     if (!h->var)
         ret = "";
     else if (h->var & H_OPT_ALIASM)
-        ret = get_stored_pointer(&(h->word[0]) + h->blen + 1);
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
     else
-        ret = &(h->word[0]) + h->blen + 1;
+        ret = HENTRY_WORD(h) + h->blen + 1;
     return ret;
 }
 

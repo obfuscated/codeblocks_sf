@@ -223,9 +223,9 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
     //Manager::Get()->GetLogManager()->Log(wxT("dissecting: \"") + word + wxT("\""));
     //and now decide whether the word is an abbreviation and split words when case changes to uppercase
     bool upper = wxIsupper(word[0]) != 0;
-    int a, b, c;
-    a = 0; b = 0; c = 0;
-    for (; c < word.length();) {
+    int a, b;
+    a = 0; b = 0;
+    for (unsigned int c = 0; c < word.length();) {
         wxChar cc = word[c];
         if (upper == (wxIsupper(cc) != 0)) {
             //same case

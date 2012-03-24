@@ -1,3 +1,225 @@
+2012-01-10 Ehsan Akhgari <ehsan at mozilla dot com>
+	* moz#710940 Firefox Crash [@ AffixMgr::parse_file(char const*, char
+	const*) ]
+
+2011-12-16 Jared Wein <jwein at mozilla dot com>
+	* moz#710967 Incorrect argument passed to strncmp in
+	AffixMgr::parse_convtable
+
+2011-12-06 Caolán McNamara <caolanm at LibO>:
+	* rhbz#759647 fixed tempname of hunSPELL.bak collides with other users
+	when multiple edits in one dir
+
+2011-10-13 Caolán McNamara <caolanm at LibO>:
+	* moz#694002 crash in hunspell affixmgr on exit with bad .aff
+	* leak in hunspell affixmgr with bad .aff
+
+2011-09-19 Caolán McNamara <caolanm at LibO>:
+	* make libparsers.a not installed thanks to Tomáš Chvátal
+
+2011-06-23 Caolán McNamara <caolanm at LibO>:
+	* fix some windows compiler warnings
+
+2011-05-24 Németh László <nemeth at numbertext dot org>:
+        * src/hunspell/affixmgr.*: allow twofold suffixes in compounds
+          by extended version of Arno Teigseth's patch, see hun#3288562.
+        - new option for this feature: COMPOUNDMORESUFFIXES
+
+2011-02-16 Németh László <nemeth at numbertext dot org>:
+        * src/*/Makefile.am: fix library versioning, the probem reported by
+          Rene Engerhald and Simon Brouwer.
+
+	* man/hunspell.4: new version based on the revised version of Ruud Baars
+
+2011-02-02 Németh László <nemeth at OOo>:
+	* suggestngr.cxx: fix ngram PHONE suggestion for input words with
+	  diacritics using UTF-8 encoded dictionaries (add byte length to the
+	  8-bit phonet() argument instead of character length)
+
+	* suggestmgr.cxx: fix missing csconv problem with UTF-8 encoding
+	  dictionares, when the input contains non-BMP characters
+	- tests/utf8_nonbmp.sug: test file
+
+	* suggestmgr.cxx: mixed and keyboard based character suggestions
+	  don't forbid ngram suggestion search (optimized tests/suggestiontest)
+
+	* affixmgr.cxx: fix hun#2999225: interfering compounding mechanisms,
+	  tested on Dutch word list and reported by Ruud Baars
+
+	* affixmgr.cxx: allomorph fix for hun#2970240 (Hungarian 
+	  compound "vadász+gép" was analyzed as vad+ász+gép, and rejected
+	  by the ss->s rep rule (verb "vadássz"), but the analysis
+	  didn't continue for the longer word parts (vadász+gép).
+
+	* csutil.cxx: add lang code "az_AZ", "hu_HU", "tr_TR" for back
+	  compatibility (fixing Azeri and Turkish casing conversion, also
+	  Hungarian compound handling)
+
+	* affixmgr.cxx: fix morphological analysis
+
+2011-01-26 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: fix for moz#626195 (memcheck problem with FULLSTRIP).
+
+	* affixmgr.*, suggestmgr.cxx: FORBIDWARN parameter (see manual)
+
+2011-01-24 Németh László <nemeth at OOo>:
+	* suffixmgr.cxx: fix bad suggestion of forbidden compound words, eg. 
+	  "termijndoel" with the Dutch dictionary. Reported by Ruud Baars.
+
+	* latexparser.cxx: fix double apostrophe TeX quoation mark tokenization
+	  (hun#3119776), reported by Wybodekker at SF.net.
+
+	* tests/suggestiontest/*: multilanguage and single Hunspell version, see README
+	* tests/suggestiontest/prepare2: for make -f Makefile.orig single
+
+2011-01-22 Németh László <nemeth at OOo>:
+	* affixmgr.*, suggestmgr.*: new features
+	  ONLYMAXDIFF: remove all bad ngram suggestions (default mode keeps one)
+	  NONGRAMSUGGEST: similar to NOSUGGEST, but it forbids to use the word
+	  in ngram based (more, than 1-character distance) suggestions.
+
+2011-01-21 Németh László <nemeth at OOo>:
+	* suggestmgr.*: limit wild suggestions (hun#2970237 by Ruud Baars)
+	- limited compound word suggestions
+	- improved and limited ngram based suggestions
+	* tests/*.sug: modified test files
+	- feature MAXCPDSUGS:
+	  MAXCPDSUGS 0 : no compound suggestion, suggested by
+	  Finn Gruwier Larsen in hunfeat#2836033
+	  MAXCPDSUGS n : max. ~n compound suggestions
+	- feature MAXDIFF: differency limit for ngram suggestions: 0-10 
+	  eg. MAXDIFF 5: normal (default) limit
+	  MAXDIFF 0: only one ngram suggestion
+	  MAXDIFF 10: ~maxngramsugs ngram suggestions 
+
+	* affixmgr.*, hunspell.*: add flag FORCEUCASE (hun#2999228), force
+	  capitalization of compound words, see Hunspell 4 manual),
+	  suggested by Ruud Baars
+	  test/forceucase.*: test files
+
+	* affixmgr.*, hunspell.*: add flag WARN (hun#1808861), optional warning feature
+	  for rare words, suggested by Ruud Baars
+	  tests/warn: test files
+	* tools/hunspell.cxx: add option -r for optional filtering of rare words
+
+	* affixmgr.cxx: fix hun#3161359 (gcc warnings) reported by Ryan VanderMeulen.
+
+2011-01-17 Németh László <nemeth at OOo>:
+	* suggestmgr.cxx: fix hun#3158994 and hun#3159027 (missing csconv table
+	  using awkward 8bit capitalization of UTF-8 encoded dictionary words with PHONE
+	  suggestion, reported by benjarobin and dicollecte at SF.net).
+
+2011-01-13 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: ONLYINCOMPOUND fix for hun#2999224 (fogemorphene
+          was allowed in end position of compoundings). Reported by Ruud Baars.
+        * tests/onlyincompound2.*: test files
+
+2011-01-10 Ingo H. de Boer <idb_winshell at SF.net>:
+	* win_api/{hunspell,libhunspell, testparser}.vcproj: updated project
+	  files for the library and the executables. Compiling problem
+	  also reported by Don Walker.
+
+2011-01-06 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: fix freedesktop#32850 (program halt during Hungarian
+          spell checking of the word "6csillagocska6", reported by András Tímár)
+
+        * tools/hunspell.cxx: add Mac OS X Hunspell dictionary paths, asked by
+          Vidar Gundersen in hunfeat#3142010
+
+2011-01-05 Caolán McNamara <cmc at OOo>:
+	* moz#620626 NS_UNICHARUTIL_CID doesn't support
+	  case conversion
+
+2011-01-03 Németh László <nemeth at OOo>:
+	* NEWS and THANKS: update for release 1.2.13
+
+2010-12-20 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: hun#3140784
+
+2010-12-16 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: 
+        - improved fix of hun#2970242 (supporting
+          zero affixes, reported by Ruud Baars
+        - tests/opentaal_cpdpat{,2}: test files
+
+        - switching off default BREAK parameters by BREAK 0,
+          reported by Ruud Baars
+
+        - hun#2999225: interfering compounding mechanisms, reported by Ruud Baars
+
+2010-12-11 Németh László <nemeth at OOo>:
+        * affixmgr.cxx: fix hun#2970242 (CHECKCOMPOUNDPATTERN only with flags),
+          the bug reported by Ruud Baars
+        * tests/2970242.*: test files
+
+        * tests/2970240.*: test files for CHECKCOMPOUNDPATTERN fix (check all
+          boundaries in compound words, fixed by the previous CHECKCOMPOUNDREP
+          fix), the bug reported by Ruud Baars
+
+        * win_api/Makefile.cygwin: update
+
+2010-12-09 Caolán McNamara <cmc at OOo>:
+	* moz#617953 fix leak
+
+2010-11-08 Caolán McNamara <cmc at OOo>:
+	* rhbz#650503 crash in arabic dictionary
+
+2010-11-05 Caolán McNamara <cmc at OOo>:
+	* rhbz#648740 don't warn on empty flagvector
+
+2010-11-03 Caolán McNamara <cmc at OOo>:
+	* logically we shouldn't need a csconv table in utf-8 mode
+
+2010-10-27 Németh László <nemeth at OOo>:
+	* hun#3000055 (requested by Ruud Baars) add REP boundary specifiation:
+	  REP ^word$ xxxx
+	  REP ^wordstarting xxxx
+	  REP wordending$ xxxx
+
+	* hun#3008434 (requested by Adrián Chaves Fernández) and
+	  hun#3018929 (requested by Ruud Baars): REP with more than 2 words:
+	  REP morethantwo more_than_two
+
+	* suggestmgr.cxx: fix incomplete suggestion list for capitalized words,
+	  eg. missing Machtstrijd->Machtsstrijd in the Dutch dictionary
+	  (reported by Ruud Bars)
+
+	* tests, man: related updates
+
+2010-10-12 Caolán McNamara <cmc at OOo>:
+	* moz#603311 HashMgr::load_tables leaks dict when decode_flags fails
+	* fix mem leak found with new tests
+	* hun#3084340 allow underscores in html entity names
+
+2010-10-07 Németh László <nemeth at OOo>:
+	* affixmgr.cxx: 
+	- hun#2970239 fix bad suggestion of forbidden compound words
+	- hun#2999224 fix keepcase feature on compound words (only partial
+	  fix for COMPOUNDRULE based compounding)
+	- fix checkcompoundrep feature in compound words (check all boundaries,
+	  not only the last one)
+	  Problems reported by Ruud Baars.
+	  
+	* tests/opentaal_forbiddenword[12]*, tests/opentaal_keepcase*:
+	  new test files for the previous fixes
+	* tests/checkcompoundrep: extended test file.
+
+2010-09-05 Caolán McNamara <cmc at OOo>:
+	* moz#583582 fix double buffer gcc fortify issue
+
+2010-08-13 Caolán McNamara <cmc at OOo>:
+	* moz#586671 AffixMgr::parse_convtable leaks pattern/pattern2 if it
+	can't create both
+	* moz#586686 tidy up get_xml_list and friends
+
+2010-08-10 Caolán McNamara <cmc at OOo>:
+	* hun#3022860 fix remove duplicate code
+
+2010-07-17 Caolán McNamara <cmc at OOo>:
+	* remove ununsed get_default_enc and avoid potential misrecognition of
+	three letter language ids
+	* normalize encoding names before lookup
+
 2010-07-05 Caolán McNamara <cmc at OOo>:
 	* hun#2286060 add Hangul syllables to unicode tables
 

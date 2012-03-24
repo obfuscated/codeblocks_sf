@@ -2,6 +2,8 @@
 name=bzipstream
 type=3
 defaultConfig=0
+
+
 [Debug]
 // compiler 
 workingDirectory=
@@ -22,6 +24,7 @@ debugLevel=2
 exceptionEnabled=1
 runtimeTypeEnabled=1
 optimizeLevel=0
+
 // linker
 libraryPath=
 outputFilename=../lib_bzipstreamd.a
@@ -30,12 +33,15 @@ extraLinkerOptions=
 ignoreStartupFile=1
 ignoreDefaultLibs=1
 stripExecutableFile=1
+
 // archive
 extraArchiveOptions=
+
 //resource
 resourcePreprocessor=
 resourceIncludeDirectory=
 extraResourceOptions=
+
 [Release]
 // compiler 
 workingDirectory=
@@ -56,6 +62,7 @@ debugLevel=1
 exceptionEnabled=1
 runtimeTypeEnabled=1
 optimizeLevel=0
+
 // linker
 libraryPath=
 outputFilename=../lib_bzipstream.a
@@ -64,12 +71,15 @@ extraLinkerOptions=
 ignoreStartupFile=1
 ignoreDefaultLibs=1
 stripExecutableFile=1
+
 // archive
 extraArchiveOptions=
+
 //resource
 resourcePreprocessor=
 resourceIncludeDirectory=
 extraResourceOptions=
+
 [Source]
 1=bzipstream.cpp
 2=bzip/blocksort.c

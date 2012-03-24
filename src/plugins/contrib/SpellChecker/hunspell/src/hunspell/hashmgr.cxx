@@ -363,8 +363,8 @@ int HashMgr::load_tables(const char * tpath, const char * key)
   if (dict == NULL) return 1;
 
   // first read the first line of file to get hash table size */
-  if (!(ts = dict->getline())) {
-    HUNSPELL_WARNING(stderr, "error: empty dic file\n");
+  if ((ts = dict->getline()) == NULL) {
+    HUNSPELL_WARNING(stderr, "error: empty dic file %s\n", tpath);
     delete dict;
     return 2;
   }
@@ -396,11 +396,11 @@ int HashMgr::load_tables(const char * tpath, const char * key)
   // loop through all words on much list and add to hash
   // table and create word and affix strings
 
-  while ((ts = dict->getline())) {
+  while ((ts = dict->getline()) != NULL) {
     mychomp(ts);
     // split each line into word and morphological description
     dp = ts;
-    while ((dp = strchr(dp, ':'))) {
+    while ((dp = strchr(dp, ':')) != NULL) {
 	if ((dp > ts + 3) && (*(dp - 3) == ' ' || *(dp - 3) == '\t')) {
 	    for (dp -= 4; dp >= ts && (*dp == ' ' || *dp == '\t'); dp--);
 	    if (dp < ts) { // missing word
@@ -448,6 +448,7 @@ int HashMgr::load_tables(const char * tpath, const char * key)
         al = decode_flags(&flags, ap + 1, dict);
         if (al == -1) {
             HUNSPELL_WARNING(stderr, "Can't allocate memory.\n");
+            delete dict;
             return 6;
         }
         flag_qsort(flags, 0, al);
@@ -491,7 +492,6 @@ int HashMgr::hash(const char * word) const
 int HashMgr::decode_flags(unsigned short ** result, char * flags, FileMgr * af) {
     int len;
     if (*flags == '\0') {
-        HUNSPELL_WARNING(stderr, "error: line %d: bad flagvector\n", af->getlinenum());
         *result = NULL;
         return 0;
     }
@@ -616,7 +616,7 @@ int  HashMgr::load_config(const char * affpath, const char * key)
     // read in each line ignoring any that do not
     // start with a known line type indicator
 
-    while ((line = afflst->getline())) {
+    while ((line = afflst->getline()) != NULL) {
         mychomp(line);
 
        /* remove byte order mark */
@@ -756,7 +756,7 @@ int  HashMgr::parse_aliasf(char * line, FileMgr * af)
    /* now parse the numaliasf lines to read in the remainder of the table */
    char * nl;
    for (int j=0; j < numaliasf; j++) {
-        if (!(nl = af->getline())) return 1;
+        if ((nl = af->getline()) == NULL) return 1;
         mychomp(nl);
         tp = nl;
         i = 0;
@@ -863,7 +863,7 @@ int  HashMgr::parse_aliasm(char * line, FileMgr * af)
    /* now parse the numaliasm lines to read in the remainder of the table */
    char * nl = line;
    for (int j=0; j < numaliasm; j++) {
-        if (!(nl = af->getline())) return 1;
+        if ((nl = af->getline()) == NULL) return 1;
         mychomp(nl);
         tp = nl;
         i = 0;
