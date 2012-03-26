@@ -121,10 +121,13 @@ void SpellCheckSettingsPanel::PostConfig()
 {
     m_sccfg->SetEnableOnlineChecker(m_checkEnableOnlineSpellChecker->GetValue());
     std::vector<wxString> dics = m_sccfg->GetPossibleDictionaries();
-    wxString dic = dics[m_choiceDictionary->GetSelection()];
-    if ( !dic.IsEmpty() )
+    if ( !dics.empty() )
     {
-        m_sccfg->SetDictionaryName( dic );
+        wxString dic = dics[m_choiceDictionary->GetSelection()];
+        if ( !dic.IsEmpty() )
+        {
+            m_sccfg->SetDictionaryName( dic );
+        }
     }
 
     wxString path;
