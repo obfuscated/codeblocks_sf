@@ -1812,7 +1812,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
             break;
 
         default: // default style
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
             target->SetArtProvider(new NbStyleGTK());
 #else
             target->SetArtProvider(new wxAuiDefaultTabArt());

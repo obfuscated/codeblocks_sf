@@ -8,6 +8,14 @@
 
 #include "cbauibook.h"
 
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+    #define GSocket GLibSocket
+    #include <gtk/gtk.h>
+    #undef GSocket
+    #include <wx/artprov.h>
+#endif
+
+
 class wxDC;
 class wxWindow;
 class wxRect;
@@ -45,7 +53,7 @@ public:
                             const wxSize& required_bmp_size);
 };
 
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
 class NbStyleGTK : public wxAuiDefaultTabArt
 {
 public:
@@ -72,7 +80,8 @@ private:
     int m_Ythickness;
     int m_TabHBorder;
     int m_TabVBorder;
+    wxBitmap m_ActiveCloseButton;
 };
-#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
 
 #endif // NOTEBOOKSTYLES_H
