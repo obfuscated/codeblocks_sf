@@ -1834,13 +1834,29 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
 
 void MainFrame::DoUpdateEditorStyle()
 {
-    long closestyle = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_close_on_all")) ? wxAUI_NB_CLOSE_ON_ALL_TABS : 0;
+    long style = wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS;
+    long closestyle = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/tabs_closestyle"), 0);
+    switch (closestyle)
+    {
+        case 1: // current tab
+            style |= wxAUI_NB_CLOSE_ON_ACTIVE_TAB;
+            break;
+
+        case 2: // right side
+            style |= wxAUI_NB_CLOSE_BUTTON;
+            break;
+
+        default: // all tabs (default)
+            style |= wxAUI_NB_CLOSE_ON_ALL_TABS;
+            break;
+    }
+
     cbAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
 
-    DoUpdateEditorStyle(an, _T("editor"), closestyle | wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    DoUpdateEditorStyle(an, _T("editor"), style | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
     an = m_pInfoPane;
-    DoUpdateEditorStyle(an, _T("infopane"), closestyle | wxAUI_NB_DEFAULT_STYLE);
+    DoUpdateEditorStyle(an, _T("infopane"), style);
 
     an = Manager::Get()->GetProjectManager()->GetNotebook();
     DoUpdateEditorStyle(an, _T("project"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE);

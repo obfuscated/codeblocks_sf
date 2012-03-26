@@ -453,10 +453,28 @@
 									<size>0,16</size>
 								</object>
 								<object class="sizeritem">
-									<object class="wxCheckBox" name="chkCloseOnAll">
-										<label>Show close on all tabs</label>
+									<object class="wxBoxSizer">
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT3">
+												<label>Show close button on</label>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxComboBox" name="cmbTabCloseStyle">
+												<content>
+													<item>all tabs</item>
+													<item>current tab</item>
+													<item>the right side</item>
+												</content>
+												<style>wxCB_READONLY</style>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
 									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
