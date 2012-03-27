@@ -8,7 +8,7 @@
 
 #include "cbauibook.h"
 
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK)
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
     #define GSocket GLibSocket
     #include <gtk/gtk.h>
     #undef GSocket
