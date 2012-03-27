@@ -28,13 +28,11 @@
 #define CONF_GROUP _T("/replace_options")
 
 BEGIN_EVENT_TABLE(ReplaceDlg, wxScrollingDialog)
-    EVT_NOTEBOOK_PAGE_CHANGED(XRCID("nbReplace"), ReplaceDlg::OnFindChange)
     EVT_CHECKBOX(XRCID("chkMultiLine1"), ReplaceDlg::OnMultiChange)
     EVT_CHECKBOX(XRCID("chkMultiLine2"), ReplaceDlg::OnMultiChange)
     EVT_CHECKBOX(XRCID("chkLimitTo1"), ReplaceDlg::OnLimitToChange)
     EVT_CHECKBOX(XRCID("chkLimitTo2"), ReplaceDlg::OnLimitToChange)
 
-    EVT_SIZE(                           ReplaceDlg::OnSize)
     EVT_CHECKBOX(XRCID("chkRegEx1"),    ReplaceDlg::OnRegEx)
     EVT_ACTIVATE(                       ReplaceDlg::OnActivate)
 END_EVENT_TABLE()
@@ -129,7 +127,8 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 
     if (findInFilesOnly)
     {
-        XRCCTRL(*this, "nbReplace", wxNotebook)->DeletePage(0); // no active editor, so only replace-in-files
+// NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only replace-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
     else if (replaceInFilesActive)
@@ -139,6 +138,11 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
     }
 
     GetSizer()->SetSizeHints(this);
+
+// NOTE (jens#1#): Dynamically connect these events, to avoid asserts in debug-mode
+    Connect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ReplaceDlg::OnFindChange));
+    Connect(wxEVT_SIZE, wxSizeEventHandler(ReplaceDlg::OnSize));
+
 }
 
 ReplaceDlg::~ReplaceDlg()
@@ -197,6 +201,9 @@ ReplaceDlg::~ReplaceDlg()
     cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/regex2"), XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());
+
+    Disconnect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ReplaceDlg::OnFindChange));
+    Disconnect(wxEVT_SIZE, wxSizeEventHandler(ReplaceDlg::OnSize));
 }
 
 void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)

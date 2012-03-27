@@ -100,7 +100,8 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
     if (!m_Complete)
     {
-        XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
+// NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
+        (XRCCTRL(*this, "nbFind", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only find-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
     else if (findInFilesActive)
