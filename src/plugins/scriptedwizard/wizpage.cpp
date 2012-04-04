@@ -479,7 +479,7 @@ WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& v
                 {
                     cmb->Append(compiler->GetName());
                     if (compiler->GetID().IsSameAs(def))
-                        id = (cmb->GetCount() - 1) < 0 ? 0 : (cmb->GetCount() - 1);
+                        id = cmb->GetCount() < 1 ? 0 : (cmb->GetCount() - 1);
                     break;
                 }
             }

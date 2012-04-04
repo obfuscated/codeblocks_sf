@@ -270,7 +270,7 @@ bool Tokenizer::IsEscapedChar()
     {
         // check for multiple backslashes, e.g. "\\"
         unsigned int numBackslash = 2; // for sure we have at least two at this point
-        while (   ((m_TokenIndex - numBackslash) >= 0)
+        while (   m_TokenIndex >= numBackslash
                && ((m_TokenIndex - numBackslash) <= m_BufferLen)
                && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
             ++numBackslash; // another one...

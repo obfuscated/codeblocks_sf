@@ -345,10 +345,10 @@ protected:
     /** Return (peek) the previous character */
     wxChar PreviousChar() const
     {
-        if ( ((m_TokenIndex - 1) < 0) || (m_BufferLen==0) ) // (m_TokenIndex - 1) >= m_BufferLen can never be true
-            return 0;
+        if (m_TokenIndex > 0 && m_BufferLen > 0) // m_TokenIndex > m_BufferLen can never be true
+            return m_Buffer.GetChar(m_TokenIndex - 1);
 
-        return m_Buffer.GetChar(m_TokenIndex - 1);
+        return 0;
     };
 
 private:
@@ -378,7 +378,7 @@ private:
     {
         wxChar last = PreviousChar();
         // if DOS line endings, we have hit \r and we skip to \n...
-        if (last == _T('\r') && (m_TokenIndex - 2 >= 0))
+        if (last == _T('\r') && m_TokenIndex >= 2)
             return m_Buffer.GetChar(m_TokenIndex - 2) == _T('\\');
         return last == _T('\\');
     }

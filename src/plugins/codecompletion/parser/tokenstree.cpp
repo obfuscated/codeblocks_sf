@@ -197,7 +197,7 @@ int TokensTree::TokenExists(const wxString& name, const wxString& baseArgs, int 
     return -1;
 }
 
-size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask)
+size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask)
 {
     result.clear();
 
