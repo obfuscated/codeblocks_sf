@@ -3497,7 +3497,7 @@
 		<Unit filename="tools/ConsoleRunner/main.cpp">
 			<Option target="ConsoleRunner" />
 		</Unit>
-		<Unit filename="wxsmith/debuggersettginscommonpanel.wxs">
+		<Unit filename="wxsmith/debuggersettingscommonpanel.wxs">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="wxsmith/debuggersettingsdlg.wxs">

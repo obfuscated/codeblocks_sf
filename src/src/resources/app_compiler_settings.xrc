@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxScrollingDialog" name="dlgCompilerSettings">
-        <title>Compiler and debugger settings</title>
+        <title>Compiler settings</title>
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
         <object class="wxBoxSizer">
