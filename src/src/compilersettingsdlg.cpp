@@ -162,29 +162,6 @@ void CompilerSettingsDlg::AddPluginPanels()
 	lb->GetImageList()->Add(cbLoadBitmap(offFile));
     lb->SetPageImage(lb->GetPageCount() -1, lb->GetImageList()->GetImageCount() - 2);
 
-    // step 2
-    Manager::Get()->GetPluginManager()->GetConfigurationPanels(cgDebugger, lb, local);
-    for (size_t i = 0; i < local.GetCount(); ++i)
-    {
-        cbConfigurationPanel* panel = local[i];
-        panel->SetParentDialog(this);
-        lb->AddPage(panel, panel->GetTitle());
-
-        wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
-        if (onFile.IsEmpty())
-			onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
-        wxString offFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T("-off.png"), sdDataGlobal | sdDataUser);
-        if (offFile.IsEmpty())
-			offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
-
-        lb->GetImageList()->Add(cbLoadBitmap(onFile));
-        lb->GetImageList()->Add(cbLoadBitmap(offFile));
-        lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
-
-        // add it in our central container too
-        m_PluginPanels.Add(panel);
-    }
-
     UpdateListbookImages();
 }
 

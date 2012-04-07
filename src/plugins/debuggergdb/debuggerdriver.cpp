@@ -11,14 +11,15 @@
 #include "debuggerdriver.h"
 #include "debuggergdb.h"
 
+#include <cbdebugger_interfaces.h>
+
 DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
     : m_pDBG(plugin),
     m_ProgramIsStopped(true),
     m_ChildPID(0),
-    m_pBacktrace(0),
-    m_pDisassembly(0),
-    m_pExamineMemory(0),
-    m_QueueBusy(false)
+    m_QueueBusy(false),
+    m_currentFrameNo(0),
+    m_userSelectedFrameNo(-1)
 {
     //ctor
 }
@@ -26,7 +27,9 @@ DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
 DebuggerDriver::~DebuggerDriver()
 {
     //dtor
-    ClearQueue();
+    for (size_t ii = 0; ii < m_DCmds.GetCount(); ++ii)
+        delete m_DCmds[ii];
+    m_DCmds.Clear();
 }
 
 void DebuggerDriver::Log(const wxString& msg)
@@ -37,19 +40,6 @@ void DebuggerDriver::Log(const wxString& msg)
 void DebuggerDriver::DebugLog(const wxString& msg)
 {
     m_pDBG->DebugLog(msg);
-}
-
-void DebuggerDriver::SetDebugWindows(BacktraceDlg* b,
-                                    DisassemblyDlg* d,
-                                    CPURegistersDlg* r,
-                                    ExamineMemoryDlg* m,
-                                    ThreadsDlg* t)
-{
-    m_pBacktrace = b;
-    m_pDisassembly = d;
-    m_pCPURegisters = r;
-    m_pExamineMemory = m;
-    m_pThreads = t;
 }
 
 void DebuggerDriver::ClearDirectories()
@@ -66,6 +56,15 @@ void DebuggerDriver::AddDirectory(const wxString& dir)
 void DebuggerDriver::SetWorkingDirectory(const wxString& dir)
 {
     m_WorkingDir = dir;
+}
+
+wxString DebuggerDriver::GetDebuggersWorkingDirectory() const
+{
+    wxString oldDir = wxGetCwd();
+    wxSetWorkingDirectory(m_WorkingDir);
+    wxString newDir = wxGetCwd();
+    wxSetWorkingDirectory(oldDir);
+    return newDir;
 }
 
 void DebuggerDriver::SetArguments(const wxString& args)
@@ -88,6 +87,12 @@ void DebuggerDriver::NotifyCursorChanged()
     m_LastCursorAddress = m_Cursor.address;
     wxCommandEvent event(DEBUGGER_CURSOR_CHANGED);
     m_pDBG->ProcessEvent(event);
+}
+
+void DebuggerDriver::NotifyDebuggeeContinued()
+{
+    m_pDBG->DebuggeeContinued();
+    ResetCursor();
 }
 
 void DebuggerDriver::ResetCursor()
@@ -117,25 +122,28 @@ DebuggerCmd* DebuggerDriver::CurrentCommand()
 
 void DebuggerDriver::RunQueue()
 {
-    if (m_QueueBusy || !m_DCmds.GetCount())
+    if (m_QueueBusy || !m_DCmds.GetCount() || !IsProgramStopped())
         return;
+
+    DebuggerCmd *command = CurrentCommand();
 
 //    Log(_T("Running command: ") + CurrentCommand()->m_Cmd);
     // don't send a command if empty; most debuggers repeat the last command this way...
-    if (!CurrentCommand()->m_Cmd.IsEmpty())
+    if (!command->m_Cmd.IsEmpty())
     {
         m_QueueBusy = true;
-        m_pDBG->SendCommand(CurrentCommand()->m_Cmd);
-        m_ProgramIsStopped = false;
+        m_pDBG->DoSendCommand(command->m_Cmd);
+        if (command->IsContinueCommand())
+            m_ProgramIsStopped = false;
     }
 
     // Call Action()
-    CurrentCommand()->Action();
+    command->Action();
 
     // If the command was an action (i.e. no command specified,
     // remove it from the queue and run the next command.
     // For other commands, this happens in driver's ParseOutput().
-    if (CurrentCommand()->m_Cmd.IsEmpty())
+    if (command->m_Cmd.IsEmpty())
     {
         RemoveTopCommand(true);
         RunQueue();
@@ -153,16 +161,39 @@ void DebuggerDriver::RemoveTopCommand(bool deleteIt)
     m_DCmds.RemoveAt(0);
 }
 
-void DebuggerDriver::ClearQueue()
+DebuggerDriver::StackFrameContainer const & DebuggerDriver::GetStackFrames() const
 {
-    int idx = 0;
-    // if the first command in the queue is running, delete all others
-    // (this will be deleted when done)
-    if (m_QueueBusy && !m_DCmds.GetCount())
-        idx = 1;
-    for (int i = idx; i < (int)m_DCmds.GetCount(); ++i)
-    {
-        delete m_DCmds[i];
-        m_DCmds.RemoveAt(i);
-    }
+    return m_backtrace;
 }
+
+DebuggerDriver::StackFrameContainer& DebuggerDriver::GetStackFrames()
+{
+    return m_backtrace;
+}
+
+const DebuggerDriver::ThreadsContainer & DebuggerDriver::GetThreads() const
+{
+    return m_threads;
+}
+
+DebuggerDriver::ThreadsContainer & DebuggerDriver::GetThreads()
+{
+    return m_threads;
+}
+
+void DebuggerDriver::SetCurrentFrame(int number, bool user_selected)
+{
+    m_currentFrameNo = number;
+    if (user_selected)
+        m_userSelectedFrameNo = number;
+}
+
+void DebuggerDriver::ResetCurrentFrame()
+{
+    m_currentFrameNo = 0;
+    m_userSelectedFrameNo = -1;
+
+    if (Manager::Get()->GetDebuggerManager()->UpdateBacktrace())
+        Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
+}
+

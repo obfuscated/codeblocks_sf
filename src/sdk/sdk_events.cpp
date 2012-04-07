@@ -85,9 +85,6 @@ const wxEventType cbEVT_EDITOR_SAVE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_TOOLTIP = wxNewEventType();
 const wxEventType cbEVT_EDITOR_TOOLTIP_CANCEL = wxNewEventType();
-const wxEventType cbEVT_EDITOR_BREAKPOINT_ADD = wxNewEventType();
-const wxEventType cbEVT_EDITOR_BREAKPOINT_EDIT = wxNewEventType();
-const wxEventType cbEVT_EDITOR_BREAKPOINT_DELETE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_UPDATE_UI = wxNewEventType();
 // project events
 const wxEventType cbEVT_PROJECT_NEW = wxNewEventType();
@@ -169,3 +166,5 @@ const wxEventType cbEVT_CBAUIBOOK_LEFT_DCLICK = wxNewEventType();
 // code-completion related events
 const wxEventType cbEVT_COMPLETE_CODE = wxNewEventType();
 const wxEventType cbEVT_SHOW_CALL_TIP = wxNewEventType();
+
+const wxEventType cbEVT_SETTINGS_CHANGED = wxNewEventType();

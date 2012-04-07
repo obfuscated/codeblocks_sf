@@ -32,6 +32,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						base64.cpp \
 						blockallocated.cpp \
 						cbauibook.cpp \
+						cbdebugger_interfaces.cpp \
 						cbeditor.cpp \
 						cbeditorprintout.cpp \
 						cbexception.cpp \
@@ -47,12 +48,13 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						compilerfactory.cpp \
 						compileroptions.cpp \
 						compiletargetbase.cpp \
-						configmanager.cpp \
 						configmanager-revision.cpp \
+						configmanager.cpp \
 						configurationpanel.cpp \
 						configuretoolsdlg.cpp \
 						confirmreplacedlg.cpp \
 						crc32.cpp \
+						debuggermanager.cpp \
 						editarrayfiledlg.cpp \
 						editarrayorderdlg.cpp \
 						editarraystringdlg.cpp \

@@ -229,6 +229,9 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Go to previous debugger breakpoint. */
         void GotoPreviousBreakpoint();
 
+        /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
+        void RefreshBreakpointMarkers();
+
         /** Toggle bookmark at specified line. If @c line is -1, use current line. */
         void ToggleBookmark(int line = -1);
 
@@ -344,6 +347,8 @@ class DLLIMPORT cbEditor : public EditorBase
         void DestroySplitView();
 
         void DoInitializations(const wxString& filename, LoaderBase* fileLdr = 0);
+
+        void BreakpointMarkerToggle(int line);
 
         // variables
         bool m_IsOK;

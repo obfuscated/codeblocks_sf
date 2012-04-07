@@ -328,8 +328,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/compilergcc/resources/Makefile
 	src/plugins/debuggergdb/Makefile
 	src/plugins/debuggergdb/resources/Makefile
-	src/plugins/debuggergdb/resources/images/Makefile
-	src/plugins/debuggergdb/resources/images/16x16/Makefile
 	src/plugins/defaultmimehandler/Makefile
 	src/plugins/defaultmimehandler/resources/Makefile
 	src/plugins/openfileslist/Makefile

@@ -57,7 +57,7 @@ echo Packing core UI bitmaps
 cd src\resources
 %ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
 cd ..\..\sdk\resources
-%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
 %ZIPCMD% -0 -qu ..\..\..\%CB_DEVEL_RESDIR%\compiler.zip images\*.png images\16x16\*.png > nul

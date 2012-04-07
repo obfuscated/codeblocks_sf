@@ -41,6 +41,7 @@ void CompilerGNUAVR::Reset()
         m_Programs.CPP = _T("avr-g++.exe");
         m_Programs.LD = _T("avr-g++.exe");
         m_Programs.DBG = _T("avr-gdb.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("avr-ar.exe");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make.exe");
@@ -51,6 +52,7 @@ void CompilerGNUAVR::Reset()
         m_Programs.CPP = _T("avr-g++");
         m_Programs.LD = _T("avr-g++");
         m_Programs.DBG = _T("avr-gdb");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("avr-ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

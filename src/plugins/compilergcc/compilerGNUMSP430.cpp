@@ -48,6 +48,7 @@ void CompilerGNUMSP430::Reset()
         m_Programs.CPP = _T("msp430-g++.exe");
         m_Programs.LD = _T("msp430-g++.exe");
         m_Programs.DBG = _T("msp430-insight.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("msp430-ar.exe");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make.exe");
@@ -58,6 +59,7 @@ void CompilerGNUMSP430::Reset()
         m_Programs.CPP = _T("msp430-g++");
         m_Programs.LD = _T("msp430-g++");
         m_Programs.DBG = _T("msp430-insight");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("msp430-ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

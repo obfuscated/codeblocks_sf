@@ -2,6 +2,7 @@ SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/include/scripting/include \
 			-I$(top_srcdir)/src/include/scripting/sqplus \
@@ -33,11 +34,21 @@ codeblocks_LDADD =  -L../sdk -lcodeblocks \
 
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
+			backtracedlg.cpp \
+			breakpointsdlg.cpp \
 			compilersettingsdlg.cpp \
+			cpuregistersdlg.cpp \
 			crashhandler.cpp \
+			debugger_interface_creator.cpp \
+			debuggermenu.cpp \
+			debuggersettingscommonpanel.cpp \
+			debuggersettingsdlg.cpp \
+			debuggersettingspanel.cpp \
+			disassemblydlg.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
+			examinememorydlg.cpp \
 			infopane.cpp \
 			main.cpp \
 			notebookstyles.cpp \
@@ -47,16 +58,28 @@ codeblocks_SOURCES = app.cpp \
 			scriptingsettingsdlg.cpp \
 			splashscreen.cpp \
 			startherepage.cpp \
-			switcherdlg.cpp
+			switcherdlg.cpp \
+			threadsdlg.cpp \
+			watchesdlg.cpp
 
 noinst_HEADERS = app.h \
 			appglobals.h \
+			backtracedlg.h \
 			batchbuild.h \
+			breakpointsdlg.h \
 			compilersettingsdlg.h \
+			cpuregistersdlg.h \
 			crashhandler.h \
+			debugger_interface_creator.h \
+			debuggermenu.h \
+			debuggersettingscommonpanel.h \
+			debuggersettingsdlg.h \
+			debuggersettingspanel.h \
+			disassemblydlg.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \
+			examinememorydlg.h \
 			infopane.h \
 			main.h \
 			notebookstyles.h \
@@ -66,7 +89,9 @@ noinst_HEADERS = app.h \
 			scriptingsettingsdlg.h \
 			splashscreen.h \
 			startherepage.h \
-			switcherdlg.h
+			switcherdlg.h \
+			threadsdlg.h \
+			watchesdlg.h
 
 man_MANS = codeblocks.1
 

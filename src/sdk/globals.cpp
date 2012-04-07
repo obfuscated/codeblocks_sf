@@ -337,6 +337,27 @@ FileType FileTypeOf(const wxString& filename)
     return ftOther;
 }
 
+wxString cbFindFileInPATH(const wxString &filename)
+{
+    wxString pathValues;
+    wxGetEnv(_T("PATH"), &pathValues);
+    if (pathValues.empty())
+        return wxEmptyString;
+
+    const wxString &sep = platform::windows ? _T(";") : _T(":");
+    wxChar pathSep = wxFileName::GetPathSeparator();
+    const wxArrayString &pathArray = GetArrayFromString(pathValues, sep);
+    for (size_t i = 0; i < pathArray.GetCount(); ++i)
+    {
+        if (wxFileExists(pathArray[i] + pathSep + filename))
+        {
+            if (pathArray[i].AfterLast(pathSep).IsSameAs(_T("bin")))
+                return pathArray[i];
+        }
+    }
+    return wxEmptyString;
+}
+
 void DoRememberSelectedNodes(wxTreeCtrl* tree, wxArrayString& selectedItemPaths)
 {
     wxArrayTreeItemIds items;

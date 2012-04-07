@@ -765,17 +765,9 @@
 																					<object class="sizeritem">
 																						<object class="wxBoxSizer">
 																							<object class="sizeritem">
-																								<object class="wxTextCtrl" name="txtDebugger" />
-																								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																								<border>8</border>
+																								<object class="wxChoice" name="cmbDebugger" />
+																								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 																								<option>1</option>
-																							</object>
-																							<object class="sizeritem">
-																								<object class="wxButton" name="btnDebugger">
-																									<label>...</label>
-																									<size>20,-1</size>
-																								</object>
-																								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																							</object>
 																						</object>
 																						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

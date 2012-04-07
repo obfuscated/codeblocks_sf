@@ -26,6 +26,7 @@ class wxFrame;
 class wxWindow;
 class ProjectManager;
 class EditorManager;
+class DebuggerManager;
 class LogManager;
 class PluginManager;
 class ToolsManager;
@@ -114,6 +115,8 @@ public:
     ScriptingManager*    GetScriptingManager() const;
     ConfigManager*       GetConfigManager(const wxString& name_space) const;
     FileManager*         GetFileManager() const;
+    DebuggerManager*     GetDebuggerManager() const;
+
 
 
     /////// XML Resource functions ///////
@@ -133,6 +136,7 @@ public:
     // Do not use this, use Get()
     static Manager* Get(wxFrame* appWindow);
 
+    wxToolBar* CreateEmptyToolbar();
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
 

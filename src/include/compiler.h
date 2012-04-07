@@ -155,6 +155,7 @@ struct CompilerPrograms
     wxString WINDRES;   // resource compiler
     wxString MAKE;      // make
     wxString DBG;       // debugger
+    wxString DBGconfig; // debugger config name = "debugger_settings_name:config_name"
 };
 
 /// Struct to keep switches

@@ -475,6 +475,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
             return *this;
         }
 
+        /** If a plugin runs the project executable, should not be able to run it too */
+        void SetIsRunning(cbPlugin *plugin);
+        cbPlugin* GetIsRunning() const;
     private:
         ProjectManager(const ProjectManager& /*rhs*/); // prevent copy construction
 
@@ -564,6 +567,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         wxTreeItemId         m_RightClickItem;
         bool                 m_isCheckingForExternallyModifiedProjects;
         bool                 m_CanSendWorkspaceChanged;
+        cbPlugin*            m_RunningPlugin;
 
         DECLARE_EVENT_TABLE()
 };

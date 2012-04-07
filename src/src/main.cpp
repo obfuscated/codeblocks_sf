@@ -15,6 +15,7 @@
 #include "cbauibook.h"
 #include "cbstyledtextctrl.h"
 #include "compilersettingsdlg.h"
+#include "debuggersettingsdlg.h"
 #include "dlgabout.h"
 #include "dlgaboutplugin.h"
 #include "environmentsettingsdlg.h"
@@ -47,6 +48,7 @@
 #include <cbproject.h>
 #include <cbworkspace.h>
 #include <configmanager.h>
+#include <debuggermanager.h>
 #include <editorcolourset.h>
 #include <editormanager.h>
 #include <filefilters.h>
@@ -60,6 +62,9 @@
 #include <templatemanager.h>
 #include <toolsmanager.h>
 #include <uservarmanager.h>
+
+#include "debugger_interface_creator.h"
+#include "debuggermenu.h"
 
 class cbFileDropTarget : public wxFileDropTarget
 {
@@ -239,6 +244,7 @@ int idViewLayoutDelete       = XRCID("idViewLayoutDelete");
 int idViewLayoutSave         = XRCID("idViewLayoutSave");
 int idViewToolbars           = XRCID("idViewToolbars");
 int idViewToolMain           = XRCID("idViewToolMain");
+int idViewToolDebugger       = XRCID("idViewToolDebugger");
 int idViewManager            = XRCID("idViewManager");
 int idViewLogManager         = XRCID("idViewLogManager");
 int idViewStatusbar          = XRCID("idViewStatusbar");
@@ -262,7 +268,8 @@ int idSearchGotoPreviousChanged = XRCID("idSearchGotoPreviousChanged");
 int idSettingsEnvironment    = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor         = XRCID("idSettingsEditor");
-int idSettingsCompilerDebugger = XRCID("idSettingsCompilerDebugger");
+int idSettingsCompiler       = XRCID("idSettingsCompiler");
+int idSettingsDebugger       = XRCID("idSettingsDebugger");
 int idPluginsManagePlugins   = XRCID("idPluginsManagePlugins");
 int idSettingsScripting      = XRCID("idSettingsScripting");
 
@@ -464,6 +471,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewLayoutSave,            MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete,          MainFrame::OnViewLayoutDelete)
     EVT_MENU(idViewToolMain,              MainFrame::OnToggleBar)
+    EVT_MENU(XRCID("idViewToolDebugger"), MainFrame::OnToggleBar)
     EVT_MENU(idViewLogManager,            MainFrame::OnToggleBar)
     EVT_MENU(idViewManager,               MainFrame::OnToggleBar)
     EVT_MENU(idViewStatusbar,             MainFrame::OnToggleStatusBar)
@@ -477,7 +485,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSettingsEnvironment,    MainFrame::OnSettingsEnvironment)
     EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
     EVT_MENU(idSettingsEditor,         MainFrame::OnSettingsEditor)
-    EVT_MENU(idSettingsCompilerDebugger, MainFrame::OnSettingsCompilerDebugger)
+    EVT_MENU(idSettingsCompiler,       MainFrame::OnSettingsCompiler)
+    EVT_MENU(idSettingsDebugger,       MainFrame::OnSettingsDebugger)
     EVT_MENU(idPluginsManagePlugins,   MainFrame::OnSettingsPlugins)
     EVT_MENU(idSettingsScripting,      MainFrame::OnSettingsScripting)
 
@@ -684,6 +693,7 @@ void MainFrame::CreateIDE()
 
     // logs manager
     SetupGUILogging();
+    SetupDebuggerUI();
 
     CreateMenubar();
 
@@ -755,6 +765,24 @@ void MainFrame::SetupGUILogging()
     m_pInfoPane->SetDropTarget(new cbFileDropTarget(this));
 }
 
+void MainFrame::SetupDebuggerUI()
+{
+    m_debuggerMenuHandler = new DebuggerMenuHandler;
+    m_debuggerToolbarHandler = new DebuggerToolbarHandler(m_debuggerMenuHandler);
+    m_debuggerMenuHandler->SetEvtHandlerEnabled(false);
+    m_debuggerToolbarHandler->SetEvtHandlerEnabled(false);
+    wxWindow* window = Manager::Get()->GetAppWindow();
+    if (window)
+    {
+        window->PushEventHandler(m_debuggerMenuHandler);
+        window->PushEventHandler(m_debuggerToolbarHandler);
+    }
+    m_debuggerMenuHandler->SetEvtHandlerEnabled(true);
+    m_debuggerToolbarHandler->SetEvtHandlerEnabled(true);
+
+    Manager::Get()->GetDebuggerManager()->SetInterfaceFactory(new DebugInterfaceFactory);
+    m_debuggerMenuHandler->RegisterDefaultWindowItems();
+}
 
 DECLARE_INSTANCE_TYPE(MainFrame);
 
@@ -929,6 +957,7 @@ void MainFrame::CreateMenubar()
     // core modules: create menus
     Manager::Get()->GetProjectManager()->CreateMenu(mbar);
     Manager::Get()->GetEditorManager()->CreateMenu(mbar);
+    Manager::Get()->GetDebuggerManager()->SetMenuHandler(m_debuggerMenuHandler);
 
     // ask all plugins to rebuild their menus
     PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -1002,10 +1031,8 @@ void MainFrame::CreateToolbars()
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading toolbar..."));
 
-    wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
-    m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
-    m_pToolbar->SetToolBitmapSize(size);
-    Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
+    m_pToolbar = Manager::Get()->CreateEmptyToolbar();
+    Manager::Get()->AddonToolBar(m_pToolbar, xrcToolbarName);
 
     m_pToolbar->Realize();
 
@@ -1014,6 +1041,9 @@ void MainFrame::CreateToolbars()
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                           Name(wxT("MainToolbar")).Caption(_("Main Toolbar")).
+                          ToolbarPane().Top());
+    m_LayoutManager.AddPane(m_debuggerToolbarHandler->GetToolbar(), wxAuiPaneInfo().
+                          Name(wxT("DebuggerToolbar")).Caption(_("Debugger Toolbar")).
                           ToolbarPane().Top());
     DoUpdateLayout();
 
@@ -1468,9 +1498,7 @@ void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
-    wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
-    wxToolBar* tb = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
-    tb->SetToolBitmapSize(size);
+    wxToolBar *tb = Manager::Get()->CreateEmptyToolbar();
     if (plugin->BuildToolBar(tb))
     {
         SetToolBar(0);
@@ -4010,6 +4038,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     // toolbars
     mbar->Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
+    mbar->Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
     wxMenu* viewToolbars = 0;
     GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
     if (viewToolbars)
@@ -4108,6 +4137,8 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
         win = m_pInfoPane;
     else if (event.GetId() == idViewToolMain)
         win = m_pToolbar;
+    else if (event.GetId() == idViewToolDebugger)
+        win = m_debuggerToolbarHandler->GetToolbar();
     else
     {
         wxString pluginName = m_PluginIDsMap[event.GetId()];
@@ -4343,11 +4374,28 @@ void MainFrame::OnSettingsEditor(wxCommandEvent& /*event*/)
     Manager::Get()->GetEditorManager()->Configure();
 }
 
-void MainFrame::OnSettingsCompilerDebugger(wxCommandEvent& /*event*/)
+void MainFrame::OnSettingsCompiler(wxCommandEvent& /*event*/)
 {
     CompilerSettingsDlg dlg(this);
     PlaceWindow(&dlg);
-    dlg.ShowModal();
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        CodeBlocksEvent event(cbEVT_SETTINGS_CHANGED);
+        event.SetInt(cbSettingsType::Compiler);
+        Manager::Get()->ProcessEvent(event);
+    }
+}
+
+void MainFrame::OnSettingsDebugger(wxCommandEvent& /*event*/)
+{
+    DebuggerSettingsDlg dlg(this);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        CodeBlocksEvent event(cbEVT_SETTINGS_CHANGED);
+        event.SetInt(cbSettingsType::Debugger);
+        Manager::Get()->ProcessEvent(event);
+    }
 }
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& /*event*/)

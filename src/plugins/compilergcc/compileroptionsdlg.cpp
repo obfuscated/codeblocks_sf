@@ -42,6 +42,7 @@
 #include "cbexception.h"
 #include "compilergcc.h"
 #include "compileroptionsdlg.h"
+#include "debuggermanager.h"
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 
@@ -89,8 +90,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(            XRCID("btnLinker"),                       CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("txtLibLinker"),                    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnLibLinker"),                    CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtDebugger"),                     CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDebugger"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbDebugger"),                     CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("txtResComp"),                      CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnResComp"),                      CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("txtMake"),                         CompilerOptionsDlg::OnUpdateUI)
@@ -142,7 +142,6 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_BUTTON(                XRCID("btnCPPcompiler"),                 CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnLinker"),                      CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnLibLinker"),                   CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnDebugger"),                    CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnResComp"),                     CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnMake"),                        CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnAdvanced"),                    CompilerOptionsDlg::OnAdvancedClick)
@@ -186,6 +185,12 @@ class ScopeTreeData : public wxTreeItemData
     private:
         cbProject* m_Project;
         ProjectBuildTarget* m_Target;
+};
+
+struct DebuggerClientData : wxClientData
+{
+    DebuggerClientData(const wxString &s) : string(s) {}
+    wxString string;
 };
 
 /*
@@ -444,7 +449,31 @@ void CompilerOptionsDlg::DoFillCompilerPrograms()
     XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->SetValue(progs.CPP);
     XRCCTRL(*this, "txtLinker", wxTextCtrl)->SetValue(progs.LD);
     XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->SetValue(progs.LIB);
-    XRCCTRL(*this, "txtDebugger", wxTextCtrl)->SetValue(progs.DBG);
+    wxChoice *cmbDebugger = XRCCTRL(*this, "cmbDebugger", wxChoice);
+    if (cmbDebugger)
+    {
+        cmbDebugger->Clear();
+        // Add an invalid debugger entry and store the old value in the client data, so no user settings are changed.
+        cmbDebugger->Append(_("--- Invalid debugger ---"), new DebuggerClientData(progs.DBGconfig));
+        cmbDebugger->SetSelection(0);
+
+        const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+        for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+        {
+            const DebuggerManager::PluginData &data = it->second;
+            for (DebuggerManager::ConfigurationVector::const_iterator itConf = data.GetConfigurations().begin();
+                 itConf != data.GetConfigurations().end();
+                 ++itConf)
+            {
+                const wxString &def = it->first->GetSettingsName() + wxT(":") + (*itConf)->GetName();
+                int index = cmbDebugger->Append(it->first->GetGUIName() + wxT(" : ") + (*itConf)->GetName(),
+                                                new DebuggerClientData(def));
+                if (def == progs.DBGconfig)
+                    cmbDebugger->SetSelection(index);
+            }
+        }
+    }
+
     XRCCTRL(*this, "txtResComp", wxTextCtrl)->SetValue(progs.WINDRES);
     XRCCTRL(*this, "txtMake", wxTextCtrl)->SetValue(progs.MAKE);
 
@@ -1000,7 +1029,13 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
     progs.LIB     = (XRCCTRL(*this, "txtLibLinker",   wxTextCtrl)->GetValue()).Trim();
     progs.WINDRES = (XRCCTRL(*this, "txtResComp",     wxTextCtrl)->GetValue()).Trim();
     progs.MAKE    = (XRCCTRL(*this, "txtMake",        wxTextCtrl)->GetValue()).Trim();
-    progs.DBG     = (XRCCTRL(*this, "txtDebugger",    wxTextCtrl)->GetValue()).Trim();
+    wxChoice *cmbDebugger = XRCCTRL(*this, "cmbDebugger", wxChoice);
+    if (cmbDebugger)
+    {
+        int index = cmbDebugger->GetSelection();
+        const DebuggerClientData* data = static_cast<const DebuggerClientData*>(cmbDebugger->GetClientObject(index));
+        progs.DBGconfig = data->string;
+    }
     compiler->SetPrograms(progs);
     compiler->SetMasterPath(masterPath);
     compiler->SetOptions(m_Options); //LDC : DOES NOT BELONG HERE !!!
@@ -2141,8 +2176,6 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
         obj = XRCCTRL(*this, "txtLinker", wxTextCtrl);
     else if (event.GetId() == XRCID("btnLibLinker"))
         obj = XRCCTRL(*this, "txtLibLinker", wxTextCtrl);
-    else if (event.GetId() == XRCID("btnDebugger"))
-        obj = XRCCTRL(*this, "txtDebugger", wxTextCtrl);
     else if (event.GetId() == XRCID("btnResComp"))
         obj = XRCCTRL(*this, "txtResComp", wxTextCtrl);
     else if (event.GetId() == XRCID("btnMake"))

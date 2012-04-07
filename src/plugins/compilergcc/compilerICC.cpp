@@ -50,6 +50,7 @@ void CompilerICC::Reset()
         m_Programs.CPP = _T("icl.exe");
         m_Programs.LD = _T("xilink.exe"); //Runs Microsoft's link.exe
         m_Programs.DBG = _T("idb.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("xilink.exe");
         m_Programs.WINDRES = _T("rc.exe"); // platform SDK is needed for this
         m_Programs.MAKE = _T("mingw32-make.exe");//it works with nmake as well but cb doesn't
@@ -155,6 +156,7 @@ void CompilerICC::Reset()
         m_Programs.CPP = _T("icpc");
         m_Programs.LD = _T("icpc");
         m_Programs.DBG = _T("idb");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

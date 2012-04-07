@@ -297,7 +297,44 @@ public:
     };
 };
 
+/** Wrapper class for reading or writing config values, without the need for the full path.
+  * It provides a way to sandbox a part of the code from the namespace details
+  * or the full path used to access the config values.
+  */
+class DLLIMPORT ConfigManagerWrapper
+{
+public:
+    ConfigManagerWrapper() {}
+    ConfigManagerWrapper(wxString namespace_, wxString basepath) : m_namespace(namespace_), m_basepath(basepath)
+    {
+        if (!m_basepath.EndsWith(wxT("/")))
+            m_basepath += wxT("/");
+    }
+    bool IsValid() const { return !m_namespace.empty(); }
+    const wxString& GetBasepath() const { return m_basepath; }
 
+    void Write(const wxString& name, const wxString& value, bool ignoreEmpty = false);
+    wxString Read(const wxString& key, const wxString& defaultVal = wxEmptyString);
+
+    bool Read(const wxString& key, wxString* str);
+    void Write(const wxString& key, const char* str);
+
+    void Write(const wxString& name,  int value);
+    bool Read(const wxString& name,  int* value);
+    int  ReadInt(const wxString& name,  int defaultVal = 0);
+
+    void Write(const wxString& name,  bool value);
+    bool Read(const wxString& name,  bool* value);
+    bool ReadBool(const wxString& name,  bool defaultVal = false);
+
+    void Write(const wxString& name, double value);
+    bool Read(const wxString& name, double* value);
+    double ReadDouble(const wxString& name, double defaultVal = 0.0f);
+
+private:
+    wxString m_namespace;
+    wxString m_basepath;
+};
 
 
 

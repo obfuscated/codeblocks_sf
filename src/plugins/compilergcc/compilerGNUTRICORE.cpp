@@ -47,6 +47,7 @@ void CompilerGNUTRICORE::Reset()
         m_Programs.CPP = _T("tricore-g++.exe");
         m_Programs.LD = _T("tricore-g++.exe");
         m_Programs.DBG = _T("tricore-insight.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("tricore-ar.exe");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make.exe");
@@ -57,6 +58,7 @@ void CompilerGNUTRICORE::Reset()
         m_Programs.CPP = _T("tricore-g++");
         m_Programs.LD = _T("tricore-g++");
         m_Programs.DBG = _T("tricore-insight");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("tricore-ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

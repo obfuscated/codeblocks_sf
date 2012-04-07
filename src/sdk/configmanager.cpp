@@ -1475,4 +1475,99 @@ void ConfigManager::InitPaths()
 }
 
 
+void ConfigManagerWrapper::Write(const wxString& name, const wxString& value, bool ignoreEmpty)
+{
+    if (m_namespace.empty())
+        return;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    c->Write(m_basepath + name, value, ignoreEmpty);
+}
+wxString ConfigManagerWrapper::Read(const wxString& key, const wxString& defaultVal)
+{
+    if (m_namespace.empty())
+        return defaultVal;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->Read(m_basepath + key, defaultVal);
+}
 
+bool ConfigManagerWrapper::Read(const wxString& key, wxString* str)
+{
+    if (m_namespace.empty())
+        return false;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->Read(key, str);
+}
+void ConfigManagerWrapper::Write(const wxString& key, const char* str)
+{
+    if (m_namespace.empty())
+        return;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    c->Write(key, str);
+}
+
+void ConfigManagerWrapper::Write(const wxString& name, int value)
+{
+    if (m_namespace.empty())
+        return;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    c->Write(m_basepath + name, value);
+}
+bool ConfigManagerWrapper::Read(const wxString& name, int* value)
+{
+    if (m_namespace.empty())
+        return false;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->Read(m_basepath + name, value);
+}
+
+int ConfigManagerWrapper::ReadInt(const wxString& name, int defaultVal)
+{
+    if (m_namespace.empty())
+        return defaultVal;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->ReadInt(m_basepath + name, defaultVal);
+}
+
+void ConfigManagerWrapper::Write(const wxString& name, bool value)
+{
+    if (m_namespace.empty())
+        return;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    c->Write(m_basepath + name, value);
+}
+bool ConfigManagerWrapper::Read(const wxString& name, bool* value)
+{
+    if (m_namespace.empty())
+        return false;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->Read(m_basepath + name, value);
+}
+bool ConfigManagerWrapper::ReadBool(const wxString& name, bool defaultVal)
+{
+    if (m_namespace.empty())
+        return defaultVal;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->ReadBool(m_basepath + name, defaultVal);
+}
+
+void ConfigManagerWrapper::Write(const wxString& name, double value)
+{
+    if (m_namespace.empty())
+        return;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    c->Write(m_basepath + name, value);
+}
+bool ConfigManagerWrapper::Read(const wxString& name, double* value)
+{
+    if (m_namespace.empty())
+        return false;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->Read(m_basepath + name, value);
+}
+double ConfigManagerWrapper::ReadDouble(const wxString& name, double defaultVal)
+{
+    if (m_namespace.empty())
+        return defaultVal;
+    ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
+    return c->ReadDouble(m_basepath + name, defaultVal);
+}

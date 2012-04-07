@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision:$
- * $Id:$
- * $HeadURL:$
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #ifdef __WXMSW__
@@ -45,6 +45,7 @@ void CompilerMSVC10::Reset()
     m_Programs.WINDRES = _T("rc.exe");
     m_Programs.MAKE = _T("nmake.exe");
     m_Programs.DBG = _T("cdb.exe");
+    m_Programs.DBGconfig = wxEmptyString;
 
     m_Switches.includeDirs = _T("/I");
     m_Switches.libDirs = _T("/LIBPATH:");

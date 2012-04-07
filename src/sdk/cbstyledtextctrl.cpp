@@ -12,11 +12,19 @@
 //    #include "globals.h"
 //#endif
 
-#include <wx/string.h>
-#include <wx/timer.h>
+#include "sdk_precomp.h"
 #include "cbstyledtextctrl.h"
-#include "editorbase.h" // DisplayContextMenu
-#include "prep.h" // platform::gtk
+#ifndef CB_PRECOMP
+    #include <wx/string.h>
+    #include <wx/timer.h>
+
+    #include "editorbase.h" // DisplayContextMenu
+    #include "prep.h" // platform::gtk
+    #include "pluginmanager.h"
+#endif
+
+#include "cbdebugger_interfaces.h"
+#include "debuggermanager.h"
 
 static const wxString s_leftBrace(_T("([{'\""));
 static const wxString s_rightBrace(_T(")]}'\""));
@@ -118,6 +126,8 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
 
 void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
 {
+    bool emulateDwellStart = false;
+
     m_lastSelectedText = GetSelectedText();
 
     switch (event.GetKeyCode())
@@ -179,7 +189,17 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
                 m_tabSmartJump = false;
         }
         break;
+
+        case WXK_CONTROL:
+        {
+            EmulateDwellStart();
+            emulateDwellStart = true;
+        }
+        break;
     }
+
+    if (event.ControlDown() && !emulateDwellStart)
+        EmulateDwellStart();
 
     event.Skip();
 }
@@ -362,6 +382,21 @@ void cbStyledTextCtrl::HighlightRightBrace()
 
     SetCaretForeground(caretForeground);
     SetCaretWidth(caretWidth);
+}
+
+void cbStyledTextCtrl::EmulateDwellStart()
+{
+    EditorBase *editor = static_cast<EditorBase*>(m_pParent);
+
+    CodeBlocksEvent event(cbEVT_EDITOR_TOOLTIP);
+    wxPoint pt(ScreenToClient(wxGetMousePosition()));
+    event.SetX(pt.x);
+    event.SetY(pt.y);
+    int pos = PositionFromPoint(pt);
+    int style = GetStyleAt(pos);
+    event.SetInt(style);
+    event.SetEditor(editor);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
 void cbStyledTextCtrl::EnableTabSmartJump(bool enable)

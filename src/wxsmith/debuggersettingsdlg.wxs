@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxScrollingDialog" name="DebuggerSettingsDlg">
+		<title>Debugger settings</title>
+		<id_arg>0</id_arg>
+		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxMINIMIZE_BOX</style>
+		<object class="wxBoxSizer" variable="mainSizer" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxPanel" name="wxID_ANY" variable="header" member="no">
+					<bg>#004080</bg>
+					<style>wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+					<object class="wxBoxSizer" variable="headerSizer1" member="no">
+						<object class="sizeritem">
+							<object class="wxBoxSizer" variable="headerSizer2" member="no">
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_LABEL_ACTIVE_INFO" variable="m_activeInfo" member="yes">
+										<label>Active debugger config</label>
+										<fg>#FFFFFF</fg>
+										<bg>#004080</bg>
+										<font>
+											<size>12</size>
+											<weight>bold</weight>
+										</font>
+										<style>wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+									</object>
+									<flag>wxALL|wxEXPAND|wxSHAPED|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<option>1</option>
+								</object>
+							</object>
+							<flag>wxALL|wxSHAPED|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+							<option>1</option>
+						</object>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_RIGHT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTreebook" name="ID_TREEBOOK" variable="m_treebook" member="yes">
+					<handler function="OnPageChanged" entry="EVT_TREEBOOK_PAGE_CHANGED" />
+				</object>
+				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="wxID_ANY" variable="staticLine" member="no">
+					<size>10,-1</size>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="stdDialogButtons" member="no">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -14,10 +14,7 @@ libdebugger_la_LDFLAGS = $(WX_GTK2_LIBS) -module -version-info 0:1:0 -shared -no
 
 libdebugger_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
 
-libdebugger_la_SOURCES = backtracedlg.cpp \
-			breakpointsdlg.cpp \
-			cdb_driver.cpp \
-			cpuregistersdlg.cpp \
+libdebugger_la_SOURCES = cdb_driver.cpp \
 			databreakpointdlg.cpp \
 			debugger_defs.cpp \
 			debuggerdriver.cpp \
@@ -25,21 +22,13 @@ libdebugger_la_SOURCES = backtracedlg.cpp \
 			debuggeroptionsdlg.cpp \
 			debuggeroptionsprjdlg.cpp \
 			debuggerstate.cpp \
-			debuggertree.cpp \
-			disassemblydlg.cpp \
 			editbreakpointdlg.cpp \
 			editwatchdlg.cpp \
-			editwatchesdlg.cpp \
-			examinememorydlg.cpp \
 			gdb_driver.cpp \
-			gdb_tipwindow.cpp \
-			threadsdlg.cpp
+			parsewatchvalue.cpp
 
-noinst_HEADERS = backtracedlg.h \
-			breakpointsdlg.h \
-			cdb_commands.h \
+noinst_HEADERS = cdb_commands.h \
 			cdb_driver.h \
-			cpuregistersdlg.h \
 			databreakpointdlg.h \
 			debugger_defs.h \
 			debuggerdriver.h \
@@ -47,14 +36,9 @@ noinst_HEADERS = backtracedlg.h \
 			debuggeroptionsdlg.h \
 			debuggeroptionsprjdlg.h \
 			debuggerstate.h \
-			debuggertree.h \
-			disassemblydlg.h \
 			editbreakpointdlg.h \
 			editwatchdlg.h \
-			editwatchesdlg.h \
-			examinememorydlg.h \
 			gdb_commands.h \
 			gdb_driver.h \
-			gdb_tipwindow.h \
-			remotedebugging.h \
-			threadsdlg.h
+			parsewatchvalue.h \
+			remotedebugging.h

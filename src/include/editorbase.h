@@ -16,6 +16,7 @@
 class wxMenu;
 class EditorBase;
 struct EditorBaseInternalData;
+class cbDebuggerPlugin;
 
 WX_DECLARE_HASH_MAP(int, EditorBase*, wxIntegerHash, wxIntegerEqual, SwitchToMap);
 
@@ -174,6 +175,9 @@ class DLLIMPORT EditorBase : public wxPanel
 
         /** Go to previous breakpoint. */
         virtual void GotoPreviousBreakpoint(){}
+
+        /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
+        virtual void RefreshBreakpointMarkers(){}
 
         /** Toggle bookmark at specified line.
           * @param line The line to toggle the bookmark on. If @c line is -1,

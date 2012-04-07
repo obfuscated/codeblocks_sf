@@ -245,13 +245,9 @@ extern EVTIMPORT const wxEventType cbEVT_EDITOR_MODIFIED;
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_TOOLTIP;
 #define EVT_EDITOR_TOOLTIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_TOOLTIP_CANCEL;
-#define EVT_EDITOR_USERLIST_SELECTION(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_USERLIST_SELECTION, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-extern EVTIMPORT const wxEventType cbEVT_EDITOR_BREAKPOINT_ADD;
-#define EVT_EDITOR_BREAKPOINT_ADD(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_BREAKPOINT_ADD, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-extern EVTIMPORT const wxEventType cbEVT_EDITOR_BREAKPOINT_EDIT;
-#define EVT_EDITOR_BREAKPOINT_EDIT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_BREAKPOINT_EDIT, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-extern EVTIMPORT const wxEventType cbEVT_EDITOR_BREAKPOINT_DELETE;
-#define EVT_EDITOR_BREAKPOINT_DELETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_BREAKPOINT_DELETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_EDITOR_TOOLTIP_CANCEL(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP_CANCEL, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+//#define EVT_EDITOR_USERLIST_SELECTION(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_USERLIST_SELECTION, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_UPDATE_UI;
 #define EVT_EDITOR_UPDATE_UI(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_UPDATE_UI, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
@@ -419,5 +415,19 @@ extern EVTIMPORT const wxEventType cbEVT_COMPLETE_CODE;
 #define EVT_COMPLETE_CODE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPLETE_CODE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_SHOW_CALL_TIP;
 #define EVT_SHOW_CALL_TIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SHOW_CALL_TIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+
+// settings events
+
+// event.GetInt() returns value of type cbSettingsType::Type indicating which setting group was changed
+struct cbSettingsType
+{
+    enum Type
+    {
+        Compiler,
+        Debugger
+    };
+};
+extern EVTIMPORT const wxEventType cbEVT_SETTINGS_CHANGED;
+#define EVT_SETTINGS_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H

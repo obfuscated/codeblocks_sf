@@ -29,6 +29,7 @@ ALLHEADERS = annoyingdialog.h \
 				base64.h \
 				blockallocated.h \
 				cbauibook.h \
+				cbdebugger_interfaces.h \
 				cbeditor.h \
 				cbeditorprintout.h \
 				cbexception.h \
@@ -53,6 +54,7 @@ ALLHEADERS = annoyingdialog.h \
 				configuretoolsdlg.h \
 				confirmreplacedlg.h \
 				crc32.h \
+				debuggermanager.h \
 				editarrayfiledlg.h \
 				editarrayorderdlg.h \
 				editarraystringdlg.h \

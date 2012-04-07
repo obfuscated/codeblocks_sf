@@ -32,6 +32,7 @@
 #include <sdk_events.h>
 #include <pipedprocess.h>
 #include <configmanager.h>
+#include <debuggermanager.h>
 #include <logmanager.h>
 #include <macrosmanager.h>
 #include <projectmanager.h>
@@ -611,6 +612,15 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
         menu->Append(idMenuCleanFromProjectManager,   _("Clean"));
         menu->AppendSeparator();
         menu->Append(idMenuProjectCompilerOptionsFromProjectManager, _("Build options..."));
+
+        cbPlugin *otherRunning = Manager::Get()->GetProjectManager()->GetIsRunning();
+        if (otherRunning && otherRunning != this)
+        {
+            menu->Enable(idMenuCompileFromProjectManager, false);
+            menu->Enable(idMenuRebuildFromProjectManager, false);
+            menu->Enable(idMenuCleanFromProjectManager, false);
+            menu->Enable(idMenuProjectCompilerOptionsFromProjectManager, false);
+        }
     }
     else if (data && data->GetKind() == FileTreeData::ftdkFile)
     {
@@ -817,33 +827,29 @@ void CompilerGCC::SetupEnvironment()
 
 bool CompilerGCC::StopRunningDebugger()
 {
-    PluginsArray plugins = Manager::Get()->GetPluginManager()->GetDebuggerOffers();
-    if (plugins.GetCount())
+    cbDebuggerPlugin *dbg = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    if (dbg)
     {
-        cbDebuggerPlugin* dbg = (cbDebuggerPlugin*)plugins[0];
-        if (dbg)
+        // is the debugger running?
+        if (dbg->IsRunning())
         {
-            // is the debugger running?
-            if (dbg->IsRunning())
+            int ret = cbMessageBox(_("The debugger must be stopped to do a (re-)build.\n"
+                                     "Do you want to stop the debugger now?"),
+                                     _("Information"),
+                                    wxYES_NO | wxCANCEL | wxICON_QUESTION);
+            switch (ret)
             {
-                int ret = cbMessageBox(_("The debugger must be stopped to do a (re-)build.\n"
-                                         "Do you want to stop the debugger now?"),
-                                         _("Information"),
-                                        wxYES_NO | wxCANCEL | wxICON_QUESTION);
-                switch (ret)
+                case wxID_YES:
                 {
-                    case wxID_YES:
-                    {
-                        m_pLog->Clear();
-                        Manager::Get()->GetLogManager()->Log(_("Stopping debugger..."), m_PageIndex);
-                        dbg->Stop();
-                        break;
-                    }
-                    case wxID_NO: // fallthrough
-                    default:
-                        Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
-                        return false;
+                    m_pLog->Clear();
+                    Manager::Get()->GetLogManager()->Log(_("Stopping debugger..."), m_PageIndex);
+                    dbg->Stop();
+                    break;
                 }
+                case wxID_NO: // fallthrough
+                default:
+                    Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
+                    return false;
             }
         }
     }
@@ -1820,6 +1826,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_pProject, target, true));
 
     m_pProject->SetCurrentlyCompilingTarget(0);
+
+    Manager::Get()->GetProjectManager()->SetIsRunning(this);
     return 0;
 }
 
@@ -2690,6 +2698,10 @@ int CompilerGCC::KillProcess()
             }
         }
     }
+
+    ProjectManager *projectManager = Manager::Get()->GetProjectManager();
+    if (projectManager->GetIsRunning() == this)
+        projectManager->SetIsRunning(NULL);
     return ret;
 }
 
@@ -3049,46 +3061,49 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     bool running = IsRunning();
+
+    cbPlugin *runningPlugin = Manager::Get()->GetProjectManager()->GetIsRunning();
+    bool otherRunning = runningPlugin && runningPlugin != this;
     if (mbar)
     {
-        mbar->Enable(idMenuCompile,          !running && (prj || ed));
-        mbar->Enable(idMenuBuildWorkspace,   !running && prj);
+        mbar->Enable(idMenuCompile,          !running && (prj || ed) && !otherRunning);
+        mbar->Enable(idMenuBuildWorkspace,   !running && prj &&         !otherRunning);
 //        mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
-        mbar->Enable(idMenuCompileFile,      !running && ed);
+        mbar->Enable(idMenuCompileFile,      !running && ed &&          !otherRunning);
 //        mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
-        mbar->Enable(idMenuRebuild,          !running && prj);
-        mbar->Enable(idMenuRebuildWorkspace, !running && prj);
+        mbar->Enable(idMenuRebuild,          !running && prj &&         !otherRunning);
+        mbar->Enable(idMenuRebuildWorkspace, !running && prj &&         !otherRunning);
 //        mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
-        mbar->Enable(idMenuClean,            !running && prj);
-        mbar->Enable(idMenuCleanWorkspace,   !running && prj);
+        mbar->Enable(idMenuClean,            !running && prj &&         !otherRunning);
+        mbar->Enable(idMenuCleanWorkspace,   !running && prj &&         !otherRunning);
 //        mbar->Enable(idMenuCleanFromProjectManager, !running && prj);
-        mbar->Enable(idMenuCompileAndRun,    !running && (prj || ed));
-        mbar->Enable(idMenuRun,              !running && (prj || ed));
+        mbar->Enable(idMenuCompileAndRun,    !running && (prj || ed) && !otherRunning);
+        mbar->Enable(idMenuRun, !running && (prj || ed) &&              !otherRunning);
         mbar->Enable(idMenuKillProcess,       running);
-        mbar->Enable(idMenuSelectTarget,     !running && prj);
+        mbar->Enable(idMenuSelectTarget,     !running && prj &&         !otherRunning);
 
-        mbar->Enable(idMenuNextError,        !running && (prj || ed) && m_Errors.HasNextError());
-        mbar->Enable(idMenuPreviousError,    !running && (prj || ed) && m_Errors.HasPreviousError());
-//        mbar->Enable(idMenuClearErrors, cnt);
+        mbar->Enable(idMenuNextError,     !running && (prj || ed) && m_Errors.HasNextError()     && !otherRunning);
+        mbar->Enable(idMenuPreviousError, !running && (prj || ed) && m_Errors.HasPreviousError() && !otherRunning);
+        mbar->Enable(idMenuClearErrors,                                                             !otherRunning);
 
         // Project menu
-        mbar->Enable(idMenuProjectCompilerOptions, !running && prj);
-        mbar->Enable(idMenuProjectProperties,      !running && prj);
+        mbar->Enable(idMenuProjectCompilerOptions, !running && prj && !otherRunning);
+        mbar->Enable(idMenuProjectProperties,      !running && prj && !otherRunning);
     }
 
     // enable/disable compiler toolbar buttons
     wxToolBar* tbar = m_pTbar;//Manager::Get()->GetAppWindow()->GetToolBar();
     if (tbar)
     {
-        tbar->EnableTool(idMenuCompile,       !running && (prj || ed));
-        tbar->EnableTool(idMenuRun,           !running && (prj || ed));
-        tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed));
-        tbar->EnableTool(idMenuRebuild,       !running && prj);
+        tbar->EnableTool(idMenuCompile,       !running && (prj || ed) && !otherRunning);
+        tbar->EnableTool(idMenuRun,           !running && (prj || ed) && !otherRunning);
+        tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed) && !otherRunning);
+        tbar->EnableTool(idMenuRebuild,       !running && prj         && !otherRunning);
         tbar->EnableTool(idMenuKillProcess,    running && prj);
 
         m_pToolTarget = XRCCTRL(*tbar, "idToolTarget", wxChoice);
         if (m_pToolTarget)
-            m_pToolTarget->Enable(!running && prj);
+            m_pToolTarget->Enable(!running && prj && !otherRunning);
     }
 
     // allow other UpdateUI handlers to process this event
@@ -3622,6 +3637,10 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 
     if (!IsProcessRunning())
     {
+        ProjectManager *manager = Manager::Get()->GetProjectManager();
+        if (manager->GetIsRunning() == this)
+            manager->SetIsRunning(NULL);
+
         CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
         evt.SetInt(m_LastExitCode);
         Manager::Get()->ProcessEvent(evt);

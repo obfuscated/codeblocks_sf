@@ -29,6 +29,8 @@ extern int idStartHerePageLink;
 extern int idStartHerePageVarSubst;
 
 class cbAuiNotebook;
+class DebuggerMenuHandler;
+class DebuggerToolbarHandler;
 class InfoPane;
 class wxGauge;
 
@@ -176,7 +178,8 @@ class MainFrame : public wxFrame
         void OnSettingsKeyBindings(wxCommandEvent& event);
         void OnGlobalUserVars(wxCommandEvent& event);
         void OnSettingsEditor(wxCommandEvent& event);
-        void OnSettingsCompilerDebugger(wxCommandEvent& event);
+        void OnSettingsCompiler(wxCommandEvent& event);
+        void OnSettingsDebugger(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
         void OnPluginSettingsMenu(wxCommandEvent& event);
         void OnSettingsScripting(wxCommandEvent& event);
@@ -256,6 +259,7 @@ class MainFrame : public wxFrame
         void RecreateMenuBar();
         void RegisterEvents();
         void SetupGUILogging();
+        void SetupDebuggerUI();
 
         void RegisterScriptFunctions();
         void RunStartupScripts();
@@ -351,6 +355,9 @@ class MainFrame : public wxFrame
 
         wxScrollingDialog* m_pBatchBuildDialog;
         wxGauge* m_pProgressBar;
+
+        DebuggerMenuHandler *m_debuggerMenuHandler;
+        DebuggerToolbarHandler *m_debuggerToolbarHandler;
 
         DECLARE_EVENT_TABLE()
 };

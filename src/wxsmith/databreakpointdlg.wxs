@@ -14,6 +14,17 @@
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_TEXTCTRL_DATA_EXPRESION" variable="m_dataExpressionCtrl" member="yes">
+					<value>Text</value>
+					<size>265,23</size>
+					<focused>1</focused>
+					<style>wxTE_PROCESS_ENTER</style>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
 				<object class="wxRadioBox" name="ID_RADIOBOX1" variable="RadioBox1" member="yes">
 					<label>Condition</label>
 					<content>

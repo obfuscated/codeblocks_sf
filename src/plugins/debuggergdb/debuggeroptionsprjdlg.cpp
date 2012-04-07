@@ -35,7 +35,8 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
     m_pProject(project),
     m_LastTargetSel(-1)
 {
-    wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions"));
+    if (!wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions")))
+        return;
 
     m_OldPaths = m_pDBG->GetSearchDirs(project);
     m_CurrentRemoteDebugging = m_pDBG->GetRemoteDebuggingMap(project);

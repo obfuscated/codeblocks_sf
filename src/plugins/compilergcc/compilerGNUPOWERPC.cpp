@@ -47,6 +47,7 @@ void CompilerGNUPOWERPC::Reset()
         m_Programs.CPP = _T("ppc-g++.exe");
         m_Programs.LD = _T("ppc-g++.exe");
         m_Programs.DBG = _T("ppc-insight.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("ppc-ar.exe");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make.exe");
@@ -57,6 +58,7 @@ void CompilerGNUPOWERPC::Reset()
         m_Programs.CPP = _T("ppc-g++");
         m_Programs.LD = _T("ppc-g++");
         m_Programs.DBG = _T("ppc-insight");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("ppc-ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

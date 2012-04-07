@@ -42,6 +42,7 @@ void CompilerCYGWIN::Reset()
     m_Programs.CPP = _T("g++-3.exe");
     m_Programs.LD = _T("g++-3.exe");
     m_Programs.DBG = _T("gdb.exe");
+    m_Programs.DBGconfig = _T("gdb_debugger:Default");
     m_Programs.LIB = _T("ar.exe");
     m_Programs.WINDRES = _T("windres.exe");
     m_Programs.MAKE = _T("make.exe");

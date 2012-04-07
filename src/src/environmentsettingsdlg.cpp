@@ -44,7 +44,7 @@
 
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
-    #include "cbplugin.h" // cgCompiler, cgDebugger...
+    #include "cbplugin.h" // cgCompiler...
 #endif
 
 // images by order of pages
@@ -277,8 +277,8 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     const wxString noimg = _T("images/settings/generic-plugin");
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    // get all configuration panels which are *not* about compiler, debugger and editor.
-    Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgDebugger | cgEditor), lb, m_PluginPanels);
+    // get all configuration panels which are *not* about compiler and editor.
+    Manager::Get()->GetPluginManager()->GetConfigurationPanels(~(cgCompiler | cgEditor), lb, m_PluginPanels);
 
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {

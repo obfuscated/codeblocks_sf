@@ -12,20 +12,22 @@
 #include "debuggerstate.h"
 #include <compilerfactory.h>
 #include "debuggergdb.h"
+#include "debuggeroptionsdlg.h"
 #include "projectbuildtarget.h"
 #include "cdb_driver.h"
 #include "gdb_driver.h"
-#include "manager.h"
-#include "projectmanager.h"
 
 #ifndef CB_PRECOMP
+    #include <algorithm>
+
     #include "cbproject.h"
+    #include "manager.h"
+    #include "projectmanager.h"
 #endif
 
 DebuggerState::DebuggerState(DebuggerGDB* plugin)
     : m_pPlugin(plugin),
-    m_pDriver(0),
-    m_BpAutoIndex(0)
+    m_pDriver(0)
 {
 }
 
@@ -35,57 +37,57 @@ DebuggerState::~DebuggerState()
 
 bool DebuggerState::StartDriver(ProjectBuildTarget* target)
 {
-    StopDriver();
-    SetupBreakpointIndices();
-    wxString idx = target ? target->GetCompilerID() : CompilerFactory::GetDefaultCompilerID();
-    if (CompilerFactory::CompilerInheritsFrom(idx, _T("msvc*"))) // MSVC
-        m_pDriver = new CDB_driver(m_pPlugin);
-    else
+    delete m_pDriver;
+    m_pDriver = nullptr;
+
+    if (m_pPlugin->GetActiveConfigEx().IsGDB())
         m_pDriver = new GDB_driver(m_pPlugin);
+    else
+        m_pDriver = new CDB_driver(m_pPlugin);
+    m_pDriver->SetTarget(target);
     return true;
 }
 
+struct MatchDataAndTempBreakpoints
+{
+    bool operator()(const DebuggerBreakpoint::Pointer &bp) const
+    {
+        return bp->type == DebuggerBreakpoint::bptData || bp->temporary;
+    }
+};
+
 void DebuggerState::StopDriver()
 {
-    if (m_pDriver)
-        delete m_pDriver;
-    m_pDriver = 0;
+    delete m_pDriver;
+    m_pDriver = nullptr;
+    m_Breakpoints.erase(std::remove_if(m_Breakpoints.begin(), m_Breakpoints.end(), MatchDataAndTempBreakpoints()),
+                        m_Breakpoints.end());
 }
 
-bool DebuggerState::HasDriver()
+bool DebuggerState::HasDriver() const
 {
-	return m_pDriver != NULL;
+    return m_pDriver != NULL;
 }
 
 DebuggerDriver* DebuggerState::GetDriver()
 {
-	cbAssert(m_pDriver != NULL);
-	return m_pDriver;
+    cbAssert(m_pDriver != NULL);
+    return m_pDriver;
+}
+const DebuggerDriver* DebuggerState::GetDriver() const
+{
+    cbAssert(m_pDriver != NULL);
+    return m_pDriver;
 }
 
 void DebuggerState::CleanUp()
 {
+    // FIXME (obfuscated#): This is not a good API design! Replace with RemoveAllBreakpoints
     if (m_pDriver)
-        m_pDriver->RemoveBreakpoint(0);
+        m_pDriver->RemoveBreakpoint(DebuggerBreakpoint::Pointer());
     StopDriver();
 
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        delete bp;
-    }
-    m_Breakpoints.Clear();
-}
-
-// Re-number indices. Called before starting the debugging session
-void DebuggerState::SetupBreakpointIndices()
-{
-    m_BpAutoIndex = 0;
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        bp->index = ++m_BpAutoIndex;
-    }
+    m_Breakpoints.clear();
 }
 
 // The compiler now uses absolute paths to source files so we don't need
@@ -115,18 +117,20 @@ cbProject* DebuggerState::FindProjectForFile(const wxString& file)
     return 0;
 }
 
-int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, const wxString& lineText)
+DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, int line,
+                                                         bool temp, const wxString& lineText)
 {
     wxString bpfile = ConvertToValidFilename(file);
 
     // do we have a bp there?
-    int idx = HasBreakpoint(bpfile, line);
+    int idx = HasBreakpoint(bpfile, line, temp);
     // if yes, remove old breakpoint first
     if (idx != -1)
-        RemoveBreakpoint(idx, true);
+        RemoveBreakpoint(idx);
+
     // create new bp
-//    Manager::Get()->GetLogManager()->DebugLog(_T("add bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str());
-    DebuggerBreakpoint* bp = new DebuggerBreakpoint;
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerState::AddBreakpoint() : bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str()));
+    DebuggerBreakpoint::Pointer bp(new DebuggerBreakpoint);
     bp->type = DebuggerBreakpoint::bptCode;
     bp->filename = bpfile;
     bp->filenameAsPassed = file;
@@ -134,29 +138,31 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, cons
     bp->temporary = temp;
     bp->lineText = lineText;
     bp->userData = FindProjectForFile(file);
-    return AddBreakpoint(bp);
+    AddBreakpoint(bp);
+
+    return bp;
 }
 
-int DebuggerState::AddBreakpoint(const wxString& dataAddr, bool onRead, bool onWrite)
+DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& dataAddr, bool onRead, bool onWrite)
 {
-    DebuggerBreakpoint* bp = new DebuggerBreakpoint;
+    DebuggerBreakpoint::Pointer bp(new DebuggerBreakpoint);
     bp->type = DebuggerBreakpoint::bptData;
     bp->breakAddress = dataAddr;
     bp->breakOnRead = onRead;
     bp->breakOnWrite = onWrite;
-    return AddBreakpoint(bp);
+    AddBreakpoint(bp);
+
+    return bp;
 }
 
-int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
+int DebuggerState::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
 {
     if (!bp)
         return -1;
 
     wxString bpfile = ConvertToValidFilename(bp->filename);
     bp->filename = bpfile;
-
-    bp->index = ++m_BpAutoIndex;
-    m_Breakpoints.Add(bp);
+    m_Breakpoints.push_back(bp);
 
     // notify driver if it is active
     if (m_pDriver)
@@ -164,193 +170,150 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
     return bp->index;
 }
 
-DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteit)
+void DebuggerState::RemoveBreakpoint(DebuggerBreakpoint::Pointer bp, bool removeFromDriver)
 {
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    int index = 0;
+    for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it, ++index)
     {
-		if (m_Breakpoints[i] == bp)
-		{
-			return RemoveBreakpoint(i, deleteit);
-		}
+        if (*it == bp)
+        {
+            RemoveBreakpoint(index, removeFromDriver);
+            return;
+        }
     }
-    return 0;
 }
 
-DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(const wxString& file, int line, bool deleteit)
-{
-    wxString bpfile = ConvertToValidFilename(file);
-    return RemoveBreakpoint(HasBreakpoint(bpfile, line), deleteit);
-}
-
-DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(int idx, bool deleteit)
+void DebuggerState::RemoveBreakpoint(int idx, bool removeFromDriver)
 {
     // do we have a valid index?
-    if (idx < 0 || idx >= (int)m_Breakpoints.GetCount())
-        return 0;
+    if (idx < 0 || idx >= (int)m_Breakpoints.size())
+        return;
     // yes, remove it from the list
-    DebuggerBreakpoint* bp = m_Breakpoints[idx];
-    m_Breakpoints.RemoveAt(idx);
+    //DebuggerBreakpoint::Pointer bp = m_Breakpoints[idx];
+    BreakpointsList::iterator it = m_Breakpoints.begin();
+    std::advance(it, idx);
+    DebuggerBreakpoint::Pointer bp = *it;
+    m_Breakpoints.erase(it);
 
     // notify driver if it is active
-    if (m_pDriver)
+    if (m_pDriver && removeFromDriver)
         m_pDriver->RemoveBreakpoint(bp);
-
-    if (deleteit)
-    {
-        delete bp;
-        return 0;
-    }
-    return bp;
 }
 
-void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
+void DebuggerState::RemoveAllBreakpoints()
 {
-    wxString bpfile = ConvertToValidFilename(file);
-    bool fileonly = !bpfile.IsEmpty();
-    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    if (m_pDriver)
     {
-        if (fileonly)
-        {
-            DebuggerBreakpoint* bp = m_Breakpoints[i];
-            if (bp->filename != bpfile && bp->filenameAsPassed != file)
-                continue;
-        }
-        RemoveBreakpoint(i, deleteit);
+        for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
+            m_pDriver->RemoveBreakpoint(*it);
     }
+    m_Breakpoints.clear();
 }
 
-int DebuggerState::RemoveBreakpointsRange(const wxString& file, int startline, int endline)
+struct MatchProject
 {
-    int ret = 0;
-    wxString bpfile = ConvertToValidFilename(file);
-    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    MatchProject(cbProject *project) : project(project) {}
+    bool operator()(const DebuggerBreakpoint::Pointer &bp)
     {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->line >= startline && bp->line <= endline && (bp->filename == bpfile || bp->filenameAsPassed == file))
-        {
-            ++ret;
-            RemoveBreakpoint(i, true);
-        }
+        return static_cast<cbProject*>(bp->userData) == project;
     }
-    return ret;
-}
+private:
+    cbProject *project;
+};
 
 void DebuggerState::RemoveAllProjectBreakpoints(cbProject* prj)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing all breakpoints of project: %p"), prj));
-    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    BreakpointsList::iterator start = std::remove_if(m_Breakpoints.begin(), m_Breakpoints.end(), MatchProject(prj));
+    if (m_pDriver)
     {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->userData == prj)
-        {
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Got one")));
-            RemoveBreakpoint(i, true);
-        }
+        for (BreakpointsList::iterator it = start; it != m_Breakpoints.end(); ++it)
+            m_pDriver->RemoveBreakpoint(*it);
     }
+    m_Breakpoints.erase(start, m_Breakpoints.end());
 }
 
-void DebuggerState::ShiftBreakpoints(const wxString& file, int startline, int nroflines)
+void DebuggerState::ShiftBreakpoint(DebuggerBreakpoint::Pointer bp, int nroflines)
 {
-    wxString bpfile = ConvertToValidFilename(file);
-    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    // notify driver if it is active
+    if (m_pDriver)
     {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->line >= startline && (bp->filename == bpfile || bp->filenameAsPassed == file))
-        {
-            // notify driver if it is active
-            if (m_pDriver)
-                m_pDriver->RemoveBreakpoint(bp);
-            bp->line += nroflines;
-            // notify driver if it is active
-            if (m_pDriver)
-                m_pDriver->AddBreakpoint(bp);
-        }
+        m_pDriver->RemoveBreakpoint(bp);
+        bp->line += nroflines;
+        m_pDriver->AddBreakpoint(bp);
     }
+    else
+        bp->line += nroflines;
 }
 
-int DebuggerState::HasBreakpoint(const wxString& file, int line)
+int DebuggerState::HasBreakpoint(const wxString& file, int line, bool temp)
 {
     wxString bpfile = ConvertToValidFilename(file);
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    int index = 0;
+    for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it, ++index)
     {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if ((bp->filename == bpfile || bp->filenameAsPassed == file) && bp->line == line)
-            return i;
+        DebuggerBreakpoint* bp = (*it).get();
+        if ((bp->filename == bpfile || bp->filenameAsPassed == file) && bp->line == line && bp->temporary == temp)
+            return index;
     }
     return -1;
 }
 
-int DebuggerState::HasBreakpoint(const wxString& dataAddr)
+DebuggerBreakpoint::Pointer DebuggerState::GetBreakpoint(int idx)
 {
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->breakAddress == dataAddr)
-            return i;
-    }
-    return -1;
-}
-
-DebuggerBreakpoint* DebuggerState::GetBreakpoint(int idx)
-{
-    if (idx < 0 || idx >= (int)m_Breakpoints.GetCount())
-        return 0;
+    if (idx < 0 || idx >= (int)m_Breakpoints.size())
+        return DebuggerBreakpoint::Pointer();
     return m_Breakpoints[idx];
 }
 
-DebuggerBreakpoint* DebuggerState::GetBreakpointByNumber(int num)
+DebuggerBreakpoint::Pointer DebuggerState::GetBreakpointByNumber(int num)
 {
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
     {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->index == num)
-            return bp;
+        if ((*it)->index == num)
+            return *it;
     }
-    return 0;
+    return DebuggerBreakpoint::Pointer();
 }
 
-void DebuggerState::ResetBreakpoint(int idx)
+const DebuggerBreakpoint::Pointer DebuggerState::GetBreakpointByNumber(int num) const
 {
-    DebuggerBreakpoint* bp = RemoveBreakpoint(idx, false);
-    AddBreakpoint(bp);
+    for (BreakpointsList::const_iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
+    {
+        if ((*it)->index == num)
+            return *it;
+    }
+    return DebuggerBreakpoint::Pointer();
 }
 
-void DebuggerState::ResetBreakpoint(DebuggerBreakpoint* bp)
+void DebuggerState::ResetBreakpoint(DebuggerBreakpoint::Pointer bp)
 {
-    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    // notify driver if it is active
+    if (m_pDriver)
     {
-		if (m_Breakpoints[i] == bp)
-		{
-			RemoveBreakpoint(i);
-			AddBreakpoint(bp);
-			break;
-		}
+        m_pDriver->RemoveBreakpoint(bp);
+        m_pDriver->AddBreakpoint(bp);
     }
 }
+
+struct MatchSetTempBreakpoint
+{
+    bool operator()(const DebuggerBreakpoint::Pointer &bp) const
+    {
+        return bp->temporary && bp->alreadySet;
+    }
+};
 
 void DebuggerState::ApplyBreakpoints()
 {
     if (!m_pDriver)
         return;
 
-    // remove any previously set temporary breakpoints
-    int i = (int)m_Breakpoints.GetCount() - 1;
-    while (i >= 0)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        if (bp->temporary && bp->alreadySet)
-            m_Breakpoints.RemoveAt(i);
-        --i;
-    }
+    m_Breakpoints.erase(std::remove_if(m_Breakpoints.begin(), m_Breakpoints.end(), MatchSetTempBreakpoint()),
+                        m_Breakpoints.end());
 
+    m_pDriver->RemoveBreakpoint(DebuggerBreakpoint::Pointer());
     m_pPlugin->Log(_("Setting breakpoints"));
-    m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
 
-    i = (int)m_Breakpoints.GetCount() - 1;
-    while (i >= 0)
-    {
-        DebuggerBreakpoint* bp = m_Breakpoints[i];
-        m_pDriver->AddBreakpoint(bp);
-        --i;
-    }
+    for (BreakpointsList::const_iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
+        m_pDriver->AddBreakpoint(*it);
 }

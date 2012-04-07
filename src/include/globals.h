@@ -187,6 +187,7 @@ extern DLLIMPORT void QuoteStringIfNeeded(wxString& str);
 extern DLLIMPORT wxString EscapeSpaces(const wxString& str);
 
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);
+extern DLLIMPORT wxString cbFindFileInPATH(const wxString &filename);
 
 extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths);
 extern DLLIMPORT void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths);

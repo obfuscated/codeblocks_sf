@@ -426,6 +426,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(tmp + _T("/make"),            m_Programs.MAKE,      true);
     if (m_Mirror.Programs.DBG != m_Programs.DBG)
         cfg->Write(tmp + _T("/debugger"),        m_Programs.DBG,       true);
+    if (m_Mirror.Programs.DBGconfig != m_Programs.DBGconfig)
+        cfg->Write(tmp + _T("/debugger_config"), m_Programs.DBGconfig, true);
 
     for (int i = 0; i < ctCount; ++i)
     {
@@ -566,6 +568,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.WINDRES   = cfg->Read(tmp + _T("/res_compiler"),    m_Programs.WINDRES);
     m_Programs.MAKE      = cfg->Read(tmp + _T("/make"),            m_Programs.MAKE);
     m_Programs.DBG       = cfg->Read(tmp + _T("/debugger"),        m_Programs.DBG);
+    m_Programs.DBGconfig = cfg->Read(tmp + _T("/debugger_config"), m_Programs.DBGconfig);
 
     // set member variable containing the version string with the configurated toolchain executables, not only
     // with the default ones, otherwise we might have an empty version-string

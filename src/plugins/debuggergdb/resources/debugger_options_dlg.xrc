@@ -4,6 +4,63 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="m_staticText3">
+							<label>Executable path:</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtExecutablePath" />
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnBrowse">
+							<label>...</label>
+							<style>wxBU_EXACTFIT</style>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Arguments:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtArguments" />
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="rbType">
+					<label>Debugger Type</label>
+					<content>
+						<item>GDB</item>
+						<item>CDB</item>
+					</content>
+					<style>wxRA_SPECIFY_ROWS</style>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
 					<label>Debugger intialization commands</label>
 					<orient>wxVERTICAL</orient>
@@ -33,13 +90,6 @@
 					<vgap>4</vgap>
 					<growablecols>0</growablecols>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkAutoBuild">
-							<label>Auto-build project to ensure up-to-date</label>
-							<tooltip>Automatic project build before debug session is started</tooltip>
-						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-					</object>
-					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWatchArgs">
 							<label>Watch function arguments</label>
 							<tooltip>Automatic watches are added for the current function&apos;s arguments</tooltip>
@@ -54,14 +104,17 @@
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkCatchExceptions">
-							<label>Catch C++ exceptions</label>
+						<object class="wxCheckBox" name="chkWatchScriptPrinters">
+							<label>Enable watch scripts</label>
+							<tooltip>Enable the execution of scripts to pretty print the watch values (do not use it if you have python enabled GDB)</tooltip>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkAutoSwitchFrame">
-							<label>When stopping, auto-switch to first frame with valid source info</label>
+						<object class="wxCheckBox" name="chkCatchExceptions">
+							<label>Catch C++ exceptions</label>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
@@ -69,13 +122,6 @@
 						<object class="wxCheckBox" name="chkTooltipEval">
 							<label>Evaluate expression under cursor</label>
 							<tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
-						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-					</object>
-					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkDebugLog">
-							<label>Display debugger&apos;s log</label>
-							<tooltip>If enabled, the debugger&apos;s raw input/output will be logged in a separate log page</tooltip>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
@@ -122,37 +168,6 @@
 								<object class="wxTextCtrl" name="txtInstructionSet" />
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<option>1</option>
-							</object>
-						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<border>4</border>
-					</object>
-				</object>
-				<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-				<border>8</border>
-			</object>
-			<object class="sizeritem">
-				<object class="wxStaticBoxSizer">
-					<label>Display watched arrays on a single line:</label>
-					<orient>wxVERTICAL</orient>
-					<object class="sizeritem">
-						<object class="wxBoxSizer">
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT4">
-									<label>If number of elements is less than or equal to:</label>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-							</object>
-							<object class="spacer">
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<size>5,0</size>
-							</object>
-							<object class="sizeritem">
-								<object class="wxSpinCtrl" name="spnArrayElems">
-									<value>8</value>
-									<max>128</max>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 							</object>
 						</object>
 						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

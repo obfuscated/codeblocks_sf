@@ -50,6 +50,7 @@ void CompilerGDC::Reset()
         m_Programs.CPP = _T("mingw32-gdc.exe");
         m_Programs.LD = _T("mingw32-gdc.exe");
         m_Programs.DBG = _T("gdb.exe");
+        m_Programs.DBGconfig = _T("gdb_debugger:Default");
         m_Programs.LIB = _T("ar.exe");
         m_Programs.WINDRES = _T("windres.exe");
         m_Programs.MAKE = _T("mingw32-make.exe");
@@ -60,6 +61,7 @@ void CompilerGDC::Reset()
         m_Programs.CPP = _T("gdc");
         m_Programs.LD = _T("gdc");
         m_Programs.DBG = _T("gdb");
+        m_Programs.DBGconfig = _T("gdb_debugger:Default");
         m_Programs.LIB = _T("ar");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

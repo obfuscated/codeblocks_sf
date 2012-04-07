@@ -49,11 +49,13 @@
 #include <wx/fontutil.h>
 #include <wx/splitter.h>
 
-#include "cbeditorprintout.h"
-#include "editor_hooks.h"
-#include "filefilters.h"
-#include "encodingdetector.h"
-#include "projectfileoptionsdlg.h"
+#include <cbeditorprintout.h>
+#include <cbdebugger_interfaces.h>
+#include <debuggermanager.h>
+#include <editor_hooks.h>
+#include <encodingdetector.h>
+#include <filefilters.h>
+#include <projectfileoptionsdlg.h>
 
 const wxString g_EditorModified = _T("*");
 
@@ -1809,21 +1811,7 @@ bool ScbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-    if (!arr.GetCount())
-        return false;
-    bool accepted=false;
-    for(size_t i=0;i<arr.GetCount();i++)
-    {
-        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
-        if (!debugger)
-            continue; //kinda scary if this isn't a debugger? perhaps this should be a logged error??
-        if (debugger->RemoveBreakpoint(m_Filename, line))
-        {
-            accepted=true;
-        }
-    }
-    if(accepted)
+    if (Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->RemoveBreakpoint(m_Filename, line + 1))
     {
         MarkerToggle(BREAKPOINT_MARKER, line);
         return true;
@@ -1844,26 +1832,24 @@ void ScbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
         return;
     }
 
-    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-    if (!arr.GetCount())
-        return;
-    bool toggle=false;
-    for (size_t i=0;i<arr.GetCount();i++)
+    cbBreakpointsDlg *dialog = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
+    bool toggle = false;
+    if (HasBreakpoint(line))
     {
-        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
-        if (HasBreakpoint(line))
-        {
-            if (debugger->RemoveBreakpoint(m_Filename, line))
-                toggle=true;
-        }
-        else
-        {
-            if (debugger->AddBreakpoint(m_Filename, line))
-                toggle=true;
-        }
+        if (dialog->RemoveBreakpoint(m_Filename, line + 1))
+            toggle = true;
     }
+    else
+    {
+        if (dialog->AddBreakpoint(m_Filename, line + 1))
+            toggle = true;
+    }
+
     if(toggle)
+    {
         MarkerToggle(BREAKPOINT_MARKER, line);
+        dialog->Reload();
+    }
     */
 }
 
@@ -2470,8 +2456,9 @@ void ScbEditor::OnContextMenuEntry(wxCommandEvent& event)
     /*      //(pecan 2011/12/14)
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);
-    else if (id == idBreakpointEdit)
-        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_EDIT, m_pData->m_LastMarginMenuLine, m_Filename);
+// TODO (obfuscated#): reimplement this, breakpoints
+//    else if (id == idBreakpointEdit)
+//        NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_EDIT, m_pData->m_LastMarginMenuLine + 1, m_Filename);
     else if (id == idBreakpointRemove)
         RemoveBreakpoint(m_pData->m_LastMarginMenuLine);
     */      //(pecan 2011/12/14)

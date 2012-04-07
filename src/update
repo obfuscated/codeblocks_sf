@@ -1,4 +1,3 @@
-#!/bin/sh
 
 if [ "x$MSYSTEM" != "x" ] ; then
   EXEEXT=".exe"
@@ -13,6 +12,7 @@ echo Creating output directory tree
 mkdir -p output/share/codeblocks/lexers
 mkdir -p output/share/codeblocks/images/settings
 mkdir -p output/share/codeblocks/images/codecompletion
+mkdir -p output/share/codeblocks/images/12x12
 mkdir -p output/share/codeblocks/images/16x16
 mkdir -p output/share/codeblocks/plugins
 mkdir -p output/share/codeblocks/templates
@@ -21,6 +21,7 @@ mkdir -p output/share/codeblocks/scripts
 mkdir -p devel/share/codeblocks/lexers
 mkdir -p devel/share/codeblocks/images/settings
 mkdir -p devel/share/codeblocks/images/codecompletion
+mkdir -p devel/share/codeblocks/images/12x12
 mkdir -p devel/share/codeblocks/images/16x16
 mkdir -p devel/share/codeblocks/plugins
 mkdir -p devel/share/codeblocks/templates
@@ -49,8 +50,8 @@ ${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/mani
 echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
-#cd ../../sdk/resources
-#${ZIPCMD} -0 ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png > /dev/null
+cd ../../sdk/resources
+${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 echo Packing plugins UI bitmaps
 cd ../../plugins/compilergcc/resources
 ${ZIPCMD} -0 -qu ../../../${RESDIR}/compiler.zip images/*.png images/16x16/*.png > /dev/null

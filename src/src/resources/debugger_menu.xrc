@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+  <object class="wxMenu" name="debugger_menu">
+    <object class="wxMenu" name="idDebuggerMenuActive">
+        <label>Active debuggers</label>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuDebug">
+      <label>&amp;Start / Continue</label>
+      <bitmap>images\16x16\dbgrun.png</bitmap>
+      <accel>F8</accel>
+      <help>Run current project in debugger</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuBreak">
+      <label>Break debugger</label>
+      <bitmap>images\16x16\dbgpause.png</bitmap>
+      <help>Break the debuggee in order to examine its state</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuStop">
+      <label>Stop debugger</label>
+      <bitmap>images\16x16\dbgstop.png</bitmap>
+      <help>Stop current debugging session</help>
+      <accel>Shift-F8</accel>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuRunToCursor">
+      <label>Run to cursor</label>
+      <bitmap>images\16x16\dbgrunto.png</bitmap>
+      <accel>F4</accel>
+      <help>Run program until it reaches the current line</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuNext">
+      <label>Next line</label>
+      <bitmap>images\16x16\dbgnext.png</bitmap>
+      <accel>F7</accel>
+      <help>Execute the next line of code</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuStep">
+      <label>Step into</label>
+      <bitmap>images\16x16\dbgstep.png</bitmap>
+      <accel>Shift-F7</accel>
+      <help>Execute the next line of code, but step inside functions</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuStepOut">
+      <label>Step out</label>
+      <bitmap>images\16x16\dbgstepout.png</bitmap>
+      <accel>Ctrl-F7</accel>
+      <help>Continue execution until the current frame exits</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuNextInstr">
+      <label>Next instruction</label>
+      <bitmap>images\16x16\dbgnexti.png</bitmap>
+      <accel>Alt-F7</accel>
+      <help>Execute the next assembly instruction</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuStepIntoInstr">
+      <label>Step into instruction</label>
+      <bitmap>images\16x16\dbgstepi.png</bitmap>
+      <accel>Shift-Alt-F7</accel>
+      <help>Execute the next assembly instruction, if it is a function call step into it</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuSetNextStatement">
+      <label>Set next statement</label>
+      <help>Move the Program counter to the selected/current line</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuToggleBreakpoint">
+      <label>Toggle breakpoint</label>
+      <accel>F5</accel>
+      <help>Toggle breakpoint in current line</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuRemoveAllBreakpoints">
+      <label>Remove all breakpoints</label>
+      <help>Remove all breakpoints</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuAddSymbolFile">
+      <label>Add symbol file</label>
+      <help>Adds symbols from another file</help>
+    </object>
+    <object class="wxMenu" name="idDebuggingWindows">
+      <label>Debugging windows</label>
+    </object>
+    <object class="wxMenu" name="idDebuggerInfo">
+      <label>Information</label>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuAttachToProcess">
+      <label>Attach to process...</label>
+      <help>Attach to an external running process</help>
+    </object>
+    <object class="wxMenuItem" name="idDebuggerMenuDetach">
+      <label>Detach</label>
+      <help>Detach from running process</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idDebuggerMenuSendCommand">
+      <label>Send user command to debugger</label>
+      <help>Sends a user-defined command to the debugger</help>
+    </object>
+  </object>
+</resource>

@@ -502,6 +502,12 @@
           <checkable>1</checkable>
           <enabled>1</enabled>
         </object>
+        <object class="wxMenuItem" name="idViewToolDebugger">
+          <label>&amp;Debugger</label>
+          <help>Show/hide debugger toolbar</help>
+          <checkable>1</checkable>
+          <enabled>1</enabled>
+        </object>
       </object>
       <object class="wxMenuItem" name="idViewManager">
         <label>&amp;Manager</label>
@@ -639,9 +645,13 @@
         <label>E&amp;ditor...</label>
         <help>Change editor's settings</help>
       </object>
-      <object class="wxMenuItem" name="idSettingsCompilerDebugger">
-        <label>&amp;Compiler and debugger...</label>
-        <help>Change compiler and debugger settings</help>
+      <object class="wxMenuItem" name="idSettingsCompiler">
+        <label>&amp;Compiler...</label>
+        <help>Change compiler settings</help>
+      </object>
+      <object class="wxMenuItem" name="idSettingsDebugger">
+        <label>&amp;Debugger...</label>
+        <help>Change debugger settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsGlobalUserVars">
         <label>&amp;Global variables...</label>

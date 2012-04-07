@@ -46,6 +46,7 @@ void CompilerSDCC::Reset()
         m_Programs.CPP = _T("sdcc.exe");
         m_Programs.LD = _T("sdcc.exe");
         m_Programs.DBG = _T("sdcdb.exe");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("sdcclib.exe");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make.exe");
@@ -56,6 +57,7 @@ void CompilerSDCC::Reset()
         m_Programs.CPP = _T("sdcc");
         m_Programs.LD = _T("sdcc");
         m_Programs.DBG = _T("sdcdb");
+        m_Programs.DBGconfig = wxEmptyString;
         m_Programs.LIB = _T("sdcclib");
         m_Programs.WINDRES = _T("");
         m_Programs.MAKE = _T("make");

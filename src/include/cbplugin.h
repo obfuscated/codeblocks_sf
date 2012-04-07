@@ -13,8 +13,10 @@
 
 #include "settings.h" // build settings
 #include "globals.h"
+#include "logger.h"
 #include "manager.h"
 #include "pluginmanager.h"
+#include "prep.h"
 
 #ifdef __WXMSW__
     #ifndef PLUGIN_EXPORT
@@ -34,9 +36,9 @@
 
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
-#define PLUGIN_SDK_VERSION_MAJOR   1
-#define PLUGIN_SDK_VERSION_MINOR   11
-#define PLUGIN_SDK_VERSION_RELEASE 18
+#define PLUGIN_SDK_VERSION_MAJOR 1
+#define PLUGIN_SDK_VERSION_MINOR 13
+#define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
 class wxMenuBar;
@@ -44,22 +46,29 @@ class wxMenu;
 class wxToolBar;
 class wxPanel;
 class wxWindow;
+
+class cbBreakpoint;
+class cbConfigurationPanel;
+class cbDebuggerConfiguration;
 class cbEditor;
 class cbProject;
-class ProjectBuildTarget;
-class CompileTargetBase;
-class FileTreeData;
-class cbConfigurationPanel;
-struct PluginInfo;
+class cbStackFrame;
 class cbStatusBar;
+class cbThread;
+class cbWatch;
+class Compiler;
+class CompileTargetBase;
+class ConfigManagerWrapper;
+class FileTreeData;
+struct PluginInfo;
+class ProjectBuildTarget;
 
 // Define basic groups for plugins' configuration.
 static const int cgCompiler         = 0x01; ///< Compiler related.
-static const int cgDebugger         = 0x02; ///< Debugger related.
-static const int cgEditor           = 0x04; ///< Editor related.
-static const int cgCorePlugin       = 0x08; ///< One of the core plugins.
-static const int cgContribPlugin    = 0x10; ///< One of the contrib plugins (or any third-party plugin for that matter).
-static const int cgUnknown          = 0x20; ///< Unknown. This will be probably grouped with cgContribPlugin.
+static const int cgEditor           = 0x02; ///< Editor related.
+static const int cgCorePlugin       = 0x04; ///< One of the core plugins.
+static const int cgContribPlugin    = 0x08; ///< One of the contrib plugins (or any third-party plugin for that matter).
+static const int cgUnknown          = 0x10; ///< Unknown. This will be probably grouped with cgContribPlugin.
 
 /** @brief Base class for plugins
   * This is the most basic class a plugin must descend
@@ -359,6 +368,26 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
     private:
 };
 
+
+class wxScintillaEvent;
+
+struct cbDebuggerFeature
+{
+    enum Flags
+    {
+        Breakpoints,
+        Callstack,
+        CPURegisters,
+        Disassembly,
+        ExamineMemory,
+        Threads,
+        Watches,
+        ValueTooltips,
+        RunToCursor,
+        SetNextStatement
+    };
+};
+
 /** @brief Base class for debugger plugins
   *
   * This plugin type must offer some pre-defined debug facilities, on top
@@ -367,39 +396,15 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
     public:
-        cbDebuggerPlugin();
+        cbDebuggerPlugin(const wxString &guiName, const wxString &settingsName);
 
-        /** @brief Request to add a breakpoint.
-          * @param file The file to add the breakpoint based on a file/line pair.
-          * @param line The line number to put the breakpoint in @c file.
-          * @return True if succeeded, false if not.
-          */
-        virtual bool AddBreakpoint(const wxString& file, int line) = 0;
+    public:
+        virtual void OnAttach();
+        virtual void OnRelease(bool appShutDown);
 
-        /** @brief Request to add a breakpoint based on a function signature.
-          * @param functionSignature The function signature to add the breakpoint.
-          * @return True if succeeded, false if not.
-          */
-        virtual bool AddBreakpoint(const wxString& functionSignature) = 0;
-
-        /** @brief Request to remove a breakpoint based on a file/line pair.
-          * @param file The file to remove the breakpoint.
-          * @param line The line number the breakpoint is in @c file.
-          * @return True if succeeded, false if not.
-          */
-        virtual bool RemoveBreakpoint(const wxString& file, int line) = 0;
-
-        /** @brief Request to remove a breakpoint based on a function signature.
-          * @param functionSignature The function signature to remove the breakpoint.
-          * @return True if succeeded, false if not.
-          */
-        virtual bool RemoveBreakpoint(const wxString& functionSignature) = 0;
-
-        /** @brief Request to remove all breakpoints from a file.
-          * @param file The file to remove all breakpoints in. If the argument is empty, all breakpoints are removed from all files.
-          * @return True if succeeded, false if not.
-          */
-        virtual bool RemoveAllBreakpoints(const wxString& file = wxEmptyString) = 0;
+        virtual void BuildMenu(wxMenuBar* menuBar);
+        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+        virtual bool BuildToolBar(wxToolBar* toolBar);
 
         /** @brief Notify the debugger that lines were added or removed in an editor.
           * This causes the debugger to keep the breakpoints list in-sync with the
@@ -409,19 +414,51 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
           * @param lines The number of lines added or removed. If it's a positive number,
           *              lines were added. If it's a negative number, lines were removed.
           */
-        virtual void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines) = 0;
+        virtual void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines);
+    public:
+        virtual void OnAttachReal() = 0;
+        virtual void OnReleaseReal(bool appShutDown) = 0;
+
+        virtual void SetupToolsMenu(wxMenu &menu) = 0;
+        virtual bool ToolMenuEnabled() const;
+
+        virtual bool SupportsFeature(cbDebuggerFeature::Flags flag) = 0;
+
+        virtual cbDebuggerConfiguration* LoadConfig(const ConfigManagerWrapper &config) = 0;
+
+        cbDebuggerConfiguration& GetActiveConfig();
+        void SetActiveConfig(int index);
+        int GetIndexOfActiveConfig() const;
+
+        /** @brief Called when the user clicks OK in Settings -> Debugger... */
+        virtual void OnConfigurationChange(bool isActive) {}
 
         /** @brief Start a new debugging process. */
-        virtual int Debug() = 0;
+        virtual bool Debug(bool breakOnEntry) = 0;
 
         /** @brief Continue running the debugged program. */
         virtual void Continue() = 0;
 
+        /** @brief Run the debugged program until it reaches the cursor at the current editor */
+        virtual bool RunToCursor(const wxString& filename, int line, const wxString& line_text) = 0;
+
+        /** @brief Sets the position of the Program counter to the specified filename:line */
+        virtual void SetNextStatement(const wxString& filename, int line) = 0;
+
         /** @brief Execute the next instruction and return control to the debugger. */
         virtual void Next() = 0;
 
+        /** @brief Execute the next instruction and return control to the debugger. */
+        virtual void NextInstruction() = 0;
+
+        /** @brief Execute the next instruction and return control to the debugger, if the instruction is a function call step into it. */
+        virtual void StepIntoInstruction() = 0;
+
         /** @brief Execute the next instruction, stepping into function calls if needed, and return control to the debugger. */
         virtual void Step() = 0;
+
+        /** @brief Execute the next instruction, stepping out of function calls if needed, and return control to the debugger. */
+        virtual void StepOut() = 0;
 
         /** @brief Break the debugging process (stop the debuggee for debugging). */
         virtual void Break() = 0;
@@ -432,8 +469,185 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         /** @brief Is the plugin currently debugging? */
         virtual bool IsRunning() const = 0;
 
+        /** @brief Is the plugin stopped on breakpoint? */
+        virtual bool IsStopped() const = 0;
+
+        /** @brief Is the plugin processing something? */
+        virtual bool IsBusy() const = 0;
+
         /** @brief Get the exit code of the last debug process. */
         virtual int GetExitCode() const = 0;
+
+        // stack frame calls;
+        virtual int GetStackFrameCount() const = 0;
+        virtual cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const = 0;
+        virtual void SwitchToFrame(int number) = 0;
+        virtual int GetActiveStackFrame() const = 0;
+
+        // breakpoints calls
+        /** @brief Request to add a breakpoint.
+          * @param file The file to add the breakpoint based on a file/line pair.
+          * @param line The line number to put the breakpoint in @c file.
+          * @return True if succeeded, false if not.
+          */
+        virtual cb::shared_ptr<cbBreakpoint> AddBreakpoint(const wxString& filename, int line) = 0;
+
+        /** @brief Request to add a breakpoint based on a data expression.
+          * @param dataExpression The data expression to add the breakpoint.
+          * @return True if succeeded, false if not.
+          */
+        virtual cb::shared_ptr<cbBreakpoint> AddDataBreakpoint(const wxString& dataExpression) = 0;
+        virtual int GetBreakpointsCount() const = 0;
+        virtual cb::shared_ptr<cbBreakpoint> GetBreakpoint(int index) = 0;
+        virtual cb::shared_ptr<const cbBreakpoint> GetBreakpoint(int index) const = 0;
+        virtual void UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) = 0;
+        virtual void DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint) = 0;
+        virtual void DeleteAllBreakpoints() = 0;
+        virtual void ShiftBreakpoint(int index, int lines_to_shift) = 0;
+        virtual void EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable) = 0;
+        // threads
+        virtual int GetThreadsCount() const = 0;
+        virtual cb::shared_ptr<const cbThread> GetThread(int index) const = 0;
+        virtual bool SwitchToThread(int thread_number) = 0;
+
+        // watches
+        virtual cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol) = 0;
+        virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) = 0;
+        virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) = 0;
+        virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) = 0;
+        virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value) = 0;
+        virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch) = 0;
+        virtual void CollapseWatch(cb::shared_ptr<cbWatch> watch) = 0;
+
+        struct WatchesDisabledMenuItems
+        {
+            enum
+            {
+                Empty      = 0,
+                Rename     = 1 << 0,
+                Properties = 1 << 1,
+                Delete     = 1 << 2,
+                DeleteAll  = 1 << 3
+            };
+        };
+
+        /**
+          * @param[out] disabledMenus A combination of WatchesDisabledMenuItems, which controls which of the default menu items are disabled
+          */
+        virtual void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property, int &disabledMenus) {};
+
+        virtual void SendCommand(const wxString& cmd, bool debugLog) = 0;
+
+        virtual void AttachToProcess(const wxString& pid) = 0;
+        virtual void DetachFromProcess() = 0;
+        virtual bool IsAttachedToProcess() const = 0;
+
+        virtual void GetCurrentPosition(wxString &filename, int &line) = 0;
+
+
+        virtual void OnValueTooltip(const wxString &token, const wxRect &evalRect);
+        virtual bool ShowValueTooltip(int style);
+    private:
+        void RegisterValueTooltip();
+        void ProcessValueTooltip(CodeBlocksEvent& event);
+        void CancelValueTooltip(CodeBlocksEvent& event);
+
+    protected:
+        enum StartType
+        {
+            StartTypeUnknown = 0,
+            StartTypeRun,
+            StartTypeStepInto
+        };
+    protected:
+        virtual void ConvertDirectory(wxString& str, wxString base = _T(""), bool relative = true) = 0;
+        virtual cbProject* GetProject() = 0;
+        virtual void ResetProject() = 0;
+        virtual void CleanupWhenProjectClosed(cbProject *project) = 0;
+
+        /** @brief Called when the compilation has finished. The compilation is started when EnsureBuildUpToDate is called.
+          * @param compilerFailed the compilation failed for some reason.
+          * @param startType it is the same value given to the Debug method, when the debugger session was started.
+          * @return True if debug session is start, false if there are any errors or the users canceled the session.
+        */
+        virtual bool CompilerFinished(bool compilerFailed, StartType startType) { return false; }
+    public:
+        enum DebugWindows
+        {
+            Backtrace,
+            CPURegisters,
+            Disassembly,
+            ExamineMemory,
+            Threads,
+            Watches
+        };
+
+        virtual void RequestUpdate(DebugWindows window) = 0;
+
+    public:
+        virtual wxString GetEditorWordAtCaret(const wxPoint *mousePosition = NULL);
+        void ClearActiveMarkFromAllEditors();
+
+        enum SyncEditorResult
+        {
+            SyncOk = 0,
+            SyncFileNotFound,
+            SyncFileUnknown
+        };
+
+        SyncEditorResult SyncEditor(const wxString& filename, int line, bool setMarker = true);
+
+        void BringCBToFront();
+
+        bool DragInProgress() const;
+
+        void ShowLog(bool clear);
+        void Log(const wxString& msg, Logger::level level = Logger::info);
+        void DebugLog(const wxString& msg, Logger::level level = Logger::info);
+        bool HasDebugLog() const;
+        void ClearLog();
+
+        // Called only by DebuggerManager, when registering plugin or changing settings
+        void SetupLog(int normalIndex);
+
+        wxString GetGUIName() const { return m_guiName; }
+        wxString GetSettingsName() const { return m_settingsName; }
+
+    protected:
+        void SwitchToDebuggingLayout();
+        void SwitchToPreviousLayout();
+
+        bool GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target);
+        bool EnsureBuildUpToDate(StartType startType);
+        bool WaitingCompilerToFinish() const { return m_WaitingCompilerToFinish; }
+
+        int RunNixConsole(wxString &consoleTty);
+        void MarkAsStopped();
+
+    private:
+        wxString GetConsoleTty(int ConsolePid);
+
+    private:
+        void OnEditorOpened(CodeBlocksEvent& event);
+        void OnProjectActivated(CodeBlocksEvent& event);
+        void OnProjectClosed(CodeBlocksEvent& event);
+        void OnCompilerFinished(CodeBlocksEvent& event);
+        void OnEditorHook(cbEditor* editor, wxScintillaEvent& event);
+    private:
+        wxToolBar *m_toolbar;
+        wxString m_PreviousLayout;
+        cbCompilerPlugin* m_pCompiler;
+        bool m_WaitingCompilerToFinish;
+
+        int m_EditorHookId;
+        StartType m_StartType;
+        bool m_DragInProgress;
+
+        int m_ActiveConfig;
+
+        int m_LogPageIndex;
+        bool m_lastLineWasNormal;
+        wxString m_guiName, m_settingsName;
 };
 
 /** @brief Base class for tool plugins

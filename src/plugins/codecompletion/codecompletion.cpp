@@ -2449,6 +2449,12 @@ void CodeCompletion::OnToolbarTimer(wxTimerEvent& event)
 
 void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
 {
+    if (wxGetKeyState(WXK_CONTROL))
+    {
+         event.Skip();
+        return;
+    }
+
     if (!IsAttached() || !m_InitDone)
     {
         event.Skip();

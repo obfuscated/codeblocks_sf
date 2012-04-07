@@ -49,6 +49,7 @@ void CompilerLCC::Reset()
     m_Programs.CPP     = _T("lcc.exe");
     m_Programs.LD      = _T("lcclnk.exe");
     m_Programs.DBG     = _T("cdb.exe");
+    m_Programs.DBGconfig = wxEmptyString;
     m_Programs.LIB     = _T("lcclib.exe");
     m_Programs.WINDRES = _T("lrc.exe");
     m_Programs.MAKE    = _T("make.exe");
