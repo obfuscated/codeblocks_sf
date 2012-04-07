@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 #include <wx/dynarray.h>
 #include "globals.h" // PluginType
@@ -127,6 +128,9 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
 
         static void SetSafeMode(bool on){ s_SafeMode = on; }
         static bool GetSafeMode(){ return s_SafeMode; }
+
+        void RegisterCCFileExts(const wxString& pluginName, const std::set<wxString>& fileExts);
+        bool IsFileExtRegistered(const wxString& filename);
     private:
         PluginManager();
         ~PluginManager();
@@ -177,6 +181,8 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         std::vector<PluginRegistration> m_RegisteredPlugins;
 
         static bool s_SafeMode;
+
+        std::map<wxString, std::set<wxString> > m_CCFileExts;
 
         DECLARE_EVENT_TABLE()
 };
