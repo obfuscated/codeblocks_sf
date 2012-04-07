@@ -261,31 +261,6 @@ class GDBWatch : public cbWatch
 
 typedef std::vector<GDBWatch::Pointer> WatchesContainer;
 
-/** Stack frame.
-  *
-  * This keeps info about a specific stack frame.
-  */
-struct oldStackFrame
-{
-    oldStackFrame() : valid(false), number(0), address(0) {}
-    /** Clear everything. */
-    void Clear()
-    {
-        valid = false;
-        number = 0;
-        address = 0;
-        function.Clear();
-        file.Clear();
-        line.Clear();
-    }
-    bool valid; ///< Is this stack frame valid?
-    unsigned long int number; ///< Stack frame's number (used in backtraces).
-    unsigned long int address; ///< Stack frame's address.
-    wxString function; ///< Current function name.
-    wxString file; ///< Current file.
-    wxString line; ///< Current line in file.
-};
-
 bool IsPointerType(wxString type);
 
 #endif // DEBUGGER_DEFS_H
