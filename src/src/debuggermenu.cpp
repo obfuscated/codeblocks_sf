@@ -45,7 +45,6 @@ namespace
     const int idMenuBreak = XRCID("idDebuggerMenuBreak");
     const int idMenuStop = XRCID("idDebuggerMenuStop");
     const int idToolbarStop = XRCID("idDebuggerToolbarStop");
-    const int idMenuContinue = XRCID("idDebuggerMenuContinue");
     const int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
     const int idMenuRemoveAllBreakpoints = XRCID("idDebuggerMenuRemoveAllBreakpoints");
     const int idMenuAddDataBreakpoint = XRCID("idMenuAddDataBreakpoint");
@@ -91,7 +90,6 @@ namespace
 }
 
 BEGIN_EVENT_TABLE(DebuggerMenuHandler, wxEvtHandler)
-//    EVT_UPDATE_UI_RANGE(idMenuContinue, idMenuDebuggerAddWatch, DebuggerMenuHandler::OnUpdateUI)
     // these are different because they are loaded from the XRC
     EVT_UPDATE_UI(idMenuDebug, DebuggerMenuHandler::OnUpdateUI)
     EVT_UPDATE_UI(idMenuRunToCursor, DebuggerMenuHandler::OnUpdateUI)
@@ -112,7 +110,6 @@ BEGIN_EVENT_TABLE(DebuggerMenuHandler, wxEvtHandler)
     EVT_MENU(idMenuDebug, DebuggerMenuHandler::OnStart)
     EVT_MENU(idMenuBreak, DebuggerMenuHandler::OnBreak)
     EVT_MENU(idMenuStop, DebuggerMenuHandler::OnStop)
-    EVT_MENU(idMenuContinue, DebuggerMenuHandler::OnContinue)
     EVT_MENU(idMenuNext, DebuggerMenuHandler::OnNext)
     EVT_MENU(idMenuStep, DebuggerMenuHandler::OnStep)
     EVT_MENU(idMenuNextInstr, DebuggerMenuHandler::OnNextInstr)
@@ -448,7 +445,6 @@ void DebuggerMenuHandler::OnUpdateUI(wxUpdateUIEvent& event)
         bool hasBreaks = Support(m_activeDebugger, cbDebuggerFeature::Breakpoints);
 
         mbar->Enable(idMenuDebug, (!isRunning || stopped) && en);
-        mbar->Enable(idMenuContinue, isRunning && en && stopped);
         mbar->Enable(idMenuNext, isRunning && en && stopped);
         mbar->Enable(idMenuNextInstr, isRunning && en && stopped);
         mbar->Enable(idMenuStepIntoInstr, isRunning && en && stopped);
