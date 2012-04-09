@@ -130,8 +130,11 @@ static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 static wxRegEx reBT4(_T("#([0-9]+)[ \\t]+(.+)[ \\t]in[ \\t](.+)")); // case #11
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
+// GDB7.4 and before will return:
 // Breakpoint 1 ("/home/jens/codeblocks-build/codeblocks-1.0svn/src/plugins/debuggergdb/gdb_commands.h:125) pending.
-static wxRegEx rePendingBreakpoint(_T("Breakpoint ([0-9]+)[ \t]\\(\\\"(.+):([0-9]+)\\)[ \t]pending\\."));
+// GDB7.5 and later will return:
+// Breakpoint 4 ("E:/code/cb/test_code/DebugDLLTest/TestDLL/dllmain.cpp:29") pending.
+static wxRegEx rePendingBreakpoint(_T("Breakpoint ([0-9]+)[ \t]\\(\"(.+):([0-9]+)(\"?)\\)[ \t]pending\\."));
 // Hardware assisted breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reHWBreakpoint(_T("Hardware assisted breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
 // Hardware watchpoint 1: expr
