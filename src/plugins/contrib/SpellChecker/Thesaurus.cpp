@@ -27,15 +27,13 @@
 
 Thesaurus::Thesaurus(wxWindow *dialogsparent):
     m_pT(NULL),
-    m_pDialogsParent(dialogsparent),
-    m_ok(false)
+    m_pDialogsParent(dialogsparent)
 {
     //ctor
 }
 Thesaurus::Thesaurus(wxWindow *dialogsparent,const wxString idxpath, const wxString datpath):
     m_pT(NULL),
-    m_pDialogsParent(dialogsparent),
-    m_ok(false)
+    m_pDialogsParent(dialogsparent)
 {
     //ctor
     SetFiles(idxpath, datpath);
@@ -52,12 +50,10 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
 {
     delete m_pT;
     m_pT = NULL;
-    m_ok = false;
 
     if ( wxFile::Exists(idxpath) && wxFile::Exists(datpath) )
     {
         m_pT = new wxThes( idxpath, datpath );
-        m_ok = true;
     }
     else
         Manager::Get()->GetLogManager()->Log(_T("SpellChecker: Thesaurus files '") + idxpath + _T("' not found!"));
@@ -87,5 +83,5 @@ bool Thesaurus::GetSynonym(const wxString Word, wxString &Syn)
 
 bool Thesaurus::IsOk()
 {
-    return m_ok;
+    return (m_pT != NULL);
 }

@@ -77,7 +77,7 @@ class SpellCheckSettingsPanel: public cbConfigurationPanel
 
 
     private:
-        void InitDictionaryChoice();
+        void InitDictionaryChoice(const wxString &path = wxEmptyString);
         void PostConfig();
 
 	protected:

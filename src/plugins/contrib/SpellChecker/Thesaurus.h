@@ -42,7 +42,6 @@ class Thesaurus
     private:
         wxThes *m_pT;
         wxWindow *m_pDialogsParent;
-        bool m_ok;
 };
 
 #endif // THESAURUS_H
