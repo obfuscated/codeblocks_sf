@@ -1171,10 +1171,13 @@ void DebuggerManager::FindTargetsDebugger()
     Compiler *compiler = nullptr;
     if (!target)
     {
-        compiler = CompilerFactory::GetDefaultCompiler();
+        if (project)
+            compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+        if (!compiler)
+            compiler = CompilerFactory::GetDefaultCompiler();
         if (!compiler)
         {
-            log->LogError(_("Can't get the active target, nor default compiler!"));
+            log->LogError(_("Can't get the compiler for the active target, nor the project, nor the default one!"));
             m_menuHandler->MarkActiveTargetAsValid(false);
             return;
         }
