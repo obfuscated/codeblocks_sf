@@ -17,6 +17,23 @@
 									<cols>2</cols>
 									<growablecols>1</growablecols>
 									<object class="sizeritem">
+ 										<object class="wxStaticText" name="ID_STATICTEXT14" variable="StaticText14" member="yes">
+ 											<label>Unique IDs only:</label>
+ 										</object>
+ 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+ 										<border>5</border>
+ 										<option>1</option>
+ 									</object>
+ 									<object class="sizeritem">
+ 										<object class="wxCheckBox" name="ID_CHECKBOX11" variable="m_UniqueIDsOnly" member="yes">
+ 											<label>(uncheck if you want to assign the same ID to different widgets)</label>
+ 											<checked>1</checked>
+ 										</object>
+ 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+ 										<border>5</border>
+ 										<option>0</option>
+ 									</object>
+ 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
 											<label>Placement:</label>
 										</object>

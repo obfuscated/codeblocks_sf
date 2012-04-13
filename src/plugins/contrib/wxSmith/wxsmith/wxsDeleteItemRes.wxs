@@ -11,7 +11,7 @@
 					<label>Delete options</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_PhisDeleteWXS" member="yes">
+						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_PhysDeleteWXS" member="yes">
 							<label>Physically delete WXS file</label>
 							<checked>1</checked>
 						</object>
@@ -27,7 +27,7 @@
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="ID_CHECKBOX3" variable="m_PhisDeleteSources" member="yes">
+						<object class="wxCheckBox" name="ID_CHECKBOX3" variable="m_PhysDeleteSources" member="yes">
 							<label>Physically delete source files</label>
 							<enabled>0</enabled>
 						</object>

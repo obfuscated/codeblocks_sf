@@ -308,10 +308,3 @@ wxString    ss, tt;
         outItem = ss;
     };
 }
-
-
-
-
-
-
-
