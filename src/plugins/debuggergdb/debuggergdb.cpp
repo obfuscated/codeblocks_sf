@@ -1881,6 +1881,8 @@ void DebuggerGDB::CleanupWhenProjectClosed(cbProject *project)
 
     // remove all breakpoints belonging to the closed project
     DeleteAllProjectBreakpoints(project);
+    // FIXME (#obfuscated): Optimize this when multiple projects are closed
+    //                      (during workspace close operation for exmaple).
     cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
     dlg->Reload();
 }
