@@ -68,13 +68,13 @@ static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 // Temporary breakpoint 2, main () at /path/projects/tests/main.cpp:136
 static wxRegEx reTempBreakFound(wxT("^[Tt]emporary[ \t]breakpoint[ \t]([0-9]+),.*"));
 
-// gdb: do_initial_child_stuff: process 1392
-static wxRegEx reChildPid(_T("gdb: do_initial_child_stuff: process ([0-9]+)"));
-// same as above but for gdb >= 6.7 (TODO: need to check the exact version it was changed)
-static wxRegEx reChildPid2(_T("gdb: kernel event for pid=([0-9]+)"));
+
 // [Switching to Thread -1234655568 (LWP 18590)]
 // [New Thread -1234655568 (LWP 18590)]
-static wxRegEx reChildPid3(_T("Thread[ \t]+[xA-Fa-f0-9-]+[ \t]+\\(LWP ([0-9]+)\\)]"));
+static wxRegEx reChildPid1(_T("Thread[ \t]+[xA-Fa-f0-9-]+[ \t]+\\(LWP ([0-9]+)\\)]"));
+// MinGW GDB 6.8 and later
+// [New Thread 2684.0xf40] or [New thread 2684.0xf40]
+static wxRegEx reChildPid2(_T("\\[New [tT]hread[ \t]+[0-9]+\\.[xA-Fa-f0-9-]+\\]"));
 static wxRegEx reAttachedChildPid(wxT("Attaching to process ([0-9]+)"));
 
 static wxRegEx reInferiorExited(wxT("^\\[Inferior[ \\t].+[ \\t]exited normally\\]$"), wxRE_EXTENDED);
@@ -92,8 +92,6 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
     m_IsStarted(false),
     m_GDBVersionMajor(0),
     m_GDBVersionMinor(0),
-    want_debug_events(true),
-    disable_debug_events(false),
     m_attachedToProcess(false),
     m_catchThrowIndex(-1)
 {
@@ -242,19 +240,6 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
     QueueCommand(new DebuggerCmd(this, _T("set unwindonsignal on")));
     // disalbe result string truncations
     QueueCommand(new DebuggerCmd(this, wxString::Format(wxT("set print elements %d"), printElements)));
-
-    // want debug events
-    if(platform::windows)
-    {
-        QueueCommand(new DebuggerCmd(this, _T("set debugevents on")));
-        want_debug_events = true;
-        disable_debug_events = false;
-    }
-    else
-    {
-        want_debug_events = false;
-        disable_debug_events = false;
-    }
 
     if (platform::windows && isConsole)
         QueueCommand(new DebuggerCmd(this, _T("set new-console on")));
@@ -750,49 +735,24 @@ void GDB_driver::ParseOutput(const wxString& output)
 {
     m_Cursor.changed = false;
 
-    // Watch for initial debug info and grab the child PID
-    // this is put here because we need this info even if
-    // we don't get a prompt back.
-    // It's "cheap" anyway because the line we 're after is
-    // the very first line printed by gdb when running our
-    // program. It then sets the child PID and never enters here
-    // again because the "want_debug_events" condition below
-    // is not satisfied anymore...
-    if (platform::windows && want_debug_events)
+    if (platform::windows && m_ChildPID == 0)
     {
-        wxRegEx* re = 0;
-        if ((m_GDBVersionMajor > 6 || (m_GDBVersionMajor == 6 && m_GDBVersionMinor >= 7)) &&
-            output.Contains(_T("CREATE_PROCESS_DEBUG_EVENT")))
+        if (reChildPid2.Matches(output)) // [New Thread 2684.0xf40] or [New thread 2684.0xf40]
         {
-            re = &reChildPid2;
-        }
-        else if (m_GDBVersionMajor <= 6 && output.Contains(_T("do_initial_child_stuff")))
-            re = &reChildPid;
-        else if (m_attachedToProcess)
-            re = &reAttachedChildPid;
-
-        if (re)
-        {
-            // got the line with the PID, parse it out:
-            // e.g.
-            // gdb: do_initial_child_stuff: process 1392
-            if (re->Matches(output))
-            {
-                wxString pidStr = re->GetMatch(output, 1);
-                long pid = 0;
-                pidStr.ToLong(&pid);
-                SetChildPID(pid);
-                want_debug_events = false;
-                disable_debug_events = true;
-                m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
-            }
+            wxString pidStr = reChildPid2.GetMatch(output, 0);
+            pidStr = pidStr.BeforeFirst(_T('.')); //[New Thread 2684.0xf40] -> [New Thread 2684
+            pidStr = pidStr.AfterFirst(_T('d')); //[New Thread 2684 ->  2684
+            long pid = 0;
+            pidStr.ToLong(&pid);
+            SetChildPID(pid);
+            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
         }
     }
     else if (!platform::windows && m_ChildPID == 0)
     {
-        if (reChildPid3.Matches(output)) // [Switching to Thread -1234655568 (LWP 18590)]
+        if (reChildPid1.Matches(output)) // [Switching to Thread -1234655568 (LWP 18590)]
         {
-            wxString pidStr = reChildPid3.GetMatch(output, 1);
+            wxString pidStr = reChildPid1.GetMatch(output, 1);
             long pid = 0;
             pidStr.ToLong(&pid);
             SetChildPID(pid);
@@ -800,10 +760,9 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
     }
 
-    if (!want_debug_events &&
-        (output.StartsWith(_T("gdb: ")) ||
-        output.StartsWith(_T("Warning: ")) ||
-        output.StartsWith(_T("ContinueDebugEvent "))))
+    if (  output.StartsWith(_T("gdb: "))
+        ||output.StartsWith(_T("Warning: "))
+        ||output.StartsWith(_T("ContinueDebugEvent ")))
     {
         return;
     }
@@ -820,13 +779,6 @@ void GDB_driver::ParseOutput(const wxString& output)
         // m_ProgramIsStopped is set to false in DebuggerDriver::RunQueue()
 //        m_ProgramIsStopped = false;
         return; // come back later
-    }
-
-    if (disable_debug_events)
-    {
-        // we don't want debug events anymore (we got the pid)
-        QueueCommand(new DebuggerCmd(this, _T("set debugevents off")));
-        disable_debug_events = false;
     }
 
     m_QueueBusy = false;

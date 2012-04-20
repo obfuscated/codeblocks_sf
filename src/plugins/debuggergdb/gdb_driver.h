@@ -127,8 +127,6 @@ class GDB_driver : public DebuggerDriver
         long m_GDBVersionMinor;
         wxString flavour;
 
-        bool want_debug_events;
-        bool disable_debug_events;
         bool m_attachedToProcess;
 
         // for remote debugging usage (mainly)
