@@ -3447,3 +3447,22 @@ cbPlugin* ProjectManager::GetIsRunning() const
 {
     return m_RunningPlugin;
 }
+
+cbProject* ProjectManager::FindProjectForFile(const wxString& file, ProjectFile **resultFile,
+                                              bool isRelative, bool isUnixFilename)
+{
+    for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+    {
+        cbProject* prj = m_pProjects->Item(i);
+        ProjectFile *temp = prj->GetFileByFilename(file, isRelative, isUnixFilename);
+        if (temp)
+        {
+            if (resultFile)
+                *resultFile = temp;
+            return prj;
+        }
+    }
+    if (resultFile)
+        *resultFile = nullptr;
+    return nullptr;
+}

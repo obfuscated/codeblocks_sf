@@ -478,6 +478,11 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** If a plugin runs the project executable, should not be able to run it too */
         void SetIsRunning(cbPlugin *plugin);
         cbPlugin* GetIsRunning() const;
+
+        /** Return the project which has the file in it, also return the pointer to the ProjectFile object. */
+        cbProject* FindProjectForFile(const wxString& file, ProjectFile **resultFile,
+                                      bool isRelative, bool isUnixFilename);
+
     private:
         ProjectManager(const ProjectManager& /*rhs*/); // prevent copy construction
 

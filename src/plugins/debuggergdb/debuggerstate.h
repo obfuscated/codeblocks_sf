@@ -54,7 +54,6 @@ class DebuggerState
         void ApplyBreakpoints();
     protected:
         wxString ConvertToValidFilename(const wxString& filename);
-        cbProject* FindProjectForFile(const wxString& file);
 
         DebuggerGDB* m_pPlugin;
         DebuggerDriver* m_pDriver;

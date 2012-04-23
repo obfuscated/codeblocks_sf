@@ -154,17 +154,10 @@ void EditorBase::SetTitle(const wxString& newTitle)
     wxFileName fname(realpath(toolTip));
     NormalizePath(fname, wxEmptyString);
     toolTip = UnixFilename(fname.GetFullPath());
-    cbProject* prj = nullptr;
-    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-    for (unsigned int i = 0; i < projects->GetCount(); ++i)
-    {
-        prj = projects->Item(i);
-        if (prj && prj->GetFileByFilename(toolTip, false, true))
-        {
-            toolTip += _("\nProject: ") + prj->GetTitle();
-            break;
-        }
-    }
+
+    cbProject* prj = Manager::Get()->GetProjectManager()->FindProjectForFile(toolTip, nullptr, false, true);
+    if (prj)
+        toolTip += _("\nProject: ") + prj->GetTitle();
     cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (nb)
         nb->SetTabToolTip(this, toolTip);

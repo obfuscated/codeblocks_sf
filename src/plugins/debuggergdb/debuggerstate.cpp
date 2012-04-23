@@ -100,23 +100,6 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
     return fname;
 } // end of ConvertToValidFilename
 
-cbProject* DebuggerState::FindProjectForFile(const wxString& file)
-{
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Searching for project containing: ") + file));
-    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-    for (size_t i = 0; i < projects->GetCount(); ++i)
-    {
-        cbProject* prj = projects->Item(i);
-        if (prj->GetFileByFilename(file, false, false))
-        {
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Got it: %s (%p)"), prj->GetTitle().c_str(), prj));
-            return prj;
-        }
-    }
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Not found...")));
-    return 0;
-}
-
 DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, int line,
                                                          bool temp, const wxString& lineText)
 {
@@ -137,7 +120,7 @@ DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, i
     bp->line = line;
     bp->temporary = temp;
     bp->lineText = lineText;
-    bp->userData = FindProjectForFile(file);
+    bp->userData = Manager::Get()->GetProjectManager()->FindProjectForFile(file, nullptr, false, false);
     AddBreakpoint(bp);
 
     return bp;

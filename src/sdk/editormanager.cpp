@@ -538,20 +538,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         if (data)
             Manager::Get()->GetLogManager()->DebugLog(_T("project data set for ") + data->file.GetFullPath());
         else
-        {
-            ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-            for (unsigned int i = 0; i < projects->GetCount(); ++i)
-            {
-                cbProject* prj = projects->Item(i);
-                ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
-                if (pf)
-                {
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("Found ") + pf->file.GetFullPath());
-                    data = pf;
-                    break;
-                }
-            }
-        }
+            Manager::Get()->GetProjectManager()->FindProjectForFile(ed->GetFilename(), &data, false, false);
         if (data)
             ed->SetProjectFile(data,true);
     }
