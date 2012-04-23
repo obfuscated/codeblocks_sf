@@ -1147,6 +1147,9 @@ void DebuggerManager::SetTargetsDefaultAsActiveDebugger()
 
 void DebuggerManager::FindTargetsDebugger()
 {
+    if (Manager::Get()->GetProjectManager()->IsLoadingOrClosing())
+        return;
+
     m_activeDebugger = nullptr;
     m_menuHandler->SetActiveDebugger(nullptr);
 
