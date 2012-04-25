@@ -40,8 +40,8 @@ AbbreviationsConfigPanel::AbbreviationsConfigPanel(wxWindow* parent, Abbreviatio
     {
         m_LastAutoCompKeyword = 0;
         m_Keyword->SetSelection(0);
-        m_AutoCompTextControl->SetText(m_AutoCompMap.begin()->second);
     }
+    m_AutoCompTextControl->SetText(m_AutoCompMap[m_Keyword->GetString(m_Keyword->GetSelection())]);
 
     Connect(XRCID("lstAutoCompKeyword"), wxEVT_COMMAND_LISTBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
     Connect(XRCID("btnAutoCompAdd"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompAdd);
@@ -68,6 +68,10 @@ void AbbreviationsConfigPanel::InitCompText()
     m_AutoCompTextControl->SetMarginWidth(0, 32);
     m_AutoCompTextControl->SetViewWhiteSpace(1);
     m_AutoCompTextControl->SetMinSize(wxSize(50, 50));
+
+    wxColor ccolor = Manager::Get()->GetConfigManager(_T("editor"))->ReadColour(_T("/caret/colour"), *wxBLACK );
+    m_AutoCompTextControl->SetCaretForeground( ccolor );
+
     ApplyColours();
     wxXmlResource::Get()->AttachUnknownControl(_T("txtAutoCompCode"), m_AutoCompTextControl);
 }
@@ -99,8 +103,7 @@ void AbbreviationsConfigPanel::AutoCompUpdate(int index)
     if (index != -1)
     {
         wxString lastSel = m_Keyword->GetString(index);
-        if (m_AutoCompTextControl->GetText() != m_AutoCompMap[lastSel])
-            m_AutoCompMap[lastSel] = m_AutoCompTextControl->GetText();
+        m_AutoCompMap[lastSel] = m_AutoCompTextControl->GetText();
     }
 }
 
@@ -116,11 +119,10 @@ void AbbreviationsConfigPanel::OnAutoCompAdd(wxCommandEvent& event)
             return;
         }
         m_AutoCompMap[key] = wxEmptyString;
-        m_Keyword->Append(key);
+        m_LastAutoCompKeyword = m_Keyword->Append(key);
+        m_Keyword->SetSelection( m_LastAutoCompKeyword );
         AutoCompUpdate(m_Keyword->GetSelection());
         m_AutoCompTextControl->SetText(wxEmptyString);
-        m_LastAutoCompKeyword = m_Keyword->GetCount() - 1;
-        m_Keyword->SetSelection(m_LastAutoCompKeyword);
     }
 }
 

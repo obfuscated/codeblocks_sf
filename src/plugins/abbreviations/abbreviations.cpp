@@ -270,7 +270,7 @@ void Abbreviations::LoadAutoCompleteConfig()
     {
         wxString name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/name"), wxEmptyString);
         wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/code"), wxEmptyString);
-        if (name.IsEmpty() || code.IsEmpty())
+        if (name.IsEmpty())
             continue;
         // convert non-printable chars to printable
         code.Replace(_T("\\n"), _T("\n"));
