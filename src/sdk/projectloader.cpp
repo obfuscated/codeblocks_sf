@@ -527,6 +527,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
     bool use_console_runner = true;
     wxString output;
+    wxString imp_lib;
+    wxString def_file;
     wxString working_dir;
     wxString obj_output;
     wxString deps_output;
@@ -559,6 +561,12 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
         if (node->Attribute("output"))
             output = UnixFilename(cbC2U(node->Attribute("output")));
+
+        if (node->Attribute("imp_lib"))
+            imp_lib = UnixFilename(cbC2U(node->Attribute("imp_lib")));
+
+        if (node->Attribute("def_file"))
+            def_file = UnixFilename(cbC2U(node->Attribute("def_file")));
 
         if (node->Attribute("prefix_auto"))
             prefixPolicy = atoi(node->Attribute("prefix_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
@@ -649,6 +657,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         target->SetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
         target->SetTargetType((TargetType)type); // type *must* come before output filename!
         target->SetOutputFilename(output); // because if no filename defined, one will be suggested based on target type...
+        target->SetImportLibraryFilename(imp_lib);
+        target->SetDefinitionFileFilename(def_file);
         target->SetUseConsoleRunner(use_console_runner);
         if (!working_dir.IsEmpty())
             target->SetWorkingDir(working_dir);
@@ -1166,9 +1176,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             if (extensionPolicy == tgfpPlatformDefault)
             {
                 wxFileName fname(outputFileName);
-                fname.ClearExt();
-                outputFileName = fname.GetFullPath();
+                if (fname.HasExt())
+                {
+                    fname.ClearExt();
+                    outputFileName = fname.GetFullPath();
+                }
             }
+
             if (   (prefixPolicy == tgfpPlatformDefault)
                 && (   (!platform::windows && target->GetTargetType() == ttDynamicLib)
                     || (target->GetTargetType() == ttStaticLib) ) )
@@ -1195,6 +1209,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             }
 
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", outputFileName);
+            if (target->GetTargetType() == ttDynamicLib)
+            {
+                outnode->SetAttribute("imp_lib",  cbU2C(target->GetDynamicLibImportFilename()));
+                outnode->SetAttribute("def_file", cbU2C(target->GetDynamicLibDefFilename()));
+            }
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
 

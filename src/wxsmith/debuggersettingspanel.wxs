@@ -41,11 +41,10 @@
 					<label>Info</label>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TEXTCTRL_INFO" variable="textInfo" member="no">
-							<value>Text</value>
 							<size>186,243</size>
 							<enabled>0</enabled>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>

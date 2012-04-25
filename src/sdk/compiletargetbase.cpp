@@ -61,7 +61,7 @@ void CompileTargetBase::GetTargetFilenameGenerationPolicy(TargetFilenameGenerati
 {
     prefixOut = m_PrefixGenerationPolicy;
     extensionOut = m_ExtensionGenerationPolicy;
-} // end of GetTargetFilenameGenerationPolicy
+}
 
 const wxString& CompileTargetBase::GetFilename() const
 {
@@ -100,7 +100,7 @@ void CompileTargetBase::SetImportLibraryFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
     {
-        m_ImportLibraryFilename = _T("$(TARGET_NAME)");
+        m_ImportLibraryFilename = _T("lib$(TARGET_OUTPUT_BASENAME).a");
         SetModified(true);
         return;
     }
@@ -114,7 +114,7 @@ void CompileTargetBase::SetDefinitionFileFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
     {
-        m_DefinitionFileFilename = _T("$(TARGET_NAME)");
+        m_DefinitionFileFilename = _T("$(TARGET_OUTPUT_BASENAME).def");
         SetModified(true);
         return;
     }
