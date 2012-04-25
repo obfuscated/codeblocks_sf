@@ -10,25 +10,20 @@
 				<object class="wxPanel" name="wxID_ANY" variable="header" member="no">
 					<bg>#004080</bg>
 					<style>wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
-					<object class="wxBoxSizer" variable="headerSizer1" member="no">
+					<object class="wxBoxSizer" variable="headerSizer" member="no">
 						<object class="sizeritem">
-							<object class="wxBoxSizer" variable="headerSizer2" member="no">
-								<object class="sizeritem">
-									<object class="wxStaticText" name="ID_LABEL_ACTIVE_INFO" variable="m_activeInfo" member="yes">
-										<label>Active debugger config</label>
-										<fg>#FFFFFF</fg>
-										<bg>#004080</bg>
-										<font>
-											<size>12</size>
-											<weight>bold</weight>
-										</font>
-										<style>wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
-									</object>
-									<flag>wxALL|wxEXPAND|wxSHAPED|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-									<option>1</option>
-								</object>
+							<object class="wxStaticText" name="ID_LABEL_ACTIVE_INFO" variable="m_activeInfo" member="yes">
+								<label>Active debugger config</label>
+								<fg>#FFFFFF</fg>
+								<bg>#004080</bg>
+								<font>
+									<size>12</size>
+									<weight>bold</weight>
+								</font>
+								<style>wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
 							</object>
-							<flag>wxALL|wxSHAPED|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
 							<option>1</option>
 						</object>
 					</object>
@@ -38,9 +33,10 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxTreebook" name="ID_TREEBOOK" variable="m_treebook" member="yes">
+					<minsize>600,440</minsize>
 					<handler function="OnPageChanged" entry="EVT_TREEBOOK_PAGE_CHANGED" />
 				</object>
-				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
