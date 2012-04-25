@@ -1862,7 +1862,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
 
 void MainFrame::DoUpdateEditorStyle()
 {
-    long style = wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS;
+    long style = wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_MIDDLE_CLICK_CLOSE;
     long closestyle = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/tabs_closestyle"), 0);
     switch (closestyle)
     {
