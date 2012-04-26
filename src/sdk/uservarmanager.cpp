@@ -24,6 +24,7 @@
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
     #include <wx/textctrl.h>
+    #include <wx/splitter.h>
 #endif
 
 #include "annoyingdialog.h"

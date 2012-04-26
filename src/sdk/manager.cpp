@@ -84,7 +84,6 @@ Manager::~Manager()
         }
     }
 
-
 //    Shutdown();
     CfgMgrBldr::Free(); // only terminate config at the very last moment
 //    FileManager::Free();

@@ -36,15 +36,15 @@
 
 namespace
 {
-	const long idList = wxNewId();
-	// menu
-	const long idRemove = wxNewId();
-	const long idRemoveAll = wxNewId();
-	const long idProperties = wxNewId();
-	const long idOpen = wxNewId();
-	const long idEnable = wxNewId();
-	const long idDisable = wxNewId();
-	const long idShowTemp = wxNewId();
+    const long idList = wxNewId();
+    // menu
+    const long idRemove = wxNewId();
+    const long idRemoveAll = wxNewId();
+    const long idProperties = wxNewId();
+    const long idOpen = wxNewId();
+    const long idEnable = wxNewId();
+    const long idDisable = wxNewId();
+    const long idShowTemp = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(BreakpointsDlg, wxPanel)
@@ -89,11 +89,11 @@ BreakpointsDlg::BreakpointsDlg() :
         m_icons.Add(icon);
     m_pList->SetImageList(&m_icons, wxIMAGE_LIST_SMALL);
 
-	m_pList->InsertColumn(Type, _("Type"), wxLIST_FORMAT_LEFT, 128);
-	m_pList->InsertColumn(FilenameAddress, _("Filename/Address"), wxLIST_FORMAT_LEFT, 128);
-	m_pList->InsertColumn(Line, _("Line"), wxLIST_FORMAT_LEFT, 44);
-	m_pList->InsertColumn(Info, _("Info"), wxLIST_FORMAT_LEFT, 120);
-	m_pList->InsertColumn(Debugger, _("Debugger"), wxLIST_FORMAT_LEFT, 60);
+    m_pList->InsertColumn(Type, _("Type"), wxLIST_FORMAT_LEFT, 128);
+    m_pList->InsertColumn(FilenameAddress, _("Filename/Address"), wxLIST_FORMAT_LEFT, 128);
+    m_pList->InsertColumn(Line, _("Line"), wxLIST_FORMAT_LEFT, 44);
+    m_pList->InsertColumn(Info, _("Info"), wxLIST_FORMAT_LEFT, 120);
+    m_pList->InsertColumn(Debugger, _("Debugger"), wxLIST_FORMAT_LEFT, 60);
 
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)

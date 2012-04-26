@@ -3,8 +3,8 @@
 
 #ifndef CB_PRECOMP
 	//(*InternalHeadersPCH(DebuggerSettingsPanel)
-	#include <wx/string.h>
 	#include <wx/intl.h>
+	#include <wx/string.h>
 	//*)
 
 	#include <wx/textdlg.h>
@@ -34,12 +34,12 @@ DebuggerSettingsPanel::DebuggerSettingsPanel(wxWindow* parent, DebuggerSettingsD
     m_plugin(plugin)
 {
 	//(*Initialize(DebuggerSettingsPanel)
-	wxBoxSizer* buttonSizer;
-	wxTextCtrl* textInfo;
 	wxButton* butReset;
+	wxTextCtrl* textInfo;
 	wxButton* butCreate;
-	wxBoxSizer* mainSizer;
 	wxStaticBoxSizer* infoSizer;
+	wxBoxSizer* buttonSizer;
+	wxBoxSizer* mainSizer;
 
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -52,9 +52,9 @@ DebuggerSettingsPanel::DebuggerSettingsPanel(wxWindow* parent, DebuggerSettingsD
 	buttonSizer->Add(butReset, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	mainSizer->Add(buttonSizer, 0, wxALL|wxEXPAND|wxSHAPED|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
 	infoSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Info"));
-	textInfo = new wxTextCtrl(this, ID_TEXTCTRL_INFO, _("Text"), wxDefaultPosition, wxSize(186,243), 0, wxDefaultValidator, _T("ID_TEXTCTRL_INFO"));
+	textInfo = new wxTextCtrl(this, ID_TEXTCTRL_INFO, wxEmptyString, wxDefaultPosition, wxSize(186,243), 0, wxDefaultValidator, _T("ID_TEXTCTRL_INFO"));
 	textInfo->Disable();
-	infoSizer->Add(textInfo, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	infoSizer->Add(textInfo, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	mainSizer->Add(infoSizer, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
 	SetSizer(mainSizer);
 	mainSizer->Fit(this);

@@ -15,6 +15,7 @@
 class wxContextMenuEvent;
 class wxFocusEvent;
 class wxMouseEvent;
+class wxPoint;
 
 class cbStyledTextCtrl : public wxScintilla
 {

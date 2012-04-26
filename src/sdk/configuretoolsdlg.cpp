@@ -82,10 +82,10 @@ void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     if(hasSel)
         notSeparator = Manager::Get()->GetToolsManager()->GetToolByIndex(list->GetSelection())->GetName() != CB_TOOLS_SEPARATOR;
 
-    XRCCTRL(*this, "btnEdit", wxButton)->Enable(hasSel && notSeparator);
+    XRCCTRL(*this, "btnEdit",   wxButton)->Enable(hasSel && notSeparator);
     XRCCTRL(*this, "btnRemove", wxButton)->Enable(hasSel);
-    XRCCTRL(*this, "btnUp", wxButton)->Enable(notFirst);
-    XRCCTRL(*this, "btnDown", wxButton)->Enable(notLast);
+    XRCCTRL(*this, "btnUp",     wxButton)->Enable(notFirst);
+    XRCCTRL(*this, "btnDown",   wxButton)->Enable(notLast);
 } // end of OnUpdateUI
 
 void ConfigureToolsDlg::OnAdd(wxCommandEvent& /*event*/)

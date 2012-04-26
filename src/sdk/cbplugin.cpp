@@ -38,9 +38,9 @@
 
 #ifndef __WXMSW__
     #include <errno.h>
-	// needed for the kill system call
-	#include <signal.h>
-	#include <sys/types.h>
+    // needed for the kill system call
+    #include <signal.h>
+    #include <sys/types.h>
 #endif
 
 
@@ -619,7 +619,6 @@ void cbDebuggerPlugin::SwitchToDebuggingLayout()
 
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, perspectiveName);
 
-
     #if wxCHECK_VERSION(2, 9, 0)
     Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.wx_str()));
     #else
@@ -651,7 +650,6 @@ void cbDebuggerPlugin::SwitchToPreviousLayout()
     // switch to previous layout
     Manager::Get()->ProcessEvent(switchEvent);
 }
-
 
 bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target)
 {
@@ -915,7 +913,6 @@ wxString cbDebuggerPlugin::GetConsoleTty(int ConsolePid)
 #endif // !__WXMSW__
     return wxEmptyString;
 }
-
 
 void cbDebuggerPlugin::BringCBToFront()
 {

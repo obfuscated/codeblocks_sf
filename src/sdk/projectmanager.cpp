@@ -1803,7 +1803,7 @@ bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
         return false;
 
     // avoid circular dependencies
-    if (CausesCircularDependency(base, dependsOn))
+    if ( CausesCircularDependency(base, dependsOn) )
         return false;
 
     ProjectsArray* arr = 0;
@@ -1818,7 +1818,7 @@ bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
         arr = it->second;
 
     // add dependency only if not already there
-    if (arr->Index(dependsOn) == wxNOT_FOUND)
+    if (arr && arr->Index(dependsOn) == wxNOT_FOUND)
     {
         arr->Add(dependsOn);
         if (m_pWorkspace)

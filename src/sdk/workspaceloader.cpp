@@ -15,12 +15,14 @@
     #include <wx/intl.h>
     #include <wx/string.h>
 
+    #include "workspaceloader.h"
+
     #include "manager.h"
     #include "projectmanager.h"
     #include "logmanager.h"
     #include "cbproject.h"
     #include "globals.h"
-    #include "workspaceloader.h"
+    #include "cbworkspace.h"
 #endif
 
 

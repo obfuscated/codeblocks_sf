@@ -4,9 +4,9 @@
 #ifndef CB_PRECOMP
 	//(*HeadersPCH(DebuggerSettingsPanel)
 	#include <wx/sizer.h>
-	#include <wx/button.h>
-	#include <wx/panel.h>
 	#include <wx/textctrl.h>
+	#include <wx/panel.h>
+	#include <wx/button.h>
 	//*)
 #endif
 //(*Headers(DebuggerSettingsPanel)

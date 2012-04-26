@@ -1482,6 +1482,7 @@ void ConfigManagerWrapper::Write(const wxString& name, const wxString& value, bo
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     c->Write(m_basepath + name, value, ignoreEmpty);
 }
+
 wxString ConfigManagerWrapper::Read(const wxString& key, const wxString& defaultVal)
 {
     if (m_namespace.empty())
