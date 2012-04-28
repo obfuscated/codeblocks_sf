@@ -1176,11 +1176,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             if (extensionPolicy == tgfpPlatformDefault)
             {
                 wxFileName fname(outputFileName);
-                if (fname.HasExt())
-                {
-                    fname.ClearExt();
-                    outputFileName = fname.GetFullPath();
-                }
+                fname.ClearExt();
+                outputFileName = fname.GetFullPath();
             }
 
             if (   (prefixPolicy == tgfpPlatformDefault)
