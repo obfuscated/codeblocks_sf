@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 6504 $
- * $Id: MSVC10Loader.cpp 6504 2010-08-20 15:52:35Z mortenmacfly $
- * $HeadURL: svn://svn.berlios.de/codeblocks/trunk/src/plugins/projectsimporter/MSVC10Loader.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include "sdk.h"

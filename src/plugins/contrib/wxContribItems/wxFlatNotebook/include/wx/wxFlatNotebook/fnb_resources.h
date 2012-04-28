@@ -3,7 +3,7 @@
 // Purpose:     resources used by wxFlatNotebook
 // Author:      Armel Asselin
 // Created:     2008/02/12
-// RCS-ID:      $Id: fnb_resources.h 7551 2011-11-01 18:13:27Z jenslody $
+// RCS-ID:      $Id$
 // Copyright:   (c) 2008 Eran Ifrah
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

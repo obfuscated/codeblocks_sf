@@ -4,7 +4,7 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     1/08/1999
-// RCS-ID:      $Id: thingdef.h,v 1.3 2006/08/24 19:35:58 jrl1 Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) John Labenski
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

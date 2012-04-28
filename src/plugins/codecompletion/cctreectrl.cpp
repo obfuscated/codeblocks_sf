@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 7763 $
- * $Id: classbrowserbuilderthread.cpp 7763 2012-02-01 16:44:43Z mortenmacfly $
- * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/codecompletion/classbrowserbuilderthread.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include <sdk.h>

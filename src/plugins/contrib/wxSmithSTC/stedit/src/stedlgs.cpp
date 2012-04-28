@@ -3,7 +3,7 @@
 // Purpose:     Preferences dialog
 // Maintainer:
 // Created:     2003-04-28
-// RCS-ID:      $Id: stedlgs.cpp 7603 2011-11-20 15:49:42Z mortenmacfly $
+// RCS-ID:      $Id$
 // Copyright:   (c) John Labenski, Otto Wyss
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
