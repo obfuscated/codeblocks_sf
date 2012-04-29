@@ -1208,8 +1208,10 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", outputFileName);
             if (target->GetTargetType() == ttDynamicLib)
             {
-                outnode->SetAttribute("imp_lib",  cbU2C(target->GetDynamicLibImportFilename()));
-                outnode->SetAttribute("def_file", cbU2C(target->GetDynamicLibDefFilename()));
+                if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
+                  outnode->SetAttribute("imp_lib",  cbU2C(target->GetDynamicLibImportFilename()));
+                if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
+                  outnode->SetAttribute("def_file", cbU2C(target->GetDynamicLibDefFilename()));
             }
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");

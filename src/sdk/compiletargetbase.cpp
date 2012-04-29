@@ -100,13 +100,12 @@ void CompileTargetBase::SetImportLibraryFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
     {
-        m_ImportLibraryFilename = _T("lib$(TARGET_OUTPUT_BASENAME).a");
+        m_ImportLibraryFilename = _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
         SetModified(true);
         return;
     }
     else if (m_ImportLibraryFilename == filename)
         return;
-
     m_ImportLibraryFilename = UnixFilename(filename);
 }
 
@@ -114,13 +113,12 @@ void CompileTargetBase::SetDefinitionFileFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
     {
-        m_DefinitionFileFilename = _T("$(TARGET_OUTPUT_BASENAME).def");
+        m_DefinitionFileFilename = _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)");
         SetModified(true);
         return;
     }
     else if (m_DefinitionFileFilename == filename)
         return;
-
     m_DefinitionFileFilename = UnixFilename(filename);
 }
 
@@ -264,7 +262,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             if (m_PrefixGenerationPolicy == tgfpPlatformDefault)
             {
                 wxString prefix = wxEmptyString;
-                // On linux, "lib" is th common prefix for this platform
+                // On linux, "lib" is the common prefix for this platform
                 if (platform::linux)
                     prefix = wxT("lib");
                 // FIXME (mortenmacfly#5#): What about Mac (Windows is OK)?!
