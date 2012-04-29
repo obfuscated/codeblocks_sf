@@ -60,15 +60,16 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 	m_treebook->SetMinSize(wxSize(600,440));
 	mainSizer->Add(m_treebook, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("wxID_ANY"));
-	mainSizer->Add(staticLine, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	mainSizer->Add(staticLine, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	stdDialogButtons = new wxStdDialogButtonSizer();
 	stdDialogButtons->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
 	stdDialogButtons->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
 	stdDialogButtons->Realize();
-	mainSizer->Add(stdDialogButtons, 0, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+	mainSizer->Add(stdDialogButtons, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	SetSizer(mainSizer);
 	mainSizer->Fit(this);
 	mainSizer->SetSizeHints(this);
+	Center();
 
 	Connect(ID_TREEBOOK,wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED,(wxObjectEventFunction)&DebuggerSettingsDlg::OnPageChanged);
 	//*)

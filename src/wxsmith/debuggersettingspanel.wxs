@@ -11,16 +11,16 @@
 							<label>Create Config</label>
 							<handler function="OnButtonCreate" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxButton" name="ID_BUTTON_DELETE" variable="butDelete" member="yes">
+						<object class="wxButton" name="ID_BUTTON_DELETE" variable="butDelete" member="no">
 							<label>Delete Config</label>
 							<handler function="OnButtonDelete" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -29,7 +29,7 @@
 							<label>Reset defaults</label>
 							<handler function="OnButtonReset" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -49,7 +49,7 @@
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 				<option>1</option>
 			</object>
 		</object>

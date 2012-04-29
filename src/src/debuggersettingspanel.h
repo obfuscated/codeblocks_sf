@@ -25,7 +25,6 @@ class DebuggerSettingsPanel: public wxPanel
 	private:
 
 		//(*Declarations(DebuggerSettingsPanel)
-		wxButton* butDelete;
 		//*)
 
 		//(*Identifiers(DebuggerSettingsPanel)
