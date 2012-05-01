@@ -365,6 +365,12 @@
                                                                         <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                                     </object>
                                                                     <object class="sizeritem">
+                                                                        <object class="wxCheckBox" name="chkWordWrapStyleHomeEnd">
+                                                                            <label>Home/end to wrap point (line otherwise)</label>
+                                                                        </object>
+                                                                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                                    </object>
+                                                                    <object class="sizeritem">
                                                                         <object class="wxCheckBox" name="chkPosixRegex">
                                                                             <label>Use POSIX style for RegEx searches</label>
                                                                         </object>

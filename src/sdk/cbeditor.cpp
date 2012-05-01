@@ -1363,10 +1363,10 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
     if (mgr->ReadBool(_T("/word_wrap_style_home_end"), true))
     {
-        //in word wrap mode, home/end keys goto the wrap point if not already there,
-        //otherwise to the start/end of the entire line.
-        //alt+home/end go to start/end of the entire line.
-        //in unwrapped mode, there is no difference between home/end and alt+home/end
+        // in word wrap mode, home/end keys goto the wrap point if not already there,
+        // otherwise to the start/end of the entire line.
+        // alt+home/end go to start/end of the entire line.
+        // in unwrapped mode, there is no difference between home/end and alt+home/end
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NORM,wxSCI_CMD_VCHOMEWRAP);
         control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_NORM,wxSCI_CMD_LINEENDWRAP);
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOME);
@@ -1377,7 +1377,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_LINEENDEXTEND);
     }
     else
-    { //in word wrap mode, home/end keys goto start/end of the entire line. alt+home/end goes to wrap points
+    {   // in word wrap mode, home/end keys goto start/end of the entire line. alt+home/end goes to wrap points
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAP);
         control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_ALT,wxSCI_CMD_LINEENDWRAP);
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAPEXTEND);
@@ -1385,7 +1385,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     control->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
     control->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
-    //gutter
+    // gutter
     control->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
     control->SetEdgeColour(GetOptionColour(_T("/gutter/colour"), *wxLIGHT_GREY));
     control->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
@@ -2136,7 +2136,7 @@ bool cbEditor::GotoTokenPosition(int line, const wxString& tokenName)
 void cbEditor::BreakpointMarkerToggle(int line)
 {
     int marker = m_pControl->MarkerGet(line);
-    if (marker & (1 << BREAKPOINT_MARKER))
+    if      (marker & (1 << BREAKPOINT_MARKER))
         m_pControl->MarkerDelete(line, BREAKPOINT_MARKER);
     else if (marker & (1 << BREAKPOINT_DISABLED_MARKER))
         m_pControl->MarkerDelete(line, BREAKPOINT_DISABLED_MARKER);
@@ -2216,7 +2216,7 @@ void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
             toggle = true;
     }
 
-    if(toggle)
+    if (toggle)
     {
         BreakpointMarkerToggle(line);
         dialog->Reload();
@@ -2252,9 +2252,11 @@ void cbEditor::RefreshBreakpointMarkers()
     int line = 0;
     while ((line = c->MarkerNext(line, (1 << BREAKPOINT_MARKER))) != -1)
         MarkerToggle(BREAKPOINT_MARKER, line);
+
     line = 0;
     while ((line = c->MarkerNext(line, (1 << BREAKPOINT_DISABLED_MARKER))) != -1)
         MarkerToggle(BREAKPOINT_DISABLED_MARKER, line);
+
     line = 0;
     while ((line = c->MarkerNext(line, (1 << BREAKPOINT_OTHER_MARKER))) != -1)
         MarkerToggle(BREAKPOINT_OTHER_MARKER, line);
@@ -2271,7 +2273,7 @@ void cbEditor::RefreshBreakpointMarkers()
                 if (bp->GetLocation() == GetFilename())
                 {
                     if (bp->IsEnabled())
-                        MarkerToggle(BREAKPOINT_MARKER, bp->GetLine() - 1);
+                        MarkerToggle(BREAKPOINT_MARKER,          bp->GetLine() - 1);
                     else
                         MarkerToggle(BREAKPOINT_DISABLED_MARKER, bp->GetLine() - 1);
                 }

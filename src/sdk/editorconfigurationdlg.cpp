@@ -122,6 +122,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"), true));
     XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"), true));
     XRCCTRL(*this, "chkWordWrap", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"), false));
+    XRCCTRL(*this, "chkWordWrapStyleHomeEnd", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap_style_home_end"), true));
     XRCCTRL(*this, "chkPosixRegex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_posix_style_regexes"), false));
     #ifdef wxHAS_REGEX_ADVANCED
     XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_advanced_regexes"), false));
@@ -800,6 +801,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/tab_indents"),                         XRCCTRL(*this, "chkTabIndents", wxCheckBox)->GetValue());
         cfg->Write(_T("/backspace_unindents"),                 XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->GetValue());
         cfg->Write(_T("/word_wrap"),                           XRCCTRL(*this, "chkWordWrap", wxCheckBox)->GetValue());
+        cfg->Write(_T("/word_wrap_style_home_end"),            XRCCTRL(*this, "chkWordWrapStyleHomeEnd", wxCheckBox)->GetValue());
         cfg->Write(_T("/use_posix_style_regexes"),             XRCCTRL(*this, "chkPosixRegex", wxCheckBox)->GetValue());
         #ifdef wxHAS_REGEX_ADVANCED
         cfg->Write(_T("/use_advanced_regexes"),                XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->GetValue());
