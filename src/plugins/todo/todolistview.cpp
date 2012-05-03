@@ -387,12 +387,14 @@ void ToDoListView::ParseFile(const wxString& filename)
 
     delete fileBuffer;
 }
+
 void ToDoListView::SkipSpaces(const wxString& buffer, size_t &pos)
 {
     wxChar c = buffer[pos];
     while ( c == _T(' ') || c == _T('\t') )
         c = buffer[++pos];
 }
+
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
     // this is the actual workhorse...
@@ -427,124 +429,109 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
         startStrings.Add(cmttoken.lineComment);
     if ( !cmttoken.streamCommentStart.IsEmpty() )
         startStrings.Add(cmttoken.streamCommentStart);
+
     if ( startStrings.IsEmpty() || allowedTypes.IsEmpty() )
     {
         Manager::Get()->GetLogManager()->Log(_T("ToDoList: Warning: No to-do types or comment symbols selected to search for, nothing to do."));
         return;
     }
 
-
-    size_t pos = 0;
-    while( 1 )
+    for ( unsigned k = 0; k < startStrings.size(); k++)
     {
-        int cmtStart = buffer.length();
-        unsigned int cmtType;
-        for (unsigned int i = 0; i < startStrings.GetCount() ; ++i)
+        size_t pos = 0;
+        while (1)
         {
-            int p = buffer.find(startStrings[i], pos);
-            if ( p != wxNOT_FOUND )
-            {
-                if (p < cmtStart)
-                {
-                    cmtStart = p;
-                    cmtType = i;
-                }
-                else if ( p == cmtStart && startStrings[i].length() > startStrings[cmtType].length() )
-                {
-                    cmtType = i;
-                }
-                //Manager::Get()->GetLogManager()->DebugLog(_T("found startString: ")+ startStrings[cmtType] + wxString::Format(_T(", len=%d"),startStrings[cmtType].length()));
-            }
-        }
-        // none of the search strings found so end the loop now
-        if (cmtStart == (int)buffer.length())
-            break;
+            pos = buffer.find(startStrings[k], pos);
+            if ( pos == (size_t)wxNOT_FOUND )
+                break;
 
-        pos = cmtStart + startStrings[cmtType].length();
-        SkipSpaces(buffer, pos);
-
-        for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
-        {
-            if (buffer.find(allowedTypes[i], pos) != pos)
-                continue;
-            pos += allowedTypes[i].length();
+            pos += startStrings[k].length();
             SkipSpaces(buffer, pos);
 
-            ToDoItem item;
-            item.type = allowedTypes[i];
-            item.filename = filename;
-
-
-            // ok, we look for two basic kinds of todo entries in the text
-            // our version...
-            // TODO (mandrav#0#): Implement code to do this and the other...
-            // and a generic version...
-            // TODO: Implement code to do this and the other...
-
-            wxChar c = buffer.GetChar(pos);
-            // is it ours or generic todo?
-            if (c == _T('('))
+            for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
             {
-                // it's ours, find user and/or priority
-                ++pos;
-                while(pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n'))
+                wxString type = buffer.Mid(pos, allowedTypes[i].length());
+                if ( type != allowedTypes[i])
+                    continue;
+                pos += allowedTypes[i].length();
+                SkipSpaces(buffer, pos);
+
+                ToDoItem item;
+                item.type = allowedTypes[i];
+                item.filename = filename;
+
+
+                // ok, we look for two basic kinds of todo entries in the text
+                // our version...
+                // TODO (mandrav#0#): Implement code to do this and the other...
+                // and a generic version...
+                // TODO: Implement code to do this and the other...
+
+                wxChar c = buffer.GetChar(pos);
+                // is it ours or generic todo?
+                if (c == _T('('))
                 {
-                    wxChar c1 = buffer.GetChar(pos);
-                    if (c1 != _T('#') && c1 != _T(')'))
+                    // it's ours, find user and/or priority
+                    ++pos;
+                    while(pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n'))
                     {
-                        // a little logic doesn't hurt ;)
-                        if (c1 == _T(' ') || c1 == _T('\t'))
+                        wxChar c1 = buffer.GetChar(pos);
+                        if (c1 != _T('#') && c1 != _T(')'))
                         {
-                            // allow one consecutive space
-                            if (item.user.Last() != _T(' '))
-                                item.user << _T(' ');
+                            // a little logic doesn't hurt ;)
+                            if (c1 == _T(' ') || c1 == _T('\t'))
+                            {
+                                // allow one consecutive space
+                                if (item.user.Last() != _T(' '))
+                                    item.user << _T(' ');
+                            }
+                            else
+                                item.user << c1;
+                        }
+                        else if (c1 == _T('#'))
+                        {
+                            // look for priority
+                            c1 = buffer.GetChar(++pos);
+                            const wxString allowedChars = _T("0123456789");
+                            if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
+                                item.priorityStr << c1;
+                            // skip to start of text
+                            while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
+                            {
+                                wxChar c2 = buffer.GetChar(pos++);
+                                if (c2 == _T(')'))
+                                    break;
+                            }
+                            break;
                         }
                         else
-                            item.user << c1;
+                            break;
+                        ++pos;
                     }
-                    else if (c1 == _T('#'))
-                    {
-                        // look for priority
-                        c1 = buffer.GetChar(++pos);
-                        const wxString allowedChars = _T("0123456789");
-                        if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
-                            item.priorityStr << c1;
-                        // skip to start of text
-                        while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
-                        {
-                            wxChar c2 = buffer.GetChar(pos++);
-                            if (c2 == _T(')'))
-                                break;
-                        }
-                        break;
-                    }
-                    else
-                        break;
-                    ++pos;
                 }
+                // ok, we 've reached the actual todo text :)
+                // take everything up to the end of line
+                if( buffer.GetChar(pos) == _T(':'))
+                    ++pos;
+                size_t idx = pos;
+                while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
+                    idx++;
+                item.text = buffer.Mid(pos, idx-pos);
+
+                // do some clean-up
+                item.text.Trim();
+                item.text.Trim(false);
+                item.user.Trim();
+                item.user.Trim(false);
+                item.line = CalculateLineNumber(buffer, pos);
+                item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
+                m_ItemsMap[filename].push_back(item);
+                m_Items.Add(item);
+
+                pos = idx;
             }
-            // ok, we 've reached the actual todo text :)
-            // take everything up to the end of line
-            if( buffer.GetChar(pos) == _T(':'))
-                ++pos;
-            size_t idx = pos;
-            while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
-                idx++;
-            item.text = buffer.Mid(pos, idx-pos);
-
-            // do some clean-up
-            item.text.Trim();
-            item.text.Trim(false);
-            item.user.Trim();
-            item.user.Trim(false);
-            item.line = CalculateLineNumber(buffer, pos);
-            item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
-            m_ItemsMap[filename].push_back(item);
-            m_Items.Add(item);
-
-            pos = idx;
+            pos ++;
         }
-        pos ++;
     }
 }
 
