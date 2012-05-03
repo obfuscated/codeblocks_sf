@@ -439,6 +439,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     for ( unsigned k = 0; k < startStrings.size(); k++)
     {
         size_t pos = 0;
+        int oldline=0, oldlinepos=0;
         while (1)
         {
             pos = buffer.find(startStrings[k], pos);
@@ -523,7 +524,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 item.text.Trim(false);
                 item.user.Trim();
                 item.user.Trim(false);
-                item.line = CalculateLineNumber(buffer, pos);
+                item.line = CalculateLineNumber(buffer, pos, oldline, oldlinepos);
                 item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
                 m_ItemsMap[filename].push_back(item);
                 m_Items.Add(item);
@@ -535,18 +536,17 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     }
 }
 
-int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo)
+int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo, int &oldline, int &oldlinepos )
 {
-    int line = 0;
-    for (int i = 0; i < upTo; ++i)
+    for (; oldlinepos < upTo; ++oldlinepos)
     {
-        if (buffer.GetChar(i) == _T('\r') && buffer.GetChar(i + 1) == _T('\n')) // CR+LF
+        if (buffer.GetChar(oldlinepos) == _T('\r') && buffer.GetChar(oldlinepos + 1) == _T('\n')) // CR+LF
             continue; // we 'll count on \n (next loop)
-        else if (buffer.GetChar(i) == _T('\r') || // CR only
-                buffer.GetChar(i) == _T('\n')) // lf only
-            ++line;
+        else if (buffer.GetChar(oldlinepos) == _T('\r') || // CR only
+                buffer.GetChar(oldlinepos) == _T('\n')) // lf only
+            ++oldline;
     }
-    return line;
+    return oldline;
 }
 
 void ToDoListView::FocusEntry(size_t index)

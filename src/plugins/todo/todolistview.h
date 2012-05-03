@@ -82,7 +82,7 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
         void ParseEditor(cbEditor* pEditor);
         void ParseFile(const wxString& filename);
         void ParseBuffer(const wxString& buffer, const wxString& filename);
-        int CalculateLineNumber(const wxString& buffer, int upTo);
+        int CalculateLineNumber(const wxString& buffer, int upTo, int &oldline, int &oldlinepos );
         void FocusEntry(size_t index);
         void SkipSpaces(const wxString& buffer, size_t &pos);
 
