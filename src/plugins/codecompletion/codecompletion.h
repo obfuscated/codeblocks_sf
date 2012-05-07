@@ -83,6 +83,7 @@ public:
     virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
     /** offer for the Toolbar */
     virtual bool BuildToolBar(wxToolBar* toolBar);
+    virtual bool BuildToolBar(wxToolBar* toolBar, int &priority) { priority = 10; return BuildToolBar(toolBar); }
 
     // TODO unused, should be removed probably
     virtual wxArrayString GetCallTips() { return wxArrayString(); }

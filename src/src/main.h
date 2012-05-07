@@ -34,6 +34,26 @@ class DebuggerToolbarHandler;
 class InfoPane;
 class wxGauge;
 
+struct ToolbarInfo
+{
+    ToolbarInfo() {}
+    ToolbarInfo(wxToolBar *toolbar, const wxAuiPaneInfo &paneInfo, int priority) :
+        paneInfo(paneInfo),
+        toolbar(toolbar),
+        priority(priority)
+    {
+    }
+
+    bool operator<(const ToolbarInfo& b) const
+    {
+        return priority < b.priority;
+    }
+
+    wxAuiPaneInfo paneInfo;
+    wxToolBar *toolbar;
+    int priority;
+};
+
 class MainFrame : public wxFrame
 {
 	public:
@@ -268,7 +288,7 @@ class MainFrame : public wxFrame
         void PluginsUpdated(cbPlugin* plugin, int status);
 
         void DoAddPlugin(cbPlugin* plugin);
-        void DoAddPluginToolbar(cbPlugin* plugin);
+        ToolbarInfo DoAddPluginToolbar(cbPlugin* plugin);
         void DoAddPluginStatusField(cbPlugin* plugin);
         void AddPluginInPluginsMenu(cbPlugin* plugin);
         void AddPluginInSettingsMenu(cbPlugin* plugin);
@@ -307,6 +327,7 @@ class MainFrame : public wxFrame
 
         void LoadWindowState();
         void SaveWindowState();
+        void LoadWindowSize();
 
         void InitializeRecentFilesHistory();
         void AddToRecentFilesHistory(const wxString& filename);
@@ -334,6 +355,7 @@ class MainFrame : public wxFrame
         wxMenu* m_ToolsMenu;
         wxMenu* m_PluginsMenu;
         wxMenu* m_HelpPluginsMenu;
+        bool m_ScanningForPlugins;
 
         bool m_SmallToolBar;
         bool m_StartupDone;

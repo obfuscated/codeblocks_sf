@@ -32,6 +32,7 @@
     #include "cbstatusbar.h"
 #endif
 
+#include <wx/display.h>
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
@@ -522,6 +523,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pToolbar(0L),
        m_ToolsMenu(0L),
        m_HelpPluginsMenu(0L),
+       m_ScanningForPlugins(false),
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
        m_AutoHideLockCounter(0),
@@ -577,7 +579,9 @@ MainFrame::MainFrame(wxWindow* parent)
 #endif // wxUSE_STATUSBAR
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
+    LoadWindowSize();
     ScanForPlugins();
+    CreateToolbars();
 
     // save default view
     wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));
@@ -661,7 +665,7 @@ void MainFrame::RegisterEvents()
 
 void MainFrame::ShowTips(bool forceShow)
 {
-    bool showAtStartup = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_tips"), true);
+    bool showAtStartup = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_tips"), false);
     if (forceShow || showAtStartup)
     {
         wxString tipsFile = ConfigManager::GetDataFolder() + _T("/tips.txt");
@@ -678,7 +682,7 @@ void MainFrame::CreateIDE()
 {
     int leftW = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_width"), 200);
 //    int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
-    SetSize(800, 600);
+//    SetSize(1000, 800);
     wxSize clientsize = GetClientSize();
 
     // Create CloseFullScreen Button, and hide it initially
@@ -701,9 +705,6 @@ void MainFrame::CreateIDE()
     m_pPrjMan = Manager::Get()->GetProjectManager();
     m_pLogMan = Manager::Get()->GetLogManager();
 
-    CreateToolbars();
-    SetToolBar(0);
-
     // editor manager
     m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxAuiPaneInfo().Name(wxT("MainPane")).
                             CentrePane());
@@ -711,7 +712,7 @@ void MainFrame::CreateIDE()
     // script console
     m_pScriptConsole = new ScriptConsole(this, -1);
     m_LayoutManager.AddPane(m_pScriptConsole, wxAuiPaneInfo().Name(wxT("ScriptConsole")).
-                            Caption(_("Scripting console")).Float().MinSize(100,100).FloatingPosition(300, 200));
+                            Caption(_("Scripting console")).Float().MinSize(100,100).FloatingPosition(300, 200).Hide());
 
     DoUpdateLayout();
     DoUpdateLayoutColours();
@@ -1038,14 +1039,12 @@ void MainFrame::CreateToolbars()
 
     m_pToolbar->SetInitialSize();
 
-    // add toolbars in docking system
-    m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
-                          Name(wxT("MainToolbar")).Caption(_("Main Toolbar")).
-                          ToolbarPane().Top());
-    m_LayoutManager.AddPane(m_debuggerToolbarHandler->GetToolbar(), wxAuiPaneInfo().
-                          Name(wxT("DebuggerToolbar")).Caption(_("Debugger Toolbar")).
-                          ToolbarPane().Top());
-    DoUpdateLayout();
+    std::vector<ToolbarInfo> toolbars;
+
+    toolbars.push_back(ToolbarInfo(m_pToolbar, wxAuiPaneInfo().Name(wxT("MainToolbar")).Caption(_("Main Toolbar")), 0));
+    toolbars.push_back(ToolbarInfo(m_debuggerToolbarHandler->GetToolbar(),
+                                   wxAuiPaneInfo(). Name(wxT("DebuggerToolbar")).Caption(_("Debugger Toolbar")),
+                                   2));
 
     // ask all plugins to rebuild their toolbars
     PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -1053,10 +1052,36 @@ void MainFrame::CreateToolbars()
     {
         cbPlugin* plug = plugins[i]->plugin;
         if (plug && plug->IsAttached())
-            DoAddPluginToolbar(plug);
+        {
+            ToolbarInfo info = DoAddPluginToolbar(plug);
+            if (info.toolbar)
+                toolbars.push_back(info);
+        }
     }
 
+    std::sort(toolbars.begin(), toolbars.end());
+
+    int row = 0, position = 0, rowLength = 0;
+    int maxLength = GetSize().x;
+
+    for (std::vector<ToolbarInfo>::iterator it = toolbars.begin(); it != toolbars.end(); ++it)
+    {
+        rowLength += it->toolbar->GetSize().x;
+        if (rowLength >= maxLength)
+        {
+            row++;
+            position = 0;
+            rowLength = it->toolbar->GetSize().x;
+        }
+        wxAuiPaneInfo paneInfo(it->paneInfo);
+        m_LayoutManager.AddPane(it->toolbar, paneInfo.ToolbarPane().Top().Row(row).Position(position));
+
+        position += it->toolbar->GetSize().x;
+    }
+    DoUpdateLayout();
+
     Manager::ProcessPendingEvents();
+    SetToolBar(0);
 }
 
 void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image)
@@ -1068,6 +1093,7 @@ void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& sh
 
 void MainFrame::ScanForPlugins()
 {
+    m_ScanningForPlugins = true;
     m_PluginIDsMap.clear();
 
     PluginManager* m_PluginManager = Manager::Get()->GetPluginManager();
@@ -1091,6 +1117,7 @@ void MainFrame::ScanForPlugins()
 
     CodeBlocksEvent event(cbEVT_PLUGIN_LOADING_COMPLETE);
     Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    m_ScanningForPlugins = false;
 }
 
 wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos, bool checkable)
@@ -1219,6 +1246,10 @@ void MainFrame::LoadWindowState()
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
         m_pInfoPane->SetWindowStyleFlag(m_pInfoPane->GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
 
+}
+
+void MainFrame::LoadWindowSize()
+{
 #ifndef __WXMAC__
     int x = 0;
     int y = 0;
@@ -1226,8 +1257,8 @@ void MainFrame::LoadWindowState()
     int x = 0;
     int y = wxSystemSettings::GetMetric(wxSYS_MENU_Y, this); // make sure it doesn't hide under the menu bar
 #endif
-    int w = 800;
-    int h = 600;
+    int w = 1000;
+    int h = 800;
 
     // load window size and position
     wxRect rect(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left"),   x),
@@ -1235,8 +1266,16 @@ void MainFrame::LoadWindowState()
                 Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/width"),  w),
                 Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/height"), h));
     // maximize if needed
-    Maximize(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/maximized"), true));
+    bool maximized = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/maximized"), true);
+    Maximize(maximized);
     // set size and position
+    if (maximized) {
+        int index = wxDisplay::GetFromWindow(this);
+        wxDisplay display(index);
+        rect = display.GetClientArea();
+        rect.width-=100;
+        rect.height-=100;
+    }
     SetSize(rect);
 }
 
@@ -1496,47 +1535,53 @@ void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
 #endif
 }
 
-void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
+void InitToolbar(wxToolBar *tb)
 {
-    wxToolBar *tb = Manager::Get()->CreateEmptyToolbar();
-    if (plugin->BuildToolBar(tb))
+#if defined __WXMSW__ && !wxCHECK_VERSION(2, 8, 9)
+    // HACK: for all windows versions (including XP *without* using a manifest file),
+    //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
+    //       so we try to help the situation a little. It's not perfect, but it works.
+    // not needed for versions >= 2.8.9: fixed in upstream, toolbars with standard-controls
+    // are much too large with it (at least on w2k).
+    if (!UsesCommonControls6()) // all windows versions, including XP without a manifest file
+    {
+        // calculate the total width of all wxWindow* in the toolbar (if any)
+        int w = 0;
+        int ccount = 0;
+        for (wxWindowList::compatibility_iterator node = tb->GetChildren().GetFirst(); node; node = node->GetNext())
+        {
+            wxWindow *win = (wxWindow *)node->GetData();
+            if (win)
+            {
+                w += win->GetSize().GetWidth();
+                ++ccount;
+            }
+        }
+        #if wxCHECK_VERSION(2, 8, 0)
+        wxSize s(w + tb->GetEffectiveMinSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
+        tb->SetInitialSize(s);
+        #else
+        wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
+        tb->SetBestFittingSize(s);
+        #endif
+    }
+    else
+        tb->SetInitialSize();
+    // end of HACK
+#else
+    tb->SetInitialSize();
+#endif
+}
+
+ToolbarInfo MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
+{
+    ToolbarInfo info;
+    info.toolbar = Manager::Get()->CreateEmptyToolbar();
+    info.priority = 50;
+    if (plugin->BuildToolBar(info.toolbar, info.priority))
     {
         SetToolBar(0);
-
-#if defined __WXMSW__ && !wxCHECK_VERSION(2, 8, 9)
-        // HACK: for all windows versions (including XP *without* using a manifest file),
-        //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
-        //       so we try to help the situation a little. It's not perfect, but it works.
-        // not needed for versions >= 2.8.9: fixed in upstream, toolbars with standard-controls
-        // are much too large with it (at least on w2k).
-        if (!UsesCommonControls6()) // all windows versions, including XP without a manifest file
-        {
-            // calculate the total width of all wxWindow* in the toolbar (if any)
-            int w = 0;
-            int ccount = 0;
-            for (wxWindowList::compatibility_iterator node = tb->GetChildren().GetFirst(); node; node = node->GetNext())
-            {
-                wxWindow *win = (wxWindow *)node->GetData();
-                if (win)
-                {
-                    w += win->GetSize().GetWidth();
-                    ++ccount;
-                }
-            }
-            #if wxCHECK_VERSION(2, 8, 0)
-            wxSize s(w + tb->GetEffectiveMinSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
-            tb->SetInitialSize(s);
-            #else
-            wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
-            tb->SetBestFittingSize(s);
-            #endif
-        }
-        else
-            tb->SetInitialSize();
-        // end of HACK
-#else
-        tb->SetInitialSize();
-#endif
+        InitToolbar(info.toolbar);
 
         // add View->Toolbars menu item for toolbar
         wxMenu* viewToolbars = 0;
@@ -1549,22 +1594,22 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             if (item)
             {
                 item->Check(true);
-                m_PluginsTools[plugin] = tb;
+                m_PluginsTools[plugin] = info.toolbar;
             }
         }
 
-        const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
-        if (!info)
+        const PluginInfo* pluginInfo = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
+        if (!pluginInfo)
             cbThrow(_T("No plugin info?!?"));
 
-        static int row = 1;
-        m_LayoutManager.AddPane(tb, wxAuiPaneInfo().
-                              Name(info->name + _T("Toolbar")).Caption(info->title + _(" Toolbar")).
-                              ToolbarPane().Top().Row(row++));
-        DoUpdateLayout();
+        info.paneInfo.Name(pluginInfo->name + _T("Toolbar")).Caption(pluginInfo->title + _(" Toolbar"));
     }
     else
-        delete tb;
+    {
+        delete info.toolbar;
+        info.toolbar = nullptr;
+    }
+    return info;
 }
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
@@ -1589,8 +1634,50 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
         {
             e.ShowErrorMessage();
         }
-        // toolbar
-        DoAddPluginToolbar(plugin);
+        // Don't load the toolbars during the initial loading of the plugins, this code should be executed
+        // only when a single plugins is loaded from the Plugins -> Manager ... window.
+        if (!m_ScanningForPlugins)
+        {
+            // Create the toolbar for the plugin if there is one.
+            const ToolbarInfo &toolbarInfo = DoAddPluginToolbar(plugin);
+            if (toolbarInfo.toolbar)
+            {
+                // Place the new toolbar at the bottom of the toolbar pane. Try to reuse the last row
+                // if there is enough space in it, otherwise place the new toolbar at a new row.
+                int row = 0;
+                const wxAuiPaneInfoArray &panes = m_LayoutManager.GetAllPanes();
+                for (size_t ii = 0; ii < panes.GetCount(); ++ii)
+                {
+                    const wxAuiPaneInfo &info = panes[ii];
+                    if (info.IsToolbar())
+                        row = std::max(row, info.dock_row);
+                }
+                int minX = 100000, maxX = -100000;
+                int position = 0;
+                for (size_t ii = 0; ii < panes.GetCount(); ++ii)
+                {
+                    const wxAuiPaneInfo &info = panes[ii];
+                    if (info.IsToolbar() && info.dock_row == row && info.window)
+                    {
+                        const wxPoint &pt = info.window->GetPosition();
+                        minX = std::min(minX, pt.x + info.window->GetSize().x);
+                        maxX = std::max(maxX, pt.x + info.window->GetSize().x);
+                        position = std::max(position, info.dock_pos);
+                    }
+                }
+                if (maxX + toolbarInfo.toolbar->GetSize().x <= GetSize().x)
+                    position++;
+                else
+                {
+                    row++;
+                    position = 0;
+                }
+                wxAuiPaneInfo paneInfo(toolbarInfo.paneInfo);
+                m_LayoutManager.AddPane(toolbarInfo.toolbar, paneInfo. ToolbarPane().Top().Row(row).Position(position));
+
+                DoUpdateLayout();
+            }
+        }
         DoAddPluginStatusField(plugin);
     }
 }
@@ -2036,6 +2123,8 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
         if (count < hist->GetCount())
            AskToRemoveFileFromHistory(hist, count, false);
     }
+    else if (link.IsSameAs(_T("CB_CMD_TIP_OF_THE_DAY")))
+        ShowTips(true);
 }
 
 void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool cannot_open)
@@ -2129,6 +2218,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
     buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
     buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
+    buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
     ((StartHerePage*)sh)->SetPageContent(buf);
 }
 
