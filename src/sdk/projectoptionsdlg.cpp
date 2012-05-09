@@ -145,7 +145,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     // other plugins configuration
     AddPluginPanels();
 
-    CentreOnParent();
+    CenterOnParent();
 }
 
 // class destructor

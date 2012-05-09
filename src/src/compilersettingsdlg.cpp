@@ -101,7 +101,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
-    CentreOnParent();
+    CenterOnParent();
 }
 
 CompilerSettingsDlg::~CompilerSettingsDlg()

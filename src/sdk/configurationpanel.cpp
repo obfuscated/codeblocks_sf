@@ -44,7 +44,7 @@ void cbConfigurationDialog::AttachConfigurationPanel(cbConfigurationPanel* panel
     SetSizer(bs);
 
     bs->SetSizeHints(this);
-    CentreOnParent();
+    CenterOnParent();
 }
 
 cbConfigurationDialog::~cbConfigurationDialog()

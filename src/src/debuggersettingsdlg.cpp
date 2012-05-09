@@ -101,7 +101,7 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
     for (size_t ii = 0; ii < m_treebook->GetPageCount(); ++ii)
         m_treebook->ExpandNode(ii);
 
-    CentreOnParent();
+    CenterOnParent();
 }
 
 DebuggerSettingsDlg::~DebuggerSettingsDlg()
