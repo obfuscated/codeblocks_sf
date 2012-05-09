@@ -1578,7 +1578,7 @@ bool NativeParserBase::PrettyPrintToken(const TokensTree* tree,
             return true;
 
         case tkFunction:
-            result = token->m_BaseType + wxT(" ") + result + token->m_Name + token->m_Args;
+            result = token->m_FullType + wxT(" ") + result + token->m_Name + token->m_Args;
             if (token->m_IsConst)
                 result += wxT(" const");
             return true;
