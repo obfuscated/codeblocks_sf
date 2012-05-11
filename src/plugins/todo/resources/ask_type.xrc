@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxScrollingDialog" name="dlgAskType">
         <title>Validation on used Comment Style needed</title>
