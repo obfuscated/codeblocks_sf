@@ -8,18 +8,23 @@
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
+/// @file stenoteb.h
+/// @brief wxSTEditorNotebook, a wxNotebook for managing wxSTEditorSplitters.
+
 #ifndef _STENOTEB_H_
 #define _STENOTEB_H_
 
 #include <wx/notebook.h>
-#include <wx/stedit/stedefs.h>
+#include "wx/stedit/stedefs.h"
 
-class FileNameArray;
+class WXDLLIMPEXP_FWD_STEDIT wxArrayFileName;
 
 //-----------------------------------------------------------------------------
-// wxSTEditorNotebook - a wxNotebook of wxSTEditorSplitters
-//                      updates the tab names and can keep them sorted
-//                      provides a menu to add, close, goto, save, pages
+/// @class wxSTEditorNotebook
+/// @brief A wxNotebook of wxSTEditorSplitters.
+///
+/// Updates the tab names and can keep them sorted provides a menu to add,
+/// close, goto, save, pages.
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorNotebook : public wxNotebook
@@ -45,111 +50,120 @@ public:
                  long style = 0,
                  const wxString& name = wxT("wxSTEditorNotebook") );
 
-    // Create and set the wxSTEditorOptions, call this after creation.
+    /// Create and set the wxSTEditorOptions, call this after creation.
     virtual void CreateOptions(const wxSTEditorOptions& options);
-    // GetOptions, use this to change editor option values
+    /// Get the editor option values.
     const wxSTEditorOptions& GetOptions() const { return m_options; }
+    /// Get the editor option values.
     wxSTEditorOptions& GetOptions() { return m_options; }
-    // Set the options, the options will now be refed copies of the ones you send
-    // in. This can be used to detach the options for a particular editor from
-    // the rest of them.
+    /// Set the options, the options will now be refed copies of the ones you send in.
+    /// This can be used to detach the options for a particular editor from
+    /// the rest of them.
     void SetOptions(const wxSTEditorOptions& options) { m_options = options; }
 
-    // enable/disable sending wxSTEditor events from children editors
+    /// enable/disable sending wxSTEditor events from children editors.
     void SetSendSTEEvents(bool send);
 
-    // Get the editor at the page (last focused), if -1 then get the current editor, else NULL
+    /// Get the editor at the page (last focused), if -1 then get the current editor, else NULL.
     wxSTEditor *GetEditor(int page = -1);
-    // Get the splitter at this page, if -1 then get current splitter, else NULL
+    /// Get the splitter at this page, if -1 then get current splitter, else NULL.
     wxSTEditorSplitter *GetEditorSplitter(int page = -1);
 
-    // Find the page that this editor is in or -1 for none
-    int FindEditorPage(const wxSTEditor*);
-    // Find the page who's editor has this filename or id, returns first found or -1 for not found.
-    int FindEditorPageByFileName(const wxFileName&);
+    /// Find the page that this editor is in or -1 for none.
+    int FindEditorPage(const wxSTEditor* editor);
+    /// Find the page who's editor has this filename, returns first found or -1 for not found.
+    int FindEditorPageByFileName(const wxFileName& fileName);
+    /// Find the page who's editor has this id, returns first found or -1 for not found.
     int FindEditorPageById(wxWindowID win_id);
 
-    // Insert a blank wxSTEditorSplitter into the notebook
-    //  nPage = -1 means at end or if sorted then alphabetically
+    /// Insert a blank wxSTEditorSplitter into the notebook.
+    /// nPage = -1 means at end or if sorted then alphabetically.
     wxSTEditorSplitter* InsertEditorSplitter(int nPage, wxWindowID win_id,
                                              const wxString& title,
                                              bool bSelect = false);
-    // Insert a splitter of your own creation
+    /// Insert a splitter of your own creation.
     bool InsertEditorSplitter(int nPage, wxSTEditorSplitter* splitter,
                               bool bSelect = false);
 
-    // Get/Set the maximum number of pages to allow, default is STN_NOTEBOOK_PAGES_MAX_DEFAULT
-    //  absolute max is STN_NOTEBOOK_PAGES_MAX, menu IDs will confict if greater
+    /// Get/Set the maximum number of pages to allow, default is STN_NOTEBOOK_PAGES_MAX_DEFAULT.
+    /// Absolute max is STN_NOTEBOOK_PAGES_MAX, menu IDs will confict if greater.
     size_t GetMaxPageCount() const { return m_stn_max_page_count; }
     void SetMaxPageCount(size_t count) { m_stn_max_page_count = (int)count; }
 
-    // strip the path off the wxSTEditor::GetFileName to use as tab name
-    wxString FileNameToTabName(const wxSTEditor*) const;
+    /// Strip the path off the wxSTEditor::GetFileName() to use as tab name.
+    wxString FileNameToTabName(const wxSTEditor* editor) const;
 
-    // Delete a page and if query_save_if_modified & modified call
-    //   wxSTEditor::QuerySaveIfModified()
-    //   returns sucess - not canceled and anything done
-    //   if !STN_ALLOW_NO_PAGES then add back a new blank page
+    /// Delete a page and if query_save_if_modified & modified call
+    ///   wxSTEditor::QuerySaveIfModified().
+    /// If !STN_ALLOW_NO_PAGES then add back a new blank page.
+    /// @returns success - not canceled and anything done.
     bool ClosePage(int n, bool query_save_if_modified = true);
-    // Delete all pages and if query_save_if_modified & modified call
-    //   wxSTEditor::QuerySaveIfModified()
-    //   returns sucess - not canceled and anything done
-    //   if !STN_ALLOW_NO_PAGES then add back a new blank page
-    bool CloseAllPages(bool query_save_if_modified = true);
+    /// Delete all pages.
+    /// @param query_save_if_modified & modified call wxSTEditor::QuerySaveIfModified().
+    /// @param except_this_page If > 0 then keep this page open, else close all.
+    /// If !STN_ALLOW_NO_PAGES then add back a new blank page.
+    /// @returns success - not canceled and anything done.
+    bool CloseAllPages(bool query_save_if_modified = true, int except_this_page = -1);
 
-    // Add a new page with the given name, if name is "" popup dialog to ask name
+    /// Add a new page with the given name, if name is "" popup dialog to ask name.
     virtual bool NewPage( const wxString& title = wxEmptyString );
-    // Load a single file into a new page, if fileName is empty use wxFileSelector
+    /// Load a single file into a new page, if fileName is empty use wxFileSelector.
     virtual bool LoadFile( const wxFileName&,
-                           const wxString &extensions = wxEmptyString );
-    // Load file(s) into new page(s), if filenames is NULL, use wxFileDialog
+                           const wxString &extensions = wxEmptyString,
+                           const wxString& encoding = wxEmptyString);
+    /// Load file(s) into new page(s), if filenames is NULL, use wxFileDialog.
     virtual bool LoadFiles( wxArrayString *fileNames = NULL,
                             const wxString &extensions = wxEmptyString  );
-    bool LoadFiles( const FileNameArray *fileNames,
+    bool LoadFiles( const wxArrayFileName *fileNames,
                     const wxString &extensions = wxEmptyString  );
-    // Save all the opened files if modified
+    /// Save all the opened files if modified.
     virtual void SaveAllFiles();
 
-
-    // Runs through all pages and if IsModified popup a message box asking if the user wants to save the file
-    //   returns false if wxCANCEL was pressed, else true
-    //   if the user presses wxID_YES the file is automatically saved
-    //   note: use EVT_CLOSE in frame before hiding the frame
-    //         check for wxCloseEvent::CanVeto and if it can't be vetoed use the
-    //         style wxYES_NO only since it can't be canceled.
+    /// Runs through all pages and if IsModified() popup a message box asking if the user wants to save the file.
+    /// If the user presses wxID_YES the file is automatically saved.
+    /// Note: Use EVT_CLOSE in frame before hiding the frame.
+    ///       Check for wxCloseEvent::CanVeto and if it can't be vetoed use the
+    ///       style wxYES_NO only since it can't be canceled.
+    /// @returns false if wxCANCEL was pressed, else true.
     bool QuerySaveIfModified(int style = wxYES_NO|wxCANCEL);
 
-    // Tests wxSTEditor::CanSave for each page
+    /// Tests wxSTEditor::CanSave() for each page.
     bool CanSaveAll();
 
-    // Update all the menu/tool items in the wxSTEditorOptions
+    /// Update all the menu/tool items in the wxSTEditorOptions.
     virtual void UpdateAllItems();
-    // Update popupmenu, menubar, toolbar if any
+    /// Update popupmenu, menubar, toolbar if any.
     virtual void UpdateItems(wxMenu *menu=NULL, wxMenuBar *menuBar=NULL, wxToolBar *toolBar=NULL);
 
-    // Find a string starting at the current page and incrementing pages
-    //   until one is found or wxNOT_FOUND (-1) for none found.
-    //   returns the position in the page, use GetSelection to get new page number.
-    //   action is of type STE_FindStringType selects, goto, or do nothing
-    int FindString(const wxString &str, int start_pos, int flags, int action);
-    // Replace all occurances of the find string with the replace string in all pages
-    //   if flags = -1 uses wxSTEditor::GetFindFlags()
-    //   pages will be filled with the number of different pages that have been modified
-    //   returns the number of replacements
+    /// Find a string starting at the current page and incrementing pages
+    ///   until one is found or wxNOT_FOUND (-1) for none found.
+    /// Action is of type STE_FindStringType selects, goto, or do nothing.
+    /// @returns The position in the page, use GetSelection to get new page number.
+    int FindString(const wxString &str, STE_TextPos start_pos, int flags, int action);
+    /// Replace all occurances of the find string with the replace string in all pages.
+    /// If flags = -1 uses wxSTEditor::GetFindFlags().
+    /// Pages will be filled with the number of different pages that have been modified.
+    /// @returns The number of replacements.
     int ReplaceAllStrings(const wxString &findString,
                           const wxString &replaceString,
                           int flags = -1, int *pages = NULL);
 
     // -----------------------------------------------------------------------
     // implementation
+
+    /// Create a wxSTEditorSplitter as needed for new pages, override if desired.
     virtual wxSTEditorSplitter *CreateSplitter(wxWindowID id = wxID_ANY);
 
+    /// Sort the tabs, currently only STN_ALPHABETICAL_TABS is understood.
     void SortTabs(int style = STN_ALPHABETICAL_TABS);
 
+    /// Update the goto and close submenus of the notebook tab popup menu.
     void UpdateGotoCloseMenu(wxMenu* menu, int startID);
 
-    // overridden wxNotebook methods to send EVT_STN_PAGE_CHANGED events
-    //  to help update UI (these just call base class)
+    /// @name Overridden wxNotebook methods.
+    /// These send EVT_STNOTEBOOK_PAGE_CHANGED events to help update UI (these just call base class).
+    /// @{
+
     virtual bool AddPage(wxWindow *page, const wxString& text,
                          bool bSelect = false, int imageId = -1);
     virtual bool InsertPage(int nPage, wxNotebookPage *pPage,
@@ -160,6 +174,8 @@ public:
     virtual bool DeletePage(int nPage);
     virtual bool RemovePage(int nPage);
     virtual bool DeleteAllPages();
+
+    /// @}
 
     void OnMenu(wxCommandEvent &event);
     virtual bool HandleMenuEvent(wxCommandEvent &event);

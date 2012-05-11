@@ -38,8 +38,8 @@ OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "precomp.h"
 
-#include <wx/stedit/stestyls.h>
-#include <wx/stedit/stedit.h>
+#include "wx/stedit/stestyls.h"
+#include "wx/stedit/stedit.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxArraySTEditorStyle);
@@ -85,45 +85,45 @@ void wxSTEditorStyles::Init()
     keyArr.Alloc(52);
     valArr.Alloc(52);
 
-    keyArr.Add(STE_STYLE_DEFAULT);           valArr.Add(wxSTEditorStyle(wxT("Default text"),       0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, 0,                                 STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD1);          valArr.Add(wxSTEditorStyle(wxT("Keyword 1"),          0x0000FF, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFONTSTYLE,  STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD2);          valArr.Add(wxSTEditorStyle(wxT("Keyword 2"),          0x0000AA, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD3);          valArr.Add(wxSTEditorStyle(wxT("Keyword 3"),          0x42426F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD4);          valArr.Add(wxSTEditorStyle(wxT("Keyword 4"),          0xAA00AA, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD5);          valArr.Add(wxSTEditorStyle(wxT("Keyword 5"),          0x2F2F2F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_KEYWORD6);          valArr.Add(wxSTEditorStyle(wxT("Keyword 6"),          0x808080, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENT);           valArr.Add(wxSTEditorStyle(wxT("Comment"),            0x238E23, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTDOC);        valArr.Add(wxSTEditorStyle(wxT("Comment doc"),        0x238E23, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTLINE);       valArr.Add(wxSTEditorStyle(wxT("Comment line"),       0x238E23, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMENTOTHER);      valArr.Add(wxSTEditorStyle(wxT("Comment other"),      0x238E23, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CHARACTER);         valArr.Add(wxSTEditorStyle(wxT("Character"),          0x9F9F9F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CHARACTEREOL);      valArr.Add(wxSTEditorStyle(wxT("Character EOL"),      0x9F9F9F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_STRING);            valArr.Add(wxSTEditorStyle(wxT("String"),             0x2AA52A, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_STRINGEOL);         valArr.Add(wxSTEditorStyle(wxT("String EOL"),         0x2AA52A, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_DELIMITER);         valArr.Add(wxSTEditorStyle(wxT("Delimiter"),          0xCC3232, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PUNCTUATION);       valArr.Add(wxSTEditorStyle(wxT("Punctuation"),        0xCC3232, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_OPERATOR);          valArr.Add(wxSTEditorStyle(wxT("Operator"),           0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACE);             valArr.Add(wxSTEditorStyle(wxT("Brace"),              0x4F2F4F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_COMMAND);           valArr.Add(wxSTEditorStyle(wxT("Command"),            0x0000FF, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_IDENTIFIER);        valArr.Add(wxSTEditorStyle(wxT("Identifier"),         0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_LABEL);             valArr.Add(wxSTEditorStyle(wxT("Label"),              0x4F2F4F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_NUMBER);            valArr.Add(wxSTEditorStyle(wxT("Number"),             0x238E6B, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PARAMETER);         valArr.Add(wxSTEditorStyle(wxT("Parameter"),          0x4F2F4F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_REGEX);             valArr.Add(wxSTEditorStyle(wxT("Regular expression"), 0xDB70DB, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_UUID);              valArr.Add(wxSTEditorStyle(wxT("UUID"),               0xDB70DB, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_VALUE);             valArr.Add(wxSTEditorStyle(wxT("Value"),              0xDB70DB, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_PREPROCESSOR);      valArr.Add(wxSTEditorStyle(wxT("Preprocessor"),       0x808080, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_SCRIPT);            valArr.Add(wxSTEditorStyle(wxT("Script"),             0x2F2F2F, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_ERROR);             valArr.Add(wxSTEditorStyle(wxT("Error"),              0xFF0000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_UNDEFINED);         valArr.Add(wxSTEditorStyle(wxT("Undefined"),          0x32CC32, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    //keyArr.Add(STE_STYLE_UNUSED);          valArr.Add(wxSTEditorStyle(wxT("Unused"),             0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
-    //keyArr.Add(wxSTC_STYLE_DEFAULT);       valArr.Add(wxSTEditorStyle(wxT("Editor default"),     0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_DEFAULT);           valArr.Add(wxSTEditorStyle(wxT("Default text"),       0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, 0,                                 STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD1);          valArr.Add(wxSTEditorStyle(wxT("Keyword 1"),          0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFONTSTYLE,  STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD2);          valArr.Add(wxSTEditorStyle(wxT("Keyword 2"),          0x0000AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD3);          valArr.Add(wxSTEditorStyle(wxT("Keyword 3"),          0x42426F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD4);          valArr.Add(wxSTEditorStyle(wxT("Keyword 4"),          0xAA00AA, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD5);          valArr.Add(wxSTEditorStyle(wxT("Keyword 5"),          0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_KEYWORD6);          valArr.Add(wxSTEditorStyle(wxT("Keyword 6"),          0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENT);           valArr.Add(wxSTEditorStyle(wxT("Comment"),            0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTDOC);        valArr.Add(wxSTEditorStyle(wxT("Comment doc"),        0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTLINE);       valArr.Add(wxSTEditorStyle(wxT("Comment line"),       0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMENTOTHER);      valArr.Add(wxSTEditorStyle(wxT("Comment other"),      0x238E23, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CHARACTER);         valArr.Add(wxSTEditorStyle(wxT("Character"),          0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CHARACTEREOL);      valArr.Add(wxSTEditorStyle(wxT("Character EOL"),      0x9F9F9F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_STRING);            valArr.Add(wxSTEditorStyle(wxT("String"),             0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_STRINGEOL);         valArr.Add(wxSTEditorStyle(wxT("String EOL"),         0x2AA52A, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_DELIMITER);         valArr.Add(wxSTEditorStyle(wxT("Delimiter"),          0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PUNCTUATION);       valArr.Add(wxSTEditorStyle(wxT("Punctuation"),        0xCC3232, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_OPERATOR);          valArr.Add(wxSTEditorStyle(wxT("Operator"),           0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACE);             valArr.Add(wxSTEditorStyle(wxT("Brace"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_COMMAND);           valArr.Add(wxSTEditorStyle(wxT("Command"),            0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_IDENTIFIER);        valArr.Add(wxSTEditorStyle(wxT("Identifier"),         0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_LABEL);             valArr.Add(wxSTEditorStyle(wxT("Label"),              0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_NUMBER);            valArr.Add(wxSTEditorStyle(wxT("Number"),             0x238E6B, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PARAMETER);         valArr.Add(wxSTEditorStyle(wxT("Parameter"),          0x4F2F4F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_REGEX);             valArr.Add(wxSTEditorStyle(wxT("Regular expression"), 0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_UUID);              valArr.Add(wxSTEditorStyle(wxT("UUID"),               0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_VALUE);             valArr.Add(wxSTEditorStyle(wxT("Value"),              0xDB70DB, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_PREPROCESSOR);      valArr.Add(wxSTEditorStyle(wxT("Preprocessor"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_SCRIPT);            valArr.Add(wxSTEditorStyle(wxT("Script"),             0x2F2F2F, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_ERROR);             valArr.Add(wxSTEditorStyle(wxT("Error"),              0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_UNDEFINED);         valArr.Add(wxSTEditorStyle(wxT("Undefined"),          0x32CC32, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    //keyArr.Add(STE_STYLE_UNUSED);          valArr.Add(wxSTEditorStyle(wxT("Unused"),             0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
+    //keyArr.Add(wxSTC_STYLE_DEFAULT);       valArr.Add(wxSTEditorStyle(wxT("Editor default"),     0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_ALL));
 
-    keyArr.Add(STE_STYLE_LINENUMBER);        valArr.Add(wxSTEditorStyle(wxT("Line numbers"),       0x000000, 0xC0C0C0, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACELIGHT);        valArr.Add(wxSTEditorStyle(wxT("Brace hilight"),      0x0000FF, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_BRACEBAD);          valArr.Add(wxSTEditorStyle(wxT("Brace mismatch"),     0xFF0000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_CONTROLCHAR);       valArr.Add(wxSTEditorStyle(wxT("Control character"),  0x000000, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
-    keyArr.Add(STE_STYLE_INDENTGUIDE);       valArr.Add(wxSTEditorStyle(wxT("Indent guide"),       0x808080, 0xFFFFFF, STE_DEF_FACENAME, STE_DEF_FONTSIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_COLOUR));
+    keyArr.Add(STE_STYLE_LINENUMBER);        valArr.Add(wxSTEditorStyle(wxT("Line numbers"),       0x000000, 0xC0C0C0, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACELIGHT);        valArr.Add(wxSTEditorStyle(wxT("Brace hilight"),      0x0000FF, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_BRACEBAD);          valArr.Add(wxSTEditorStyle(wxT("Brace mismatch"),     0xFF0000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_CONTROLCHAR);       valArr.Add(wxSTEditorStyle(wxT("Control character"),  0x000000, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_ALL));
+    keyArr.Add(STE_STYLE_INDENTGUIDE);       valArr.Add(wxSTEditorStyle(wxT("Indent guide"),       0x808080, 0xFFFFFF, STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, 0, STE_STYLE_USEDEFAULT_NOFORECOLOUR, STE_STYLE_USES_COLOUR));
 
     keyArr.Add(STE_STYLE_SELECTION_COLOUR);  valArr.Add(wxSTEditorStyle(wxT("Selection colour"),   0xFFFFFF, 0xC0C0C0, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_NOCOLOUR,     STE_STYLE_USES_COLOUR));
     keyArr.Add(STE_STYLE_WHITESPACE_COLOUR); valArr.Add(wxSTEditorStyle(wxT("Whitespace colour"),  0x000000, 0xFFFFFF, wxEmptyString,    0,                0, STE_STYLE_USEDEFAULT_ALL,          STE_STYLE_USES_COLOUR));
@@ -294,7 +294,7 @@ int wxSTEditorStyles::GetBackgroundColourInt(int style_n, bool use_default) cons
 }
 wxFont wxSTEditorStyles::GetFont(int style_n, bool use_default) const
 {
-    wxCHECK_MSG(IsOk(), wxFont(STE_DEF_FONTSIZE, wxMODERN, wxNORMAL, wxNORMAL), wxT("Styles not created"));
+    wxCHECK_MSG(IsOk(), wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL), wxT("Styles not created"));
 /*
     wxFont *f = wxTheFontList->FindOrCreateFont(
                 GetSize(style_n, use_default),
@@ -305,7 +305,7 @@ wxFont wxSTEditorStyles::GetFont(int style_n, bool use_default) const
                 GetFaceName(style_n, use_default));
 
     if (!f || !f->IsOk())
-        return wxFont(STE_DEF_FONTSIZE, wxMODERN, wxNORMAL, wxNORMAL);
+        return wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
 
     return wxFont(*f);
 */
@@ -318,7 +318,7 @@ wxFont wxSTEditorStyles::GetFont(int style_n, bool use_default) const
                 GetFaceName(style_n, use_default));
 
     if (!font.IsOk())  // oops this font works though
-        return wxFont(STE_DEF_FONTSIZE, wxMODERN, wxNORMAL, wxNORMAL);
+        return wxFont(STE_DEFAULT_FONT_SIZE, wxMODERN, wxNORMAL, wxNORMAL);
 
     return font;
 }
@@ -326,14 +326,14 @@ wxString wxSTEditorStyles::GetFaceName(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
                         use_default ? STE_STYLE_USEDEFAULT_FACENAME : 0);
-    if (steStyle == NULL) return STE_DEF_FACENAME;
+    if (steStyle == NULL) return STE_DEFAULT_FONT_FACENAME;
     return steStyle->m_faceName;
 }
 int wxSTEditorStyles::GetSize(int style_n, bool use_default) const
 {
     wxSTEditorStyle* steStyle = GetStyleUseDefault(style_n,
                         use_default ? STE_STYLE_USEDEFAULT_FONTSIZE : 0);
-    if (steStyle == NULL) return STE_DEF_FONTSIZE;
+    if (steStyle == NULL) return STE_DEFAULT_FONT_SIZE;
     return steStyle->m_font_size;
 }
 int wxSTEditorStyles::GetFontAttr(int style_n, bool use_default) const
@@ -387,7 +387,7 @@ bool wxSTEditorStyles::SetInitIndicator( int indic_n, const wxString &name,
     wxCHECK_STEINDIC_MSG(indic_n, false);
     return SetInitStyle(STE_STYLE_INDIC__FIRST+indic_n,
                  wxSTEditorStyle(name, fore_colour, 0xFFFFFF,
-                 STE_DEF_FACENAME, STE_DEF_FONTSIZE, style,
+                 STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
                  STE_STYLE_USEDEFAULT_NOFONTSTYLE, // just fore and style
                  STE_STYLE_USES_FORECOLOUR|STE_STYLE_USES_STYLE));
 }
@@ -397,7 +397,7 @@ bool wxSTEditorStyles::SetInitMarker( int marker_n, const wxString &name, int st
     wxCHECK_STEMARKER_MSG(marker_n, false);
     return SetInitStyle(STE_STYLE_MARKER__FIRST+marker_n,
                  wxSTEditorStyle(name, fore_colour, back_colour,
-                 STE_DEF_FACENAME, STE_DEF_FONTSIZE, style,
+                 STE_DEFAULT_FONT_FACENAME, STE_DEFAULT_FONT_SIZE, style,
                  STE_STYLE_USEDEFAULT_NOFONTSTYLE & STE_STYLE_USEDEFAULT_NOCOLOUR,
                  STE_STYLE_USES_COLOUR|STE_STYLE_USES_STYLE));
 }

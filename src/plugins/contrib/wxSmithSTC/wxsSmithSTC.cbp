@@ -583,6 +583,69 @@
 		<Unit filename="stedit\art\x_red.xpm">
 			<Option target="wxSTEdit" />
 		</Unit>
+		<Unit filename="stedit\include\wx\stedit\pairarr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\setup.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\setup0.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steart.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stedefs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stedit.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stedlgs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steevent.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steexprt.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stefindr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steframe.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stelangs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stemenum.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stenoteb.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steopts.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steprefs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steprint.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\steshell.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stesplit.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stestyls.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\include\wx\stedit\stetree.h">
+			<Option target="wxSTEdit" />
+		</Unit>
 		<Unit filename="stedit\src\precomp.cpp">
 			<Option target="wxSTEdit" />
 		</Unit>
@@ -605,6 +668,9 @@
 			<Option target="wxSTEdit" />
 		</Unit>
 		<Unit filename="stedit\src\stedlgs_wdr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\steevent.cpp">
 			<Option target="wxSTEdit" />
 		</Unit>
 		<Unit filename="stedit\src\steexprt.cpp">
@@ -643,10 +709,16 @@
 		<Unit filename="stedit\src\stestyls.cpp">
 			<Option target="wxSTEdit" />
 		</Unit>
+		<Unit filename="stedit\src\stetree.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
 		<Unit filename="stedit\src\wxext.cpp">
 			<Option target="wxSTEdit" />
 		</Unit>
 		<Unit filename="stedit\src\wxext.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit\src\wxtrunk.h">
 			<Option target="wxSTEdit" />
 		</Unit>
 		<Unit filename="wxsRichTextCtrl.cpp">

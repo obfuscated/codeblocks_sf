@@ -8,6 +8,9 @@
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
+/// @file stedefs.h
+/// @brief wxWindowIds, pref/style,language enums, and defines.
+
 #ifndef _STEDEFS_H_
 #define _STEDEFS_H_
 
@@ -19,44 +22,54 @@
 #include <wx/stc/stc.h>
 
 #if (wxVERSION_NUMBER >= 2900)
-    // #include <wx/stc/private.h" // wx2stc() has been moved here, but isn't exported
+    // #include <wx/stc/private.h> // wx2stc() has been moved here, but isn't exported
     #define wx2stc(wxstr)    (wxstr).mb_str()
     #define stc2wx(char_str) wxString(char_str)
 #endif
 
+//-----------------------------------------------------------------------------
 // Include our setup file that includes/excludes the different language
 //   information for the wxSTEditorLangs.
-// If you get an error on this line, maybe you forgot to copy
-//   include/wx/stedit/setup0.h to include/wx/stedit/setup.h ?
+//-----------------------------------------------------------------------------
+
+/// The STE_SETUP_VERSION is simply an integer that is incremented whenever
+/// wx/stedit/setup0.h is modified in a way that breaks compatibility.
+#define STE_SETUP_VERSION 2
+
+/// If you get an error on this line, you probably forgot to copy
+///   include/wx/stedit/setup0.h to include/wx/stedit/setup.h
 #if !defined(_STESETUP_H_)
-    #include <wx/stedit/setup.h>
+    #include "wx/stedit/setup.h"
 #endif // !defined(_STESETUP_H_)
 
-//-----------------------------------------------------------------------------
-// The version of wxStEdit
-//-----------------------------------------------------------------------------
+#ifndef ID_STE__FIRST
+#   error "Your wx/stedit/setup.h file is out of date, please update to wx/stedit/setup0.h."
+#endif
 
+//-----------------------------------------------------------------------------
+/// @name wxStEdit version
+//-----------------------------------------------------------------------------
+/// @{
 #define STE_MAJOR_VERSION      1
-#define STE_MINOR_VERSION      2
-#define STE_RELEASE_VERSION    6
+#define STE_MINOR_VERSION      6
+#define STE_RELEASE_VERSION    0
 #define STE_SUBRELEASE_VERSION 0
 #define STE_APPNAME           wxT("wxstedit")
 #define STE_APPDISPLAYNAME    wxT("wxStEdit")
-#define STE_VERSION_STRING    STE_APPDISPLAYNAME wxT(" 1.2.6")
+#define STE_VERSION_STRING    STE_APPDISPLAYNAME wxT(" 1.6.0")
 #define STE_WEBSITE           "http://wxcode.sourceforge.net/showcomp.php?name=wxStEdit"
+/// @}
 
-
-// For non-Unix systems (i.e. when building without a configure script),
-// users of this component can use the following macro to check if the
-// current version is at least major.minor.release
-#define wxCHECK_STE_VERSION(major,minor,release) \
+/// Use the following macro to check if the current version is at least major minor release.
+#define wxCHECK_STE_VERSION(major, minor, release) \
     (STE_MAJOR_VERSION > (major) || \
     (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION > (minor)) || \
     (STE_MAJOR_VERSION == (major) && STE_MINOR_VERSION == (minor) && STE_RELEASE_VERSION >= (release)))
 
 //-----------------------------------------------------------------------------
-// These are our DLL macros (see the contrib libs like wxPlot)
+/// @name DLL Import and Export macros (see the contrib libs like wxPlot)
 //-----------------------------------------------------------------------------
+/// @{
 
 #ifdef WXMAKINGDLL_STEDIT
     #define WXDLLIMPEXP_STEDIT WXEXPORT
@@ -68,94 +81,90 @@
     #define WXDLLIMPEXP_STEDIT
     #define WXDLLIMPEXP_DATA_STEDIT(type) type
 #endif
-#if defined(__WINDOWS__) && defined(__GNUC__)
+
+/// Forward declare all wxStEdit classes with this macro
+#if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
     #define WXDLLIMPEXP_FWD_STEDIT
 #else
     #define WXDLLIMPEXP_FWD_STEDIT WXDLLIMPEXP_STEDIT
 #endif
 
+/// @}
 //-----------------------------------------------------------------------------
-// Generic convenience defines
+/// @name Generic convenience defines
 //-----------------------------------------------------------------------------
+/// @{
 
 #define STE_HASBIT(value, bit)      (((value) & (bit)) != 0)
 #define STE_SETBIT(value, bit, set) ((set) ? (value)|(bit) : (value)&(~(bit)))
 
 #define STE_MM wxSTEditorMenuManager
 
-//-----------------------------------------------------------------------------
-// Use wxHtmlEasyPrinting instead of normal printing
-//   eg. in your build files use compiler flag -D STE_USE_HTML_PRINT=1
-//-----------------------------------------------------------------------------
+#define STE_TextPos wxTextPos
+//#define STE_TextCoord wxTextCoord // row/col
 
-#ifndef STE_USE_HTML_PRINT
-    #define STE_USE_HTML_PRINT 0
-#endif
+/// @}
 
 //-----------------------------------------------------------------------------
 // Forward declaration of the wxSTEditor classes
 //-----------------------------------------------------------------------------
 
-class WXDLLIMPEXP_STEDIT wxSTEditor;                    // stedit.h
-class WXDLLIMPEXP_STEDIT wxSTEditorEvent;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditor;                    // stedit.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorEvent;
 
-class WXDLLIMPEXP_STEDIT wxSTEditorSplitter;            // stesplit.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorSplitter;            // stesplit.h
 
-class WXDLLIMPEXP_STEDIT wxSTEditorNotebook;            // stenoteb.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorNotebook;            // stenoteb.h
 
-class WXDLLIMPEXP_STEDIT wxSTEditorFrame;               // steframe.h
-class WXDLLIMPEXP_STEDIT wxSTEditorFrameFileDropTarget;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFrame;               // steframe.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFrameFileDropTarget;
 
-class WXDLLIMPEXP_STEDIT wxSTEditorOptions;             // steopts.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorOptions;             // steopts.h
 
-class WXDLLIMPEXP_STEDIT wxSTEditorMenuManager;         // stemenum.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorMenuManager;         // stemenum.h
 
-class WXDLLIMPEXP_STEDIT wxSTEditorPrefs;               // steprefs.h
-class WXDLLIMPEXP_STEDIT wxSTEditorStyles;              // stestyls.h
-class WXDLLIMPEXP_STEDIT wxSTEditorLangs;               // stelangs.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrefs;               // steprefs.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorStyles;              // stestyls.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorLangs;               // stelangs.h
 
-class WXDLLIMPEXP_STEDIT wxSTEditorFindReplacePanel;    // stefindr.h
-class WXDLLIMPEXP_STEDIT wxSTEditorFindReplaceDialog;
-class WXDLLIMPEXP_STEDIT wxSTEditorFindReplaceData;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFindReplacePanel;    // stefindr.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFindReplaceDialog;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFindReplaceData;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorFindResultsEditor;
 
-class WXDLLIMPEXP_STEDIT wxSTEditorPropertiesDialog;    // stedlgs.h
-class WXDLLIMPEXP_STEDIT wxSTEditorInsertTextDialog;
-class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialog;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPropertiesDialog;    // stedlgs.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorInsertTextDialog;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrefDialog;
 
-class WXDLLIMPEXP_STEDIT wxSTEditorPrintout;            // steprint.h
-class WXDLLIMPEXP_STEDIT wxSTEditorPrintOptionsDialog;
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrintout;            // steprint.h
+class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrintOptionsDialog;
 
-//-----------------------------------------------------------------------------
-// Maximum number of notebook pages, should be enough? You can readjust it
-//  in the wxSTEditorNotebook.
-
-#define STN_NOTEBOOK_PAGES_DEFAULT_MAX 200  // default max number of pages
-#define STN_NOTEBOOK_PAGES_MAX         1000 // max number of pages before menu
-                                            // IDs start to conflict
+class WXDLLIMPEXP_STEDIT wxSTEditorTreeCtrl;                // stetree.h
+class WXDLLIMPEXP_STEDIT wxSTEditorTreeItemData;            // stetree.h
 
 //-----------------------------------------------------------------------------
-// STE_StateType - State of the wxSTEditor
-//   See wxSTEditor::GetState and
-//       wxSTEditorEvent::GetStateChange and wxSTEditorEvent::GetStateValues.
+/// @enum STE_StateType The State of the wxSTEditor.
+/// @see wxSTEditor::GetState() and wxSTEditorEvent::GetStateChange(), wxSTEditorEvent::GetStateValues().
 //-----------------------------------------------------------------------------
 
 enum STE_StateType
 {
-    STE_MODIFIED   = 0x0001, // the document has been modified
-    STE_CANCUT     = 0x0002, // can cut, some text is selected and !readonly
-    STE_CANCOPY    = 0x0004, // can copy, some text is selected
-    STE_CANPASTE   = 0x0008, // can paste, text in clipboard and !readonly
-    STE_CANUNDO    = 0x0010, // possible to undo
-    STE_CANREDO    = 0x0020, // possible to redo
-    STE_CANSAVE    = 0x0040, // is modified and has valid filename
-    STE_CANFIND    = 0x0080, // possible to find, false if previous find failed
+    STE_MODIFIED   = 0x0001, ///< the document has been modified
+    STE_CANCUT     = 0x0002, ///< can cut, some text is selected and !readonly
+    STE_CANCOPY    = 0x0004, ///< can copy, some text is selected
+    STE_CANPASTE   = 0x0008, ///< can paste, text in clipboard and !readonly
+    STE_CANUNDO    = 0x0010, ///< possible to undo
+    STE_CANREDO    = 0x0020, ///< possible to redo
+    STE_CANSAVE    = 0x0040, ///< is modified and has valid filename
+    STE_CANFIND    = 0x0080, ///< possible to find, false if previous find failed
+    STE_EDITABLE   = 0x0100, ///< the control is not readonly
 
-    STE_FILENAME   = 0x0100  // not a state, flag for wxSTEditorEvent
-                             // saying that the editor's filename has changed
+    STE_FILENAME   = 0x0200  ///< not a state, flag for wxSTEditorEvent
+                             ///< saying that the editor's filename has changed
 };
 
 //-----------------------------------------------------------------------------
-// STE_MarginType - predefined margin types and their number
+/// @enum STE_MarginType Predefined margin types and their number.
 //-----------------------------------------------------------------------------
 
 enum STE_MarginType
@@ -170,17 +179,19 @@ enum STE_MarginType
 };
 
 //-----------------------------------------------------------------------------
-// STE_MarkerType - predefined margin marker type,
-//
-// Markers are a little tricky, here's some sample code
-//   MarkerNext(line, 1<<STE_MARKER_BOOKMARK);
-//   MarkerPrevious(line, 1<<STE_MARKER_BOOKMARK)
-//   MarkerDeleteAll(STE_MARKER_BOOKMARK);
-//
-//   if ((MarkerGet(line) & (1<<STE_MARKER_BOOKMARK)) != 0)
-//       MarkerDelete(line, STE_MARKER_BOOKMARK);
-//   else
-//       MarkerAdd(line, STE_MARKER_BOOKMARK);
+/// @enum STE_MarkerType Predefined margin marker type.
+///
+/// Markers are a little tricky, here's some sample code.
+/// @code
+///   MarkerNext(line, 1<<STE_MARKER_BOOKMARK);
+///   MarkerPrevious(line, 1<<STE_MARKER_BOOKMARK)
+///   MarkerDeleteAll(STE_MARKER_BOOKMARK);
+///
+///   if ((MarkerGet(line) & (1<<STE_MARKER_BOOKMARK)) != 0)
+///       MarkerDelete(line, STE_MARKER_BOOKMARK);
+///   else
+///       MarkerAdd(line, STE_MARKER_BOOKMARK);
+/// @endcode
 //-----------------------------------------------------------------------------
 
 enum STE_MarkerType
@@ -191,14 +202,14 @@ enum STE_MarkerType
 };
 
 //-----------------------------------------------------------------------------
-// IDs of all the menus, toolbar tools, windows
+/// @enum STE_WindowId_Type IDs of all the menus, toolbar tools, windows.
 //-----------------------------------------------------------------------------
 
-#ifndef ID_STE__FIRST
-    #define ID_STE__FIRST 100 // first menu/window ID value
-#endif
+/// Max number of pages before menu IDs start to conflict, see usage in STE_WindowId_Type.
+#define STN_NOTEBOOK_PAGES_MAX 1000
 
-enum
+
+enum STE_WindowId_Type
 {
     // ------------------------------------------------------------------------
     // IDs of wxSTEditorPrefs menu items, same order as enum STE_PrefType
@@ -297,6 +308,7 @@ enum
     //ID_STN_SAVE_ALL             STE_MENU_NOTEBOOK
     //ID_STN_CLOSE_PAGE,          STE_MENU_FRAME
     //ID_STN_CLOSE_ALL,           STE_MENU_FRAME|STE_MENU_NOTEBOOK
+    //ID_STN_CLOSE_ALL_OTHERS,    STE_MENU_FRAME|STE_MENU_NOTEBOOK
     ID_STE_PROPERTIES,
     //wxID_PRINT,
     //wxID_PREVIEW,
@@ -305,30 +317,33 @@ enum
     ID_STE_PRINT_OPTIONS,
     //wxID_EXIT                   STE_MENU_FRAME
     // Edit menu items --------------------------------------------------------
+    //wxID_UNDO,
+    //wxID_REDO,
     //wxID_CUT,
     //wxID_COPY,
+    ID_STE_COPY_HTML,
     ID_STE_COPY_PRIMARY,  // unix copy to primary selection
     //wxID_PASTE,
     ID_STE_PASTE_NEW,
     ID_STE_PASTE_RECT,
+    //wxID_CLEAR
     //ID_STE_PREF_SELECTION_MODE, // rect sel check only
     //wxID_SELECTALL,
+    ID_STE_READONLY,
+    ID_STE_COMPLETEWORD,
+    ID_STE_COPYPATH,
     ID_STE_LINE_CUT,
     ID_STE_LINE_COPY,
     ID_STE_LINE_DELETE,
     ID_STE_LINE_TRANSPOSE,
     ID_STE_LINE_DUPLICATE,
+    // Search menu items -------------------------------------------------------
     //wxID_FIND,
     ID_STE_FIND_NEXT,
     ID_STE_FIND_PREV,
     ID_STE_FIND_DOWN,
     //wxID_REPLACE
     ID_STE_GOTO_LINE,
-    //wxID_UNDO,
-    //wxID_REDO,
-    ID_STE_READONLY,
-    ID_STE_COMPLETEWORD,
-    ID_STE_COPYPATH,
     // Tools menu items -------------------------------------------------------
     ID_STE_UPPERCASE,
     ID_STE_LOWERCASE,
@@ -342,12 +357,12 @@ enum
     ID_STE_TRAILING_WHITESPACE,
     ID_STE_REMOVE_CHARSAROUND,
     ID_STE_COLUMNIZE,
-    // Insert Menu items  -------------------------------------------------------
+    // Insert menu items  -------------------------------------------------------
     ID_STE_INSERT_TEXT,
     ID_STE_INSERT_DATETIME,
-    // View Menu items  -------------------------------------------------------
-    ID_STE_VIEW_NONPRINT,
+    // View menu items  -------------------------------------------------------
     //ID_STE_PREF_WRAPLINES
+    ID_STE_VIEW_NONPRINT,
     //ID_STE_PREF_VIEWEOL
     //ID_STE_PREF_VIEWWHITESPACE
     //ID_STE_PREF_INDENTGUIDES
@@ -365,6 +380,7 @@ enum
     //ID_STE_PREF_ZOOM
     ID_STE_SHOW_FULLSCREEN,
     // Bookmark menu items  ---------------------------------------------------
+    ID_STE_BOOKMARKS,
     ID_STE_BOOKMARK_TOGGLE,
     ID_STE_BOOKMARK_FIRST,
     ID_STE_BOOKMARK_PREVIOUS,
@@ -399,6 +415,7 @@ enum
     ID_STN_SAVE_ALL,
     ID_STN_CLOSE_PAGE,
     ID_STN_CLOSE_ALL,
+    ID_STN_CLOSE_ALL_OTHERS,
     ID_STN_WINDOWS,
     ID_STN_WIN_PREVIOUS,
     ID_STN_WIN_NEXT,
@@ -407,9 +424,6 @@ enum
 
     // Menu items used for wxSTEditorFrame
     ID_STF_SHOW_SIDEBAR = ID_STN_CLOSE_PAGE_START+STN_NOTEBOOK_PAGES_MAX,
-    ID_STF_SIDE_SPLITTER,
-    ID_STF_SIDE_NOTEBOOK,
-    ID_STF_MAIN_SPLITTER,
 
     // Menu items for the insert character menu for dialogs
     ID_STEDLG_INSERTMENU_TAB,
@@ -440,7 +454,19 @@ enum
     ID_STS_VSPLITBUTTON,
     ID_STS_HSPLITBUTTON,
 
-    ID_STE_TOOLBAR_FIND_COMBO,
+    ID_STE_TOOLBAR_FIND_CTRL,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU0, // The menu items attached to the wxSearchCtrl
+    ID_STE_TOOLBAR_FIND_CTRL_MENU1,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU2,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU3,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU4,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU5,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU6,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU7,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU8,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU9,
+    ID_STE_TOOLBAR_FIND_CTRL_MENU__LAST, // count = ID_STE_TOOLBAR_FIND_CTRL_MENU__LAST - ID_STE_TOOLBAR_FIND_CTRL_MENU0
+
     ID_STEDLG_PREF_NOTEBOOK,    // id of the notebook in the pref dialog
 
     // ------------------------------------------------------------------------
@@ -470,13 +496,30 @@ enum
     ID_STEDLG_MENU_INSERTMENURE,
 
     // ------------------------------------------------------------------------
+    // Menu IDs for the wxSTEditorTreeCtrl popup menu
+
+    ID_STT_FILE_OPEN,
+    ID_STT_FILE_CLOSE,
+    ID_STT_FILE_PROPERTIES,
+    ID_STT_EXPAND_ALL,
+    ID_STT_COLLAPSE_ALL,
+    ID_STT_SHOW_FILENAME_ONLY,
+    ID_STT_SHOW_FILEPATH_ONLY,
+    ID_STT_SHOW_PATH_THEN_FILENAME,
+    ID_STT_SHOW_ALL_PATHS,
+
+    // ------------------------------------------------------------------------
     // Dialog and Window IDs
 
     // ID of the find replace dialog
     ID_STE_FINDREPLACE_DIALOG,
 
-    // ID of the wxListBox used to display files for the STF
+    // IDs of child windows of the wxSTEditorFrame
+    ID_STF_SIDE_SPLITTER,
+    ID_STF_SIDE_NOTEBOOK,
+    ID_STF_MAIN_SPLITTER,
     ID_STF_FILE_TREECTRL,
+    ID_STF_FILE_DIRCTRL,
 
     // IDs of the editors used in the wxSTEditorPrefDialogPageStyles
     ID_STEDLG_STYLE_COLOUR_EDITOR,
@@ -486,211 +529,212 @@ enum
 };
 
 //-----------------------------------------------------------------------------
-// STE_PrefType - indexes in wxSTEditorPrefs::Get/SetPref(int pref)
-//
-// The name of the pref enum nearly matches wxStyledTextCtrl's function name
-// If you want to be sure what the pref does, look at
-//  wxSTEditorPrefs::UpdateEditor
-//
-// To permanently add a new pref, see comment before wxSTEditorPrefs, steprefs.h
+/// @enum STE_PrefType Indexes in wxSTEditorPrefs::Get/SetPref(int pref).
+///
+/// The name of the pref enum nearly matches wxStyledTextCtrl's function name
+/// If you want to be sure what the pref does, @see wxSTEditorPrefs::UpdateEditor.
+///
+/// To permanently add a new pref, see comment before wxSTEditorPrefs, steprefs.h
 //-----------------------------------------------------------------------------
 
 enum STE_PrefType
 {
                                     // [default value], [value type and range], description
-    STE_PREF_HIGHLIGHT_SYNTAX = 0,  // true, bool, turns off lexer
-    STE_PREF_HIGHLIGHT_PREPROC,     // true, bool, SetProperty("styling.within.preprocessor"
-    STE_PREF_HIGHLIGHT_BRACES,      // true, bool, code in wxSTEditor
-    STE_PREF_LOAD_INIT_LANG,        // true, bool, call STE::SetLanguage(filename) on LoadFile
-    STE_PREF_LOAD_UNICODE,          // STE_LOAD_DEFAULT, int, enum STE_LoadFileType
-    STE_PREF_WRAP_MODE,             // wxSTC_WRAP_NONE, int wxSTC_WRAP_XXX, see SetWrapMode
-    STE_PREF_WRAP_VISUALFLAGS,      // wxSTC_WRAPVISUALFLAG_END, int wxSTC_WRAPVISUALFLAG_XXX, see SetWrapVisualFlags
-    STE_PREF_WRAP_VISUALFLAGSLOC,   // wxSTC_WRAPVISUALFLAGLOC_DEFAULT, int wxSTC_WRAPVISUALFLAGLOC_XXX, see SetWrapVisualFlagsLocation
-    STE_PREF_WRAP_STARTINDENT,      // 0, int, spaces to indent wrapped lines, see SetWrapStartIndent
-    STE_PREF_ZOOM,                  // 0, int -10...20, see SetZoom
-    STE_PREF_VIEW_EOL,              // false, bool, see SetViewEOL
-    STE_PREF_VIEW_WHITESPACE,       // wxSTC_WS_INVISIBLE, int, wxSTC_WS_XXX, see SetViewWhiteSpace
-    STE_PREF_INDENT_GUIDES,         // true,  bool, see SetIndentationGuides
-    STE_PREF_EDGE_MODE,             // wxSTC_EDGE_LINE, int wxSTC_EDGE_XXX, see SetEdgeMode
-    STE_PREF_EDGE_COLUMN,           // 80,    int 0...?, see SetEdgeColumn
-    STE_PREF_VIEW_LINEMARGIN,       // false, bool
-    STE_PREF_VIEW_MARKERMARGIN,     // false, bool
-    STE_PREF_VIEW_FOLDMARGIN,       // true,  bool
-    STE_PREF_USE_TABS,              // false, bool, see SetUseTabs
-    STE_PREF_TAB_INDENTS,           // true,  bool, see SetTabIndents
-    STE_PREF_TAB_WIDTH,             // 4,     int 0...?, see SetTabWidth
-    STE_PREF_INDENT_WIDTH,          // 4,     int 0...?, see SetIndent
-    STE_PREF_BACKSPACE_UNINDENTS,   // true,  bool, see SetBackSpaceUnIndents
-    STE_PREF_AUTOINDENT,            // true,  bool, implemented in wxSTEditor::OnSTCCharAdded
-    STE_PREF_CARET_LINE_VISIBLE,    // true,  bool, see SetCaretLineVisible
-    STE_PREF_CARET_WIDTH,           // 1,     int 0...3, see SetCaretWidth
-    STE_PREF_CARET_PERIOD,          // 500,   int 0...? ms per blink, see SetCaretPeriod
-    STE_PREF_CARET_POLICY_X,        // wxSTC_CARET_EVEN|wxSTC_VISIBLE_STRICT|wxSTC_CARET_SLOP, int, wxSTC_CARET_XXX, see SetXCaretPolicy
-    STE_PREF_CARET_POLICY_Y,        // same as X, see SetYCaretPolicy
-    STE_PREF_CARET_SLOP_X,          // 1, int, number of pixels, see SetXCaretPolicy
-    STE_PREF_CARET_SLOP_Y,          // 1, int, number of pixels, see SetYCaretPolicy
-    STE_PREF_VISIBLE_POLICY,        // wxSTC_VISIBLE_STRICT|wxSTC_VISIBLE_SLOP, int, wxSTC_VISIBLE_XXX, see SetVisiblePolicy
-    STE_PREF_VISIBLE_SLOP,          // 1, int, number of pixels, see SetVisiblePolicy
-    STE_PREF_EOL_MODE,              // platform dependent, int wxSTC_EOL_CRLF, wxSTC_EOL_CR, wxSTC_EOL_LF, see SetEOLMode
-    STE_PREF_SELECTION_MODE,        // -1, int wxSTC_SEL_STREAM, wxSTC_SEL_RECTANGLE, wxSTC_SEL_LINES (note wxSTC::Cancel() is off)
-    STE_PREF_PRINT_MAGNIFICATION,   // -2,    int -20...20, see SetPrintMagnification
-    STE_PREF_PRINT_COLOURMODE,      // wxSTC_PRINT_COLOURONWHITE, int wxSTC_PRINT_XXX, see SetPrintColourMode
-    STE_PREF_PRINT_WRAPMODE,        // wxSTC_WRAP_WORD, int wxSTC_WRAP_XXX, see SetPrintWrapMode
-    STE_PREF_PRINT_LINENUMBERS,     // STE_PRINT_LINENUMBERS_DEFAULT, int, see enum STE_PrintLinenumbersType
-    STE_PREF_FOLD_FLAGS,            // wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED|wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, int, wxSTC_FOLDFLAG_XXX, see SetFoldFlags
-    STE_PREF_FOLD_STYLES,           // STE_FOLD_STYLE_DEFAULT, int, see STE_FoldStyleType, see SetProperty
-    STE_PREF_FOLDMARGIN_STYLE,      // STE_FOLDMARGIN_STYLE_SQUARES, int, see STE_FoldMarginStyleType
-    STE_PREF_BUFFERED_DRAW,         // true, bool, see SetBufferedDraw
-    STE_PREF_TWOPHASE_DRAW,         // true, bool, see SetTwoPhaseDraw
-    STE_PREF_LAYOUT_CACHE,          // wxSTC_CACHE_PAGE, int, wxSTC_CACHE_XXX, see SetLayoutCache
-    STE_PREF_USEANTIALIASING,       // true, bool, see SetUseAntiAliasing
-    STE_PREF_SAVE_REMOVE_WHITESP,   // false, bool, remove trailing whitespace on save
-    STE_PREF_SAVE_CONVERT_EOL,      // false, bool, convert all EOL chars to STE_PREF_EOL_MODE
+    STE_PREF_HIGHLIGHT_SYNTAX = 0,  ///< true, bool, turns off lexer
+    STE_PREF_HIGHLIGHT_PREPROC,     ///< true, bool, SetProperty("styling.within.preprocessor"
+    STE_PREF_HIGHLIGHT_BRACES,      ///< true, bool, code in wxSTEditor
+    STE_PREF_LOAD_INIT_LANG,        ///< true, bool, call STE::SetLanguage(filename) on LoadFile
+    STE_PREF_LOAD_UNICODE,          ///< STE_LOAD_DEFAULT, int, enum STE_LoadFileType
+    STE_PREF_WRAP_MODE,             ///< wxSTC_WRAP_NONE, int wxSTC_WRAP_XXX, see SetWrapMode
+    STE_PREF_WRAP_VISUALFLAGS,      ///< wxSTC_WRAPVISUALFLAG_END, int wxSTC_WRAPVISUALFLAG_XXX, see SetWrapVisualFlags
+    STE_PREF_WRAP_VISUALFLAGSLOC,   ///< wxSTC_WRAPVISUALFLAGLOC_DEFAULT, int wxSTC_WRAPVISUALFLAGLOC_XXX, see SetWrapVisualFlagsLocation
+    STE_PREF_WRAP_STARTINDENT,      ///< 0, int, spaces to indent wrapped lines, see SetWrapStartIndent
+    STE_PREF_ZOOM,                  ///< 0, int -10...20, see SetZoom
+    STE_PREF_VIEW_EOL,              ///< false, bool, see SetViewEOL
+    STE_PREF_VIEW_WHITESPACE,       ///< wxSTC_WS_INVISIBLE, int, wxSTC_WS_XXX, see SetViewWhiteSpace
+    STE_PREF_INDENT_GUIDES,         ///< true,  bool, see SetIndentationGuides
+    STE_PREF_EDGE_MODE,             ///< wxSTC_EDGE_LINE, int wxSTC_EDGE_XXX, see SetEdgeMode
+    STE_PREF_EDGE_COLUMN,           ///< 80,    int 0...?, see SetEdgeColumn
+    STE_PREF_VIEW_LINEMARGIN,       ///< false, bool
+    STE_PREF_VIEW_MARKERMARGIN,     ///< false, bool
+    STE_PREF_VIEW_FOLDMARGIN,       ///< true,  bool
+    STE_PREF_USE_TABS,              ///< false, bool, see SetUseTabs
+    STE_PREF_TAB_INDENTS,           ///< true,  bool, see SetTabIndents
+    STE_PREF_TAB_WIDTH,             ///< 4,     int 0...?, see SetTabWidth
+    STE_PREF_INDENT_WIDTH,          ///< 4,     int 0...?, see SetIndent
+    STE_PREF_BACKSPACE_UNINDENTS,   ///< true,  bool, see SetBackSpaceUnIndents
+    STE_PREF_AUTOINDENT,            ///< true,  bool, implemented in wxSTEditor::OnSTCCharAdded
+    STE_PREF_CARET_LINE_VISIBLE,    ///< true,  bool, see SetCaretLineVisible
+    STE_PREF_CARET_WIDTH,           ///< 1,     int 0...3, see SetCaretWidth
+    STE_PREF_CARET_PERIOD,          ///< 500,   int 0...? ms per blink, see SetCaretPeriod
+    STE_PREF_CARET_POLICY_X,        ///< wxSTC_CARET_EVEN|wxSTC_VISIBLE_STRICT|wxSTC_CARET_SLOP, int, wxSTC_CARET_XXX, see SetXCaretPolicy
+    STE_PREF_CARET_POLICY_Y,        ///< same as X, see SetYCaretPolicy
+    STE_PREF_CARET_SLOP_X,          ///< 1, int, number of pixels, see SetXCaretPolicy
+    STE_PREF_CARET_SLOP_Y,          ///< 1, int, number of pixels, see SetYCaretPolicy
+    STE_PREF_VISIBLE_POLICY,        ///< wxSTC_VISIBLE_STRICT|wxSTC_VISIBLE_SLOP, int, wxSTC_VISIBLE_XXX, see SetVisiblePolicy
+    STE_PREF_VISIBLE_SLOP,          ///< 1, int, number of pixels, see SetVisiblePolicy
+    STE_PREF_EOL_MODE,              ///< platform dependent, int wxSTC_EOL_CRLF, wxSTC_EOL_CR, wxSTC_EOL_LF, see SetEOLMode
+    STE_PREF_SELECTION_MODE,        ///< -1, int wxSTC_SEL_STREAM, wxSTC_SEL_RECTANGLE, wxSTC_SEL_LINES (note wxSTC::Cancel() is off)
+    STE_PREF_PRINT_MAGNIFICATION,   ///< -2,    int -20...20, see SetPrintMagnification
+    STE_PREF_PRINT_COLOURMODE,      ///< wxSTC_PRINT_COLOURONWHITE, int wxSTC_PRINT_XXX, see SetPrintColourMode
+    STE_PREF_PRINT_WRAPMODE,        ///< wxSTC_WRAP_WORD, int wxSTC_WRAP_XXX, see SetPrintWrapMode
+    STE_PREF_PRINT_LINENUMBERS,     ///< STE_PRINT_LINENUMBERS_DEFAULT, int, see enum STE_PrintLinenumbersType
+    STE_PREF_FOLD_FLAGS,            ///< wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED|wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED, int, wxSTC_FOLDFLAG_XXX, see SetFoldFlags
+    STE_PREF_FOLD_STYLES,           ///< STE_FOLD_STYLE_DEFAULT, int, see STE_FoldStyleType, see SetProperty
+    STE_PREF_FOLDMARGIN_STYLE,      ///< STE_FOLDMARGIN_STYLE_SQUARES, int, see STE_FoldMarginStyleType
+    STE_PREF_BUFFERED_DRAW,         ///< true, bool, see SetBufferedDraw
+    STE_PREF_TWOPHASE_DRAW,         ///< true, bool, see SetTwoPhaseDraw
+    STE_PREF_LAYOUT_CACHE,          ///< wxSTC_CACHE_PAGE, int, wxSTC_CACHE_XXX, see SetLayoutCache
+    STE_PREF_USEANTIALIASING,       ///< true, bool, see SetUseAntiAliasing
+    STE_PREF_SAVE_REMOVE_WHITESP,   ///< false, bool, remove trailing whitespace on save
+    STE_PREF_SAVE_CONVERT_EOL,      ///< false, bool, convert all EOL chars to STE_PREF_EOL_MODE
 
     // non user preferences - these are probably not useful to show to users
     // and you will probably want to hard code their values at startup
 
-    STE_PREF_HORIZ_SCROLLBAR,       // true, bool, see SetUseHorizontalScrollBar
-    STE_PREF_VERT_SCROLLBAR,        // true, bool, see SetUseVerticalScrollBar
-    STE_PREF_MARGIN0_TYPE,          // wxSTC_MARGIN_NUMBER, int, see SetMarginType
-    STE_PREF_MARGIN1_TYPE,          // wxSTC_MARGIN_SYMBOL, int, see SetMarginType
-    STE_PREF_MARGIN2_TYPE,          // wxSTC_MARGIN_SYMBOL, int, see SetMarginType
-    STE_PREF_MARGIN0_WIDTH,         // -1 (width of "_999999"), int, see SetMarginWidth
-    STE_PREF_MARGIN1_WIDTH,         // 16 (widths are set to 0 if not shown), int, see SetMarginWidth
-    STE_PREF_MARGIN2_WIDTH,         // 16, int, see SetMarginWidth
-    STE_PREF_MARGIN0_MASK,          // 0, int, see SetMarginMask
-    STE_PREF_MARGIN1_MASK,          // ~wxSTC_MASK_FOLDERS, int, see SetMarginMask
-    STE_PREF_MARGIN2_MASK,          // wxSTC_MASK_FOLDERS, int, see SetMarginMask
-    STE_PREF_MARGIN0_SENSITIVE,     // false, bool, see SetMarginSensitive
-    STE_PREF_MARGIN1_SENSITIVE,     // true, bool, see SetMarginSensitive
-    STE_PREF_MARGIN2_SENSITIVE,     // true, bool, see SetMarginSensitive
+    STE_PREF_HORIZ_SCROLLBAR,       ///< true, bool, see SetUseHorizontalScrollBar
+    STE_PREF_VERT_SCROLLBAR,        ///< true, bool, see SetUseVerticalScrollBar
+    STE_PREF_MARGIN0_TYPE,          ///< wxSTC_MARGIN_NUMBER, int, see SetMarginType
+    STE_PREF_MARGIN1_TYPE,          ///< wxSTC_MARGIN_SYMBOL, int, see SetMarginType
+    STE_PREF_MARGIN2_TYPE,          ///< wxSTC_MARGIN_SYMBOL, int, see SetMarginType
+    STE_PREF_MARGIN0_WIDTH,         ///< -1 (width of "_999999"), int, see SetMarginWidth
+    STE_PREF_MARGIN1_WIDTH,         ///< 16 (widths are set to 0 if not shown), int, see SetMarginWidth
+    STE_PREF_MARGIN2_WIDTH,         ///< 16, int, see SetMarginWidth
+    STE_PREF_MARGIN0_MASK,          ///< 0, int, see SetMarginMask
+    STE_PREF_MARGIN1_MASK,          ///< ~wxSTC_MASK_FOLDERS, int, see SetMarginMask
+    STE_PREF_MARGIN2_MASK,          ///< wxSTC_MASK_FOLDERS, int, see SetMarginMask
+    STE_PREF_MARGIN0_SENSITIVE,     ///< false, bool, see SetMarginSensitive
+    STE_PREF_MARGIN1_SENSITIVE,     ///< true, bool, see SetMarginSensitive
+    STE_PREF_MARGIN2_SENSITIVE,     ///< true, bool, see SetMarginSensitive
 
-    STE_PREF_BOOKMARK_DCLICK,       // true, bool if margin 1 is dclicked put a bookmark marker on it
+    STE_PREF_BOOKMARK_DCLICK,       ///< true, bool if margin 1 is dclicked put a bookmark marker on it
 
-    STE_PREF_AUTOC_STOPS,           // " ()[]{}<>:;.?", string, see AutoCompStops
-    STE_PREF_AUTOC_SEPARATOR,       // int(' '), int, see AutoCompSetSeparator
-    STE_PREF_AUTOC_FILLUPS,         // "", string,    see AutoCompSetFillUps
-    STE_PREF_AUTOC_CANCELATSTART,   // true, bool,    see AutoCompSetCancelAtStart
-    STE_PREF_AUTOC_CHOOSESINGLE,    // true, bool,    see AutoCompSetChooseSingle
-    STE_PREF_AUTOC_IGNORECASE,      // false, bool,   see AutoCompSetIgnoreCase
-    STE_PREF_AUTOC_AUTOHIDE,        // true, bool,    see AutoCompSetAutoHide
-    STE_PREF_AUTOC_DROPRESTOFWORD,  // true, bool,    see AutoCompSetDropRestOfWord
-    STE_PREF_AUTOC_TYPESEPARATOR,   // int('?'), int, see AutoCompSetTypeSeparator
+    STE_PREF_AUTOC_STOPS,           ///< " ()[]{}<>:;.?", string, see AutoCompStops
+    STE_PREF_AUTOC_SEPARATOR,       ///< int(' '), int, see AutoCompSetSeparator
+    STE_PREF_AUTOC_FILLUPS,         ///< "", string,    see AutoCompSetFillUps
+    STE_PREF_AUTOC_CANCELATSTART,   ///< true, bool,    see AutoCompSetCancelAtStart
+    STE_PREF_AUTOC_CHOOSESINGLE,    ///< true, bool,    see AutoCompSetChooseSingle
+    STE_PREF_AUTOC_IGNORECASE,      ///< false, bool,   see AutoCompSetIgnoreCase
+    STE_PREF_AUTOC_AUTOHIDE,        ///< true, bool,    see AutoCompSetAutoHide
+    STE_PREF_AUTOC_DROPRESTOFWORD,  ///< true, bool,    see AutoCompSetDropRestOfWord
+    STE_PREF_AUTOC_TYPESEPARATOR,   ///< int('?'), int, see AutoCompSetTypeSeparator
 
-    STE_PREF__MAX                   // number of initial built in preferences
+    STE_PREF__MAX                   ///< number of initial built in preferences
 };
 
 //-----------------------------------------------------------------------------
-// STE_PrefFlagType - additional information about the wxSTEditorPrefs
-//  For wxSTEditorPrefs::Get/SetPrefFlags, determines what values are stored
-//  in the pref, though the actual usage is dependent on the pref.
+/// @enum STE_PrefFlagType Additional information about the wxSTEditorPrefs.
+///  For wxSTEditorPrefs::Get/SetPrefFlags, determines what values are stored
+///  in the pref, though the actual usage is dependent on the pref.
 //-----------------------------------------------------------------------------
 
 enum STE_PrefFlagType
 {
-    STE_PREF_FLAG_STRING    = 0x0000, // default is a string valued pref
-    STE_PREF_FLAG_INT       = 0x0001, // pref is an int value
-    STE_PREF_FLAG_BOOL      = 0x0002, // pref is a bool 0/1 value
+    STE_PREF_FLAG_STRING    = 0x0000, ///< default is a string valued pref
+    STE_PREF_FLAG_INT       = 0x0001, ///< pref is an int value
+    STE_PREF_FLAG_BOOL      = 0x0002, ///< pref is a bool 0/1 value
 
-    STE_PREF_FLAG_IGNORE    = 0x0004, // do not set the pref value for editor
-    STE_PREF_FLAG_NOCONFIG  = 0x0008, // don't load/save this in the wxConfig
-                                      // eg. your program "hard codes" this value
+    STE_PREF_FLAG_IGNORE    = 0x0004, ///< do not set the pref value for editor
+    STE_PREF_FLAG_NOCONFIG  = 0x0008, ///< don't load/save this in the wxConfig
+                                      ///< eg. your program "hard codes" this value
 };
 
 //-----------------------------------------------------------------------------
-// STE_LoadFileType - options when loading a file
-//   See wxSTEditor::LoadInputStream
-//   and wxSTEditorPrefs and STE_PREF_LOAD_UNICODE
+/// @enum STE_LoadFileType Options when loading a file.
+/// @see wxSTEditor::LoadFile and wxSTEditorPrefs and STE_PREF_LOAD_UNICODE.
 //-----------------------------------------------------------------------------
 
 enum STE_LoadFileType
 {
     // If a file(stream) starts with 0xfffe as first two chars it's probably unicode.
 
-    STE_LOAD_DEFAULT       = 0,      // load as unicode if it has the header,
-                                     //   else load as ascii
+    STE_LOAD_DEFAULT       = 0,      ///< load as unicode if it has the header,
+                                     ///<   else load as ascii
 
-    STE_LOAD_QUERY_UNICODE = 0x0001, // popup dialog to ask if to load in unicode
-                                     //   if the file starts w/ unicode signature
-    STE_LOAD_ASCII         = 0x0002, // load as ascii in all cases
-    STE_LOAD_UNICODE       = 0x0004, // load as unicode in all cases
+    STE_LOAD_QUERY_UNICODE = 0x0001, ///< popup dialog to ask (or rather warn) if to load in unicode
+                                     ///<   if the file starts w/ unicode signature. Flag ignored in Unicode build.
+    STE_LOAD_ASCII         = 0x0002, ///< load as ascii in all cases
+    STE_LOAD_UNICODE       = 0x0004, ///< load as unicode in all cases
 
-    STE_LOAD_NOERRDLG      = 0x0010, // never show an error message dialog
-                                     //   silent failure, return false
-                                     //   this flag can be used with one of the others
+    STE_LOAD_FROM_DISK     = 0x0008, ///< The file is/was/will be loaded from disk.
+
+    STE_LOAD_NOERRDLG      = 0x0010, ///< never show an error message dialog
+                                     ///<   silent failure, return false
+                                     ///<   this flag can be used with one of the others
 };
 
 //-----------------------------------------------------------------------------
-// STE_PrintLinenumbersType - Print the line numbers in wxSTEditorPrintout?
-//   See wxSTEditorPrefs and STE_PREF_PRINT_LINENUMBERS
+/// @enum STE_PrintLinenumbersType Print the line numbers in wxSTEditorPrintout.
+/// @see wxSTEditorPrefs and STE_PREF_PRINT_LINENUMBERS
 //-----------------------------------------------------------------------------
 
 enum STE_PrintLinenumbersType
 {
-    STE_PRINT_LINENUMBERS_DEFAULT, // print linenumbers if shown in editor
-    STE_PRINT_LINENUMBERS_NEVER,   // never print linenumbers
-    STE_PRINT_LINENUMBERS_ALWAYS   // always print linenumbers
+    STE_PRINT_LINENUMBERS_DEFAULT, ///< print linenumbers if shown in editor
+    STE_PRINT_LINENUMBERS_NEVER,   ///< never print linenumbers
+    STE_PRINT_LINENUMBERS_ALWAYS   ///< always print linenumbers
 };
 
 //-----------------------------------------------------------------------------
-// STE_FoldStyleType - different folds that the language supports translated to
-//                     wxSTC::SetProperty(wxT("fold.comment"), 1/0)
-// These lexer properties can be set for any lexer, they might not be used.
-// For wxSTEditorPrefs STE_PREF_FOLD_STYLES
+/// @enum STE_FoldStyleType Different folds that the language supports translated to
+///                     wxSTC::SetProperty(wxT("fold.comment"), 1/0).
+/// These lexer properties can be set for any lexer, they might not be used.
+/// For wxSTEditorPrefs STE_PREF_FOLD_STYLES.
 //-----------------------------------------------------------------------------
 
 enum STE_FoldStyleType
 {
-    STE_FOLD_COMPACT       = 0x0001, // "fold.compact"
-    STE_FOLD_COMMENT       = 0x0002, // "fold.comment"
-    STE_FOLD_PREPROC       = 0x0004, // "fold.preprocessor"
-    STE_FOLD_ATELSE        = 0x0008, // "fold.at.else"        c++ only
+    STE_FOLD_COMPACT       = 0x0001, ///< "fold.compact"
+    STE_FOLD_COMMENT       = 0x0002, ///< "fold.comment"
+    STE_FOLD_PREPROC       = 0x0004, ///< "fold.preprocessor"
+    STE_FOLD_ATELSE        = 0x0008, ///< "fold.at.else"        c++ only
 
-    STE_FOLD_HTML          = 0x0010, // "fold.html"
-    STE_FOLD_HTMLPREP      = 0x0020, // "fold.html.preprocessor"
+    STE_FOLD_HTML          = 0x0010, ///< "fold.html"
+    STE_FOLD_HTMLPREP      = 0x0020, ///< "fold.html.preprocessor"
 
-    STE_FOLD_DIRECTIVE     = 0x0040, // "fold.directive"
-    STE_FOLD_COMMENTPY     = 0x0080, // "fold.comment.python"
-    STE_FOLD_QUOTESPY      = 0x0100, // "fold.quotes.python"
-    STE_FOLD_TABTIMMY      = 0x0200, // "tab.timmy.whinge.level" python indent check
+    STE_FOLD_DIRECTIVE     = 0x0040, ///< "fold.directive"
+    STE_FOLD_COMMENTPY     = 0x0080, ///< "fold.comment.python"
+    STE_FOLD_QUOTESPY      = 0x0100, ///< "fold.quotes.python"
+    STE_FOLD_TABTIMMY      = 0x0200, ///< "tab.timmy.whinge.level" python indent check
 
     // everything set
     STE_FOLD_STYLE_DEFAULT = STE_FOLD_COMPACT|STE_FOLD_COMMENT|STE_FOLD_PREPROC|STE_FOLD_ATELSE|STE_FOLD_HTML|STE_FOLD_HTMLPREP|STE_FOLD_DIRECTIVE|STE_FOLD_COMMENTPY|STE_FOLD_QUOTESPY|STE_FOLD_TABTIMMY
 };
 
 //-----------------------------------------------------------------------------
-// STE_FoldMarginStyleType - different sets of nice looking fold margin symbols
-//  For wxSTEditorPrefs STE_PREF_FOLDMARGIN_STYLE
+/// @enum STE_FoldMarginStyleType Different sets of nice looking fold margin symbols.
+///  For wxSTEditorPrefs STE_PREF_FOLDMARGIN_STYLE
 //-----------------------------------------------------------------------------
 
 enum STE_FoldMarginStyleType
 {
-    STE_FOLDMARGIN_STYLE_UNSET     =-1, // the fold code won't be run
-    STE_FOLDMARGIN_STYLE_ARROWS    = 0, // "..." for contracted folders, arrow pointing down for expanded
-    STE_FOLDMARGIN_STYLE_CIRCLES   = 1, // Like a flattened tree control using circular headers and curved joins
-    STE_FOLDMARGIN_STYLE_SQUARES   = 2, // Like a flattened tree control using square headers (default)
-    STE_FOLDMARGIN_STYLE_PLUSMINUS = 3, // Plus for contracted folders, minus for expanded
+    STE_FOLDMARGIN_STYLE_UNSET     =-1, ///< the fold code won't be run
+    STE_FOLDMARGIN_STYLE_ARROWS    = 0, ///< "..." for contracted folders, arrow pointing down for expanded
+    STE_FOLDMARGIN_STYLE_CIRCLES   = 1, ///< Like a flattened tree control using circular headers and curved joins
+    STE_FOLDMARGIN_STYLE_SQUARES   = 2, ///< Like a flattened tree control using square headers (default)
+    STE_FOLDMARGIN_STYLE_PLUSMINUS = 3, ///< Plus for contracted folders, minus for expanded
 };
 
 //-----------------------------------------------------------------------------
-// STE_StyleType - styles for wxSTEditorStyles controlling how different
-//                 text items will appear (not all languages use every one).
-//                 Scintilla uses styles 0-127 with 32-37 having special meaning
-// ------------------------------------------------------------------------
-// These are arbitrarily mapped to the styles that the lexer uses.
-//   You can have up to STE_STYLE_LANG__MAX (10000) of them, however you
-//   can only set 128 of them to scintilla, minus the hardcoded ones, at a time.
-//   See wxSTEditorLangs::GetSciStyle and GetSTEStyle which does the mapping
-//   per language between the two.
-//
-//  Additional "styles" (GUI colours) are stored after STE_STYLE_GUI_FIRST
-//     these styles may make use of only some of the information (see below)
-//
-//  Indicators and markers are also stored here.
+/// @enum STE_StyleType Styles for wxSTEditorStyles controlling how different
+///                 text items will appear (not all languages use every one).
+/// Scintilla uses styles 0-127 with 32-37 having special meaning
+///
+/// These are arbitrarily mapped to the styles that the lexer uses.
+///   You can have up to STE_STYLE_LANG__MAX (10000) of them, however you
+///   can only set 128 of them to scintilla, minus the hardcoded ones, at a time.
+///   See wxSTEditorLangs::GetSciStyle and GetSTEStyle which does the mapping
+///   per language between the two.
+///
+///  Additional "styles" (GUI colours) are stored after STE_STYLE_GUI_FIRST
+///     these styles may make use of only some of the information (see below).
+///
+///  Indicators and markers are also stored here.
 //-----------------------------------------------------------------------------
+
 enum STE_StyleType
 {
-    STE_STYLE_DEFAULT = 0,    // 0  This style is always mapped to Scintilla's #32 default text
+    STE_STYLE_DEFAULT = 0,    ///< 0  This style is always mapped to Scintilla's #32 default text.
     STE_STYLE_KEYWORD1,
     STE_STYLE_KEYWORD2,
     STE_STYLE_KEYWORD3,
@@ -700,7 +744,7 @@ enum STE_StyleType
     STE_STYLE_COMMENT,
     STE_STYLE_COMMENTDOC,
     STE_STYLE_COMMENTLINE,
-    STE_STYLE_COMMENTOTHER,   // 10  other comments line block
+    STE_STYLE_COMMENTOTHER,   ///< 10  other comments line block.
     STE_STYLE_CHARACTER,
     STE_STYLE_CHARACTEREOL,
     STE_STYLE_STRING,
@@ -710,7 +754,7 @@ enum STE_StyleType
     STE_STYLE_OPERATOR,
     STE_STYLE_BRACE,
     STE_STYLE_COMMAND,
-    STE_STYLE_IDENTIFIER,       // 20
+    STE_STYLE_IDENTIFIER,       ///< 20.
     STE_STYLE_LABEL,
     STE_STYLE_NUMBER,
     STE_STYLE_PARAMETER,
@@ -720,7 +764,7 @@ enum STE_StyleType
     STE_STYLE_PREPROCESSOR,
     STE_STYLE_SCRIPT,
     STE_STYLE_ERROR,
-    STE_STYLE_UNDEFINED,        // 30
+    STE_STYLE_UNDEFINED,        ///< 30.
     //STE_STYLE_UNUSED,           // unused, last user style
     //STE_STYLE_DEFAULT,          // 32 = wxSTC_STYLE_DEFAULT, the background
 
@@ -785,32 +829,10 @@ enum STE_StyleType
     STE_STYLE_MARKER__LAST         = STE_STYLE_MARKER__FIRST + wxSTC_MARKER_MAX
 };
 
-//-----------------------------------------------------------------------------
-// Some default initial values for the font
-//-----------------------------------------------------------------------------
-
-// A smallish font size that is nicely readable (your mileage may vary)
-#ifndef STE_DEF_FONTSIZE
-    #ifdef __WXGTK__
-        #define STE_DEF_FONTSIZE 12
-    #else
-        #define STE_DEF_FONTSIZE 10
-    #endif
-#endif // #ifndef STE_DEF_FONTSIZE
-
-// A fixed width font - courier is not great, but a reasonable start
-#ifndef STE_DEF_FACENAME
-    #ifdef __WXMSW__
-        // Use a TrueType/ClearType font on Windows
-        #define STE_DEF_FACENAME wxT("Courier New")
-    #else
-        #define STE_DEF_FACENAME wxT("Courier")
-    #endif
-#endif // #ifndef STE_DEF_FACENAME
-
 // ----------------------------------------------------------------------------
-// STE_FontAttrType - Font attributes for a style
-// see wxSTEditorStyle::Get/SetFontAttr(style_n, STE_STYLE_FONT_BOLD|...)
+/// @enum STE_FontAttrType Font attributes for a style.
+/// @see wxSTEditorStyle::Get/SetFontAttr(style_n, STE_STYLE_FONT_BOLD|...)
+
 enum STE_FontAttrType
 {
     STE_STYLE_FONT_NONE       = 0x0000,
@@ -829,10 +851,11 @@ enum STE_FontAttrType
 };
 
 // ----------------------------------------------------------------------------
-// STE_StyleUseDefaultType - Should the default value be used instead of the set one?
-// see wxSTEditorStyle::Get/SetUseDefault(style_n, STE_STYLE_USEDEFAULT_FORECOLOUR|...)
-// The styles always contain values, even if the defaults are used to make it
-//   easy for a user to revert to default and then back to what they set.
+/// @enum STE_StyleUseDefaultType Should the default value be used instead of the set one.
+/// @see wxSTEditorStyle::Get/SetUseDefault(style_n, STE_STYLE_USEDEFAULT_FORECOLOUR|...)
+/// The styles always contain values, even if the defaults are used to make it
+///   easy for a user to revert to default and then back to what they set.
+
 enum STE_StyleUseDefaultType
 {
     STE_STYLE_USEDEFAULT_NONE         = 0x0000,
@@ -852,8 +875,9 @@ enum STE_StyleUseDefaultType
 };
 
 // ----------------------------------------------------------------------------
-// STE_StyleUsesType - what parts of the style are actually used
-// see wxSTEditorStyle::GetStyleUsage(style_n)
+/// @enum STE_StyleUsesType What parts of the style are actually used.
+/// @see wxSTEditorStyle::GetStyleUsage(style_n)
+
 enum STE_StyleUsesType
 {
     STE_STYLE_USES_FORECOLOUR = 0x0001,
@@ -871,7 +895,7 @@ enum STE_StyleUsesType
 };
 
 //-----------------------------------------------------------------------------
-// STE_LangTypes - all of the languages used in the wxSTEditorLangs in order
+/// @enum STE_LangTypes All of the languages used in the wxSTEditorLangs in order.
 
 enum STE_LangTypes
 {
@@ -954,11 +978,11 @@ enum STE_LangTypes
 };
 
 //-----------------------------------------------------------------------------
-// STE_LangFlagsType - extra flags for wxSTEditorLangs::Get/SetFlags
+/// @enum STE_LangFlagsType Extra flags for wxSTEditorLangs::Get/SetFlags.
 
 enum STE_LangFlagsType
 {
-    STE_LANG_FLAG_DONTUSE = 0x0001 // ignore this language in the pref dialog
+    STE_LANG_FLAG_DONTUSE = 0x0001 ///< ignore this language in the pref dialog
 };
 
 #endif // _STEDEFS_H_

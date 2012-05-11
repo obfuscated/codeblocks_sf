@@ -10,8 +10,8 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/steprefs.h>
-#include <wx/stedit/stedit.h>
+#include "wx/stedit/steprefs.h"
+#include "wx/stedit/stedit.h"
 
 extern wxSTEditorPrefs  s_wxSTEditorPrefs;
 
@@ -444,10 +444,11 @@ bool wxSTEditorPrefs::SetPrefInt(size_t pref_n, int value, bool update)
     return SetPref(pref_n, wxString::Format(wxT("%d"), value), update);
 }
 
-// Note: The define generates this code
-//if (!HasPrefFlag(STE_PREF_WRAP_MODE, STE_PREF_FLAG_IGNORE) &&
-//    (editor->GetWrapMode() != GetPrefInt(STE_PREF_WRAP_MODE)))
-//    editor->SetWrapMode(GetPrefInt(STE_PREF_WRAP_MODE));
+// Note: The define generates this code for:
+// UPEDIT(STE_PREF_WRAP_MODE, GetWrapMode, SetWrapMode, GetPrefInt)
+// if (!HasPrefFlag(STE_PREF_WRAP_MODE, STE_PREF_FLAG_IGNORE) &&
+//     (editor->GetWrapMode() != GetPrefInt(STE_PREF_WRAP_MODE)))
+//     editor->SetWrapMode(GetPrefInt(STE_PREF_WRAP_MODE));
 
 #define UPEDIT(pref_n, editGetFn, editSetFn, getPrefFn) \
     if (!HasPrefFlag(pref_n, STE_PREF_FLAG_IGNORE) &&   \

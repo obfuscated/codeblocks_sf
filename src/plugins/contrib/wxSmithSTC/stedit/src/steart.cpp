@@ -11,14 +11,12 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/stedefs.h>
-#include <wx/stedit/steart.h>
+#include "wx/stedit/stedefs.h"
+#include "wx/stedit/steart.h"
 #include "wxext.h"
 
-//-----------------------------------------------------------------------------
-// wxSTEditorArtProvider
-//-----------------------------------------------------------------------------
 #include <wx/image.h>
+#include <wx/settings.h> // for wxSystemSettings
 
 // Bitmaps used for the toolbar in the wxSTEditorFrame
 #include "../art/pencil16.xpm"
@@ -46,126 +44,168 @@
 #include "../art/redo.xpm"
 #include "../art/cross.xpm"
 
-static wxBitmap DoGetBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& reqSize)
+
+const wxSize wxSTEIconSize     (wxSystemSettings::GetMetric(wxSYS_ICON_X     ), wxSystemSettings::GetMetric(wxSYS_ICON_Y     ));
+const wxSize wxSTESmallIconSize(wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y));
+
+//-----------------------------------------------------------------------------
+// wxSTEditorArtProvider
+//-----------------------------------------------------------------------------
+
+/*static*/ wxBitmap wxSTEditorArtProvider::m_app_small; // can't create in GTK until later
+/*static*/ wxBitmap wxSTEditorArtProvider::m_app_large;
+
+wxSTEditorArtProvider::wxSTEditorArtProvider() : wxArtProvider()
+{
+    if (!m_app_small.IsOk())
+    {
+        // these should always be created since a wxSTEditorArtProvider is created in wxSTEditorModule
+        m_app_small = wxBitmap(pencil16_xpm); // must create after wxApp initialization
+        m_app_large = wxBitmap(pencil32_xpm);
+    }
+}
+
+// static
+wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& id,
+                                            const wxArtClient& client,
+                                            const wxSize& size_)
 {
     static const struct art_item
     {
-        wxArtID ste_id;
+        // wxArtID id; - can't have wxString in struct for MSVC6
+#if (wxVERSION_NUMBER >= 2902)
+        const char* id;
+#else
+        const wxChar* id;
+#endif
         const char* const* xpm;
-        wxArtID wx_id;
-    } array[] =
+    } s_xpm_array[] =
     {
-        { wxART_STEDIT_NEW,            new_xpm,             wxART_NEW          },
-        { wxART_STEDIT_OPEN,           open_xpm,            wxART_FILE_OPEN    },
-        { wxART_STEDIT_SAVE,           save_xpm,            wxART_FILE_SAVE    },
-        { wxART_STEDIT_SAVEALL,        saveall_xpm,         wxEmptyString},
-        { wxART_STEDIT_SAVEAS,         saveas_xpm,          wxART_FILE_SAVE_AS },
-        { wxART_STEDIT_PRINT,          print_xpm,           wxART_PRINT        },
-        { wxART_STEDIT_PRINTPREVIEW,   print_preview_xpm,   wxEmptyString},
-        { wxART_STEDIT_PRINTSETUP,     print_setup_xpm,     wxEmptyString},
-        { wxART_STEDIT_PRINTPAGESETUP, print_page_setup_xpm, wxEmptyString },
-        { wxART_STEDIT_EXIT,           x_red_xpm,           wxART_QUIT         },
-        { wxART_STEDIT_CUT,            cut_xpm,             wxART_CUT   },
-        { wxART_STEDIT_COPY,           copy_xpm,            wxART_COPY   },
-        { wxART_STEDIT_PASTE,          paste_xpm,           wxART_PASTE },
-        { wxART_STEDIT_FIND,           find_xpm,            wxART_FIND   },
-        { wxART_STEDIT_FINDNEXT,       findnext_xpm,        wxEmptyString },
-        { wxART_STEDIT_FINDUP,         findup_xpm,          wxEmptyString },
-        { wxART_STEDIT_FINDDOWN,       finddown_xpm,        wxEmptyString },
-        { wxART_STEDIT_REPLACE,        replace_xpm,         wxART_FIND_AND_REPLACE },
-        { wxART_STEDIT_UNDO,           undo_xpm,            wxART_UNDO  },
-        { wxART_STEDIT_REDO,           redo_xpm,            wxART_REDO },
-        { wxART_STEDIT_CLEAR,          cross_xpm,           wxART_DELETE }
+        { wxART_STEDIT_NEW,            new_xpm },
+        { wxART_STEDIT_OPEN,           open_xpm },
+        { wxART_STEDIT_SAVE,           save_xpm },
+        { wxART_STEDIT_SAVEALL,        saveall_xpm },
+        { wxART_STEDIT_SAVEAS,         saveas_xpm },
+        { wxART_STEDIT_PRINT,          print_xpm },
+        { wxART_STEDIT_PRINTPREVIEW,   print_preview_xpm },
+        { wxART_STEDIT_PRINTSETUP,     print_setup_xpm },
+        { wxART_STEDIT_PRINTPAGESETUP, print_page_setup_xpm },
+        { wxART_STEDIT_QUIT,           x_red_xpm },
+        { wxART_STEDIT_CUT,            cut_xpm },
+        { wxART_STEDIT_COPY,           copy_xpm },
+        { wxART_STEDIT_PASTE,          paste_xpm },
+        { wxART_STEDIT_FIND,           find_xpm },
+        { wxART_STEDIT_FINDNEXT,       findnext_xpm },
+        { wxART_STEDIT_FINDUP,         findup_xpm },
+        { wxART_STEDIT_FINDDOWN,       finddown_xpm },
+        { wxART_STEDIT_REPLACE,        replace_xpm },
+        { wxART_STEDIT_UNDO,           undo_xpm },
+        { wxART_STEDIT_REDO,           redo_xpm },
+        { wxART_STEDIT_CLEAR,          cross_xpm }
     };
 
-    for (size_t i = 0; i < WXSIZEOF(array); i++)
-    {
-        if (array[i].ste_id == id)
-        {
-            if ( (wxART_STEDIT == client) || array[i].wx_id.empty() )
-            {
-                return wxBitmap(array[i].xpm);
-            }
-            else
-            {
-                return wxArtProvider::GetBitmap(array[i].wx_id, client, reqSize);
-            }
-        }
-    }
-    return wxNullBitmap;
-}
+    static const size_t s_xpm_array_size = WXSIZEOF(s_xpm_array);
 
-wxSTEditorArtProvider::wxSTEditorArtProvider() : wxArtProvider(), m_app_large(pencil32_xpm), m_app_small(pencil16_xpm)
-{
-}
-
-/*static*/ wxArtClient wxSTEditorArtProvider::m_default_client = wxART_STEDIT;
-
-wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID& id,
-                                             const wxArtClient& client,
-                                             const wxSize& reqSize_)
-{
     wxBitmap bmp;
-    wxSize reqSize = wxIconSize_System;
+    // If wxDefaultSize is requested, use size hint from client
+    wxSize size(size_);
+    if (size == wxDefaultSize)
+        size = GetSizeHint(client);
 
     if (id == wxART_STEDIT_PREFDLG_VIEW)
-        bmp = wxArtProvider::GetBitmap(wxART_FIND, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_FIND, client, size);
     else if (id == wxART_STEDIT_PREFDLG_TABSEOL)
-        bmp = wxArtProvider::GetBitmap(wxART_LIST_VIEW, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_LIST_VIEW, client, size);
     else if (id == wxART_STEDIT_PREFDLG_FOLDWRAP)
-        bmp = wxArtProvider::GetBitmap(wxART_COPY, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_COPY, client, size);
     else if (id == wxART_STEDIT_PREFDLG_PRINT)
-        bmp = wxArtProvider::GetBitmap(wxART_PRINT, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_PRINT, client, size);
     else if (id == wxART_STEDIT_PREFDLG_LOADSAVE)
-        bmp = wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_FILE_SAVE, client, size);
     else if (id == wxART_STEDIT_PREFDLG_HIGHLIGHT)
-        bmp = wxArtProvider::GetBitmap(wxART_TIP, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_TIP, client, size);
     else if (id == wxART_STEDIT_PREFDLG_STYLES)
-        bmp = wxArtProvider::GetBitmap(wxART_HELP_BOOK, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_HELP_BOOK, client, size);
     else if (id == wxART_STEDIT_PREFDLG_LANGS)
-        bmp = wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_OTHER, reqSize);
+        bmp = wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, client, size);
     else if (id == wxART_STEDIT_APP)
     {
-        // this logic has room for improvement
-        bmp = (reqSize_ == wxSize(m_app_small.GetWidth(), m_app_small.GetHeight()))
-           ? m_app_small
-           : m_app_large;
+        // try to get the bitmap that is closest in size to the requested size
+        // we will resize it later if necessary
+        if ((size.GetWidth()  > m_app_small.GetWidth()  + 5) ||
+            (size.GetHeight() > m_app_small.GetHeight() + 5))
+            bmp = m_app_large;
+        else
+           bmp = m_app_small;
     }
     else
     {
-        bmp = DoGetBitmap(id, client, reqSize_);
-        reqSize = reqSize_;
-    }
-
-#if wxUSE_IMAGE
-    if (bmp.IsOk())
-    {
-        // fit into transparent image with desired size hint from the client
-        if (reqSize == wxDefaultSize)
+        // we don't need to be fast about this since the wxArtProvider caches them
+        for (size_t i = 0; i < s_xpm_array_size; ++i)
         {
-            // find out if there is a desired size for this client
-            wxSize bestSize = GetSizeHint(client);
-            if (bestSize != wxDefaultSize)
+            if (s_xpm_array[i].id == id)
             {
-                int bmp_w = bmp.GetWidth();
-                int bmp_h = bmp.GetHeight();
-                // want default size but it's smaller, paste into transparent image
-                if ((bmp_h < bestSize.x) && (bmp_w < bestSize.y))
-                {
-                    wxPoint offset((bestSize.x - bmp_w)/2, (bestSize.y - bmp_h)/2);
-                    wxImage img = bmp.ConvertToImage();
-                    img.Resize(bestSize, offset);
-                    bmp = wxBitmap(img);
-                }
+                bmp = wxBitmap(s_xpm_array[i].xpm);
+                break;
             }
         }
     }
-#endif // wxUSE_IMAGE
+
+    return Resize(bmp, size); // does nothing if already correct size
+}
+
+// static
+wxBitmap wxSTEditorArtProvider::Resize(const wxBitmap& bmp_, const wxSize& size)
+{
+    wxBitmap bmp(bmp_);
+
+    if (!bmp.IsOk() || (size.GetWidth() < 1) || (size.GetHeight() < 1))
+        return bmp;
+
+    int bmp_w = bmp.GetWidth();
+    int bmp_h = bmp.GetHeight();
+
+    if ((bmp_w != size.GetWidth()) || (bmp_h != size.GetHeight()))
+    {
+        wxPoint offset((size.GetWidth() - bmp_w)/2, (size.GetHeight() - bmp_h)/2);
+        wxImage img = bmp.ConvertToImage();
+        img.Resize(size, offset);
+        bmp = wxBitmap(img);
+    }
 
     return bmp;
 }
 
-/*static*/ wxIcon wxSTEditorArtProvider::GetDefaultDialogIcon()
+// static
+wxIconBundle wxSTEditorArtProvider::GetDialogIconBundle()
 {
-    return GetIcon(wxART_STEDIT_APP, wxDialogIconSize);
+    wxIcon icon1, icon2;
+    icon1.CopyFromBitmap(wxArtProvider::GetBitmap(wxART_STEDIT_APP, wxART_OTHER, wxSTESmallIconSize));
+    icon2.CopyFromBitmap(wxArtProvider::GetBitmap(wxART_STEDIT_APP, wxART_OTHER, wxSTEIconSize));
+
+    wxIconBundle iconBundle(icon1);
+    iconBundle.AddIcon(icon2);
+    return iconBundle;
+}
+
+wxBitmap wxSTEditorArtProvider::CreateBitmap(const wxArtID& id,
+                                             const wxArtClient& client,
+                                             const wxSize& size)
+{
+    wxBitmap bmp = DoGetBitmap(id, client, size);
+
+    return bmp; // ok to return invalid bitmap, the wxArtProvider will search other providers
+}
+
+wxIconBundle wxSTEditorArtProvider::CreateIconBundle(const wxArtID& id,
+                                                     const wxArtClient& WXUNUSED(client))
+{
+    if (id == wxART_STEDIT_APP)
+        return GetDialogIconBundle();
+
+#if wxCHECK_VERSION(2,9,0)
+    return wxNullIconBundle;
+#else
+    return wxIconBundle();
+#endif
 }

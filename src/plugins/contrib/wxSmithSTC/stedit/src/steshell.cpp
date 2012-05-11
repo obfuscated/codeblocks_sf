@@ -11,13 +11,13 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/stedit.h>
-#include <wx/stedit/steshell.h>
+#include "wx/stedit/stedit.h"
+#include "wx/stedit/steshell.h"
 
 //-----------------------------------------------------------------------------
 // wxSTEditorShell
 //-----------------------------------------------------------------------------
-IMPLEMENT_CLASS(wxSTEditorShell, wxSTEditor)
+IMPLEMENT_DYNAMIC_CLASS(wxSTEditorShell, wxSTEditor)
 
 BEGIN_EVENT_TABLE(wxSTEditorShell, wxSTEditor)
     EVT_KEY_DOWN     (wxSTEditorShell::OnKeyDown)
@@ -76,7 +76,7 @@ void wxSTEditorShell::SetPromptText(const wxString& text)
     BeginWriteable();
     int length = GetLength();
     wxString promptText = GetPromptText();
-    SetTargetStart(length - promptText.Length());
+    SetTargetStart(length - (STE_TextPos)promptText.Length());
     SetTargetEnd(length);
     ReplaceTarget(text);
     GotoPos(GetLength());
@@ -183,7 +183,7 @@ void wxSTEditorShell::OnSTCUpdateUI(wxStyledTextEvent &event)
 
 wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line)
 {
-    int count = m_lineHistoryArray.GetCount();
+    int count = (int)m_lineHistoryArray.GetCount();
 
     // no history, just return ""
     if (count == 0)
@@ -198,7 +198,7 @@ wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line
     {
         if (m_line_history_index >= count - 1)
         {
-            m_line_history_index = count - 1; // fix it up
+            m_line_history_index = (int)(count - 1); // fix it up
             return wxEmptyString;
         }
 
@@ -220,7 +220,7 @@ wxString wxSTEditorShell::GetNextHistoryLine(bool forwards, const wxString &line
 
 void wxSTEditorShell::AddHistoryLine(const wxString& string, bool set_index_to_last)
 {
-    int count = m_lineHistoryArray.GetCount();
+    size_t count = m_lineHistoryArray.GetCount();
 
     // don't add same line twice
     if ((count > 0) && (string == m_lineHistoryArray[count-1]))
@@ -228,7 +228,7 @@ void wxSTEditorShell::AddHistoryLine(const wxString& string, bool set_index_to_l
 
     m_lineHistoryArray.Add(string);
     if (set_index_to_last)
-        m_line_history_index = m_lineHistoryArray.GetCount() - 1;
+        m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
 
     SetMaxHistoryLines(GetMaxHistoryLines()); // remove any extra
 }
@@ -387,7 +387,7 @@ void wxSTEditorShell::OnKeyDown(wxKeyEvent &event)
         default : // move cursor to end if not already there
         {
             // reset history to start at most recent again
-            m_line_history_index = m_lineHistoryArray.GetCount() - 1;
+            m_line_history_index = (int)(m_lineHistoryArray.GetCount() - 1);
 
             CaretOnPromptLine(STE_CARET_MOVE_ENDTEXT);
             break;

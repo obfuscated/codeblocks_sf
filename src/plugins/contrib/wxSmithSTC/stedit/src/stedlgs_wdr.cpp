@@ -3,52 +3,49 @@
 // Do not modify this file, all changes will be lost!
 //------------------------------------------------------------------------------
 
+// Custom source
 #include "precomp.h"
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+    #pragma implementation "stedlgs_wdr.h"
+#endif
+
+// For compilers that support precompilation
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+    #pragma hdrstop
+#endif
 
 // Include private header
 #include "stedlgs_wdr.h"
 
-// Euro sign hack of the year
-#if wxUSE_UNICODE
-    #define __WDR_EURO__ wxT("\u20ac")
-#else
-    #if defined(__WXMAC__)
-        #define __WDR_EURO__ wxT("\xdb")
-    #elif defined(__WXMSW__)
-        #define __WDR_EURO__ wxT("\x80")
-    #else
-        #define __WDR_EURO__ wxT("\xa4")
-    #endif
-#endif
+#include <wx/intl.h>
 
 // Implement window functions
 
 wxSizer *wxSTEditorStyleSizer( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
-    item0->AddGrowableCol( 0 );
-    item0->AddGrowableRow( 0 );
 
     wxStaticBox *item2 = new wxStaticBox( parent, -1, _("Highlighting and other styles") );
     wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxVERTICAL );
 
     wxFlexGridSizer *item3 = new wxFlexGridSizer( 1, 0, 0 );
-    item3->AddGrowableCol( 0 );
-    item3->AddGrowableRow( 0 );
 
     wxNotebook *item5 = new wxNotebook( parent, ID_STEDLG_STYLE_NOTEBOOK, wxDefaultPosition, wxSize(200,160), 0 );
-    wxWindow *item4 = item5;
+wxWindow *item4 = item5;
 
     item3->Add( item4, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
 
-    wxString strs6[] = 
+    wxString strs6[] =
     {
-        _("ChoiceItem"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ChoiceItem"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
     wxChoice *item6 = new wxChoice( parent, ID_STEDLG_STYLELANG_CHOICE, wxDefaultPosition, wxDefaultSize, 7, strs6, 0 );
@@ -64,29 +61,30 @@ wxSizer *wxSTEditorStyleSizer( wxWindow *parent, bool call_fit, bool set_sizer )
     item8->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxFlexGridSizer *item10 = new wxFlexGridSizer( 4, 0, 0 );
-    item10->AddGrowableCol( 1 );
 
     wxButton *item11 = new wxButton( parent, ID_STEDLG_FONT_BUTTON, _("Font"), wxDefaultPosition, wxDefaultSize, 0 );
     item11->SetToolTip( _("Choose a font (unsupported fonts revert to a default)") );
     item10->Add( item11, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs12[] = 
+    wxString strs12[] =
     {
-        _("Bitstream Vera Sans Mono*"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("Bitstream Vera Sans Mono*"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
     wxChoice *item12 = new wxChoice( parent, ID_STEDLG_FONT_CHOICE, wxDefaultPosition, wxDefaultSize, 11, strs12, 0 );
     item12->SetToolTip( _("Typical fonts (* are known to be fixed width)") );
     item10->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
+
+    item10->AddGrowableCol( 1 );
 
     item8->Add( item10, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
@@ -140,9 +138,17 @@ wxSizer *wxSTEditorStyleSizer( wxWindow *parent, bool call_fit, bool set_sizer )
 
     item3->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
+    item3->AddGrowableCol( 0 );
+
+    item3->AddGrowableRow( 0 );
+
     item1->Add( item3, 1, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item0->AddGrowableCol( 0 );
+
+    item0->AddGrowableRow( 0 );
 
     if (set_sizer)
     {
@@ -150,44 +156,41 @@ wxSizer *wxSTEditorStyleSizer( wxWindow *parent, bool call_fit, bool set_sizer )
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
 wxSizer *wxSTEditorLangSizer( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
-    item0->AddGrowableCol( 0 );
-    item0->AddGrowableRow( 0 );
 
     wxStaticBox *item2 = new wxStaticBox( parent, -1, _("Language settings") );
     wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxVERTICAL );
 
     wxFlexGridSizer *item3 = new wxFlexGridSizer( 2, 0, 0 );
-    item3->AddGrowableCol( 1 );
 
     wxStaticText *item4 = new wxStaticText( parent, ID_TEXT, _("Language"), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs5[] = 
+    wxString strs5[] =
     {
-        _("ChoiceItem"), 
-        _("ACTIVE SERVER PAGES (ASP) BLAH"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ChoiceItem"),
+        _("ACTIVE SERVER PAGES (ASP) BLAH"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
     wxChoice *item5 = new wxChoice( parent, ID_STEDLG_LANG_CHOICE, wxDefaultPosition, wxDefaultSize, 18, strs5, 0 );
@@ -197,18 +200,24 @@ wxSizer *wxSTEditorLangSizer( wxWindow *parent, bool call_fit, bool set_sizer )
     wxStaticText *item6 = new wxStaticText( parent, ID_TEXT, _("File patterns"), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxTextCtrl *item7 = new wxTextCtrl( parent, ID_STEDLG_FILEPATTERN_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    wxTextCtrl *item7 = new wxTextCtrl( parent, ID_STEDLG_FILEPATTERN_TEXTCTRL, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
     item7->SetToolTip( _("File extensions associated with this language (*.cpp;*.c;*.h)") );
     item3->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item3->AddGrowableCol( 1 );
 
     item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxNotebook *item9 = new wxNotebook( parent, ID_STEDLG_LANG_NOTEBOOK, wxDefaultPosition, wxSize(200,160), 0 );
-    wxWindow *item8 = item9;
+wxWindow *item8 = item9;
 
     item1->Add( item8, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP, 5 );
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item0->AddGrowableCol( 0 );
+
+    item0->AddGrowableRow( 0 );
 
     if (set_sizer)
     {
@@ -216,7 +225,7 @@ wxSizer *wxSTEditorLangSizer( wxWindow *parent, bool call_fit, bool set_sizer )
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -227,160 +236,183 @@ wxSizer *wxSTEditorPropertiesSizer( wxWindow *parent, bool call_fit, bool set_si
     wxStaticBox *item2 = new wxStaticBox( parent, -1, _("File properties") );
     wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxVERTICAL );
 
-    wxFlexGridSizer *item3 = new wxFlexGridSizer( 3, 0, 0 );
-    item3->AddGrowableCol( 2 );
+    wxFlexGridSizer *item3 = new wxFlexGridSizer( 3, 5, 5 );
 
-    wxStaticText *item4 = new wxStaticText( parent, ID_TEXT, _("Filename "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item4 = new wxStaticText( parent, wxID_ANY, _("Filename"), wxDefaultPosition, wxDefaultSize, 0 );
     item4->SetToolTip( _("Name of the document or filename") );
-    item3->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
+    item3->Add( item4, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item5 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item5, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item5 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item5, 0, wxALIGN_CENTER, 5 );
 
     wxTextCtrl *item6 = new wxTextCtrl( parent, ID_STEPROP_FILENAME_TEXTCTRL, _("path/to/the/file/and/stuff/untitled.txt"), wxDefaultPosition, wxSize(300,-1), wxTE_READONLY );
-    item3->Add( item6, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item3->Add( item6, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item7 = new wxStaticText( parent, ID_TEXT, _("Size "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item7 = new wxStaticText( parent, wxID_ANY, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
     item7->SetToolTip( _("Size of the file on disk if it exists") );
-    item3->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    item3->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item8 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item8, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item8 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item8, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item9 = new wxStaticText( parent, ID_STEPROP_FILESIZE_TEXT, _("100000000000000000000000000000000 bytes"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    item3->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item10 = new wxStaticText( parent, ID_TEXT, _("Opened "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item10 = new wxStaticText( parent, wxID_ANY, _("Opened"), wxDefaultPosition, wxDefaultSize, 0 );
     item10->SetToolTip( _("Time the file was opened from disk") );
-    item3->Add( item10, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item3->Add( item10, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item11 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item11, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item11 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item11, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item12 = new wxStaticText( parent, ID_STEPROP_FILEOPENED_TEXT, _("12/12/2003 00:00:00 000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item3->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item13 = new wxStaticText( parent, ID_TEXT, _("Modified "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item13 = new wxStaticText( parent, wxID_ANY, _("Modified"), wxDefaultPosition, wxDefaultSize, 0 );
     item13->SetToolTip( _("Last time the file was modified on disk") );
-    item3->Add( item13, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    item3->Add( item13, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item14 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item14, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item14 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item14, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item15 = new wxStaticText( parent, ID_STEPROP_FILEMODIFIED_TEXT, _("12/12/2003 00:00:00 000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item15, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    item3->Add( item15, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item16 = new wxStaticText( parent, ID_TEXT, _("Accessed "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item16 = new wxStaticText( parent, wxID_ANY, _("Accessed"), wxDefaultPosition, wxDefaultSize, 0 );
     item16->SetToolTip( _("Last time the file was accessed on disk (not all platforms support this)") );
-    item3->Add( item16, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    item3->Add( item16, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item17 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item17, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item17 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item17, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item18 = new wxStaticText( parent, ID_STEPROP_FILEACCESSED_TEXT, _("12/12/2003 00:00:00 000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item18, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    item3->Add( item18, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item19 = new wxStaticText( parent, ID_TEXT, _("Created "), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item19 = new wxStaticText( parent, wxID_ANY, _("Created"), wxDefaultPosition, wxDefaultSize, 0 );
     item19->SetToolTip( _("Time the file was created on disk (not all platforms support this)") );
-    item3->Add( item19, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
+    item3->Add( item19, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item20 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item20, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item20 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item20, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item21 = new wxStaticText( parent, ID_STEPROP_FILECREATED_TEXT, _("12/12/2003 00:00:00 000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item3->Add( item21, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    item3->Add( item21, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+    wxStaticText *item22 = new wxStaticText( parent, wxID_ANY, _("File Type"), wxDefaultPosition, wxDefaultSize, 0 );
+    item22->SetToolTip( _("Time the file was created on disk (not all platforms support this)") );
+    item3->Add( item22, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    wxStaticText *item23 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item23, 0, wxALIGN_CENTER, 5 );
+
+    wxStaticText *item24 = new wxStaticText( parent, ID_STEPROP_FILE_TYPE_TEXT, _("<mime type>"), wxDefaultPosition, wxDefaultSize, 0 );
+    item3->Add( item24, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    item3->AddGrowableCol( 2 );
+
+    item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticBox *item23 = new wxStaticBox( parent, -1, _("Information") );
-    wxStaticBoxSizer *item22 = new wxStaticBoxSizer( item23, wxVERTICAL );
+    wxStaticBox *item26 = new wxStaticBox( parent, -1, _("Information") );
+    wxStaticBoxSizer *item25 = new wxStaticBoxSizer( item26, wxVERTICAL );
 
-    wxFlexGridSizer *item24 = new wxFlexGridSizer( 3, 0, 0 );
-    item24->AddGrowableCol( 2 );
+    wxFlexGridSizer *item27 = new wxFlexGridSizer( 3, 5, 5 );
 
-    wxStaticText *item25 = new wxStaticText( parent, ID_TEXT, _("Language "), wxDefaultPosition, wxDefaultSize, 0 );
-    item25->SetToolTip( _("The language used to hilight the document") );
-    item24->Add( item25, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
+    wxStaticText *item28 = new wxStaticText( parent, wxID_ANY, _("Language"), wxDefaultPosition, wxDefaultSize, 0 );
+    item28->SetToolTip( _("The language used to hilight the document") );
+    item27->Add( item28, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item26 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item24->Add( item26, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item29 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item27->Add( item29, 0, wxALIGN_CENTER, 5 );
 
-    wxStaticText *item27 = new wxStaticText( parent, ID_STEPROP_LANGUAGE_TEXT, _("Some language name that has some name like this"), wxDefaultPosition, wxDefaultSize, 0 );
-    item24->Add( item27, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item30 = new wxStaticText( parent, ID_STEPROP_LANGUAGE_TEXT, _("Some language name that has some name like this"), wxDefaultPosition, wxDefaultSize, 0 );
+    item27->Add( item30, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    item22->Add( item24, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+    wxStaticText *item31 = new wxStaticText( parent, wxID_ANY, _("Encoding"), wxDefaultPosition, wxDefaultSize, 0 );
+    item31->SetToolTip( _("The language used to hilight the document") );
+    item27->Add( item31, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    item0->Add( item22, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item32 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item27->Add( item32, 0, wxALIGN_CENTER, 5 );
 
-    wxStaticBox *item29 = new wxStaticBox( parent, -1, _("Current statistics") );
-    wxStaticBoxSizer *item28 = new wxStaticBoxSizer( item29, wxVERTICAL );
+    wxBoxSizer *item33 = new wxBoxSizer( wxHORIZONTAL );
 
-    wxFlexGridSizer *item30 = new wxFlexGridSizer( 3, 0, 0 );
-    item30->AddGrowableCol( 2 );
+    wxString *strs34 = (wxString*) NULL;
+    wxChoice *item34 = new wxChoice( parent, ID_STEPROP_ENCODING_CHOICE, wxDefaultPosition, wxDefaultSize, 0, strs34, 0 );
+    item33->Add( item34, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item31 = new wxStaticText( parent, ID_TEXT, _("Lines "), wxDefaultPosition, wxDefaultSize, 0 );
-    item31->SetToolTip( _("Number of lines in the document") );
-    item30->Add( item31, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
+    wxCheckBox *item35 = new wxCheckBox( parent, ID_STEPROP_ENCODING_BOM_CHECKBOX, _("BOM"), wxDefaultPosition, wxDefaultSize, 0 );
+    item33->Add( item35, 0, wxALIGN_CENTER|wxLEFT, 5 );
 
-    wxStaticText *item32 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item32, 0, wxALIGN_CENTER|wxALL, 5 );
+    item27->Add( item33, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item33 = new wxStaticText( parent, ID_STEPROP_NUMLINES_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item33, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item27->AddGrowableCol( 2 );
 
-    wxStaticText *item34 = new wxStaticText( parent, ID_TEXT, _("Characters "), wxDefaultPosition, wxDefaultSize, 0 );
-    item34->SetToolTip( _("Number of characters in the document (size)") );
-    item30->Add( item34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    item25->Add( item27, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item35 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item35, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    item0->Add( item25, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-    wxStaticText *item36 = new wxStaticText( parent, ID_STEPROP_NUMCHARS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item36, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticBox *item37 = new wxStaticBox( parent, -1, _("Document Statistics") );
+    wxStaticBoxSizer *item36 = new wxStaticBoxSizer( item37, wxVERTICAL );
 
-    wxStaticText *item37 = new wxStaticText( parent, ID_TEXT, _("Words "), wxDefaultPosition, wxDefaultSize, 0 );
-    item37->SetToolTip( _("Number of words in the document") );
-    item30->Add( item37, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    wxFlexGridSizer *item38 = new wxFlexGridSizer( 3, 5, 5 );
 
-    wxStaticText *item38 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item38, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item39 = new wxStaticText( parent, wxID_ANY, _("Lines"), wxDefaultPosition, wxDefaultSize, 0 );
+    item39->SetToolTip( _("Number of lines in the document") );
+    item38->Add( item39, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item39 = new wxStaticText( parent, ID_STEPROP_NUMWORDS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item39, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item40 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item40, 0, wxALIGN_CENTER, 5 );
 
-    wxStaticText *item40 = new wxStaticText( parent, ID_TEXT, _("Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
-    item40->SetToolTip( _("Number of tab characters in the document") );
-    item30->Add( item40, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    wxStaticText *item41 = new wxStaticText( parent, ID_STEPROP_NUMLINES_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item41, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item41 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item41, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item42 = new wxStaticText( parent, wxID_ANY, _("Characters"), wxDefaultPosition, wxDefaultSize, 0 );
+    item42->SetToolTip( _("Number of characters in the document (size)") );
+    item38->Add( item42, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item42 = new wxStaticText( parent, ID_STEPROP_NUMTABS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item42, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    wxStaticText *item43 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item43, 0, wxALIGN_CENTER, 5 );
 
-    wxStaticText *item43 = new wxStaticText( parent, ID_TEXT, _("EOL Characters "), wxDefaultPosition, wxDefaultSize, 0 );
-    item43->SetToolTip( _("Number and types of end of line characters") );
-    item30->Add( item43, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxBOTTOM, 5 );
+    wxStaticText *item44 = new wxStaticText( parent, ID_STEPROP_NUMCHARS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item44, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item44 = new wxStaticText( parent, ID_TEXT, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item44, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item45 = new wxStaticText( parent, wxID_ANY, _("Words"), wxDefaultPosition, wxDefaultSize, 0 );
+    item45->SetToolTip( _("Number of words in the document") );
+    item38->Add( item45, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxStaticText *item45 = new wxStaticText( parent, ID_STEPROP_EOLCHARS_TEXT, _("CRLF (DOS/Win)=100000, CR (Mac)=100000, LF (Unix)=100000 "), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->Add( item45, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    wxStaticText *item46 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item46, 0, wxALIGN_CENTER, 5 );
 
-    item28->Add( item30, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+    wxStaticText *item47 = new wxStaticText( parent, ID_STEPROP_NUMWORDS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item47, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    item0->Add( item28, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
+    wxStaticText *item48 = new wxStaticText( parent, wxID_ANY, _("Tabs"), wxDefaultPosition, wxDefaultSize, 0 );
+    item48->SetToolTip( _("Number of tab characters in the document") );
+    item38->Add( item48, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxFlexGridSizer *item46 = new wxFlexGridSizer( 2, 0, 0 );
+    wxStaticText *item49 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item49, 0, wxALIGN_CENTER, 5 );
 
-    wxButton *item47 = new wxButton( parent, wxID_OK, wxGetStockLabel(wxID_CLOSE), wxDefaultPosition, wxDefaultSize, 0 );
-    item47->SetDefault();
-    item46->Add( item47, 0, wxALIGN_CENTER, 5 );
+    wxStaticText *item50 = new wxStaticText( parent, ID_STEPROP_NUMTABS_TEXT, _("10000000000000000000000000000000000000"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item50, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    item0->Add( item46, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item51 = new wxStaticText( parent, wxID_ANY, _("EOL Characters"), wxDefaultPosition, wxDefaultSize, 0 );
+    item51->SetToolTip( _("Number and types of end of line characters") );
+    item38->Add( item51, 0, wxALIGN_CENTER_VERTICAL, 5 );
+
+    wxStaticText *item52 = new wxStaticText( parent, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item52, 0, wxALIGN_CENTER, 5 );
+
+    wxStaticText *item53 = new wxStaticText( parent, ID_STEPROP_EOLCHARS_TEXT, _("CRLF (DOS/Win)=100000, CR (Mac)=100000, LF (Unix)=100000 "), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->Add( item53, 0, wxALIGN_CENTER_VERTICAL, 5 );
+
+    item38->AddGrowableCol( 2 );
+
+    item36->Add( item38, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item0->Add( item36, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
     if (set_sizer)
     {
@@ -388,43 +420,38 @@ wxSizer *wxSTEditorPropertiesSizer( wxWindow *parent, bool call_fit, bool set_si
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
 wxSizer *wxSTEditorFindReplaceSizer( wxWindow *parent, bool call_fit, bool set_sizer )
 {
-    wxFlexGridSizer *item0 = new wxFlexGridSizer( 2, 1, 0, 0 );
-    item0->AddGrowableCol( 0 );
-    item0->AddGrowableRow( 1 );
+    wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
 
     wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
-    item1->AddGrowableCol( 0 );
 
     wxFlexGridSizer *item2 = new wxFlexGridSizer( 1, 0, 0 );
-    item2->AddGrowableCol( 0 );
 
     wxFlexGridSizer *item3 = new wxFlexGridSizer( 3, 3, 0 );
-    item3->AddGrowableCol( 1 );
 
     wxStaticText *item4 = new wxStaticText( parent, ID_TEXT, _("Find what"), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 
-    wxString strs5[] = 
+    wxString strs5[] =
     {
-        _("ComboItem"), 
-        _("Item1"), 
-        _("Item2"), 
-        _("Item3"), 
-        _("Item4"), 
-        _("Item5"), 
-        _("Item6"), 
-        _("Item7"), 
-        _("Item8"), 
-        _("Item9"), 
+        _("ComboItem"),
+        _("Item1"),
+        _("Item2"),
+        _("Item3"),
+        _("Item4"),
+        _("Item5"),
+        _("Item6"),
+        _("Item7"),
+        _("Item8"),
+        _("Item9"),
         _("Item0")
     };
-    wxComboBox *item5 = new wxComboBox( parent, ID_STEDLG_FIND_COMBO, wxEmptyString, wxDefaultPosition, wxSize(250,-1), 11, strs5, wxCB_DROPDOWN );
+    wxComboBox *item5 = new wxComboBox( parent, ID_STEDLG_FIND_COMBO, wxT(""), wxDefaultPosition, wxSize(250,-1), 11, strs5, wxCB_DROPDOWN );
     item3->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxBitmapButton *item6 = new wxBitmapButton( parent, ID_STEDLG_FIND_BITMAPBUTTON, wxSTEBitmapsFunc( 1 ), wxDefaultPosition, wxDefaultSize );
@@ -433,30 +460,31 @@ wxSizer *wxSTEditorFindReplaceSizer( wxWindow *parent, bool call_fit, bool set_s
     wxStaticText *item7 = new wxStaticText( parent, ID_STEDLG_REPLACE_TEXT, _("Replace with "), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 
-    wxString strs8[] = 
+    wxString strs8[] =
     {
-        _("ComboItem"), 
-        _("Item1"), 
-        _("Item2"), 
-        _("Item3"), 
-        _("Item4"), 
-        _("Item5"), 
-        _("Item6"), 
-        _("Item7"), 
-        _("Item8"), 
-        _("Item9"), 
+        _("ComboItem"),
+        _("Item1"),
+        _("Item2"),
+        _("Item3"),
+        _("Item4"),
+        _("Item5"),
+        _("Item6"),
+        _("Item7"),
+        _("Item8"),
+        _("Item9"),
         _("Item0")
     };
-    wxComboBox *item8 = new wxComboBox( parent, ID_STEDLG_REPLACE_COMBO, wxEmptyString, wxDefaultPosition, wxSize(250,-1), 11, strs8, wxCB_DROPDOWN );
+    wxComboBox *item8 = new wxComboBox( parent, ID_STEDLG_REPLACE_COMBO, wxT(""), wxDefaultPosition, wxSize(250,-1), 11, strs8, wxCB_DROPDOWN );
     item3->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxBitmapButton *item9 = new wxBitmapButton( parent, ID_STEDLG_REPLACE_BITMAPBUTTON, wxSTEBitmapsFunc( 1 ), wxDefaultPosition, wxDefaultSize );
     item3->Add( item9, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT, 5 );
 
+    item3->AddGrowableCol( 1 );
+
     item2->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxFlexGridSizer *item10 = new wxFlexGridSizer( 4, 0, 0 );
-    item10->AddGrowableCol( 1 );
 
     wxStaticBox *item12 = new wxStaticBox( parent, -1, _("Options") );
     wxStaticBoxSizer *item11 = new wxStaticBoxSizer( item12, wxVERTICAL );
@@ -517,12 +545,15 @@ wxSizer *wxSTEditorFindReplaceSizer( wxWindow *parent, bool call_fit, bool set_s
 
     item10->Add( item22, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxBOTTOM, 5 );
 
+    item10->AddGrowableCol( 1 );
+
     item2->Add( item10, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    item2->AddGrowableCol( 0 );
 
     item1->Add( item2, 0, wxGROW, 5 );
 
     wxFlexGridSizer *item27 = new wxFlexGridSizer( 1, 0, 0 );
-    item27->AddGrowableRow( 2 );
 
     wxButton *item28 = new wxButton( parent, ID_STEDLG_FIND_BUTTON, _("&Find"), wxDefaultPosition, wxDefaultSize, 0 );
     item28->SetDefault();
@@ -547,9 +578,15 @@ wxSizer *wxSTEditorFindReplaceSizer( wxWindow *parent, bool call_fit, bool set_s
     wxButton *item33 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     item27->Add( item33, 1, wxGROW|wxALIGN_BOTTOM|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
+    item27->AddGrowableRow( 2 );
+
     item1->Add( item27, 0, wxGROW|wxTOP, 5 );
 
+    item1->AddGrowableCol( 0 );
+
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    item0->AddGrowableCol( 0 );
 
     if (set_sizer)
     {
@@ -557,7 +594,7 @@ wxSizer *wxSTEditorFindReplaceSizer( wxWindow *parent, bool call_fit, bool set_s
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -584,68 +621,53 @@ wxSizer *wxSTEditorInsertTextSizer( wxWindow *parent, bool call_fit, bool set_si
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxFlexGridSizer *item7 = new wxFlexGridSizer( 3, 0, 0 );
-    item7->AddGrowableCol( 1 );
+    wxFlexGridSizer *item7 = new wxFlexGridSizer( 3, 5, 5 );
 
     wxStaticText *item8 = new wxStaticText( parent, ID_STEDLG_INSERT_PREPEND_TEXT, _("Prepend"), wxDefaultPosition, wxDefaultSize, 0 );
-    item7->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item7->Add( item8, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxString strs9[] = 
+    wxString strs9[] =
     {
-        _("ComboItem"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ComboItem"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
-    wxComboBox *item9 = new wxComboBox( parent, ID_STEDLG_INSERT_PREPEND_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 6, strs9, wxCB_DROPDOWN );
+    wxComboBox *item9 = new wxComboBox( parent, ID_STEDLG_INSERT_PREPEND_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 6, strs9, wxCB_DROPDOWN );
     item9->SetToolTip( _("Text to prepend") );
-    item7->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item7->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxBitmapButton *item10 = new wxBitmapButton( parent, ID_STEDLG_INSERT_PREPEND_BITMAPBUTTON, wxSTEBitmapsFunc( 1 ), wxDefaultPosition, wxDefaultSize );
-    item7->Add( item10, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5 );
+    item7->Add( item10, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-    wxStaticText *item11 = new wxStaticText( parent, ID_TEXT, _("Append"), wxDefaultPosition, wxDefaultSize, 0 );
-    item7->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item11 = new wxStaticText( parent, wxID_ANY, _("Append"), wxDefaultPosition, wxDefaultSize, 0 );
+    item7->Add( item11, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxString strs12[] = 
+    wxString strs12[] =
     {
-        _("ComboItem"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ComboItem"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
-    wxComboBox *item12 = new wxComboBox( parent, ID_STEDLG_INSERT_APPEND_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 6, strs12, wxCB_DROPDOWN );
+    wxComboBox *item12 = new wxComboBox( parent, ID_STEDLG_INSERT_APPEND_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 6, strs12, wxCB_DROPDOWN );
     item12->SetToolTip( _("Text to append") );
-    item7->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item7->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxBitmapButton *item13 = new wxBitmapButton( parent, ID_STEDLG_INSERT_APPEND_BITMAPBUTTON, wxSTEBitmapsFunc( 1 ), wxDefaultPosition, wxDefaultSize );
-    item7->Add( item13, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxTOP|wxBOTTOM, 5 );
+    item7->Add( item13, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+    item7->AddGrowableCol( 1 );
+
+    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxWindow *item14 = parent->FindWindow( ID_STEDLG_INSERT_EDITOR );
     wxASSERT( item14 );
-    item0->Add( item14, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxStaticLine *item15 = new wxStaticLine( parent, ID_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
-    item0->Add( item15, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxBoxSizer *item16 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxButton *item17 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    item17->SetDefault();
-    item16->Add( item17, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    item16->Add( 10, 10, 0, wxALIGN_CENTER, 5 );
-
-    wxButton *item18 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    item16->Add( item18, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    item0->Add( item16, 0, wxALIGN_CENTER, 5 );
+    item0->Add( item14, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     if (set_sizer)
     {
@@ -653,7 +675,7 @@ wxSizer *wxSTEditorInsertTextSizer( wxWindow *parent, bool call_fit, bool set_si
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -685,10 +707,10 @@ wxSizer *wxSTEditorViewPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item9 = new wxStaticText( parent, ID_TEXT, _("Type"), wxDefaultPosition, wxDefaultSize, 0 );
     item8->Add( item9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs10[] = 
+    wxString strs10[] =
     {
-        _("No marker"), 
-        _("Line"), 
+        _("No marker"),
+        _("Line"),
         _("Background")
     };
     wxChoice *item10 = new wxChoice( parent, ID_STEDLG_EDGE_MODE_CHOICE, wxDefaultPosition, wxDefaultSize, 3, strs10, 0 );
@@ -749,7 +771,7 @@ wxSizer *wxSTEditorViewPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -765,12 +787,12 @@ wxSizer *wxSTEditorPrintPrefsSizer( wxWindow *parent, bool call_fit, bool set_si
     wxStaticText *item4 = new wxStaticText( parent, ID_TEXT, _("Coloring "), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs5[] = 
+    wxString strs5[] =
     {
-        _("Normal colors (WYSIWYG)"), 
-        _("Invert light colors"), 
-        _("Black on white"), 
-        _("Color on white"), 
+        _("Normal colors (WYSIWYG)"),
+        _("Invert light colors"),
+        _("Black on white"),
+        _("Color on white"),
         _("Color on white (except line nums)")
     };
     wxChoice *item5 = new wxChoice( parent, ID_STEDLG_PRINT_COLOURMODE_CHOICE, wxDefaultPosition, wxDefaultSize, 5, strs5, 0 );
@@ -787,17 +809,17 @@ wxSizer *wxSTEditorPrintPrefsSizer( wxWindow *parent, bool call_fit, bool set_si
     wxStaticText *item8 = new wxStaticText( parent, ID_TEXT, _("Wrap lines"), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxCheckBox *item9 = new wxCheckBox( parent, ID_STEDLG_PRINT_WRAPMODE_CHECKBOX, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+    wxCheckBox *item9 = new wxCheckBox( parent, ID_STEDLG_PRINT_WRAPMODE_CHECKBOX, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
     item9->SetToolTip( _("Wrap long lines when printing, else cut them off") );
     item3->Add( item9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item10 = new wxStaticText( parent, ID_TEXT, _("Line numbers"), wxDefaultPosition, wxDefaultSize, 0 );
     item3->Add( item10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs11[] = 
+    wxString strs11[] =
     {
-        _("As shown in editor"), 
-        _("Never"), 
+        _("As shown in editor"),
+        _("Never"),
         _("Always")
     };
     wxChoice *item11 = new wxChoice( parent, ID_STEDLG_PRINT_LINENUMBERS_CHOICE, wxDefaultPosition, wxDefaultSize, 3, strs11, 0 );
@@ -813,7 +835,7 @@ wxSizer *wxSTEditorPrintPrefsSizer( wxWindow *parent, bool call_fit, bool set_si
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -879,10 +901,10 @@ wxSizer *wxSTEditorTabsPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item20 = new wxStaticText( parent, ID_TEXT, _("Default EOL"), wxDefaultPosition, wxDefaultSize, 0 );
     item19->Add( item20, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs21[] = 
+    wxString strs21[] =
     {
-        _("CRLF (Dos/Windows)"), 
-        _("CR (Mac)"), 
+        _("CRLF (Dos/Windows)"),
+        _("CR (Mac)"),
         _("LF (Unix)")
     };
     wxChoice *item21 = new wxChoice( parent, ID_STEDLG_EOL_MODE_CHOICE, wxDefaultPosition, wxDefaultSize, 3, strs21, 0 );
@@ -909,7 +931,7 @@ wxSizer *wxSTEditorTabsPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -942,7 +964,7 @@ wxSizer *wxSTEditorHighlightingPrefsSizer( wxWindow *parent, bool call_fit, bool
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -957,17 +979,17 @@ wxSizer *wxSTEditorFoldPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     item3->SetToolTip( _("Show a margin to fold text (not all lexers are supported)") );
     item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs4[] = 
+    wxString strs4[] =
     {
-        _("Compact folding"), 
-        _("Comment folding"), 
-        _("Preprocessor folding"), 
-        _("At \"else\" folding"), 
-        _("HTML folding"), 
-        _("HTML preprocessor folding      "), 
-        _("Directive folding"), 
-        _("Python comment folding"), 
-        _("Python quote folding"), 
+        _("Compact folding"),
+        _("Comment folding"),
+        _("Preprocessor folding"),
+        _("At \"else\" folding"),
+        _("HTML folding"),
+        _("HTML preprocessor folding      "),
+        _("Directive folding"),
+        _("Python comment folding"),
+        _("Python quote folding"),
         _("Python indent fold check")
     };
     wxCheckListBox *item4 = new wxCheckListBox( parent, ID_STEDLG_FOLD_STYLES_LISTBOX, wxDefaultPosition, wxSize(-1,100), 10, strs4, wxLB_SINGLE );
@@ -978,11 +1000,11 @@ wxSizer *wxSTEditorFoldPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item6 = new wxStaticText( parent, ID_TEXT, _("Fold margin style"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs7[] = 
+    wxString strs7[] =
     {
-        _("Arrows"), 
-        _("Circles"), 
-        _("Squares"), 
+        _("Arrows"),
+        _("Circles"),
+        _("Squares"),
         _("Plus minus")
     };
     wxChoice *item7 = new wxChoice( parent, ID_STEDLG_FOLDMARGIN_STYLE_CHOICE, wxDefaultPosition, wxDefaultSize, 4, strs7, 0 );
@@ -1004,11 +1026,11 @@ wxSizer *wxSTEditorFoldPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item12 = new wxStaticText( parent, ID_TEXT, _("Marker position"), wxDefaultPosition, wxDefaultSize, 0 );
     item11->Add( item12, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs13[] = 
+    wxString strs13[] =
     {
-        _("No wrap markers"), 
-        _("At end of line"), 
-        _("At start of line"), 
+        _("No wrap markers"),
+        _("At end of line"),
+        _("At start of line"),
         _("At end and start of line")
     };
     wxChoice *item13 = new wxChoice( parent, ID_STEDLG_WRAP_VISUALFLAGS_CHOICE, wxDefaultPosition, wxDefaultSize, 4, strs13, 0 );
@@ -1017,11 +1039,11 @@ wxSizer *wxSTEditorFoldPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item14 = new wxStaticText( parent, ID_TEXT, _("Marker style"), wxDefaultPosition, wxDefaultSize, 0 );
     item11->Add( item14, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-    wxString strs15[] = 
+    wxString strs15[] =
     {
-        _("At edge of window"), 
-        _("At end of text"), 
-        _("At start of text"), 
+        _("At edge of window"),
+        _("At end of text"),
+        _("At start of text"),
         _("At end and start of text")
     };
     wxChoice *item15 = new wxChoice( parent, ID_STEDLG_WRAP_VISUALFLAGSLOC_CHOICE, wxDefaultPosition, wxDefaultSize, 4, strs15, 0 );
@@ -1044,7 +1066,7 @@ wxSizer *wxSTEditorFoldPrefsSizer( wxWindow *parent, bool call_fit, bool set_siz
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1056,20 +1078,17 @@ wxSizer *wxSTEditorWindowsSizer( wxWindow *parent, bool call_fit, bool set_sizer
     wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxHORIZONTAL );
 
     wxFlexGridSizer *item3 = new wxFlexGridSizer( 2, 0, 0 );
-    item3->AddGrowableCol( 0 );
-    item3->AddGrowableRow( 0 );
 
-    wxString strs4[] = 
+    wxString strs4[] =
     {
-        _("ListItem1"), 
-        _("Item2"), 
+        _("ListItem1"),
+        _("Item2"),
         _("Item3")
     };
-    wxListBox *item4 = new wxListBox( parent, ID_STEDLG_WINDOWS_LISTBOX, wxDefaultPosition, wxSize(300,200), 3, strs4, wxLB_EXTENDED|wxLB_HSCROLL|wxLB_NEEDED_SB );
+    wxListBox *item4 = new wxListBox( parent, ID_STEDLG_WINDOWS_LISTBOX, wxDefaultPosition, wxSize(400,400), 3, strs4, wxLB_EXTENDED );
     item3->Add( item4, 1, wxGROW|wxALL, 5 );
 
     wxFlexGridSizer *item5 = new wxFlexGridSizer( 1, 0, 0 );
-    item5->AddGrowableRow( 3 );
 
     wxButton *item6 = new wxButton( parent, ID_STEDLGS_WINDOWS_ACTIVATE_BUTTON, _("&Activate"), wxDefaultPosition, wxDefaultSize, 0 );
     item6->SetDefault();
@@ -1083,10 +1102,16 @@ wxSizer *wxSTEditorWindowsSizer( wxWindow *parent, bool call_fit, bool set_sizer
 
     item5->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxButton *item9 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxButton *item9 = new wxButton( parent, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
+    item5->AddGrowableRow( 3 );
+
     item3->Add( item5, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
+
+    item3->AddGrowableCol( 0 );
+
+    item3->AddGrowableRow( 0 );
 
     item1->Add( item3, 1, wxGROW|wxALIGN_CENTER_HORIZONTAL, 0 );
 
@@ -1098,7 +1123,7 @@ wxSizer *wxSTEditorWindowsSizer( wxWindow *parent, bool call_fit, bool set_sizer
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1107,27 +1132,26 @@ wxSizer *wxSTEditorColumnizeSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
 
     wxFlexGridSizer *item1 = new wxFlexGridSizer( 3, 0, 0 );
-    item1->AddGrowableCol( 1 );
 
     wxStaticText *item2 = new wxStaticText( parent, ID_TEXT, _("Split before chars"), wxDefaultPosition, wxDefaultSize, 0 );
     item2->SetToolTip( _("Characters to split text into columns before") );
     item1->Add( item2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs3[] = 
+    wxString strs3[] =
     {
-        _("ComboItem"), 
-        _("Item1"), 
-        _("Item2"), 
-        _("Item3"), 
-        _("Item4"), 
-        _("Item5"), 
-        _("Item6"), 
-        _("Item7"), 
-        _("Item8"), 
-        _("Item9"), 
+        _("ComboItem"),
+        _("Item1"),
+        _("Item2"),
+        _("Item3"),
+        _("Item4"),
+        _("Item5"),
+        _("Item6"),
+        _("Item7"),
+        _("Item8"),
+        _("Item9"),
         _("Item0")
     };
-    wxComboBox *item3 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_BEFORE_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 11, strs3, wxCB_DROPDOWN );
+    wxComboBox *item3 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_BEFORE_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 11, strs3, wxCB_DROPDOWN );
     item3->SetToolTip( _("Characters to split before, ex. '){}'") );
     item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -1139,21 +1163,21 @@ wxSizer *wxSTEditorColumnizeSizer( wxWindow *parent, bool call_fit, bool set_siz
     item5->SetToolTip( _("Characters to split text into columns after") );
     item1->Add( item5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs6[] = 
+    wxString strs6[] =
     {
-        _("ComboItem"), 
-        _("Item1"), 
-        _("Item2"), 
-        _("Item3"), 
-        _("Item4"), 
-        _("Item5"), 
-        _("Item6"), 
-        _("Item7"), 
-        _("Item8"), 
-        _("Item9"), 
+        _("ComboItem"),
+        _("Item1"),
+        _("Item2"),
+        _("Item3"),
+        _("Item4"),
+        _("Item5"),
+        _("Item6"),
+        _("Item7"),
+        _("Item8"),
+        _("Item9"),
         _("Item0")
     };
-    wxComboBox *item6 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_AFTER_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 11, strs6, wxCB_DROPDOWN );
+    wxComboBox *item6 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_AFTER_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 11, strs6, wxCB_DROPDOWN );
     item6->SetToolTip( _("Characters to split after, ex. '(,;'") );
     item1->Add( item6, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -1165,21 +1189,21 @@ wxSizer *wxSTEditorColumnizeSizer( wxWindow *parent, bool call_fit, bool set_siz
     item8->SetToolTip( _("Preserve formatting between matching characters, double first character (() to preserve between two different characters") );
     item1->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs9[] = 
+    wxString strs9[] =
     {
-        _("ComboItem"), 
-        _("Item1"), 
-        _("Item2"), 
-        _("Item3"), 
-        _("Item4"), 
-        _("Item5"), 
-        _("Item6"), 
-        _("Item7"), 
-        _("Item8"), 
-        _("Item9"), 
+        _("ComboItem"),
+        _("Item1"),
+        _("Item2"),
+        _("Item3"),
+        _("Item4"),
+        _("Item5"),
+        _("Item6"),
+        _("Item7"),
+        _("Item8"),
+        _("Item9"),
         _("Item0")
     };
-    wxComboBox *item9 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_PRESERVE_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 11, strs9, wxCB_DROPDOWN );
+    wxComboBox *item9 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_PRESERVE_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 11, strs9, wxCB_DROPDOWN );
     item9->SetToolTip( _("Character pairs to preserve formatting between, ex. '\"\" ()'") );
     item1->Add( item9, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -1191,12 +1215,14 @@ wxSizer *wxSTEditorColumnizeSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxStaticText *item11 = new wxStaticText( parent, ID_TEXT, _("Ignore after"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs12[] = 
+    wxString strs12[] =
     {
         _("ComboItem")
     };
-    wxComboBox *item12 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_IGNORE_COMBO, wxEmptyString, wxDefaultPosition, wxSize(100,-1), 1, strs12, wxCB_DROPDOWN );
+    wxComboBox *item12 = new wxComboBox( parent, ID_STEDLG_COLUMNIZE_IGNORE_COMBO, wxT(""), wxDefaultPosition, wxSize(100,-1), 1, strs12, wxCB_DROPDOWN );
     item1->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item1->AddGrowableCol( 1 );
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -1224,7 +1250,7 @@ wxSizer *wxSTEditorColumnizeSizer( wxWindow *parent, bool call_fit, bool set_siz
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1232,68 +1258,55 @@ wxSizer *wxSTEditorExportSizer( wxWindow *parent, bool call_fit, bool set_sizer 
 {
     wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
 
-    wxFlexGridSizer *item1 = new wxFlexGridSizer( 3, 0, 0 );
-    item1->AddGrowableCol( 1 );
+    wxFlexGridSizer *item1 = new wxFlexGridSizer( 3, 5, 5 );
 
-    wxStaticText *item2 = new wxStaticText( parent, ID_TEXT, _("File format"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item2 = new wxStaticText( parent, wxID_ANY, _("File format"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item2, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxString strs3[] = 
+    wxString strs3[] =
     {
-        _("HTML - Hypertext"), 
-        _("HTML - Hypertext (w/ CSS)"), 
-        _("PDF - Portable Document Format"), 
-        _("RTF - Rich Text Format"), 
-        _("TEX - Latex"), 
+        _("HTML - Hypertext"),
+        _("HTML - Hypertext (w/ CSS)"),
+        _("PDF - Portable Document Format"),
+        _("RTF - Rich Text Format"),
+        _("TEX - Latex"),
         _("XML - Extensible Markup Language")
     };
     wxChoice *item3 = new wxChoice( parent, ID_STEDLG_EXPORT_FORMAT_CHOICE, wxDefaultPosition, wxDefaultSize, 6, strs3, 0 );
-    item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    item1->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 0 );
+    item1->Add( 20, 20, 0, wxALIGN_CENTER, 0 );
 
-    wxStaticText *item4 = new wxStaticText( parent, ID_TEXT, _("File name"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item4 = new wxStaticText( parent, wxID_ANY, _("File name"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item4, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    wxString strs5[] = 
+    wxString strs5[] =
     {
-        _("This Is a Long Filename to size the dialog"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("This Is a Long Filename to size the dialog"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
-    wxComboBox *item5 = new wxComboBox( parent, ID_STEDLG_EXPORT_FILENAME_COMBO, wxEmptyString, wxDefaultPosition, wxDefaultSize, 6, strs5, wxCB_DROPDOWN );
-    item1->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxComboBox *item5 = new wxComboBox( parent, ID_STEDLG_EXPORT_FILENAME_COMBO, wxT(""), wxDefaultPosition, wxDefaultSize, 6, strs5, wxCB_DROPDOWN );
+    item1->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
     wxBitmapButton *item6 = new wxBitmapButton( parent, ID_STEDLG_EXPORT_FILENAME_BITMAPBUTTON, wxSTEBitmapsFunc( 0 ), wxDefaultPosition, wxDefaultSize );
     item6->SetToolTip( _("Choose file") );
-    item1->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
+    item1->Add( item6, 0, wxALIGN_CENTER, 5 );
 
-    item1->Add( 10, 10, 0, wxALIGN_CENTER|wxALL, 5 );
+    item1->Add( 10, 10, 0, wxALIGN_CENTER, 5 );
 
     wxCheckBox *item7 = new wxCheckBox( parent, ID_STEDLG_EXPORT_EXTENSION_CHECKBOX, _("Automatic file name extension"), wxDefaultPosition, wxDefaultSize, 0 );
     item7->SetValue( TRUE );
-    item1->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item1->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
-    item1->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 0 );
+    item1->Add( 20, 20, 0, wxALIGN_CENTER, 0 );
+
+    item1->AddGrowableCol( 1 );
 
     item0->Add( item1, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxStaticLine *item8 = new wxStaticLine( parent, ID_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
-    item0->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxBoxSizer *item9 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxButton *item10 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    item10->SetDefault();
-    item9->Add( item10, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    wxButton *item11 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    item9->Add( item11, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    item0->Add( item9, 0, wxALIGN_CENTER, 5 );
 
     if (set_sizer)
     {
@@ -1301,7 +1314,7 @@ wxSizer *wxSTEditorExportSizer( wxWindow *parent, bool call_fit, bool set_sizer 
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1314,15 +1327,15 @@ wxSizer *wxSTEditorLangKeywordSizer( wxWindow *parent, bool call_fit, bool set_s
     wxStaticText *item2 = new wxStaticText( parent, ID_TEXT, _("Choose keyword list"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item2, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs3[] = 
+    wxString strs3[] =
     {
-        _("ChoiceItem"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ChoiceItem"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
     wxChoice *item3 = new wxChoice( parent, ID_STEDLG_LANG_KEYWORD_CHOICE, wxDefaultPosition, wxSize(100,-1), 8, strs3, 0 );
@@ -1334,9 +1347,6 @@ wxSizer *wxSTEditorLangKeywordSizer( wxWindow *parent, bool call_fit, bool set_s
     item0->Add( item4, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
     wxFlexGridSizer *item5 = new wxFlexGridSizer( 2, 0, 0 );
-    item5->AddGrowableCol( 0 );
-    item5->AddGrowableCol( 1 );
-    item5->AddGrowableRow( 1 );
 
     wxStaticText *item6 = new wxStaticText( parent, ID_TEXT, _("Default keywords"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item6, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
@@ -1344,11 +1354,17 @@ wxSizer *wxSTEditorLangKeywordSizer( wxWindow *parent, bool call_fit, bool set_s
     wxStaticText *item7 = new wxStaticText( parent, ID_TEXT, _("Additional keywords"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxTextCtrl *item8 = new wxTextCtrl( parent, ID_STEDLG_LANG_KEYWORD_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(80,40), wxTE_MULTILINE|wxTE_READONLY );
+    wxTextCtrl *item8 = new wxTextCtrl( parent, ID_STEDLG_LANG_KEYWORD_TEXTCTRL, wxT(""), wxDefaultPosition, wxSize(80,40), wxTE_MULTILINE|wxTE_READONLY );
     item5->Add( item8, 0, wxGROW|wxALL, 5 );
 
-    wxTextCtrl *item9 = new wxTextCtrl( parent, ID_STEDLG_LANG_USERKEYWORD_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(80,40), wxTE_MULTILINE );
+    wxTextCtrl *item9 = new wxTextCtrl( parent, ID_STEDLG_LANG_USERKEYWORD_TEXTCTRL, wxT(""), wxDefaultPosition, wxSize(80,40), wxTE_MULTILINE );
     item5->Add( item9, 0, wxGROW|wxALL, 5 );
+
+    item5->AddGrowableCol( 0 );
+
+    item5->AddGrowableCol( 1 );
+
+    item5->AddGrowableRow( 1 );
 
     item0->Add( item5, 1, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -1358,7 +1374,7 @@ wxSizer *wxSTEditorLangKeywordSizer( wxWindow *parent, bool call_fit, bool set_s
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1367,28 +1383,29 @@ wxSizer *wxSTEditorLangStyleSizer( wxWindow *parent, bool call_fit, bool set_siz
     wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
 
     wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
-    item1->AddGrowableCol( 1 );
 
     wxStaticText *item2 = new wxStaticText( parent, ID_TEXT, _("Choose style"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item2, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs3[] = 
+    wxString strs3[] =
     {
-        _("ChoiceItem"), 
-        _("REGULAR EXPRESSION BLAH"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
-        _("Item"), 
+        _("ChoiceItem"),
+        _("REGULAR EXPRESSION BLAH"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
+        _("Item"),
         _("Item")
     };
     wxChoice *item3 = new wxChoice( parent, ID_STEDLG_LANG_STYLE_CHOICE, wxDefaultPosition, wxDefaultSize, 12, strs3, 0 );
     item1->Add( item3, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    item1->AddGrowableCol( 1 );
 
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -1402,7 +1419,7 @@ wxSizer *wxSTEditorLangStyleSizer( wxWindow *parent, bool call_fit, bool set_siz
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
     return item0;
 }
 
@@ -1422,11 +1439,11 @@ wxSizer *wxSTEditorLoadSavePrefsSizer( wxWindow *parent, bool call_fit, bool set
     wxStaticText *item5 = new wxStaticText( parent, ID_TEXT, _("Load Unicode"), wxDefaultPosition, wxDefaultSize, 0 );
     item4->Add( item5, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs6[] = 
+    wxString strs6[] =
     {
-        _("Default"), 
-        _("Ask if unicode"), 
-        _("ASCII always"), 
+        _("Default"),
+        _("Ask if unicode"),
+        _("ASCII always"),
         _("Unicode always")
     };
     wxChoice *item6 = new wxChoice( parent, ID_STEDLG_LOAD_UNICODE_CHOICE, wxDefaultPosition, wxDefaultSize, 4, strs6, 0 );
@@ -1454,7 +1471,80 @@ wxSizer *wxSTEditorLoadSavePrefsSizer( wxWindow *parent, bool call_fit, bool set
         if (call_fit)
             item0->SetSizeHints( parent );
     }
-    
+
+    return item0;
+}
+
+wxSizer *wxSTEditorFileOpenSizer( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxStaticBox *item2 = new wxStaticBox( parent, -1, _("Encoding") );
+    wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxHORIZONTAL );
+
+    wxString *strs3 = (wxString*) NULL;
+    wxChoice *item3 = new wxChoice( parent, ID_STEFILEOPEN_ENCODING_CHOICE, wxDefaultPosition, wxDefaultSize, 0, strs3, 0 );
+    item1->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item4 = new wxCheckBox( parent, ID_STEFILEOPEN_ENCODING_BOM_CHECKBOX, _("BOM"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item4, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+
+    return item0;
+}
+
+wxSizer *wxSTEditorBookmarkSizer( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxStaticBox *item2 = new wxStaticBox( parent, -1, _("Select Bookmark") );
+    wxStaticBoxSizer *item1 = new wxStaticBoxSizer( item2, wxHORIZONTAL );
+
+    wxFlexGridSizer *item3 = new wxFlexGridSizer( 2, 0, 0 );
+
+    wxTreeCtrl *item4 = new wxTreeCtrl( parent, ID_STEDLGS_BOOKMARKS_TREECTRL, wxDefaultPosition, wxSize(400,400), wxTR_MULTIPLE|wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxSUNKEN_BORDER|wxTR_HIDE_ROOT );
+    item3->Add( item4, 1, wxGROW|wxALL, 5 );
+
+    wxFlexGridSizer *item5 = new wxFlexGridSizer( 1, 0, 0 );
+
+    wxButton *item6 = new wxButton( parent, ID_STEDLGS_BOOKMARKS_GOTO_BUTTON, _("&Goto"), wxDefaultPosition, wxDefaultSize, 0 );
+    item5->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxButton *item7 = new wxButton( parent, ID_STEDLGS_BOOKMARKS_DELETE_BUTTON, _("&Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+    item5->Add( item7, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item5->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxButton *item8 = new wxButton( parent, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    item5->Add( item8, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item5->AddGrowableRow( 2 );
+
+    item3->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    item3->AddGrowableCol( 0 );
+
+    item3->AddGrowableRow( 0 );
+
+    item1->Add( item3, 1, wxGROW|wxALIGN_CENTER_HORIZONTAL, 5 );
+
+    item0->Add( item1, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+
     return item0;
 }
 
@@ -1466,7 +1556,7 @@ wxSizer *wxSTEditorLoadSavePrefsSizer( wxWindow *parent, bool call_fit, bool set
 
 wxBitmap wxSTEBitmapsFunc( size_t index )
 {
-    if (index == 0)
+    if (index == (size_t)0)
     {
         /* XPM */
         static const char *xpm_data[] = {
@@ -1485,20 +1575,20 @@ wxBitmap wxSTEBitmapsFunc( size_t index )
         "j c #1A1A1A",
         "k c #4F4F4F",
         "l c #8B8B8B",
-        "n c #949600",
-        "o c #9B9B9B",
+        "m c #949600",
+        "n c #9B9B9B",
         /* pixels */
         "               ",
-        "      oeee     ",
+        "      neee     ",
         "    ldfcccge   ",
         "    ghbbbbhg   ",
-        "   knbbhhbbnk  ",
-        "   abbbaibbnd  ",
+        "   kmbbhhbbmk  ",
+        "   abbbaibbmd  ",
         "   kifafhbbil  ",
         "      jhbbck   ",
-        "      abbnk    ",
+        "      abbmk    ",
         "      kifdl    ",
-        "      gnhnd    ",
+        "      gmhmd    ",
         "      abbhj    ",
         "      abbba    ",
         "      kfgak    ",
@@ -1507,7 +1597,7 @@ wxBitmap wxSTEBitmapsFunc( size_t index )
         wxBitmap bitmap( xpm_data );
         return bitmap;
     }
-    if (index == 1)
+    if (index == (size_t)1)
     {
         /* XPM */
         static const char *xpm_data[] = {

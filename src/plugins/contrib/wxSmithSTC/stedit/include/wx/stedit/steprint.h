@@ -8,17 +8,21 @@
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
+/// @file steprint.h
+/// @brief wxSTEditorPrintout and printing related classes.
+
 #ifndef _STEPRINT_H_
 #define _STEPRINT_H_
 
 #include <wx/print.h>
 
-#include <wx/stedit/stedefs.h>
-#include <wx/stedit/stestyls.h>
+#include "wx/stedit/stedefs.h"
+#include "wx/stedit/stestyls.h"
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPrintout : A subclassed wxPrintout for printing the current
-// document of a wxSTEditor. See usage in the print functions in stedit.cpp. 
+/// @class wxSTEditorPrintout
+/// @brief A subclassed wxPrintout for printing the current document of a wxSTEditor.
+/// See usage in the print functions in stedit.cpp.
 //-----------------------------------------------------------------------------
 #if wxUSE_PRINTING_ARCHITECTURE
 
@@ -31,13 +35,14 @@ public:
     virtual bool OnBeginDocument(int startPage, int endPage);
     virtual void OnEndDocument();
 
-    virtual bool HasPage(int page); // wxWin starts at page 1
+    virtual bool HasPage(int page); ///< wxWidgets starts at page 1
     virtual bool OnPrintPage(int page);
     virtual void GetPageInfo(int *minPage, int *maxPage, int *pageFrom, int *pageTo);
 
-    // Get/Set the wxPrintData/wxPageSetupData that will be used
-    //   if NULL then one will be created on first use and deleted when the
-    //   program exits.
+    /// @name Get/Set the wxPrintData/wxPageSetupData that will be used.
+    /// If NULL then one will be created on first use and deleted when the
+    ///   program exits.
+    /// @{
     static wxPrintData *GetPrintData(bool create_on_demand = false);
     static wxPageSetupData *GetPageSetupData(bool create_on_demand = false);
     static bool GetPrintDataStatic();
@@ -46,6 +51,7 @@ public:
     //   when the program exits
     static void SetPrintData( wxPrintData *printData, bool is_static );
     static void SetPageSetupData( wxPageSetupData *pageSetupData, bool is_static );
+    /// @}
 
 protected :
     bool PrintScaling(wxDC *dc);
@@ -73,11 +79,13 @@ private:
 #endif // wxUSE_PRINTING_ARCHITECTURE
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPrintOptionsDialog - show all the STC print options.
-//   Uses the editor to load the current values if parent is of class
-//   wxSTEditor else use SetXXX before calling ShowModal.
-//   Doesn't change the values of the input editor on Ok (if parent is wxSTEditor).
-//   See wxSTEditor::ShowPrintOptionsDialog() for usage
+/// @class wxSTEditorPrintOptionsDialog
+/// @brief Show all the STC print options.
+///
+/// Uses the editor to load the current values if parent is of class
+///   wxSTEditor else you must call SetXXX before calling ShowModal().
+/// Doesn't change the values of the input editor on Ok (if parent is wxSTEditor).
+/// See wxSTEditor::ShowPrintOptionsDialog() for usage.
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorPrintOptionsDialog: public wxDialog
@@ -86,9 +94,9 @@ public:
     wxSTEditorPrintOptionsDialog(wxWindow *parent);
 
     void SetPrintMagnification( int magnification );
-    void SetPrintColourMode( int colour_mode );        // wxSTC_PRINT_NORMAL...
+    void SetPrintColourMode( int colour_mode );        ///< wxSTC_PRINT_NORMAL...
     void SetPrintWrapMode( bool wrap_lines );
-    void SetPrintLinenumbers( int print_linenumbers ); // enum STE_PrintLinenumbersType
+    void SetPrintLinenumbers( int print_linenumbers ); ///< enum STE_PrintLinenumbersType
 
     int  GetPrintMagnification();
     int  GetPrintColourMode();

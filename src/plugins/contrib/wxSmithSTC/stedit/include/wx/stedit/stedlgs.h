@@ -8,11 +8,13 @@
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
+/// @file stedlgs.h
+/// @brief Most of the dialogs for prefs, styles, langs, and others.
+
 #ifndef _STEDLGS_H_
 #define _STEDLGS_H_
 
-#include <wx/stedit/stedefs.h>
-#include <wx/stedit/stedit.h>
+#include <wx/filedlg.h>
 
 class WXDLLIMPEXP_FWD_CORE wxComboBox;
 class WXDLLIMPEXP_FWD_CORE wxSpinCtrl;
@@ -32,28 +34,29 @@ class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrefDialog;
 #endif
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPrefPageData - data shared by multiple pages shown at once
-//
-// You should create this and send it to all the pages you create.
-//  (see how the wxSTEditorPrefDialog handles it)
+/// @class wxSTEditorPrefPageData
+/// @brief Data shared by multiple pages shown at once.
+///
+/// You should create this and send it to all the pages you create.
+/// See how the wxSTEditorPrefDialog handles it.
 //-----------------------------------------------------------------------------
 
-// What pages to show in the wxSTEditorPrefDialog
+/// What pages to show in the wxSTEditorPrefDialog.
 enum STE_PrefPageTypes
 {
-    STE_PREF_PAGE_SHOW_VIEW      = 0x0001, // view preferences
-    STE_PREF_PAGE_SHOW_TABSEOL   = 0x0002, // tabs and eol preferences
-    STE_PREF_PAGE_SHOW_FOLDWRAP  = 0x0004, // folding and wrapping preferences
-    STE_PREF_PAGE_SHOW_PRINT     = 0x0008, // printing preferences
-    STE_PREF_PAGE_SHOW_LOADSAVE  = 0x0010, // loading and saving preferences
-    STE_PREF_PAGE_SHOW_HIGHLIGHT = 0x0020, // highlighting preferences
-    STE_PREF_PAGE_SHOW_STYLES    = 0x0040, // styles colouring
-    STE_PREF_PAGE_SHOW_LANGS     = 0x0080, // language selection
+    STE_PREF_PAGE_SHOW_VIEW      = 0x0001, ///< View preferences.
+    STE_PREF_PAGE_SHOW_TABSEOL   = 0x0002, ///< Tabs and eol preferences.
+    STE_PREF_PAGE_SHOW_FOLDWRAP  = 0x0004, ///< Folding and wrapping preferences.
+    STE_PREF_PAGE_SHOW_PRINT     = 0x0008, ///< Printing preferences.
+    STE_PREF_PAGE_SHOW_LOADSAVE  = 0x0010, ///< Loading and saving preferences.
+    STE_PREF_PAGE_SHOW_HIGHLIGHT = 0x0020, ///< Highlighting preferences.
+    STE_PREF_PAGE_SHOW_STYLES    = 0x0040, ///< Styles colouring.
+    STE_PREF_PAGE_SHOW_LANGS     = 0x0080, ///< Language selection.
 
-    STE_PREF_PAGE_SHOW_ALL       = 0x00FF
+    STE_PREF_PAGE_SHOW_ALL       = 0x00FF  ///< Show all the preference pages.
 };
 
-// Internal use ref data for the wxSTEditorPrefPageData (always created)
+/// Internal use ref data for the wxSTEditorPrefPageData (always created)
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefPageData_RefData : public wxObjectRefData
 {
 public:
@@ -83,13 +86,13 @@ public:
     wxSTEditorStyles& GetStyles() const;
     wxSTEditorLangs&  GetLangs() const;
 
-    // The language selection for the "current" editor
-    int GetLanguageId() const;
+    /// The language selection for the "current" editor.
+    int  GetLanguageId() const;
     void SetLanguageId(int lang_id);
-    // Get/Set the "current" editor to update the languange selection for
+    /// Get the "current" editor to update the languange selection for.
     wxSTEditor* GetEditor() const;
     void SetEditor(wxSTEditor* editor);
-    // Get the options this was created with, enum STE_PrefPageTypes
+    /// Get the options this was created with, enum STE_PrefPageTypes.
     int  GetOptions() const;
     bool HasOption(int option) const { return (GetOptions() & option) != 0; }
     void SetOptions(int options);
@@ -109,11 +112,12 @@ public:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPrefDialogPageBase - base class for prefs/styles/langs pages
-//
-// It has some generic functions that map from Ok, Apply, Reset buttons
-// The data to be manipulated is GetPrefData(), the original is GetEditorPrefData()
-// When Apply is called, the GetPrefData is pushed into the GetEditorPrefData
+/// @class wxSTEditorPrefDialogPageBase
+/// @brief Base class for prefs/styles/langs pages.
+///
+/// It has some generic functions that map from Ok, Apply, Reset buttons.
+/// The data to be manipulated is GetPrefData(), the original is GetEditorPrefData().
+/// When Apply is called, the GetPrefData() is pushed into the GetEditorPrefData().
 //-----------------------------------------------------------------------------
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialogPageBase : public wxPanel
 {
@@ -128,18 +132,18 @@ public:
 
     virtual ~wxSTEditorPrefDialogPageBase() {}
 
-    virtual void GetControlValues() = 0; // set pref values from GUI values
-    virtual void SetControlValues() = 0; // set GUI values from pref values
-    virtual void Apply() = 0;            // apply values from GUI to prefs
-    virtual void Reset() = 0;            // reset GUI values to pref defaults
+    virtual void GetControlValues() = 0; ///< Set pref values from GUI values.
+    virtual void SetControlValues() = 0; ///< Set GUI values from pref values.
+    virtual void Apply() = 0;            ///< Apply values from GUI to prefs.
+    virtual void Reset() = 0;            ///< Reset GUI values to pref defaults.
 
-    virtual bool IsModified() { return true; } // is it currently modified
+    virtual bool IsModified() { return true; } ///< Is it currently modified.
 
-    // Get the pref data that will be modified by the GUI
+    /// Get the pref data that will be modified by the GUI.
     wxSTEditorPrefPageData GetPrefData() const { return m_prefData; }
-    // Get the original pref data that was used to init with
-    //   Typically when Apply is called, the GetPrefData() is pushed onto the
-    //   GetEditorPrefData() setting the values for the editor.
+    /// Get the original pref data that was used to init with.
+    /// Typically when Apply is called, the GetPrefData() is pushed onto the
+    ///   GetEditorPrefData() setting the values for the editor.
     wxSTEditorPrefPageData GetEditorPrefData() const { return m_editorPrefData; }
 
     // implementation
@@ -156,10 +160,11 @@ private:
 };
 
 //----------------------------------------------------------------------------
-// wxSTEditorPrefDialogPagePrefs - blank page that maps control types
-//  to enum STE_PrefType.
-//  GetValue/SetValue is called on the control after determining type.
-//  wxCheckBox = bool, wxSpinCtrl = int, wxComboBox/wxChoice/wxListBox = int
+/// @class wxSTEditorPrefDialogPagePrefs
+/// @brief Blank page that maps control types to enum STE_PrefType.
+///
+/// GetValue/SetValue is called on the control after determining type.
+/// wxCheckBox = bool, wxSpinCtrl = int, wxComboBox/wxChoice/wxListBox = int
 //----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialogPagePrefs : public wxSTEditorPrefDialogPageBase
@@ -188,7 +193,8 @@ private:
 };
 
 //----------------------------------------------------------------------------
-// wxSTEditorPrefDialogPageStyles - adjust all the styles, including gui
+/// @class wxSTEditorPrefDialogPageStyles
+/// @brief Adjust all the styles, including gui.
 //----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialogPageStyles : public wxSTEditorPrefDialogPageBase
@@ -259,7 +265,8 @@ private:
 };
 
 //----------------------------------------------------------------------------
-// wxSTEditorPrefDialogPageLangs - show user languages
+/// @class wxSTEditorPrefDialogPageLangs
+/// @brief Show user languages.
 //----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialogPageLangs : public wxSTEditorPrefDialogPageBase
@@ -311,14 +318,14 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPrefDialog
-//
-// A dialog to show notebook pages for the prefs, styles, langs. They can be
-// !IsOk which will not make that page shown, but at least one must be valid.
-//
-// If the parent is derived from a wxSTEditor then you can change the
-// language of the editor.
-// The Apply/Ok button updates all editors attached to the prefs/styles/langs.
+/// @class wxSTEditorPrefDialog
+/// @brief A dialog to show notebook pages for the prefs, styles, langs.
+///
+/// They can be !IsOk() which will not make that page shown, but at least one must be valid.
+///
+/// If the parent is derived from a wxSTEditor then you can change the
+/// language of the editor.
+/// The Apply/Ok button updates all editors attached to the prefs/styles/langs.
 //-----------------------------------------------------------------------------
 class WXDLLIMPEXP_STEDIT wxSTEditorPrefDialog : public wxDialog
 {
@@ -339,9 +346,9 @@ public:
 
     virtual ~wxSTEditorPrefDialog();
 
-    // Get the data that they set
+    /// Get the data that they set
     wxSTEditorPrefPageData GetPrefData() const       { return m_prefData; }
-    // Get the data originally sent in
+    /// Get the data originally sent in
     wxSTEditorPrefPageData GetEditorPrefData() const { return m_editorPrefData; }
 
     // -----------------------------------------------------------------------
@@ -350,7 +357,7 @@ public:
     void OnCancel(wxCommandEvent& event);
     void OnOk(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
-    void OnNotebookPageChanged(wxNotebookEvent &event);
+    void OnNotebookPageChanged(wxNotebookEvent& event);
     void OnUpdateUIApply(wxUpdateUIEvent& event);
 
 private:
@@ -368,26 +375,42 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorPropertiesDialog - display info about editor session
-//
-// File name, size, modified time, language, # lines/chars/words/tabs, LF type
+/// @class wxSTEditorPropertiesDialog
+/// @brief Display info about editor session.
+///
+/// File name, size, modified time, language, # lines/chars/words/tabs, LF type.
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorPropertiesDialog : public wxDialog
 {
 public:
-    wxSTEditorPropertiesDialog(wxSTEditor *editor,
-                               const wxString& title,
-                               long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
+    wxSTEditorPropertiesDialog(wxSTEditor* editor);
+
+    bool Create(wxWindow* parent,
+                const wxString& title,
+                long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
+
+    virtual bool TransferDataFromWindow();
+
+    bool IsEditable() const { return m_editor->IsEditable(); }
 
 private:
+    wxSTEditor* m_editor;
+    int         m_encoding;
+    bool        m_bom;
+
+    void OnUpdateNeedEditable(wxUpdateUIEvent&);
+    void OnUpdateBomCheckBox(wxUpdateUIEvent&);
+    DECLARE_EVENT_TABLE()
     DECLARE_ABSTRACT_CLASS(wxSTEditorPropertiesDialog);
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorWindowsDialog - dialog to manage opened windows in notebook
-//   The user can activate, save, close notebook pages.
-//   The dialog is shown modal and closes itself.
+/// @class wxSTEditorWindowsDialog
+/// @brief Dialog to manage opened windows in notebook.
+///
+/// The user can activate, save, close notebook pages.
+/// The dialog is shown modal and closes itself.
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorWindowsDialog : public wxDialog
@@ -405,7 +428,7 @@ public:
     void OnButton(wxCommandEvent& event);
 
     wxSTEditorNotebook* m_notebook;
-    wxListBox* m_listBox;
+    wxListBox*          m_listBox;
 
 private:
     DECLARE_EVENT_TABLE()
@@ -413,46 +436,89 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorInsertTextDialog - get values from the user for the
-//   wxSTEditor::InsertTextAtCol() function.
-//
-// You can then use the values from the dialog to call the
-//   wxSTEditor::InsertTextAtCol yourself.
+/// @class wxSTEditorBookmarkDialog
+/// @brief Dialog to manage bookmarks.
+///
+/// The user can goto or delete bookmarks.
+/// The dialog is shown modal and closes itself.
 //-----------------------------------------------------------------------------
 
-enum STE_InsertText_Type
+class WXDLLIMPEXP_STEDIT wxSTEditorBookmarkDialog : public wxDialog
 {
-    STE_INSERT_TEXT_PREPEND,
-    STE_INSERT_TEXT_APPEND,
-    STE_INSERT_TEXT_ATCOLUMN,
-    STE_INSERT_TEXT_SURROUND
+public:
+    wxSTEditorBookmarkDialog(wxWindow *win,
+                             const wxString& title = _("Bookmarks"),
+                             long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
+
+    virtual ~wxSTEditorBookmarkDialog();
+
+    // -----------------------------------------------------------------------
+    // implementation
+
+    bool GetItemInfo(const wxTreeItemId& id, long& notebook_page, long& bookmark_line);
+
+    void UpdateTreeCtrl();
+    void UpdateButtons();
+    void OnTreeCtrl(wxTreeEvent& event);
+    void OnButton(wxCommandEvent& event);
+
+    wxSTEditorNotebook* m_notebook;
+    wxSTEditor*         m_editor;
+    wxTreeCtrl*         m_treeCtrl;
+
+    static wxPoint ms_dialogPosition;
+    static wxSize  ms_dialogSize;
+
+private:
+    DECLARE_EVENT_TABLE()
+    DECLARE_ABSTRACT_CLASS(wxSTEditorBookmarkDialog);
 };
+
+//-----------------------------------------------------------------------------
+/// @class wxSTEditorInsertTextDialog
+/// @brief Provides a UI for the wxSTEditor::InsertTextAtCol() function.
+//-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorInsertTextDialog: public wxDialog
 {
 public:
-    wxSTEditorInsertTextDialog(wxWindow* parent,
+    /// Create the dialog and call ShowModal(), the editor will be updated
+    /// if the user clicks Ok and wxID_OK is returned from ShowModal().
+    wxSTEditorInsertTextDialog(wxSTEditor* editor,
                                long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
 
     virtual ~wxSTEditorInsertTextDialog();
 
-    // Get the type of insert desired
-    STE_InsertText_Type GetInsertType() const { return m_type; }
-    // Get the column to insert the text at
-    int GetColumn() const { return m_col-1; }
-    // text to be inserted
-    wxString GetPrependText() const { return m_prependString; }
-    wxString GetAppendText() const  { return m_appendString; }
-
-    // Set the text to display to the user to be formatted
-    void SetText(const wxString& text);
-    // Get the text in the editor currently (as user left it)
-    wxString GetText();
-    // format the text that you sent in with SetText using values in the gui
-    void FormatText();
-
     // -----------------------------------------------------------------------
     // implementation
+
+    /// Setup this dialog from the editor
+    bool InitFromEditor();
+    /// If the user pressed wxID_OK, call this to replace the
+    /// text in the editor with the settings in the dialog.
+    /// Make sure that the selection in the editor has NOT changed
+    /// since the call to InitFromEditor(editor).
+    bool InsertIntoEditor();
+
+    /// How to insert text into an editor.
+    enum STE_InsertText_Type
+    {
+        STE_INSERT_TEXT_PREPEND,
+        STE_INSERT_TEXT_APPEND,
+        STE_INSERT_TEXT_ATCOLUMN,
+        STE_INSERT_TEXT_SURROUND
+    };
+
+    /// Get the column to insert the text at.
+    int GetColumn() const { return m_column-1; }
+
+    /// Set the text to display to the user to be formatted.
+    void SetText(const wxString& text);
+    /// Get the text in the editor currently (as user left it).
+    wxString GetText();
+    /// Format the text that you sent in with SetText using values in the gui.
+    void FormatText();
+
     void OnButton(wxCommandEvent& event);
     void OnMenu(wxCommandEvent& event);
     void OnRadioButton(wxCommandEvent& event);
@@ -463,19 +529,24 @@ public:
     STE_InsertText_Type RadioIdToType( wxWindowID id ) const;
     wxWindowID GetSelectedRadioId() const;
 
+    wxSTEditor*   m_editor;
+    STE_TextPos   m_editor_sel_start;
+    STE_TextPos   m_editor_sel_end;
+
     wxComboBox*   m_prependCombo;
     wxComboBox*   m_appendCombo;
     wxStaticText* m_prependText;
     wxMenu*       m_insertMenu;
     wxSTEditor*   m_testEditor;
 
-    STE_InsertText_Type m_type;
-    int      m_col;
-    wxString m_prependString;
-    wxString m_appendString;
-    int      m_prepend_insert_pos;
-    int      m_append_insert_pos;
-    wxString m_initText;
+    STE_InsertText_Type m_insert_type;
+    int       m_column;
+    wxString  m_prependString;
+    wxString  m_appendString;
+    wxTextPos m_prepend_insert_pos;
+    wxTextPos m_append_insert_pos;
+    wxString  m_initText;
+    bool      m_created;
 
     static int sm_radioID;                  // last set radio button Window ID
     static int sm_spinValue;                // last set column for spinctrl
@@ -489,20 +560,29 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorColumnizeDialog - insert text at specified col
+/// @class wxSTEditorColumnizeDialog
+/// @brief Insert text at specified column.
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorColumnizeDialog : public wxDialog
 {
 public:
+    wxSTEditorColumnizeDialog() : wxDialog() { Init(); }
     wxSTEditorColumnizeDialog(wxWindow* parent,
-                              long style = wxDEFAULT_DIALOG_STYLE_RESIZE|wxMAXIMIZE_BOX);
+                              long style = wxDEFAULT_DIALOG_STYLE_RESIZE|wxMAXIMIZE_BOX) : wxDialog()
+    {
+        Init();
+        Create(parent, style);
+    }
 
-    // Set the text to display to the user to be formatted
+    bool Create(wxWindow* parent,
+                long style = wxDEFAULT_DIALOG_STYLE_RESIZE|wxMAXIMIZE_BOX);
+
+    /// Set the text to display to the user to be formatted.
     void SetText(const wxString& text);
-    // Get the text in the editor currently (as user left it)
+    /// Get the text in the editor currently (as user left it).
     wxString GetText();
-    // format the text that you sent in with SetText using values in the gui
+    /// Format the text that you sent in with SetText() using values in the gui.
     void FormatText();
 
     wxSTEditor* GetTestEditor() { return m_testEditor; }
@@ -531,5 +611,50 @@ private:
     DECLARE_EVENT_TABLE()
     DECLARE_ABSTRACT_CLASS(wxSTEditorColumnizeDialog);
 };
+
+//-----------------------------------------------------------------------------
+/// @class wxSTEditorFileDialog
+/// @brief A specialized wxFileDialog for the wxSTEditor.
+//-----------------------------------------------------------------------------
+
+#if (wxVERSION_NUMBER >= 2903)
+  //#define STE_FILEOPENEXTRA 1 // trac.wxwidgets.org/ticket/13611
+    #define STE_FILEOPENEXTRA 0
+#else
+    #define STE_FILEOPENEXTRA 0
+#endif
+
+class WXDLLIMPEXP_STEDIT wxSTEditorFileDialog : public wxFileDialog
+{
+public:
+    wxSTEditorFileDialog(wxWindow* parent,
+                         const wxString& message = wxFileSelectorPromptStr,
+                         const wxString& defaultDir = wxEmptyString,
+                         const wxString& wildCard = wxFileSelectorDefaultWildcardStr,
+                         long style = wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+    virtual int ShowModal();
+
+    static wxString m_encoding;
+    static bool m_file_bom; // wxFD_SAVE only
+
+private:
+    DECLARE_CLASS(wxSTEditorFileDialog)
+};
+
+//-----------------------------------------------------------------------------
+/// wxSTEditorStdDialogButtonSizer
+/// @brief A specialized wxStdDialogButtonSizer for the wxSTEditor that
+///        understands wxOK|wxCANCEL|wxAPPLY.
+//-----------------------------------------------------------------------------
+
+WXDLLIMPEXP_STEDIT wxStdDialogButtonSizer* wxSTEditorStdDialogButtonSizer(wxWindow* parent, long flags);
+
+//-----------------------------------------------------------------------------
+/// wxSTEditorAboutDialog
+/// @brief A specialized wxAboutBox for the wxSTEditor.
+//-----------------------------------------------------------------------------
+
+WXDLLIMPEXP_STEDIT void wxSTEditorAboutDialog(wxWindow* parent);
 
 #endif // _STEDLGS_H_

@@ -11,9 +11,11 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/stemenum.h>
-#include <wx/stedit/stedit.h>
-#include <wx/stedit/steart.h>
+#include <wx/srchctrl.h>
+
+#include "wx/stedit/stemenum.h"
+#include "wx/stedit/stedit.h"
+#include "wx/stedit/steart.h"
 #include "wxext.h"
 
 //-----------------------------------------------------------------------------
@@ -22,7 +24,7 @@
 
 wxSTEditorMenuManager::~wxSTEditorMenuManager()
 {
-   delete m_accelerator_array;
+    delete m_accelEntryArray;
 }
 
 void wxSTEditorMenuManager::Init()
@@ -31,91 +33,128 @@ void wxSTEditorMenuManager::Init()
     m_menuOptionTypes = 0;
     m_menuItemTypes.Add(0, STE_MENU_HELP_MENU+1);
     m_toolBarToolTypes = 0;
-    m_accelerator_array = new AcceleratorArray();
-    InitAcceleratorArray();
+
+    m_accels_dirty = true;
+    m_accelEntryArray = new wxArrayAcceleratorEntry();
 }
 
-void wxSTEditorMenuManager::InitAcceleratorArray()
+void wxSTEditorMenuManager::InitAcceleratorArray() const
 {
-    // TODO: filter accelerators
+    // No need to recreate if nothing has changed.
+    if (!m_accels_dirty) return;
 
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_NEW));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_OPEN));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_CUT));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_COPY));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_PASTE));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_SAVE));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_EXIT));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_FIND));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_PRINT));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_PREVIEW));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_SELECTALL));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_UNDO));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_REDO));
-    m_accelerator_array->Add(wxGetStockAcceleratorEx(wxID_SAVEAS));
+    // After running this function, they're all created.
+    m_accels_dirty = false;
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_FULLSCREEN, ID_STE_SHOW_FULLSCREEN));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_ALT, WXK_RETURN, ID_STE_PROPERTIES));
+    if (m_accelEntryArray->GetCount() > 0)
+        m_accelEntryArray->Clear();
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'W', ID_STN_CLOSE_PAGE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'W', ID_STN_CLOSE_ALL));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, WXK_F4, ID_STN_CLOSE_PAGE));
+    // File menu items --------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_FILE_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_NEW));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_OPEN));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_SAVE));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_SAVEAS));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_PRINT));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_PREVIEW));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_EXIT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_ALT,                  WXK_RETURN, ID_STE_PROPERTIES));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'W',        ID_STN_CLOSE_PAGE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'W',        ID_STN_CLOSE_ALL));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 WXK_F4,     ID_STN_CLOSE_PAGE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'A',        ID_STN_SAVE_ALL));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'A', ID_STN_SAVE_ALL));
-   
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'V', ID_STE_PASTE_NEW));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_ALT, 'V', ID_STE_PASTE_RECT));
+    // Edit menu items --------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_EDIT_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_UNDO));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_REDO));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_CUT));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_COPY));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_PASTE));
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_SELECTALL));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'V', ID_STE_PASTE_NEW));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_ALT,   'V', ID_STE_PASTE_RECT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'L', ID_STE_LINE_CUT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'T', ID_STE_LINE_COPY));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'C', ID_STE_COPYPATH));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'L', ID_STE_LINE_DELETE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 ' ', ID_STE_COMPLETEWORD));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'T', ID_STE_LINE_TRANSPOSE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'D', ID_STE_LINE_DUPLICATE));
+      //m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'R', ID_STE_PREF_SELECTION_MODE));
+    #ifdef __UNIX__
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'C', ID_STE_COPY_PRIMARY));
+    #endif // __UNIX__
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'L', ID_STS_SPLIT_HORIZ));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'T', ID_STS_SPLIT_VERT));
+    // View menu items  -------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_VIEW_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_FULLSCREEN, ID_STE_SHOW_FULLSCREEN));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,   WXK_F10,        ID_STE_VIEW_NONPRINT));
+    }
 
-  //m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'R', ID_STE_PREF_SELECTION_MODE));
+    // Search menu items  -------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_SEARCH_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_FIND));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,   'H',    wxID_REPLACE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F3, ID_STE_FIND_NEXT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT , WXK_F3, ID_STE_FIND_PREV));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F2, ID_STE_FIND_DOWN));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,   'G',    ID_STE_GOTO_LINE));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'L', ID_STE_LINE_CUT));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'T', ID_STE_LINE_COPY));
+    // Insert menu items  -------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_INSERT_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL, 'I', ID_STE_INSERT_TEXT));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'L', ID_STE_LINE_DELETE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'T', ID_STE_LINE_TRANSPOSE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'D', ID_STE_LINE_DUPLICATE));
+    // Tools menu items  -------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_TOOLS_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'U', ID_STE_UPPERCASE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'U', ID_STE_LOWERCASE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'J', ID_STE_LINES_JOIN));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'K', ID_STE_LINES_SPLIT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_ALT,   'W', ID_STE_TRAILING_WHITESPACE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'W', ID_STE_REMOVE_CHARSAROUND));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F3, ID_STE_FIND_NEXT));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT , WXK_F3, ID_STE_FIND_PREV));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F2, ID_STE_FIND_DOWN));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'H', wxID_REPLACE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'G', ID_STE_GOTO_LINE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, ' ', ID_STE_COMPLETEWORD));
+    // Bookmark menu items  ---------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_BOOKMARK_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F4, ID_STE_BOOKMARK_TOGGLE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT,  WXK_F5, ID_STE_BOOKMARK_FIRST));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F5, ID_STE_BOOKMARK_PREVIOUS));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F6, ID_STE_BOOKMARK_NEXT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT,  WXK_F6, ID_STE_BOOKMARK_LAST));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT,  WXK_F4, ID_STE_BOOKMARK_CLEAR));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'U', ID_STE_UPPERCASE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'U', ID_STE_LOWERCASE));
+    // Preference menu items  -------------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_PREFS_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL, WXK_F9, ID_STE_PREFERENCES));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'J', ID_STE_LINES_JOIN));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'K', ID_STE_LINES_SPLIT));
+    // Window menu items  -----------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_WINDOW_MENU))
+    {
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'L',    ID_STS_SPLIT_HORIZ));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'T',    ID_STS_SPLIT_VERT));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_SHIFT,                WXK_F8, ID_STN_WIN_PREVIOUS));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_NORMAL,               WXK_F8, ID_STN_WIN_NEXT));
+    }
 
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_ALT, 'W', ID_STE_TRAILING_WHITESPACE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'W', ID_STE_REMOVE_CHARSAROUND));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, 'I', ID_STE_INSERT_TEXT));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_F8, ID_STN_WIN_PREVIOUS));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F8, ID_STN_WIN_NEXT));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F4, ID_STE_BOOKMARK_TOGGLE));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_F5, ID_STE_BOOKMARK_FIRST));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F5, ID_STE_BOOKMARK_PREVIOUS));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F6, ID_STE_BOOKMARK_NEXT));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_F6, ID_STE_BOOKMARK_LAST));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_F4, ID_STE_BOOKMARK_CLEAR));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, WXK_F10, ID_STE_VIEW_NONPRINT));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'C', ID_STE_COPYPATH));
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_SHIFT, WXK_NUMPAD_ADD, ID_STE_COPYPATH));
-
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD, WXK_F9, ID_STE_PREFERENCES));
-
-#ifdef __UNIX__
-    m_accelerator_array->Add(wxAcceleratorEntry(wxACCEL_CMD | wxACCEL_SHIFT, 'C', ID_STE_COPY_PRIMARY));
-#endif // __UNIX__
+    // Help menu items  -----------------------------------------------------
+    if (GetMenuItemTypes(STE_MENU_HELP_MENU))
+    {
+    }
 }
 
 void wxSTEditorMenuManager::CreateForSinglePage()
@@ -257,12 +296,12 @@ wxMenu* wxSTEditorMenuManager::CreateNotebookPopupMenu(wxMenu *menu_) const
     wxMenu *menu = menu_;
     if (!menu) menu = new wxMenu;
 
-    menu->Append(wxID_NEW,  _("&Add empty page"));
-    menu->Append(wxID_OPEN, _("&Open file(s)..."));
+    menu->Append(wxID_NEW,         _("&Add empty page"));
+    menu->Append(wxID_OPEN,        _("&Open file(s)..."));
     menu->Append(ID_STN_SAVE_ALL,  _("&Save all files"));
 
     menu->AppendSeparator();
-    // These are empty and are filled by wxSTEditorNotebook::UpdateMenuItems
+    // These are empty and are filled by wxSTEditorNotebook::UpdateMenuItems()
     wxMenu *gotoMenu  = new wxMenu;
     wxMenu *closeMenu = new wxMenu;
 
@@ -271,9 +310,10 @@ wxMenu* wxSTEditorMenuManager::CreateNotebookPopupMenu(wxMenu *menu_) const
 
     menu->Append(ID_STN_MENU_GOTO,  _("Goto page"), gotoMenu);
     menu->AppendSeparator();
-    menu->Append(ID_STN_CLOSE_PAGE, _("Close current page"));
-    menu->Append(ID_STN_CLOSE_ALL,  _("Close all pages..."));
-    menu->Append(ID_STN_MENU_CLOSE, _("Close page"), closeMenu);
+    menu->Append(ID_STN_CLOSE_PAGE,       _("Close current page"));
+    menu->Append(ID_STN_CLOSE_ALL,        _("Close all pages..."));
+    menu->Append(ID_STN_CLOSE_ALL_OTHERS, _("Close all other pages"));
+    menu->Append(ID_STN_MENU_CLOSE,       _("Close page"), closeMenu);
     menu->AppendSeparator();
     menu->Append(ID_STN_WINDOWS,    _("&Windows..."), _("Manage opened windows"));
 
@@ -320,7 +360,7 @@ bool wxSTEditorMenuManager::CreateMenuBar(wxMenuBar *menuBar, bool for_frame) co
     return menuBar->GetMenuCount() > menu_count;
 }
 
-static wxString wxToolBarTool_MakeShortHelp(const AcceleratorArray& accel, int id)
+static wxString wxToolBarTool_MakeShortHelp(const wxArrayAcceleratorEntry& accel, int id)
 {
     return wxToolBarTool_MakeShortHelp(wxGetStockLabelEx(id, wxSTOCK_PLAINTEXT), accel, id);
 }
@@ -328,76 +368,75 @@ static wxString wxToolBarTool_MakeShortHelp(const AcceleratorArray& accel, int i
 bool wxSTEditorMenuManager::CreateToolBar(wxToolBar *tb) const
 {
     wxCHECK_MSG(tb, false, wxT("Invalid toolbar"));
+
+    InitAcceleratorArray(); // ALWAYS call this before accessing m_accelEntryArray
+
     size_t tools_count = tb->GetToolsCount();
 
     if (HasToolbarToolType(STE_TOOLBAR_FILE_NEW))
     {
-        tb->AddTool(wxID_NEW, wxEmptyString, STE_ARTBMP(wxART_STEDIT_NEW), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_NEW), _("Clear editor for new file"));
+        tb->AddTool(wxID_NEW, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_NEW), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_NEW), _("Clear editor for new file"));
     }
     if (HasToolbarToolType(STE_TOOLBAR_FILE_OPEN))
     {
-        tb->AddTool(wxID_OPEN, wxEmptyString, STE_ARTBMP(wxART_STEDIT_OPEN), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_OPEN), _("Open a file to edit"));
+        tb->AddTool(wxID_OPEN, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_OPEN), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_OPEN), _("Open a file to edit"));
     }
     if (HasToolbarToolType(STE_TOOLBAR_FILE_SAVE))
     {
-        tb->AddTool(wxID_SAVE,   wxEmptyString, STE_ARTBMP(wxART_STEDIT_SAVE  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_SAVE  ), _("Save current file"));
-        tb->AddTool(wxID_SAVEAS, wxEmptyString, STE_ARTBMP(wxART_STEDIT_SAVEAS), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_SAVEAS), _("Save to a specific filename"));
+        tb->AddTool(wxID_SAVE,   wxEmptyString, STE_ARTTOOL(wxART_STEDIT_SAVE  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_SAVE  ), _("Save current file"));
+        tb->AddTool(wxID_SAVEAS, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_SAVEAS), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_SAVEAS), _("Save to a specific filename"));
         tb->EnableTool(wxID_SAVE, false);
 
         if (HasMenuOptionType(STE_MENU_NOTEBOOK))
         {
-            tb->AddTool(ID_STN_SAVE_ALL, wxEmptyString, STE_ARTBMP(wxART_STEDIT_SAVEALL), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Save all files"), *m_accelerator_array, ID_STN_SAVE_ALL), _("Save all open files"));
+            tb->AddTool(ID_STN_SAVE_ALL, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_SAVEALL), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Save all files"), *m_accelEntryArray, ID_STN_SAVE_ALL), _("Save all open files"));
             tb->EnableTool(ID_STN_SAVE_ALL, false);
         }
-    }
-    if (HasToolbarToolType(STE_TOOLBAR_EDIT_CUTCOPYPASTE))
-    {
-        if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(wxID_CUT,    wxEmptyString, STE_ARTBMP(wxART_STEDIT_CUT  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_CUT  ), _("Cut selected text"));
-        tb->AddTool(wxID_COPY,   wxEmptyString, STE_ARTBMP(wxART_STEDIT_COPY ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_COPY ), _("Copy selected text"));
-        tb->AddTool(wxID_PASTE,  wxEmptyString, STE_ARTBMP(wxART_STEDIT_PASTE), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_PASTE), _("Paste text at cursor"));
-    }
-    if (HasToolbarToolType(STE_TOOLBAR_EDIT_UNDOREDO))
-    {
-        if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(wxID_UNDO, wxEmptyString, STE_ARTBMP(wxART_STEDIT_UNDO), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_UNDO), _("Undo last editing"));
-        tb->AddTool(wxID_REDO, wxEmptyString, STE_ARTBMP(wxART_STEDIT_REDO), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_REDO), _("Redo last undo"));
-    }
-    if (HasToolbarToolType(STE_TOOLBAR_EDIT_FINDREPLACE))
-    {
-        if (tb->GetToolsCount()) tb->AddSeparator();
-        //tb->AddTool(ID_STE_FIND_DOWN, _("Search direction"), STE_ARTBMP(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_CHECK, _("Search direction"), _("Search direction for next occurance in document"));
-        tb->AddTool(wxID_FIND       , wxEmptyString, STE_ARTBMP(wxART_STEDIT_FIND    ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_FIND), _("Find text in document..."));
-        tb->AddTool(ID_STE_FIND_NEXT, wxEmptyString, STE_ARTBMP(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find next"), *m_accelerator_array, ID_STE_FIND_NEXT), _("Find next occurance in document"));
-        tb->AddTool(ID_STE_FIND_PREV, wxEmptyString, STE_ARTBMP(wxART_STEDIT_FINDUP  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find previous"), *m_accelerator_array, ID_STE_FIND_PREV), _("Find previous occurance in document"));
-        tb->AddTool(wxID_REPLACE    , wxEmptyString, STE_ARTBMP(wxART_STEDIT_REPLACE ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_REPLACE), _("Replace text in document"));
-    }
-    if (HasToolbarToolType(STE_TOOLBAR_EDIT_FINDCOMBO))
-    {
-        if (tb->GetToolsCount()) tb->AddSeparator();
-        wxComboBox *combo = new wxComboBox(tb, ID_STE_TOOLBAR_FIND_COMBO);
-        tb->AddControl(combo);
-    }
-    if (HasToolbarToolType(STE_TOOLBAR_BOOKMARK))
-    {
-        if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(ID_STE_BOOKMARK_TOGGLE,   wxEmptyString, STE_ARTBMP(wxART_ADD_BOOKMARK), wxNullBitmap, wxITEM_NORMAL, _("Toggle bookmark"), _("Toggle a bookmark on cursor line"));
-        tb->AddTool(ID_STE_BOOKMARK_FIRST,    wxEmptyString, STE_ARTBMP(wxART_GO_UP),        wxNullBitmap, wxITEM_NORMAL, _("First bookmark"),  _("Goto first bookmark"));
-        tb->AddTool(ID_STE_BOOKMARK_PREVIOUS, wxEmptyString, STE_ARTBMP(wxART_GO_BACK),      wxNullBitmap, wxITEM_NORMAL, _("Previous bookmark"), _("Goto previous bookmark"));
-        tb->AddTool(ID_STE_BOOKMARK_NEXT,     wxEmptyString, STE_ARTBMP(wxART_GO_FORWARD),   wxNullBitmap, wxITEM_NORMAL, _("Next bookmark"),   _("Goto next bookmark"));
-        tb->AddTool(ID_STE_BOOKMARK_LAST,     wxEmptyString, STE_ARTBMP(wxART_GO_DOWN),      wxNullBitmap, wxITEM_NORMAL, _("Last bookmark"),   _("Goto last bookmark"));
-        tb->AddTool(ID_STE_BOOKMARK_CLEAR,    wxEmptyString, STE_ARTBMP(wxART_DEL_BOOKMARK), wxNullBitmap, wxITEM_NORMAL, _("Clear bookmarks"), _("Clear all bookmarks"));
     }
     if (HasToolbarToolType(STE_TOOLBAR_PRINT))
     {
         if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(wxID_PRINT  , wxEmptyString, STE_ARTBMP(wxART_STEDIT_PRINT)       , wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_PRINT), wxGetStockHelpString(wxID_PRINT));
-        tb->AddTool(wxID_PREVIEW, wxEmptyString, STE_ARTBMP(wxART_STEDIT_PRINTPREVIEW), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_PREVIEW), wxGetStockHelpString(wxID_PREVIEW));
+        tb->AddTool(wxID_PRINT  , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PRINT)       , wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PRINT), wxGetStockHelpString(wxID_PRINT));
+        tb->AddTool(wxID_PREVIEW, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PRINTPREVIEW), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PREVIEW), wxGetStockHelpString(wxID_PREVIEW));
     }
-    if (HasToolbarToolType(STE_TOOLBAR_EXIT))
+    if (HasToolbarToolType(STE_TOOLBAR_EDIT_CUTCOPYPASTE))
     {
         if (tb->GetToolsCount()) tb->AddSeparator();
-        tb->AddTool(wxID_EXIT, wxEmptyString, STE_ARTBMP(wxART_STEDIT_EXIT), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelerator_array, wxID_EXIT), wxGetStockHelpString(wxID_EXIT));//, wxSTOCK_PLAINTEXT));
+        tb->AddTool(wxID_CUT,    wxEmptyString, STE_ARTTOOL(wxART_STEDIT_CUT  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_CUT  ), _("Cut selected text"));
+        tb->AddTool(wxID_COPY,   wxEmptyString, STE_ARTTOOL(wxART_STEDIT_COPY ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_COPY ), _("Copy selected text"));
+        tb->AddTool(wxID_PASTE,  wxEmptyString, STE_ARTTOOL(wxART_STEDIT_PASTE), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_PASTE), _("Paste text at cursor"));
+    }
+    if (HasToolbarToolType(STE_TOOLBAR_EDIT_UNDOREDO))
+    {
+        if (tb->GetToolsCount()) tb->AddSeparator();
+        tb->AddTool(wxID_UNDO, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_UNDO), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_UNDO), _("Undo last editing"));
+        tb->AddTool(wxID_REDO, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_REDO), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_REDO), _("Redo last undo"));
+    }
+    if (HasToolbarToolType(STE_TOOLBAR_EDIT_FINDREPLACE))
+    {
+        if (tb->GetToolsCount()) tb->AddSeparator();
+        //tb->AddTool(ID_STE_FIND_DOWN, _("Search direction"), STE_ARTTOOL(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_CHECK, _("Search direction"), _("Search direction for next occurance in document"));
+        tb->AddTool(wxID_FIND       , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FIND    ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_FIND), _("Find text in document..."));
+        tb->AddTool(ID_STE_FIND_NEXT, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FINDDOWN), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find next"), *m_accelEntryArray, ID_STE_FIND_NEXT), _("Find next occurance in document"));
+        tb->AddTool(ID_STE_FIND_PREV, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FINDUP  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find previous"), *m_accelEntryArray, ID_STE_FIND_PREV), _("Find previous occurance in document"));
+        tb->AddTool(wxID_REPLACE    , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_REPLACE ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_REPLACE), _("Replace text in document"));
+    }
+    if (HasToolbarToolType(STE_TOOLBAR_EDIT_FIND_CTRL))
+    {
+        if (tb->GetToolsCount()) tb->AddSeparator();
+        wxSearchCtrl *searchCtrl = new wxSearchCtrl(tb, ID_STE_TOOLBAR_FIND_CTRL, wxT(""), wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER);
+        searchCtrl->SetMenu(new wxMenu);
+        tb->AddControl(searchCtrl);
+    }
+    if (HasToolbarToolType(STE_TOOLBAR_BOOKMARK))
+    {
+        if (tb->GetToolsCount()) tb->AddSeparator();
+        tb->AddTool(ID_STE_BOOKMARK_TOGGLE,   wxEmptyString, STE_ARTTOOL(wxART_ADD_BOOKMARK), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Toggle bookmark"),   *m_accelEntryArray, ID_STE_BOOKMARK_TOGGLE),   _("Toggle a bookmark on cursor line"));
+        tb->AddTool(ID_STE_BOOKMARK_FIRST,    wxEmptyString, STE_ARTTOOL(wxART_GO_UP),        wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("First bookmark"),    *m_accelEntryArray, ID_STE_BOOKMARK_FIRST),    _("Goto first bookmark"));
+        tb->AddTool(ID_STE_BOOKMARK_PREVIOUS, wxEmptyString, STE_ARTTOOL(wxART_GO_BACK),      wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Previous bookmark"), *m_accelEntryArray, ID_STE_BOOKMARK_PREVIOUS), _("Goto previous bookmark"));
+        tb->AddTool(ID_STE_BOOKMARK_NEXT,     wxEmptyString, STE_ARTTOOL(wxART_GO_FORWARD),   wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Next bookmark"),     *m_accelEntryArray, ID_STE_BOOKMARK_NEXT),     _("Goto next bookmark"));
+        tb->AddTool(ID_STE_BOOKMARK_LAST,     wxEmptyString, STE_ARTTOOL(wxART_GO_DOWN),      wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Last bookmark"),     *m_accelEntryArray, ID_STE_BOOKMARK_LAST),     _("Goto last bookmark"));
+        tb->AddTool(ID_STE_BOOKMARK_CLEAR,    wxEmptyString, STE_ARTTOOL(wxART_DEL_BOOKMARK), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Clear bookmarks"),   *m_accelEntryArray, ID_STE_BOOKMARK_CLEAR),    _("Clear all bookmarks"));
     }
     tb->Realize();
 
@@ -411,12 +450,12 @@ wxMenu *wxSTEditorMenuManager::CreateFileMenu(wxMenu *menu_) const
 
     if (HasMenuItemType(STE_MENU_FILE_MENU, STE_MENU_FILE_NEW))
     {
-        menu->Append(MenuItem(menu, wxID_NEW, wxGetStockLabel(wxID_NEW), _("Clear contents and start a new file"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_NEW)));
+        menu->Append(MenuItem(menu, wxID_NEW, wxGetStockLabel(wxID_NEW), _("Clear contents and start a new file"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_NEW)));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_FILE_MENU, STE_MENU_FILE_OPEN))
     {
-        menu->Append(MenuItem(menu, wxID_OPEN, wxGetStockLabelEx(wxID_OPEN), _("Open file"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_OPEN)));
+        menu->Append(MenuItem(menu, wxID_OPEN, wxGetStockLabelEx(wxID_OPEN), _("Open file"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_OPEN)));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_FILE_MENU, STE_MENU_FILE_CLOSE) && HasMenuOptionType(STE_MENU_FRAME))
@@ -426,7 +465,8 @@ wxMenu *wxSTEditorMenuManager::CreateFileMenu(wxMenu *menu_) const
         menu->Append(ID_STN_CLOSE_PAGE, _("&Close current page"), _("Close current page"));
         if (HasMenuOptionType(STE_MENU_NOTEBOOK))
         {
-            menu->Append(ID_STN_CLOSE_ALL, _("Close all pages..."), _("Close all pages"));
+            menu->Append(ID_STN_CLOSE_ALL,        _("Close all pages..."), _("Close all pages"));
+            menu->Append(ID_STN_CLOSE_ALL_OTHERS, _("Close all other pages"), _("Close all other pages"));
         }
 
         add_sep = true;
@@ -435,12 +475,12 @@ wxMenu *wxSTEditorMenuManager::CreateFileMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(MenuItem(menu, wxID_SAVE, wxGetStockLabel(wxID_SAVE), _("Save current file"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_SAVE)));
+        menu->Append(MenuItem(menu, wxID_SAVE, wxGetStockLabel(wxID_SAVE), _("Save current file"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_SAVE)));
         menu->Enable(wxID_SAVE, false);
-        menu->Append(MenuItem(menu, wxID_SAVEAS, wxEmptyString, _("Save as file"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_SAVEAS)));
+        menu->Append(MenuItem(menu, wxID_SAVEAS, wxGetStockLabelEx(wxID_SAVEAS), _("Save as file"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_SAVEAS)));
         if (HasMenuOptionType(STE_MENU_NOTEBOOK))
         {
-            menu->Append(MenuItem(menu, ID_STN_SAVE_ALL, _("Save A&ll"), _("Save all files"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_SAVEALL)));
+            menu->Append(MenuItem(menu, ID_STN_SAVE_ALL, _("Save A&ll"), _("Save all files"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_SAVEALL)));
             menu->Enable(ID_STN_SAVE_ALL, false);
         }
         menu->Append(MenuItem(menu, wxID_REVERT, wxGetStockLabelEx(wxID_REVERT), _("Revert to saved version of the file"), wxITEM_NORMAL));
@@ -464,21 +504,21 @@ wxMenu *wxSTEditorMenuManager::CreateFileMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(MenuItem(menu, wxID_PRINT,              wxEmptyString, _("Print current document"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PRINT)));
-        menu->Append(MenuItem(menu, wxID_PREVIEW,            wxGetStockLabel(wxID_PREVIEW), _("Print preview of the current document"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PRINTPREVIEW)));
+        menu->Append(MenuItem(menu, wxID_PRINT,              wxGetStockLabelEx(wxID_PRINT  ), _("Print current document"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINT)));
+        menu->Append(MenuItem(menu, wxID_PREVIEW,            wxGetStockLabelEx(wxID_PREVIEW), _("Print preview of the current document"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPREVIEW)));
    #ifdef __WXMSW__
         // The wxID_PRINT_SETUP dialog is the same as the wxID_PRINT one, at least on Windows; confusing to the user
    #else
-        menu->Append(MenuItem(menu, wxID_PRINT_SETUP,        _("Printer set&up..."), _("Setup the printer"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PRINTSETUP)));
+        menu->Append(MenuItem(menu, wxID_PRINT_SETUP,        _("Printer set&up..."), _("Setup the printer"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTSETUP)));
    #endif
-        menu->Append(MenuItem(menu, ID_STE_PRINT_PAGE_SETUP, _("Printer pa&ge setup..."), _("Setup the printout page"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PRINTPAGESETUP)));
-        menu->Append(MenuItem(menu, ID_STE_PRINT_OPTIONS,    _("Printer options..."), _("Set other printout options"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PRINTPREVIEW)));
+        menu->Append(MenuItem(menu, ID_STE_PRINT_PAGE_SETUP, _("Printer pa&ge setup..."), _("Setup the printout page"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPAGESETUP)));
+        menu->Append(MenuItem(menu, ID_STE_PRINT_OPTIONS,    _("Printer options..."), _("Set other printout options"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PRINTPREVIEW)));
     }
 
     if (HasMenuOptionType(STE_MENU_FRAME))
     {
         if (add_sep) menu->AppendSeparator();
-        menu->Append(MenuItem(menu, wxID_EXIT, wxGetStockLabelEx(wxID_EXIT), _("Exit editor"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_EXIT)));
+        menu->Append(MenuItem(menu, wxID_EXIT, wxGetStockLabelEx(wxID_EXIT), _("Exit editor"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_QUIT)));
     }
 
     if (!menu_ && menu && (menu->GetMenuItemCount() == 0))
@@ -498,8 +538,8 @@ wxMenu *wxSTEditorMenuManager::CreateEditMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(MenuItem(menu, wxID_UNDO, wxGetStockLabel(wxID_UNDO), _("Undo last operation"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_UNDO)));
-        menu->Append(MenuItem(menu, wxID_REDO, wxGetStockLabel(wxID_REDO), _("Redo last undo"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_REDO)));
+        menu->Append(MenuItem(menu, wxID_UNDO, wxGetStockLabel(wxID_UNDO), _("Undo last operation"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_UNDO)));
+        menu->Append(MenuItem(menu, wxID_REDO, wxGetStockLabel(wxID_REDO), _("Redo last undo"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_REDO)));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_EDIT_MENU, STE_MENU_EDIT_CUTCOPYPASTE))
@@ -507,26 +547,29 @@ wxMenu *wxSTEditorMenuManager::CreateEditMenu(wxMenu *menu_) const
         if (add_sep) menu->AppendSeparator();
 
         if (!HasMenuOptionType(STE_MENU_READONLY))
-            menu->Append(MenuItem(menu, wxID_CUT,  wxGetStockLabel(wxID_CUT), _("Cut selected text to clipboard"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_CUT)));
-        menu->Append(MenuItem(menu, wxID_COPY,  wxGetStockLabel(wxID_COPY), _("Copy selected text to clipboard"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_COPY)));
+            menu->Append(MenuItem(menu, wxID_CUT,  wxGetStockLabel(wxID_CUT), _("Cut selected text to clipboard"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_CUT)));
+        menu->Append(MenuItem(menu, wxID_COPY,  wxGetStockLabel(wxID_COPY), _("Copy selected text to clipboard"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_COPY)));
+        menu->Append(ID_STE_COPY_HTML, _("Copy as &HTML"), _("Copy selected text to clipboard with text markup"));
 #ifdef __UNIX__
         menu->Append(ID_STE_COPY_PRIMARY,  _("Copy primary"), _("Copy selected text to primary clipboard"));
 #endif // __UNIX__
         if (!HasMenuOptionType(STE_MENU_READONLY))
         {
-            menu->Append(MenuItem(menu, wxID_PASTE, wxGetStockLabel(wxID_PASTE), _("Paste text from clipboard"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_PASTE)));
-            menu->Append(ID_STE_PASTE_RECT, _("Paste &Rect"), _("Paste rectangular text from clipboard (select with Shift+Alt)"));
+            menu->Append(MenuItem(menu, wxID_PASTE, wxGetStockLabel(wxID_PASTE), _("Paste text from clipboard"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_PASTE)));
+            menu->Append(ID_STE_PASTE_RECT, _("Paste &Rectangle"), _("Paste rectangular text from clipboard (select with Shift+Alt)"));
         }
 
         if (HasMenuOptionType(STE_MENU_NOTEBOOK))
         {
-            menu->Append(ID_STE_PASTE_NEW, _("Paste as &New"), _("Paste text from clipboard into new notebook tab"));
+            // FIXME - this is probably not needed, it's pretty easy to simply do new then paste
+            //menu->Append(ID_STE_PASTE_NEW, _("Paste as &New"), _("Paste text from clipboard into new notebook tab"));
         }
 
         // FIXME - ID_STE_PREF_SELECTION_MODE remmed out since I can't make it work in GTK
         //menu->AppendCheckItem(ID_STE_PREF_SELECTION_MODE, _("Rectan&gular Selection"), _("Rectangular selections for cut/copy/paste"));
 
-        menu->Append(MenuItem(menu, wxID_CLEAR, wxGetStockLabel(wxID_DELETE)+ wxT('\t') + _("Del"), _("Delete selection"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_CLEAR)));
+        // WXK_DELETE - no accelerator to allow scintilla to handle it appropriately
+        menu->Append(MenuItem(menu, wxID_CLEAR, wxGetStockLabel(wxID_DELETE), _("Delete selection"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_CLEAR)));
 
         add_sep = true;
     }
@@ -538,6 +581,7 @@ wxMenu *wxSTEditorMenuManager::CreateEditMenu(wxMenu *menu_) const
         if (add_sep) menu->AppendSeparator();
 
         wxMenu *m = new wxMenu();
+
         // FIXME - these aren't Ctrl-L since the stc handles the keys already (works everywhere?)
         if (!HasMenuOptionType(STE_MENU_READONLY))
             m->Append(ID_STE_LINE_CUT,   _("Line Cu&t"), _("Cut current line to clipboard"));
@@ -546,7 +590,7 @@ wxMenu *wxSTEditorMenuManager::CreateEditMenu(wxMenu *menu_) const
 
         if (!HasMenuOptionType(STE_MENU_READONLY))
         {
-            m->Append(ID_STE_LINE_DELETE, _("Line &Delete"), _("Delete current line"));
+            m->Append(ID_STE_LINE_DELETE,    _("Line &Delete"),    _("Delete current line"));
             m->Append(ID_STE_LINE_TRANSPOSE, _("Line &Transpose"), _("Transpose current line upwards"));
             m->Append(ID_STE_LINE_DUPLICATE, _("Line D&uplicate"), _("Duplicate current line"));
         }
@@ -565,7 +609,7 @@ wxMenu *wxSTEditorMenuManager::CreateEditMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->AppendCheckItem(ID_STE_COMPLETEWORD, _("Complete w&ord"), _("Complete word at cursor"));
+        menu->Append(ID_STE_COMPLETEWORD, _("Complete w&ord"), _("Complete word at cursor"));
         add_sep = true;
     }
 
@@ -594,19 +638,19 @@ wxMenu *wxSTEditorMenuManager::CreateSearchMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(MenuItem(menu, wxID_FIND, wxGetStockLabelEx(wxID_FIND), _("Find text"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_FIND)));
-        menu->Append(MenuItem(menu, ID_STE_FIND_NEXT, _("Find &Next"),   _("Find next occurance"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_FINDNEXT)));
-        menu->Append(MenuItem(menu, ID_STE_FIND_PREV, _("Find &Previous"),   _("Find previous occurance"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_FINDUP)));
+        menu->Append(MenuItem(menu, wxID_FIND, wxGetStockLabelEx(wxID_FIND), _("Find text"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_FIND)));
+        menu->Append(MenuItem(menu, ID_STE_FIND_NEXT, _("Find &Next"),      _("Find next occurance"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_FINDNEXT)));
+        menu->Append(MenuItem(menu, ID_STE_FIND_PREV, _("Find &Previous"),  _("Find previous occurance"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_FINDUP)));
         menu->AppendCheckItem(ID_STE_FIND_DOWN,       _("Search For&ward"), _("Search forward/reverse in document"));
         if (!HasMenuOptionType(STE_MENU_READONLY))
-            menu->Append(MenuItem(menu, wxID_REPLACE, wxGetStockLabelEx(wxID_REPLACE), _("Replace text"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_REPLACE)));
+            menu->Append(MenuItem(menu, wxID_REPLACE, wxGetStockLabelEx(wxID_REPLACE), _("Replace text"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_REPLACE)));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_SEARCH_MENU, STE_MENU_SEARCH_GOTOLINE))
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(ID_STE_GOTO_LINE, _("&Go To..."), _("Goto line number"));
+        menu->Append(ID_STE_GOTO_LINE, _("&Go to Line..."), _("Goto line number"));
         add_sep = true;
     }
 
@@ -647,8 +691,8 @@ wxMenu *wxSTEditorMenuManager::CreateToolsMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(ID_STE_LINES_JOIN,  _("&Join selected lines"), _("Join selected lines together"));
-        menu->Append(ID_STE_LINES_SPLIT, _("&Split selected lines"), _("Split selected lines to edge marker"));
+        menu->Append(ID_STE_LINES_JOIN,  _("&Join selected lines"),  _("Join selected lines together"));
+        menu->Append(ID_STE_LINES_SPLIT, _("&Split selected lines"), _("Split selected lines to edge marker column"));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_TOOLS_MENU, STE_MENU_TOOLS_TABS_SP))
@@ -670,8 +714,8 @@ wxMenu *wxSTEditorMenuManager::CreateToolsMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(ID_STE_TRAILING_WHITESPACE, _("Remove trailing &whitespace"), _("Remove whitespace at the ends of lines"));
-        menu->Append(ID_STE_REMOVE_CHARSAROUND, _("Remove w&hitespace at cursor"), _("Remove whitespace before and after cursor"));
+        menu->Append(ID_STE_TRAILING_WHITESPACE, _("Remove trailing &whitespace"),  _("Remove whitespace at the ends of lines"));
+        menu->Append(ID_STE_REMOVE_CHARSAROUND,  _("Remove w&hitespace at cursor"), _("Remove whitespace before and after cursor"));
         add_sep = true;
     }
     if (HasMenuItemType(STE_MENU_TOOLS_MENU, STE_MENU_TOOLS_COLUMNIZE))
@@ -731,7 +775,7 @@ wxMenu *wxSTEditorMenuManager::CreateViewMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->AppendCheckItem(ID_STE_VIEW_NONPRINT,   _("&Nonprinting Characters"), _("Show end of line symbols and whitespace"));
+        menu->AppendCheckItem(ID_STE_VIEW_NONPRINT,        _("&Nonprinting Characters"), _("Show end of line symbols and whitespace"));
         menu->AppendCheckItem(ID_STE_PREF_VIEW_EOL,        _("&EOL"), _("Show end of line symbols"));
         menu->AppendCheckItem(ID_STE_PREF_VIEW_WHITESPACE, _("Whi&tespace"), _("Show whitespace using symbols"));
 
@@ -802,14 +846,16 @@ wxMenu *wxSTEditorMenuManager::CreateBookmarkMenu(wxMenu *menu_) const
     if (HasMenuItemType(STE_MENU_BOOKMARK_MENU, STE_MENU_BOOKMARK_DEFAULT))
     {
         if (menu == NULL) menu = new wxMenu;
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_TOGGLE, _("&Toggle bookmark"), _("Toggle a bookmark on cursor line"), wxITEM_NORMAL, STE_ARTBMP(wxART_ADD_BOOKMARK)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARKS, _("&Bookmarks..."), _("View all bookmarks"), wxITEM_NORMAL, STE_ARTMENU(wxART_HELP_BOOK)));
         menu->AppendSeparator();
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_FIRST,    _("&First bookmark"),    _("Goto first bookmark"), wxITEM_NORMAL, STE_ARTBMP(wxART_GO_UP)));
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_PREVIOUS, _("&Previous bookmark"), _("Goto previous bookmark"), wxITEM_NORMAL, STE_ARTBMP(wxART_GO_BACK)));
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_NEXT,     _("&Next bookmark"),     _("Goto next bookmark"), wxITEM_NORMAL, STE_ARTBMP(wxART_GO_FORWARD)));
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_LAST,     _("&Last bookmark"),     _("Goto last bookmark"), wxITEM_NORMAL, STE_ARTBMP(wxART_GO_DOWN)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_TOGGLE, _("&Toggle bookmark"), _("Toggle a bookmark on cursor line"), wxITEM_NORMAL, STE_ARTMENU(wxART_ADD_BOOKMARK)));
         menu->AppendSeparator();
-        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_CLEAR, _("&Clear all bookmarks"), _("Clear all bookmarks"), wxITEM_NORMAL, STE_ARTBMP(wxART_DEL_BOOKMARK)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_FIRST,    _("&First bookmark"),    _("Goto first bookmark"), wxITEM_NORMAL, STE_ARTMENU(wxART_GO_UP)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_PREVIOUS, _("&Previous bookmark"), _("Goto previous bookmark"), wxITEM_NORMAL, STE_ARTMENU(wxART_GO_BACK)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_NEXT,     _("&Next bookmark"),     _("Goto next bookmark"), wxITEM_NORMAL, STE_ARTMENU(wxART_GO_FORWARD)));
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_LAST,     _("&Last bookmark"),     _("Goto last bookmark"), wxITEM_NORMAL, STE_ARTMENU(wxART_GO_DOWN)));
+        menu->AppendSeparator();
+        menu->Append(MenuItem(menu, ID_STE_BOOKMARK_CLEAR, _("&Clear all bookmarks"), _("Clear all bookmarks"), wxITEM_NORMAL, STE_ARTMENU(wxART_DEL_BOOKMARK)));
     }
 
     return menu;
@@ -849,7 +895,7 @@ wxMenu *wxSTEditorMenuManager::CreatePreferenceMenu(wxMenu *menu_) const
     {
         if (add_sep) menu->AppendSeparator();
 
-        menu->Append(MenuItem(menu, ID_STE_SAVE_PREFERENCES, _("Save preferences"), _("Save current preferences"), wxITEM_NORMAL, STE_ARTBMP(wxART_STEDIT_SAVE)));
+        menu->Append(MenuItem(menu, ID_STE_SAVE_PREFERENCES, _("Save preferences"), _("Save current preferences"), wxITEM_NORMAL, STE_ARTMENU(wxART_STEDIT_SAVE)));
         add_sep = true;
     }
 
@@ -883,7 +929,7 @@ wxMenu *wxSTEditorMenuManager::CreateWindowMenu(wxMenu *menu_) const
         if (add_sep) menu->AppendSeparator();
 
         menu->Append(ID_STN_WIN_PREVIOUS, _("Pr&evious page"), _("Goto previous page"));
-        menu->Append(ID_STN_WIN_NEXT,     _("Ne&xt page"), _("Goto next page"));
+        menu->Append(ID_STN_WIN_NEXT,     _("Ne&xt page"),     _("Goto next page"));
         add_sep = true;
     }
 
@@ -894,9 +940,6 @@ wxMenu *wxSTEditorMenuManager::CreateWindowMenu(wxMenu *menu_) const
         menu->Append(ID_STN_WINDOWS, _("&Windows..."), _("Manage opened windows"));
         add_sep = true;
     }
-
-    if (add_sep) menu->AppendSeparator();
-    menu->Append(ID_STN_CLOSE_PAGE, _("&Close"));
 
     if (!menu_ && menu && (menu->GetMenuItemCount() == 0))
     {
@@ -913,7 +956,7 @@ wxMenu *wxSTEditorMenuManager::CreateHelpMenu(wxMenu *menu_) const
     if (HasMenuOptionType(STE_MENU_FRAME) && HasMenuItemType(STE_MENU_HELP_MENU, STE_MENU_HELP_ABOUT))
     {
         wxMenuItem* item = new wxMenuItem(menu, wxID_ABOUT, wxGetStockLabelEx(wxID_ABOUT), _("About this program"));
-        item->SetBitmap(wxSTEditorArtProvider::GetBitmap(wxART_STEDIT_APP, wxMenuIconSize));
+        item->SetBitmap(STE_ARTMENU(wxART_STEDIT_APP));
         menu->Append(item);
     }
 
@@ -925,6 +968,7 @@ wxMenu *wxSTEditorMenuManager::CreateHelpMenu(wxMenu *menu_) const
     return menu;
 }
 
+// static
 wxMenu* wxSTEditorMenuManager::CreateInsertCharsMenu(wxMenu *menu_, int types)
 {
     wxMenu *menu = menu_ ? menu_ : new wxMenu();
@@ -971,7 +1015,7 @@ static bool AddAccelFromMenuItem(const wxMenu* menu, wxArrayPtrVoid& entries)
 
     bool ret = false;
     const wxMenuItemList& itemList = menu->GetMenuItems();
-    
+
     for ( wxMenuItemList::const_iterator it = itemList.begin();
           it != itemList.end();
           it++)
@@ -991,7 +1035,8 @@ static bool AddAccelFromMenuItem(const wxMenu* menu, wxArrayPtrVoid& entries)
                 // make sure the id is set correctly (for GTK at least)
                 entry->Set(entry->GetFlags(), entry->GetKeyCode(), menuItem->GetId());
                 bool exists = false;
-                for (size_t n = 0; n < entries.GetCount(); n++)
+                size_t n, count = entries.GetCount();
+                for (n = 0; n < count; n++)
                 {
                     if (*entry == *((wxAcceleratorEntry*)entries[n]))
                     {
@@ -1010,29 +1055,36 @@ static bool AddAccelFromMenuItem(const wxMenu* menu, wxArrayPtrVoid& entries)
 
     return ret;
 }
+
+// static
 bool wxSTEditorMenuManager::GetAcceleratorEntries(const wxMenu* menu,
                                                   const wxMenuBar* menuBar,
-                                                  wxArrayPtrVoid& entries) const
+                                                  wxArrayPtrVoid& entries)
 {
     bool ret = false;
     if (menu)
         ret = AddAccelFromMenuItem(menu, entries);
     if (menuBar)
     {
-        for (size_t n = 0; n < menuBar->GetMenuCount(); n++)
+        size_t n, count = menuBar->GetMenuCount();
+        for (n = 0; n < count; n++)
             ret |= AddAccelFromMenuItem(menuBar->GetMenu(n), entries);
     }
 
     return ret;
 }
+
+// static
 wxAcceleratorTable wxSTEditorMenuManager::CreateAcceleratorTable(wxArrayPtrVoid& entries)
 {
     if (entries.GetCount() == 0)
         return wxAcceleratorTable();
 
-    return wxAcceleratorTable(entries.GetCount(),
+    return wxAcceleratorTable((int)entries.GetCount(),
                               (wxAcceleratorEntry*)&entries.Item(0));
 }
+
+// static
 wxAcceleratorTable wxSTEditorMenuManager::CreateAcceleratorTable(const wxMenu* menu,
                                                                  const wxMenuBar* menuBar)
 {
@@ -1058,7 +1110,8 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
     for (n = ID_STE_PREF__FIRST; n <= ID_STE_PREF__LAST; n++)
         DoEnableItem(menu, menuBar, toolBar, n, enable);
 
-    for (n = 0; n < int(m_enableItemsArray.GetCount()); n++)
+    count = (int)m_enableItemsArray.GetCount();
+    for (n = 0; n < count; n++)
         DoEnableItem(menu, menuBar, toolBar, m_enableItemsArray[n], enable);
 
     const int menuIds[] = {
@@ -1067,8 +1120,7 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
         ID_STN_SAVE_ALL,
         ID_STN_CLOSE_PAGE,
         ID_STN_CLOSE_ALL,
-        ID_STN_CLOSE_PAGE,
-        ID_STN_CLOSE_ALL,
+        ID_STN_CLOSE_ALL_OTHERS,
         ID_STE_PROPERTIES,
         wxID_PRINT,
         wxID_PREVIEW,
@@ -1099,6 +1151,7 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
         ID_STE_SPACES_TO_TABS,
         ID_STE_CONVERT_EOL,
         ID_STE_TRAILING_WHITESPACE,
+        ID_STE_REMOVE_CHARSAROUND,
 
         ID_STE_FOLDS_TOGGLE_CURRENT,
         ID_STE_FOLDS_COLLAPSE_LEVEL,
@@ -1126,9 +1179,10 @@ void wxSTEditorMenuManager::EnableEditorItems(bool enable, wxMenu *menu,
         DoEnableItem(menu, menuBar, toolBar, menuIds[n], enable);
 }
 
+// static
 wxMenuItem *wxSTEditorMenuManager::MenuItem(wxMenu *menu, wxWindowID win_id,
                                      const wxString &text, const wxString &help,
-                                     wxItemKind kind, const wxBitmap &bitmap) const
+                                     wxItemKind kind, const wxBitmap &bitmap)
 {
     wxMenuItem *item = new wxMenuItem(menu, win_id, text, help, kind);
     if (bitmap.IsOk())
@@ -1136,7 +1190,8 @@ wxMenuItem *wxSTEditorMenuManager::MenuItem(wxMenu *menu, wxWindowID win_id,
     return item;
 }
 
-void wxSTEditorMenuManager::DestroyMenuItem(wxMenu *menu, int menu_id, bool clean_sep) const
+// static
+void wxSTEditorMenuManager::DestroyMenuItem(wxMenu *menu, int menu_id, bool clean_sep)
 {
     wxCHECK_RET(menu, wxT("Invalid menu"));
     wxMenuItem *lastItem = menu->FindItem(menu_id);

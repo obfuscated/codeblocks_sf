@@ -10,8 +10,8 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/stelangs.h>
-#include <wx/stedit/stedit.h>
+#include "wx/stedit/stelangs.h"
+#include "wx/stedit/stedit.h"
 
 DEFINE_PAIRARRAY_INTKEY(wxString, wxSTEPairArrayIntString)
 
@@ -2221,8 +2221,8 @@ static const char* STE_WordList1_STE_LANG_SQUIRREL =
 #define STE_LexerName_STE_LANG_VHDL       "VHDL"
 #define STE_LexerName_STE_LANG_JAVA       "Java"
 #define STE_LexerName_STE_LANG_JAVASCRIPT "JavaScript"
-#define STE_LexerName_STE_LANG_RC         "RC"
-#define STE_LexerName_STE_LANG_CS         "CS"
+#define STE_LexerName_STE_LANG_RC         "Resource"
+#define STE_LexerName_STE_LANG_CS         "C#"
 #define STE_LexerName_STE_LANG_D          "D"
 #define STE_LexerName_STE_LANG_IDL        "IDL"
 #define STE_LexerName_STE_LANG_PLSQL      "PL-SQL"
@@ -4991,7 +4991,7 @@ int wxSTEditorLangs::AddLanguage(STE_Language* lang)
 {
     wxCHECK_MSG(IsOk() && lang, -1, wxT("Langs not created"));
     M_LANGDATA->m_langs.Add(lang);
-    return M_LANGDATA->m_langs.GetCount() - 1;
+    return (int)M_LANGDATA->m_langs.GetCount() - 1;
 }
 
 size_t wxSTEditorLangs::GetCount() const
@@ -5032,12 +5032,12 @@ int wxSTEditorLangs::FindLanguageByFilename(const wxFileName& fileName_) const
 
             if ((wildToken == wxT("*")) || (wildToken == wxT("*.*")))
             {
-                fallback = lang_n; // try for better match
+                fallback = (int)lang_n; // try for better match
             }
             else if ( ((wildExt  == wxT("*")) || (wildExt  == ext )) &&
                       ((wildName == wxT("*")) || (wildName == name)) )
             {
-                return lang_n;
+                return (int)lang_n;
             }
         }
     }
@@ -5475,9 +5475,9 @@ void wxSTEditorLangs::UpdateEditor( wxSTEditor *editor )
 
     size_t word_n, keyword_count = GetKeyWordsCount(lang_n);
     for (word_n = 0; word_n < keyword_count; word_n++)
-        editor->SetKeyWords(word_n, GetKeyWords(lang_n, word_n));
+        editor->SetKeyWords((int)word_n, GetKeyWords(lang_n, word_n));
 
-    editor->Colourise(0, -1); // FIXME this can take awhile! but otherwise it gets garbled
+    editor->ColouriseDocument(); // FIXME this can take awhile! but otherwise it gets garbled
 }
 
 // global precreated wxSTEditorLangs
@@ -5515,7 +5515,7 @@ void LangConfig()
 
         //config->Write(keyName + wxT("Keyword_Count"),  langs.GetKeyWordsCount(n));
         for (i = 0; i < langs.GetKeyWordsCount(n); i++)
-            config->Write(keyName + wxString::Format(wxT("Keyword%d"), i), langs.GetKeyWords(n, i));
+            config->Write(keyName + wxString::Format(wxT("Keyword%d"), (int)i), langs.GetKeyWords(n, i));
 
         if (langs.GetBlockStart(n).Length())
             config->Write(keyName + wxT("BlockStart"),         langs.GetBlockStart(n));

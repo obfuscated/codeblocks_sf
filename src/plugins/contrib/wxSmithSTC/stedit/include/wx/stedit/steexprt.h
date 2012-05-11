@@ -8,18 +8,23 @@
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
+/// @file steexprt.h
+/// @brief wxSTEditorExporter and wxSTEditorExportDialog to save to html, pdf, rtf, tex, and xml.
+
 #ifndef _STEEXPORT_H_
 #define _STEEXPORT_H_
 
-#include <wx/stedit/stedefs.h>
+#include "wx/stedit/stedefs.h"
 
 //-----------------------------------------------------------------------------
-// wxSTEditorExporter - simple class to export the contents of a
-//  wxSTEditor to a file or create a html string representation for use
-//  in wxHtmlEasyPrinting.
-//
-//  Create this on demand, there is no use keeping it around.
+/// @class wxSTEditorExporter
+/// @brief A class to export the contents of a wxSTEditor to a file or create
+///        a html string representation for use in wxHtmlEasyPrinting.
+///
+///  Create this class on demand, there is no use keeping it around.
 //-----------------------------------------------------------------------------
+
+/// What type of file to export to.
 enum STE_Export_Type
 {
     STE_EXPORT_HTML,
@@ -36,31 +41,35 @@ public:
     wxSTEditorExporter(wxSTEditor* editor);
 
     // these are taken from SciTE src/Exporters.cxx
-    bool SaveToRTF(const wxFileName&, int start = 0, int end = -1);
-    bool SaveToHTMLCSS(const wxFileName&);
-    bool SaveToPDF(const wxFileName&);
-    bool SaveToTEX(const wxFileName&);
-    bool SaveToXML(const wxFileName&);
+    bool SaveToRTF(const wxFileName& fileName, int start = 0, int end = -1);
+    bool SaveToHTMLCSS(const wxFileName& fileName);
+    bool SaveToPDF(const wxFileName& fileName);
+    bool SaveToTEX(const wxFileName& fileName);
+    bool SaveToXML(const wxFileName& fileName);
 
-    // Get a HTML representation of the text, w/ styles
-    //  code originally from wxHatch by Chris Elliott
-    wxString RenderAsHTML();
-    bool SaveToHTML(const wxFileName&);
+    /// Get a HTML representation of the text, w/ styles.
+    ///  code originally from wxHatch by Chris Elliott
+    wxString RenderAsHTML(int from, int to) const;
+    /// Save to HTML using RenderAsHTML(), returns true if the file was written.
+    bool SaveToHTML(const wxFileName& fileName);
 
-    // Export to the file_format (enum STE_Export_Type) to the given fileName
-    //  if !overwrite_prompt don't ask to overwrite
-    //  if !msg_on_error don't show an error message on failure (write error)
-    bool ExportToFile(int file_format, const wxFileName&,
+    /// Export to the enum STE_Export_Type file_format to the given fileName.
+    /// If !overwrite_prompt don't ask to overwrite.
+    /// If !msg_on_error don't show an error message on failure (write error).
+    bool ExportToFile(int file_format, const wxFileName& fileName,
                       bool overwrite_prompt, bool msg_on_error);
 
-    static wxString GetExtension(int file_format); // see enum STE_Export_Type
-    static wxString GetWildcards(int file_format); // see enum STE_Export_Type
+    /// Returns extensions for enum STE_Export_Type, else empty string.
+    static wxString GetExtension(int file_format);
+    /// Returns wildcard strings ("HTML (html,htm)|*.html;*.htm") for enum STE_Export_Type,
+    /// else wxFileSelectorDefaultWildcardStr.
+    static wxString GetWildcards(int file_format);
 
     // -----------------------------------------------------------------------
     // implementation
 
-    // maps the stc style # to the appropriate ste style using the langs
-    //  returns STE_STYLE_DEFAULT if the style isn't set
+    /// Maps the stc style # to the appropriate ste style using the langs.
+    /// Returns STE_STYLE_DEFAULT if the style isn't set.
     int SciToSTEStyle(int sci_style) const;
 
 protected:
@@ -71,22 +80,27 @@ protected:
 };
 
 //-----------------------------------------------------------------------------
-// wxSTEditorExportDialog - Choose format and filename to export text
-//
-// This does not save the file, see wxSTEditor::ShowExportDialog
+/// @class wxSTEditorExportDialog
+/// @brief Choose format and filename to export text.
+///
+/// This does not save the file, see wxSTEditor::ShowExportDialog().
 //-----------------------------------------------------------------------------
 
 class WXDLLIMPEXP_STEDIT wxSTEditorExportDialog : public wxDialog
 {
 public:
+    wxSTEditorExportDialog();
     wxSTEditorExportDialog(wxWindow* parent,
                            long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
 
-    wxFileName GetFileName() const;
-    void SetFileName(const wxFileName&);
+    bool Create(wxWindow* parent,
+                long style = wxDEFAULT_DIALOG_STYLE_RESIZE);
 
-    int  GetFileFormat() const;                    // see enum STE_Export_Type
-    void SetFileFormat(int file_format);
+    wxFileName GetFileName() const;
+    void SetFileName(const wxFileName& fileName);
+
+    STE_Export_Type  GetFileFormat() const;
+    void SetFileFormat(STE_Export_Type file_format);
 
     // -----------------------------------------------------------------------
     // implementation
@@ -103,7 +117,6 @@ public:
     static int           sm_file_format;
 
 private:
-    void Init();
     DECLARE_EVENT_TABLE()
     DECLARE_ABSTRACT_CLASS(wxSTEditorExportDialog);
 };

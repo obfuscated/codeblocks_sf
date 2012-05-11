@@ -11,11 +11,15 @@
 
 #include "precomp.h"
 
-#include <wx/stedit/stedit.h>
-#include <wx/stedit/steframe.h>
-#include <wx/stedit/steart.h>
+#include "wx/stedit/stedit.h"
+#include "wx/stedit/steframe.h"
+#include "wx/stedit/steart.h"
+#include "wx/stedit/stetree.h"
 
 #include "wxext.h"
+
+#include <wx/srchctrl.h>
+#include <wx/dirctrl.h>
 
 //-----------------------------------------------------------------------------
 // wxSTEditorFrame
@@ -23,30 +27,45 @@
 IMPLEMENT_DYNAMIC_CLASS(wxSTEditorFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(wxSTEditorFrame, wxFrame)
-    EVT_MENU_OPEN             (wxSTEditorFrame::OnMenuOpen)
-    EVT_MENU                  (wxID_ANY, wxSTEditorFrame::OnMenu)
+    EVT_MENU_OPEN               (wxSTEditorFrame::OnMenuOpen)
+    EVT_MENU                    (wxID_ANY, wxSTEditorFrame::OnMenu)
+    EVT_SEARCHCTRL_SEARCH_BTN   (ID_STE_TOOLBAR_FIND_CTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
+    EVT_TEXT_ENTER              (ID_STE_TOOLBAR_FIND_CTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
 
-    //EVT_STE_CREATED           (wxID_ANY, wxSTEditorFrame::OnSTECreatedEvent)
-    EVT_STE_STATE_CHANGED     (wxID_ANY, wxSTEditorFrame::OnSTEState)
-    EVT_STC_UPDATEUI          (wxID_ANY, wxSTEditorFrame::OnSTCUpdateUI)
-    EVT_STE_POPUPMENU         (wxID_ANY, wxSTEditorFrame::OnSTEPopupMenu)
+    //EVT_STEDITOR_CREATED      (wxID_ANY, wxSTEditorFrame::OnSTECreated)
+    EVT_STEDITOR_STATE_CHANGED  (wxID_ANY, wxSTEditorFrame::OnSTEState)
+    EVT_STC_UPDATEUI            (wxID_ANY, wxSTEditorFrame::OnSTCUpdateUI)
+    EVT_STEDITOR_POPUPMENU      (wxID_ANY, wxSTEditorFrame::OnSTEPopupMenu)
 
-    EVT_STN_PAGE_CHANGED      (wxID_ANY, wxSTEditorFrame::OnNotebookPageChanged)
-    EVT_TREE_ITEM_ACTIVATED   (ID_STF_FILE_TREECTRL, wxSTEditorFrame::OnFileTreeCtrl)
+    EVT_STNOTEBOOK_PAGE_CHANGED (wxID_ANY, wxSTEditorFrame::OnNotebookPageChanged)
 
-    EVT_CLOSE                 (wxSTEditorFrame::OnClose)
+    EVT_STEFIND_RESULTS_NEED_SHOWN(wxID_ANY, wxSTEditorFrame::OnFindAllResults)
+
+    EVT_TREE_ITEM_ACTIVATED     (wxID_ANY, wxSTEditorFrame::OnDirCtrlItemActivation)
+
+    EVT_CLOSE                   (wxSTEditorFrame::OnClose)
 END_EVENT_TABLE()
 
 void wxSTEditorFrame::Init()
 {
-    m_steNotebook      = NULL;
-    m_steSplitter      = NULL;
-    m_mainSplitter     = NULL;
     m_sideSplitter     = NULL;
-    m_sideNotebook     = NULL;
-    m_fileTreeCtrl     = NULL;
     m_sideSplitterWin1 = NULL;
     m_sideSplitterWin2 = NULL;
+    m_sideSplitter_pos = 200;
+
+    m_sideNotebook     = NULL;
+    m_steTreeCtrl      = NULL;
+    m_dirCtrl          = NULL;
+
+    m_mainSplitter     = NULL;
+    m_mainSplitterWin1 = NULL;
+    m_mainSplitterWin1 = NULL;
+
+    m_steNotebook      = NULL;
+    m_steSplitter      = NULL;
+
+    m_resultsNotebook  = NULL;
+    m_findResultsEditor= NULL;
 }
 
 bool wxSTEditorFrame::Create(wxWindow *parent, wxWindowID id,
@@ -61,12 +80,10 @@ bool wxSTEditorFrame::Create(wxWindow *parent, wxWindowID id,
         return false;
 
     // Set the frame's icons
-    wxIconBundle iconBundle;
-    iconBundle.AddIcon(wxSTEditorArtProvider::GetIcon(wxART_STEDIT_APP, wxIconSize_System));
-    iconBundle.AddIcon(wxSTEditorArtProvider::GetIcon(wxART_STEDIT_APP, wxIconSize_SystemSmall));
-    SetIcons(iconBundle);
+    SetIcons(wxSTEditorArtProvider::GetDialogIconBundle());
 
     ::wxFrame_SetInitialPosition(this, pos, size);
+
     return true;
 }
 
@@ -103,54 +120,46 @@ bool wxSTEditorFrame::Destroy()
 
     return wxFrame::Destroy();
 }
-void wxSTEditorFrame::SetSendSTEEvents(bool send)
-{
-    if (GetEditorNotebook())
-        GetEditorNotebook()->SetSendSTEEvents(send);
-    else if (GetEditorSplitter())
-        GetEditorSplitter()->SetSendSTEEvents(send);
-    else if (GetEditor())
-        GetEditor()->SetSendSTEEvents(send);
-}
 
 void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
 {
     m_options = options;
+
     wxConfigBase *config = GetConfigBase();
     wxSTEditorMenuManager *steMM = GetOptions().GetMenuManager();
 
     if (steMM && GetOptions().HasFrameOption(STF_CREATE_MENUBAR))
     {
-        wxMenuBar *menuBar = GetMenuBar() ? GetMenuBar() : new wxMenuBar(wxMB_DOCKABLE);
+        wxMenuBar *menuBar = GetMenuBar();
+
+        if (!menuBar)
+            menuBar = new wxMenuBar(wxMB_DOCKABLE);
+
         steMM->CreateMenuBar(menuBar, true);
 
-        if (menuBar)
-        {
-            SetMenuBar(menuBar);
-            ::wxSetAcceleratorTable(this, *steMM->GetAcceleratorArray());
-            ::wxMenu_SetAccelText(menuBar, *steMM->GetAcceleratorArray());
+        SetMenuBar(menuBar);
+        wxAcceleratorHelper::SetAcceleratorTable(this, *steMM->GetAcceleratorArray());
+        wxAcceleratorHelper::SetAccelText(menuBar, *steMM->GetAcceleratorArray());
 
-            if (GetOptions().HasFrameOption(STF_CREATE_FILEHISTORY) && !GetOptions().GetFileHistory())
+        if (GetOptions().HasFrameOption(STF_CREATE_FILEHISTORY) && !GetOptions().GetFileHistory())
+        {
+            // If there is wxID_OPEN then we can use wxFileHistory to save them
+            wxMenu* menu = NULL;
+            wxMenuItem* item = menuBar->FindItem(wxID_OPEN, &menu);
+
+            if (menu && item)
             {
-                // if has file open then we can use wxFileHistory to save them
-                wxMenu* menu = NULL;
-                wxMenuItem* item = menuBar->FindItem(wxID_OPEN, &menu);
-                if (item)
+                int open_index = menu->GetMenuItems().IndexOf(item);
+
+                if (open_index != wxNOT_FOUND)
                 {
-                    for (size_t i = 0; i < menu->GetMenuItemCount(); i++)
+                    wxMenu* submenu = new wxMenu();
+                    menu->Insert(open_index + 1, wxID_ANY, _("Open &Recent"), submenu);
+                    GetOptions().SetFileHistory(new wxFileHistory(9), false);
+                    GetOptions().GetFileHistory()->UseMenu(submenu);
+                    if (config)
                     {
-                       if (menu->GetMenuItems().Item(i)->GetData() == item)
-                       {
-                          wxMenu* submenu = new wxMenu();
-                          menu->Insert(i + 1, wxID_ANY, _("Open &Recent"), submenu);
-                          GetOptions().SetFileHistory(new wxFileHistory(9), false);
-                          GetOptions().GetFileHistory()->UseMenu(submenu);
-                          if (config)
-                          {
-                              GetOptions().LoadFileConfig(*config);
-                          }
-                          break;
-                       }
+                        GetOptions().LoadFileConfig(*config);
                     }
                 }
             }
@@ -174,7 +183,8 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
         if (GetOptions().HasEditorOption(STE_CREATE_POPUPMENU))
         {
             wxMenu* menu = steMM->CreateEditorPopupMenu();
-            ::wxMenu_SetAccelText(menu, *steMM->GetAcceleratorArray());
+
+            wxAcceleratorHelper::SetAccelText(menu, *steMM->GetAcceleratorArray());
             GetOptions().SetEditorPopupMenu(menu, false);
         }
         if (GetOptions().HasSplitterOption(STS_CREATE_POPUPMENU))
@@ -188,19 +198,26 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
         m_sideSplitter = new wxSplitterWindow(this, ID_STF_SIDE_SPLITTER);
         m_sideSplitter->SetMinimumPaneSize(10);
         m_sideNotebook = new wxNotebook(m_sideSplitter, ID_STF_SIDE_NOTEBOOK);
-        m_fileTreeCtrl = new wxTreeCtrl(m_sideNotebook, ID_STF_FILE_TREECTRL,
-                                wxDefaultPosition, wxDefaultSize,
-                                wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT );
-        m_fileTreeCtrl->SetIndent(6);
-        m_fileTreeCtrl->AddRoot(_("Files"));
-        m_sideNotebook->AddPage(m_fileTreeCtrl, _("Files"));
+        m_steTreeCtrl  = new wxSTEditorTreeCtrl(m_sideNotebook, ID_STF_FILE_TREECTRL);
+        m_dirCtrl      = new wxGenericDirCtrl(m_sideNotebook, ID_STF_FILE_DIRCTRL,
+                                              wxFileName::GetCwd(),
+                                              wxDefaultPosition, wxDefaultSize,
+                                              wxDIRCTRL_3D_INTERNAL
+#if wxCHECK_VERSION(2, 9, 2)
+                                              |(GetOptions().HasFrameOption(STF_CREATE_NOTEBOOK) ? wxDIRCTRL_MULTIPLE : 0)
+#endif // wxCHECK_VERSION(2, 9, 2)
+                                              );
+
+        m_sideNotebook->AddPage(m_steTreeCtrl, _("Files"));
+        m_sideNotebook->AddPage(m_dirCtrl,     _("Open"));
+
         m_sideSplitterWin1 = m_sideNotebook;
     }
 
     if (!m_steNotebook && GetOptions().HasFrameOption(STF_CREATE_NOTEBOOK))
     {
         m_mainSplitter = new wxSplitterWindow(m_sideSplitter ? (wxWindow*)m_sideSplitter : (wxWindow*)this, ID_STF_MAIN_SPLITTER);
-        m_mainSplitter->SetMinimumPaneSize(10);
+        m_mainSplitter->SetMinimumPaneSize(1);
 
         m_steNotebook = new wxSTEditorNotebook(m_mainSplitter, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                                wxCLIP_CHILDREN);
@@ -209,26 +226,47 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
         // update after adding a single page
         m_steNotebook->UpdateAllItems();
         m_mainSplitter->Initialize(m_steNotebook);
+        m_mainSplitterWin1 = m_steNotebook;
         m_sideSplitterWin2 = m_mainSplitter;
+
+        if (m_steTreeCtrl)
+            m_steTreeCtrl->SetSTENotebook(m_steNotebook);
     }
     else if (!m_steSplitter && GetOptions().HasFrameOption(STF_CREATE_SINGLEPAGE))
     {
         m_mainSplitter = new wxSplitterWindow(m_sideSplitter ? (wxWindow*)m_sideSplitter : (wxWindow*)this, ID_STF_MAIN_SPLITTER);
-        m_mainSplitter->SetMinimumPaneSize(10);
+        m_mainSplitter->SetMinimumPaneSize(1);
 
         m_steSplitter = new wxSTEditorSplitter(m_mainSplitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
         m_steSplitter->CreateOptions(m_options);
         m_mainSplitter->Initialize(m_steSplitter);
+        m_mainSplitterWin1 = m_steSplitter;
     }
     //else user will set up the rest
 
+    if (m_mainSplitter && m_mainSplitterWin1 && !m_resultsNotebook && GetOptions().HasFrameOption(STF_CREATE_RESULT_NOTEBOOK))
+    {
+        m_resultsNotebook = new wxNotebook(m_mainSplitter, wxID_ANY);
+
+        m_findResultsEditor = new wxSTEditorFindResultsEditor(m_resultsNotebook, wxID_ANY);
+        m_findResultsEditor->CreateOptions(options);
+        m_resultsNotebook->AddPage(m_findResultsEditor, _("Search Results"));
+
+        wxSTEditorFindReplacePanel::SetFindResultsEditor(m_findResultsEditor);
+        m_mainSplitter->SplitHorizontally(m_mainSplitterWin1, m_resultsNotebook, GetClientSize().GetHeight()*2/3);
+        m_mainSplitterWin2 = m_resultsNotebook;
+    }
+
     if (GetOptions().HasFrameOption(STF_CREATE_SIDEBAR) && GetSideSplitter() && m_sideSplitterWin1 && m_sideSplitterWin2)
     {
-        GetSideSplitter()->SplitVertically(m_sideSplitterWin1, m_sideSplitterWin2, 100);
+        GetSideSplitter()->SplitVertically(m_sideSplitterWin1, m_sideSplitterWin2, m_sideSplitter_pos);
     }
 
 #if wxUSE_DRAG_AND_DROP
-    SetDropTarget(new wxSTEditorFrameFileDropTarget(this));
+    if (GetOptions().HasFrameOption(STF_DO_DRAG_AND_DROP))
+    {
+        SetDropTarget(new wxSTEditorFileDropTarget(this));
+    }
 #endif //wxUSE_DRAG_AND_DROP
 
     if (GetOptions().HasConfigOption(STE_CONFIG_FINDREPLACE) && config)
@@ -249,6 +287,17 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
         editor->UpdateAllItems();
 }
 
+// --------------------------------------------------------------------------
+
+void wxSTEditorFrame::SetSendSTEEvents(bool send)
+{
+    if      (GetEditorNotebook()) GetEditorNotebook()->SetSendSTEEvents(send);
+    else if (GetEditorSplitter()) GetEditorSplitter()->SetSendSTEEvents(send);
+    else if (GetEditor())         GetEditor()->SetSendSTEEvents(send);
+}
+
+// --------------------------------------------------------------------------
+
 wxSTEditor *wxSTEditorFrame::GetEditor(int page) const
 {
     wxSTEditorSplitter *splitter = GetEditorSplitter(page);
@@ -258,6 +307,63 @@ wxSTEditor *wxSTEditorFrame::GetEditor(int page) const
 wxSTEditorSplitter *wxSTEditorFrame::GetEditorSplitter(int page) const
 {
     return GetEditorNotebook() ? GetEditorNotebook()->GetEditorSplitter(page) : m_steSplitter;
+}
+
+void wxSTEditorFrame::ShowSidebar(bool show_left_side)
+{
+    wxSplitterWindow* sideSplitter = GetSideSplitter();
+
+    if (sideSplitter && m_sideSplitterWin1 && m_sideSplitterWin2)
+    {
+        if (show_left_side)
+        {
+            if (!sideSplitter->IsSplit())
+            {
+                // If they want it shown, make it large enough to be vagely useful
+                // but never wider than the window itself.
+                int win_width = sideSplitter->GetSize().GetWidth();
+                int sash_pos  = wxMax(m_sideSplitter_pos, 100);
+                sash_pos      = wxMin(m_sideSplitter_pos, int(0.8*win_width));
+                sideSplitter->SplitVertically(m_sideSplitterWin1, m_sideSplitterWin2, sash_pos);
+                GetSideNotebook()->Show();
+            }
+        }
+        else if (sideSplitter->IsSplit())
+        {
+            m_sideSplitter_pos = sideSplitter->GetSashPosition();
+            sideSplitter->Unsplit(m_sideSplitterWin1);
+        }
+        UpdateAllItems();
+    }
+}
+
+// --------------------------------------------------------------------------
+
+bool wxSTEditorFrame::LoadFile(const wxFileName& fileName, bool show_error_dialog_on_error)
+{
+    bool ok;
+
+    if (GetEditorNotebook())
+    {
+        ok = GetEditorNotebook()->LoadFile(fileName);
+    }
+    else if (GetEditor())
+    {
+        ok = GetEditor()->LoadFile(fileName);
+    }
+    else
+    {
+        ok = false;
+    }
+
+    if (show_error_dialog_on_error && !ok)
+    {
+        wxMessageBox(wxString::Format(_("Error opening file: '%s'"),
+                     fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()).wx_str()),
+                     STE_APPDISPLAYNAME, wxOK|wxICON_ERROR , this);
+    }
+
+    return ok;
 }
 
 void wxSTEditorFrame::UpdateAllItems()
@@ -273,6 +379,13 @@ void wxSTEditorFrame::UpdateItems(wxMenu *menu, wxMenuBar *menuBar, wxToolBar *t
 
     STE_MM::DoEnableItem(menu, menuBar, toolBar, ID_STF_SHOW_SIDEBAR, GetSideSplitter() != NULL);
     STE_MM::DoCheckItem(menu, menuBar, toolBar, ID_STF_SHOW_SIDEBAR, (GetSideSplitter() != NULL) && GetSideSplitter()->IsSplit());
+}
+
+// --------------------------------------------------------------------------
+
+wxConfigBase* wxSTEditorFrame::GetConfigBase()
+{
+    return wxConfigBase::Get(false);
 }
 
 void wxSTEditorFrame::LoadConfig(wxConfigBase &config, const wxString &configPath_)
@@ -312,6 +425,7 @@ void wxSTEditorFrame::LoadConfig(wxConfigBase &config, const wxString &configPat
         }
     }
 }
+
 void wxSTEditorFrame::SaveConfig(wxConfigBase &config, const wxString &configPath_)
 {
     wxString configPath = wxSTEditorOptions::FixConfigPath(configPath_, false);
@@ -329,185 +443,116 @@ void wxSTEditorFrame::SaveConfig(wxConfigBase &config, const wxString &configPat
 void wxSTEditorFrame::OnNotebookPageChanged(wxNotebookEvent &WXUNUSED(event))
 {
     wxSTEditor *editor = GetEditor();
-    wxString title = m_titleBase;
+    wxString title;
     wxSTEditorMenuManager *steMM = GetOptions().GetMenuManager();
 
     if (editor)
     {
+        title = MakeTitle(editor);
+
         if ( steMM && !steMM->HasEnabledEditorItems())
             steMM->EnableEditorItems(true, NULL, GetMenuBar(), GetToolBar());
-
-        title = MakeTitle(editor);
     }
     else
     {
+        title = m_titleBase;
+
         if (steMM && steMM->HasEnabledEditorItems())
             steMM->EnableEditorItems(false, NULL, GetMenuBar(), GetToolBar());
     }
 
-    UpdateFileTreeCtrl();
     SetTitle(title);
 }
 
-void wxSTEditorFrame::OnFileTreeCtrl(wxTreeEvent &event)
+void wxSTEditorFrame::OnFindAllResults(wxCommandEvent& )
 {
-    if (GetEditorNotebook())
-    {
-        wxTreeItemId id = event.GetItem();
-        wxSTETreeItemData* data = (wxSTETreeItemData*)m_fileTreeCtrl->GetItemData(id);
-        if (data && (data->m_page_num >= 0))
-            GetEditorNotebook()->SetSelection(data->m_page_num);
-        else
-            event.Skip();
-    }
-}
-
-// can't use wxArray::Index since MSVC can't convert from wxTreeItemId to wxTreeItemIdBase
-static int Find_wxArrayTreeItemId(const wxArrayTreeItemIds& arrayIds, const wxTreeItemId& id)
-{
-    size_t n, id_count = arrayIds.GetCount();
-    for (n = 0; n < id_count; n++)
-    {
-        if (arrayIds[n] == id)
-            return n;
-    }
-    return wxNOT_FOUND;
-}
-
-void wxSTEditorFrame::UpdateFileTreeCtrl()
-{
-    wxSTEditorNotebook *noteBook = GetEditorNotebook();
-    wxTreeCtrl *treeCtrl = GetFileTreeCtrl();
-    if (!treeCtrl || !noteBook)
+    // nothing to do
+    if (!m_findResultsEditor)
         return;
 
-    int n;
-    int page_count = noteBook->GetPageCount();
-    int note_sel   = noteBook->GetSelection();
-
-    wxTreeItemId id, selId;
-    wxSTETreeCtrlHelper treeHelper(treeCtrl);
-
-    // Check for and add a root item to the treectrl
-    wxTreeItemId rootId = treeCtrl->GetRootItem();
-    if (!rootId)
-        rootId = treeCtrl->AddRoot(_("Root"), -1, -1, NULL);
-
-    // Check for and add a "Opened files" item to the treectrl
-    wxArrayString openedfilesPath; openedfilesPath.Add(_("Opened files"));
-    wxTreeItemId openedId = treeHelper.FindOrInsertItem(openedfilesPath, STE_TREECTRLHELPER_FIND_OR_INSERT);
-
-    // Get all the current children of the "Opened files", should be notebook pages
-    wxArrayTreeItemIds arrayIds;
-    treeHelper.GetAllItemIds(openedId, arrayIds, STE_TREECTRLHELPER_GET_DATA);
-
-    treeCtrl->Freeze();
-
-    for (n = 0; n < page_count; n++)
+    // try to select the page in the results notebook
+    if (m_resultsNotebook)
     {
-        // create new data to use or compare with existing
-        wxSTETreeItemData steTreeData(n, noteBook->GetPage(n));
-        wxSTEditor* editor = noteBook->GetEditor(n);
-        wxWindow* notePage = noteBook->GetPage(n);
+        size_t n, count = m_resultsNotebook->GetPageCount();
 
-        // this is an editor, else some other unknown window type
-        if (editor)
+        for (n = 0; n < count; ++n)
         {
-            steTreeData.m_root = _("Opened files");
-            steTreeData.m_fileName = editor->GetFileName();
-            steTreeData.m_modified = editor->IsModified();
-            wxFileName fn(steTreeData.m_fileName);
-            fn.Normalize();
-
-            steTreeData.m_treePath.Add(steTreeData.m_root);
-            steTreeData.m_treePath.Add(fn.GetPath());
-            steTreeData.m_treePath.Add(fn.GetFullName());
-        }
-        else
-        {
-            steTreeData.m_root = _("Others");
-            steTreeData.m_fileName = noteBook->GetPageText(n);
-
-            steTreeData.m_treePath.Add(steTreeData.m_root);
-            steTreeData.m_treePath.Add(steTreeData.m_fileName.GetFullPath());
-        }
-
-        wxTreeItemId id; // initially null
-
-        if (editor && editor->GetTreeItemId())
-        {
-            // get and check the old tree item id, the filename/path could have changed
-            id = editor->GetTreeItemId();
-            wxSTETreeItemData* oldData = (wxSTETreeItemData*)treeCtrl->GetItemData(id);
-            if (oldData && (oldData->m_window == notePage) &&
-                (oldData->m_treePath != treeHelper.GetItemPath(id)))
+            if (m_resultsNotebook->GetPage(n) == m_findResultsEditor)
             {
-                treeHelper.DeleteItem(id, true, 2);
-
-                int id_idx = Find_wxArrayTreeItemId(arrayIds, id);
-                if (id_idx != wxNOT_FOUND)
-                    arrayIds.RemoveAt(id_idx);
-
-                id = wxTreeItemId(); // null it and add it correctly later
-                editor->SetTreeItemId(id);
+                m_resultsNotebook->SetSelection(n);
+                break;
             }
         }
+    }
 
-        if (!id)
+    // check that the results editor is in the main splitter
+    bool is_in_mainsplitter = false;
+
+    wxWindow* parent = m_findResultsEditor->GetParent();
+    while (parent)
+    {
+        if (parent == m_mainSplitter)
         {
-            // always insert a new editor since if we already did,
-            //   it'd have a treeitem id, for other windows, who knows, you can
-            //   only have one tree node per notebook page name
-            if (editor)
-            {
-                id = treeHelper.FindOrInsertItem(steTreeData.m_treePath, STE_TREECTRLHELPER_INSERT);
-                editor->SetTreeItemId(id);
-            }
-            else
-                id = treeHelper.FindOrInsertItem(steTreeData.m_treePath, STE_TREECTRLHELPER_FIND_OR_INSERT);
+            is_in_mainsplitter = true;
+            break;
         }
 
-        // must set new data before deleting old in MSW since it checks old before setting new
-        wxTreeItemData* oldData = treeCtrl->GetItemData(id);
-        treeCtrl->SetItemData(id, new wxSTETreeItemData(steTreeData));
-        if (oldData) delete oldData;
-
-        int id_idx = Find_wxArrayTreeItemId(arrayIds, id);
-        if (id_idx != wxNOT_FOUND)
-            arrayIds.RemoveAt(id_idx);
-
-        treeCtrl->SetItemTextColour(id, steTreeData.m_modified ? *wxRED : *wxBLACK);
-        if (treeCtrl->IsBold(id))
-            treeCtrl->SetItemBold(id, false);
-
-        if (n == note_sel)
-            selId = id;
+        parent = parent->GetParent();
     }
 
-    // remove the orphaned items, but only if they have our data in them
-    size_t i, id_count = arrayIds.GetCount();
-    for (i = 0; i < id_count; i++)
+    // show the find results in the splitter
+    if (is_in_mainsplitter && m_mainSplitter && m_mainSplitterWin1 && m_mainSplitterWin2)
     {
-        wxSTETreeItemData* data = (wxSTETreeItemData*)treeCtrl->GetItemData(arrayIds[i]);
-        if (data)
-            treeHelper.DeleteItem(arrayIds[i], true, -1);
-            //treeHelper.DeleteItem(data->m_treePath);
+        int split_win_height = m_mainSplitter->GetClientSize().GetHeight();
+
+        if (!m_mainSplitter->IsSplit())
+        {
+            m_mainSplitter->SplitHorizontally(m_mainSplitterWin1, m_mainSplitterWin2, split_win_height*2/3);
+        }
+        else if (m_mainSplitterWin2->GetSize().GetHeight() < 59)
+        {
+            m_mainSplitter->SetSashPosition(wxMax(split_win_height/2, 100));
+        }
     }
+}
 
-    treeHelper.SortChildren(treeCtrl->GetRootItem());
-    treeCtrl->Thaw();
+void wxSTEditorFrame::OnDirCtrlItemActivation(wxTreeEvent &WXUNUSED(event))
+{
+    if (!m_dirCtrl) return;
 
-    if (selId)
+    wxArrayString files;
+
+    if (m_dirCtrl->GetTreeCtrl()->HasFlag(wxTR_MULTIPLE))
     {
-        treeCtrl->SetItemBold(selId);
-        treeCtrl->SelectItem(selId);
+        // We won't reach here in 2.8 since wxDIRCTRL_MULTIPLE doesn't exist
+        #if wxCHECK_VERSION(2, 9, 2)
+            // Avoid assert in GTK for calling wxTreeCtrl::GetSelection() on multiple selection treectrl
+            m_dirCtrl->GetFilePaths(files);
+        #endif
     }
+    else
+    {
+        wxString filePath = m_dirCtrl->GetFilePath();
+        if (!filePath.IsEmpty())
+            files.Add(filePath);
+    }
+
+    if (files.IsEmpty())
+        return;
+
+    if (GetEditorNotebook())
+    {
+        GetEditorNotebook()->LoadFiles(&files, wxEmptyString);
+    }
+    else
+        LoadFile(files[0], true); // just load the first one
 }
 
 void wxSTEditorFrame::OnSTECreated(wxCommandEvent &event)
 {
     event.Skip();
-    UpdateFileTreeCtrl();
+    if (m_steTreeCtrl != NULL)
+        m_steTreeCtrl->UpdateFromNotebook();
 }
 
 void wxSTEditorFrame::OnSTEPopupMenu(wxSTEditorEvent &event)
@@ -519,11 +564,13 @@ void wxSTEditorFrame::OnSTEPopupMenu(wxSTEditorEvent &event)
 
 wxString wxSTEditorFrame::MakeTitle(const wxSTEditor* editor) const
 {
-    wxFileName filename = editor->GetFileName() ;
-    const wxString modified = editor->IsModified() ? wxMODIFIED_ASTERISK : wxEmptyString;
-    return wxString::Format(wxT("%s - %s"),
-        (filename.GetFullPath(wxSTEditorOptions::m_path_display_format) + modified).wx_str(),
-        m_titleBase.wx_str());
+    wxFileName fileName = editor ? editor->GetFileName() : wxFileName();
+
+    wxString title(fileName.GetFullPath(GetOptions().GetDisplayPathSeparator()));
+    if (editor->IsModified()) title += wxMODIFIED_ASTERISK;
+    title += wxT(" - ") + m_titleBase;
+
+    return title;
 }
 
 void wxSTEditorFrame::OnSTEState(wxSTEditorEvent &event)
@@ -531,11 +578,15 @@ void wxSTEditorFrame::OnSTEState(wxSTEditorEvent &event)
     event.Skip();
     wxSTEditor *editor = event.GetEditor();
 
-    if ( event.HasStateChange(STE_FILENAME | STE_MODIFIED) )
+    if ( event.HasStateChange(STE_FILENAME | STE_MODIFIED | STE_EDITABLE) )
     {
-        SetTitle(MakeTitle(editor));
+        if (wxDynamicCast(editor, wxSTEditorFindResultsEditor) == NULL)
+        {
+            wxString title = MakeTitle(editor);
+            if (GetTitle() != title)
+                SetTitle(title);
+        }
 
-        UpdateFileTreeCtrl();
         if (event.HasStateChange(STE_FILENAME) && GetOptions().GetFileHistory())
         {
             if (wxFileExists(event.GetString()))
@@ -551,11 +602,11 @@ void wxSTEditorFrame::OnSTCUpdateUI(wxStyledTextEvent &event)
         return;
 
     wxStyledTextCtrl* editor = wxStaticCast(event.GetEventObject(), wxStyledTextCtrl);
-    int pos   = editor->GetCurrentPos();
-    int line  = editor->GetCurrentLine() + 1; // start at 1
-    int lines = editor->GetLineCount();
-    int col   = editor->GetColumn(pos) + 1;   // start at 1
-    int chars = editor->GetLength();
+    STE_TextPos pos = editor->GetCurrentPos();
+    int line        = editor->GetCurrentLine() + 1; // start at 1
+    int lines       = editor->GetLineCount();
+    int col         = editor->GetColumn(pos) + 1;   // start at 1
+    int chars       = editor->GetLength();
 
     wxString txt = wxString::Format(wxT("Line %6d of %6d, Col %4d, Chars %6d  "), line, lines, col, chars);
     txt += editor->GetOvertype() ? wxT("[OVR]") : wxT("[INS]");
@@ -645,26 +696,7 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
         if (GetOptions().GetFileHistory())
         {
             wxFileName fileName = GetOptions().GetFileHistory()->GetHistoryFile(win_id-wxID_FILE1);
-            bool ok;
-
-            if (GetEditorNotebook())
-            {
-                ok = GetEditorNotebook()->LoadFile(fileName);
-            }
-            else if (editor)
-            {
-                ok = editor->LoadFile(fileName);
-            }
-            else
-            {
-                ok = false;
-            }
-            if (!ok)
-            {
-               wxMessageBox(wxString::Format(_("Error opening file: '%s'"),
-                              fileName.GetFullPath(wxSTEditorOptions::m_path_display_format).wx_str()),
-                        STE_APPDISPLAYNAME, wxOK|wxICON_ERROR , this);
-            }
+            LoadFile(fileName, true);
         }
 
         return true;
@@ -673,11 +705,16 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
     switch (win_id)
     {
         case ID_STE_SHOW_FULLSCREEN :
-            ShowFullScreen(event.IsChecked());
+        {
+            long style = wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOTOOLBAR|wxFULLSCREEN_NOCAPTION;
+            ShowFullScreen(event.IsChecked(), style);
             return true;
+        }
         case ID_STF_SHOW_SIDEBAR :
+        {
             ShowSidebar(event.IsChecked());
             return true;
+        }
         case wxID_EXIT :
         {
             if (GetEditorNotebook())
@@ -692,39 +729,14 @@ bool wxSTEditorFrame::HandleMenuEvent(wxCommandEvent &event)
             return true;
         }
         case wxID_ABOUT :
-            wxSTEditor::ShowAboutDialog(this);
+        {
+            wxSTEditorAboutDialog(this);
             return true;
+        }
         default : break;
     }
 
     return false;
-}
-
-void wxSTEditorFrame::ShowFullScreen(bool on)
-{
-    //long style = wxFULLSCREEN_NOBORDER|wxFULLSCREEN_NOCAPTION;
-    long style = wxFULLSCREEN_ALL;
-    wxFrame::ShowFullScreen(on, style);
-}
-
-void wxSTEditorFrame::ShowSidebar(bool on)
-{
-    if (GetSideSplitter() && m_sideSplitterWin1 && m_sideSplitterWin2)
-    {
-        if (on)
-        {
-            if (!GetSideSplitter()->IsSplit())
-            {
-                GetSideSplitter()->SplitVertically(m_sideSplitterWin1, m_sideSplitterWin2, 100);
-                GetSideNotebook()->Show();
-            }
-        }
-        else if (GetSideSplitter()->IsSplit())
-        {
-            GetSideSplitter()->Unsplit(m_sideSplitterWin1);
-        }
-        UpdateAllItems();
-    }
 }
 
 void wxSTEditorFrame::OnClose( wxCloseEvent &event )
@@ -755,244 +767,80 @@ void wxSTEditorFrame::OnClose( wxCloseEvent &event )
 //-----------------------------------------------------------------------------
 #if wxUSE_DRAG_AND_DROP
 
-bool wxSTEditorFrameFileDropTarget::OnDropFiles(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y),
-                                                const wxArrayString& filenames)
+bool wxSTEditorFileDropTarget::OnDropFiles(wxCoord WXUNUSED(x), wxCoord WXUNUSED(y),
+                                           const wxArrayString& filenames)
 {
-    wxCHECK_MSG(m_owner, false, wxT("Invalid drop target"));
+    wxCHECK_MSG(m_owner, false, wxT("Invalid file drop target"));
+
     const size_t count = filenames.GetCount();
     if (count == 0)
         return false;
 
-    // see if it has a notebook and use it to load the files
-    if (m_owner->GetEditorNotebook())
+    // Try to find the best window to use to load the files
+    wxSTEditorFrame*    stEditorFrame    = NULL;
+    wxSTEditorNotebook* stEditorNotebook = NULL;
+    wxSTEditorSplitter* stEditorSplitter = NULL;
+    wxSTEditor*         stEditor         = NULL;
+
+    wxWindow* parent = m_owner;
+
+    while (parent)
+    {
+        if (wxDynamicCast(parent, wxSTEditorFrame) != NULL)
+        {
+            stEditorFrame = wxDynamicCast(parent, wxSTEditorFrame);
+            break;
+        }
+        else if (wxDynamicCast(parent, wxSTEditorNotebook) != NULL)
+        {
+            stEditorNotebook = wxDynamicCast(parent, wxSTEditorNotebook);
+            break; // once we find a notebook, we'll use it
+        }
+        else if (wxDynamicCast(parent, wxSTEditorSplitter) != NULL)
+        {
+            stEditorSplitter = wxDynamicCast(parent, wxSTEditorSplitter);
+        }
+        else if (wxDynamicCast(parent, wxSTEditor) != NULL)
+        {
+            stEditor = wxDynamicCast(parent, wxSTEditor);
+        }
+
+        parent = parent->GetParent();
+    }
+
+    // These are in order of preference to use to load the files
+
+    if (stEditorFrame != NULL)
+    {
+        // see if it has a notebook and use it to load the files
+        if (stEditorFrame->GetEditorNotebook())
+        {
+            wxArrayString files = filenames;
+            stEditorFrame->GetEditorNotebook()->LoadFiles(&files);
+        }
+        else if (stEditorFrame->GetEditor())
+            stEditorFrame->GetEditor()->LoadFile(filenames[0]);
+
+        return true;
+    }
+    else if (stEditorNotebook != NULL)
     {
         wxArrayString files = filenames;
-        m_owner->GetEditorNotebook()->LoadFiles(&files);
+        stEditorNotebook->LoadFiles(&files);
+        return true;
     }
-    else if (m_owner->GetEditor())
-        m_owner->GetEditor()->LoadFile(filenames[0]);
+    else if (stEditorSplitter != NULL)
+    {
+        stEditorSplitter->GetEditor()->LoadFile(filenames[0]);
+        return true;
+    }
+    else if (stEditor != NULL)
+    {
+        stEditor->LoadFile(filenames[0]);
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 #endif //wxUSE_DRAG_AND_DROP
-
-//-----------------------------------------------------------------------------
-// wxSTETreeCtrlHelper - wxTreeCtrl helper class
-//-----------------------------------------------------------------------------
-
-wxArrayString wxSTETreeCtrlHelper::GetItemPath(const wxTreeItemId& id_)
-{
-    wxArrayString pathArray;
-    wxCHECK_MSG(m_treeCtrl, pathArray, wxT("Invalid wxTreeCtrl"));
-
-    wxTreeItemId rootId = m_treeCtrl->GetRootItem();
-
-    for (wxTreeItemId id = id_;
-         id && (id != rootId);
-         id = m_treeCtrl->GetItemParent(id))
-    {
-        pathArray.Insert(m_treeCtrl->GetItemText(id), 0);
-    }
-    return pathArray;
-}
-
-bool wxSTETreeCtrlHelper::DeleteItem(const wxArrayString& treePath, bool delete_empty)
-{
-    wxCHECK_MSG(m_treeCtrl, false, wxT("Invalid wxTreeCtrl"));
-
-    wxTreeItemId id = FindOrInsertItem(treePath, STE_TREECTRLHELPER_FIND);
-
-    return DeleteItem(id, delete_empty, -1) > 0;
-}
-
-int wxSTETreeCtrlHelper::DeleteItem(const wxTreeItemId& id_, bool delete_empty, int levels)
-{
-    wxCHECK_MSG(m_treeCtrl, 0, wxT("Invalid wxTreeCtrl"));
-
-    int n = 0;
-    wxTreeItemId id = id_;
-    wxTreeItemId parentId;
-    wxTreeItemId rootId = m_treeCtrl->GetRootItem();
-
-    if (!id)
-        return 0;
-    else if (!delete_empty)
-    {
-        m_treeCtrl->Delete(id);
-        n++;
-    }
-    else
-    {
-        // back up the tree and delete all parents that have no other children
-        wxTreeItemId parentId_last;
-        wxTreeItemId rootId = m_treeCtrl->GetRootItem();
-        m_treeCtrl->Delete(id);
-        n++;
-
-        for (wxTreeItemId parentId = m_treeCtrl->GetItemParent(id);
-             parentId && (parentId != rootId) && ((n <= levels) || (levels == -1));
-             )
-        {
-            wxTreeItemIdValue tmpCookie;
-            wxTreeItemId siblingId = m_treeCtrl->GetFirstChild(parentId, tmpCookie);
-
-            if (!siblingId)
-            {
-                // no other children in this node, try next parent
-                parentId_last = parentId;
-                parentId = m_treeCtrl->GetItemParent(parentId);
-                n++;
-            }
-            else
-            {
-                if (parentId_last)
-                {
-                    m_treeCtrl->Delete(parentId_last);
-                }
-
-                break;
-            }
-        }
-    }
-
-    return n;
-}
-
-wxTreeItemId wxSTETreeCtrlHelper::FindOrInsertItem(const wxArrayString& treePath, int find_type)
-{
-    wxCHECK_MSG(m_treeCtrl, wxTreeItemId(), wxT("Invalid wxTreeCtrl"));
-    wxCHECK_MSG(treePath.GetCount() > 0, wxTreeItemId(), wxT("Nothing to insert"));
-
-    int n = 0, count = treePath.GetCount();
-
-    // check for and add "Root" if not only_find
-    wxTreeItemId parentId = m_treeCtrl->GetRootItem();
-    if (!parentId)
-    {
-        if (find_type == STE_TREECTRLHELPER_FIND)
-            return wxTreeItemId();
-
-        parentId = m_treeCtrl->AddRoot(_("Root"), -1, -1, NULL);
-    }
-
-    wxTreeItemIdValue rootCookie;
-    wxTreeItemId id = m_treeCtrl->GetFirstChild(parentId, rootCookie);
-
-    // check for and add first path if not only_find
-    if (!id)
-    {
-        if (find_type == STE_TREECTRLHELPER_FIND)
-            return wxTreeItemId();
-
-        parentId = id = m_treeCtrl->AppendItem(parentId, treePath[n], -1, -1, NULL);
-        n++;
-    }
-
-    // Iterate though the path list
-    while (id && (n < count))
-    {
-        if (m_treeCtrl->GetItemText(id) == treePath[n])
-        {
-            if (n == count - 1)       // found the existing item w/ full path
-            {
-                if (find_type == STE_TREECTRLHELPER_INSERT)
-                    return m_treeCtrl->AppendItem(parentId, treePath[n], -1, -1, NULL);
-                else
-                    return id;
-            }
-
-            parentId = id;
-            id = m_treeCtrl->GetFirstChild(id, rootCookie); // next path part
-            n++;
-        }
-        else
-        {
-            id = m_treeCtrl->GetNextSibling(id);         // find this path part
-        }
-
-        if (!id)
-        {
-            if (find_type == STE_TREECTRLHELPER_FIND)
-                return wxTreeItemId();
-
-            id = parentId;                              // use last good parent
-            for (; n < count; n++)                      // append rest of path
-            {
-                id = m_treeCtrl->AppendItem(id, treePath[n], -1, -1, NULL);
-
-                if (n == count - 1)
-                    return id;
-            }
-        }
-
-    }
-
-    return wxTreeItemId();
-}
-
-size_t wxSTETreeCtrlHelper::GetAllItemIds(const wxTreeItemId& start_id, wxArrayTreeItemIds& arrayIds, int get_type)
-{
-    wxCHECK_MSG(m_treeCtrl, 0, wxT("Invalid wxTreeCtrl"));
-
-    // MSW crashes on GetNextSibling on the root item
-    if (start_id == m_treeCtrl->GetRootItem())
-    {
-        wxTreeItemIdValue cookie;
-        wxTreeItemId id = m_treeCtrl->GetFirstChild(start_id, cookie);
-        return DoGetAllItemIds(id, arrayIds, get_type);
-    }
-
-    return DoGetAllItemIds(start_id, arrayIds, get_type);
-}
-
-size_t wxSTETreeCtrlHelper::DoGetAllItemIds(const wxTreeItemId& start_id, wxArrayTreeItemIds& arrayIds, int get_type)
-{
-    size_t count = 0;
-
-    for (wxTreeItemId id = start_id;
-         id;
-         id = m_treeCtrl->GetNextSibling(id))
-    {
-        if (get_type == STE_TREECTRLHELPER_GET_ALL)
-        {
-            arrayIds.Add(id);
-            count++;
-        }
-        else
-        {
-            wxTreeItemData* data = m_treeCtrl->GetItemData(id);
-            if ((data && ((get_type & STE_TREECTRLHELPER_GET_DATA) != 0)) ||
-                (!data && ((get_type & STE_TREECTRLHELPER_GET_NODATA) != 0)))
-            {
-                arrayIds.Add(id);
-                count++;
-            }
-        }
-
-        wxTreeItemIdValue childCookie;
-        wxTreeItemId childId = m_treeCtrl->GetFirstChild(id, childCookie);
-        if (childId)
-            count += DoGetAllItemIds(childId, arrayIds, get_type);
-    }
-    return count;
-}
-
-void wxSTETreeCtrlHelper::SortChildren(const wxTreeItemId& item_)
-{
-    wxCHECK_RET(m_treeCtrl && item_, wxT("Invalid wxTreeCtrl"));
-
-    wxTreeItemIdValue cookie;
-    for (wxTreeItemId childId = m_treeCtrl->GetFirstChild(item_, cookie);
-         childId;
-         childId = m_treeCtrl->GetNextChild(item_, cookie))
-    {
-        m_treeCtrl->SortChildren(childId);
-        SortChildren(childId);
-    }
-}
-
-wxConfigBase* wxSTEditorFrame::GetConfigBase()
-{
-   return wxConfigBase::Get(false);
-}
