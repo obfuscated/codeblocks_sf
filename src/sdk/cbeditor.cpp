@@ -50,27 +50,22 @@
 
 const wxString g_EditorModified = _T("*");
 
-#define ERROR_STYLE           wxSCI_MARK_SMALLRECT
-#define BOOKMARK_STYLE        wxSCI_MARK_ARROW
-#define BREAKPOINT_STYLE      wxSCI_MARK_CIRCLE
-#define DEBUG_STYLE           wxSCI_MARK_ARROW
+#define ERROR_STYLE      wxSCI_MARK_SMALLRECT
+#define BOOKMARK_STYLE   wxSCI_MARK_ARROW
+#define BREAKPOINT_STYLE wxSCI_MARK_CIRCLE
+#define DEBUG_STYLE      wxSCI_MARK_ARROW
 
-enum
-{
-    BREAKPOINT_OTHER_MARKER = 1,
-    BREAKPOINT_DISABLED_MARKER,
-    BREAKPOINT_MARKER,
-    BOOKMARK_MARKER,
-    ERROR_MARKER,
-    DEBUG_MARKER
-};
+#define BREAKPOINT_OTHER_MARKER    1
+#define BREAKPOINT_DISABLED_MARKER 2
+#define BREAKPOINT_MARKER          3
+#define BOOKMARK_MARKER            4
+#define ERROR_MARKER               5
+#define DEBUG_MARKER               6
 
-
-static const int lineMargin      = 0; // Line numbers
-static const int markerMargin    = 1; // Bookmarks, Breakpoints...
-static const int changebarMargin = 2;
-static const int foldingMargin   = 3;
-
+#define C_LINE_MARGIN      0 // Line numbers
+#define C_MARKER_MARGIN    1 // Bookmarks, Breakpoints...
+#define C_CHANGEBAR_MARGIN 2
+#define C_FOLDING_MARGIN   3
 
 /* This struct holds private data for the cbEditor class.
  * It's a paradigm to avoid rebuilding the entire project (as cbEditor is a basic dependency)
@@ -465,17 +460,17 @@ struct cbEditorInternalData
 
             if (lineNumWidth != m_lineNumbersWidth)
             {
-                m_pOwner->m_pControl->SetMarginWidth(lineMargin, 6 + lineNumWidth * pixelWidth);
+                m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, 6 + lineNumWidth * pixelWidth);
                 if (m_pOwner->m_pControl2)
-                    m_pOwner->m_pControl2->SetMarginWidth(lineMargin, 6 + lineNumWidth * pixelWidth);
+                    m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, 6 + lineNumWidth * pixelWidth);
                 m_lineNumbersWidth = lineNumWidth;
             }
         }
         else
         {
-            m_pOwner->m_pControl->SetMarginWidth(lineMargin, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+            m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
             if (m_pOwner->m_pControl2)
-                m_pOwner->m_pControl2->SetMarginWidth(lineMargin, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+                m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
         }
     }
 
@@ -778,10 +773,10 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 
     // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
     // and/or by plugins, that use markers, like browsemarks-plugin
-    m_pControl->SetMarginMask(lineMargin,      0);
-    m_pControl->SetMarginMask(markerMargin,    0);
-    m_pControl->SetMarginMask(changebarMargin, 0);
-    m_pControl->SetMarginMask(foldingMargin,   0);
+    m_pControl->SetMarginMask(C_LINE_MARGIN,      0);
+    m_pControl->SetMarginMask(C_MARKER_MARGIN,    0);
+    m_pControl->SetMarginMask(C_CHANGEBAR_MARGIN, 0);
+    m_pControl->SetMarginMask(C_FOLDING_MARGIN,   0);
 
     SetEditorStyleBeforeFileOpen();
     m_IsOK = Open();
@@ -1161,7 +1156,7 @@ void cbEditor::Split(cbEditor::SplitType split)
     // initial zoom is same as left/top control
     m_pControl2->SetZoom(m_pControl->GetZoom());
     // make sure the line numbers margin is correct for the new control
-    m_pControl2->SetMarginWidth(lineMargin, m_pControl->GetMarginWidth(lineMargin));
+    m_pControl2->SetMarginWidth(C_LINE_MARGIN, m_pControl->GetMarginWidth(C_LINE_MARGIN));
 
     Thaw();
 }
@@ -1284,9 +1279,9 @@ void cbEditor::SetEditorStyleAfterFileOpen()
         m_pData->SetLineNumberColWidth();
     else
     {
-        m_pControl->SetMarginWidth(lineMargin, 0);
+        m_pControl->SetMarginWidth(C_LINE_MARGIN, 0);
         if (m_pControl2)
-            m_pControl2->SetMarginWidth(lineMargin, 0);
+            m_pControl2->SetMarginWidth(C_LINE_MARGIN, 0);
     }
 }
 
@@ -1304,7 +1299,7 @@ void cbEditor::ApplyStyles(cbStyledTextCtrl* control)
 
     int pixelWidth = control->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
     if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        control->SetMarginWidth(lineMargin, 5 * pixelWidth); // hardcoded width up to 99999 lines
+        control->SetMarginWidth(C_LINE_MARGIN, 5 * pixelWidth); // hardcoded width up to 99999 lines
 }
 
 // static
@@ -1397,20 +1392,24 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     // margin for bookmarks, breakpoints etc.
     // FIXME: how to display a mark with an offset???
-    control->SetMarginWidth(markerMargin, 16);
-    control->SetMarginType(markerMargin, wxSCI_MARGIN_SYMBOL);
-    control->SetMarginSensitive(markerMargin, mgr->ReadBool(_T("/margin_1_sensitive"), true));
+    control->SetMarginWidth(C_MARKER_MARGIN, 16);
+    control->SetMarginType(C_MARKER_MARGIN, wxSCI_MARGIN_SYMBOL);
+    control->SetMarginSensitive(C_MARKER_MARGIN, mgr->ReadBool(_T("/margin_1_sensitive"), true));
     // use "|" here or we might break plugins that use the margin (like browsemarks)
-    control->SetMarginMask(markerMargin, control->GetMarginMask(markerMargin) |
-                                         (1 << BOOKMARK_MARKER) |
-                                         (1 << BREAKPOINT_MARKER) |
-                                         (1 << BREAKPOINT_DISABLED_MARKER) |
-                                         (1 << BREAKPOINT_OTHER_MARKER) |
-                                         (1 << DEBUG_MARKER) |
-                                         (1 << ERROR_MARKER));
+    control->SetMarginMask(C_MARKER_MARGIN,
+                           control->GetMarginMask(C_MARKER_MARGIN)
+                           | (1 << BOOKMARK_MARKER)
+                           | (1 << BREAKPOINT_MARKER)
+                           | (1 << BREAKPOINT_DISABLED_MARKER)
+                           | (1 << BREAKPOINT_OTHER_MARKER)
+                           | (1 << DEBUG_MARKER)
+                           | (1 << ERROR_MARKER) );
+
+    // 1.) Marker for Bookmarks etc...
     control->MarkerDefine(BOOKMARK_MARKER, BOOKMARK_STYLE);
     control->MarkerSetBackground(BOOKMARK_MARKER, wxColour(0xA0, 0xA0, 0xFF));
 
+    // 2.) Marker for Breakpoints etc...
     const wxString &basepath = ConfigManager::GetDataFolder() + wxT("/manager_resources.zip#zip:/images/12x12/");
     wxBitmap icon = cbLoadBitmap(basepath + wxT("breakpoint.png"), wxBITMAP_TYPE_PNG);
     if (icon.IsOk())
@@ -1436,8 +1435,12 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->MarkerDefine(BREAKPOINT_OTHER_MARKER, BREAKPOINT_STYLE);
         control->MarkerSetBackground(BREAKPOINT_OTHER_MARKER, wxColour(0x59, 0x74, 0x8e));
     }
+
+    // 3.) Marker for Debugging etc...
     control->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
+
+    // 4.) Marker for Errors...
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
     control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
 
@@ -1449,11 +1452,13 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // changebar margin
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
     {
-        control->SetMarginWidth(changebarMargin, 4);
-        control->SetMarginType(changebarMargin,  wxSCI_MARGIN_SYMBOL);
+        control->SetMarginWidth(C_CHANGEBAR_MARGIN, 4);
+        control->SetMarginType(C_CHANGEBAR_MARGIN,  wxSCI_MARGIN_SYMBOL);
         // use "|" here or we might break plugins that use the margin (none at the moment)
-        control->SetMarginMask(changebarMargin, control->GetMarginMask(changebarMargin) |
-                                                (1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED) );
+        control->SetMarginMask(C_CHANGEBAR_MARGIN,
+                               control->GetMarginMask(C_CHANGEBAR_MARGIN)
+                               | (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
+                               | (1 << wxSCI_MARKNUM_CHANGESAVED) );
 
         control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT);
         control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04));
@@ -1461,20 +1466,16 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, wxColour(0x04, 0xFF, 0x50));
     }
     else
-        control->SetMarginWidth(changebarMargin, 0);
+        control->SetMarginWidth(C_CHANGEBAR_MARGIN, 0);
 
     control->SetScrollWidthTracking(mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
 
     control->SetMultipleSelection(mgr->ReadBool(_T("/selection/multi_select"), false));
     control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"), false));
     if (mgr->ReadBool(_T("/selection/use_vspace"), false))
-    {
         control->SetVirtualSpaceOptions(wxSCI_SCVS_RECTANGULARSELECTION | wxSCI_SCVS_USERACCESSIBLE);
-    }
     else
-    {
         control->SetVirtualSpaceOptions(wxSCI_SCVS_NONE);
-    }
 }
 
 // static
@@ -1498,22 +1499,25 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
 
         control->SetFoldFlags(16);
-        control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
-        control->SetMarginWidth(foldingMargin, 16);
+        control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
+        control->SetMarginWidth(C_FOLDING_MARGIN, 16);
         // use "|" here or we might break plugins that use the margin (none at the moment)
-        control->SetMarginMask(foldingMargin, control->GetMarginMask(foldingMargin) |
-                                              (wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED))));
-        control->SetMarginSensitive(foldingMargin, 1);
+        control->SetMarginMask(C_FOLDING_MARGIN,
+                                 control->GetMarginMask(C_FOLDING_MARGIN)
+                               | (  wxSCI_MASK_FOLDERS
+                                  - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
+                                     | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
+        control->SetMarginSensitive(C_FOLDING_MARGIN, 1);
 
     }
     else
     {
         control->SetProperty(_T("fold"), _T("0"));
-        control->SetMarginWidth(foldingMargin, 0);
+        control->SetMarginWidth(C_FOLDING_MARGIN, 0);
     }
 
     // line numbering
-    control->SetMarginType(lineMargin, wxSCI_MARGIN_NUMBER);
+    control->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
 }
 
 void cbEditor::SetColourSet(EditorColourSet* theme)
@@ -1851,9 +1855,7 @@ bool cbEditor::SaveFoldState()
         m_foldBackup->SetText(m_pControl->GetText());
         int count = m_pControl->GetLineCount();
         for (int i = 0; i < count; ++i)
-        {
             m_foldBackup->SetFoldLevel(i,m_pControl->GetFoldLevel(i));
-        }
         bRet = true;
     }
     return bRet;
@@ -2729,10 +2731,10 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
         // because here the focus has not switched yet (i.e. the left control has the focus,
         // but the user right-clicked inside the right control), we find out the active control differently...
         wxPoint clientpos(ScreenToClient(position));
-        const int margin = m_pControl->GetMarginWidth(lineMargin) +     // numbers, if present
-                           m_pControl->GetMarginWidth(markerMargin) +   // breakpoints, bookmarks... if present
-                           m_pControl->GetMarginWidth(foldingMargin) +  // folding, if present
-                           m_pControl->GetMarginWidth(changebarMargin); // changebar, if present
+        const int margin = m_pControl->GetMarginWidth(C_LINE_MARGIN) +     // numbers, if present
+                           m_pControl->GetMarginWidth(C_MARKER_MARGIN) +   // breakpoints, bookmarks... if present
+                           m_pControl->GetMarginWidth(C_FOLDING_MARGIN) +  // folding, if present
+                           m_pControl->GetMarginWidth(C_CHANGEBAR_MARGIN); // changebar, if present
         wxRect r = m_pControl->GetRect();
 
         bool inside1 = r.Contains(clientpos);
@@ -2814,16 +2816,16 @@ void cbEditor::OnAfterBuildContextMenu(ModuleType /*type*/)
 void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
 {
     // print line numbers?
-    m_pControl->SetMarginType(lineMargin, wxSCI_MARGIN_NUMBER);
+    m_pControl->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
     if (!line_numbers)
     {
         m_pControl->SetPrintMagnification(-1);
-        m_pControl->SetMarginWidth(lineMargin, 0);
+        m_pControl->SetMarginWidth(C_LINE_MARGIN, 0);
     }
     else
     {
         m_pControl->SetPrintMagnification(-2);
-        m_pControl->SetMarginWidth(lineMargin, 1);
+        m_pControl->SetMarginWidth(C_LINE_MARGIN, 1);
     }
     // never print the gutter line
     m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
@@ -2865,9 +2867,9 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
     // revert line numbers and gutter settings
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
     if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        m_pControl->SetMarginWidth(lineMargin, 48);
+        m_pControl->SetMarginWidth(C_LINE_MARGIN, 48);
     else
-        m_pControl->SetMarginWidth(lineMargin, 0);
+        m_pControl->SetMarginWidth(C_LINE_MARGIN, 0);
     m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
 }
 
@@ -3018,7 +3020,7 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
 {
     switch (event.GetMargin())
     {
-        case markerMargin: // bookmarks and breakpoints margin
+        case C_MARKER_MARGIN: // bookmarks and breakpoints margin
         {
             int lineYpix = event.GetPosition();
             int line = GetControl()->LineFromPosition(lineYpix);
@@ -3026,7 +3028,7 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
             ToggleBreakpoint(line);
             break;
         }
-        case foldingMargin: // folding margin
+        case C_FOLDING_MARGIN: // folding margin
         {
             int lineYpix = event.GetPosition();
             int line = GetControl()->LineFromPosition(lineYpix);
