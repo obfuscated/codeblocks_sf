@@ -128,34 +128,17 @@ if (NOT DEFINED BUILD_USE_SOLUTION_FOLDERS)
     set( BUILD_USE_SOLUTION_FOLDERS TRUE )
 endif()
 
-set( BUILD_USE_SOLUTION_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS} CACHE BOOL "Use solution folders to group projects in MSVC Gui")
+set( BUILD_USE_SOLUTION_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS} CACHE BOOL "Use solution folders to group projects in MSVC Gui" FORCE)
 set_property( GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS} )
 
 # ---------------------------------------------------------------------------
 # Don't insist that everything needs to be built before being able to "install"
 
 if (NOT DEFINED CMAKE_SKIP_INSTALL_ALL_DEPENDENCY)
-    set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE CACHE INTERNAL "Don't require all projects to be built in order to install" FORCE)
+    set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY TRUE)
 endif()
 
-# ===========================================================================
-# Enable doxygen to be run via "make doc" if the doxygen executable is found
-# It includes the Doxyfile.in file.
-# ===========================================================================
-
-find_package(Doxygen)
-
-if (DOXYGEN_FOUND_fixme)
-    configure_file( ${CMAKE_SOURCE_DIR}/build/Doxyfile.in
-                    ${CMAKE_BINARY_DIR}/Doxyfile @ONLY )
-    add_custom_target( doc ${DOXYGEN_EXECUTABLE} ${CMAKE_BINARY_DIR}/Doxyfile
-                       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                       COMMENT "Generate API documentation with Doxygen" VERBATUM )
-
-    message( STATUS "* Doxygen found, run $make doc to generate documentation in doc/ folder" )
-else()
-    message( STATUS "* WARNING: Doxygen NOT found, 'doc' target will not be generated" )
-endif (DOXYGEN_FOUND_fixme)
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY ${CMAKE_SKIP_INSTALL_ALL_DEPENDENCY} CACHE BOOL "Don't require all projects to be built in order to install" FORCE)
 
 # ===========================================================================
 # Build Settings
@@ -172,7 +155,7 @@ endif()
 
 # There is some weirdness between CMake versions showing (or not) CMAKE_INSTALL_PREFIX to the user
 # Just show our own variable and hide theirs to smooth over the inconsistencies.
-set( BUILD_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE PATH "Install Directory prefix for INSTALL target" FORCE)
+set( BUILD_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE PATH     "Install Directory prefix for INSTALL target" FORCE)
 set( CMAKE_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE INTERNAL "Install Directory prefix for INSTALL target" FORCE)
 
 # ---------------------------------------------------------------------------
@@ -180,12 +163,14 @@ set( CMAKE_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE INTERNAL "Install Direct
 # ---------------------------------------------------------------------------
 
 if ((CMAKE_SIZEOF_VOID_P MATCHES 4) OR (CMAKE_CL_64 MATCHES 0))
-    set(IS_32_BIT TRUE)
-    set(IS_64_BIT FALSE)
+    set(IS_32_BIT TRUE  CACHE INTERNAL "")
+    set(IS_64_BIT FALSE CACHE INTERNAL "")
 elseif((CMAKE_SIZEOF_VOID_P MATCHES 8) OR (CMAKE_CL_64 MATCHES 1))
-    set(IS_32_BIT FALSE)
-    set(IS_64_BIT TRUE)
-else()
+    set(IS_32_BIT FALSE CACHE INTERNAL "")
+    set(IS_64_BIT TRUE  CACHE INTERNAL "")
+elseif(NOT DEFINED IS_32_BIT)
+    # Sometimes CMake doesn't set CMAKE_SIZEOF_VOID_P, so we remember the last good value.
+    # http://www.cmake.org/pipermail/cmake/2011-January/042058.html
     MESSAGE(WARNING "Oops, unable to determine if using 32 or 64 bit compilation.")
 endif()
 
@@ -195,18 +180,38 @@ endif()
 # Possible options are "Debug, Release, RelWithDebInfo and MinSizeRel"
 # ---------------------------------------------------------------------------
 
-if (NOT CMAKE_BUILD_TYPE)
-    if (NOT MSVC)
-        # This is used only for the Makefile generator.
-        # In MSVC you can choose the build type in the IDE.
-        set (CMAKE_BUILD_TYPE "Debug" CACHE string "Set build type, options are Debug, Release, RelWithDebInfo, and MinSizeRel" FORCE)
-    endif()
+IF (DEFINED CMAKE_BUILD_TYPE)
+    if(NOT CMAKE_BUILD_TYPE)
+         MESSAGE(STATUS "* No build type was specified, using default 'Debug'")
+         SET (CMAKE_BUILD_TYPE "Debug")
+    ENDIF()
+ELSE()
+    MESSAGE(STATUS "* No build type was specified, using default 'Debug'")
+    SET (CMAKE_BUILD_TYPE "Debug")
+ENDIF()
+
+# Sanity check - we don't handle any other build types
+SET( CMAKE_BUILD_TYPES "Debug;Release;RelWithDebInfo;MinSizeRel" )
+LIST(FIND CMAKE_BUILD_TYPES ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_valid)
+if ("${CMAKE_BUILD_TYPE_valid}" EQUAL "-1")
+    MESSAGE(FATAL_ERROR "Build type can ONLY be one of '${CMAKE_BUILD_TYPES}', but is set to '${CMAKE_BUILD_TYPE}'")
+endif()
+
+if (NOT MSVC)
+    # This is used only for the Makefile generator.
+    # In MSVC you can choose the build type in the IDE.
+    SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "Set build type, options are one of ${CMAKE_BUILD_TYPES}" FORCE)
 endif ()
 
-if (DEFINED CMAKE_BUILD_TYPE)
-    # Useful, since I cannot find a case-insensitive string comparison function
-    string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_UPPERCASE)
-endif()
+# Useful, since I cannot find a case-insensitive string comparison function
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_UPPERCASE)
+
+# We can use this later for the default MSVC library output directories, Debug and Release
+IF ("${CMAKE_BUILD_TYPE_UPPERCASE}" STREQUAL "DEBUG")
+    SET( CMAKE_BUILD_TYPE_CAPTIALIZED "Debug" )
+ELSE() # All other build types are variants of release
+    SET( CMAKE_BUILD_TYPE_CAPTIALIZED "Release" )
+ENDIF()
 
 # ---------------------------------------------------------------------------
 # Set the default for CMake's add_library(target [STATIC/SHARED]) directive
@@ -221,9 +226,9 @@ endif()
 
 if( "${BUILD_SHARED_LIBS}" STREQUAL "" )
     if (WIN32)
-        set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Build shared libraries (TRUE) or static libraries (FALSE)" FORCE)
+        set(BUILD_SHARED_LIBS FALSE)
     else()
-        set(BUILD_SHARED_LIBS TRUE  CACHE BOOL "Build shared libraries (TRUE) or static libraries (FALSE)" FORCE)
+        set(BUILD_SHARED_LIBS TRUE)
     endif()
 endif()
 
@@ -273,16 +278,20 @@ endif()
 # Also works for MSVC so you don't have to look at the BuildLog file.
 
 if (NOT DEFINED BUILD_VERBOSELY)
-    set(BUILD_VERBOSELY FALSE CACHE BOOL "Verbose compiler build output (enable if using Eclipse to help it discover paths)" )
+    set(BUILD_VERBOSELY FALSE )
 endif()
 
+set( BUILD_VERBOSELY        ${BUILD_VERBOSELY} CACHE BOOL "Verbose compiler build output (enable if using Eclipse to help it discover paths)" FORCE)
 set( CMAKE_VERBOSE_MAKEFILE ${BUILD_VERBOSELY} CACHE BOOL "Verbose build output (set by BUILD_VERBOSELY)" FORCE)
 
 # ---------------------------------------------------------------------------
 # Compiler specific settings
 # ---------------------------------------------------------------------------
 
-set(BUILD_WARNINGS_HIGH FALSE CACHE BOOL "Build with a higher level of warnings than normal")
+if (NOT DEFINED BUILD_WARNINGS_HIGH)
+    SET(BUILD_WARNINGS_HIGH FALSE)
+endif()
+SET(BUILD_WARNINGS_HIGH ${BUILD_WARNINGS_HIGH} CACHE BOOL "Build with a higher level of warnings than normal" FORCE)
 
 if (MSVC) # if (CMAKE_BUILD_TOOL MATCHES "(msdev|devenv|nmake)")
 
@@ -325,12 +334,12 @@ elseif (UNIX) # elseif (CMAKE_BUILD_TOOL MATCHES "(gmake)")
     if (NOT DEFINED CMAKE_COLOR_MAKEFILE)
         set(CMAKE_COLOR_MAKEFILE TRUE)
     endif()
-    set( CMAKE_COLOR_MAKEFILE ${CMAKE_COLOR_MAKEFILE} CACHE BOOL "Colorize the makefile output.")
+    set( CMAKE_COLOR_MAKEFILE ${CMAKE_COLOR_MAKEFILE} CACHE BOOL "Colorize the makefile output." FORCE)
 
     # -----------------------------------------------------------------------
     if (IS_64_BIT)
         add_definitions( -fPIC )
-        set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -fPIC)
+        #set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -fPIC)
     endif()
 endif()
 
@@ -382,6 +391,8 @@ message(STATUS " ")
 #                                       wxWidgets_ALL_COMPONENTS list.
 # ---------------------------------------------------------------------------
 
+set(DOXYGEN_PREDEFINED_WXWIDGETS "WXUNUSED(x)=x DECLARE_EXPORTED_EVENT_TYPE(x,y,z)=y")
+
 macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
 
     # We only want this function called once per CMake configure, but we may link
@@ -429,9 +440,11 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
             set(wxWidgets_COMPONENTS stc ${wxWidgets_COMPONENTS})
         endif()
 
-        list(FIND wxWidgets_COMPONENTS stc idx)
-        if (idx GREATER "-1")
-            include_directories(${wxWidgets_ROOT_DIR}/contrib/include)
+        if (NOT UNIX)
+            list(FIND wxWidgets_COMPONENTS stc idx)
+            if (idx GREATER "-1")
+                include_directories(${wxWidgets_ROOT_DIR}/contrib/include)
+            endif()
         endif()
     else()
 
@@ -582,6 +595,7 @@ function( DETERMINE_WXWIDGETS_VERSION )
         execute_process(COMMAND ${wxWidgets_CONFIG_EXECUTABLE} --version OUTPUT_VARIABLE wxWidgets_VERSION)
         # remove spaces and linefeed
         string(STRIP "${wxWidgets_VERSION}" wxWidgets_VERSION)
+
         # Match major.minor.revision
         string(REGEX MATCH "^([0-9]+)\\."   wxWidgets_MAJOR_VERSION  ${wxWidgets_VERSION})
         string(REGEX MATCH "\\.([0-9]+)\\." wxWidgets_MINOR_VERSION  ${wxWidgets_VERSION})
@@ -600,13 +614,13 @@ function( DETERMINE_WXWIDGETS_VERSION )
         ENDIF()
     endif()
 
-    set(wxWidgets_VERSION        "${wxWidgets_VERSION}"        CACHE STRING "The wxWidgets version to compile and link against. (e.g. 2.9.3)")
-    set(wxWidgets_MAJOR_VERSION  "${wxWidgets_MAJOR_VERSION}"  CACHE STRING "")
-    set(wxWidgets_MINOR_VERSION  "${wxWidgets_MINOR_VERSION}"  CACHE STRING "")
-    set(wxWidgets_RELEASE_NUMBER "${wxWidgets_RELEASE_NUMBER}" CACHE STRING "")
+    set(wxWidgets_VERSION        "${wxWidgets_VERSION}"        CACHE STRING "The wxWidgets version to compile and link against. (e.g. 2.9.3)" FORCE)
+    set(wxWidgets_MAJOR_VERSION  "${wxWidgets_MAJOR_VERSION}"  CACHE STRING "" FORCE)
+    set(wxWidgets_MINOR_VERSION  "${wxWidgets_MINOR_VERSION}"  CACHE STRING "" FORCE)
+    set(wxWidgets_RELEASE_NUMBER "${wxWidgets_RELEASE_NUMBER}" CACHE STRING "" FORCE)
 
-    set(wxWidgets_RELEASE       "${wxWidgets_MAJOR_VERSION}.${wxWidgets_MINOR_VERSION}" CACHE STRING "")
-    set(wxWidgets_RELEASE_NODOT "${wxWidgets_MAJOR_VERSION}${wxWidgets_MINOR_VERSION}" CACHE STRING "")
+    set(wxWidgets_RELEASE       "${wxWidgets_MAJOR_VERSION}.${wxWidgets_MINOR_VERSION}" CACHE STRING "" FORCE)
+    set(wxWidgets_RELEASE_NODOT "${wxWidgets_MAJOR_VERSION}${wxWidgets_MINOR_VERSION}" CACHE STRING "" FORCE)
 
     mark_as_advanced( wxWidgets_MAJOR_VERSION
                       wxWidgets_MINOR_VERSION
@@ -633,6 +647,7 @@ function( PARSE_WXWIDGETS_LIB_NAMES )
     set(wxWidgets_UNICODEFLAG "" CACHE STRING "wxWidgets unicode build, either 'u' or ''" FORCE)
     set(wxWidgets_DEBUGFLAG   "" CACHE STRING "wxWidgets debug build, either 'd' or ''" FORCE)
 
+    # wxWidgets lib/dll build using MSVC
     if ("${wxWidgets_PORTNAME}" STREQUAL "")
         string(REGEX MATCH "wx(msw)(univ)?([0-9][0-9])(u)?(d)?_core" _match_msw "${wxWidgets_LIBRARIES}")
 
@@ -645,10 +660,50 @@ function( PARSE_WXWIDGETS_LIB_NAMES )
         endif()
     endif()
 
+    # wxWidgets monolithic DLL build using nmake MSVC : lib/vc_amd64_dll/wxmsw29ud.lib and wxmsw294ud_vc_custom.dll
+    if ("${wxWidgets_PORTNAME}" STREQUAL "")
+        string(REGEX MATCH "wx(msw)(univ)?([0-9][0-9])(u)?(d)?\\.lib" _match_msw_mono "${wxWidgets_LIBRARIES}")
+
+        if (NOT "${_match_msw_mono}" STREQUAL "")
+            set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
+            set(wxWidgets_UNIVNAME    "${CMAKE_MATCH_2}" )
+            #set(wxWidgets_LIB_VERSION "${CMAKE_MATCH_3}" )
+            set(wxWidgets_UNICODEFLAG "${CMAKE_MATCH_4}" )
+            set(wxWidgets_DEBUGFLAG   "${CMAKE_MATCH_5}" )
+        endif()
+    endif()
+
+    # wxWidgets GTK2 build using configure
     if ("${wxWidgets_PORTNAME}" STREQUAL "")
         string(REGEX MATCH "wx_(gtk[12]?)(univ)?(u)?(d)?_core-([0-9].[0-9])" _match_gtk "${wxWidgets_LIBRARIES}")
 
         if (NOT "${_match_gtk}" STREQUAL "")
+            set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
+            set(wxWidgets_UNIVNAME    "${CMAKE_MATCH_2}" )
+            set(wxWidgets_UNICODEFLAG "${CMAKE_MATCH_3}" )
+            set(wxWidgets_DEBUGFLAG   "${CMAKE_MATCH_4}" )
+            #set(wxWidgets_LIB_VERSION "${CMAKE_MATCH_5}" )
+        endif()
+    endif()
+
+    # wxWidgets OSX Cocoa build using configure
+    if ("${wxWidgets_PORTNAME}" STREQUAL "")
+        # libwx_osx_cocoau_core-2.9.a
+        string(REGEX MATCH "wx_(osx_cocoa)(univ)?(u)?(d)?_core-([0-9].[0-9])" _match_osx_cocoa "${wxWidgets_LIBRARIES}")
+        if (NOT "${_match_osx_cocoa}" STREQUAL "")
+            set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
+            set(wxWidgets_UNIVNAME    "${CMAKE_MATCH_2}" )
+            set(wxWidgets_UNICODEFLAG "${CMAKE_MATCH_3}" )
+            set(wxWidgets_DEBUGFLAG   "${CMAKE_MATCH_4}" )
+            #set(wxWidgets_LIB_VERSION "${CMAKE_MATCH_5}" )
+        endif()
+    endif()
+
+    # wxWidgets OSX Carbon build using configure
+    if ("${wxWidgets_PORTNAME}" STREQUAL "")
+        # libwx_macud-2.8.dylib
+        string(REGEX MATCH "wx_(mac)(univ)?(u)?(d)?-([0-9].[0-9])" _match_mac "${wxWidgets_LIBRARIES}")
+        if (NOT "${_match_mac}" STREQUAL "")
             set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
             set(wxWidgets_UNIVNAME    "${CMAKE_MATCH_2}" )
             set(wxWidgets_UNICODEFLAG "${CMAKE_MATCH_3}" )
@@ -764,7 +819,7 @@ endfunction(VERIFY_WXWIDGETS_COMPONENTS)
 # The libs will be named like this: ${lib_prefix}-wx28mswud-${lib_postfix}
 # lib_prefix should be the name of your lib and lib_postfix the version.
 # ---------------------------------------------------------------------------
-macro( WXLIKE_LIBRARY_NAMES target_name lib_prefix lib_postfix )
+function( WXLIKE_LIBRARY_NAMES target_name lib_prefix lib_postfix )
 
     # wxWidgets names their libaries this way - note MSW and Unix are different
     # wx$(PORTNAME)$(WXUNIVNAME)$(WX_RELEASE_NODOT)$(WXUNICODEFLAG)$(WXDEBUGFLAG)$(WX_LIB_FLAVOUR).lib
@@ -794,4 +849,4 @@ macro( WXLIKE_LIBRARY_NAMES target_name lib_prefix lib_postfix )
     set_target_properties(${target_name} PROPERTIES RELEASE_OUTPUT_NAME        ${_libname_release})
     set_target_properties(${target_name} PROPERTIES MINSIZEREL_OUTPUT_NAME     ${_libname_release})
     set_target_properties(${target_name} PROPERTIES RELWITHDEBINFO_OUTPUT_NAME ${_libname_release})
-endmacro()
+endfunction()

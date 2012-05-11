@@ -153,13 +153,13 @@ public :
 
     // Get the current dir (not file), optionally add a trailing platform dependent '/' or '\'
     wxString GetPath(bool add_wxFILE_SEP_PATH = false) const;
-    // Go to a directory, returns sucess
+    // Go to a directory, returns success
     bool SetPath(const wxString &dirName);
 
     // go to a dir or send an EVT_FILEBROWSER_FILE_ACTIVATED if a filename
     bool OpenFilePath(const wxString &filePath);
 
-    // Go to a higher directory, returns sucess
+    // Go to a higher directory, returns success
     bool CanGoUpDir() const;
     bool GoUpDir();
 

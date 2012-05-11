@@ -27,7 +27,7 @@
 
 #define PRINT_BLOCK(msg, b) { wxPrintf(wxT("Block '%s' %lg %lg %lg %lg\n"), msg, (double)(b).m_x1, (double)(b).m_y1, (double)(b).m_x2, (double)(b).m_y2); }
 
-wxBlockInt const wxEmptyBlockInt(0, 0, -1, -1);
+wxBlockInt    const wxEmptyBlockInt(0, 0, -1, -1);
 wxBlockDouble const wxEmptyBlockDouble(0, 0, -1, -1);
 
 #include <wx/arrimpl.cpp>

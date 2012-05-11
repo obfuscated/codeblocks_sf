@@ -80,7 +80,7 @@ public:
     int HasOption(const wxString &name) const;
     // Search through the option names for this part returning the first match
     int FindOption(const wxString &part_of_option_name) const;
-    // delete this option, returns sucess
+    // delete this option, returns success
     bool DeleteOption(const wxString &name);
     bool DeleteOption( size_t n );
 
@@ -103,7 +103,7 @@ public:
     wxString GetOption(const wxString& name) const; // returns wxEmptyString if not found
     int GetOptionInt(const wxString& name) const;   // returns 0 if not found
 
-    // These return true on sucess otherwise the value is not modified
+    // These return true on success otherwise the value is not modified
     bool GetOption(const wxString& name, wxString &value ) const;
     bool GetOption(const wxString& name, int *value ) const;
     bool GetOption(const wxString& name, float *value ) const;

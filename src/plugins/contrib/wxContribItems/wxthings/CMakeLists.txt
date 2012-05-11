@@ -24,7 +24,7 @@ include( build/CMakeFunctions.txt )
 
 # Specify what wxWidgets libs we need to link to. Note: 'core' must be before 'base'.
 # If you call this CMakeLists.txt from another one you may have already called FIND_WXWIDGETS()
-if (NOT wxWidgets_COMPONENTS)
+if (NOT DEFINED wxWidgets_COMPONENTS)
     set(wxWidgets_COMPONENTS adv core base) # minimal set for static lib/dll
     #set(wxWidgets_COMPONENTS gl xrc xml net media propgrid richtext aui stc html adv core base) # for multilib/dll
     #set(wxWidgets_COMPONENTS stc mono) # for monolithic
@@ -51,16 +51,45 @@ set( wxThings_MAJOR_VERSION   "1" )
 set( wxThings_MINOR_VERSION   "0" )
 set( wxThings_RELEASE_VERSION "0" )
 
+# ---------------------------------------------------------------------------
+
 ADD_CPPCHECK_TEST(wxThings_CppCheck)
+
+set( DOXYGEN_PROJECT_NAME        "wxThings" )
+set( DOXYGEN_PROJECT_NUMBER      "${wxThings_VERSION}" )
+set( DOXYGEN_OUTPUT_DIRECTORY    "${CMAKE_BINARY_DIR}/doc-wxThings" )
+set( DOXYGEN_STRIP_FROM_PATH     "${wxThings_ROOT_DIR}/include" )
+set( DOXYGEN_STRIP_FROM_INC_PATH "${wxThings_ROOT_DIR}/include" )
+set( DOXYGEN_INPUT               "${wxThings_ROOT_DIR}/include" )
+set( DOXYGEN_FILE_PATTERNS       "*.h *.hpp" )
+set( DOXYGEN_PREDEFINED          "${DOXYGEN_PREDEFINED_WXWIDGETS}  WXDLLIMPEXP_DATA_THINGS(x)=x")
+
+ADD_DOXYGEN( wxThings_doxygen
+             ${wxThings_ROOT_DIR}/build/CMake-doxygen.in
+             ${CMAKE_BINARY_DIR}/doxygen_wxThings.cfg
+             ${CMAKE_BINARY_DIR} )
+
+# ---------------------------------------------------------------------------
+
 
 include_directories( ${wxThings_ROOT_DIR}/include/ )
 
 # We use some functions from GTK directly
-if ("${wxWidgets_PLATFORM}" STREQUAL "gtk2")
+if ("${wxWidgets_PORTNAME}" STREQUAL "gtk2")
     find_package(GTK2)
+
+    if (NOT GTK2_FOUND)
+        MESSAGE(WARNING "Unable to find GTK2, you might need to install the gtk2-devel package")
+    endif()
+
     include_directories( ${GTK2_INCLUDE_DIRS} )
-elseif ("${wxWidgets_PLATFORM}" STREQUAL "gtk")
+elseif ("${wxWidgets_PORTNAME}" STREQUAL "gtk")
     find_package(GTK)
+
+    if (NOT GTK_FOUND)
+        MESSAGE(WARNING "Unable to find GTK, you might need to install the gtk-devel package")
+    endif()
+
     include_directories( ${GTK_INCLUDE_DIRS} )
 endif()
 
@@ -239,7 +268,7 @@ install(FILES
 # CMake build file for wxThings sample
 # ---------------------------------------------------------------------------
 
-ADD_EXECUTABLE_FULL( wxThingsDemo WIN32
+ADD_EXECUTABLE_FULL( wxThingsDemo WIN32 MACOSX_BUNDLE
     HEADERS ""
     SOURCES
         ${wxThings_ROOT_DIR}/samples/things/thingsdemo.cpp
@@ -253,7 +282,7 @@ ADD_EXECUTABLE_FULL( wxThingsDemo WIN32
 # CMake build file for wxThings FileBrowser sample
 # ---------------------------------------------------------------------------
 
-ADD_EXECUTABLE_FULL( wxFileBrowser WIN32
+ADD_EXECUTABLE_FULL( wxFileBrowser WIN32 MACOSX_BUNDLE
     HEADERS ""
     SOURCES
         ${wxThings_ROOT_DIR}/samples/filebrws/wxfilebrowser.cpp

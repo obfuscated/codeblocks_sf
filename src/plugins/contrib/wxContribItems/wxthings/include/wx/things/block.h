@@ -29,9 +29,9 @@ class WXDLLIMPEXP_FWD_THINGS wxBlockIntSelection;
 class WXDLLIMPEXP_FWD_THINGS wxBlockDoubleSelection;
 
 #include <wx/dynarray.h>
-WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockInt, wxArrayBlockInt, class WXDLLIMPEXP_THINGS);
-WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockDouble, wxArrayBlockDouble, class WXDLLIMPEXP_THINGS);
-WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockIntSelection, wxArrayBlockIntSelection, class WXDLLIMPEXP_THINGS);
+WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockInt,             wxArrayBlockInt,             class WXDLLIMPEXP_THINGS);
+WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockDouble,          wxArrayBlockDouble,          class WXDLLIMPEXP_THINGS);
+WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockIntSelection,    wxArrayBlockIntSelection,    class WXDLLIMPEXP_THINGS);
 WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockDoubleSelection, wxArrayBlockDoubleSelection, class WXDLLIMPEXP_THINGS);
 
 //=============================================================================
@@ -39,7 +39,7 @@ WX_DECLARE_OBJARRAY_WITH_DECL(wxBlockDoubleSelection, wxArrayBlockDoubleSelectio
 //=============================================================================
 
 // wxEmptyBlockXXX = (0,0,-1,-1)
-WXDLLIMPEXP_DATA_THINGS(extern const wxBlockInt) wxEmptyBlockInt;
+WXDLLIMPEXP_DATA_THINGS(extern const wxBlockInt)    wxEmptyBlockInt;
 WXDLLIMPEXP_DATA_THINGS(extern const wxBlockDouble) wxEmptyBlockDouble;
 
 //=============================================================================
@@ -61,7 +61,7 @@ WXDLLIMPEXP_THINGS void wxArrayBlockIntSort(wxArrayBlockInt &blocks,
                                 wxBlockSort_Type type = wxBLOCKSORT_TOPLEFT_BOTTOMRIGHT);
 
 WXDLLIMPEXP_THINGS void wxArrayBlockDoubleSort(wxArrayBlockDouble &blocks,
-                                   wxBlockSort_Type type = wxBLOCKSORT_TOPLEFT_BOTTOMRIGHT);
+                                wxBlockSort_Type type = wxBLOCKSORT_TOPLEFT_BOTTOMRIGHT);
 
 //=============================================================================
 // wxBlockInt - a rectangle bounded by the corner points that can combine with
