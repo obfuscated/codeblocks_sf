@@ -163,7 +163,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
 #endif
     Fit();
-    CenterOnParent();
+    CentreOnParent();
 }
 
 // class destructor
