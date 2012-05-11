@@ -247,7 +247,8 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         bt->SetTargetType(ttNative);
     else if (conftype.IsSameAs(_T("10"))) // typeGeneric 10
         bt->SetTargetType(ttCommandsOnly);
-    else { // typeUnknown 0
+    else // typeUnknown 0
+    {
         bt->SetTargetType(ttCommandsOnly);
         Manager::Get()->GetLogManager()->DebugLog(_T("unrecognized project type"));
     }
@@ -267,24 +268,26 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             // linker
             wxString tmp;
 
-            if ((bt->GetTargetType()==ttExecutable) || (bt->GetTargetType()==ttNative)) {
+            if ((bt->GetTargetType()==ttExecutable) || (bt->GetTargetType()==ttNative))
+            {
                 tmp = cbC2U(tool->Attribute("SubSystem"));
                 //subSystemNotSet 0
                 //subSystemConsole 1
                 //subSystemWindows 2
-                if (tmp.IsSameAs(_T("1"))) {
+                if (tmp.IsSameAs(_T("1")))
+                {
                     bt->SetTargetType(ttConsoleOnly);
                     //bt->AddLinkerOption("/SUBSYSTEM:CONSOLE"); // don't know if it is necessary
                 }
-                else if (tmp.IsSameAs(_T("3"))) {
+                else if (tmp.IsSameAs(_T("3")))
                     bt->SetTargetType(ttNative);
-                }
             } // else we keep executable
 
             tmp = ReplaceMSVCMacros(cbC2U(tool->Attribute("OutputFile")));
             tmp = UnixFilename(tmp);
             if (tmp.Last() == _T('.')) tmp.RemoveLast();
-            if (bt->GetTargetType() == ttStaticLib) {
+            if (bt->GetTargetType() == ttStaticLib)
+            {
                 // convert the lib name
                 Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
                 if (compiler)
@@ -340,7 +343,8 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             }
 
             // other options: /MACHINE:I386, /INCREMENTAL:YES, /STACK:10000000
-            if (!m_ConvertSwitches) {
+            if (!m_ConvertSwitches)
+            {
                 arr = GetArrayFromString(ReplaceMSVCMacros(cbC2U(tool->Attribute("AdditionalOptions"))), _T(" "));
                 for (unsigned int i = 0; i < arr.GetCount(); ++i) bt->AddLinkerOption(arr[i]);
             }
@@ -621,7 +625,8 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                             // remove the directory from the include list
                             sAdditionalInclude = sAdditionalInclude.Mid(iEnd + 2);
                             iCommaPosition = sAdditionalInclude.Find(_T(","));
-                        } while (sAdditionalInclude.Len() > 0);
+                        }
+                        while (sAdditionalInclude.Len() > 0);
                     }
 
                     tool = tool->NextSiblingElement();
