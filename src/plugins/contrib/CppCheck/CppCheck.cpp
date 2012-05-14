@@ -236,6 +236,8 @@ int CppCheck::Execute()
         wxString IncludeDir(IncludeDirs[Dir]);
         if (target)
             MacrosMgr->ReplaceMacros(IncludeDir, target);
+        else
+            MacrosMgr->ReplaceMacros(IncludeDir);
         IncludeList += _T("-I\"") + IncludeDir + _T("\" ");
     }
     if (target)
