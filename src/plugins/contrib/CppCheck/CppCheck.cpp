@@ -31,6 +31,7 @@
 #include <wx/utils.h>
 
 #include "tinyxml/tinyxml.h"
+#include "filefilters.h"
 #include "loggers.h"
 
 #include "CppCheck.h"
@@ -215,11 +216,11 @@ int CppCheck::Execute()
     {
         ProjectFile* pf = *it;
         // filter to avoid including non C/C++ files
-        if (pf->relativeFilename.Mid(2).Lower() == wxT(".c")   ||
-            pf->relativeFilename.Mid(4).Lower() == wxT(".cpp") ||
-            pf->relativeFilename.Mid(3).Lower() == wxT(".cc")  ||
-            pf->relativeFilename.Mid(3).Lower() == wxT(".c++") ||
-            pf->relativeFilename.Mid(4).Lower() == wxT(".cxx") ||
+        if (pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)   ||
+            pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT) ||
+            pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)  ||
+            pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT) ||
+            pf->relativeFilename.EndsWith(_T(".c++")) ||
             FileTypeOf(pf->relativeFilename) == ftHeader)
         {
             Input.Write(pf->relativeFilename + _T("\n"));
