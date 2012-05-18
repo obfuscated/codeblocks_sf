@@ -54,7 +54,7 @@ void CompilerDMC::Reset()
     m_Switches.needDependencies = false;
     m_Switches.forceCompilerUseQuotes = false;
     m_Switches.forceLinkerUseQuotes = true;
-    m_Switches.logging = clogSimple;
+    m_Switches.logging = CompilerSwitches::defaultLogging;
     m_Switches.linkerNeedsLibPrefix = false;
     m_Switches.linkerNeedsLibExtension = true;
 

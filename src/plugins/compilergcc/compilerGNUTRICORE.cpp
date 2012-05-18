@@ -72,7 +72,7 @@ void CompilerGNUTRICORE::Reset()
     m_Switches.needDependencies = true;
     m_Switches.forceCompilerUseQuotes = false;
     m_Switches.forceLinkerUseQuotes = false;
-    m_Switches.logging = clogFull;
+    m_Switches.logging = CompilerSwitches::defaultLogging;
     m_Switches.libPrefix = _T("lib");
     m_Switches.libExtension = _T("a");
     m_Switches.linkerNeedsLibPrefix = false;

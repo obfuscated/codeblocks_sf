@@ -54,7 +54,7 @@ CompilerSwitches::CompilerSwitches()
     forceFwdSlashes         = false;
     forceCompilerUseQuotes  = false;
     forceLinkerUseQuotes    = false;
-    logging                 = clogSimple;
+    logging                 = defaultLogging;
     libPrefix               = _T("lib");
     libExtension            = _T("a");
     linkerNeedsLibPrefix    = false;

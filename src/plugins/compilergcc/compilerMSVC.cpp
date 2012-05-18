@@ -56,7 +56,7 @@ void CompilerMSVC::Reset()
     m_Switches.needDependencies = false;
     m_Switches.forceCompilerUseQuotes = false;
     m_Switches.forceLinkerUseQuotes = false;
-    m_Switches.logging = clogNone;
+    m_Switches.logging = CompilerSwitches::defaultLogging;
     m_Switches.libPrefix = _T("");
     m_Switches.libExtension = _T("lib");
     m_Switches.linkerNeedsLibPrefix = false;

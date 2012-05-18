@@ -161,6 +161,7 @@ struct CompilerPrograms
 /// Struct to keep switches
 struct CompilerSwitches
 {
+    static const CompilerLoggingType defaultLogging = clogFull;
     wxString includeDirs;         // -I
     wxString libDirs;             // -L
     wxString linkLibs;            // -l
