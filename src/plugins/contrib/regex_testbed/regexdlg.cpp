@@ -197,8 +197,21 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
     flags |= m_newlines->IsChecked() ? wxRE_NEWLINE : 0;
     flags |= m_nocase->IsChecked() ? wxRE_ICASE : 0;
 
-    if(!m_wxre.Compile(m_regex->GetValue(), flags) || !m_wxre.Matches(text))
+    if(m_wxre.Compile(m_regex->GetValue(), flags))
+    {
+        m_regex->SetForegroundColour(wxNullColour);
+        m_regex->SetBackgroundColour(wxNullColour);
+        m_regex->GetParent()->Refresh();
+        if(!m_wxre.Matches(text))
+            return ret;
+    }
+    else
+    {
+        m_regex->SetForegroundColour(*wxWHITE);
+        m_regex->SetBackgroundColour(*wxRED);
+        m_regex->GetParent()->Refresh();
         return ret;
+    }
 
     for(size_t i = 0; i < m_wxre.GetMatchCount(); ++i)
         if(m_wxre.GetMatch(text, i))
