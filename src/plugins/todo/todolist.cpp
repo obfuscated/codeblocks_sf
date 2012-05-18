@@ -136,15 +136,16 @@ void ToDoList::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pListLog->GetWindow();
         Manager::Get()->ProcessEvent(evt);
-//        delete m_pListLog;
+        m_pListLog->DestroyControls(true);
+        delete m_pListLog;
     }
     else
     {
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
-//        evt.window = m_pListLog->GetWindow();
+        m_pListLog->DestroyControls(false);
         Manager::Get()->ProcessEvent(evt);
     }
-    m_pListLog = 0;
+    m_pListLog = nullptr;
 }
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)

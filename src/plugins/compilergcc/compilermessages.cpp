@@ -62,6 +62,11 @@ wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
     return control;
 }
 
+void CompilerMessages::DestroyControls()
+{
+    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+}
+
 void CompilerMessages::FocusError(int nr)
 {
     control->SetItemState(nr, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);

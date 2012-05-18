@@ -132,6 +132,18 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     return m_pPanel;
 }
 
+void ToDoListView::DestroyControls(bool control)
+{
+    if (Manager::Get()->IsAppShuttingDown())
+        return;
+    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    if (control)
+    {
+        m_pPanel->Destroy();
+        m_pPanel = nullptr;
+    }
+}
+
 
 void ToDoListView::Parse()
 {

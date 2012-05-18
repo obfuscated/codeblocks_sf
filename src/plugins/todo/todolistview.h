@@ -62,12 +62,13 @@ class CheckListDialog : public wxDialog
     private:
 };
 
-class ToDoListView : public ListCtrlLogger, public wxEvtHandler
+class ToDoListView :  public wxEvtHandler, public ListCtrlLogger
 {
     public:
         ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
         ~ToDoListView();
         virtual wxWindow* CreateControl(wxWindow* parent);
+        void DestroyControls(bool control);
 
         void Parse();
         void ParseCurrent(bool forced);

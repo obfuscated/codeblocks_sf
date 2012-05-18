@@ -489,6 +489,7 @@ void CompilerGCC::OnRelease(bool appShutDown)
         m_pLog = 0;
 
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+        m_pListLog->DestroyControls();
         Manager::Get()->ProcessEvent(evt);
         m_pListLog = 0;
     }
