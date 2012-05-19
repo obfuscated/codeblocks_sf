@@ -529,8 +529,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_LastCtrlAltTabWindow(0),
        m_LastLayoutIsTemp(false),
        m_pScriptConsole(0),
-       m_pBatchBuildDialog(0),
-       m_pProgressBar(0)
+       m_pBatchBuildDialog(0)
 {
     Manager::Get(this); // provide manager with handle to MainFrame (this)
 
