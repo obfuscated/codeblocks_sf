@@ -81,6 +81,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case2"), false));
     XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex2"), false));
     XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
+    XRCCTRL(*this, "chkSortSearchResult2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/sort_search_results2"), true));
     XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/scope2"), 0));
     UpdateUI();
 
@@ -161,6 +162,7 @@ FindDlg::~FindDlg()
     cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/regex2"), XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/sort_search_results2"), XRCCTRL(*this, "chkSortSearchResult2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());
 }
 
@@ -181,6 +183,14 @@ bool FindDlg::GetDeleteOldSearches() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
+
+    return true;  // checkbox doesn't exist in Find dialog
+}
+
+bool FindDlg::GetSortSearchResult() const
+{
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkSortSearchResult2", wxCheckBox)->GetValue();
 
     return true;  // checkbox doesn't exist in Find dialog
 }

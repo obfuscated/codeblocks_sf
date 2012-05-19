@@ -74,6 +74,7 @@ struct cbFindReplaceData
     bool initialreplacing;
     bool findInFiles;
     bool delOldSearches;
+    bool sortSearchResult;
     bool matchWord;
     bool startWord;
     bool startFile; //!< To be implemented.
@@ -1391,6 +1392,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
             m_LastFindReplaceData->findUsesSelectedText = dlg->GetFindUsesSelectedText();
     }
     m_LastFindReplaceData->delOldSearches = dlg->GetDeleteOldSearches();
+    m_LastFindReplaceData->sortSearchResult = dlg->GetSortSearchResult();
     m_LastFindReplaceData->matchWord = dlg->GetMatchWord();
     m_LastFindReplaceData->startWord = dlg->GetStartWord();
     m_LastFindReplaceData->matchCase = dlg->GetMatchCase();
@@ -2495,6 +2497,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         cbMessageBox(_("No files to search in!"), _("Error"), wxICON_WARNING);
         return 0;
     }
+
+    // sort search results alphabetically if option is on
+    if (m_LastFindReplaceData->sortSearchResult)
+        filesList.Sort();
 
     // now that list is filled, we'll search
     // but first we'll create a hidden cbStyledTextCtrl to do the search for us ;)

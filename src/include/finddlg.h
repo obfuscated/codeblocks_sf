@@ -21,6 +21,7 @@ class FindDlg : public FindReplaceBase
         wxString GetReplaceString() const{ return wxEmptyString; }
         bool IsFindInFiles() const;
         bool GetDeleteOldSearches() const;
+        bool GetSortSearchResult() const;
         bool GetMatchWord() const;
         bool GetStartWord() const;
         bool GetMatchCase() const;
