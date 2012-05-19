@@ -341,14 +341,8 @@ void cbProject::CalculateCommonTopLevelPath()
             ++pos;
         }
         if ( (pos > 0) && (pos < tmp.Length()) )
-        {
             tmpbase << sep << tmp.Left(pos) << sep;
-            f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);
-        }
-        else
-            f->relativeToCommonTopLevelPath = tmp;
-        f->SetObjName(f->relativeToCommonTopLevelPath);
-
+            
         wxFileName tmpbaseF(tmpbase);
         tmpbaseF.Normalize(wxPATH_NORM_DOTS);
         if ( tmpbaseF.GetDirCount() < base.GetDirCount() &&
@@ -358,6 +352,19 @@ void cbProject::CalculateCommonTopLevelPath()
 
     m_CommonTopLevelPath = base.GetFullPath();
     Manager::Get()->GetLogManager()->DebugLog(_T("Project's common toplevel path: ") + m_CommonTopLevelPath);
+
+    for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
+    {
+        ProjectFile* f = (*it);
+
+        if (!f)
+            continue;
+
+        wxString fileName = f->file.GetFullPath();
+        f->relativeToCommonTopLevelPath = fileName.Right(fileName.Length() - m_CommonTopLevelPath.Length());
+        f->SetObjName(f->relativeToCommonTopLevelPath);
+    }
+
 }
 
 wxString cbProject::GetCommonTopLevelPath() const
