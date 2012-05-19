@@ -227,6 +227,7 @@ FileType FileTypeOf(const wxString& filename)
         ext.IsSameAs(FileFilters::CC_EXT) ||
         ext.IsSameAs(FileFilters::CPP_EXT) ||
         ext.IsSameAs(FileFilters::CXX_EXT) ||
+        ext.IsSameAs(FileFilters::CPLPL_EXT) ||
         ext.IsSameAs(FileFilters::S_EXT) ||
         ext.IsSameAs(FileFilters::SS_EXT) ||
         ext.IsSameAs(FileFilters::S62_EXT) ||
@@ -247,6 +248,7 @@ FileType FileTypeOf(const wxString& filename)
              ext.IsSameAs(FileFilters::HH_EXT) ||
              ext.IsSameAs(FileFilters::HPP_EXT) ||
              ext.IsSameAs(FileFilters::HXX_EXT) ||
+             ext.IsSameAs(FileFilters::HPLPL_EXT) ||
              ext.IsSameAs(FileFilters::INL_EXT)
             )
         return ftHeader;

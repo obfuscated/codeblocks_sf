@@ -131,7 +131,7 @@ public:
     /// Loads Menu from XRC
     static wxMenu*    LoadMenu(wxString menu_id, bool createonfailure = false);
     /// Loads ToolBar from XRC
-    static wxToolBar *LoadToolBar(wxFrame *parent, wxString resid, bool defaultsmall = true);
+    static wxToolBar* LoadToolBar(wxFrame *parent, wxString resid, bool defaultsmall = true);
 
     // Do not use this, use Get()
     static Manager* Get(wxFrame* appWindow);

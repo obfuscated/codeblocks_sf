@@ -568,7 +568,6 @@ MainFrame::MainFrame(wxWindow* parent)
     SetIcon(wxIcon(app));
 #endif // __WXMSW__
 
-#if wxUSE_STATUSBAR
     // even it is possible that the statusbar is not visible at the moment, create the statusbar so the plugins can create their own fields on the it:
     DoCreateStatusBar();
     SetStatusText(_("Welcome to ")+ appglobals::AppName + _T("!"));
@@ -576,7 +575,7 @@ MainFrame::MainFrame(wxWindow* parent)
     wxStatusBar *sb = GetStatusBar();
     if (sb)
         sb->Show(cfg->ReadBool(_T("/main_frame/statusbar"), true));
-#endif // wxUSE_STATUSBAR
+
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
     LoadWindowSize();
@@ -1269,7 +1268,8 @@ void MainFrame::LoadWindowSize()
     bool maximized = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/maximized"), true);
     Maximize(maximized);
     // set size and position
-    if (maximized) {
+    if (maximized)
+    {
         int index = wxDisplay::GetFromWindow(this);
         wxDisplay display(index);
         rect = display.GetClientArea();
@@ -1526,13 +1526,11 @@ void MainFrame::DoSelectLayout(const wxString& name)
 
 void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
 {
-#if wxUSE_STATUSBAR
     cbStatusBar *sbar = (cbStatusBar *)GetStatusBar();
     if (!sbar)
         return;
     plugin->CreateStatusField(sbar);
     sbar->AdjustFieldsSize();
-#endif
 }
 
 void InitToolbar(wxToolBar *tb)
@@ -1835,36 +1833,31 @@ bool MainFrame::DoCloseCurrentWorkspace()
 
 void MainFrame::DoCreateStatusBar()
 {
-#if wxUSE_STATUSBAR
-    wxCoord width[16]; // 16 max
-
     wxClientDC dc(this);
     wxFont font = dc.GetFont();
     int h;
-    int num = 0;
+    size_t num = 0;
 
+    wxCoord width[16]; // 16 max
     width[num++] = -1; // main field
-//    width[num++] = 128; // progress bar
     dc.GetTextExtent(_(" WINDOWS-1252 "),           &width[num++], &h);
     dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[num++], &h);
     dc.GetTextExtent(_(" Overwrite "),              &width[num++], &h);
     dc.GetTextExtent(_(" Modified "),               &width[num++], &h);
-    dc.GetTextExtent(_(" Read/Write....."),         &width[num++], &h);
+    dc.GetTextExtent(_(" Read/Write... "),          &width[num++], &h);
     dc.GetTextExtent(_(" name_of_profile "),        &width[num++], &h);
 
-    CreateStatusBar(num);
-    SetStatusWidths(num, width);
+    wxStatusBar* sb = CreateStatusBar(num);
+    if (!sb) return;
 
-    // here for later usage
-//    m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
-#endif // wxUSE_STATUSBAR
+    SetStatusWidths(num, width);
 }
 
 void MainFrame::DoUpdateStatusBar()
 {
-#if wxUSE_STATUSBAR
     if (!GetStatusBar())
         return;
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
     if (ed)
@@ -1900,7 +1893,6 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(personality, panel++);
     }
-#endif // wxUSE_STATUSBAR
 }
 
 void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefix, long defaultStyle)
@@ -3883,9 +3875,7 @@ void MainFrame::OnSearchReplace(wxCommandEvent& event)
 {
     bool bDoMultipleFiles = (event.GetId() == idSearchReplaceInFiles);
     if (!bDoMultipleFiles)
-    {
         bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    }
     Manager::Get()->GetEditorManager()->ShowFindDialog(true, bDoMultipleFiles);
 }
 
@@ -4113,6 +4103,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
+
     wxMenuBar* mbar   = GetMenuBar();
     cbEditor*  ed     = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
     bool       manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
@@ -4156,29 +4147,28 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
-    cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
 
-    bool enableGotoChanged = false;
+    cbEditor* ed = Manager::Get()->GetEditorManager()
+                 ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(
+                     Manager::Get()->GetEditorManager()->GetActiveEditor() ) : 0;
 
+    bool enableGoto = false;
     if (ed)
-        enableGotoChanged = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true) && (ed->CanUndo() || ed->CanRedo());
+        enableGoto = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true)
+                   && (ed->CanUndo() || ed->CanRedo());
 
     wxMenuBar* mbar = GetMenuBar();
 
     // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
+    // (idSearchFindInFiles and idSearchReplaceInFiles)
+
     mbar->Enable(idSearchFind,                ed);
     mbar->Enable(idSearchFindNext,            ed);
     mbar->Enable(idSearchFindPrevious,        ed);
     mbar->Enable(idSearchReplace,             ed);
     mbar->Enable(idSearchGotoLine,            ed);
-    mbar->Enable(idSearchGotoNextChanged,     enableGotoChanged);
-    mbar->Enable(idSearchGotoPreviousChanged, enableGotoChanged);
-
-//    if (m_pToolbar)
-//    {
-//        m_pToolbar->EnableTool(idSearchFind, ed);
-//        m_pToolbar->EnableTool(idSearchReplace, ed);
-//    }
+    mbar->Enable(idSearchGotoNextChanged,     enableGoto);
+    mbar->Enable(idSearchGotoPreviousChanged, enableGoto);
 
     event.Skip();
 }
@@ -4190,10 +4180,12 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
         event.Skip();
         return;
     }
+
     cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
+
     mbar->Enable(idFileCloseProject,           prj && canCloseProject);
     mbar->Enable(idFileCloseAllProjects,       prj && canCloseProject);
     mbar->Enable(idFileSaveProject,            prj && prj->GetModified() && canCloseProject);
@@ -4379,9 +4371,7 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& /*event*/)
         m_pCloseFullScreenBtn->Raise();
     }
     else
-    {
         m_pCloseFullScreenBtn->Show( false );
-    }
 }
 
 void MainFrame::OnPluginInstalled(CodeBlocksEvent& event)
@@ -4415,11 +4405,9 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 
     cbPlugin* plugin = event.GetPlugin();
 
-#if wxUSE_STATUSBAR
     cbStatusBar *sb = (cbStatusBar*)GetStatusBar();
     if ( sb )
         sb->RemoveField(plugin);
-#endif
 
     // remove toolbar, if any
     if (m_PluginsTools[plugin])
@@ -4777,12 +4765,10 @@ void MainFrame::StartupDone()
     DoUpdateLayout();
 }
 
-#if wxUSE_STATUSBAR
-wxStatusBar *MainFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
+wxStatusBar* MainFrame::OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name)
 {
-    cbStatusBar *statusBar = new cbStatusBar(this, id, style, name);
-    statusBar->SetFieldsCount(number);
+    cbStatusBar* sb = new cbStatusBar(this, id, style, name);
+    sb->SetFieldsCount(number);
 
-    return statusBar;
+    return sb;
 }
-#endif

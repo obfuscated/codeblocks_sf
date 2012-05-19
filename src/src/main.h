@@ -376,7 +376,6 @@ class MainFrame : public wxFrame
         MenuIDToScript m_MenuIDToScript;
 
         wxScrollingDialog* m_pBatchBuildDialog;
-        wxGauge* m_pProgressBar;
 
         DebuggerMenuHandler *m_debuggerMenuHandler;
         DebuggerToolbarHandler *m_debuggerToolbarHandler;

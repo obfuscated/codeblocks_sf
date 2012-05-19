@@ -88,11 +88,13 @@ namespace FileFilters
     extern const DLLIMPORT wxString CC_EXT;
     extern const DLLIMPORT wxString CPP_EXT;
     extern const DLLIMPORT wxString CXX_EXT;
+    extern const DLLIMPORT wxString CPLPL_EXT;
     extern const DLLIMPORT wxString INL_EXT;
     extern const DLLIMPORT wxString H_EXT;
     extern const DLLIMPORT wxString HH_EXT;
     extern const DLLIMPORT wxString HPP_EXT;
     extern const DLLIMPORT wxString HXX_EXT;
+    extern const DLLIMPORT wxString HPLPL_EXT;
     extern const DLLIMPORT wxString S_EXT;
     extern const DLLIMPORT wxString SS_EXT;
     extern const DLLIMPORT wxString S62_EXT;
@@ -133,11 +135,13 @@ namespace FileFilters
     extern const DLLIMPORT wxString CC_DOT_EXT;
     extern const DLLIMPORT wxString CPP_DOT_EXT;
     extern const DLLIMPORT wxString CXX_DOT_EXT;
+    extern const DLLIMPORT wxString CPLPL_DOT_EXT;
     extern const DLLIMPORT wxString INL_DOT_EXT;
     extern const DLLIMPORT wxString H_DOT_EXT;
     extern const DLLIMPORT wxString HH_DOT_EXT;
     extern const DLLIMPORT wxString HPP_DOT_EXT;
     extern const DLLIMPORT wxString HXX_DOT_EXT;
+    extern const DLLIMPORT wxString HPLPL_DOT_EXT;
     extern const DLLIMPORT wxString S_DOT_EXT;
     extern const DLLIMPORT wxString SS_DOT_EXT;
     extern const DLLIMPORT wxString S62_DOT_EXT;
