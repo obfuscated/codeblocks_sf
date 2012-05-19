@@ -64,7 +64,10 @@ wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
 
 void CompilerMessages::DestroyControls()
 {
-    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    if ( !Manager::Get()->IsAppShuttingDown() )
+    {
+        Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    }
 }
 
 void CompilerMessages::FocusError(int nr)
