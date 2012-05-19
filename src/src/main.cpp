@@ -28,9 +28,7 @@
 #include "scriptingsettingsdlg.h"
 #include "startherepage.h"
 #include "switcherdlg.h"
-#if wxUSE_STATUSBAR
-    #include "cbstatusbar.h"
-#endif
+#include "cbstatusbar.h"
 
 #include <wx/display.h>
 #include <wx/dnd.h>
@@ -303,13 +301,14 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileCloseAll,                      MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrintSetup,                    MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrint,                         MainFrame::OnFileMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProject,                   MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectAs,                 MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectAllProjects,        MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectTemplate,           MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveAll,                       MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileCloseProject,                  MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileCloseAllProjects,              MainFrame::OnProjectMenuUpdateUI)
+
+    EVT_UPDATE_UI(idFileSaveProject,            MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectAs,          MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectTemplate,    MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveAll,                MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseProject,           MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseAllProjects,       MainFrame::OnProjectMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditUndo,                  MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo,                  MainFrame::OnEditMenuUpdateUI)
@@ -366,7 +365,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileNewCustom,  MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewUser,    MainFrame::OnFileNewWhat)
 
-    EVT_MENU(idToolNew, MainFrame::OnFileNew)
+    EVT_MENU(idToolNew,                           MainFrame::OnFileNew)
     EVT_MENU(idFileOpen,                          MainFrame::OnFileOpen)
     EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
     EVT_MENU(idFileOpenRecentFileClearHistory,    MainFrame::OnFileOpenRecentClearHistory)
@@ -1685,7 +1684,6 @@ bool MainFrame::Open(const wxString& filename, bool addToHistory)
     wxFileName fn(filename);
     fn.Normalize(); // really important so that two same files with different names are not loaded twice
     wxString name = fn.GetFullPath();
-    //Manager::Get()->GetLogManager()->DebugLog(_T("Opening file '%s'"), sname.wx_str());
     Manager::Get()->GetLogManager()->DebugLog(_T("Opening file ") + name);
     bool ret = OpenGeneric(name, addToHistory);
     return ret;

@@ -78,7 +78,7 @@ RegExDlg::~RegExDlg()
 void RegExDlg::OnClose(wxCloseEvent& /*event*/)
 {
     VisibleDialogs::iterator it = m_visible_dialogs.find(this);
-    if(it != m_visible_dialogs.end())
+    if (it != m_visible_dialogs.end())
     {
         delete *it;
         m_visible_dialogs.erase(it);
@@ -113,7 +113,7 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     static bool newlines;
     static int library;
 
-//    if(event.GetId() == XRCID("ID_NOCASE") || event.GetId() == XRCID("ID_NEWLINES"))
+//    if (event.GetId() == XRCID("ID_NOCASE") || event.GetId() == XRCID("ID_NEWLINES"))
 //        regex = _T("$^"); // bullshit
 //    all UI elements send events quite often (on linux on every mouse move, if the parent window
 //    has the focus, on windows even without any user action). So we can not use the event Id to force a new
@@ -122,7 +122,7 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 //    cannot scroll the text (windows and linux).
 //
 
-    if( regex == m_regex->GetValue() &&
+    if ( regex == m_regex->GetValue() &&
         text == m_text->GetValue() &&
         nocase == m_nocase->GetValue() &&
         newlines == m_newlines->GetValue() &&
@@ -145,11 +145,11 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 
     wxArrayString as = GetBuiltinMatches(text);
 
-    if(as.IsEmpty())
-        {
+    if (as.IsEmpty())
+    {
         m_output->SetPage(_T("<html><center><b>no matches</b></center></html>"));
         return;
-        }
+    }
 
     wxString s(_T("<html width='100%'><center><b>matches:</b><br><br><font size=-1><table width='100%' border='1' cellspacing='2'>"));
 
@@ -191,18 +191,18 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
 
     int flags = m_library->GetSelection();
 
-    if(text.IsEmpty() || flags > 2) // should not be
+    if (text.IsEmpty() || flags > 2) // should not be
         return ret;
 
     flags |= m_newlines->IsChecked() ? wxRE_NEWLINE : 0;
     flags |= m_nocase->IsChecked() ? wxRE_ICASE : 0;
 
-    if(m_wxre.Compile(m_regex->GetValue(), flags))
+    if (m_wxre.Compile(m_regex->GetValue(), flags))
     {
         m_regex->SetForegroundColour(wxNullColour);
         m_regex->SetBackgroundColour(wxNullColour);
         m_regex->GetParent()->Refresh();
-        if(!m_wxre.Matches(text))
+        if (!m_wxre.Matches(text))
             return ret;
     }
     else
@@ -214,7 +214,7 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
     }
 
     for(size_t i = 0; i < m_wxre.GetMatchCount(); ++i)
-        if(m_wxre.GetMatch(text, i))
+        if (m_wxre.GetMatch(text, i))
             ret.Add(m_wxre.GetMatch(text, i));
 
     return ret;

@@ -355,7 +355,7 @@ class MainFrame : public wxFrame
         wxMenu* m_ToolsMenu;
         wxMenu* m_PluginsMenu;
         wxMenu* m_HelpPluginsMenu;
-        bool m_ScanningForPlugins;
+        bool    m_ScanningForPlugins;
 
         bool m_SmallToolBar;
         bool m_StartupDone;

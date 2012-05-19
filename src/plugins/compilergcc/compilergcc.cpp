@@ -829,31 +829,29 @@ void CompilerGCC::SetupEnvironment()
 bool CompilerGCC::StopRunningDebugger()
 {
     cbDebuggerPlugin *dbg = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    if (dbg)
+    // is the debugger running?
+    if (dbg && dbg->IsRunning())
     {
-        // is the debugger running?
-        if (dbg->IsRunning())
+        int ret = cbMessageBox(_("The debugger must be stopped to do a (re-)build.\n"
+                                 "Do you want to stop the debugger now?"),
+                                 _("Information"),
+                                wxYES_NO | wxCANCEL | wxICON_QUESTION);
+        switch (ret)
         {
-            int ret = cbMessageBox(_("The debugger must be stopped to do a (re-)build.\n"
-                                     "Do you want to stop the debugger now?"),
-                                     _("Information"),
-                                    wxYES_NO | wxCANCEL | wxICON_QUESTION);
-            switch (ret)
+            case wxID_YES:
             {
-                case wxID_YES:
-                {
-                    m_pLog->Clear();
-                    Manager::Get()->GetLogManager()->Log(_("Stopping debugger..."), m_PageIndex);
-                    dbg->Stop();
-                    break;
-                }
-                case wxID_NO: // fallthrough
-                default:
-                    Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
-                    return false;
+                m_pLog->Clear();
+                Manager::Get()->GetLogManager()->Log(_("Stopping debugger..."), m_PageIndex);
+                dbg->Stop();
+                break;
             }
+            case wxID_NO: // fallthrough
+            default:
+                Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
+                return false;
         }
     }
+
     return true;
 }
 
@@ -1357,7 +1355,8 @@ void CompilerGCC::DoRecreateTargetMenu()
 
         // finally, make sure we 're using the correct compiler for the project
         SwitchCompiler(m_pProject->GetCompilerID());
-    } while (false);
+    }
+    while (false);
 
     if (mbar)
         mbar->Thaw();
@@ -2689,10 +2688,10 @@ int CompilerGCC::KillProcess()
             }
             else switch (ret)
             {
-//                case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied")); break;
-//                case wxKILL_NO_PROCESS: cbMessageBox(_("No process")); break;
-//                case wxKILL_BAD_SIGNAL: cbMessageBox(_("Bad signal")); break;
-//                case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
+//                case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied"));     break;
+//                case wxKILL_NO_PROCESS:    cbMessageBox(_("No process"));        break;
+//                case wxKILL_BAD_SIGNAL:    cbMessageBox(_("Bad signal"));        break;
+//                case wxKILL_ERROR:         cbMessageBox(_("Unspecified error")); break;
                 case wxKILL_OK:
                 default: break;
                 // Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed...")));
