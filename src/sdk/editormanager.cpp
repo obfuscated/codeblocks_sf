@@ -521,28 +521,26 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         }
     }
 
-    if (can_updateui)
-    {
-        if (ed)
-        {
-            SetActiveEditor(ed);
-            ed->GetControl()->SetFocus();
-        }
-    }
-
     // check for ProjectFile
     if (ed && !ed->GetProjectFile())
     {
-        // First checks if we're already being passed a ProjectFile
-        // as a parameter
+        // First checks if we're already being passed a ProjectFile as a parameter
         if (data)
-            Manager::Get()->GetLogManager()->DebugLog(_T("project data set for ") + data->file.GetFullPath());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Project data set for ") + data->file.GetFullPath());
         else
             Manager::Get()->GetProjectManager()->FindProjectForFile(ed->GetFilename(), &data, false, false);
         if (data)
             ed->SetProjectFile(data,true);
     }
 
+    if (can_updateui)
+    {
+        if (ed)
+        {
+            SetActiveEditor(ed); // fires the cbEVT_EDITOR_ACTIVATED event
+            ed->GetControl()->SetFocus();
+        }
+    }
 
     // we 're done
     s_CanShutdown = true;
@@ -629,8 +627,10 @@ cbEditor* EditorManager::New(const wxString& newFileName)
 
     ed->Show(true);
     SetActiveEditor(ed);
+
     CodeBlocksEvent evt(cbEVT_EDITOR_OPEN, -1, 0, ed);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
     return ed;
 }
 
