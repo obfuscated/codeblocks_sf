@@ -25,13 +25,13 @@ libhelp_plugin_la_LIBADD = $(PLUGIN_WX_LIBS) \
 
 if ! HAVE_BZIP2
 libhelp_plugin_la_LIBADD += bzip2/libbzip2.la
-INCLUDES += -Ibzip2
+INCLUDES += -I$(srcdir)/bzip2
 else
 libhelp_plugin_la_LIBADD += -lbz2
 endif
 if ! HAVE_ZLIB
 libhelp_plugin_la_LIBADD += zlib/libz.la
-INCLUDES += -Izlib
+INCLUDES += -I$(srcdir)/zlib
 else
 libhelp_plugin_la_LIBADD += -lz
 endif
