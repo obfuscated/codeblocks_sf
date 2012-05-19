@@ -3224,7 +3224,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     } // SelectionBraceCompletion
 
     // indent
-    if (ch == _T('\n'))
+    if ( (ch == _T('\n')) || ( (control->GetEOLMode() == wxSCI_EOL_CR) && (ch == _T('\r')) ) )
     {
         control->BeginUndoAction();
         // new-line: adjust indentation
