@@ -380,8 +380,8 @@ int EditorColourSet::GetOptionCount(HighlightLanguage lang)
 HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filename)
 {
     // convert filename to lowercase first (m_FileMasks already contains
-    // lowercase-only strings)
-    wxString lfname = filename.Lower();
+    // lowercase-only strings) and allow for filemasks like Makefile.*:
+    wxString lfname = wxFileName(filename.Lower()).GetFullName();
 
     // first search in filemasks
     for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
