@@ -105,7 +105,8 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
         (XRCCTRL(*this, "nbFind", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only find-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
-    else if (findInFilesActive)
+
+    if (findInFilesActive)
     {
         XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
