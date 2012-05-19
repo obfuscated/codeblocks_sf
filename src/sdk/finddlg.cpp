@@ -100,7 +100,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
     if (!m_Complete)
     {
-// NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
+        // NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
         (XRCCTRL(*this, "nbFind", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only find-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
@@ -179,81 +179,81 @@ bool FindDlg::IsFindInFiles() const
 
 bool FindDlg::GetDeleteOldSearches() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
-    else
-        return true;  // checkbox doesn't exist in Find dialog
+
+    return true;  // checkbox doesn't exist in Find dialog
 }
 
 bool FindDlg::GetMatchWord() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->GetValue();
-    else
-        return XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetStartWord() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue();
-    else
-        return XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetMatchCase() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue();
-    else
-        return XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetRegEx() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue();
-    else
-        return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
 }
 bool FindDlg::GetAutoWrapSearch() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return false; // not for search in files
-    else
-        return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetFindUsesSelectedText() const
 {
-     if (IsFindInFiles())
+     if ( IsFindInFiles() )
         return false;
-    else
-        return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+
+    return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
 }
 
 int FindDlg::GetDirection() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return 1;
-    else
-        return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
+
+    return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
 }
 
 int FindDlg::GetOrigin() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return 1;
-    else
-        return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
+
+    return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
 }
 
 int FindDlg::GetScope() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
-    else
-        return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
+
+    return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
 }
 
 bool FindDlg::GetRecursive() const
