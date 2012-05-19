@@ -216,12 +216,12 @@ int CppCheck::Execute()
     {
         ProjectFile* pf = *it;
         // filter to avoid including non C/C++ files
-        if (pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)   ||
-            pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT) ||
-            pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)  ||
-            pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT) ||
-            pf->relativeFilename.EndsWith(_T(".c++")) ||
-            FileTypeOf(pf->relativeFilename) == ftHeader)
+        if (   pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
+            || (FileTypeOf(pf->relativeFilename) == ftHeader) )
         {
             Input.Write(pf->relativeFilename + _T("\n"));
         }
