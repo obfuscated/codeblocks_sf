@@ -1055,11 +1055,10 @@ void ParserThread::DoParse()
                 }
                 else if (peek==ParserConsts::dcolon)
                 {
-                    wxString str_stripped(m_Str);
-                    str_stripped.Trim(true).Trim(false);
+                    wxString str_stripped(m_Str); str_stripped.Trim(true).Trim(false);
                     if (   str_stripped.IsEmpty()
-                        || str_stripped.Trim(true).Trim(false).IsSameAs(ParserConsts::kw_const)
-                        || str_stripped.Trim(true).Trim(false).IsSameAs(ParserConsts::kw_volatile) ) // what else?!
+                        || str_stripped.IsSameAs(ParserConsts::kw_const)
+                        || str_stripped.IsSameAs(ParserConsts::kw_volatile) ) // what else?!
                         m_EncounteredTypeNamespaces.push(token); // it's a type's namespace
                     else
                         m_EncounteredNamespaces.push(token);
