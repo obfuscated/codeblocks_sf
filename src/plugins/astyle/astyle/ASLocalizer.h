@@ -84,13 +84,13 @@ class Translation
 	public:
 		Translation() {}
 		virtual ~Translation() {}
-		string convertToMultiByte(const wstring& wideStr) const;
+		string convertToMultiByte(const wstring &wideStr) const;
 		size_t getTranslationVectorSize() const;
-		bool getWideTranslation(const string& stringIn, wstring& wideOut) const;
-		string& translate(const string& stringIn) const;
+		bool getWideTranslation(const string &stringIn, wstring &wideOut) const;
+		string &translate(const string &stringIn) const;
 
 	protected:
-		void addPair(const string& english, const wstring& translated);
+		void addPair(const string &english, const wstring &translated);
 		// variables
 		vector<pair<string, wstring> > m_translation;		// translation vector
 };

@@ -54,6 +54,7 @@ ASFormatter::ASFormatter()
 	maxCodeLength = string::npos;
 	shouldPadOperators = false;
 	shouldPadParensOutside = false;
+	shouldPadFirstParen = false;
 	shouldPadParensInside = false;
 	shouldPadHeader = false;
 	shouldUnPadParens = false;
@@ -62,6 +63,7 @@ ASFormatter::ASFormatter()
 	shouldBreakOneLineStatements = true;
 	shouldConvertTabs = false;
 	shouldIndentCol1Comments = false;
+	shouldCloseTemplates = false;
 	shouldBreakBlocks = false;
 	shouldBreakClosingHeaderBlocks = false;
 	shouldBreakClosingHeaderBrackets = false;
@@ -128,7 +130,9 @@ void ASFormatter::init(ASSourceIterator* si)
 	ASBeautifier::init(si);
 	enhancer->init(getFileType(),
 	               getIndentLength(),
-	               getIndentString(),
+	               getTabLength(),
+	               getIndentString() == "\t" ? true : false,
+	               getForceTabIndentation(),
 	               getCaseIndent(),
 	               getPreprocessorIndent(),
 	               getEmptyLineFill());
@@ -199,6 +203,7 @@ void ASFormatter::init(ASSourceIterator* si)
 	isInLineBreak = false;
 	endOfAsmReached = false;
 	endOfCodeReached = false;
+	isInEnum = false;
 	isInExecSQL = false;
 	isInAsm = false;
 	isInAsmOneLine = false;
@@ -220,10 +225,12 @@ void ASFormatter::init(ASSourceIterator* si)
 	isImmediatelyPostEmptyBlock = false;
 	isImmediatelyPostPreprocessor = false;
 	isImmediatelyPostReturn = false;
+	isImmediatelyPostThrow = false;
 	isImmediatelyPostOperator = false;
 	isImmediatelyPostTemplate = false;
 	isImmediatelyPostPointerOrReference = false;
 	isCharImmediatelyPostReturn = false;
+	isCharImmediatelyPostThrow = false;
 	isCharImmediatelyPostOperator = false;
 	isCharImmediatelyPostComment = false;
 	isPreviousCharPostComment = false;
@@ -270,7 +277,7 @@ void ASFormatter::buildLanguageVectors()
 	ASResource::buildPreDefinitionHeaders(preDefinitionHeaders, getFileType());
 	ASResource::buildPreCommandHeaders(preCommandHeaders, getFileType());
 	if (operators->empty())
-		ASResource::buildOperators(operators);
+		ASResource::buildOperators(operators, getFileType());
 	if (assignmentOperators->empty())
 		ASResource::buildAssignmentOperators(assignmentOperators);
 	if (castOperators->empty())
@@ -360,6 +367,9 @@ void ASFormatter::fixOptionVariableConflicts()
 		}
 	}
 	setMinConditionalIndentLength();
+	// if not set by indent=force-tab-x set equal to indentLength
+	if (!getTabLength())
+		setDefaultTabLength();
 	// add-one-line-brackets implies keep-one-line-blocks
 	if (shouldAddOneLineBrackets)
 		setBreakOneLineBlocksMode(false);
@@ -406,14 +416,12 @@ string ASFormatter::nextLine()
 			isCharImmediatelyPostComment = false;
 			isCharImmediatelyPostTemplate = false;
 			isCharImmediatelyPostReturn = false;
+			isCharImmediatelyPostThrow = false;
 			isCharImmediatelyPostOperator = false;
 			isCharImmediatelyPostPointerOrReference = false;
 			isCharImmediatelyPostOpenBlock = false;
 			isCharImmediatelyPostCloseBlock = false;
 		}
-
-//		if (inLineNumber >= 7)
-//			int x = 1;
 
 		if (shouldBreakLineAtNextChar)
 		{
@@ -495,6 +503,14 @@ string ASFormatter::nextLine()
 			continue;
 		}
 
+		if (isInTemplate && shouldCloseTemplates)
+		{
+			if (previousCommandChar == '<' && isWhiteSpace(currentChar))
+				continue;
+			if (isWhiteSpace(currentChar) && peekNextChar() == '>')
+				continue;
+		}
+
 		// handle white space - needed to simplify the rest.
 		if (isWhiteSpace(currentChar))
 		{
@@ -538,6 +554,12 @@ string ASFormatter::nextLine()
 		{
 			isImmediatelyPostReturn = false;
 			isCharImmediatelyPostReturn = true;
+		}
+
+		if (isImmediatelyPostThrow)
+		{
+			isImmediatelyPostThrow = false;
+			isCharImmediatelyPostThrow = true;
 		}
 
 		if (isImmediatelyPostOperator)
@@ -594,7 +616,7 @@ string ASFormatter::nextLine()
 		if (passedSemicolon)    // need to break the formattedLine
 		{
 			passedSemicolon = false;
-			if (parenStack->back() == 0 && currentChar != ';') // allow ;;
+			if (parenStack->back() == 0 && !isCharImmediatelyPostComment && currentChar != ';') // allow ;;
 			{
 				// does a one-line statement have ending comments?
 				if (isBracketType(bracketTypeStack->back(), SINGLE_LINE_TYPE))
@@ -696,6 +718,7 @@ string ASFormatter::nextLine()
 				foundPreDefinitionHeader = false;
 				foundPreCommandHeader = false;
 				isInPotentialCalculation = false;
+				isInEnum = false;
 				isJavaStaticConstructor = false;
 				isCharImmediatelyPostNonInStmt = false;
 				needHeaderOpeningBracket = false;
@@ -914,7 +937,7 @@ string ASFormatter::nextLine()
 				//     as if it were NOT a header since a closing while()
 				//     should never have a block after it!
 				if (currentHeader != &AS_CASE
-					&& !(foundClosingHeader && currentHeader == &AS_WHILE))
+				        && !(foundClosingHeader && currentHeader == &AS_WHILE))
 				{
 					isInHeader = true;
 
@@ -1042,6 +1065,7 @@ string ASFormatter::nextLine()
 			isInPotentialCalculation = false;
 			isSharpAccessor = false;
 			isSharpDelegate = false;
+			isInEnum = false;
 			isInExtern = false;
 			nonInStatementBracket = 0;
 		}
@@ -1064,6 +1088,7 @@ string ASFormatter::nextLine()
 			         && previousChar != ':'         // not part of '::'
 			         && peekNextChar() != ':'       // not part of '::'
 			         && !isDigit(peekNextChar())    // not a bit field
+			         && !isInEnum                   // not an enum with a base type
 			         && !isInAsm                    // not in extended assembler
 			         && !isInAsmOneLine             // not in extended assembler
 			         && !isInAsmBlock)              // not in extended assembler
@@ -1075,7 +1100,7 @@ string ASFormatter::nextLine()
 		if (currentChar == '?')
 			foundQuestionMark = true;
 
-		if (isPotentialHeader &&  !isInTemplate)
+		if (isPotentialHeader && !isInTemplate)
 		{
 			if (findKeyword(currentLine, charNum, AS_NEW))
 				isInPotentialCalculation = false;
@@ -1086,8 +1111,17 @@ string ASFormatter::nextLine()
 				isImmediatelyPostReturn = true;
 			}
 
+			if (isCStyle()
+				    && findKeyword(currentLine, charNum, AS_THROW)
+			        && previousCommandChar != ')'
+			        && !foundPreCommandHeader)      // 'const' throw()
+				isImmediatelyPostThrow = true;
+
 			if (findKeyword(currentLine, charNum, AS_OPERATOR))
 				isImmediatelyPostOperator = true;
+
+			if (isCStyle() && findKeyword(currentLine, charNum, AS_ENUM))
+				isInEnum = true;
 
 			if (isCStyle() && findKeyword(currentLine, charNum, AS_EXTERN))
 				isInExtern = true;
@@ -1185,7 +1219,7 @@ string ASFormatter::nextLine()
 		// process pointers and references
 		// check newHeader to elimnate things like '&&' sequence
 		if (!isJavaStyle()
-		        && (newHeader == &AS_MULT || newHeader == &AS_BIT_AND)
+		        && (newHeader == &AS_MULT || newHeader == &AS_BIT_AND || newHeader == &AS_BIT_XOR)
 		        && isPointerOrReference()
 		        && !isDereferenceOrAddressOf())
 		{
@@ -1223,8 +1257,14 @@ string ASFormatter::nextLine()
 			}
 		}
 
+		// do NOT use 'continue' after this, it must do padParens if necessary
+		if (currentChar == '('
+		        && shouldPadHeader
+		        && (isCharImmediatelyPostReturn || isCharImmediatelyPostThrow))
+			appendSpacePad();
+
 		if ((currentChar == '(' || currentChar == ')')
-		        && (shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens))
+		        && (shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens || shouldPadFirstParen))
 		{
 			padParens();
 			continue;
@@ -1437,6 +1477,19 @@ void ASFormatter::setParensInsidePaddingMode(bool state)
 }
 
 /**
+ * set padding mode before one or more open parentheses.
+ * options:
+ *    true     first open parenthesis will be padded with a space before.
+ *    false    first open parenthesis will not be padded.
+ *
+ * @param state         the padding mode.
+ */
+void ASFormatter::setParensFirstPaddingMode(bool state)
+{
+	shouldPadFirstParen = state;
+}
+
+/**
  * set header padding mode.
  * options:
  *    true     headers will be padded with spaces around them.
@@ -1480,6 +1533,11 @@ void ASFormatter::setAttachClosingBracket(bool state)
 void ASFormatter::setBreakOneLineBlocksMode(bool state)
 {
 	shouldBreakOneLineBlocks = state;
+}
+
+void ASFormatter::setCloseTemplatesMode(bool state)
+{
+	shouldCloseTemplates = state;
 }
 
 /**
@@ -1800,8 +1858,9 @@ bool ASFormatter::getNextLine(bool emptyLineWasDeleted /*false*/)
 		// check if is in preprocessor before line trimming
 		// a blank line after a \ will remove the flag
 		isImmediatelyPostPreprocessor = isInPreprocessor;
-		if (previousNonWSChar != '\\'
-		        || isEmptyLine(currentLine))
+		if (!isInComment
+		        && (previousNonWSChar != '\\'
+		            || isEmptyLine(currentLine)))
 			isInPreprocessor = false;
 
 		if (passedSemicolon)
@@ -1845,11 +1904,15 @@ bool ASFormatter::getNextLine(bool emptyLineWasDeleted /*false*/)
  */
 void ASFormatter::initNewLine()
 {
+	assert(getTabLength() > 0);
+
 	size_t len = currentLine.length();
-	size_t indent = getIndentLength();
+	size_t tabSize = getTabLength();
 	charNum = 0;
 
-	if (isInPreprocessor || isInQuoteContinuation)
+	// don't trim these
+	if (isInQuoteContinuation
+	        || (isInPreprocessor && !getPreprocessorIndent()))
 		return;
 
 	// SQL continuation lines must be adjusted so the leading spaces
@@ -1866,10 +1929,10 @@ void ASFormatter::initNewLine()
 				break;
 			if (currentLine[i] == '\t')
 			{
-				size_t numSpaces = indent - ((tabCount_ + i) % indent);
+				size_t numSpaces = tabSize - ((tabCount_ + i) % tabSize);
 				currentLine.replace(i, 1, numSpaces, ' ');
 				tabCount_++;
-				i += indent - 1;
+				i += tabSize - 1;
 			}
 		}
 		// this will correct the format if EXEC SQL is not a hanging indent
@@ -1897,10 +1960,12 @@ void ASFormatter::initNewLine()
 	currentLineFirstBracketNum = string::npos;
 	tabIncrementIn = 0;
 
+	// bypass whitespace at the start of a line
+	// preprocessor tabs are replaced later in the program
 	for (charNum = 0; isWhiteSpace(currentLine[charNum]) && charNum + 1 < (int) len; charNum++)
 	{
-		if (currentLine[charNum] == '\t')
-			tabIncrementIn += indent - 1 - ((tabIncrementIn + charNum) % indent);
+		if (currentLine[charNum] == '\t' && !isInPreprocessor)
+			tabIncrementIn += tabSize - 1 - ((tabIncrementIn + charNum) % tabSize);
 	}
 	leadingSpaces = charNum + tabIncrementIn;
 
@@ -1929,7 +1994,7 @@ void ASFormatter::initNewLine()
 				for (j = charNum + 1; isWhiteSpace(currentLine[j]) && j < firstText; j++)
 				{
 					if (currentLine[j] == '\t')
-						tabIncrementIn += indent - 1 - ((tabIncrementIn + j) % indent);
+						tabIncrementIn += tabSize - 1 - ((tabIncrementIn + j) % tabSize);
 				}
 				leadingSpaces = j + tabIncrementIn;
 				if (currentLine.compare(firstText, 2, "/*") == 0)
@@ -1940,6 +2005,14 @@ void ASFormatter::initNewLine()
 	else if (isWhiteSpace(currentLine[charNum]) && !(charNum + 1 < (int) currentLine.length()))
 	{
 		lineIsEmpty = true;
+	}
+
+	// do not trim indented preprocessor define (except for comment continuation lines)
+	if (isInPreprocessor)
+	{
+		if (!doesLineStartComment)
+			leadingSpaces = 0;
+		charNum = 0;
 	}
 }
 
@@ -1969,7 +2042,7 @@ void ASFormatter::appendChar(char ch, bool canBreakLine)
  * @param sequence         the sequence to append.
  * @param canBreakLine     if true, a registered line-break
  */
-void ASFormatter::appendSequence(const string& sequence, bool canBreakLine)
+void ASFormatter::appendSequence(const string &sequence, bool canBreakLine)
 {
 	if (canBreakLine && isInLineBreak)
 		breakLine();
@@ -2069,7 +2142,7 @@ BracketType ASFormatter::getBracketType()
 	        || isBracketType(bracketTypeStack->back(),  ARRAY_TYPE))
 	        && previousCommandChar != ')')
 		returnVal = ARRAY_TYPE;
-	else if (foundPreDefinitionHeader)
+	else if (foundPreDefinitionHeader && previousCommandChar != ')')
 	{
 		returnVal = DEFINITION_TYPE;
 		if (foundNamespaceHeader)
@@ -2130,13 +2203,13 @@ BracketType ASFormatter::getBracketType()
  *
  * @return        whether line is empty
  */
-bool ASFormatter::isEmptyLine(const string& line) const
+bool ASFormatter::isEmptyLine(const string &line) const
 {
 	return line.find_first_not_of(" \t") == string::npos;
 }
 
 /**
- * Check if the currently reached  '*' or '&' character is
+ * Check if the currently reached '*', '&' or '^' character is
  * a pointer-or-reference symbol, or another operator.
  * A pointer dereference (*) or an "address of" character (&)
  * counts as a pointer or reference because it is not an
@@ -2146,7 +2219,7 @@ bool ASFormatter::isEmptyLine(const string& line) const
  */
 bool ASFormatter::isPointerOrReference() const
 {
-	assert(currentChar == '*' || currentChar == '&');
+	assert(currentChar == '*' || currentChar == '&' || currentChar == '^');
 
 	if (isJavaStyle())
 		return false;
@@ -2261,7 +2334,7 @@ bool ASFormatter::isPointerOrReference() const
  */
 bool ASFormatter::isDereferenceOrAddressOf() const
 {
-	assert(currentChar == '*' || currentChar == '&');
+	assert(currentChar == '*' || currentChar == '&' || currentChar == '^');
 
 	if (isCharImmediatelyPostTemplate)
 		return false;
@@ -2312,7 +2385,7 @@ bool ASFormatter::isDereferenceOrAddressOf() const
 
 	bool isDA = (!(isLegalNameChar(previousNonWSChar) || previousNonWSChar == '>')
 	             || (!isLegalNameChar(nextChar) && nextChar != '/')
-	             || (ispunct(previousNonWSChar) && previousNonWSChar != '.')
+	             || (ispunct((unsigned char)previousNonWSChar) && previousNonWSChar != '.')
 	             || isCharImmediatelyPostReturn);
 
 	return isDA;
@@ -2328,7 +2401,7 @@ bool ASFormatter::isDereferenceOrAddressOf() const
  */
 bool ASFormatter::isPointerOrReferenceCentered() const
 {
-	assert(currentLine[charNum] == '*' || currentLine[charNum] == '&');
+	assert(currentLine[charNum] == '*' || currentLine[charNum] == '&' || currentLine[charNum] == '^');
 
 	int prNum = charNum;
 	int lineLength = (int) currentLine.length();
@@ -2453,7 +2526,7 @@ bool ASFormatter::isNonInStatementArrayBracket() const
  *             1 = one-line bracket has been reached.
  *             2 = one-line bracket has been reached and is followed by a comma.
  */
-int ASFormatter::isOneLineBlockReached(string& line, int startChar) const
+int ASFormatter::isOneLineBlockReached(string &line, int startChar) const
 {
 	assert(line[startChar] == '{');
 
@@ -2578,7 +2651,7 @@ bool ASFormatter::isNextCharOpeningBracket(int startChar) const
  * @param   the first line to check
  * @return  the next non-whitespace substring.
  */
-string ASFormatter::peekNextText(const string& firstLine, bool endOnEmptyLine /*false*/, bool shouldReset /*false*/) const
+string ASFormatter::peekNextText(const string &firstLine, bool endOnEmptyLine /*false*/, bool shouldReset /*false*/) const
 {
 	bool isFirstLine = true;
 	bool needReset = shouldReset;
@@ -2763,6 +2836,10 @@ void ASFormatter::padOperators(const string* newOperator)
 	                  && !(newOperator == &AS_GCC_MIN_ASSIGN
 	                       && ASBase::peekNextChar(currentLine, charNum+1) == '>')
 	                  && !(newOperator == &AS_GR && previousNonWSChar == '?')
+	                  && !(newOperator == &AS_QUESTION			// check for Java wildcard
+	                       && (previousNonWSChar == '<'
+	                           || ASBase::peekNextChar(currentLine, charNum) == '>'
+	                           || ASBase::peekNextChar(currentLine, charNum) == '.'))
 	                  && !isInCase
 	                  && !isInAsm
 	                  && !isInAsmOneLine
@@ -2771,7 +2848,8 @@ void ASFormatter::padOperators(const string* newOperator)
 
 	// pad before operator
 	if (shouldPad
-	        && !(newOperator == &AS_COLON && !foundQuestionMark)
+	        && !(newOperator == &AS_COLON
+	             && (!foundQuestionMark && !isInEnum) && currentHeader != &AS_FOR)
 	        && !(newOperator == &AS_QUESTION && isSharpStyle() // check for C# nullable type (e.g. int?)
 	             && currentLine.find(':', charNum+1) == string::npos)
 	   )
@@ -2808,12 +2886,12 @@ void ASFormatter::padOperators(const string* newOperator)
  */
 void ASFormatter::formatPointerOrReference(void)
 {
-	assert(currentChar == '*' || currentChar == '&');
+	assert(currentChar == '*' || currentChar == '&' || currentChar == '^');
 	assert(!isJavaStyle());
 
 	int pa = pointerAlignment;
 	int ra = referenceAlignment;
-	int itemAlignment = (currentChar == '*') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
+	int itemAlignment = (currentChar == '*' || currentChar == '^') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
 
 	// check for cast
 	char peekedChar = peekNextChar();
@@ -2887,8 +2965,7 @@ void ASFormatter::formatPointerOrReference(void)
 			wsBefore = 0;
 		else
 			wsBefore = charNum - wsBefore - 1;
-		// adjust for **
-		string sequenceToInsert = currentChar == '*' ? "*" : "&";
+		string sequenceToInsert(1, currentChar);
 		if (isSequenceReached("**"))
 		{
 			sequenceToInsert = "**";
@@ -2959,7 +3036,7 @@ void ASFormatter::formatPointerOrReference(void)
 	else if (itemAlignment == PTR_ALIGN_NAME)
 	{
 		size_t startNum = formattedLine.find_last_not_of(" \t");
-		string sequenceToInsert = currentChar == '*' ? "*" : "&";
+		string sequenceToInsert(1, currentChar);
 		if (isSequenceReached("**"))
 		{
 			sequenceToInsert = "**";
@@ -3031,14 +3108,14 @@ void ASFormatter::formatPointerOrReference(void)
  */
 void ASFormatter::formatPointerOrReferenceCast(void)
 {
-	assert(currentChar == '*' || currentChar == '&');
+	assert(currentChar == '*' || currentChar == '&' || currentChar == '^');
 	assert(!isJavaStyle());
 
 	int pa = pointerAlignment;
 	int ra = referenceAlignment;
-	int itemAlignment = (currentChar == '*') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
+	int itemAlignment = (currentChar == '*' || currentChar == '^') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
 
-	string sequenceToInsert = currentChar == '*' ? "*" : "&";
+	string sequenceToInsert(1, currentChar);
 	if (isSequenceReached("**"))
 	{
 		sequenceToInsert = "**";
@@ -3113,7 +3190,9 @@ void ASFormatter::padParens(void)
 						prevWordH = ASBeautifier::findHeader(prevWord, 0, headers);
 					if (prevWordH != NULL)
 						prevIsParenHeader = true;
-					else if (prevWord == "return")  // don't unpad return statements
+					else if (prevWord == "return")  // don't unpad
+						prevIsParenHeader = true;
+					else if (isCStyle() && prevWord == "throw" && shouldPadHeader) // don't unpad
 						prevIsParenHeader = true;
 					else if (prevWord == "and" || prevWord == "or")  // don't unpad
 						prevIsParenHeader = true;
@@ -3169,10 +3248,14 @@ void ASFormatter::padParens(void)
 		}
 
 		// pad open paren outside
-		char peekedCharOutside = peekNextChar();
-		if (shouldPadParensOutside)
+		if (shouldPadFirstParen && previousChar != '(')
+			appendSpacePad();
+		else if (shouldPadParensOutside)
+		{
+			char peekedCharOutside = peekNextChar();
 			if (!(currentChar == '(' && peekedCharOutside == ')'))
 				appendSpacePad();
+		}
 
 		appendCurrentChar();
 
@@ -3703,7 +3786,25 @@ void ASFormatter::formatRunIn()
 	        && formattedLine.find_first_not_of(" \t", lastText+1) == string::npos)
 		formattedLine.erase(lastText+1);
 
-	if (getIndentString() == "\t")
+	if (getForceTabIndentation() && getIndentLength() != getTabLength())
+	{
+		// insert the space indents
+		string indent;
+		int indentLength_ = getIndentLength();
+		int tabLength_ = getTabLength();
+		indent.append(indentLength_, ' ');
+		if (extraIndent)
+			indent.append(indentLength_, ' ');
+		// replace spaces indents with tab indents
+		size_t tabCount = indent.length() / tabLength_;		// truncate extra spaces
+		indent.erase(0U, tabCount * tabLength_);
+		indent.insert(0U, tabCount, '\t');
+		horstmannIndentChars = indentLength_;
+		if (indent[0] == ' ')			// allow for bracket
+			indent.erase(0, 1);
+		formattedLine.append(indent);
+	}
+	else if (getIndentString() == "\t")
 	{
 		appendChar('\t', false);
 		horstmannIndentChars = 2;	// one for { and one for tab
@@ -3713,15 +3814,15 @@ void ASFormatter::formatRunIn()
 			horstmannIndentChars++;
 		}
 	}
-	else
+	else // spaces
 	{
-		int indent = getIndentLength();
-		formattedLine.append(indent-1, ' ');
-		horstmannIndentChars = indent;
+		int indentLength_ = getIndentLength();
+		formattedLine.append(indentLength_ - 1, ' ');
+		horstmannIndentChars = indentLength_;
 		if (extraIndent)
 		{
-			formattedLine.append(indent, ' ');
-			horstmannIndentChars += indent;
+			formattedLine.append(indentLength_, ' ');
+			horstmannIndentChars += indentLength_;
 		}
 	}
 	isInHorstmannRunIn = true;
@@ -3782,7 +3883,7 @@ void ASFormatter::deleteContainer(vector<BracketType>* &container)
  * used for all vectors except bracketTypeStack
  */
 template<typename T>
-void ASFormatter::deleteContainer(T& container)
+void ASFormatter::deleteContainer(T &container)
 {
 	if (container != NULL)
 	{
@@ -3809,7 +3910,7 @@ void ASFormatter::initContainer(vector<BracketType>* &container, vector<BracketT
  * used for all vectors except bracketTypeStack
  */
 template<typename T>
-void ASFormatter::initContainer(T& container, T value)
+void ASFormatter::initContainer(T &container, T value)
 {
 	// since the ASFormatter object is never deleted,
 	// the existing vectors must be deleted before creating new ones
@@ -3829,13 +3930,14 @@ void ASFormatter::initContainer(T& container, T value)
 void ASFormatter::convertTabToSpaces()
 {
 	assert(currentLine[charNum] == '\t');
+	assert(getTabLength() > 0);
 
 	// do NOT replace if in quotes
 	if (isInQuote || isInQuoteContinuation)
 		return;
 
-	size_t indent = getIndentLength();
-	size_t numSpaces = indent - ((tabIncrementIn + charNum) % indent);
+	size_t tabSize = getTabLength();
+	size_t numSpaces = tabSize - ((tabIncrementIn + charNum) % tabSize);
 	currentLine.replace(charNum, 1, numSpaces, ' ');
 	currentChar = currentLine[charNum];
 }
@@ -3875,7 +3977,7 @@ bool ASFormatter::isSharpStyleWithParen(const string* header) const
  * if a header follows, the comments are kept as part of the header block.
  * firstLine must contain the start of the comment.
  */
-void ASFormatter::checkForHeaderFollowingComment(const string& firstLine)
+void ASFormatter::checkForHeaderFollowingComment(const string &firstLine)
 {
 	assert(isInComment || isInLineComment);
 	// this is called ONLY IF shouldBreakBlocks is TRUE.
@@ -3907,7 +4009,7 @@ void ASFormatter::checkForHeaderFollowingComment(const string& firstLine)
 
 /**
  * process preprocessor statements.
- * charNum should be the index of the preprocessor directive.
+ * charNum should be the index of the #.
  *
  * delete bracketTypeStack entries added by #if if a #else is found.
  * prevents double entries in the bracketTypeStack.
@@ -3916,7 +4018,10 @@ void ASFormatter::processPreprocessor()
 {
 	assert(currentChar == '#');
 
-	const int preproc = charNum + 1;
+	const size_t preproc = currentLine.find_first_not_of(" \t", charNum + 1);
+
+	if (preproc == string::npos)
+		return;
 
 	if (currentLine.compare(preproc, 2, "if") == 0)
 	{
@@ -4441,7 +4546,7 @@ int ASFormatter::getCurrentLineCommentAdjustment()
  *
  * @return is the previous word or an empty string if none found.
  */
-string ASFormatter::getPreviousWord(const string& line, int currPos) const
+string ASFormatter::getPreviousWord(const string &line, int currPos) const
 {
 	// get the last legal word (may be a number)
 	if (currPos == 0)
@@ -4589,7 +4694,7 @@ bool ASFormatter::addBracketsToStatement()
  * @param searchStart  the start position on the line (default is 0).
  * @return the position on the line or string::npos if not found.
  */
-size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart /*0*/)
+size_t ASFormatter::findNextChar(string &line, char searchChar, int searchStart /*0*/)
 {
 	// find the next searchChar
 	size_t i;
@@ -4643,7 +4748,7 @@ size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart 
  * @param index         the current line index.
  * @return              true if the struct has access modifiers.
  */
-bool ASFormatter::isStructAccessModified(string&  firstLine, size_t index) const
+bool ASFormatter::isStructAccessModified(string  &firstLine, size_t index) const
 {
 	assert(firstLine[index] == '{');
 	assert(isCStyle());
@@ -4746,7 +4851,7 @@ bool ASFormatter::isStructAccessModified(string&  firstLine, size_t index) const
  * @param index         the current line index.
  * @return              true if the statement is EXEC SQL.
  */
-bool ASFormatter::isExecSQL(string&  line, size_t index) const
+bool ASFormatter::isExecSQL(string  &line, size_t index) const
 {
 	if (line[index] != 'e' && line[index] != 'E')	// quick check to reject most
 		return false;
@@ -4779,8 +4884,10 @@ bool ASFormatter::isExecSQL(string&  line, size_t index) const
  */
 void ASFormatter::trimContinuationLine()
 {
+	assert(getTabLength() > 0);
+
 	size_t len = currentLine.length();
-	size_t indent = getIndentLength();
+	size_t tabSize = getTabLength();
 	charNum = 0;
 
 	if (leadingSpaces > 0 && len > 0)
@@ -4797,7 +4904,7 @@ void ASFormatter::trimContinuationLine()
 				break;
 			}
 			if (currentLine[i] == '\t')
-				continuationIncrementIn += indent - 1 - ((continuationIncrementIn + i) % indent);
+				continuationIncrementIn += tabSize - 1 - ((continuationIncrementIn + i) % tabSize);
 		}
 
 		if ((int) continuationIncrementIn == tabIncrementIn)
@@ -4911,6 +5018,7 @@ void ASFormatter::checkIfTemplateOpener()
 		else if (currentChar_ == ','       // comma,     e.g. A<int, char>
 		         || currentChar_ == '&'    // reference, e.g. A<int&>
 		         || currentChar_ == '*'    // pointer,   e.g. A<int*>
+		         || currentChar_ == '^'    // C++/CLI managed pointer, e.g. A<int^>
 		         || currentChar_ == ':'    // ::,        e.g. std::string
 		         || currentChar_ == '='    // assign     e.g. default parameter
 		         || currentChar_ == '['    // []         e.g. string[]
@@ -4920,7 +5028,7 @@ void ASFormatter::checkIfTemplateOpener()
 		{
 			continue;
 		}
-		else if (!isLegalNameChar(currentChar_))
+		else if (!isLegalNameChar(currentChar_) && currentChar_ != '?')
 		{
 			// this is not a template -> leave...
 			isInTemplate = false;
@@ -5053,7 +5161,7 @@ void ASFormatter::updateFormattedLineSplitPoints(char appendedChar)
 	}
 }
 
-void ASFormatter::updateFormattedLineSplitPointSequence(const string& sequence)
+void ASFormatter::updateFormattedLineSplitPointSequence(const string &sequence)
 {
 	assert(formattedLine.length() > 0);
 
@@ -5305,7 +5413,7 @@ void ASFormatter::clearFormattedLineSplitPoints()
  * Compute the input checksum.
  * This is called as an assert so it for is debug config only
  */
-bool ASFormatter::computeChecksumIn(const string& currentLine_)
+bool ASFormatter::computeChecksumIn(const string &currentLine_)
 {
 	for (size_t i = 0; i < currentLine_.length(); i++)
 		if (!isWhiteSpace(currentLine_[i]))
@@ -5327,7 +5435,7 @@ size_t ASFormatter::getChecksumIn() const
  * Compute the output checksum.
  * This is called as an assert so it is for debug config only
  */
-bool ASFormatter::computeChecksumOut(const string& beautifiedLine)
+bool ASFormatter::computeChecksumOut(const string &beautifiedLine)
 {
 	for (size_t i = 0; i < beautifiedLine.length(); i++)
 		if (!isWhiteSpace(beautifiedLine[i]))

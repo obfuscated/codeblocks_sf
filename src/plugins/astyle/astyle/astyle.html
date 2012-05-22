@@ -66,9 +66,11 @@
         <a class="contents" href="#_Tab_Options">Tab&nbsp;Options</a>
     </p>
     <p class="contents2">
-        <a class="contents" href="#_default_indent">default&nbsp;indent</a>&nbsp;&nbsp;&nbsp; <a class="contents" href="#_indent=spaces">
-            indent=spaces</a>&nbsp;&nbsp;&nbsp; <a class="contents" href="#_indent=tab">indent=tab</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_default_indent">default&nbsp;indent</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_indent=spaces">indent=spaces</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_indent=tab">indent=tab</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_indent=force-tab">indent=force&#8209;tab</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_indent=force-tab-x">--indent=force&#8209;tab&#8209;x&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
         <a class="contents" href="#_Indentation_Options">Indentation&nbsp;Options</a></p>
@@ -90,7 +92,8 @@
         <a class="contents" href="#_break-blocks=all">break&#8209;blocks=all</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_pad-oper">pad&#8209;oper</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_pad-paren">pad&#8209;paren</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_pad-paren-out">pad&#8209;paren&#8209;out</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_pad-paren-out">pad&#8209;paren&#8209;out</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_pad-first-paren-out">pad&#8209;first&#8209;paren&#8209;out</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_pad-paren-in">pad&#8209;paren&#8209;in</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_pad-header">pad&#8209;header</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_unpad-paren">unpad&#8209;paren</a>&nbsp;&nbsp;&nbsp; 
@@ -109,8 +112,9 @@
         <a class="contents" href="#_keep-one-line-blocks">keep&#8209;one&#8209;line&#8209;blocks</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_keep-one-line-statements">keep&#8209;one&#8209;line&#8209;statements</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_convert-tabs">convert&#8209;tabs</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_close-templates">close&#8209;templates</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_max-code-length">max&#8209;code&#8209;length</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_max-code-length">break&#8209;after&#8209;logical</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_max-code-length">break&#8209;after&#8209;logical</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_mode">mode</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
@@ -274,7 +278,7 @@
         The <span style="color: #0000a0">&lt;</span> and <span style="color: #0000a0">&gt;</span> characters are used
         to redirect the files into standard input (cin) and out of standard output (cout) - don't forget them! With this
         option only one file at a time can be formatted. Wildcards are not recognized, there are no console messages,
-        and a backup is not created.</p>
+        and a backup is not created. On Windows the output will always have Windows line ends.</p>
     <p>
         &nbsp;</p>
     <hr />
@@ -643,10 +647,10 @@ indent-switches     <span class="comment"># cannot do this on the command line</
         &nbsp;</p>
     <p id="_indent=tab">
         <code class="title">--indent=tab / --indent=tab=<span class="option">#</span> / -t / -t<span class="option">#</span></code><br />
-        Indent using <strong>tabs for indentation, spaces for continuation line alignment</strong>. This ensures that
-        the code is displayed correctly everywhere, regardless of the viewer&#8217;s tab size. Treat each tab as # spaces
+        Indent using <strong>tabs for indentation, and spaces for continuation line alignment</strong>. This ensures that
+        the code is displayed correctly&nbsp; regardless of the viewer&#8217;s tab size. Treat each indent as # spaces
         (e.g. <code>-t<span class="option">6</span></code> / <code>--indent=tab=<span class="option">6</span></code>).
-        # must be between 2 and 20. If no # is set, treats tabs as 4 spaces.
+        # must be between 2 and 20. If no # is set, treats indents as 4 spaces.
     </p>
     <div class="code">
         <p class="code">
@@ -671,7 +675,7 @@ indent-switches     <span class="comment"># cannot do this on the command line</
         &nbsp;</p>
     <p id="_indent=force-tab">
         <code class="title">--indent=force-tab / --indent=force-tab=<span class="option">#</span> / -T / -T<span class="option">#</span></code><br />
-        Indent using <strong>all tab</strong> characters, if possible. If the continuation line is not an even number
+        Indent using <strong>all tab</strong> characters, if possible. If a continuation line is not an even number
         of tabs, spaces will be added at the end. Treat each tab as # spaces (e.g. <code>-T<span class="option">6</span></code>
         / <code>--indent=<span lang="en-us">force-</span>tab=<span class="option">6</span></code>). # must be between
         2 and 20. If no # is set, treats tabs as 4 spaces.</p>
@@ -682,6 +686,29 @@ indent-switches     <span class="comment"># cannot do this on the command line</
 >   if (isBar1
 >   >   >   &amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
 >   >   bar();
+<span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_indent=force-tab-x">
+        <code class="title">--indent=force-tab-x / --indent=force-tab-x=<span class="option">#</span> / -xT / -xT<span class="option">#</span></code><br />
+        This force-tab option allows the tab length to be set to a length that is different than the indent length. This
+        may cause the indentation to be <strong>a mix of both tabs and spaces.</strong> Tabs will be used to indent, if
+        possible. If a tab indent cannot be used, spaces will be used instead.
+    </p>
+    <p>
+        This option sets the <strong>tab length.</strong> Treat each tab as # spaces (e.g. <code>-xT<span class="option">6</span></code>
+        / <code>--indent=<span lang="en-us">force-</span>tab-x=<span class="option">6</span></code>). # must be between
+        2 and 20. If no # is set, treats tabs as 8 spaces. To change the indent length "indent=force-tab" must also be
+        used.</p>
+    <div class="code">
+        <p class="code">
+            with indent=force-tab-x (default tab length of 8 and default indent length of 4):</p>
+        <pre>void Foo() <span class="brace">{</span>
+....if (isBar1
+&gt;       ....&amp;&amp; isBar2)    <span class="comment">// indent of this line can be changed with min-conditional-indent</span>
+>       bar();
 <span class="brace">}</span>
 </pre>
     </div>
@@ -1060,12 +1087,12 @@ isBar = false;
         Insert space padding around parenthesis on both the <strong>outside</strong> and the <strong>inside</strong>.
         Any end of line comments will remain in the original column, if possible.</p>
     <div class="code">
-        <pre>if (isFoo(a, b))
+        <pre>if (isFoo((a+2), b))
     bar(a, b);
 </pre>
         <p class="code">
             becomes:</p>
-        <pre>if ( isFoo ( a, b ) )
+        <pre>if ( isFoo ( ( a+2 ), b ) )
     bar ( a, b );
 </pre>
     </div>
@@ -1074,14 +1101,32 @@ isBar = false;
     <p id="_pad-paren-out">
         <code class="title">--pad-paren-out / -d </code><br />
         Insert space padding around parenthesis on the <strong>outside</strong> only. Any end of line comments will remain
-        in the original column, if possible. This can be used with <code>unpad-paren</code> below to remove unwanted spaces.</p>
+        in the original column, if possible. This can be used with unpad-paren below to remove unwanted spaces.</p>
     <div class="code">
-        <pre>if (isFoo(a, b))
+        <pre>if (isFoo((a+2), b))
     bar(a, b);
 </pre>
         <p class="code">
             becomes:</p>
-        <pre>if (isFoo (a, b) )
+        <pre>if (isFoo ( (a+2), b) )
+    bar (a, b);
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_pad-first-paren-out">
+        <code class="title">--pad-first-paren-out / -xd </code><br />
+        Insert space padding around the <strong>first</strong> parenthesis in a series on the <strong>outside</strong>
+        only. Any end of line comments will remain in the original column, if possible. This can be used with unpad-paren
+        below to remove unwanted spaces. If used with pad-paren or pad-paren-out, this option will be ignored. If used
+        with pad-paren-in, the result will be the same as pad-paren.</p>
+    <div class="code">
+        <pre>if (isFoo((a+2), b))
+    bar(a, b);
+</pre>
+        <p class="code">
+            becomes:</p>
+        <pre>if (isFoo ((a+2), b))
     bar (a, b);
 </pre>
     </div>
@@ -1090,14 +1135,14 @@ isBar = false;
     <p id="_pad-paren-in">
         <code class="title">--pad-paren-in / -D </code><br />
         Insert space padding around parenthesis on the <strong>inside</strong> only. Any end of line comments will remain
-        in the original column, if possible. This can be used with <code>unpad-paren</code> below to remove unwanted spaces.</p>
+        in the original column, if possible. This can be used with unpad-paren below to remove unwanted spaces.</p>
     <div class="code">
-        <pre>if (isFoo(a, b))
+        <pre>if (isFoo((a+2), b))
     bar(a, b);
 </pre>
         <p class="code">
             becomes:</p>
-        <pre>if ( isFoo( a, b ) )
+        <pre>if ( isFoo( ( a+2 ), b ) )
     bar( a, b );
 </pre>
     </div>
@@ -1106,14 +1151,14 @@ isBar = false;
     <p id="_pad-header">
         <code class="title">--pad-header / -H </code><br />
         Insert space padding after paren headers only (e.g. '<code>if</code>', '<code>for</code>', '<code>while</code>'...).
-        Any end of line comments will remain in the original column, if possible. This can be used with <code>unpad-paren</code>
-        to remove unwanted spaces.</p>
+        Any end of line comments will remain in the original column, if possible. This can be used with unpad-paren to
+        remove unwanted spaces.</p>
     <div class="code">
-        <pre>if(isFoo(a, b))
+        <pre>if(isFoo((a+2), b))
     bar(a, b);</pre>
         <p class="code">
             becomes:</p>
-        <pre>if (isFoo(a, b))
+        <pre>if (isFoo((a+2), b))
     bar(a, b);
 </pre>
     </div>
@@ -1130,19 +1175,19 @@ isBar = false;
         to use <code>unpad-paren</code> to remove the outside padding, and <code>pad&#8209;paren&#8209;in</code> to retain
         the inside padding. Using only <code>pad&#8209;paren&#8209;in</code> would not remove the outside padding.</p>
     <div class="code">
-        <pre>if ( isFoo( a, b ) )
+        <pre>if ( isFoo( ( a+2 ), b ) )
     bar ( a, b );
 </pre>
         <p class="code">
             becomes (with no padding option requested):</p>
-        <pre>if(isFoo(a, b))
+        <pre>if(isFoo((a+2), b))
     bar(a, b);
 </pre>
     </div>
     <p>
         &nbsp;</p>
     <p id="_delete-empty-lines">
-        <code class="title">--delete-empty-lines / -xd</code><br />
+        <code class="title">--delete-empty-lines / -xe</code><br />
         Delete empty lines within a function or method. Empty lines outside of functions or methods are NOT deleted. If
         used with break-blocks or break-blocks=all it will delete all lines EXCEPT the lines added by the break-blocks
         options.</p>
@@ -1178,31 +1223,37 @@ isBar = false;
             --align-pointer=name&nbsp;&nbsp; / -k3</code><br />
         Attach a pointer or reference operator (* or &amp;) to either the variable type (left) or variable name (right),
         or place it between the type and name (middle). The spacing between the type and name will be preserved, if possible.
-        This option is effective for C/C++ files only. To format references separately use the following align-reference
+        This option is for C/C++, C++/CLI, and C# files. To format references separately use the following align-reference
         option.</p>
     <div class="code">
-        <pre>char *foo1;
-char &amp;foo2;</pre>
+        <pre>char* foo1;
+char &amp; foo2;
+String ^s1;</pre>
         <p class="code">
             becomes (with align-pointer=type):</p>
         <pre>char* foo1;
-char&amp; foo2;</pre>
+char&amp; foo2;
+String^ s1;</pre>
     </div>
     <div class="code">
         <pre>char* foo1;
-char&amp; foo2;</pre>
+char &amp; foo2;
+String ^s1;</pre>
         <p class="code">
             becomes (with align-pointer=middle):</p>
         <pre>char * foo1;
-char &amp; foo2;</pre>
+char &amp; foo2;
+String ^ s1;</pre>
     </div>
     <div class="code">
         <pre>char* foo1;
-char&amp; foo2;</pre>
+char &amp; foo2;
+String ^s1;</pre>
         <p class="code">
             becomes (with align-pointer=name):</p>
         <pre>char *foo1;
-char &amp;foo2;</pre>
+char &amp;foo2;
+String ^s1;</pre>
     </div>
     <p>
         &nbsp;</p>
@@ -1213,8 +1264,8 @@ char &amp;foo2;</pre>
             --align-reference=name&nbsp;&nbsp; / -W3</code><br />
         This option will align references separate from pointers. Pointers are not changes by this option. If pointers
         and references are to be aligned the same, use the previous align-pointer option. The option align-reference=none
-        will not change the reference alignment. The other options are the same as for align-pointer. This option is effective
-        for C/C++ files only.
+        will not change the reference alignment. The other options are the same as for align-pointer. This option is for
+        C/C++, C++/CLI, and C# files.
     </p>
     <div class="code">
         <pre>char &amp;foo1;</pre>
@@ -1372,15 +1423,32 @@ else
     <p>
         &nbsp;</p>
     <p id="_convert-tabs">
-        <code class="title">--convert-tabs / -c</code><br />
-        Converts tabs into spaces in the non-indentation part of the line. The number of spaces inserted will maintain
-        the spacing of the tab. The current setting for spaces per tab is used. It may not produce the expected results
-        if convert-tabs is used when changing spaces per tab. Tabs are not replaced in quotes.</p>
+        <code class="title">--convert-tabs / -c</code><br />Converts tabs into spaces in the non-indentation part of the
+        line. The number of spaces inserted will maintain the spacing of the tab. The current setting for spaces per tab
+        is used. It may not produce the expected results if convert-tabs is used when changing spaces per tab. Tabs are
+        not replaced in quotes.
+    </p>
     <p>
-        &nbsp;</p>
+        &nbsp;
+    </p>
+    <p id="_close-templates">
+        <code class="title">--close-templates / -xy</code><br />Closes whitespace in the angle brackets of template definitions. 
+        Closing the ending angle brackets
+        is now allowed by the C++11 standard. Be sure your compiler supports this before making the changes.
+    </p>
+    <div class="code">
+        <pre>Stack&lt; int,List&lt; int &gt; &gt; stack1;</pre>
+        <p class="code">
+            becomes:
+        </p>
+        <pre>Stack&lt;int,List&lt;int&gt;&gt; stack1;</pre>
+    </div>
+    <p>
+        &nbsp;
+    </p>
     <p id="_max-code-length">
-        <code class="title">--max-code-length=<span class="option">#</span>&nbsp;&nbsp; / -xC<span class="option">#</span><br />
-            --break-after-logical / -xL</code><br />
+        <code class="title">--max-code-length=<span class="option">#</span>&nbsp;&nbsp; / -xC<span class="option">#</span>
+            <br />--break-after-logical / -xL</code><br />
         The option max&#8209;code&#8209;length will break a line if the code exceeds <span class="option"><strong>#</strong></span>
         characters. The valid values are 50 thru 200. Lines without logical conditionals will break on a logical conditional
         (||, &amp;&amp;, ...), comma, paren, semicolon, or space.
@@ -1396,26 +1464,26 @@ else
         will cause the logical conditionals to be placed last on the previous line. This option has no effect without
         max&#8209;code&#8209;length.</p>
     <div class="code">
-        <pre>   if (thisVariable1 == thatVariable1 || thisVariable2 == thatVariable2 || thisVariable3 == thatVariable3)
-        bar();</pre>
+        <pre>if (thisVariable1 == thatVariable1 || thisVariable2 == thatVariable2 || thisVariable3 == thatVariable3)
+    bar();</pre>
         <p class="code">
             becomes:</p>
-        <pre>    if (thisVariable1 == thatVariable1
-            || thisVariable2 == thatVariable2
-            || thisVariable3 == thatVariable3)
-        bar();</pre>
+        <pre>if (thisVariable1 == thatVariable1
+        || thisVariable2 == thatVariable2
+        || thisVariable3 == thatVariable3)
+    bar();</pre>
         <p class="code">
             becomes (with break&#8209;after&#8209;logical):</p>
-        <pre>    if (thisVariable1 == thatVariable1 ||
-            thisVariable2 == thatVariable2 ||
-            thisVariable3 == thatVariable3)
-        bar();</pre>
+        <pre>if (thisVariable1 == thatVariable1 ||
+        thisVariable2 == thatVariable2 ||
+        thisVariable3 == thatVariable3)
+    bar();</pre>
     </div>
     <p>
-        &nbsp;</p>
+        &nbsp;
+    </p>
     <p id="_mode">
-        <code class="title">--mode=c</code><br />
-        <code class="title">--mode=cs</code><br />
+        <code class="title">--mode=c</code><br /><code class="title">--mode=cs</code><br />
         <code class="title">--mode=java</code><br />
         Indent a C/C++, C#, or Java file. The option is usually set from the file extension for each file. You can override
         the setting with this entry. It will be used for all files regardless of the file extension. It allows the formatter
@@ -1494,6 +1562,9 @@ else
         Force use of the specified line end style. Valid options are windows (CRLF), linux (LF), and macold (CR). MacOld
         style is the format for OS 9 and earlier. Mac OS X uses the Linux style. If one of these options is not used the
         line ends will be determined automatically from the input file.</p>
+    <p>
+        When <strong>redirection</strong> is used on Windows the output will always have Windows line ends. This option
+        will be ignored.</p>
     <p>
         &nbsp;</p>
     <hr style="margin-left: -0.4in;" />

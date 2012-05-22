@@ -1,4 +1,8 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+//
+//  FILE ENCODING IS UTF-8 WITHOUT A BOM.
+//  русский    中文（简体）    日本    한국의
+//
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   ASLocalizer.cpp
  *
  *   Copyright (C) 2006-2011 by Jim Pattee <jimp03@email.com>
@@ -23,7 +27,7 @@
  *   along with Artistic Style.  If not, see <http://www.gnu.org/licenses/>.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * 
+ *
  *   To add a new language:
  *
  *   Add a new translation class to ASLocalizer.h.
@@ -189,7 +193,7 @@ string ASLocalizer::getLanguageID() const
 }
 
 const Translation* ASLocalizer::getTranslationClass() const
-// Returns the name of the translation class in m_translation.
+// Returns the name of the translation class in m_translation.  Used for testing.
 {
 	assert(m_translation);
 	return m_translation;
@@ -291,14 +295,14 @@ void ASLocalizer::setTranslationClass()
 // Translation base class methods.
 //----------------------------------------------------------------------------
 
-void Translation::addPair(const string& english, const wstring& translated)
+void Translation::addPair(const string &english, const wstring &translated)
 // Add a string pair to the translation vector.
 {
 	pair<string, wstring> entry (english, translated);
 	m_translation.push_back(entry);
 }
 
-string Translation::convertToMultiByte(const wstring& wideStr) const
+string Translation::convertToMultiByte(const wstring &wideStr) const
 // Convert wchar_t to a multibyte string using the currently assigned locale.
 // Return an empty string if an error occurs.
 {
@@ -338,7 +342,7 @@ size_t Translation::getTranslationVectorSize() const
 	return m_translation.size();
 }
 
-bool Translation::getWideTranslation(const string& stringIn, wstring& wideOut) const
+bool Translation::getWideTranslation(const string &stringIn, wstring &wideOut) const
 // Get the wide translation string. Used for testing.
 {
 	for (size_t i = 0; i < m_translation.size(); i++)
@@ -354,7 +358,7 @@ bool Translation::getWideTranslation(const string& stringIn, wstring& wideOut) c
 	return false;
 }
 
-string& Translation::translate(const string& stringIn) const
+string &Translation::translate(const string &stringIn) const
 // Translate a string.
 // Return a static string instead of a member variable so the method can have a "const" designation.
 // This allows "settext" to be called from a "const" method.
