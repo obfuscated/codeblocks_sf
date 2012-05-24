@@ -1152,8 +1152,7 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
             long line;
             if (linePart.ToLong(&line))
             {
-                EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(Manager::Get()->GetEditorManager()->GetEditorsCount() - 1);
-//                Manager::Get()->GetLogManager()->Log(F(_T("%p"), eb));
+                EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(m_AutoFile);
                 if (eb)
                     eb->GotoLine(line - 1, true);
             }
