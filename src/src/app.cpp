@@ -135,7 +135,11 @@ bool DDEConnection::OnExecute(const wxString& /*topic*/, wxChar *data, int /*siz
     else if (strData.StartsWith(_T("[Raise]")))
     {
         if (m_Frame)
+        {
+            if (m_Frame->IsIconized())
+                m_Frame->Iconize(false);
             m_Frame->Raise();
+        }
         return true;
     }
     wxSafeShowMessage(wxT("Warning"),wxString::Format(wxT("DDE topic %s not handled."),strData.wx_str()));
@@ -528,6 +532,7 @@ bool CodeBlocksApp::OnInit()
         // set safe-mode appropriately
         PluginManager::SetSafeMode(m_SafeMode);
 
+        // If not in batch mode, and no startup-script defined, initialise XRC
         if(!m_Batch && m_Script.IsEmpty() && !InitXRCStuff())
             return false;
 
