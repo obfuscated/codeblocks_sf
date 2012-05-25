@@ -9,6 +9,8 @@
     #include <wx/toolbar.h>
 #endif
 
+#include "EditorTweaksConfDlg.h"
+
 
 #include <manager.h>
 #include <configmanager.h>
@@ -31,10 +33,10 @@ namespace
         bool operator() (AlignerMenuEntry i, AlignerMenuEntry j) { return (i.UsageCount<=j.UsageCount);}
     } CompareAlignerMenuEntryObject;
 
-    const unsigned int MaxStoreAlignerdEntries = 4;
+    const unsigned int defaultStoredAlignerEntries = 4;
 
-    wxString defaultNames[MaxStoreAlignerdEntries] = { _T("Equality Operator"), _T("C/C++ line Comment "), _T("VHDL Signal Assignment"), _T("VHDL named association")};
-    wxString defaultStrings[MaxStoreAlignerdEntries] = { _T("="), _T("//"), _T("<="), _T("=>") };
+    wxString defaultNames[defaultStoredAlignerEntries] = { _T("Equality Operator"), _T("C/C++ line Comment "), _T("VHDL Signal Assignment"), _T("VHDL named association")};
+    wxString defaultStrings[defaultStoredAlignerEntries] = { _T("="), _T("//"), _T("<="), _T("=>") };
 
 }
 
@@ -164,13 +166,13 @@ void EditorTweaks::OnAttach()
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));
 
-    for (int i = 0 ; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
+    for (int i = 0 ; i < cfg->ReadInt(_T("AlingerSavedEntries"),defaultStoredAlignerEntries) ; ++i)
     {
         e.MenuName = cfg->Read(wxString::Format(_T("AlignerFirstName%d"),i),defaultNames[i]);
         e.ArgumentString = cfg->Read(wxString::Format(_T("AlignerFirstArgumentString%d"),i) ,defaultStrings[i]);
         e.UsageCount = 0;
         e.id = wxNewId();
-        AlignerMenuEntries.push_back (e);
+        AlignerMenuEntries.push_back(e);
         Connect(e.id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
     m_suppress_insert=cfg->ReadBool(_("SuppressInsertKey"),false);
@@ -195,16 +197,26 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     std::sort (AlignerMenuEntries.begin(), AlignerMenuEntries.end(),CompareAlignerMenuEntryObject);
     std::reverse( AlignerMenuEntries.begin(), AlignerMenuEntries.end());
     int i = 0;
-    for (; i < static_cast<int>(MaxStoreAlignerdEntries) ; ++i)
+    for (; i < cfg->ReadInt(_T("AlingerMaxSavedEntries"),defaultStoredAlignerEntries) && i < AlignerMenuEntries.size() ; ++i)
     {
         cfg->Write(wxString::Format(_T("AlignerFirstName%d"),i),AlignerMenuEntries[i].MenuName);
         cfg->Write(wxString::Format(_T("AlignerFirstArgumentString%d"),i) ,AlignerMenuEntries[i].ArgumentString);
 
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
+    cfg->Write(_T("AlingerSavedEntries"),i);
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
+}
+
+cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
+{
+    if ( !IsAttached() )
+        return NULL;
+
+    EditorTweaksConfDlg* cfg = new EditorTweaksConfDlg(parent);
+    return cfg;
 }
 
 void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
@@ -758,8 +770,8 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
     bool NewCharacter = true;
 
     // create the name and call the first DialogBox
-    const wxString MessageArgumentString = _T("Insert a new character");
-    const wxString CaptionArgumentString = _T("New character");
+    const wxString MessageArgumentString = _("Insert a new character");
+    const wxString CaptionArgumentString = _("New character");
     NewAlignmentString = wxGetTextFromUser( MessageArgumentString, CaptionArgumentString );
     if (NewAlignmentString !=_T(""))
     {
@@ -785,7 +797,7 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
         }
 
         // create the name and call the second DialogBox
-        const wxString MessageName = _T("Insert a name for the (new) character");
+        const wxString MessageName = _("Insert a name for the (new) character");
         const wxString CaptionName = NewAlignmentString;
         NewAlignmentStringName = wxGetTextFromUser( MessageName, CaptionName , AlignerMenuEntries[i].MenuName);
         if (NewAlignmentStringName != _T(""))

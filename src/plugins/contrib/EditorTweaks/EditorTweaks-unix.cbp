@@ -33,7 +33,7 @@
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ../../../devel/share/codeblocks/EditorTweaks.zip manifest.xml" />
+					<Add after="zip -j9 ../../../devel/share/codeblocks/EditorTweaks.zip manifest.xml *.xrc" />
 				</ExtraCommands>
 			</Target>
 		</Build>
@@ -42,7 +42,10 @@
 		</VirtualTargets>
 		<Unit filename="EditorTweaks.cpp" />
 		<Unit filename="EditorTweaks.h" />
+		<Unit filename="EditorTweaksConfDlg.cpp" />
+		<Unit filename="EditorTweaksConfDlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/EditorTweaksConfDlg.wxs *.xrc" />
 		<Extensions>
 			<code_completion />
 			<debugger />

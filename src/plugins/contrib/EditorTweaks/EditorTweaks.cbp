@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd" />
 				<Option host_application=".\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-pipe" />
@@ -43,12 +44,12 @@
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\EditorTweaks.zip manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\EditorTweaks.zip manifest.xml *.xrc" />
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -56,11 +57,19 @@
 		</VirtualTargets>
 		<Unit filename="EditorTweaks.cpp" />
 		<Unit filename="EditorTweaks.h" />
+		<Unit filename="EditorTweaksConfDlg.cpp" />
+		<Unit filename="EditorTweaksConfDlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith\EditorTweaksConfDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/EditorTweaksConfDlg.wxs" src="EditorTweaksConfDlg.cpp" hdr="EditorTweaksConfDlg.h" xrc="EditorTweaksConfDlg.xrc" fwddecl="0" i18n="1" name="EditorTweaksConfDlg" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

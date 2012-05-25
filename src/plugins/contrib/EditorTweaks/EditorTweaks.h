@@ -30,6 +30,10 @@ class EditorTweaks : public cbPlugin
         EditorTweaks();
         /** Destructor. */
         virtual ~EditorTweaks();
+        int GetConfigurationPriority() const {return 50;}
+        int GetConfigurationGroup() const {return cgEditor;}
+        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        //cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow*  /*parent*/, cbProject* /*project*/){return 0;}
 
 
         /** This method is called by Code::Blocks and is used by the plugin
@@ -67,6 +71,7 @@ class EditorTweaks : public cbPlugin
           * @return The plugin should return true if it needed the toolbar, false if not
           */
         virtual bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+
     protected:
         /** Any descendent plugin should override this virtual method and
           * perform any necessary initialization. This method is called by

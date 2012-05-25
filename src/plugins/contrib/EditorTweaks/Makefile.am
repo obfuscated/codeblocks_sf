@@ -10,16 +10,19 @@ libEditorTweaks_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -
 
 libEditorTweaks_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-libEditorTweaks_la_SOURCES = EditorTweaks.cpp
+libEditorTweaks_la_SOURCES = EditorTweaks.cpp \
+		EditorTweaksConfDlg.cpp
 
-noinst_HEADERS = EditorTweaks.h
+noinst_HEADERS = EditorTweaks.h \
+		EditorTweaksConfDlg.cpp
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
+		EditorTweaksConfDlg.xrc \
 		manifest.xml
 
 pkgdata_DATA = EditorTweaks.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
-EditorTweaks.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/EditorTweaks.zip manifest.xml > /dev/null
+EditorTweaks.zip: $(EXTRA_DIST)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/EditorTweaks.zip manifest.xml *.xrc > /dev/null
