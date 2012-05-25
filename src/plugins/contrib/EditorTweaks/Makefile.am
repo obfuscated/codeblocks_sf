@@ -14,11 +14,12 @@ libEditorTweaks_la_SOURCES = EditorTweaks.cpp \
 		EditorTweaksConfDlg.cpp
 
 noinst_HEADERS = EditorTweaks.h \
-		EditorTweaksConfDlg.cpp
+		EditorTweaksConfDlg.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		EditorTweaksConfDlg.xrc \
-		manifest.xml
+		manifest.xml \
+		$(srcdir)/wxsmith/*.wxs
 
 pkgdata_DATA = EditorTweaks.zip
 
