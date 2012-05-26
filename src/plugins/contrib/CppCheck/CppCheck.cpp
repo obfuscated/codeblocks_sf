@@ -339,6 +339,7 @@ int CppCheck::Execute()
                 }
             }
         }
+        Doc.SaveFile("CppCheckResults.xml");
     }
 
     return 0;
