@@ -1,15 +1,15 @@
-%define _svnrev		@REVISION@
-%define req_wxgtk	2.8.0
-%define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
-%define _redhat		%(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
-%define _mandrake       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
-%define _version        1.0_0.svn.%{_svnrev}
-%define _rel		0
-%define _release	%{_rel}
-%define jobs		%(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
+%define _svnrev             @REVISION@
+%define req_wxgtk           2.8.0
+%define _fedora             %(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
+%define _redhat             %(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
+%define _mandrake           %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
+%define _version            10.5.svn.%{_svnrev}
+%define _rel                1
+%define _release            %{_rel}
+%define jobs                %(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
 
 %if 0%{?suse_version}
-%define _release	%{_rel}.suse%{suse_version}
+%define _release            %{_rel}.suse%{suse_version}
 %endif
 %if 0%{?mandriva_version}
 %define _release            %{_rel}.mdk%{mandrake_version}
@@ -26,86 +26,82 @@
 %endif
 
 %if 0%{?suse_version} >= 930
-%define debugrpm	    1
+%define debugrpm            1
 %endif
 
 %if 0%{?mandriva_version}
 %define debugrpm            1
 %endif
 
-%define automake17	    0
+%define automake17          0
 
 %if 0%{?_redhat}
 %if 0%{?_redhat_vernum} < 4
-%define automake17	    1
+%define automake17          1
 %endif
 %endif
 
-Name:			codeblocks
-Version:		%{_version}
-Release:		%{_release}
-Summary:		OpenSource Cross Platform Free C++ IDE
-Group:			Development/Tools/IDE
-License:		GPL
-URL:			http://www.codeblocks.org/
-Packager:		TheTuxKeeper <thetuxkeeper@googlemail.com>
-Source:			%{name}-@VERSION@.tar.bz2
-BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
+Name:                       codeblocks
+Version:                    %{_version}
+Release:                    %{_release}
+Summary:                    OpenSource Cross Platform Free C++ IDE
+Group:                      Development/Tools/IDE
+License:                    GPLv3+
+URL:                        http://www.codeblocks.org/
+Packager:                   Jens Lody <jens@codeblocks.org>
+Source:                     %{name}-@VERSION@.tar.bz2
+BuildRoot:                  %{_tmppath}/%{name}-%{version}-buildroot
 
 %if 0%{?mandriva_version}
-Requires:               wxgtk2.8 >= %{req_wxgtk}
-BuildRequires:          wxgtk2.8 >= %{req_wxgtk}, libwxgtku2.8-devel >= %{req_wxgtk}
+Requires:                   wxgtk2.8 >= %{req_wxgtk}
+BuildRequires:              wxgtk2.8 >= %{req_wxgtk}, libwxgtku2.8-devel >= %{req_wxgtk}
 %else
 %if 0%{?suse_version}
 %if 0%{?suse_version} < 1030
-Requires:               wxWidgets >= %{req_wxgtk}
-BuildRequires:          wxWidgets >= %{req_wxgtk}, wxWidgets-devel >= %{req_wxgtk}
+Requires:                   wxWidgets >= %{req_wxgtk}
+BuildRequires:              wxWidgets >= %{req_wxgtk}, wxWidgets-devel >= %{req_wxgtk}
 %else
-Requires:               wxGTK >= %{req_wxgtk}
-BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
+Requires:                   wxGTK >= %{req_wxgtk}
+BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %endif
 %else
-Requires:               wxGTK >= %{req_wxgtk}
-BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
+Requires:                   wxGTK >= %{req_wxgtk}
+BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %endif
 %endif
 
 %if ! 0%{?automake17}
-BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
+BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
 %else
-BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
+BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
 %endif
-BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
-BuildRequires:  	zip, pkgconfig
+BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel, hunspell-devel
+BuildRequires:              zip, pkgconfig, bzip2-devel, zlib-devel, boost-devel, gamin-devel
 
 %if 0%{?suse_version}
-BuildRequires:		update-desktop-files
-%endif
-
-%if 0%{?fedora_version}
-#BuildRequires:  	lynx
+BuildRequires:              update-desktop-files
 %endif
 
 #{?_distribution:Distribution:%_distribution}
 
-%define pkgdata		%{_datadir}/%{name}
-%define	pkglib		%{_libdir}/%{name}
+%define pkgdata             %{_datadir}/%{name}
+%define    pkglib           %{_libdir}/%{name}
 
 %description
 Code::Blocks is a free C++ IDE built specifically to meet the most demanding needs of its users. It was designed, right from the start, to be extensible and configurable.
 
 %package contrib
-Summary:                        Code::Blocks contrib plugins
-Group:                  Development/Tools/IDE
-Requires:               codeblocks = %{version}
+Summary:                    Code::Blocks contrib plugins
+Group:                      Development/Tools/IDE
+Requires:                   codeblocks = %{version}
 
 %description contrib
 Additional Code::Blocks plugins
 
 %package devel
-Summary:                        Code::Blocks SDK
-Group:                  Development/Tools/IDE
-Requires:               codeblocks = %{version}
+Summary:                    Code::Blocks SDK
+Group:                      Development/Tools/IDE
+Requires:                   codeblocks = %{version}
 
 %description devel
 Code::Blocks SDK to develop your own plugins.
@@ -148,7 +144,7 @@ Code::Blocks SDK to develop your own plugins.
 
 %post
   if [ -x /usr/bin/update-mime-database ]; then
-  	/usr/bin/update-mime-database "%{_datadir}/mime"
+      /usr/bin/update-mime-database "%{_datadir}/mime"
   fi
   test -x /sbin/ldconfig && /sbin/ldconfig
 
@@ -173,6 +169,7 @@ Code::Blocks SDK to develop your own plugins.
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
 %{_datadir}/pixmaps/codeblocks.png
+%{pkgdata}/abbreviations.zip
 %{pkgdata}/astyle.zip
 %{pkgdata}/autosave.zip
 %{pkgdata}/classwizard.zip
@@ -195,6 +192,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/images/settings/*
 %{pkgdata}/lexers/*
 %{pkglib}/plugins/libastyle.*
+%{pkglib}/plugins/libabbreviations.*
 %{pkglib}/plugins/libautosave.*
 %{pkglib}/plugins/libclasswizard.*
 %{pkglib}/plugins/libcodecompletion.*
@@ -236,6 +234,8 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/NassiShneiderman.zip
 %{pkgdata}/Profiler.zip
 %{pkgdata}/RegExTestbed.zip
+%{pkgdata}/ReopenEditor.zip
+%{pkgdata}/SpellChecker.zip
 %{pkgdata}/SymTab.zip
 %{pkgdata}/ThreadSearch.zip
 %{pkgdata}/ToolsPlus.zip
@@ -251,6 +251,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/images/DoxyBlocks/*
 %{pkgdata}/images/ThreadSearch/*
 %{pkgdata}/lib_finder/*
+%{pkgdata}/SpellChecker/*
 %{pkglib}/plugins/libAutoVersioning.*
 %{pkglib}/plugins/libBrowseTracker.*
 %{pkglib}/plugins/libbyogames.*
@@ -276,7 +277,9 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libNassiShneiderman.*
 %{pkglib}/plugins/libProfiler.*
 %{pkglib}/plugins/libRegExTestbed.*
+%{pkglib}/plugins/libReopenEditor.*
 %{pkglib}/plugins/libSymTab.*
+%{pkglib}/plugins/libSpellChecker.*
 %{pkglib}/plugins/libThreadSearch.*
 %{pkglib}/plugins/libToolsPlus.*
 %{pkglib}/plugins/libValgrind.*
@@ -284,7 +287,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libwxsmith.*
 %{_libdir}/libwxsmithlib.so
 %{_libdir}/libwxsmithlib.la
-%{_libdir}/wxSmithContribItems/*
+%{_libdir}/%{name}/wxContribItems/*
 %{pkglib}/plugins/libwxsmithcontribitems.*
 %{pkglib}/plugins/libwxSmithAui.*
 %{_libdir}/libwxsmithlib.so.*
@@ -292,14 +295,26 @@ Code::Blocks SDK to develop your own plugins.
 %files devel
 %defattr(-,root,root)
 %{_libdir}/pkgconfig/codeblocks.pc
+%{_libdir}/pkgconfig/cb_wxchartctrl.pc
+%{_libdir}/pkgconfig/cb_wxcontrib.pc
+%{_libdir}/pkgconfig/cb_wxcustombutton.pc
+%{_libdir}/pkgconfig/cb_wxflatnotebook.pc
+%{_libdir}/pkgconfig/cb_wximagepanel.pc
+%{_libdir}/pkgconfig/cb_wxKWIC.pc
+%{_libdir}/pkgconfig/cb_wxled.pc
+%{_libdir}/pkgconfig/cb_wxspeedbutton.pc
+%{_libdir}/pkgconfig/cb_wxtreelist.pc
 %{_libdir}/pkgconfig/wxsmith.pc
 %{_libdir}/pkgconfig/wxsmith-contrib.pc
 %{_libdir}/pkgconfig/wxsmithaui.pc
 %{_includedir}/%{name}/*
 %{_includedir}/wxsmith/*
-%{_includedir}/wxSmithContribItems/*
 
 %changelog
+* Fri May 25 2010 jens <jens@codeblocks.org>
+- Fixed: missing build-dependencies
+- Fixed: RPM build error, because of new contrib-packages
+- Layout changes in codeblocks.spec.in, to enhance readability
 * Sun Feb 20 2010 Biplab <bkmodak@gmail.com>
 - Fixed typos: In wxSmithAui generated files.
 - Fixed: RPM build error due to inclusion of contrib plugins twice.
