@@ -330,7 +330,7 @@ public:
     ID() : value ((unsigned) -1) {};
 
     operator unsigned int() const { return value; };
-    operator void*() const { return (void*) value; };
+    operator void*() const { return reinterpret_cast<void*>(value); };
 
     bool Valid() const { return value != ((unsigned) -1); };
     bool operator!() const { return !Valid(); };
