@@ -342,7 +342,7 @@ void cbProject::CalculateCommonTopLevelPath()
         }
         if ( (pos > 0) && (pos < tmp.Length()) )
             tmpbase << sep << tmp.Left(pos) << sep;
-            
+
         wxFileName tmpbaseF(tmpbase);
         tmpbaseF.Normalize(wxPATH_NORM_DOTS);
         if ( tmpbaseF.GetDirCount() < base.GetDirCount() &&
@@ -1623,7 +1623,7 @@ ProjectFile* cbProject::GetFile(int index)
         }
     }
 
-    if (index < 0 || index >= m_Files.size())
+    if (index < 0 || index >= static_cast<int>(m_Files.size()))
         return NULL;
 
     return m_FileArray.Item(index);
