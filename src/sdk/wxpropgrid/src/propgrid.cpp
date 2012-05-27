@@ -5198,7 +5198,6 @@ wxString& wxPropertyGrid::CreateEscapeSequences( wxString& dst_str, wxString& sr
     }
 
     wxString::const_iterator i = src_str.begin();
-    wxUniChar prev_a = wxT('\0');
 
     dst_str.clear();
 
@@ -5234,7 +5233,6 @@ wxString& wxPropertyGrid::CreateEscapeSequences( wxString& dst_str, wxString& sr
             }
         }
 
-        prev_a = a;
     }
     return dst_str;
 }
@@ -7613,8 +7611,6 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
 
             wxASSERT( m_wndEditor == (wxWindow*) NULL );
 
-            // Do we need OnMeasureCalls?
-            wxSize imsz = p->OnMeasureImage();
 
             //
             // Only create editor for non-disabled non-caption
@@ -8010,7 +8006,6 @@ void wxPropertyGrid::RecalculateVirtualSize( int WXUNUSED(forceXPos) )
 
     m_iFlags |= wxPG_FL_RECALCULATING_VIRTUAL_SIZE;
 
-    int x = m_pState->m_width;
     int y = m_pState->m_virtualHeight;
 
     int width, height;
@@ -8019,7 +8014,6 @@ void wxPropertyGrid::RecalculateVirtualSize( int WXUNUSED(forceXPos) )
     if ( !HasVirtualWidth() )
     {
         m_pState->SetVirtualWidth(width);
-        x = width;
     }
 
     m_width = width;
@@ -12037,8 +12031,6 @@ void wxPropertyGridState::CheckColumnWidths( int widthChange )
     // Column to reduce, if needed. Take last one that exceeds minimum width.
     int reduceCol = -1;
 
-    bool minimizedCols = false;
-
 #ifdef __WXDEBUG__
     if ( debug )
         wxLogDebug(wxT("ColumnWidthCheck (virtualWidth: %i, clientWidth: %i)"), width, clientWidth);
@@ -12052,7 +12044,6 @@ void wxPropertyGridState::CheckColumnWidths( int widthChange )
         if ( m_colWidths[i] <= min )
         {
             m_colWidths[i] = min;
-            minimizedCols = true;
         }
         else
         {
