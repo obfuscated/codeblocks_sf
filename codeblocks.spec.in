@@ -84,27 +84,191 @@ BuildRequires:              update-desktop-files
 
 #{?_distribution:Distribution:%_distribution}
 
-%define pkgdata             %{_datadir}/%{name}
-%define    pkglib           %{_libdir}/%{name}
+%define pkgdatadir          %{_datadir}/%{name}
+%define pkglibdir           %{_libdir}/%{name}
+%define plugindir           %{pkglibdir}/plugins
+
+Requires:                   %{name}-common = %{version}
+Requires:                   libcodeblocks0%{?_isa} = %{version}
 
 %description
-Code::Blocks is a free C++ IDE built specifically to meet the most demanding needs of its users. It was designed, right from the start, to be extensible and configurable.
+Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
 
+It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
+
+ Plugins included in the base package are:
+  * Compiler frontend to many free compilers
+  * Debugger frontend for GDB (and CDB for windows platforms)
+  * Source formatter (based on AStyle)
+  * Wizard to create new C++ classes
+  * Code-completion / symbols-browser (work in progress)
+  * Default MIME handler
+  * Wizard to create new Code::Blocks plugins
+  * To-do list
+  * Extensible wizard based on scripts
+  * Autosave (saves your work in the unfortunate case of a crash)
+
+%package common
+Summary:                    common files for Code::Blocks IDE
+Group:                      Development/Tools/IDE
+Conflicts:                  %{name} < %{version}
+BuildArch:                  noarch
+
+%description common
+Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
+
+It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
+
+This package contains the architecture-independent files of Code::Blocks.
+ 
+%package -n libcodeblocks0
+Summary:                    Code::Blocks shared libraries
+Group:                      Development/Tools/IDE
+
+%description -n libcodeblocks0
+Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
+
+It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
+
+This package contains the Code::Blocks shared library.
+ 
 %package contrib
 Summary:                    Code::Blocks contrib plugins
 Group:                      Development/Tools/IDE
-Requires:                   codeblocks = %{version}
+Requires:                   %{name}%{?_isa} = %{version}
+Requires:                   libwxsmithlib0%{?_isa} = %{version}
+Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
+Requires:                   %{name}-contrib-common = %{version}
 
 %description contrib
-Additional Code::Blocks plugins
+This package extends Code::Blocks functionality a great deal with the included plugins. These are:
+ * Autoversioning
+ * BrowseTracker
+ * Cccc
+ * Code profiler (based on gprof)
+ * Code statistics (SLOCs etc)
+ * Codesnippets
+ * Copy strings
+ * CppCheck
+ * Cscope
+ * DoxyBlocks
+ * DragScroll (enhances mouse operations)
+ * EditorTweaks
+ * Selection of small games for relaxing between coding sessions! (BYOGames)
+ * Setting of environment variables
+ * Source exporter to PDF/HTML/ODT/RTF
+ * FileManager
+ * Header fixup
+ * Help
+ * HexEditor
+ * IncrementalSearch
+ * Keyboard shortcuts configuration
+ * CB koders
+ * Library finder
+ * MouseSap
+ * NassiShneiderman
+ * Regular expression testbed
+ * Reopen last closed editor(s) via menu or hotkey
+ * Spellchecker plugin
+ * Symbol table plugin
+ * ThreadSearch
+ * ToolsPlus
+ * Valgrind
+ * RAD gui-builder for wxWidgets (wxSmith)
+ * wxSmith contrib items
+ * wxSmith AUI
 
-%package devel
-Summary:                    Code::Blocks SDK
+%package contrib-common
+Summary:                    common files for the contrib plugins for Code::Blocks IDE
+Conflicts:                  %{name}-contrib < %{version}
+BuildArch:                  noarch
+
+%description contrib-common
+The contrib plugins extend Code::Blocks functionality.
+
+This package contains the architecture-independent files of the codeblocks-contrib plugins.
+  
+%package -n libwxsmithlib0
+Summary:                    wxSmith shared library (Code::Blocks plugin for RAD GUI editing)
 Group:                      Development/Tools/IDE
-Requires:                   codeblocks = %{version}
+
+%description -n libwxsmithlib0
+This package contains the wxSmith shared library.
+wxSmith is included in the codeblocks-contrib package.
+
+%package libwxcontrib0
+Summary:                    Code::Blocks shared libraries for wxContribItems
+Group:                      Development/Tools/IDE
+
+%description libwxcontrib0
+This package contains the shared libraries for the wxContribItems used by wxSmith.
+
+Contrib items included in this package are:
+ * KWIC
+ * wxChartCtrl
+ * wxFlatNotebook
+ * wxImagePanel
+ * wxSpeedButton
+ * wxTreeList
+ * wxCustomButton
+ * wxLED
+ 
+%package devel
+Summary:                    Code::Blocks development libraries (SDK)
+Group:                      Development/Tools/IDE
+Requires:                   libcodeblocks0%{?_isa} = %{version}
+Requires:                   %{name}-headers = %{version}
 
 %description devel
-Code::Blocks SDK to develop your own plugins.
+This package contains the development libraries for creating plugins for the Code::Blocks IDE.
+
+%package headers
+Summary:                    Code::Blocks development headers (SDK)
+Group:                      Development/Tools/IDE
+Requires:                   %{name}-devel = %{version}
+Conflicts:                  %{name}-devel < %{version}
+BuildArch:                  noarch
+
+%description headers
+This package contains the development headers for creating plugins for the Code::Blocks IDE.
+
+%package wxcontrib-devel
+Summary:                    Code::Blocks development libraries for wxContribItems
+Group:                      Development/Tools/IDE
+Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
+Requires:                   %{name}-wxcontrib-headers = %{version}
+
+%description wxcontrib-devel
+This package contains the development libraries needed to use the wxContribItems in own programs.
+ 
+%package wxcontrib-headers
+Summary:                    Code::Blocks development headers for wxContribItems
+Group:                      Development/Tools/IDE
+Requires:                   %{name}-wxcontrib-devel = %{version}
+Conflicts:                  %{name}-wxcontrib-devel < %{version}
+BuildArch:                  noarch
+
+%description wxcontrib-headers
+This package contains the development headers needed to use the wxContribItems in own programs.
+ 
+%package -n wxsmith-devel
+Summary:                    wxSmith development files (libraries)
+Group:                      Development/Tools/IDE
+Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
+Requires:                   %{name}-wxcontrib-headers = %{version}
+
+%description -n wxsmith-devel
+This package contains the development libraries for wxSmith, the codeblocks RAD GUI editing tool. 
+
+%package -n wxsmith-headers
+Summary:                    wxSmith development files (headers)
+Group:                      Development/Tools/IDE
+Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
+Requires:                   %{name}-wxcontrib-headers = %{version}
+BuildArch:                  noarch
+
+%description -n wxsmith-headers
+This package contains the development headers for wxSmith, the codeblocks RAD GUI editing tool. 
 
 %{?debugrpm:%debug_package}
 
@@ -141,6 +305,10 @@ Code::Blocks SDK to develop your own plugins.
 
 %install
   %__make DESTDIR=$RPM_BUILD_ROOT install
+  
+  rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+  rm -f $RPM_BUILD_ROOT%{pkglibdir}/wxContribItems/*.la
+  rm -f $RPM_BUILD_ROOT%{plugindir}/*.la
 
 %post
   if [ -x /usr/bin/update-mime-database ]; then
@@ -162,139 +330,178 @@ Code::Blocks SDK to develop your own plugins.
 
 %{_bindir}/codeblocks
 %{_bindir}/cb_console_runner
-%{_libdir}/libcodeblocks.so
-%{_libdir}/libcodeblocks.la
-%{_libdir}/libcodeblocks.so.*
+%{_bindir}/cb_share_config
+%{plugindir}/libabbreviations.so
+%{plugindir}/libastyle.so
+%{plugindir}/libautosave.so
+%{plugindir}/libclasswizard.so
+%{plugindir}/libcodecompletion.so
+%{plugindir}/libcompiler.so
+%{plugindir}/libdebugger.so
+%{plugindir}/libdefaultmimehandler.so
+%{plugindir}/libopenfileslist.so
+%{plugindir}/libprojectsimporter.so
+%{plugindir}/libscriptedwizard.so
+%{plugindir}/libtodo.so
+
+%files common
+%defattr(-,root,root)
+
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
 %{_datadir}/pixmaps/codeblocks.png
-%{pkgdata}/abbreviations.zip
-%{pkgdata}/astyle.zip
-%{pkgdata}/autosave.zip
-%{pkgdata}/classwizard.zip
-%{pkgdata}/codecompletion.zip
-%{pkgdata}/compiler.zip
-%{pkgdata}/debugger.zip
-%{pkgdata}/defaultmimehandler.zip
-%{pkgdata}/manager_resources.zip
-%{pkgdata}/openfileslist.zip
-%{pkgdata}/projectsimporter.zip
-%{pkgdata}/resources.zip
-%{pkgdata}/scriptedwizard.zip
-%{pkgdata}/start_here.zip
-%{pkgdata}/tips.txt
-%{pkgdata}/todo.zip
-%{pkgdata}/icons/*
-%{pkgdata}/images/*.png
-%{pkgdata}/images/16x16/*
-%{pkgdata}/images/codecompletion/*
-%{pkgdata}/images/settings/*
-%{pkgdata}/lexers/*
-%{pkglib}/plugins/libastyle.*
-%{pkglib}/plugins/libabbreviations.*
-%{pkglib}/plugins/libautosave.*
-%{pkglib}/plugins/libclasswizard.*
-%{pkglib}/plugins/libcodecompletion.*
-%{pkglib}/plugins/libcompiler.*
-%{pkglib}/plugins/libdebugger.*
-%{pkglib}/plugins/libdefaultmimehandler.*
-%{pkglib}/plugins/libopenfileslist.*
-%{pkglib}/plugins/libprojectsimporter.*
-%{pkglib}/plugins/libscriptedwizard.*
-%{pkglib}/plugins/libtodo.*
-%{pkgdata}/scripts/*
-%{pkgdata}/templates/*
-%{_mandir}/*
+%{_mandir}/man1/codeblocks.*
+%{_mandir}/man1/cb_console_runner.*
+%{_mandir}/man1/cb_share_config.*
+%{pkgdatadir}/icons/*
+%{pkgdatadir}/images/*.png
+%{pkgdatadir}/images/16x16/*
+%{pkgdatadir}/images/codecompletion/*
+%{pkgdatadir}/images/settings/*
+%{pkgdatadir}/lexers/*
+%{pkgdatadir}/scripts/*
+%{pkgdatadir}/templates/*
+%{pkgdatadir}/abbreviations.zip
+%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/autosave.zip
+%{pkgdatadir}/classwizard.zip
+%{pkgdatadir}/codecompletion.zip
+%{pkgdatadir}/compiler.zip
+%{pkgdatadir}/debugger.zip
+%{pkgdatadir}/defaultmimehandler.zip
+%{pkgdatadir}/manager_resources.zip
+%{pkgdatadir}/openfileslist.zip
+%{pkgdatadir}/projectsimporter.zip
+%{pkgdatadir}/resources.zip
+%{pkgdatadir}/scriptedwizard.zip
+%{pkgdatadir}/start_here.zip
+%{pkgdatadir}/todo.zip
+%{pkgdatadir}/tips.txt
+
+%files -n libcodeblocks0
+%defattr(-,root,root)
+%{_libdir}/libcodeblocks.so.*
 
 %files contrib
 %defattr(-,root,root)
-%{_bindir}/cb_share_config
 %{_bindir}/codesnippets
-%{pkgdata}/AutoVersioning.zip
-%{pkgdata}/BrowseTracker.zip
-%{pkgdata}/byogames.zip
-%{pkgdata}/Cccc.zip
-%{pkgdata}/CppCheck.zip
-%{pkgdata}/cb_koders.zip
-%{pkgdata}/codesnippets.zip
-%{pkgdata}/codestat.zip
-%{pkgdata}/copystrings.zip
-%{pkgdata}/Cscope.zip
-%{pkgdata}/DoxyBlocks.zip
-%{pkgdata}/dragscroll.zip
-%{pkgdata}/EditorTweaks.zip
-%{pkgdata}/envvars.zip
-%{pkgdata}/exporter.zip
-%{pkgdata}/FileManager.zip
-%{pkgdata}/headerfixup.zip
-%{pkgdata}/help_plugin.zip
-%{pkgdata}/keybinder.zip
-%{pkgdata}/lib_finder.zip
-%{pkgdata}/NassiShneiderman.zip
-%{pkgdata}/Profiler.zip
-%{pkgdata}/RegExTestbed.zip
-%{pkgdata}/ReopenEditor.zip
-%{pkgdata}/SpellChecker.zip
-%{pkgdata}/SymTab.zip
-%{pkgdata}/ThreadSearch.zip
-%{pkgdata}/ToolsPlus.zip
-%{pkgdata}/Valgrind.zip
-%{pkgdata}/wxsmith.zip
-%{pkgdata}/wxsmithcontribitems.zip
-%{pkgdata}/wxSmithAui.zip
-%{pkgdata}/HexEditor.zip
-%{pkgdata}/IncrementalSearch.zip
-%{pkgdata}/MouseSap.zip
-%{pkgdata}/images/wxsmith/*
-%{pkgdata}/images/codesnippets/*
-%{pkgdata}/images/DoxyBlocks/*
-%{pkgdata}/images/ThreadSearch/*
-%{pkgdata}/lib_finder/*
-%{pkgdata}/SpellChecker/*
-%{pkglib}/plugins/libAutoVersioning.*
-%{pkglib}/plugins/libBrowseTracker.*
-%{pkglib}/plugins/libbyogames.*
-%{pkglib}/plugins/libCccc.*
-%{pkglib}/plugins/libCppCheck.*
-%{pkglib}/plugins/libcb_koders.*
-%{pkglib}/plugins/libcodesnippets.*
-%{pkglib}/plugins/libcodestat.*
-%{pkglib}/plugins/libcopystrings.*
-%{pkglib}/plugins/libCscope.*
-%{pkglib}/plugins/libDoxyBlocks.*
-%{pkglib}/plugins/libdragscroll.*
-%{pkglib}/plugins/libEditorTweaks.*
-%{pkglib}/plugins/libenvvars.*
-%{pkglib}/plugins/libexporter.*
-%{pkglib}/plugins/libFileManager.*
-%{pkglib}/plugins/libheaderfixup.*
-%{pkglib}/plugins/libhelp_plugin.*
-%{pkglib}/plugins/libHexEditor.*
-%{pkglib}/plugins/libIncrementalSearch.*
-%{pkglib}/plugins/libkeybinder.*
-%{pkglib}/plugins/liblib_finder.*
-%{pkglib}/plugins/libNassiShneiderman.*
-%{pkglib}/plugins/libProfiler.*
-%{pkglib}/plugins/libRegExTestbed.*
-%{pkglib}/plugins/libReopenEditor.*
-%{pkglib}/plugins/libSymTab.*
-%{pkglib}/plugins/libSpellChecker.*
-%{pkglib}/plugins/libThreadSearch.*
-%{pkglib}/plugins/libToolsPlus.*
-%{pkglib}/plugins/libValgrind.*
-%{pkglib}/plugins/libMouseSap.*
-%{pkglib}/plugins/libwxsmith.*
-%{_libdir}/libwxsmithlib.so
-%{_libdir}/libwxsmithlib.la
-%{_libdir}/%{name}/wxContribItems/*
-%{pkglib}/plugins/libwxsmithcontribitems.*
-%{pkglib}/plugins/libwxSmithAui.*
+%{plugindir}/libAutoVersioning.so
+%{plugindir}/libBrowseTracker.so
+%{plugindir}/libbyogames.so
+%{plugindir}/libCccc.so
+%{plugindir}/libCppCheck.so
+%{plugindir}/libcb_koders.so
+%{plugindir}/libcodesnippets.so
+%{plugindir}/libcodestat.so
+%{plugindir}/libcopystrings.so
+%{plugindir}/libCscope.so
+%{plugindir}/libDoxyBlocks.so
+%{plugindir}/libdragscroll.so
+%{plugindir}/libEditorTweaks.so
+%{plugindir}/libenvvars.so
+%{plugindir}/libexporter.so
+%{plugindir}/libFileManager.so
+%{plugindir}/libheaderfixup.so
+%{plugindir}/libhelp_plugin.so
+%{plugindir}/libHexEditor.so
+%{plugindir}/libIncrementalSearch.so
+%{plugindir}/libkeybinder.so
+%{plugindir}/liblib_finder.so
+%{plugindir}/libNassiShneiderman.so
+%{plugindir}/libProfiler.so
+%{plugindir}/libRegExTestbed.so
+%{plugindir}/libSpellChecker.so
+%{plugindir}/libSymTab.so
+%{plugindir}/libThreadSearch.so
+%{plugindir}/libToolsPlus.so
+%{plugindir}/libValgrind.so
+%{plugindir}/libMouseSap.so
+%{plugindir}/libReopenEditor.so
+%{plugindir}/libwxsmith.so
+%{plugindir}/libwxsmithcontribitems.so
+%{plugindir}/libwxSmithAui.so
+%{_libdir}/pkgconfig/wxsmithaui.pc
+
+%files contrib-common
+%defattr(-,root,root)
+%{pkgdatadir}/AutoVersioning.zip
+%{pkgdatadir}/BrowseTracker.zip
+%{pkgdatadir}/byogames.zip
+%{pkgdatadir}/Cccc.zip
+%{pkgdatadir}/CppCheck.zip
+%{pkgdatadir}/cb_koders.zip
+%{pkgdatadir}/codesnippets.zip
+%{pkgdatadir}/codestat.zip
+%{pkgdatadir}/copystrings.zip
+%{pkgdatadir}/Cscope.zip
+%{pkgdatadir}/DoxyBlocks.zip
+%{pkgdatadir}/dragscroll.zip
+%{pkgdatadir}/EditorTweaks.zip
+%{pkgdatadir}/envvars.zip
+%{pkgdatadir}/exporter.zip
+%{pkgdatadir}/FileManager.zip
+%{pkgdatadir}/headerfixup.zip
+%{pkgdatadir}/help_plugin.zip
+%{pkgdatadir}/HexEditor.zip
+%{pkgdatadir}/IncrementalSearch.zip
+%{pkgdatadir}/keybinder.zip
+%{pkgdatadir}/lib_finder.zip
+%{pkgdatadir}/MouseSap.zip
+%{pkgdatadir}/NassiShneiderman.zip
+%{pkgdatadir}/Profiler.zip
+%{pkgdatadir}/RegExTestbed.zip
+%{pkgdatadir}/ReopenEditor.zip
+%{pkgdatadir}/SpellChecker.zip
+%{pkgdatadir}/SymTab.zip
+%{pkgdatadir}/ThreadSearch.zip
+%{pkgdatadir}/ToolsPlus.zip
+%{pkgdatadir}/Valgrind.zip
+%{pkgdatadir}/wxsmith.zip
+%{pkgdatadir}/wxsmithcontribitems.zip
+%{pkgdatadir}/wxSmithAui.zip
+%{pkgdatadir}/images/codesnippets/*
+%{pkgdatadir}/images/DoxyBlocks/*
+%{pkgdatadir}/images/ThreadSearch/*
+%{pkgdatadir}/images/wxsmith/*
+%{pkgdatadir}/lib_finder/*
+%{pkgdatadir}/SpellChecker/*
+%{_mandir}/man1/*snippets*
+
+%files -n libwxsmithlib0
+%defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
+
+%files libwxcontrib0
+%defattr(-,root,root)
+%{pkglibdir}/wxContribItems/libwxchartctrl.so.*
+%{pkglibdir}/wxContribItems/libwxcustombutton.so.*
+%{pkglibdir}/wxContribItems/libwxflatnotebook.so.*
+%{pkglibdir}/wxContribItems/libwximagepanel.so.*
+%{pkglibdir}/wxContribItems/libwxkwic.so.*
+%{pkglibdir}/wxContribItems/libwxled.so.*
+%{pkglibdir}/wxContribItems/libwxspeedbutton.so.*
+%{pkglibdir}/wxContribItems/libwxtreelist.so.*
 
 %files devel
 %defattr(-,root,root)
+%{_libdir}/libcodeblocks.so
 %{_libdir}/pkgconfig/codeblocks.pc
+
+%files headers
+%defattr(-,root,root)
+%{_includedir}/%{name}/*
+
+%files wxcontrib-devel
+%defattr(-,root,root)
+%{pkglibdir}/wxContribItems/libwxchartctrl.so
+%{pkglibdir}/wxContribItems/libwxcustombutton.so
+%{pkglibdir}/wxContribItems/libwxflatnotebook.so
+%{pkglibdir}/wxContribItems/libwximagepanel.so
+%{pkglibdir}/wxContribItems/libwxkwic.so
+%{pkglibdir}/wxContribItems/libwxled.so
+%{pkglibdir}/wxContribItems/libwxspeedbutton.so
+%{pkglibdir}/wxContribItems/libwxtreelist.so
 %{_libdir}/pkgconfig/cb_wxchartctrl.pc
 %{_libdir}/pkgconfig/cb_wxcontrib.pc
 %{_libdir}/pkgconfig/cb_wxcustombutton.pc
@@ -305,13 +512,25 @@ Code::Blocks SDK to develop your own plugins.
 %{_libdir}/pkgconfig/cb_wxspeedbutton.pc
 %{_libdir}/pkgconfig/cb_wxtreelist.pc
 %{_libdir}/pkgconfig/wxsmith.pc
+
+%files wxcontrib-headers
+%defattr(-,root,root)
+%{_includedir}/%{name}/wxContribItems/*
+
+%files -n wxsmith-devel
+%defattr(-,root,root)
+%{_libdir}/libwxsmithlib.so
 %{_libdir}/pkgconfig/wxsmith-contrib.pc
-%{_libdir}/pkgconfig/wxsmithaui.pc
-%{_includedir}/%{name}/*
+
+%files -n wxsmith-headers
+%defattr(-,root,root)
 %{_includedir}/wxsmith/*
 
 %changelog
-* Fri May 25 2010 jens <jens@codeblocks.org>
+* Sat May 26 2012 jens <jens@codeblocks.org>
+- split packages in binaries, arch-independent, development- and header-packages,
+  similar to the debian package-layout
+* Fri May 25 2012 jens <jens@codeblocks.org>
 - Fixed: missing build-dependencies
 - Fixed: RPM build error, because of new contrib-packages
 - Layout changes in codeblocks.spec.in, to enhance readability
