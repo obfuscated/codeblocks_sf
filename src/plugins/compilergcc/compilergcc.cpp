@@ -3046,15 +3046,18 @@ void CompilerGCC::OnKillProcess(wxCommandEvent& /*event*/)
 
 void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
-    int sel = event.GetSelection();
     if (event.GetId() == idToolTarget)
     {   // through the toolbar
+        const int sel = event.GetSelection();
+        Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(GetTargetString(sel));
         DoUpdateTargetMenu(sel);
     }
     else
     {   // through Build->SelectTarget
-        DoUpdateTargetMenu(event.GetId() - idMenuSelectTargetOther[0]);
-        m_pToolTarget->SetSelection(event.GetId() - idMenuSelectTargetOther[0]);
+        const int i = event.GetId() - idMenuSelectTargetOther[0];
+        Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(GetTargetString(i));
+        DoUpdateTargetMenu(i);
+        m_pToolTarget->SetSelection(i);
     }
 } // end of OnSelectTarget
 
