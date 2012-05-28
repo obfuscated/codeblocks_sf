@@ -111,11 +111,13 @@ class cbWorkspace
 
         /** @brief Set the preferred target for this workspace
           */
-        virtual void PreferredTarget(const wxString &target);
+        void PreferredTarget(const wxString &target);
 
         /** @brief Get the preferred target for this workspace
           */
-        virtual wxString PreferredTarget() const;
+        wxString PreferredTarget() const;
+
+        void ActiveProjectChanged();
 
     private:
         bool m_IsOK; // succeeded loading?

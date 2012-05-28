@@ -173,6 +173,11 @@ wxString cbWorkspace::PreferredTarget() const
     return m_PreferredTargetName;
 }
 
+void cbWorkspace::ActiveProjectChanged()
+{
+    SaveLayout();
+}
+
 bool cbWorkspace::SaveLayout()
 {
     LogManager *log = Manager::Get()->GetLogManager();
