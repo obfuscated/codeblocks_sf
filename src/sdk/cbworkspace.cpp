@@ -96,6 +96,9 @@ void cbWorkspace::Load()
         delete pWsp;
     }
 
+    // load workspace layout file
+    LoadLayout();
+
     m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
     SetModified(false);
 }

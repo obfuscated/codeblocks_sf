@@ -105,33 +105,11 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             wxFileName fname(projectFilename);
             wxFileName wfname(filename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-            int active = 0;
-            int ret = proj->QueryIntAttribute("active", &active);
-            switch (ret)
+            cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don't activate it
+            if (!pProject)
             {
-                case TIXML_SUCCESS:
-                    if (active == 1)
-                    {
-                        cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), true); // activate it
-                        if(!pProject)
-                        {
-                            cbMessageBox(_("Unable to open ") + projectFilename,
-                             _("Opening WorkSpace") + filename, wxICON_WARNING);
-                        }
-                    }
-                    break;
-                case TIXML_WRONG_TYPE:
-                    GetpMsg()->DebugLog(F(_T("Error %s: %s"), doc.Value(), doc.ErrorDesc()));
-                    GetpMsg()->DebugLog(_T("Wrong attribute type (expected 'int')"));
-                    break;
-                default:
-                    cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don't activate it
-                    if(!pProject)
-                    {
-                        cbMessageBox(_("Unable to open ") + projectFilename,
-                         _("Opening WorkSpace") + filename, wxICON_WARNING);
-                    }
-                    break;
+                cbMessageBox(_("Unable to open ") + projectFilename,
+                 _("Opening WorkSpace") + filename, wxICON_WARNING);
             }
         }
         proj = proj->NextSiblingElement("Project");
@@ -208,8 +186,6 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
 
         TiXmlElement* node = static_cast<TiXmlElement*>(wksp->InsertEndChild(TiXmlElement("Project")));
         node->SetAttribute("filename", cbU2C( ExportFilename(fname) ) );
-        if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
-            node->SetAttribute("active", 1);
 
         const ProjectsArray* deps = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
         if (deps && deps->GetCount())
