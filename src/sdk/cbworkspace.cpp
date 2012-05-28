@@ -105,6 +105,9 @@ bool cbWorkspace::Save(bool force)
     if (m_Filename.GetFullPath().IsEmpty())
         return SaveAs(_T(""));
 
+    // always save the layout file
+    SaveLayout();
+
     if (!force && !m_Modified)
         return true;
 
