@@ -1291,6 +1291,24 @@ void CompilerGCC::DoClearTargetMenu()
     }
 }
 
+bool CompilerGCC::IsValidTarget(const wxString &target) const
+{
+    if ( target.IsEmpty() )
+    {
+        return false;
+    }
+    if ( m_Targets.Index(target) == -1 )
+    {
+        return false;
+    }
+    const ProjectBuildTarget* tgt = Manager::Get()->GetProjectManager()->GetActiveProject()->GetBuildTarget(target);
+    if ( tgt && ! tgt->SupportsCurrentPlatform() )
+    {
+        return false;
+    }
+    return true;
+}
+
 void CompilerGCC::DoRecreateTargetMenu()
 {
     if (!IsAttached())

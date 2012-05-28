@@ -123,6 +123,8 @@ class CompilerGCC : public cbCompilerPlugin
         int GetConfigurationGroup() const { return cgCompiler; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
+        bool IsValidTarget(const wxString& target) const;
+
         void SwitchCompiler(const wxString& id);
         const wxString& GetCurrentCompilerID();
 
