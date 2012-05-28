@@ -635,9 +635,12 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
     if (project != m_pActiveProject)
     {
-        // Only set worksapce as modified, if there was an active project before
+        // Only set workspace as modified, if there was an active project before
         if (m_pWorkspace && m_pActiveProject)
+        {
             m_pWorkspace->SetModified(true);
+            m_pWorkspace->ActiveProjectChanged();
+        }
     }
     else
         return; // already active
