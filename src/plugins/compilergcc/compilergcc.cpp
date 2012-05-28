@@ -1336,9 +1336,20 @@ void CompilerGCC::DoRecreateTargetMenu()
             break;
 
         // find out the should-be-selected target
-        wxString tgtStr = m_pProject->GetActiveBuildTarget();
-        if (tgtStr.IsEmpty())
-            tgtStr = m_pProject->GetFirstValidBuildTargetName(); // a default value
+        const wxString preferredTarget = Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget();
+        wxString tgtStr = preferredTarget;
+        if ( ! IsValidTarget(tgtStr) )
+        {
+            tgtStr = m_pProject->GetActiveBuildTarget();
+        }
+        if ( ! IsValidTarget(tgtStr) )
+        {
+            tgtStr = m_pProject->GetFirstValidBuildTargetName(); // last-chance default
+        }
+        if ( preferredTarget.IsEmpty() )
+        {
+            Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(tgtStr);
+        }
 
         // fill the menu and combo
         for (size_t x = 0; x < m_Targets.GetCount(); ++x)
@@ -1350,7 +1361,9 @@ void CompilerGCC::DoRecreateTargetMenu()
                 m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], GetTargetString(x), help);
             }
             if (m_pToolTarget)
+            {
                 m_pToolTarget->Append(GetTargetString(x));
+            }
         }
 
         // connect menu events
@@ -1423,10 +1436,18 @@ void CompilerGCC::UpdateProjectTargets(cbProject* project)
     // update the list of targets (virtual + real)
     wxArrayString virtuals = project->GetVirtualBuildTargets();
     for (size_t i = 0; i < virtuals.GetCount(); ++i)
+    {
         m_Targets.Add(virtuals[i]);
+    }
 
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
-        m_Targets.Add(project->GetBuildTarget(i)->GetTitle());
+    {
+        ProjectBuildTarget *tgt = project->GetBuildTarget(i);
+        if ( tgt->SupportsCurrentPlatform() )
+        {
+            m_Targets.Add( tgt->GetTitle() );
+        }
+    }
 
     // keep the index for the first real target
     m_RealTargetsStartIndex = virtuals.GetCount();
