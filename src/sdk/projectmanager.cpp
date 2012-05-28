@@ -633,13 +633,14 @@ bool ProjectManager::IsProjectStillOpen(cbProject* project)
 
 void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
+    bool activeProjectChanged = false;
     if (project != m_pActiveProject)
     {
         // Only set workspace as modified, if there was an active project before
         if (m_pWorkspace && m_pActiveProject)
         {
             m_pWorkspace->SetModified(true);
-//            m_pWorkspace->ActiveProjectChanged();
+            activeProjectChanged = true;
         }
     }
     else
@@ -654,6 +655,11 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
         wxTreeItemId tid = m_pActiveProject->GetProjectNode();
         if (tid)
             m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), true);
+    }
+
+    if(activeProjectChanged)
+    {
+        m_pWorkspace->ActiveProjectChanged();
     }
 
     if (refresh)
