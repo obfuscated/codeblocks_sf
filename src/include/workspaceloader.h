@@ -16,6 +16,9 @@ class WorkspaceLoader : public IBaseWorkspaceLoader
 
         bool Open(const wxString& filename, wxString& Title);
         bool Save(const wxString& title, const wxString& filename);
+
+        bool SaveLayout(const wxString& filename);
+        bool LoadLayout(const wxString& filename);
 };
 
 #endif // WORKSPACELOADER_H
