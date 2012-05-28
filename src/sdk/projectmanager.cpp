@@ -639,7 +639,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
         if (m_pWorkspace && m_pActiveProject)
         {
             m_pWorkspace->SetModified(true);
-            m_pWorkspace->ActiveProjectChanged();
+//            m_pWorkspace->ActiveProjectChanged();
         }
     }
     else
