@@ -28,7 +28,8 @@ cbWorkspace::cbWorkspace(const wxString& filename) :
     m_IsDefault(true),
     m_Modified(false),
     m_Filename(DEFAULT_WORKSPACE),
-    m_Title(_("Default workspace"))
+    m_Title(_("Default workspace")),
+    m_PreferredTargetName()
 {
     //ctor
     if ( filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
@@ -154,4 +155,17 @@ void cbWorkspace::SetModified(bool modified)
 {
     m_Modified = modified;
     // Manager::Get()->GetLogManager()->DebugLog(F(_T("Setting workspace to modified = \"%s\""), modified ? _T("true") : _T("false")));
+}
+
+void cbWorkspace::PreferredTarget(const wxString &target)
+{
+    if ( ! target.IsEmpty() )
+    {
+        m_PreferredTargetName = target;
+    }
+}
+
+wxString cbWorkspace::PreferredTarget() const
+{
+    return m_PreferredTargetName;
 }
