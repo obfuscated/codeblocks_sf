@@ -169,3 +169,61 @@ wxString cbWorkspace::PreferredTarget() const
 {
     return m_PreferredTargetName;
 }
+
+bool cbWorkspace::SaveLayout()
+{
+    LogManager *log = Manager::Get()->GetLogManager();
+    WorkspaceLoader wsl;
+    wxFileName fn(m_Filename);
+    fn.SetExt( _T("workspace.layout") );
+#if wxCHECK_VERSION(2, 9, 0)
+    log->DebugLog(F(_T("Saving workspace layout \"%s\""), fn.GetFullPath().wx_str()));
+#else
+    log->DebugLog(F(_T("Saving workspace layout \"%s\""), fn.GetFullPath().c_str()));
+#endif
+    const bool rc = wsl.SaveLayout( fn.GetFullPath() );
+    if (!rc)
+    {
+#if wxCHECK_VERSION(2, 9, 0)
+        log->DebugLog(F(_T("Couldn't save workspace layout \"%s\""), fn.GetFullPath().wx_str()));
+#else
+        log->DebugLog(F(_T("Couldn't save workspace layout \"%s\""), fn.GetFullPath().c_str()));
+#endif
+    }
+    return rc;
+}
+
+bool cbWorkspace::LoadLayout()
+{
+    LogManager *log = Manager::Get()->GetLogManager();
+    WorkspaceLoader wsl;
+    wxFileName fn(m_Filename);
+    fn.SetExt( _T("workspace.layout") );
+    bool rc = false;
+    if ( fn.FileExists() )
+    {
+#if wxCHECK_VERSION(2, 9, 0)
+        log->DebugLog(F(_T("Loading workspace layout \"%s\""), fn.GetFullPath().wx_str()));
+#else
+        log->DebugLog(F(_T("Loading workspace layout \"%s\""), fn.GetFullPath().c_str()));
+#endif
+        rc = wsl.LoadLayout( fn.GetFullPath() );
+        if (!rc)
+        {
+#if wxCHECK_VERSION(2, 9, 0)
+            log->DebugLog(F(_T("Couldn't load workspace layout \"%s\""), fn.GetFullPath().wx_str()));
+#else
+            log->DebugLog(F(_T("Couldn't load workspace layout \"%s\""), fn.GetFullPath().c_str()));
+#endif
+        }
+    }
+    else
+    {
+#if wxCHECK_VERSION(2, 9, 0)
+        log->DebugLog(F(_T("Workspace layout file doesn't exist \"%s\""), fn.GetFullPath().wx_str()));
+#else
+        log->DebugLog(F(_T("Workspace layout file doesn't exist \"%s\""), fn.GetFullPath().c_str()));
+#endif
+    }
+    return rc;
+}

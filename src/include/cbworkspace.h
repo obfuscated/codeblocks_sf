@@ -126,6 +126,8 @@ class cbWorkspace
         wxString m_PreferredTargetName;
 
         void Load(); // utility function
+        bool SaveLayout();
+        bool LoadLayout();
 };
 
 #endif // CBWORKSPACE_H
