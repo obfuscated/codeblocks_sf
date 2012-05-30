@@ -254,8 +254,8 @@ This package contains the development headers needed to use the wxContribItems i
 %package -n wxsmith-devel
 Summary:                    wxSmith development files (libraries)
 Group:                      Development/Tools/IDE
-Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
-Requires:                   %{name}-wxcontrib-headers = %{version}
+Requires:                   libwxsmithlib0%{?_isa} = %{version}
+Requires:                   wxsmith-headers = %{version}
 
 %description -n wxsmith-devel
 This package contains the development libraries for wxSmith, the codeblocks RAD GUI editing tool. 
@@ -263,8 +263,8 @@ This package contains the development libraries for wxSmith, the codeblocks RAD 
 %package -n wxsmith-headers
 Summary:                    wxSmith development files (headers)
 Group:                      Development/Tools/IDE
-Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
-Requires:                   %{name}-wxcontrib-headers = %{version}
+Requires:                   wxsmith-devel = %{version}
+Conflicts:                  wxsmith-devel < %{version}
 BuildArch:                  noarch
 
 %description -n wxsmith-headers
