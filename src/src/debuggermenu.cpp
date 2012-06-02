@@ -707,7 +707,16 @@ void DebuggerMenuHandler::OnAddWatch(wxCommandEvent& event)
     {
         cbWatch::Pointer watch = m_activeDebugger->AddWatch(src);
         if (watch.get())
-            Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->AddWatch(watch);
+        {
+            cbWatchesDlg *dialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+            dialog->AddWatch(watch);
+            if (!IsWindowReallyShown(dialog->GetWindow()))
+            {
+                CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+                evt.pWindow = dialog->GetWindow();
+                Manager::Get()->ProcessEvent(evt);
+            }
+        }
     }
 }
 
