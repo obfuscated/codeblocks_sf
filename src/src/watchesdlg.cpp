@@ -41,6 +41,7 @@ namespace
     const long idMenuProperties = wxNewId();
     const long idMenuDelete = wxNewId();
     const long idMenuDeleteAll = wxNewId();
+    const long idMenuAddDataBreak = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
@@ -58,6 +59,7 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuProperties, WatchesDlg::OnMenuProperties)
     EVT_MENU(idMenuDelete, WatchesDlg::OnMenuDelete)
     EVT_MENU(idMenuDeleteAll, WatchesDlg::OnMenuDeleteAll)
+    EVT_MENU(idMenuAddDataBreak, WatchesDlg::OnMenuAddDataBreak)
 END_EVENT_TABLE()
 
 #if wxCHECK_VERSION(2,9,0)
@@ -626,6 +628,7 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
     {
         wxMenu m;
         m.Append(idMenuRename, _("Rename"), _("Rename the watch"));
+        m.Append(idMenuAddDataBreak, _("Add Data breakpoint"), _("Add Data breakpoing"));
         m.Append(idMenuProperties, _("Properties"), _("Show the properties for the watch"));
         m.Append(idMenuDelete, _("Delete"), _("Delete the currently selected watch"));
         m.Append(idMenuDeleteAll, _("Delete All"), _("Delete all watches"));
@@ -660,6 +663,8 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                 m.Enable(idMenuDelete, false);
             if (disabled & cbDebuggerPlugin::WatchesDisabledMenuItems::DeleteAll)
                 m.Enable(idMenuDeleteAll, false);
+            if (disabled & cbDebuggerPlugin::WatchesDisabledMenuItems::AddDataBreak)
+                m.Enable(idMenuAddDataBreak, false);
         }
         PopupMenu(&m);
     }
@@ -716,6 +721,24 @@ void WatchesDlg::OnMenuDeleteAll(wxCommandEvent &event)
         m_grid->DeleteProperty(it->property);
     }
     m_watches.clear();
+}
+
+void WatchesDlg::OnMenuAddDataBreak(wxCommandEvent &event)
+{
+    wxPGProperty *selected = m_grid->GetSelection();
+    if (!selected)
+        return;
+    WatchesProperty *prop = static_cast<WatchesProperty*>(selected);
+
+    wxString expression;
+    prop->GetWatch()->GetSymbol(expression);
+
+    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    if (plugin && !expression.empty())
+    {
+        if (plugin->AddDataBreakpoint(expression))
+            Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
+    }
 }
 
 void WatchesDlg::RenameWatch(wxObject *prop, const wxString &newSymbol)

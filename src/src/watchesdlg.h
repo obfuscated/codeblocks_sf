@@ -46,6 +46,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
         void OnMenuProperties(wxCommandEvent &event);
         void OnMenuDelete(wxCommandEvent &event);
         void OnMenuDeleteAll(wxCommandEvent &event);
+        void OnMenuAddDataBreak(wxCommandEvent &event);
 
         DECLARE_EVENT_TABLE()
 

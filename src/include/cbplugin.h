@@ -528,7 +528,8 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
                 Rename     = 1 << 0,
                 Properties = 1 << 1,
                 Delete     = 1 << 2,
-                DeleteAll  = 1 << 3
+                DeleteAll  = 1 << 3,
+                AddDataBreak = 1 << 4
             };
         };
 
