@@ -8216,9 +8216,9 @@ protected:
     void DestroyEditorWnd( wxWindow* wnd );
     void FreeEditors();
 
-    virtual bool DoExpand( wxPGProperty* p, bool sendEvent = false );
+    virtual bool DoExpand( wxPGProperty* p, bool sendEvent /* CB modification = false*/);
 
-    virtual bool DoCollapse( wxPGProperty* p, bool sendEvent = false );
+    virtual bool DoCollapse( wxPGProperty* p, bool sendEvent /* CB modification = false*/);
 
     // Returns nearest paint visible property (such that will be painted unless
     // window is scrolled or resized). If given property is paint visible, then

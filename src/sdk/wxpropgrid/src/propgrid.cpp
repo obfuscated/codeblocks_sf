@@ -10774,7 +10774,7 @@ bool wxPropertyGridInterface::Collapse( wxPGPropArg id )
     wxPG_PROP_ARG_CALL_PROLOG_RETVAL(false)
     wxPropertyGrid* pg = p->GetGridIfDisplayed();
     if ( pg )
-        return pg->DoCollapse(p);
+        return pg->DoCollapse(p, true /* CB modification */);
 
     return p->GetParentState()->DoCollapse(p);
 }
@@ -10786,7 +10786,7 @@ bool wxPropertyGridInterface::Expand( wxPGPropArg id )
     wxPG_PROP_ARG_CALL_PROLOG_RETVAL(false)
     wxPropertyGrid* pg = p->GetGridIfDisplayed();
     if ( pg )
-        return pg->DoExpand(p);
+        return pg->DoExpand(p, true /* CB modification */);
 
     return p->GetParentState()->DoExpand(p);
 }
