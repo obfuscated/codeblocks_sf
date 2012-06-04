@@ -364,7 +364,6 @@ void cbProject::CalculateCommonTopLevelPath()
         f->relativeToCommonTopLevelPath = fileName.Right(fileName.Length() - m_CommonTopLevelPath.Length());
         f->SetObjName(f->relativeToCommonTopLevelPath);
     }
-
 }
 
 wxString cbProject::GetCommonTopLevelPath() const

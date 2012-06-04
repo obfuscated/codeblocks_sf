@@ -656,7 +656,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
             m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), true);
     }
 
-    if(activeProjectChanged)
+    if (activeProjectChanged)
     {
         m_pWorkspace->ActiveProjectChanged();
     }

@@ -108,14 +108,13 @@ class cbWorkspace
           */
         virtual void SetModified(bool modified);
 
-
         /** @brief Set the preferred target for this workspace
           */
-        void PreferredTarget(const wxString &target);
+        void SetPreferredTarget(const wxString &target);
 
         /** @brief Get the preferred target for this workspace
           */
-        wxString PreferredTarget() const;
+        wxString GetPreferredTarget() const;
 
         void ActiveProjectChanged();
 

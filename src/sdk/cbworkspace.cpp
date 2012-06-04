@@ -111,6 +111,7 @@ bool cbWorkspace::Save(bool force)
     // always save the layout file
     SaveLayout();
 
+    // don't save workspace unless modified or forced
     if (!force && !m_Modified)
         return true;
 
@@ -163,15 +164,13 @@ void cbWorkspace::SetModified(bool modified)
     // Manager::Get()->GetLogManager()->DebugLog(F(_T("Setting workspace to modified = \"%s\""), modified ? _T("true") : _T("false")));
 }
 
-void cbWorkspace::PreferredTarget(const wxString &target)
+void cbWorkspace::SetPreferredTarget(const wxString &target)
 {
-    if ( ! target.IsEmpty() )
-    {
+    if ( !target.IsEmpty() )
         m_PreferredTargetName = target;
-    }
 }
 
-wxString cbWorkspace::PreferredTarget() const
+wxString cbWorkspace::GetPreferredTarget() const
 {
     return m_PreferredTargetName;
 }

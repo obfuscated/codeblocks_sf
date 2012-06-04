@@ -49,7 +49,9 @@ enum { lvOriginal=0 };
 
 class ILexer {
 public:
+/* C::B begin */
 	virtual ~ILexer() {}
+/* C::B end */
 	virtual int SCI_METHOD Version() const = 0;
 	virtual void SCI_METHOD Release() = 0;
 	virtual const char * SCI_METHOD PropertyNames() = 0;

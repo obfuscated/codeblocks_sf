@@ -264,6 +264,8 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 	}
 
 
+  // C::B patch: Avoid compiler warnings (and below)
+//	SQInteger op;
 	SQBool isgreedy = SQFalse;
 	unsigned short p0 = 0, p1 = 0;
 	switch(*exp->_p){
@@ -297,6 +299,7 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 	}
 	if(isgreedy) {
 		SQInteger nnode = sqstd_rex_newnode(exp,OP_GREEDY);
+//		op = OP_GREEDY;
 		exp->_nodes[nnode].left = ret;
 		exp->_nodes[nnode].right = ((p0)<<16)|p1;
 		ret = nnode;
@@ -497,6 +500,7 @@ static const SQChar *sqstd_rex_matchnode(SQRex* exp,SQRexNode *node,const SQChar
 		if(str == exp->_eol) return str;
 		return NULL;
 	case OP_DOT:{
+    // C::B patch: Avoid compiler warnings (and below)
 		++str;
 				}
 		return str;
@@ -605,6 +609,7 @@ SQBool sqstd_rex_searchrange(SQRex* exp,const SQChar* text_begin,const SQChar* t
 				break;
 			node = exp->_nodes[node].next;
 		}
+    // C::B patch: Avoid compiler warnings
 		++text_begin;
 	} while(cur == NULL && text_begin != text_end);
 

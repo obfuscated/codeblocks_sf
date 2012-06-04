@@ -1336,19 +1336,16 @@ void CompilerGCC::DoRecreateTargetMenu()
             break;
 
         // find out the should-be-selected target
-        const wxString preferredTarget = Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget();
-        wxString tgtStr = preferredTarget;
-        if ( ! IsValidTarget(tgtStr) )
+        if (cbWorkspace* ws = Manager::Get()->GetProjectManager()->GetWorkspace())
         {
-            tgtStr = m_pProject->GetActiveBuildTarget();
-        }
-        if ( ! IsValidTarget(tgtStr) )
-        {
-            tgtStr = m_pProject->GetFirstValidBuildTargetName(); // last-chance default
-        }
-        if ( preferredTarget.IsEmpty() )
-        {
-            Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(tgtStr);
+          const wxString preferredTarget = ws->GetPreferredTarget();
+          wxString tgtStr = preferredTarget;
+          if ( !IsValidTarget(tgtStr) )
+              tgtStr = m_pProject->GetActiveBuildTarget();
+          if ( !IsValidTarget(tgtStr) )
+              tgtStr = m_pProject->GetFirstValidBuildTargetName(); // last-chance default
+          if ( preferredTarget.IsEmpty() )
+              ws->SetPreferredTarget(tgtStr);
         }
 
         // fill the menu and combo
@@ -3070,13 +3067,13 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
     if (event.GetId() == idToolTarget)
     {   // through the toolbar
         const int sel = event.GetSelection();
-        Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(GetTargetString(sel));
+        Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(sel) );
         DoUpdateTargetMenu(sel);
     }
     else
     {   // through Build->SelectTarget
         const int i = event.GetId() - idMenuSelectTargetOther[0];
-        Manager::Get()->GetProjectManager()->GetWorkspace()->PreferredTarget(GetTargetString(i));
+        Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(i) );
         DoUpdateTargetMenu(i);
         m_pToolTarget->SetSelection(i);
     }
