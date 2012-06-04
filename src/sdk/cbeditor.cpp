@@ -899,6 +899,12 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
             }
         }
 
+        if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), true) )
+        {
+            for (unsigned int i = 0; i < m_pProjectFile->editorFoldLinesArray.GetCount(); i++)
+                m_pControl->ToggleFold(m_pProjectFile->editorFoldLinesArray[i]);
+        }
+
         m_pProjectFile->editorOpen = true;
 
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true))
@@ -945,6 +951,13 @@ void cbEditor::UpdateProjectFile()
             if (GetControl()==m_pControl2)
                 m_pProjectFile->editorSplitActive = 2;
         }
+
+        if (m_pProjectFile->editorFoldLinesArray.GetCount() != 0)
+            m_pProjectFile->editorFoldLinesArray.Clear();
+
+        int i = 0;
+        while ((i = m_pControl->ContractedFoldNext(i)) != -1)
+            m_pProjectFile->editorFoldLinesArray.Add(i++);
     }
 }
 
@@ -981,8 +994,8 @@ cbStyledTextCtrl* cbEditor::CreateEditor(bool connectEvents)
     cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, size);
     control->UsePopUp(false);
 
-    wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
-    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
+    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(
+        Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString) );
 
     if (connectEvents)
     {

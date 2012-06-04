@@ -32,6 +32,8 @@ WX_DECLARE_HASH_MAP(wxString, pfCustomBuild, wxStringHash, wxStringEqual, pfCust
 class ProjectFile;
 typedef std::vector<ProjectFile*> ProjectFilesVector;
 
+WX_DEFINE_ARRAY_INT(int, editorFoldLinesArray);
+
 /** Represents a file in a Code::Blocks project. */
 class ProjectFile
 {
@@ -168,6 +170,9 @@ class ProjectFile
 
         /** The position of the editor-tab for this file. */
         int editorTabPos; // layout info
+
+        /** Fold lines */
+        wxArrayInt editorFoldLinesArray; // layout info
 
         /** A map for custom builds. Key is compiler ID, value is pfCustomBuild struct. */
         pfCustomBuildMap customBuild;
