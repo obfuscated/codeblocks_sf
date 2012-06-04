@@ -924,7 +924,7 @@ bool CompilerGCC::CheckProject()
     AskForActiveProject();
 
     // switch compiler for the project (if needed)
-    if (m_pProject && m_pProject->GetCompilerID() != m_CompilerId)
+    if      ( m_pProject && m_pProject->GetCompilerID() != m_CompilerId)
         SwitchCompiler(m_pProject->GetCompilerID());
     // switch compiler for single file (if needed)
     else if (!m_pProject && m_CompilerId != CompilerFactory::GetDefaultCompilerID())
@@ -1335,17 +1335,19 @@ void CompilerGCC::DoRecreateTargetMenu()
         if (!m_Targets.GetCount())
             break;
 
+        wxString tgtStr(m_pProject->GetFirstValidBuildTargetName());
+
         // find out the should-be-selected target
-        if (cbWorkspace* ws = Manager::Get()->GetProjectManager()->GetWorkspace())
+        if (cbWorkspace* wsp = Manager::Get()->GetProjectManager()->GetWorkspace())
         {
-          const wxString preferredTarget = ws->GetPreferredTarget();
-          wxString tgtStr = preferredTarget;
+          const wxString preferredTarget = wsp->GetPreferredTarget();
+          tgtStr = preferredTarget;
           if ( !IsValidTarget(tgtStr) )
               tgtStr = m_pProject->GetActiveBuildTarget();
           if ( !IsValidTarget(tgtStr) )
               tgtStr = m_pProject->GetFirstValidBuildTargetName(); // last-chance default
           if ( preferredTarget.IsEmpty() )
-              ws->SetPreferredTarget(tgtStr);
+              wsp->SetPreferredTarget(tgtStr);
         }
 
         // fill the menu and combo
