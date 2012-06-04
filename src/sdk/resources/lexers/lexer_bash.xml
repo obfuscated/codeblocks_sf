@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="Bash"
                 index="62"
-                filemasks="*.sh">
+                filemasks="*.sh,*bootstrap,*configure">
                 <Style name="Default"
                         index="0"
                         fg="128,128,128"

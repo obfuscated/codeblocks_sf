@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
-		<Lexer name="XML"
-				index="5"
-				filemasks="*.xml,*.xsd,*.xsl,*.xrc">
-				<Style name="Default"
-						index="0"
-						fg="0,0,0"
-						bg="255,255,255"
-						bold="0"
-						italics="0"
-						underlined="0"/>
+        <Lexer name="XML"
+               index="5"
+               filemasks="*.xml,*.xsd,*.xsl,*.xrc,*.xcu,*.bkl,*.bkgen,*.font,*.imageset,*.layout,*.looknfeel,*.scheme,*.wnd">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
                 <Style name="Tag"
                         index="1,2"
                         fg="128,0,128"

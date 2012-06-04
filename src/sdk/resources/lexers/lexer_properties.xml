@@ -2,15 +2,15 @@
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
         <Lexer name="Properties"
-				index="9"
-				filemasks="*.properties,*.ini,*.inf,*.reg,*.url,*.cfg,*.cnf,*.aut">
-				<Style name="Default"
-						index="0"
-						fg="0,0,0"
-						bg="255,255,255"
-						bold="0"
-						italics="0"
-						underlined="0"/>
+                index="9"
+                filemasks="*.properties,*.ini,*.inf,*.reg,*.url,*.cfg,*.cnf,*.aut,*.doxy,*Doxyfile">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
                 <Style name="Comment"
                         index="1"
                         fg="160,160,160"/>

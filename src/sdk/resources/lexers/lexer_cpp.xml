@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="C/C++"
                 index="3"
-                filemasks="*.c,*.cpp,*.cc,*.cxx,*.h,*.hpp,*.hh,*.hxx,*.inl">
+                filemasks="*.c,*.cpp,*.cc,*.cxx,*.h,*.hpp,*.hh,*.hxx,*.inl,*.ipp">
                 <Style name="Default"
                         index="0"
                         fg="0,0,0"

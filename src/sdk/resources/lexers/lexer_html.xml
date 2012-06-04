@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="HTML/PHP/ASP/JS"
                 index="4"
-                filemasks="*.htm,*.html,*.xhtml,*.php,*.php3,*.phtml">
+                filemasks="*.htm,*.html,*.xhtml,*.php,*.php3,*.phtml,*.hta">
                 <Style name="HTML Default"
                         index="0"
                         fg="0,0,0"

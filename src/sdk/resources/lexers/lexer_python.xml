@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="Python"
                 index="2"
-                filemasks="*.py,*SConstruct,*SConscript">
+                filemasks="*.py,*.pyw,*.pyx,*SConstruct,*SConscript">
                 <Style name="Default"
                         index="0"
                         fg="0,0,0"
@@ -172,8 +172,11 @@
                 <SampleCode value="lexer_python.sample"/>
                 <LanguageAttributes
                     LineComment="#"
+                    DoxygenLineComment="##"
                     StreamCommentStart=""
                     StreamCommentEnd=""
+                    DoxygenStreamCommentStart=""
+                    DoxygenStreamCommentEnd=""
                     BoxCommentStart=""
                     BoxCommentMid=""
                     BoxCommentEnd=""
