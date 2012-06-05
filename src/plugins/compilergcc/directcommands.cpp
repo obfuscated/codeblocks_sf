@@ -847,12 +847,18 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
 		if (timeOutput)
 		{
 			// look for static libraries in target/project library dirs
-			const wxArrayString& libs = target->GetLinkLibs();
+			wxArrayString libs = target->GetLinkLibs();
+			const wxArrayString& prjLibs = target->GetParentProject()->GetLinkLibs();
+			const wxArrayString& cmpLibs = compiler->GetLinkLibs();
+			AppendArray(prjLibs, libs);
+			AppendArray(cmpLibs, libs);
+
 			const wxArrayString& prjLibDirs = target->GetParentProject()->GetLibDirs();
 			const wxArrayString& cmpLibDirs = compiler->GetLibDirs();
 			wxArrayString libDirs = target->GetLibDirs();
 			AppendArray(prjLibDirs, libDirs);
 			AppendArray(cmpLibDirs, libDirs);
+
 			for (size_t i = 0; i < libs.GetCount(); ++i)
 			{
 				wxString lib = libs[i];
