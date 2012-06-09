@@ -1,6 +1,7 @@
 SUBDIRS = gizmosled/include/wx/gizmos lcdWindow/include/wx led/include/wx ledpanel/include/wx
 
-INCLUDES = $(WX_CXXFLAGS) \
+INCLUDES = -I$(srcdir)/wxled/gizmosled/include \
+ $(WX_CXXFLAGS) \
 -I$(srcdir)/ledpanel/include \
 -I$(srcdir)/lcdWindow/include \
 -I$(srcdir)/led/include
