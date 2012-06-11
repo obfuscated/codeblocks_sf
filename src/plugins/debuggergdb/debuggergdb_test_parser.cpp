@@ -28,6 +28,13 @@ wxString WatchToString(cbWatch const &watch)
     return s;
 }
 
+inline wxString getName(cbWatch const &watch)
+{
+    wxString name;
+    watch.GetSymbol(name);
+    return name;
+}
+
 std::ostream& operator<<(std::ostream &stream, cbWatch const &w)
 {
     return stream << WatchToString(w);
@@ -261,12 +268,25 @@ TEST(RepeatingChars6)
     CHECK_EQUAL(wxT("t= {name1=\"aa\", '\\000' <repeats 14 times>,name2=\"bb\",")
                 wxT(" '\\000' <repeats 12 times>, \"aabbccddee\"}"), *w);
 }
+TEST(RepeatingChars6_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  name1 = \"aa\", '\\000' <repeats 14 times>,\n")
+                                wxT("  name2 = \"bb\", '\\000' <repeats 12 times>, \"aabbccddee\"\n}")));
+    CHECK_EQUAL(2, w->GetChildCount());
+}
 
 TEST(RepeatingChars7)
 {
     GDBWatch::Pointer w(new GDBWatch(wxT("t")));
     CHECK(ParseGDBWatchValue(w, wxT("{\n  name = \"bb\", '\\000' <repeats 14 times>, '\\000' <repeats 12 times>\n}")));
     CHECK_EQUAL(wxT("t= {name=\"bb\", '\\000' <repeats 14 times>, '\\000' <repeats 12 times>}"), *w);
+}
+TEST(RepeatingChars7_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  name = \"bb\", '\\000' <repeats 14 times>, '\\000' <repeats 12 times>\n}")));
+    CHECK_EQUAL(1, w->GetChildCount());
 }
 
 TEST(RepeatingChars8)
@@ -277,6 +297,13 @@ TEST(RepeatingChars8)
     CHECK_EQUAL(wxT("t= {name=\"bb\", '\\000' <repeats 14 times>, \"aabb\",")
                 wxT(" '\\000' <repeats 12 times>, \"aabbccddee\"}"), *w);
 }
+TEST(RepeatingChars8_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  name = \"bb\", '\\000' <repeats 14 times>, \"aabb\",")
+                                wxT(" '\\000' <repeats 12 times>, \"aabbccddee\"\n}")));
+    CHECK_EQUAL(1, w->GetChildCount());
+}
 
 // parsing the output of "const char *[]"
 TEST(RepeatingChars9)
@@ -284,6 +311,12 @@ TEST(RepeatingChars9)
     GDBWatch::Pointer w(new GDBWatch(wxT("t")));
     CHECK(ParseGDBWatchValue(w, wxT("{0x400e90 \"1st\", 0x400e94 '.' <repeats 16 times>, 0x400ea5 \"3th\"}")));
     CHECK_EQUAL(wxT("t= {[0]=0x400e90 \"1st\",[1]=0x400e94 '.' <repeats 16 times>,[2]=0x400ea5 \"3th\"}"), *w);
+}
+TEST(RepeatingChars9_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{0x400e90 \"1st\", 0x400e94 '.' <repeats 16 times>, 0x400ea5 \"3th\"}")));
+    CHECK_EQUAL(3, w->GetChildCount());
 }
 
 // parsing the output of "const char *[]"
@@ -294,6 +327,13 @@ TEST(RepeatingChars10)
     CHECK_EQUAL(wxT("t= {[0]=0x4080d8 \"1st\",[1]=0x4080dc \"2nd\", '.' <repeats 48 times>,[2]=0x408110 \"3th\"}"), *w);
 }
 
+TEST(RepeatingChars10_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{0x4080d8 \"1st\", 0x4080dc \"2nd\", '.' <repeats 48 times>, 0x408110 \"3th\"}")));
+    CHECK_EQUAL(3, w->GetChildCount());
+}
+
 // parsing the output of "const char *[]"
 TEST(RepeatingChars11)
 {
@@ -302,6 +342,24 @@ TEST(RepeatingChars11)
                                 wxT(" \"#\", '&' <repeats 16 times>, 0x4080fc \"3th\"}")));
     CHECK_EQUAL(wxT("t= {[0]=0x4080d8 \"1st\",[1]=0x4080dc '.' <repeats 14 times>, \"#\", '&' <repeats 16 times>,")
                 wxT("[2]=0x4080fc \"3th\"}"), *w);
+}
+
+TEST(RepeatingChars11_children_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    ParseGDBWatchValue(w, wxT("{0x4080d8 \"1st\", 0x4080dc '.' <repeats 14 times>,")
+                          wxT(" \"#\", '&' <repeats 16 times>, 0x4080fc \"3th\"}"));
+    CHECK_EQUAL(3, w->GetChildCount());
+}
+
+TEST(RepeatingChars11_children_name)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("t")));
+    ParseGDBWatchValue(w, wxT("{0x4080d8 \"1st\", 0x4080dc '.' <repeats 14 times>,")
+                          wxT(" \"#\", '&' <repeats 16 times>, 0x4080fc \"3th\"}"));
+    CHECK_EQUAL(wxT("[0]"), getName(*w->GetChild(0)));
+    CHECK_EQUAL(wxT("[1]"), getName(*w->GetChild(1)));
+    CHECK_EQUAL(wxT("[2]"), getName(*w->GetChild(2)));
 }
 
 TEST(ChangeType0)
@@ -325,6 +383,28 @@ TEST(StructSummarySimple)
     GDBWatch::Pointer w(new GDBWatch(wxT("s")));
     CHECK(ParseGDBWatchValue(w, wxT("test = {a=5}")));
     CHECK_EQUAL(wxT("s=test {a=5}"), *w);
+}
+
+TEST(StructStaticOptimized)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{static mVar = <optimized out>, mValue = 5}")));
+    CHECK_EQUAL(wxT("s= {static mVar=<optimized out>,mValue=5}"), *w);
+}
+
+TEST(StructStaticOptimized_children_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{static mVar = <optimized out>, mValue = 5}"));
+    CHECK_EQUAL(2,w->GetChildCount());
+}
+
+TEST(StructStaticOptimized_children_name)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{static mVar = <optimized out>, mValue = 5}"));
+    CHECK_EQUAL(wxT("static mVar"), getName(*w->GetChild(0)));
+    CHECK_EQUAL(wxT("mValue"), getName(*w->GetChild(1)));
 }
 
 /*

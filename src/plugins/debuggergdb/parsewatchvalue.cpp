@@ -169,7 +169,7 @@ bool GetNextToken(wxString const &str, int pos, Token &token)
     {
         if (open_braces == 0)
         {
-            if (str[pos] == _T(',') && !in_quote && brace_type!=BraceType::Angle)
+            if (str[pos] == _T(',') && !in_quote)
             {
                 token.end = pos;
                 return true;
