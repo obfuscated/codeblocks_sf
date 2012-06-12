@@ -158,7 +158,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 END_EVENT_TABLE()
 
 DebuggerGDB::DebuggerGDB() :
-    cbDebuggerPlugin(wxT("GDB debugger"), wxT("gdb_debugger")),
+    cbDebuggerPlugin(wxT("GDB/CDB debugger"), wxT("gdb_debugger")),
     m_State(this),
     m_pProcess(0L),
     m_LastExitCode(0),
