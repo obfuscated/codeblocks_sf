@@ -78,6 +78,8 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxScrollingDialog)
     EVT_LISTBOX_DCLICK(XRCID("lstFiles"),                       ProjectOptionsDlg::OnFileOptionsClick)
     EVT_BUTTON(    XRCID("btnFileOptions"),                     ProjectOptionsDlg::OnFileOptionsClick)
     EVT_BUTTON(    XRCID("btnToggleCheckmarks"),                ProjectOptionsDlg::OnFileToggleMarkClick)
+    EVT_BUTTON(    XRCID("btnCheckmarksOn"),                    ProjectOptionsDlg::OnFileMarkOnClick)
+    EVT_BUTTON(    XRCID("btnCheckmarksOff"),                   ProjectOptionsDlg::OnFileMarkOffClick)
     EVT_LISTBOX(   XRCID("lstBuildTarget"),                     ProjectOptionsDlg::OnBuildTargetChanged)
     EVT_COMBOBOX(  XRCID("cmbProjectType"),                     ProjectOptionsDlg::OnProjectTypeChanged)
     EVT_CHECKBOX(  XRCID("chkCreateStaticLib"),                 ProjectOptionsDlg::OnCreateImportFileClick)
@@ -850,7 +852,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
         return;
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (int i = 0; i < (int)list->GetCount(); ++i)
+    for (unsigned int i = 0; i < list->GetCount(); ++i)
     {
         ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
         if (pf)
@@ -860,6 +862,46 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
                 pf->AddBuildTarget(target->GetTitle());
             else
                 pf->RemoveBuildTarget(target->GetTitle());
+        }
+    }
+}
+
+void ProjectOptionsDlg::OnFileMarkOnClick(wxCommandEvent& /*event*/)
+{
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    int targetIdx = lstTargets->GetSelection();
+    ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
+    if (!target)
+        return;
+
+    wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
+    for (unsigned int i = 0; i < list->GetCount(); ++i)
+    {
+        ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
+        if (pf)
+        {
+            list->Check(i, true);
+            pf->AddBuildTarget(target->GetTitle());
+        }
+    }
+}
+
+void ProjectOptionsDlg::OnFileMarkOffClick(wxCommandEvent& /*event*/)
+{
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    int targetIdx = lstTargets->GetSelection();
+    ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
+    if (!target)
+        return;
+
+    wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
+    for (unsigned int i = 0; i < list->GetCount(); ++i)
+    {
+        ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
+        if (pf)
+        {
+            list->Check(i, false);
+            pf->RemoveBuildTarget(target->GetTitle());
         }
     }
 }
@@ -1127,6 +1169,8 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "txtObjectDir",        wxTextCtrl)->Enable(!customMake && en);
     XRCCTRL(*this, "btnBrowseObjectDir",  wxButton)->Enable(!customMake && en);
     XRCCTRL(*this, "btnToggleCheckmarks", wxButton)->Enable(!customMake && en);
+    XRCCTRL(*this, "btnCheckmarksOn",     wxButton)->Enable(!customMake && en);
+    XRCCTRL(*this, "btnCheckmarksOff",    wxButton)->Enable(!customMake && en);
     list->Enable(!customMake);
 
     // enable some stuff if using a custom makefile
