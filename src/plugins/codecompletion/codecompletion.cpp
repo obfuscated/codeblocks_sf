@@ -2518,11 +2518,12 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
     int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
     if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
     {
-        wxString msg;
+        wxString      calltip;
+        wxArrayString tips;
 
         TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
 
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
         int count = 0;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -2530,23 +2531,28 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
             Token* token = tree->at(*it);
             if (token)
             {
-                msg << token->DisplayName() << _T("\n");
+                wxString tip = token->DisplayName();
+                if (tips.Index(tip) != wxNOT_FOUND) // avoid showing tips twice
+                    continue;
+
+                tips.Add(tip);
+                calltip << tip << _T("\n");
                 ++count;
                 if (count > 32) // allow max 32 matches (else something is definitely wrong)
                 {
-                    msg.Clear();
+                    calltip.Clear();
                     break;
                 }
             }
         }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-        if (!msg.IsEmpty())
+        if (!calltip.IsEmpty())
         {
-            msg.RemoveLast(); // last \n
-            ed->GetControl()->CallTipShow(pos, msg);
-            TRACE(msg);
+            calltip.RemoveLast(); // last \n
+            ed->GetControl()->CallTipShow(pos, calltip);
+            TRACE(calltip);
         }
     }
 
