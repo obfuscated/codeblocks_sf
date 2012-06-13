@@ -28,6 +28,8 @@ class ProjectOptionsDlg : public wxScrollingDialog
         void EndModal(int retCode);
         void OnFileOptionsClick(wxCommandEvent& event);
         void OnFileToggleMarkClick(wxCommandEvent& event);
+        void OnFileMarkOnClick(wxCommandEvent& event);
+        void OnFileMarkOffClick(wxCommandEvent& event);
         void OnProjectTypeChanged(wxCommandEvent& event);
         void OnBuildTargetChanged(wxCommandEvent& event);
         void OnAddBuildTargetClick(wxCommandEvent& event);
