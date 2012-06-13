@@ -641,7 +641,7 @@ void NativeParser::RereadParserOptions()
 
     RemoveObsoleteParsers();
 
-    // reparse if settings changed
+    // re-parse if settings changed
     ParserOptions opts = m_Parser->Options();
     m_Parser->ReadOptions();
     bool reparse = false;
@@ -1231,11 +1231,11 @@ bool NativeParser::DeleteParser(cbProject* project)
     if (m_ParserPerWorkspace)
         removeProjectFromParser = RemoveProjectFromParser(project);
 
-    if (m_ParsedProjects.empty() && it->second == m_Parser)
-        SetParser(m_TempParser);
-
     if (m_ParsedProjects.empty())
     {
+        if (it->second == m_Parser)
+          SetParser(m_TempParser);
+
         wxString log(F(_("Delete parser for project '%s'!"), project
                        ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
         CCLogger::Get()->Log(log);
@@ -1687,10 +1687,10 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
                     Token* token = tree->at(i);
                     if (token && token->m_IsTemp)
                     {
-                        wxString log(_T(" + ") + token->DisplayName());
+                        wxString log(wxString::Format(_T(" + %s (%d)"), token->DisplayName().wx_str(), token->m_Index));
                         Token* parent = tree->at(token->m_ParentIndex);
                         if (parent)
-                            log += _T(" Parent = ") + parent->m_Name;
+                            log += wxString::Format(_T("; Parent = %s (%d)"), parent->m_Name.wx_str(), token->m_ParentIndex);
                         CCLogger::Get()->DebugLog(log);
                     }
                 }
@@ -1762,7 +1762,11 @@ bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& se
     return true;
 }
 
-size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool isPrefix, bool caseSensitive, int caretPos)
+size_t NativeParser::MarkItemsByAI(TokenIdxSet& result,
+                                   bool         reallyUseAI,
+                                   bool         isPrefix,
+                                   bool         caseSensitive,
+                                   int          caretPos)
 {
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(F(_T("MarkItemsByAI_1()")));
@@ -1783,8 +1787,12 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool i
 // Here, we collect the "using namespace XXXX" directives
 // Also, we locate the current caret in which function, then, add the function parameters to Token trie
 // Also, the variables in the function body( local block ) was add to the Token trie
-size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result, bool reallyUseAI, bool isPrefix,
-                                   bool caseSensitive, int caretPos)
+size_t NativeParser::MarkItemsByAI(ccSearchData* searchData,
+                                   TokenIdxSet&  result,
+                                   bool          reallyUseAI,
+                                   bool          isPrefix,
+                                   bool          caseSensitive,
+                                   int           caretPos)
 {
     result.clear();
 
@@ -1807,7 +1815,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData, TokenIdxSet& result
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-    RemoveLastFunctionChildren(tree, m_LastFuncTokenIdx);
+    RemoveLastFunctionChildren(m_Parser->GetTokensTree(), m_LastFuncTokenIdx);
 
     // find "using namespace" directives in the file
     TokenIdxSet search_scope;
