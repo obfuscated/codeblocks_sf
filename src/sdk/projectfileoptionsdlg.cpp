@@ -399,7 +399,7 @@ void ProjectFileOptionsDlg::UpdateBuildCommand()
 
     FileType ft = FileTypeOf(m_ProjectFile->relativeFilename);
     wxString cmd;
-    if      (ft == ftResource)
+    if (ft == ftResource)
         cmd = compiler->GetCommand(ctCompileResourceCmd);
     else if (ft == ftSource || ft == ftHeader)
         cmd = compiler->GetCommand(ctCompileObjectCmd);
