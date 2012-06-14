@@ -42,3 +42,13 @@ noinst_HEADERS = cdb_commands.h \
 			gdb_driver.h \
 			parsewatchvalue.h \
 			remotedebugging.h
+
+EXTRA_DIST = debuggergdb_test_defs.cpp \
+		debuggergdb_test_backtrace.cpp \
+		debuggergdb_test_common.h \
+		debuggergdb_test_main.cpp \
+		debuggergdb_test_parser.cpp \
+		debuggergdb_test_parser_cdb.cpp \
+		debuggergdb_test-unix.cbp \
+		debuggergdb_test.cbp
+
