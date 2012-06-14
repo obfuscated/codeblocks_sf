@@ -33,12 +33,22 @@
 %define debugrpm            1
 %endif
 
+%define nassi_shneiderman   1
 %define automake17          0
 
 %if 0%{?_redhat}
 %if 0%{?_redhat_vernum} < 4
 %define automake17          1
 %endif
+%if 0%{?_redhat_vernum} < 6
+%define nassi_shneiderman   0	
+%endif
+%endif
+
+%if 0%{?nassi_shneiderman}
+%define no_nassi_flag " "
+%else
+%define no_nassi_flag ,-NassiShneiderman
 %endif
 
 Name:                       codeblocks
@@ -70,13 +80,15 @@ BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %endif
 %endif
 
+BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, libtool >= 1.4, m4
+BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
+BuildRequires:              zip, pkgconfig
+
 %if ! 0%{?automake17}
-BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
+BuildRequires:              automake >= 1.7
 %else
-BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
+BuildRequires:              automake17
 %endif
-BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel, hunspell-devel
-BuildRequires:              zip, pkgconfig, bzip2-devel, zlib-devel, boost-devel, gamin-devel
 
 %if 0%{?suse_version}
 BuildRequires:              update-desktop-files
@@ -87,9 +99,6 @@ BuildRequires:              update-desktop-files
 %define pkgdatadir          %{_datadir}/%{name}
 %define pkglibdir           %{_libdir}/%{name}
 %define plugindir           %{pkglibdir}/plugins
-
-Requires:                   %{name}-common = %{version}
-Requires:                   libcodeblocks0%{?_isa} = %{version}
 
 %description
 Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
@@ -108,37 +117,14 @@ It is based on a self-developed plugin framework allowing unlimited extensibilit
   * Extensible wizard based on scripts
   * Autosave (saves your work in the unfortunate case of a crash)
 
-%package common
-Summary:                    common files for Code::Blocks IDE
-Group:                      Development/Tools/IDE
-Conflicts:                  %{name} < %{version}
-BuildArch:                  noarch
-
-%description common
-Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
-
-It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
-
-This package contains the architecture-independent files of Code::Blocks.
- 
-%package -n libcodeblocks0
-Summary:                    Code::Blocks shared libraries
-Group:                      Development/Tools/IDE
-
-%description -n libcodeblocks0
-Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
-
-It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
-
-This package contains the Code::Blocks shared library.
- 
 %package contrib
 Summary:                    Code::Blocks contrib plugins
 Group:                      Development/Tools/IDE
 Requires:                   %{name}%{?_isa} = %{version}
-Requires:                   libwxsmithlib0%{?_isa} = %{version}
-Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
-Requires:                   %{name}-contrib-common = %{version}
+BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, hunspell-devel
+%if 0%{?nassi_shneiderman}
+BuildRequires:              boost-devel
+%endif
 
 %description contrib
 This package extends Code::Blocks functionality a great deal with the included plugins. These are:
@@ -178,98 +164,22 @@ This package extends Code::Blocks functionality a great deal with the included p
  * wxSmith contrib items
  * wxSmith AUI
 
-%package contrib-common
-Summary:                    common files for the contrib plugins for Code::Blocks IDE
-Conflicts:                  %{name}-contrib < %{version}
-BuildArch:                  noarch
-
-%description contrib-common
-The contrib plugins extend Code::Blocks functionality.
-
-This package contains the architecture-independent files of the codeblocks-contrib plugins.
-  
-%package -n libwxsmithlib0
-Summary:                    wxSmith shared library (Code::Blocks plugin for RAD GUI editing)
-Group:                      Development/Tools/IDE
-
-%description -n libwxsmithlib0
-This package contains the wxSmith shared library.
-wxSmith is included in the codeblocks-contrib package.
-
-%package libwxcontrib0
-Summary:                    Code::Blocks shared libraries for wxContribItems
-Group:                      Development/Tools/IDE
-
-%description libwxcontrib0
-This package contains the shared libraries for the wxContribItems used by wxSmith.
-
-Contrib items included in this package are:
- * KWIC
- * wxChartCtrl
- * wxFlatNotebook
- * wxImagePanel
- * wxSpeedButton
- * wxTreeList
- * wxCustomButton
- * wxLED
- 
 %package devel
-Summary:                    Code::Blocks development libraries (SDK)
+Summary:                    Code::Blocks development libraries and headers (SDK)
 Group:                      Development/Tools/IDE
-Requires:                   libcodeblocks0%{?_isa} = %{version}
-Requires:                   %{name}-headers = %{version}
+Requires:                   %{name}%{?_isa} = %{version}
 
 %description devel
-This package contains the development libraries for creating plugins for the Code::Blocks IDE.
+This package contains the development libraries and headers for creating plugins for the Code::Blocks IDE.
 
-%package headers
-Summary:                    Code::Blocks development headers (SDK)
+%package contrib-devel
+Summary:                    Code::Blocks development libraries and headers for wxSmith and wxContribItems
 Group:                      Development/Tools/IDE
-Requires:                   %{name}-devel = %{version}
-Conflicts:                  %{name}-devel < %{version}
-BuildArch:                  noarch
+Requires:                   %{name}-contrib%{?_isa} = %{version}
 
-%description headers
-This package contains the development headers for creating plugins for the Code::Blocks IDE.
-
-%package wxcontrib-devel
-Summary:                    Code::Blocks development libraries for wxContribItems
-Group:                      Development/Tools/IDE
-Requires:                   %{name}-libwxcontrib0%{?_isa} = %{version}
-Requires:                   %{name}-wxcontrib-headers = %{version}
-
-%description wxcontrib-devel
-This package contains the development libraries needed to use the wxContribItems in own programs.
+%description contrib-devel
+This package contains the development libraries and headers needed to build wxSmith-pluhǵins and to use the wxContribItems in own programs.
  
-%package wxcontrib-headers
-Summary:                    Code::Blocks development headers for wxContribItems
-Group:                      Development/Tools/IDE
-Requires:                   %{name}-wxcontrib-devel = %{version}
-Conflicts:                  %{name}-wxcontrib-devel < %{version}
-BuildArch:                  noarch
-
-%description wxcontrib-headers
-This package contains the development headers needed to use the wxContribItems in own programs.
- 
-%package -n wxsmith-devel
-Summary:                    wxSmith development files (libraries)
-Group:                      Development/Tools/IDE
-Requires:                   libwxsmithlib0%{?_isa} = %{version}
-Requires:                   wxsmith-headers = %{version}
-
-%description -n wxsmith-devel
-This package contains the development libraries for wxSmith, the codeblocks RAD GUI editing tool. 
-
-%package -n wxsmith-headers
-Summary:                    wxSmith development files (headers)
-Group:                      Development/Tools/IDE
-Requires:                   wxsmith-devel = %{version}
-Conflicts:                  wxsmith-devel < %{version}
-BuildArch:                  noarch
-
-%description -n wxsmith-headers
-This package contains the development headers for wxSmith, the codeblocks RAD GUI editing tool. 
-
 %{?debugrpm:%debug_package}
 
 %prep
@@ -279,7 +189,6 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{?suse_update_libdir:%{suse_update_libdir}}
 %{?suse_update_config:%{suse_update_config -f}}
 
-%build
   %if ! %{automake17}
      ./bootstrap
   %else
@@ -288,18 +197,26 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
   %if 0%{?suse_version}
   %if 0%{?suse_version} > 1020
   %configure \
+      --disable-pch \
       --with-wx-config="%{_bindir}/wx-config" \
-      --with-contrib-plugins=all $CONF_OPTS
+      --with-contrib-plugins=all \
+      $CONF_OPTS
   %else
   %configure \
+      --disable-pch \
       --with-wx-config="%{_bindir}/wx-config-2.8" \
-      --with-contrib-plugins=all $CONF_OPTS
+      --with-contrib-plugins=all \
+      $CONF_OPTS
   %endif
   %else
   %configure \
+      --disable-pch \
       --with-wx-config="%{_bindir}/wx-config" \
-      --with-contrib-plugins=all $CONF_OPTS
+      --with-contrib-plugins=all%no_nassi_flag \
+      $CONF_OPTS
   %endif
+
+%build
 
   %{__make} %{?jobs:-j %{jobs}}
 
@@ -343,10 +260,6 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{plugindir}/libprojectsimporter.so
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
-
-%files common
-%defattr(-,root,root)
-
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
@@ -378,9 +291,6 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{pkgdatadir}/start_here.zip
 %{pkgdatadir}/todo.zip
 %{pkgdatadir}/tips.txt
-
-%files -n libcodeblocks0
-%defattr(-,root,root)
 %{_libdir}/libcodeblocks.so.*
 
 %files contrib
@@ -408,7 +318,9 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{plugindir}/libIncrementalSearch.so
 %{plugindir}/libkeybinder.so
 %{plugindir}/liblib_finder.so
+%if 0%{?nassi_shneiderman}
 %{plugindir}/libNassiShneiderman.so
+%endif
 %{plugindir}/libProfiler.so
 %{plugindir}/libRegExTestbed.so
 %{plugindir}/libSpellChecker.so
@@ -422,9 +334,6 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{plugindir}/libwxsmithcontribitems.so
 %{plugindir}/libwxSmithAui.so
 %{_libdir}/pkgconfig/wxsmithaui.pc
-
-%files contrib-common
-%defattr(-,root,root)
 %{pkgdatadir}/AutoVersioning.zip
 %{pkgdatadir}/BrowseTracker.zip
 %{pkgdatadir}/byogames.zip
@@ -448,7 +357,9 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{pkgdatadir}/keybinder.zip
 %{pkgdatadir}/lib_finder.zip
 %{pkgdatadir}/MouseSap.zip
+%if 0%{?nassi_shneiderman}
 %{pkgdatadir}/NassiShneiderman.zip
+%endif
 %{pkgdatadir}/Profiler.zip
 %{pkgdatadir}/RegExTestbed.zip
 %{pkgdatadir}/ReopenEditor.zip
@@ -467,13 +378,7 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{pkgdatadir}/lib_finder/*
 %{pkgdatadir}/SpellChecker/*
 %{_mandir}/man1/*snippets*
-
-%files -n libwxsmithlib0
-%defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
-
-%files libwxcontrib0
-%defattr(-,root,root)
 %{pkglibdir}/wxContribItems/libwxchartctrl.so.*
 %{pkglibdir}/wxContribItems/libwxcustombutton.so.*
 %{pkglibdir}/wxContribItems/libwxflatnotebook.so.*
@@ -487,12 +392,9 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %defattr(-,root,root)
 %{_libdir}/libcodeblocks.so
 %{_libdir}/pkgconfig/codeblocks.pc
-
-%files headers
-%defattr(-,root,root)
 %{_includedir}/%{name}/*
 
-%files wxcontrib-devel
+%files contrib-devel
 %defattr(-,root,root)
 %{pkglibdir}/wxContribItems/libwxchartctrl.so
 %{pkglibdir}/wxContribItems/libwxcustombutton.so
@@ -512,21 +414,18 @@ This package contains the development headers for wxSmith, the codeblocks RAD GU
 %{_libdir}/pkgconfig/cb_wxspeedbutton.pc
 %{_libdir}/pkgconfig/cb_wxtreelist.pc
 %{_libdir}/pkgconfig/wxsmith.pc
-
-%files wxcontrib-headers
-%defattr(-,root,root)
 %{_includedir}/%{name}/wxContribItems/*
-
-%files -n wxsmith-devel
-%defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so
 %{_libdir}/pkgconfig/wxsmith-contrib.pc
-
-%files -n wxsmith-headers
-%defattr(-,root,root)
 %{_includedir}/wxsmith/*
 
 %changelog
+* Fri Jun 08 2012 jens <jens@codeblocks.org>
+- partly reverted last change, to keep the package layout more clear
+- do not try to build NassiShneiderman-plugin on CentOS/RedHat < 6, because the
+  boost packages are too old (based on changes of oBFusCATed)
+- move some build-dependencies to the contrib-plugins package, because they are
+  only needed there, thanks oBFusCATed
 * Sat May 26 2012 jens <jens@codeblocks.org>
 - split packages in binaries, arch-independent, development- and header-packages,
   similar to the debian package-layout
