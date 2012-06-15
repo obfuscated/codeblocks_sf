@@ -898,7 +898,7 @@ wxString cbDebuggerPlugin::GetConsoleTty(int ConsolePid)
         do
         {
             // check for correct "sleep" line
-            if (psCmd.Contains(wxT("-T")))
+            if (psCmd.Find(ConsPidStr) != wxNOT_FOUND)
                 break; //error;wrong sleep line.
             // found "sleep 93343" string, extract tty field
             ConsTtyStr = wxT("/dev/") + psCmd.BeforeFirst(' ');
