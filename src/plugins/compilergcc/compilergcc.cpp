@@ -1745,7 +1745,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
-    if (target->GetTargetType() == ttConsoleOnly || target-> || GetRunHostApplicationInTerminal())
+    if (target->GetTargetType() == ttConsoleOnly || target->GetRunHostApplicationInTerminal())
     {
         if (!platform::windows)
         {
