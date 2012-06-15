@@ -67,7 +67,7 @@ class DLLIMPORT cbEditor : public EditorBase
         };
 
         /** Don't use this. It throws an exception if you do. */
-        virtual void operator=(const cbEditor& /*rhs*/){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
+        void operator=(const cbEditor& /*rhs*/){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
 
         // properties
 
