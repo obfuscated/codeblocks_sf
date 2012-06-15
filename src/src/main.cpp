@@ -1573,9 +1573,9 @@ ToolbarInfo MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
     ToolbarInfo info;
     info.toolbar = Manager::Get()->CreateEmptyToolbar();
-    info.priority = 50;
-    if (plugin->BuildToolBar(info.toolbar, info.priority))
+    if (plugin->BuildToolBar(info.toolbar))
     {
+        info.priority = plugin->GetToolBarPriority();
         SetToolBar(0);
         InitToolbar(info.toolbar);
 

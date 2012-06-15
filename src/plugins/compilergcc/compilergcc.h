@@ -95,7 +95,7 @@ class CompilerGCC : public cbCompilerPlugin
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0); // offer for menu space by a module
         virtual bool BuildToolBar(wxToolBar* toolBar);
-        virtual bool BuildToolBar(wxToolBar* toolBar, int &priority) { priority = 1; return BuildToolBar(toolBar); }
+        virtual int GetToolBarPriority() { return 1; }
 
         virtual int Run(ProjectBuildTarget* target = 0L);
         virtual int Run(const wxString& target);
