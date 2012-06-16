@@ -913,6 +913,9 @@
 		<Unit filename="include/scripting/squirrel/sqlexer.h">
 			<Option target="Squirrel" />
 		</Unit>
+		<Unit filename="include/scripting/squirrel/sqmem.h">
+			<Option target="Squirrel" />
+		</Unit>
 		<Unit filename="include/scripting/squirrel/sqobject.h">
 			<Option target="Squirrel" />
 		</Unit>
