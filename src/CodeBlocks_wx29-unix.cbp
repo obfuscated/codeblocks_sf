@@ -514,6 +514,9 @@
 		<Unit filename="include/cbauibook.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cbdebugger_interfaces.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/cbeditor.h">
 			<Option target="sdk" />
 		</Unit>
@@ -584,6 +587,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/crc32.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/debuggermanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/editarrayfiledlg.h">
@@ -2278,9 +2284,6 @@
 		<Unit filename="sdk/newfromtemplatedlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/nullptr.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
 		<Unit filename="sdk/personalitymanager.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2714,57 +2717,6 @@
 		</Unit>
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/advprops.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/editors.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/extras.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/manager.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/odcombo.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/propdev.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/propgrid.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/props.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/xh_propgrid.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/advprops.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/editors.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/extras.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/manager.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/odcombo.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/propgrid.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/props.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
-		<Unit filename="sdk/wxpropgrid/src/xh_propgrid.cpp">
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
 			<Option target="scintilla" />
@@ -3416,6 +3368,9 @@
 		<Unit filename="src/resources/debugger_toolbar_16x16.xrc">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/disassembly.xrc">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/dlg_about.xrc">
 			<Option target="src" />
 		</Unit>
@@ -3435,6 +3390,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/manage_assocs.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/memdump.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/print_dialog.xrc">
