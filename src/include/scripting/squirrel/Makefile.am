@@ -12,5 +12,6 @@ noinst_HEADERS = sqtable.h \
                 sqclosure.h \
                 sqfuncproto.h \
                 sqlexer.h \
+                sqmem.h \
                 sqstate.h \
                 sqvm.h
