@@ -108,37 +108,38 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-    XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_indent"), true));
-    XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/smart_indent"), true));
-    XRCCTRL(*this, "chkBraceCompletion", wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_completion"), true));
-    XRCCTRL(*this, "chkUseTab", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tab"), false));
+    XRCCTRL(*this, "chkAutoIndent",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_indent"),                true));
+    XRCCTRL(*this, "chkSmartIndent",              wxCheckBox)->SetValue(cfg->ReadBool(_T("/smart_indent"),               true));
+    XRCCTRL(*this, "chkBraceCompletion",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_completion"),           true));
+    XRCCTRL(*this, "chkUseTab",                   wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tab"),                    false));
     m_EnableScrollWidthTracking = cfg->ReadBool(_T("/margin/scroll_width_tracking"), false);
-    XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->SetValue(m_EnableScrollWidthTracking);
+    XRCCTRL(*this, "chkScrollWidthTracking",      wxCheckBox)->SetValue(m_EnableScrollWidthTracking);
     m_EnableChangebar = cfg->ReadBool(_T("/margin/use_changebar"), true);
-    XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->SetValue(m_EnableChangebar);
-    XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_indent_guides"), false));
-    XRCCTRL(*this, "chkBraceSmartIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_smart_indent"), true));
+    XRCCTRL(*this, "chkUseChangebar",             wxCheckBox)->SetValue(m_EnableChangebar);
+    XRCCTRL(*this, "chkShowIndentGuides",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_indent_guides"),         false));
+    XRCCTRL(*this, "chkBraceSmartIndent",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_smart_indent"),         true));
     XRCCTRL(*this, "chkSelectionBraceCompletion", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection_brace_completion"), false));
-    XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"), true));
-    XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"), true));
-    XRCCTRL(*this, "chkWordWrap", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"), false));
-    XRCCTRL(*this, "chkWordWrapStyleHomeEnd", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap_style_home_end"), true));
-    XRCCTRL(*this, "chkPosixRegex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_posix_style_regexes"), false));
+    XRCCTRL(*this, "chkTabIndents",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"),                true));
+    XRCCTRL(*this, "chkBackspaceUnindents",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"),        true));
+    XRCCTRL(*this, "chkWordWrap",                 wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"),                  false));
+    XRCCTRL(*this, "chkWordWrapStyleHomeEnd",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap_style_home_end"),   true));
+    XRCCTRL(*this, "chkPosixRegex",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_posix_style_regexes"),    false));
     #ifdef wxHAS_REGEX_ADVANCED
-    XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_advanced_regexes"), false));
+    XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_advanced_regexes"),       false));
     #else
-    XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->SetValue(false);
-    XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->Enable(false);
+    XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkAdvancedRegex",            wxCheckBox)->Enable(false);
     #endif
-    XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"), true));
-    XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"), false));
-    XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"), false));
-    XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->SetValue(cfg->ReadBool(_T("/simplified_home"), false));
-    XRCCTRL(*this, "chkResetZoom", wxCheckBox)->SetValue(cfg->ReadBool(_T("/reset_zoom"), false));
-    XRCCTRL(*this, "chkZoomAll", wxCheckBox)->SetValue(cfg->ReadBool(_T("/zoom_all"), false));
-    XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
-    XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), 0));
-    XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
+    XRCCTRL(*this, "chkShowLineNumbers",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"),          true));
+    XRCCTRL(*this, "chkTrackPreprocessor",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"),         false));
+    XRCCTRL(*this, "chkHighlightCaretLine",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"),       false));
+    XRCCTRL(*this, "chkSimplifiedHome",           wxCheckBox)->SetValue(cfg->ReadBool(_T("/simplified_home"),            false));
+    XRCCTRL(*this, "chkCamelCase",                wxCheckBox)->SetValue(cfg->ReadBool(_T("/camel_case"),                 false));
+    XRCCTRL(*this, "chkResetZoom",                wxCheckBox)->SetValue(cfg->ReadBool(_T("/reset_zoom"),                 false));
+    XRCCTRL(*this, "chkZoomAll",                  wxCheckBox)->SetValue(cfg->ReadBool(_T("/zoom_all"),                   false));
+    XRCCTRL(*this, "spnTabSize",                  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"),                    4));
+    XRCCTRL(*this, "cmbViewWS",                   wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"),         0));
+    XRCCTRL(*this, "rbTabText",                   wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true)? 1 : 0);
 
 #if defined __WXMSW__
     const wxString openFolderCmds = _T("explorer.exe /select,");
@@ -151,62 +152,62 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 
     // Highlight Occurence
     bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
-    XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->SetValue(highlightEnabled);
+    XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->SetValue(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true));
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(highlightEnabled);
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable(highlightEnabled);
-    XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
-    XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable(highlightEnabled);
-    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable(highlightEnabled);
+    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
+    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->Enable(highlightEnabled);
+    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
+    XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable(highlightEnabled);
+    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable(highlightEnabled);
 
     // NOTE: duplicate line in cbeditor.cpp (CreateEditor)
     const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
 
-    XRCCTRL(*this, "chkShowEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_eol"), false));
-    XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/strip_trailing_spaces"), true));
-    XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"), true));
+    XRCCTRL(*this, "chkShowEOL",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_eol"),                        false));
+    XRCCTRL(*this, "chkStripTrailings",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/strip_trailing_spaces"),       true));
+    XRCCTRL(*this, "chkEnsureFinalEOL",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"),       true));
     XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_consistent_line_ends"), false));
-    XRCCTRL(*this, "cmbEOLMode", wxComboBox)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"), default_eol));
+    XRCCTRL(*this, "cmbEOLMode",             wxComboBox)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"),                  default_eol));
 
     //caret
     wxColour caretColour = cfg->ReadColour(_T("/caret/colour"), *wxBLACK);
     int caretStyle = cfg->ReadInt(_T("/caret/style"), wxSCI_CARETSTYLE_LINE);
-    XRCCTRL(*this, "lstCaretStyle", wxChoice)->SetSelection(caretStyle);
-    XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/caret/width"), 1));
-    XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->Enable(caretStyle == wxSCI_CARETSTYLE_LINE);
+    XRCCTRL(*this, "lstCaretStyle",  wxChoice)->SetSelection(caretStyle);
+    XRCCTRL(*this, "spnCaretWidth",  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/caret/width"), 1));
+    XRCCTRL(*this, "spnCaretWidth",  wxSpinCtrl)->Enable(caretStyle == wxSCI_CARETSTYLE_LINE);
     XRCCTRL(*this, "btnCaretColour", wxButton)->SetBackgroundColour(caretColour);
-    XRCCTRL(*this, "slCaretPeriod", wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
+    XRCCTRL(*this, "slCaretPeriod",  wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
 
     //selections
     XRCCTRL(*this, "chkEnableVirtualSpace", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/use_vspace"), false));
     bool multiSelectEnabled = cfg->ReadBool(_T("/selection/multi_select"), false);
-    XRCCTRL(*this, "chkEnableMultipleSelections", wxCheckBox)->SetValue(multiSelectEnabled);
+    XRCCTRL(*this, "chkEnableMultipleSelections",        wxCheckBox)->SetValue(multiSelectEnabled);
     XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/multi_typing"), false));
     XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->Enable(multiSelectEnabled);
 
     //folding
-    XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/show_folds"), true));
-    XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_all_on_open"), false));
-    XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_preprocessor"), false));
-    XRCCTRL(*this, "chkFoldComments", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_comments"), true));
-    XRCCTRL(*this, "chkFoldXml", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_xml"), true));
+    XRCCTRL(*this, "chkEnableFolding",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/show_folds"),            true));
+    XRCCTRL(*this, "chkFoldOnOpen",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_all_on_open"),      false));
+    XRCCTRL(*this, "chkFoldPreprocessor",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_preprocessor"),     false));
+    XRCCTRL(*this, "chkFoldComments",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_comments"),         true));
+    XRCCTRL(*this, "chkFoldXml",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_xml"),              true));
     XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/underline_folded_line"), true));
-    XRCCTRL(*this, "lstIndicators", wxChoice)->SetSelection(cfg->ReadInt(_T("/folding/indicator"), 2));
-    XRCCTRL(*this, "chkFoldLimit", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/limit"), false));
-    XRCCTRL(*this, "spnFoldLimitLevel", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/folding/limit_level"), 1));
+    XRCCTRL(*this, "lstIndicators",          wxChoice)->SetSelection(cfg->ReadInt(_T("/folding/indicator"),            2));
+    XRCCTRL(*this, "chkFoldLimit",           wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/limit"),                 false));
+    XRCCTRL(*this, "spnFoldLimitLevel",      wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/folding/limit_level"),            1));
 
     //gutter
     wxColour gutterColour = cfg->ReadColour(_T("/gutter/colour"), *wxLIGHT_GREY);
-    XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
+    XRCCTRL(*this, "lstGutterMode",   wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
     XRCCTRL(*this, "btnGutterColour", wxButton)->SetBackgroundColour(gutterColour);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetRange(1, 500);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/gutter/column"), 80));
 
     //margin
-    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width_chars"), 6));
-    XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin/dynamic_width"), false));
-    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->Enable(!cfg->ReadBool(_T("/margin/dynamic_width"), false));
+    XRCCTRL(*this, "spnMarginWidth",  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width_chars"),      6));
+    XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin/dynamic_width"),   false));
+    XRCCTRL(*this, "spnMarginWidth",  wxSpinCtrl)->Enable(!cfg->ReadBool(_T("/margin/dynamic_width"),    false));
     XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin_1_sensitive"), true));
 
     // colour set
@@ -230,9 +231,9 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
         }
         cmbEnc->SetSelection(sel);
     }
-    XRCCTRL(*this, "rbEncodingUseOption",  wxRadioBox)->SetSelection(cfg->ReadInt(_T("/default_encoding/use_option"), 0));
-    XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/find_latin2"), false));
-    XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/use_system"), true));
+    XRCCTRL(*this, "rbEncodingUseOption",   wxRadioBox)->SetSelection(cfg->ReadInt(_T("/default_encoding/use_option"), 0));
+    XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/find_latin2"),   false));
+    XRCCTRL(*this, "chkEncodingUseSystem",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/use_system"),    true));
 
     // default code
     XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->SetSelection(m_DefCodeFileType);
@@ -808,9 +809,10 @@ void EditorConfigurationDlg::EndModal(int retCode)
         #endif
 
         cfg->Write(_T("/show_line_numbers"),                   XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->GetValue());
-        cfg->Write(_T("/track_preprocessor"),                  XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->GetValue());
+        cfg->Write(_T("/track_preprocessor"),                  XRCCTRL(*this, "chkTrackPreprocessor", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_caret_line"),                XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
         cfg->Write(_T("/simplified_home"),                     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
+        cfg->Write(_T("/camel_case"),                          XRCCTRL(*this, "chkCamelCase", wxCheckBox)->GetValue());
 
         bool resetZoom = XRCCTRL(*this, "chkResetZoom", wxCheckBox)->GetValue();
         bool zoomAll = XRCCTRL(*this, "chkZoomAll", wxCheckBox)->GetValue();
