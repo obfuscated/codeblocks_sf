@@ -2808,36 +2808,54 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
         pop->Append(idNBTabCloseAll, _("Close all"));
         pop->Append(idNBTabCloseAllOthers, _("Close all others"));
     }
-    pop->AppendSeparator();
-    pop->Append(idNBTabSave, _("Save"));
-    pop->Append(idNBTabSaveAll, _("Save all"));
+
+    int any_modified = 0;
+    for (int i = 0; i<GetEditorsCount(); ++i)
+    {
+        EditorBase* ed = GetEditor(i);
+        if (ed && ed->GetModified())
+        {
+            if (++any_modified > 1)
+                break; // more than one editor is modified -> enable "Save all"
+        }
+    }
+    if (any_modified > 0)
+    {
+        pop->AppendSeparator();
+        if (GetEditor(event.GetSelection())->GetModified())
+            pop->Append(idNBTabSave, _("Save"));
+        if (any_modified > 1)
+            pop->Append(idNBTabSaveAll, _("Save all"));
+    }
+
     pop->AppendSeparator();
     pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
-    pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
-    pop->AppendSeparator();
-    pop->Append(idNBTabTop, _("Tabs at top"));
-    pop->Append(idNBTabBottom, _("Tabs at bottom"));
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
-        pop->FindItem(idNBTabBottom)->Enable(false);
-    else
-        pop->FindItem(idNBTabTop)->Enable(false);
 
     cbEditor* ed = GetBuiltinEditor(event.GetSelection());
     if (ed)
     {
-        pop->AppendSeparator();
+        pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
         pop->Append(idNBProperties, _("Properties..."));
-
-        wxMenu* splitMenu = new wxMenu;
-        splitMenu->Append(idNBTabSplitHorz, _("Horizontally"));
-        splitMenu->Append(idNBTabSplitVert, _("Vertically"));
-        splitMenu->AppendSeparator();
-        splitMenu->Append(idNBTabUnsplit, _("Unsplit"));
-        splitMenu->Enable(idNBTabSplitHorz, ed->GetSplitType() != cbEditor::stHorizontal);
-        splitMenu->Enable(idNBTabSplitVert, ed->GetSplitType() != cbEditor::stVertical);
-        splitMenu->Enable(idNBTabUnsplit, ed->GetSplitType() != cbEditor::stNoSplit);
-
         pop->AppendSeparator();
+    }
+
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
+        pop->Append(idNBTabTop, _("Tabs at top"));
+    else
+        pop->Append(idNBTabBottom, _("Tabs at bottom"));
+
+    if (ed)
+    {
+        wxMenu* splitMenu = new wxMenu;
+        if (ed->GetSplitType() != cbEditor::stHorizontal)
+            splitMenu->Append(idNBTabSplitHorz, _("Horizontally"));
+        if (ed->GetSplitType() != cbEditor::stVertical)
+            splitMenu->Append(idNBTabSplitVert, _("Vertically"));
+        if (ed->GetSplitType() != cbEditor::stNoSplit)
+        {
+            splitMenu->AppendSeparator();
+            splitMenu->Append(idNBTabUnsplit, _("Unsplit"));
+        }
         pop->Append(-1, _("Split view"), splitMenu);
 
         if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
@@ -2854,21 +2872,6 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
                 pop->Append(idNBAddFileToProject, _("Add file to active project"));
         }
     }
-
-    bool any_modified = false;
-
-    for (int i = 0; i < GetEditorsCount(); ++i)
-    {
-        EditorBase* ed = GetEditor(i);
-        if (ed && ed->GetModified())
-        {
-            any_modified = true;
-            break;
-        }
-    }
-
-    pop->Enable(idNBTabSave, GetEditor(event.GetSelection())->GetModified());
-    pop->Enable(idNBTabSaveAll, any_modified );
 
     // allow plugins to use this menu
     Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorTab, pop);

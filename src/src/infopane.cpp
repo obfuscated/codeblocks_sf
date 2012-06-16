@@ -347,12 +347,10 @@ void InfoPane::DoShowContextMenu()
     page.Sort(&CompareIndexes);
     wxMenu menu;
     wxMenu* view = new wxMenu;
-    menu.Append(idNB_TabTop, _("Tabs at top"));
-    menu.Append(idNB_TabBottom, _("Tabs at bottom"));
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
-    	menu.FindItem(idNB_TabBottom)->Enable(false);
+    	menu.Append(idNB_TabTop, _("Tabs at top"));
     else
-    	menu.FindItem(idNB_TabTop)->Enable(false);
+    	menu.Append(idNB_TabBottom, _("Tabs at bottom"));
 
     int selection = GetSelection();
     if (selection >= 0 &&

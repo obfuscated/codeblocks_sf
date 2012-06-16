@@ -1948,12 +1948,10 @@ void ProjectManager::ConfigureProjectDependencies(cbProject* base)
 void ProjectManager::OnTabContextMenu(wxAuiNotebookEvent& /*event*/)
 {
     wxMenu* NBmenu = new wxMenu();
-    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
-    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/project_tabs_bottom"), false))
-        NBmenu->FindItem(idNB_TabBottom)->Enable(false);
+        NBmenu->Append(idNB_TabTop, _("Tabs at top"));
     else
-        NBmenu->FindItem(idNB_TabTop)->Enable(false);
+        NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
     m_pNotebook->PopupMenu(NBmenu);
     delete NBmenu;
 }
