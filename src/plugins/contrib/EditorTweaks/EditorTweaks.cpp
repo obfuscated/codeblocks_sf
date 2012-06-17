@@ -652,7 +652,28 @@ void EditorTweaks::OnStripTrailingBlanks(wxCommandEvent &/*event*/)
     if (!ed || !ed->GetControl())
         return;
 
-    wxMessageBox(_("Not Implemented"));
+    cbStyledTextCtrl* control = ed->GetControl();
+    int maxLines = control->GetLineCount();
+    control->BeginUndoAction();
+    for (int line = 0; line < maxLines; line++)
+    {
+        int lineStart = control->PositionFromLine(line);
+        int lineEnd = control->GetLineEndPosition(line);
+        int i = lineEnd-1;
+        wxChar ch = (wxChar)(control->GetCharAt(i));
+        while ((i >= lineStart) && ((ch == _T(' ')) || (ch == _T('\t'))))
+        {
+            i--;
+            ch = (wxChar)(control->GetCharAt(i));
+        }
+        if (i < (lineEnd-1))
+        {
+            control->SetTargetStart(i+1);
+            control->SetTargetEnd(lineEnd);
+            control->ReplaceTarget(_T(""));
+        }
+    }
+    control->EndUndoAction();
 }
 
 void EditorTweaks::OnEnsureConsistentEOL(wxCommandEvent &/*event*/)
