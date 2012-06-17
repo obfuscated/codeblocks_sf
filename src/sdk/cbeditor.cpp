@@ -552,7 +552,67 @@ struct cbEditorInternalData
         }
     }
 
-    //vars
+    wxString GetUrl()
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        if (!control)
+            return wxEmptyString;
+
+        wxRegEx reUrl(wxT("***:(((ht|f)tp(s?)\\:\\/\\/)|(www\\.))(([a-zA-Z0-9\\-\\._]+(\\.[a-zA-Z0-9\\-\\._]+)+)|localhost)(\\/?)([a-zA-Z0-9\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#_]*)?([\\d\\w\\.\\/\\%\\+\\-\\=\\&amp;\\?\\:\\\\\\&quot;\\'\\,\\|\\~\\;]*)"));
+        wxString url = control->GetSelectedText();
+        // Is the URL selected?
+        if (reUrl.Matches(url))
+            return reUrl.GetMatch(url);
+        // else is there a URL near the cursor?
+
+        // Find out start position
+        int startPos = control->GetCurrentPos();
+        const wxString space = wxT(" \n\r\t{}");
+        wxChar curCh = control->GetCharAt(startPos);
+        while ( (startPos > 0) && (space.Find(curCh) == -1) )
+        {
+            startPos--;
+            curCh = control->GetCharAt(startPos);
+        }
+
+        // Find out end position
+        int endPos = control->GetCurrentPos();
+        int maxPos = control->GetLineEndPosition(control->GetLineCount());
+        curCh = control->GetCharAt(endPos);
+        while ( (endPos < maxPos) && (space.Find(curCh) == -1) )
+        {
+            endPos++;
+            curCh = control->GetCharAt(endPos);
+        }
+
+        url = control->GetTextRange(startPos, endPos);
+        if (    (control->GetLexer() == wxSCI_LEX_CPP)
+            &&  (   (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRING)
+                 || (control->GetStyleAt(control->GetCurrentPos()) == wxSCI_C_STRINGEOL) ) )
+        {
+            url.Replace(wxT("\\n"), wxT("\n"));
+            url.Replace(wxT("\\r"), wxT("\r"));
+            url.Replace(wxT("\\t"), wxT("\t"));
+        }
+
+        if (reUrl.Matches(url))
+        {
+            wxString match = reUrl.GetMatch(url);
+            if (   (url.Find(match) + startPos                       < control->GetCurrentPos())
+                && (url.Find(match) + startPos + (int)match.Length() > control->GetCurrentPos()) )
+            {
+                url = match;
+            }
+            else
+                url = wxEmptyString; // nope, too far from cursor, return invalid (empty)
+        }
+        else
+            url = wxEmptyString; // nope, return invalid (empty)
+
+        return url;
+    }
+
+    // vars
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
     bool m_ensure_consistent_line_ends;
@@ -609,6 +669,7 @@ const int idProperties = wxNewId();
 const int idAddFileToProject = wxNewId();
 const int idRemoveFileFromProject = wxNewId();
 const int idShowFileInProject = wxNewId();
+const int idOpenUrl = wxNewId();
 
 const int idBookmarkAdd = wxNewId();
 const int idBookmarkRemove = wxNewId();
@@ -661,6 +722,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idSplitHorz, cbEditor::OnContextMenuEntry)
     EVT_MENU(idSplitVert, cbEditor::OnContextMenuEntry)
     EVT_MENU(idUnsplit, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idOpenUrl, cbEditor::OnContextMenuEntry)
 
     EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
     EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
@@ -2703,6 +2765,12 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
     }
     else
     {
+        if (!noeditor && !m_pData->GetUrl().IsEmpty())
+        {
+            popup->InsertSeparator(0);
+            popup->Insert(0, idOpenUrl, _("Open link in browser"));
+        }
+
         wxMenu* splitMenu = new wxMenu;
         splitMenu->Append(idSplitHorz, _("Horizontally"));
         splitMenu->Append(idSplitVert, _("Vertically"));
@@ -2963,6 +3031,8 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         UnfoldBlockFromLine();
     else if (id == idFoldingToggleCurrent)
         ToggleFoldBlockFromLine();
+    else if (id == idOpenUrl)
+        wxLaunchDefaultBrowser(m_pData->GetUrl());
     else if (id == idSplitHorz)
         Split(stHorizontal);
     else if (id == idSplitVert)
