@@ -102,6 +102,7 @@ void CompilerGNUAVR::Reset()
     m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
     m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
     m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
+    m_Options.AddOption(_("zero as null pointer constant"), _T("-Wzero-as-null-pointer-constant"), category);
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
