@@ -371,6 +371,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                         rd.additionalCmdsBefore = cbC2U(rdOpt->Attribute("additional_cmds_before"));
                     if (rdOpt->Attribute("skip_ld_path"))
                         rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != _T("0");
+                    if (rdOpt->Attribute("extended_remote"))
+                        rd.extendedRemote = cbC2U(rdOpt->Attribute("extended_remote")) != _T("0");
                     if (rdOpt->Attribute("additional_shell_cmds_after"))
                         rd.additionalShellCmdsAfter = cbC2U(rdOpt->Attribute("additional_shell_cmds_after"));
                     if (rdOpt->Attribute("additional_shell_cmds_before"))
@@ -419,7 +421,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 // if no different than defaults, skip it
                 if (rd.serialPort.IsEmpty() && rd.ip.IsEmpty() &&
                     rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty() &&
-                    !rd.skipLDpath)
+                    !rd.skipLDpath && !rd.extendedRemote)
                 {
                     continue;
                 }
@@ -444,6 +446,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                     tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
                 if (rd.skipLDpath)
                     tgtnode->SetAttribute("skip_ld_path", "1");
+                if (rd.extendedRemote)
+                    tgtnode->SetAttribute("extended_remote", "1");
                 if (!rd.additionalShellCmdsAfter.IsEmpty())
                     tgtnode->SetAttribute("additional_shell_cmds_after", cbU2C(rd.additionalShellCmdsAfter));
                 if (!rd.additionalShellCmdsBefore.IsEmpty())

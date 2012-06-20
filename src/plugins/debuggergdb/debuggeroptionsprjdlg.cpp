@@ -180,6 +180,7 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
         XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(rd.additionalCmds);
         XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->SetValue(rd.additionalCmdsBefore);
         XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->SetValue(rd.skipLDpath);
+        XRCCTRL(*this, "chkExtendedRemote", wxCheckBox)->SetValue(rd.extendedRemote);
         XRCCTRL(*this, "txtShellCmdsAfter", wxTextCtrl)->SetValue(rd.additionalShellCmdsAfter);
         XRCCTRL(*this, "txtShellCmdsBefore", wxTextCtrl)->SetValue(rd.additionalShellCmdsBefore);
     }
@@ -193,6 +194,7 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
         XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(wxEmptyString);
         XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->SetValue(wxEmptyString);
         XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->SetValue(false);
+        XRCCTRL(*this, "chkExtendedRemote", wxCheckBox)->SetValue(false);
         XRCCTRL(*this, "txtShellCmdsAfter", wxTextCtrl)->SetValue(wxEmptyString);
         XRCCTRL(*this, "txtShellCmdsBefore", wxTextCtrl)->SetValue(wxEmptyString);
     }
@@ -221,6 +223,7 @@ void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
     rd.additionalCmds = XRCCTRL(*this, "txtCmds", wxTextCtrl)->GetValue();
     rd.additionalCmdsBefore = XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->GetValue();
     rd.skipLDpath = XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->GetValue();
+    rd.extendedRemote = XRCCTRL(*this, "chkExtendedRemote", wxCheckBox)->GetValue();
     rd.additionalShellCmdsAfter = XRCCTRL(*this, "txtShellCmdsAfter", wxTextCtrl)->GetValue();
     rd.additionalShellCmdsBefore = XRCCTRL(*this, "txtShellCmdsBefore", wxTextCtrl)->GetValue();
 }
@@ -297,6 +300,7 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
     XRCCTRL(*this, "txtCmds", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkExtendedRemote", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtShellCmdsAfter", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtShellCmdsBefore", wxTextCtrl)->Enable(en);
 }

@@ -21,7 +21,7 @@ struct RemoteDebugging
 		Serial
 	};
 
-	RemoteDebugging() : skipLDpath(false) {}
+	RemoteDebugging() : skipLDpath(false), extendedRemote(false) {}
 
 	bool IsOk() const
 	{
@@ -52,6 +52,7 @@ struct RemoteDebugging
 			additionalCmdsBefore += other.additionalCmdsBefore;
 
 		skipLDpath = other.skipLDpath;
+		extendedRemote = other.extendedRemote;
 
 		if (!additionalShellCmdsAfter.IsEmpty() && !other.additionalShellCmdsAfter.IsEmpty())
 			additionalShellCmdsAfter += _T('\n');
@@ -74,6 +75,7 @@ struct RemoteDebugging
 	wxString additionalShellCmdsAfter; ///< shell commands after remote connection established
 	wxString additionalShellCmdsBefore; ///< shell commands before establishing remote connection
 	bool skipLDpath; ///< skip adjusting LD_LIBRARY_PATH before launching debugger
+	bool extendedRemote;//!< connect with extended remote or not
 };
 
 typedef std::map<ProjectBuildTarget*, RemoteDebugging> RemoteDebuggingMap;

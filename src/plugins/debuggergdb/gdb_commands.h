@@ -1690,26 +1690,27 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
         GdbCmd_RemoteTarget(DebuggerDriver* driver, RemoteDebugging* rd)
             : DebuggerCmd(driver)
         {
+            const wxString targetRemote = rd->extendedRemote ? _T("target extended-remote ") : _T("target remote ");
             switch (rd->connType)
             {
                 case RemoteDebugging::TCP:
                 {
                     if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-                        m_Cmd << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
+                        m_Cmd << targetRemote << _T("tcp:") << rd->ip << _T(":") << rd->ipPort;
                 }
                 break;
 
                 case RemoteDebugging::UDP:
                 {
                     if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-                        m_Cmd << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
+                        m_Cmd << targetRemote << _T("udp:") << rd->ip << _T(":") << rd->ipPort;
                 }
                 break;
 
                 case RemoteDebugging::Serial:
                 {
                     if (!rd->serialPort.IsEmpty())
-                        m_Cmd << _T("target remote ") << rd->serialPort;
+                        m_Cmd << targetRemote << rd->serialPort;
                 }
                 break;
 
