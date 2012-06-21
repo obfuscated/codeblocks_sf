@@ -1,16 +1,6 @@
 #ifndef INTERPRETERPROPERTIES_H
 #define INTERPRETERPROPERTIES_H
 
-// TODO : FIX THIS : killerbot : these includes are wrong : pch related stuff has to included in the cpp , not in a header !!!!!!!!!!!!!!!!
-
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <sdk.h> // Code::Blocks SDK
-
 #include <wx/dynarray.h>
 #include <wx/string.h>
 
