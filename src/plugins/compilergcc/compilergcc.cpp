@@ -1475,7 +1475,7 @@ void CompilerGCC::DoPrepareQueue(bool clearLog)
             ClearLog();
         DoClearErrors();
         // wxStartTimer();
-        m_StartTimer = wxGetLocalTimeMillis();
+        m_StartTime = wxGetLocalTimeMillis();
     }
     Manager::Yield();
 }
@@ -3586,7 +3586,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
         // long int elapsed = wxGetElapsedTime() / 1000;
         wxLongLong localTime = wxGetLocalTimeMillis();
-        wxLongLong duration = localTime - m_StartTimer;
+        wxLongLong duration = localTime - m_StartTime;
         long int elapsed = duration.ToLong();
         elapsed /= 1000;
         int mins = elapsed / 60;
