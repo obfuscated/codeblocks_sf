@@ -1,8 +1,7 @@
 #ifndef INTERPRETERPROPERTIES_H
 #define INTERPRETERPROPERTIES_H
 
-//#include <vector>
-//#include <stdlib.h>
+// TODO : FIX THIS : killerbot : these includes are wrong : pch related stuff has to included in the cpp , not in a header !!!!!!!!!!!!!!!!
 
 #include <wx/wxprec.h>
 
@@ -13,18 +12,9 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #include <wx/dynarray.h>
-
-
-//struct ShellCommandMenuRef
-//{
-//    ShellCommandMenuRef() {i=0; a=0;}
-//    ShellCommandMenuRef(size_t interp, size_t act) {i=interp; a=act;}
-//    size_t i;
-////    size_t a;
-//};
+#include <wx/string.h>
 
 WX_DEFINE_ARRAY_INT(int, ShellCommandMenuVec);
-//WX_DECLARE_OBJARRAY(ShellCommandMenuRef, ShellCommandMenuVec);
 
 struct ShellCommand
 {

@@ -2,7 +2,7 @@
 
 #include <configmanager.h>
 
-#include <wx/arrimpl.cpp> 
+#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ShellCommandVec);
 
 wxString istr0(int i)
@@ -15,11 +15,11 @@ bool CommandCollection::WriteConfig()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
     //cfg->Clear();
-    int len=interps.GetCount();
+    const int len = interps.GetCount();
     cfg->Write(_T("ShellCmds/numcmds"), len);
-    for(int i=0;i<len;i++)
+    for(int i = 0; i < len; ++i)
     {
-        wxString istr=istr0(i);
+        const wxString istr = istr0(i);
         cfg->Write(_T("ShellCmds/I")+istr+_T("/name"), interps[i].name);
         cfg->Write(_T("ShellCmds/I")+istr+_T("/command"), interps[i].command);
         cfg->Write(_T("ShellCmds/I")+istr+_T("/wdir"), interps[i].wdir);
@@ -37,16 +37,16 @@ bool CommandCollection::WriteConfig()
 bool CommandCollection::ReadConfig()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
-    int len=0;
+    int len = 0;
     if(!cfg->Read(_T("ShellCmds/numcmds"), &len))
     {
 //        cbMessageBox(_T("Warning: couldn't read interpreter config data"));
         return false;
     }
-    for(int i=0;i<len;i++)
+    for(int i = 0; i < len; ++i)
     {
         ShellCommand interp;
-        wxString istr=istr0(i);
+        const wxString istr = istr0(i);
         cfg->Read(_T("ShellCmds/I")+istr+_T("/name"), &interp.name);
         cfg->Read(_T("ShellCmds/I")+istr+_T("/command"), &interp.command);
         cfg->Read(_T("ShellCmds/I")+istr+_T("/wdir"), &interp.wdir);
@@ -68,8 +68,8 @@ bool CommandCollection::ExportConfig(const wxString &filename)
     if(!file.IsOpened())
         return false;
     file.Write(_T("##Tools Plus Plugin (v0.6) Command Export##\n"));
-    int len=interps.GetCount();
-    for(int i=0;i<len;i++)
+    const int len=interps.GetCount();
+    for(int i = 0; i < len; ++i)
     {
         file.Write(_T("COMMAND#####################################\n"));
         file.Write(_T("name:")+interps[i].name+_T("\n"));
@@ -99,27 +99,27 @@ bool CommandCollection::ImportConfig(const wxString &filename)
     wxFile file(filename, wxFile::read);
     if(!file.IsOpened())
         return false;
-    wxString import=cbReadFileContents(file);
+    wxString import = cbReadFileContents(file);
     import.Replace(_T("\r\n"),_T("\n"));
     import.Replace(_T("\r"),_T("\n"));
-    import=import.AfterFirst('\n');
+    import = import.AfterFirst('\n');
     while(!import.IsEmpty())
     {
         ShellCommand s;
-        import=import.AfterFirst('\n');
-        s.name=readconfigdata(import);
-        s.command=readconfigdata(import);
-        s.wdir=readconfigdata(import);
-        s.wildcards=readconfigdata(import);
-        s.menu=readconfigdata(import);
+        import = import.AfterFirst('\n');
+        s.name = readconfigdata(import);
+        s.command = readconfigdata(import);
+        s.wdir = readconfigdata(import);
+        s.wildcards = readconfigdata(import);
+        s.menu = readconfigdata(import);
         long i;
         readconfigdata(import).ToLong(&i);
-        s.menupriority=i;
-        s.cmenu=readconfigdata(import);
+        s.menupriority = i;
+        s.cmenu = readconfigdata(import);
         readconfigdata(import).ToLong(&i);
-        s.cmenupriority=i;
-        s.envvarset=readconfigdata(import);
-        s.mode=readconfigdata(import);
+        s.cmenupriority = i;
+        s.envvarset = readconfigdata(import);
+        s.mode = readconfigdata(import);
         interps.Add(s);
     }
     return true;
@@ -129,41 +129,41 @@ bool CommandCollection::ImportConfig(const wxString &filename)
 bool CommandCollection::ImportLegacyConfig()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("InterpretedLangs"));
-    int len=0;
+    int len = 0;
     if(!cfg->Read(_T("InterpProps/numinterps"), &len))
     {
         return false;
     }
-    for(int i=0;i<len;i++)
+    for(int i = 0; i < len; ++i)
     {
-        wxString istr=istr0(i);
+        const wxString istr = istr0(i);
         wxString name,exec,extensions;
         cfg->Read(_T("InterpProps/I")+istr+_T("/name"), &name);
         cfg->Read(_T("InterpProps/I")+istr+_T("/exec"), &exec);
         cfg->Read(_T("InterpProps/I")+istr+_T("/ext"), &extensions);
-        int lenact=0;
+        int lenact = 0;
         cfg->Read(_T("InterpProps/I")+istr+_T("/numactions"), &lenact);
-        for(int j=0;j<lenact;j++)
+        for(int j = 0; j < lenact; ++j)
         {
             ShellCommand interp;
-            wxString jstr=istr0(j);
+            const wxString jstr = istr0(j);
             wxString aname,command,mode,wdir,envvarset;
             cfg->Read(_T("InterpProps/I")+istr+_T("/actions/A")+jstr+_T("/name"), &aname);
             cfg->Read(_T("InterpProps/I")+istr+_T("/actions/A")+jstr+_T("/command"), &command);
             cfg->Read(_T("InterpProps/I")+istr+_T("/actions/A")+jstr+_T("/mode"), &mode);
             cfg->Read(_T("InterpProps/I")+istr+_T("/actions/A")+jstr+_T("/workingdir"), &wdir);
             cfg->Read(_T("InterpProps/I")+istr+_T("/actions/A")+jstr+_T("/envvarset"), &envvarset);
-            interp.name=name+_T(" ")+aname;
-            interp.wildcards=extensions;
-            interp.command=command;
+            interp.name = name+_T(" ")+aname;
+            interp.wildcards = extensions;
+            interp.command = command;
             interp.command.Replace(_T("$interpreter"),exec);
-            interp.wdir=wdir;
-            interp.menu=name+_T("/")+aname;
-            interp.cmenu=name+_T("/")+aname;
-            interp.cmenupriority=0;
-            interp.menupriority=0;
-            interp.envvarset=envvarset;
-            interp.mode=mode;
+            interp.wdir = wdir;
+            interp.menu = name+_T("/")+aname;
+            interp.cmenu = name+_T("/")+aname;
+            interp.cmenupriority = 0;
+            interp.menupriority = 0;
+            interp.envvarset = envvarset;
+            interp.mode = mode;
             interps.Add(interp);
         }
     }

@@ -289,7 +289,7 @@ void CmdConfigDialog::SetDialogItems()
         m_mode->Enable();
         m_envvars->Enable();
 
-        ShellCommand &interp=m_ic.interps[m_activeinterp];
+        const ShellCommand &interp=m_ic.interps[m_activeinterp];
         m_commandname->SetValue(interp.name);
         m_command->SetValue(interp.command);
         m_wildcards->SetValue(interp.wildcards);
@@ -334,17 +334,17 @@ void CmdConfigDialog::SetDialogItems()
 // Retrieve configuration values from the dialog widgets and store them appropriately
 void CmdConfigDialog::GetDialogItems()
 {
-    if(!m_ic.interps.GetCount()||m_activeinterp<0||m_activeinterp>=static_cast<int>(m_ic.interps.GetCount()))
+    if(!m_ic.interps.GetCount() || m_activeinterp<0||m_activeinterp>=static_cast<int>(m_ic.interps.GetCount()))
         return;
-    ShellCommand &interp=m_ic.interps[m_activeinterp];
-    interp.name=m_commandname->GetValue();
-    interp.command=m_command->GetValue();
-    interp.wildcards=m_wildcards->GetValue();
-    interp.wdir=m_workdir->GetValue();
-    interp.menu=m_menuloc->GetValue();
-    interp.menupriority=m_menulocpriority->GetValue();
-    interp.cmenu=m_cmenuloc->GetValue();
-    interp.cmenupriority=m_cmenulocpriority->GetValue();
+    ShellCommand &interp = m_ic.interps[m_activeinterp];
+    interp.name = m_commandname->GetValue();
+    interp.command = m_command->GetValue();
+    interp.wildcards = m_wildcards->GetValue();
+    interp.wdir = m_workdir->GetValue();
+    interp.menu = m_menuloc->GetValue();
+    interp.menupriority = m_menulocpriority->GetValue();
+    interp.cmenu = m_cmenuloc->GetValue();
+    interp.cmenupriority = m_cmenulocpriority->GetValue();
     switch(m_mode->GetSelection())
     {
         case 0:
@@ -357,7 +357,7 @@ void CmdConfigDialog::GetDialogItems()
             interp.mode=_T("");
             break;
     }
-    interp.envvarset=m_envvars->GetStringSelection();
+    interp.envvarset = m_envvars->GetStringSelection();
 }
 
 void CmdConfigDialog::New(wxCommandEvent &event)
@@ -367,7 +367,7 @@ void CmdConfigDialog::New(wxCommandEvent &event)
     interp.name=_("New Tool");
     m_ic.interps.Add(interp);
 
-    m_activeinterp=m_ic.interps.GetCount()-1;
+    m_activeinterp = m_ic.interps.GetCount()-1;
 
     m_commandlist->Insert(m_ic.interps[m_activeinterp].name,m_activeinterp);
 
@@ -381,10 +381,10 @@ void CmdConfigDialog::Copy(wxCommandEvent &event)
     if(m_ic.interps.GetCount()>0)
     {
         ShellCommand interp=m_ic.interps[m_activeinterp];
-        interp.name+=_(" (Copy)");
+        interp.name += _(" (Copy)");
         m_ic.interps.Add(interp);
 
-        m_activeinterp=m_ic.interps.GetCount()-1;
+        m_activeinterp = m_ic.interps.GetCount()-1;
 
         m_commandlist->Insert(m_ic.interps[m_activeinterp].name,m_activeinterp);
 
@@ -400,10 +400,10 @@ void CmdConfigDialog::Delete(wxCommandEvent &event)
         {
             m_ic.interps.RemoveAt(m_activeinterp);
             m_commandlist->Delete(m_activeinterp);
-            if(m_activeinterp>=static_cast<int>(m_ic.interps.GetCount()))
-                m_activeinterp=m_ic.interps.GetCount()-1;
+            if(m_activeinterp >= static_cast<int>(m_ic.interps.GetCount()))
+                m_activeinterp = m_ic.interps.GetCount()-1;
             SetDialogItems();
-            if(m_activeinterp>=0)
+            if(m_activeinterp >= 0)
                 m_commandlist->SetSelection(m_activeinterp);
         }
 }
@@ -413,7 +413,7 @@ void CmdConfigDialog::OnUp(wxCommandEvent &event)
     if(m_activeinterp>0 && m_ic.interps.GetCount()>1)
     {
         GetDialogItems();
-        ShellCommand interp=m_ic.interps[m_activeinterp];
+        ShellCommand interp = m_ic.interps[m_activeinterp];
         m_ic.interps.RemoveAt(m_activeinterp);
         m_commandlist->Delete(m_activeinterp);
         m_activeinterp--;
@@ -425,10 +425,10 @@ void CmdConfigDialog::OnUp(wxCommandEvent &event)
 
 void CmdConfigDialog::OnDown(wxCommandEvent &event)
 {
-    if(m_activeinterp+1<static_cast<int>(m_ic.interps.GetCount()) && m_ic.interps.GetCount()>1)
+    if(m_activeinterp+1 < static_cast<int>(m_ic.interps.GetCount()) && m_ic.interps.GetCount()>1)
     {
         GetDialogItems();
-        ShellCommand interp=m_ic.interps[m_activeinterp];
+        ShellCommand interp = m_ic.interps[m_activeinterp];
         m_ic.interps.RemoveAt(m_activeinterp);
         m_commandlist->Delete(m_activeinterp);
         m_activeinterp++;
@@ -445,12 +445,15 @@ void CmdConfigDialog::OnImport(wxCommandEvent &event)
     #else
     wxFileDialog fd(NULL, _("Import: Select File"),_T(""),_T(""),_T("*"),wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     #endif
-    int prevlistsize=m_ic.interps.GetCount();
+    const int prevlistsize = m_ic.interps.GetCount();
     if(fd.ShowModal()!=wxID_OK)
         return;
     m_ic.ImportConfig(fd.GetPath());
-    for(unsigned int i=prevlistsize;i<m_ic.interps.GetCount();i++)
+    for(unsigned int i = prevlistsize; i < m_ic.interps.GetCount(); ++i)
+    {
         m_commandlist->Append(m_ic.interps[i].name);
+    }
+    SetDialogItems(); // needed in case initial list was empty, otherwise our first imported entry would be overwritten with everything empty (due to GetDialogItems, and all members used in there still empty)
 }
 
 void CmdConfigDialog::OnExport(wxCommandEvent &event)

@@ -508,7 +508,7 @@ int ToolsPlus::Configure()
 void ToolsPlus::CreateMenu()
 {
     unsigned int i;
-    for (i=0;i<m_ic.interps.size();i++)
+    for (i = 0; i < m_ic.interps.size(); i++)
     {
         wxString tail;
         if (m_ic.interps[i].command.Find(_("$file"))>0||
