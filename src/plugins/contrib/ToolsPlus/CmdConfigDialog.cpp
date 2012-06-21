@@ -54,7 +54,7 @@ CmdConfigDialog::CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin) : wxDialo
     nb->AddPage(settings_panel,_("Plugin Settings"),false);
 
     wxBoxSizer *tools_sizer=new wxBoxSizer( wxHORIZONTAL);
-    wxBoxSizer *settings_sizer=new wxBoxSizer( wxHORIZONTAL);
+    wxBoxSizer *settings_sizer=new wxBoxSizer( wxVERTICAL);
     wxBoxSizer *list_sizer=new wxBoxSizer( wxVERTICAL );
 	wxBoxSizer *p_sizer=new wxBoxSizer( wxVERTICAL );
 	tools_sizer->Add(list_sizer,3,wxALL|wxEXPAND,10);
@@ -63,10 +63,15 @@ CmdConfigDialog::CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin) : wxDialo
     settings_panel->SetSizer(settings_sizer);
     main_sizer->Add(nb,1,wxALL|wxEXPAND,5);
 
-    m_replace_tools=new wxCheckBox(settings_panel,wxID_ANY,_("Replace Tools menu with Tools Plus"));
+    m_replace_tools = new wxCheckBox(settings_panel, wxID_ANY, _("Replace Tools menu with Tools Plus"));
+    m_ReuseToolsPage = new wxCheckBox(settings_panel, wxID_ANY, _("Reuse existing Tools page"));
+
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
-    m_replace_tools->SetValue(cfg->ReadBool(_T("HideToolsMenu"),false));
+    m_replace_tools->SetValue(cfg->ReadBool(_T("HideToolsMenu"), false));
     settings_sizer->Add(m_replace_tools);
+    m_ReUseToolsPageValue = cfg->ReadBool(_T("ReuseToolsPage"), false);
+    m_ReuseToolsPage->SetValue(m_ReUseToolsPageValue);
+    settings_sizer->Add(m_ReuseToolsPage);
 
     m_prop_panel=new wxPanel(tools_panel);
 	wxBoxSizer *prop_sizer=new wxBoxSizer( wxVERTICAL );
@@ -255,6 +260,7 @@ void CmdConfigDialog::OnApply()
     m_icperm->interps=m_ic.interps;
     m_icperm->WriteConfig();
     m_plugin->UpdateMenu(m_replace_tools->IsChecked());
+    m_ReUseToolsPageValue = m_ReuseToolsPage->IsChecked();
 }
 
 void CmdConfigDialog::NameChange(wxCommandEvent& event)
@@ -468,3 +474,7 @@ void CmdConfigDialog::OnExport(wxCommandEvent &event)
     m_ic.ExportConfig(fd.GetPath());
 }
 
+bool CmdConfigDialog::ReUseToolsPage() const
+{
+    return m_ReUseToolsPageValue;
+}

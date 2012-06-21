@@ -168,6 +168,7 @@ class ToolsPlus : public cbPlugin
         int m_bufpos; //search position in console output buffer (used to check whether processing is finished)
 
         ShellManager *m_shellmgr;
+        bool m_ReUseToolsPage;
 
         DECLARE_EVENT_TABLE();
 };

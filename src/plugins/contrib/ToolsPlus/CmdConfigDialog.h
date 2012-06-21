@@ -51,7 +51,6 @@
 
 #include <sdk.h>
 #include <configurationpanel.h>
-#include "shellproperties.h"
 
 class ToolsPlus;
 class CommandCollection;
@@ -67,12 +66,14 @@ class CmdConfigDialog : public wxDialog
         wxString GetBitmapBaseName() const { return _("ToolsPlus"); }
         void OnApply();
         void OnCancel(){}
+        bool ReUseToolsPage() const;
 
 	private:
         CommandCollection m_ic;
         CommandCollection *m_icperm;
         ToolsPlus *m_plugin;
         int m_activeinterp;
+        bool m_ReUseToolsPageValue;
 //        void UpdateEntry(int index);
 //        void ChooseFile();
 
@@ -117,6 +118,7 @@ class CmdConfigDialog : public wxDialog
 		wxChoice* m_envvars;
 		wxWindow *m_prop_panel;
 		wxCheckBox *m_replace_tools;
+		wxCheckBox *m_ReuseToolsPage;
     DECLARE_EVENT_TABLE()
 
 };

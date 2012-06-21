@@ -158,9 +158,14 @@ void ToolsPlus::OnConfigure(wxCommandEvent& event)
 {
     // Open the configuration dialog (global settings/add+remove tools)
     CmdConfigDialog *dlg = new CmdConfigDialog(NULL, this);
-    int result=dlg->ShowModal();
-    if (result==wxID_OK)
+    const int result = dlg->ShowModal();
+    if (result == wxID_OK)
+    {
         dlg->OnApply();
+        m_ReUseToolsPage = dlg->ReUseToolsPage();
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
+        cfg->Write(_T("ReuseToolsPage"), m_ReUseToolsPage);
+    }
     dlg->Destroy();
 }
 
@@ -388,8 +393,12 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
 
     if (windowed)
     {
+        if(m_ReUseToolsPage)
+        {
+            m_shellmgr->RemoveDeadPages();;
+        }
         wxArrayString astr;
-        m_shellmgr->LaunchProcess(commandstr,consolename,_("Piped Process Control"),astr);
+        m_shellmgr->LaunchProcess(commandstr, consolename, _("Piped Process Control"), astr);
         ShowConsole();
     } else if (console)
     {
@@ -428,6 +437,8 @@ ToolsPlus::ToolsPlus()
     // we add some, it will be nice that this code is in place already ;)
     if (!Manager::LoadResource(_T("ToolsPlus.zip")))
         NotifyMissingFile(_T("ToolsPlus.zip"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
+    m_ReUseToolsPage = cfg->ReadBool(_T("ReuseToolsPage"), false);
 }
 
 cbConfigurationPanel* ToolsPlus::GetConfigurationPanel(wxWindow* parent)
