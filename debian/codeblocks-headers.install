@@ -1,1 +1,6 @@
-usr/include/codeblocks/
+usr/include/codeblocks/scripting
+usr/include/codeblocks/tinyxml
+usr/include/codeblocks/wxpropgrid
+usr/include/codeblocks/wxscintilla
+usr/include/codeblocks/*.h
+
