@@ -186,49 +186,59 @@ void CCOptionsDlg::OnApply()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
     // -----------------------------------------------------------------------
-    // Handle all options that are being directly applied / written from UI
+    // Handle all options that are being directly applied / written from UI:
     // -----------------------------------------------------------------------
 
     // Page "Code Completion"
-    cfg->Write(_T("/use_code_completion"),  (bool)!XRCCTRL(*this, "chkNoCC",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/eval_tooltip"),         (bool) XRCCTRL(*this, "chkEvalTooltip",           wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_select_one"),      (bool) XRCCTRL(*this, "chkAutoSelectOne",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses",    wxCheckBox)->GetValue());
-    cfg->Write(_T("/add_doxgen_comment"),   (bool) XRCCTRL(*this, "chkAddDoxgenComment",      wxCheckBox)->GetValue());
-    cfg->Write(_T("/enable_headers"),       (bool) XRCCTRL(*this, "chkEnableHeaders",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_launch"),          (bool) XRCCTRL(*this, "chkAutoLaunch",            wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_launch_chars"),    (int)  XRCCTRL(*this, "spnAutoLaunchChars",       wxSpinCtrl)->GetValue());
-    cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",            wxSpinCtrl)->GetValue());
-    cfg->Write(_T("/fillup_chars"),                XRCCTRL(*this, "txtFillupChars",           wxTextCtrl)->GetValue());
-    cfg->Write(_T("/cc_delay"),             (int)  XRCCTRL(*this, "sldCCDelay",               wxSlider)->GetValue() * 100);
-    cfg->Write(_T("/lexer_keywords_set1"),  (bool) XRCCTRL(*this, "chkKL_1",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set2"),  (bool) XRCCTRL(*this, "chkKL_2",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set3"),  (bool) XRCCTRL(*this, "chkKL_3",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set4"),  (bool) XRCCTRL(*this, "chkKL_4",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set5"),  (bool) XRCCTRL(*this, "chkKL_5",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set6"),  (bool) XRCCTRL(*this, "chkKL_6",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set7"),  (bool) XRCCTRL(*this, "chkKL_7",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set8"),  (bool) XRCCTRL(*this, "chkKL_8",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/lexer_keywords_set9"),  (bool) XRCCTRL(*this, "chkKL_9",                  wxCheckBox)->GetValue());
+    cfg->Write(_T("/use_code_completion"),  (bool)!XRCCTRL(*this, "chkNoCC",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/use_SmartSense"),       (bool) XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->GetValue());
+    cfg->Write(_T("/while_typing"),         (bool) XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->GetValue());
+    cfg->Write(_T("/case_sensitive"),       (bool) XRCCTRL(*this, "chkCaseSensitive",      wxCheckBox)->GetValue());
+    cfg->Write(_T("/eval_tooltip"),         (bool) XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->GetValue());
+    cfg->Write(_T("/auto_select_one"),      (bool) XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->GetValue());
+    cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue());
+    cfg->Write(_T("/add_doxgen_comment"),   (bool) XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->GetValue());
+    cfg->Write(_T("/enable_headers"),       (bool) XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->GetValue());
+    cfg->Write(_T("/auto_launch"),          (bool) XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->GetValue());
+    cfg->Write(_T("/auto_launch_chars"),    (int)  XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/fillup_chars"),                XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->GetValue());
+    cfg->Write(_T("/cc_delay"),             (int)  XRCCTRL(*this, "sldCCDelay",            wxSlider)->GetValue() * 100);
+    cfg->Write(_T("/lexer_keywords_set1"),  (bool) XRCCTRL(*this, "chkKL_1",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set2"),  (bool) XRCCTRL(*this, "chkKL_2",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set3"),  (bool) XRCCTRL(*this, "chkKL_3",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set4"),  (bool) XRCCTRL(*this, "chkKL_4",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set5"),  (bool) XRCCTRL(*this, "chkKL_5",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set6"),  (bool) XRCCTRL(*this, "chkKL_6",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set7"),  (bool) XRCCTRL(*this, "chkKL_7",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set8"),  (bool) XRCCTRL(*this, "chkKL_8",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/lexer_keywords_set9"),  (bool) XRCCTRL(*this, "chkKL_9",               wxCheckBox)->GetValue());
 
     // Page "C / C++ parser"
-    cfg->Write(_T("/priority_headers"),            XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->GetValue());
-    cfg->Write(_T("/max_threads"),          (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
-    cfg->Write(_T("/parser_per_workspace"), (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
-    cfg->Write(_T("/max_parsers"),          (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/parser_follow_local_includes"),  (bool) XRCCTRL(*this, "chkLocals",                wxCheckBox)->GetValue());
+    cfg->Write(_T("/parser_follow_global_includes"), (bool) XRCCTRL(*this, "chkGlobals",               wxCheckBox)->GetValue());
+    cfg->Write(_T("/want_preprocessor"),             (bool) XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->GetValue());
+    cfg->Write(_T("/parse_complex_macros"),          (bool) XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->GetValue());
+    cfg->Write(_T("/priority_headers"),                     XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->GetValue());
+    cfg->Write(_T("/max_threads"),                   (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/parser_per_workspace"),          (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
+    cfg->Write(_T("/max_parsers"),                   (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
 
     // Page "C / C++ parser (adv.)"
-    cfg->Write(_T("/header_ext"),                  XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->GetValue());
-    cfg->Write(_T("/empty_ext"),            (bool) XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->GetValue());
-    cfg->Write(_T("/source_ext"),                  XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->GetValue());
+    cfg->Write(_T("/header_ext"), (bool) XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
+    cfg->Write(_T("/empty_ext"),  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
+    cfg->Write(_T("/source_ext"), (bool) XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
 
     // Page "Symbol browser"
-    cfg->Write(_T("/use_symbols_browser"),  (bool)!XRCCTRL(*this, "chkNoSB",                  wxCheckBox)->GetValue());
-    cfg->Write(_T("/as_floating_window"),   (bool) XRCCTRL(*this, "chkFloatCB",               wxCheckBox)->GetValue());
-    cfg->Write(_T("/scope_filter"),         (bool) XRCCTRL(*this, "chkScopeFilter",           wxCheckBox)->GetValue());
+    cfg->Write(_T("/use_symbols_browser"),      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
+    cfg->Write(_T("/browser_show_inheritance"), (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
+    cfg->Write(_T("/browser_expand_ns"),        (bool) XRCCTRL(*this, "chkExpandNS",    wxCheckBox)->GetValue());
+    cfg->Write(_T("/as_floating_window"),       (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
+    cfg->Write(_T("/browser_tree_members"),     (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
+    cfg->Write(_T("/scope_filter"),             (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
 
     // -----------------------------------------------------------------------
-    // Handle all options that are being be read by m_Parser.ReadOptions();
+    // Handle all options that are being be read by m_Parser.ReadOptions():
     // -----------------------------------------------------------------------
 
     // Force parser to read its options that we write in the config
@@ -236,9 +246,9 @@ void CCOptionsDlg::OnApply()
     m_Parser.ReadOptions();
 
     // Page "Code Completion"
-    m_Parser.Options().useSmartSense        = !XRCCTRL(*this, "chkUseSmartSense",    wxCheckBox)->GetValue();
-    m_Parser.Options().whileTyping          =  XRCCTRL(*this, "chkWhileTyping",      wxCheckBox)->GetValue();
-    m_Parser.Options().caseSensitive        =  XRCCTRL(*this, "chkCaseSensitive",    wxCheckBox)->GetValue();
+    m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkUseSmartSense",    wxCheckBox)->GetValue();
+    m_Parser.Options().whileTyping   =  XRCCTRL(*this, "chkWhileTyping",      wxCheckBox)->GetValue();
+    m_Parser.Options().caseSensitive =  XRCCTRL(*this, "chkCaseSensitive",    wxCheckBox)->GetValue();
 
     // Page "C / C++ parser"
     m_Parser.Options().followLocalIncludes  = XRCCTRL(*this, "chkLocals",             wxCheckBox)->GetValue();

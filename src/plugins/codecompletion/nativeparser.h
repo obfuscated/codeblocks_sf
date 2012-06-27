@@ -367,14 +367,13 @@ private:
     void OnParserStart(wxCommandEvent& event);
 
     /** Event handler when the batch parse finishes, print some log information, check  whether the active editor
-     * belong to the current parser, if not, do a parser switch
-     */
+     * belong to the current parser, if not, do a parser switch */
     void OnParserEnd(wxCommandEvent& event);
 
     /** If use one parser per whole workspace, we need parse all project one by one */
     void OnParsingOneByOneTimer(wxTimerEvent& event);
 
-    /** Event handler when an editor activate, *NONE* project is handled here*/
+    /** Event handler when an editor activate, *NONE* project is handled here */
     void OnEditorActivated(EditorBase* editor);
 
     /** Event handler when an editor closed, if it is the last editor belong to *NONE* project, then
@@ -403,8 +402,8 @@ private:
     ClassBrowser*                m_ClassBrowser;
     bool                         m_ClassBrowserIsFloating;
     ProjectSearchDirsMap         m_ProjectSearchDirsMap;
-    int                          m_HookId;               /// project loader hook ID
-    wxImageList*                 m_ImageList;
+    int                          m_HookId;    //!< project loader hook ID
+    wxImageList*                 m_ImageList; //!< Images for class browser
 
     wxArrayString                m_StandaloneFiles;
     bool                         m_ParserPerWorkspace;
@@ -414,12 +413,12 @@ private:
     wxString          m_CCItems;
     int               m_EditorStartWord;
     int               m_EditorEndWord;
-    wxString          m_LastAIGlobalSearch;    /// same case like above, it holds the search string
-    bool              m_LastAISearchWasGlobal; /// true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
+    wxString          m_LastAIGlobalSearch;    //!< same case like above, it holds the search string
+    bool              m_LastAISearchWasGlobal; //!< true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
     cbStyledTextCtrl* m_LastControl;
     wxString          m_LastFile;
     int               m_LastFunctionIndex;
-    int               m_LastFuncTokenIdx;      /// saved the function token's index, for remove all local variable
+    int               m_LastFuncTokenIdx;      //!< saved the function token's index, for remove all local variable
     int               m_LastLine;
     wxString          m_LastNamespace;
     wxString          m_LastPROC;

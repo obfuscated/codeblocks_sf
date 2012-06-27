@@ -909,13 +909,12 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         EndStopWatch();
 
-        wxString parseEndLog;
-
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
+        wxString prj = (m_Project ? m_Project->GetTitle() : _T("*NONE*"));
+        wxString parseEndLog;
         parseEndLog.Printf(_T("Project '%s' parsing stage done (%lu total parsed files, ")
-                           _T("%lu tokens in %ld minute(s), %ld.%03ld seconds)."),
-                           m_Project    ? m_Project->GetTitle().wx_str()  : wxString(_T("*NONE*")).wx_str(),
+                           _T("%lu tokens in %ld minute(s), %ld.%03ld seconds)."), prj.wx_str(),
                            m_TokensTree ? static_cast<unsigned long>(m_TokensTree->m_FilesMap.size()) : 0,
                            m_TokensTree ? static_cast<unsigned long>(m_TokensTree->realsize())        : 0,
                            (m_LastStopWatchTime / 60000),

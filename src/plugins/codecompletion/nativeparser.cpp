@@ -1181,7 +1181,7 @@ ParserBase* NativeParser::CreateParser(cbProject* project)
     TRACE(_T("NativeParser::CreateParser()"));
 
     ParserBase* parser = new Parser(this, project);
-    if (!DoFullParsing(project, parser))
+    if ( !DoFullParsing(project, parser) )
     {
         CCLogger::Get()->DebugLog(_T("Full parsing failed!"));
         delete parser;
@@ -1196,8 +1196,8 @@ ParserBase* NativeParser::CreateParser(cbProject* project)
 
     m_ParserList.push_back(std::make_pair(project, parser));
 
-    wxString log(F(_("Create new parser for project '%s'"), project
-                 ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
+    wxString log(F(_("Create new parser for project '%s'"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
@@ -1208,6 +1208,8 @@ ParserBase* NativeParser::CreateParser(cbProject* project)
 
 bool NativeParser::DeleteParser(cbProject* project)
 {
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
+
     ParserList::iterator it = m_ParserList.begin();
     if (!m_ParserPerWorkspace)
     {
@@ -1220,8 +1222,7 @@ bool NativeParser::DeleteParser(cbProject* project)
 
     if (it == m_ParserList.end())
     {
-        CCLogger::Get()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), project ?
-                                    project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        CCLogger::Get()->DebugLog(F(_T("Parser does not exist for delete '%s'!"), prj.wx_str()));
         return false;
     }
 
@@ -1236,8 +1237,7 @@ bool NativeParser::DeleteParser(cbProject* project)
         if (it->second == m_Parser)
           SetParser(m_TempParser);
 
-        wxString log(F(_("Delete parser for project '%s'!"), project
-                       ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        wxString log(F(_("Delete parser for project '%s'!"), prj.wx_str()));
         CCLogger::Get()->Log(log);
         CCLogger::Get()->DebugLog(log);
 
@@ -1262,8 +1262,8 @@ bool NativeParser::SwitchParser(cbProject* project, ParserBase* parser)
     TRACE(_T("NativeParser::SwitchParser()"));
 
     SetParser(parser);
-    wxString log(F(_("Switch parser to project '%s'"), project
-                 ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
+    wxString log(F(_("Switch parser to project '%s'"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
     return true;
@@ -1365,10 +1365,10 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     wxString priority_headers = cfg->Read(_T("/priority_headers"), default_priority_headers);
     if (!priority_headers.StartsWith(default_priority_headers))
     {
-        wxStringTokenizer def(default_priority_headers, _T(","));
-        wxArrayString defs;
-        while (def.HasMoreTokens())
-            defs.Add(def.GetNextToken().Trim(false).Trim(true));
+        wxStringTokenizer default_ph(default_priority_headers, _T(","));
+        wxArrayString default_phs;
+        while (default_ph.HasMoreTokens())
+            default_phs.Add(default_ph.GetNextToken().Trim(false).Trim(true));
 
         wxStringTokenizer user(priority_headers, _T(","));
         wxArrayString users;
@@ -1378,7 +1378,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         priority_headers = default_priority_headers;
         for (size_t i = 0; i < users.GetCount(); ++i)
         {
-            if (!users[i].IsEmpty() && defs.Index(users[i], false) == wxNOT_FOUND)
+            if (!users[i].IsEmpty() && default_phs.Index(users[i], false) == wxNOT_FOUND)
                 priority_headers.Append(_T(", ") + users[i]);
         }
 
@@ -1452,6 +1452,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     CCLogger::Get()->DebugLog(_T("Passing list of files to batch-parser."));
 
     // parse priority files
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     if (!priority_files.empty())
     {
         for (StringList::iterator it = priority_files.begin(); it != priority_files.end(); ++it)
@@ -1465,15 +1466,13 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         }
 
         CCLogger::Get()->DebugLog(F(_T("Add %d priority parsing file(s) for project '%s'..."),
-                                    priority_files.size(),
-                                    project ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+                                    priority_files.size(), prj.wx_str()));
     }
 
     if (!headers.empty() || !sources.empty())
     {
         CCLogger::Get()->DebugLog(F(_T("Added %d file(s) for project '%s' to batch-parser..."),
-                                    headers.size() + sources.size(),
-                                    project ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+                                    headers.size() + sources.size(), prj.wx_str()));
         parser->AddBatchParse(headers);
         parser->AddBatchParse(sources);
     }
@@ -2208,13 +2207,13 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
     TRACE(_T("NativeParser::OnParserStart()"));
 
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     const ParsingType type = static_cast<ParsingType>(event.GetInt());
 
     switch (type)
     {
     case ptCreateParser:
-        CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), project
-                                    ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), prj.wx_str()));
         {
             std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
             if (info.second && m_Parser != info.second)
@@ -2226,22 +2225,18 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
         break;
 
     case ptAddFileToParser:
-        CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), project
-                                    ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), prj.wx_str()));
         break;
 
     case ptReparseFile:
-        CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), project
-                                    ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), prj.wx_str()));
         break;
 
     case ptUndefined:
         if (event.GetString().IsEmpty())
-            CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), project
-                                        ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+            CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), prj.wx_str()));
         else
-            CCLogger::Get()->DebugLog(F(_("%s in project '%s'"), event.GetString().wx_str(), project
-                                        ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+            CCLogger::Get()->DebugLog(F(_("%s in project '%s'"), event.GetString().wx_str(), prj.wx_str()));
         return;
     }
 
@@ -2254,14 +2249,14 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
     ParserBase* parser = reinterpret_cast<ParserBase*>(event.GetEventObject());
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     const ParsingType type = static_cast<ParsingType>(event.GetInt());
 
     switch (type)
     {
     case ptCreateParser:
         {
-            wxString log(F(_("Project '%s' parsing stage done!"), project
-                         ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+            wxString log(F(_("Project '%s' parsing stage done!"), prj.wx_str()));
             CCLogger::Get()->Log(log);
             CCLogger::Get()->DebugLog(log);
         }
@@ -2283,8 +2278,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
         break;
 
     case ptUndefined:
-        CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), project
-                                    ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), prj.wx_str()));
         return;
     }
 
@@ -2454,12 +2448,10 @@ void NativeParser::RemoveObsoleteParsers()
             if (it->second == info.second)
                 continue;
 
-            wxString prjName = _T("*NONE*");
-            if (it->first)
-                prjName = it->first->GetTitle();
             if (DeleteParser(it->first))
             {
-                removedProjectNames.Add(prjName);
+                wxString prj = (it->first ? it->first->GetTitle() : _T("*NONE*"));
+                removedProjectNames.Add(prj);
                 deleted = true;
                 break;
             }
@@ -2586,6 +2578,7 @@ void NativeParser::InitCCSearchVariables()
 
 void NativeParser::AddProjectToParser(cbProject* project)
 {
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     ParserBase* parser = GetParserByProject(project);
     if (parser)
         return;
@@ -2603,8 +2596,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
         return;
     }
 
-    wxString log(F(_("Add project (%s) to parser"), project
-                   ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+    wxString log(F(_("Add project (%s) to parser"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
@@ -2639,8 +2631,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
             }
         }
 
-        wxString log(F(_("Done adding %d files of project (%s) to parser."), fileCount,
-                     project ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+        wxString log(F(_("Done adding %d files of project (%s) to parser."), fileCount, prj.wx_str()));
         CCLogger::Get()->DebugLog(log);
     }
     else
@@ -2671,8 +2662,8 @@ bool NativeParser::RemoveProjectFromParser(cbProject* project)
     if (!project || m_ParsedProjects.empty())
         return true;
 
-    wxString log(F(_("Remove project (%s) from parser"), project
-                 ? project->GetTitle().wx_str() : wxString(_T("*NONE*")).wx_str()));
+    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
+    wxString log(F(_("Remove project (%s) from parser"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 

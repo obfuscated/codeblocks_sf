@@ -1231,14 +1231,14 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
     return result;
 }
 
-Token* ParserThread::DoAddToken(TokenKind kind,
+Token* ParserThread::DoAddToken(TokenKind       kind,
                                 const wxString& name,
-                                int line,
-                                int implLineStart,
-                                int implLineEnd,
+                                int             line,
+                                int             implLineStart,
+                                int             implLineEnd,
                                 const wxString& args,
-                                bool isOperator,
-                                bool isImpl)
+                                bool            isOperator,
+                                bool            isImpl)
 {
     if (name.IsEmpty())
     {

@@ -297,8 +297,8 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
             menu->AppendSeparator();
 
         menu->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
-        menu->AppendCheckItem(idCBExpandNS, _("Auto-expand namespaces"));
-        menu->Append(idMenuRefreshTree, _("&Refresh tree"));
+        menu->AppendCheckItem(idCBExpandNS,        _("Auto-expand namespaces"));
+        menu->Append         (idMenuRefreshTree,   _("&Refresh tree"));
 
         if (id == m_CCTreeCtrl->GetRootItem())
         {
@@ -314,7 +314,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         }
 
         menu->Check(idCBViewInheritance, m_Parser ? options.showInheritance : false);
-        menu->Check(idCBExpandNS,        m_Parser ? options.expandNS : false);
+        menu->Check(idCBExpandNS,        m_Parser ? options.expandNS        : false);
     }
 
     menu->AppendSeparator();
@@ -637,7 +637,7 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
         if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
         {
             cbMessageBox(_("This feature is not supported in combination with\n"
-                           "the option \"one parser per whole worspace\"."),
+                           "the option \"one parser per whole workspace\"."),
                          _("Information"), wxICON_INFORMATION);
             filter = bdfProject;
             XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
