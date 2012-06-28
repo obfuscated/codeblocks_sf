@@ -407,6 +407,8 @@ struct cbEditorInternalData
             int lineEnd = control->GetLineEndPosition(line);
             int i = lineEnd-1;
             wxChar ch = (wxChar)(control->GetCharAt(i));
+            if (control->GetLexer() == wxSCI_LEX_DIFF)
+                lineStart++;
             while ((i >= lineStart) && ((ch == _T(' ')) || (ch == _T('\t'))))
             {
                 i--;
