@@ -2824,16 +2824,15 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
         pop->AppendSeparator();
         if (GetEditor(event.GetSelection())->GetModified())
             pop->Append(idNBTabSave, _("Save"));
-        if (any_modified > 1)
+        if (any_modified > 1 || !GetEditor(event.GetSelection())->GetModified())
             pop->Append(idNBTabSaveAll, _("Save all"));
     }
 
     pop->AppendSeparator();
-    pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
-
     cbEditor* ed = GetBuiltinEditor(event.GetSelection());
     if (ed)
     {
+        pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
         pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
         pop->Append(idNBProperties, _("Properties..."));
         pop->AppendSeparator();
