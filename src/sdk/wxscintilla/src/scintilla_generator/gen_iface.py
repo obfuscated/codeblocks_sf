@@ -85,8 +85,8 @@ methodOverrideMap = {
                  'void %s(const wxString& text);',
 
                  '''void %s(const wxString& text) {
-                    wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
-                    SendMsg(%s, strlen(buf), (sptr_t)(const char*)buf);''',
+                    const wxWX2MBbuf buf = wx2stc(text);
+                    SendMsg(%s, wx2stclen(text, buf), (sptr_t)(const char*)buf);''',
                  0),
 
     'AddStyledText' : (0,
@@ -100,8 +100,8 @@ methodOverrideMap = {
                  'void %s(const wxString& text);',
 
                  '''void %s(const wxString& text) {
-                    wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
-                    SendMsg(%s, strlen(buf), (sptr_t)(const char*)buf);''',
+                    const wxWX2MBbuf buf = wx2stc(text);
+                    SendMsg(%s, wx2stclen(text, buf), (sptr_t)(const char*)buf);''',
                  0),
 
     'GetViewWS' : ( 'GetViewWhiteSpace', 0, 0, 0),
@@ -436,7 +436,7 @@ methodOverrideMap = {
             TextToFind  ft;
             ft.chrg.cpMin = minPos;
             ft.chrg.cpMax = maxPos;
-            wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
+            const wxWX2MBbuf buf = wx2stc(text);
             ft.lpstrText = (char*)(const char*)buf;
 
             return SendMsg(%s, flags, (sptr_t)&ft);''',
@@ -506,11 +506,7 @@ methodOverrideMap = {
      'wxString %s();',
 
      '''wxString %s() {
-         long   start;
-         long   end;
-
-         GetSelection(&start, &end);
-         int   len  = end - start;
+         const int len = SendMsg(SCI_GETSELTEXT, 0, (sptr_t)0);
          if (!len) return wxEmptyString;
 
          wxMemoryBuffer mbuf(len+2);
@@ -593,8 +589,8 @@ methodOverrideMap = {
 
      '''
      int %s(const wxString& text) {
-         wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
-         return SendMsg(%s, strlen(buf), (sptr_t)(const char*)buf);''',
+         const wxWX2MBbuf buf = wx2stc(text);
+         return SendMsg(%s, wx2stclen(text, buf), (sptr_t)(const char*)buf);''',
      0),
 
     'ReplaceTargetRE' :
@@ -603,8 +599,8 @@ methodOverrideMap = {
 
      '''
      int %s(const wxString& text) {
-         wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
-         return SendMsg(%s, strlen(buf), (sptr_t)(const char*)buf);''',
+         const wxWX2MBbuf buf = wx2stc(text);
+         return SendMsg(%s, wx2stclen(text, buf), (sptr_t)(const char*)buf);''',
      0),
 
     'SearchInTarget' :
@@ -613,8 +609,8 @@ methodOverrideMap = {
 
      '''
      int %s(const wxString& text) {
-         wxWX2MBbuf buf = (wxWX2MBbuf)wx2stc(text);
-         return SendMsg(%s, strlen(buf), (sptr_t)(const char*)buf);''',
+         const wxWX2MBbuf buf = wx2stc(text);
+         return SendMsg(%s, wx2stclen(text, buf), (sptr_t)(const char*)buf);''',
      0),
 
     # not sure what to do about these yet
@@ -782,7 +778,7 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
             curDocStrings = []
 
         elif op == 'cat ':
-            if string.strip(line[4:]) == 'Deprecated':
+            if line[4:].strip() == 'Deprecated':
                 break    # skip the rest of the file
 
         elif op == 'evt ':
@@ -795,7 +791,7 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
             pass
 
         else:
-            print '***** Unknown line type: ', line
+            print('***** Unknown line type: %s' % line)
 
 
     # process templates
@@ -822,7 +818,7 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
 
 
 def joinWithNewLines(values):
-    return string.join(values, '\n')
+    return '\n'.join(values)
 
 #----------------------------------------------------------------------------
 
@@ -902,7 +898,7 @@ def processMethods(methods):
 
 def checkMethodOverride(name, number, docs):
     theDef = theImp = None
-    if methodOverrideMap.has_key(name):
+    if name in methodOverrideMap:
         item = methodOverrideMap[name]
 
         try:
@@ -915,7 +911,7 @@ def checkMethodOverride(name, number, docs):
             if item[3] != 0:
                 docs = item[3]
         except:
-            print "*************", name
+            print("************* " + name)
             raise
 
     return name, theDef, theImp, docs
@@ -955,7 +951,7 @@ def makeParamString(param1, param2):
 #----------------------------------------------------------------------------
 
 def parseVal(line, values, docs):
-    name, val = string.split(line, '=')
+    name, val = line.split('=')
 
     # remove prefixes such as SCI, etc.
     for old, new in valPrefixes:
@@ -978,16 +974,16 @@ funregex = re.compile(r'\s*([a-zA-Z0-9_]+)'  # <ws>return type
 
 def parseFun(line, methods, docs, values, is_const):
     def parseParam(param):
-        param = string.strip(param)
+        param = param.strip()
         if param == '':
             param = None
         else:
-            param = tuple(string.split(param))
+            param = tuple(param.split())
         return param
 
     mo = funregex.match(line)
     if mo is None:
-        print "***** Line doesn't match! : " + line
+        print("***** Line doesn't match! : %s" % line)
 
     retType, name, number, param1, param2 = mo.groups()
 
@@ -995,10 +991,10 @@ def parseFun(line, methods, docs, values, is_const):
     param2 = parseParam(param2)
 
     # Special case.  For the key command functions we want a value defined too
-    num = string.atoi(number)
+    num = int(number)
     for v in cmdValues:
         if (type(v) == type(()) and v[0] <= num <= v[1]) or v == num:
-            parseVal('CMD_%s=%s' % (string.upper(name), number), values, docs)
+            parseVal('CMD_%s=%s' % (name.upper(), number), values, docs)
 
             # if we are not also doing a function for CMD values, then
             # just return, otherwise fall through to the append blow.
@@ -1016,7 +1012,7 @@ def main(args):
     # TODO: parse command line args to replace default input/output files???
 
     if not os.path.exists(IFACE):
-        print 'Please run this script from src/stc subdirectory.'
+        print('Please run this script from src/stc subdirectory.')
         sys.exit(1)
 
     # Now just do it

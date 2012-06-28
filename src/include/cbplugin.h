@@ -166,7 +166,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @return The plugin should return true if it needed the toolbar, false if not
           */
         virtual bool BuildToolBar(wxToolBar* toolBar) = 0;
-        
+
         /** This method return the priority of the plugin's toolbar, the less value
           * indicates a more preceding position when C::B starts with no configuration file
           */
@@ -528,11 +528,11 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         {
             enum
             {
-                Empty      = 0,
-                Rename     = 1 << 0,
-                Properties = 1 << 1,
-                Delete     = 1 << 2,
-                DeleteAll  = 1 << 3,
+                Empty        = 0,
+                Rename       = 1 << 0,
+                Properties   = 1 << 1,
+                Delete       = 1 << 2,
+                DeleteAll    = 1 << 3,
                 AddDataBreak = 1 << 4
             };
         };

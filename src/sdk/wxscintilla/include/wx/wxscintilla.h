@@ -22,7 +22,7 @@
 
 #include <wx/defs.h>
 
-#define wxSCINTILLA_VERSION _T("2.29.0")
+#define wxSCINTILLA_VERSION _T("3.20.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -178,6 +178,10 @@
 #define wxSCI_CASE_MIXED 0
 #define wxSCI_CASE_UPPER 1
 #define wxSCI_CASE_LOWER 2
+#define wxSCI_FONT_SIZE_MULTIPLIER 100
+#define wxSCI_WEIGHT_NORMAL 400
+#define wxSCI_WEIGHT_SEMIBOLD 600
+#define wxSCI_WEIGHT_BOLD 700
 
 // Indicator style enumeration and some constants
 #define wxSCI_INDIC_PLAIN 0
@@ -242,6 +246,7 @@
 #define wxSCI_WRAPVISUALFLAG_NONE 0x0000
 #define wxSCI_WRAPVISUALFLAG_END 0x0001
 #define wxSCI_WRAPVISUALFLAG_START 0x0002
+#define wxSCI_WRAPVISUALFLAG_MARGIN 0x0004
 #define wxSCI_WRAPVISUALFLAGLOC_DEFAULT 0x0000
 #define wxSCI_WRAPVISUALFLAGLOC_END_BY_TEXT 0x0001
 #define wxSCI_WRAPVISUALFLAGLOC_START_BY_TEXT 0x0002
@@ -308,6 +313,9 @@
 #define wxSCI_SEL_LINES 2
 #define wxSCI_SEL_THIN 3
 
+#define wxSCI_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE 0
+#define wxSCI_CASEINSENSITIVEBEHAVIOUR_IGNORECASE 1
+
 // Caret visualisation
 #define wxSCI_CARETSTICKY_OFF 0
 #define wxSCI_CARETSTICKY_ON 1
@@ -333,6 +341,8 @@
 #define wxSCI_SCVS_NONE 0
 #define wxSCI_SCVS_RECTANGULARSELECTION 1
 #define wxSCI_SCVS_USERACCESSIBLE 2
+#define wxSCI_TECHNOLOGY_DEFAULT 0
+#define wxSCI_TECHNOLOGY_DIRECTWRITE 1
 
 // Maximum value of keywordSet parameter of SetKeyWords.
 #define wxSCI_KEYWORDSET_MAX 8
@@ -506,8 +516,14 @@
 #define wxSCI_LEX_TXT2TAGS 99
 #define wxSCI_LEX_A68K 100
 #define wxSCI_LEX_MODULA 101
+#define wxSCI_LEX_COFFEESCRIPT 102
+#define wxSCI_LEX_TCMD 103
+#define wxSCI_LEX_AVS 104
+#define wxSCI_LEX_ECL 105
+#define wxSCI_LEX_OSCRIPT 106
+#define wxSCI_LEX_VISUALPROLOG 107
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_MODULA // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_VISUALPROLOG // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -555,6 +571,7 @@
 #define wxSCI_C_GLOBALCLASS 19
 #define wxSCI_C_STRINGRAW 20
 #define wxSCI_C_TRIPLEVERBATIM 21
+#define wxSCI_C_HASHQUOTEDSTRING 22
 /* C::B begin */
 #define wxSCI_C_WXSMITH 99
 /* C::B end */
@@ -781,16 +798,16 @@
 #define wxSCI_PL_SUB_PROTOTYPE 40
 #define wxSCI_PL_FORMAT_IDENT 41
 #define wxSCI_PL_FORMAT 42
-#define wxSTC_PL_STRING_VAR 43
-#define wxSTC_PL_XLAT 44
-#define wxSTC_PL_REGEX_VAR 54
-#define wxSTC_PL_REGSUBST_VAR 55
-#define wxSTC_PL_BACKTICKS_VAR 57
-#define wxSTC_PL_HERE_QQ_VAR 61
-#define wxSTC_PL_HERE_QX_VAR 62
-#define wxSTC_PL_STRING_QQ_VAR 64
-#define wxSTC_PL_STRING_QX_VAR 65
-#define wxSTC_PL_STRING_QR_VAR 66
+#define wxSCI_PL_STRING_VAR 43
+#define wxSCI_PL_XLAT 44
+#define wxSCI_PL_REGEX_VAR 54
+#define wxSCI_PL_REGSUBST_VAR 55
+#define wxSCI_PL_BACKTICKS_VAR 57
+#define wxSCI_PL_HERE_QQ_VAR 61
+#define wxSCI_PL_HERE_QX_VAR 62
+#define wxSCI_PL_STRING_QQ_VAR 64
+#define wxSCI_PL_STRING_QX_VAR 65
+#define wxSCI_PL_STRING_QR_VAR 66
 
 // Lexical states for SCLEX_RUBY
 #define wxSCI_RB_DEFAULT 0
@@ -928,6 +945,19 @@
 #define wxSCI_BAT_COMMAND 5
 #define wxSCI_BAT_IDENTIFIER 6
 #define wxSCI_BAT_OPERATOR 7
+
+// Lexical states for SCLEX_TCMD
+#define wxSCI_TCMD_DEFAULT 0
+#define wxSCI_TCMD_COMMENT 1
+#define wxSCI_TCMD_WORD 2
+#define wxSCI_TCMD_LABEL 3
+#define wxSCI_TCMD_HIDE 4
+#define wxSCI_TCMD_COMMAND 5
+#define wxSCI_TCMD_IDENTIFIER 6
+#define wxSCI_TCMD_OPERATOR 7
+#define wxSCI_TCMD_ENVIRONMENT 8
+#define wxSCI_TCMD_EXPANSION 9
+#define wxSCI_TCMD_CLABEL 10
 
 // Lexical states for SCLEX_MAKEFILE
 #define wxSCI_MAKE_DEFAULT 0
@@ -1146,6 +1176,7 @@
 #define wxSCI_CSS_EXTENDED_PSEUDOCLASS 20
 #define wxSCI_CSS_EXTENDED_PSEUDOELEMENT 21
 #define wxSCI_CSS_MEDIA 22
+#define wxSCI_CSS_VARIABLE 23
 
 // Lexical states for SCLEX_POV
 #define wxSCI_POV_DEFAULT 0
@@ -2063,6 +2094,127 @@
 #define wxSCI_MODULA_OPERATOR 16
 #define wxSCI_MODULA_BADSTR 17
 
+// Lexical states for SCLEX_COFFEESCRIPT
+#define wxSCI_COFFEESCRIPT_DEFAULT 0
+#define wxSCI_COFFEESCRIPT_COMMENT 1
+#define wxSCI_COFFEESCRIPT_COMMENTLINE 2
+#define wxSCI_COFFEESCRIPT_COMMENTDOC 3
+#define wxSCI_COFFEESCRIPT_NUMBER 4
+#define wxSCI_COFFEESCRIPT_WORD 5
+#define wxSCI_COFFEESCRIPT_STRING 6
+#define wxSCI_COFFEESCRIPT_CHARACTER 7
+#define wxSCI_COFFEESCRIPT_UUID 8
+#define wxSCI_COFFEESCRIPT_PREPROCESSOR 9
+#define wxSCI_COFFEESCRIPT_OPERATOR 10
+#define wxSCI_COFFEESCRIPT_IDENTIFIER 11
+#define wxSCI_COFFEESCRIPT_STRINGEOL 12
+#define wxSCI_COFFEESCRIPT_VERBATIM 13
+#define wxSCI_COFFEESCRIPT_REGEX 14
+#define wxSCI_COFFEESCRIPT_COMMENTLINEDOC 15
+#define wxSCI_COFFEESCRIPT_WORD2 16
+#define wxSCI_COFFEESCRIPT_COMMENTDOCKEYWORD 17
+#define wxSCI_COFFEESCRIPT_COMMENTDOCKEYWORDERROR 18
+#define wxSCI_COFFEESCRIPT_GLOBALCLASS 19
+#define wxSCI_COFFEESCRIPT_STRINGRAW 20
+#define wxSCI_COFFEESCRIPT_TRIPLEVERBATIM 21
+#define wxSCI_COFFEESCRIPT_HASHQUOTEDSTRING 22
+#define wxSCI_COFFEESCRIPT_COMMENTBLOCK 22
+#define wxSCI_COFFEESCRIPT_VERBOSE_REGEX 23
+#define wxSCI_COFFEESCRIPT_VERBOSE_REGEX_COMMENT 24
+
+// Lexical states for SCLEX_AVS
+#define wxSCI_AVS_DEFAULT 0
+#define wxSCI_AVS_COMMENTBLOCK 1
+#define wxSCI_AVS_COMMENTBLOCKN 2
+#define wxSCI_AVS_COMMENTLINE 3
+#define wxSCI_AVS_NUMBER 4
+#define wxSCI_AVS_OPERATOR 5
+#define wxSCI_AVS_IDENTIFIER 6
+#define wxSCI_AVS_STRING 7
+#define wxSCI_AVS_TRIPLESTRING 8
+#define wxSCI_AVS_KEYWORD 9
+#define wxSCI_AVS_FILTER 10
+#define wxSCI_AVS_PLUGIN 11
+#define wxSCI_AVS_FUNCTION 12
+#define wxSCI_AVS_CLIPPROP 13
+#define wxSCI_AVS_USERDFN 14
+
+// Lexical states for SCLEX_ECL
+#define wxSCI_ECL_DEFAULT 0
+#define wxSCI_ECL_COMMENT 1
+#define wxSCI_ECL_COMMENTLINE 2
+#define wxSCI_ECL_NUMBER 3
+#define wxSCI_ECL_STRING 4
+#define wxSCI_ECL_WORD0 5
+#define wxSCI_ECL_OPERATOR 6
+#define wxSCI_ECL_CHARACTER 7
+#define wxSCI_ECL_UUID 8
+#define wxSCI_ECL_PREPROCESSOR 9
+#define wxSCI_ECL_UNKNOWN 10
+#define wxSCI_ECL_IDENTIFIER 11
+#define wxSCI_ECL_STRINGEOL 12
+#define wxSCI_ECL_VERBATIM 13
+#define wxSCI_ECL_REGEX 14
+#define wxSCI_ECL_COMMENTLINEDOC 15
+#define wxSCI_ECL_WORD1 16
+#define wxSCI_ECL_COMMENTDOCKEYWORD 17
+#define wxSCI_ECL_COMMENTDOCKEYWORDERROR 18
+#define wxSCI_ECL_WORD2 19
+#define wxSCI_ECL_WORD3 20
+#define wxSCI_ECL_WORD4 21
+#define wxSCI_ECL_WORD5 22
+#define wxSCI_ECL_COMMENTDOC 23
+#define wxSCI_ECL_ADDED 24
+#define wxSCI_ECL_DELETED 25
+#define wxSCI_ECL_CHANGED 26
+#define wxSCI_ECL_MOVED 27
+
+// Lexical states for SCLEX_OSCRIPT
+#define wxSCI_OSCRIPT_DEFAULT 0
+#define wxSCI_OSCRIPT_LINE_COMMENT 1
+#define wxSCI_OSCRIPT_BLOCK_COMMENT 2
+#define wxSCI_OSCRIPT_DOC_COMMENT 3
+#define wxSCI_OSCRIPT_PREPROCESSOR 4
+#define wxSCI_OSCRIPT_NUMBER 5
+#define wxSCI_OSCRIPT_SINGLEQUOTE_STRING 6
+#define wxSCI_OSCRIPT_DOUBLEQUOTE_STRING 7
+#define wxSCI_OSCRIPT_CONSTANT 8
+#define wxSCI_OSCRIPT_IDENTIFIER 9
+#define wxSCI_OSCRIPT_GLOBAL 10
+#define wxSCI_OSCRIPT_KEYWORD 11
+#define wxSCI_OSCRIPT_OPERATOR 12
+#define wxSCI_OSCRIPT_LABEL 13
+#define wxSCI_OSCRIPT_TYPE 14
+#define wxSCI_OSCRIPT_FUNCTION 15
+#define wxSCI_OSCRIPT_OBJECT 16
+#define wxSCI_OSCRIPT_PROPERTY 17
+#define wxSCI_OSCRIPT_METHOD 18
+
+// Lexical states for SCLEX_VISUALPROLOG
+#define wxSCI_VISUALPROLOG_DEFAULT 0
+#define wxSCI_VISUALPROLOG_KEY_MAJOR 1
+#define wxSCI_VISUALPROLOG_KEY_MINOR 2
+#define wxSCI_VISUALPROLOG_KEY_DIRECTIVE 3
+#define wxSCI_VISUALPROLOG_COMMENT_BLOCK 4
+#define wxSCI_VISUALPROLOG_COMMENT_LINE 5
+#define wxSCI_VISUALPROLOG_COMMENT_KEY 6
+#define wxSCI_VISUALPROLOG_COMMENT_KEY_ERROR 7
+#define wxSCI_VISUALPROLOG_IDENTIFIER 8
+#define wxSCI_VISUALPROLOG_VARIABLE 9
+#define wxSCI_VISUALPROLOG_ANONYMOUS 10
+#define wxSCI_VISUALPROLOG_NUMBER 11
+#define wxSCI_VISUALPROLOG_OPERATOR 12
+#define wxSCI_VISUALPROLOG_CHARACTER 13
+#define wxSCI_VISUALPROLOG_CHARACTER_TOO_MANY 14
+#define wxSCI_VISUALPROLOG_CHARACTER_ESCAPE_ERROR 15
+#define wxSCI_VISUALPROLOG_STRING 16
+#define wxSCI_VISUALPROLOG_STRING_ESCAPE 17
+#define wxSCI_VISUALPROLOG_STRING_ESCAPE_ERROR 18
+#define wxSCI_VISUALPROLOG_STRING_EOL_OPEN 19
+#define wxSCI_VISUALPROLOG_STRING_VERBATIM 20
+#define wxSCI_VISUALPROLOG_STRING_VERBATIM_SPECIAL 21
+#define wxSCI_VISUALPROLOG_STRING_VERBATIM_EOL 22
+
 //}}}
 //----------------------------------------------------------------------
 
@@ -2377,7 +2529,7 @@ public:
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize, long style = 0,
                  const wxString& name = wxPySCINameStr);
-    %RenameCtor(PreScintilla) wxScintilla());
+    %RenameCtor(PreScintilla, wxScintilla());
 
 #else
     wxScintilla (wxWindow *parent, wxWindowID id=wxID_ANY,
@@ -2413,6 +2565,9 @@ public:
 
     // Delete all text in the document.
     void ClearAll();
+
+    // Delete a range of text in the document.
+    void DeleteRange(int pos, int deleteLength);
 
     // Set all style bytes to 0, remove all folding information.
     void ClearDocumentStyle();
@@ -2687,6 +2842,18 @@ public:
     // Set a style to be mixed case, or to force upper or lower case.
     void StyleSetCase(int style, int caseForce);
 
+    // Set the size of characters of a style. Size is in points multiplied by 100.
+    void StyleSetSizeFractional(int style, int caseForce);
+
+    // Get the size of characters of a style in points multiplied by 100
+    int StyleGetSizeFractional(int style) const;
+
+    // Set the weight of characters of a style.
+    void StyleSetWeight(int style, int weight);
+
+    // Get the weight of characters of a style.
+    int StyleGetWeight(int style) const;
+
     // Set a style to be a hotspot or not.
     void StyleSetHotSpot(int style, bool hotspot);
 
@@ -2735,6 +2902,10 @@ public:
     // Set the set of characters making up words for when moving or selecting by word.
     // First sets defaults like SetCharsDefault.
     void SetWordChars(const wxString& characters);
+
+    // Get the set of characters making up words for when moving or selecting by word.
+    // Retuns the number of characters
+    wxString GetWordChars() const;
 
     // Start a sequence of actions that is undone and redone as a unit.
     // May be nested.
@@ -2927,6 +3098,9 @@ public:
 
     // Retrieve the column number of a position, taking tab width into account.
     int GetColumn(int pos) const;
+
+    // Count characters between two positions.
+    int CountCharacters(int startPos, int endPos);
 
     // Show or hide the horizontal scroll bar.
     void SetUseHorizontalScrollBar(bool show);
@@ -3166,6 +3340,9 @@ public:
     // Enable use of STYLE_CALLTIP and set call tip tab size in pixels.
     void CallTipUseStyle(int tabSize);
 
+    // Set position of calltip, above or below text.
+    void CallTipSetPosition(bool above);
+
     // Find the display line of a document line taking hidden lines into account.
     int VisibleFromDocLine(int line);
 
@@ -3197,6 +3374,9 @@ public:
 
     // Is a line visible?
     bool GetLineVisible(int line) const;
+
+    // Are all lines visible?
+    bool GetAllLinesVisible() const;
 
     // Show the children of a header line.
     void SetFoldExpanded(int line, bool expanded);
@@ -3752,7 +3932,7 @@ public:
     // Copy argument text to the clipboard.
     void CopyText(int length, const wxString& text);
 
-    // Set the selection mode to stream (SC_SEL_STREAM=1) or rectangular (SC_SEL_RECTANGLE=2) or
+    // Set the selection mode to stream (SC_SEL_STREAM=1) or rectangular (SC_SEL_RECTANGLE/SC_SEL_THIN=2) or
     // by lines (SC_SEL_LINES=3).
     void SetSelectionMode(int mode);
 
@@ -3822,11 +4002,31 @@ public:
     // Should be called after SetWordChars.
     void SetWhitespaceChars(const wxString& characters);
 
+    // Get the set of characters making up whitespace for when moving or selecting by word.
+/* C::B begin */
+    wxString GetWhitespaceChars() const;
+/* C::B end */
+
+    // Set the set of characters making up punctuation characters
+    // Should be called after SetWordChars.
+    void SetPunctuationChars(const wxString& characters);
+
+    // Get the set of characters making up punctuation characters
+/* C::B begin */
+    wxString GetPunctuationChars() const;
+/* C::B end */
+
     // Reset the set of characters for whitespace and word characters to the defaults.
     void SetCharsDefault();
 
     // Get currently selected item position in the auto-completion list
     int AutoCompGetCurrent();
+
+    // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
+    void AutoCSetCaseInsensitiveBehaviour(int behaviour);
+
+    // Get auto-completion case insensitive behaviour.
+    int AutoCGetCaseInsensitiveBehaviour() const;
 
 /* C::B begin */
     // Get currently selected item text in the auto-completion list
@@ -3916,6 +4116,14 @@ public:
     // defined later as wxUIntPtr GetCharacterPointer() const;
     const char* GetCharacterPointer();
 /* C::B end */
+    // Return a read-only pointer to a range of characters in the document.
+    // May move the gap so that the range is contiguous, but will only move up
+    // to rangeLength bytes.
+    int GetRangePointer(int position, int rangeLength) const;
+
+    // Return a position which, to avoid performance costs, should not be within
+    // the range of a call to GetRangePointer.
+    int GetGapPosition() const;
 
     // Always interpret keyboard input as Unicode
     void SetKeysUnicode(bool keysUnicode);
@@ -4194,6 +4402,24 @@ public:
     // Scroll to end of document.
     void ScrollToEnd();
 
+    // Set the technolgy used.
+    void SetTechnology(int technology);
+
+    // Get the tech.
+    int GetTechnology() const;
+
+    // Create an ILoader*.
+    int CreateLoader(int bytes);
+
+    // On OS X, show a find indicator.
+    void FindIndicatorShow(int start, int end);
+
+    // On OS X, flash a find indicator, then fade out.
+    void FindIndicatorFlash(int start, int end);
+
+    // On OS X, hide the find indicator.
+    void FindIndicatorHide();
+
     // Start notifying the container of all key presses and commands.
     void StartRecord();
 
@@ -4307,7 +4533,7 @@ public:
     void StyleSetFontEncoding(int style, wxFontEncoding encoding);
 
 
-    // Perform one of the operations defined by the wxSTC_CMD_* constants.
+    // Perform one of the operations defined by the wxSCI_CMD_* constants.
     void CmdKeyExecute(int cmd);
 
 
@@ -4380,7 +4606,7 @@ public:
     // what is used internally by Scintilla in unicode builds.
 
     // Add text to the document at current position.
-    void AddTextRaw(const char* text);
+    void AddTextRaw(const char* text, int length=-1);
 
     // Insert string at a position.
     void InsertTextRaw(int pos, const char* text);
@@ -4409,7 +4635,7 @@ public:
     wxCharBuffer GetTextRaw();
 
     // Append a string to the end of the document without changing the selection.
-    void AppendTextRaw(const char* text);
+    void AppendTextRaw(const char* text, int length=-1);
 
 #ifdef SWIG
     %pythoncode "_stc_utf8_methods.py"
@@ -4429,16 +4655,18 @@ public:
     }
 
 /* C::B begin */
+/*
     // kept for compatibility only
-    //void GetSelection(int *from, int *to)
-    //{
-    //    long f, t;
-    //    GetSelection(&f, &t);
-    //    if ( from )
-    //        *from = f;
-    //    if ( to )
-    //        *to = t;
-    //}
+    void GetSelection(int *from, int *to)
+    {
+        long f, t;
+        GetSelection(&f, &t);
+        if ( from )
+            *from = f;
+        if ( to )
+            *to = t;
+    }
+*/
 /* C::B end */
 #endif
 
@@ -4503,9 +4731,8 @@ protected:
 
     bool                m_lastKeyDownConsumed;
 
-    // the timestamp that consists of the last wheel event
-    // added to the time taken to process that event.
-    long m_lastWheelTimestamp;
+    // Time until when we should ignore any new mouse wheel events.
+    wxLongLong m_timeToBlockWheelEventsUntil;
 
     friend class ScintillaWX;
     friend class Platform;
@@ -4518,14 +4745,11 @@ public:
     // this is working but is a bit useless in this platform
     // not even SCI_* are defined in wxscintilla.h
     wxSciFnDirect GetDirectFunction();
-    wxIntPtr GetDirectPointer() const;
-    wxUIntPtr GetCharacterPointer() const;
+    wxIntPtr      GetDirectPointer() const;
+    wxUIntPtr     GetCharacterPointer() const;
 
     void GrabSCIFocus();
     void LoadLexerLibrary(const wxString& path);
-
-    void SetUsePalette(bool allowPaletteUse);
-    bool GetUsePalette();
 /* C::B end */
 };
 
@@ -4769,8 +4993,8 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #define EVT_SCI_ZOOM(id, fn)                    DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ZOOM,                  id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_HOTSPOT_CLICK(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_CLICK,         id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_HOTSPOT_DCLICK(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_DCLICK,        id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
-#define EVT_SCI_CALLTIP_CLICK(id, fn))          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
-#define EVT_SCI_AUTOCOMP_SELECTION(id, fn))     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_SELECTION     id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_CALLTIP_CLICK(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_AUTOCOMP_SELECTION(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_SELECTION     id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_INDICATOR_CLICK(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_INDICATOR_CLICK        id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_INDICATOR_RELEASE(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_INDICATOR_RELEASE      id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_AUTOCOMP_CANCELLED(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_CANCELLED     id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
@@ -4792,7 +5016,7 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #ifndef SWIG
 
 #if wxUSE_UNICODE
-wxString sci2wx (const char* str);
+wxString sci2wx (const char* str); // See PlatWX.cpp
 #else
 inline wxString sci2wx (const char* str)
 {
@@ -4801,7 +5025,7 @@ inline wxString sci2wx (const char* str)
 #endif
 
 #if wxUSE_UNICODE
-wxString sci2wx (const char* str, size_t len);
+wxString sci2wx (const char* str, size_t len); // See PlatWX.cpp
 #else
 inline wxString sci2wx (const char* str, size_t len)
 {
@@ -4811,10 +5035,7 @@ inline wxString sci2wx (const char* str, size_t len)
 
 
 #if wxUSE_UNICODE
-inline const wxWX2MBbuf wx2sci (const wxString& str)
-{
-    return str.mb_str (wxConvUTF8);
-}
+const wxWX2MBbuf wx2sci (const wxString& str); // See PlatWX.cpp
 #else
 inline const wxWX2MBbuf wx2sci (const wxString& str)
 {

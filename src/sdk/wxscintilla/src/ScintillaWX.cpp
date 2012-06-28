@@ -99,7 +99,7 @@ public:
     void OnPaint(wxPaintEvent& WXUNUSED(evt))
     {
         wxAutoBufferedPaintDC dc(this);
-        Surface* surfaceWindow = Surface::Allocate();
+        Surface* surfaceWindow = Surface::Allocate(SC_TECHNOLOGY_DEFAULT);
         surfaceWindow->Init(&dc, m_ct->wDraw.GetID());
         m_ct->PaintCT(surfaceWindow);
         surfaceWindow->Release();
@@ -543,10 +543,8 @@ void ScintillaWX::Copy() {
         CopySelectionRange(&st);
 /* C::B begin */
 #ifdef __WXGTK__
-		for (int i=0; i<5; i++) {
-			//wxPrintf(wxT("Copying to clipboard %ld\n"), i);
+		for (int i=0; i<5; i++)
         	CopyToClipboard(st);
-		}
 #else
      	CopyToClipboard(st);
 #endif
@@ -822,11 +820,13 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 /* C::B end */
           int caretMain = sel.MainCaret();
           PRectangle rc = ct.CallTipStart(caretMain, pt,
+                                          vs.lineHeight,
                                           defn,
                                           vs.styles[ctStyle].fontName,
                                           vs.styles[ctStyle].sizeZoomed,
                                           CodePage(),
                                           vs.styles[ctStyle].characterSet,
+                                          vs.technology,
                                           wMain);
           // If the call-tip window would be out of the client
           // space, adjust so it displays above the text.
@@ -885,7 +885,7 @@ sptr_t ScintillaWX::DirectFunction(ScintillaWX *wxsci, unsigned int iMessage, up
 void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
 
     paintState = painting;
-    Surface* surfaceWindow = Surface::Allocate();
+    Surface* surfaceWindow = Surface::Allocate(SC_TECHNOLOGY_DEFAULT);
     surfaceWindow->Init(dc, wMain.GetID());
     rcPaint = PRectangleFromwxRect(rect);
     PRectangle rcClient = GetClientRectangle();
@@ -902,6 +902,17 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
     }
     paintState = notPainting;
 }
+
+
+// Force the whole window to be repainted
+void ScintillaWX::FullPaint() {
+#ifndef __WXMAC__
+    sci->Refresh(false);
+#endif
+    sci->Update();
+}
+
+
 
 
 void ScintillaWX::DoHScroll(int type, int pos) {
@@ -1074,6 +1085,12 @@ void ScintillaWX::DoAddChar(int key) {
 int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
 {
     int key = evt.GetKeyCode();
+/* C::B begin */
+#if wxCHECK_VERSION(2,9,0)
+    if (key == 0 && evt.GetUnicodeKey() != 0)
+        key = evt.GetUnicodeKey();
+#endif
+/* C::B end */
     bool shift = evt.ShiftDown(),
          ctrl  = evt.ControlDown(),
          alt   = evt.AltDown();
@@ -1113,8 +1130,8 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
     case WXK_ESCAPE:            key = SCK_ESCAPE;   break;
     case WXK_BACK:              key = SCK_BACK;     break;
     case WXK_TAB:               key = SCK_TAB;      break;
-    case WXK_NUMPAD_ENTER:      // fall through
-    case WXK_RETURN:            key = SCK_RETURN;   break;
+    case WXK_RETURN:            // fall through
+    case WXK_NUMPAD_ENTER:      key = SCK_RETURN;   break;
     case WXK_ADD:               // fall through
     case WXK_NUMPAD_ADD:        key = SCK_ADD;      break;
     case WXK_SUBTRACT:          // fall through
@@ -1124,7 +1141,7 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
     case WXK_CONTROL:           key = 0; break;
     case WXK_ALT:               key = 0; break;
     case WXK_SHIFT:             key = 0; break;
-    case WXK_MENU:              key = 0; break;
+    case WXK_MENU:              key = SCK_MENU;     break;
     }
 
 #ifdef __WXMAC__
@@ -1236,15 +1253,6 @@ void ScintillaWX::DoDragLeave() {
 }
 #endif // wxUSE_DRAG_AND_DROP
 //----------------------------------------------------------------------
-
-// Force the whole window to be repainted
-void ScintillaWX::FullPaint() {
-#ifndef __WXMAC__
-    sci->Refresh(false);
-#endif
-    sci->Update();
-}
-
 
 void ScintillaWX::DoScrollToLine(int line) {
     ScrollTo(line);

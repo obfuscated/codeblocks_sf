@@ -197,7 +197,7 @@ public:
 
 /**
  */
-class Document : PerLine, public IDocument {
+class Document : PerLine, public IDocument, public ILoader {
 
 public:
 	/** Used to pair watcher pointer with user data. */
@@ -256,7 +256,7 @@ public:
 	virtual ~Document();
 
 	int AddRef();
-	int Release();
+	int SCI_METHOD Release();
 
 	virtual void Init();
 	virtual void InsertLine(int line);
@@ -285,6 +285,8 @@ public:
 	void CheckReadOnly();
 	bool DeleteChars(int pos, int len);
 	bool InsertString(int position, const char *s, int insertLength);
+	int SCI_METHOD AddData(char *data, int length);
+	void * SCI_METHOD ConvertToDocument();
 	int Undo();
 	int Redo();
 	bool CanUndo() { return cb.CanUndo(); }
@@ -308,11 +310,14 @@ public:
 	void SetSavePoint();
 	bool IsSavePoint() { return cb.IsSavePoint(); }
 	const char * SCI_METHOD BufferPointer() { return cb.BufferPointer(); }
+	const char *RangePointer(int position, int rangeLength) { return cb.RangePointer(position, rangeLength); }
+	int GapPosition() const { return cb.GapPosition(); }
 
 	int SCI_METHOD GetLineIndentation(int line);
 	void SetLineIndentation(int line, int indent);
 	int GetLineIndentPosition(int line) const;
 	int GetColumn(int position);
+	int CountCharacters(int startPos, int endPos);
 	int FindColumn(int line, int column);
 	void Indent(bool forwards, int lineBottom, int lineTop);
 	static char *TransformLineEnds(int *pLenOut, const char *s, size_t len, int eolModeWanted);
@@ -335,6 +340,7 @@ public:
 		cb.GetStyleRange(buffer, position, lengthRetrieve);
 	}
 	int GetMark(int line);
+	int MarkerNext(int lineStart, int mask) const;
 	int AddMark(int line, int markerNum);
 	void AddMarkSet(int line, int valueSet);
 	void DeleteMark(int line, int markerNum);
@@ -363,7 +369,6 @@ public:
 	int NextWordEnd(int pos, int delta);
 	int SCI_METHOD Length() const { return cb.Length(); }
 	void Allocate(int newSize) { cb.Allocate(newSize); }
-	size_t ExtractChar(int pos, char *bytes);
 	bool MatchesWordOptions(bool word, bool wordStart, int pos, int length);
 	long FindText(int minPos, int maxPos, const char *search, bool caseSensitive, bool word,
 		bool wordStart, bool regExp, int flags, int *length, CaseFolder *pcf);
@@ -374,6 +379,7 @@ public:
 
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass);
+	int GetCharsOfClass(CharClassify::cc charClass, unsigned char *buffer);
 	void SetStylingBits(int bits);
 	void SCI_METHOD StartStyling(int position, char mask);
 	bool SCI_METHOD SetStyleFor(int length, char style);

@@ -33,7 +33,7 @@
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker-unix.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp">
-			<Depends filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus-unix.cbp" />
 		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />

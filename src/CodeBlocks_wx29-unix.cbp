@@ -2473,6 +2473,12 @@
 		<Unit filename="sdk/resources/lexers/lexer_html.xml">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_java.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_java.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_latex.sample">
 			<Option target="scintilla" />
 		</Unit>
@@ -2763,6 +2769,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexAVE.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexAVS.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexAbaqus.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2805,6 +2814,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexCmake.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexCoffeeScript.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexConf.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2815,6 +2827,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexD.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexECL.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexEScript.cxx">
@@ -2895,6 +2910,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexNsis.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexOScript.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexOpal.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2973,6 +2991,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexTCL.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexTCMD.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexTeX.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2986,6 +3007,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexVerilog.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexVisualProlog.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexYAML.cxx">

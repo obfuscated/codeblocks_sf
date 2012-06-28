@@ -34,8 +34,9 @@
 #include "debuggermanager.h"
 #include "filefilters.h"
 
-const int DEBUG_MARKER = 4;
-const int DEBUG_STYLE = wxSCI_MARK_ARROW;
+// Keep in sync with cbEditor.cpp:
+#define DEBUG_MARKER     6
+#define DEBUG_STYLE      wxSCI_MARK_ARROW
 
 BEGIN_EVENT_TABLE(DisassemblyDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)

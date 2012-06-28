@@ -176,7 +176,9 @@ bool wxScintilla::Create (wxWindow *parent,
                           long style,
                           const wxString& name)
 {
+#if defined (__WXMAC__) || wxCHECK_VERSION(2, 9, 0)
     style |= wxVSCROLL | wxHSCROLL;
+#endif
     if (!wxControl::Create (parent, id, pos, size,
                             style | wxWANTS_CHARS | wxCLIP_CHILDREN,
                             wxDefaultValidator, name)) {
@@ -199,7 +201,7 @@ bool wxScintilla::Create (wxWindow *parent,
 /* C::B begin */
     // we need this here, because wxEvent::GetTimestamp() returns negative values on some systems
     // and therefore blocks mousewheel events. Big thanks to DrewBoo
-    m_lastWheelTimestamp = std::numeric_limits<long>::min();
+    m_timeToBlockWheelEventsUntil = std::numeric_limits<long>::min();
 /* C::B end */
     m_vScrollBar = NULL;
     m_hScrollBar = NULL;
@@ -209,15 +211,21 @@ bool wxScintilla::Create (wxWindow *parent,
 #endif
 
 /* C::B begin */
-    #if wxVERSION_NUMBER >= 2800
+    #if wxCHECK_VERSION(2, 8, 0)
         SetInitialSize(size);
     #else
         SetBestFittingSize(size);
     #endif
 /* C::B end */
 
+/* C::B begin */
     // Reduces flicker on GTK+/X11
-    SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+    #if wxCHECK_VERSION(2, 9, 0)
+        SetBackgroundStyle(wxBG_STYLE_PAINT);
+    #else
+        SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+    #endif
+/* C::B end */
 
 /* C::B begin */
     // FIXME: back-port from wx29 (svn) to wx289
@@ -278,7 +286,11 @@ void wxScintilla::SetHScrollBar (wxScrollBar* bar)
 void wxScintilla::AddText (const wxString& text)
 {
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+#if wxCHECK_VERSION(2, 9, 0)
+    SendMsg(SCI_ADDTEXT, buf.length()-1, (uptr_t)(const char*)buf);
+#else
     SendMsg(SCI_ADDTEXT, strlen(buf), (uptr_t)(const char*)wx2sci(text));
+#endif
 }
 
 /* C::B begin */
@@ -306,6 +318,12 @@ void wxScintilla::InsertText (int pos, const wxString& text)
 void wxScintilla::ClearAll()
 {
     SendMsg(SCI_CLEARALL, 0, 0);
+}
+
+// Delete a range of text in the document.
+void wxScintilla::DeleteRange(int pos, int deleteLength)
+{
+    SendMsg(SCI_DELETERANGE, pos, deleteLength);
 }
 
 // Set all style bytes to 0, remove all folding information.
@@ -570,8 +588,6 @@ void wxScintilla::SetCodePage (int codePage)
     SendMsg(SCI_SETCODEPAGE, codePage);
 }
 
-// Set use palette (SCI_SETUSEPALETTE) not supported
-
 // Set the symbol used for a particular marker number,
 // and optionally the fore and background colours.
 void wxScintilla::MarkerDefine (int markerNumber, int markerSymbol,
@@ -579,9 +595,9 @@ void wxScintilla::MarkerDefine (int markerNumber, int markerSymbol,
                 const wxColour& background)
 {
     SendMsg(SCI_MARKERDEFINE, markerNumber, markerSymbol);
-    if (foreground.Ok())
+    if (foreground.IsOk())
         MarkerSetForeground(markerNumber, foreground);
-    if (background.Ok())
+    if (background.IsOk())
         MarkerSetBackground(markerNumber, background);
 }
 
@@ -890,6 +906,30 @@ void wxScintilla::StyleSetCase (int style, int caseForce)
     SendMsg(SCI_STYLESETCASE, style, caseForce);
 }
 
+// Set the size of characters of a style. Size is in points multiplied by 100.
+void wxScintilla::StyleSetSizeFractional(int style, int caseForce)
+{
+    SendMsg(SCI_STYLESETSIZEFRACTIONAL, style, caseForce);
+}
+
+// Get the size of characters of a style in points multiplied by 100
+int wxScintilla::StyleGetSizeFractional(int style) const
+{
+    return SendMsg(SCI_STYLEGETSIZEFRACTIONAL, style, 0);
+}
+
+// Set the weight of characters of a style.
+void wxScintilla::StyleSetWeight(int style, int weight)
+{
+    SendMsg(SCI_STYLESETWEIGHT, style, weight);
+}
+
+// Get the weight of characters of a style.
+int wxScintilla::StyleGetWeight(int style) const
+{
+    return SendMsg(SCI_STYLEGETWEIGHT, style, 0);
+}
+
 // Set a style to be a hotspot or not.
 void wxScintilla::StyleSetHotSpot (int style, bool hotspot)
 {
@@ -985,6 +1025,21 @@ void wxScintilla::SetCaretPeriod (int periodMilliseconds)
 void wxScintilla::SetWordChars (const wxString& characters)
 {
     SendMsg(SCI_SETWORDCHARS, 0, (uptr_t)(const char*)wx2sci(characters));
+}
+
+// Get the set of characters making up words for when moving or selecting by word.
+// Retuns the number of characters
+wxString wxScintilla::GetWordChars() const
+{
+    int len = SendMsg(SCI_GETWORDCHARS, 0, 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_GETWORDCHARS, 0, (uptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 // Start a sequence of actions that is undone and redone as a unit.
@@ -1370,6 +1425,12 @@ int wxScintilla::GetColumn (int pos) const
     return SendMsg(SCI_GETCOLUMN, pos, 0);
 }
 
+// Count characters between two positions.
+int wxScintilla::CountCharacters(int startPos, int endPos)
+{
+    return SendMsg(SCI_COUNTCHARACTERS, startPos, endPos);
+}
+
 // Show or hide the horizontal scroll bar.
 void wxScintilla::SetUseHorizontalScrollBar (bool show)
 {
@@ -1556,7 +1617,7 @@ int wxScintilla::GetFirstVisibleLine() const
 }
 
 // Retrieve the contents of a line.
-wxString wxScintilla::GetLine (int line) const
+wxString wxScintilla::GetLine(int line) const
 {
     int len = LineLength(line);
     if (!len) return wxEmptyString;
@@ -1823,7 +1884,11 @@ int wxScintilla::GetTargetEnd() const
 int wxScintilla::ReplaceTarget (const wxString& text)
 {
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+#if wxCHECK_VERSION(2, 9, 0)
+    return SendMsg(SCI_REPLACETARGET, buf.length()-1, (uptr_t)(const char*)buf);
+#else
     return SendMsg(SCI_REPLACETARGET, strlen(buf), (uptr_t)(const char*)buf);
+#endif
 }
 
 // Replace the target text with the argument text after \d processing.
@@ -1836,7 +1901,11 @@ int wxScintilla::ReplaceTarget (const wxString& text)
 int wxScintilla::ReplaceTargetRE (const wxString& text)
 {
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+#if wxCHECK_VERSION(2, 9, 0)
+    return SendMsg(SCI_REPLACETARGETRE, buf.length()-1, (uptr_t)(const char*)buf);
+#else
     return SendMsg(SCI_REPLACETARGETRE, strlen(buf), (uptr_t)(const char*)buf);
+#endif
 }
 
 // Search for a counted string in the target and set the target to the found
@@ -1846,7 +1915,11 @@ int wxScintilla::ReplaceTargetRE (const wxString& text)
 int wxScintilla::SearchInTarget (const wxString& text)
 {
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+#if wxCHECK_VERSION(2, 9, 0)
+    return SendMsg(SCI_SEARCHINTARGET, buf.length()-1, (uptr_t)(const char*)buf);
+#else
     return SendMsg(SCI_SEARCHINTARGET, strlen(buf), (uptr_t)(const char*)buf);
+#endif
 }
 
 // Set the search flags used by SearchInTarget.
@@ -1915,6 +1988,12 @@ void wxScintilla::CallTipUseStyle (int tabSize)
     SendMsg(SCI_CALLTIPUSESTYLE, tabSize, 0);
 }
 
+// Set position of calltip, above or below text.
+void wxScintilla::CallTipSetPosition(bool above)
+{
+    SendMsg(SCI_CALLTIPSETPOSITION, above, 0);
+}
+
 // Find the display line of a document line taking hidden lines into account.
 int wxScintilla::VisibleFromDocLine (int line)
 {
@@ -1975,6 +2054,12 @@ void wxScintilla::HideLines (int lineStart, int lineEnd)
 bool wxScintilla::GetLineVisible (int line) const
 {
     return SendMsg(SCI_GETLINEVISIBLE, line, 0) != 0;
+}
+
+// Are all lines visible?
+bool wxScintilla::GetAllLinesVisible() const
+{
+    return SendMsg(SCI_GETALLLINESVISIBLE, 0, 0) != 0;
 }
 
 // Show the children of a header line.
@@ -2194,7 +2279,7 @@ void wxScintilla::SetUseVerticalScrollBar (bool show)
 }
 
 // Is the vertical scroll bar visible?
-bool wxScintilla::GetUseVerticalScrollBar() const
+bool wxScintilla::GetUseVerticalScrollBar () const
 {
     return SendMsg(SCI_GETVSCROLLBAR, 0, 0) != 0;
 }
@@ -2203,7 +2288,11 @@ bool wxScintilla::GetUseVerticalScrollBar() const
 void wxScintilla::AppendText (const wxString& text)
 {
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+#if wxCHECK_VERSION(2, 9, 0)
+    SendMsg(SCI_APPENDTEXT, buf.length()-1, (uptr_t)(const char*)buf);
+#else
     SendMsg(SCI_APPENDTEXT, strlen(buf), (uptr_t)(const char*)buf);
+#endif
 }
 
 // Is drawing done in two phases with backgrounds drawn before foregrounds?
@@ -3207,6 +3296,41 @@ void wxScintilla::SetWhitespaceChars (const wxString& characters)
     SendMsg(SCI_SETWHITESPACECHARS, 0, (uptr_t)(const char*)wx2sci(characters));
 }
 
+// Get the set of characters making up whitespace for when moving or selecting by word.
+wxString wxScintilla::GetWhitespaceChars() const
+{
+    int len = SendMsg(SCI_GETWHITESPACECHARS, 0, 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_GETWHITESPACECHARS, 0, (uptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Set the set of characters making up punctuation characters
+// Should be called after SetWordChars.
+void wxScintilla::SetPunctuationChars(const wxString& characters)
+{
+    SendMsg(SCI_SETPUNCTUATIONCHARS, 0, (sptr_t)(const char*)wx2sci(characters));
+}
+
+// Get the set of characters making up punctuation characters
+wxString wxScintilla::GetPunctuationChars() const
+{
+    int len = SendMsg(SCI_GETPUNCTUATIONCHARS, 0, 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_GETPUNCTUATIONCHARS, 0, (uptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
 // Reset the set of characters for whitespace and word characters to the defaults.
 void wxScintilla::SetCharsDefault()
 {
@@ -3217,6 +3341,18 @@ void wxScintilla::SetCharsDefault()
 int wxScintilla::AutoCompGetCurrent()
 {
     return SendMsg(SCI_AUTOCGETCURRENT, 0, 0);
+}
+
+// Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
+void wxScintilla::AutoCSetCaseInsensitiveBehaviour(int behaviour)
+{
+    SendMsg(SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR, behaviour, 0);
+}
+
+// Get auto-completion case insensitive behaviour.
+int wxScintilla::AutoCGetCaseInsensitiveBehaviour() const
+{
+    return SendMsg(SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR, 0, 0);
 }
 
 /* C::B begin */
@@ -3405,6 +3541,21 @@ const char* wxScintilla::GetCharacterPointer()
     return (const char*)SendMsg(SCI_GETCHARACTERPOINTER, 0, 0);
 }
 /* C::B end */
+
+// Return a read-only pointer to a range of characters in the document.
+// May move the gap so that the range is contiguous, but will only move up
+// to rangeLength bytes.
+int wxScintilla::GetRangePointer(int position, int rangeLength) const
+{
+    return SendMsg(SCI_GETRANGEPOINTER, position, rangeLength);
+}
+
+// Return a position which, to avoid performance costs, should not be within
+// the range of a call to GetRangePointer.
+int wxScintilla::GetGapPosition() const
+{
+    return SendMsg(SCI_GETGAPPOSITION, 0, 0);
+}
 
 // Always interpret keyboard input as Unicode
 void wxScintilla::SetKeysUnicode(bool keysUnicode)
@@ -3997,6 +4148,42 @@ void wxScintilla::ScrollToEnd()
     SendMsg(SCI_SCROLLTOEND, 0, 0);
 }
 
+// Set the technolgy used.
+void wxScintilla::SetTechnology(int technology)
+{
+    SendMsg(SCI_SETTECHNOLOGY, technology, 0);
+}
+
+// Get the tech.
+int wxScintilla::GetTechnology() const
+{
+    return SendMsg(SCI_GETTECHNOLOGY, 0, 0);
+}
+
+// Create an ILoader*.
+int wxScintilla::CreateLoader(int bytes)
+{
+    return SendMsg(SCI_CREATELOADER, bytes, 0);
+}
+
+// On OS X, show a find indicator.
+void wxScintilla::FindIndicatorShow(int start, int end)
+{
+    SendMsg(SCI_FINDINDICATORSHOW, start, end);
+}
+
+// On OS X, flash a find indicator, then fade out.
+void wxScintilla::FindIndicatorFlash(int start, int end)
+{
+    SendMsg(SCI_FINDINDICATORFLASH, start, end);
+}
+
+// On OS X, hide the find indicator.
+void wxScintilla::FindIndicatorHide()
+{
+    SendMsg(SCI_FINDINDICATORHIDE, 0, 0);
+}
+
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord ()
 {
@@ -4144,37 +4331,27 @@ wxString wxScintilla::DescribeKeyWordSets()
 /* C::B begin */
 wxSciFnDirect wxScintilla::GetDirectFunction()
 {
-    return (wxSciFnDirect)SendMsg(SCI_GETDIRECTFUNCTION , 0, 0);
+    return (wxSciFnDirect)SendMsg(SCI_GETDIRECTFUNCTION, 0, 0);
 }
 
 wxIntPtr wxScintilla::GetDirectPointer() const
 {
-    return (wxIntPtr)SendMsg(SCI_GETDIRECTPOINTER , 0, 0);
+    return (wxIntPtr)SendMsg(SCI_GETDIRECTPOINTER, 0, 0);
 }
 
 wxUIntPtr wxScintilla::GetCharacterPointer() const
 {
-    return (wxUIntPtr)SendMsg(SCI_GETCHARACTERPOINTER , 0, 0);
+    return (wxUIntPtr)SendMsg(SCI_GETCHARACTERPOINTER, 0, 0);
 }
 
 void wxScintilla::GrabSCIFocus()
 {
-    SendMsg(SCI_GRABFOCUS , 0, 0);
+    SendMsg(SCI_GRABFOCUS, 0, 0);
 }
 
 void wxScintilla::LoadLexerLibrary(const wxString& path)
 {
-    SendMsg(SCI_LOADLEXERLIBRARY , 0, (uptr_t)(const char*)wx2sci(path));
-}
-
-void wxScintilla::SetUsePalette(bool allowPaletteUse)
-{
-    SendMsg(SCI_SETUSEPALETTE ,allowPaletteUse, 0);
-}
-
-bool wxScintilla::GetUsePalette()
-{
-    return SendMsg(SCI_GETUSEPALETTE , 0, 0) != 0;
+    SendMsg(SCI_LOADLEXERLIBRARY, 0, (uptr_t)(const char*)wx2sci(path));
 }
 
 // Retrieve the name of the lexer.
@@ -4553,9 +4730,11 @@ void wxScintilla::DoDragLeave ()
 // Raw text handling for UTF-8
 
 
-void wxScintilla::AddTextRaw (const char* text)
+void wxScintilla::AddTextRaw(const char* text, int length)
 {
-    SendMsg(SCI_ADDTEXT, strlen(text), (uptr_t)text);
+    if (length == -1)
+        length = strlen(text);
+    SendMsg(SCI_ADDTEXT, length, (uptr_t)text);
 }
 
 void wxScintilla::InsertTextRaw (int pos, const char* text)
@@ -4648,9 +4827,11 @@ wxCharBuffer wxScintilla::GetTextRaw()
     return buf;
 }
 
-void wxScintilla::AppendTextRaw (const char* text)
+void wxScintilla::AppendTextRaw(const char* text, int length)
 {
-    SendMsg(SCI_APPENDTEXT, strlen(text), (uptr_t)text);
+    if (length == -1)
+        length = strlen(text);
+    SendMsg(SCI_APPENDTEXT, length, (uptr_t)text);
 }
 
 
@@ -4663,9 +4844,9 @@ void wxScintilla::AppendTextRaw (const char* text)
 void wxScintilla::OnPaint (wxPaintEvent& WXUNUSED(evt))
 {
 /* C::B begin */
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     // avoid flickering, thanks Eran for the patch
-	// On Mac / Windows there is no real need for this
+    // On Windows there is no real need for this
     wxBufferedPaintDC dc(this);
 #else
     wxPaintDC dc(this);
@@ -4754,18 +4935,34 @@ void wxScintilla::OnContextMenu (wxContextMenuEvent& evt)
 
 void wxScintilla::OnMouseWheel (wxMouseEvent& evt)
 {
-    // prevent having an event queue with wheel events that cannot be processed
-    // reasonably fast (see ticket #9057)
-    if ( m_lastWheelTimestamp <= evt.GetTimestamp() )
+    // Prevent having an event queue with wheel events that cannot be processed
+    // reasonably fast (see ticket #9057) by ignoring all of them that happen
+    // during the time interval corresponding to the time it took us to handle
+    // the last one.
+    //
+    // Notice the use of TimeInMicro() instead of Time() to avoid overflow in
+    // long running programs.
+#if wxCHECK_VERSION(2, 9, 0)
+    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.TimeInMicro() )
     {
-        m_lastWheelTimestamp = m_stopWatch.Time();
+        const wxLongLong beforeMouseWheel = m_stopWatch.TimeInMicro();
+#else
+    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.Time() )
+    {
+        const wxLongLong beforeMouseWheel = m_stopWatch.Time();
+#endif
         m_swx->DoMouseWheel(evt.GetWheelRotation(),
                             evt.GetWheelDelta(),
                             evt.GetLinesPerAction(),
                             evt.ControlDown(),
                             evt.IsPageScroll());
-        m_lastWheelTimestamp = m_stopWatch.Time() - m_lastWheelTimestamp;
-        m_lastWheelTimestamp += evt.GetTimestamp();
+#if wxCHECK_VERSION(2, 9, 0)
+        const wxLongLong afterMouseWheel = m_stopWatch.TimeInMicro();
+#else
+        const wxLongLong afterMouseWheel = m_stopWatch.Time();
+#endif
+        m_timeToBlockWheelEventsUntil = afterMouseWheel;
+        m_timeToBlockWheelEventsUntil += afterMouseWheel - beforeMouseWheel;
     }
 }
 
@@ -5157,7 +5354,7 @@ wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 2, 2, 9, "Scintilla 2.29");
+    return wxVersionInfo("Scintilla", 3, 2, 0, "Scintilla 3.20");
 }
 #endif
 /* C::B end */

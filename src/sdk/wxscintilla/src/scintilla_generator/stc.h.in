@@ -247,7 +247,7 @@ public:
     // what is used internally by Scintilla in unicode builds.
 
     // Add text to the document at current position.
-    void AddTextRaw(const char* text);
+    void AddTextRaw(const char* text, int length=-1);
 
     // Insert string at a position.
     void InsertTextRaw(int pos, const char* text);
@@ -276,7 +276,7 @@ public:
     wxCharBuffer GetTextRaw();
 
     // Append a string to the end of the document without changing the selection.
-    void AppendTextRaw(const char* text);
+    void AppendTextRaw(const char* text, int length=-1);
 
 #ifdef SWIG
     %%pythoncode "_stc_utf8_methods.py"
@@ -398,16 +398,15 @@ public:
 
     virtual bool PositionToXY(long pos, long *x, long *y) const
     {
+        long l = LineFromPosition(pos);
+        if ( l == -1 )
+            return false;
+
         if ( x )
-            *x = -1; // TODO
+            *x = pos - PositionFromLine(l);
 
         if ( y )
-        {
-            long l = LineFromPosition(pos);
-            if ( l == -1 )
-                return false;
             *y = l;
-        }
 
         return true;
     }
@@ -490,9 +489,8 @@ protected:
 
     bool                m_lastKeyDownConsumed;
 
-    // the timestamp that consists of the last wheel event
-    // added to the time taken to process that event.
-    long m_lastWheelTimestamp;
+    // Time until when we should ignore any new mouse wheel events.
+    wxLongLong m_timeToBlockWheelEventsUntil;
 
     friend class ScintillaWX;
     friend class Platform;

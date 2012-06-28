@@ -45,7 +45,7 @@ public:
 	unsigned char *styles;
 	int styleBitsSet;
 	char *indicators;
-	int *positions;
+	XYPOSITION *positions;
 	char bracePreviousStyles[2];
 
 	// Hotspot support
@@ -55,7 +55,7 @@ public:
 	// Wrapped line support
 	int widthLine;
 	int lines;
-	int wrapIndent; // In pixels
+	XYPOSITION wrapIndent; // In pixels
 
 	LineLayout(int maxLineLength_);
 	virtual ~LineLayout();
@@ -69,7 +69,7 @@ public:
 	void SetBracesHighlight(Range rangeLine, Position braces[],
 		char bracesMatchStyle, int xHighlight, bool ignoreStyle);
 	void RestoreBracesHighlight(Range rangeLine, Position braces[], bool ignoreStyle);
-	int FindBefore(int x, int lower, int upper) const;
+	int FindBefore(XYPOSITION x, int lower, int upper) const;
 	int EndLineStyle() const;
 };
 
@@ -107,13 +107,13 @@ class PositionCacheEntry {
 	unsigned int styleNumber:8;
 	unsigned int len:8;
 	unsigned int clock:16;
-	short *positions;
+	XYPOSITION *positions;
 public:
 	PositionCacheEntry();
 	~PositionCacheEntry();
-	void Set(unsigned int styleNumber_, const char *s_, unsigned int len_, int *positions_, unsigned int clock);
+	void Set(unsigned int styleNumber_, const char *s_, unsigned int len_, XYPOSITION *positions_, unsigned int clock);
 	void Clear();
-	bool Retrieve(unsigned int styleNumber_, const char *s_, unsigned int len_, int *positions_) const;
+	bool Retrieve(unsigned int styleNumber_, const char *s_, unsigned int len_, XYPOSITION *positions_) const;
 	static int Hash(unsigned int styleNumber_, const char *s, unsigned int len);
 	bool NewerThan(const PositionCacheEntry &other) const;
 	void ResetClock();
@@ -159,7 +159,7 @@ public:
 	void SetSize(size_t size_);
 	size_t GetSize() const { return size; }
 	void MeasureWidths(Surface *surface, ViewStyle &vstyle, unsigned int styleNumber,
-		const char *s, unsigned int len, int *positions, Document *pdoc);
+		const char *s, unsigned int len, XYPOSITION *positions, Document *pdoc);
 };
 
 inline bool IsSpaceOrTab(int ch) {

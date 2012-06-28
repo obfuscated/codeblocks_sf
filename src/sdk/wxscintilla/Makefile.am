@@ -16,6 +16,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexASY.cxx \
 			src/scintilla/lexers/LexAU3.cxx \
 			src/scintilla/lexers/LexAVE.cxx \
+			src/scintilla/lexers/LexAVS.cxx \
 			src/scintilla/lexers/LexAbaqus.cxx \
 			src/scintilla/lexers/LexAda.cxx \
 			src/scintilla/lexers/LexAsm.cxx \
@@ -30,10 +31,12 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexCSS.cxx \
 			src/scintilla/lexers/LexCaml.cxx \
 			src/scintilla/lexers/LexCmake.cxx \
+			src/scintilla/lexers/LexCoffeeScript \
 			src/scintilla/lexers/LexConf.cxx \
 			src/scintilla/lexers/LexCrontab.cxx \
 			src/scintilla/lexers/LexCsound.cxx \
 			src/scintilla/lexers/LexD.cxx \
+			src/scintilla/lexers/LexECL.cxx \
 			src/scintilla/lexers/LexEScript.cxx \
 			src/scintilla/lexers/LexEiffel.cxx \
 			src/scintilla/lexers/LexErlang.cxx \
@@ -60,6 +63,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexMySQL.cxx \
 			src/scintilla/lexers/LexNimrod.cxx \
 			src/scintilla/lexers/LexNsis.cxx \
+			src/scintilla/lexers/LexOScript.cxx \
 			src/scintilla/lexers/LexOpal.cxx \
 			src/scintilla/lexers/LexOthers.cxx \
 			src/scintilla/lexers/LexPB.cxx \
@@ -86,11 +90,13 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexTADS3.cxx \
 			src/scintilla/lexers/LexTAL.cxx \
 			src/scintilla/lexers/LexTCL.cxx \
+			src/scintilla/lexers/LexTCMD.cxx \
 			src/scintilla/lexers/LexTeX.cxx \
 			src/scintilla/lexers/LexTxt2tags.cxx \
 			src/scintilla/lexers/LexVB.cxx \
 			src/scintilla/lexers/LexVHDL.cxx \
 			src/scintilla/lexers/LexVerilog.cxx \
+			src/scintilla/lexers/LexVisualProlog.cxx \
 			src/scintilla/lexers/LexYAML.cxx \
 			src/scintilla/lexlib/Accessor.cxx \
 			src/scintilla/lexlib/CharacterSet.cxx \
@@ -171,7 +177,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/UniConversion.h \
 			src/scintilla/src/ViewStyle.h \
 			src/scintilla/src/XPM.h
-														
+
 sdkdir=$(includedir)/codeblocks/wxscintilla/include/wx
 
 sdk_HEADERS = include/wx/wxscintilla.h

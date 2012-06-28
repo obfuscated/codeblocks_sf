@@ -924,9 +924,7 @@ void cbEditor::SetEditorTitle(const wxString& title)
     if (m_Modified)
         SetTitle(g_EditorModified + title);
     else
-    {
         SetTitle(title);
-    }
 }
 
 void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
@@ -1115,6 +1113,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor(bool connectEvents)
     //        wxEVT_SCI_DWELLSTART,
     //        wxEVT_SCI_DWELLEND,
             wxEVT_SCI_START_DRAG,
+            wxEVT_SCI_FINISHED_DRAG,
             wxEVT_SCI_DRAG_OVER,
             wxEVT_SCI_DO_DROP,
             wxEVT_SCI_ZOOM,
@@ -1536,11 +1535,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
     control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
 
-    // NOTE: duplicate line in editorconfigurationdlg.cpp (ctor)
-    static const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
-
-    control->SetEOLMode(mgr->ReadInt(_T("/eol/eolmode"), default_eol));
-
     // changebar margin
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
     {
@@ -1555,15 +1549,16 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT);
         control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04));
         control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_LEFTRECT);
-        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, wxColour(0x04, 0xFF, 0x50));
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED,   wxColour(0x04, 0xFF, 0x50));
     }
     else
         control->SetMarginWidth(C_CHANGEBAR_MARGIN, 0);
 
-    control->SetScrollWidthTracking(mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
-
-    control->SetMultipleSelection(mgr->ReadBool(_T("/selection/multi_select"), false));
-    control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"), false));
+    // NOTE: duplicate line in editorconfigurationdlg.cpp (ctor)
+    control->SetEOLMode(                  mgr->ReadInt(_T("/eol/eolmode"),                   platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF)); // Windows takes CR+LF, other platforms LF only
+    control->SetScrollWidthTracking(      mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
+    control->SetMultipleSelection(        mgr->ReadBool(_T("/selection/multi_select"),       false));
+    control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"),       false));
     if (mgr->ReadBool(_T("/selection/use_vspace"), false))
         control->SetVirtualSpaceOptions(wxSCI_SCVS_RECTANGULARSELECTION | wxSCI_SCVS_USERACCESSIBLE);
     else

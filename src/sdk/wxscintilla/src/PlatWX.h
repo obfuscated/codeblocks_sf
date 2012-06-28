@@ -1,8 +1,11 @@
+#ifndef PLATWX_H
+#define PLATWX_H
 
 
 
 
 wxRect wxRectFromPRectangle(PRectangle prc);
 PRectangle PRectangleFromwxRect(wxRect rc);
-wxColour wxColourFromCA(const ColourAllocated& ca);
+wxColour wxColourFromCD(ColourDesired cd);
 
+#endif

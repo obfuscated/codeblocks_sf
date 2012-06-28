@@ -9,11 +9,13 @@
 #ifndef SCINTILLAWIDGET_H
 #define SCINTILLAWIDGET_H
 
-#if defined(GTK)
-
+/* C::B begin */
+#if defined(__WXGTK__)
+#include <gtk-2.0/gtk/gtk.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* C::B end */
 
 #define SCINTILLA(obj)          G_TYPE_CHECK_INSTANCE_CAST (obj, scintilla_get_type (), ScintillaObject)
 #define SCINTILLA_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, scintilla_get_type (), ScintillaClass)
