@@ -1411,6 +1411,24 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
     if (copt)
     {
         copt->enabled = list->IsChecked(sel);
+        if (copt->doChecks && copt->enabled)
+        {
+            wxArrayString check = GetArrayFromString(copt->checkAgainst, _T(" "));
+            for (size_t i = 0; i < check.Count(); i++)
+            {
+                CompOption* against = m_Options.GetOptionByOption(check[i]);
+                if (against && against->enabled)
+                {
+                    AnnoyingDialog dlg(_("Compiler options conflict"),
+                                       copt->checkMessage,
+                                       wxART_INFORMATION,
+                                       AnnoyingDialog::OK,
+                                       wxID_OK);
+                    dlg.ShowModal();
+                    break;
+                }
+            }
+        }
     }
     m_bDirty = true;
 } // OnOptionToggled
@@ -2392,7 +2410,7 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         return;
     }
     int keycode = event.GetKeyCode();
-    int id = focused->GetId();
+    int id      = focused->GetId();
 
     int myid = 0;
     unsigned int myidx = 0;
@@ -2403,11 +2421,11 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     const wxChar* str_xtra[4] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete"),_T("btnExtraClear") };
 
     if (keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
-        { myidx = 0; } // Edit
+    { myidx = 0; } // Edit
     else if (keycode == WXK_INSERT || keycode == WXK_NUMPAD_INSERT)
-        { myidx = 1; } // Add
+    { myidx = 1; } // Add
     else if (keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE)
-        { myidx = 2; } // Delete
+    { myidx = 2; } // Delete
     else
     {
         event.Skip();
