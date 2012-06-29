@@ -37,36 +37,36 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 			m_Y(event.m_Y) {}
 		virtual wxEvent *Clone() const { return new CodeBlocksEvent(*this); }
 
-		cbProject* GetProject() const { return m_pProject; }
-		void SetProject(cbProject* project){ m_pProject = project; }
+		cbProject* GetProject() const             { return m_pProject;    }
+		void       SetProject(cbProject* project) { m_pProject = project; }
 
-		EditorBase* GetEditor() const { return m_pEditor; }
-		void SetEditor(EditorBase* editor){ m_pEditor = editor; }
+		EditorBase* GetEditor() const             { return m_pEditor;   }
+		void        SetEditor(EditorBase* editor) { m_pEditor = editor; }
 
-		EditorBase* GetOldEditor() const { return m_pOldEditor; }
-		void SetOldEditor(EditorBase* editor){ m_pOldEditor = editor; }
+		EditorBase* GetOldEditor() const             { return m_pOldEditor;   }
+		void        SetOldEditor(EditorBase* editor) { m_pOldEditor = editor; }
 
-		cbPlugin* GetPlugin() const { return m_pPlugin; }
-		void SetPlugin(cbPlugin* plugin){ m_pPlugin = plugin; }
+		cbPlugin* GetPlugin() const           { return m_pPlugin;   }
+		void      SetPlugin(cbPlugin* plugin) { m_pPlugin = plugin; }
 
-		int GetX() const { return m_X; }
-		void SetX(int x) { m_X = x; }
+		int  GetX() const { return m_X; }
+		void SetX(int x)  { m_X = x;    }
 
-		int GetY() const { return m_Y; }
-		void SetY(int y){ m_Y = y; }
+		int  GetY() const { return m_Y; }
+		void SetY(int y)  { m_Y = y;    }
 
-		const wxString& GetBuildTargetName() const { return m_TargetName; }
-		void SetBuildTargetName(const wxString& target){ m_TargetName = target; }
+		const wxString& GetBuildTargetName() const                 { return m_TargetName;   }
+		void            SetBuildTargetName(const wxString& target) { m_TargetName = target; }
 
 		// the following two functions are only valid for EVT_BUILDTARGET_RENAMED
 		// and EVT_BUILDTARGET_SELECTED events
-		const wxString& GetOldBuildTargetName() const { return m_OldTargetName; }
-		void SetOldBuildTargetName(const wxString& target){ m_OldTargetName = target; }
+		const wxString& GetOldBuildTargetName() const                 { return m_OldTargetName;   }
+		void            SetOldBuildTargetName(const wxString& target) { m_OldTargetName = target; }
 	protected:
-		cbProject* m_pProject;
+		cbProject*  m_pProject;
 		EditorBase* m_pEditor;
 		EditorBase* m_pOldEditor;
-		cbPlugin* m_pPlugin;
+		cbPlugin*   m_pPlugin;
 		// for some editor events
 		int m_X;
 		int m_Y;

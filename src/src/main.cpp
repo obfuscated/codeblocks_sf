@@ -3932,7 +3932,7 @@ void MainFrame::OnHelpTips(wxCommandEvent& /*event*/)
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -3982,7 +3982,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -3997,7 +3997,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canCut    = false;
     bool canSelAll = false;
 
-    if (Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
+    if (Manager::Get()->GetEditorManager() && !Manager::IsAppShuttingDown())
     {
         ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
@@ -4095,7 +4095,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -4139,7 +4139,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -4172,7 +4172,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -4195,7 +4195,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
     {
         event.Skip();
         return;
@@ -4571,7 +4571,7 @@ void MainFrame::OnCtrlAltTab(wxCommandEvent& /*event*/)
 
 void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
         return;
 
     wxAuiPaneInfo info;

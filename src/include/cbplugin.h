@@ -36,9 +36,9 @@
 
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
-#define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 13
-#define PLUGIN_SDK_VERSION_RELEASE 4
+#define PLUGIN_SDK_VERSION_MAJOR   1
+#define PLUGIN_SDK_VERSION_MINOR   13
+#define PLUGIN_SDK_VERSION_RELEASE 5
 
 // class decls
 class wxMenuBar;
@@ -60,8 +60,9 @@ class Compiler;
 class CompileTargetBase;
 class ConfigManagerWrapper;
 class FileTreeData;
-struct PluginInfo;
 class ProjectBuildTarget;
+
+struct PluginInfo;
 
 // Define basic groups for plugins' configuration.
 static const int cgCompiler         = 0x01; ///< Compiler related.

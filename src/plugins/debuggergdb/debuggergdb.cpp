@@ -1787,7 +1787,8 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     ClearActiveMarkFromAllEditors();
     m_State.StopDriver();
     Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
-    Log(wxString::Format(_("Debugger finished with status %d"), m_LastExitCode));
+    if (!Manager::IsAppShuttingDown())
+        Log(wxString::Format(_("Debugger finished with status %d"), m_LastExitCode));
 
     if (m_NoDebugInfo)
     {

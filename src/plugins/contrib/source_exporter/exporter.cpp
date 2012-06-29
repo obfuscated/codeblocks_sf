@@ -128,7 +128,7 @@ void Exporter::RemoveMenu(wxMenuBar *menuBar)
 
 void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
 {
-  if (Manager::isappShuttingDown())
+  if (Manager::IsAppShuttingDown())
   {
     event.Skip();
     return;

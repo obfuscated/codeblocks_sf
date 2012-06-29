@@ -659,7 +659,7 @@ void EditorManager::AddEditorBase(EditorBase* eb)
 void EditorManager::RemoveEditorBase(EditorBase* eb, bool /*deleteObject*/)
 {
     int page = FindPageFromEditor(eb);
-    if (page != -1 && !Manager::isappShuttingDown())
+    if (page != -1 && !Manager::IsAppShuttingDown())
         m_pNotebook->RemovePage(page);
 
     //    if (deleteObject)

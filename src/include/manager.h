@@ -43,10 +43,11 @@ class FileManager;
 
 class DLLIMPORT Manager
 {
-    wxFrame* m_pAppWindow;
-    static bool appShuttingDown;
-    static bool blockYields;
-    static bool isBatch;
+    wxFrame*               m_pAppWindow;
+    static bool            m_AppShuttingDown;
+    static bool            m_AppStartedUp;
+    static bool            m_BlockYields;
+    static bool            m_IsBatch;
     static wxCmdLineParser m_CmdLineParser;
 
      Manager();
@@ -55,8 +56,9 @@ class DLLIMPORT Manager
     void OnMenu(wxCommandEvent& event);
 
 public:
+    static void SetAppStartedUp(bool app_started_up);
     static void SetBatchBuild(bool is_batch);
-    static bool IsBatchBuild(){ return isBatch; }
+    static bool IsBatchBuild() { return m_IsBatch; }
     /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
@@ -82,7 +84,7 @@ public:
     wxWindow* GetAppWindow() const;
 
     static bool IsAppShuttingDown();
-    static bool isappShuttingDown(){return Manager::IsAppShuttingDown();};
+    static bool IsAppStartedUp();
 
     /** Functions returning pointers to the respective sub-manager instances.
      * During application startup as well as during runtime, these functions will always return a valid pointer.
@@ -97,33 +99,33 @@ public:
      *   ScriptingManager,   ProjectManager,  EditorManager,
      *   PersonalityManager, MacrosManager,   UserVariableManager,
      *   LogManager
-     *   The ConfigManager is destroyed immediately before the applicaton terminates, so it can be
+     *   The ConfigManager is destroyed immediately before the application terminates, so it can be
      *   considered being omnipresent.
      *
      * For plugin developers, this means that most managers (except for the ones you probably don't use anyway)
      * will be available throughout the entire lifetime of your plugins.
      */
 
-    ProjectManager*      GetProjectManager() const;
-    EditorManager*       GetEditorManager() const;
-    LogManager*          GetLogManager() const;
-    PluginManager*       GetPluginManager() const;
-    ToolsManager*        GetToolsManager() const;
-    MacrosManager*       GetMacrosManager() const;
-    PersonalityManager*  GetPersonalityManager() const;
-    UserVariableManager* GetUserVariableManager() const;
-    ScriptingManager*    GetScriptingManager() const;
+    ProjectManager*      GetProjectManager()                          const;
+    EditorManager*       GetEditorManager()                           const;
+    LogManager*          GetLogManager()                              const;
+    PluginManager*       GetPluginManager()                           const;
+    ToolsManager*        GetToolsManager()                            const;
+    MacrosManager*       GetMacrosManager()                           const;
+    PersonalityManager*  GetPersonalityManager()                      const;
+    UserVariableManager* GetUserVariableManager()                     const;
+    ScriptingManager*    GetScriptingManager()                        const;
     ConfigManager*       GetConfigManager(const wxString& name_space) const;
-    FileManager*         GetFileManager() const;
-    DebuggerManager*     GetDebuggerManager() const;
+    FileManager*         GetFileManager()                             const;
+    DebuggerManager*     GetDebuggerManager()                         const;
 
 
 
     /////// XML Resource functions ///////
     /// Inits XML Resource system
-    static void Initxrc(bool force=false);
+    static void InitXRC(bool force=false);
     /// Loads XRC file(s) using data_path
-    static void Loadxrc(wxString relpath);
+    static void LoadXRC(wxString relpath);
     static bool LoadResource(const wxString& file);
 
     /// Loads Menubar from XRC
@@ -199,4 +201,3 @@ public:
 };
 
 #endif // MANAGER_H
-

@@ -25,8 +25,8 @@ class cbExecuteProcess : public wxProcess
 
     wxArrayString *std_out;
     wxArrayString *std_err;
-    bool running;
-    int exitCode;
+    bool           running;
+    int            exitCode;
 
 public:
     cbExecuteProcess(wxArrayString* out, wxArrayString* err) : std_out(out), std_err(err), running(true)
@@ -40,24 +40,24 @@ public:
         stream_stdout = GetInputStream();
         stream_stderr = GetErrorStream();
 
-        if(stream_stdout && stream_stderr)
+        if (stream_stdout && stream_stderr)
         {
             wxTextInputStream t_stream_stdout(*stream_stdout);
             wxTextInputStream t_stream_stderr(*stream_stderr);
 
-            while(! stream_stdout->Eof() )
+            while (! stream_stdout->Eof() )
             {
                 line = t_stream_stdout.ReadLine();
                 std_out->Add(line);
             }
 
-            if(std_err)
+            if (std_err)
             {
-            while(! stream_stderr->Eof() )
-            {
-                line = t_stream_stderr.ReadLine();
-                std_err->Add(line);
-            }
+                while (! stream_stderr->Eof() )
+                {
+                    line = t_stream_stderr.ReadLine();
+                    std_err->Add(line);
+                }
             }
         }
     };
@@ -80,25 +80,22 @@ public:
 
 };
 
-
-
-
 inline long cbSyncExecute(const wxString& command, wxArrayString& output, wxArrayString& error)
 {
     cbExecuteProcess process(&output, &error);
 
-    if(wxExecute(command, wxEXEC_ASYNC, &process) == 0)
+    if (wxExecute(command, wxEXEC_ASYNC, &process) == 0)
         return -1;
 
-    while(process.Running())
+    while (process.Running())
+    {
+        if (Manager::IsAppShuttingDown())
         {
-            if(Manager::isappShuttingDown())
-            {
-                process.Kill(wxSIGTERM); // will not work under Windows
-                return -1;
-            }
-            Manager::Yield();
+            process.Kill(wxSIGTERM); // will not work under Windows
+            return -1;
         }
+        Manager::Yield();
+    }
     return process.ExitCode();
 }
 
@@ -106,20 +103,19 @@ inline long cbSyncExecute(const wxString& command, wxArrayString& output)
 {
     cbExecuteProcess process(&output, 0);
 
-    if(wxExecute(command, wxEXEC_ASYNC, &process) == 0)
+    if (wxExecute(command, wxEXEC_ASYNC, &process) == 0)
         return -1;
 
-    while(process.Running())
+    while (process.Running())
+    {
+        if (Manager::IsAppShuttingDown())
         {
-            if(Manager::isappShuttingDown())
-            {
-                process.Kill(wxSIGTERM);
-                return -1;
-            }
-            Manager::Yield();
+            process.Kill(wxSIGTERM);
+            return -1;
         }
+        Manager::Yield();
+    }
     return process.ExitCode();
 }
-
 
 #endif

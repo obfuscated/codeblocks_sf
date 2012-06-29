@@ -95,7 +95,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     // first loop to load projects
     while (proj)
     {
-        if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
+        if (Manager::IsAppShuttingDown() || !GetpMan() || !GetpMsg())
             return false;
         wxString projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
@@ -214,16 +214,12 @@ bool WorkspaceLoader::SaveLayout(const wxString& filename)
     doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
     TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
     if (!rootnode)
-    {
         return false; // Failed creating the root node of the workspace layout XML file?!
-    }
 
     // active project
     ProjectManager *pm = Manager::Get()->GetProjectManager();
     if (!pm)
-    {
         return false; // Could not access ProjectManager?!
-    }
 
     if (const cbProject *project = pm->GetActiveProject())
     {
@@ -259,14 +255,10 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
 {
     TiXmlDocument doc;
     if ( ! TinyXML::LoadDocument(filename, &doc) )
-    {
         return false; // Can't load XML file?!
-    }
 
     if ( ! GetpMan() || ! GetpMsg() )
-    {
         return false; // GetpMan or GetpMsg returns NULL?!
-    }
 
     TiXmlElement* root = doc.FirstChildElement("CodeBlocks_workspace_layout_file");
     if (!root)

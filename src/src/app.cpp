@@ -486,18 +486,18 @@ bool CodeBlocksApp::OnInit()
     wxLog::EnableLogging(true);
 
     SetAppName(_T("codeblocks"));
-    s_Loading = true;
-    m_pBatchBuildDialog = 0;
-    m_BatchExitCode = 0;
-    m_Batch = false;
-    m_BatchNotify = false;
-    m_Build = false;
-    m_ReBuild = false;
-    m_Clean = false;
-    m_HasProject = false;
-    m_HasWorkSpace = false;
-    m_SafeMode = false;
 
+    s_Loading              = true;
+    m_pBatchBuildDialog    = 0;
+    m_BatchExitCode        = 0;
+    m_Batch                = false;
+    m_BatchNotify          = false;
+    m_Build                = false;
+    m_ReBuild              = false;
+    m_Clean                = false;
+    m_HasProject           = false;
+    m_HasWorkSpace         = false;
+    m_SafeMode             = false;
     m_BatchWindowAutoClose = true;
 
     wxTheClipboard->Flush();
@@ -637,6 +637,8 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
+            Manager::SetAppStartedUp(true);
+
             // the compiler plugin might be waiting for this
             CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
             Manager::Get()->ProcessEvent(event);
@@ -696,6 +698,8 @@ bool CodeBlocksApp::OnInit()
         Manager::Get()->GetProjectManager()->WorkspaceChanged();
 
         // all done
+        Manager::SetAppStartedUp(true);
+
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
 

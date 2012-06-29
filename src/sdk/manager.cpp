@@ -39,7 +39,7 @@
 
 #include "debuggermanager.h"
 
-static Manager* instance = 0;
+static Manager* s_ManagerInstance = 0;
 
 Manager::Manager() : m_pAppWindow(0)
 {
@@ -108,42 +108,47 @@ Manager* Manager::Get(wxFrame *appWindow)
 
 Manager* Manager::Get()
 {
-    if (!instance)
-        instance = new Manager;
-    return instance;
+    if (!s_ManagerInstance)
+        s_ManagerInstance = new Manager;
+    return s_ManagerInstance;
 }
 
 void Manager::Free()
 {
-    delete instance;
-    instance = 0;
+    delete s_ManagerInstance;
+    s_ManagerInstance = 0;
+}
+
+void Manager::SetAppStartedUp(bool app_started_up)
+{
+    m_AppStartedUp = app_started_up;
 }
 
 void Manager::SetBatchBuild(bool is_batch)
 {
-    isBatch = is_batch;
+    m_IsBatch = is_batch;
 }
 
 void Manager::BlockYields(bool block)
 {
-    blockYields = block;
+    m_BlockYields = block;
 }
 
 void Manager::ProcessPendingEvents()
 {
-    if (!blockYields && !appShuttingDown)
+    if (!m_BlockYields && !m_AppShuttingDown)
         wxTheApp->ProcessPendingEvents();
 }
 
 void Manager::Yield()
 {
-    if (!blockYields && !appShuttingDown)
+    if (!m_BlockYields && !m_AppShuttingDown)
         wxTheApp->Yield(true);
 }
 
 void Manager::Shutdown()
 {
-    appShuttingDown = true;
+    m_AppShuttingDown = true;
 
     ToolsManager::Free();
     TemplateManager::Free();
@@ -213,14 +218,17 @@ bool Manager::ProcessEvent(CodeBlocksLogEvent& event)
     return true;
 }
 
-
 bool Manager::IsAppShuttingDown()
 {
-    return appShuttingDown;
+    return m_AppShuttingDown;
 }
 
+bool Manager::IsAppStartedUp()
+{
+    return m_AppStartedUp;
+}
 
-void Manager::Initxrc(bool force)
+void Manager::InitXRC(bool force)
 {
     static bool xrcok = false;
     if (!xrcok || force)
@@ -229,11 +237,11 @@ void Manager::Initxrc(bool force)
         wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
         wxXmlResource::Get()->InitAllHandlers();
 
-        xrcok=true;
+        xrcok = true;
     }
 }
 
-void Manager::Loadxrc(wxString relpath)
+void Manager::LoadXRC(wxString relpath)
 {
     LoadResource(relpath);
 }
@@ -507,7 +515,8 @@ void Manager::RemoveAllEventSinksFor(void* owner)
     }
 }
 
-bool Manager::appShuttingDown = false;
-bool Manager::blockYields = false;
-bool Manager::isBatch = false;
+bool            Manager::m_AppShuttingDown = false;
+bool            Manager::m_AppStartedUp    = false;
+bool            Manager::m_BlockYields     = false;
+bool            Manager::m_IsBatch         = false;
 wxCmdLineParser Manager::m_CmdLineParser;

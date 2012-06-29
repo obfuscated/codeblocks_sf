@@ -437,7 +437,7 @@ ProjectManager::~ProjectManager()
 
 void ProjectManager::InitPane()
 {
-    if (Manager::isappShuttingDown())
+    if (Manager::IsAppShuttingDown())
         return;
     if (m_pTree)
         return;
@@ -638,9 +638,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
     {
         // Only set workspace as modified, if there was an active project before
         if (m_pWorkspace && m_pActiveProject)
-        {
             activeProjectChanged = true;
-        }
     }
     else
         return; // already active
@@ -657,9 +655,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
     }
 
     if (activeProjectChanged)
-    {
         m_pWorkspace->ActiveProjectChanged();
-    }
 
     if (refresh)
         RebuildTree();
@@ -1502,7 +1498,7 @@ void ProjectManager::UnfreezeTree(bool /*force*/)
 
 void ProjectManager::RebuildTree()
 {
-    if (Manager::isappShuttingDown() || Manager::IsBatchBuild()) // saves a lot of time at startup for large projects
+    if (Manager::IsAppShuttingDown() || Manager::IsBatchBuild()) // saves a lot of time at startup for large projects
         return;
 
     FreezeTree();
