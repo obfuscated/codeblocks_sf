@@ -1054,14 +1054,14 @@ void NassiView::DragStart()
             wxIcon movecursor(dnd_move_cur_xpm);
             wxIcon nonecursor(dnd_none_cur_xpm);
         #endif
-        wxDragResult result;
+        //wxDragResult result;
 
         wxDropSource dndSource(m_diagramwindow, copycursor, movecursor, nonecursor);
         dndSource.SetData(*dataptr);
         //dndSource.SetData(myData);
 
         ThisIsDnDSource = true;
-        result = dndSource.DoDragDrop(wxDrag_DefaultMove );
+        /*result = */dndSource.DoDragDrop(wxDrag_DefaultMove );
     }
     ThisIsDnDSource = false;
 

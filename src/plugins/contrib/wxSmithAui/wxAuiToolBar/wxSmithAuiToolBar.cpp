@@ -41,7 +41,7 @@ wxSmithAuiToolBar::~wxSmithAuiToolBar()
 
 int wxSmithAuiToolBar::HitTest(const wxPoint& pt)
 {
-    for (int i=0; i<m_items.Count(); i++)
+    for (unsigned int i=0; i<m_items.Count(); i++)
     {
         wxAuiToolBarItem& Item = m_items.Item(i);
 

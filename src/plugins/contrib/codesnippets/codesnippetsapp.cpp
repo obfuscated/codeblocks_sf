@@ -1420,7 +1420,11 @@ void CodeSnippetsAppFrame::ImportCBResources()
         //.ini must be in .exe folder to receive .conf
         if (appConfigFolder == appExeFolder)
         if (not wxFileExists(appExeFolder + _T("/default.conf")) )
-        {   bool copied = wxCopyFile( fileToCopy, appExeFolder+_T("/default.conf") );
+        {
+            #if defined(LOGGING)
+            bool copied =
+            #endif
+            wxCopyFile( fileToCopy, appExeFolder+_T("/default.conf") );
             #if defined(LOGGING)
             LOGIT( _T("Copy [%s][%s][%s]"), fileToCopy.c_str(), cbConfigFolder.c_str(), copied?_T("OK"):_T("FAILED"));
             #endif

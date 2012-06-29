@@ -20,9 +20,9 @@
 
 #include "wx/things/thingdef.h"
 
-#include "wx/defs.h"
-#include "wx/filedlg.h"
-#include "wx/volume.h"           // wxFSVolumeBase
+#include <wx/defs.h>
+#include <wx/filedlg.h>
+#include <wx/volume.h>           // wxFSVolumeBase
 #include "wx/generic/dirctrlg.h" // wxFileIconsTable
 //#include "wx/generic/filedlgg.h"
 

@@ -563,8 +563,8 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     // differentiate window, left, right split window
     cbEditor* ed = 0;
     cbStyledTextCtrl* pControl = 0;
-    cbStyledTextCtrl* pLeftSplitWin = 0;
-    cbStyledTextCtrl* pRightSplitWin = 0;
+    /*cbStyledTextCtrl* pLeftSplitWin = 0;
+    cbStyledTextCtrl* pRightSplitWin = 0;*/
 
     ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( not ed ) { event.Skip(); return; }
@@ -574,8 +574,8 @@ void MMSapEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     if ( pControl not_eq wxWindow::FindFocus()  )
         { event.Skip(); return; }
 
-    pLeftSplitWin = ed->GetLeftSplitViewControl();
-    pRightSplitWin = ed->GetRightSplitViewControl();
+    /*pLeftSplitWin = ed->GetLeftSplitViewControl();
+    pRightSplitWin = ed->GetRightSplitViewControl();*/
 
     #if defined(LOGGING)
     //LOGIT(_T("OnMouseSap[%d]"), eventType);

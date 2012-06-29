@@ -1174,8 +1174,8 @@ void NassiSwitchBrick::accept(NassiBrickVisitor *visitor)
 void NassiSwitchBrick::RemoveChild(wxUint32 pos)
 {
     if ( pos > nChilds ) return;
-    NassiBrick *brick;
-    brick = childBlocks[pos];
+    /*NassiBrick *brick;
+    brick = childBlocks[pos];*/
     //childBlocks.RemoveAt(pos);
     //{
     wxUint32 p = 0;

@@ -80,8 +80,8 @@ void NassiDiagramWindow::OnMouseWheel(wxMouseEvent& event)
     wxClientDC dc(this);
     PrepareDC(dc);
     dc.SetFont(m_view->GetCommentFont());
-    wxCoord dx, dy;
-    dx = dc.GetCharWidth();
+    wxCoord /*dx,*/ dy;
+    //dx = dc.GetCharWidth();
     dy = dc.GetCharHeight();
 
     if ( m_hd )

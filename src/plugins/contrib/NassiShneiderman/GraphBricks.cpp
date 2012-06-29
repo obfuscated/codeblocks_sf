@@ -1515,7 +1515,7 @@ void GraphNassiDoWhileBrick::CalcMinSize(wxDC *dc, wxPoint &size)
     wxCoord dx = dc->GetCharWidth(),
             dy = dc->GetCharHeight();
 
-    wxCoord w, h, bb, hh;
+    wxCoord w, h, bb;//, hh;
     if ( this->IsMinimized() )
     {
         h = 2*dy;
@@ -1529,7 +1529,7 @@ void GraphNassiDoWhileBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         h += 10;  //MinMaxBox
         w += 18; // the symbol
         bb = 0;
-        hh = 0;
+        //hh = 0;
         m_hh = 0;
     }
     else
@@ -1550,7 +1550,7 @@ void GraphNassiDoWhileBrick::CalcMinSize(wxDC *dc, wxPoint &size)
                 w = source.GetWidth();
         }
         w += 2*dx;
-        hh = h;
+        //hh = h;
         m_hh = h;
 
         if ( !childgbrick ) // no child

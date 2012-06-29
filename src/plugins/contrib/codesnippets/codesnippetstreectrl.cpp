@@ -202,7 +202,7 @@ void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
     // other routines.
 
     //CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
-    wxTreeItemId itemId = event.GetItem();
+    //wxTreeItemId itemId = event.GetItem();
 
     //-SetStatusText(wxEmptyString);
 

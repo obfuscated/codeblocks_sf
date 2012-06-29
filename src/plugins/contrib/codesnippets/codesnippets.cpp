@@ -1121,9 +1121,9 @@ bool DropTargets::OnDataText (wxCoord x, wxCoord y, const wxString& data)
     #ifdef LOGGING
      LOGIT( wxT("DropTargets::OnDataText") );
     #endif //LOGGING
-    bool ok;
+    //bool ok;
     wxArrayString* pFilenames = m_pcbDndExtn->TextToFilenames(data);
-    if (pFilenames->GetCount()) ok = m_pcbDndExtn->OnDropFiles(1, 1, *pFilenames);
+    if (pFilenames->GetCount()) /*ok =*/ m_pcbDndExtn->OnDropFiles(1, 1, *pFilenames);
     delete pFilenames;
     //return ok;
     // ---------------------------------------------------
