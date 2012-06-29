@@ -131,7 +131,7 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
 #endif
 
-  if (IsAttached())
+  if ( IsAttached() )
   {
     wxString prj_envvar_set = m_ProjectSets[event.GetProject()];
     if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
@@ -295,7 +295,7 @@ int EnvVars::Configure()
 
 cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 {
-  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);
+  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent);
   // deleted by the caller
 
   return dlg;

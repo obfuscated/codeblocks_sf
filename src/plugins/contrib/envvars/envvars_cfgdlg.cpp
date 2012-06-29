@@ -61,8 +61,7 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin):
-  m_pPlugin(plugin)
+EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent)
 {
   wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEnvVars"));
   LoadSettings();

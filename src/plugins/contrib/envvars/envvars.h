@@ -23,8 +23,6 @@ class cbProject;
 #include "configurationpanel.h"
 #include "sdk_events.h"
 
-typedef std::map<cbProject*, wxString> ProjectEnvvarMap;
-
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 class EnvVars : public cbPlugin
@@ -91,6 +89,8 @@ private:
 
   /// issues a warning if an activated project has a reference to an envvar set that does not exist
   void     EnvvarSetWarning(const wxString& envvar_set);
+
+  typedef std::map<cbProject*, wxString> ProjectEnvvarMap;
 
   int              m_EnvVarHookID; //!< project loader hook ID
   ProjectEnvvarMap m_ProjectSets;  //!< preferred envvar sets for all projects
