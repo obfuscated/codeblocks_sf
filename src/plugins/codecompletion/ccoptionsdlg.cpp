@@ -225,9 +225,9 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/max_parsers"),                   (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
 
     // Page "C / C++ parser (adv.)"
-    cfg->Write(_T("/header_ext"), (bool) XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
+    cfg->Write(_T("/header_ext"),        XRCCTRL(*this, "txtCCFileExtHeader", wxTextCtrl)->GetValue());
     cfg->Write(_T("/empty_ext"),  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
-    cfg->Write(_T("/source_ext"), (bool) XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
+    cfg->Write(_T("/source_ext"),        XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
 
     // Page "Symbol browser"
     cfg->Write(_T("/use_symbols_browser"),      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
