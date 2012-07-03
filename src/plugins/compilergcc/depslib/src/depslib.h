@@ -22,10 +22,10 @@ extern "C" {
 /* This structure is returned by depsGetStats() */
 struct depsStats
 {
-	int scanned; /* the number of files scanned for #include */
-	int cache_used; /* This many files were not scanned for #include because
+	long scanned; /* the number of files scanned for #include */
+	long cache_used; /* This many files were not scanned for #include because
 					   up-to-date entries in the cache were found */
-	int cache_updated; /* This many files had entries in the cache updated */
+	long cache_updated; /* This many files had entries in the cache updated */
 };
 
 typedef struct _depsRef *depsRef;

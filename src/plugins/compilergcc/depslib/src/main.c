@@ -151,7 +151,7 @@ return 0;
     }
 
     depsGetStats(&stats); depsOK();
-    printf("scanned %d files for #include, cache used %d, cache updated %d\n",
+    printf("scanned %ld files for #include, cache used %ld, cache updated %ld\n",
         stats.scanned, stats.cache_used, stats.cache_updated);
 
     depsDone(); depsOK();
