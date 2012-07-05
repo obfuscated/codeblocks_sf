@@ -3,6 +3,9 @@
  * http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
+#ifndef ANNOYINGDIALOG_H
+#define ANNOYINGDIALOG_H
+
 #include "settings.h"
 #include "scrollingdialog.h"
 #include <wx/string.h>
@@ -42,3 +45,5 @@ class DLLIMPORT AnnoyingDialog : public wxScrollingDialog
         int defRet;
         DECLARE_EVENT_TABLE()
 };
+
+#endif // ANNOYINGDIALOG_H

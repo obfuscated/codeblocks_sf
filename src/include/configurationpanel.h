@@ -57,17 +57,17 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
 /// @brief A simple dialog that wraps a cbConfigurationPanel.
 class DLLIMPORT cbConfigurationDialog : public wxScrollingDialog
 {
-	public:
-		cbConfigurationDialog(wxWindow* parent, int id, const wxString& title);
-		void AttachConfigurationPanel(cbConfigurationPanel* panel);
-		~cbConfigurationDialog();
+    public:
+        cbConfigurationDialog(wxWindow* parent, int id, const wxString& title);
+        void AttachConfigurationPanel(cbConfigurationPanel* panel);
+        ~cbConfigurationDialog();
 
-		void EndModal(int retCode);
-	protected:
+        void EndModal(int retCode);
+    protected:
         cbConfigurationPanel* m_pPanel;
         wxButton* m_pOK;
         wxButton* m_pCancel;
-	private:
+    private:
 
 };
 
