@@ -381,7 +381,7 @@
 																			</object>
 																			<object class="sizeritem">
 																				<object class="wxListBox" name="lstIncludeDirs">
-																					<style>wxLB_MULTIPLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+																					<style>wxLB_EXTENDED|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
 																				</object>
 																				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																				<border>8</border>
@@ -431,7 +431,7 @@
 																			</object>
 																			<object class="sizeritem">
 																				<object class="wxListBox" name="lstLibDirs">
-																					<style>wxLB_MULTIPLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+																					<style>wxLB_EXTENDED|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
 																				</object>
 																				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																				<border>8</border>
@@ -481,7 +481,7 @@
 																			</object>
 																			<object class="sizeritem">
 																				<object class="wxListBox" name="lstResDirs">
-																					<style>wxLB_MULTIPLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+																					<style>wxLB_EXTENDED|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
 																				</object>
 																				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																				<border>8</border>
