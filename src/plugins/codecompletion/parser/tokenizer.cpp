@@ -913,7 +913,7 @@ bool Tokenizer::SkipComment()
         }
         else             // C++ style comment
         {
-            TRACE(_T("SkipComment() : Need to call SkipToEOL() here at line = %d"), m_LineNumber);
+            TRACE(_T("SkipComment() : Need to call SkipToInlineCommentEnd() here at line = %d"), m_LineNumber);
             SkipToInlineCommentEnd();
             break;
         }
