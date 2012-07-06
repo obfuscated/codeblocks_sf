@@ -1,73 +1,79 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
-  <object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
-    <title>Compilers auto-detection</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxFlexGridSizer">
-          <object class="sizeritem">
-            <object class="wxListCtrl" name="lcCompilers">
-              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
-            </object>
-            <flag>wxGROW</flag>
-            <minsize>460,240</minsize>
-          </object>
-          <cols>2</cols>
-          <vgap>8</vgap>
-          <hgap>8</hgap>
-          <growablecols>0</growablecols>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnDefault">
-              <label>Set as default</label>
-            </object>
-          </object>
-          <growablerows>0</growablerows>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Default compiler:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText" name="lblDefCompiler">
-              <label>xxx</label>
-            </object>
-            <option>1</option>
-            <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label></label>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-  </object>
+	<object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
+		<title>Compilers auto-detection</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT2">
+					<label>Note: After autor-detection, at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and change the compiler&apos;s master path later in the compiler options.&#x0A;Select you favourite default compiler here:</label>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<vgap>8</vgap>
+					<hgap>8</hgap>
+					<growablecols>0</growablecols>
+					<growablerows>0</growablerows>
+					<object class="sizeritem">
+						<object class="wxListCtrl" name="lcCompilers">
+							<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<minsize>460,240</minsize>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnDefault">
+							<label>Set as default</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Current default compiler:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="lblDefCompiler">
+							<label>xxx</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
