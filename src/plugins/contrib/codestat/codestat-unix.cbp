@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="0" />
 			</Target>
 		</Build>
@@ -49,6 +50,9 @@
 		<Unit filename="codestatexec.cpp" />
 		<Unit filename="codestatexec.h" />
 		<Unit filename="language_def.h" />
+		<Unit filename="resources/config_dialog.xrc" />
+		<Unit filename="resources/main_dialog.xrc" />
+		<Unit filename="resources/manifest.xml" />
 		<Extensions>
 			<code_completion />
 			<envvars />
