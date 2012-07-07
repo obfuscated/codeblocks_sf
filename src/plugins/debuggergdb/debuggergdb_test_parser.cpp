@@ -407,40 +407,107 @@ TEST(StructStaticOptimized_children_name)
     CHECK_EQUAL(wxT("mValue"), getName(*w->GetChild(1)));
 }
 
-/*
-This one is highly unparsable :(
+
 TEST(StructSummaryComplex)
 {
     GDBWatch::Pointer w(new GDBWatch(wxT("s")));
-    CHECK(ParseGDBWatchValue(w, wxT("{a= test2, test3 ={b = 5}}")));
-    CHECK_EQUAL(wxT("s= {a=test2, test3 {b=5}"), *w);
+    CHECK(ParseGDBWatchValue(w, wxT("{a= test2, test3 = {b = 5}}")));
+    CHECK_EQUAL(wxT("s= {a=test2, test3 {b=5}}"), *w);
 }
-*/
 
 TEST(PythonSTLVector)
 {
     GDBWatch::Pointer w(new GDBWatch(wxT("s")));
     CHECK(ParseGDBWatchValue(w, wxT("std::vector of length 4, capacity 4 = {0, 1, 2, 3}")));
-    CHECK_EQUAL(wxT("s=length 4, capacity 4 {[0]=0,[1]=1,[2]=2,[3]=3}"), *w);
+    CHECK_EQUAL(wxT("s=std::vector of length 4, capacity 4 {[0]=0,[1]=1,[2]=2,[3]=3}"), *w);
 }
 
 TEST(PythonSTLMap)
 {
     GDBWatch::Pointer w(new GDBWatch(wxT("s")));
     CHECK(ParseGDBWatchValue(w, wxT("std::map with 20 elements = {[\"BEGIN_EVENT_TABLE\"] = \"-END_EVENT_TABLE\"}")));
-    CHECK_EQUAL(wxT("s=20 elements {[\"BEGIN_EVENT_TABLE\"]=\"-END_EVENT_TABLE\"}"), *w);
+    CHECK_EQUAL(wxT("s=std::map with 20 elements {[\"BEGIN_EVENT_TABLE\"]=\"-END_EVENT_TABLE\"}"), *w);
 }
-/*
+
 TEST(PythonSTLMapVector)
 {
     GDBWatch::Pointer w(new GDBWatch(wxT("s")));
     CHECK(ParseGDBWatchValue(w, wxT("std::map with 3 elements = {")
-                                wxT("[\"test1\"] = std::vector of length 4, capacity 4 = {0, 1, 2, 3}, ")
-                                wxT("[\"test2\"] = std::vector of length 4, capacity 4 = {0, 1, 2, 3}, ")
-                                wxT("[\"test3\"] = std::vector of length 4, capacity 4 = {0, 1, 2, 3}}")));
-    CHECK_EQUAL(wxT("s=3 elements {}"), *w);
+                                wxT("[\"test1\"] = std::vector of length 1, capacity 2 = {0, 1, 2, 3}, ")
+                                wxT("[\"test2\"] = std::vector of length 2, capacity 3 = {0, 1, 2, 3}, ")
+                                wxT("[\"test3\"] = std::vector of length 3, capacity 4 = {0, 1, 2, 3}}")));
+    CHECK_EQUAL(wxT("s=std::map with 3 elements {[\"test1\"]=std::vector of length 1, capacity 2 {[0]=0,[1]=1,[2]=2,[3]=3},")
+                wxT("[\"test2\"]=std::vector of length 2, capacity 3 {[0]=0,[1]=1,[2]=2,[3]=3},")
+                wxT("[\"test3\"]=std::vector of length 3, capacity 4 {[0]=0,[1]=1,[2]=2,[3]=3}}"), *w);
 }
-*/
+
+TEST(PythonVector)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  a = vector(1,2,3) = {x = 1,y = 2,z = 3},\n")
+                                wxT("  b = vector(4,5,6) = {x = 4,y = 5,z = 6}\n}")));
+	CHECK_EQUAL(wxT("s= {a=vector(1,2,3) {x=1,y=2,z=3},b=vector(4,5,6) {x=4,y=5,z=6}}"), *w);
+}
+
+TEST(PythonVector2)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  a = vector(1,2,3) = {x = 1,y = 2,z = 3},\n")
+                                wxT("  b = {x = 4,y = 5,z = 6}\n}")));
+	CHECK_EQUAL(wxT("s= {a=vector(1,2,3) {x=1,y=2,z=3},b= {x=4,y=5,z=6}}"), *w);
+}
+
+TEST(PythonVector_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{\n  a = vector(1,2,3) = {x = 1,y = 2,z = 3},\n  b = vector(4,5,6) = {x = 4,y = 5,z = 6}\n}"));
+    CHECK_EQUAL(2, w->GetChildCount());
+}
+
+TEST(PythonNegativeInt)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{a = -134225496, b = 12}")));
+    CHECK_EQUAL(wxT("s= {a=-134225496,b=12}"), *w);
+}
+
+TEST(PythonSTLVectorEmptyInStruct)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{vec = vector size 0, capacity 0}")));
+    CHECK_EQUAL(wxT("s= {vec=vector size 0, capacity 0}"), *w);
+}
+
+TEST(PythonSTLVectorEmptyInStruct2)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{vec1 = vector size 0, capacity 0, vec2 = vector size 0, capacity 1}")));
+    CHECK_EQUAL(wxT("s= {vec1=vector size 0, capacity 0,vec2=vector size 0, capacity 1}"), *w);
+}
+
+TEST(PythonSTLVectorEmptyInStruct2_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{vec1 = empty, vector, vec2 = empty, vector}"));
+    CHECK_EQUAL(2, w->GetChildCount());
+}
+
+TEST(PythonSTLVectorEmptyInStruct3)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{vec1 = vector size 0, capacity 0, vec2 = vector size 0, capacity 1,")
+                                wxT("vec3 = vector size 0, capacity 2}")));
+    CHECK_EQUAL(wxT("s= {vec1=vector size 0, capacity 0,vec2=vector size 0, capacity 1,")
+                wxT("vec3=vector size 0, capacity 2}"), *w);
+}
+
+TEST(PythonSTLVectorEmptyInStruct3_count)
+{
+    GDBWatch::Pointer w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{vec1 = vector size 0, capacity 0, vec2 = vector size 0, capacity 1,")
+                          wxT("vec3 = vector size 0, capacity 2}"));
+    CHECK_EQUAL(3, w->GetChildCount());
+}
 
 } // SUITE(GDBWatchParser)
 
