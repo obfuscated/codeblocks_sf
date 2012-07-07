@@ -17,8 +17,6 @@
 				<Compiler>
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
 				</Compiler>
 			</Target>
 			<Target title="no_pch">

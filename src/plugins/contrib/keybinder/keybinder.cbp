@@ -27,8 +27,6 @@
 					<Add option="-DWXUSINGDLL" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />

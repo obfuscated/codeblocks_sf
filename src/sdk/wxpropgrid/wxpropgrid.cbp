@@ -37,7 +37,7 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DWIN32" />
-			<Add option="-DWXMAKINGDLL_PROPGRID" />
+			<Add option="-DEXPORT_LIB" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#wx)\include" />
 			<Add directory="$(#wx)\contrib\include" />

@@ -129,7 +129,6 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXMAKINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="wxFlatNotebook\include" />

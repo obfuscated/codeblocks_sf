@@ -68,7 +68,6 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add option="-DwxPG_USE_WXMODULE=1" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 				</Compiler>

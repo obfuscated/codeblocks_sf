@@ -14,8 +14,8 @@
 
 // -----------------------------------------------------------------------
 
-
-class WXDLLIMPEXP_PG wxArrayEditorDialog;
+// C::B patch: Change to WXDLLIMPEXP_PG_FWD instead of WXDLLIMPEXP_PG
+class WXDLLIMPEXP_PG_FWD wxArrayEditorDialog;
 
 // -----------------------------------------------------------------------
 

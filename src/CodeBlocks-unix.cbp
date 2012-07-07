@@ -116,8 +116,7 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-DWXMAKINGLIB_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
+					<Add option="-DEXPORT_LIB" />
 					<Add option="-DwxPG_SUPPORT_TOOLTIPS" />
 					<Add directory="sdk/wxpropgrid/include" />
 					<Add directory="include" />
@@ -409,8 +408,6 @@
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
 					<Add directory="include" />
 					<Add directory="include/mozilla_chardet" />
 				</Compiler>

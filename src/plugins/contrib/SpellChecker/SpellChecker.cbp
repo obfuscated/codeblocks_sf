@@ -78,8 +78,6 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add option="-DWXMAKINGDLL_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
 					<Add directory="hunspell\src" />
 					<Add directory="wxspellchecker\include" />
 					<Add directory="..\..\..\include" />

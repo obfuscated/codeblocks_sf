@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-pipe" />
@@ -34,7 +35,7 @@
 					<Add directory="$(#wx.include)" />
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="$(#wx)\contrib\include" />
-					<Add directory="$(#boost)" />
+					<Add directory="$(#boost.include)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,-enable-auto-import" />
@@ -47,9 +48,9 @@
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
 				</ExtraCommands>
 				<Environment>
+					<Variable name="WX_CFG" value="" />
 					<Variable name="WX_SUFFIX" value="u" />
 					<Variable name="WX_VERSION" value="28" />
-					<Variable name="WX_CFG" value="" />
 				</Environment>
 			</Target>
 		</Build>

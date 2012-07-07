@@ -20,7 +20,6 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-DWXMAKINGLIB_PROPGRID" />
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="../../../sdk/wxpropgrid/include" />

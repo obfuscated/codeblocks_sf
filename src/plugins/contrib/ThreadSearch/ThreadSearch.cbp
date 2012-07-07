@@ -48,8 +48,6 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
-			<Add option="-DWXMAKINGDLL_PROPGRID" />
-			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />

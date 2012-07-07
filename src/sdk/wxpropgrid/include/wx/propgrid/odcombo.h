@@ -30,6 +30,24 @@
 class WXDLLEXPORT wxTextCtrl;
 class WXDLLEXPORT wxButton;
 
+/*
+DLLIMPORT code based on CodeBlocks settings.h file.
+*/
+#if defined(__WXMSW__)
+    #ifndef DLLIMPORT
+        #if EXPORT_LIB
+            #define DLLIMPORT __declspec (dllexport)
+        #else
+            #define DLLIMPORT __declspec (dllimport)
+        #endif // EXPORT_LIB
+    #endif // DLLIMPORT
+#else
+    #define DLLIMPORT
+#endif
+
+#define WXDLLEXPORT_PGODC DLLIMPORT
+
+/*
 #ifdef WXMAKINGLIB_PROPGRID
     #define WXDLLEXPORT_PGODC
 #elif defined(WXMAKINGDLL_PROPGRID)
@@ -39,6 +57,7 @@ class WXDLLEXPORT wxButton;
 #else // not making nor using DLL
     #define WXDLLEXPORT_PGODC
 #endif
+*/
 
 #define wxODComboBoxNameStr	wxT("wxOwnerDrawnComboBox")
 
