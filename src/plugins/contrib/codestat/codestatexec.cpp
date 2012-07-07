@@ -143,9 +143,9 @@ void CodeStatExecDlg::OnIdle(wxIdleEvent& evt)
     evt.Skip();
 }
 
-void CodeStatExecDlg::ParseProject(int index)
+ProjectCodeStats CodeStatExecDlg::ParseProject(int index, ParsedFileNamesSet *parsedFileNames)
 {
-    ProjectCodeStats& stat = m_cache[index];
+    ProjectCodeStats stat;
     cbProject* project = Manager::Get()->GetProjectManager()->GetProjects()->Item(index - 1);
     stat.numFiles = project->GetFilesCount();
 
@@ -153,6 +153,15 @@ void CodeStatExecDlg::ParseProject(int index)
     {
         ProjectFile* pf = project->GetFile(i);
         wxFileName filename(pf->file.GetFullPath(), wxPATH_DOS);
+
+        if (parsedFileNames)
+        {
+            if (parsedFileNames->find(filename.GetFullPath())==parsedFileNames->end())
+                parsedFileNames->insert(filename.GetFullPath());
+            else
+                continue;
+        }
+
         if (!filename.FileExists())
             ++stat.numFilesNotFound;
         else
@@ -183,6 +192,7 @@ void CodeStatExecDlg::ParseProject(int index)
             UpdateProgress();
         }
     }
+    return stat;
 }
 
 void CodeStatExecDlg::DoParseProject(int index)
@@ -195,7 +205,7 @@ void CodeStatExecDlg::DoParseProject(int index)
     cbProject* project = Manager::Get()->GetProjectManager()->GetProjects()->Item(index - 1);
     m_currentFile = 0;
     m_numFiles = project->GetFilesCount();
-    ParseProject(index);
+    m_cache[index]=ParseProject(index, nullptr);
 
     m_progress->Update(100);
     delete m_progress;
@@ -205,8 +215,8 @@ void CodeStatExecDlg::DoParseProject(int index)
 
 void CodeStatExecDlg::DoParseWorkspace()
 {
-    ProjectCodeStats& stat_ws = m_cache[0];
-    if (stat_ws.isParsed)
+    ProjectCodeStats& statWS = m_cache[0];
+    if (statWS.isParsed)
         return;
 
     m_progress = new wxProgressDialog(_("Code Statistics plugin"),_("Parsing workspace files. Please wait..."));
@@ -218,26 +228,23 @@ void CodeStatExecDlg::DoParseWorkspace()
     for (size_t i = 0, count = projects->GetCount(); i < count; ++i)
         m_numFiles += projects->Item(i)->GetFilesCount();
 
+    ParsedFileNamesSet parsedFileNames;
+
     for (size_t i = 1, count = projects->GetCount(); i < count + 1; ++i)
     {
-        if (!m_cache[i].isParsed)
-        {
-            ParseProject(i);
-            m_cache[i].isParsed = true;
-        }
+        ProjectCodeStats statProject = ParseProject(i, &parsedFileNames);
 
-        ProjectCodeStats& stat_prj = m_cache[i];
-        stat_ws.numFiles           += stat_prj.numFiles;
-        stat_ws.numFilesNotFound   += stat_prj.numFilesNotFound;
-        stat_ws.numSkippedFiles    += stat_prj.numSkippedFiles;
-        stat_ws.codeLines          += stat_prj.codeLines;
-        stat_ws.emptyLines         += stat_prj.emptyLines;
-        stat_ws.commentLines       += stat_prj.commentLines;
-        stat_ws.codeAndCommentLines += stat_prj.codeAndCommentLines;
-        stat_ws.totalLines         += stat_prj.totalLines ;
+        statWS.numFiles           += statProject.numFiles;
+        statWS.numFilesNotFound   += statProject.numFilesNotFound;
+        statWS.numSkippedFiles    += statProject.numSkippedFiles;
+        statWS.codeLines          += statProject.codeLines;
+        statWS.emptyLines         += statProject.emptyLines;
+        statWS.commentLines       += statProject.commentLines;
+        statWS.codeAndCommentLines += statProject.codeAndCommentLines;
+        statWS.totalLines         += statProject.totalLines ;
     }
 
-    stat_ws.isParsed = true;
+    statWS.isParsed = true;
 
     m_progress->Update(100);
     delete m_progress;

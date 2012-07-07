@@ -53,6 +53,8 @@ struct ProjectCodeStats
 class CodeStatExecDlg : public wxScrollingDialog
 {
 public:
+    typedef std::set<wxString> ParsedFileNamesSet;
+public:
     CodeStatExecDlg(wxWindow* parent);
     virtual ~CodeStatExecDlg();
     int Execute(LanguageDef languages[NB_FILETYPES_MAX], int numLanguages);
@@ -60,7 +62,7 @@ private:
     void EndModal(int retCode);
     void OnSelectProject(wxCommandEvent& evt);
     void OnIdle(wxIdleEvent& evt);
-    void ParseProject(int index);
+    ProjectCodeStats ParseProject(int index, ParsedFileNamesSet *parsedFileNames);
     void DoParseProject(int index);
     void DoParseWorkspace();
     void UpdateProgress();
