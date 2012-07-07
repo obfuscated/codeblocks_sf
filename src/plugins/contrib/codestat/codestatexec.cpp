@@ -6,25 +6,29 @@
  * Copyright: (c) Zlika
  * License:   GPL
  **************************************************************/
+#include "codestatexec.h"
+
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/xrc/xmlres.h>
-#include "cbproject.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "globals.h"
-#include "manager.h"
-#include "logmanager.h"
-#include "projectfile.h"
-#include "projectmanager.h"
+#   include <wx/choice.h>
+#   include <wx/gauge.h>
+#   include <wx/intl.h>
+#   include <wx/sizer.h>
+#   include <wx/stattext.h>
+#   include <wx/string.h>
+#   include <wx/xrc/xmlres.h>
+#   include "cbproject.h"
+#   include "configmanager.h"
+#   include "editormanager.h"
+#   include "globals.h"
+#   include "manager.h"
+#   include "logmanager.h"
+#   include "projectfile.h"
+#   include "projectmanager.h"
 #endif
-#include <wx/gauge.h>
+
 #include <wx/progdlg.h>
 #include <wx/textfile.h>
-#include "codestatexec.h"
 
 void CountLines(ProjectCodeStats& stat, const wxFileName &filename, const LanguageDef &language);
 

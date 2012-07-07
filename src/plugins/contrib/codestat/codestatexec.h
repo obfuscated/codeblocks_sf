@@ -10,6 +10,7 @@
 #ifndef CODESTATEXEC_H
 #define CODESTATEXEC_H
 
+#include <set>
 #include <vector>
 
 #include <wx/filename.h>
@@ -19,6 +20,7 @@
 
 class wxWindow;
 class wxProgressDialog;
+class wxChoice;
 
 struct ProjectCodeStats
 {
