@@ -14,3 +14,4 @@ autorevision.h
 autorevision
 cb_console_runner
 *.bmarks
+Makefile.in
