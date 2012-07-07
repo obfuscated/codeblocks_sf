@@ -68,7 +68,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                     list->SetItem(li);
                 }
             }
-            else // The compiler is *probably*Ü invalid, but at least a master-path is set
+            else // The compiler is *probably* invalid, but at least a master-path is set
                 list->SetItem(idx, 1, _("Invalid"));
 
             // Inspect deeper and probably try to auto-detect invalid compilers:
