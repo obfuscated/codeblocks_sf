@@ -10,28 +10,71 @@
 #ifndef CODESTATEXEC_H
 #define CODESTATEXEC_H
 
-#include "scrollingdialog.h"
+#include <vector>
+
 #include <wx/filename.h>
+
+#include "scrollingdialog.h"
 #include "language_def.h"
 
 class wxWindow;
+class wxProgressDialog;
+
+struct ProjectCodeStats
+{
+    ProjectCodeStats() :
+        numFiles(0),
+        numFilesNotFound(0),
+        numSkippedFiles(0),
+        codeLines(0),
+        emptyLines(0),
+        commentLines(0),
+        codeAndCommentLines(0),
+        totalLines(0),
+        isParsed(false)
+    {}
+
+    long numFiles;
+    long numFilesNotFound;
+    long numSkippedFiles;
+
+    long codeLines;
+    long emptyLines;
+    long commentLines;
+    long codeAndCommentLines;
+    long totalLines;
+
+    bool isParsed;
+};
 
 /** This class computes the statistics of the project's files and display them.
  *  @see CodeStat, CodeStatConfigDlg, CodeStatExecDlg, LanguageDef
  */
 class CodeStatExecDlg : public wxScrollingDialog
 {
-	public:
-		CodeStatExecDlg(wxWindow* parent) : parent(parent){}
-		virtual ~CodeStatExecDlg();
-		int Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_languages);
-	private:
-      void EndModal(int retCode);
-      void CountLines(wxFileName filename, LanguageDef &language,
-                      long int &code_lines, long int &codecomments_lines,
-                      long int &comment_lines, long int &empty_lines, long int &total_lines);
-      void AnalyseLine(LanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment);
-      wxWindow* parent;
+public:
+    CodeStatExecDlg(wxWindow* parent);
+    virtual ~CodeStatExecDlg();
+    int Execute(LanguageDef languages[NB_FILETYPES_MAX], int numLanguages);
+private:
+    void EndModal(int retCode);
+    void OnSelectProject(wxCommandEvent& evt);
+    void OnIdle(wxIdleEvent& evt);
+    void ParseProject(int index);
+    void DoParseProject(int index);
+    void DoParseWorkspace();
+    void UpdateProgress();
+    void ShowResults(int index);
+
+private:
+    wxChoice* m_choice;
+    wxProgressDialog* m_progress;
+    std::vector<ProjectCodeStats> m_cache;
+    LanguageDef* m_languages;
+    int m_numLanguages;
+    int m_numFiles;
+    int m_currentFile;
+    bool m_changed;
 };
 
 #endif // CODESTATEXEC_H
