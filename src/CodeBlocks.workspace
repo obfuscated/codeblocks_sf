@@ -16,7 +16,6 @@
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames.cbp" />
 		<Project filename="plugins/contrib/cb_koders/cb_koders.cbp" />
-		<Project filename="plugins/contrib/cbGcov/cbGcov.cbp" />
 		<Project filename="plugins/contrib/Cccc/Cccc.cbp" />
 		<Project filename="plugins/contrib/codesnippets/codesnippets.cbp" />
 		<Project filename="plugins/contrib/codestat/codestat.cbp" />
