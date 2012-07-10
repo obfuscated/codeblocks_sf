@@ -572,6 +572,8 @@
 #define wxSCI_C_STRINGRAW 20
 #define wxSCI_C_TRIPLEVERBATIM 21
 #define wxSCI_C_HASHQUOTEDSTRING 22
+#define wxSTC_C_PREPROCESSORCOMMENT 23
+
 /* C::B begin */
 #define wxSCI_C_WXSMITH 99
 /* C::B end */
@@ -4020,7 +4022,7 @@ public:
     void SetCharsDefault();
 
     // Get currently selected item position in the auto-completion list
-    int AutoCompGetCurrent();
+    int AutoCompGetCurrent() const;
 
     // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
     void AutoCSetCaseInsensitiveBehaviour(int behaviour);

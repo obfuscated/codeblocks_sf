@@ -663,7 +663,8 @@ PRectangle Editor::RectangleFromRange(int start, int end) {
 	int maxLine = cs.DisplayFromDoc(lineDocMax) + cs.GetHeight(lineDocMax) - 1;
 	PRectangle rcClient = GetTextRectangle();
 	PRectangle rc;
-	rc.left = vs.fixedColumnWidth;
+	const int leftTextOverlap = ((xOffset == 0) && (vs.leftMarginWidth > 0)) ? 1 : 0;
+	rc.left = vs.fixedColumnWidth - leftTextOverlap;
 	rc.top = (minLine - topLine) * vs.lineHeight;
 	if (rc.top < 0)
 		rc.top = 0;
@@ -3240,7 +3241,7 @@ void Editor::DrawBlockCaret(Surface *surface, ViewStyle &vsDraw, LineLayout *ll,
 	// glyph / combining character. If so we'll need to draw that too.
 	int offsetFirstChar = offset;
 	int offsetLastChar = offset + (posAfter - posCaret);
-	while ((offsetLastChar - numCharsToDraw) >= lineStart) {
+	while ((posBefore > 0) && ((offsetLastChar - numCharsToDraw) >= lineStart)) {
 		if ((ll->positions[offsetLastChar] - ll->positions[offsetLastChar - numCharsToDraw]) > 0) {
 			// The char does not share horizontal space
 			break;
@@ -3254,6 +3255,8 @@ void Editor::DrawBlockCaret(Surface *surface, ViewStyle &vsDraw, LineLayout *ll,
 
 	// See if the next character shares horizontal space, if so we'll
 	// need to draw that too.
+	if (offsetFirstChar < 0)
+		offsetFirstChar = 0;
 	numCharsToDraw = offsetLastChar - offsetFirstChar;
 	while ((offsetLastChar < ll->LineStart(subLine + 1)) && (offsetLastChar <= ll->numCharsInLine)) {
 		// Update posAfter to point to the 2nd next char, this is where
@@ -3513,8 +3516,12 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 	}
 	//Platform::DebugPrintf("start display %d, offset = %d\n", pdoc->Length(), xOffset);
 
+	// Allow text at start of line to overlap 1 pixel into the margin as this displays
+	// serifs and italic stems for aliased text.
+	const int leftTextOverlap = ((xOffset == 0) && (vs.leftMarginWidth > 0)) ? 1 : 0;
+
 	// Do the painting
-	if (rcArea.right > vs.fixedColumnWidth) {
+	if (rcArea.right > vs.fixedColumnWidth - leftTextOverlap) {
 
 		Surface *surface = surfaceWindow;
 		if (bufferedDraw) {
@@ -3538,7 +3545,9 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 		// Remove selection margin from drawing area so text will not be drawn
 		// on it in unbuffered mode.
 		if (!bufferedDraw) {
-			surfaceWindow->SetClip(rcTextArea);
+			PRectangle rcClipText = rcTextArea;
+			rcClipText.left -= leftTextOverlap;
+			surfaceWindow->SetClip(rcClipText);
 		}
 
 		// Loop on visible lines
@@ -3589,6 +3598,13 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 				ll->SetBracesHighlight(rangeLine, braces, static_cast<char>(bracesMatchStyle),
 				        highlightGuideColumn * vs.spaceWidth, bracesIgnoreStyle);
 
+				if (leftTextOverlap && bufferedDraw) {
+					PRectangle rcSpacer = rcLine;
+					rcSpacer.right = rcSpacer.left;
+					rcSpacer.left -= 1;
+					surface->FillRectangle(rcSpacer, vs.styles[STYLE_DEFAULT].back);
+				}
+
 				// Draw the line
 				DrawLine(surface, vs, lineDoc, visibleLine, xStart, rcLine, ll, subLine);
 				//durPaint += et.Duration(true);
@@ -3622,8 +3638,8 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 				DrawCarets(surface, vs, lineDoc, xStart, rcLine, ll, subLine);
 
 				if (bufferedDraw) {
-					Point from(vs.fixedColumnWidth, 0);
-					PRectangle rcCopyArea(vs.fixedColumnWidth, yposScreen,
+					Point from(vs.fixedColumnWidth-leftTextOverlap, 0);
+					PRectangle rcCopyArea(vs.fixedColumnWidth-leftTextOverlap, yposScreen,
 					        rcClient.right - vs.rightMarginWidth, yposScreen + vs.lineHeight);
 					surfaceWindow->Copy(rcCopyArea, from, *pixmapLine);
 				}
@@ -6978,10 +6994,10 @@ void Editor::EnsureLineVisible(int lineDoc, bool enforcePolicy) {
 }
 
 int Editor::GetTag(char *tagValue, int tagNumber) {
-	char name[3] = "\\?";
 	const char *text = 0;
 	int length = 0;
 	if ((tagNumber >= 1) && (tagNumber <= 9)) {
+		char name[3] = "\\?";
 		name[1] = static_cast<char>(tagNumber + '0');
 		length = 2;
 		text = pdoc->SubstituteByPosition(name, &length);
