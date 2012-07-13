@@ -102,7 +102,7 @@ bool ParserTestApp::OnInit()
 
     wxLog::SetActiveTarget(new wxLogStderr());
 
-    Frame* frame = new Frame(_T("test.h"));
+    Frame* frame = new Frame(_T("cc_test/test.h"));
     frame->Center();
     frame->Show();
     frame->Start();
