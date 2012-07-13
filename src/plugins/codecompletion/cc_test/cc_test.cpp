@@ -18,7 +18,7 @@
 #endif
 #include <wx/thread.h>
 
-#include "parsertest.h"
+#include "cc_test.h"
 
 #include "token.h"
 #include "parserthread.h"
@@ -26,10 +26,10 @@
 #include "tokenizer.h"
 #include "parser.h"
 
-wxCriticalSection         g_ParserCritical;
-std::auto_ptr<ParserTest> ParserTest::s_Inst;
+wxCriticalSection     g_ParserCritical;
+std::auto_ptr<CCTest> CCTest::s_Inst;
 
-void ParserTest::Init()
+void CCTest::Init()
 {
     // for GCC
     Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                     _T("std"));
@@ -61,10 +61,10 @@ void ParserTest::Init()
 
 TokensTree* ParserBase::GetTokensTree()
 {
-    return ParserTest::Get()->GetTokensTree();
+    return CCTest::Get()->GetTokensTree();
 }
 
-bool ParserTest::Start(const wxString& file)
+bool CCTest::Start(const wxString& file)
 {
     if (!m_pClient)     m_pClient     = new ParserBase();
     if (!m_pTokensTree) m_pTokensTree = new TokensTree();
@@ -101,13 +101,13 @@ bool ParserTest::Start(const wxString& file)
     return success;
 }
 
-void ParserTest::Clear()
+void CCTest::Clear()
 {
     if (!m_pTokensTree) m_pTokensTree = new TokensTree();
     m_pTokensTree->clear();
 }
 
-void ParserTest::PrintTree()
+void CCTest::PrintTree()
 {
     if (!m_pTokensTree) return;
 
@@ -124,7 +124,7 @@ void ParserTest::PrintTree()
     }
 }
 
-void ParserTest::PrintTokenTree(Token* token)
+void CCTest::PrintTokenTree(Token* token)
 {
     if (!token || !m_pTokensTree) return;
 
@@ -145,7 +145,7 @@ void ParserTest::PrintTokenTree(Token* token)
     }
 }
 
-void ParserTest::PrintList()
+void CCTest::PrintList()
 {
     if (!m_pTokensTree) return;
 
@@ -165,7 +165,7 @@ void ParserTest::PrintList()
     }
 }
 
-wxString ParserTest::SerializeTree()
+wxString CCTest::SerializeTree()
 {
   if (!m_pTokensTree) return wxEmptyString;
 

@@ -6,7 +6,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "parsertest.h"
+#include "cc_test.h"
 
 //(*Headers(Frame)
 #include <wx/sizer.h>

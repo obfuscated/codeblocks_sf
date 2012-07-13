@@ -25,6 +25,8 @@
 #include "token.h"
 #include "tokenstree.h"
 
+#include "nativeparser_test.h"
+
 //(*InternalHeaders(Frame)
 #include <wx/settings.h>
 #include <wx/intl.h>
@@ -41,12 +43,12 @@
 const long Frame::wxID_TOKEN = wxNewId();
 //*)
 
-namespace ParserTestAppGlobal
+namespace CCTestAppGlobal
 {
     extern wxArrayString s_includeDirs;
     extern wxArrayString s_fileQueue;
     extern wxArrayString s_filesParsed;
-}
+}// CCTestAppGlobal
 
 int idCCLogger   = wxNewId();
 int idCCAddToken = wxNewId();
@@ -93,7 +95,7 @@ Frame::Frame(const wxString& main_file) :
     wxMenu* mnu_file;
     wxBoxSizer* bsz_main;
 
-    Create(0, wxID_ANY, _("Parser Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
+    Create(0, wxID_ANY, _("CC Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
     bsz_main = new wxBoxSizer(wxVERTICAL);
     bsz_misc = new wxBoxSizer(wxVERTICAL);
@@ -179,7 +181,7 @@ Frame::Frame(const wxString& main_file) :
     Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
     //*)
 
-    ParserTest::Get()->Init();
+    CCTest::Get()->Init();
 
     // TODO: Make this base folders configurable
     wxString wx_base (_T("C:\\Devel\\wxWidgets\\"));
@@ -209,9 +211,9 @@ Frame::~Frame()
 
 void Frame::Start()
 {
-    ParserTestAppGlobal::s_includeDirs.Clear();
-    ParserTestAppGlobal::s_fileQueue.Clear();
-    ParserTestAppGlobal::s_filesParsed.Clear();
+    CCTestAppGlobal::s_includeDirs.Clear();
+    CCTestAppGlobal::s_fileQueue.Clear();
+    CCTestAppGlobal::s_filesParsed.Clear();
 
     // Obtain all include directories
     wxStringTokenizer tkz_inc(m_IncludeCtrl->GetValue(), _T("\r\n"));
@@ -219,7 +221,7 @@ void Frame::Start()
     {
         wxString include = tkz_inc.GetNextToken().Trim(true).Trim(false);
         if (!include.IsEmpty())
-            ParserTestAppGlobal::s_includeDirs.Add(include);
+            CCTestAppGlobal::s_includeDirs.Add(include);
     }
 
     if (m_DoHeadersCtrl->IsChecked())
@@ -243,25 +245,25 @@ void Frame::Start()
 
             // Find the header files in include path's as provided
             // (practically the same as ParserBase::FindFileInIncludeDirs())
-            for (size_t i=0; i<ParserTestAppGlobal::s_includeDirs.GetCount(); ++i)
+            for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); ++i)
             {
                 // Normalize the path (as in C::B's "NormalizePath()")
                 wxFileName f_header(header);
-                wxString   base_path(ParserTestAppGlobal::s_includeDirs[i]);
+                wxString   base_path(CCTestAppGlobal::s_includeDirs[i]);
                 if (f_header.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base_path))
                 {
                     wxString this_header = f_header.GetFullPath();
                     if ( ::wxFileExists(this_header) )
-                        ParserTestAppGlobal::s_fileQueue.Add(this_header);
+                        CCTestAppGlobal::s_fileQueue.Add(this_header);
                 }
             }
         }
     }
 
     if (!m_MainFile.IsEmpty() && wxFileExists(m_MainFile))
-        ParserTestAppGlobal::s_fileQueue.Add(m_MainFile);
+        CCTestAppGlobal::s_fileQueue.Add(m_MainFile);
 
-    if (ParserTestAppGlobal::s_fileQueue.IsEmpty())
+    if (CCTestAppGlobal::s_fileQueue.IsEmpty())
     {
         wxMessageBox(wxT("Main file not found. Nothing to do."),
                      _("Information"), wxOK | wxICON_INFORMATION, this);
@@ -277,14 +279,14 @@ void Frame::Start()
 
     m_LogCount = 0;
     m_LogCtrl->Clear();
-    ParserTest::Get()->Clear(); // initial clearance
+    CCTest::Get()->Clear(); // initial clearance
 
     AppendToLog(_T("--------------M-a-i-n--L-o-g--------------\r\n\r\n"));
 
-    while (!ParserTestAppGlobal::s_fileQueue.IsEmpty())
+    while (!CCTestAppGlobal::s_fileQueue.IsEmpty())
     {
-      wxString file = ParserTestAppGlobal::s_fileQueue.Item(0);
-      ParserTestAppGlobal::s_fileQueue.Remove(file);
+      wxString file = CCTestAppGlobal::s_fileQueue.Item(0);
+      CCTestAppGlobal::s_fileQueue.Remove(file);
       if (file.IsEmpty()) continue;
 
       AppendToLog(_T("-----------I-n-t-e-r-i-m--L-o-g-----------"));
@@ -293,32 +295,69 @@ void Frame::Start()
       m_ProgDlg->Update(-1, m_CurrentFile);
       m_StatuBar->SetStatusText(m_CurrentFile);
 
-      ParserTest::Get()->Start(m_CurrentFile);
-      ParserTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
+      // This is the core parse stage
+      CCTest::Get()->Start(m_CurrentFile);
+      CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
 
     m_ProgDlg->Update(-1, wxT("Creating tree log..."));
     AppendToLog(_T("--------------T-r-e-e--L-o-g--------------\r\n"));
-    ParserTest::Get()->PrintTree();
+    CCTest::Get()->PrintTree();
 
     m_ProgDlg->Update(-1, wxT("Creating list log..."));
     AppendToLog(_T("--------------L-i-s-t--L-o-g--------------\r\n"));
-    ParserTest::Get()->PrintList();
+    CCTest::Get()->PrintList();
 
     if (m_DoTreeCtrl->IsChecked())
     {
       m_ProgDlg->Update(-1, wxT("Serializing tree..."));
 
       Freeze();
-      m_TreeCtrl->SetValue( ParserTest::Get()->SerializeTree() );
+      m_TreeCtrl->SetValue( CCTest::Get()->SerializeTree() );
       Thaw();
     }
+
+    // Here we are going to test the expression solving algorithm
+
+    NativeParserTest nativeParserTest;
+
+    wxString exp = _T("obj.m_Member1");
+
+    TokenIdxSet searchScope;
+    searchScope.insert(-1);
+
+    TokenIdxSet result;
+
+    TokensTree *tree = CCTest::Get()->GetTokensTree();
+
+    nativeParserTest.TestExpression(exp,
+                                    tree,
+                                    searchScope,
+                                    result );
+
+    wxLogMessage(_T("Result have %d matches"), result.size());
+
+
+    for (TokenIdxSet::iterator it=result.begin(); it!=result.end(); ++it)
+    {
+        Token* token = tree->at(*it);
+        if (token)
+        {
+            wxString log;
+            log << token->GetTokenKindString() << _T(" ")
+                << token->DisplayName()        << _T("\t[")
+                << token->m_Line               << _T(",")
+                << token->m_ImplLine           << _T("]");
+            CCLogger::Get()->Log(log);
+        }
+    }
+
 
     if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 
     Show();
 
-    TokensTree* tt = ParserTest::Get()->GetTokensTree();
+    TokensTree* tt = CCTest::Get()->GetTokensTree();
     if (tt)
         AppendToLog((wxString::Format(_("The parser contains %d tokens, found in %d files."),
                                       tt->size(), tt->m_FilesMap.size())));
@@ -385,11 +424,11 @@ void Frame::OnMenuFindSelected(wxCommandEvent& event)
 
 void Frame::OnMenuTokenSelected(wxCommandEvent& event)
 {
-    ParserBase* pb = ParserTest::Get()->GetParser();
-    TokensTree* tt = ParserTest::Get()->GetTokensTree();
+    ParserBase* pb = CCTest::Get()->GetParser();
+    TokensTree* tt = CCTest::Get()->GetTokensTree();
     if (!pb || !tt) return;
 
-    wxTextEntryDialog dlg(this, _T("Enter name of token to debug:"), _T("ParserTest"));
+    wxTextEntryDialog dlg(this, _T("Enter name of token to debug:"), _T("CCTest"));
     if (dlg.ShowModal()==wxID_OK)
     {
         wxString target = dlg.GetValue().Trim(true).Trim(false);
@@ -408,7 +447,7 @@ void Frame::OnMenuTokenSelected(wxCommandEvent& event)
             }
         }
         if (!found)
-            wxMessageBox(_("Token not found."), _("ParserTest"),
+            wxMessageBox(_("Token not found."), _("CCTest"),
                          wxOK | wxICON_INFORMATION, this);
     }
 }

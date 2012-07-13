@@ -8,7 +8,7 @@
 
 #include <sdk.h>
 #include "parser.h"
-#include "parsertest.h"
+#include "cc_test.h"
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -21,12 +21,12 @@
 #include <wx/filename.h>
 #include <wx/string.h>
 
-namespace ParserTestAppGlobal
+namespace CCTestAppGlobal
 {
     extern wxArrayString s_includeDirs;
     extern wxArrayString s_fileQueue;
     extern wxArrayString s_filesParsed;
-}
+}// CCTestAppGlobal
 
 ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
 {
@@ -111,9 +111,9 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
         return full_file_name;
 
     // second, try taking include directories into account
-    for (size_t i=0; i<ParserTestAppGlobal::s_includeDirs.GetCount(); i++)
+    for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); i++)
     {
-        wxString include_dir = ParserTestAppGlobal::s_includeDirs.Item(i);
+        wxString include_dir = CCTestAppGlobal::s_includeDirs.Item(i);
         CCLogger::Get()->Log(wxT("ParserDummy::ParserBase::GetFullFileName() : Checking existence of ")+include_dir);
         if ( ::wxDirExists(include_dir) )
         {
@@ -139,9 +139,9 @@ bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
         return false;
 
     // avoid parsing the same file(s) over and over again
-    for (size_t i=0; i<ParserTestAppGlobal::s_filesParsed.GetCount(); i++)
+    for (size_t i=0; i<CCTestAppGlobal::s_filesParsed.GetCount(); i++)
     {
-        if (filename.IsSameAs(ParserTestAppGlobal::s_filesParsed.Item(i), false))
+        if (filename.IsSameAs(CCTestAppGlobal::s_filesParsed.Item(i), false))
         {
             log.Printf(wxT("ParserDummy::ParserBase::ParseFile() : File '%s' has already been parsed"),
                        filename.wx_str());
@@ -151,12 +151,12 @@ bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
     }
 
     // check, if the file is already queued
-    if (ParserTestAppGlobal::s_fileQueue.Index(filename)==wxNOT_FOUND)
+    if (CCTestAppGlobal::s_fileQueue.Index(filename)==wxNOT_FOUND)
     {
         log.Printf(wxT("ParserDummy::ParserBase::ParseFile() : Appending new file to parse to queue: '%s'"),
            filename.wx_str());
         CCLogger::Get()->Log(log);
-        ParserTestAppGlobal::s_fileQueue.Add(filename);
+        CCTestAppGlobal::s_fileQueue.Add(filename);
     }
     else
     {

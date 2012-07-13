@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxFrame" name="Frame">
-		<title>Parser Testing</title>
+		<title>CC Testing</title>
 		<centered>1</centered>
 		<bg>wxSYS_COLOUR_MENUBAR</bg>
 		<parent_arg>0</parent_arg>

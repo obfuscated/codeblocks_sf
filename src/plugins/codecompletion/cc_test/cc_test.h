@@ -3,21 +3,21 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef PARSERTEST_H
-#define PARSERTEST_H
+#ifndef CCTEST_H
+#define CCTEST_H
 
 class Token;
 
 #include "parser.h"
 #include "tokenstree.h"
 
-class ParserTest
+class CCTest
 {
 public:
-    static ParserTest* Get()
+    static CCTest* Get()
     {
         if (!s_Inst.get())
-            s_Inst.reset(new ParserTest);
+            s_Inst.reset(new CCTest);
         return s_Inst.get();
     }
 
@@ -32,17 +32,17 @@ public:
     wxString SerializeTree();
 
 protected:
-    ParserTest() : m_pClient(NULL), m_pTokensTree(NULL) { ; }
-    virtual ~ParserTest()
+    CCTest() : m_pClient(NULL), m_pTokensTree(NULL) { ; }
+    virtual ~CCTest()
     {
         if (m_pTokensTree) { delete m_pTokensTree; m_pTokensTree = NULL; }
         if (m_pClient)     { delete m_pClient;     m_pClient     = NULL; }
     }
 
-    ParserTest(const ParserTest&) { ; }
-    ParserTest& operator=(const ParserTest&) { return *this; }
-    friend class std::auto_ptr<ParserTest>;
-    static std::auto_ptr<ParserTest> s_Inst;
+    CCTest(const CCTest&) { ; }
+    CCTest& operator=(const CCTest&) { return *this; }
+    friend class std::auto_ptr<CCTest>;
+    static std::auto_ptr<CCTest> s_Inst;
 
 private:
     void PrintTokenTree(Token* token);
@@ -51,4 +51,4 @@ private:
     TokensTree* m_pTokensTree;
 };
 
-#endif // PARSERTEST_H
+#endif // CCTEST_H

@@ -74,13 +74,15 @@
 
 #include "frame.h"
 
-namespace ParserTestAppGlobal
+namespace CCTestAppGlobal
 {
     // global variable to ease handling of include directories and header files
     wxArrayString s_includeDirs;
     wxArrayString s_fileQueue;
     wxArrayString s_filesParsed;
-}// ParserTestAppGlobal
+}// CCTestAppGlobal
+
+bool s_DebugSmartSense = true;
 
 class ParserTestApp : public wxApp
 {
@@ -97,6 +99,8 @@ bool ParserTestApp::OnInit()
     bool wxsOK = true;
     wxInitAllImageHandlers();
     //*)
+
+    wxLog::SetActiveTarget(new wxLogStderr());
 
     Frame* frame = new Frame(_T("test.h"));
     frame->Center();

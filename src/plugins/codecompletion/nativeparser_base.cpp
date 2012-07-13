@@ -12,7 +12,6 @@
 #ifndef CB_PRECOMP
 #endif
 
-#include <cbstyledtextctrl.h>
 #include "nativeparser_base.h"
 
 #include "parser/cclogger.h"
@@ -27,23 +26,44 @@
     #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 2
 #endif
 
-#if CC_NATIVEPARSERBASE_DEBUG_OUTPUT == 1
+#ifdef CC_PARSER_TEST
+//    #define ADDTOKEN(format, args...) \
+//            CCLogger::Get()->AddToken(F(format, ##args))
+//    #define TRACE(format, args...) \
+//            CCLogger::Get()->DebugLog(F(format, ##args))
+//    #define TRACE2(format, args...) \
+//            CCLogger::Get()->DebugLog(F(format, ##args))
+
+    #define ADDTOKEN(format, args...) \
+            wxLogMessage(F(format, ##args))
     #define TRACE(format, args...) \
-        CCLogger::Get()->DebugLog(F(format, ##args))
-    #define TRACE2(format, args...)
-#elif CC_NATIVEPARSERBASE_DEBUG_OUTPUT == 2
-    #define TRACE(format, args...)                                              \
-        do                                                                      \
-        {                                                                       \
-            if (g_EnableDebugTrace)                                             \
-                CCLogger::Get()->DebugLog(F(format, ##args));   \
-        }                                                                       \
-        while (false)
+            wxLogMessage(F(format, ##args))
     #define TRACE2(format, args...) \
-        CCLogger::Get()->DebugLog(F(format, ##args))
+            wxLogMessage(F(format, ##args))
 #else
-    #define TRACE(format, args...)
-    #define TRACE2(format, args...)
+    #if CC_NATIVEPARSERBASE_DEBUG_OUTPUT == 1
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
+        #define TRACE(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
+        #define TRACE2(format, args...)
+    #elif CC_NATIVEPARSERBASE_DEBUG_OUTPUT == 2
+        #define ADDTOKEN(format, args...) \
+                CCLogger::Get()->AddToken(F(format, ##args))
+        #define TRACE(format, args...)                                              \
+            do                                                                      \
+            {                                                                       \
+                if (g_EnableDebugTrace)                                             \
+                    CCLogger::Get()->DebugLog(F(format, ##args));                   \
+            }                                                                       \
+            while (false)
+        #define TRACE2(format, args...) \
+            CCLogger::Get()->DebugLog(F(format, ##args))
+    #else
+        #define ADDTOKEN(format, args...)
+        #define TRACE(format, args...)
+        #define TRACE2(format, args...)
+    #endif
 #endif
 
 NativeParserBase::NativeParserBase()

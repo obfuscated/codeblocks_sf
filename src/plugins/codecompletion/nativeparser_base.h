@@ -15,8 +15,6 @@
 #include "parser/token.h"
 #include "parser/tokenstree.h"
 
-class cbStyledTextCtrl;
-
 /** debug only variable, used to print the AI match related log message*/
 extern bool s_DebugSmartSense;
 
