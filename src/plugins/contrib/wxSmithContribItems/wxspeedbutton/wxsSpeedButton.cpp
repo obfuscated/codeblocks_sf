@@ -229,30 +229,27 @@ wxString    s;
 // of the static char array defined by the file
 
 wxString    wxsSpeedButton::GetXPMName(wxsBitmapData &inData) {
-int         i,n;
-wxString    s,t,v;
-wxFileInputStream input( inData.FileName );
-wxTextInputStream txt( input );
+    wxFileInputStream input( inData.FileName );
+    wxTextInputStream txt( input );
 
 
 // this will be our return value
 
-    v = _T("");
+    wxString v = _T("");
 
 // read until EOF, keeping the last data name we find
 
-    i = 0;
     while (! input.Eof()) {
 
 // next line
 
-        s = txt.ReadLine();
+        wxString s = txt.ReadLine();
 //std::cout << "line " << i++ << ") " << s.mb_str() << std::endl;
 
 // the "static" keyword is optional under some compilers
 
         s.Trim(false);
-        n = s.Find(_T("static"));
+        int n = s.Find(_T("static"));
         if (n == 0) s.erase(0, 6);
 
 // but the "char" and "*" are required
