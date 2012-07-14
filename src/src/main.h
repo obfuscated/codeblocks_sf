@@ -58,7 +58,7 @@ class MainFrame : public wxFrame
 {
 	public:
         // needed for binding with SqPlus
-        MainFrame& operator=(const MainFrame& /*rhs*/) // prevent assignement operator
+        MainFrame& operator=(const MainFrame& /*rhs*/) // prevent assignment operator
         {
         	cbThrow(_T("Can't use MainFrame's operator="));
         	return *this;
@@ -165,6 +165,7 @@ class MainFrame : public wxFrame
         void OnEditLineTranspose(wxCommandEvent& event);
         void OnEditLineCopy(wxCommandEvent& event);
         void OnEditLinePaste(wxCommandEvent& event);
+        void OnEditLineMove(wxCommandEvent& event);
         void OnEditUpperCase(wxCommandEvent& event);
         void OnEditLowerCase(wxCommandEvent& event);
         void OnEditInsertNewLine(wxCommandEvent& event);

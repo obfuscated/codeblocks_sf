@@ -418,6 +418,16 @@
             <label>Paste</label>
             <help>Paste before current line</help>
           </object>
+          <object class="wxMenuItem" name="idEditLineUp">
+            <label>Move up</label>
+            <accel>Alt-UP</accel>
+            <help>Transpose current line(s) up</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLineDown">
+            <label>Move down</label>
+            <accel>Alt-DOWN</accel>
+            <help>Transpose current line(s) down</help>
+          </object>
         </object>
         <object class="wxMenu" name="idEditSpecialCommandsCase">
           <label>Case</label>
@@ -571,7 +581,7 @@
         <help>Search for text</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindInFiles">
-        <label>&amp;Find in files...</label>
+        <label>Find in fil&amp;es...</label>
         <bitmap>images\16x16\findf.png</bitmap>
         <accel>Ctrl-Shift-F</accel>
         <help>Search for text</help>
@@ -596,7 +606,7 @@
         <help>Find and replace text</help>
       </object>
       <object class="wxMenuItem" name="idSearchReplaceInFiles">
-        <label>&amp;Replace in files...</label>
+        <label>Replace in file&amp;s...</label>
         <bitmap>images\16x16\searchreplacef.png</bitmap>
         <accel>Ctrl-Shift-R</accel>
         <help>Find and replace text</help>

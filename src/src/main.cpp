@@ -226,6 +226,8 @@ int idEditLineDuplicate           = XRCID("idEditLineDuplicate");
 int idEditLineTranspose           = XRCID("idEditLineTranspose");
 int idEditLineCopy                = XRCID("idEditLineCopy");
 int idEditLinePaste               = XRCID("idEditLinePaste");
+int idEditLineUp                  = XRCID("idEditLineUp");
+int idEditLineDown                = XRCID("idEditLineDown");
 int idEditSpecialCommandsCase     = XRCID("idEditSpecialCommandsCase");
 int idEditUpperCase               = XRCID("idEditUpperCase");
 int idEditLowerCase               = XRCID("idEditLowerCase");
@@ -444,6 +446,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditLineTranspose,         MainFrame::OnEditLineTranspose)
     EVT_MENU(idEditLineCopy,              MainFrame::OnEditLineCopy)
     EVT_MENU(idEditLinePaste,             MainFrame::OnEditLinePaste)
+    EVT_MENU(idEditLineUp,                MainFrame::OnEditLineMove)
+    EVT_MENU(idEditLineDown,              MainFrame::OnEditLineMove)
     EVT_MENU(idEditUpperCase,             MainFrame::OnEditUpperCase)
     EVT_MENU(idEditLowerCase,             MainFrame::OnEditLowerCase)
     EVT_MENU(idEditInsertNewLine,         MainFrame::OnEditInsertNewLine)
@@ -901,10 +905,11 @@ void MainFrame::CreateMenubar()
     wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L;
     wxMenuItem *tmpitem=0L;
 
+    wxXmlResource* xml_res = wxXmlResource::Get();
     wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource *myres = wxXmlResource::Get();
-    myres->Load(resPath + _T("/resources.zip#zip:main_menu.xrc"));
-    mbar = myres->LoadMenuBar(_T("main_menu_bar"));
+    xml_res->Load(resPath + _T("/resources.zip#zip:main_menu.xrc"));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Loading menubar..."));
+    mbar = xml_res->LoadMenuBar(_T("main_menu_bar"));
     if (!mbar)
         mbar = new wxMenuBar(); // Some error happened.
     if (mbar)
@@ -1015,18 +1020,19 @@ void MainFrame::CreateMenubar()
 
 void MainFrame::CreateToolbars()
 {
-    wxXmlResource *myres = wxXmlResource::Get();
     if (m_pToolbar)
     {
         SetToolBar(0L);
         m_pToolbar = 0L;
     }
 
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxString xrcToolbarName = _T("main_toolbar");
+    wxString xrcToolbarName(_T("main_toolbar"));
     if (m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
-    myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
+
+    wxXmlResource* xml_res = wxXmlResource::Get();
+    wxString resPath = ConfigManager::GetDataFolder();
+    xml_res->Load(resPath + _T("/resources.zip#zip:") + xrcToolbarName + _T("*.xrc"));
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading toolbar..."));
 
     m_pToolbar = Manager::Get()->CreateEmptyToolbar();
@@ -3237,6 +3243,49 @@ void MainFrame::OnEditLinePaste(wxCommandEvent& /*event*/)
 
         ed->GetControl()->EndUndoAction();
     }
+}
+
+void MainFrame::OnEditLineMove(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    // TODO (mortenmacfly##): Exclude rectangle selection here or not? What behaviour the majority of users expect here???
+    cbStyledTextCtrl* ctrl = ed->GetControl();
+    if (!ctrl || /*ctrl->SelectionIsRectangle() ||*/ (ctrl->GetSelections() > 1))
+        return;
+
+    int startPos = ctrl->PositionFromLine(ctrl->LineFromPosition(ctrl->GetSelectionStart()));
+    int endPos   = ctrl->PositionFromLine(ctrl->LineFromPosition(ctrl->GetSelectionEnd()) + 1) - 1;
+    if (event.GetId() == idEditLineUp)
+    {
+        if (startPos < 2)
+            return;
+        ctrl->BeginUndoAction();
+        wxString line = ctrl->GetTextRange(ctrl->PositionFromLine(ctrl->LineFromPosition(startPos) - 1),
+                                           startPos);
+        ctrl->InsertText(endPos + 1, line);
+        ctrl->DeleteRange(startPos - line.Length(), line.Length());
+        startPos -= line.Length();
+        endPos   -= line.Length();
+        ctrl->EndUndoAction();
+    }
+    else
+    {
+        if (ctrl->LineFromPosition(ctrl->GetSelectionEnd()) == ctrl->GetLineCount())
+            return;
+        ctrl->BeginUndoAction();
+        wxString line = ctrl->GetTextRange(endPos + 1,
+                                           ctrl->PositionFromLine(ctrl->LineFromPosition(endPos + 1) + 1));
+        ctrl->DeleteRange(endPos + 1, line.Length());
+        ctrl->InsertText(startPos, line);
+        startPos += line.Length();
+        endPos   += line.Length();
+        ctrl->EndUndoAction();
+    }
+    ctrl->SetSelectionStart(startPos);
+    ctrl->SetSelectionEnd(endPos);
 }
 
 void MainFrame::OnEditUpperCase(wxCommandEvent& /*event*/)
