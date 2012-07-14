@@ -342,7 +342,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
   [                        Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets, ]
-  [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars, ]
+  [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
   [                        		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, spellchecker, symtab, ]
   [                        		     ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui ],
@@ -384,6 +384,9 @@ do
 		;;
 	dragscroll)
 		AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
+		;;
+	EditorConfig)
+		AM_CONDITIONAL([BUILD_EDITORCONFIG], [true])
 		;;
 	EditorTweaks)
 		AM_CONDITIONAL([BUILD_EDITORTWEAKS], [true])
@@ -492,6 +495,9 @@ do
 		;;
 	-dragscroll)
 		AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
+		;;
+	-EditorConfig)
+		AM_CONDITIONAL([BUILD_EDITORCONFIG], [false])
 		;;
 	-EditorTweaks)
 		AM_CONDITIONAL([BUILD_EDITORTWEAKS], [false])

@@ -11,6 +11,7 @@
 		<Project filename="plugins/contrib/Cscope/Cscope-unix.cbp" />
 		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks-unix.cbp" />
 		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig-unix.cbp" />
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks-unix.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />

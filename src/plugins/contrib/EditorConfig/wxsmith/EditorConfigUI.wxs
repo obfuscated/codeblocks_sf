@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="EditorConfigUI">
+		<id_arg>0</id_arg>
+		<object class="wxFlexGridSizer" variable="flsMain" member="no">
+			<cols>2</cols>
+			<rows>5</rows>
+			<growablecols>1</growablecols>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="ID_CHK_ACTIVE" variable="chkActive" member="yes">
+					<label>Activate for project</label>
+					<handler function="OnActiveClick" entry="EVT_CHECKBOX" />
+				</object>
+				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="spacer">
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblTab" member="no">
+					<label>Specify tab behaviour:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bszTab" member="no">
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHK_USE_TABS" variable="chkUseTabs" member="yes">
+							<label>Use tabs</label>
+							<enabled>0</enabled>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHK_TAB_INDENTS" variable="chkTabIndents" member="yes">
+							<label>Tab indents</label>
+							<checked>1</checked>
+							<enabled>0</enabled>
+						</object>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblTabWidth" member="no">
+					<label>Specify tab width:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxSpinCtrl" name="ID_SPN_TAB_WIDTH" variable="spnTabWidth" member="yes">
+					<value>4</value>
+					<max>10</max>
+					<enabled>0</enabled>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblIndent" member="no">
+					<label>Specify indent width:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxSpinCtrl" name="ID_SPN_INDENT" variable="spnIndent" member="yes">
+					<value>4</value>
+					<max>10</max>
+					<enabled>0</enabled>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="wxID_ANY" variable="lblEOLMode" member="no">
+					<label>Specify EOL mode:</label>
+				</object>
+				<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxChoice" name="ID_CHO_EOL_MODE" variable="choEOLMode" member="yes">
+					<content>
+						<item>CR/LF</item>
+						<item>CR</item>
+						<item>LF</item>
+					</content>
+					<selection>0</selection>
+					<enabled>0</enabled>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

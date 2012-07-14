@@ -408,6 +408,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/DoxyBlocks/images/Makefile
 	src/plugins/contrib/DoxyBlocks/images/16x16/Makefile
 	src/plugins/contrib/dragscroll/Makefile
+	src/plugins/contrib/EditorConfig/Makefile
 	src/plugins/contrib/EditorTweaks/Makefile
 	src/plugins/contrib/envvars/Makefile
 	src/plugins/contrib/FileManager/Makefile

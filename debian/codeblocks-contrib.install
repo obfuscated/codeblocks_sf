@@ -12,6 +12,7 @@ usr/lib/codeblocks/plugins/libcopystrings.so
 usr/lib/codeblocks/plugins/libCscope.so
 usr/lib/codeblocks/plugins/libDoxyBlocks.so
 usr/lib/codeblocks/plugins/libdragscroll.so
+usr/lib/codeblocks/plugins/libEditorConfig.so
 usr/lib/codeblocks/plugins/libEditorTweaks.so
 usr/lib/codeblocks/plugins/libenvvars.so
 usr/lib/codeblocks/plugins/libexporter.so

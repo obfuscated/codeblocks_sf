@@ -143,6 +143,7 @@ Description: contrib plugins for Code::Blocks IDE
     * Cscope
     * DoxyBlocks
     * DragScroll (enhances mouse operations)
+    * EditorConfig
     * EditorTweaks
     * Selection of small games for relaxing between coding sessions! (BYOGames)
     * Setting of environment variables
@@ -213,6 +214,7 @@ Description: Debugging libraries for the Code::Blocks contrib plugins
     * Cscope
     * DoxyBlocks
     * DragScroll (enhances mouse operations)
+    * EditorConfig
     * EditorTweaks
     * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF

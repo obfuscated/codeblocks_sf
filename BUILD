@@ -40,7 +40,7 @@ make install
 "all,-help" compiles all contrib plugins except the help plugin
 By default, no contrib plugins are compiled
 Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,
-		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,
+		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars,
 		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap,
 		     NassiShneiderman, profiler, regex, ReopenEditor, exporter, symtab, ThreadSearch,
 		     ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui

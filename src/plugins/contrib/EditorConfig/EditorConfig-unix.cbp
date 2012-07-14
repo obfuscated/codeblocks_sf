@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="EditorConfig" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/EditorConfig" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/EditorConfig" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="codeblocks" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`pkg-config --cflags codeblocks`" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-fPIC" />
+				</Compiler>
+				<Linker>
+					<Add option="`pkg-config --libs codeblocks`" />
+					<Add option="`wx-config --libs`" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel/share/CodeBlocks/EditorConfig.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Unit filename="EditorConfig.cpp" />
+		<Unit filename="EditorConfig.h" />
+		<Unit filename="EditorConfigCommon.cpp" />
+		<Unit filename="EditorConfigCommon.h" />
+		<Unit filename="EditorConfigUI.cpp" />
+		<Unit filename="EditorConfigUI.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/EditorConfigUI.wxs" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/EditorConfigUI.wxs" src="EditorConfigUI.cpp" hdr="EditorConfigUI.h" fwddecl="1" i18n="1" name="EditorConfigUI" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

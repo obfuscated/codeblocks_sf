@@ -139,6 +139,7 @@ This package extends Code::Blocks functionality a great deal with the included p
  * Cscope
  * DoxyBlocks
  * DragScroll (enhances mouse operations)
+ * EditorConfig
  * EditorTweaks
  * Selection of small games for relaxing between coding sessions! (BYOGames)
  * Setting of environment variables
@@ -308,6 +309,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{plugindir}/libCscope.so
 %{plugindir}/libDoxyBlocks.so
 %{plugindir}/libdragscroll.so
+%{plugindir}/libEditorConfig.so
 %{plugindir}/libEditorTweaks.so
 %{plugindir}/libenvvars.so
 %{plugindir}/libexporter.so
@@ -346,6 +348,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/Cscope.zip
 %{pkgdatadir}/DoxyBlocks.zip
 %{pkgdatadir}/dragscroll.zip
+%{pkgdatadir}/EditorConfig.zip
 %{pkgdatadir}/EditorTweaks.zip
 %{pkgdatadir}/envvars.zip
 %{pkgdatadir}/exporter.zip

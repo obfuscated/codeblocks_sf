@@ -28,6 +28,7 @@
 		<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin.cbp" />
 		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks.cbp" />
 		<Project filename="plugins/contrib/dragscroll/dragscroll.cbp" />
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig.cbp" />
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager.cbp" />
