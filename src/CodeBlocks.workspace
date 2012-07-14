@@ -2,7 +2,10 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace">
 		<Project filename="CodeBlocks.cbp" active="1" />
-		<Project filename="plugins/codecompletion/parser/parsertest.cbp" />
+		<Project filename="tools/cb_share_config/cb_share_config.cbp" />
+		<Project filename="tools/CbLauncher/CbLauncher.cbp" />
+		<Project filename="tools/Addr2LineUI/Addr2LineUI.cbp" />
+		<Project filename="plugins/codecompletion/cc_test.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems.cbp">
@@ -41,6 +44,7 @@
 		<Project filename="plugins/contrib/profiler/cbprofiler.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor.cbp" />
+		<Project filename="plugins/contrib/rndgen/rndgen.cbp" />
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab.cbp" />
@@ -48,8 +52,5 @@
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus.cbp" />
-		<Project filename="tools/Addr2LineUI/Addr2LineUI.cbp" />
-		<Project filename="tools/cb_share_config/cb_share_config.cbp" />
-		<Project filename="tools/CbLauncher/CbLauncher.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
