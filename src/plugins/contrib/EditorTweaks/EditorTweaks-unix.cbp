@@ -45,11 +45,16 @@
 		<Unit filename="EditorTweaksConfDlg.cpp" />
 		<Unit filename="EditorTweaksConfDlg.h" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="wxsmith/EditorTweaksConfDlg.wxs *.xrc" />
+		<Unit filename="wxsmith\EditorTweaksConfDlg.wxs" />
 		<Extensions>
 			<code_completion />
-			<debugger />
 			<envvars />
+			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/EditorTweaksConfDlg.wxs" src="EditorTweaksConfDlg.cpp" hdr="EditorTweaksConfDlg.h" xrc="EditorTweaksConfDlg.xrc" fwddecl="0" i18n="1" name="EditorTweaksConfDlg" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

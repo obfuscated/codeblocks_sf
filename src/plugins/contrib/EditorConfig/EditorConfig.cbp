@@ -64,7 +64,6 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxsmith\EditorConfigUI.wxs" />
 		<Extensions>
-			<envvars />
 			<code_completion />
 			<debugger />
 			<wxsmith version="1">

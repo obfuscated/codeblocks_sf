@@ -34,7 +34,7 @@
 			<Add directory="." />
 			<Add directory="cc_test" />
 			<Add directory="parser" />
-			<Add directory="../../../include" />
+			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

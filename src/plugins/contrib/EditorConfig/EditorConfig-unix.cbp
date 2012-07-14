@@ -7,21 +7,30 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/EditorConfig" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../devel" />
+				<Option output="../../../devel/share/codeblocks/plugins/libEditorConfig" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/EditorConfig" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="codeblocks" />
+				<Option parameters="-d -ni" />
+				<Option host_application="../../../devel/codeblocks" />
 				<Compiler>
+					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="`pkg-config --cflags codeblocks`" />
+					<Add option="-Ulinux" />
+					<Add option="-Uunix" />
 					<Add option="`wx-config --cflags`" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fexceptions" />
 					<Add option="-fPIC" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`pkg-config --libs codeblocks`" />
 					<Add option="`wx-config --libs`" />
+					<Add library="libcodeblocks.a" />
+					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel/share/CodeBlocks/EditorConfig.zip manifest.xml" />
@@ -41,7 +50,6 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxsmith/EditorConfigUI.wxs" />
 		<Extensions>
-			<envvars />
 			<code_completion />
 			<debugger />
 			<wxsmith version="1">
