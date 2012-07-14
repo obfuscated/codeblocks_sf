@@ -1,299 +1,130 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
-  <object class="wxScrollingDialog" name="dlgEditWatches">
-    <title>Edit debugger watches</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Watches:</label>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxListBox" name="lstWatches">
-                  <content/>
-                </object>
-                <option>1</option>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxBoxSizer">
-                  <orient>wxHORIZONTAL</orient>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnAdd">
-                      <label>&amp;Add</label>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnRemove">
-                      <label>&amp;Remove</label>
-                    </object>
-                    <flag>wxLEFT</flag>
-                    <border>8</border>
-                  </object>
-                </object>
-                <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <option>1</option>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Keyword:</label>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txtKeyword"/>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxBoxSizer">
-                  <orient>wxVERTICAL</orient>
-                  <object class="sizeritem">
-                    <object class="wxRadioBox" name="rbFormat">
-                      <label>Format</label>
-                      <content>
-                        <item>Undefined</item>
-                        <item>Decimal</item>
-                        <item>Unsigned</item>
-                        <item>Hexadecimal</item>
-                        <item>Binary</item>
-                        <item>Character</item>
-                        <item>Floating point</item>
-                      </content>
-                      <selection>0</selection>
-                      <dimension>2</dimension>
-                      <style>wxRA_SPECIFY_COLS</style>
-                    </object>
-                    <flag>wxGROW</flag>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxStaticBoxSizer">
-                      <label>Array</label>
-                      <orient>wxVERTICAL</orient>
-                      <object class="sizeritem">
-                        <object class="wxCheckBox" name="chkArray">
-                          <label>Watch as array</label>
-                        </object>
-                        <flag>wxTOP|wxBOTTOM|wxGROW</flag>
-                        <border>8</border>
-                      </object>
-                      <object class="sizeritem">
-                        <object class="wxFlexGridSizer">
-                          <object class="sizeritem">
-                            <object class="wxStaticText">
-                              <label>Start:</label>
-                            </object>
-                            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                          </object>
-                          <cols>2</cols>
-                          <rows>2</rows>
-                          <object class="sizeritem">
-                            <object class="wxSpinCtrl" name="spnArrStart">
-                              <value>0</value>
-                              <min>0</min>
-                              <max>32000</max>
-                            </object>
-                            <flag>wxGROW</flag>
-                          </object>
-                          <vgap>4</vgap>
-                          <hgap>4</hgap>
-                          <growablecols>1</growablecols>
-                          <object class="sizeritem">
-                            <object class="wxStaticText">
-                              <label>Count:</label>
-                            </object>
-                          </object>
-                          <object class="sizeritem">
-                            <object class="wxSpinCtrl" name="spnArrCount">
-                              <value>0</value>
-                              <min>0</min>
-                              <max>1000</max>
-                            </object>
-                            <flag>wxGROW</flag>
-                          </object>
-                        </object>
-                        <flag>wxGROW</flag>
-                      </object>
-                    </object>
-                    <flag>wxTOP|wxGROW</flag>
-                    <border>8</border>
-                  </object>
-                </object>
-                <flag>wxTOP|wxGROW</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <option>1</option>
-            <flag>wxLEFT|wxGROW</flag>
-            <border>8</border>
-          </object>
-          <orient>wxHORIZONTAL</orient>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
-  <object class="wxScrollingDialog" name="dlgEditWatch">
-    <title>Edit watch</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxVERTICAL</orient>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Keyword:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtKeyword"/>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxRadioBox" name="rbFormat">
-                  <label>Format</label>
-                  <content>
-                    <item>Undefined</item>
-                    <item>Decimal</item>
-                    <item>Unsigned</item>
-                    <item>Hexadecimal</item>
-                    <item>Binary</item>
-                    <item>Character</item>
-                  </content>
-                  <selection>0</selection>
-                  <dimension>2</dimension>
-                  <style>wxRA_SPECIFY_COLS</style>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxStaticBoxSizer">
-                  <label>Array</label>
-                  <orient>wxVERTICAL</orient>
-                  <object class="sizeritem">
-                    <object class="wxCheckBox" name="chkArray">
-                      <label>Watch as array</label>
-                    </object>
-                    <flag>wxTOP|wxBOTTOM|wxGROW</flag>
-                    <border>8</border>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxFlexGridSizer">
-                      <object class="sizeritem">
-                        <object class="wxStaticText">
-                          <label>Start:</label>
-                        </object>
-                        <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                      </object>
-                      <cols>2</cols>
-                      <rows>2</rows>
-                      <object class="sizeritem">
-                        <object class="wxSpinCtrl" name="spnArrStart">
-                          <value>0</value>
-                          <min>0</min>
-                          <max>32000</max>
-                        </object>
-                        <flag>wxGROW</flag>
-                      </object>
-                      <vgap>4</vgap>
-                      <hgap>4</hgap>
-                      <growablecols>1</growablecols>
-                      <object class="sizeritem">
-                        <object class="wxStaticText">
-                          <label>Count:</label>
-                        </object>
-                      </object>
-                      <object class="sizeritem">
-                        <object class="wxSpinCtrl" name="spnArrCount">
-                          <value>0</value>
-                          <min>0</min>
-                          <max>1000</max>
-                        </object>
-                        <flag>wxGROW</flag>
-                      </object>
-                    </object>
-                    <flag>wxGROW</flag>
-                  </object>
-                </object>
-                <flag>wxLEFT|wxGROW</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <flag>wxTOP|wxGROW</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgEditWatch">
+		<title>Edit watch</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Keyword:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtKeyword" />
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxRadioBox" name="rbFormat">
+									<label>Format</label>
+									<content>
+										<item>Undefined</item>
+										<item>Decimal</item>
+										<item>Unsigned</item>
+										<item>Hexadecimal</item>
+										<item>Binary</item>
+										<item>Character</item>
+									</content>
+									<dimension>2</dimension>
+									<style>wxRA_SPECIFY_COLS</style>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer">
+									<label>Array</label>
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="chkArray">
+											<label>Watch as array</label>
+										</object>
+										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>8</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxFlexGridSizer">
+											<cols>2</cols>
+											<rows>2</rows>
+											<vgap>4</vgap>
+											<hgap>4</hgap>
+											<growablecols>1</growablecols>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT2">
+													<label>Start:</label>
+												</object>
+												<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											</object>
+											<object class="sizeritem">
+												<object class="wxSpinCtrl" name="spnArrStart">
+													<value>0</value>
+													<max>32000</max>
+												</object>
+												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT3">
+													<label>Count:</label>
+												</object>
+												<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											</object>
+											<object class="sizeritem">
+												<object class="wxSpinCtrl" name="spnArrCount">
+													<value>0</value>
+													<max>1000</max>
+												</object>
+												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											</object>
+										</object>
+										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									</object>
+								</object>
+								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>8</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;OK</label>
+							<default>1</default>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label>&amp;Cancel</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
