@@ -26,24 +26,19 @@ bool NassiEditorPanel::ParseC(const wxString &str)
     const wxChar *buf = str.wc_str();
 
     //wxMessageBox(str, _T("parsing:"));
-    rule_t preprocessor   = comment_p( _T("#") );
-    rule_t cpp_comment    = comment_p( _T("//") );                      // C++ comment
-    rule_t c_comment      = comment_p( _T("/*"), _T("*/") );            // C comment
-    rule_t cstr           = confix_p(_T('"'), *c_escape_ch_p, _T('"')); // string
-    rule_t comment        = c_comment | cpp_comment;
+    rule_t preprocessor      = comment_p( _T("#") );
+    rule_t cpp_comment       = comment_p( _T("//") );                      // C++ comment
+    rule_t c_comment         = comment_p( _T("/*"), _T("*/") );            // C comment
+    rule_t cstr              = confix_p(_T('"'), *c_escape_ch_p, _T('"')); // string
+    rule_t comment           = c_comment | cpp_comment;
     rule_t comment_collected = comment[comment_collector(comment_str)];
-    rule_t parentheseshelper  = (
+    rule_t parentheseshelper = (
                 confix_p(ch_p(_T('(')),
                 *(comment_collected | cstr | parentheseshelper | anychar_p),
                 ch_p(_T(')')))  );
-    rule_t parentheses    = parentheseshelper[instr_collector(source_str)];
-
-    rule_t keywordend = (eps_p - (alnum_p | _T('_')));
-
-
-
-    rule_t spaces = *(space_p | comment_collected);
-
+    rule_t parentheses       = parentheseshelper[instr_collector(source_str)];
+    rule_t keywordend        = (eps_p - (alnum_p | _T('_')));
+    rule_t spaces            = *(space_p | comment_collected);
     rule_t instruction;
     rule_t break_instr, continue_instr, return_instr, block, if_instr, for_instr, while_instr, dowhile_instr;
     rule_t switch_instr, switch_head, switch_body, switch_case, other_instr;
@@ -95,7 +90,6 @@ bool NassiEditorPanel::ParseC(const wxString &str)
                        spaces >>
                        ch_p(_T(':'))[instr_collector(source_str)]));
 
-
     rule_t special_w = (str_p(_T("break"))   |
                         str_p(_T("continue"))|
                         str_p(_T("return"))  |
@@ -106,7 +100,6 @@ bool NassiEditorPanel::ParseC(const wxString &str)
                         str_p(_T("switch"))  |
                         str_p(_T("case"))    |
                         str_p(_T("default")) ) >> keywordend;
-
 
     other_instr    = ( preprocessor |
                        (*
@@ -121,7 +114,6 @@ bool NassiEditorPanel::ParseC(const wxString &str)
                           ))
                           >> ch_p(_T(';')) )
                       )[instr_collector(source_str)];
-
 
     instruction =
         spaces >>
@@ -164,8 +156,4 @@ bool NassiEditorPanel::ParseC(const wxString &str)
         prc->Submit( cmd );
         return true;
     }
-
 }
-
-
-

@@ -1580,7 +1580,6 @@ void ScbEditor::DoFoldBlockFromLine(int line, int fold)
     cbStyledTextCtrl* ctrl = GetControl();
     ctrl->Colourise(0, -1); // the *most* important part!
     int i, parent, maxLine, level, UnfoldUpto = line;
-    bool FoldedInside = false;
 
     parent = ctrl->GetFoldParent(line);
     level = ctrl->GetFoldLevel(parent);
@@ -1592,10 +1591,8 @@ void ScbEditor::DoFoldBlockFromLine(int line, int fold)
         do
         {
             if (!ctrl->GetFoldExpanded(parent))
-            {
-                FoldedInside = true;
                 UnfoldUpto = parent;
-            }
+
             if (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))
                 break;
             parent = ctrl->GetFoldParent(parent);

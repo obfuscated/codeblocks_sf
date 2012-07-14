@@ -176,7 +176,6 @@ void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
     }
 
     wxArrayTreeItemIds selections;
-    unsigned int num = GetSelections(selections);
     // Don't care if no selection has been made
     if ( GetSelections(selections)<1 )
     {

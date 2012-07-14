@@ -354,7 +354,7 @@ void ProjectFileOptionsDlg::FillGeneralProperties()
             XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), empty_lines));
             XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_T("%ld"), code_lines + codecomments_lines));
             XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_T("%ld"), comment_lines));
-            XRCCTRL(*this, "staticEmptyLines", wxStaticText)->GetContainingSizer()->Layout();
+            XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->GetContainingSizer()->Layout();
         }
         wxFile file(m_FileName.GetFullPath());
         if (file.IsOpened())

@@ -518,10 +518,8 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
     // stop dynamic menu merges
     EnableMerge(false);
 
-    bool modified = false;
     dlg->m_p->ApplyChanges();
 
-        modified = true;
         *m_pKeyProfArr = dlg->m_p->GetProfiles();
     // don't delete "dlg" variable; CodeBlocks will destroy it
 
@@ -658,8 +656,11 @@ void cbKeyBinder::OnSave(bool backitup)
     // Save the key profile(s) to a file
 
     // delete the key definition file (removes invalid menuitem id's)
-    bool done = false;
-    done = ::wxRemoveFile(m_sKeyFilename);
+    #ifdef LOGGING
+      bool done = false;
+      done =
+    #endif
+    ::wxRemoveFile(m_sKeyFilename);
     #if LOGGING
       if (done)
        LOGIT(_T("cbKB:File %s deleted."),m_sKeyFilename.GetData());
@@ -683,10 +684,15 @@ void cbKeyBinder::OnSave(bool backitup)
               m_pKeyProfArr->GetCount(), total) );
 
         // copy the .ini file to a .ini.bak file
-        done = false;
+        #ifdef LOGGING
+          done = false;
+        #endif
         if ( backitup && ::wxFileExists(m_sKeyFilename) )
         {
-            done = ::wxCopyFile(m_sKeyFilename, m_sKeyFilename+_T(".bak"));
+            #ifdef LOGGING
+              done =
+            #endif
+            ::wxCopyFile(m_sKeyFilename, m_sKeyFilename+_T(".bak"));
             #if LOGGING
               if ( done )
                 LOGIT(_T("cbKB:File %s copied to .bak"),m_sKeyFilename.GetData());
@@ -1005,13 +1011,13 @@ void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
     {
         wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
         cbEditor* ed = 0;
-        cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
-        cbStyledTextCtrl* pLeftSplitWin = 0;
+        //cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
+        //cbStyledTextCtrl* pLeftSplitWin = 0;
         cbStyledTextCtrl* pRightSplitWin = 0;
         ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (ed)
-        {   p_cbStyledTextCtrl = ed->GetControl();
-            pLeftSplitWin = ed->GetLeftSplitViewControl();
+        {   //p_cbStyledTextCtrl = ed->GetControl();
+            //pLeftSplitWin = ed->GetLeftSplitViewControl();
             pRightSplitWin = ed->GetRightSplitViewControl();
             //Has this window been split?
             //**This is a temporary hack until some cbEvents are defined**

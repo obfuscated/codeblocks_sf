@@ -96,7 +96,8 @@ void IncrementalSearch::OnAttach()
     // (see: does not need) this plugin...
     m_pEditor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    mbar->Enable(idIncSearchFocus, m_pEditor && m_pEditor->GetControl());
+    if (mbar->FindItem(idIncSearchFocus)) // if BuildMenu is called afterwards this may not exist yet
+        mbar->Enable(idIncSearchFocus, m_pEditor && m_pEditor->GetControl());
 
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
