@@ -1729,6 +1729,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
             case crAll:
                 replace = true;
                 confirm = false;
+                control->Freeze();
                 break;
             case crCancel:
                 stop = true;
@@ -1790,6 +1791,8 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
             }
         }
     }
+    if (control->IsFrozen())
+        control->Thaw();
     control->EndUndoAction();
     wxString msg;
     if (foundcount == 0)
