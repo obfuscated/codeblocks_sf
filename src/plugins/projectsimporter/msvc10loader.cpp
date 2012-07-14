@@ -112,12 +112,6 @@ bool MSVC10Loader::Open(const wxString& filename)
         return false;
     }
 
-    if (strcmp(root->Attribute("ProjectType"), "Visual C++") != 0)
-    {
-        pMsg->DebugLog(_("Project is not Visual C++..."));
-        return false;
-    }
-
     // initialisation of the project
     m_pProject->ClearAllProperties();
     m_pProject->SetModified(true);
@@ -149,8 +143,7 @@ bool MSVC10Loader::GetProjectGlobalsInfo(TiXmlElement* root)
     while (prop)
     {
         wxString sLabelName = cbC2U(prop->Attribute("Label"));
-        sLabelName = sLabelName.MakeUpper();
-        if (sLabelName == _T("GLOBALS"))
+        if (sLabelName.MakeUpper().IsSameAs(_T("GLOBALS")))
         {
             TiXmlElement* pGUID = prop->FirstChildElement("ProjectGuid");
             m_ProjectGUID = GetText(pGUID);
