@@ -10,27 +10,31 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "globals.h"
-    #include <wx/filename.h>
     #include <wx/file.h>
+    #include <wx/filename.h>
+    #include <wx/filesys.h>
     #include <wx/image.h>
     #include <wx/listctrl.h>
-    #include <wx/filesys.h>
+
     #include "cbexception.h"
-    #include "manager.h"
     #include "configmanager.h" // ReadBool
     #include "filemanager.h"
+    #include "globals.h"
+    #include "manager.h"
     #include "projectmanager.h"
 #endif
 
 #include "tinyxml/tinyxml.h"
-#include <wx/filefn.h>
-#include <wx/tokenzr.h>
+
 #include <wx/dirdlg.h>
-#include <wx/msgdlg.h>
+#include <wx/filefn.h>
 #include <wx/fontmap.h>
+#include <wx/msgdlg.h>
+#include <wx/tokenzr.h>
+
 #include <algorithm>
 #include <string>
+
 #include "filefilters.h"
 #include "tinyxml/tinywxuni.h"
 #include "filegroupsandmasks.h"

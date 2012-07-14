@@ -912,9 +912,14 @@ int CodeBlocksApp::BatchJob()
         tbIcon->RemoveIcon();
         delete tbIcon;
     }
-    if (m_pBatchBuildDialog)
+
+    if (m_pBatchBuildDialog->IsModal())
+        m_pBatchBuildDialog->EndModal(wxID_OK);
+    else
+    {
         m_pBatchBuildDialog->Destroy();
-    m_pBatchBuildDialog = 0;
+        m_pBatchBuildDialog = 0;
+    }
 
     return 0;
 }
@@ -939,7 +944,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         else
             msg << _("Batch build stopped with errors.\n");
         msg << wxString::Format(_("Process exited with status code %d."), m_BatchExitCode);
-        cbMessageBox(msg, appglobals::AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+        cbMessageBox(msg, appglobals::AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING, m_pBatchBuildDialog);
     }
     else
         wxBell();

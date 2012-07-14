@@ -12,7 +12,11 @@
 
 #include "cbauibook.h"
 
-static const int infopane_flags = wxAUI_NB_MIDDLE_CLICK_CLOSE | wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT;
+static const int infopane_flags = wxAUI_NB_MIDDLE_CLICK_CLOSE
+                                | wxAUI_NB_WINDOWLIST_BUTTON
+                                | wxAUI_NB_SCROLL_BUTTONS
+                                | wxAUI_NB_TAB_MOVE
+                                | wxAUI_NB_TAB_SPLIT;
 
 class wxWindow;
 class wxCommandEvent;
@@ -25,37 +29,37 @@ class InfoPane : public cbAuiNotebook
     struct Page
     {
         Page() : icon(0), window(0), logger(0), indexInNB(std::numeric_limits<int>::min()), eventID(0), islogger(0) {};
-        wxString title;
+        wxString  title;
         wxBitmap* icon;
         wxWindow* window;
-        Logger* logger;
-        int indexInNB; // used to be "visible" flag: invisible is <0, any other value means visible
-        int eventID;
-        bool islogger;
+        Logger*   logger;
+        int       indexInNB; // used to be "visible" flag: invisible is <0, any other value means visible
+        int       eventID;
+        bool      islogger;
     };
 
-    WX_DEFINE_ARRAY(Page *, wxArrayOfPage);
-
     typedef int (*CompareFunction)(Page**, Page**);
-    static int CompareIndexes(Page **p1, Page **p2);
-    void ReorderTabs(CompareFunction cmp_f);
-    wxBitmap defaultBitmap;
+    static int  CompareIndexes(Page **p1, Page **p2);
+    void        ReorderTabs(CompareFunction cmp_f);
 
+    wxBitmap m_DefaultBitmap;
 
-    wxArrayOfPage page;
+    WX_DEFINE_ARRAY(Page*, wxArrayOfPage);
+    wxArrayOfPage m_Pages;
 
     void Toggle(size_t index);
     void Hide(size_t i);
 
     void OnMenu(wxCommandEvent& event);
     void OnCopy(wxCommandEvent& event);
+    void OnWrapMode(wxCommandEvent& event);
     void OnClear(wxCommandEvent& event);
     void ContextMenu(wxContextMenuEvent& event);
     void OnTabContextMenu(wxAuiNotebookEvent& event);
     void OnCloseClicked(wxAuiNotebookEvent& event);
     void OnTabPosition(wxCommandEvent& event);
     void DoShowContextMenu();
-    int AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    int  AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
     bool InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0 , int index = -1);
 public:
 
@@ -78,7 +82,7 @@ public:
     int GetPageIndexByWindow(wxWindow* win);
     int GetCurrentPage(bool &is_logger);
 
-    Logger* GetLogger(int index);
+    Logger*   GetLogger(int index);
     wxWindow* GetWindow(int index);
 
     void UpdateEffectiveTabOrder(); // refreshes the tab effective order, needed, because tabs might have moved with drag and drop
@@ -91,7 +95,7 @@ public:
     *  AddLogger:
     *  Add the GUI control obtained by a logger's CreateControl() function.
     *  DeleteLogger:
-    *  Remove (delete) a tab and its logger. All log output directed to the corresponging log index
+    *  Remove (delete) a tab and its logger. All log output directed to the corresponding log index
     *  will be redirected to the null log thereafter.
     *  To prove that you are serious, you must know the logger belonging to the tab to delete.
     */

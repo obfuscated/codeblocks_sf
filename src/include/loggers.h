@@ -19,6 +19,12 @@ class wxListCtrl;
 // so that text will be readable in bright and dark colour schemes
 wxColour BlendTextColour(wxColour col);
 
+class DLLIMPORT NullLogger : public Logger
+{
+public:
+    virtual void Append(const wxString& /*msg*/, Logger::level /*lv*/){};
+};
+
 class DLLIMPORT StdoutLogger : public Logger
 {
 public:
@@ -82,18 +88,20 @@ class DLLIMPORT TextCtrlLogger : public Logger
 protected:
 
     wxTextCtrl* control;
-    bool fixed;
-    wxTextAttr style[num_levels];
+    bool        fixed;
+    wxTextAttr  style[num_levels];
 
 public:
     TextCtrlLogger(bool fixedPitchFont = false);
     ~TextCtrlLogger();
 
-    virtual void CopyContentsToClipboard(bool selectionOnly = false);
-    virtual void UpdateSettings();
-    virtual void Append(const wxString& msg, Logger::level lv = info);
-    virtual void Clear();
+    virtual void      CopyContentsToClipboard(bool selectionOnly = false);
+    virtual void      UpdateSettings();
+    virtual void      Append(const wxString& msg, Logger::level lv = info);
+    virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);
+    virtual bool      IsWrappableTextCtrl();
+    virtual void      ToggleWrapMode();
 };
 
 
@@ -107,10 +115,10 @@ class DLLIMPORT ListCtrlLogger : public Logger
 {
 protected:
 
-    wxListCtrl* control;
-    bool fixed;
+    wxListCtrl*   control;
+    bool          fixed;
     wxArrayString titles;
-    wxArrayInt widths;
+    wxArrayInt    widths;
 
     struct ListStyles
     {
@@ -125,14 +133,13 @@ public:
     ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
     ~ListCtrlLogger();
 
-    virtual void CopyContentsToClipboard(bool selectionOnly = false);
-    virtual void UpdateSettings();
-    virtual void Append(const wxString& msg, Logger::level lv = info);
-    virtual void Append(const wxArrayString& colValues, Logger::level lv = info);
-    virtual size_t GetItemsCount() const;
-    virtual void Clear();
+    virtual void      CopyContentsToClipboard(bool selectionOnly = false);
+    virtual void      UpdateSettings();
+    virtual void      Append(const wxString& msg, Logger::level lv = info);
+    virtual void      Append(const wxArrayString& colValues, Logger::level lv = info);
+    virtual size_t    GetItemsCount() const;
+    virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);
 };
-
 
 #endif // LOGGERS_H

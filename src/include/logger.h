@@ -24,7 +24,7 @@ public:
     *  The ubiquitous, standard log levels to use are:  info, warning, error, critical
     *
     *  info      - I'm telling you, but you probably won't bother reading anyway.
-    *  warning   - You should know about this. I'm telling you now, so you can's sue me later.
+    *  warning   - You should know about this. I'm telling you now, so you can't sue me later.
     *  error     - Something failed, but the world is not going to end.
     *  critical  - Something failed, and it hit you right in the eye. It really hurts, you have to do something.
     *
@@ -37,7 +37,6 @@ public:
     Logger() {};
     virtual ~Logger() {};
 
-
     /* Logger writers:
     *  This is the One Function you must implement. Everything else is optional or bull.
     *  It must be possible to call this function in presence and in absence of GUI without crashing the application.
@@ -45,23 +44,15 @@ public:
     *  You may not throw from this function, it must return in finite time, and it must not call logging functions (to prevent infinite recursion).
     *  Other than that, you can do anything you want with the log messages that you receive.
     */
-    virtual void Append(const wxString& msg, Logger::level lv = info) = 0;
+    virtual void      Append(const wxString& msg, Logger::level lv = info) = 0;
 
+    virtual void      Clear() {};
+    virtual void      CopyContentsToClipboard(bool /*selectionOnly = false*/) {};
 
-    virtual void Clear(){};
-    virtual void CopyContentsToClipboard(bool /*selectionOnly = false*/) {};
-
-    virtual void UpdateSettings() {};
+    virtual void      UpdateSettings() {};
     virtual wxWindow* CreateControl(wxWindow* /*parent*/) { return 0; };
+
+    virtual bool      IsWrappableTextCtrl() { return false; };
 };
-
-
-
-class DLLIMPORT NullLogger : public Logger
-{
-public:
-    virtual void Append(const wxString& /*msg*/, Logger::level /*lv*/){};
-};
-
 
 #endif

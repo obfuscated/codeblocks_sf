@@ -8,6 +8,7 @@
 
 #include "manager.h"
 #include "logger.h"
+#include "loggers.h"
 #include <map>
 
 namespace

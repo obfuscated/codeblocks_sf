@@ -19,6 +19,7 @@
 
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
+#include <wx/wupdlock.h>
 
 #include "loggers.h"
 
@@ -41,8 +42,8 @@ wxColour BlendTextColour(wxColour col)
     return col;
 }
 
-TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
-    : control(0), fixed(fixedPitchFont)
+TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont) :
+    control(0), fixed(fixedPitchFont)
 {
 }
 
@@ -144,7 +145,6 @@ void TextCtrlLogger::Append(const wxString& msg, Logger::level lv)
     }
 }
 
-
 void TextCtrlLogger::Clear()
 {
     if (control)
@@ -156,6 +156,48 @@ wxWindow* TextCtrlLogger::CreateControl(wxWindow* parent)
     if (!control)
         control = new wxTextCtrl(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL | wxTE_AUTO_URL);
     return control;
+}
+
+bool TextCtrlLogger::IsWrappableTextCtrl()
+{
+    return (control && control->IsMultiLine());
+}
+
+void TextCtrlLogger::ToggleWrapMode()
+{
+    if (!control || !IsWrappableTextCtrl())
+        return;
+
+    wxWindowUpdateLocker noUpdates(control);
+
+    long style = control->GetWindowStyle();
+
+    // wxTE_DONTWRAP is an equivalent for wxHSCROLL (see <wx/textctrl.h>)
+    bool is_dontwrap = ((style & wxTE_DONTWRAP)==wxTE_DONTWRAP);
+    if (is_dontwrap)
+        style &= ~wxTE_DONTWRAP; // don't wrap = OFF means wrapping = ON
+    else
+        style |=  wxTE_DONTWRAP; // don't wrap = ON means wrapping = OFF
+
+// On Windows the wrap-style can not easily be changed on the fly, but if the align flags
+// change wxWidgets recreates the textcontrol, doing this ourselves seems not to be so easy,
+// so we use this hack here (testing if the centred-flag is set, is not needed for our loggers)
+#ifdef __WXMSW__
+    bool is_centred = ((style & wxALIGN_CENTER)==wxALIGN_CENTER);
+    if (is_centred)
+    {
+        style &= ~wxALIGN_CENTRE;
+        control->SetWindowStyleFlag(style);
+        style |= wxALIGN_CENTRE;
+    }
+    else
+    {
+        style |= wxALIGN_CENTRE;
+        control->SetWindowStyleFlag(style);
+        style &= ~wxALIGN_CENTRE;
+    }
+#endif
+    control->SetWindowStyleFlag(style);
 }
 
 
@@ -171,9 +213,11 @@ void TimestampTextCtrlLogger::Append(const wxString& msg, Logger::level lv)
     control->AppendText(::temp_string);
 }
 
-ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont)
-    : control(0), fixed(fixedPitchFont),
-    titles(titles), widths(widths)
+ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont) :
+    control(0),
+    fixed(fixedPitchFont),
+    titles(titles),
+    widths(widths)
 {
     cbAssert(titles.GetCount() == widths.GetCount());
 }
