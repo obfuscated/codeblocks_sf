@@ -760,9 +760,10 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
     }
 
-    if (  output.StartsWith(_T("gdb: "))
-        ||output.StartsWith(_T("Warning: "))
-        ||output.StartsWith(_T("ContinueDebugEvent ")))
+    if (   output.StartsWith(_T("gdb: "))
+        || output.StartsWith(_T("warning: "))
+        || output.StartsWith(_T("Warning: "))
+        || output.StartsWith(_T("ContinueDebugEvent ")) )
     {
         return;
     }
