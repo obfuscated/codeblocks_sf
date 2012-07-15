@@ -197,6 +197,7 @@ DIST_SUBDIRS = AutoVersioning \
 		devpak_plugin \
 		DoxyBlocks \
 		dragscroll \
+		EditorConfig \
 		EditorTweaks \
 		envvars \
 		FileManager \
