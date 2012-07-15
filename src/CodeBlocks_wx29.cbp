@@ -785,6 +785,9 @@
 		<Unit filename="include\cbtool.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\cbtreectrl.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\cbworkspace.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2285,6 +2288,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\cbthreadpool.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbtreectrl.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\cbworkspace.cpp">

@@ -23,22 +23,23 @@
     #include <wx/dir.h>
 
     #include "cbproject.h" // class's header file
-    #include "compiler.h" // GetSwitches
-    #include "sdk_events.h"
-    #include "manager.h"
     #include "cbeditor.h"
-    #include "globals.h"
-    #include "pluginmanager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "logmanager.h"
+    #include "cbtreectrl.h"
+    #include "compiler.h" // GetSwitches
+    #include "compilerfactory.h"
+    #include "configmanager.h"
     #include "editormanager.h"
     #include "filemanager.h"
-    #include "configmanager.h"
-    #include "compilerfactory.h"
+    #include "globals.h"
+    #include "infowindow.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "pluginmanager.h"
     #include "projectbuildtarget.h"
     #include "projectfile.h"
-    #include "infowindow.h"
+    #include "projectmanager.h"
+    #include "sdk_events.h"
 #endif
 
 #include <map>

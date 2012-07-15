@@ -73,289 +73,112 @@ static const int idOpenWithInternal = wxNewId();
 // static
 bool ProjectManager::s_CanShutdown = true;
 
-int ID_ProjectManager = wxNewId();
-int idMenuSetActiveProject = wxNewId();
-int idMenuOpenFile = wxNewId();
-int idMenuSaveProject = wxNewId();
-int idMenuSaveFile = wxNewId();
-int idMenuCloseProject = wxNewId();
-int idMenuCloseFile = wxNewId();
-int idMenuAddFilePopup = wxNewId();
+int ID_ProjectManager              = wxNewId();
+int idMenuSetActiveProject         = wxNewId();
+int idMenuOpenFile                 = wxNewId();
+int idMenuSaveProject              = wxNewId();
+int idMenuSaveFile                 = wxNewId();
+int idMenuCloseProject             = wxNewId();
+int idMenuCloseFile                = wxNewId();
+int idMenuAddFilePopup             = wxNewId();
 int idMenuAddFilesRecursivelyPopup = wxNewId();
-int idMenuAddFile = wxNewId();
-int idMenuAddFilesRecursively = wxNewId();
-int idMenuRemoveFolderFilesPopup = wxNewId();
-int idMenuOpenFolderFilesPopup = wxNewId();
-int idMenuRemoveFilePopup = wxNewId();
-int idMenuRemoveFile = wxNewId();
-int idMenuRenameFile = wxNewId();
-int idMenuProjectNotes = wxNewId();
-int idMenuProjectProperties = wxNewId();
-int idMenuFileProperties = wxNewId();
-int idMenuTreeProjectProperties = wxNewId();
-int idMenuTreeFileProperties = wxNewId();
-int idMenuGotoFile = wxNewId();
-int idMenuExecParams = wxNewId();
-int idMenuViewCategorize = wxNewId();
-int idMenuViewUseFolders = wxNewId();
-int idMenuViewHideFolderName = wxNewId();
-int idMenuViewFileMasks = wxNewId();
-int idMenuNextProject = wxNewId();
-int idMenuPriorProject = wxNewId();
-int idMenuProjectTreeProps = wxNewId();
-int idMenuProjectUp = wxNewId();
-int idMenuProjectDown = wxNewId();
-int idMenuViewCategorizePopup = wxNewId();
-int idMenuViewUseFoldersPopup = wxNewId();
-int idMenuViewHideFolderNamePopup = wxNewId();
-int idMenuTreeRenameWorkspace = wxNewId();
-int idMenuTreeSaveWorkspace = wxNewId();
-int idMenuTreeSaveAsWorkspace = wxNewId();
-int idMenuTreeCloseWorkspace = wxNewId();
-int idMenuAddVirtualFolder = wxNewId();
-int idMenuDeleteVirtualFolder = wxNewId();
+int idMenuAddFile                  = wxNewId();
+int idMenuAddFilesRecursively      = wxNewId();
+int idMenuRemoveFolderFilesPopup   = wxNewId();
+int idMenuOpenFolderFilesPopup     = wxNewId();
+int idMenuRemoveFilePopup          = wxNewId();
+int idMenuRemoveFile               = wxNewId();
+int idMenuRenameFile               = wxNewId();
+int idMenuProjectNotes             = wxNewId();
+int idMenuProjectProperties        = wxNewId();
+int idMenuFileProperties           = wxNewId();
+int idMenuTreeProjectProperties    = wxNewId();
+int idMenuTreeFileProperties       = wxNewId();
+int idMenuGotoFile                 = wxNewId();
+int idMenuExecParams               = wxNewId();
+int idMenuViewCategorize           = wxNewId();
+int idMenuViewUseFolders           = wxNewId();
+int idMenuViewHideFolderName       = wxNewId();
+int idMenuViewFileMasks            = wxNewId();
+int idMenuNextProject              = wxNewId();
+int idMenuPriorProject             = wxNewId();
+int idMenuProjectTreeProps         = wxNewId();
+int idMenuProjectUp                = wxNewId();
+int idMenuProjectDown              = wxNewId();
+int idMenuViewCategorizePopup      = wxNewId();
+int idMenuViewUseFoldersPopup      = wxNewId();
+int idMenuViewHideFolderNamePopup  = wxNewId();
+int idMenuTreeRenameWorkspace      = wxNewId();
+int idMenuTreeSaveWorkspace        = wxNewId();
+int idMenuTreeSaveAsWorkspace      = wxNewId();
+int idMenuTreeCloseWorkspace       = wxNewId();
+int idMenuAddVirtualFolder         = wxNewId();
+int idMenuDeleteVirtualFolder      = wxNewId();
 
 static const int idMenuFindFile = wxNewId();
-static const int idNB = wxNewId();
-static const int idNB_TabTop = wxNewId();
+static const int idNB           = wxNewId();
+static const int idNB_TabTop    = wxNewId();
 static const int idNB_TabBottom = wxNewId();
 
-cbTreeCtrl::cbTreeCtrl() : wxTreeCtrl()
-{
-    Compare = &filesSort;
-}
-
-cbTreeCtrl::cbTreeCtrl(wxWindow* parent, int id) :
-    wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
-               wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS | wxTR_MULTIPLE | wxBORDER_NONE)
-{
-    Compare = &filesSort;
-}
-
-void cbTreeCtrl::SetCompareFunction(const int ptvs)
-{
-    // sort list of files
-    if ( !(ptvs & ptvsUseFolders) && (ptvs & ptvsHideFolderName) )
-        Compare = &filesSortNameOnly;
-    else
-        Compare = &filesSort;
-}
-
-#ifndef __WXMSW__
-/*
-    Under wxGTK, wxTreeCtrl is not sending an EVT_COMMAND_RIGHT_CLICK
-    event when right-clicking on the client area.
-*/
-void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
-{
-    if (!this) return;
-
-    int flags;
-    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-    if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
-    {
-        // "proxy" the call
-        wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, ID_ProjectManager);
-        wxPostEvent(GetParent(), e);
-    }
-    else
-        event.Skip();
-}
-#endif // !__WXMSW__
-/*
-    Under all platforms there is no reaction when pressing "ENTER".
-    Expected would be e.g. to open the file in an editor.
-*/
-void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
-{
-    // Don't care about special key combinations
-    if ( !this || (event.GetModifiers()!=wxMOD_NONE) )
-    {
-        event.Skip();
-        return;
-    }
-
-    wxArrayTreeItemIds selections;
-    // Don't care if no selection has been made
-    if ( GetSelections(selections)<1 )
-    {
-        event.Skip();
-        return;
-    }
-
-    long         keycode = event.GetKeyCode();
-    wxTreeItemId itemId  = selections[0];
-    // Don't care if item is invalid
-    if ( !itemId.IsOk() )
-    {
-        event.Skip();
-        return;
-    }
-
-    switch (keycode)
-    {
-        case WXK_RETURN:
-        {
-            wxTreeEvent te = wxTreeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, itemId);
-            wxPostEvent(this, te);
-            break;
-        }
-#ifndef __WXMSW__
-/*
-        Under wxGTK, there is no navigation possible using cursor keys.
-*/
-        case WXK_UP:
-        {
-            // GetPrevVisible - not implemented... strange...
-            wxTreeItemId itemIdPrev = GetPrevSibling(itemId);
-            if (itemIdPrev.IsOk())
-            {
-                SelectItem(itemId, false);
-                SelectItem(itemIdPrev, true);
-            }
-            else
-            {
-                wxTreeItemId itemIdParent = GetItemParent(itemId);
-                if (itemIdParent.IsOk())
-                {
-                    SelectItem(itemId, false);
-                    SelectItem(itemIdParent, true);
-                }
-            }
-            break;
-        }
-        case WXK_DOWN:
-        {
-            wxTreeItemId itemIdNext = GetNextVisible(itemId);
-            if (itemIdNext.IsOk())
-            {
-                SelectItem(itemId, false);
-                SelectItem(itemIdNext, true);
-            }
-            break;
-        }
-        case WXK_LEFT:
-        {
-            if ( ItemHasChildren(itemId) && IsExpanded(itemId) )
-                Collapse(itemId);
-            else
-            {
-                wxTreeItemId itemIdParent = GetItemParent(itemId);
-                if (itemIdParent.IsOk())
-                {
-                    SelectItem(itemId, false);
-                    SelectItem(itemIdParent, true);
-                }
-            }
-            break;
-        }
-        case WXK_RIGHT:
-        {
-            if ( ItemHasChildren(itemId) && !IsExpanded(itemId) )
-                Expand(itemId);
-            else
-            {
-                wxTreeItemIdValue cookie;
-                wxTreeItemId itemIdChild = GetFirstChild(itemId, cookie);
-                if (itemIdChild.IsOk())
-                {
-                    SelectItem(itemId, false);
-                    SelectItem(itemIdChild, true);
-                }
-            }
-            break;
-        }
-#endif // !__WXMSW__
-        default:
-            event.Skip();
-    }
-}
-
-int cbTreeCtrl::filesSort(const ProjectFile* arg1, const ProjectFile* arg2)
-{
-    if (arg1 && arg2)
-        return wxStricmp(arg1->file.GetFullPath(), arg2->file.GetFullPath());
-    return 0;
-}
-
-int cbTreeCtrl::filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2)
-{
-    if (arg1 && arg2)
-        return wxStricmp(arg1->file.GetFullName(), arg2->file.GetFullName());
-    return 0;
-}
-
-int cbTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
-{
-    return Compare(((FileTreeData*)GetItemData(item1))->GetProjectFile(), ((FileTreeData*)GetItemData(item2))->GetProjectFile());
-}
-IMPLEMENT_DYNAMIC_CLASS(cbTreeCtrl, wxTreeCtrl)
-BEGIN_EVENT_TABLE(cbTreeCtrl, wxTreeCtrl)
-#ifndef __WXMSW__
-    EVT_RIGHT_DOWN(cbTreeCtrl::OnRightClick)
-#endif // !__WXMSW__
-    EVT_KEY_DOWN(cbTreeCtrl::OnKeyDown)
-END_EVENT_TABLE()
-
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
-    EVT_TREE_BEGIN_DRAG(ID_ProjectManager, ProjectManager::OnTreeBeginDrag)
-    EVT_TREE_END_DRAG(ID_ProjectManager, ProjectManager::OnTreeEndDrag)
+    EVT_TREE_BEGIN_DRAG(ID_ProjectManager,       ProjectManager::OnTreeBeginDrag)
+    EVT_TREE_END_DRAG(ID_ProjectManager,         ProjectManager::OnTreeEndDrag)
 
     EVT_TREE_BEGIN_LABEL_EDIT(ID_ProjectManager, ProjectManager::OnBeginEditNode)
-    EVT_TREE_END_LABEL_EDIT(ID_ProjectManager, ProjectManager::OnEndEditNode)
+    EVT_TREE_END_LABEL_EDIT(ID_ProjectManager,   ProjectManager::OnEndEditNode)
 
-    EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
+    EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager,   ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
-    EVT_TREE_KEY_DOWN(ID_ProjectManager, ProjectManager::OnKeyDown)
-    EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
+    EVT_TREE_KEY_DOWN(ID_ProjectManager,         ProjectManager::OnKeyDown)
+    EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager,   ProjectManager::OnRightClick)
 
     EVT_AUINOTEBOOK_TAB_RIGHT_UP(idNB, ProjectManager::OnTabContextMenu)
 
     EVT_MENU_RANGE(idOpenWith[0], idOpenWith[MAX_OPEN_WITH_ITEMS - 1], ProjectManager::OnOpenWith)
-    EVT_MENU(idOpenWithInternal, ProjectManager::OnOpenWith)
-    EVT_MENU(idNB_TabTop, ProjectManager::OnTabPosition)
-    EVT_MENU(idNB_TabBottom, ProjectManager::OnTabPosition)
-    EVT_MENU(idMenuSetActiveProject, ProjectManager::OnSetActiveProject)
-    EVT_MENU(idMenuNextProject, ProjectManager::OnSetActiveProject)
-    EVT_MENU(idMenuPriorProject, ProjectManager::OnSetActiveProject)
-    EVT_MENU(idMenuProjectUp, ProjectManager::OnSetActiveProject)
-    EVT_MENU(idMenuProjectDown, ProjectManager::OnSetActiveProject)
-    EVT_MENU(idMenuTreeRenameWorkspace, ProjectManager::OnRenameWorkspace)
-    EVT_MENU(idMenuTreeSaveWorkspace, ProjectManager::OnSaveWorkspace)
-    EVT_MENU(idMenuTreeSaveAsWorkspace, ProjectManager::OnSaveAsWorkspace)
-    EVT_MENU(idMenuTreeCloseWorkspace, ProjectManager::OnCloseWorkspace)
-    EVT_MENU(idMenuAddVirtualFolder, ProjectManager::OnAddVirtualFolder)
-    EVT_MENU(idMenuDeleteVirtualFolder, ProjectManager::OnDeleteVirtualFolder)
-    EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
-    EVT_MENU(idMenuAddFilesRecursively, ProjectManager::OnAddFilesToProjectRecursively)
-    EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
-    EVT_MENU(idMenuAddFilePopup, ProjectManager::OnAddFileToProject)
+    EVT_MENU(idOpenWithInternal,             ProjectManager::OnOpenWith)
+    EVT_MENU(idNB_TabTop,                    ProjectManager::OnTabPosition)
+    EVT_MENU(idNB_TabBottom,                 ProjectManager::OnTabPosition)
+    EVT_MENU(idMenuSetActiveProject,         ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuNextProject,              ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuPriorProject,             ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuProjectUp,                ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuProjectDown,              ProjectManager::OnSetActiveProject)
+    EVT_MENU(idMenuTreeRenameWorkspace,      ProjectManager::OnRenameWorkspace)
+    EVT_MENU(idMenuTreeSaveWorkspace,        ProjectManager::OnSaveWorkspace)
+    EVT_MENU(idMenuTreeSaveAsWorkspace,      ProjectManager::OnSaveAsWorkspace)
+    EVT_MENU(idMenuTreeCloseWorkspace,       ProjectManager::OnCloseWorkspace)
+    EVT_MENU(idMenuAddVirtualFolder,         ProjectManager::OnAddVirtualFolder)
+    EVT_MENU(idMenuDeleteVirtualFolder,      ProjectManager::OnDeleteVirtualFolder)
+    EVT_MENU(idMenuAddFile,                  ProjectManager::OnAddFileToProject)
+    EVT_MENU(idMenuAddFilesRecursively,      ProjectManager::OnAddFilesToProjectRecursively)
+    EVT_MENU(idMenuRemoveFile,               ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuAddFilePopup,             ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManager::OnAddFilesToProjectRecursively)
-    EVT_MENU(idMenuRemoveFolderFilesPopup, ProjectManager::OnRemoveFileFromProject)
-    EVT_MENU(idMenuOpenFolderFilesPopup, ProjectManager::OnOpenFolderFiles)
-    EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
-    EVT_MENU(idMenuRenameFile, ProjectManager::OnRenameFile)
-    EVT_MENU(idMenuSaveProject, ProjectManager::OnSaveProject)
-    EVT_MENU(idMenuSaveFile, ProjectManager::OnSaveFile)
-    EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
-    EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
-    EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
-    EVT_MENU(idMenuProjectNotes, ProjectManager::OnNotes)
-    EVT_MENU(idMenuProjectProperties, ProjectManager::OnProperties)
-    EVT_MENU(idMenuFileProperties, ProjectManager::OnProperties)
-    EVT_MENU(idMenuTreeProjectProperties, ProjectManager::OnProperties)
-    EVT_MENU(idMenuTreeFileProperties, ProjectManager::OnProperties)
-    EVT_MENU(idMenuGotoFile, ProjectManager::OnGotoFile)
-    EVT_MENU(idMenuExecParams, ProjectManager::OnExecParameters)
-    EVT_MENU(idMenuViewCategorize, ProjectManager::OnViewCategorize)
-    EVT_MENU(idMenuViewUseFolders, ProjectManager::OnViewUseFolders)
-    EVT_MENU(idMenuViewHideFolderName, ProjectManager::OnViewHideFolderName)
-    EVT_MENU(idMenuViewCategorizePopup, ProjectManager::OnViewCategorize)
-    EVT_MENU(idMenuViewUseFoldersPopup, ProjectManager::OnViewUseFolders)
-    EVT_MENU(idMenuViewHideFolderNamePopup, ProjectManager::OnViewHideFolderName)
-    EVT_MENU(idMenuViewFileMasks, ProjectManager::OnViewFileMasks)
-    EVT_MENU(idMenuFindFile, ProjectManager::OnFindFile)
-    EVT_IDLE(ProjectManager::OnIdle)
+    EVT_MENU(idMenuRemoveFolderFilesPopup,   ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuOpenFolderFilesPopup,     ProjectManager::OnOpenFolderFiles)
+    EVT_MENU(idMenuRemoveFilePopup,          ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuRenameFile,               ProjectManager::OnRenameFile)
+    EVT_MENU(idMenuSaveProject,              ProjectManager::OnSaveProject)
+    EVT_MENU(idMenuSaveFile,                 ProjectManager::OnSaveFile)
+    EVT_MENU(idMenuCloseProject,             ProjectManager::OnCloseProject)
+    EVT_MENU(idMenuCloseFile,                ProjectManager::OnCloseFile)
+    EVT_MENU(idMenuOpenFile,                 ProjectManager::OnOpenFile)
+    EVT_MENU(idMenuProjectNotes,             ProjectManager::OnNotes)
+    EVT_MENU(idMenuProjectProperties,        ProjectManager::OnProperties)
+    EVT_MENU(idMenuFileProperties,           ProjectManager::OnProperties)
+    EVT_MENU(idMenuTreeProjectProperties,    ProjectManager::OnProperties)
+    EVT_MENU(idMenuTreeFileProperties,       ProjectManager::OnProperties)
+    EVT_MENU(idMenuGotoFile,                 ProjectManager::OnGotoFile)
+    EVT_MENU(idMenuExecParams,               ProjectManager::OnExecParameters)
+    EVT_MENU(idMenuViewCategorize,           ProjectManager::OnViewCategorize)
+    EVT_MENU(idMenuViewUseFolders,           ProjectManager::OnViewUseFolders)
+    EVT_MENU(idMenuViewHideFolderName,       ProjectManager::OnViewHideFolderName)
+    EVT_MENU(idMenuViewCategorizePopup,      ProjectManager::OnViewCategorize)
+    EVT_MENU(idMenuViewUseFoldersPopup,      ProjectManager::OnViewUseFolders)
+    EVT_MENU(idMenuViewHideFolderNamePopup,  ProjectManager::OnViewHideFolderName)
+    EVT_MENU(idMenuViewFileMasks,            ProjectManager::OnViewFileMasks)
+    EVT_MENU(idMenuFindFile,                 ProjectManager::OnFindFile)
+    EVT_IDLE(                                ProjectManager::OnIdle)
 END_EVENT_TABLE()
 
 // class constructor
@@ -1290,9 +1113,9 @@ void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
         m_pWorkspace->SetModified(true);
 
     // re-select the project
-    wxTreeItemId node = project->GetProjectNode();
-    cbAssert(node.IsOk());
-    m_pTree->SelectItem(node, true);
+    wxTreeItemId itemId = project->GetProjectNode();
+    cbAssert(itemId.IsOk());
+    m_pTree->SelectItem(itemId);
 }
 
 void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
@@ -1318,9 +1141,9 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
         m_pWorkspace->SetModified(true);
 
     // re-select the project
-    wxTreeItemId node = project->GetProjectNode();
-    cbAssert(node.IsOk());
-    m_pTree->SelectItem(node, true);
+    wxTreeItemId itemId = project->GetProjectNode();
+    cbAssert(itemId.IsOk());
+    m_pTree->SelectItem(itemId);
 }
 
 cbWorkspace* ProjectManager::GetWorkspace()
@@ -2924,12 +2747,11 @@ void ProjectManager::OnFindFile(wxCommandEvent& /*event*/)
         if (!sel.IsOk())
             return;
 
-        wxTreeItemId found = FindItem( sel, text );
-
-        if ( found.IsOk() )
+        wxTreeItemId itemId = FindItem( sel, text );
+        if ( itemId.IsOk() )
         {
             m_pTree->UnselectAll();
-            m_pTree->SelectItem( found );
+            m_pTree->SelectItem(itemId);
         }
         else
             cbMessageBox(_("The file couldn't be found!"), _(""), wxICON_INFORMATION);
@@ -3117,9 +2939,8 @@ void ProjectManager::CheckForExternallyModifiedProjects()
         // the hash (Projects) could change the order
         std::vector<cbProject*> ProjectPointers;
         for (unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
-        {
             ProjectPointers.push_back(Projects->Item(idxProject));
-        }
+
         for (unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
         {
             cbProject* pProject = ProjectPointers[idxProject];
@@ -3203,7 +3024,7 @@ void ProjectManager::RemoveFilesRecursively(wxTreeItemId& sel_id)
                     ProjectFile* pf = data->GetProjectFile();
                     RemoveFileFromProject(pf, prj);
                 }
-                else if (data->GetKind() == FileTreeData::ftdkFolder
+                else if (  data->GetKind() == FileTreeData::ftdkFolder
                         || data->GetKind() == FileTreeData::ftdkVirtualFolder)
                 {
                     RemoveFilesRecursively(child);

@@ -14,9 +14,11 @@
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
+
+#include "cbexception.h"
+#include "cbtreectrl.h"
 #include "settings.h"
 #include "manager.h"
-#include "cbexception.h"
 
 // forward decls
 class wxMenuBar;
@@ -29,38 +31,6 @@ class FilesGroupsAndMasks;
 class cbWorkspace;
 class cbAuiNotebook;
 class wxAuiNotebookEvent;
-
-/*
-    This is a "proxy" wxTreeCtrl descendant handles several usage limitations.
-*/
-class cbTreeCtrl : public wxTreeCtrl
-{
-    public:
-        cbTreeCtrl();
-        cbTreeCtrl(wxWindow* parent, int id);
-        void SetCompareFunction(const int ptvs);
-    protected:
-#ifndef __WXMSW__
-/*
-        Under wxGTK, wxTreeCtrl is not sending an EVT_COMMAND_RIGHT_CLICK
-        event when right-clicking on the client area.
-*/
-        void OnRightClick(wxMouseEvent& event);
-#endif // !__WXMSW__
-/*
-        Under all platforms there is no reaction when pressing "ENTER".
-        Expected would be e.g. to open the file in an editor.
-*/
-        void OnKeyDown(wxKeyEvent& event);
-
-        static int filesSort(const ProjectFile* arg1, const ProjectFile* arg2);
-        static int filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2);
-        int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
-        int (*Compare)(const ProjectFile* arg1, const ProjectFile* arg2);
-
-        DECLARE_DYNAMIC_CLASS(cbTreeCtrl)
-        DECLARE_EVENT_TABLE();
-};
 
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);

@@ -15,6 +15,7 @@
 #include "sdk_precomp.h"
 #include "cbstyledtextctrl.h"
 #ifndef CB_PRECOMP
+    #include <wx/gdicmn.h> // for wxPoint
     #include <wx/string.h>
     #include <wx/timer.h>
 
@@ -126,9 +127,8 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
 
 void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
 {
-    bool emulateDwellStart = false;
-
     m_lastSelectedText = GetSelectedText();
+    bool emulateDwellStart = false;
 
     switch (event.GetKeyCode())
     {
