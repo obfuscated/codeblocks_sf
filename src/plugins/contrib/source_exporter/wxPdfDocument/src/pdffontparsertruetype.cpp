@@ -233,8 +233,8 @@ wxPdfFontParserTrueType::LoadTrueTypeFontStream(const wxFont& font)
   wxFillLogFont(&lf, &font);
 
   HDC hdc = CreateCompatibleDC(0);
-  // TODO: check whether clean up is needed in addition to deleting hdc
-  /*HFONT oldfont = (HFONT)*/ SelectObject(hdc, CreateFontIndirect(&lf));
+  HFONT hFont = CreateFontIndirect(&lf);
+  /*HFONT oldfont = (HFONT)*/ SelectObject(hdc, hFont);
 
   DWORD fontDataSize;
   BYTE* fontData;
@@ -248,6 +248,7 @@ wxPdfFontParserTrueType::LoadTrueTypeFontStream(const wxFont& font)
     delete [] fontData;
   }
   DeleteDC(hdc);
+  DeleteObject(hFont);
 
   return fontStream;
 }
@@ -1152,6 +1153,7 @@ wxPdfFontParserTrueType::ReadMaps()
   wxPdfFontHeader head;
   wxPdfHorizontalHeader hhea;
   wxPdfWindowsMetrics os_2;
+  int realOS2TypoDescender;
 
   wxPdfTableDirectoryEntry* tableLocation;
   wxPdfTableDirectory::iterator entry = m_tableDirectory->find(wxT("head"));
@@ -1234,6 +1236,7 @@ wxPdfFontParserTrueType::ReadMaps()
     os_2.m_usLastCharIndex = ReadUShort();
     os_2.m_sTypoAscender = ReadShort();
     os_2.m_sTypoDescender = ReadShort();
+    realOS2TypoDescender = os_2.m_sTypoDescender;
     if (os_2.m_sTypoDescender > 0)
     {
       os_2.m_sTypoDescender = (short)(-os_2.m_sTypoDescender);
@@ -1259,6 +1262,16 @@ wxPdfFontParserTrueType::ReadMaps()
       os_2.m_sCapHeight = (int)(0.7 * head.m_unitsPerEm);
     }
     ReleaseTable();
+    m_fd.SetOpenTypeMetrics(
+      (int) (hhea.m_ascender      * 1000 / head.m_unitsPerEm),
+      (int) (hhea.m_descender     * 1000 / head.m_unitsPerEm),
+      (int) (hhea.m_lineGap       * 1000 / head.m_unitsPerEm),
+      (int) (os_2.m_sTypoAscender * 1000 / head.m_unitsPerEm),
+      (int) (realOS2TypoDescender * 1000 / head.m_unitsPerEm),
+      (int) (os_2.m_sTypoLineGap  * 1000 / head.m_unitsPerEm),
+      (int) (os_2.m_usWinAscent   * 1000 / head.m_unitsPerEm),
+      (int) (os_2.m_usWinDescent  * 1000 / head.m_unitsPerEm)
+    );
   }
   else
   {

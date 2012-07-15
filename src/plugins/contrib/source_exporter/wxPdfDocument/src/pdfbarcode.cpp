@@ -91,7 +91,7 @@ wxPdfBarCodeCreator::TestCheckDigit(const wxString& barcode)
 }
 
 // Code and parity constants for EAN13 and UPC_A
-static wxString bc_codes[3][10] = {
+static wxString bc_codes[3][10] = { 
   {
     wxT("0001101"),wxT("0011001"),wxT("0010011"),wxT("0111101"),wxT("0100011"),
     wxT("0110001"),wxT("0101111"),wxT("0111011"),wxT("0110111"),wxT("0001011")
@@ -203,7 +203,7 @@ static wxString code39_wideEncoding[] = {
   wxT("111000101010111"), wxT("100011101010111"), wxT("111000111010101"),
   wxT("100010111010111"), wxT("111000101110101"), wxT("100011101110101"),
   wxT("100010101110111"), wxT("111000101011101"), wxT("100011101011101"),
-  wxT("100010001000101"), wxT("100010001010001"), wxT("100010100010001"),
+  wxT("100010001000101"), wxT("100010001010001"), wxT("100010100010001"), 
   wxT("101000100010001"), wxT("100010111011101") };
 
 bool
@@ -331,11 +331,7 @@ wxPdfBarCodeCreator::EncodeCode39Ext(const wxString& code)
   size_t i;
   for (i = 0 ; i < code.Length(); i++)
   {
-    #if wxCHECK_VERSION(2, 9, 0)
-    codeExt += code39_encode[code[i].GetValue()];
-    #else
-    codeExt += code39_encode[code[i]];
-    #endif
+    codeExt += code39_encode[(long int) code[i]];
   }
   return codeExt;
 }
@@ -357,7 +353,7 @@ wxPdfBarCodeCreator::DrawCode39(const wxString& code, double x, double y, double
 // Character and barcode constants for I25
 static wxString i25_chars = wxT("0123456789AZ");
 static wxString i25_barChar[] = {
-  wxT("nnwwn"), wxT("wnnnw"), wxT("nwnnw"), wxT("wwnnn"), wxT("nnwnw"),
+  wxT("nnwwn"), wxT("wnnnw"), wxT("nwnnw"), wxT("wwnnn"), wxT("nnwnw"), 
   wxT("wnwnn"), wxT("nwwnn"), wxT("nnnww"), wxT("wnnwn"), wxT("nwnwn"),
   wxT("nn"), wxT("wn") };
 
@@ -460,7 +456,7 @@ wxPdfBarCodeCreator::PostNet(double x, double y, const wxString& zipcode)
       x += fiveBarSpacing;
     }
   }
-
+    
   // draw check sum digit
   digit = ZipCodeCheckSumDigit(zipcode);
   ZipCodeDrawDigitBars(x, y, barSpacing, halfBarHeight, fullBarHeight, digit);
@@ -496,7 +492,7 @@ wxPdfBarCodeCreator::ZipCodeValidate(const wxString& zipcode)
   return valid;
 }
 
-// takes a validated zip code and
+// takes a validated zip code and 
 // calculates the checksum for POSTNET
 int
 wxPdfBarCodeCreator::ZipCodeCheckSumDigit(const wxString& zipcode)
@@ -559,7 +555,7 @@ wxPdfBarCodeCreator::ZipCodeDrawDigitBars(double x, double y, double barSpacing,
       x += barSpacing;
     }
   }
-}
+} 
 
 // --- Code128 implementation ---
 
@@ -1399,11 +1395,7 @@ wxPdfBarCodeCreator::Code128Draw(double x, double y, const wxString& barcode, do
   wxString::const_iterator ch;
   for (ch = barcode.begin(); ch != barcode.end(); ++ch)
   {
-    #if wxCHECK_VERSION(2, 9, 0)
-    bars = code128_bars[(*ch).GetValue()];
-    #else
-    bars = code128_bars[*ch];
-    #endif
+    bars = code128_bars[(long int) (*ch)];
     for (j = 0; j < 6 && bars[j] != 0; j = j+2)
     {
       barWidth = bars[j] * w;

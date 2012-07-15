@@ -44,6 +44,7 @@ libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 				src/pdfocg.cpp \
 				src/pdfparser.cpp \
 				src/pdfpattern.cpp \
+				src/pdfprint.cpp \
 				src/pdfrijndael.cpp \
 				src/pdftemplate.cpp \
 				src/pdfutility.cpp \
@@ -97,6 +98,7 @@ noinst_HEADERS = include/wx/pdfannotation.h \
 				include/wx/pdfobjects.h \
 				include/wx/pdfparser.h \
 				include/wx/pdfpattern.h \
+				include/wx/pdfprint.h \
 				include/wx/pdfproperties.h \
 				include/wx/pdfrijndael.h \
 				include/wx/pdfshape.h \

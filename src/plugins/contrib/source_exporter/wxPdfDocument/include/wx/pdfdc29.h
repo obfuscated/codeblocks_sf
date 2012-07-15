@@ -27,6 +27,10 @@ public:
   wxPdfDocument* GetPdfDocument();
 
   void SetResolution(int ppi);
+  int GetResolution() const;
+
+  void SetMapModeStyle(wxPdfMapModeStyle style);
+  wxPdfMapModeStyle GetMapModeStyle() const;
 
 private:
     DECLARE_DYNAMIC_CLASS(wxPdfDC)
@@ -83,9 +87,9 @@ public:
   virtual void SetDeviceOrigin(wxCoord x, wxCoord y);
   virtual void SetAxisOrientation(bool xLeftRight, bool yBottomUp);
   virtual void SetLogicalFunction(wxRasterOperationMode function);
-#if 0
+
+  virtual void SetTextForeground(const wxColour& colour);
   virtual void ComputeScaleAndOrigin();
-#endif
 
 #if 0
   // RTL related functions
@@ -178,25 +182,39 @@ protected:
                                wxCoord* externalLeading = NULL,
                                const wxFont* theFont = NULL) const;
 
+  virtual bool DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const;
+
 public:
   int GetDrawingStyle();
   bool StretchBlt(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
                   wxBitmap* bitmap);
   int IncreaseImageCounter() { return ++m_imageCount; }
 
+  void SetMapModeStyle(wxPdfMapModeStyle style) { m_mappingModeStyle = style; }
+  wxPdfMapModeStyle GetMapModeStyle() const { return m_mappingModeStyle; }
+
 private:
   int FindPdfFont(wxFont* font) const;
   void SetupPen();
   void SetupBrush();
-  double ScaleToPdf(wxCoord x) const;
+  double ScaleLogicalToPdfX(wxCoord x) const;
+  double ScaleLogicalToPdfXRel(wxCoord x) const;
+  double ScaleLogicalToPdfY(wxCoord y) const;
+  double ScaleLogicalToPdfYRel(wxCoord y) const;
+  double ScaleFontSizeToPdf(int pointSize) const;
+  int ScalePdfToFontMetric(double metric) const;
+  void CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
+                            int* height, int* ascent, int* descent, int* extLeading) const;
 
   bool           m_templateMode;
   double         m_templateWidth;
   double         m_templateHeight;
   double         m_ppi;
+  double         m_ppiPdfFont;
   wxPdfDocument* m_pdfDocument;
   int            m_imageCount;
   wxPrintData    m_printData;
+  wxPdfMapModeStyle m_mappingModeStyle;
 
   DECLARE_DYNAMIC_CLASS(wxPdfDCImpl);
 };

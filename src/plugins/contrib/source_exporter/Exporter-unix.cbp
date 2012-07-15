@@ -99,6 +99,9 @@
 		<Unit filename="exporter.h">
 			<Option target="default" />
 		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="default" />
+		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfannotation.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
@@ -241,6 +244,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfpattern.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/include/wx/pdfprint.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/include/wx/pdfproperties.h">
@@ -402,6 +408,9 @@
 		<Unit filename="wxPdfDocument/src/pdfpattern.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument/src/pdfprint.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfrijndael.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
@@ -412,6 +421,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument/src/pdfxml.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument/src/wxmemdbg.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Extensions>

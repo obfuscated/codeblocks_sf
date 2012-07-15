@@ -53,6 +53,24 @@ wxPdfDC::SetResolution(int ppi)
   ((wxPdfDCImpl*) m_pimpl)->SetResolution(ppi);
 }
 
+int
+wxPdfDC::GetResolution() const
+{
+  return ((wxPdfDCImpl*) m_pimpl)->GetResolution();
+}
+
+void
+wxPdfDC::SetMapModeStyle(wxPdfMapModeStyle style)
+{
+  ((wxPdfDCImpl*) m_pimpl)->SetMapModeStyle(style);
+}
+
+wxPdfMapModeStyle
+wxPdfDC::GetMapModeStyle() const
+{
+  return ((wxPdfDCImpl*) m_pimpl)->GetMapModeStyle();
+}
+
 static double
 angleByCoords(wxCoord xa, wxCoord ya, wxCoord xc, wxCoord yc)
 {
@@ -60,7 +78,7 @@ angleByCoords(wxCoord xa, wxCoord ya, wxCoord xc, wxCoord yc)
   double diffX = xa - xc, diffY = -(ya - yc), ret = 0;
   if (diffX == 0) // singularity
   {
-    ret = diffY > 0 ? 90 : 270;
+    ret = diffY > 0 ? 90 : -90;
   }
   else if (diffX >= 0) // quadrants 1, 4
   {
@@ -117,7 +135,10 @@ wxPdfDCImpl::~wxPdfDCImpl()
 {
   if (m_pdfDocument != NULL)
   {
-    EndDoc();
+    if (!m_templateMode)
+    {
+      delete m_pdfDocument;
+    }
   }
 }
 
@@ -128,6 +149,10 @@ wxPdfDCImpl::Init()
   m_ppi = 72;
   m_pdfDocument = NULL;
   m_imageCount = 0;
+
+  wxScreenDC screendc;
+  m_ppiPdfFont = screendc.GetPPI().GetHeight();
+  m_mappingModeStyle = wxPDF_MAPMODESTYLE_STANDARD;
 
   SetBackgroundMode(wxSOLID);
   
@@ -181,7 +206,7 @@ wxPdfDCImpl::StartDoc(const wxString& message)
   {
     m_pdfDocument = new wxPdfDocument(m_printData.GetOrientation(), wxString(wxT("pt")), m_printData.GetPaperId());
     m_pdfDocument->Open();
-    m_pdfDocument->SetCompression(false);
+    //m_pdfDocument->SetCompression(false);
     m_pdfDocument->SetAuthor(wxT("wxPdfDC"));
     m_pdfDocument->SetTitle(wxT("wxPdfDC"));
 
@@ -269,31 +294,35 @@ wxPdfDCImpl::SetFont(const wxFont& font)
 
   if (ok)
   {
-    // TODO: point size adjustment is not always reliable
-    double size = (double) font.GetPointSize() * GetFontPointSizeAdjustment(72.0) * 4./3.;
-    ok = m_pdfDocument->SetFont(regFont, styles, ScaleToPdf(LogicalToDeviceXRel(size) * m_pdfDocument->GetScaleFactor()));
+    ok = m_pdfDocument->SetFont(regFont, styles, ScaleFontSizeToPdf(font.GetPointSize()));    
   }
 }
 
 void
 wxPdfDCImpl::SetPen(const wxPen& pen)
 {
-  if (!pen.Ok()) return;
-  m_pen = pen;
+  if (pen.Ok())
+  {
+    m_pen = pen;
+  }
 }
 
 void
 wxPdfDCImpl::SetBrush(const wxBrush& brush)
 {
-  if (!brush.Ok()) return;
-  m_brush = brush;
+  if (brush.Ok())
+  {
+    m_brush = brush;
+  }
 }
 
 void
 wxPdfDCImpl::SetBackground(const wxBrush& brush)
 {
-  if (!brush.Ok()) return;
-  m_backgroundBrush = brush;
+  if (brush.Ok())
+  {
+    m_backgroundBrush = brush;
+  }
 }
 
 void
@@ -308,6 +337,15 @@ wxPdfDCImpl::SetPalette(const wxPalette& palette)
 {
   // Not yet implemented
   wxUnusedVar(palette);
+}
+
+void
+wxPdfDCImpl::SetTextForeground(const wxColour& colour)
+{
+  if (colour.IsOk())
+  {
+    m_textForegroundColour = colour;
+  }
 }
 
 void
@@ -333,10 +371,12 @@ wxPdfDCImpl::DestroyClippingRegion()
 wxCoord
 wxPdfDCImpl::GetCharHeight() const
 {
-  wxCoord height = 12;
+  // default for 12 point font
+  int height = 18;
+  int width;
   if (m_font.Ok())
   {
-    height = m_font.GetPointSize();
+    DoGetTextExtent("x", &width, &height);
   }
   return height;
 }
@@ -344,8 +384,13 @@ wxPdfDCImpl::GetCharHeight() const
 wxCoord
 wxPdfDCImpl::GetCharWidth() const
 {
-  // Chris Breeze: reasonable approximation using wxMODERN/Courier
-  return (wxCoord) (GetCharHeight() * 72.0 / 120.0);
+  int height;
+  int width = 8;
+  if (m_font.Ok())
+  {
+    DoGetTextExtent("x", &width, &height);
+  }
+  return width;
 }
 
 bool
@@ -372,6 +417,13 @@ wxPdfDCImpl::GetPPI() const
 {
   int ppi = (int) m_ppi;
   return wxSize(ppi,ppi);
+}
+
+void 
+wxPdfDCImpl::ComputeScaleAndOrigin()
+{
+  m_scaleX = m_logicalScaleX * m_userScaleX;
+  m_scaleY = m_logicalScaleY * m_userScaleY;
 }
 
 void
@@ -505,8 +557,8 @@ wxPdfDCImpl::DoDrawPoint(wxCoord x, wxCoord y)
 {
   wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
   SetupPen();
-  double xx = ScaleToPdf(LogicalToDeviceX(x));
-  double yy = ScaleToPdf(LogicalToDeviceY(y));
+  double xx = ScaleLogicalToPdfX(x);
+  double yy = ScaleLogicalToPdfY(y);
   m_pdfDocument->SetFillColour(m_pdfDocument->GetDrawColour());
   m_pdfDocument->Rect(xx-0.5, yy-0.5, xx+0.5, yy+0.5);
   CalcBoundingBox(x, y);
@@ -528,8 +580,8 @@ wxPdfDCImpl::DoDrawSpline(wxList* points)
   while (node)
   {
     p = (wxPoint *)node->GetData();
-    xp.Add(ScaleToPdf(LogicalToDeviceX(p->x)));
-    yp.Add(ScaleToPdf(LogicalToDeviceY(p->y)));
+    xp.Add(ScaleLogicalToPdfX(p->x));
+    yp.Add(ScaleLogicalToPdfY(p->y));
     node = node->GetNext();
   }
   m_pdfDocument->BezierSpline(xp, yp, wxPDF_STYLE_DRAW);
@@ -556,15 +608,15 @@ wxPdfDCImpl::DoDrawSpline(wxList* points)
   wxList::compatibility_iterator node = points->GetFirst();
   wxPoint* p = (wxPoint*) node->GetData();
 
-  x1 = ScaleToPdf(LogicalToDeviceX(p->x));
-  y1 = ScaleToPdf(LogicalToDeviceY(p->y));
+  x1 = ScaleLogicalToPdfX(p->x);
+  y1 = ScaleLogicalToPdfY(p->y);
   m_pdfDocument->MoveTo(x1, y1);
 
   node = node->GetNext();
   p = (wxPoint*) node->GetData();
 
-  bx1 = x2 = ScaleToPdf(LogicalToDeviceX(p->x));
-  by1 = y2 = ScaleToPdf(LogicalToDeviceY(p->y));
+  bx1 = x2 = ScaleLogicalToPdfX(p->x);
+  by1 = y2 = ScaleLogicalToPdfY(p->y);
   cx1 = ( x1 + x2 ) / 2;
   cy1 = ( y1 + y2 ) / 2;
   bx3 = bx2 = cx1;
@@ -580,8 +632,8 @@ wxPdfDCImpl::DoDrawSpline(wxList* points)
     p = (wxPoint*) node->GetData();
     x1 = x2;
     y1 = y2;
-    x2 = ScaleToPdf(LogicalToDeviceX(p->x));
-    y2 = ScaleToPdf(LogicalToDeviceY(p->y));
+    x2 = ScaleLogicalToPdfX(p->x);
+    y2 = ScaleLogicalToPdfY(p->y);
     cx4 = (x1 + x2) / 2;
     cy4 = (y1 + y2) / 2;
     // B0 is B3 of previous segment
@@ -616,8 +668,8 @@ wxPdfDCImpl::DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
   {
     SetupBrush();
     SetupPen();
-    m_pdfDocument->Line(ScaleToPdf(LogicalToDeviceX(x1)), ScaleToPdf(LogicalToDeviceY(y1)), 
-                        ScaleToPdf(LogicalToDeviceX(x2)), ScaleToPdf(LogicalToDeviceY(y2)));
+    m_pdfDocument->Line(ScaleLogicalToPdfX(x1), ScaleLogicalToPdfY(y1), 
+                        ScaleLogicalToPdfX(x2), ScaleLogicalToPdfY(y2));
     CalcBoundingBox(x1, y1);
     CalcBoundingBox(x2, y2);
   }
@@ -645,12 +697,12 @@ wxPdfDCImpl::DoDrawArc(wxCoord x1, wxCoord y1,
     double yyc = yc;
     double start = angleByCoords(xx1, yy1, xxc, yyc);
     double end   = angleByCoords(xx2, yy2, xxc, yyc);
-    xx1 = ScaleToPdf(LogicalToDeviceX(xx1));
-    yy1 = ScaleToPdf(LogicalToDeviceY(yy1));
-    xx2 = ScaleToPdf(LogicalToDeviceX(xx2));
-    yy2 = ScaleToPdf(LogicalToDeviceY(yy2));
-    xxc = ScaleToPdf(LogicalToDeviceX(xxc));
-    yyc = ScaleToPdf(LogicalToDeviceY(yyc));
+    xx1 = ScaleLogicalToPdfX(xx1);
+    yy1 = ScaleLogicalToPdfY(yy1);
+    xx2 = ScaleLogicalToPdfX(xx2);
+    yy2 = ScaleLogicalToPdfY(yy2);
+    xxc = ScaleLogicalToPdfX(xxc);
+    yyc = ScaleLogicalToPdfY(yyc);
     double rx = xx1 - xxc;
     double ry = yy1 - yyc;
     double r = sqrt(rx * rx + ry * ry);
@@ -709,17 +761,17 @@ wxPdfDCImpl::DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord width, wxCoord heig
     bool doDraw = (curPen != wxNullPen) && curPen.GetStyle() != wxTRANSPARENT;
     if (doDraw || doFill)
     {
-      m_pdfDocument->SetLineWidth(ScaleToPdf(LogicalToDeviceXRel(1))); // pen width != 1 sometimes fools readers when closing paths
+      m_pdfDocument->SetLineWidth(ScaleLogicalToPdfXRel(1)); // pen width != 1 sometimes fools readers when closing paths
       int style = wxPDF_STYLE_FILL | wxPDF_STYLE_DRAWCLOSE;
       if (!(doDraw && doFill))
       {
         style = (doFill) ? wxPDF_STYLE_FILL : wxPDF_STYLE_DRAWCLOSE;
       }
-      m_pdfDocument->Ellipse(ScaleToPdf(LogicalToDeviceX(x + 0.5 * width)), 
-                            ScaleToPdf(LogicalToDeviceY(y + 0.5 * height)),
-                            ScaleToPdf(LogicalToDeviceXRel(0.5 * width)), 
-                            ScaleToPdf(LogicalToDeviceYRel(0.5 * height)), 
-                            0, sa, ea, style, 8, true);
+      m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + 0.5 * width), 
+                             ScaleLogicalToPdfY(y + 0.5 * height),
+                             ScaleLogicalToPdfXRel(0.5 * width), 
+                             ScaleLogicalToPdfYRel(0.5 * height), 
+                             0, sa, ea, style, 8, true);
       CalcBoundingBox(x, y);
       CalcBoundingBox(x+width, y+height);
     }
@@ -732,8 +784,8 @@ wxPdfDCImpl::DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height
   wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
-  m_pdfDocument->Rect(ScaleToPdf(LogicalToDeviceX(x)), ScaleToPdf(LogicalToDeviceY(y)),
-                      ScaleToPdf(LogicalToDeviceXRel(width)), ScaleToPdf(LogicalToDeviceYRel(height)), 
+  m_pdfDocument->Rect(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y),
+                      ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height), 
                       GetDrawingStyle()); 
   CalcBoundingBox(x, y);
   CalcBoundingBox(x+width, y+height);
@@ -754,9 +806,9 @@ wxPdfDCImpl::DoDrawRoundedRectangle(wxCoord x, wxCoord y,
   }
   SetupBrush();
   SetupPen();
-  m_pdfDocument->RoundedRect(ScaleToPdf(LogicalToDeviceX(x)), ScaleToPdf(LogicalToDeviceY(y)), 
-                             ScaleToPdf(LogicalToDeviceXRel(width)), ScaleToPdf(LogicalToDeviceYRel(height)), 
-                             ScaleToPdf(LogicalToDeviceXRel(radius)), wxPDF_CORNER_ALL, GetDrawingStyle());  
+  m_pdfDocument->RoundedRect(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y), 
+                             ScaleLogicalToPdfXRel(width), ScaleLogicalToPdfYRel(height), 
+                             ScaleLogicalToPdfXRel(radius), wxPDF_CORNER_ALL, GetDrawingStyle());  
   CalcBoundingBox(x, y);
   CalcBoundingBox(x+width, y+height);
 }
@@ -767,10 +819,10 @@ wxPdfDCImpl::DoDrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
   wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
   SetupBrush();
   SetupPen();
-  m_pdfDocument->Ellipse(ScaleToPdf(LogicalToDeviceX(x + width / 2.0)), 
-                         ScaleToPdf(LogicalToDeviceY(y + height / 2.0)), 
-                         ScaleToPdf(LogicalToDeviceXRel(width / 2.0)), 
-                         ScaleToPdf(LogicalToDeviceYRel(height / 2.0)), 
+  m_pdfDocument->Ellipse(ScaleLogicalToPdfX(x + width / 2.0), 
+                         ScaleLogicalToPdfY(y + height / 2.0), 
+                         ScaleLogicalToPdfXRel(width / 2.0), 
+                         ScaleLogicalToPdfYRel(height / 2.0), 
                          0, 0, 360, GetDrawingStyle()); 
   CalcBoundingBox(x-width, y-height);
   CalcBoundingBox(x+width, y+height);
@@ -810,11 +862,11 @@ wxPdfDCImpl::DoDrawBitmap(const wxBitmap& bitmap, wxCoord x, wxCoord y, bool use
   wxCoord w = image.GetWidth();
   wxCoord h = image.GetHeight();
 
-  wxCoord ww = ScaleToPdf(LogicalToDeviceXRel(w));
-  wxCoord hh = ScaleToPdf(LogicalToDeviceYRel(h));
+  wxCoord ww = ScaleLogicalToPdfXRel(w);
+  wxCoord hh = ScaleLogicalToPdfYRel(h);
 
-  wxCoord xx = ScaleToPdf(LogicalToDeviceX(x));
-  wxCoord yy = ScaleToPdf(LogicalToDeviceY(y));
+  wxCoord xx = ScaleLogicalToPdfX(x);
+  wxCoord yy = ScaleLogicalToPdfY(y);
 
   wxString imgName = wxString::Format(wxT("pdfdcimg%d"), ++m_imageCount);
 
@@ -846,21 +898,25 @@ void
 wxPdfDCImpl::DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y, double angle)
 {
   wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+
   wxFont* fontToUse = &m_font;
   if (!fontToUse->IsOk())
   {
     return;
   }
-#ifdef wx_msw
-  y += m_pdfDocument->GetFontSize();
-#else
-  y += 0.8f * GetCharHeight();
-#endif
   wxFont old = m_font; 
+
+  wxPdfFontDescription desc = m_pdfDocument->GetFontDescription();
+  int height, descent;
+  CalculateFontMetrics(&desc, fontToUse->GetPointSize(), &height, NULL, &descent, NULL);
+  if (m_mappingModeStyle != wxPDF_MAPMODESTYLE_PDF)
+  {
+    y += (height - abs(descent));
+  }
+
   m_pdfDocument->SetTextColour(m_textForegroundColour.Red(), m_textForegroundColour.Green(), m_textForegroundColour.Blue());
-  double size = (double) m_font.GetPointSize() * GetFontPointSizeAdjustment(72.0) * 4./3.;
-  m_pdfDocument->SetFontSize(ScaleToPdf(LogicalToDeviceXRel(size)) * m_pdfDocument->GetScaleFactor());
-  m_pdfDocument->RotatedText(ScaleToPdf(LogicalToDeviceX(x)), ScaleToPdf(LogicalToDeviceY(y)), text, angle);
+  m_pdfDocument->SetFontSize(ScaleFontSizeToPdf(fontToUse->GetPointSize()));
+  m_pdfDocument->RotatedText(ScaleLogicalToPdfX(x), ScaleLogicalToPdfY(y), text, angle);
   SetFont(old);
 }
 
@@ -904,9 +960,7 @@ wxPdfDCImpl::DoGetSize(int* width, int* height) const
   else
   {
     wxPaperSize id = m_printData.GetPaperId();
-
     wxPrintPaperType *paper = wxThePrintPaperDatabase->FindPaperType(id);
-
     if (!paper) paper = wxThePrintPaperDatabase->FindPaperType(wxPAPER_A4);
 
     w = 595;
@@ -939,29 +993,42 @@ wxPdfDCImpl::DoGetSize(int* width, int* height) const
 void
 wxPdfDCImpl::DoGetSizeMM(int* width, int* height) const
 {
-  wxPaperSize id = m_printData.GetPaperId();
-
-  wxPrintPaperType *paper = wxThePrintPaperDatabase->FindPaperType(id);
-
-  if (!paper) paper = wxThePrintPaperDatabase->FindPaperType(wxPAPER_A4);
-
-  int w = 210;
-  int h = 297;
-  if (paper)
+  int w;
+  int h;
+  if (m_templateMode)
   {
-    w = paper->GetWidth() / 10;
-    h = paper->GetHeight() / 10;
+    w = wxRound(m_templateWidth * m_pdfDocument->GetScaleFactor() * 25.4/72.0);
+    h = wxRound(m_templateHeight * m_pdfDocument->GetScaleFactor() * 25.4/72.0);
   }
-
-  if (m_printData.GetOrientation() == wxLANDSCAPE)
+  else
   {
-    int tmp = w;
-    w = h;
-    h = tmp;
-  }
+    wxPaperSize id = m_printData.GetPaperId();
+    wxPrintPaperType *paper = wxThePrintPaperDatabase->FindPaperType(id);
+    if (!paper) paper = wxThePrintPaperDatabase->FindPaperType(wxPAPER_A4);
 
-  if (width) *width = w;
-  if (height) *height = h;
+    w = 210;
+    h = 297;
+    if (paper)
+    {
+      w = paper->GetWidth() / 10;
+      h = paper->GetHeight() / 10;
+    }
+
+    if (m_printData.GetOrientation() == wxLANDSCAPE)
+    {
+      int tmp = w;
+      w = h;
+      h = tmp;
+    }
+  }
+  if (width)
+  {
+    *width = w;
+  }
+  if (height)
+  {
+    *height = h;
+  }
 }
 
 void
@@ -973,8 +1040,8 @@ wxPdfDCImpl::DoDrawLines(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffs
   for (i = 0; i < n; ++i)
   {
     wxPoint& point = points[i];
-    double xx = ScaleToPdf(LogicalToDeviceX(xoffset + point.x));
-    double yy = ScaleToPdf(LogicalToDeviceY(yoffset + point.y));
+    double xx = ScaleLogicalToPdfX(xoffset + point.x);
+    double yy = ScaleLogicalToPdfY(yoffset + point.y);
     CalcBoundingBox(point.x+xoffset, point.y+yoffset);
     if (i == 0)
     {
@@ -1002,8 +1069,8 @@ wxPdfDCImpl::DoDrawPolygon(int n, wxPoint points[],
   for (i = 0; i < n; ++i)
   {
     wxPoint& point = points[i];
-    xp.Add(ScaleToPdf(LogicalToDeviceX(xoffset + point.x)));
-    yp.Add(ScaleToPdf(LogicalToDeviceY(yoffset + point.y)));
+    xp.Add(ScaleLogicalToPdfX(xoffset + point.x));
+    yp.Add(ScaleLogicalToPdfY(yoffset + point.y));
     CalcBoundingBox(point.x + xoffset, point.y + yoffset);
   }
   int saveFillingRule = m_pdfDocument->GetFillingRule();
@@ -1036,8 +1103,8 @@ wxPdfDCImpl::DoDrawPolyPolygon(int n, int count[], wxPoint points[],
       for (i = 0; i < count[j]; ++i)
       {
         wxPoint& point = points[ofs+i];
-        xp.Add(ScaleToPdf(LogicalToDeviceX(xoffset + point.x)));
-        yp.Add(ScaleToPdf(LogicalToDeviceY(yoffset + point.y)));
+        xp.Add(ScaleLogicalToPdfX(xoffset + point.x));
+        yp.Add(ScaleLogicalToPdfY(yoffset + point.y));
         CalcBoundingBox(point.x + xoffset, point.y + yoffset);
       }
       m_pdfDocument->Polygon(xp, yp, style);
@@ -1069,18 +1136,20 @@ wxPdfDCImpl::DoSetClippingRegion(wxCoord x, wxCoord y, wxCoord width, wxCoord he
   m_clipY2 = (int) (y + height);
 
   // Use the current path as a clipping region
-  m_pdfDocument->ClippingRect(ScaleToPdf(LogicalToDeviceX(x)), 
-                             ScaleToPdf(LogicalToDeviceY(y)), 
-                             ScaleToPdf(LogicalToDeviceXRel(width)), 
-                             ScaleToPdf(LogicalToDeviceYRel(height)));
+  m_pdfDocument->ClippingRect(ScaleLogicalToPdfX(x), 
+                              ScaleLogicalToPdfY(y), 
+                              ScaleLogicalToPdfXRel(width), 
+                              ScaleLogicalToPdfYRel(height));
   m_clipping = true;
 }
 
 void
 wxPdfDCImpl::DoSetDeviceClippingRegion(const wxRegion& region)
 {
-  wxUnusedVar(region);
-  wxFAIL_MSG(wxString(wxT("wxPdfDCImpl::DoSetDeviceClippingRegion: "))+_("Not implemented."));
+  wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
+  wxCoord x, y, w, h;
+  region.GetBox(x, y, w, h);
+  DoSetClippingRegion(DeviceToLogicalX(x), DeviceToLogicalY(y), DeviceToLogicalXRel(w), DeviceToLogicalYRel(h));
 }
 
 void
@@ -1091,8 +1160,7 @@ wxPdfDCImpl::DoGetTextExtent(const wxString& text,
                          const wxFont* theFont) const
 {
   wxCHECK_RET(m_pdfDocument, wxT("Invalid PDF DC"));
-  // TODO
-  wxUnusedVar(externalLeading);
+
   const wxFont* fontToUse = theFont;
   if (!fontToUse)
   {
@@ -1102,19 +1170,67 @@ wxPdfDCImpl::DoGetTextExtent(const wxString& text,
   if (fontToUse)
   {
     wxFont old = m_font;
+    
     const_cast<wxPdfDCImpl*>(this)->SetFont(*fontToUse);
+    wxPdfFontDescription desc = const_cast<wxPdfDCImpl*>(this)->m_pdfDocument->GetFontDescription();
+    int myAscent, myDescent, myHeight, myExtLeading;
+    CalculateFontMetrics(&desc, fontToUse->GetPointSize(), &myHeight, &myAscent, &myDescent, &myExtLeading);
+
     if (descent)
     {
-      *descent = DeviceToLogicalYRel(m_pdfDocument->GetFontSize() * (m_pdfDocument->GetFontDescription().GetDescent() / 1000.0));
+      *descent = abs(myDescent);
     }
-    *x = DeviceToLogicalXRel(const_cast<wxPdfDCImpl*>(this)->m_pdfDocument->GetStringWidth(text));
-    *y = DeviceToLogicalYRel(GetCharHeight());
+    if( externalLeading )
+    {
+      *externalLeading = myExtLeading;
+    }
+    *x = ScalePdfToFontMetric((double)const_cast<wxPdfDCImpl*>(this)->m_pdfDocument->GetStringWidth(text));
+    *y = myHeight;
     const_cast<wxPdfDCImpl*>(this)->SetFont(old);
   }
   else
   {
     *x = *y = 0;
+    if (descent)
+    {
+      *descent = 0;
+    }
+    if (externalLeading)
+    {
+      *externalLeading = 0;
+    }
   }
+}
+
+bool
+wxPdfDCImpl::DoGetPartialTextExtents(const wxString& text, wxArrayInt& widths) const
+{
+  wxCHECK_MSG( m_pdfDocument, false, wxT("wxPdfDCImpl::DoGetPartialTextExtents - invalid DC") );
+    
+  /// very slow - but correct ??
+    
+  const size_t len = text.length();
+  if (len == 0)
+  {
+    return true;
+  }
+    
+  widths.Empty();
+  widths.Add(0, len);
+  int w, h;
+    
+  wxString buffer;
+  buffer.Alloc(len);
+
+  for ( size_t i = 0; i < len; ++i )
+  {
+    buffer.Append(text.Mid( i, 1));
+    DoGetTextExtent(buffer, &w, &h);
+    widths[i] = w;
+  }
+
+  buffer.Clear();
+  return true;
 }
 
 void
@@ -1132,7 +1248,7 @@ wxPdfDCImpl::SetupPen()
                              curPen.GetColour().Blue()));
     if (curPen.GetWidth())
     {
-      style.SetWidth(ScaleToPdf(LogicalToDeviceXRel(curPen.GetWidth())));
+      style.SetWidth(ScaleLogicalToPdfXRel(curPen.GetWidth()));
     }
     switch (curPen.GetStyle())
     {
@@ -1170,7 +1286,7 @@ wxPdfDCImpl::SetupPen()
   else
   {
     m_pdfDocument->SetDrawColour(0, 0, 0);
-    m_pdfDocument->SetLineWidth(ScaleToPdf(LogicalToDeviceXRel(1.0)));
+    m_pdfDocument->SetLineWidth(ScaleLogicalToPdfXRel(1.0));
   }
 }
 
@@ -1215,7 +1331,139 @@ wxPdfDCImpl::GetDrawingStyle()
 }
 
 double
-wxPdfDCImpl::ScaleToPdf(wxCoord x) const
+wxPdfDCImpl::ScaleLogicalToPdfX(wxCoord x) const
 {
-  return (double) x * (72. / m_ppi);
+  double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
+  return docScale * (((double)((x - m_logicalOriginX) * m_signX) * m_scaleX) +
+         m_deviceOriginX + m_deviceLocalOriginX);
+}
+
+double
+wxPdfDCImpl::ScaleLogicalToPdfXRel(wxCoord x) const
+{
+  double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
+  return (double)(x) * m_scaleX * docScale;
+}
+
+double
+wxPdfDCImpl::ScaleLogicalToPdfY(wxCoord y) const
+{
+  double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
+  return docScale * (((double)((y - m_logicalOriginY) * m_signY) * m_scaleY) + 
+         m_deviceOriginY + m_deviceLocalOriginY);
+}
+ 
+double
+wxPdfDCImpl::ScaleLogicalToPdfYRel(wxCoord y) const
+{
+  double docScale = 72.0 / (m_ppi * m_pdfDocument->GetScaleFactor());
+  return (double)(y) * m_scaleY * docScale;
+}
+
+double
+wxPdfDCImpl::ScaleFontSizeToPdf(int pointSize) const
+{
+  double fontScale;
+  double rval;
+  switch (m_mappingModeStyle)
+  {
+    case wxPDF_MAPMODESTYLE_MSW:
+      // as implemented in wxMSW
+      fontScale = (m_ppiPdfFont / m_ppi);
+      rval = (double) pointSize * fontScale * m_scaleY;
+      break;
+    case wxPDF_MAPMODESTYLE_GTK:
+      // as implemented in wxGTK / wxMAC / wxOSX
+      fontScale = (m_ppiPdfFont / m_ppi);
+      rval = (double) pointSize * fontScale * m_userScaleY;
+      break;
+    case wxPDF_MAPMODESTYLE_MAC:
+      // as implemented in wxGTK / wxMAC / wxOSX
+      fontScale = (m_ppiPdfFont / m_ppi);
+      rval = (double) pointSize * fontScale * m_userScaleY;
+      break;
+    case wxPDF_MAPMODESTYLE_PDF:
+      // an implementation where a font size of 12 gets a 12 point font if the
+      // mapping mode is wxMM_POINTS and suitable scaled for other modes
+      fontScale = (m_mappingMode == wxMM_TEXT) ? (m_ppiPdfFont / m_ppi) : (72.0 / m_ppi);
+      rval = (double) pointSize * fontScale * m_scaleY;
+      break;
+    default:
+      // standard and fall through
+#if defined( __WXMSW__)
+      fontScale = (m_ppiPdfFont / m_ppi);
+      rval = (double) pointSize * fontScale * m_scaleY;
+#else
+      fontScale = (m_ppiPdfFont / m_ppi);
+      rval = (double) pointSize * fontScale * m_userScaleY;
+#endif
+      break;
+  }
+  return rval;
+}
+
+int
+wxPdfDCImpl::ScalePdfToFontMetric( double metric ) const
+{
+  double fontScale = (72.0 / m_ppi) / (double)m_pdfDocument->GetScaleFactor();
+  return wxRound(((metric * m_signY) / m_scaleY ) / fontScale);
+}
+
+void
+wxPdfDCImpl::CalculateFontMetrics(wxPdfFontDescription* desc, int pointSize,
+                                  int* height, int* ascent, int* descent, int* extLeading) const
+{
+  double em_height, em_ascent, em_descent, em_externalLeading;
+  int hheaAscender, hheaDescender, hheaLineGap;
+
+  double size;
+  if ((m_mappingModeStyle == wxPDF_MAPMODESTYLE_PDF) && (m_mappingMode != wxMM_TEXT))
+  {
+    size = (double) pointSize;
+  }
+  else
+  {
+    size = (double) pointSize * (m_ppiPdfFont / 72.0);
+  }
+
+  int os2sTypoAscender, os2sTypoDescender, os2sTypoLineGap, os2usWinAscent, os2usWinDescent;
+
+  desc->GetOpenTypeMetrics(&hheaAscender, &hheaDescender, &hheaLineGap,
+                           &os2sTypoAscender, &os2sTypoDescender, &os2sTypoLineGap,
+                           &os2usWinAscent, &os2usWinDescent);
+
+  if (hheaAscender)
+  {
+    em_ascent  = os2usWinAscent;
+    em_descent = os2usWinDescent;
+    em_externalLeading = (hheaLineGap - ((em_ascent + em_descent) - (hheaAscender - hheaDescender)));
+    em_height = em_ascent + em_descent;
+  }
+  else
+  {
+    // magic numbers 1120 and 25 give reasonable defaults
+    // for core fonts etc.
+    // This may need adjustment for CJK fonts ??
+    em_height  = 1120;
+    em_descent = desc->GetDescent();
+    em_ascent  = em_height + em_descent;
+    em_externalLeading = 25;
+  }
+    
+  if (ascent)
+  {
+    *ascent = wxRound(em_ascent * size / 1000.0);
+  }
+  if (descent)
+  {
+    *descent = wxRound(em_descent * size / 1000.0);
+  }
+  if (height)
+  {
+    *height = wxRound(em_height * size / 1000.0);
+  }
+  if (extLeading)
+  {
+    *extLeading = wxRound(em_externalLeading * size / 1000.0);
+  }
 }

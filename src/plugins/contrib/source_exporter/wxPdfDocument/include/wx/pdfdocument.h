@@ -31,7 +31,7 @@
 #include "wx/pdflinks.h"
 #include "wx/pdfproperties.h"
 
-#define wxPDF_PRODUCER       wxT("wxPdfDocument 0.9.1")
+#define wxPDF_PRODUCER       wxT("wxPdfDocument 0.9.3")
 
 #define wxPDF_EPSILON        1e-6
 
@@ -113,6 +113,9 @@ WX_DECLARE_HASH_MAP_WITH_DECL(long, wxPdfOcg*, wxIntegerHash, wxIntegerEqual, wx
 /// Hashmap class for optional content groups
 WX_DECLARE_HASH_MAP_WITH_DECL(long, wxPdfLayerGroup*, wxIntegerHash, wxIntegerEqual, wxPdfLayerRGMap, class WXDLLIMPEXP_PDFDOC);
 
+/// Hashmap class for file attachments
+WX_DECLARE_HASH_MAP_WITH_DECL(long, wxArrayString*, wxIntegerHash, wxIntegerEqual, wxPdfAttachmentMap, class WXDLLIMPEXP_PDFDOC);
+
 /// Hashmap class for core fonts
 WX_DECLARE_STRING_HASH_MAP_WITH_DECL(int, wxPdfCoreFontMap, class WXDLLIMPEXP_PDFDOC);
 
@@ -138,7 +141,11 @@ WX_DECLARE_STRING_HASH_MAP_WITH_DECL(wxPdfIndirectObject*, wxPdfRadioGroupMap, c
 WX_DECLARE_STRING_HASH_MAP_WITH_DECL(wxPdfParser*, wxPdfParserMap, class WXDLLIMPEXP_PDFDOC);
 
 /// Class representing a PDF document.
+#if WXPDFDOC_INHERIT_WXOBJECT
+class WXDLLIMPEXP_PDFDOC wxPdfDocument : public wxObject
+#else
 class WXDLLIMPEXP_PDFDOC wxPdfDocument
+#endif
 {
 public:
   /// Constructor
@@ -1616,6 +1623,16 @@ public:
                             const wxPdfLink& link = wxPdfLink(-1),
                             int maskImage = 0);
 
+  /// Get x coordinate of bottom right corner of last inserted image
+  /**
+  */
+  virtual double GetLastImageBottomRightX() { return m_img_rb_x; }
+
+  /// Get y coordinate of bottom right corner of last inserted image
+  /**
+  */
+  virtual double GetLastImageBottomRightY() { return m_img_rb_y; }
+
   /// Performs a line break.
   /**
   * The current abscissa goes back to the left margin and the ordinate increases by the amount passed in parameter.
@@ -2450,6 +2467,17 @@ public:
   */
   virtual void LeaveLayer();
 
+  /// Attach file
+  /**
+  * Attaches a file to the PDF document.
+  * \param fileName path to the file to attach
+  * \param attachName the name under which the file will be attached (dfeault: filename)
+  * \param description an optional description
+  */
+  virtual bool AttachFile(const wxString& fileName, 
+                          const wxString& attachName = wxEmptyString,
+                          const wxString& description = wxEmptyString);
+
   /// Set message translation mode
   /**
   * Sets the message translation mode which controls the handling of msg tags in XML output
@@ -2580,6 +2608,9 @@ protected:
 
   /// Add Javascript (document level)
   virtual void PutJavaScript();
+
+  /// Add attached files
+  virtual void PutFiles();
 
   /// Add resource dictionary
   virtual void PutResourceDict();
@@ -2854,7 +2885,17 @@ private:
   wxPdfLayerGroup*     m_lockedLayers;        ///< array of locked layers
   wxArrayInt           m_layerDepth;          ///< stack for nested layers
 
+  // File attachments
+  int                  m_nAttachments;        ///< attachments object number
+  wxPdfAttachmentMap*  m_attachments;         ///< array of file attachments
+
   bool                 m_translate;           ///< flag whether messages in msg tags should be translated
+
+private:
+#if WXPDFDOC_INHERIT_WXOBJECT
+  DECLARE_DYNAMIC_CLASS(wxPdfDocument)
+#endif
+  DECLARE_NO_COPY_CLASS(wxPdfDocument)
 
   friend class wxPdfImage;
   friend class wxPdfTable;

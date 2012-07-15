@@ -8,9 +8,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxPdfDocument">
-				<Option output="wxPdfDocument\lib\libwxPdfDocument" prefix_auto="1" extension_auto="1" />
+				<Option output="wxPdfDocument\lib\wxPdfDocument" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\wxPdfDocument" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\source_exporter" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -22,7 +22,7 @@
 			<Target title="makefont">
 				<Option output="wxPdfDocument\makefont\makefont" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\makefont" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\makefont" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\source_exporter" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Linker>
@@ -34,7 +34,7 @@
 			<Target title="minimal">
 				<Option output="wxPdfDocument\samples\minimal\minimal" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\minimal" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\minimal" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\source_exporter" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Linker>
@@ -46,7 +46,7 @@
 			<Target title="pdfdc">
 				<Option output="wxPdfDocument\samples\pdfdcl\pdfdc" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="wxPdfDocument\samples\pdfdc" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter\pdfdc" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\source_exporter" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Linker>
@@ -57,7 +57,7 @@
 			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter" prefix_auto="0" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\source_exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -297,6 +297,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfpattern.h">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfprint.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfproperties.h">
@@ -573,6 +576,9 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfpattern.cpp">
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfprint.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfrijndael.cpp">
