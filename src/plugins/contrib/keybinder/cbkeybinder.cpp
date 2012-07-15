@@ -406,7 +406,7 @@ int cbKeyBinder::EnableMerge(bool allow)
         return m_mergeEnabled;
     }
     // enable Merge
-    m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : ++m_mergeEnabled );
+    m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : m_mergeEnabled + 1);
     // StartMergetTimer removed for testing 2007/05/10
     //  re-enables 2007/05/31 to record plugin menu key changes
     StartMergeTimer( 15 );

@@ -492,8 +492,6 @@ void wxMultiColumnListCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
     wxPaintDC dc(this);
 #endif
 
-    wxRect rect = GetClientRect();
-
     if (m_items.GetColumnCount() == 0)
         CalculateLayout(dc);
 

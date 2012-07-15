@@ -77,9 +77,6 @@ wxsBitmapComboBox::wxsBitmapComboBox(wxsItemResData* Data):
         wxsBitmapComboBoxEvents,
         wxsBitmapComboBoxStyles)
 {
-int         i,n;
-wxString    ss;
-
 // default values
 
     mImageList = _("<none>");
@@ -115,7 +112,7 @@ bool        ilist;
 // bitmaps have to added after the wxsImages' and wxsImageList's were added
 // note: first 2 items in mItems are used only in the dialog
 
-    for(i=2; i<mItems.GetCount(); i++) {
+    for(i=2; i<(int)mItems.GetCount(); ++i) {
         ss = mItems.Item(i);
         ParseComboItem(ss, tt, n);
 
@@ -163,7 +160,7 @@ wxBitmap            bmp;
 // add items to combo-box
 // note: first 2 items are used only in the dialog
 
-    for(i=2; i<mItems.GetCount(); i++) {
+    for(i=2; i<(int)mItems.GetCount(); ++i) {
         ss = mItems.Item(i);
         ParseComboItem(ss, tt, n);
 
@@ -217,7 +214,6 @@ void wxsBitmapComboBox::FindAllImageLists(wxArrayString &aNames) {
 int             i,n;
 wxsItemResData  *res;
 wxsTool         *tool;
-wxsImageList    *ilist;
 wxString        ss, tt;
 
 // start the list with a chance to de-select any old list
@@ -281,7 +277,7 @@ wxArrayString   aa;
 //------------------------------------------------------------------------------
 
 void wxsBitmapComboBox::ParseComboItem(wxString inSource, wxString &outItem, int &outIndex) {
-int         i,n;
+int         i;
 long        ll;
 wxString    ss, tt;
 

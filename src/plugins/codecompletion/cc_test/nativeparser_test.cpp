@@ -18,13 +18,6 @@
 #endif
 
 #ifdef CC_PARSER_TEST
-//    #define ADDTOKEN(format, args...) \
-//            CCLogger::Get()->AddToken(F(format, ##args))
-//    #define TRACE(format, args...) \
-//            CCLogger::Get()->DebugLog(F(format, ##args))
-//    #define TRACE2(format, args...) \
-//            CCLogger::Get()->DebugLog(F(format, ##args))
-
     #define ADDTOKEN(format, args...) \
             wxLogMessage(F(format, ##args))
     #define TRACE(format, args...) \

@@ -644,7 +644,7 @@ void EditSnippetFrame::OnCloseFrameOrWindow(wxCloseEvent &event)
 ////            return;
 ////        }
 
-    m_OncloseWindowEntries = (m_OncloseWindowEntries<1)? 0 : --m_OncloseWindowEntries;
+    m_OncloseWindowEntries = ((m_OncloseWindowEntries<1)? 0 : m_OncloseWindowEntries - 1);
 
 }
 //// ----------------------------------------------------------------------------

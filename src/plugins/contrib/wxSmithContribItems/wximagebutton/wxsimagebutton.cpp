@@ -208,7 +208,6 @@ static wxString         sImageNames[128];
 static const wxChar    *pImageNames[128];
 static wxString         sIndexNames[1024];
 static const wxChar    *pIndexNames[1024];
-static long             iIndexNames[1024];
 
 // find available images, and pointer to current imagelist
 
@@ -241,7 +240,6 @@ static long             iIndexNames[1024];
     n = 0;
     sIndexNames[n] = _("<none>");
     pIndexNames[n] = (const wxChar *) sIndexNames[n];
-    iIndexNames[n] = -1;
     n += 1;
     if (ilist == NULL) k = 0;
     else               k = ilist->GetCount();
@@ -249,7 +247,6 @@ static long             iIndexNames[1024];
     for(int i = 0; i < k; ++i) {
         sIndexNames[n].Printf(_("%d"), i);
         pIndexNames[n] = (const wxChar *) sIndexNames[n];
-        iIndexNames[n] = i;
         n += 1;
     };
     pIndexNames[n] = NULL;

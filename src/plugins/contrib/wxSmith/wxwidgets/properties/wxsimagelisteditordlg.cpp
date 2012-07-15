@@ -1330,7 +1330,7 @@ void wxsImageListEditorDlg::ImageListToArray(wxImageList &inList, wxArrayString 
  */
 void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList &outList)
 {
-    int             i, n;
+    int             i;
     int             w, h;
     long            ll;
     wxBitmap        bmp;
@@ -1378,7 +1378,7 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
         }
         else{                                      // end of XPM data; start next block of data
             ArrayToBitmap(aa, bmp);
-            n = list->Add(bmp);
+            list->Add(bmp);
             aa.Clear();
             aa.Add(ss);
         }

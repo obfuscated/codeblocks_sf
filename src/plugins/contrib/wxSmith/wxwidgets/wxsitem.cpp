@@ -946,11 +946,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
 
                         default:
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             Result.Append(*Fmt);
-                            #else
-                            *Result.Append(*Fmt);
-                            #endif
                         }
                     }
                     Fmt++;

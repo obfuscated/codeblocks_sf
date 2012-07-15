@@ -527,7 +527,6 @@ wxFrame* CodeSnippetsConfig::GetEditorManagerFrame(const int index)
 // ----------------------------------------------------------------------------
 {
     wxFrame* frame;
-    SEditorManager* edMgr;
     if ( (index < 0) or (index > GetEditorManagerCount()) )
         return 0;
     // iterate over all the elements in the class
@@ -538,7 +537,6 @@ wxFrame* CodeSnippetsConfig::GetEditorManagerFrame(const int index)
         if (i == index)
         {
             frame = it->first;
-            edMgr = it->second;
             return frame;
         }
         ++i;
@@ -549,7 +547,6 @@ wxFrame* CodeSnippetsConfig::GetEditorManagerFrame(const int index)
 SEditorManager* CodeSnippetsConfig::GetEditorManager(const int index)
 // ----------------------------------------------------------------------------
 {
-    wxFrame* frame;
     SEditorManager* edMgr;
     if ( (index < 0) or (index > GetEditorManagerCount()) )
         return 0;
@@ -560,7 +557,6 @@ SEditorManager* CodeSnippetsConfig::GetEditorManager(const int index)
     {
         if (i == index)
         {
-            frame = it->first;
             edMgr = it->second;
             return edMgr;
         }

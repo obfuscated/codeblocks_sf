@@ -1692,12 +1692,12 @@ void BrowseTracker::OnEditorOpened(CodeBlocksEvent& event)
         cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
         if (not cbed) return;
 
-        cbStyledTextCtrl* control = 0;
-        if (cbed) control = cbed->GetControl();
         // validate cbProject has been set
         cbProject* pcbProject = GetProject( eb );
         #if defined(LOGGING)
-         LOGIT( _T("BT OnEditorOpen ebase[%p]cbed[%p]stc[%p]proj[%p][%s]"), eb, cbed, control, pcbProject, eb->GetShortName().c_str() );
+        cbStyledTextCtrl* control = 0;
+        if (cbed) control = cbed->GetControl();
+        LOGIT( _T("BT OnEditorOpen ebase[%p]cbed[%p]stc[%p]proj[%p][%s]"), eb, cbed, control, pcbProject, eb->GetShortName().c_str() );
         #endif
 
         // stow opened editor info in the ProjectData class
