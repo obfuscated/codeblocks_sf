@@ -575,6 +575,8 @@
 #define wxSTC_C_PREPROCESSORCOMMENT 23
 
 /* C::B begin */
+// Keep in sync with SciLexer.h      -> SCE_C_WXSMITH
+// Keep in sync with Scintilla.iface -> SCE_C_WXSMITH
 #define wxSCI_C_WXSMITH 99
 /* C::B end */
 

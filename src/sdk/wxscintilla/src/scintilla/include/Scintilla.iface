@@ -2563,6 +2563,8 @@ val SCE_C_TRIPLEVERBATIM=21
 val SCE_C_HASHQUOTEDSTRING=22
 val SCE_C_PREPROCESSORCOMMENT=23
 # WXSMITH begin #
+# Keep in sync with wxscinilla.h -> wxSCI_C_WXSMITH
+# Keep in sync with SciLexer.h   -> SCE_C_WXSMITH
 val SCE_C_WXSMITH=99
 # WXSMITH end #
 # Lexical states for SCLEX_D

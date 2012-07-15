@@ -385,6 +385,12 @@ public:
 
 int SCI_METHOD LexerCPP::PropertySet(const char *key, const char *val) {
 	if (osCPP.PropertySet(&options, key, val)) {
+		if (strcmp(key, "lexer.cpp.allow.dollars") == 0) {
+			setWord = CharacterSet(CharacterSet::setAlphaNum, "._", 0x80, true);
+			if (options.identifiersAllowDollars) {
+				setWord.Add('$');
+			}
+		}
 		return 0;
 	}
 	return -1;
@@ -459,7 +465,6 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 
 	if (options.identifiersAllowDollars) {
 		setWordStart.Add('$');
-		setWord.Add('$');
 	}
 
 	int chPrevNonWhite = ' ';

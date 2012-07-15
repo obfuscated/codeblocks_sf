@@ -162,7 +162,9 @@
 #define SCE_C_HASHQUOTEDSTRING 22
 #define SCE_C_PREPROCESSORCOMMENT 23
 /* C::B begin */
-#define SCE_C_WXSMITH 24
+// Keep in sync with wxscinilla.h    -> wxSCI_C_WXSMITH
+// Keep in sync with Scintilla.iface -> SCE_C_WXSMITH
+#define SCE_C_WXSMITH 99
 /* C::B end */
 #define SCE_D_DEFAULT 0
 #define SCE_D_COMMENT 1
