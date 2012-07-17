@@ -41,7 +41,7 @@
 %define automake17          1
 %endif
 %if 0%{?_redhat_vernum} < 6
-%define nassi_shneiderman   0	
+%define nassi_shneiderman   0
 %endif
 %endif
 
