@@ -1604,6 +1604,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         control->SetProperty(_T("fold"), _T("0"));
         control->SetMarginWidth(C_FOLDING_MARGIN, 0);
     }
+    control->SetProperty(_T("highlight.wxsmith"), mgr->ReadBool(_T("/colour_sets/highlight_wxsmith"), true) ? _T("1") : _T("0"));
 
     // line numbering
     control->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);

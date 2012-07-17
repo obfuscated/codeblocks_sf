@@ -164,7 +164,9 @@
 /* C::B begin */
 // Keep in sync with wxscinilla.h    -> wxSCI_C_WXSMITH
 // Keep in sync with Scintilla.iface -> SCE_C_WXSMITH
-#define SCE_C_WXSMITH 99
+// Keep in sync with lexer_cpp.xml   -> Style name="wxSmith-generated code"
+// Notice that due to the "activeFlag" in LexCPP.cxx, the index must be < 64 (0x40).
+#define SCE_C_WXSMITH 50
 /* C::B end */
 #define SCE_D_DEFAULT 0
 #define SCE_D_COMMENT 1

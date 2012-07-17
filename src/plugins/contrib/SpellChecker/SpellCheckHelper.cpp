@@ -41,7 +41,7 @@ SpellCheckHelper::~SpellCheckHelper()
 
 bool SpellCheckHelper::IsWhiteSpace(const wxChar &ch)
 {
-    wxString str( _T(" \t\r\n.,'?!@#$%^&*()-=_+[]{}\\|;:\"<>/~0123456789") );
+    wxString str( _T(" \t\r\n.,'`?!@#$%^&*()-=_+[]{}\\|;:\"<>/~0123456789") );
 
     return str.Find(ch) != wxNOT_FOUND; //signed-unsigned comparison; switched from "find()" to "Find()"
 }

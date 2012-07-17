@@ -218,7 +218,7 @@ struct OptionsCPP {
 	bool foldCompact;
 	bool foldAtElse;
 /* C::B begin */
-	bool foldWxSmith;
+	bool highlightWxSmith;
 /* C::B end */
 	OptionsCPP() {
 		stylingWithinPreprocessor = false;
@@ -239,7 +239,7 @@ struct OptionsCPP {
 		foldCompact = false;
 		foldAtElse = false;
 /* C::B begin */
-		foldWxSmith = false;
+		highlightWxSmith = true;
 /* C::B end */
 	}
 };
@@ -305,7 +305,9 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 			"Includes C#'s explicit #region and #endregion folding directives.");
 
 		DefineProperty("fold.compact", &OptionsCPP::foldCompact);
-
+/* C::B begin */
+		DefineProperty("highlight.wxsmith", &OptionsCPP::highlightWxSmith);
+/* C::B end */
 		DefineProperty("fold.at.else", &OptionsCPP::foldAtElse,
 			"This option enables C++ folding on a \"} else {\" line of an if statement.");
 
@@ -786,8 +788,9 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 				break;
 			case SCE_C_WXSMITH:
 				if (sc.Match("//*)")) {
-					sc.Forward(); sc.Forward(); sc.Forward();
-					sc.ForwardSetState(SCE_C_DEFAULT|activitySet);
+					sc.Forward(4);
+					sc.SetState(SCE_C_COMMENTLINE|activitySet);
+					continue;
 				}
 /* C::B end */
 		}
@@ -835,9 +838,15 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC|activitySet);
 /* C::B begin */
-				else if (sc.Match("(*"))
+				else if (sc.Match("//(*") && options.highlightWxSmith) {
 					// Support for wxSmith auto-generated code
 					sc.SetState(SCE_C_WXSMITH|activitySet);
+					sc.Forward(4);
+					sc.SetState(SCE_C_COMMENTLINE|activitySet);
+					while (!sc.atLineEnd)
+						sc.Forward();
+					sc.SetState(SCE_C_WXSMITH|activitySet);
+				}
 /* C::B end */
 				else
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
@@ -1005,7 +1014,9 @@ void SCI_METHOD LexerCPP::Fold(unsigned int startPos, int length, int initStyle,
 				levelNext--;
 			}
 		}
-		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) || options.foldExplicitAnywhere)) {
+/* C::B begin */
+		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) || (style == SCE_C_WXSMITH) || options.foldExplicitAnywhere)) {
+/* C::B end */
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
 					levelNext++;
@@ -1032,15 +1043,6 @@ void SCI_METHOD LexerCPP::Fold(unsigned int startPos, int length, int initStyle,
 				}
 			}
 		}
-/* C::B begin */
-		if (options.foldWxSmith && (style == SCE_C_WXSMITH)) {
-			if (stylePrev != SCE_C_WXSMITH) {
-				levelNext++;
-			} else if ( styleNext != SCE_C_WXSMITH) {
-				levelNext--;
-		    }
-		}
-/* C::B end */
 		if (options.foldPreprocessor && (style == SCE_C_PREPROCESSOR)) {
 			if (ch == '#') {
 				unsigned int j = i + 1;
