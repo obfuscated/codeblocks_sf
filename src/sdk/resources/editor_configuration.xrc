@@ -465,7 +465,7 @@
                                 <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 <border>4</border>
                               </object>
-                              <label>Colouring andf highlighting options</label>
+                              <label>Colouring and highlighting options</label>
                               <orient>wxVERTICAL</orient>
                             </object>
                             <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
