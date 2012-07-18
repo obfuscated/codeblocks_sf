@@ -283,7 +283,7 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
     m_CurrentSet(Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"))),
     m_CurrentVar(var)
 {
-    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGloabalUservars"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGlobalUservars"),_T("wxScrollingDialog"));
     m_SelSet    = XRCCTRL(*this, "selSet",    wxChoice);
     m_SelVar    = XRCCTRL(*this, "selVar",    wxChoice);
     m_DeleteSet = XRCCTRL(*this, "deleteSet", wxButton);
