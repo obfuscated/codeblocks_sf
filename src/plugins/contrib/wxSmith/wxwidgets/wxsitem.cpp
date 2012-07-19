@@ -26,7 +26,10 @@
 #include "wxsitemrestreedata.h"
 #include "wxseventseditor.h"
 #include "wxsitemeditor.h"
+
 #include <wx/menu.h>
+
+#include <clocale>
 
 using namespace wxsFlags;
 
@@ -260,11 +263,11 @@ void wxsItem::BuildSetupWindowCode()
             }
 
             #if wxCHECK_VERSION(2, 9, 0)
-            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
-            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
+            if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
+            if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
             #else
-            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.c_str());
-            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.c_str());
+            if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.c_str());
+            if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.c_str());
             #endif
             if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty() )
             {
@@ -743,7 +746,14 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
 
                         case _T('V'):
                         {
-                            Result << _T("wxDefaultValidator");
+                            if ( Flags & flValidator && !m_BaseProperties.m_Validator.IsEmpty() )
+                            {
+                                Result << m_BaseProperties.m_Validator;
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultValidator");
+                            }
                             break;
                         }
 
@@ -790,7 +800,10 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                         case _T('f'):
                         {
                             double F = va_arg(ap,double);
-                            Result << F;
+                            // handle locale decimal points correctly (always convert them to "dot")
+                            wxString sF; sF << F;
+                            sF.Replace(wxString::FromUTF8(localeconv()->decimal_point), wxT("."));
+                            Result << sF;
                             break;
                         }
 

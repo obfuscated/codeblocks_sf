@@ -41,6 +41,7 @@ namespace wxsFlags
     const long flSubclass  = 0x0000800;  ///< \brief Item is using subclassing
     const long flMinMaxSize= 0x0001000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
     const long flExtraCode = 0x0002000;  ///< \brief Item is using extra item initialization code
+    const long flValidator = 0x0004000;  ///< \brief Item is using specific validator (not wxDefaultValidator)
 
     const long flFile      = 0x8000000;  ///< \brief Edition in file mode
     const long flSource    = 0x4000000;  ///< \brief Edition in source mode

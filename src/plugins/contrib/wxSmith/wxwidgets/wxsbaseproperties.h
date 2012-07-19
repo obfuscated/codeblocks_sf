@@ -38,40 +38,43 @@ class wxsBaseProperties: public wxsPropertyContainer
 {
     public:
 
-        bool m_ParentFromArg;             ///< \brief Use parent from constructor's argument
-        wxString m_VarName;               ///< \brief Variable name
-        bool m_IsMember;                  ///< \brief Swith between local and global variable
-        wxString m_IdName;                ///< \brief Name of identifier
-        bool m_IdFromArg;                 ///< \brief Set to true if we should consider taking id from constructor's argument
-        wxString m_Subclass;              ///< \brief Subclass (class used instead of original base class)
-        wxsPositionData m_Position;       ///< \brief Data for position in case of custom value
-        bool m_PositionFromArg;           ///< \brief If set to true, we should consider taking position from constructor's argument
-        wxsSizeData m_Size;               ///< \brief Data for size in case of custom value
-        bool m_SizeFromArg;               ///< \brief If set to true, we should consider taking position from constructor's argument
-        wxsSizeData m_MinSize;            ///< \brief Mininum size (not available in XRC)
-        wxsSizeData m_MaxSize;            ///< \brief Maximum size (not available in XRC)
-        bool m_Enabled;                   ///< \brief If false, widget is disabled (true by deefault)
-        bool m_Focused;                   ///< \brief If true, widget is focused (false by default)
-        bool m_Hidden;                    ///< \brief If true, widget is hidden (false by default)
-        wxsColourData m_Fg;               ///< \brief Foreground colour when using custom colour
-        wxsColourData m_Bg;               ///< \brief Background colour when using custom colour
-        wxsFontData m_Font;               ///< \brief Font
-        wxString m_ToolTip;               ///< \brief Tooltip
-        wxString m_HelpText;              ///< \brief Help text
-        wxString m_ExtraCode;             ///< \brief User's extra item initialization code
+        bool            m_ParentFromArg;   ///< \brief Use parent from constructor's argument
+        wxString        m_VarName;         ///< \brief Variable name
+        bool            m_IsMember;        ///< \brief Swith between local and global variable
+        wxString        m_IdName;          ///< \brief Name of identifier
+        bool            m_IdFromArg;       ///< \brief Set to true if we should consider taking id from constructor's argument
+        wxString        m_Subclass;        ///< \brief Subclass (class used instead of original base class)
+        wxsPositionData m_Position;        ///< \brief Data for position in case of custom value
+        bool            m_PositionFromArg; ///< \brief If set to true, we should consider taking position from constructor's argument
+        wxsSizeData     m_Size;            ///< \brief Data for size in case of custom value
+        bool            m_SizeFromArg;     ///< \brief If set to true, we should consider taking position from constructor's argument
+        wxString        m_Validator;       ///< \brief Specific validator, setup by the user (not wxDefaultValidator)
+        wxsSizeData     m_MinSize;         ///< \brief Mininum size (not available in XRC)
+        wxsSizeData     m_MaxSize;         ///< \brief Maximum size (not available in XRC)
+        bool            m_Enabled;         ///< \brief If false, widget is disabled (true by deefault)
+        bool            m_Focused;         ///< \brief If true, widget is focused (false by default)
+        bool            m_Hidden;          ///< \brief If true, widget is hidden (false by default)
+        wxsColourData   m_Fg;              ///< \brief Foreground colour when using custom colour
+        wxsColourData   m_Bg;              ///< \brief Background colour when using custom colour
+        wxsFontData     m_Font;            ///< \brief Font
+        wxString        m_ToolTip;         ///< \brief Tooltip
+        wxString        m_HelpText;        ///< \brief Help text
+        wxString        m_ExtraCode;       ///< \brief User's extra item initialization code
 
         // TODO: Convert these to long long
-        long m_StyleBits;                 ///< \brief Internal representation of styles as bit field
-        long m_ExStyleBits;               ///< \brief Internal representation of extra styles as bit field
-        const wxsStyleSet* m_StyleSet;    ///< \brief Styleset used in style operations
+        long m_StyleBits;                  ///< \brief Internal representation of styles as bit field
+        long m_ExStyleBits;                ///< \brief Internal representation of extra styles as bit field
+        const wxsStyleSet* m_StyleSet;     ///< \brief Styleset used in style operations
 
         /** \brief Constructor - it will be used to set default values */
         wxsBaseProperties():
             m_ParentFromArg(true),
             m_IsMember(true),
+            m_IdName(wxEmptyString),
             m_IdFromArg(false),
             m_PositionFromArg(false),
             m_SizeFromArg(false),
+            m_Validator(wxEmptyString),
             m_Enabled(true),
             m_Focused(false),
             m_Hidden(false),
