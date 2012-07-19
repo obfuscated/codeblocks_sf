@@ -102,7 +102,6 @@ protected:
 
     //(*Declarations(wxsNewWindowDlg)
     wxBoxSizer* m_RootSizer;
-    wxFlexGridSizer* FlexGridSizer4;
     wxTextCtrl* m_Header;
     wxCheckBox* m_UseFwdDecl;
     wxTextCtrl* m_CtorCustom;
@@ -114,15 +113,12 @@ protected:
     wxCheckBox* m_CtorParent;
     wxCheckBox* m_CtorId;
     wxCheckBox* m_AddWxs;
-    wxFlexGridSizer* FlexGridSizer3;
     wxTextCtrl* m_PchGuard;
     wxTextCtrl* m_Class;
     wxCheckBox* m_UsePCH;
-    wxFlexGridSizer* FlexGridSizer2;
     wxStaticBoxSizer* m_AdvancedOptionsSizer;
     wxCheckBox* m_CtorParentDef;
     wxCheckBox* m_CtorSizeDef;
-    wxStaticBoxSizer* StaticBoxSizer3;
     wxCheckBox* m_XRCAutoload;
     wxTextCtrl* m_Xrc;
     wxButton* m_ScopeIds;
@@ -131,11 +127,9 @@ protected:
     wxCheckBox* m_UseXrc;
     wxButton* m_AdvOps;
     wxCheckBox* m_CtorPosDef;
-    wxFlexGridSizer* FlexGridSizer1;
     wxCheckBox* m_CtorPos;
     wxCheckBox* m_UseI18n;
     wxComboBox* m_Pch;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
     wxCheckBox* m_CtorSize;
     wxCheckBox* m_UseInitFunc;
     //*)

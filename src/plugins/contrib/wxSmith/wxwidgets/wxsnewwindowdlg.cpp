@@ -128,15 +128,21 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     //(*Initialize(wxsNewWindowDlg)
     wxStaticText* StaticText10;
     wxStaticText* StaticText9;
+    wxFlexGridSizer* FlexGridSizer4;
     wxStaticText* StaticText2;
+    wxFlexGridSizer* FlexGridSizer3;
     wxStaticText* StaticText6;
     wxStaticText* StaticText8;
     wxStaticText* StaticText11;
+    wxFlexGridSizer* FlexGridSizer2;
     wxStaticText* StaticText1;
     wxStaticText* StaticText3;
+    wxStaticBoxSizer* StaticBoxSizer3;
     wxStaticText* StaticText5;
     wxStaticText* StaticText7;
+    wxFlexGridSizer* FlexGridSizer1;
     wxStaticText* StaticText4;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
 
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
@@ -217,32 +223,33 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     FlexGridSizer2->Add(StaticText5, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer3 = new wxFlexGridSizer(0, 2, 0, 10);
     FlexGridSizer3->AddGrowableCol(0);
+    FlexGridSizer3->AddGrowableCol(1);
     m_CtorParent = new wxCheckBox(this, ID_CHECKBOX5, _("Parent"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
     m_CtorParent->SetValue(true);
-    FlexGridSizer3->Add(m_CtorParent, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorParent, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorParentDef = new wxCheckBox(this, ID_CHECKBOX9, _("Def. value"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX9"));
     m_CtorParentDef->SetValue(false);
-    FlexGridSizer3->Add(m_CtorParentDef, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorParentDef, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorId = new wxCheckBox(this, ID_CHECKBOX6, _("Id"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
     m_CtorId->SetValue(true);
-    FlexGridSizer3->Add(m_CtorId, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorId, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorIdDef = new wxCheckBox(this, ID_CHECKBOX10, _("Def. value"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX10"));
     m_CtorIdDef->SetValue(true);
-    FlexGridSizer3->Add(m_CtorIdDef, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorIdDef, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorPos = new wxCheckBox(this, ID_CHECKBOX7, _("Position"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX7"));
     m_CtorPos->SetValue(false);
     FlexGridSizer3->Add(m_CtorPos, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorPosDef = new wxCheckBox(this, ID_CHECKBOX11, _("Def. value"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX11"));
     m_CtorPosDef->SetValue(true);
     m_CtorPosDef->Disable();
-    FlexGridSizer3->Add(m_CtorPosDef, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorPosDef, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorSize = new wxCheckBox(this, ID_CHECKBOX8, _("Size"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
     m_CtorSize->SetValue(false);
     FlexGridSizer3->Add(m_CtorSize, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_CtorSizeDef = new wxCheckBox(this, ID_CHECKBOX12, _("Def. value"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX12"));
     m_CtorSizeDef->SetValue(true);
     m_CtorSizeDef->Disable();
-    FlexGridSizer3->Add(m_CtorSizeDef, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_CtorSizeDef, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer2->Add(FlexGridSizer3, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticText6 = new wxStaticText(this, wxID_ANY, _("Custom arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer2->Add(StaticText6, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -252,9 +259,9 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_UseFwdDecl = new wxCheckBox(this, ID_CHECKBOX14, _("Use forward declarations"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX14"));
     m_UseFwdDecl->SetValue(false);
     m_AdvancedOptionsSizer->Add(m_UseFwdDecl, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_UseI18n = new wxCheckBox(this, ID_CHECKBOX15, _("Use internationalize"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX15"));
+    m_UseI18n = new wxCheckBox(this, ID_CHECKBOX15, _("Use internationalisation (translatable applications)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX15"));
     m_UseI18n->SetValue(true);
-    m_AdvancedOptionsSizer->Add(m_UseI18n, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    m_AdvancedOptionsSizer->Add(m_UseI18n, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_AddWxs = new wxCheckBox(this, ID_CHECKBOX13, _("Add wxs file to project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX13"));
     m_AddWxs->SetValue(true);
     m_AdvancedOptionsSizer->Add(m_AddWxs, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -360,7 +367,7 @@ void wxsNewWindowDlg::OnCancel(wxCommandEvent& event)
 
 void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 {
-	bool CreateXrc = m_UseXrc->GetValue();
+    bool CreateXrc = m_UseXrc->GetValue();
     cbProject* cbProj = m_Project->GetCBProject();
 
     wxsItemRes::NewResourceParams Params;

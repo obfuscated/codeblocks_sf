@@ -6,10 +6,10 @@
 		<object class="wxBoxSizer" variable="m_RootSizer" member="yes">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
 					<label>Options</label>
 					<object class="sizeritem">
-						<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+						<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
 							<cols>2</cols>
 							<vgap>5</vgap>
 							<hgap>5</hgap>
@@ -109,7 +109,7 @@
 				<object class="wxStaticBoxSizer" variable="m_AdvancedOptionsSizer" member="yes">
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+						<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
 							<cols>2</cols>
 							<vgap>5</vgap>
 							<hgap>5</hgap>
@@ -190,7 +190,7 @@
 								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 							</object>
 							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="yes">
+								<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
 									<cols>3</cols>
 									<hgap>5</hgap>
 									<growablecols>0,1,2</growablecols>
@@ -257,10 +257,10 @@
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
+								<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
 									<cols>2</cols>
 									<hgap>10</hgap>
-									<growablecols>0</growablecols>
+									<growablecols>0,1</growablecols>
 									<object class="sizeritem">
 										<object class="wxCheckBox" name="ID_CHECKBOX5" variable="m_CtorParent" member="yes">
 											<label>Parent</label>
@@ -269,13 +269,14 @@
 										</object>
 										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxCheckBox" name="ID_CHECKBOX9" variable="m_CtorParentDef" member="yes">
 											<label>Def. value</label>
 											<handler function="OnCtorParentDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -287,6 +288,7 @@
 										</object>
 										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxCheckBox" name="ID_CHECKBOX10" variable="m_CtorIdDef" member="yes">
@@ -294,7 +296,7 @@
 											<checked>1</checked>
 											<handler function="OnCtorIdDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -314,7 +316,7 @@
 											<enabled>0</enabled>
 											<handler function="OnCtorPosDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -334,7 +336,7 @@
 											<enabled>0</enabled>
 											<handler function="OnCtorSizeDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -371,10 +373,10 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX15" variable="m_UseI18n" member="yes">
-							<label>Use internationalize</label>
+							<label>Use internationalisation (translatable applications)</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -395,7 +397,7 @@
 				<size>300,5</size>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
+				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="no">
 					<object class="button">
 						<object class="wxButton" name="wxID_OK">
 							<label></label>
