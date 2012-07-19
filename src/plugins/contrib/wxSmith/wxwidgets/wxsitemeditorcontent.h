@@ -95,14 +95,14 @@ class wxsItemEditorContent: public wxsDrawingWindow
         /** \brief Structure describing one dragging point */
         struct DragPointData
         {
-        	wxsItem* Item;                                  ///< \brief Associated item
-        	DragBoxType Type;                               ///< \brief Type of this drag box
-        	bool Grey;                                      ///< \brief If true, this drag point will be drawn grey
-        	int PosX;                                       ///< \brief X position of this drag point
-        	int PosY;                                       ///< \brief Y position of this drag point
-        	int DragInitPosX;                               ///< \brief X position before dragging
-        	int DragInitPosY;                               ///< \brief Y position before dragging
-        	DragPointData* ItemPoints[DragBoxTypeCnt];      ///< \brief Pointers to all drag points for this item
+            wxsItem* Item;                                  ///< \brief Associated item
+            DragBoxType Type;                               ///< \brief Type of this drag box
+            bool Grey;                                      ///< \brief If true, this drag point will be drawn grey
+            int PosX;                                       ///< \brief X position of this drag point
+            int PosY;                                       ///< \brief Y position of this drag point
+            int DragInitPosX;                               ///< \brief X position before dragging
+            int DragInitPosY;                               ///< \brief Y position before dragging
+            DragPointData* ItemPoints[DragBoxTypeCnt];      ///< \brief Pointers to all drag points for this item
         };
 
         /** \brief Declaration of vector containing all drag points */

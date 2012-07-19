@@ -36,7 +36,7 @@ wxsGridSizer::wxsGridSizer(wxsItemResData* Data):
 
 wxSizer* wxsGridSizer::OnBuildSizerPreview(wxWindow* Parent)
 {
-	return new wxGridSizer(Rows,Cols,
+    return new wxGridSizer(Rows,Cols,
         VGap.GetPixels(Parent),HGap.GetPixels(Parent));
 }
 

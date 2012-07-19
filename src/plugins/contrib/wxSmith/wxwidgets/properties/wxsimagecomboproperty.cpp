@@ -44,8 +44,8 @@ bool wxsImageComboProperty::ShowEditor(wxsPropertyContainer* Object)
 
 /*! \brief Read XML control data.
  *
- * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
- * \param Element TiXmlElement*				A pointer to the parent node of the XML block.
+ * \param Object wxsPropertyContainer*    A pointer to a wxsPropertyContainer object.
+ * \param Element TiXmlElement*                A pointer to the parent node of the XML block.
  * \return bool
  *
  */
@@ -77,8 +77,8 @@ bool wxsImageComboProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
 
 /*! \brief Write XML data.
  *
- * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
- * \param Element TiXmlElement*				A pointer to the parent node of the XML block.
+ * \param Object wxsPropertyContainer*    A pointer to a wxsPropertyContainer object.
+ * \param Element TiXmlElement*                A pointer to the parent node of the XML block.
  * \return bool
  *
  */

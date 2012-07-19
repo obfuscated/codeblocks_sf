@@ -36,11 +36,11 @@ class wxsHyperlinkCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString 			m_Label;					//!< The label text.
-        wxString 			m_URL;					//!< The URL text.
-        wxsColourData	m_NormalColour;		//!< The normal text colour.
-        wxsColourData	m_HoverColour;			//!< The colour to use when hovering over the text.
-        wxsColourData	m_VisitedColour;		//!< The colour to use when the URL has been visited.
+        wxString             m_Label;                    //!< The label text.
+        wxString             m_URL;                    //!< The URL text.
+        wxsColourData    m_NormalColour;        //!< The normal text colour.
+        wxsColourData    m_HoverColour;            //!< The colour to use when hovering over the text.
+        wxsColourData    m_VisitedColour;        //!< The colour to use when the URL has been visited.
 };
 
 

@@ -35,9 +35,9 @@ class wxsTextEntryDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        wxString m_sCaption;			//!< The caption text.
-        wxString m_sMessage;			//!< The message text.
-        wxString m_sDefaultValue;		//!< The default text to insert into the text box.
+        wxString m_sCaption;            //!< The caption text.
+        wxString m_sMessage;            //!< The message text.
+        wxString m_sDefaultValue;        //!< The default text to insert into the text box.
 };
 
 #endif      //  WXTEXTENTRYDIALOG_H

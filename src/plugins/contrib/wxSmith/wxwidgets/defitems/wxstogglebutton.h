@@ -39,7 +39,7 @@ class wxsToggleButton: public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
         wxString Label;
-	    bool IsChecked;
+        bool IsChecked;
 
 };
 

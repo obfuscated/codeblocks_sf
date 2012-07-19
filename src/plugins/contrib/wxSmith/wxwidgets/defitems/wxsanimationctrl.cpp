@@ -35,7 +35,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsAnimationCtrl::wxsAnimationCtrl(wxsItemResData* Data):
@@ -44,7 +44,7 @@ wxsAnimationCtrl::wxsAnimationCtrl(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         wxsAnimationCtrlStyles),
-		m_bPlay(false)
+        m_bPlay(false)
 {}
 
 /*! \brief Create the initial control.
@@ -60,7 +60,7 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/animate.h>"),GetInfo().ClassName,hfInPCH);
 
-			wxString sAnimName = GetCoderContext()->GetUniqueName(_T("anim"));
+            wxString sAnimName = GetCoderContext()->GetUniqueName(_T("anim"));
             #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\twxAnimation %s(%n);\n"), sAnimName.wx_str(), m_sAnimation.wx_str());
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.wx_str(),);
@@ -69,11 +69,11 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.c_str());
             #endif
 
-			if(!m_bmpInactive.IsEmpty()){
-				Codef(_T("%ASetInactiveBitmap(%i);\n"), &m_bmpInactive, _T("wxART_OTHER"));
-			}
+            if(!m_bmpInactive.IsEmpty()){
+                Codef(_T("%ASetInactiveBitmap(%i);\n"), &m_bmpInactive, _T("wxART_OTHER"));
+            }
             if(m_bPlay){
-				Codef(_T("%APlay();\n"));
+                Codef(_T("%APlay();\n"));
             }
 
             BuildSetupWindowCode();
@@ -87,11 +87,11 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsAnimationCtrl::OnBuildPreview(wxWindow* parent,long flags)
@@ -113,14 +113,14 @@ wxObject* wxsAnimationCtrl::OnBuildPreview(wxWindow* parent,long flags)
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsAnimationCtrl::OnEnumWidgetProperties(long flags)
 {
     WXS_SHORT_STRING(wxsAnimationCtrl, m_sAnimation, _("Animation"), _T("animation"), _T(""), false)
-	WXS_BITMAP(wxsAnimationCtrl, m_bmpInactive, _("Inactive Bitmap"), _T("inactive_bitmap"), _T("wxART_OTHER"));
-	WXS_BOOL(wxsAnimationCtrl, m_bPlay, _("Play"), _T("play"), false)
+    WXS_BITMAP(wxsAnimationCtrl, m_bmpInactive, _("Inactive Bitmap"), _T("inactive_bitmap"), _T("wxART_OTHER"));
+    WXS_BOOL(wxsAnimationCtrl, m_bPlay, _("Play"), _T("play"), false)
 }
 

@@ -148,32 +148,32 @@ void wxsSplitterWindow::OnEnumContainerProperties(long Flags)
 bool wxsSplitterWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
     // TODO: Allow more tools
-	if ( GetChildCount() == 2 )
-	{
-	    if ( ShowMessage )
-	    {
+    if ( GetChildCount() == 2 )
+    {
+        if ( ShowMessage )
+        {
             wxMessageBox(_("Splitter can have at most 2 children"));
-	    }
-		return false;
-	}
+        }
+        return false;
+    }
 
-	if ( Item->GetType() == wxsTSizer )
-	{
-	    if ( ShowMessage )
-	    {
+    if ( Item->GetType() == wxsTSizer )
+    {
+        if ( ShowMessage )
+        {
             wxMessageBox(_("Can not add sizer into Splitter.\nAdd panels first"));
-	    }
-		return false;
-	}
+        }
+        return false;
+    }
 
-	if ( Item->GetType() == wxsTSpacer )
-	{
-	    if ( ShowMessage )
-	    {
+    if ( Item->GetType() == wxsTSpacer )
+    {
+        if ( ShowMessage )
+        {
             wxMessageBox(_("Spacer can be added to sizers only"));
-	    }
-		return false;
-	}
+        }
+        return false;
+    }
 
     return true;
 }

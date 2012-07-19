@@ -56,7 +56,7 @@ class wxsEventsEditor
          */
         bool GotoOrBuildEvent(wxsItem* Item,int EventIndex,wxsPropertyGridManager* Grid);
 
-	private:
+    private:
 
         WX_DEFINE_ARRAY(wxPGId,wxArrayPGId);
 

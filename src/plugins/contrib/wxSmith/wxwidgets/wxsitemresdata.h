@@ -170,71 +170,71 @@ class wxsItemResData
         /*  Undo buffer operations  */
         /* ************************ */
 
-		/** \brief Checking if can Undo */
-		inline bool CanUndo() { return m_Undo.CanUndo(); }
+        /** \brief Checking if can Undo */
+        inline bool CanUndo() { return m_Undo.CanUndo(); }
 
-		/** \brief Ckecing if can Redo */
-		inline bool CanRedo() { return m_Undo.CanRedo(); }
+        /** \brief Ckecing if can Redo */
+        inline bool CanRedo() { return m_Undo.CanRedo(); }
 
-		/** \brief Undoing */
-		inline void Undo() { SetXmlData(m_Undo.Undo()); }
+        /** \brief Undoing */
+        inline void Undo() { SetXmlData(m_Undo.Undo()); }
 
-		/** \brief Redoing */
-		inline void Redo() { SetXmlData(m_Undo.Redo()); }
+        /** \brief Redoing */
+        inline void Redo() { SetXmlData(m_Undo.Redo()); }
 
         /** \brief Checking if current content is read only */
         inline bool IsReadOnly() { return m_ReadOnly; }
 
-		/* ********************** */
-		/*  Clipboard operations  */
-		/* ********************** */
+        /* ********************** */
+        /*  Clipboard operations  */
+        /* ********************** */
 
-		/** \brief Checking if we can paste current clipboard content */
-		bool CanPaste();
+        /** \brief Checking if we can paste current clipboard content */
+        bool CanPaste();
 
-		/** \brief Cutting current selection to clipboard */
-		void Cut();
+        /** \brief Cutting current selection to clipboard */
+        void Cut();
 
-		/** \brief Copying current selectin to clipboard */
-		void Copy();
+        /** \brief Copying current selectin to clipboard */
+        void Copy();
 
-		/** \brief Pasting components from clipboard
-		 *  \param Parent parent for new items
-		 *  \param Position initial position for new items
-		 */
-		void Paste(wxsParent* Parent,int Position);
+        /** \brief Pasting components from clipboard
+         *  \param Parent parent for new items
+         *  \param Position initial position for new items
+         */
+        void Paste(wxsParent* Parent,int Position);
 
 
-		/* ********************** */
-		/*  Selection operations  */
-		/* ********************** */
+        /* ********************** */
+        /*  Selection operations  */
+        /* ********************** */
 
-		/** \brief Checking of there's any selection */
-		bool AnySelected();
+        /** \brief Checking of there's any selection */
+        bool AnySelected();
 
-		/** \brief Selecting one item */
-		bool SelectItem(wxsItem* Item,bool UnselectOther);
+        /** \brief Selecting one item */
+        bool SelectItem(wxsItem* Item,bool UnselectOther);
 
-		/** \brief Getting last selected item or 0 if there's no valid selection */
-		inline wxsItem* GetLastSelection() { return m_RootSelection; }
+        /** \brief Getting last selected item or 0 if there's no valid selection */
+        inline wxsItem* GetLastSelection() { return m_RootSelection; }
 
-		/* ******************* */
-		/*  Operating on data  */
-		/* ******************* */
+        /* ******************* */
+        /*  Operating on data  */
+        /* ******************* */
 
-		/** \brief Adding new item
-		 *
-		 * This function tries to add new item into
-		 * given position. If it's possible, new item
-		 * is added and true is returned. If it's
-		 * impossible, new item is deleted internally
-		 * and function returns false.
-		 * \note To add tool item use InsertNewTool
-		 * \param New new item
-		 * \param Parent item which will become parent of New
-		 * \param Position position inside Parent (if <0 or  out of range,
-		 *        appending New at the end of Parent's children)
-		 */
+        /** \brief Adding new item
+         *
+         * This function tries to add new item into
+         * given position. If it's possible, new item
+         * is added and true is returned. If it's
+         * impossible, new item is deleted internally
+         * and function returns false.
+         * \note To add tool item use InsertNewTool
+         * \param New new item
+         * \param Parent item which will become parent of New
+         * \param Position position inside Parent (if <0 or  out of range,
+         *        appending New at the end of Parent's children)
+         */
         bool InsertNew(wxsItem* New,wxsParent* Parent,int Position);
 
         /** \brief Adding new tool

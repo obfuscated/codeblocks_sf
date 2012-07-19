@@ -34,47 +34,47 @@ const long wxsArrayStringEditorDlg::ID_TEXTCTRL1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg,wxScrollingDialog)
-	//(*EventTable(wxsArrayStringEditorDlg)
-	//*)
+    //(*EventTable(wxsArrayStringEditorDlg)
+    //*)
 END_EVENT_TABLE()
 
 wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString& _Data,wxWindowID id):
     Data(_Data)
 {
-	//(*Initialize(wxsArrayStringEditorDlg)
-	wxButton* Button1;
-	wxBoxSizer* BoxSizer2;
-	wxButton* Button2;
-	wxBoxSizer* BoxSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
+    //(*Initialize(wxsArrayStringEditorDlg)
+    wxButton* Button1;
+    wxBoxSizer* BoxSizer2;
+    wxButton* Button2;
+    wxBoxSizer* BoxSizer1;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
-	Create(parent, id, _("Edit items"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Enter items (one item per line)"));
-	Items = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(350,200), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	StaticBoxSizer1->Add(Items, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
-	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	Button1 = new wxButton(this, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_OK"));
-	Button1->SetDefault();
-	BoxSizer2->Add(Button1, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	Button2 = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_CANCEL"));
-	BoxSizer2->Add(Button2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
+    Create(parent, id, _("Edit items"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Enter items (one item per line)"));
+    Items = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(350,200), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    StaticBoxSizer1->Add(Items, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
+    BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    Button1 = new wxButton(this, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_OK"));
+    Button1->SetDefault();
+    BoxSizer2->Add(Button1, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button2 = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_CANCEL"));
+    BoxSizer2->Add(Button2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(BoxSizer1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
-	Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnOK);
-	Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnCancel);
-	//*)
+    Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnOK);
+    Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnCancel);
+    //*)
 
-	size_t Count = Data.Count();
-	for ( size_t i = 0; i<Count; i++ )
-	{
-	    Items->AppendText(Data[i]);
-	    Items->AppendText(_T('\n'));
-	}
+    size_t Count = Data.Count();
+    for ( size_t i = 0; i<Count; i++ )
+    {
+        Items->AppendText(Data[i]);
+        Items->AppendText(_T('\n'));
+    }
 }
 
 wxsArrayStringEditorDlg::~wxsArrayStringEditorDlg()

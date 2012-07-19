@@ -37,13 +37,13 @@ wxsImage::wxsImage(wxsItemResData *Data) :
     wxString    ss, tt;
     wxFileName  fn;
 
-	// nothing selected yet
+    // nothing selected yet
     m_IsBuilt = false;
     m_ImageData.Clear();
     m_Include = false;
 
-	// make the absolute directory path where we store XPM image files
-	// this directory is always a sub-dir where the source code file is stored
+    // make the absolute directory path where we store XPM image files
+    // this directory is always a sub-dir where the source code file is stored
     fn = Data->GetSrcFileName();
     ss = fn.GetPath((wxPATH_GET_VOLUME + wxPATH_GET_SEPARATOR));
     n  = ss.Len();
@@ -110,17 +110,17 @@ void wxsImage::OnBuildCreatingCode()
 
 /*! \brief Enumerate the tool's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsImage::OnEnumToolProperties(long Flags)
 {
-	// starting a new build cycle
+    // starting a new build cycle
     m_IsBuilt = false;
     m_Context = GetCoderContext();
 
-	// details
+    // details
     WXS_IMAGE(wxsImage, m_ImageData, _("Image"), _T("image"));
     WXS_ARRAYSTRING(wxsImage, m_ImageData, _("Image as Text"), _T("image_text"), _("item2"));
     WXS_BOOL(wxsImage, m_Include, _("Use Include File"), _T("use_include"), false);
@@ -139,7 +139,7 @@ void wxsImage::OnBuildDeclarationsCode()
     vname = GetVarName();
     bname = vname + _T("_BMP");
 
-	// put in all the vars, although some might be ignored later
+    // put in all the vars, although some might be ignored later
     AddDeclaration(_T("wxImage               *") + vname + _T(";"));
     AddDeclaration(_T("wxBitmap              *") + bname + _T(";"));
 }
@@ -151,20 +151,20 @@ void wxsImage::OnBuildDeclarationsCode()
  *
  */
 void wxsImage::StoreXpmData(void) {
-    int         		i, n;
+    int                 i, n;
     wxString    vname;
     wxString    xname;
     wxString    ss, tt;
-    wxFile      	ff;
+    wxFile          ff;
 
-	// nothing to store?
+    // nothing to store?
     if(m_ImageData.Count() == 0) return;
 
-	// important names
+    // important names
     vname = GetVarName();
     xname = vname + _T("_XPM");
 
-	// make a single string with the proper name
+    // make a single string with the proper name
     tt = _T("");
     n = m_ImageData.GetCount();
     if(n > 5){
@@ -175,17 +175,17 @@ void wxsImage::StoreXpmData(void) {
     for(i = 0;i < (int)m_ImageData.GetCount();i++){
         ss = m_ImageData.Item(i);
         if(ss.Find(_T("xpm_data")) >= 0){
-        	ss.Replace(_T("xpm_data"), xname);
+            ss.Replace(_T("xpm_data"), xname);
         }
 
         tt += ss;
         tt += _T("\n");
     }
 
-	// store as an include file
+    // store as an include file
     if(m_Include) {
         if(! wxFileName::DirExists(m_IDir)){
-        	wxFileName::Mkdir(m_IDir);
+            wxFileName::Mkdir(m_IDir);
         }
         ss  = m_IDir;
         ss += m_Base;
@@ -206,7 +206,7 @@ void wxsImage::StoreXpmData(void) {
 
         AddHeader(ss, GetInfo().ClassName, 0);
     }
-	// store in-line in the main header file
+    // store in-line in the main header file
     else {
         Codef(tt);
     }
@@ -223,7 +223,7 @@ wxBitmap wxsImage::GetPreview(void)
     wxBitmap    bmp;
 
     if(m_ImageData.GetCount() == 0){
-    	return wxNullBitmap;
+        return wxNullBitmap;
     }
 
     wxsImageListEditorDlg::ArrayToBitmap(m_ImageData, bmp);

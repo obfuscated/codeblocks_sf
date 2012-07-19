@@ -34,28 +34,28 @@
  */
 class wxsCoder: public wxEvtHandler
 {
-	public:
+    public:
 
         wxsCoder();
         virtual ~wxsCoder();
 
-		/** \brief Function notifying about change of block of code in file
-		 *
-		 * Code should use tabs for indentation and will be automatically
-		 * indented relatively to code header.
-		 *
-		 * \param FileName Full path for processed file
-		 * \param Header Header beginning code block
-		 * \param End Sequence ending code block
-		 * \param Code new code
-		 * \param Immediately flag forcing immediate apply (currently not used
-		 *        but may be aded in future when updates will be sheduled)
-		 * \param CodeHasHeader if true, heder will also be recreated
-		 *        (new hwader should be placed at the beginning of Code)
-		 * \param CodeHasEnd if true, ending sequence will also be recreated
-		 *        (new ending sequence should be placed at the end of Code)
-		 */
-		void AddCode(
+        /** \brief Function notifying about change of block of code in file
+         *
+         * Code should use tabs for indentation and will be automatically
+         * indented relatively to code header.
+         *
+         * \param FileName Full path for processed file
+         * \param Header Header beginning code block
+         * \param End Sequence ending code block
+         * \param Code new code
+         * \param Immediately flag forcing immediate apply (currently not used
+         *        but may be aded in future when updates will be sheduled)
+         * \param CodeHasHeader if true, heder will also be recreated
+         *        (new hwader should be placed at the beginning of Code)
+         * \param CodeHasEnd if true, ending sequence will also be recreated
+         *        (new ending sequence should be placed at the end of Code)
+         */
+        void AddCode(
             const wxString& FileName,
             const wxString& Header,
             const wxString& End,
@@ -64,15 +64,15 @@ class wxsCoder: public wxEvtHandler
             bool CodeHasHeader=false,
             bool CodeHasEnd=false);
 
-		/** \brief Function reading block of code from given source file
-		 *
-		 * \param FileName Full path for processed file
-		 * \param Header Header beginning code block
-		 * \param End Sequence ending code block
-		 * \param IncludeHeader if true, returned code will also contain header
-		 * \param IncludeEnd if true, returned code will also contain ending sequence
-		 */
-		wxString GetCode(
+        /** \brief Function reading block of code from given source file
+         *
+         * \param FileName Full path for processed file
+         * \param Header Header beginning code block
+         * \param End Sequence ending code block
+         * \param IncludeHeader if true, returned code will also contain header
+         * \param IncludeEnd if true, returned code will also contain ending sequence
+         */
+        wxString GetCode(
             const wxString& FileName,
             const wxString& Header,
             const wxString& End,
@@ -88,10 +88,10 @@ class wxsCoder: public wxEvtHandler
         /** \brief Applying all pending code changes */
         void Flush(int Delay);
 
-		/** \brief Function getting singleton object from system */
-		static wxsCoder* Get() { return Singleton; }
+        /** \brief Function getting singleton object from system */
+        static wxsCoder* Get() { return Singleton; }
 
-	private:
+    private:
 
         /** \brief Structure which contains one data change */
         struct CodeChange
@@ -105,11 +105,11 @@ class wxsCoder: public wxEvtHandler
         };
         WX_DEFINE_ARRAY(CodeChange*,CodeChangeArray);
 
-		/** \brief Mutex for this object - added in case of multi-threading shedules */
-		wxMutex DataMutex;
+        /** \brief Mutex for this object - added in case of multi-threading shedules */
+        wxMutex DataMutex;
 
-		/** \brief Timer used for delayed flushes */
-		wxTimer FlushTimer;
+        /** \brief Timer used for delayed flushes */
+        wxTimer FlushTimer;
 
         /** \brief Temporary storage place where changes are stored */
         CodeChangeArray CodeChanges;
@@ -117,8 +117,8 @@ class wxsCoder: public wxEvtHandler
         /** \brief File names which are changed */
         wxArrayString CodeChangesFiles;
 
-		/** \brief Function applying hanges to currently opened editor */
-		bool ApplyChangesEditor(
+        /** \brief Function applying hanges to currently opened editor */
+        bool ApplyChangesEditor(
             cbEditor* Editor,
             const wxString& Header,
             const wxString& End,
@@ -156,8 +156,8 @@ class wxsCoder: public wxEvtHandler
         /** \brief Normalizing given file name */
         static wxString NormalizeFileName(const wxString& FileName);
 
-		/** \brief Singleton object */
-		static wxsCoder* Singleton;
+        /** \brief Singleton object */
+        static wxsCoder* Singleton;
 };
 
 /** \page Auto-Code Code automatically generated by wxSmith

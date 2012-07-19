@@ -36,9 +36,9 @@ class wxsFilePickerCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-		wxString	m_sMessage;		//!< The dialogue message.
-		wxString	m_sPath;				//!< The directory path.
-		wxString	m_sWildcard;		//!< The wildcard string.
+        wxString    m_sMessage;        //!< The dialogue message.
+        wxString    m_sPath;                //!< The directory path.
+        wxString    m_sWildcard;        //!< The wildcard string.
 };
 
 #endif

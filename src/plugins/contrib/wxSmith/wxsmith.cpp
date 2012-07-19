@@ -48,8 +48,8 @@ namespace
     /* XPM */
     static const char * Events_xpm[] = {
     "16 16 2 1",
-    " 	c None",
-    ".	c #000000",
+    "     c None",
+    ".    c #000000",
     "                ",
     "    ..    ..    ",
     "   .        .   ",
@@ -80,11 +80,11 @@ BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
     EVT_UPDATE_UI(ViewWxSmithId,wxSmith::OnUpdateUI)
     EVT_UPDATE_UI(ViewWxSmithResourceId,wxSmith::OnUpdateUI)
     EVT_UPDATE_UI(ViewWxSmithPropertyId,wxSmith::OnUpdateUI)
-	EVT_MENU(ConfigureId,wxSmith::OnConfigure)
-	EVT_MENU(ViewWxSmithId,wxSmith::OnViewBrowsers)
-	EVT_MENU(ViewWxSmithResourceId,wxSmith::OnViewResourceBrowser)
-	EVT_MENU(ViewWxSmithPropertyId,wxSmith::OnViewPropertyBrowser)
-	EVT_MENU(-1,wxSmith::OnMenu)
+    EVT_MENU(ConfigureId,wxSmith::OnConfigure)
+    EVT_MENU(ViewWxSmithId,wxSmith::OnViewBrowsers)
+    EVT_MENU(ViewWxSmithResourceId,wxSmith::OnViewResourceBrowser)
+    EVT_MENU(ViewWxSmithPropertyId,wxSmith::OnViewPropertyBrowser)
+    EVT_MENU(-1,wxSmith::OnMenu)
 END_EVENT_TABLE()
 
 wxSmith::wxSmith()
@@ -113,12 +113,12 @@ void wxSmith::OnAttach()
 
     wxsResourceFactory::OnAttachAll();
 
-	// register event sink
+    // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectOpened));
-	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
-	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
 
-	// register scripting stuff
+    // register scripting stuff
     RegisterScripting();
 }
 
@@ -238,7 +238,7 @@ void wxSmith::OnRelease(bool appShutDown)
 
 cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
 {
-	return new wxsSettings(parent);
+    return new wxsSettings(parent);
 }
 
 cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
@@ -251,24 +251,24 @@ cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cb
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
     // Genearating separate wxSmith menu entry
-	wxMenu* SmithMenu = new wxMenu;
+    wxMenu* SmithMenu = new wxMenu;
 
-	wxsResourceFactory::BuildSmithMenu(SmithMenu);
+    wxsResourceFactory::BuildSmithMenu(SmithMenu);
 
-	SmithMenu->AppendSeparator();
-	SmithMenu->Append(ConfigureId,_("&Configure wxSmith for current project"));
+    SmithMenu->AppendSeparator();
+    SmithMenu->Append(ConfigureId,_("&Configure wxSmith for current project"));
 
-	int ToolsPos = menuBar->FindMenu(_("&Tools"));
-	if  ( ToolsPos == wxNOT_FOUND )
-	{
+    int ToolsPos = menuBar->FindMenu(_("&Tools"));
+    if  ( ToolsPos == wxNOT_FOUND )
+    {
         menuBar->Append(SmithMenu,_("&wxSmith"));
-	}
-	else
-	{
+    }
+    else
+    {
         menuBar->Insert(ToolsPos,SmithMenu,_("&wxSmith"));
-	}
+    }
 
-	// Generate entries in "view" menu
+    // Generate entries in "view" menu
     int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
@@ -316,7 +316,7 @@ void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTre
 
 bool wxSmith::BuildToolBar(wxToolBar* toolBar)
 {
-	return false;
+    return false;
 }
 
 void wxSmith::OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading)
@@ -470,7 +470,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
 {
     if ( !CheckIntegration() ) return;
 
-	wxString FileName = ::wxFileSelector(
+    wxString FileName = ::wxFileSelector(
         _("Select XRC file"),
         _T(""),
         _T(""),
@@ -486,7 +486,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     TiXmlElement* Resource;
     if ( !Doc.LoadFile() || !(Resource = Doc.FirstChildElement("resource")) )
     {
-    	wxMessageBox(_("Couldn't load XRC file."));
+        wxMessageBox(_("Couldn't load XRC file."));
         return;
     }
 
@@ -495,15 +495,15 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     TiXmlElement* Element = Resource->FirstChildElement("object");
     while ( Element )
     {
-    	const char* Class = Element->Attribute("class");
-    	const char* Name = Element->Attribute("name");
-    	if ( !Class || !Name ) continue;
+        const char* Class = Element->Attribute("class");
+        const char* Name = Element->Attribute("name");
+        if ( !Class || !Name ) continue;
 
-    	if ( !strcmp(Class,"wxDialog") ||
-    	     !strcmp(Class,"wxPanel") ||
-    	     !strcmp(Class,"wxFrame") )
+        if ( !strcmp(Class,"wxDialog") ||
+             !strcmp(Class,"wxPanel") ||
+             !strcmp(Class,"wxFrame") )
         {
-        	Resources.Add(cbC2U(Name));
+            Resources.Add(cbC2U(Name));
         }
 
         Element = Element->NextSiblingElement("object");
@@ -511,8 +511,8 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
 
     if ( Resources.Count() == 0 )
     {
-    	wxMessageBox(_("Didn't find any editable resources"));
-    	return;
+        wxMessageBox(_("Didn't find any editable resources"));
+        return;
     }
 
     // Selecting resource to edit
@@ -520,7 +520,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
 
     if ( Resources.Count() == 1 )
     {
-    	Name = Resources[0];
+        Name = Resources[0];
     }
     else
     {
@@ -547,20 +547,20 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     wxsItem* Test = wxsGEN(cbC2U(Element->Attribute("class")),0);
     if ( !Test )
     {
-    	// Something went wrong - default factory is not working ?
-    	Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Internal error - did not found one of base items when importing XRC")));
-    	return;
+        // Something went wrong - default factory is not working ?
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Internal error - did not found one of base items when importing XRC")));
+        return;
     }
 
     if ( !Test->XmlRead(Element,true,false) )
     {
-		if ( wxMessageBox(_("Resource was not loaded properly. Some widgets may be\n"
+        if ( wxMessageBox(_("Resource was not loaded properly. Some widgets may be\n"
                             "damaged or will be removed. Continue ?"),
                           _("XRC Load error"),
                           wxYES_NO|wxICON_QUESTION) == wxNO )
         {
-        	delete Test;
-        	return;
+            delete Test;
+            return;
         }
     }
     delete Test;

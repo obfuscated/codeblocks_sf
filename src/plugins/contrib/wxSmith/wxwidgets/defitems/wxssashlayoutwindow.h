@@ -24,9 +24,9 @@
 
 class wxsSashLayoutWindow: public wxsContainer
 {
-	public:
+    public:
 
-		wxsSashLayoutWindow(wxsItemResData* Data);
+        wxsSashLayoutWindow(wxsItemResData* Data);
 
     private:
 

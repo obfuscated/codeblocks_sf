@@ -20,7 +20,7 @@
 * $HeadURL$
 */
 
-#include <wx/app.h>		// wxTheApp
+#include <wx/app.h>        // wxTheApp
 #include <wx/frame.h> // wxFRAME_SHAPED
 #include <wx/settings.h> // wxSystemSettings, wxSYS_COLOUR_BTNFACE
 #include "wxsdialog.h"

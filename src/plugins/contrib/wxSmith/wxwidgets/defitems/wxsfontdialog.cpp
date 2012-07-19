@@ -29,16 +29,16 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsFontDialog::wxsFontDialog(wxsItemResData* Data):
     wxsTool(Data,&Reg.Info),
     m_bAllowSymbols(true),
-	m_bEnableEffects(true),
-	m_bShowHelp(false),
-	m_iMinSize(0),
-	m_iMaxSize(0)
+    m_bEnableEffects(true),
+    m_bShowHelp(false),
+    m_iMinSize(0),
+    m_iMaxSize(0)
 {
 }
 
@@ -55,66 +55,66 @@ void wxsFontDialog::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/fontdlg.h>"),GetInfo().ClassName,hfInPCH);
 
-			wxString sfontName = GetCoderContext()->GetUniqueName(_T("fontData"));
-			#if wxCHECK_VERSION(2, 9, 0)
+            wxString sfontName = GetCoderContext()->GetUniqueName(_T("fontData"));
+            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\twxFontData %s;\n"), sfontName.wx_str());
-			#else
+            #else
             Codef(_T("\twxFontData %s;\n"), sfontName.c_str());
-			#endif
+            #endif
 
-			wxString sClr = m_cdColour.BuildCode(GetCoderContext());
-			#if wxCHECK_VERSION(2, 9, 0)
-			if(!sClr.IsEmpty()){
-				Codef(_T("\t%s.SetColour(%s);\n"), sfontName.wx_str(), sClr.wx_str());
-			}
-			#else
-			if(!sClr.IsEmpty()){
-				Codef(_T("\t%s.SetColour(%s);\n"), sfontName.c_str(), sClr.c_str());
-			}
-			#endif
-			if(!m_bEnableEffects){
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
-				#else
-				Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.c_str(), m_bEnableEffects);
-				#endif
-			}
-			#if wxCHECK_VERSION(2, 9, 0)
-			Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
-			#else
-			Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.c_str());
-			#endif
+            wxString sClr = m_cdColour.BuildCode(GetCoderContext());
+            #if wxCHECK_VERSION(2, 9, 0)
+            if(!sClr.IsEmpty()){
+                Codef(_T("\t%s.SetColour(%s);\n"), sfontName.wx_str(), sClr.wx_str());
+            }
+            #else
+            if(!sClr.IsEmpty()){
+                Codef(_T("\t%s.SetColour(%s);\n"), sfontName.c_str(), sClr.c_str());
+            }
+            #endif
+            if(!m_bEnableEffects){
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
+                #else
+                Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.c_str(), m_bEnableEffects);
+                #endif
+            }
+            #if wxCHECK_VERSION(2, 9, 0)
+            Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
+            #else
+            Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.c_str());
+            #endif
 
-			// These functions are Windows only.
-			if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-				if(!m_bShowHelp){
-					#if wxCHECK_VERSION(2, 9, 0)
-					Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.wx_str(), m_bAllowSymbols);
-					#else
-					Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.c_str(), m_bAllowSymbols);
-					#endif
-				}
-				if(m_iMinSize > 0 || m_iMaxSize > 0){
-					#if wxCHECK_VERSION(2, 9, 0)
-					Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.wx_str(), m_iMinSize, m_iMaxSize);
-					#else
-					Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.c_str(), m_iMinSize, m_iMaxSize);
-					#endif
-				}
-				if(m_bShowHelp){
-					#if wxCHECK_VERSION(2, 9, 0)
-					Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.wx_str(), m_bShowHelp);
-					#else
-					Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.c_str(), m_bShowHelp);
-					#endif
-				}
-			}
+            // These functions are Windows only.
+            if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+                if(!m_bShowHelp){
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.wx_str(), m_bAllowSymbols);
+                    #else
+                    Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.c_str(), m_bAllowSymbols);
+                    #endif
+                }
+                if(m_iMinSize > 0 || m_iMaxSize > 0){
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.wx_str(), m_iMinSize, m_iMaxSize);
+                    #else
+                    Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.c_str(), m_iMinSize, m_iMaxSize);
+                    #endif
+                }
+                if(m_bShowHelp){
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.wx_str(), m_bShowHelp);
+                    #else
+                    Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.c_str(), m_bShowHelp);
+                    #endif
+                }
+            }
 
-			#if wxCHECK_VERSION(2, 9, 0)
-			Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
-			#else
-			Codef(_T("%C(%W, %s);\n"), sfontName.c_str());
-			#endif
+            #if wxCHECK_VERSION(2, 9, 0)
+            Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
+            #else
+            Codef(_T("%C(%W, %s);\n"), sfontName.c_str());
+            #endif
             BuildSetupWindowCode();
             return;
         }
@@ -128,23 +128,23 @@ void wxsFontDialog::OnBuildCreatingCode()
 
 /*! \brief Enumerate the dialogue's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsFontDialog::OnEnumToolProperties(long Flags)
 {
-	// These functions are Windows only.
-	if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-		WXS_BOOL(wxsFontDialog, m_bAllowSymbols, _("Allow Symbols"), _T("allow_symbols"), true)
-	}
+    // These functions are Windows only.
+    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+        WXS_BOOL(wxsFontDialog, m_bAllowSymbols, _("Allow Symbols"), _T("allow_symbols"), true)
+    }
     WXS_COLOUR(wxsFontDialog, m_cdColour, _("Colour"), _T("colour"));
     // This one is used by generic as well as Windows, so keep it available.
-	WXS_BOOL(wxsFontDialog, m_bEnableEffects, _("Enable Effects"), _T("enable_effects"), true)
-	// These functions are Windows only.
-	if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-		WXS_LONG(wxsFontDialog, m_iMinSize,  _("Min. Size"), _T("min_size"), 0)
-		WXS_LONG(wxsFontDialog, m_iMaxSize,  _("Max. Size"), _T("max_size"), 0)
-		WXS_BOOL(wxsFontDialog, m_bShowHelp, _("Show Help"), _T("show_help"), false)
-	}
+    WXS_BOOL(wxsFontDialog, m_bEnableEffects, _("Enable Effects"), _T("enable_effects"), true)
+    // These functions are Windows only.
+    if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
+        WXS_LONG(wxsFontDialog, m_iMinSize,  _("Min. Size"), _T("min_size"), 0)
+        WXS_LONG(wxsFontDialog, m_iMaxSize,  _("Max. Size"), _T("max_size"), 0)
+        WXS_BOOL(wxsFontDialog, m_bShowHelp, _("Show Help"), _T("show_help"), false)
+    }
 }

@@ -219,7 +219,7 @@ bool wxsNotebook::OnCanAddChild(wxsItem* Item,bool ShowMessage)
         return false;
     }
 
-	return wxsContainer::OnCanAddChild(Item,ShowMessage);
+    return wxsContainer::OnCanAddChild(Item,ShowMessage);
 }
 
 wxsPropertyContainer* wxsNotebook::OnBuildExtra()
@@ -244,33 +244,33 @@ void wxsNotebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 wxObject* wxsNotebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 {
     UpdateCurrentSelection();
-	wxNotebook* Notebook = new wxNotebook(Parent,-1,Pos(Parent),Size(Parent),Style());
+    wxNotebook* Notebook = new wxNotebook(Parent,-1,Pos(Parent),Size(Parent),Style());
 
-	if ( !GetChildCount() && !(PreviewFlags&pfExact) )
-	{
-	    // Adding additional empty notebook to prevent from having zero-sized notebook
-	    Notebook->AddPage(
+    if ( !GetChildCount() && !(PreviewFlags&pfExact) )
+    {
+        // Adding additional empty notebook to prevent from having zero-sized notebook
+        Notebook->AddPage(
             new wxPanel(Notebook,-1,wxDefaultPosition,wxSize(50,50)),
             _("No pages"));
-	}
+    }
 
-	AddChildrenPreview(Notebook,PreviewFlags);
+    AddChildrenPreview(Notebook,PreviewFlags);
 
-	for ( int i=0; i<GetChildCount(); i++ )
-	{
-	    wxsItem* Child = GetChild(i);
-	    wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
 
-	    wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
-	    if ( !ChildPreview ) continue;
+        wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
+        if ( !ChildPreview ) continue;
 
-	    bool Selected = (Child == m_CurrentSelection);
-	    if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        bool Selected = (Child == m_CurrentSelection);
+        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
 
-	    Notebook->AddPage(ChildPreview,Extra->m_Label,Selected);
-	}
+        Notebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+    }
 
-	return Notebook;
+    return Notebook;
 }
 
 void wxsNotebook::OnBuildCreatingCode()

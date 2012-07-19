@@ -206,7 +206,7 @@ bool wxsListbook::OnCanAddChild(wxsItem* Item,bool ShowMessage)
         return false;
     }
 
-	return wxsContainer::OnCanAddChild(Item,ShowMessage);
+    return wxsContainer::OnCanAddChild(Item,ShowMessage);
 }
 
 wxsPropertyContainer* wxsListbook::OnBuildExtra()
@@ -231,33 +231,33 @@ void wxsListbook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 wxObject* wxsListbook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 {
     UpdateCurrentSelection();
-	wxListbook* Listbook = new wxListbook(Parent,-1,Pos(Parent),Size(Parent),Style());
+    wxListbook* Listbook = new wxListbook(Parent,-1,Pos(Parent),Size(Parent),Style());
 
-	if ( !GetChildCount() && !(PreviewFlags&pfExact) )
-	{
-	    // Adding additional empty notebook to prevent from having zero-sized notebook
-	    Listbook->AddPage(
+    if ( !GetChildCount() && !(PreviewFlags&pfExact) )
+    {
+        // Adding additional empty notebook to prevent from having zero-sized notebook
+        Listbook->AddPage(
             new wxPanel(Listbook,-1,wxDefaultPosition,wxSize(50,50)),
             _("No pages"));
-	}
+    }
 
-	AddChildrenPreview(Listbook,PreviewFlags);
+    AddChildrenPreview(Listbook,PreviewFlags);
 
-	for ( int i=0; i<GetChildCount(); i++ )
-	{
-	    wxsItem* Child = GetChild(i);
-	    wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
 
-	    wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
-	    if ( !ChildPreview ) continue;
+        wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
+        if ( !ChildPreview ) continue;
 
-	    bool Selected = (Child == m_CurrentSelection);
-	    if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        bool Selected = (Child == m_CurrentSelection);
+        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
 
-	    Listbook->AddPage(ChildPreview,Extra->m_Label,Selected);
-	}
+        Listbook->AddPage(ChildPreview,Extra->m_Label,Selected);
+    }
 
-	return Listbook;
+    return Listbook;
 }
 
 void wxsListbook::OnBuildCreatingCode()

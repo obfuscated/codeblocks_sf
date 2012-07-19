@@ -36,7 +36,7 @@ class wxsFontPickerCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-		wxsFontData	m_fdFont;		//!< The font.
+        wxsFontData    m_fdFont;        //!< The font.
 };
 
 #endif

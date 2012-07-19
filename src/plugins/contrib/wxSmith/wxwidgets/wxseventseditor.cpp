@@ -90,21 +90,21 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
     m_Class  = m_Data->GetClassName();
     m_Language = m_Data->GetLanguage();
 
-	int Cnt = m_Events->GetCount();
-	for ( int i=0; i<Cnt; i++ )
-	{
-		const wxsEventDesc* Event = m_Events->GetDesc(i);
-		const wxString& FunctionName = m_Events->GetHandler(i);
+    int Cnt = m_Events->GetCount();
+    for ( int i=0; i<Cnt; i++ )
+    {
+        const wxsEventDesc* Event = m_Events->GetDesc(i);
+        const wxString& FunctionName = m_Events->GetHandler(i);
 
         // TODO: Create new group
-		if ( Event->ET == wxsEventDesc::Category )
-		{
-		    m_Ids.Add(0);
-		    continue;
-		}
+        if ( Event->ET == wxsEventDesc::Category )
+        {
+            m_Ids.Add(0);
+            continue;
+        }
 
-		wxArrayString Functions;
-		FindFunctions(Event->ArgType,Functions);
+        wxArrayString Functions;
+        FindFunctions(Event->ArgType,Functions);
 
         wxPGChoices Const;
         Const.Add(NoneStr,0);
@@ -113,11 +113,11 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
         int Index = 0;
         for ( int j=0; j<(int)Functions.Count(); j++ )
         {
-        	Const.Add(Functions[j],j+2);
-        	if ( Functions[j] == FunctionName )
-        	{
-        		Index = j+2;
-        	}
+            Const.Add(Functions[j],j+2);
+            if ( Functions[j] == FunctionName )
+            {
+                Index = j+2;
+            }
         }
         if ( Index == 0 )
         {
@@ -125,7 +125,7 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
         }
 
         m_Ids.Add(Grid->Append(NEW_IN_WXPG14X wxEnumProperty(Event->Entry,wxPG_LABEL,Const,Index)));
-	}
+    }
     #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
     #endif
@@ -140,17 +140,17 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     }
 
     int Index;
-	for ( Index=0; Index<(int)m_Ids.Count(); Index++ )
-	{
-	    if ( m_Ids[Index] == Id ) break;
-	}
+    for ( Index=0; Index<(int)m_Ids.Count(); Index++ )
+    {
+        if ( m_Ids[Index] == Id ) break;
+    }
 
-	if ( Index>=(int)m_Ids.Count() )
-	{
-	    return;
-	}
+    if ( Index>=(int)m_Ids.Count() )
+    {
+        return;
+    }
 
-	wxString Selection = Grid->GetPropertyValueAsString(Id);
+    wxString Selection = Grid->GetPropertyValueAsString(Id);
 
     if ( Selection == NoneStr )
     {
@@ -198,7 +198,7 @@ bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex,wxsPropertyG
 
 void wxsEventsEditor::FindFunctions(const wxString& ArgType,wxArrayString& Array)
 {
-	wxString Code = wxsCoder::Get()->GetCode(m_Header,
+    wxString Code = wxsCoder::Get()->GetCode(m_Header,
         wxsCodeMarks::Beg(m_Language,_T("Handlers"),m_Class),
         wxsCodeMarks::End(m_Language),
         false,false);
@@ -331,8 +331,8 @@ wxString wxsEventsEditor::GetFunctionProposition(const wxsEventDesc* Event)
 
     while ( Functions.Index(NewName) != wxNOT_FOUND )
     {
-    	NewName = NewNameBase;
-    	NewName.Append(wxString::Format(_T("%d"),++Suffix));
+        NewName = NewNameBase;
+        NewName.Append(wxString::Format(_T("%d"),++Suffix));
     }
 
     return NewName;
@@ -340,17 +340,17 @@ wxString wxsEventsEditor::GetFunctionProposition(const wxsEventDesc* Event)
 
 wxString wxsEventsEditor::GetNewFunction(const wxsEventDesc* Event)
 {
-	wxString Name = GetFunctionProposition(Event);
+    wxString Name = GetFunctionProposition(Event);
 
-	for (;;)
-	{
-		Name = ::wxGetTextFromUser(_("Enter name for new handler:"),_("New handler"),Name);
-		if ( !Name.Length() ) return _T("");
+    for (;;)
+    {
+        Name = ::wxGetTextFromUser(_("Enter name for new handler:"),_("New handler"),Name);
+        if ( !Name.Length() ) return _T("");
 
         if ( !wxsCodeMarks::ValidateIdentifier(m_Language,Name) )
         {
-        	wxMessageBox(_("Invalid name"));
-        	continue;
+            wxMessageBox(_("Invalid name"));
+            continue;
         }
 
         wxArrayString Functions;
@@ -358,22 +358,22 @@ wxString wxsEventsEditor::GetNewFunction(const wxsEventDesc* Event)
 
         if ( Functions.Index(Name) != wxNOT_FOUND )
         {
-        	wxMessageBox(_("Handler with this name already exists"));
-        	continue;
+            wxMessageBox(_("Handler with this name already exists"));
+            continue;
         }
 
         break;
-	}
+    }
 
-	// Creating new function
+    // Creating new function
 
-	if ( !CreateNewFunction(Event,Name) )
-	{
-		wxMessageBox(_("Couldn't add new handler"));
-		return _T("");
-	}
+    if ( !CreateNewFunction(Event,Name) )
+    {
+        wxMessageBox(_("Couldn't add new handler"));
+        return _T("");
+    }
 
-	return Name;
+    return Name;
 }
 
 bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString& NewFunctionName)
@@ -445,11 +445,11 @@ bool wxsEventsEditor::GotoHandler(int Index)
         return false;
     }
 
-	wxString FunctionName = m_Events->GetHandler(Index);
-	if ( FunctionName.IsEmpty() )
-	{
-	    return false;
-	}
+    wxString FunctionName = m_Events->GetHandler(Index);
+    if ( FunctionName.IsEmpty() )
+    {
+        return false;
+    }
 
     cbStyledTextCtrl* Ctrl = Editor->GetControl();
     wxString FullText = Ctrl->GetText();

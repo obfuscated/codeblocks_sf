@@ -28,9 +28,9 @@
 /** \brief Listbook container */
 class wxsListbook : public wxsContainer
 {
-	public:
+    public:
 
-		wxsListbook(wxsItemResData* Data);
+        wxsListbook(wxsItemResData* Data);
 
     private:
 

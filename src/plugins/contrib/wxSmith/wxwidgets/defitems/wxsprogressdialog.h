@@ -35,10 +35,10 @@ class wxsProgressDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        wxString 	m_sTitle;				//!< The dialogue's title.
-        wxString 	m_sMessage;		//!< The dialogue message.
-        long			m_iMaxValue;		//!< The maximum progress value.
-        bool			m_bRunAtStartup;	//!< Run the dialogue at start-up. If false, the pointer is set to null and must be initialised by the user.
+        wxString     m_sTitle;                //!< The dialogue's title.
+        wxString     m_sMessage;        //!< The dialogue message.
+        long            m_iMaxValue;        //!< The maximum progress value.
+        bool            m_bRunAtStartup;    //!< Run the dialogue at start-up. If false, the pointer is set to null and must be initialised by the user.
 };
 
 #endif      //  WXSPROGRESSDIALOG_H

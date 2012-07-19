@@ -62,7 +62,7 @@ class wxsStyleProperty: public wxsProperty
          *  \param IsExtra      if true, this is extra style, false otherwise
          *  \param Priority     priority of this property
          */
-		wxsStyleProperty(
+        wxsStyleProperty(
             const wxString& StyleName,
             const wxString& DataName,
             long  Offset,

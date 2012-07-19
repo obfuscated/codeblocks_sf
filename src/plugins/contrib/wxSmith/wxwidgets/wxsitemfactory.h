@@ -54,7 +54,7 @@ class wxsItemResData;
  */
 class wxsItemFactory
 {
-	public:
+    public:
 
         /** \brief Creating item with given name */
         static wxsItem* Build(const wxString& ClassName,wxsItemResData* Data);
@@ -81,23 +81,23 @@ class wxsItemFactory
         static int LoadImage(const wxString& Name);
 
         /** \brief Ctor */
-		wxsItemFactory(const wxsItemInfo* Info);
+        wxsItemFactory(const wxsItemInfo* Info);
 
-		/** \brief Extra ctor for templates - uses class name from param.
-		 *         It may be used when Info is going to be created
-		 *         inside constructor.
-		 */
+        /** \brief Extra ctor for templates - uses class name from param.
+         *         It may be used when Info is going to be created
+         *         inside constructor.
+         */
         wxsItemFactory(const wxsItemInfo* Info,wxString ClassName);
 
         /** \brief Dctor */
-		virtual ~wxsItemFactory();
+        virtual ~wxsItemFactory();
 
     protected:
 
         /** \brief Building item */
         virtual wxsItem* OnBuild(wxsItemResData* Data) = 0;
 
-	private:
+    private:
 
         WX_DECLARE_STRING_HASH_MAP(wxsItemFactory*,ItemMapT);
 

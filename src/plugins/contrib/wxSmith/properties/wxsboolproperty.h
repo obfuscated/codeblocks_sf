@@ -28,7 +28,7 @@
 /** \brief Base boolean property */
 class wxsBoolProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName   name of property in Property Grid
@@ -36,7 +36,7 @@ class wxsBoolProperty: public wxsProperty
          *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
          */
-		wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
+        wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
 
         /** \brief Returning type name */
         virtual const wxString GetTypeName() { return _T("bool"); }
@@ -51,7 +51,7 @@ class wxsBoolProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         bool Default;
 };

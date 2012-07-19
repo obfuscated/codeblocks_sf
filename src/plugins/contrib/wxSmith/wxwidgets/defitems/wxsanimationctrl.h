@@ -35,9 +35,9 @@ class wxsAnimationCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString 			m_sAnimation;			//!< The animation file.
-        wxsBitmapData	m_bmpInactive;			//!< The inactivity bitmap.
-        bool					m_bPlay;					//!< Play the animation.
+        wxString             m_sAnimation;            //!< The animation file.
+        wxsBitmapData    m_bmpInactive;            //!< The inactivity bitmap.
+        bool                    m_bPlay;                    //!< Play the animation.
 };
 
 #endif // WXSANIMATIONCTRL_H

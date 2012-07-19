@@ -32,7 +32,7 @@ namespace
 #else
     WXS_ST_BEGIN(wxsFilePickerCtrlStyles,_T("wxFLP_USE_TEXTCTRL|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST"))
 #endif
-		WXS_ST_CATEGORY("wxFilePickerCtrl")
+        WXS_ST_CATEGORY("wxFilePickerCtrl")
         WXS_ST(wxFLP_CHANGE_DIR)
         WXS_ST(wxFLP_FILE_MUST_EXIST)
         WXS_ST(wxFLP_OPEN)
@@ -49,7 +49,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsFilePickerCtrl::wxsFilePickerCtrl(wxsItemResData* Data):
@@ -76,11 +76,11 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
 
-			#if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %n %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
-			#else
+            #else
             Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.c_str(), m_sMessage.c_str(), m_sWildcard.c_str());
-			#endif
+            #endif
 
             BuildSetupWindowCode();
             return;
@@ -93,23 +93,23 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long					The control flags.
- * \return wxObject* 					The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                    The control flags.
+ * \return wxObject*                     The constructed control.
  *
  */
 wxObject* wxsFilePickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-	wxFilePickerCtrl* Preview;
-	Preview = new wxFilePickerCtrl(Parent, GetId(), m_sPath, m_sMessage, m_sWildcard, Pos(Parent), Size(Parent), Style());
+    wxFilePickerCtrl* Preview;
+    Preview = new wxFilePickerCtrl(Parent, GetId(), m_sPath, m_sMessage, m_sWildcard, Pos(Parent), Size(Parent), Style());
     return SetupWindow(Preview,Flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

@@ -35,18 +35,18 @@ class wxsPrintDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        bool		m_bEnableHelp;				//!< Enable the help button.
-        bool		m_bEnablePageNumbers;	//!< Enable the page number block.
-        bool		m_bEnablePrintToFile;		//!< Enable the print to file block.
-        bool		m_bEnableSelection;			//!< Enable the selection block.
-        bool		m_bCollate;						//!< Whether to collate copies.
-        bool		m_bPrintToFile;					//!< Whether to print to file.
-        bool		m_bSelection;					//!< Whether to print the selection Results are implementation-dependent.
-        long		m_iFromPage;					//!< The page to print from.
-        long		m_iToPage;						//!< The page to print to.
-        long		m_iMinPage;						//!< The minimum page no. to print from.
-        long		m_iMaxPage;					//!< The maximum page no. to print to.
-        long		m_iNoCopies;					//!< The number of copies to print.
+        bool        m_bEnableHelp;                //!< Enable the help button.
+        bool        m_bEnablePageNumbers;    //!< Enable the page number block.
+        bool        m_bEnablePrintToFile;        //!< Enable the print to file block.
+        bool        m_bEnableSelection;            //!< Enable the selection block.
+        bool        m_bCollate;                        //!< Whether to collate copies.
+        bool        m_bPrintToFile;                    //!< Whether to print to file.
+        bool        m_bSelection;                    //!< Whether to print the selection Results are implementation-dependent.
+        long        m_iFromPage;                    //!< The page to print from.
+        long        m_iToPage;                        //!< The page to print to.
+        long        m_iMinPage;                        //!< The minimum page no. to print from.
+        long        m_iMaxPage;                    //!< The maximum page no. to print to.
+        long        m_iNoCopies;                    //!< The number of copies to print.
 };
 
 #endif

@@ -66,26 +66,26 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
             {
                 if ( FileName.empty() )
                 {
-					if ( CodeText.empty() )
-					{
-						return wxEmptyString;
-					}
-					else
-					{
-						Code << CodeText;
-					}
+                    if ( CodeText.empty() )
+                    {
+                        return wxEmptyString;
+                    }
+                    else
+                    {
+                        Code << CodeText;
+                    }
                 }
-				else{
-					if ( NoResize )
-					{
-						Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T("))");
-					}
-					else
-					{
-						Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T(").Rescale(")
-							 << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
-					}
-				}
+                else{
+                    if ( NoResize )
+                    {
+                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T("))");
+                    }
+                    else
+                    {
+                        Code << _T("wxBitmap(wxImage(") << wxsCodeMarks::WxString(wxsCPP,FileName,false) << _T(").Rescale(")
+                             << SizeCode << _T(".GetWidth(),") << SizeCode << _T(".GetHeight()))");
+                    }
+                }
             }
             else
             {
@@ -192,13 +192,13 @@ bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
         VALUE.Id.Clear();
         VALUE.Client.Clear();
 
-		VALUE.CodeText = cbC2U(Element->Attribute("code"));
-		if ( VALUE.CodeText.IsEmpty() )
-		{
-			// It's a filename
-			VALUE.CodeText.Clear();
-			return XmlGetString(Element,VALUE.FileName);
-		}
+        VALUE.CodeText = cbC2U(Element->Attribute("code"));
+        if ( VALUE.CodeText.IsEmpty() )
+        {
+            // It's a filename
+            VALUE.CodeText.Clear();
+            return XmlGetString(Element,VALUE.FileName);
+        }
     }
 
     VALUE.FileName.Clear();

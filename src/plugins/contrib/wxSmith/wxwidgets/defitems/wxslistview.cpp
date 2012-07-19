@@ -72,7 +72,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsListView::wxsListView(wxsItemResData* Data):
@@ -107,11 +107,11 @@ void wxsListView::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsListView::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -122,7 +122,7 @@ wxObject* wxsListView::OnBuildPreview(wxWindow* Parent,long Flags)
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

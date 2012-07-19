@@ -32,7 +32,7 @@
  */
 class wxsArrayStringProperty: public wxsCustomEditorProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName       name of property in Property Grid
@@ -40,10 +40,10 @@ class wxsArrayStringProperty: public wxsCustomEditorProperty
          *  \param DataSubName  name of name applied for each array element
          *  \param Offset       offset of value (returned from wxsOFFSET macro)
          */
-		wxsArrayStringProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
+        wxsArrayStringProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxArrayString"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxArrayString"); }
 
         /** \brief Showing editor for this property */
         virtual bool ShowEditor(wxsPropertyContainer* Object);
@@ -56,7 +56,7 @@ class wxsArrayStringProperty: public wxsCustomEditorProperty
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
-	private:
+    private:
         long Offset;
         wxString DataSubName;
 };

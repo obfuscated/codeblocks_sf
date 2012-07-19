@@ -24,10 +24,10 @@
 #include "../wxswidget.h"
 
 /** \brief Class for wxsRichTextStyleListBox widget
- *	\note If you set the control or a style sheet for this control in wxSmith you must ensure that it has been declared
- *	beforehand, or use SetRichTextCtrl() and SetStyleSheet(). If set via wxSmith, these functions are called late enough
- *	that you can using the style sheet declared for wxRichTextStyleOrganiserDialog. Alternatively, you could declare one
- *	manually before the wxSmith-managed code block.
+ *    \note If you set the control or a style sheet for this control in wxSmith you must ensure that it has been declared
+ *    beforehand, or use SetRichTextCtrl() and SetStyleSheet(). If set via wxSmith, these functions are called late enough
+ *    that you can using the style sheet declared for wxRichTextStyleOrganiserDialog. Alternatively, you could declare one
+ *    manually before the wxSmith-managed code block.
 */
 class wxsRichTextStyleListBox: public wxsWidget
 {
@@ -41,10 +41,10 @@ class wxsRichTextStyleListBox: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-		wxString	m_sControl;							//!< The associated wxRichTextCtrl.
-		wxString	m_sStyleSheet;					//!< The associated style sheet.
-		int				m_iStyleType;						//!< The style type to display.
-		bool			m_bApplyOnSelection;		//!< Whether to apply the style on selection.
+        wxString    m_sControl;                            //!< The associated wxRichTextCtrl.
+        wxString    m_sStyleSheet;                    //!< The associated style sheet.
+        int                m_iStyleType;                        //!< The style type to display.
+        bool            m_bApplyOnSelection;        //!< Whether to apply the style on selection.
 };
 
 #endif

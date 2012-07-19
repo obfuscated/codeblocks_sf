@@ -46,9 +46,9 @@ wxsEditEnumProperty::wxsEditEnumProperty(const wxString &PGName,
 {
     int     i;
 
-	// the calling routine only needs the returned value as a string
-	// the list of long Values[] is useless to the calling routine
-	// so, let us hope that we have enough Values[] here
+    // the calling routine only needs the returned value as a string
+    // the list of long Values[] is useless to the calling routine
+    // so, let us hope that we have enough Values[] here
 
     for(i = 0; i < 512; i++) Values[i] = i;
 }
@@ -81,7 +81,7 @@ void wxsEditEnumProperty::PGCreate(wxsPropertyContainer *Object, wxPropertyGridM
  */
 bool wxsEditEnumProperty::PGRead(wxsPropertyContainer *Object, wxPropertyGridManager *Grid, wxPGId Id, long Index)
 {
-	VALUE = Grid->GetPropertyValueAsString(Id);
+    VALUE = Grid->GetPropertyValueAsString(Id);
     VALUE.Replace(_T("\\n"), _T("\n"));
 
     return true;

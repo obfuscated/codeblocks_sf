@@ -35,7 +35,7 @@
  */
 class wxsImageComboProperty: public wxsCustomEditorProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName       name of property in Property Grid
@@ -43,18 +43,18 @@ class wxsImageComboProperty: public wxsCustomEditorProperty
          *  \param DataSubName  name of name applied for each array element
          *  \param Offset       offset of value (returned from wxsOFFSET macro)
          */
-		wxsImageComboProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
+        wxsImageComboProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxArrayString"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxArrayString"); }
 
         /** \brief Showing editor for this property */
         virtual bool ShowEditor(wxsPropertyContainer* Object);
 
-		/** \brief Function giving string representation of property
-		* \param Object wxsPropertyContainer*
-		* \return wxString
-		*/
+        /** \brief Function giving string representation of property
+        * \param Object wxsPropertyContainer*
+        * \return wxString
+        */
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
     protected:
@@ -64,10 +64,10 @@ class wxsImageComboProperty: public wxsCustomEditorProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
-        long Offset;							//!< The offset of a variable in this class.
-        wxString DataSubName;	//!< The name to use for sub-item entries in XML.
-        wxString DataName;			//!< The name to use for item entries in XML.
+    private:
+        long Offset;                            //!< The offset of a variable in this class.
+        wxString DataSubName;    //!< The name to use for sub-item entries in XML.
+        wxString DataName;            //!< The name to use for item entries in XML.
 };
 
 /** \addtogroup ext_properties_macros

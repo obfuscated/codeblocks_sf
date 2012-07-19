@@ -24,7 +24,7 @@
 #include "../wxstool.h"
 
 /** \brief Class for wxFindReplaceDialog dialogue.
-	\note In order for events to connect properly you must set the ID of your wxFindReplaceDialog to -1 in wxSmith.
+    \note In order for events to connect properly you must set the ID of your wxFindReplaceDialog to -1 in wxSmith.
 */
 class wxsFindReplaceDialog: public wxsTool
 {
@@ -37,7 +37,7 @@ class wxsFindReplaceDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        wxString m_sCaption;	//!< The dialogue caption.
+        wxString m_sCaption;    //!< The dialogue caption.
 };
 
 #endif      //  WXSFINDREPLACEDIALOG_H

@@ -48,7 +48,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsSearchCtrl::wxsSearchCtrl(wxsItemResData* Data):
@@ -81,12 +81,12 @@ void wxsSearchCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.c_str());
             #endif
 
-			if(!m_bShowSearchBtn){
-				Codef(_T("%AShowSearchButton(%b);\n"), m_bShowSearchBtn);
-			}
-			if(m_bShowCancelBtn){
-				Codef(_T("%AShowCancelButton(%b);\n"), m_bShowCancelBtn);
-			}
+            if(!m_bShowSearchBtn){
+                Codef(_T("%AShowSearchButton(%b);\n"), m_bShowSearchBtn);
+            }
+            if(m_bShowCancelBtn){
+                Codef(_T("%AShowCancelButton(%b);\n"), m_bShowCancelBtn);
+            }
 
             BuildSetupWindowCode();
             return;
@@ -99,37 +99,37 @@ void wxsSearchCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long					The control flags.
- * \return wxObject* 					The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                    The control flags.
+ * \return wxObject*                     The constructed control.
  *
  */
 wxObject* wxsSearchCtrl::OnBuildPreview(wxWindow* parent,long flags)
 {
     wxSearchCtrl* preview = new wxSearchCtrl(parent, GetId(), m_sValue, Pos(parent), Size(parent), Style());
 
-	if(!m_bShowSearchBtn){
-		preview->ShowSearchButton(m_bShowSearchBtn);
-	}
-	if(m_bShowCancelBtn){
-		preview->ShowCancelButton(m_bShowCancelBtn);
-	}
+    if(!m_bShowSearchBtn){
+        preview->ShowSearchButton(m_bShowSearchBtn);
+    }
+    if(m_bShowCancelBtn){
+        preview->ShowCancelButton(m_bShowCancelBtn);
+    }
 
     return SetupWindow(preview,flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsSearchCtrl::OnEnumWidgetProperties(long flags)
 {
     WXS_SHORT_STRING(wxsSearchCtrl, m_sValue, _("Value"), _T("value"), wxEmptyString, false)
-	WXS_BOOL(wxsSearchCtrl, m_bShowSearchBtn, _("Search Button"), _T("search_button"), true)
-	WXS_BOOL(wxsSearchCtrl, m_bShowCancelBtn, _("Cancel Button"), _T("cancel_button"), false)
+    WXS_BOOL(wxsSearchCtrl, m_bShowSearchBtn, _("Search Button"), _T("search_button"), true)
+    WXS_BOOL(wxsSearchCtrl, m_bShowCancelBtn, _("Cancel Button"), _T("cancel_button"), false)
 }
 

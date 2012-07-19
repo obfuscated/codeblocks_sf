@@ -79,7 +79,7 @@ void wxsItemEditorContent::PaintExtra(wxDC* DC)
         }
         int PosX = DPD->PosX - m_DragBoxSize/2;
         int PosY = DPD->PosY - m_DragBoxSize/2;
-    	DC->DrawRectangle(PosX , PosY, m_DragBoxSize, m_DragBoxSize );
+        DC->DrawRectangle(PosX , PosY, m_DragBoxSize, m_DragBoxSize );
     }
 
     if ( m_MouseState==msTargetSearch && m_TargetInfo )
@@ -431,8 +431,8 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
 
         if ( DPD )
         {
-    		switch ( DPD->Type )
-    		{
+            switch ( DPD->Type )
+            {
                 case LeftTop:
                 case RightBtm:
                     SetCur(wxCURSOR_SIZENWSE);
@@ -455,7 +455,7 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
 
                 default:
                     SetCur(wxCURSOR_ARROW);
-    		}
+            }
         }
         else
         {

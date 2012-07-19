@@ -42,21 +42,21 @@ class wxsMenuBar;
 
 class wxsMenuEditor: public wxPanel
 {
-	public:
+    public:
 
         /** \brief Ctor for wxsMenuBar */
-		wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar);
+        wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar);
 
-		/** \brief Ctor for wxsMenu */
-		wxsMenuEditor(wxWindow* parent,wxsMenu* Menu);
+        /** \brief Ctor for wxsMenu */
+        wxsMenuEditor(wxWindow* parent,wxsMenu* Menu);
 
-		/** \brief Dctor */
-		virtual ~wxsMenuEditor();
+        /** \brief Dctor */
+        virtual ~wxsMenuEditor();
 
-		/** \brief Function applying current edited content into real wxsMenu or wxsMenuBar object */
-		void ApplyChanges();
+        /** \brief Function applying current edited content into real wxsMenu or wxsMenuBar object */
+        void ApplyChanges();
 
-	private:
+    private:
 
         typedef wxsMenuItem::Type Type;
 
@@ -64,7 +64,7 @@ class wxsMenuEditor: public wxPanel
          *
          * This is almost copy of wxMenu's properties, in contains additional
          * pointers to m_Child, m_Next and m_Parent items. Full functionality
-         * of wxsMenu was not required here so simillar structure containing
+         * of wxsMenu was not required here so similar structure containing
          * data only has been provided
          */
         struct MenuItem
@@ -145,82 +145,82 @@ class wxsMenuEditor: public wxPanel
         bool        m_BlockSel; ///< \brief Flag for blockig select events from tree ctrl
         bool        m_BlockRead;///< \brief Flag for blocking reading data from dialog to MenuItem
 
-		//(*Identifiers(wxsMenuEditor)
-		static const long ID_TREECTRL1;
-		static const long ID_RADIOBUTTON1;
-		static const long ID_RADIOBUTTON4;
-		static const long ID_RADIOBUTTON2;
-		static const long ID_RADIOBUTTON5;
-		static const long ID_RADIOBUTTON3;
-		static const long ID_STATICLINE1;
-		static const long ID_STATICTEXT6;
-		static const long ID_TEXTCTRL4;
-		static const long ID_STATICTEXT1;
-		static const long ID_TEXTCTRL1;
-		static const long ID_STATICTEXT2;
-		static const long ID_TEXTCTRL2;
-		static const long ID_STATICTEXT3;
-		static const long ID_TEXTCTRL3;
-		static const long ID_STATICTEXT4;
-		static const long ID_CHECKBOX1;
-		static const long ID_STATICTEXT5;
-		static const long ID_CHECKBOX2;
-		static const long ID_STATICLINE2;
-		static const long ID_BUTTON1;
-		static const long ID_BUTTON2;
-		static const long ID_BUTTON3;
-		static const long ID_BUTTON4;
-		static const long ID_BUTTON5;
-		static const long ID_BUTTON6;
-		//*)
+        //(*Identifiers(wxsMenuEditor)
+        static const long ID_TREECTRL1;
+        static const long ID_RADIOBUTTON1;
+        static const long ID_RADIOBUTTON4;
+        static const long ID_RADIOBUTTON2;
+        static const long ID_RADIOBUTTON5;
+        static const long ID_RADIOBUTTON3;
+        static const long ID_STATICLINE1;
+        static const long ID_STATICTEXT6;
+        static const long ID_TEXTCTRL4;
+        static const long ID_STATICTEXT1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_STATICTEXT2;
+        static const long ID_TEXTCTRL2;
+        static const long ID_STATICTEXT3;
+        static const long ID_TEXTCTRL3;
+        static const long ID_STATICTEXT4;
+        static const long ID_CHECKBOX1;
+        static const long ID_STATICTEXT5;
+        static const long ID_CHECKBOX2;
+        static const long ID_STATICLINE2;
+        static const long ID_BUTTON1;
+        static const long ID_BUTTON2;
+        static const long ID_BUTTON3;
+        static const long ID_BUTTON4;
+        static const long ID_BUTTON5;
+        static const long ID_BUTTON6;
+        //*)
 
-		//(*Handlers(wxsMenuEditor)
-		void OnContentSelectionChanged(wxTreeEvent& event);
-		void OnTypeChanged(wxCommandEvent& event);
-		void OnButtonUpClick(wxCommandEvent& event);
-		void OnButtonDownClick(wxCommandEvent& event);
-		void OnButtonNewClick(wxCommandEvent& event);
-		void OnButtonDelClick(wxCommandEvent& event);
-		void OnButtonLeftClick(wxCommandEvent& event);
-		void OnButtonRightClick(wxCommandEvent& event);
-		void OnLabelChanged(wxCommandEvent& event);
-		//*)
+        //(*Handlers(wxsMenuEditor)
+        void OnContentSelectionChanged(wxTreeEvent& event);
+        void OnTypeChanged(wxCommandEvent& event);
+        void OnButtonUpClick(wxCommandEvent& event);
+        void OnButtonDownClick(wxCommandEvent& event);
+        void OnButtonNewClick(wxCommandEvent& event);
+        void OnButtonDelClick(wxCommandEvent& event);
+        void OnButtonLeftClick(wxCommandEvent& event);
+        void OnButtonRightClick(wxCommandEvent& event);
+        void OnLabelChanged(wxCommandEvent& event);
+        //*)
 
-		//(*Declarations(wxsMenuEditor)
-		wxStaticBoxSizer* StaticBoxSizer2;
-		wxButton* Button4;
-		wxStaticText* StaticText2;
-		wxRadioButton* m_TypeNormal;
-		wxButton* Button1;
-		wxStaticText* StaticText6;
-		wxTreeCtrl* m_Content;
-		wxRadioButton* m_TypeRadio;
-		wxStaticText* StaticText1;
-		wxBoxSizer* BoxSizer2;
-		wxStaticText* StaticText3;
-		wxCheckBox* m_Checked;
-		wxButton* Button2;
-		wxStaticLine* StaticLine2;
-		wxButton* Button6;
-		wxRadioButton* m_TypeCheck;
-		wxRadioButton* m_TypeSeparator;
-		wxButton* Button5;
-		wxButton* Button3;
-		wxGridSizer* GridSizer1;
-		wxStaticText* StaticText5;
-		wxCheckBox* m_Enabled;
-		wxStaticLine* StaticLine1;
-		wxBoxSizer* BoxSizer1;
-		wxRadioButton* m_TypeBreak;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxBoxSizer* BoxSizer3;
-		wxStaticText* StaticText4;
-		wxTextCtrl* m_Label;
-		wxTextCtrl* m_Help;
-		wxTextCtrl* m_Id;
-		wxTextCtrl* m_Accelerator;
-		//*)
+        //(*Declarations(wxsMenuEditor)
+        wxStaticBoxSizer* StaticBoxSizer2;
+        wxButton* Button4;
+        wxStaticText* StaticText2;
+        wxRadioButton* m_TypeNormal;
+        wxButton* Button1;
+        wxStaticText* StaticText6;
+        wxTreeCtrl* m_Content;
+        wxRadioButton* m_TypeRadio;
+        wxStaticText* StaticText1;
+        wxBoxSizer* BoxSizer2;
+        wxStaticText* StaticText3;
+        wxCheckBox* m_Checked;
+        wxButton* Button2;
+        wxStaticLine* StaticLine2;
+        wxButton* Button6;
+        wxRadioButton* m_TypeCheck;
+        wxRadioButton* m_TypeSeparator;
+        wxButton* Button5;
+        wxButton* Button3;
+        wxGridSizer* GridSizer1;
+        wxStaticText* StaticText5;
+        wxCheckBox* m_Enabled;
+        wxStaticLine* StaticLine1;
+        wxBoxSizer* BoxSizer1;
+        wxRadioButton* m_TypeBreak;
+        wxStaticBoxSizer* StaticBoxSizer1;
+        wxFlexGridSizer* FlexGridSizer1;
+        wxBoxSizer* BoxSizer3;
+        wxStaticText* StaticText4;
+        wxTextCtrl* m_Label;
+        wxTextCtrl* m_Help;
+        wxTextCtrl* m_Id;
+        wxTextCtrl* m_Accelerator;
+        //*)
 
 };
 

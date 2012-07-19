@@ -40,7 +40,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsColourPickerCtrl::wxsColourPickerCtrl(wxsItemResData* Data):
@@ -65,12 +65,12 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/clrpicker.h>"),GetInfo().ClassName,0);
 
-			wxString ss = m_cdColour.BuildCode(GetCoderContext());
-			#if wxCHECK_VERSION(2, 9, 0)
+            wxString ss = m_cdColour.BuildCode(GetCoderContext());
+            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
-			#else
+            #else
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.c_str());
-			#endif
+            #endif
 
             BuildSetupWindowCode();
             return;
@@ -83,29 +83,29 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsColourPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-	wxColourPickerCtrl* Preview;
+    wxColourPickerCtrl* Preview;
     wxColour clr = m_cdColour.GetColour();
     if(clr.IsOk()){
-		Preview = new wxColourPickerCtrl(Parent, GetId(), clr, Pos(Parent), Size(Parent), Style());
+        Preview = new wxColourPickerCtrl(Parent, GetId(), clr, Pos(Parent), Size(Parent), Style());
     }
     else{
-		Preview = new wxColourPickerCtrl(Parent, GetId(), *wxBLACK, Pos(Parent), Size(Parent), Style());
+        Preview = new wxColourPickerCtrl(Parent, GetId(), *wxBLACK, Pos(Parent), Size(Parent), Style());
     }
     return SetupWindow(Preview,Flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

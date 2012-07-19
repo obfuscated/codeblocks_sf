@@ -33,26 +33,26 @@
  */
 class wxsImageProperty: public wxsCustomEditorProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
-         *  \param PGName       		The name of this property in the Property Grid.
-         *  \param DataName     	The name of this property in data stuctures.
+         *  \param PGName               The name of this property in the Property Grid.
+         *  \param DataName         The name of this property in data stuctures.
          *  \param DataSubName  The name applied for each array element.
-         *  \param Offset       			The offset of the value (returned from wxsOFFSET macro).
-		 *  \param Priority int			The item's priority.
+         *  \param Offset                   The offset of the value (returned from wxsOFFSET macro).
+         *  \param Priority int            The item's priority.
          */
-		wxsImageProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
+        wxsImageProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxArrayString"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxArrayString"); }
 
         /** \brief Showing editor for this property
-		 *
-		 * \param Object wxsPropertyContainer*	A pointer to a wxsPropertyContainer object.
-		 * \return bool	True on succes, otherwise false.
-		 *
-		 */
+         *
+         * \param Object wxsPropertyContainer*    A pointer to a wxsPropertyContainer object.
+         * \return bool    True on succes, otherwise false.
+         *
+         */
         virtual bool ShowEditor(wxsPropertyContainer* Object);
 
     protected:
@@ -63,7 +63,7 @@ class wxsImageProperty: public wxsCustomEditorProperty
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
-	private:
+    private:
         long Offset;
         wxString DataSubName;
         wxString DataName;

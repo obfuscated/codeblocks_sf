@@ -138,7 +138,7 @@ typedef wxsPositionSizeData wxsSizeData;
  */
 class wxsPositionSizeProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGUseDefName name of "use default value" property
@@ -149,7 +149,7 @@ class wxsPositionSizeProperty: public wxsProperty
          *  \param Offset       offset to wxsPositionSizeData structure
          *  \param Priority     priority of this property
          */
-		wxsPositionSizeProperty(
+        wxsPositionSizeProperty(
             const wxString& PGUseDefName,
             const wxString& PGXName,
             const wxString& PGYName,
@@ -158,8 +158,8 @@ class wxsPositionSizeProperty: public wxsProperty
             long Offset,
             int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxPosition wxSize"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxPosition wxSize"); }
 
     protected:
 
@@ -171,7 +171,7 @@ class wxsPositionSizeProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         wxString PGXName;
         wxString PGYName;
         wxString PGDUName;

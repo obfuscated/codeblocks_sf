@@ -27,18 +27,18 @@ namespace
     WXS_ST_BEGIN(wxsContextHelpButtonStyles, wxT("wxBU_AUTODRAW"))
         WXS_ST_CATEGORY("wxContextHelpButton")
          WXS_ST(wxBU_AUTODRAW)
-		 WXS_ST(wxBU_BOTTOM)
-		 WXS_ST(wxBU_LEFT)
-		 WXS_ST(wxBU_RIGHT)
-		 WXS_ST(wxBU_TOP)
-		 WXS_ST(wxBU_EXACTFIT)
+         WXS_ST(wxBU_BOTTOM)
+         WXS_ST(wxBU_LEFT)
+         WXS_ST(wxBU_RIGHT)
+         WXS_ST(wxBU_TOP)
+         WXS_ST(wxBU_EXACTFIT)
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 }
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsContextHelpButton::wxsContextHelpButton(wxsItemResData* Data):
@@ -78,11 +78,11 @@ void wxsContextHelpButton::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsContextHelpButton::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -94,7 +94,7 @@ wxObject* wxsContextHelpButton::OnBuildPreview(wxWindow* Parent,long Flags)
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

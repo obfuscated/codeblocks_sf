@@ -77,7 +77,7 @@ wxsItemEditor::wxsItemEditor(wxWindow* parent,wxsItemRes* Resource):
 wxsItemEditor::~wxsItemEditor()
 {
     delete m_Data;
-	m_AllEditors.erase(this);
+    m_AllEditors.erase(this);
 }
 
 void wxsItemEditor::InitializeResourceData()
@@ -293,12 +293,12 @@ bool wxsItemEditor::Save()
         // TODO: Some message here please
     }
     UpdateModified();
-	return true;
+    return true;
 }
 
 bool wxsItemEditor::GetModified() const
 {
-	return m_Data ? m_Data->GetModified() : false;
+    return m_Data ? m_Data->GetModified() : false;
 }
 
 void wxsItemEditor::UpdateModified()
@@ -315,12 +315,12 @@ void wxsItemEditor::UpdateModified()
 
 bool wxsItemEditor::CanUndo() const
 {
-	return m_Data ? m_Data->CanUndo() : false;
+    return m_Data ? m_Data->CanUndo() : false;
 }
 
 bool wxsItemEditor::CanRedo() const
 {
-	return m_Data ? m_Data->CanRedo() : false;
+    return m_Data ? m_Data->CanRedo() : false;
 }
 
 void wxsItemEditor::Undo()

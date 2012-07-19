@@ -76,7 +76,7 @@ struct wxsDimensionData
 /** \brief Dimension property (long integer value which may be in pixel or dialog units) */
 class wxsDimensionProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName               name of property in Property Grid
@@ -87,7 +87,7 @@ class wxsDimensionProperty: public wxsProperty
          *  \param DefaultDialogUnits   default value applied for pixel / dialog units switch on read errors
          *  \param Priority             priority of this property
          */
-		wxsDimensionProperty(
+        wxsDimensionProperty(
             const wxString& PGName,
             const wxString& PGDUName,
             const wxString& DataName,
@@ -96,8 +96,8 @@ class wxsDimensionProperty: public wxsProperty
             bool DefaultDialogUnits=false,
             int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxsDimension"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxsDimension"); }
 
     protected:
 
@@ -109,7 +109,7 @@ class wxsDimensionProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         long DefaultValue;
         bool DefaultDialogUnits;

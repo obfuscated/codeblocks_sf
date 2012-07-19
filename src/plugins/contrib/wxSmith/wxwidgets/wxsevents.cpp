@@ -55,42 +55,42 @@ wxsEvents::wxsEvents(const wxsEventDesc* Events,wxsItem* Item):
 
 void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
 {
-	for ( TiXmlElement* Handler = Element->FirstChildElement(HandlerXmlElementName);
+    for ( TiXmlElement* Handler = Element->FirstChildElement(HandlerXmlElementName);
           Handler;
           Handler = Handler->NextSiblingElement(HandlerXmlElementName) )
     {
-    	const char* EntryName    = Handler->Attribute(HandlerXmlEntryName);
-    	const char* TypeName     = Handler->Attribute(HandlerXmlTypeName);
-    	const char* FunctionName = Handler->Attribute(HandlerXmlFunctionName);
+        const char* EntryName    = Handler->Attribute(HandlerXmlEntryName);
+        const char* TypeName     = Handler->Attribute(HandlerXmlTypeName);
+        const char* FunctionName = Handler->Attribute(HandlerXmlFunctionName);
 
         // There must be function name, otherwise this handler definition is useless
-    	if ( !FunctionName ) continue;
+        if ( !FunctionName ) continue;
 
-    	if ( EntryName )
-    	{
-    	    // Function given by event entry
-    	    wxString Name = cbC2U(EntryName);
-    	    for ( int i=0; i<m_Count; i++ )
-    	    {
-    	        if ( (m_EventArray[i].Entry == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
-    	        {
-    	            m_Functions[i] = cbC2U(FunctionName);
-    	            break;
-    	        }
-    	    }
-    	}
-    	else
-    	{
-    	    // Function given by event type
-    	    wxString Name = cbC2U(TypeName);
-    	    for ( int i=0; i<m_Count; i++ )
-    	    {
-    	        if ( (m_EventArray[i].Type == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
-    	        {
-    	            m_Functions[i] = cbC2U(FunctionName);
-    	        }
-    	    }
-    	}
+        if ( EntryName )
+        {
+            // Function given by event entry
+            wxString Name = cbC2U(EntryName);
+            for ( int i=0; i<m_Count; i++ )
+            {
+                if ( (m_EventArray[i].Entry == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
+                {
+                    m_Functions[i] = cbC2U(FunctionName);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // Function given by event type
+            wxString Name = cbC2U(TypeName);
+            for ( int i=0; i<m_Count; i++ )
+            {
+                if ( (m_EventArray[i].Type == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
+                {
+                    m_Functions[i] = cbC2U(FunctionName);
+                }
+            }
+        }
     }
 }
 
@@ -98,19 +98,19 @@ void wxsEvents::XmlSaveFunctions(TiXmlElement* Element)
 {
     for ( int i=0; i<m_Count; i++ )
     {
-    	if ( !m_Functions[i].empty() && (m_EventArray[i].ET != wxsEventDesc::Category) )
-    	{
-    		TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
-    		Handler->SetAttribute(HandlerXmlFunctionName,cbU2C(m_Functions[i]));
-    		if ( !m_EventArray[i].Entry.empty() )
-    		{
+        if ( !m_Functions[i].empty() && (m_EventArray[i].ET != wxsEventDesc::Category) )
+        {
+            TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
+            Handler->SetAttribute(HandlerXmlFunctionName,cbU2C(m_Functions[i]));
+            if ( !m_EventArray[i].Entry.empty() )
+            {
                 Handler->SetAttribute(HandlerXmlEntryName,cbU2C(m_EventArray[i].Entry));
-    		}
-    		else
-    		{
-    		    Handler->SetAttribute(HandlerXmlTypeName,cbU2C(m_EventArray[i].Type));
-    		}
-    	}
+            }
+            else
+            {
+                Handler->SetAttribute(HandlerXmlTypeName,cbU2C(m_EventArray[i].Type));
+            }
+        }
     }
 }
 

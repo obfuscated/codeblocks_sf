@@ -33,7 +33,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
  wxsDialUpManager::wxsDialUpManager(wxsItemResData* Data):
@@ -42,21 +42,21 @@ namespace
         &Reg.Info,
         wxsDialUpManagerEvents,
         NULL,
-         flVariable|flId|flSubclass|flExtraCode),
-         m_iAutoCheckInterval(60)
+        flVariable|flId|flSubclass|flExtraCode),
+        m_iAutoCheckInterval(60)
 #ifndef __WXMSW__
-         ,
-         m_sWellKnownHost(wxT("www.yahoo.com")),
-         m_iPortNo(80),
-         m_sDialCommand(wxT("/usr/bin/pon")),
-         m_sHangUpCommand(wxT("/usr/bin/poff"))
+        ,
+        m_sWellKnownHost(wxT("www.yahoo.com")),
+        m_iPortNo(80),
+        m_sDialCommand(wxT("/usr/bin/pon")),
+        m_sHangUpCommand(wxT("/usr/bin/poff"))
 #endif
 {
-	// AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
+    // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
 #ifdef __WXMSW__
-		m_bAutoCheckOnlineStatus = true;
+        m_bAutoCheckOnlineStatus = true;
 #else
-		m_bAutoCheckOnlineStatus = false;
+        m_bAutoCheckOnlineStatus = false;
 #endif
 }
 
@@ -76,35 +76,35 @@ void wxsDialUpManager::OnBuildCreatingCode()
             Codef(wxT("%O = wxDialUpManager::Create();\n"));
 
 #ifdef __WXMSW__
-			// AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
-			if(!m_bAutoCheckOnlineStatus){
-				Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
-			}
+            // AutoCheckOnlineStatus defaults to ON on Windows and OFF on Linux.
+            if(!m_bAutoCheckOnlineStatus){
+                Codef(_T("%ADisableAutoCheckOnlineStatus();\n"));
+            }
 #else
-			if(m_bAutoCheckOnlineStatus){
-				if(m_iAutoCheckInterval != 60){
-					Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
-				}
-				else{
-					Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
-				}
-			}
-			// These functions are only used on Unix.
-			if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80){
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
-				#else
-				Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.c_str(), m_iPortNo);
-				#endif
-			}
+            if(m_bAutoCheckOnlineStatus){
+                if(m_iAutoCheckInterval != 60){
+                    Codef(_T("%AEnableAutoCheckOnlineStatus(%d);\n"), m_iAutoCheckInterval);
+                }
+                else{
+                    Codef(_T("%AEnableAutoCheckOnlineStatus();\n"));
+                }
+            }
+            // These functions are only used on Unix.
+            if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80){
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
+                #else
+                Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.c_str(), m_iPortNo);
+                #endif
+            }
 
-			if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff"))){
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
-				#else
-				Codef(_T("%ASetConnectCommand(%n);\n"), m_sWellKnownHost.c_str(), m_sHangUpCommand.c_str());
-				#endif
-			}
+            if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff"))){
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
+                #else
+                Codef(_T("%ASetConnectCommand(%n);\n"), m_sWellKnownHost.c_str(), m_sHangUpCommand.c_str());
+                #endif
+            }
 #endif
 
             BuildSetupWindowCode();
@@ -120,26 +120,28 @@ void wxsDialUpManager::OnBuildCreatingCode()
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsDialUpManager::OnEnumToolProperties(long Flags)
 {
-	bool bAutoCheck;
-	if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
-		bAutoCheck = true;
-	}
-	else{
-		bAutoCheck = false;
-	}
+    bool bAutoCheck;
+    if ((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0)
+    {
+        bAutoCheck = true;
+    }
+    else
+    {
+        bAutoCheck = false;
+    }
     WXS_BOOL(wxsDialUpManager, m_bAutoCheckOnlineStatus, _("Auto-check online status"), _T("auto_check_online_status"), bAutoCheck)
 #ifndef __WXMSW__
-	// These properties are only used on Unix.
-    WXS_LONG(wxsDialUpManager, m_iAutoCheckInterval, _("Auto-check interval (secs)"), wxT("auto_check_interval"), 60)
-	WXS_SHORT_STRING(wxsDialUpManager, m_sWellKnownHost, _("Well Known Host"), wxT("well_known_host"), wxT("www.yahoo.com"), false)
-	WXS_LONG(wxsDialUpManager, m_iPortNo, _("Port no."), wxT("port_no"), 80)
-	WXS_SHORT_STRING(wxsDialUpManager, m_sDialCommand, _("Dial command"), wxT("dial_command"), wxT("/usr/bin/pon"), false)
-	WXS_SHORT_STRING(wxsDialUpManager, m_sHangUpCommand, _("Hang up command"), wxT("hangup_command"), wxT("/usr/bin/poff"), false)
+    // These properties are only used on Unix.
+    WXS_LONG(wxsDialUpManager,         m_iAutoCheckInterval, _("Auto-check interval (secs)"), wxT("auto_check_interval"), 60)
+    WXS_SHORT_STRING(wxsDialUpManager, m_sWellKnownHost,     _("Well Known Host"),            wxT("well_known_host"),     wxT("www.yahoo.com"), false)
+    WXS_LONG(wxsDialUpManager,         m_iPortNo,            _("Port no."),                   wxT("port_no"),             80)
+    WXS_SHORT_STRING(wxsDialUpManager, m_sDialCommand,       _("Dial command"),               wxT("dial_command"),        wxT("/usr/bin/pon"),  false)
+    WXS_SHORT_STRING(wxsDialUpManager, m_sHangUpCommand,     _("Hang up command"),            wxT("hangup_command"),      wxT("/usr/bin/poff"), false)
 #endif
 }

@@ -38,58 +38,58 @@
 /** \brief Configuration panel for wxWidgetsGUI class */
 class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
 {
-	public:
+    public:
 
-		wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* GUI);
-		virtual ~wxWidgetsGUIConfigPanel();
+        wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* GUI);
+        virtual ~wxWidgetsGUIConfigPanel();
 
-		//(*Identifiers(wxWidgetsGUIConfigPanel)
-		static const long ID_STATICTEXT1;
-		static const long ID_TEXTCTRL1;
-		static const long ID_BUTTON1;
-		static const long ID_BUTTON2;
-		static const long ID_COMBOBOX1;
-		static const long ID_STATICTEXT2;
-		static const long ID_CHECKBOX2;
-		static const long ID_CHECKBOX1;
-		//*)
+        //(*Identifiers(wxWidgetsGUIConfigPanel)
+        static const long ID_STATICTEXT1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON1;
+        static const long ID_BUTTON2;
+        static const long ID_COMBOBOX1;
+        static const long ID_STATICTEXT2;
+        static const long ID_CHECKBOX2;
+        static const long ID_CHECKBOX1;
+        //*)
 
-	private:
+    private:
 
         virtual wxString GetTitle() const;
         virtual wxString GetBitmapBaseName() const;
         virtual void OnApply();
         virtual void OnCancel();
 
-		//(*Handlers(wxWidgetsGUIConfigPanel)
-		void OnInitAllChange(wxCommandEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
-		void OnButton2Click(wxCommandEvent& event);
-		//*)
+        //(*Handlers(wxWidgetsGUIConfigPanel)
+        void OnInitAllChange(wxCommandEvent& event);
+        void OnButton1Click(wxCommandEvent& event);
+        void OnButton2Click(wxCommandEvent& event);
+        //*)
 
-		//(*Declarations(wxWidgetsGUIConfigPanel)
-		wxBoxSizer* BoxSizer4;
-		wxStaticBoxSizer* StaticBoxSizer2;
-		wxBoxSizer* BoxSizer5;
-		wxStaticText* StaticText2;
-		wxButton* Button1;
-		wxTextCtrl* AutoLoad;
-		wxComboBox* MainRes;
-		wxStaticText* StaticText1;
-		wxBoxSizer* BoxSizer2;
-		wxButton* Button2;
-		wxCheckBox* InitAll;
-		wxStaticBoxSizer* StaticBoxSizer3;
-		wxBoxSizer* BoxSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxCheckBox* InitAllNecessary;
-		wxBoxSizer* BoxSizer3;
-		//*)
+        //(*Declarations(wxWidgetsGUIConfigPanel)
+        wxBoxSizer* BoxSizer4;
+        wxStaticBoxSizer* StaticBoxSizer2;
+        wxBoxSizer* BoxSizer5;
+        wxStaticText* StaticText2;
+        wxButton* Button1;
+        wxTextCtrl* AutoLoad;
+        wxComboBox* MainRes;
+        wxStaticText* StaticText1;
+        wxBoxSizer* BoxSizer2;
+        wxButton* Button2;
+        wxCheckBox* InitAll;
+        wxStaticBoxSizer* StaticBoxSizer3;
+        wxBoxSizer* BoxSizer1;
+        wxStaticBoxSizer* StaticBoxSizer1;
+        wxFlexGridSizer* FlexGridSizer1;
+        wxCheckBox* InitAllNecessary;
+        wxBoxSizer* BoxSizer3;
+        //*)
 
         wxWidgetsGUI* m_GUI;
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

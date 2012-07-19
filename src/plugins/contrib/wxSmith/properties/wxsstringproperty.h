@@ -28,7 +28,7 @@
 /** \brief Base string property (working on wxString class) */
 class wxsStringProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName           name of property in Property Grid
@@ -39,10 +39,10 @@ class wxsStringProperty: public wxsProperty
          *  \param Default          default value applied on read errors
          *  \param Priority         priority of this property
          */
-		wxsStringProperty(const wxString& PGName,const wxString& DataName,long Offset,bool IsLongString=true,bool XmlStoreEmpty=false,const wxString& Default=wxEmptyString,int Priority=100);
+        wxsStringProperty(const wxString& PGName,const wxString& DataName,long Offset,bool IsLongString=true,bool XmlStoreEmpty=false,const wxString& Default=wxEmptyString,int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxString"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxString"); }
 
     protected:
 
@@ -54,7 +54,7 @@ class wxsStringProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         bool IsLongString;
         bool XmlStoreEmpty;

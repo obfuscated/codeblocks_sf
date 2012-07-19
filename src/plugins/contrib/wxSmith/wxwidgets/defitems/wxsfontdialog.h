@@ -35,12 +35,12 @@ class wxsFontDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        bool					m_bAllowSymbols;	//!< Allow symbol fonts to be selected..
-        bool					m_bEnableEffects;		//!< Enable effects.
-        bool					m_bShowHelp;			//!< Show the help button.
-        long					m_iMinSize;				//!< The minimum allowed font size.
-        long					m_iMaxSize;				//!< The maximum allowed font size.
-        wxsColourData	m_cdColour;				//!< The font colour..
+        bool                    m_bAllowSymbols;    //!< Allow symbol fonts to be selected..
+        bool                    m_bEnableEffects;        //!< Enable effects.
+        bool                    m_bShowHelp;            //!< Show the help button.
+        long                    m_iMinSize;                //!< The minimum allowed font size.
+        long                    m_iMaxSize;                //!< The maximum allowed font size.
+        wxsColourData    m_cdColour;                //!< The font colour..
 };
 
 #endif

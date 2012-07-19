@@ -47,10 +47,10 @@ const long wxWidgetsGUIAppAdoptingDlg::ID_BUTTON6 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxWidgetsGUIAppAdoptingDlg,wxScrollingDialog)
-	//(*EventTable(wxWidgetsGUIAppAdoptingDlg)
-	//*)
-	EVT_CLOSE(wxWidgetsGUIAppAdoptingDlg::OnClose)
-	EVT_TIMER(1,wxWidgetsGUIAppAdoptingDlg::OnTimer)
+    //(*EventTable(wxWidgetsGUIAppAdoptingDlg)
+    //*)
+    EVT_CLOSE(wxWidgetsGUIAppAdoptingDlg::OnClose)
+    EVT_TIMER(1,wxWidgetsGUIAppAdoptingDlg::OnTimer)
 END_EVENT_TABLE()
 
 wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id):
@@ -59,54 +59,54 @@ wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidget
     m_Timer(this,1),
     m_Run(true)
 {
-	//(*Initialize(wxWidgetsGUIAppAdoptingDlg)
-	Create(parent, id, _("Integrating application class with wxSmith"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("id"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Files with application class:"));
-	FoundFiles = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(198,166), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-	StaticBoxSizer1->Add(FoundFiles, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	Progress = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(90,13), wxGA_SMOOTH, wxDefaultValidator, _T("ID_GAUGE1"));
-	StaticBoxSizer1->Add(Progress, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	ScanningTxt = new wxStaticText(this, ID_STATICTEXT1, _("Scanning:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	BoxSizer2->Add(ScanningTxt, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	ScanningFile = new wxStaticText(this, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-	BoxSizer2->Add(ScanningFile, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer4->Add(StaticBoxSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer3 = new wxBoxSizer(wxVERTICAL);
-	BoxSizer3->Add(28,17,0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	UseFileBtn = new wxButton(this, ID_BUTTON5, _("Use selected file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON5"));
-	UseFileBtn->Disable();
-	BoxSizer3->Add(UseFileBtn, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	SelectBtn = new wxButton(this, ID_BUTTON2, _("Select file manually"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-	BoxSizer3->Add(SelectBtn, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	CreateBtn = new wxButton(this, ID_BUTTON3, _("Create new file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-	BoxSizer3->Add(CreateBtn, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
-	BoxSizer3->Add(StaticLine2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 8);
-	Button4 = new wxButton(this, ID_BUTTON4, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
-	Button4->SetDefault();
-	BoxSizer3->Add(Button4, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
-	BoxSizer3->Add(StaticLine1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 8);
-	Button6 = new wxButton(this, ID_BUTTON6, _("What\'s this for \?"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
-	BoxSizer3->Add(Button6, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer3->Add(28,17,0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer4->Add(BoxSizer3, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	BoxSizer1->Add(BoxSizer4, 1, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
-	Center();
+    //(*Initialize(wxWidgetsGUIAppAdoptingDlg)
+    Create(parent, id, _("Integrating application class with wxSmith"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("id"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Files with application class:"));
+    FoundFiles = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(198,166), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
+    StaticBoxSizer1->Add(FoundFiles, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    Progress = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(90,13), wxGA_SMOOTH, wxDefaultValidator, _T("ID_GAUGE1"));
+    StaticBoxSizer1->Add(Progress, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    ScanningTxt = new wxStaticText(this, ID_STATICTEXT1, _("Scanning:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+    BoxSizer2->Add(ScanningTxt, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    ScanningFile = new wxStaticText(this, ID_STATICTEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+    BoxSizer2->Add(ScanningFile, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer4->Add(StaticBoxSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer3 = new wxBoxSizer(wxVERTICAL);
+    BoxSizer3->Add(28,17,0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    UseFileBtn = new wxButton(this, ID_BUTTON5, _("Use selected file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON5"));
+    UseFileBtn->Disable();
+    BoxSizer3->Add(UseFileBtn, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    SelectBtn = new wxButton(this, ID_BUTTON2, _("Select file manually"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+    BoxSizer3->Add(SelectBtn, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    CreateBtn = new wxButton(this, ID_BUTTON3, _("Create new file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+    BoxSizer3->Add(CreateBtn, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
+    BoxSizer3->Add(StaticLine2, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 8);
+    Button4 = new wxButton(this, ID_BUTTON4, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
+    Button4->SetDefault();
+    BoxSizer3->Add(Button4, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(50,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
+    BoxSizer3->Add(StaticLine1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 8);
+    Button6 = new wxButton(this, ID_BUTTON6, _("What\'s this for \?"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
+    BoxSizer3->Add(Button6, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer3->Add(28,17,0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer4->Add(BoxSizer3, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    BoxSizer1->Add(BoxSizer4, 1, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    SetSizer(BoxSizer1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
+    Center();
 
-	Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick);
-	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick);
-	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick);
-	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton4Click);
-	Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton6Click);
-	//*)
+    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick);
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick);
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton4Click);
+    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton6Click);
+    //*)
 
     m_Timer.Start(100,true);
 }

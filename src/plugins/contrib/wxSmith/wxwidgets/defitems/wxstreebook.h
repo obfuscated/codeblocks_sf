@@ -26,9 +26,9 @@
 /** \brief wxTreebook container */
 class wxsTreebook : public wxsContainer
 {
-	public:
+    public:
 
-		wxsTreebook(wxsItemResData* Data);
+        wxsTreebook(wxsItemResData* Data);
 
     private:
 
@@ -47,7 +47,7 @@ class wxsTreebook : public wxsContainer
 
         void UpdateCurrentSelection();
 
-        wxsItem						*m_CurrentSelection;		//!< The currently selected page.
+        wxsItem                        *m_CurrentSelection;        //!< The currently selected page.
 
 };
 

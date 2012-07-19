@@ -42,7 +42,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData* Data):
@@ -51,7 +51,7 @@ wxsHyperlinkCtrl::wxsHyperlinkCtrl(wxsItemResData* Data):
         &Reg.Info,
         wxsHyperlinkCtrlEvents,
         wxsHyperlinkCtrlStyles),
-		m_Label(wxT("http://www.codeblocks.org"))
+        m_Label(wxT("http://www.codeblocks.org"))
 {}
 
 /*! \brief Create the initial control.
@@ -73,26 +73,26 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.c_str(), m_URL.c_str());
             #endif
 
-			wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
-			if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.c_str());
-			#endif
+            wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
+            #if wxCHECK_VERSION(2, 9, 0)
+            if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
+            #else
+            if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.c_str());
+            #endif
 
-			ss = m_HoverColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
-			if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.c_str());
-			#endif
+            ss = m_HoverColour.BuildCode( GetCoderContext() );
+            #if wxCHECK_VERSION(2, 9, 0)
+            if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
+            #else
+            if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.c_str());
+            #endif
 
-			ss = m_VisitedColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
-			if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.c_str());
-			#endif
+            ss = m_VisitedColour.BuildCode( GetCoderContext() );
+            #if wxCHECK_VERSION(2, 9, 0)
+            if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
+            #else
+            if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.c_str());
+            #endif
 
             BuildSetupWindowCode();
             return;
@@ -105,38 +105,38 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsHyperlinkCtrl::OnBuildPreview(wxWindow* parent,long flags)
 {
     wxHyperlinkCtrl* preview = new wxHyperlinkCtrl(parent,GetId(),m_Label,m_URL,Pos(parent),Size(parent),Style());
-	wxColour cc = m_NormalColour.GetColour();
-	if ( cc.IsOk() )
-	{
-		preview->SetNormalColour(cc);
-	}
-	cc = m_HoverColour.GetColour();
-	if ( cc.IsOk() )
-	{
-		preview->SetHoverColour(cc);
-	}
-	cc = m_VisitedColour.GetColour();
-	if ( cc.IsOk() )
-	{
-		preview->SetVisitedColour(cc);
-	}
+    wxColour cc = m_NormalColour.GetColour();
+    if ( cc.IsOk() )
+    {
+        preview->SetNormalColour(cc);
+    }
+    cc = m_HoverColour.GetColour();
+    if ( cc.IsOk() )
+    {
+        preview->SetHoverColour(cc);
+    }
+    cc = m_VisitedColour.GetColour();
+    if ( cc.IsOk() )
+    {
+        preview->SetVisitedColour(cc);
+    }
 
     return SetupWindow(preview,flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

@@ -46,9 +46,9 @@ class wxsColourData: public wxColourPropertyValue
         wxsColourData(const wxColour &colour): wxColourPropertyValue(colour) {}
         wxsColourData(const wxColourPropertyValue& cp): wxColourPropertyValue(cp) {}
 
-		/** \brief Getting wxColour object from wxColourPropertyValue
-		 *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
-		 */
+        /** \brief Getting wxColour object from wxColourPropertyValue
+         *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
+         */
         wxColour GetColour();
 
         /** \brief Getting code building colour
@@ -64,7 +64,7 @@ class wxsColourData: public wxColourPropertyValue
  */
 class wxsColourProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName               name of property in Property Grid
@@ -72,18 +72,18 @@ class wxsColourProperty: public wxsProperty
          *  \param ValueOffset          offset of wxColourPropertyValue member (taken from wxsOFFSET macro)
          *  \param Priority         priority of this property
          */
-		wxsColourProperty(
+        wxsColourProperty(
             const wxString& PGName,
             const wxString& DataName,
             long ValueOffset,
             int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxsColour"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxsColour"); }
 
-		/** \brief Getting wxColour object from wxColourPropertyValue
-		 *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
-		 */
+        /** \brief Getting wxColour object from wxColourPropertyValue
+         *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
+         */
         static wxColour GetColour(const wxColourPropertyValue& value);
 
         /** \brief Getting code building colour
@@ -101,7 +101,7 @@ class wxsColourProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long ValueOffset;
 };
 

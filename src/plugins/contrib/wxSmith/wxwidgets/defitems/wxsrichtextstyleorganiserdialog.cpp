@@ -27,55 +27,55 @@ namespace
 {
     wxsRegisterItem<wxsRichTextStyleOrganiserDialog> Reg(
         _T("RichTextStyleOrganiserDialog"),      // Class base name
-        wxsTTool,                       								// Item type
-        _T("Dialogs"),                  							// Category in palette
-        80,                             										// Priority in palette
-        false);                         									// We do not allow this item inside XRC files
+        wxsTTool,                                                       // Item type
+        _T("Dialogs"),                                              // Category in palette
+        80,                                                                     // Priority in palette
+        false);                                                             // We do not allow this item inside XRC files
 
     static const long arrStyleValues[] = {
-		wxRICHTEXT_ORGANISER_APPLY_STYLES,
-		wxRICHTEXT_ORGANISER_CREATE_STYLES,
-		wxRICHTEXT_ORGANISER_DELETE_STYLES,
-		wxRICHTEXT_ORGANISER_EDIT_STYLES,
-		wxRICHTEXT_ORGANISER_OK_CANCEL,
-		wxRICHTEXT_ORGANISER_RENAME_STYLES,
-		wxRICHTEXT_ORGANISER_RENUMBER,
-		wxRICHTEXT_ORGANISER_SHOW_ALL,
-		wxRICHTEXT_ORGANISER_SHOW_CHARACTER,
-		wxRICHTEXT_ORGANISER_SHOW_LIST,
-		wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH
-	};
+        wxRICHTEXT_ORGANISER_APPLY_STYLES,
+        wxRICHTEXT_ORGANISER_CREATE_STYLES,
+        wxRICHTEXT_ORGANISER_DELETE_STYLES,
+        wxRICHTEXT_ORGANISER_EDIT_STYLES,
+        wxRICHTEXT_ORGANISER_OK_CANCEL,
+        wxRICHTEXT_ORGANISER_RENAME_STYLES,
+        wxRICHTEXT_ORGANISER_RENUMBER,
+        wxRICHTEXT_ORGANISER_SHOW_ALL,
+        wxRICHTEXT_ORGANISER_SHOW_CHARACTER,
+        wxRICHTEXT_ORGANISER_SHOW_LIST,
+        wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH
+    };
 
     static const wxChar* arrStyleValueNames[] = {
-    	_T("wxRICHTEXT_ORGANISER_APPLY_STYLES"),
-    	_T("wxRICHTEXT_ORGANISER_CREATE_STYLES"),
-    	_T("wxRICHTEXT_ORGANISER_DELETE_STYLES"),
-		_T("wxRICHTEXT_ORGANISER_EDIT_STYLES"),
-		_T("wxRICHTEXT_ORGANISER_OK_CANCEL"),
-		_T("wxRICHTEXT_ORGANISER_RENAME_STYLES"),
-		_T("wxRICHTEXT_ORGANISER_RENUMBER"),
-		_T("wxRICHTEXT_ORGANISER_SHOW_ALL"),
-		_T("wxRICHTEXT_ORGANISER_SHOW_CHARACTER"),
-		_T("wxRICHTEXT_ORGANISER_SHOW_LIST"),
-		_T("wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH"),
-		NULL
-	};
+        _T("wxRICHTEXT_ORGANISER_APPLY_STYLES"),
+        _T("wxRICHTEXT_ORGANISER_CREATE_STYLES"),
+        _T("wxRICHTEXT_ORGANISER_DELETE_STYLES"),
+        _T("wxRICHTEXT_ORGANISER_EDIT_STYLES"),
+        _T("wxRICHTEXT_ORGANISER_OK_CANCEL"),
+        _T("wxRICHTEXT_ORGANISER_RENAME_STYLES"),
+        _T("wxRICHTEXT_ORGANISER_RENUMBER"),
+        _T("wxRICHTEXT_ORGANISER_SHOW_ALL"),
+        _T("wxRICHTEXT_ORGANISER_SHOW_CHARACTER"),
+        _T("wxRICHTEXT_ORGANISER_SHOW_LIST"),
+        _T("wxRICHTEXT_ORGANISER_SHOW_PARAGRAPH"),
+        NULL
+    };
 }
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsRichTextStyleOrganiserDialog::wxsRichTextStyleOrganiserDialog(wxsItemResData *Data):
     wxsTool(Data,
-			&Reg.Info,
-			NULL,
-			NULL,
-			(flVariable | flId | flSubclass | flExtraCode)),
-			m_sCaption(SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE),
-			m_iFlags(wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES|
-								wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES)
+            &Reg.Info,
+            NULL,
+            NULL,
+            (flVariable | flId | flSubclass | flExtraCode)),
+            m_sCaption(SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE),
+            m_iFlags(wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES|
+                                wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES)
 {
 }
 
@@ -86,8 +86,8 @@ wxsRichTextStyleOrganiserDialog::wxsRichTextStyleOrganiserDialog(wxsItemResData 
  */
 void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
 {
-	wxString sFlags;
-	wxString sStyleSheetName = GetCoderContext()->GetUniqueName(_T("richTextStyleSheet"));
+    wxString sFlags;
+    wxString sStyleSheetName = GetCoderContext()->GetUniqueName(_T("richTextStyleSheet"));
     switch(GetLanguage())
     {
         case wxsCPP:
@@ -95,37 +95,37 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
 
             for(int i = 0;arrStyleValueNames[i];i++){
                 if(m_iFlags & arrStyleValues[i]){
-                	sFlags << arrStyleValueNames[i] << _T("|");
+                    sFlags << arrStyleValueNames[i] << _T("|");
                 }
             }
-			if(sFlags.IsEmpty()){
-				sFlags = _T("0");
-			}
+            if(sFlags.IsEmpty()){
+                sFlags = _T("0");
+            }
             else{
-				sFlags.RemoveLast();
+                sFlags.RemoveLast();
             }
 
-			#if wxCHECK_VERSION(2, 9, 0)
-			AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.wx_str()));
+            #if wxCHECK_VERSION(2, 9, 0)
+            AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.wx_str()));
             Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.wx_str());
-			#else
-			AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.c_str()));
+            #else
+            AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.c_str()));
             Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.c_str());
-			#endif
+            #endif
 
-			#if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
-							sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
-			#else
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
+                            sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
+            #else
             Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
-							wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
-							sFlags.c_str(), sStyleSheetName.c_str(), m_sCaption.c_str());
-			#endif
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
+                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
+                            sFlags.c_str(), sStyleSheetName.c_str(), m_sCaption.c_str());
+            #endif
 
             BuildSetupWindowCode();
             break;
@@ -137,15 +137,15 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
 
 /*! \brief Enumerate the dialogue's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsRichTextStyleOrganiserDialog::OnEnumToolProperties(long Flags)
 {
     // Default to wxRICHTEXT_ORGANISER_ORGANISE.
-	WXS_FLAGS(wxsRichTextStyleOrganiserDialog, m_iFlags, _("Style Flags"), _T("style_flags"), arrStyleValues, arrStyleValueNames,
-														wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES
-														|wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES )
+    WXS_FLAGS(wxsRichTextStyleOrganiserDialog, m_iFlags, _("Style Flags"), _T("style_flags"), arrStyleValues, arrStyleValueNames,
+                                                        wxRICHTEXT_ORGANISER_SHOW_ALL|wxRICHTEXT_ORGANISER_DELETE_STYLES|wxRICHTEXT_ORGANISER_CREATE_STYLES
+                                                        |wxRICHTEXT_ORGANISER_APPLY_STYLES|wxRICHTEXT_ORGANISER_EDIT_STYLES|wxRICHTEXT_ORGANISER_RENAME_STYLES )
     WXS_SHORT_STRING(wxsRichTextStyleOrganiserDialog, m_sCaption, _("Caption"), _T("caption"), SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_TITLE, true);
 }

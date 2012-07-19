@@ -35,26 +35,26 @@ class wxsPageSetupDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        bool		m_bEnableHelp;				//!< Enable the help button.
-        bool		m_bEnableMargins;			//!< Enable the margin block.
-        bool		m_bEnableOrientation;		//!< Enable the orientation block.
-        bool		m_bEnablePaper;				//!< Enable the paper block.
-        bool		m_bDefaultInfo;					//!< Use default info. If true, the dialogue will simply return default printer information (such as orientation) instead of displaying.
-        bool		m_bDefaultMinMargins;		//!< Use the default margins.
-        bool		m_bEnablePrinter;				//!< Enable printer selection.
-		long		m_iMarginLeft;					//!< The left margin in mm.
-		long		m_iMarginTop;					//!< The top margin in mm.
-		long		m_iMarginRight;				//!< The right margin in mm.
-		long		m_iMarginBottom;				//!< The bottom margin in mm.
-		long		m_iMarginMinLeft;				//!< The minimum value for the left margin, in mm.
-		long		m_iMarginMinTop;				//!< The minimum value for the top margin, in mm.
-		long		m_iMarginMinRight;			//!< The minimum value for the right margin, in mm.
-		long		m_iMarginMinBottom;		//!< The minimum value for the bottom margin, in mm.
-		long		m_iPaperID;						//!< The paper ID.
-		long		m_iPaperWidth;					//!< The paper width.
-		long		m_iPaperHeight;				//!< The paper height.
+        bool        m_bEnableHelp;                //!< Enable the help button.
+        bool        m_bEnableMargins;            //!< Enable the margin block.
+        bool        m_bEnableOrientation;        //!< Enable the orientation block.
+        bool        m_bEnablePaper;                //!< Enable the paper block.
+        bool        m_bDefaultInfo;                    //!< Use default info. If true, the dialogue will simply return default printer information (such as orientation) instead of displaying.
+        bool        m_bDefaultMinMargins;        //!< Use the default margins.
+        bool        m_bEnablePrinter;                //!< Enable printer selection.
+        long        m_iMarginLeft;                    //!< The left margin in mm.
+        long        m_iMarginTop;                    //!< The top margin in mm.
+        long        m_iMarginRight;                //!< The right margin in mm.
+        long        m_iMarginBottom;                //!< The bottom margin in mm.
+        long        m_iMarginMinLeft;                //!< The minimum value for the left margin, in mm.
+        long        m_iMarginMinTop;                //!< The minimum value for the top margin, in mm.
+        long        m_iMarginMinRight;            //!< The minimum value for the right margin, in mm.
+        long        m_iMarginMinBottom;        //!< The minimum value for the bottom margin, in mm.
+        long        m_iPaperID;                        //!< The paper ID.
+        long        m_iPaperWidth;                    //!< The paper width.
+        long        m_iPaperHeight;                //!< The paper height.
 
-		wxArrayString arrPaperIDs;				//!< Array of paper ID constant names.
+        wxArrayString arrPaperIDs;                //!< Array of paper ID constant names.
 
 };
 

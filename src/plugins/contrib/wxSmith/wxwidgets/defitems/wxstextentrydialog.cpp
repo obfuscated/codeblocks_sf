@@ -26,49 +26,49 @@
 namespace
 {
     wxsRegisterItem<wxsTextEntryDialog> Reg(
-        _T("TextEntryDialog"),       		// Class base name
-        wxsTTool,                       		// Item type
-        _T("Dialogs"),                  		// Category in palette
-        50,                             			// Priority in palette
-        false);                         			// We do not allow this item inside XRC files
+        _T("TextEntryDialog"),               // Class base name
+        wxsTTool,                               // Item type
+        _T("Dialogs"),                          // Category in palette
+        50,                                         // Priority in palette
+        false);                                     // We do not allow this item inside XRC files
 
 
     WXS_ST_BEGIN(wxsTextEntryDialogStyles, wxT("wxOK | wxCANCEL | wxCENTRE | wxWS_EX_VALIDATE_RECURSIVELY"));
-		WXS_ST_CATEGORY("wxTextEntryDialog")
-		WXS_ST(wxOK)
-		WXS_ST(wxCANCEL)
-		WXS_ST(wxCENTRE)
-		WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
-		WXS_ST(wxTE_MULTILINE)
-		WXS_ST(wxTE_PASSWORD)
-		WXS_ST(wxTE_READONLY)
-		WXS_ST(wxTE_RICH)
-		WXS_ST(wxTE_RICH2)
-		WXS_ST(wxTE_NOHIDESEL)
-		WXS_ST(wxHSCROLL)
-		WXS_ST(wxTE_CENTRE)
-		WXS_ST(wxTE_RIGHT)
-		WXS_ST(wxTE_CHARWRAP)
-		WXS_ST(wxTE_WORDWRAP)
-		WXS_ST(wxTE_BESTWRAP)
-		WXS_ST(wxTE_CAPITALIZE)
+        WXS_ST_CATEGORY("wxTextEntryDialog")
+        WXS_ST(wxOK)
+        WXS_ST(wxCANCEL)
+        WXS_ST(wxCENTRE)
+        WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_ST(wxTE_MULTILINE)
+        WXS_ST(wxTE_PASSWORD)
+        WXS_ST(wxTE_READONLY)
+        WXS_ST(wxTE_RICH)
+        WXS_ST(wxTE_RICH2)
+        WXS_ST(wxTE_NOHIDESEL)
+        WXS_ST(wxHSCROLL)
+        WXS_ST(wxTE_CENTRE)
+        WXS_ST(wxTE_RIGHT)
+        WXS_ST(wxTE_CHARWRAP)
+        WXS_ST(wxTE_WORDWRAP)
+        WXS_ST(wxTE_BESTWRAP)
+        WXS_ST(wxTE_CAPITALIZE)
     WXS_ST_END()
 }
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsTextEntryDialog::wxsTextEntryDialog(wxsItemResData *Data):
     wxsTool(Data,
-			&Reg.Info,
-			NULL,
-			wxsTextEntryDialogStyles,
-			(flVariable | flId | flSubclass | flExtraCode)),
-			m_sCaption(wxGetTextFromUserPromptStr),
-			m_sMessage(wxEmptyString),
-			m_sDefaultValue(wxEmptyString)
+            &Reg.Info,
+            NULL,
+            wxsTextEntryDialogStyles,
+            (flVariable | flId | flSubclass | flExtraCode)),
+            m_sCaption(wxGetTextFromUserPromptStr),
+            m_sMessage(wxEmptyString),
+            m_sDefaultValue(wxEmptyString)
 {
 }
 
@@ -100,7 +100,7 @@ void wxsTextEntryDialog::OnBuildCreatingCode()
 
 /*! \brief Enumerate the dialogue's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

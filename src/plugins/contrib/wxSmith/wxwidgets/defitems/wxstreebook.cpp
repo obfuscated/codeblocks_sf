@@ -269,19 +269,19 @@ wxObject *wxsTreebook::OnBuildPreview(wxWindow *Parent, long PreviewFlags)
 
     AddChildrenPreview(Treebook, PreviewFlags);
 
-	for ( int i=0; i<GetChildCount(); i++ )
-	{
-	    wxsItem* Child = GetChild(i);
-	    wxsTreebookExtra* Extra = (wxsTreebookExtra*)GetChildExtra(i);
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        wxsTreebookExtra* Extra = (wxsTreebookExtra*)GetChildExtra(i);
 
-	    wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
-	    if ( !ChildPreview ) continue;
+        wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
+        if ( !ChildPreview ) continue;
 
-	    bool Selected = (Child == m_CurrentSelection);
-	    if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        bool Selected = (Child == m_CurrentSelection);
+        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
 
-	    Treebook->AddPage(ChildPreview,Extra->m_Label,Selected);
-	}
+        Treebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+    }
 
     return Treebook;
 }

@@ -31,7 +31,7 @@ namespace
 #else
     WXS_ST_BEGIN(wxsDirPickerCtrlStyles,_T("wxDIRP_USE_TEXTCTRL|wxDIRP_DIR_MUST_EXIST"))
 #endif
-		WXS_ST_CATEGORY("wxDirPickerCtrl")
+        WXS_ST_CATEGORY("wxDirPickerCtrl")
         WXS_ST(wxDIRP_CHANGE_DIR)
         WXS_ST(wxDIRP_DIR_MUST_EXIST)
         WXS_ST(wxDIRP_USE_TEXTCTRL)
@@ -45,7 +45,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsDirPickerCtrl::wxsDirPickerCtrl(wxsItemResData* Data):
@@ -71,11 +71,11 @@ void wxsDirPickerCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
 
-			#if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %n %t, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str());
-			#else
+            #else
             Codef(_T("%C(%W, %I, %n, %t, %P, %S, %T, %V, %N);\n"), m_sPath.c_str(), m_sMessage.c_str());
-			#endif
+            #endif
 
             BuildSetupWindowCode();
             return;
@@ -88,23 +88,23 @@ void wxsDirPickerCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long					The control flags.
- * \return wxObject* 					The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                    The control flags.
+ * \return wxObject*                     The constructed control.
  *
  */
 wxObject* wxsDirPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-	wxDirPickerCtrl* Preview;
-	Preview = new wxDirPickerCtrl(Parent, GetId(), m_sPath, m_sMessage, Pos(Parent), Size(Parent), Style());
+    wxDirPickerCtrl* Preview;
+    Preview = new wxDirPickerCtrl(Parent, GetId(), m_sPath, m_sMessage, Pos(Parent), Size(Parent), Style());
     return SetupWindow(Preview,Flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

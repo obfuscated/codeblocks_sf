@@ -28,9 +28,9 @@
 /** \brief Choicebook container */
 class wxsChoicebook : public wxsContainer
 {
-	public:
+    public:
 
-		wxsChoicebook(wxsItemResData* Data);
+        wxsChoicebook(wxsItemResData* Data);
 
     private:
 

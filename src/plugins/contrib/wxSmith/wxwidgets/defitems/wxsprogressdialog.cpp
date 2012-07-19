@@ -26,42 +26,42 @@
 namespace
 {
     wxsRegisterItem<wxsProgressDialog> Reg(
-        _T("ProgressDialog"),       		// Class base name
-        wxsTTool,                       			// Item type
-        _T("Dialogs"),                  		// Category in palette
-        100,                             				// Priority in palette
-        false);                         				// We do not allow this item inside XRC files
+        _T("ProgressDialog"),               // Class base name
+        wxsTTool,                                   // Item type
+        _T("Dialogs"),                          // Category in palette
+        100,                                             // Priority in palette
+        false);                                         // We do not allow this item inside XRC files
 
 
     WXS_ST_BEGIN(wxsProgressDialogStyles, wxT("wxPD_AUTO_HIDE | wxPD_APP_MODAL"));
-		WXS_ST_CATEGORY("wxProgressDialog")
-		WXS_ST(wxPD_APP_MODAL)
-		WXS_ST(wxPD_AUTO_HIDE)
-		WXS_ST(wxPD_CAN_ABORT)
-		WXS_ST(wxPD_CAN_SKIP)
-		WXS_ST(wxPD_ELAPSED_TIME)
-		WXS_ST(wxPD_ESTIMATED_TIME)
-		WXS_ST(wxPD_REMAINING_TIME)
-		WXS_ST(wxPD_SMOOTH)
+        WXS_ST_CATEGORY("wxProgressDialog")
+        WXS_ST(wxPD_APP_MODAL)
+        WXS_ST(wxPD_AUTO_HIDE)
+        WXS_ST(wxPD_CAN_ABORT)
+        WXS_ST(wxPD_CAN_SKIP)
+        WXS_ST(wxPD_ELAPSED_TIME)
+        WXS_ST(wxPD_ESTIMATED_TIME)
+        WXS_ST(wxPD_REMAINING_TIME)
+        WXS_ST(wxPD_SMOOTH)
     WXS_ST_END()
 
 }
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsProgressDialog::wxsProgressDialog(wxsItemResData *Data):
     wxsTool(Data,
-			&Reg.Info,
-			NULL,
-			wxsProgressDialogStyles,
-			(flVariable | flId | flSubclass | flExtraCode)),
-			m_sTitle(wxEmptyString),
-			m_sMessage(wxEmptyString),
-			m_iMaxValue(100),
-			m_bRunAtStartup(false)
+            &Reg.Info,
+            NULL,
+            wxsProgressDialogStyles,
+            (flVariable | flId | flSubclass | flExtraCode)),
+            m_sTitle(wxEmptyString),
+            m_sMessage(wxEmptyString),
+            m_iMaxValue(100),
+            m_bRunAtStartup(false)
 {
 }
 
@@ -80,14 +80,14 @@ void wxsProgressDialog::OnBuildCreatingCode()
         case wxsCPP:
             AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
 
-			if(m_bRunAtStartup){
-				// Initialise and display the dialogue at application start-up.
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
-				#else
-				Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.c_str(), m_sMessage.c_str(), m_iMaxValue);
-				#endif
-			}
+            if(m_bRunAtStartup){
+                // Initialise and display the dialogue at application start-up.
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
+                #else
+                Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.c_str(), m_sMessage.c_str(), m_iMaxValue);
+                #endif
+            }
 
             BuildSetupWindowCode();
             break;
@@ -99,14 +99,14 @@ void wxsProgressDialog::OnBuildCreatingCode()
 
 /*! \brief Enumerate the dialogue's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsProgressDialog::OnEnumToolProperties(long Flags)
 {
-	WXS_BOOL(wxsProgressDialog, m_bRunAtStartup, _("Run At Startup"), _T("run_at_startup"), false)
+    WXS_BOOL(wxsProgressDialog, m_bRunAtStartup, _("Run At Startup"), _T("run_at_startup"), false)
     WXS_SHORT_STRING(wxsProgressDialog, m_sTitle, _("Title"), _T("title"), wxEmptyString, true);
     WXS_SHORT_STRING(wxsProgressDialog, m_sMessage, _("Message"), _T("message"), wxEmptyString, true);
-	WXS_LONG(wxsProgressDialog, m_iMaxValue,  _("Max. Value"), _T("max_value"), 100)
+    WXS_LONG(wxsProgressDialog, m_iMaxValue,  _("Max. Value"), _T("max_value"), 100)
 }

@@ -35,8 +35,8 @@ class wxsMessageDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        wxString 	m_sCaption;			//!< The dialogue's caption.
-        wxString 	m_sMessage;			//!< The dialogue message.
+        wxString     m_sCaption;            //!< The dialogue's caption.
+        wxString     m_sMessage;            //!< The dialogue message.
 };
 
 #endif      //  WXSMESSAGEDIALOG_H

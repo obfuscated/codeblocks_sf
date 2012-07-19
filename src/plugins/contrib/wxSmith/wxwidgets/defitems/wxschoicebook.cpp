@@ -206,7 +206,7 @@ bool wxsChoicebook::OnCanAddChild(wxsItem* Item,bool ShowMessage)
         return false;
     }
 
-	return wxsContainer::OnCanAddChild(Item,ShowMessage);
+    return wxsContainer::OnCanAddChild(Item,ShowMessage);
 }
 
 wxsPropertyContainer* wxsChoicebook::OnBuildExtra()
@@ -231,33 +231,33 @@ void wxsChoicebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 wxObject* wxsChoicebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 {
     UpdateCurrentSelection();
-	wxChoicebook* Choicebook = new wxChoicebook(Parent,-1,Pos(Parent),Size(Parent),Style());
+    wxChoicebook* Choicebook = new wxChoicebook(Parent,-1,Pos(Parent),Size(Parent),Style());
 
-	if ( !GetChildCount() && !(PreviewFlags&pfExact) )
-	{
-	    // Adding additional empty notebook to prevent from having zero-sized notebook
-	    Choicebook->AddPage(
+    if ( !GetChildCount() && !(PreviewFlags&pfExact) )
+    {
+        // Adding additional empty notebook to prevent from having zero-sized notebook
+        Choicebook->AddPage(
             new wxPanel(Choicebook,-1,wxDefaultPosition,wxSize(50,50)),
             _("No pages"));
-	}
+    }
 
-	AddChildrenPreview(Choicebook,PreviewFlags);
+    AddChildrenPreview(Choicebook,PreviewFlags);
 
-	for ( int i=0; i<GetChildCount(); i++ )
-	{
-	    wxsItem* Child = GetChild(i);
-	    wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
 
-	    wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
-	    if ( !ChildPreview ) continue;
+        wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
+        if ( !ChildPreview ) continue;
 
-	    bool Selected = (Child == m_CurrentSelection);
-	    if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        bool Selected = (Child == m_CurrentSelection);
+        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
 
-	    Choicebook->AddPage(ChildPreview,Extra->m_Label,Selected);
-	}
+        Choicebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+    }
 
-	return Choicebook;
+    return Choicebook;
 }
 
 void wxsChoicebook::OnBuildCreatingCode()

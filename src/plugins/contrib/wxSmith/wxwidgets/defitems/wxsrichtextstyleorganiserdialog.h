@@ -35,8 +35,8 @@ class wxsRichTextStyleOrganiserDialog: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        wxString 	m_sCaption;		//!< The dialogue's caption.
-		long			m_iFlags;				//!< Page flags.
+        wxString     m_sCaption;        //!< The dialogue's caption.
+        long            m_iFlags;                //!< Page flags.
 };
 
 #endif      //  WXSRICHTEXTSTYLEORGANISERDIALOG_H

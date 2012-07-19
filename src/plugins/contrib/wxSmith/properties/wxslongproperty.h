@@ -28,7 +28,7 @@
 /** \brief Base long integer property */
 class wxsLongProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName   name of property in Property Grid
@@ -37,10 +37,10 @@ class wxsLongProperty: public wxsProperty
          *  \param Default  default value applied on read errors
          *  \param Priority priority of this property
          */
-		wxsLongProperty(const wxString& PGName,const wxString& DataName,long Offset,long Default=0,int Priority=100);
+        wxsLongProperty(const wxString& PGName,const wxString& DataName,long Offset,long Default=0,int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("long"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("long"); }
 
     protected:
 
@@ -52,7 +52,7 @@ class wxsLongProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         long Default;
 };

@@ -28,9 +28,9 @@
 /** \brief Notebook container */
 class wxsNotebook : public wxsContainer
 {
-	public:
+    public:
 
-		wxsNotebook(wxsItemResData* Data);
+        wxsNotebook(wxsItemResData* Data);
 
     private:
 

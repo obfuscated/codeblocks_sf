@@ -39,9 +39,9 @@ class wxsScrollBar: public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
         long Value;
-    	long ThumbSize;
-    	long Range;
-    	long PageSize;
+        long ThumbSize;
+        long Range;
+        long PageSize;
 
 };
 

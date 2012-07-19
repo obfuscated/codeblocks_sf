@@ -81,7 +81,7 @@ struct wxsFontData
  */
 class wxsFontProperty: public wxsCustomEditorProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName       name of property in Property Grid
@@ -89,14 +89,14 @@ class wxsFontProperty: public wxsCustomEditorProperty
          *  \param Offset       offset of wxsFontData structure (returned from wxsOFFSET macro)
          *  \param Priority     priority of this property
          */
-		wxsFontProperty(
+        wxsFontProperty(
             const wxString& PGName,
             const wxString& DataName,
             long Offset,
             int Priority=100);
 
-		/** \brief Returning type name */
-		virtual const wxString GetTypeName() { return _T("wxFont"); }
+        /** \brief Returning type name */
+        virtual const wxString GetTypeName() { return _T("wxFont"); }
 
         /** \brief Showing editor for this property */
         virtual bool ShowEditor(wxsPropertyContainer* Object);
@@ -109,7 +109,7 @@ class wxsFontProperty: public wxsCustomEditorProperty
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual wxString GetStr(wxsPropertyContainer* Object);
 
-	private:
+    private:
 
         long Offset;
 };

@@ -196,9 +196,9 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer1->SetSizeHints(Panel2);
     static const char * ImageList1_0_XPM[] = {
     "16 16 3 1",
-    " 	c None",
-    ".	c #000000",
-    "+	c #00C000",
+    "     c None",
+    ".    c #000000",
+    "+    c #00C000",
     "        ....... ",
     "        .+++++. ",
     "   ..   .+++++. ",
@@ -366,12 +366,12 @@ wxsImageTreeEditorDlg::~wxsImageTreeEditorDlg()
     //*)
 }
 
-	/*! \brief Run the dialogue.
-	 *
-	 * \param aItems wxArrayString&
-	 * \return bool
-	 *
-	 */
+    /*! \brief Run the dialogue.
+     *
+     * \param aItems wxArrayString&
+     * \return bool
+     *
+     */
 bool wxsImageTreeEditorDlg::Execute(wxArrayString &aItems)
 {
     int             i, n;
@@ -393,10 +393,10 @@ bool wxsImageTreeEditorDlg::Execute(wxArrayString &aItems)
     m_sTreeName  = _("<unknown>");
     m_sImageName = _("<none>");
     if(n >= 1){
-    	m_sTreeName  = aItems.Item(0);
+        m_sTreeName  = aItems.Item(0);
     }
     if(n >= 2){
-    	m_sImageName = aItems.Item(1);
+        m_sImageName = aItems.Item(1);
     }
 
     // show the names
@@ -413,7 +413,7 @@ bool wxsImageTreeEditorDlg::Execute(wxArrayString &aItems)
     m_imageList.RemoveAll();
     ilist = (wxsImageList *) wxsImageListEditorDlg::FindTool(NULL, m_sImageName);
     if(ilist != NULL){
-    	ilist->GetImageList(m_imageList);
+        ilist->GetImageList(m_imageList);
     }
     SetImageList(m_imageList);
 
@@ -424,15 +424,15 @@ bool wxsImageTreeEditorDlg::Execute(wxArrayString &aItems)
         ParseTreeItem(ss, jv, jc, jb, j1, j2, j3, j4, jt);
 
         if(jv == 0){
-        	item = Tree1->AddRoot(jt);
+            item = Tree1->AddRoot(jt);
         }
         else{
-        	item = Tree1->AppendItem(jp[jv-1], jt);
+            item = Tree1->AppendItem(jp[jv-1], jt);
         }
         jp[jv] = item;
 
         if(jc.IsOk()){
-        	Tree1->SetItemTextColour(item, jc);
+            Tree1->SetItemTextColour(item, jc);
         }
         Tree1->SetItemBold(item, jb);
         Tree1->SetItemImage(item, j1, wxTreeItemIcon_Normal);
@@ -458,7 +458,7 @@ bool wxsImageTreeEditorDlg::Execute(wxArrayString &aItems)
         // I wanted to use a simple loop here, but it works MUCH easier with a recursive function
         root = Tree1->GetRootItem();
         if(root.IsOk()){
-        	EncodeTreeItems(root, 0, aItems);
+            EncodeTreeItems(root, 0, aItems);
         }
     }
 
@@ -645,22 +645,22 @@ void wxsImageTreeEditorDlg::AddItem(wxTreeItemId &inParent){
     // the images
     n = cbNormal->GetSelection() - 1;
     if(n >= 0){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Normal);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Normal);
     }
 
     n = cbSelected->GetSelection() - 1;
     if(n >= 0){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Selected);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Selected);
     }
 
     n = cbExpanded->GetSelection() - 1;
     if(n >= 0){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Expanded);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Expanded);
     }
 
     n = cbSelExpanded->GetSelection() - 1;
     if(n >= 0){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_SelectedExpanded);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_SelectedExpanded);
     }
 
     // redraw the whole thing
@@ -719,7 +719,7 @@ void wxsImageTreeEditorDlg::OnbItemColorClick(wxCommandEvent &event)
     // ask user for a new color
     n = m_colourDialog.ShowModal();
     if(n != wxID_OK){
-    	return;
+        return;
     }
 
     // get the color
@@ -732,7 +732,7 @@ void wxsImageTreeEditorDlg::OnbItemColorClick(wxCommandEvent &event)
     // and the current item
     current = Tree1->GetSelection();
     if(current.IsOk()){
-    	Tree1->SetItemTextColour(current, cc);
+        Tree1->SetItemTextColour(current, cc);
     }
 }
 
@@ -767,12 +767,12 @@ void wxsImageTreeEditorDlg::OnbEditItemClick(wxCommandEvent &event)
 {
     wxTreeItemId    current;
 
-	// current selection
+    // current selection
     current = Tree1->GetSelection();
 
-	// delete it
+    // delete it
     if(current.IsOk()){
-    	Tree1->EditLabel(current);
+        Tree1->EditLabel(current);
     }
 }
 
@@ -792,7 +792,7 @@ void wxsImageTreeEditorDlg::OncbNormalSelect(wxCommandEvent &event)
 
     current = Tree1->GetSelection();
     if(current.IsOk()){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Normal);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Normal);
     }
 }
 
@@ -812,7 +812,7 @@ void wxsImageTreeEditorDlg::OncbSelectedSelect(wxCommandEvent &event)
 
     current = Tree1->GetSelection();
     if(current.IsOk()){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Selected);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Selected);
     }
 }
 
@@ -832,7 +832,7 @@ void wxsImageTreeEditorDlg::OncbExpandedSelect(wxCommandEvent &event)
 
     current = Tree1->GetSelection();
     if(current.IsOk()){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_Expanded);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_Expanded);
     }
 }
 
@@ -852,7 +852,7 @@ void wxsImageTreeEditorDlg::OncbSelExpandedSelect(wxCommandEvent &event)
 
     current = Tree1->GetSelection();
     if(current.IsOk()){
-    	Tree1->SetItemImage(current, n, wxTreeItemIcon_SelectedExpanded);
+        Tree1->SetItemImage(current, n, wxTreeItemIcon_SelectedExpanded);
     }
 }
 
@@ -869,21 +869,21 @@ void wxsImageTreeEditorDlg::OnTreeCtrl1SelectionChanged(wxTreeEvent &event)
     wxColour        cc;
     bool            b;
 
-	// get current item
+    // get current item
     current = Tree1->GetSelection();
     if(! current.IsOk()){
-    	return;
+        return;
     }
 
-	// current text colour
+    // current text colour
     cc = Tree1->GetItemTextColour(current);
     bItemColor->SetForegroundColour(cc);
 
-	// bold or plain
+    // bold or plain
     b = Tree1->IsBold(current);
     cxItemBold->SetValue(b);
 
-	// image indices
+    // image indices
     n = Tree1->GetItemImage(current, wxTreeItemIcon_Normal);
     n += 1;
     cbNormal->SetSelection(n);
@@ -921,10 +921,10 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
     long        ll;
     wxString    ss, tt;
 
-	// working copy
+    // working copy
     ss = aSource;
 
-	// the depth level
+    // the depth level
     outLevel = 1;
     i  = ss.Find(wxT(","));
     if(i != wxNOT_FOUND){
@@ -933,7 +933,7 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
         if(tt.ToLong(&ll)) outLevel = ll;
     }
 
-	// the color
+    // the color
     outColour.Set(wxT("?"));
     i  = ss.Find(wxT(","));
     if(i != wxNOT_FOUND){
@@ -942,26 +942,26 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
         outColour.Set(tt);
     }
 
-	// bold or normal text
+    // bold or normal text
     n = 0;
     i  = ss.Find(wxT(","));
     if(i != wxNOT_FOUND){
         tt = ss.Left(i);
         ss.erase(0, i + 1);
         if(tt.ToLong(&ll)){
-        	n = ll;
+            n = ll;
         }
     }
     outBold = (n != 0);
 
-	// 4 image indices
+    // 4 image indices
     outImage1 = -1;
     i  = ss.Find(wxT(","));
     if(i != wxNOT_FOUND){
         tt = ss.Left(i);
         ss.erase(0, i + 1);
         if(tt.ToLong(&ll)){
-        	outImage1 = ll;
+            outImage1 = ll;
         }
     }
 
@@ -971,7 +971,7 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
         tt = ss.Left(i);
         ss.erase(0, i + 1);
         if(tt.ToLong(&ll)){
-        	outImage2 = ll;
+            outImage2 = ll;
         }
     }
 
@@ -981,7 +981,7 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
         tt = ss.Left(i);
         ss.erase(0, i + 1);
         if(tt.ToLong(&ll)){
-        	outImage3 = ll;
+            outImage3 = ll;
         }
     }
 
@@ -991,11 +991,11 @@ void wxsImageTreeEditorDlg::ParseTreeItem(wxString aSource, int &outLevel, wxCol
         tt = ss.Left(i);
         ss.erase(0, i + 1);
         if(tt.ToLong(&ll)){
-        	outImage4 = ll;
+            outImage4 = ll;
         }
     }
 
-	// everything else is the text
+    // everything else is the text
     ss.Trim(true);
     ss.Trim(false);
     outText = ss;
@@ -1017,10 +1017,10 @@ void wxsImageTreeEditorDlg::EncodeTreeItems(wxTreeItemId inParent, int inLevel, 
     wxTreeItemId        child;
     wxTreeItemIdValue   cookie;
 
-	// nothing yet
+    // nothing yet
     ss = wxEmptyString;
 
-	// start with this item
+    // start with this item
     tt.Printf(wxT("%d,"), inLevel);
     ss += tt;
 
@@ -1030,10 +1030,10 @@ void wxsImageTreeEditorDlg::EncodeTreeItems(wxTreeItemId inParent, int inLevel, 
     ss += tt;
 
     if(Tree1->IsBold(inParent)){
-    	tt = wxT("1,");
+        tt = wxT("1,");
     }
     else{
-    	tt = wxT("0,");
+        tt = wxT("0,");
     }
     ss += tt;
 
@@ -1056,10 +1056,10 @@ void wxsImageTreeEditorDlg::EncodeTreeItems(wxTreeItemId inParent, int inLevel, 
     tt = Tree1->GetItemText(inParent);
     ss += tt;
 
-	// save it
+    // save it
     outList.Add(ss);
 
-	// and all the children
+    // and all the children
     child = Tree1->GetFirstChild(inParent, cookie);
     while(child.IsOk()){
         EncodeTreeItems(child, inLevel + 1, outList);

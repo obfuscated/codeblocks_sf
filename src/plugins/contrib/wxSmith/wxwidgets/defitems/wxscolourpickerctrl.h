@@ -36,7 +36,7 @@ class wxsColourPickerCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-		wxsColourData	m_cdColour;		//!< The selected colour.
+        wxsColourData    m_cdColour;        //!< The selected colour.
 };
 
 #endif

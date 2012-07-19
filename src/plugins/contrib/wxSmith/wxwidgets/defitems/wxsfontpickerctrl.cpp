@@ -27,7 +27,7 @@ namespace
     wxsRegisterItem<wxsFontPickerCtrl> Reg(_T("FontPickerCtrl"), wxsTWidget, _T("Advanced"), 100);
 
     WXS_ST_BEGIN(wxsFontPickerCtrlStyles,_T("wxFNTP_FONTDESC_AS_LABEL|wxFNTP_USEFONT_FOR_LABEL"))
-		WXS_ST_CATEGORY("wxFontPickerCtrl")
+        WXS_ST_CATEGORY("wxFontPickerCtrl")
         WXS_ST(wxFNTP_FONTDESC_AS_LABEL)
         WXS_ST(wxFNTP_USEFONT_FOR_LABEL)
         WXS_ST(wxFNTP_USE_TEXTCTRL)
@@ -41,7 +41,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsFontPickerCtrl::wxsFontPickerCtrl(wxsItemResData* Data):
@@ -66,18 +66,18 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/fontpicker.h>"),GetInfo().ClassName,0);
 
-			wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
-			wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
-			if(!sFnt.Len() > 0){
-				sFntName = wxT("wxNullFont");
-			}
-			#if wxCHECK_VERSION(2, 9, 0)
-			Codef(_T("%s"), sFnt.wx_str());
-			Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
-			#else
-			Codef(_T("%s"), sFnt.c_str());
-			Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.c_str());
-			#endif
+            wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
+            wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
+            if(!sFnt.Len() > 0){
+                sFntName = wxT("wxNullFont");
+            }
+            #if wxCHECK_VERSION(2, 9, 0)
+            Codef(_T("%s"), sFnt.wx_str());
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
+            #else
+            Codef(_T("%s"), sFnt.c_str());
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.c_str());
+            #endif
 
             BuildSetupWindowCode();
             return;
@@ -90,24 +90,24 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long					The control flags.
- * \return wxObject* 					The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                    The control flags.
+ * \return wxObject*                     The constructed control.
  *
  */
 wxObject* wxsFontPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-	wxFontPickerCtrl* Preview;
-	wxFont fnt = m_fdFont.BuildFont();
-	Preview = new wxFontPickerCtrl(Parent, GetId(), fnt, Pos(Parent), Size(Parent), Style());
+    wxFontPickerCtrl* Preview;
+    wxFont fnt = m_fdFont.BuildFont();
+    Preview = new wxFontPickerCtrl(Parent, GetId(), fnt, Pos(Parent), Size(Parent), Style());
     return SetupWindow(Preview,Flags);
 }
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

@@ -99,10 +99,10 @@ bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
         if ( m_Ids.find(IdName)!=m_Ids.end() )
         {
             Ret = true;
-			if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
-			{
-				Item->SetIdName(wxEmptyString);
-			}
+            if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
+            {
+                Item->SetIdName(wxEmptyString);
+            }
         }
         else
         {
@@ -199,13 +199,13 @@ void wxsCorrector::AfterChange(wxsItem* Item)
             Item->SetIdName(IdName);
         }
 
-		if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
-		{
-			if ( m_Ids.find(IdName) != m_Ids.end() )
-			{
-				SetNewIdName(Item);
-			}
-		}
+        if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/uniqueids"),true))
+        {
+            if ( m_Ids.find(IdName) != m_Ids.end() )
+            {
+                SetNewIdName(Item);
+            }
+        }
 
         if (!IsWxWidgetsIdPrefix(Item->GetIdName()))
         {
@@ -358,10 +358,10 @@ bool wxsCorrector::FixVarName(wxString& Name)
 {
     wxString Corrected;
     Name.Trim(true);
-   	Name.Trim(false);
+       Name.Trim(false);
 
-   	if ( !Name.empty() )
-   	{
+       if ( !Name.empty() )
+       {
         // Validating name as C++ ideentifier
         // TODO: Other languages ?
 
@@ -404,11 +404,11 @@ bool wxsCorrector::FixVarName(wxString& Name)
                 Corrected.Append(Name.GetChar(i));
             }
         }
-   	}
+       }
 
-   	bool Diff = Name != Corrected;
-   	Name = Corrected;
-   	return Diff;
+       bool Diff = Name != Corrected;
+       Name = Corrected;
+       return Diff;
 }
 
 bool wxsCorrector::FixIdName(wxString& Id)

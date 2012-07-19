@@ -34,7 +34,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsRichTextStyleComboCtrl::wxsRichTextStyleComboCtrl(wxsItemResData* Data):
@@ -63,19 +63,19 @@ void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
 
             if(!m_sControl.IsEmpty()){
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.wx_str());
-				#else
-				Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.c_str());
-				#endif
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.wx_str());
+                #else
+                Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.c_str());
+                #endif
             }
             if(!m_sStyleSheet.IsEmpty()){
-				#if wxCHECK_VERSION(2, 9, 0)
-				Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.wx_str());
-				#else
-				Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.c_str());
-				#endif
-				Codef( _T("%AUpdateStyles();\n"));
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.wx_str());
+                #else
+                Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.c_str());
+                #endif
+                Codef( _T("%AUpdateStyles();\n"));
             }
 
             BuildSetupWindowCode();
@@ -89,11 +89,11 @@ void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
     }
 }
 
-/*! \brief	Build the control preview.
+/*! \brief    Build the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long				The control flags.
- * \return wxObject* 				The constructed control.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                The control flags.
+ * \return wxObject*                 The constructed control.
  *
  */
 wxObject* wxsRichTextStyleComboCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -105,7 +105,7 @@ wxObject* wxsRichTextStyleComboCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */

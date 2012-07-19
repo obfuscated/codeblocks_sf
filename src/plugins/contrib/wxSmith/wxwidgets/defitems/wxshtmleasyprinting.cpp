@@ -27,7 +27,7 @@ namespace
 
 /*! \brief Ctor
  *
- * \param Data wxsItemResData*	The control's resource data.
+ * \param Data wxsItemResData*    The control's resource data.
  *
  */
 wxsHtmlEasyPrinting::wxsHtmlEasyPrinting(wxsItemResData* Data):
@@ -57,20 +57,20 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
 
             Codef(_T("%C(%N, %W);\n"));
 
-			if(!m_sHeader.IsEmpty()){
+            if(!m_sHeader.IsEmpty()){
 #if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
 #else
-				Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.c_str(), m_iHeaderPages);
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.c_str(), m_iHeaderPages);
 #endif
-			}
-			if(!m_sFooter.IsEmpty()){
+            }
+            if(!m_sFooter.IsEmpty()){
 #if wxCHECK_VERSION(2, 9, 0)
-				Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
 #else
-				Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.c_str(), m_iFooterPages);
+                Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.c_str(), m_iFooterPages);
 #endif
-			}
+            }
 
             BuildSetupWindowCode();
             return;
@@ -85,14 +85,14 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
 
 /*! \brief Enumerate the control's properties.
  *
- * \param flags long	The control flags.
+ * \param flags long    The control flags.
  * \return void
  *
  */
 void wxsHtmlEasyPrinting::OnEnumToolProperties(long flags)
 {
-	static const long arrHeaderPages[] = {wxPAGE_ALL, wxPAGE_EVEN, wxPAGE_ODD};																			//!< Header and footer page values.
-	static const wxChar* arrHeaderPageNames[]  = {wxT("wxPAGE_ALL"), wxT("wxPAGE_EVEN"), wxT("wxPAGE_ODD"), NULL};		//!< Header and footer page value names.
+    static const long arrHeaderPages[] = {wxPAGE_ALL, wxPAGE_EVEN, wxPAGE_ODD};                                                                            //!< Header and footer page values.
+    static const wxChar* arrHeaderPageNames[]  = {wxT("wxPAGE_ALL"), wxT("wxPAGE_EVEN"), wxT("wxPAGE_ODD"), NULL};        //!< Header and footer page value names.
 
     WXS_SHORT_STRING(wxsHtmlEasyPrinting, m_sHeader, _("Header"), _T("header"), wxEmptyString, false)
     WXS_SHORT_STRING(wxsHtmlEasyPrinting, m_sFooter, _("Footer"), _T("footer"), wxEmptyString, false)

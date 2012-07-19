@@ -47,59 +47,59 @@ class wxWidgetsGUI;
  */
 class wxWidgetsGUIAppAdoptingDlg: public wxScrollingDialog
 {
-	public:
+    public:
 
-		wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id = -1);
-		virtual ~wxWidgetsGUIAppAdoptingDlg();
+        wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidgetsGUI* GUI,wxWindowID id = -1);
+        virtual ~wxWidgetsGUIAppAdoptingDlg();
 
-		//(*Identifiers(wxWidgetsGUIAppAdoptingDlg)
-		static const long ID_LISTBOX1;
-		static const long ID_GAUGE1;
-		static const long ID_STATICTEXT1;
-		static const long ID_STATICTEXT2;
-		static const long ID_BUTTON5;
-		static const long ID_BUTTON2;
-		static const long ID_BUTTON3;
-		static const long ID_STATICLINE2;
-		static const long ID_BUTTON4;
-		static const long ID_STATICLINE1;
-		static const long ID_BUTTON6;
-		//*)
+        //(*Identifiers(wxWidgetsGUIAppAdoptingDlg)
+        static const long ID_LISTBOX1;
+        static const long ID_GAUGE1;
+        static const long ID_STATICTEXT1;
+        static const long ID_STATICTEXT2;
+        static const long ID_BUTTON5;
+        static const long ID_BUTTON2;
+        static const long ID_BUTTON3;
+        static const long ID_STATICLINE2;
+        static const long ID_BUTTON4;
+        static const long ID_STATICLINE1;
+        static const long ID_BUTTON6;
+        //*)
 
-		wxString m_RelativeFileName;
+        wxString m_RelativeFileName;
 
-	protected:
+    protected:
 
-		//(*Handlers(wxWidgetsGUIAppAdoptingDlg)
-		void OnButton6Click(wxCommandEvent& event);
-		void OnButton4Click(wxCommandEvent& event);
-		void OnClose(wxCloseEvent& event);
-		void OnTimer(wxTimerEvent& event);
-		void OnUseFileBtnClick(wxCommandEvent& event);
-		void OnSelectBtnClick(wxCommandEvent& event);
-		void OnCreateBtnClick(wxCommandEvent& event);
-		//*)
+        //(*Handlers(wxWidgetsGUIAppAdoptingDlg)
+        void OnButton6Click(wxCommandEvent& event);
+        void OnButton4Click(wxCommandEvent& event);
+        void OnClose(wxCloseEvent& event);
+        void OnTimer(wxTimerEvent& event);
+        void OnUseFileBtnClick(wxCommandEvent& event);
+        void OnSelectBtnClick(wxCommandEvent& event);
+        void OnCreateBtnClick(wxCommandEvent& event);
+        //*)
 
-		//(*Declarations(wxWidgetsGUIAppAdoptingDlg)
-		wxStaticText* ScanningFile;
-		wxBoxSizer* BoxSizer3;
-		wxStaticLine* StaticLine2;
-		wxButton* UseFileBtn;
-		wxListBox* FoundFiles;
-		wxStaticText* ScanningTxt;
-		wxButton* Button4;
-		wxBoxSizer* BoxSizer2;
-		wxButton* CreateBtn;
-		wxButton* SelectBtn;
-		wxStaticLine* StaticLine1;
-		wxBoxSizer* BoxSizer4;
-		wxBoxSizer* BoxSizer1;
-		wxGauge* Progress;
-		wxButton* Button6;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		//*)
+        //(*Declarations(wxWidgetsGUIAppAdoptingDlg)
+        wxStaticText* ScanningFile;
+        wxBoxSizer* BoxSizer3;
+        wxStaticLine* StaticLine2;
+        wxButton* UseFileBtn;
+        wxListBox* FoundFiles;
+        wxStaticText* ScanningTxt;
+        wxButton* Button4;
+        wxBoxSizer* BoxSizer2;
+        wxButton* CreateBtn;
+        wxButton* SelectBtn;
+        wxStaticLine* StaticLine1;
+        wxBoxSizer* BoxSizer4;
+        wxBoxSizer* BoxSizer1;
+        wxGauge* Progress;
+        wxButton* Button6;
+        wxStaticBoxSizer* StaticBoxSizer1;
+        //*)
 
-	private:
+    private:
 
         /** \brief Starting scanning of files
          *  \note This function creates it's own
@@ -120,7 +120,7 @@ class wxWidgetsGUIAppAdoptingDlg: public wxScrollingDialog
         wxTimer m_Timer;            ///< \brief Timer used to call Run() after dialog is shown
         bool m_Run;                 ///< \brief Flag used to break scanning of files after closing dialog
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

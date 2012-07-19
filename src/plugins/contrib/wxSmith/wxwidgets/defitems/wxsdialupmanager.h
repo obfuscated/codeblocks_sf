@@ -35,13 +35,13 @@ class wxsDialUpManager: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        bool			m_bAutoCheckOnlineStatus;		//!< Automatically check online status.
-        long			m_iAutoCheckInterval;					//!< Automatic online status check interval (seconds).
+        bool            m_bAutoCheckOnlineStatus;        //!< Automatically check online status.
+        long            m_iAutoCheckInterval;                    //!< Automatic online status check interval (seconds).
 #ifndef __WXMSW__
-        wxString	m_sWellKnownHost;						//!< On Unix, the well known host used to check whether we're connected to the internet.
-        long			m_iPortNo;										//!< On Unix, the well known host's port no.
-        wxString	m_sDialCommand;						//!< On Unix, the dial command.
-        wxString	m_sHangUpCommand;				//!< On Unix, the hang up command.
+        wxString    m_sWellKnownHost;                        //!< On Unix, the well known host used to check whether we're connected to the internet.
+        long            m_iPortNo;                                        //!< On Unix, the well known host's port no.
+        wxString    m_sDialCommand;                        //!< On Unix, the dial command.
+        wxString    m_sHangUpCommand;                //!< On Unix, the hang up command.
 #endif
 };
 

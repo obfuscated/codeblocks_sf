@@ -36,8 +36,8 @@ class wxsSimpleHtmlListBox: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        wxArrayString ArrayChoices;		//!< The choice list.
-        long DefaultSelection;				//!< The default list selection.
+        wxArrayString ArrayChoices;        //!< The choice list.
+        long DefaultSelection;                //!< The default list selection.
 };
 
 #endif

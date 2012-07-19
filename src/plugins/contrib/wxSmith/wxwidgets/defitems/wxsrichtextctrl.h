@@ -36,15 +36,15 @@ class wxsRichTextCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString 				m_sText;								//!< The default text to display.
-        long						m_iAlignment;						//!< Text alignment value.
-        long						m_iAttribute;							//!< Attribute flags passed to SetFlags().
-        long						m_iBullets;							//!< Bullet style flags.
-        long						m_iSpacing;							//!< Line spacing value.
-        long						m_iEffects;							//!< Text effect flags.
-        wxsColourData	m_cdTextColour;					//!< The text foreground colour.
-        wxsColourData	m_cdTextBackground;		//!< The text background colour.
-		wxsFontData		m_fdFont;								//!< The font.
+        wxString                 m_sText;                                //!< The default text to display.
+        long                        m_iAlignment;                        //!< Text alignment value.
+        long                        m_iAttribute;                            //!< Attribute flags passed to SetFlags().
+        long                        m_iBullets;                            //!< Bullet style flags.
+        long                        m_iSpacing;                            //!< Line spacing value.
+        long                        m_iEffects;                            //!< Text effect flags.
+        wxsColourData    m_cdTextColour;                    //!< The text foreground colour.
+        wxsColourData    m_cdTextBackground;        //!< The text background colour.
+        wxsFontData        m_fdFont;                                //!< The font.
 };
 
 #endif

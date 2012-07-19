@@ -78,19 +78,19 @@ wxsFlexGridSizer::wxsFlexGridSizer(wxsItemResData* Data):
 
 wxSizer* wxsFlexGridSizer::OnBuildSizerPreview(wxWindow* Parent)
 {
-	wxFlexGridSizer* Sizer = new wxFlexGridSizer(Rows,Cols,
+    wxFlexGridSizer* Sizer = new wxFlexGridSizer(Rows,Cols,
         VGap.GetPixels(Parent),HGap.GetPixels(Parent));
 
     wxArrayInt Cols = GetArray(GrowableCols);
     for ( size_t i=0; i<Cols.Count(); i++ )
     {
-    	Sizer->AddGrowableCol(Cols[i]);
+        Sizer->AddGrowableCol(Cols[i]);
     }
 
     wxArrayInt Rows = GetArray(GrowableRows);
     for ( size_t i=0; i<Rows.Count(); i++ )
     {
-    	Sizer->AddGrowableRow(Rows[i]);
+        Sizer->AddGrowableRow(Rows[i]);
     }
     return Sizer;
 }

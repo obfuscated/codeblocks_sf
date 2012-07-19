@@ -40,8 +40,8 @@ class wxsGenericDirCtrl: public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
         wxString DefaultFolder;
-    	wxString Filter;
-    	long DefaultFilter;
+        wxString Filter;
+        long DefaultFilter;
 };
 
 #endif

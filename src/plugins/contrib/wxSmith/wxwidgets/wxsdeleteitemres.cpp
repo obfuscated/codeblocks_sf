@@ -36,46 +36,46 @@ const long wxsDeleteItemRes::ID_STATICTEXT1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxsDeleteItemRes,wxScrollingDialog)
-	//(*EventTable(wxsDeleteItemRes)
-	//*)
+    //(*EventTable(wxsDeleteItemRes)
+    //*)
 END_EVENT_TABLE()
 
 wxsDeleteItemRes::wxsDeleteItemRes()
 {
-	//(*Initialize(wxsDeleteItemRes)
-	Create(0, wxID_ANY, _("Deleting resource"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Delete options"));
-	m_PhysDeleteWXS = new wxCheckBox(this, ID_CHECKBOX1, _("Physically delete WXS file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-	m_PhysDeleteWXS->SetValue(true);
-	StaticBoxSizer1->Add(m_PhysDeleteWXS, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	m_DeleteSources = new wxCheckBox(this, ID_CHECKBOX2, _("Delete source files from project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
-	m_DeleteSources->SetValue(false);
-	StaticBoxSizer1->Add(m_DeleteSources, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	m_PhysDeleteSources = new wxCheckBox(this, ID_CHECKBOX3, _("Physically delete source files"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
-	m_PhysDeleteSources->SetValue(false);
-	m_PhysDeleteSources->Disable();
-	StaticBoxSizer1->Add(m_PhysDeleteSources, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Note that there\'s no undo\nafter deleting resource"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT1"));
-	StaticBoxSizer1->Add(StaticText1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
-	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	SetSizer(BoxSizer1);
-	BoxSizer1->Fit(this);
-	BoxSizer1->SetSizeHints(this);
+    //(*Initialize(wxsDeleteItemRes)
+    Create(0, wxID_ANY, _("Deleting resource"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
+    BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+    StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Delete options"));
+    m_PhysDeleteWXS = new wxCheckBox(this, ID_CHECKBOX1, _("Physically delete WXS file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    m_PhysDeleteWXS->SetValue(true);
+    StaticBoxSizer1->Add(m_PhysDeleteWXS, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_DeleteSources = new wxCheckBox(this, ID_CHECKBOX2, _("Delete source files from project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+    m_DeleteSources->SetValue(false);
+    StaticBoxSizer1->Add(m_DeleteSources, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_PhysDeleteSources = new wxCheckBox(this, ID_CHECKBOX3, _("Physically delete source files"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
+    m_PhysDeleteSources->SetValue(false);
+    m_PhysDeleteSources->Disable();
+    StaticBoxSizer1->Add(m_PhysDeleteSources, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Note that there\'s no undo\nafter deleting resource"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT1"));
+    StaticBoxSizer1->Add(StaticText1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(StaticBoxSizer1, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
+    StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
+    StdDialogButtonSizer1->Realize();
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    SetSizer(BoxSizer1);
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
-	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsDeleteItemRes::Onm_DeleteSourcesClick);
-	//*)
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsDeleteItemRes::Onm_DeleteSourcesClick);
+    //*)
 }
 
 wxsDeleteItemRes::~wxsDeleteItemRes()
 {
-	//(*Destroy(wxsDeleteItemRes)
-	//*)
+    //(*Destroy(wxsDeleteItemRes)
+    //*)
 }
 
 

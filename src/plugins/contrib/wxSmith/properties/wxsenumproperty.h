@@ -33,7 +33,7 @@
  */
 class wxsEnumProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName           name of property used in Property Grid
@@ -46,7 +46,7 @@ class wxsEnumProperty: public wxsProperty
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
          *  \param Priority         priority of this property
          */
-		wxsEnumProperty(
+        wxsEnumProperty(
             const wxString& PGName,
             const wxString& DataName,
             long Offset,
@@ -68,7 +68,7 @@ class wxsEnumProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
+    private:
         long Offset;
         long Default;
         bool UpdateEnteries;

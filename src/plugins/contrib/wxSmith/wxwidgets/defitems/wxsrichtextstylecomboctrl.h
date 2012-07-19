@@ -36,8 +36,8 @@ class wxsRichTextStyleComboCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-		wxString	m_sControl;
-		wxString	m_sStyleSheet;
+        wxString    m_sControl;
+        wxString    m_sStyleSheet;
 };
 
 #endif

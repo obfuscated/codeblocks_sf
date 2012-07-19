@@ -34,7 +34,7 @@
  */
 class wxsEditEnumProperty: public wxsProperty
 {
-	public:
+    public:
 
         /** \brief Ctor
          *  \param PGName           name of property used in Property Grid
@@ -47,7 +47,7 @@ class wxsEditEnumProperty: public wxsProperty
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
          *  \param Priority         priority of this property
          */
-		wxsEditEnumProperty(
+        wxsEditEnumProperty(
             const wxString& PGName,
             const wxString& DataName,
             long Offset,
@@ -69,14 +69,14 @@ class wxsEditEnumProperty: public wxsProperty
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
 
-	private:
-        long            		Offset;							//!< The offset of the long integer holding the enumerated value (taken from wxsOFFSET macro).
-        wxString        	Default;							//!< The defaut value applied on read errors.
-        bool            		XmlStoreEmpty;			//!< Store empty values in XML.
-        bool            		UpdateEnteries;			//!< If true, arrays may change while the property is shown in the property grid.
-        long            		Values[512];					//!< An array of long integer values which can be enumerated.
-        const wxChar  **Names;						//!< An array of names used for items in Values array, ending with 0.
-        bool            		UseNamesInXml;		//!< If true, names will be stored in XML nodes instead of values.
+    private:
+        long                    Offset;                            //!< The offset of the long integer holding the enumerated value (taken from wxsOFFSET macro).
+        wxString            Default;                            //!< The defaut value applied on read errors.
+        bool                    XmlStoreEmpty;            //!< Store empty values in XML.
+        bool                    UpdateEnteries;            //!< If true, arrays may change while the property is shown in the property grid.
+        long                    Values[512];                    //!< An array of long integer values which can be enumerated.
+        const wxChar  **Names;                        //!< An array of names used for items in Values array, ending with 0.
+        bool                    UseNamesInXml;        //!< If true, names will be stored in XML nodes instead of values.
 };
 
 /** \addtogroup properties_macros Macros automatically defining standard properties
@@ -93,7 +93,7 @@ class wxsEditEnumProperty: public wxsProperty
  * \date 27/8/10
  * Updated by Cryogen to allow the values to be updated whilst the property is displayed.
  */
-	#define WXS_EDITENUM(ClassName,VarName,PGName,DataName,Names,Default) \
+    #define WXS_EDITENUM(ClassName,VarName,PGName,DataName,Names,Default) \
     { static wxsEditEnumProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Names,true,Default,true); \
       Property(_Property); }
 

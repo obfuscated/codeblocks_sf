@@ -129,8 +129,8 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
     int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
 
     // Checking if editor is opened
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != 0 );
+    EditorManager* EM = Manager::Get()->GetEditorManager();
+    assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FixedFileName);
 
     if ( Editor )
@@ -201,8 +201,8 @@ wxString wxsCoder::GetFullCode(const wxString& FileName,wxFontEncoding& Encoding
     FlushFile(FixedFileName);
 
     // Checking if editor is opened
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != 0 );
+    EditorManager* EM = Manager::Get()->GetEditorManager();
+    assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FixedFileName);
 
     if ( Editor )
@@ -239,8 +239,8 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code,wxFontE
     }
 
     // Searching for file in opened file list
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != 0 );
+    EditorManager* EM = Manager::Get()->GetEditorManager();
+    assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FixedFileName);
 
     if ( Editor )
@@ -269,8 +269,8 @@ void wxsCoder::FlushFile(const wxString& FileName)
     if ( !Changes ) return;
 
     // Searching for file in opened file list
-	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != 0 );
+    EditorManager* EM = Manager::Get()->GetEditorManager();
+    assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
 
     if ( Editor )
@@ -339,8 +339,8 @@ void wxsCoder::FlushFile(const wxString& FileName)
 
 bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd,wxString& EOL)
 {
-	cbStyledTextCtrl* Ctrl = Editor->GetControl();
-	int FullLength = Ctrl->GetLength();
+    cbStyledTextCtrl* Ctrl = Editor->GetControl();
+    int FullLength = Ctrl->GetLength();
 
     if ( EOL.IsEmpty() )
     {
@@ -365,23 +365,23 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     }
 
     // Searching for beginning of section to replace
-	Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
-	Ctrl->SetTargetStart(0);
-	Ctrl->SetTargetEnd(FullLength);
-	int Position = Ctrl->SearchInTarget(Header);
+    Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
+    Ctrl->SetTargetStart(0);
+    Ctrl->SetTargetEnd(FullLength);
+    int Position = Ctrl->SearchInTarget(Header);
 
-	if ( Position == -1 )
-	{
-	    Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
-			#if wxCHECK_VERSION(2, 9, 0)
-			Header.wx_str(),
-			Editor->GetFilename().wx_str()));
-			#else
-			Header.c_str(),
-			Editor->GetFilename().c_str()));
-			#endif
-		return false;
-	}
+    if ( Position == -1 )
+    {
+        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
+            #if wxCHECK_VERSION(2, 9, 0)
+            Header.wx_str(),
+            Editor->GetFilename().wx_str()));
+            #else
+            Header.c_str(),
+            Editor->GetFilename().c_str()));
+            #endif
+        return false;
+    }
 
     // Beginning of this code block is in Position, now searching for end
     Ctrl->SetTargetStart(Position);
@@ -474,12 +474,12 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
 
     if ( Position == -1 )
     {
-    	#if wxCHECK_VERSION(2, 9, 0)
-    	Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.wx_str()));
-    	#else
-    	Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.c_str()));
-    	#endif
-		return false;
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.wx_str()));
+        #else
+        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.c_str()));
+        #endif
+        return false;
     }
 
     // Skipping header if necessary

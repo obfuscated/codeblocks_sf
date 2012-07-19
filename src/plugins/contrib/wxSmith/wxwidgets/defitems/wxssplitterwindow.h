@@ -27,9 +27,9 @@
 
 class wxsSplitterWindow: public wxsContainer
 {
-	public:
+    public:
 
-		wxsSplitterWindow(wxsItemResData* Data);
+        wxsSplitterWindow(wxsItemResData* Data);
 
     private:
 

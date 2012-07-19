@@ -49,16 +49,16 @@ class wxsResource;
  */
 class wxSmith : public cbPlugin
 {
-	public:
+    public:
 
         /** \brief Ctor */
-		wxSmith();
+        wxSmith();
 
-		/** \brief Dctor */
-		~wxSmith();
+        /** \brief Dctor */
+        ~wxSmith();
 
         /** \brief Function returing singleton instance */
-		static wxSmith* Get() { return m_Singleton; }
+        static wxSmith* Get() { return m_Singleton; }
 
         /** \brief Getting group in configuration dialog */
         int GetConfigurationGroup()  const { return cgEditor; }
@@ -70,18 +70,18 @@ class wxSmith : public cbPlugin
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
 
         /** \brief This funciton will add enteries into menu */
-		void BuildMenu(wxMenuBar* menuBar);
+        void BuildMenu(wxMenuBar* menuBar);
 
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-		bool BuildToolBar(wxToolBar* toolBar);
-		void OnAttach();
-		void OnRelease(bool appShutDown);
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+        bool BuildToolBar(wxToolBar* toolBar);
+        void OnAttach();
+        void OnRelease(bool appShutDown);
 
-		/** \brief Registering scripting stuff */
-		void RegisterScripting();
+        /** \brief Registering scripting stuff */
+        void RegisterScripting();
 
-		/** \brief unregistering scripting stuff */
-		void UnregisterScripting();
+        /** \brief unregistering scripting stuff */
+        void UnregisterScripting();
 
         /** \brief Getting wxsProject addition for given cbPrject */
         wxsProject* GetSmithProject(cbProject* Proj);
@@ -98,7 +98,7 @@ class wxSmith : public cbPlugin
         /** \brief Bringing up the resources tab to the view */
         void ShowResourcesTab();
 
-	private:
+    private:
 
         WX_DECLARE_HASH_MAP(cbProject*,wxsProject*,wxPointerHash,wxPointerEqual,ProjectMapT);
         typedef ProjectMapT::iterator ProjectMapI;
@@ -143,7 +143,7 @@ class wxSmith : public cbPlugin
         void OnUpdateUI(wxUpdateUIEvent& event);
 
         friend class wxSmithMime;
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 /** \brief Helper function to easily access wxSmith plugin */

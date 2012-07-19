@@ -36,9 +36,9 @@ class wxsSearchCtrl: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        wxString 			m_sValue;									//!< The default text value.
-        bool					m_bShowSearchBtn;					//!< If true, show the "Search" button.
-        bool					m_bShowCancelBtn;					//!< If true, show the "Cancel" button.
+        wxString             m_sValue;                                    //!< The default text value.
+        bool                    m_bShowSearchBtn;                    //!< If true, show the "Search" button.
+        bool                    m_bShowCancelBtn;                    //!< If true, show the "Cancel" button.
 };
 
 #endif // WXSSEARCHCTRL_H
