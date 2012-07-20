@@ -539,6 +539,13 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
+      <object class="wxMenuItem" name="idViewHideEditorTabs">
+        <label>Hide editor tabs</label>
+        <accel>Ctrl-H</accel>
+        <help>Show/hide the editor tabs</help>
+        <checkable>1</checkable>
+        <enabled>1</enabled>
+      </object>
       <object class="wxMenuItem" name="idViewStatusbar">
         <label>&amp;Status bar</label>
         <help>Show/hide status bar</help>

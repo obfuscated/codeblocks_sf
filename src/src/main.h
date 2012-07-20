@@ -185,6 +185,7 @@ class MainFrame : public wxFrame
         void OnViewLayoutSave(wxCommandEvent& event);
         void OnViewLayoutDelete(wxCommandEvent& event);
         void OnViewScriptConsole(wxCommandEvent& event);
+        void OnViewHideEditorTabs(wxCommandEvent& event);
 
         void OnSearchFind(wxCommandEvent& event);
         void OnSearchFindNext(wxCommandEvent& event);

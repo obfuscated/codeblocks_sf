@@ -250,6 +250,7 @@ int idViewManager            = XRCID("idViewManager");
 int idViewLogManager         = XRCID("idViewLogManager");
 int idViewStatusbar          = XRCID("idViewStatusbar");
 int idViewScriptConsole      = XRCID("idViewScriptConsole");
+int idViewHideEditorTabs     = XRCID("idViewHideEditorTabs");
 int idViewFocusEditor        = XRCID("idViewFocusEditor");
 int idViewFocusManagement    = XRCID("idViewFocusManagement");
 int idViewFocusLogsAndOthers = XRCID("idViewFocusLogsAndOthers");
@@ -355,6 +356,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewManager,            MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar,          MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewScriptConsole,      MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewHideEditorTabs,     MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor,        MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusManagement,    MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusLogsAndOthers, MainFrame::OnViewMenuUpdateUI)
@@ -480,6 +482,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewManager,               MainFrame::OnToggleBar)
     EVT_MENU(idViewStatusbar,             MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewScriptConsole,         MainFrame::OnViewScriptConsole)
+    EVT_MENU(idViewHideEditorTabs,        MainFrame::OnViewHideEditorTabs)
     EVT_MENU(idViewFocusEditor,           MainFrame::OnFocusEditor)
     EVT_MENU(idViewFocusManagement,       MainFrame::OnFocusManagement)
     EVT_MENU(idViewFocusLogsAndOthers,    MainFrame::OnFocusLogsAndOthers)
@@ -1964,6 +1967,8 @@ void MainFrame::DoUpdateEditorStyle()
     cbAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
 
     DoUpdateEditorStyle(an, _T("editor"), style | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/hide_editor_tabs"),false))
+        an->SetTabCtrlHeight(0);
 
     an = m_pInfoPane;
     DoUpdateEditorStyle(an, _T("infopane"), style);
@@ -3903,6 +3908,22 @@ void MainFrame::OnViewScriptConsole(wxCommandEvent& /*event*/)
     ShowHideScriptConsole();
 }
 
+void MainFrame::OnViewHideEditorTabs(wxCommandEvent& /*event*/)
+{
+	cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+	if (nb)
+	{
+		bool hide_editor_tabs = nb->GetTabCtrlHeight() > 0;
+
+		if (hide_editor_tabs)
+			nb->SetTabCtrlHeight(0);
+		else
+			nb->SetTabCtrlHeight(-1);
+
+		Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/hide_editor_tabs"), hide_editor_tabs);
+	}
+}
+
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
     bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
@@ -4158,6 +4179,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewLogManager,          m_LayoutManager.GetPane(m_pInfoPane).IsShown());
     mbar->Check(idViewStatusbar,           GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewScriptConsole,       m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
+    mbar->Check(idViewHideEditorTabs,      Manager::Get()->GetEditorManager()->GetNotebook()->GetTabCtrlHeight() == 0);
     mbar->Check(idViewFullScreen,          IsFullScreen());
     mbar->Enable(idViewFocusEditor,        ed);
     mbar->Enable(idViewFocusManagement,    manVis);
