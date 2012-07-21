@@ -31,20 +31,20 @@ public:
         @param text  The text to be set.
         @param plugin  The pugin which wants to set its status text
       */
-    virtual void SetStatusText(const wxString& text, cbPlugin* plugin);
+    virtual void SetStatusTextByPlugin(const wxString& text, cbPlugin* plugin);
 
     /** Returns the string associated with a status bar field.
         @param  plugin  The plugin which wants to get its status text
         @return The  status field string if the field id is valid, otherwise the empty string.
       */
-    virtual wxString GetStatusText(cbPlugin* plugin) const;
+    virtual wxString GetStatusTextByPlugin(cbPlugin* plugin) const;
 
     /** Returns the size and position of a field's internal bounding rectangle.
         @param  plugin  The plugin which wants to know its status-field size.
         @param rect  The rectangle values are placed in this variable.
         @return true if the field id is valid, false otherwise.
       */
-    virtual bool GetFieldRect(cbPlugin *plugin, wxRect& rect) const;
+    virtual bool GetFieldRectByPlugin(cbPlugin *plugin, wxRect& rect) const;
 
     // functions used for the mainframe:
     virtual void SetStatusWidths(int n, const int* widths);

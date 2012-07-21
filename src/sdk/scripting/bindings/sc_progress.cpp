@@ -39,7 +39,7 @@ class ProgressDialog : public wxProgressDialog
             cbThrow(_T("ProgressDialog copy constructor should never be called!"));
         }
 
-        bool Update(int value, const wxString& newmsg)
+        bool DoUpdate(int value, const wxString& newmsg)
         {
             return wxProgressDialog::Update(value, newmsg, 0);
         }
@@ -53,6 +53,6 @@ namespace ScriptBindings
     {
         SqPlus::SQClassDef<ProgressDialog>("ProgressDialog").
                 emptyCtor().
-                func(&ProgressDialog::Update, "Update");
+                func(&ProgressDialog::DoUpdate, "DoUpdate");
     }
 } // namespace ScriptBindings

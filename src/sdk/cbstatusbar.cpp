@@ -35,14 +35,14 @@ cbStatusBar::~cbStatusBar()
 {
 }
 
-void cbStatusBar::SetStatusText(const wxString& text, cbPlugin* plugin)
+void cbStatusBar::SetStatusTextByPlugin(const wxString& text, cbPlugin* plugin)
 {
     int pos = GetFieldNumberOfPlugin(plugin);
     if (pos != -1)
         wxStatusBar::SetStatusText(text, pos);
 }
 
-wxString cbStatusBar::GetStatusText(cbPlugin* plugin) const
+wxString cbStatusBar::GetStatusTextByPlugin(cbPlugin* plugin) const
 {
     int pos = GetFieldNumberOfPlugin(plugin);
     if (pos != -1)
@@ -50,7 +50,7 @@ wxString cbStatusBar::GetStatusText(cbPlugin* plugin) const
     return wxEmptyString;
 }
 
-bool cbStatusBar::GetFieldRect(cbPlugin* plugin, wxRect& rect) const
+bool cbStatusBar::GetFieldRectByPlugin(cbPlugin* plugin, wxRect& rect) const
 {
     int pos = GetFieldNumberOfPlugin(plugin);
     if (pos != -1)
@@ -132,7 +132,7 @@ void cbStatusBar::AdjustFieldsSize()
         if (ctrl)
         {
             wxRect rect;
-            GetFieldRect(m_Elements[i].plugin, rect);
+            GetFieldRectByPlugin(m_Elements[i].plugin, rect);
             ctrl->SetSize(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4);
         }
     }
