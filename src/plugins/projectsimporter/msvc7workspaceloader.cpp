@@ -116,14 +116,20 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(true);
         line.Trim(false);
         wxString _version = line.AfterLast(' '); // want the version number
-        if ((_version != _T("7.00")) && (_version != _T("8.00")))
+        if (   (_version != _T("7.00"))
+            && (_version != _T("8.00"))
+            && (_version != _T("9.00"))
+            && (_version != _T("10.00"))
+            && (_version != _T("11.00")) )
+        {
             Manager::Get()->GetLogManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
+        }
     }
 
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
-    wxProgressDialog progress(_("Importing MSVC 7 solution"),
+    wxProgressDialog progress(_("Importing MSVC solution"),
                               _("Please wait while importing MSVC 7 solution..."),
                               100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
