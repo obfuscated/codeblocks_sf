@@ -103,9 +103,7 @@ bool MSVC10Loader::Open(const wxString& filename)
         return false;
 
     pMsg->DebugLog(_("Parsing project file..."));
-    TiXmlElement* root;
-
-    root = doc.FirstChildElement("Project");
+    const TiXmlElement* root = doc.FirstChildElement("Project");
     if (!root)
     {
         pMsg->DebugLog(_("Not a valid MS Visual Studio project file..."));
@@ -118,10 +116,13 @@ bool MSVC10Loader::Open(const wxString& filename)
 
     // get project name & type
     bool bResult;
-    bResult = GetProjectGlobalsInfo(root);
+    bResult  = GetProjectGlobalsInfo(root);
 
-    // get the project list of configuration => 1 configuration = 1 build target in  CodeBlocks
-    bResult = GetProjectConfigurations(root);
+    // get the project list of configuration => 1 configuration = 1 build target in CodeBlocks
+    bResult |= GetProjectConfigurations(root);
+
+    // get the project list of files and add them to the targets
+    bResult |= GetProjectConfigurationFiles(root);
 
     return bResult;
 }
@@ -129,33 +130,35 @@ bool MSVC10Loader::Open(const wxString& filename)
 /** get project name, type and GUID
   * \param root : the root node  of the XML project file (<Project >
   **/
-bool MSVC10Loader::GetProjectGlobalsInfo(TiXmlElement* root)
+bool MSVC10Loader::GetProjectGlobalsInfo(const TiXmlElement* root)
 {
-    TiXmlElement* prop = NULL;
-    bool bResult;
+    if (!root) return false;
+
     LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMsg) return false;
 
-    bResult = false;
-    if (root) prop = root->FirstChildElement("PropertyGroup");
-    m_pProject->SetTitle(cbC2U(root->Attribute("NoName")));
+    bool bResult = false;
 
+    const char* title = root->Attribute("NoName");
+    if (title) m_pProject->SetTitle(cbC2U(title));
+
+    const TiXmlElement* prop = root->FirstChildElement("PropertyGroup");
     while (prop)
     {
-        wxString sLabelName = cbC2U(prop->Attribute("Label"));
-        if (sLabelName.MakeUpper().IsSameAs(_T("GLOBALS")))
+        const char* attr = prop->Attribute("Label");
+        if (!attr) { prop = prop->NextSiblingElement(); continue; }
+
+        wxString label = cbC2U(attr);
+        if (label.MakeUpper().IsSameAs(_T("GLOBALS")))
         {
-            TiXmlElement* pGUID = prop->FirstChildElement("ProjectGuid");
-            m_ProjectGUID = GetText(pGUID);
+            const TiXmlElement* pGUID = prop->FirstChildElement("ProjectGuid");
+            if (pGUID) m_ProjectGUID = GetText(pGUID);
 
-            TiXmlElement* pProjectType = prop->FirstChildElement("Keyword");
-            m_ProjectType = GetText(pProjectType);
+            const TiXmlElement* pProjectType = prop->FirstChildElement("Keyword");
+            if (pProjectType) m_ProjectType = GetText(pProjectType);
 
-            TiXmlElement* pProjectName = prop->FirstChildElement("RootNamespace");
-            m_ProjectName = GetText(pProjectName);
-
-            bResult = true;
-            prop = NULL; //exit loop
+            const TiXmlElement* pProjectName = prop->FirstChildElement("RootNamespace");
+            if (pProjectName) m_ProjectName = GetText(pProjectName);
 
             // logging
             #if wxCHECK_VERSION(2, 9, 0)
@@ -165,9 +168,12 @@ bool MSVC10Loader::GetProjectGlobalsInfo(TiXmlElement* root)
             pMsg->DebugLog(wxString::Format(_("Project global properties: GUID=%s, Type=%s, Name=%s"),
                                              m_ProjectGUID.c_str(), m_ProjectType.c_str(), m_ProjectName.c_str()));
             #endif
+
+            bResult = true; // got everything we need
+            break; // exit loop
         }
-        else
-            prop = prop->NextSiblingElement();
+
+        prop = prop->NextSiblingElement();
     }
 
     if (!bResult)
@@ -181,47 +187,47 @@ bool MSVC10Loader::GetProjectGlobalsInfo(TiXmlElement* root)
   * For each configuration found, a target will be created
   * \param root : the root node  of the XML project file (<Project >
   **/
-bool MSVC10Loader::GetProjectConfigurations(TiXmlElement* root)
+bool MSVC10Loader::GetProjectConfigurations(const TiXmlElement* root)
 {
     // delete all targets of the project (we 'll create new ones from the imported configurations)
-    while (m_pProject->GetBuildTargetsCount())
+    while (m_pProject && m_pProject->GetBuildTargetsCount())
         m_pProject->RemoveBuildTarget(0);
 
-    TiXmlElement* prop = NULL;
-    bool bResult;
+    if (!root) return false;
+
     LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMsg) return false;
 
-    bResult = false;
+    bool bResult = false;
 
     // first we try to get the list of configurations : there is normally a specific chapter for that
     // this is not truly necessary, but it is cleaner like that:
     // the plugin will be easier to understand, and easier to extend if necessary
-    if (root) prop = root->FirstChildElement("ItemGroup");
-
+    const TiXmlElement* prop = root->FirstChildElement("ItemGroup");
     while (prop)
     {
-        wxString sLabelName = cbC2U(prop->Attribute("Label"));
-        sLabelName = sLabelName.MakeUpper();
-        if (sLabelName == _T("PROJECTCONFIGURATIONS"))
+        const char* attr = prop->Attribute("Label");
+        if (!attr) { prop = prop->NextSiblingElement(); continue; }
+
+        wxString label = cbC2U(attr); label = label.MakeUpper();
+        if (label.MakeUpper().IsSameAs(_T("PROJECTCONFIGURATIONS")))
         {
-            TiXmlElement* conf = NULL;
-            conf = prop->FirstChildElement("ProjectConfiguration");
+            const TiXmlElement* conf = prop->FirstChildElement("ProjectConfiguration");
             while(conf)
             {
                 // loop over all the configurations
-                wxString sConfName = cbC2U(conf->Attribute("Include"));
-                sConfName.Replace(_T("|"), _T(" "));
-                wxString sConfType;
-                wxString sConfPlatform;
-                TiXmlElement* pConfType = prop->FirstChildElement("Configuration");
-                sConfType = GetText(pConfType);
+                const char*         name = conf->Attribute("Include");
+                const TiXmlElement* cfg  = prop->FirstChildElement("Configuration");
+                const TiXmlElement* plat = prop->FirstChildElement("Platform");
+                if (name && cfg && plat)
+                {
+                    wxString sName = cbC2U(name); sName.Replace(_T("|"), _T(" "));
+                    wxString sType = GetText(cfg);
+                    wxString sPlat = GetText(plat);
 
-                TiXmlElement* pConfPlatform = prop->FirstChildElement("Platform");
-                sConfPlatform = GetText(pConfPlatform);
-
-                m_pc[sConfName] = _ProjectConfigurations_(sConfName, sConfPlatform, sConfType);
-
+                    if (m_pcNames.Index(sName)==wxNOT_FOUND) m_pcNames.Add(sName);
+                    m_pc[sName] = SProjectConfigurations(sName, sType, sPlat);
+                }
                 conf = conf->NextSiblingElement();
             }
 
@@ -231,52 +237,66 @@ bool MSVC10Loader::GetProjectConfigurations(TiXmlElement* root)
     }
 
     // now that we have (in theory) the list of configurations, we will parse each configuration
-    if (root) prop = root->FirstChildElement("PropertyGroup");
+    prop = root->FirstChildElement("PropertyGroup");
     while (prop)
     {
-        wxString sLabelName = cbC2U(prop->Attribute("Label"));
-        sLabelName = sLabelName.MakeUpper();
-        if (sLabelName == _T("CONFIGURATION"))
+        const  char* attr = prop->Attribute("Label");
+        if (!attr) { prop = prop->NextSiblingElement(); continue; }
+
+        wxString lbl = cbC2U(attr);
+        if (lbl.MakeUpper().IsSameAs(_T("CONFIGURATION")))
         {
-            wxString sConfName;
+            const char*         name = prop->Attribute("Condition");
+            const TiXmlElement* type = prop->FirstChildElement("ConfigurationType");
+            const TiXmlElement* dbg  = prop->FirstChildElement("UseDebugLibraries");
+            const TiXmlElement* cset = prop->FirstChildElement("CharacterSet");
+            if (name && type && dbg && cset)
+            {
+                wxString sName = cbC2U(name); sName = FormatMSCVString(sName);
+                if (m_pcNames.Index(sName)==wxNOT_FOUND) m_pcNames.Add(sName);
+                m_pc[sName].mm_sName        = sName; // OK, probably not so useful, just for completeness sake
+                m_pc[sName].mm_TargetType   = GetText(type);
+                m_pc[sName].mm_UseDebugLibs = GetText(dbg);
+                m_pc[sName].mm_Charset      = GetText(cset);
 
-            sConfName = cbC2U(prop->Attribute("Condition"));
-            sConfName = FormatMSCVString(sConfName);
+                const TiXmlElement* e = NULL;
 
-            TiXmlElement* e;
+                // By default, OutDir is $(SolutionDir)$(Configuration)
+                e = prop->FirstChildElement("OutDir");
+                if (e) m_pc[sName].mm_sOutDir = GetText(e);
 
-            m_pc[sConfName].mm_sName      = sConfName; // OK, probably not so useful, just for completeness sake
+                // By default, IntDir is $(Configuration)
+                e = prop->FirstChildElement("IntDir");
+                if (e) m_pc[sName].mm_sIntDir = GetText(e);
 
-            e = prop->FirstChildElement("ConfigurationType");
-            m_pc[sConfName].mm_TargetType = GetText(e);
+                // By default, TargetName is $(ProjectName)
+                e = prop->FirstChildElement("TargetName");
+                if (e) m_pc[sName].mm_sTargetName = GetText(e);
 
-            e = prop->FirstChildElement("UseDebugLibraries");
-            m_pc[sConfName].mm_UseDebugLibs = GetText(e);
+                // By default, TargetExt is .exe
+                e = prop->FirstChildElement("TargetExt");
+                if (e) m_pc[sName].mm_sTargetExt = GetText(e);
 
-            e = prop->FirstChildElement("CharacterSet");
-            m_pc[sConfName].mm_Charset = GetText(e);
+                // $(VCInstallDir)include , $(VCInstallDir)atlmfc\include , $(WindowsSdkDir)include , $(FrameworkSDKDir)\include
+                e = prop->FirstChildElement("IncludePath");
+                if (e) m_pc[sName].mm_sIncludePath = GetText(e);
 
-            ////
+                // $(VCInstallDir)lib , $(VCInstallDir)atlmfc\lib , $(WindowsSdkDir)lib , $(FrameworkSDKDir)\lib
+                e = prop->FirstChildElement("LibraryPath");
+                if (e) m_pc[sName].mm_sLibPath = GetText(e);
 
-            e = prop->FirstChildElement("OutDir");
-            m_pc[sConfName].mm_sOutDir = GetText(e);
+                // $(VCInstallDir)bin , $(WindowsSdkDir)bin\NETFX 4.0 Tools , $(WindowsSdkDir)bin , $(VSInstallDir)Common7\Tools\bin ,
+                // $(VSInstallDir)Common7\tools , $(VSInstallDir)Common7\ide , $(ProgramFiles)\HTML Help Workshop , $(FrameworkSDKDir)\bin ,
+                // $(MSBuildToolsPath32) , $(VSInstallDir) , $(SystemRoot)\SysWow64 , $(FxCopDir) , $(PATH)
+                e = prop->FirstChildElement("ExecutablePath");
+                if (e) m_pc[sName].mm_sExePath = GetText(e);
 
-            e = prop->FirstChildElement("IntDir");
-            m_pc[sConfName].mm_sIntDir = GetText(e);
+                // $(VCInstallDir)atlmfc\src\mfc , $(VCInstallDir)atlmfc\src\mfcm , $(VCInstallDir)atlmfc\src\atl , $(VCInstallDir)crt\src
+                e = prop->FirstChildElement("SourcePath");
+                if (e) m_pc[sName].mm_sSourcePath = GetText(e);
 
-            e = prop->FirstChildElement("TargetName");
-            m_pc[sConfName].mm_sTargetName = GetText(e);
-
-            e = prop->FirstChildElement("TargetExt");
-            m_pc[sConfName].mm_sTargetExt = GetText(e);
-
-            e = prop->FirstChildElement("IncludePath");
-            m_pc[sConfName].mm_sIncludePath = GetText(e);
-
-            e = prop->FirstChildElement("LibraryPath");
-            m_pc[sConfName].mm_sLibPath = GetText(e);
-
-            bResult = true;
+                bResult = true;
+            }
         }
 
         prop = prop->NextSiblingElement();
@@ -293,6 +313,7 @@ bool MSVC10Loader::GetProjectConfigurations(TiXmlElement* root)
             bt->AddPlatform(spAll); // target all platforms, SupportedPlatforms enum in "globals.h"
             bt->SetTargetType(ttExecutable); // executable by default, TargetType enum in "globals.h"
         }
+        bResult = true;
     }
     else
     {
@@ -303,7 +324,86 @@ bool MSVC10Loader::GetProjectConfigurations(TiXmlElement* root)
 
     m_pProject->SetTitle(m_ProjectName);
 
-    return(DoSelectConfiguration());
+    return ( DoSelectConfiguration() );
+}
+
+/** get the list of files in the project
+  * For each configuration found, the files will be added
+  * \param root : the root node  of the XML project file (<Project >
+  **/
+bool MSVC10Loader::GetProjectConfigurationFiles(const TiXmlElement* root)
+{
+    if (!root) return false;
+
+    LogManager* pMsg = Manager::Get()->GetLogManager();
+    if (!pMsg) return false;
+
+    bool bResult = false;
+
+    // parse each ItemGroup
+    const TiXmlElement* prop = root->FirstChildElement("ItemGroup");
+    while (prop)
+    {
+        const TiXmlElement* none = prop->FirstChildElement("None");
+        while (none)
+        {
+            const char* attr = none->Attribute("Include");
+            if (attr)
+            {
+                ProjectFile* pf = m_pProject->AddFile(0, cbC2U(attr), false, false);
+                HandleFilesAndExcludes(none, pf);
+            }
+
+            none = none->NextSiblingElement();
+            bResult = true; // at least one file imported
+        }
+
+        const TiXmlElement* incl = prop->FirstChildElement("ClInclude");
+        while (incl)
+        {
+            const char* attr = incl->Attribute("Include");
+            if (attr)
+            {
+                ProjectFile* pf = m_pProject->AddFile(0, cbC2U(attr), false, false);
+                HandleFilesAndExcludes(incl, pf);
+            }
+
+            incl = incl->NextSiblingElement();
+            bResult = true; // at least one file imported
+        }
+
+        const TiXmlElement* comp = prop->FirstChildElement("ClCompile");
+        while (comp)
+        {
+            const char* attr = comp->Attribute("Include");
+            if (attr)
+            {
+                ProjectFile* pf = m_pProject->AddFile(0, cbC2U(attr), true, true);
+                HandleFilesAndExcludes(comp, pf);
+            }
+
+            comp = comp->NextSiblingElement();
+            bResult = true; // at least one file imported
+        }
+
+        const TiXmlElement* res = prop->FirstChildElement("ResourceCompile");
+        while (res)
+        {
+            const char* attr = res->Attribute("Include");
+            if (attr)
+            {
+                ProjectFile* pf = m_pProject->AddFile(0, cbC2U(attr), true, true);
+                HandleFilesAndExcludes(res, pf);
+            }
+
+            res = res->NextSiblingElement();
+            bResult = true; // at least one file imported
+        }
+
+        prop = prop->NextSiblingElement();
+    }
+
+    return bResult;
 }
 
 /** Ask the users to select which configurations to import
@@ -312,7 +412,7 @@ bool MSVC10Loader::GetProjectConfigurations(TiXmlElement* root)
 bool MSVC10Loader::DoSelectConfiguration()
 {
     wxArrayString asSelectedStrings;
-    if (!ImportersGlobals::ImportAllTargets) // by default, all targets are imported
+    if ( !ImportersGlobals::ImportAllTargets ) // by default, all targets are imported
     {
         // ask the user to select a configuration - multiple choice ;)
         wxArrayString configurations;
@@ -353,7 +453,6 @@ bool MSVC10Loader::DoSelectConfiguration()
             if (it->second.mm_sType == _T("StaticLibrary"))  tt = ttStaticLib;
 
             bt->SetTargetType(tt); //executable by default, TargetType enum in "globals.h"
-
             it->second.mm_bt = bt;
         }
         else
@@ -373,7 +472,7 @@ bool MSVC10Loader::DoSelectConfiguration()
   *         <tag></tag>
   *         the method will return ""
   */
-wxString MSVC10Loader::GetText(TiXmlElement *e)
+wxString MSVC10Loader::GetText(const TiXmlElement* e)
 {
     // convenience function for getting XML text
     wxString sResult = _T("");
@@ -392,14 +491,50 @@ wxString MSVC10Loader::GetText(TiXmlElement *e)
     return sResult;
 }
 
+void MSVC10Loader::HandleFilesAndExcludes(const TiXmlElement* e, ProjectFile* pf)
+{
+    if (!pf)
+        return;
+
+    // add it to all configurations, not just the first
+    for (size_t i=0; i<m_pcNames.Count(); ++i)
+        pf->AddBuildTarget(m_pcNames[i]);
+
+    // handle explicit exclusions like:
+    // <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    // <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    const TiXmlElement* excl = e->FirstChildElement("ExcludedFromBuild");
+    // Operate existing excludes
+    while (excl)
+    {
+        const TiXmlText* do_excl = excl->ToText();
+        if (do_excl)
+        {
+            const char* value = do_excl->Value();
+            wxString  s_value = cbC2U(value);
+            if (s_value.IsSameAs(_T("TRUE")))
+            {
+                const char* cond = excl->Attribute("Condition");
+                if (cond)
+                {
+                    wxString sName = cbC2U(cond); sName = FormatMSCVString(sName);
+                    pf->RemoveBuildTarget(sName);
+                }
+            }
+        }
+
+        excl = excl->NextSiblingElement();
+    }
+}
+
 /** Format a string by performing substitution
   * It is mainly intended for formatting Configuration names such as "'$(Configuration)|$(Platform)'=='Debug|Win32'"
   * \param sString : the string to format
   * \return the formatted string
   */
-wxString MSVC10Loader::FormatMSCVString(wxString sString)
+wxString MSVC10Loader::FormatMSCVString(const wxString& sString)
 {
-    wxString sResult = sString;
+    wxString sResult(sString);
 
     sResult.Replace(_T("$(Configuration)"), _T(""));
     sResult.Replace(_T("$(Platform)"),      _T(""));
@@ -416,4 +551,3 @@ bool MSVC10Loader::Save(const wxString& filename)
     // no support to save MSVC10 projects
     return false;
 }
-
