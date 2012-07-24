@@ -122,7 +122,8 @@ function SetupProject(project)
         project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("pango-1.0"));
         project.AddIncludeDir(GtkPathDefaultLib + wxFILE_SEP_PATH + _T("gtk-2.0")  + wxFILE_SEP_PATH + _T("include"));
         project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("atk-1.0"));
-
+        if ( IO.DirectoryExists(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gdk-pixbuf-2.0")) )
+            project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gdk-pixbuf-2.0"));
 
         project.AddLibDir(GtkPathDefaultLib);
 
@@ -152,7 +153,7 @@ function SetupProject(project)
             project.AddLinkerOption(_T("`pkg-config gtk+ --libs`"));
         }*/
     }
-    
+
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
