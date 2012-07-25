@@ -4737,8 +4737,10 @@ protected:
 
     bool                m_lastKeyDownConsumed;
 
+/* C::B begin */
     // Time until when we should ignore any new mouse wheel events.
-    wxLongLong m_timeToBlockWheelEventsUntil;
+//    wxLongLong m_timeToBlockWheelEventsUntil;
+/* C::B end */
 
     friend class ScintillaWX;
     friend class Platform;

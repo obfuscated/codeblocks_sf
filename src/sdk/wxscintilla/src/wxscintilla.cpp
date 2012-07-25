@@ -27,7 +27,6 @@
  */
 
 #include <ctype.h>
-#include <limits>
 
 #include <wx/tokenzr.h>
 #include <wx/mstream.h>
@@ -216,7 +215,7 @@ bool wxScintilla::Create(wxWindow *parent,
 /* C::B begin */
     // we need this here, because wxEvent::GetTimestamp() returns negative values on some systems
     // and therefore blocks mousewheel events. Big thanks to DrewBoo
-    m_timeToBlockWheelEventsUntil = std::numeric_limits<long>::min();
+//    m_timeToBlockWheelEventsUntil = std::numeric_limits<long>::min();
 /* C::B end */
     m_vScrollBar = NULL;
     m_hScrollBar = NULL;
@@ -4959,6 +4958,7 @@ void wxScintilla::OnContextMenu(wxContextMenuEvent& evt)
 
 void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
 {
+/* C::B begin */
     // Prevent having an event queue with wheel events that cannot be processed
     // reasonably fast (see ticket #9057) by ignoring all of them that happen
     // during the time interval corresponding to the time it took us to handle
@@ -4966,28 +4966,31 @@ void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
     //
     // Notice the use of TimeInMicro() instead of Time() to avoid overflow in
     // long running programs.
-#if wxCHECK_VERSION(2, 9, 0)
-    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.TimeInMicro() )
-    {
-        const wxLongLong beforeMouseWheel = m_stopWatch.TimeInMicro();
-#else
-    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.Time() )
-    {
-        const wxLongLong beforeMouseWheel = m_stopWatch.Time();
-#endif
+//#if wxCHECK_VERSION(2, 9, 0)
+//    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.TimeInMicro() )
+//    {
+//        const wxLongLong beforeMouseWheel = m_stopWatch.TimeInMicro();
+//#else
+//    if ( m_timeToBlockWheelEventsUntil <= m_stopWatch.Time() )
+//    {
+//        const wxLongLong beforeMouseWheel = m_stopWatch.Time();
+//#endif
+/* C::B end */
         m_swx->DoMouseWheel(evt.GetWheelRotation(),
                             evt.GetWheelDelta(),
                             evt.GetLinesPerAction(),
                             evt.ControlDown(),
                             evt.IsPageScroll());
-#if wxCHECK_VERSION(2, 9, 0)
-        const wxLongLong afterMouseWheel = m_stopWatch.TimeInMicro();
-#else
-        const wxLongLong afterMouseWheel = m_stopWatch.Time();
-#endif
-        m_timeToBlockWheelEventsUntil = afterMouseWheel;
-        m_timeToBlockWheelEventsUntil += afterMouseWheel - beforeMouseWheel;
-    }
+/* C::B begin */
+//#if wxCHECK_VERSION(2, 9, 0)
+//        const wxLongLong afterMouseWheel = m_stopWatch.TimeInMicro();
+//#else
+//        const wxLongLong afterMouseWheel = m_stopWatch.Time();
+//#endif
+//        m_timeToBlockWheelEventsUntil = afterMouseWheel;
+//        m_timeToBlockWheelEventsUntil += afterMouseWheel - beforeMouseWheel;
+//    }
+/* C::B end */
 }
 
 
