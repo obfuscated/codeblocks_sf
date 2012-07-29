@@ -1,459 +1,464 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
-  <object class="wxScrollingDialog" name="dlgReplace">
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
-    <title>Replace</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <flag>wxGROW|wxALL</flag>
-        <border>8</border>
-        <option>1</option>
-        <object class="wxNotebook" name="nbReplace">
-          <object class="notebookpage">
-            <label>Replace</label>
-            <object class="wxPanel" name="tabReplace">
-              <style>wxTAB_TRAVERSAL</style>
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                    <flag>wxGROW|wxALL</flag>
-                    <option>1</option>
-                    <object class="wxPanel" name="nbReplaceSingleMulti">
-                      <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                        <object class="wxPanel" name="tabReplaceSingle">
-                            <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                            <object class="wxBoxSizer">
-                                <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                  <object class="wxStaticText" name="">
-                                    <label>&amp;Text to search for:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <object class="wxComboBox" name="cmbFind1">
-                                    <content/>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText" name="">
-                                    <label>Re&amp;place with:</label>
-                                  </object>
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <object class="wxComboBox" name="cmbReplace1">
-                                    <content/>
-                                  </object>
-                                </object>
-                            </object>
-                        </object>
-                        <object class="wxPanel" name="tabReplaceMulti">
-                            <hidden>1</hidden>
-                            <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                            <object class="wxBoxSizer">
-                                <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                  <object class="wxStaticText" name="">
-                                    <label>&amp;Text to search for:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <option>1</option>
-                                  <object class="wxTextCtrl" name="txtMultiLineFind1">
-                                    <style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
-                                    <size>200,40d</size>
-                                    <value />
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText" name="">
-                                    <label>Re&amp;place with:</label>
-                                  </object>
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <option>1</option>
-                                  <object class="wxTextCtrl" name="txtMultiLineReplace1">
-                                    <style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
-                                    <size>200,40d</size>
-                                    <value />
-                                  </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-                <object class="sizeritem">
-                    <flag>wxEXPAND|wxTOP|wxLEFT|wxRIGHT</flag>
-                    <border>8</border>
-                    <option>0</option>
-                    <object class="wxStaticBoxSizer">
-                        <label>Multi-line Search</label>
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                            <flag>wxBOTTOM</flag>
-                            <border>4</border>
-                            <object class="wxCheckBox" name="chkMultiLine1">
-                                <label>Enabled</label>
-                            </object>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxCheckBox" name="chkFixEOLs1">
-                                <disabled>1</disabled>
-                                <label>Fix EOLs before search (slower but catches mixed line endings)</label>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxALL</flag>
-                  <border>8</border>
-                  <object class="wxFlexGridSizer">
-                    <cols>3</cols>
-                    <rows>1</rows>
-                    <growablecols>1</growablecols>
-                    <object class="sizeritem">
-                      <object class="wxStaticBoxSizer">
-                        <label>Options</label>
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                            <object class="wxBoxSizer">
-                                <orient>wxHORIZONTAL</orient>
-                                <object class="sizeritem">
-                                    <flag>wxALL</flag>
-                                    <border>4</border>
-                                    <object class="wxCheckBox" name="chkLimitTo1" />
-                                </object>
-                                <object class="sizeritem">
-                                    <flag>wxALL</flag>
-                                    <border>4</border>
-                                    <object class="wxRadioBox" name="rbLimitTo1">
-                                        <label>Limit to:</label>
-                                        <dimension>1</dimension>
-                                        <style>wxRA_SPECIFY_COLS|wxBORDER_NONE</style>
-                                        <content>
-                                            <item>&amp;Whole word</item>
-                                            <item>St&amp;art word</item>
-                                            <item>Start &amp;file</item>
-                                        </content>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxCheckBox" name="chkMatchCase1">
-                            <label>&amp;Match case</label>
-                          </object>
-                          <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxCheckBox" name="chkRegEx1">
-                            <label>Regular e&amp;xpression</label>
-                          </object>
-                          <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
-                          <border>4</border>
-                          <object class="wxCheckBox" name="chkAutoWrapSearch">
-                            <label>Auto-wrap search at EOF</label>
-                            <checked>0</checked>
-                          </object>
-                        </object>
-                      </object>
-                      <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxRadioBox" name="rbDirection">
-                        <label>Direction</label>
-                        <content>
-                          <item>&amp;Up</item>
-                          <item>&amp;Down</item>
-                        </content>
-                        <dimension>1</dimension>
-                        <style>wxRA_SPECIFY_COLS</style>
-                      </object>
-                      <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                        <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                            <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                            <border>8</border>
-                            <object class="sizeritem">
-                              <object class="wxRadioBox" name="rbOrigin">
-                                <label>Origin</label>
-                                <content>
-                                  <item>&amp;From cursor</item>
-                                  <item>&amp;Entire scope</item>
-                                </content>
-                                <dimension>1</dimension>
-                                <style>wxRA_SPECIFY_COLS</style>
-                              </object>
-                              <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-                              <border>4</border>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxRadioBox" name="rbScope1">
-                                <label>Scope</label>
-                                <content>
-                                  <item>&amp;Global</item>
-                                  <item>&amp;Selected text</item>
-                                </content>
-                                <dimension>1</dimension>
-                                <style>wxRA_SPECIFY_COLS</style>
-                              </object>
-                              <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
-                              <border>4</border>
-                            </object>
-                        </object>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Replace in files</label>
-            <object class="wxPanel" name="tabReplaceInFiles">
-              <style>wxTAB_TRAVERSAL</style>
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                    <flag>wxGROW|wxALL</flag>
-                    <option>1</option>
-                    <object class="wxPanel" name="nbReplaceInFilesSingleMulti">
-                      <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                        <object class="wxPanel" name="tabReplaceInFilesSingle">
-                            <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                            <object class="wxBoxSizer">
-                                <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                  <object class="wxStaticText" name="">
-                                    <label>&amp;Text to search for:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <object class="wxComboBox" name="cmbFind2">
-                                    <content/>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText" name="">
-                                    <label>Re&amp;place with:</label>
-                                  </object>
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <object class="wxComboBox" name="cmbReplace2">
-                                    <content/>
-                                  </object>
-                                </object>
-                            </object>
-                        </object>
-                        <object class="wxPanel" name="tabReplaceInFilesMulti">
-                            <hidden>1</hidden>
-                            <style>wxTAB_TRAVERSAL|wxBORDER_NONE</style>
-                            <object class="wxBoxSizer">
-                                <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                  <object class="wxStaticText" name="">
-                                    <label>&amp;Text to search for:</label>
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <option>1</option>
-                                  <object class="wxTextCtrl" name="txtMultiLineFind2">
-                                    <style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
-                                    <size>200,40d</size>
-                                    <value />
-                                  </object>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText" name="">
-                                    <label>Re&amp;place with:</label>
-                                  </object>
-                                  <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
-                                  <border>8</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <flag>wxGROW|wxLEFT|wxRIGHT</flag>
-                                  <border>8</border>
-                                  <option>1</option>
-                                  <object class="wxTextCtrl" name="txtMultiLineReplace2">
-                                    <style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
-                                    <size>200,40d</size>
-                                    <value />
-                                  </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-                <object class="sizeritem">
-                    <flag>wxEXPAND|wxTOP|wxLEFT|wxRIGHT</flag>
-                    <border>8</border>
-                    <option>0</option>
-                    <object class="wxStaticBoxSizer">
-                        <label>Multi-line Search</label>
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                            <flag>wxBOTTOM</flag>
-                            <border>4</border>
-                            <object class="wxCheckBox" name="chkMultiLine2">
-                                <label>Enabled</label>
-                            </object>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxCheckBox" name="chkFixEOLs2">
-                                <disabled>1</disabled>
-                                <label>Fix EOLs before search (slower but catches mixed line endings)</label>
-                            </object>
-                        </object>
-                        <object class="spacer">
-                            <size>2,2d</size>
-                        </object>
-                    </object>
-                </object>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxALL</flag>
-                  <border>8</border>
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>2</rows>
-                    <vgap>8</vgap>
-                    <hgap>8</hgap>
-                    <growablecols>0</growablecols>
-                    <object class="sizeritem">
-                      <flag>wxGROW|wxGROW</flag>
-                      <border>0</border>
-                      <object class="wxStaticBoxSizer" name="wxID_ANY">
-                        <orient>wxVERTICAL</orient>
-                        <label>Options</label>
-                        <object class="sizeritem">
-                            <object class="wxBoxSizer">
-                                <orient>wxHORIZONTAL</orient>
-                                <object class="sizeritem">
-                                    <flag>wxALL</flag>
-                                    <border>4</border>
-                                    <object class="wxCheckBox" name="chkLimitTo2" />
-                                </object>
-                                <object class="sizeritem">
-                                    <flag>wxALL</flag>
-                                    <border>4</border>
-                                    <object class="wxRadioBox" name="rbLimitTo2">
-                                        <label>Limit to:</label>
-                                        <dimension>1</dimension>
-                                        <style>wxRA_SPECIFY_COLS|wxBORDER_NONE</style>
-                                        <content>
-                                            <item>&amp;Whole word</item>
-                                            <item>St&amp;art word</item>
-                                            <item>Start &amp;file</item>
-                                        </content>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
-                          <border>4</border>
-                          <object class="wxCheckBox" name="chkMatchCase2">
-                            <label>&amp;Match case</label>
-                            <checked>0</checked>
-                          </object>
-                        </object>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
-                          <border>4</border>
-                          <object class="wxCheckBox" name="chkRegEx2">
-                            <label>Regular e&amp;xpression</label>
-                            <checked>0</checked>
-                          </object>
-                        </object>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxLEFT|wxTOP|wxRIGHT|wxBOTTOM</flag>
-                          <border>6</border>
-                          <object class="wxStaticText">
-                            <label> </label>
-                            <!-- just a filler -->
-                          </object>
-                        </object>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxGROW|wxGROW</flag>
-                      <border>0</border>
-                      <object class="wxRadioBox" name="rbScope2">
-                        <style>wxRA_SPECIFY_COLS</style>
-                        <label>Scope</label>
-                        <content>
-                          <item>&amp;Open files</item>
-                          <item>&amp;Project files</item>
-                          <item>Workspace files</item>
-                          <!-- "Current file" is useless in replace dialog -->
-                        </content>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <flag>wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM</flag>
-        <border>8</border>
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <flag>wxALIGN_TOP|wxRIGHT</flag>
-            <border>8</border>
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;Replace</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <flag>wxALIGN_TOP</flag>
-            <border>0</border>
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgReplace">
+		<title>Replace</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxNotebook" name="nbReplace">
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabReplace">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceSingle">
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>&amp;Text to search for:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxComboBox" name="cmbFind1" />
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>Re&amp;place with:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxComboBox" name="cmbReplace1" />
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+										</object>
+									</object>
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceMulti">
+										<hidden>1</hidden>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>&amp;Text to search for:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxTextCtrl" name="txtMultiLineFind1">
+													<size>200,40d</size>
+													<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>Re&amp;place with:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxTextCtrl" name="txtMultiLineReplace1">
+													<size>200,40d</size>
+													<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+												<option>1</option>
+											</object>
+										</object>
+									</object>
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Multi-line Search</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkMultiLine1">
+												<label>Enabled</label>
+											</object>
+											<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkFixEOLs1">
+												<label>Fix EOLs before search</label>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="spacer">
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+													<size>15,-1</size>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="wxID_ANY">
+														<label>(slower but catches mixed line endings)</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>3</cols>
+										<rows>1</rows>
+										<growablecols>0</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticBoxSizer">
+												<label>Options</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxBoxSizer">
+														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkLimitTo1" />
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>4</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxRadioBox" name="rbLimitTo1">
+																<label>Limit to:</label>
+																<content>
+																	<item>&amp;Whole word</item>
+																	<item>St&amp;art word</item>
+																	<item>Start &amp;file</item>
+																</content>
+																<style>wxRA_SPECIFY_COLS</style>
+															</object>
+															<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>4</border>
+															<option>1</option>
+														</object>
+													</object>
+													<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkMatchCase1">
+														<label>&amp;Match case</label>
+													</object>
+													<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkRegEx1">
+														<label>Regular e&amp;xpression</label>
+													</object>
+													<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkAutoWrapSearch">
+														<label>Auto-wrap search at EOF</label>
+													</object>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioBox" name="rbDirection">
+												<label>Direction</label>
+												<content>
+													<item>&amp;Up</item>
+													<item>&amp;Down</item>
+												</content>
+												<style>wxRA_SPECIFY_COLS</style>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxRadioBox" name="rbOrigin">
+														<label>Origin</label>
+														<content>
+															<item>&amp;From cursor</item>
+															<item>&amp;Entire scope</item>
+														</content>
+														<style>wxRA_SPECIFY_COLS</style>
+													</object>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxRadioBox" name="rbScope1">
+														<label>Scope</label>
+														<content>
+															<item>&amp;Global</item>
+															<item>&amp;Selected text</item>
+														</content>
+														<style>wxRA_SPECIFY_COLS</style>
+													</object>
+													<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+							</object>
+						</object>
+						<label>Replace</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabReplaceInFiles">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceInFilesSingle">
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>&amp;Text to search for:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxComboBox" name="cmbFind2" />
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>Re&amp;place with:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxComboBox" name="cmbReplace2" />
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+										</object>
+									</object>
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceInFilesMulti">
+										<hidden>1</hidden>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>&amp;Text to search for:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxTextCtrl" name="txtMultiLineFind2">
+													<size>200,40d</size>
+													<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="wxID_ANY">
+													<label>Re&amp;place with:</label>
+												</object>
+												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxTextCtrl" name="txtMultiLineReplace2">
+													<size>200,40d</size>
+													<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>8</border>
+												<option>1</option>
+											</object>
+										</object>
+									</object>
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Multi-line Search</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkMultiLine2">
+												<label>Enabled</label>
+											</object>
+											<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkFixEOLs2">
+												<label>Fix EOLs before search</label>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="spacer">
+													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+													<size>15,-1</size>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="wxID_ANY">
+														<label>(slower but catches mixed line endings)</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
+										<rows>1</rows>
+										<growablecols>0</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticBoxSizer">
+												<label>Options</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxBoxSizer">
+														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkLimitTo2" />
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>4</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxRadioBox" name="rbLimitTo2">
+																<label>Limit to:</label>
+																<content>
+																	<item>&amp;Whole word</item>
+																	<item>St&amp;art word</item>
+																	<item>Start &amp;file</item>
+																</content>
+																<style>wxRA_SPECIFY_COLS</style>
+															</object>
+															<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>4</border>
+															<option>1</option>
+														</object>
+													</object>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkMatchCase2">
+														<label>&amp;Match case</label>
+													</object>
+													<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkRegEx2">
+														<label>Regular e&amp;xpression</label>
+													</object>
+													<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioBox" name="rbScope2">
+												<label>Scope</label>
+												<content>
+													<item>&amp;Open files</item>
+													<item>&amp;Project files</item>
+													<item>Workspace files</item>
+												</content>
+												<style>wxRA_SPECIFY_COLS</style>
+											</object>
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+							</object>
+						</object>
+						<label>Replace in files</label>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;Replace</label>
+							<default>1</default>
+						</object>
+						<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label>&amp;Cancel</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

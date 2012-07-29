@@ -8,17 +8,19 @@
 
 #include "findreplacebase.h"
 
-class wxNotebookEvent;
 class wxCommandEvent;
+class wxNotebookEvent;
 class wxActivateEvent;
 
 class FindDlg : public FindReplaceBase
 {
     public:
-        FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false, bool findInFilesActive = false);
+        FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false,
+                bool findInFilesOnly = false, bool findInFilesActive = false);
         ~FindDlg();
+
         wxString GetFindString() const;
-        wxString GetReplaceString() const{ return wxEmptyString; }
+        wxString GetReplaceString() const;
         bool IsFindInFiles() const;
         bool GetDeleteOldSearches() const;
         bool GetSortSearchResult() const;
@@ -34,20 +36,23 @@ class FindDlg : public FindReplaceBase
         int GetDirection() const;
         int GetOrigin() const;
         int GetScope() const;
-        bool GetRecursive() const; // for find in search path
-        bool GetHidden() const; // for find in search path
+        bool GetRecursive() const;      // for find in search path
+        bool GetHidden() const;         // for find in search path
         wxString GetSearchPath() const; // for find in search path
         wxString GetSearchMask() const; // for find in search path
-        void UpdateUI();
 
+    protected:
         void OnFindChange(wxNotebookEvent& event);
         void OnRegEx(wxCommandEvent& event);
-        void OnBrowsePath(wxCommandEvent& event);
-        void OnRadioBox(wxCommandEvent& event);
         void OnActivate(wxActivateEvent& event);
+        void OnBrowsePath(wxCommandEvent& event);
+        void OnScopeChange(wxCommandEvent& event);
 
     private:
-        bool m_Complete;
+        void UpdateUI();
+
+        bool m_FindInFilesOnly;
+
         DECLARE_EVENT_TABLE()
 };
 

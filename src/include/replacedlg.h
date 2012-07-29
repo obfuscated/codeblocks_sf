@@ -9,47 +9,54 @@
 #include "findreplacebase.h"
 
 class wxComboBox;
+class wxCommandEvent;
+class wxNotebookEvent;
+class wxActivateEvent;
 
 class ReplaceDlg : public FindReplaceBase
 {
     public:
         ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false,
-            bool findInFilesOnly = false, bool replaceInFilesActive = false);
+                   bool replaceInFilesOnly = false, bool replaceInFilesActive = false);
         ~ReplaceDlg();
+
         wxString GetFindString() const;
         wxString GetReplaceString() const;
         bool IsFindInFiles() const;
-        bool IsMultiLine() const;
         bool GetDeleteOldSearches() const;
-        bool GetSortSearchResult() const { return true; }; // replace has no sort search result option
+        bool GetSortSearchResult() const;
         bool GetMatchWord() const;
         bool GetStartWord() const;
         bool GetMatchCase() const;
-        bool GetStartFile() const;
-        bool GetFixEOLs() const;
-
         bool GetRegEx() const;
         bool GetAutoWrapSearch() const;
         bool GetFindUsesSelectedText() const;
+        bool GetStartFile() const;
+        bool GetFixEOLs() const;
+
         int GetDirection() const;
         int GetOrigin() const;
         int GetScope() const;
-        bool GetRecursive() const { return false; }
-        bool GetHidden() const { return false; }
-        wxString GetSearchPath() const { return wxEmptyString; }
-        wxString GetSearchMask() const { return wxEmptyString; }
+        bool GetRecursive() const;      // for find in search path
+        bool GetHidden() const;         // for find in search path
+        wxString GetSearchPath() const; // for find in search path
+        wxString GetSearchMask() const; // for find in search path
 
-        void OnSize(wxSizeEvent& event);
-        void OnFindChange(wxNotebookEvent& event);
-        void OnMultiChange(wxCommandEvent& event);
-        void OnLimitToChange(wxCommandEvent& event);
+        bool IsMultiLine() const;
+
+    protected:
+        void OnReplaceChange(wxNotebookEvent& event);
         void OnRegEx(wxCommandEvent& event);
         void OnActivate(wxActivateEvent& event);
+        void OnMultiChange(wxCommandEvent& event);
+        void OnLimitToChange(wxCommandEvent& event);
 
     private:
-        bool m_Complete;
         void FillComboWithLastValues(wxComboBox* combo, const wxString& configKey);
         void SaveComboValues(wxComboBox* combo, const wxString& configKey);
+
+        bool m_ReplaceInFilesActive;
+
         DECLARE_EVENT_TABLE()
 };
 
