@@ -11,7 +11,7 @@
 class cbEditor;
 class wxScintillaEvent;
 
-/** Provides static functions to add hooks to the project loading/saving procedure. */
+/** Provides static functions to add hooks to the editor modification operations. */
 namespace EditorHooks
 {
     /** Abstract base hook functor interface. */
@@ -22,7 +22,7 @@ namespace EditorHooks
             virtual void Call(cbEditor*, wxScintillaEvent&) const = 0;
     };
 
-    /** Functor class for use as a project loading/saving hook.
+    /** Functor class for use as a editor modification operations hook.
       * Passed as the first parameter in RegisterHook() and
       * UnregisterHook().
       *
@@ -34,20 +34,14 @@ namespace EditorHooks
       * EditorHooks::UnregisterHook(id, true);
       *
       * Member functions used as hook callbacks must have the following signature:
-      * void YourFunctionName(cbProject*, TiXmlElement*, bool)
-      *
-      * Use normal TinyXML procedures to work with the TiXmlElement* argument.
-      * The isLoading argument is true if your hook is called when the project is being loaded,
-      * and false when the project is saved.
+      * void YourFunctionName(cbEditor*, wxScintillaEvent*)
       */
     template<class T> class HookFunctor : public HookFunctorBase
     {
         public:
             typedef void (T::*Func)(cbEditor*, wxScintillaEvent&);
-            HookFunctor(T* obj, Func func)
-                : m_pObj(obj),
-                m_pFunc(func)
-            {}
+            HookFunctor(T* obj, Func func) : m_pObj(obj), m_pFunc(func)
+            { ; }
             virtual void Call(cbEditor* editor, wxScintillaEvent& event) const
             {
                 if (m_pObj && m_pFunc)
@@ -77,7 +71,7 @@ namespace EditorHooks
     /** Call all registered hooks using the supplied parameters.
       * This is called by ProjectLoader.
       * @param editor The editor in question.
-      * @param event Paremeter (wxScintilla event) to provide to the registered hook
+      * @param event Parameter (wxScintilla event) to provide to the registered hook
       */
     extern DLLIMPORT void CallHooks(cbEditor* editor, wxScintillaEvent& event);
 };

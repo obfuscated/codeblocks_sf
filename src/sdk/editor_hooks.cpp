@@ -8,15 +8,24 @@
  */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "cbeditor.h"
+    #include "cbplugin.h"
+#endif
+
 #include "editor_hooks.h"
-#include "cbeditor.h"
+
 #include "wx/wxscintilla.h"
 
 #include <map>
 
-typedef std::map<int, EditorHooks::HookFunctorBase*> HookFunctorsMap;
-static HookFunctorsMap s_HookFunctorsMap;
-static int s_UniqueID = 0;
+namespace EditorHooks
+{
+    typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
+    static HookFunctorsMap s_HookFunctorsMap;
+    static int             s_UniqueID = 0;
+}
 
 int EditorHooks::RegisterHook(EditorHooks::HookFunctorBase* functor)
 {

@@ -8,13 +8,22 @@
  */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+#endif
+
 #include "projectloader_hooks.h"
+#include "tinyxml.h"
 
 #include <map>
 
-typedef std::map<int, ProjectLoaderHooks::HookFunctorBase*> HookFunctorsMap;
-static HookFunctorsMap s_HookFunctorsMap;
-static int s_UniqueID = 0;
+namespace ProjectLoaderHooks
+{
+    typedef std::map<int, HookFunctorBase*> HookFunctorsMap;
+    static HookFunctorsMap s_HookFunctorsMap;
+    static int             s_UniqueID = 0;
+}
 
 int ProjectLoaderHooks::RegisterHook(ProjectLoaderHooks::HookFunctorBase* functor)
 {
