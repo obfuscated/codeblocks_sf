@@ -32,9 +32,9 @@ void LineMarker::SetXPM(const char *const *linesForm) {
 	markType = SC_MARK_PIXMAP;
 }
 
-void LineMarker::SetRGBAImage(Point sizeRGBAImage, const unsigned char *pixelsRGBAImage) {
+void LineMarker::SetRGBAImage(Point sizeRGBAImage, float scale, const unsigned char *pixelsRGBAImage) {
 	delete image;
-	image = new RGBAImage(sizeRGBAImage.x, sizeRGBAImage.y, pixelsRGBAImage);
+	image = new RGBAImage(sizeRGBAImage.x, sizeRGBAImage.y, scale, pixelsRGBAImage);
 	markType = SC_MARK_RGBAIMAGE;
 }
 

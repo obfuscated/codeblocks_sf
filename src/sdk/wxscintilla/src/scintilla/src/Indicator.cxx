@@ -95,7 +95,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		rcBox.right = rc.right;
 		// Cap width at 4000 to avoid large allocations when mistakes made
 		int width = Platform::Minimum(rcBox.Width(), 4000);
-		RGBAImage image(width, rcBox.Height(), 0);
+		RGBAImage image(width, rcBox.Height(), 1.0, 0);
 		// Draw horizontal lines top and bottom
 		for (int x=0; x<width; x++) {
 			for (int y=0; y<rcBox.Height(); y += rcBox.Height()-1) {
@@ -108,9 +108,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 				image.SetPixel(x, y, fore, ((x + y) % 2) ? outlineAlpha : fillAlpha);
 			}
 		}
-/* C::B begin */
-//		surface->DrawRGBAImage(rcBox, image.GetWidth(), image.GetHeight(), image.Pixels());
-/* C::B end */
+		surface->DrawRGBAImage(rcBox, image.GetWidth(), image.GetHeight(), image.Pixels());
 	} else if (style == INDIC_DASH) {
 		int x = rc.left;
 		while (x < rc.right) {

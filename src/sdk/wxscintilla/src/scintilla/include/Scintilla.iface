@@ -2107,14 +2107,17 @@ get bool GetAdditionalCaretsVisible=2609(,)
 # How many selections are there?
 get int GetSelections=2570(,)
 
+# Is every selected range empty?
+get bool GetSelectionEmpty=2650(,)
+
 # Clear selections to a single empty stream selection
 fun void ClearSelections=2571(,)
 
 # Set a simple selection
-fun int SetSelection=2572(int caret,int anchor)
+fun int SetSelection=2572(int caret, int anchor)
 
 # Add a selection
-fun int AddSelection=2573(int caret,int anchor)
+fun int AddSelection=2573(int caret, int anchor)
 
 # Set the main selection
 set void SetMainSelection=2574(int selection,)
@@ -2224,6 +2227,9 @@ set void RGBAImageSetWidth=2624(int width,)
 
 # Set the height for future RGBA image data.
 set void RGBAImageSetHeight=2625(int height,)
+
+# Set the scale factor in percent for future RGBA image data.
+set void RGBAImageSetScale=2651(int scalePercent,)
 
 # Define a marker from RGBA data.
 # It has the width and height from RGBAImageSetWidth/Height

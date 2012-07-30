@@ -8,6 +8,10 @@
 #ifndef CELLBUFFER_H
 #define CELLBUFFER_H
 
+/* C::B begin */
+#include "RunStyles.h"
+/* C::B end */
+
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif

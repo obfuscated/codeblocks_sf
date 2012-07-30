@@ -22,6 +22,7 @@
 #define PLAT_WX  0
 #define PLAT_QT 0
 #define PLAT_FOX 0
+#define PLAT_NCURSES 0
 
 #if defined(FOX)
 #undef PLAT_FOX
@@ -30,6 +31,10 @@
 #elif defined(__WX__)
 #undef PLAT_WX
 #define PLAT_WX  1
+
+#elif defined(NCURSES)
+#undef PLAT_NCURSES
+#define PLAT_NCURSES 1
 
 #elif defined(SCINTILLA_QT)
 #undef PLAT_QT
@@ -298,9 +303,7 @@ public:
 	virtual void RoundedRectangle(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourDesired fill, int alphaFill,
 		ColourDesired outline, int alphaOutline, int flags)=0;
-/* C::B begin */
-//	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
-/* C::B end */
+	virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) = 0;
 	virtual void Ellipse(PRectangle rc, ColourDesired fore, ColourDesired back)=0;
 	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
@@ -407,9 +410,7 @@ public:
 	virtual int Find(const char *prefix)=0;
 	virtual void GetValue(int n, char *value, int len)=0;
 	virtual void RegisterImage(int type, const char *xpm_data)=0;
-/* C::B begin */
-//	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
-/* C::B end */
+	virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) = 0;
 	virtual void ClearRegisteredImages()=0;
 	virtual void SetDoubleClickAction(CallBackAction, void *)=0;
 	virtual void SetList(const char* list, char separator, char typesep)=0;

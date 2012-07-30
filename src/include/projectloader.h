@@ -94,7 +94,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         // convenience functions, used in Save()
         TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr = 0, const wxString& attribute = wxEmptyString);
         TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute);
-        void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array);
+        void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array, bool isPath = false);
         void SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base);
 
         // accepts a questionable compiler index and returns a valid compiler index

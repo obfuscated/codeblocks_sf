@@ -104,6 +104,7 @@ Editor::Editor() {
 
 	stylesValid = false;
 	technology = SC_TECHNOLOGY_DEFAULT;
+	scaleRGBAImage = 100;
 
 	printMagnification = 0;
 	printColourMode = SC_PRINT_NORMAL;
@@ -216,6 +217,9 @@ Editor::Editor() {
 	wrapIndentMode = SC_WRAPINDENT_FIXED;
 
 	convertPastes = true;
+
+	marginNumberPadding = 3;
+	ctrlCharPadding = 3; // +3 For a blank on front and rounded edge each side
 
 	hsStart = -1;
 	hsEnd = -1;
@@ -1962,7 +1966,7 @@ void Editor::PaintSelMargin(Surface *surfWindow, PRectangle &rc) {
 						PRectangle rcNumber = rcMarker;
 						// Right justify
 						XYPOSITION width = surface->WidthText(vs.styles[STYLE_LINENUMBER].font, number, istrlen(number));
-						XYPOSITION xpos = rcNumber.right - width - 3;
+						XYPOSITION xpos = rcNumber.right - width - marginNumberPadding;
 						rcNumber.left = xpos;
 						surface->DrawTextNoClip(rcNumber, vs.styles[STYLE_LINENUMBER].font,
 								rcNumber.top + vs.maxAscent, number, istrlen(number),
@@ -2210,7 +2214,7 @@ void Editor::LayoutLine(int line, Surface *surface, ViewStyle &vstyle, LineLayou
 /* C::B begin */
 								ctrlCharWidth[(size_t)ll->chars[charInLine]] =
 /* C::B end */
-								    surface->WidthText(ctrlCharsFont, ctrlChar, istrlen(ctrlChar)) + 3;
+								    surface->WidthText(ctrlCharsFont, ctrlChar, istrlen(ctrlChar)) + ctrlCharPadding;
 							}
 /* C::B begin */
 							ll->positions[charInLine + 1] = ctrlCharWidth[(size_t)ll->chars[charInLine]];
@@ -4329,10 +4333,12 @@ void Editor::DelCharBack(bool allowLineStartDeletion) {
 				sel.Range(r).ClearVirtualSpace();
 			}
 		}
+		ThinRectangularRange();
 	} else {
 		ClearSelection();
 	}
 	sel.RemoveDuplicates();
+	ContainerNeedsUpdate(SC_UPDATE_SELECTION);
 	// Avoid blinking during rapid typing:
 	ShowCaretAtCurrentPosition();
 }
@@ -4344,7 +4350,9 @@ void Editor::SetCtrlID(int identifier) {
 }
 
 void Editor::NotifyStyleToNeeded(int endStyleNeeded) {
-	SCNotification scn = {0};
+/* C::B begin */
+	SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
+/* C::B end */
 	scn.nmhdr.code = SCN_STYLENEEDED;
 	scn.position = endStyleNeeded;
 	NotifyParent(scn);
@@ -5934,11 +5942,11 @@ void Editor::CopySelectionRange(SelectionText *ss, bool allowLineCopy) {
 			char *textWithEndl = new char[textLen];
 			textWithEndl[0] = '\0';
 			if (text)
-				strncat(textWithEndl, text, textLen);
+				strcat(textWithEndl, text);
 			if (pdoc->eolMode != SC_EOL_LF)
-				strncat(textWithEndl, "\r", textLen);
+				strcat(textWithEndl, "\r");
 			if (pdoc->eolMode != SC_EOL_CR)
-				strncat(textWithEndl, "\n", textLen);
+				strcat(textWithEndl, "\n");
 			ss->Set(textWithEndl, static_cast<int>(strlen(textWithEndl) + 1),
 				pdoc->dbcsCodePage, vs.styles[STYLE_DEFAULT].characterSet, false, true);
 			delete []text;
@@ -8258,9 +8266,13 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		sizeRGBAImage.y = wParam;
 		break;
 
+	case SCI_RGBAIMAGESETSCALE:
+		scaleRGBAImage = wParam;
+		break;
+
 	case SCI_MARKERDEFINERGBAIMAGE:
 		if (wParam <= MARKER_MAX) {
-			vs.markers[wParam].SetRGBAImage(sizeRGBAImage, reinterpret_cast<unsigned char *>(lParam));
+			vs.markers[wParam].SetRGBAImage(sizeRGBAImage, scaleRGBAImage / 100.0, reinterpret_cast<unsigned char *>(lParam));
 			vs.CalcLargestMarkerHeight();
 		};
 		InvalidateStyleData();
@@ -9245,6 +9257,9 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case SCI_GETSELECTIONS:
 		return sel.Count();
+
+	case SCI_GETSELECTIONEMPTY:
+		return sel.Empty();
 
 	case SCI_CLEARSELECTIONS:
 		sel.Clear();

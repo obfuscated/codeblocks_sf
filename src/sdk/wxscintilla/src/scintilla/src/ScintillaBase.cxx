@@ -226,8 +226,8 @@ void ScintillaBase::AutoCompleteStart(int lenEntered, const char *list) {
 	if (rcPopupBounds.Height() == 0)
 		rcPopupBounds = rcClient;
 
-	int heightLB = 100;
-	int widthLB = 100;
+	int heightLB = ac.heightLBDefault;
+	int widthLB = ac.widthLBDefault;
 	if (pt.x >= rcClient.right - widthLB) {
 		HorizontalScrollTo(xOffset + pt.x - rcClient.right + widthLB);
 		Redraw();
@@ -771,9 +771,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 		break;
 
 	case SCI_REGISTERRGBAIMAGE:
-/* C::B begin */
-//		ac.lb->RegisterRGBAImage(wParam, sizeRGBAImage.x, sizeRGBAImage.y, reinterpret_cast<unsigned char *>(lParam));
-/* C::B end */
+		ac.lb->RegisterRGBAImage(wParam, sizeRGBAImage.x, sizeRGBAImage.y, reinterpret_cast<unsigned char *>(lParam));
 		break;
 
 	case SCI_CLEARREGISTEREDIMAGES:

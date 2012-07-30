@@ -25,18 +25,54 @@
 
 #include <wx/clipbrd.h>
 #include <wx/textbuf.h>
-#include "ScintillaWX.h"
+
 #include "wx/wxscintilla.h"
+#include "ScintillaWX.h"
 #include "PlatWX.h"
+#ifdef SCI_LEXER
+#include "LexerModule.h"
 #include "ExternalLexer.h"
+#endif
 
 #ifdef __WXMSW__
     // GetHwndOf()
     #include <wx/msw/private.h>
 #endif
 
+#if wxUSE_POPUPWIN
+#include <wx/popupwin.h>
+#define wxSCICallTipBase wxPopupWindow
+#else
+#include <wx/frame.h>
+#define wxSCICallTipBase wxFrame
+#endif
+
+#include "wx/panel.h"
+#include <wx/dcbuffer.h>
+
+#ifdef SCI_NAMESPACE
+using namespace Scintilla;
+#endif
+
 //----------------------------------------------------------------------
 // Helper classes
+
+#if wxUSE_DRAG_AND_DROP
+class wxSCIDropTarget : public wxTextDropTarget {
+public:
+    void SetScintilla(ScintillaWX* swx) {
+        m_swx = swx;
+    }
+
+    bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
+    wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
+    wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
+    void OnLeave();
+
+private:
+    ScintillaWX* m_swx;
+};
+#endif
 
 class wxSCITimer : public wxTimer {
 public:
@@ -72,18 +108,6 @@ void  wxSCIDropTarget::OnLeave() {
 #endif // wxUSE_DRAG_AND_DROP
 
 //--------------------------------------------------------------------------
-
-#if wxUSE_POPUPWIN
-#include <wx/popupwin.h>
-#define wxSCICallTipBase wxPopupWindow
-#else
-#include <wx/frame.h>
-#define wxSCICallTipBase wxFrame
-#endif
-
-#include "wx/panel.h"
-#include <wx/dcbuffer.h>
-
 
 class wxSCICallTipContent : public wxPanel {
 public:
@@ -121,8 +145,8 @@ public:
     }
 
 private:
-    CallTip*      m_ct;
-    ScintillaWX*  m_swx;
+    CallTip*     m_ct;
+    ScintillaWX* m_swx;
     DECLARE_EVENT_TABLE()
 };
 
@@ -277,7 +301,6 @@ static int wxCountLines(const char* text, int scintillaMode)
 //----------------------------------------------------------------------
 // Constructor/Destructor
 
-
 ScintillaWX::ScintillaWX(wxScintilla* win) {
     capturedMouse = false;
     focusEvent = false;
@@ -417,10 +440,6 @@ bool ScintillaWX::HaveMouseCapture() {
 void ScintillaWX::ScrollText(int linesToMove) {
     int dy = vs.lineHeight * (linesToMove);
     sci->ScrollWindow(0, dy);
-/* C::B begin */
-//    sci->Update();
-/* C::B end */
-
 }
 
 void ScintillaWX::SetVerticalScrollPos() {
@@ -890,7 +909,7 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
     paintState = painting;
     Surface* surfaceWindow = Surface::Allocate(SC_TECHNOLOGY_DEFAULT);
     surfaceWindow->Init(dc, wMain.GetID());
-    rcPaint = PRectangleFromwxRect(rect);
+    rcPaint = PRectFromwxRect(rect);
     PRectangle rcClient = GetClientRectangle();
     paintingAllText = rcPaint.Contains(rcClient);
 

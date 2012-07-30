@@ -36,7 +36,7 @@
 
 #ifdef WXMAKINGDLL_SCI
     #define WXDLLIMPEXP_SCI WXEXPORT
-#elif defined(WXUSINGDLL)
+#elif defined(WXUSINGDLL_SCI) || defined(WXUSINGDLL)
     #define WXDLLIMPEXP_SCI WXIMPORT
 #else // not making nor using DLL
     #define WXDLLIMPEXP_SCI
@@ -2504,9 +2504,23 @@
 //}}}
 //----------------------------------------------------------------------
 
-class  ScintillaWX;                      // forward declare
-class  WordList;
+class ScintillaWX; // forward declare
+class WordList;
+
+#ifdef SCI_NAMESPACE
+	#ifndef SCI_NAMESPACE_PREFIX
+		#define SCI_NAMESPACE_PREFIX( x ) Scintilla::x
+	#endif
+namespace Scintilla {
+#else
+	#ifndef SCI_NAMESPACE_PREFIX
+		#define SCI_NAMESPACE_PREFIX( x ) x
+	#endif
+#endif
 struct SCNotification;
+#ifdef SCI_NAMESPACE
+}
+#endif
 
 #ifndef SWIG
 extern WXDLLIMPEXP_SCI const wxChar* wxSCINameStr;
@@ -3055,6 +3069,9 @@ public:
 
     // Register an image for use in autocompletion lists.
     void RegisterImage(int type, const wxBitmap& bmp);
+
+    // Register an image for use in autocompletion lists.
+    void RegisterRGBAImage(int type, const wxBitmap& bmp);
 
     // Clear all the registered images.
     void ClearRegisteredImages();
@@ -4272,6 +4289,9 @@ public:
     // How many selections are there?
     int GetSelections() const;
 
+    // Is every selected range empty?
+    bool GetSelectionEmpty() const;
+
     // Clear selections to a single empty stream selection
     void ClearSelections();
 
@@ -4722,7 +4742,7 @@ protected:
     void NotifyEsc();
 /* C::B end */
     void NotifyChange();
-    void NotifyParent(SCNotification* scn);
+    void NotifyParent(SCI_NAMESPACE_PREFIX(SCNotification)* scn);
 
 private:
     DECLARE_EVENT_TABLE()
@@ -4736,11 +4756,6 @@ protected:
     wxScrollBar*        m_hScrollBar;
 
     bool                m_lastKeyDownConsumed;
-
-/* C::B begin */
-    // Time until when we should ignore any new mouse wheel events.
-//    wxLongLong m_timeToBlockWheelEventsUntil;
-/* C::B end */
 
     friend class ScintillaWX;
     friend class Platform;
@@ -4877,8 +4892,6 @@ private:
 /* C::B end */
 #endif
 };
-
-
 
 #ifndef SWIG
 BEGIN_DECLARE_EVENT_TYPES()
