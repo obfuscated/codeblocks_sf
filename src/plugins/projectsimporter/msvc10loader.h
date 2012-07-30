@@ -12,6 +12,7 @@
 // forward decls
 class cbProject;
 class ProjectFile;
+class TiXmlElement;
 
 class MSVC10Loader : public IBaseLoader
 {
