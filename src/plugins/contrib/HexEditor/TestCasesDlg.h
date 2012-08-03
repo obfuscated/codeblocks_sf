@@ -80,7 +80,7 @@ class TestCasesDlg: public wxScrollingDialog, public TestCasesBase::Output
 
                 TestCasesDlg* m_Dlg;
 
-                virtual ExitCode Entry() { return (ExitCode)m_Dlg->Entry(); }
+                virtual ExitCode Entry() { return reinterpret_cast<ExitCode>(m_Dlg->Entry()); }
 		};
 
         TestCasesBase&    m_Tests;
