@@ -2022,7 +2022,7 @@ void wxKeyConfigPanel::ImportKeyProfileCmd(const wxKeyProfile &toimport,
 			// create a list of items containing as untyped client data
 			// (void*) the INT which is their ID...
 			m_pCommandsList->Append(arr->Item(i)->GetName(),
-									(void*)(arr->Item(i)->GetId()));
+									reinterpret_cast<void*>(arr->Item(i)->GetId()));
 		}
 
 		// in the categories combobox just add a generic title
@@ -2495,7 +2495,7 @@ void wxKeyConfigPanel::OnCategorySelected(wxCommandEvent &ev)
 	// clear the old elements & insert the new ones
 	m_pCommandsList->Clear();
 	for (int i=0; i < (int)arr.GetCount(); i++)
-		m_pCommandsList->Append(arr.Item(i), (void *)data->GetID(i));
+		m_pCommandsList->Append(arr.Item(i), reinterpret_cast<void *>(data->GetID(i)));
 
 	// select the first
 	m_pCommandsList->Select(0);
