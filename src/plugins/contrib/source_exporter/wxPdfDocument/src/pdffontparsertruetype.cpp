@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontparsertruetype.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2009-03-04
@@ -107,7 +107,7 @@ ExtractFontData(HDC hdc, DWORD& fontDataSize, BYTE*& fontData)
       return false;
     }
     nTables = ReadUShort(uShortBuf);
-    
+
     // 2. Calculate memory needed for the whole font header and read it into buffer
     DWORD headerSize = sizeOfFixedHeader + nTables * sizeOfTableEntry;
     BYTE* fontHeader = new BYTE[headerSize];
@@ -124,11 +124,11 @@ ExtractFontData(HDC hdc, DWORD& fontDataSize, BYTE*& fontData)
                  wxString::Format(_("Error %d on reading font header from TTC."), GetLastError()));
       return false;
     }
-    
-    // 3. Calculate total font size. 
+
+    // 3. Calculate total font size.
     //    Tables are padded to 4-byte boundaries, so length should be rounded up to dword.
     DWORD bufferSize = headerSize;
-    USHORT i;    
+    USHORT i;
     for (i = 0; i < nTables; i++)
     {
       DWORD tableLength = ReadDWord(fontHeader + sizeOfFixedHeader + i * sizeOfTableEntry + offsetOfTableLength);
@@ -141,7 +141,7 @@ ExtractFontData(HDC hdc, DWORD& fontDataSize, BYTE*& fontData)
         bufferSize += tableLength;
       }
     }
-    
+
     // 4. Copying header into target buffer.
     //    Patch offsets with correct values while copying data.
     BYTE* buffer = new BYTE[bufferSize];
@@ -153,17 +153,17 @@ ExtractFontData(HDC hdc, DWORD& fontDataSize, BYTE*& fontData)
       return false;
     }
     memcpy(buffer, fontHeader, headerSize);
-    
-    // 5. Get table data from GDI, write it into known place 
+
+    // 5. Get table data from GDI, write it into known place
     //    inside target buffer and fix offset value.
     DWORD runningOffset = headerSize;
-    
+
     for (i = 0; i < nTables; i++)
     {
-      BYTE* entryData  = fontHeader + sizeOfFixedHeader + i * sizeOfTableEntry; 
+      BYTE* entryData  = fontHeader + sizeOfFixedHeader + i * sizeOfTableEntry;
       DWORD tableTag    = ReadTag(entryData + offsetOfTableTag);
       DWORD tableLength = ReadDWord(entryData + offsetOfTableLength);
-        
+
       // Write new offset for this table.
       WriteDWord(buffer + sizeOfFixedHeader + i * sizeOfTableEntry + offsetOfTableOffset, runningOffset);
 
@@ -185,7 +185,7 @@ ExtractFontData(HDC hdc, DWORD& fontDataSize, BYTE*& fontData)
         {
           buffer[runningOffset] = 0;
           ++runningOffset;
-        } 
+        }
       }
     }
     delete [] fontHeader;
@@ -332,7 +332,7 @@ static const wxChar codePages[] =
   /*  5 */ "1255 Hebrew",                  // wxFONTENCODING_CP1255
   /*  6 */ "1256 Arabic",                  // wxFONTENCODING_CP1256
   /*  7 */ "1257 Windows Baltic",          // wxFONTENCODING_CP1257
-  /*  8 */ "1258 Vietnamese",              // 
+  /*  8 */ "1258 Vietnamese",              //
   /*  9 */ null,
   /* 10 */ null,
   /* 11 */ null,
@@ -374,18 +374,18 @@ static const wxChar codePages[] =
   /* 15 */ null,
   /* 16 */ "869 IBM Greek",                   //
   /* 17 */ "866 MS-DOS Russian",              // wxFONTENCODING_CP866
-  /* 18 */ "865 MS-DOS Nordic",               // 
-  /* 19 */ "864 Arabic",                      // 
-  /* 20 */ "863 MS-DOS Canadian French",      // 
-  /* 21 */ "862 Hebrew",                      // 
-  /* 22 */ "861 MS-DOS Icelandic",            // 
-  /* 23 */ "860 MS-DOS Portuguese",           // 
-  /* 24 */ "857 IBM Turkish",                 // 
+  /* 18 */ "865 MS-DOS Nordic",               //
+  /* 19 */ "864 Arabic",                      //
+  /* 20 */ "863 MS-DOS Canadian French",      //
+  /* 21 */ "862 Hebrew",                      //
+  /* 22 */ "861 MS-DOS Icelandic",            //
+  /* 23 */ "860 MS-DOS Portuguese",           //
+  /* 24 */ "857 IBM Turkish",                 //
   /* 25 */ "855 IBM Cyrillic",                // wxFONTENCODING_CP855
   /* 26 */ "852 Latin 2",                     // wxFONTENCODING_CP852
-  /* 27 */ "775 MS-DOS Baltic",               // 
-  /* 28 */ "737 Greek; former 437 G",         // 
-  /* 29 */ "708 Arabic; ASMO 708",            // 
+  /* 27 */ "775 MS-DOS Baltic",               //
+  /* 28 */ "737 Greek; former 437 G",         //
+  /* 29 */ "708 Arabic; ASMO 708",            //
   /* 30 */ "850 WE/Latin 1",                  // wxFONTENCODING_CP850
   /* 31 */ "437 US"                           // wxFONTENCODING_CP437
 };
@@ -459,11 +459,15 @@ wxPdfFontParserTrueType::ClearTableDirectory()
   }
 }
 
+/* C::B begin */
+#if 0
 static const wxChar* tableNamesDefault[] = {
   wxT("cvt "), wxT("fpgm"), wxT("glyf"), wxT("head"),
   wxT("hhea"), wxT("hmtx"), wxT("loca"), wxT("maxp"), wxT("prep"),
   NULL
 };
+#endif
+/* C::B end */
 
 void
 wxPdfFontParserTrueType::LockTable(const wxString& tableName)
@@ -594,7 +598,7 @@ wxPdfFontParserTrueType::IdentifyFont(const wxString& fontFileName, int fontInde
         }
         else
         {
-          wxLogError(wxString(wxT("wxPdfFontParserTrueType::IdentifyFont: '")) + 
+          wxLogError(wxString(wxT("wxPdfFontParserTrueType::IdentifyFont: '")) +
                      wxString::Format(_("Font file '%s' not a valid TrueType collection (TTC) file."), fontFileName.c_str()));
           ok = false;
         }
@@ -835,7 +839,7 @@ wxPdfFontParserTrueType::LoadFontData(wxPdfFontData* fontData)
           ok = (fontIndex == 0);
           if (!ok)
           {
-            wxLogError(wxString(wxT("wxPdfFontParserTrueType::LoadFontData: '")) + 
+            wxLogError(wxString(wxT("wxPdfFontParserTrueType::LoadFontData: '")) +
                        wxString::Format(_("Font file '%s' not a valid TrueType collection (TTC) file."), m_fileName.c_str()));
           }
         }
@@ -925,7 +929,7 @@ wxPdfFontParserTrueType::PrepareFontData(wxPdfFontData* fontData)
       cMap = m_cmap10;
     else if (m_cmap31 != NULL)
       cMap = m_cmap31;
-    else 
+    else
       cMap = m_cmap10;
     wxPdfCMap::iterator cMapIter;
     int cc;
@@ -983,7 +987,7 @@ wxPdfFontParserTrueType::ReadTableDirectory()
     {
       if (!m_fileName.IsEmpty())
       {
-        wxLogError(wxString(wxT("wxPdfFontParserTrueType::ReadTableDirectory: '")) + 
+        wxLogError(wxString(wxT("wxPdfFontParserTrueType::ReadTableDirectory: '")) +
                    wxString::Format(_("Font file '%s' not a valid TrueType (TTF) or OpenType (OTF) file."), m_fileName.c_str()));
       }
       ok = false;
@@ -1027,7 +1031,7 @@ wxPdfFontParserTrueType::ReadTableDirectory()
 
 static const wxChar* checkTableNames[] = {
   wxT("cmap"), wxT("head"), wxT("hhea"), wxT("hmtx"), wxT("name"),
-  wxT("post"), 
+  wxT("post"),
   wxT("glyf"), wxT("loca"),
   NULL
 };
@@ -1146,7 +1150,7 @@ wxPdfFontParserTrueType::GetBaseFont()
   }
   return fontName;
 }
-    
+
 bool
 wxPdfFontParserTrueType::ReadMaps()
 {
@@ -1520,7 +1524,7 @@ wxPdfFontParserTrueType::ReadFormat0()
   }
   return h;
 }
-    
+
 wxPdfCMap*
 wxPdfFontParserTrueType::ReadFormat4()
 {
@@ -1593,7 +1597,7 @@ wxPdfFontParserTrueType::ReadFormat4()
 
   return h;
 }
-    
+
 wxPdfCMap*
 wxPdfFontParserTrueType::ReadFormat6()
 {
@@ -1697,7 +1701,7 @@ wxPdfFontParserTrueType::ReadKerning(int unitsPerEm)
     ReleaseTable();
   }
 }
-    
+
 int
 wxPdfFontParserTrueType::GetGlyphWidth(unsigned int glyph)
 {

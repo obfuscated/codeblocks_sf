@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffontparsertype1.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2008-07-26
@@ -400,7 +400,9 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
     long nParam;
     long cc, width, boxHeight, glyphNumber;
     wxString weight;
-    bool hasGlyphNumbers = false;
+/* C::B begin */
+//    bool hasGlyphNumbers = false;
+/* C::B end */
 
     bool inHeader = true;
     bool inMetrics = false;
@@ -552,7 +554,9 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
             }
             else if (token.IsSameAs(wxT("G"))) // Glyph number
             {
-              hasGlyphNumbers = true;
+/* C::B begin */
+//              hasGlyphNumbers = true;
+/* C::B end */
               param = tkz.GetNextToken(); // Number
               param.ToLong(&glyphNumber);
               dummy = tkz.GetNextToken(); // Semicolon
@@ -672,7 +676,7 @@ wxPdfFontParserType1::ReadAFM(wxInputStream& afmFile)
 // Parts of the following method has been derived from the public domain
 // pfm2afm.c, the original version of which is available from:
 // ftp://tug.ctan.org/pub/tex-archive/fonts/utilities/
-// 
+//
 /********************************************************************
  *                                                                  *
  *  Title:  pfm2afm - Convert Windows .pfm files to .afm files      *
@@ -798,7 +802,7 @@ static int Win2PSStd[] =
   0,   0,   0,   0,   0,   0,   241, 0,   0,   0,   0,   0,   0,   0,   0,   0,   // E0
   0,   0,   0,   0,   0,   0,   0,   0,   249, 0,   0,   0,   0,   0,   0,   0    // F0
 };
-    
+
 // Character class.  This is a minor attempt to overcome the problem that
 // in the pfm file, all unused characters are given the width of space.
 
@@ -1221,7 +1225,7 @@ wxPdfFontParserType1::ReadPFM(wxInputStream& pfmFile)
 
   wxString encodingScheme = (hdr.charset != 0) ? wxString(wxT("FontSpecific")) : wxString(wxT("AdobeStandardEncoding"));
 
-  int stemV = (hdr.weight > 475 || 
+  int stemV = (hdr.weight > 475 ||
                fontNameLower.Find(wxT("bold")) != wxNOT_FOUND ||
                fontNameLower.Find(wxT("black")) != wxNOT_FOUND)  ? 120 : 80;
   fd.SetStemV(stemV);
@@ -1415,10 +1419,14 @@ wxPdfFontParserType1::GetPrivateDict(wxInputStream* stream, int start)
     bool found = false;
     wxString token = wxEmptyString;
     int limit = (int) stream->GetSize();
-    int offset;
+/* C::B begin */
+//    int offset;
+/* C::B end */
     while(!found && stream->TellI() < limit)
     {
-      offset = stream->TellI();
+/* C::B begin */
+      stream->TellI();
+/* C::B end */
       token = GetToken(stream);
       if (token.IsSameAs(wxT("eexec")))
       {
@@ -1494,7 +1502,7 @@ wxPdfFontParserType1::DecodeHex(wxInputStream* inStream, wxOutputStream* outStre
   while (ok && inStream->TellI() < limit)
   {
     ic = inStream->GetC();
-    if (ic == ' '  || ic == '\r' || ic == '\n' || 
+    if (ic == ' '  || ic == '\r' || ic == '\n' ||
         ic == '\t' || ic == '\f' || ic == '\0' )
       continue;
     if      ('0' <= ic && ic <= '9') value = ic - '0';
@@ -2149,7 +2157,7 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
       {
         // If the keyword 'FontDirectory' is encountered after the keyword
         // '/Private', the font file represents a synthetic font and all
-        // keywords except '/CharStrings' are ignored 
+        // keywords except '/CharStrings' are ignored
         if (token.IsSameAs(wxT("/CharStrings")))
         {
           ParseCharStrings(stream);
@@ -2400,7 +2408,9 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
 {
   long numGlyphs, n;
   wxString token;
-  bool notdefFound = false;
+/* C::B begin */
+//  bool notdefFound = false;
+/* C::B end */
 
   token = GetToken(stream);
   token.ToLong(&numGlyphs);
@@ -2467,7 +2477,9 @@ wxPdfFontParserType1::ParseCharStrings(wxInputStream* stream)
         }
         if (glyphName.IsSameAs(wxT("/.notdef")))
         {
-          notdefFound = true;
+/* C::B begin */
+//          notdefFound = true;
+/* C::B end */
         }
         stream->SeekI(binaryStart+binarySize);
       }
