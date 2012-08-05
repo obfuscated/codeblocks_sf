@@ -662,7 +662,7 @@ static void fill_old_character_definitions( void )
     for (size_t i = 0; i < sizeof(standardchar)/sizeof(CSTRDEF); i++)
     {
         const int nr = standardchar[i].nr;
-        const char temp[3] = { nr / 256, nr % 256, 0 };
+        const char temp[3] = { static_cast<char>(nr / 256), static_cast<char>(nr % 256), 0 };
         QByteArray name( temp );
         s_characterDefinitionMap.insert( name, StringDefinition( standardchar[i].slen, standardchar[i].st ) );
     }
