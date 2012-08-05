@@ -29,7 +29,8 @@ private:
     // can't copyable
     nullptr_t(const nullptr_t&);
     const nullptr_t& operator=(const nullptr_t&);
-} nullptr;
+} nullptr_;
+#define nullptr nullptr_
 
 template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return  lhs.equals(rhs); }
 template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return  rhs.equals(lhs); }
