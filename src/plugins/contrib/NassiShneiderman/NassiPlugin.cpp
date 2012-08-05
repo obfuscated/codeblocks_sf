@@ -59,8 +59,8 @@ namespace
     const int NASSI_ID_NEW_FILE = wxNewId();
     const int idParseC = wxNewId();
     const int insertCFromDiagram[MaxInsertMenuEntries] = {
-        wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
-        wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId()};
+        static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
+        static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
 }
 
 namespace {

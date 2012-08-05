@@ -62,10 +62,10 @@ template<> bool  Mgr<ProjectManager>::isShutdown = false;
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
 static const int idOpenWith[] =
 {
-    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
-    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
-    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
-    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
+    static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()),
 };
 // special entry: force open with internal editor
 static const int idOpenWithInternal = wxNewId();

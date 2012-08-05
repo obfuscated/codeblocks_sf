@@ -13,8 +13,8 @@
 #define LANGS 10
 namespace
 {
-    const int idCommand[LANGS]  = {wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),
-                                   wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId()};
+    const int idCommand[LANGS]  = {static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),
+                                   static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId())};
     const int idEditPersonalDictionary = wxNewId();
 };
 

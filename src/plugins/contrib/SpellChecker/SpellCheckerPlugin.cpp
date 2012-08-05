@@ -54,7 +54,7 @@ namespace
 
     const unsigned int MaxSuggestEntries = 5;
     const int idSuggest[MaxSuggestEntries] =
-        {wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId()};
+        {static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
     const int idAddToDictionary            = wxNewId();
     const int idMoreSuggestions            = wxNewId();
 }
