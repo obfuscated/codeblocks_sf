@@ -28,7 +28,7 @@
 /** \brief This class represents widget with child items
  *
  * Each item may have some additional configuration stored in wxsPropertyContainer
- * class. These informations must be created in OnBuildExtra function and can
+ * class. These information must be created in OnBuildExtra function and can
  * be used to keep some extra properties for each child (like configuration of item
  * in sizer). Returned container should properly read / write items from / to
  * xml data since this will be used.

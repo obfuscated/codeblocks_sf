@@ -57,7 +57,7 @@ class wxSmith : public cbPlugin
         /** \brief Dctor */
         ~wxSmith();
 
-        /** \brief Function returing singleton instance */
+        /** \brief Function returning singleton instance */
         static wxSmith* Get() { return m_Singleton; }
 
         /** \brief Getting group in configuration dialog */
@@ -69,7 +69,7 @@ class wxSmith : public cbPlugin
         /** \brief Generating extra configuration panel inside project options */
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
 
-        /** \brief This funciton will add enteries into menu */
+        /** \brief This function will add entries into menu */
         void BuildMenu(wxMenuBar* menuBar);
 
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
