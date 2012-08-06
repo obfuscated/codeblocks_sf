@@ -166,7 +166,7 @@ void EditorTweaks::OnAttach()
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));
 
-    for (int i = 0 ; i < cfg->ReadInt(_T("AlingerSavedEntries"),defaultStoredAlignerEntries) ; ++i)
+    for (int i = 0 ; i < cfg->ReadInt(_T("AlignerSavedEntries"),defaultStoredAlignerEntries) ; ++i)
     {
         e.MenuName = cfg->Read(wxString::Format(_T("AlignerFirstName%d"),i),defaultNames[i]);
         e.ArgumentString = cfg->Read(wxString::Format(_T("AlignerFirstArgumentString%d"),i) ,defaultStrings[i]);
@@ -204,7 +204,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
 
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
-    cfg->Write(_T("AlingerSavedEntries"),i);
+    cfg->Write(_T("AlignerSavedEntries"),i);
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
