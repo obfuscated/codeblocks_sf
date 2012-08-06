@@ -29,7 +29,6 @@ void Bindings::SetDefaultsCodeBlocks()
     "Agony;backgroundthread.h|"
     "AnnoyingDialog;annoyingdialog.h|"
     "AppendArray;globals.h|"
-    "AutoBuffer;filemanager.h|"
     "AutoDetectCompilers;autodetectcompilers.h|"
     "BackgroundThread;backgroundthread.h|"
     "BackgroundThreadPool;backgroundthread.h|"
