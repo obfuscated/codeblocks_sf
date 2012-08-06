@@ -99,42 +99,14 @@ public:
     };
 };
 
-// ***** class: AutoBuffer *****
-class AutoBuffer
-{
-  std::auto_ptr<char> ptr;
-  size_t len;
-
-public:
-    AutoBuffer() : ptr(0), len(0){};
-    AutoBuffer(size_t initial) : ptr(new char[initial]), len(initial){};
-
-    void Alloc(size_t size)
-    {
-        std::auto_ptr<char> tmp(new char[len + size]);
-        if (ptr.get())
-            memcpy(tmp.get(), ptr.get(), len);
-        ptr = tmp;
-    };
-
-    void Append(const char* add_buf, size_t add_len)
-    {
-        Alloc(add_len);
-        memcpy(ptr.get() + len, add_buf, add_len);
-        len += add_len;
-    };
-
-    size_t Length() const {return len;};
-    char *Data() const {return ptr.get();};
-};
-
 // ***** class: URLLoader *****
 class URLLoader : public LoaderBase
 {
-AutoBuffer buffer;
 public:
     URLLoader(const wxString& name) { fileName = name; };
     void operator()();
+private:
+	std::vector<char> mBuffer;
 };
 
 // ***** class: NullLoader *****

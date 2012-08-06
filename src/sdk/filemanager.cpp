@@ -97,15 +97,18 @@ void URLLoader::operator()()
         return;
     }
 
-    char tmp[8192];
+    char tmp[8192] = {};
     size_t chunk = 0;
 
     while ((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
-        buffer.Append(tmp, chunk);
+    {
+        mBuffer.insert(mBuffer.end(), tmp, tmp + chunk);
+    }
 
-    data = buffer.Data();
-    len = buffer.Length();
-    buffer.Append("\0\0\0\0", 4);
+    data = mBuffer.data();
+    len = mBuffer.size();
+    const char Zeros4[] = "\0\0\0\0";
+    mBuffer.insert(mBuffer.end(), Zeros4, Zeros4 + 4);
     Ready();
 }
 
