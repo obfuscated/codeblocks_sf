@@ -18,6 +18,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wall" />
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />

@@ -124,8 +124,8 @@ void SpellCheckSettingsPanel::PostConfig()
 {
     m_sccfg->SetEnableOnlineChecker(m_checkEnableOnlineSpellChecker->GetValue());
     std::vector<wxString> dics = m_sccfg->GetPossibleDictionaries();
-    int sel = m_choiceDictionary->GetSelection();
-    if ( sel < dics.size() && sel != wxNOT_FOUND )
+    const int sel = m_choiceDictionary->GetSelection();
+    if ( sel < static_cast<int>(dics.size()) && sel != wxNOT_FOUND )
     {
         wxString dic = dics[sel];
         if ( !dic.IsEmpty() )
