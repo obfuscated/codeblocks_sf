@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="0" />
 			</Target>
 		</Build>
@@ -21,6 +22,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-g" />
 			<Add option="-Ulinux" />
@@ -92,11 +94,11 @@
 			<debugger />
 			<wxsmith version="1">
 				<resources>
-					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
+					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" fwddecl="0" i18n="1" name="HexEditPanel" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" fwddecl="0" i18n="1" name="ExpressionTester" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" fwddecl="0" i18n="1" name="SelectStoredExpressionDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" fwddecl="0" i18n="1" name="TestCasesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" fwddecl="0" i18n="1" name="SearchDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />
