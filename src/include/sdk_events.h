@@ -89,7 +89,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
             dsTop,
             dsBottom,
             dsFloating,
-            dsUndefined,
+            dsUndefined
         };
 
         CodeBlocksDockEvent(wxEventType commandType = wxEVT_NULL, int id = 0)

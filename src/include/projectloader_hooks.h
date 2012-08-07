@@ -79,6 +79,6 @@ namespace ProjectLoaderHooks
       * @param isLoading True if the project is being loaded, false if being saved.
       */
     extern DLLIMPORT void CallHooks(cbProject* project, TiXmlElement* elem, bool isLoading);
-};
+}
 
 #endif // PROJECTLOADER_HOOKS_H

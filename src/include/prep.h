@@ -54,7 +54,7 @@ template<typename T> inline bool operator!=(T const& lhs, const nullptr_t& rhs) 
             ErrorMessage("This feature is only supported under wxWidgets 2.8, or with Foo Component 1.2 or higher.");
 */
 template <int major, int minor = 0, int revision = 0> struct Version { enum { eval = (major<<25) + (minor<<15) + revision }; };
-inline void Version2MMR(int v, int& major, int& minor, int& revision) { major = v>>25; minor = (v>>15) & ((1<<10) -1); revision = v & ((1<<15) -1); };
+inline void Version2MMR(int v, int& major, int& minor, int& revision) { major = v>>25; minor = (v>>15) & ((1<<10) -1); revision = v & ((1<<15) -1); }
 
 template <int major, int minor, int rel = 0> struct wxMinimumVersion { enum { eval = ((unsigned int)  Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval >= (unsigned int) Version<major, minor, rel>::eval) }; };
 template <int major, int minor, int rel = 0> struct wxExactVersion { enum { eval = ((unsigned int) Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval == (unsigned int) Version<major, minor, rel>::eval) }; };
@@ -107,7 +107,7 @@ template <class true_t, class false_t> struct TernaryCondTypedef<false, true_t, 
         int widths[] = {5, 3, 8};
         myListControl->SetWidths(widths, 4); // oh crap, why does this crash?
 */
-template <typename T> unsigned int array_size(const T& array) { enum {result = sizeof(array) / sizeof(array[0])}; return result; };
+template <typename T> unsigned int array_size(const T& array) { enum {result = sizeof(array) / sizeof(array[0])}; return result; }
 
 
 
@@ -117,8 +117,8 @@ template <typename T> unsigned int array_size(const T& array) { enum {result = s
     to set a pointer to zero in the destructor, as it can never be used again).
     In _all_ other cases, use Delete(), which prevents accidential double-deletes.
 */
-template<typename T>inline void Delete(T*& p){delete p; p = 0;};
-template<typename T>inline void DeleteArray(T*& p){delete[] p; p = 0;};
+template<typename T>inline void Delete(T*& p){delete p; p = 0;}
+template<typename T>inline void DeleteArray(T*& p){delete[] p; p = 0;}
 
 
 
@@ -243,7 +243,7 @@ namespace platform
         #define warn_unused
         #define deprecated_function
     #endif
-};
+}
 
 
 
@@ -255,7 +255,7 @@ namespace sdk
     const int version = Version<1>::eval;
     const int buildsystem_version = Version<1>::eval;
     const int plugin_api_version = Version<1,11,10>::eval;
-};
+}
 
 
 
@@ -348,10 +348,10 @@ template<typename whatever> inline ID GetID()
 {
     static unsigned int id = (unsigned int) -1;
     return ID(++id);
-};
+}
 
-inline ID GetID() { return GetID<void>(); };
-inline ID ConstructID(unsigned int i) { return ID(i); };
+inline ID GetID() { return GetID<void>(); }
+inline ID ConstructID(unsigned int i) { return ID(i); }
 
 #include <tr1/memory>
 

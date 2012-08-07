@@ -43,7 +43,7 @@ class cbTreeCtrl : public wxTreeCtrl
         int (*Compare)(const ProjectFile* arg1, const ProjectFile* arg2);
 
         DECLARE_DYNAMIC_CLASS(cbTreeCtrl)
-        DECLARE_EVENT_TABLE();
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // CBTREECTRL_H

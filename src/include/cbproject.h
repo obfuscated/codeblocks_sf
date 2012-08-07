@@ -83,7 +83,7 @@ enum PCHMode
 {
     pchSourceDir = 0,   /// In a dir (named by the PCH) on the same level as the source header (default).
     pchObjectDir,       /// In the objects output dir, along with other object files.
-    pchSourceFile,      /// In a file alongside the source header (with .gch appended).
+    pchSourceFile      /// In a file alongside the source header (with .gch appended).
 };
 
 /** @brief Represents a Code::Blocks project.
