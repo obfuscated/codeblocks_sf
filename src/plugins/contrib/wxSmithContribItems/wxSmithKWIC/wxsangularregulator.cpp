@@ -101,41 +101,17 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 			Codef(_T("%ASetRange(%d, %d);\n"), m_iRangeMin, m_iRangeMax);
 			Codef(_T("%ASetAngle(%d, %d);\n"), m_iAngleMin, m_iAngleMax);
 			wxString ss = m_cdExternalCircleColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdInternalCircleColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetIntCircleColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetIntCircleColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdKnobBorderColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetKnobBorderColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetKnobBorderColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdKnobColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetKnobColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetKnobColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdLimitTextColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetLimitsColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetLimitsColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdTagColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetTagsColour(%s);\n"), ss.c_str());
-#endif
 			for(size_t i = 0; i < m_arrTags.Count(); i++){
 				TagDesc *Desc = m_arrTags[i];
 				Codef(_T("\t%AAddTag(%d);\n"), Desc->val);

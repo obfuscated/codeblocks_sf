@@ -50,11 +50,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode()
             AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%s, %W, %t);\n"),
                     (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Label.wx_str());
-                    #else
-                    Label.c_str());
-                    #endif
             return;
         }
 

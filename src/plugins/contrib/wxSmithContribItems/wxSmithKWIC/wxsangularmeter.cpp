@@ -120,33 +120,17 @@ void wxsAngularMeter::OnBuildCreatingCode()
 			for(size_t i = 0; i < m_arrSectors.Count(); i++){
 				SectorDesc *Desc = m_arrSectors[i];
 				wxString sClr = wxString::Format(wxT("wxColour(%d, %d, %d)"), Desc->colour.Red(),  Desc->colour.Green(), Desc->colour.Blue());
-#if wxCHECK_VERSION(2, 9, 0)
 				Codef(_T("\t%ASetSectorColor(%d, %s);\n"), i, sClr.wx_str());
-#else
-				Codef(_T("\t%ASetSectorColor(%d, %s);\n"), i, sClr.c_str());
-#endif
 			}
 			if(!m_bShowVal){
 				Codef(_T("%ADrawCurrent(false);\n"));
 			}
 			wxString ss = m_cdNeedleColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetNeedleColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetNeedleColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdBackgroundColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetBackColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetBackColour(%s);\n"), ss.c_str());
-#endif
 			ss = m_cdBorderColour.BuildCode(GetCoderContext());
-#if wxCHECK_VERSION(2, 9, 0)
 			if(!ss.IsEmpty()) Codef(_T("%ASetBorderColour(%s);\n"), ss.wx_str());
-#else
-			if(!ss.IsEmpty()) Codef(_T("%ASetBorderColour(%s);\n"), ss.c_str());
-#endif
 			ss = GetCoderContext()->GetUniqueName(_T("AngularMeterFont"));
 			wxString sFnt = m_fnt.BuildFontCode(ss, GetCoderContext());
 			if(sFnt.Len() > 0)

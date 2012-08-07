@@ -300,11 +300,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
-                    #if wxCHECK_VERSION(2, 9, 0)
                     CompilerId.wx_str());
-                    #else
-                    CompilerId.c_str());
-                    #endif
         Compiler* compiler = 0;
         if ((m_pTarget && m_pTarget->SupportsCurrentPlatform()) || (!m_pTarget && m_pProject))
         {
@@ -1180,11 +1176,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
         msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
-                    #if wxCHECK_VERSION(2, 9, 0)
                     CompilerId.wx_str());
-                    #else
-                    CompilerId.c_str());
-                    #endif
         Compiler* compiler = 0;
         if (m_pTarget && m_pTarget->SupportsCurrentPlatform())
         {
@@ -1353,11 +1345,7 @@ void CompilerOptionsDlg::AutoDetectCompiler()
             wxString msg;
             msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
                         "Do you want to use this compiler's default installation directory?"),
-                        #if wxCHECK_VERSION(2, 9, 0)
                         compiler->GetName().wx_str());
-                        #else
-                        compiler->GetName().c_str());
-                        #endif
             if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
             {
                 compiler->SetMasterPath(backup);

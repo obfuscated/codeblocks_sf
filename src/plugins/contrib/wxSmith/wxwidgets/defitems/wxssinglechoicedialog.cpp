@@ -57,18 +57,10 @@ void wxsSingleChoiceDialog::OnBuildCreatingCode()
             if ( m_Content.GetCount() > 0 )
             {
                 ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxSingleChoiceDialogChoices"));
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.wx_str(),(int)m_Content.GetCount());
-                #else
-                Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.c_str(),(int)m_Content.GetCount());
-                #endif
                 for ( size_t i = 0; i < m_Content.GetCount(); ++i )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%t%s\n"),m_Content[i].wx_str(),((i!=m_Content.GetCount()-1)?_T(","):_T("")));
-                    #else
-                    Codef(_T("\t%t%s\n"),m_Content[i].c_str(),((i!=m_Content.GetCount()-1)?_T(","):_T("")));
-                    #endif
                 }
                 Codef(_T("};\n"));
             }

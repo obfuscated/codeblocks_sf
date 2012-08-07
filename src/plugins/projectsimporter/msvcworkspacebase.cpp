@@ -94,11 +94,7 @@ void MSVCWorkspaceBase::updateProjects()
                 if (_workspaceConfigurations.Index(s) == wxNOT_FOUND)
                 {
                     _workspaceConfigurations.Add(s);
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("workspace config: '%s'"), s.wx_str()));
-                    #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("workspace config: '%s'"), s.c_str()));
-                    #endif
                 }
             }
         }
@@ -107,11 +103,7 @@ void MSVCWorkspaceBase::updateProjects()
     for (projIt = _projects.begin(); projIt != _projects.end(); ++projIt)
     {
         proj = projIt->second;
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %d dependencies"), proj._project->GetTitle().wx_str(), proj._dependencyList.GetCount()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %d dependencies"), proj._project->GetTitle().c_str(), proj._dependencyList.GetCount()));
-        #endif
         for (i=0; i<proj._dependencyList.GetCount(); ++i)
         {
             depIt = _projects.find(proj._dependencyList[i]);

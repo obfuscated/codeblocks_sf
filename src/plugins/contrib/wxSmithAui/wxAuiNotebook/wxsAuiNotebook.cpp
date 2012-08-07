@@ -325,27 +325,15 @@ void wxsAuiNotebook::OnBuildCreatingCode()
                 wxsAuiNotebookExtra* Extra = (wxsAuiNotebookExtra*)GetChildExtra(i);
                 if ( !Extra->m_Icon.IsEmpty() )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AAddPage(%o, %t, %b, %i);\n"),i,Extra->m_Label.wx_str(),Extra->m_Selected,&(Extra->m_Icon),_T("wxART_MENU"));
-                    #else
-                    Codef(_T("%AAddPage(%o, %t, %b, %i);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected,&(Extra->m_Icon),_T("wxART_MENU"));
-                    #endif
                 }
                 else if ( Extra->m_Selected )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.wx_str(),Extra->m_Selected);
-                    #else
-                    Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
-                    #endif
                 }
                 else
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AAddPage(%o, %t);\n"),i,Extra->m_Label.wx_str());
-                    #else
-                    Codef(_T("%AAddPage(%o, %t);\n"),i,Extra->m_Label.c_str());
-                    #endif
                 }
             }
 

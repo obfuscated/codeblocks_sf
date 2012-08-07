@@ -118,11 +118,7 @@ void wxsSizer::OnBuildCreatingCode()
                 {
                     case wxsCPP:
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%AAdd(%o, %s);\n"),i,Extra->AllParamsCode(GetCoderContext()).wx_str());
-                        #else
-                        Codef(_T("%AAdd(%o, %s);\n"),i,Extra->AllParamsCode(GetCoderContext()).c_str());
-                        #endif
                         break;
                     }
 

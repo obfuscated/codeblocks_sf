@@ -64,11 +64,7 @@ void wxsStaticBitmap::OnBuildCreatingCode()
             wxString SizeCodeStr = SizeData.GetSizeCode(GetCoderContext());
             wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,GetCoderContext(),_T("wxART_OTHER"));
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.c_str());
-            #endif
             BuildSetupWindowCode();
             return;
         }

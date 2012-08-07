@@ -82,17 +82,9 @@ namespace wxsCodeMarks
     {
         Manager::Get()->GetLogManager()->DebugLog(F(
             _T("Unknown coding language %s (%d) in function %s"),
-            #if wxCHECK_VERSION(2, 9, 0)
             Name(Lang).wx_str(),
-            #else
-            Name(Lang).c_str(),
-            #endif
             (int)Lang,
-            #if wxCHECK_VERSION(2, 9, 0)
             Function.wx_str()));
-            #else
-            Function.c_str()));
-            #endif
     }
 
     wxString String(wxsCodingLang Lang,const wxString& Source)

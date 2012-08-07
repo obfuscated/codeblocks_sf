@@ -104,11 +104,7 @@ void wxsChart::OnBuildCreatingCode()
             if ( StyleCode.IsEmpty() ) StyleCode = _T("0");
             else                       StyleCode.RemoveLast();
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
-            #else
-            Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.c_str());
-            #endif
 
             Codef(_T("{\n"));
             for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
@@ -149,11 +145,7 @@ void wxsChart::OnBuildCreatingCode()
                     #endif
                 }
 
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%AAdd(%v);\n"),VarStr.wx_str());
-                #else
-                Codef(_T("\t%AAdd(%v);\n"),VarStr.c_str());
-                #endif
             }
             Codef(_T("}\n"));
 

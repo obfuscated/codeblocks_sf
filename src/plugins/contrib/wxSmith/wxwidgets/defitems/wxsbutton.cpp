@@ -58,11 +58,7 @@ void wxsButton::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/button.h>"),GetInfo().ClassName,hfInPCH);
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
-            #endif
             if ( IsDefault ) Codef( _T("%ASetDefault();\n"));
             BuildSetupWindowCode();
             return;

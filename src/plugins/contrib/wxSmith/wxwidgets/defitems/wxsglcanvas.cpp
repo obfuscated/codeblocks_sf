@@ -115,11 +115,7 @@ void wxsGLCanvas::OnBuildCreatingCode()
             wxString aname = GetCoderContext()->GetUniqueName( _T("GLCanvasAttributes") );
 
             // Generate attributes array
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef( _T("int %v[] = {\n" ), aname.wx_str() );
-            #else
-            Codef( _T("int %v[] = {\n" ), aname.c_str() );
-            #endif
 
             if ( mRGBA )
             {
@@ -208,11 +204,7 @@ void wxsGLCanvas::OnBuildCreatingCode()
             Codef( _T("\t0, 0 };\n") );
 
             // Now we can create our window
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %P, %S, %T, %N, %v);\n"),aname.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N, %v);\n"),aname.c_str());
-            #endif
 
             BuildSetupWindowCode();
             break;

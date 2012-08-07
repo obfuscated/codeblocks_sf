@@ -101,11 +101,7 @@ void wxsGrid::OnBuildCreatingCode()
                     if (m_DefaultColSize  > 0) Codef(_T("%ASetDefaultColSize(%d, %b);\n"), m_DefaultColSize, true);
 
                     wxString ss = m_LabelTextColour.BuildCode( GetCoderContext() );
-                    #if wxCHECK_VERSION(2, 9, 0)
                     if (ss.Len() > 0) Codef(_T("%ASetLabelTextColour(%s);\n"), ss.wx_str());
-                    #else
-                    if (ss.Len() > 0) Codef(_T("%ASetLabelTextColour(%s);\n"), ss.c_str());
-                    #endif
 
                     ss = GetCoderContext()->GetUniqueName( _T("GridLabelFont") );
                     wxString tt = m_LabelFont.BuildFontCode(ss, GetCoderContext());
@@ -123,21 +119,13 @@ void wxsGrid::OnBuildCreatingCode()
                     int n = wxMin( (int)m_ColLabels.GetCount(), m_ColsCount );
                     for ( int i=0; i<n; i++ )
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%ASetColLabelValue(%d, %t);\n"), i, m_ColLabels[i].wx_str());
-                        #else
-                        Codef(_T("%ASetColLabelValue(%d, %t);\n"), i, m_ColLabels[i].c_str());
-                        #endif
                     }
 
                     n = wxMin( (int)m_RowLabels.GetCount(), m_RowsCount );
                     for ( int i=0; i<n; i++)
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%ASetRowLabelValue(%d, %t);\n"), i, m_RowLabels[i].wx_str());
-                        #else
-                        Codef(_T("%ASetRowLabelValue(%d, %t);\n"), i, m_RowLabels[i].c_str());
-                        #endif
                     }
 
                     n = (int)m_CellText.GetCount();
@@ -146,11 +134,7 @@ void wxsGrid::OnBuildCreatingCode()
                     {
                         for ( int k=0; k<m_ColsCount && i<n; k++, i++ )
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             Codef( _T("%ASetCellValue(%d, %d, %t);\n"), j, k, m_CellText[i].wx_str());
-                            #else
-                            Codef( _T("%ASetCellValue(%d, %d, %t);\n"), j, k, m_CellText[i].c_str());
-                            #endif
                         }
                     }
 

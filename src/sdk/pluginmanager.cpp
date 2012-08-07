@@ -1018,11 +1018,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     m_pCurrentlyLoadingLib = LibLoader::LoadLibrary(pluginName);
     if (!m_pCurrentlyLoadingLib->IsLoaded())
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->LogError(F(_T("%s: not loaded (missing symbols?)"), pluginName.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->LogError(F(_T("%s: not loaded (missing symbols?)"), pluginName.c_str()));
-        #endif
         LibLoader::RemoveLibrary(m_pCurrentlyLoadingLib);
         m_pCurrentlyLoadingLib = 0;
         m_CurrentlyLoadingFilename.Clear();
@@ -1060,11 +1056,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 
         SetupLocaleDomain(pr.name);
 
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("%s: loaded"), pr.name.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s: loaded"), pr.name.c_str()));
-        #endif
     }
 
     if (m_RegisteredPlugins.empty())
@@ -1245,11 +1237,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     {
         if (plug->GetType() != ptTool)
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->LogError(F(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->LogError(F(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str()));
-            #endif
         }
         else
         {
@@ -1265,11 +1253,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     }
     else
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->LogError(F(_T("No plugin registered by this name: %s"), pluginName.c_str()));
-        #endif
     }
     return 0;
 }

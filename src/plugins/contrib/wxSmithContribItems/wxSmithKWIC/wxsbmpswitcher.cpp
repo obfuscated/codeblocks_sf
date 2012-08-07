@@ -94,11 +94,7 @@ void wxsBmpSwitcher::OnBuildCreatingCode()
 				// Escape Windows path separators.
 				wxString sPath = Desc->sPath;
 				sPath.Replace(wxT("\\"), wxT("\\\\"));
-#if wxCHECK_VERSION(2, 9, 0)
 				Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.wx_str());
-#else
-				Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.c_str());
-#endif
 			}
 			// Default is 0. If state <= 0 or > number of bitmaps, use default.
 			if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){

@@ -91,18 +91,10 @@ void wxsLCDClock::OnBuildCreatingCode()
 				Codef(_T("%ASetNumberDigits(%d);\n"), m_iNumDigits);
 			}
 			wxString ss = m_cdLightColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
 			if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.c_str());
-			#endif
 
 			ss = m_cdGrayColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
 			if (!ss.IsEmpty()) Codef(_T("%ASetGrayColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetGrayColour(%s);\n"), ss.c_str());
-			#endif
 
             BuildSetupWindowCode();
             break;

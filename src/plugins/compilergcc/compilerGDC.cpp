@@ -233,11 +233,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
                     if (ok) {
                         name = key.GetName() + _T("\\") + name;
                         key.SetName(name);
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Manager::Get()->GetLogManager()->DebugLog(F(_T("name: %s"), name.wx_str()));
-                        #else
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("name: %s"), name.c_str()));
-                        #endif
                         if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
                     }
                 }

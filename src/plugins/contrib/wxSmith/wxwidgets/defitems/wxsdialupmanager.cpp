@@ -91,11 +91,7 @@ void wxsDialUpManager::OnBuildCreatingCode()
             }
             // These functions are only used on Unix.
             if(!m_sWellKnownHost.IsSameAs(wxT("www.yahoo.com")) || m_iPortNo != 80){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
-                #else
-                Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.c_str(), m_iPortNo);
-                #endif
             }
 
             if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff"))){

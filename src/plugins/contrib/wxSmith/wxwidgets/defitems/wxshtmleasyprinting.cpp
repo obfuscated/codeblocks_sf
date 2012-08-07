@@ -58,18 +58,10 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
             Codef(_T("%C(%N, %W);\n"));
 
             if(!m_sHeader.IsEmpty()){
-#if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.wx_str(), m_iHeaderPages);
-#else
-                Codef(_T("%ASetHeader(%s, %d);\n"), m_sHeader.c_str(), m_iHeaderPages);
-#endif
             }
             if(!m_sFooter.IsEmpty()){
-#if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.wx_str(), m_iFooterPages);
-#else
-                Codef(_T("%ASetHeader(%s, %d);\n"), m_sFooter.c_str(), m_iFooterPages);
-#endif
             }
 
             BuildSetupWindowCode();

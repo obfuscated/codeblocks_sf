@@ -224,21 +224,13 @@ void ProjectFileOptionsDlg::OnReadOnlyCheck(wxCommandEvent& event)
     {
         // make read-only
         if ( !ToggleFileReadOnly(true) )
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Unable to set file '%s' read-only (probably missing access rights)."), m_FileNameStr.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Unable to set file '%s' read-only (probably missing access rights)."), m_FileNameStr.c_str()));
-            #endif
     }
     else
     {
         // make writeable
         if ( !ToggleFileReadOnly(false) )
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Unable to set file '%s' writeable (probably missing access rights)."), m_FileNameStr.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Unable to set file '%s' writeable (probably missing access rights)."), m_FileNameStr.c_str()));
-            #endif
     }
 
     // Update UI

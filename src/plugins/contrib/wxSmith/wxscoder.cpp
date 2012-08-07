@@ -251,11 +251,7 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code,wxFontE
     {
         if ( !cbSaveToFile(FixedFileName,Code,Encoding,UseBOM) )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write file '%s'"),FixedFileName.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write file '%s'"),FixedFileName.c_str()));
-            #endif
         }
     }
 }
@@ -294,11 +290,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
         EncodingDetector Detector(FileName);
         if ( !Detector.IsOK() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't open and properly read file '%s'"),FileName.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't open and properly read file '%s'"),FileName.c_str()));
-            #endif
             return;
         }
         //Manager::Get()->GetLogManager()->DebugLog(F(_T("File read time: %d ms"),SW.Time()));
@@ -318,11 +310,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
             //wxStopWatch SW;
             if ( !cbSaveToFile(FileName,Content,Detector.GetFontEncoding(),Detector.GetBOMSizeInBytes()>0) )
             {
-                #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write data to file '%s'"),FileName.wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write data to file '%s'"),FileName.c_str()));
-                #endif
             }
             else
             {
@@ -474,11 +462,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
 
     if ( Position == -1 )
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.c_str()));
-        #endif
         return false;
     }
 
@@ -493,11 +477,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
     int EndPosition = Content.First(End);
     if ( EndPosition == -1 )
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""),Header.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""),Header.c_str()));
-        #endif
         return false;
     }
 

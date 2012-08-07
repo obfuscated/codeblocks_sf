@@ -74,25 +74,13 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
             #endif
 
             wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
-            #if wxCHECK_VERSION(2, 9, 0)
             if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());
-            #else
-            if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.c_str());
-            #endif
 
             ss = m_HoverColour.BuildCode( GetCoderContext() );
-            #if wxCHECK_VERSION(2, 9, 0)
             if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.wx_str());
-            #else
-            if (!ss.IsEmpty()) Codef(_T("%ASetHoverColour(%s);\n"), ss.c_str());
-            #endif
 
             ss = m_VisitedColour.BuildCode( GetCoderContext() );
-            #if wxCHECK_VERSION(2, 9, 0)
             if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.wx_str());
-            #else
-            if (!ss.IsEmpty()) Codef(_T("%ASetVisitedColour(%s);\n"), ss.c_str());
-            #endif
 
             BuildSetupWindowCode();
             return;

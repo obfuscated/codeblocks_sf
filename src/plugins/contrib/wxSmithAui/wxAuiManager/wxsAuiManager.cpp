@@ -499,11 +499,7 @@ void wxsAuiManager::OnBuildCreatingCode()
                 {
                     case wxsCPP:
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,Extra->AllParamsCode(GetCoderContext(),Child).wx_str());
-                        #else
-                        Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,Extra->AllParamsCode(GetCoderContext(),Child).c_str());
-                        #endif
                         break;
                     }
 

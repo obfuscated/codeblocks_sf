@@ -63,18 +63,10 @@ void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %P, %S, %T);\n"));
 
             if(!m_sControl.IsEmpty()){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.wx_str());
-                #else
-                Codef( _T("%ASetRichTextCtrl(%s);\n"), m_sControl.c_str());
-                #endif
             }
             if(!m_sStyleSheet.IsEmpty()){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.wx_str());
-                #else
-                Codef( _T("%ASetStyleSheet(%s);\n"), m_sStyleSheet.c_str());
-                #endif
                 Codef( _T("%AUpdateStyles();\n"));
             }
 

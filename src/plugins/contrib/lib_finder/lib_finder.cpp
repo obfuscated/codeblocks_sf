@@ -515,11 +515,7 @@ bool lib_finder::TryDownload(const wxString& ShortCode,const wxString& FileName)
         wxURL UrlData(Url);
         if ( !UrlData.IsOk() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid url '%s'"),Url.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid url '%s'"),Url.c_str()));
-            #endif
             continue;
         }
         UrlData.SetProxy( ConfigManager::GetProxy() );
@@ -527,11 +523,7 @@ bool lib_finder::TryDownload(const wxString& ShortCode,const wxString& FileName)
         wxInputStream* is = UrlData.GetInputStream();
         if ( !is || !is->IsOk() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.c_str()));
-            #endif
             delete is;
             continue;
         }
@@ -539,11 +531,7 @@ bool lib_finder::TryDownload(const wxString& ShortCode,const wxString& FileName)
         wxFileOutputStream Output(FileName);
         if ( !Output.IsOk() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't write to file '%s'"),FileName.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't write to file '%s'"),FileName.c_str()));
-            #endif
             delete is;
             return false;
         }
@@ -554,11 +542,7 @@ bool lib_finder::TryDownload(const wxString& ShortCode,const wxString& FileName)
         return ret;
     }
 
-    #if wxCHECK_VERSION(2, 9, 0)
     LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't find suitable download url for '%s'"),ShortCode.wx_str()));
-    #else
-    LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't find suitable download url for '%s'"),ShortCode.c_str()));
-    #endif
     return false;
 }
 

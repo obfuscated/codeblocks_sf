@@ -52,35 +52,19 @@ void wxsColourDialog::OnBuildCreatingCode()
             {
                 wxString ColourDataName = GetCoderContext()->GetUniqueName(_T("__ColourData"));
 
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("wxColourData %v;\n"),ColourDataName.wx_str());
-                #else
-                Codef(_T("wxColourData %v;\n"),ColourDataName.c_str());
-                #endif
 
                 if ( !m_ChooseFull )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%v.SetChooseFull(%b);\n"),ColourDataName.wx_str(),m_ChooseFull);
-                    #else
-                    Codef(_T("%v.SetChooseFull(%b);\n"),ColourDataName.c_str(),m_ChooseFull);
-                    #endif
                 }
 
                 if ( m_Colour.m_type != wxsCOLOUR_DEFAULT )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%v.SetColour(%l);\n"),ColourDataName.wx_str(),&m_Colour);
-                    #else
-                    Codef(_T("%v.SetColour(%l);\n"),ColourDataName.c_str(),&m_Colour);
-                    #endif
                 }
 
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%C(%W, &%v);\n"),ColourDataName.wx_str());
-                #else
-                Codef(_T("%C(%W, &%v);\n"),ColourDataName.c_str());
-                #endif
             }
             else
             {

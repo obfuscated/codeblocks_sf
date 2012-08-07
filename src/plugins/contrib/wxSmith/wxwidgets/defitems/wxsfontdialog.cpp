@@ -56,11 +56,7 @@ void wxsFontDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/fontdlg.h>"),GetInfo().ClassName,hfInPCH);
 
             wxString sfontName = GetCoderContext()->GetUniqueName(_T("fontData"));
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\twxFontData %s;\n"), sfontName.wx_str());
-            #else
-            Codef(_T("\twxFontData %s;\n"), sfontName.c_str());
-            #endif
 
             wxString sClr = m_cdColour.BuildCode(GetCoderContext());
             #if wxCHECK_VERSION(2, 9, 0)
@@ -73,48 +69,24 @@ void wxsFontDialog::OnBuildCreatingCode()
             }
             #endif
             if(!m_bEnableEffects){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
-                #else
-                Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.c_str(), m_bEnableEffects);
-                #endif
             }
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
-            #else
-            Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.c_str());
-            #endif
 
             // These functions are Windows only.
             if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
                 if(!m_bShowHelp){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.wx_str(), m_bAllowSymbols);
-                    #else
-                    Codef(_T("\t%s.SetAllowSymbols(%b);\n"), sfontName.c_str(), m_bAllowSymbols);
-                    #endif
                 }
                 if(m_iMinSize > 0 || m_iMaxSize > 0){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.wx_str(), m_iMinSize, m_iMaxSize);
-                    #else
-                    Codef(_T("\t%s.SetRange(%d, %d);\n"), sfontName.c_str(), m_iMinSize, m_iMaxSize);
-                    #endif
                 }
                 if(m_bShowHelp){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.wx_str(), m_bShowHelp);
-                    #else
-                    Codef(_T("\t%s.SetShowHelp(%b);\n"), sfontName.c_str(), m_bShowHelp);
-                    #endif
                 }
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %s);\n"), sfontName.wx_str());
-            #else
-            Codef(_T("%C(%W, %s);\n"), sfontName.c_str());
-            #endif
             BuildSetupWindowCode();
             return;
         }

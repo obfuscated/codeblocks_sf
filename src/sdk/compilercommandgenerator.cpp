@@ -255,11 +255,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         || (compiler->GetPrograms().LIB.IsEmpty()     && macro.Contains(_T("$lib_linker")))
         || (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))) )
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."), file.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: Required compiler executable (%s) not found! Check the toolchain settings."), file.c_str()));
-        #endif
         macro.Clear();
         return;
     }
@@ -1032,11 +1028,7 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
         }
         else
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.c_str()));
-            #endif
             wxArrayString output;
             if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
                 wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);

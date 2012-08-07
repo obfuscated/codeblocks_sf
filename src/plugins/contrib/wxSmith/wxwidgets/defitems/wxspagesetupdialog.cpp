@@ -123,85 +123,41 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
             // These functions are Windows only.
             if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
                 if(m_bEnableHelp){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
-                    #else
-                    Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.c_str(), m_bEnableHelp);
-                    #endif
                 }
                 if(!m_bEnableMargins){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->EnableMargins(%b);\n"), sDataName.wx_str(), m_bEnableMargins);
-                    #else
-                    Codef(_T("\t%s->EnableMargins(%b);\n"), sDataName.c_str(), m_bEnableMargins);
-                    #endif
                 }
                 if(!m_bEnableOrientation){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->EnableOrientation(%b);\n"), sDataName.wx_str(), m_bEnableOrientation);
-                    #else
-                    Codef(_T("\t%s->EnableOrientation(%b);\n"), sDataName.c_str(), m_bEnableOrientation);
-                    #endif
                 }
                 if(!m_bEnablePaper){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->EnablePaper(%b);\n"), sDataName.wx_str(), m_bEnablePaper);
-                    #else
-                    Codef(_T("\t%s->EnablePaper(%b);\n"), sDataName.c_str(), m_bEnablePaper);
-                    #endif
                 }
                 if(m_bDefaultInfo){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetDefaultInfo(%b);\n"), sDataName.wx_str(), m_bDefaultInfo);
-                    #else
-                    Codef(_T("\t%s->SetDefaultInfo(%b);\n"), sDataName.c_str(), m_bDefaultInfo);
-                    #endif
                 }
                 if(m_bDefaultMinMargins){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetDefaultMinMargins(%b);\n"), sDataName.wx_str(), m_bDefaultMinMargins);
-                    #else
-                    Codef(_T("\t%s->SetDefaultMinMargins(%b);\n"), sDataName.c_str(), m_bDefaultMinMargins);
-                    #endif
                 }
             }
 
             if(!m_bEnablePrinter){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->EnablePrinter(%b);\n"), sDataName.wx_str(), m_bEnablePrinter);
-                #else
-                Codef(_T("\t%s->EnablePrinter(%b);\n"), sDataName.c_str(), m_bEnablePrinter);
-                #endif
             }
             if(m_iMarginLeft > -1 && m_iMarginTop > -1){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginLeft, m_iMarginTop);
-                #else
-                Codef(_T("\t%s->SetMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.c_str(), m_iMarginLeft, m_iMarginTop);
-                #endif
             }
             if(m_iMarginRight > -1 && m_iMarginBottom > -1){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginRight, m_iMarginBottom);
-                #else
-                Codef(_T("\t%s->SetMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.c_str(), m_iMarginRight, m_iMarginBottom);
-                #endif
             }
             // These functions are Windows only.
             if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
                 if(m_iMarginMinLeft > -1 && m_iMarginMinTop > -1){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetMinMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinLeft, m_iMarginMinTop);
-                    #else
-                    Codef(_T("\t%s->SetMinMarginTopLeft(wxPoint(%d, %d));\n"), sDataName.c_str(), m_iMarginMinLeft, m_iMarginMinTop);
-                    #endif
                 }
                 if(m_iMarginMinRight > -1 && m_iMarginMinBottom > -1){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetMinMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.wx_str(), m_iMarginMinRight, m_iMarginMinBottom);
-                    #else
-                    Codef(_T("\t%s->SetMinMarginBottomRight(wxPoint(%d, %d));\n"), sDataName.c_str(), m_iMarginMinRight, m_iMarginMinBottom);
-                    #endif
                 }
             }
             // If PaperId = wxPAPER_NONE and paper size = wxDefaultSize, the default system settings will be used.
@@ -216,19 +172,11 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
             else{
                 // Set paper size if wxPAPER_NONE is set.
                 if(m_iPaperWidth != -1 && m_iPaperHeight != -1){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetPaperSize(wxSize(%d, %d));\n"), sDataName.wx_str(), m_iPaperWidth, m_iPaperHeight);
-                    #else
-                    Codef(_T("\t%s->SetPaperSize(wxSize(%d, %d));\n"), sDataName.c_str(), m_iPaperWidth, m_iPaperHeight);
-                    #endif
                 }
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %s);\n"), sDataName.wx_str());
-            #else
-            Codef(_T("%C(%W, %s);\n"), sDataName.c_str());
-            #endif
             BuildSetupWindowCode();
             return;
         }

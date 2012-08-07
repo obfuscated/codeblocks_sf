@@ -334,11 +334,7 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                         #endif
                     if ( Item->m_DropDown && (Item->m_ItemKind == wxITEM_NORMAL) )
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%ASetToolDropDown(%s, true);\n"),Item->GetIdName().wx_str());
-                        #else
-                        Codef(_T("%ASetToolDropDown(%s, true);\n"),Item->GetIdName().c_str());
-                        #endif
 
                     }
                 }
@@ -386,11 +382,7 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                     continue;
                 }
 
-                #if wxCHECK_VERSION(2, 9, 0)
                 if ( !Extra->m_Enabled ) Codef(_T("%AEnableTool(%s, false);\n"),Child->GetIdName().wx_str());
-                #else
-                if ( !Extra->m_Enabled ) Codef(_T("%AEnableTool(%s, false);\n"),Child->GetIdName().c_str());
-                #endif
             }
 
             Codef(_T("%ARealize();\n"));

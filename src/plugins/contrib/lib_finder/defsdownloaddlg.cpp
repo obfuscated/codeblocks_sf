@@ -119,11 +119,7 @@ void DefsDownloadDlg::FetchList()
         wxURL UrlData(Url);
         if ( !UrlData.IsOk() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid url '%s'"),Url.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid url '%s'"),Url.c_str()));
-            #endif
             continue;
         }
         UrlData.SetProxy( ConfigManager::GetProxy() );
@@ -131,11 +127,7 @@ void DefsDownloadDlg::FetchList()
         std::auto_ptr< wxInputStream > is ( UrlData.GetInputStream() );
         if ( !is.get() || !is->IsOk() )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.c_str()));
-            #endif
             continue;
         }
 
@@ -152,11 +144,7 @@ void DefsDownloadDlg::FetchList()
         TiXmlDocument doc;
         if ( !doc.Parse( (const char*) memory.GetOutputStreamBuffer()->GetBufferStart() ) )
         {
-            #if wxCHECK_VERSION(2, 9, 0)
             LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid XML data in '%s'"),Url.wx_str()));
-            #else
-            LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid XML data in '%s'"),Url.c_str()));
-            #endif
             continue;
         }
 

@@ -173,11 +173,7 @@ void wxsStdDialogButtonSizer::OnBuildCreatingCode()
             {
                 if ( m_Use[i] )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].wx_str());
-                    #else
-                    Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].c_str());
-                    #endif
                 }
             }
             Codef(_T("%ARealize();\n"));

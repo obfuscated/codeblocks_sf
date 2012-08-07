@@ -122,11 +122,7 @@ void wxsSpacer::OnBuildCreatingCode()
                 Codef(_T("%MAdd(%d,%d,%s);\n"),
                     (int)Size.X,
                     (int)Size.Y,
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Extra->AllParamsCode(GetCoderContext()).wx_str());
-                    #else
-                    Extra->AllParamsCode(GetCoderContext()).c_str());
-                    #endif
             }
 
             break;

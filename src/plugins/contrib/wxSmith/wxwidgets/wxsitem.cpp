@@ -235,18 +235,10 @@ void wxsItem::BuildSetupWindowCode()
             if ( PropertiesFlags&flColours )
             {
                 wxString FGCol = m_BaseProperties.m_Fg.BuildCode(GetCoderContext());
-                #if wxCHECK_VERSION(2, 9, 0)
                 if ( !FGCol.empty() ) Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.wx_str());
-                #else
-                if ( !FGCol.empty() ) Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.c_str());
-                #endif
 
                 wxString BGCol = m_BaseProperties.m_Bg.BuildCode(GetCoderContext());
-                #if wxCHECK_VERSION(2, 9, 0)
                 if ( !BGCol.empty() ) Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.wx_str());
-                #else
-                if ( !BGCol.empty() ) Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.c_str());
-                #endif
             }
 
             if ( PropertiesFlags&flFont )
@@ -285,11 +277,7 @@ void wxsItem::BuildSetupWindowCode()
                 wxString ExStyleStr = m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_ExStyleBits,true,wxsCPP);
                 if ( ExStyleStr != _T("0") )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"),ExStyleStr.wx_str());
-                    #else
-                    Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"),ExStyleStr.c_str());
-                    #endif
                 }
             }
 

@@ -57,11 +57,7 @@ void wxsToggleButton::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/tglbtn.h>"),GetInfo().ClassName,0);
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
-            #endif
             if ( IsChecked ) Codef(_T("%ASetValue(%b);\n"),true);
             BuildSetupWindowCode();
             return;

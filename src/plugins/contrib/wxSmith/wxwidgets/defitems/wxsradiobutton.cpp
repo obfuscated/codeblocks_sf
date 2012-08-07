@@ -58,11 +58,7 @@ void wxsRadioButton::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/radiobut.h>"),GetInfo().ClassName,hfInPCH);
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
-            #endif
             if ( IsSelected ) Codef( _T("%ASetValue(%b);\n"), true);
             BuildSetupWindowCode();
             return;

@@ -114,11 +114,7 @@ void SEditorColourSet::LoadAvailableSets()
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
     if (wxDirExists(path) && dir.Open(path))
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.c_str()));
-        #endif
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
         {
@@ -134,11 +130,7 @@ void SEditorColourSet::LoadAvailableSets()
     path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
     if (wxDirExists(path) && dir.Open(path))
     {
-        #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.c_str()));
-        #endif
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
         {
@@ -734,11 +726,7 @@ void SEditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStri
         wxString tmp(_T(' '), keywords.length()); // faster than using Alloc()
 
         const wxChar *src = keywords.c_str();
-        #if wxCHECK_VERSION(2, 9, 0)
         wxChar *dst = (wxChar *) tmp.wx_str();
-        #else
-        wxChar *dst = (wxChar *) tmp.c_str();
-        #endif
         wxChar c;
         size_t len = 0;
 

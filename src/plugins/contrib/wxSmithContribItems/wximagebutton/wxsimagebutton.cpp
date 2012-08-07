@@ -103,11 +103,7 @@ void wxsImageButton::OnBuildCreatingCode() {
 // the basic constructor
 
     const wxString vv = GetVarName();
-	#if wxCHECK_VERSION(2, 9, 0)
     Codef(_T("%s = new wxBitmapButton(%W, %I, wxNullBitmap, %P, %S, %T, %V, %N);\n"), vv.wx_str());
-    #else
-    Codef(_T("%s = new wxBitmapButton(%W, %I, wxNullBitmap, %P, %S, %T, %V, %N);\n"), vv.c_str());
-    #endif
 
 // default button?
 
@@ -121,11 +117,7 @@ void wxsImageButton::OnBuildCreatingCode() {
         const wxString ss = ilist->GetVarName();
 		// Locator comment.
         wxString tt;
-		#if wxCHECK_VERSION(2, 9, 0)
 		tt.Printf(_("// Set the bitmaps for %s.\n"), vv.wx_str());
-		#else
-		tt.Printf(_("// Set the bitmaps for %s.\n"), vv.c_str());
-		#endif
         AddEventCode(tt);
 
         long ll = 0;

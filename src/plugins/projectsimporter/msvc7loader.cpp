@@ -83,11 +83,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
     m_ProjectName = wxFileName(filename).GetName();
 
-    #if wxCHECK_VERSION(2, 9, 0)
     pMsg->DebugLog(F(_T("Importing MSVC 7.xx project: %s"), filename.wx_str()));
-    #else
-    pMsg->DebugLog(F(_T("Importing MSVC 7.xx project: %s"), filename.c_str()));
-    #endif
 
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
@@ -115,11 +111,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     if ((m_Version!=70) && (m_Version!=71))
     {
         // seems to work with visual 8 too ;)
-        #if wxCHECK_VERSION(2, 9, 0)
         pMsg->DebugLog(F(_T("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), ver.wx_str()));
-        #else
-        pMsg->DebugLog(F(_T("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), ver.c_str()));
-        #endif
     }
 
     m_pProject->ClearAllProperties();

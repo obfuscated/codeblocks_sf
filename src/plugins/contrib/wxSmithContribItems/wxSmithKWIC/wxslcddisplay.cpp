@@ -87,18 +87,10 @@ void wxsLCDDisplay::OnBuildCreatingCode()
             Codef(_T("%C(%W,%P,%S);\n"));
 
 			wxString ss = m_cdLightColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
 			if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.c_str());
-			#endif
 
 			ss = m_cdGrayColour.BuildCode( GetCoderContext() );
-			#if wxCHECK_VERSION(2, 9, 0)
 			if (!ss.IsEmpty()) Codef(_T("%ASetGrayColour(%s);\n"), ss.wx_str());
-			#else
-			if (!ss.IsEmpty()) Codef(_T("%ASetGrayColour(%s);\n"), ss.c_str());
-			#endif
 			// 6 digits is the default value.
 			if (m_iNumDigits && m_iNumDigits != 6){
 				Codef(_T("%ASetNumberDigits(%d);\n"), m_iNumDigits);

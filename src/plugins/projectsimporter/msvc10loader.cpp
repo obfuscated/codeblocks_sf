@@ -73,11 +73,7 @@ bool MSVC10Loader::Open(const wxString& filename)
     m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
     m_ProjectName = wxFileName(filename).GetName();
 
-    #if wxCHECK_VERSION(2, 9, 0)
     pMsg->DebugLog(F(_("Importing MSVC 10.xx project: %s"), filename.wx_str()));
-    #else
-    pMsg->DebugLog(F(_("Importing MSVC 10.xx project: %s"), filename.c_str()));
-    #endif
 
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())

@@ -216,11 +216,7 @@ void wxsMenu::OnBuildCreatingCode()
             }
             if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
             {
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%MAppend(%O, %t);\n"),m_Label.wx_str());
-                #else
-                Codef(_T("%MAppend(%O, %t);\n"),m_Label.c_str());
-                #endif
             }
             BuildSetupWindowCode();
             break;

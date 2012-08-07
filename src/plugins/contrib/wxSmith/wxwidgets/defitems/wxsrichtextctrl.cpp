@@ -237,33 +237,17 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/richtext/richtextctrl.h>"),GetInfo().ClassName,hfInPCH);
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sText.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sText.c_str());
-            #endif
 
             wxString sAttrName = GetCoderContext()->GetUniqueName(_T("rchtxtAttr"));
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\twxRichTextAttr %s;\n"), sAttrName.wx_str());
-            #else
-            Codef(_T("\twxRichTextAttr %s;\n"), sAttrName.c_str());
-            #endif
             // Alignment.
             // wxTEXT_ALIGNMENT_LEFT is the default.
             if(m_iAlignment == wxTEXT_ALIGNMENT_CENTRE){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_CENTRE);\n"), sAttrName.wx_str());
-                #else
-                Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_CENTRE);\n"), sAttrName.c_str());
-                #endif
             }
             else if(m_iAlignment == wxTEXT_ALIGNMENT_RIGHT){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);\n"), sAttrName.wx_str());
-                #else
-                Codef( _T("%s.SetAlignment(wxTEXT_ALIGNMENT_RIGHT);\n"), sAttrName.c_str());
-                #endif
             }
             // Attribute flags.
             for(int i = 0;arrAttributeNames[i];i++){
@@ -299,18 +283,10 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             // Line spacing.
             // wxTEXT_ATTR_LINE_SPACING_NORMAL is the default.
             if(m_iSpacing == wxTEXT_ATTR_LINE_SPACING_HALF){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_HALF);\n"), sAttrName.wx_str());
-                #else
-                Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_HALF);\n"), sAttrName.c_str());
-                #endif
             }
             else if(m_iSpacing== wxTEXT_ATTR_LINE_SPACING_TWICE){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_TWICE);\n"), sAttrName.wx_str());
-                #else
-                Codef( _T("%s.SetLineSpacing(wxTEXT_ATTR_LINE_SPACING_TWICE);\n"), sAttrName.c_str());
-                #endif
             }
             // Text effect flags.
             sFlags.Clear();
@@ -372,11 +348,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
 
             if(m_iAlignment != wxTEXT_ALIGNMENT_LEFT || m_iAttribute != 0 || m_iBullets != wxTEXT_ATTR_BULLET_STYLE_NONE ||
                     m_iSpacing != wxTEXT_ATTR_LINE_SPACING_NORMAL || m_iEffects != wxTEXT_ATTR_EFFECT_NONE || bClrChanged || !sFnt.IsEmpty()){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%ASetBasicStyle(%s);\n"), sAttrName.wx_str());
-                #else
-                Codef( _T("%ASetBasicStyle(%s);\n"), sAttrName.c_str());
-                #endif
             }
 
             BuildSetupWindowCode();

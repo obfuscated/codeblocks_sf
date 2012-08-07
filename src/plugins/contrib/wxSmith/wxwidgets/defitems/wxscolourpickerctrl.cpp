@@ -66,11 +66,7 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
             AddHeader(_T("<wx/clrpicker.h>"),GetInfo().ClassName,0);
 
             wxString ss = m_cdColour.BuildCode(GetCoderContext());
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), ss.c_str());
-            #endif
 
             BuildSetupWindowCode();
             return;

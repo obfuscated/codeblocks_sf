@@ -124,11 +124,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
                 if(ilist != NULL)
                 {
                     // Locator comment.
-                    #if wxCHECK_VERSION(2, 9, 0)
                     AddEventCode(wxString::Format(_("// Set the images for %s.\n"), sVarName.wx_str()));
-                    #else
-                    AddEventCode(wxString::Format(_("// Set the images for %s.\n"), sVarName.c_str()));
-                    #endif
 
                     #if wxCHECK_VERSION(2, 9, 0)
                     sSource.Printf(_T("%s->SetImageList(%s);\n"), sVarName.wx_str(), m_sImageList.wx_str());
@@ -206,11 +202,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
 
                     if(bBold)
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%ASetItemBold(%s, true);\n"), sItem.wx_str());
-                        #else
-                        Codef(_T("%ASetItemBold(%s, true);\n"), sItem.c_str());
-                        #endif
                     }
 
                     // and the image-list indices
@@ -262,11 +254,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
                 }
                 if(sTop.Length() > 0)
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AScrollTo(%s);\n"), sTop.wx_str());
-                    #else
-                    Codef(_T("%AScrollTo(%s);\n"), sTop.c_str());
-                    #endif
                 }
 
                 BuildSetupWindowCode();

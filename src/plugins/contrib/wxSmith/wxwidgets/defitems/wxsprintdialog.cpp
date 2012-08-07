@@ -72,88 +72,40 @@ void wxsPrintDialog::OnBuildCreatingCode()
             #endif
 
             if(m_bEnableHelp){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
-                #else
-                Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.c_str(), m_bEnableHelp);
-                #endif
             }
             if(!m_bEnablePageNumbers){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->EnablePageNumbers(%b);\n"), sDataName.wx_str(), m_bEnablePageNumbers);
-                #else
-                Codef(_T("\t%s->EnablePageNumbers(%b);\n"), sDataName.c_str(), m_bEnablePageNumbers);
-                #endif
             }
             if(!m_bEnablePrintToFile){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->EnablePrintToFile(%b);\n"), sDataName.wx_str(), m_bEnablePrintToFile);
-                #else
-                Codef(_T("\t%s->EnablePrintToFile(%b);\n"), sDataName.c_str(), m_bEnablePrintToFile);
-                #endif
             }
             if(m_bEnableSelection){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->EnableSelection(%b);\n"), sDataName.wx_str(), m_bEnableSelection);
-                #else
-                Codef(_T("\t%s->EnableSelection(%b);\n"), sDataName.c_str(), m_bEnableSelection);
-                #endif
                 if(m_bSelection){
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("\t%s->SetSelection(%b);\n"), sDataName.wx_str(), m_bSelection);
-                    #else
-                    Codef(_T("\t%s->SetSelection(%b);\n"), sDataName.c_str(), m_bSelection);
-                    #endif
                 }
             }
             if(m_bCollate){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetCollate(%b);\n"), sDataName.wx_str(), m_bCollate);
-                #else
-                Codef(_T("\t%s->SetCollate(%b);\n"), sDataName.c_str(), m_bCollate);
-                #endif
             }
             if(m_iFromPage > 0){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetFromPage(%d);\n"), sDataName.wx_str(), m_iFromPage);
-                #else
-                Codef(_T("\t%s->SetFromPage(%d);\n"), sDataName.c_str(), m_iFromPage);
-                #endif
             }
             if(m_iToPage > 0){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetToPage(%d);\n"), sDataName.wx_str(), m_iToPage);
-                #else
-                Codef(_T("\t%s->SetToPage(%d);\n"), sDataName.c_str(), m_iToPage);
-                #endif
             }
             if(m_iMinPage > 0){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetMinPage(%d);\n"), sDataName.wx_str(), m_iMinPage);
-                #else
-                Codef(_T("\t%s->SetMinPage(%d);\n"), sDataName.c_str(), m_iMinPage);
-                #endif
             }
             if(m_iMaxPage > 0){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetMaxPage(%d);\n"), sDataName.wx_str(), m_iMaxPage);
-                #else
-                Codef(_T("\t%s->SetMaxPage(%d);\n"), sDataName.c_str(), m_iMaxPage);
-                #endif
             }
             if(m_iNoCopies > 1){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetNoCopies(%d);\n"), sDataName.wx_str(), m_iNoCopies);
-                #else
-                Codef(_T("\t%s->SetNoCopies(%d);\n"), sDataName.c_str(), m_iNoCopies);
-                #endif
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %v);\n"), sDataName.wx_str());
-            #else
-            Codef(_T("%C(%W, %v);\n"), sDataName.c_str());
-            #endif
             BuildSetupWindowCode();
             return;
         }
