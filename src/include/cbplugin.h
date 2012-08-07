@@ -402,7 +402,7 @@ struct cbDebuggerFeature
 class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
     public:
-        cbDebuggerPlugin(const wxString &guiName, const wxString &settingsName);
+        cbDebuggerPlugin(const wxString& guiName, const wxString& settingsName);
 
     public:
         virtual void OnAttach();
@@ -437,7 +437,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         int GetIndexOfActiveConfig() const;
 
         /** @brief Called when the user clicks OK in Settings -> Debugger... */
-        virtual void OnConfigurationChange(bool isActive) {}
+        virtual void OnConfigurationChange(bool isActive) { wxUnusedVar(isActive); };
 
         /** @brief Start a new debugging process. */
         virtual bool Debug(bool breakOnEntry) = 0;
@@ -521,7 +521,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) = 0;
-        virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value) = 0;
+        virtual bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString& value) = 0;
         virtual void ExpandWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void CollapseWatch(cb::shared_ptr<cbWatch> watch) = 0;
 
@@ -541,7 +541,8 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         /**
           * @param[out] disabledMenus A combination of WatchesDisabledMenuItems, which controls which of the default menu items are disabled
           */
-        virtual void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property, int &disabledMenus) {};
+        virtual void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property, int &disabledMenus)
+        { wxUnusedVar(menu); wxUnusedVar(watch); wxUnusedVar(property); wxUnusedVar(disabledMenus); };
 
         virtual void SendCommand(const wxString& cmd, bool debugLog) = 0;
 
@@ -549,10 +550,10 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual void DetachFromProcess() = 0;
         virtual bool IsAttachedToProcess() const = 0;
 
-        virtual void GetCurrentPosition(wxString &filename, int &line) = 0;
+        virtual void GetCurrentPosition(wxString& filename, int &line) = 0;
 
 
-        virtual void OnValueTooltip(const wxString &token, const wxRect &evalRect);
+        virtual void OnValueTooltip(const wxString& token, const wxRect &evalRect);
         virtual bool ShowValueTooltip(int style);
     private:
         void RegisterValueTooltip();
@@ -577,7 +578,8 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
           * @param startType it is the same value given to the Debug method, when the debugger session was started.
           * @return True if debug session is start, false if there are any errors or the users canceled the session.
         */
-        virtual bool CompilerFinished(bool compilerFailed, StartType startType) { return false; }
+        virtual bool CompilerFinished(bool compilerFailed, StartType startType)
+        { wxUnusedVar(compilerFailed); wxUnusedVar(startType); return false; }
     public:
         enum DebugWindows
         {
@@ -624,11 +626,11 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void SwitchToDebuggingLayout();
         void SwitchToPreviousLayout();
 
-        bool GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target);
+        bool GetDebuggee(wxString& pathToDebuggee, wxString& workingDirectory, ProjectBuildTarget* target);
         bool EnsureBuildUpToDate(StartType startType);
         bool WaitingCompilerToFinish() const { return m_WaitingCompilerToFinish; }
 
-        int RunNixConsole(wxString &consoleTty);
+        int RunNixConsole(wxString& consoleTty);
         void MarkAsStopped();
 
     private:
