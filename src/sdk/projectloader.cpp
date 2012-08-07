@@ -877,12 +877,12 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
     }
 }
 
-void ProjectLoader::DoUnits(TiXmlElement* parentNode)
+void ProjectLoader::DoUnits(const TiXmlElement* parentNode)
 {
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading project files..."));
     m_pProject->BeginAddFiles();
     int count = 0;
-    TiXmlElement* unit = parentNode->FirstChildElement("Unit");
+    const TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
     {
         wxString filename = cbC2U(unit->Attribute("filename"));
@@ -904,7 +904,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
     Manager::Get()->GetLogManager()->DebugLog(F(_T("%d files loaded"), count));
 }
 
-void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
+void ProjectLoader::DoUnitOptions(const TiXmlElement* parentNode, ProjectFile* file)
 {
     int tempval = 0;
     bool foundCompile = false;
@@ -915,7 +915,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
 
 //    Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
 
-    TiXmlElement* node = parentNode->FirstChildElement("Option");
+    const TiXmlElement* node = parentNode->FirstChildElement("Option");
     while (node)
     {
         if (node->Attribute("compilerVar"))
@@ -944,7 +944,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("buildCommand") && node->Attribute("compiler"))
         {
-            wxString cmp = cbC2U(node->Attribute("compiler"));
+            const wxString cmp = cbC2U(node->Attribute("compiler"));
             wxString tmp = cbC2U(node->Attribute("buildCommand"));
             if (!cmp.IsEmpty() && !tmp.IsEmpty())
             {

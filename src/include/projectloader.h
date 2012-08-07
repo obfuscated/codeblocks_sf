@@ -85,8 +85,8 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         void DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* base);
 
-        void DoUnits(TiXmlElement* parentNode);
-        void DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file);
+        void DoUnits(const TiXmlElement* parentNode);
+        void DoUnitOptions(const TiXmlElement* parentNode, ProjectFile* file);
     private:
         void ConvertVersion_Pre_1_1();
         void ConvertLibraries(CompileTargetBase* object);
