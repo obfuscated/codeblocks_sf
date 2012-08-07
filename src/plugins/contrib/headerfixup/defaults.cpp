@@ -296,10 +296,10 @@ void Bindings::SetDefaultsCodeBlocks()
     "wxBase64;base64.h|"
     "wxCrc32;crc32.h");
 
-    wxArrayString arCodeBlocks = GetArrayFromString(strCodeBlocks, _T("|"));
-    for(int i = 0; i < static_cast<int>(arCodeBlocks.GetCount()); ++i)
+    const wxArrayString arCodeBlocks = GetArrayFromString(strCodeBlocks, _T("|"));
+    for(std::size_t i = 0; i < arCodeBlocks.GetCount(); ++i)
     {
-        wxArrayString arTmp = GetArrayFromString(arCodeBlocks.Item(i), _T(";"));
+        const wxArrayString arTmp = GetArrayFromString(arCodeBlocks.Item(i), _T(";"));
         AddBinding(_T("CodeBlocks"), arTmp.Item(0), arTmp.Item(1) );
     }
 }// SetDefaultsCodeBlocks
@@ -1015,10 +1015,10 @@ void Bindings::SetDefaultsWxWidgets()
     "wxZlibInputStream;wx/zstream.h|"
     "wxZlibOutputStream;wx/zstream.h");
 
-    wxArrayString arWxWidgets_2_6_4 = GetArrayFromString(strWxWidgets_2_6_4, _T("|"));
-    for(int i = 0; i < static_cast<int>(arWxWidgets_2_6_4.GetCount()); ++i)
+    const wxArrayString arWxWidgets_2_6_4 = GetArrayFromString(strWxWidgets_2_6_4, _T("|"));
+    for(std::size_t i = 0; i < arWxWidgets_2_6_4.GetCount(); ++i)
     {
-        wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_6_4.Item(i), _T(";"));
+        const wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_6_4.Item(i), _T(";"));
         AddBinding(_T("wxWidgets_2_6_4"), arTmp.Item(0), arTmp.Item(1) );
     }
 
@@ -1848,10 +1848,10 @@ void Bindings::SetDefaultsWxWidgets()
     "wxZlibInputStream;wx/zstream.h|"
     "wxZlibOutputStream;wx/zstream.h");
 
-    wxArrayString arWxWidgets_2_8_8 = GetArrayFromString(strWxWidgets_2_8_8, _T("|"));
-    for(int i = 0; i < static_cast<int>(arWxWidgets_2_8_8.GetCount()); ++i)
+    const wxArrayString arWxWidgets_2_8_8 = GetArrayFromString(strWxWidgets_2_8_8, _T("|"));
+    for(std::size_t i = 0; i < arWxWidgets_2_8_8.GetCount(); ++i)
     {
-        wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_8_8.Item(i), _T(";"));
+        const wxArrayString arTmp = GetArrayFromString(arWxWidgets_2_8_8.Item(i), _T(";"));
         AddBinding(_T("wxWidgets_2_8_8"), arTmp.Item(0), arTmp.Item(1) );
     }
 }// SetDefaultsWxWidgets
