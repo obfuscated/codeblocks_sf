@@ -82,6 +82,7 @@ static wxRegEx reInferiorExited2(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited[ \\t]w
                                  wxRE_EXTENDED);
 
 // scripting support
+using SqPlus::Push;
 DECLARE_INSTANCE_TYPE(GDB_driver);
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
