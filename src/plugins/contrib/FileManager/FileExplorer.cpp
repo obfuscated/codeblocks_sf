@@ -8,7 +8,7 @@
 #ifndef CB_PRECOMP
     #include <wx/dnd.h>
     #include <wx/imaglist.h>
-	
+
     #include <cbproject.h>
     #include <configmanager.h>
     #include <projectmanager.h>
@@ -163,11 +163,11 @@ public:
 //            }
         return wxDragCancel;
     }
-    virtual bool OnDrop(wxCoord x, wxCoord y, int tab, wxWindow *wnd)
+    virtual bool OnDrop(wxCoord /*x*/, wxCoord /*y*/, int /*tab*/, wxWindow */*wnd*/)
     {
         return true;
     }
-    virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
+    virtual wxDragResult OnDragOver(wxCoord /*x*/, wxCoord /*y*/, wxDragResult def)
     {
         return def;
     }
@@ -545,7 +545,7 @@ void FileExplorer::OnDirMonitor(wxDirectoryMonitorEvent &e)
     }
 }
 
-void FileExplorer::OnTimerCheckUpdates(wxTimerEvent &e)
+void FileExplorer::OnTimerCheckUpdates(wxTimerEvent &/*e*/)
 {
     if(m_kill)
         return;
@@ -581,7 +581,7 @@ bool FileExplorer::ValidateRoot()
     return false;
 }
 
-void FileExplorer::OnUpdateTreeItems(wxCommandEvent &e)
+void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
 {
     if(m_kill)
         return;
@@ -919,7 +919,7 @@ void FileExplorer::WriteConfig()
     cfg->Write(_T("FileExplorer/ShowHiddenFiles"), m_show_hidden);
 }
 
-void FileExplorer::OnEnterWild(wxCommandEvent &event)
+void FileExplorer::OnEnterWild(wxCommandEvent &/*event*/)
 {
     wxString wild=m_WildCards->GetValue();
     for(size_t i=0;i<m_WildCards->GetCount();i++)
@@ -942,7 +942,7 @@ void FileExplorer::OnEnterWild(wxCommandEvent &event)
     RefreshExpanded(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnChooseWild(wxCommandEvent &event)
+void FileExplorer::OnChooseWild(wxCommandEvent &/*event*/)
 {
     // Beware on win32 that if user opens drop down, then types a wildcard the combo box
     // event will contain a -1 selection and an empty string item. Harmless in current code.
@@ -955,7 +955,7 @@ void FileExplorer::OnChooseWild(wxCommandEvent &event)
     RefreshExpanded(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnEnterLoc(wxCommandEvent &event)
+void FileExplorer::OnEnterLoc(wxCommandEvent &/*event*/)
 {
     wxString loc=m_Loc->GetValue();
     if(!SetRootFolder(loc))
@@ -1025,7 +1025,7 @@ void FileExplorer::OnChooseLoc(wxCommandEvent &event)
     }
 }
 
-void FileExplorer::OnSetLoc(wxCommandEvent &event)
+void FileExplorer::OnSetLoc(wxCommandEvent &/*event*/)
 {
     wxString loc=GetFullPath(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
     if(!SetRootFolder(loc))
@@ -1035,7 +1035,7 @@ void FileExplorer::OnSetLoc(wxCommandEvent &event)
         m_Loc->Delete(10+m_favdirs.GetCount());
 }
 
-void FileExplorer::OnOpenInEditor(wxCommandEvent &event)
+void FileExplorer::OnOpenInEditor(wxCommandEvent &/*event*/)
 {
     for(int i=0;i<m_ticount;i++)
     {
@@ -1125,7 +1125,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     if(m_ticount>0)
     {
         if(m_ticount==1)
-        {            
+        {
             if(img==fvsFolder)
             {
                 ftd->SetKind(FileTreeData::ftdkFolder);
@@ -1179,7 +1179,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
 
 }
 
-void FileExplorer::OnNewFile(wxCommandEvent &event)
+void FileExplorer::OnNewFile(wxCommandEvent &/*event*/)
 {
     wxString workingdir=GetFullPath(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
     wxTextEntryDialog te(this,_T("Name Your New File: "));
@@ -1204,7 +1204,7 @@ void FileExplorer::OnNewFile(wxCommandEvent &event)
         cbMessageBox(_T("File/Directory Already Exists with Name ")+name, _T("Error"));
 }
 
-void FileExplorer::OnAddFavorite(wxCommandEvent &event)
+void FileExplorer::OnAddFavorite(wxCommandEvent &/*event*/)
 {
     FavoriteDir fav;
     fav.path=GetFullPath(m_selectti[0]);
@@ -1219,7 +1219,7 @@ void FileExplorer::OnAddFavorite(wxCommandEvent &event)
     m_Loc->Insert(name,0);
 }
 
-void FileExplorer::OnNewFolder(wxCommandEvent &event)
+void FileExplorer::OnNewFolder(wxCommandEvent &/*event*/)
 {
     wxString workingdir=GetFullPath(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
     wxTextEntryDialog te(this,_T("New Directory Name: "));
@@ -1238,7 +1238,7 @@ void FileExplorer::OnNewFolder(wxCommandEvent &event)
         cbMessageBox(_T("File/Directory Already Exists with Name ")+name);
 }
 
-void FileExplorer::OnDuplicate(wxCommandEvent &event)
+void FileExplorer::OnDuplicate(wxCommandEvent &/*event*/)
 {
     m_ticount=m_Tree->GetSelections(m_selectti);
     for(int i=0;i<m_ticount;i++)
@@ -1316,7 +1316,7 @@ void FileExplorer::CopyFiles(const wxString &destination, const wxArrayString &s
     }
 }
 
-void FileExplorer::OnCopy(wxCommandEvent &event)
+void FileExplorer::OnCopy(wxCommandEvent &/*event*/)
 {
     wxDirDialog dd(this,_T("Copy to"));
     dd.SetPath(GetFullPath(m_Tree->GetRootItem()));
@@ -1356,7 +1356,7 @@ void FileExplorer::MoveFiles(const wxString &destination, const wxArrayString &s
     }
 }
 
-void FileExplorer::OnMove(wxCommandEvent &event)
+void FileExplorer::OnMove(wxCommandEvent &/*event*/)
 {
     wxDirDialog dd(this,_T("Move to"));
     wxArrayString selectedfiles;
@@ -1382,7 +1382,7 @@ wxArrayString FileExplorer::GetSelectedPaths()
     return paths;
 }
 
-void FileExplorer::OnDelete(wxCommandEvent &event)
+void FileExplorer::OnDelete(wxCommandEvent &/*event*/)
 {
     m_ticount=m_Tree->GetSelections(m_selectti);
     wxArrayString as=GetSelectedPaths();
@@ -1421,7 +1421,7 @@ void FileExplorer::OnDelete(wxCommandEvent &event)
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnRename(wxCommandEvent &event)
+void FileExplorer::OnRename(wxCommandEvent &/*event*/)
 {
     wxString path(GetFullPath(m_selectti[0]));  //SINGLE: m_Tree->GetSelection()
     if(wxFileName::FileExists(path))
@@ -1459,17 +1459,17 @@ void FileExplorer::OnRename(wxCommandEvent &event)
     Refresh(m_Tree->GetItemParent(m_selectti[0])); //SINGLE: m_Tree->GetSelection()
 }
 
-void FileExplorer::OnExpandAll(wxCommandEvent &event)
+void FileExplorer::OnExpandAll(wxCommandEvent &/*event*/)
 {
     m_Tree->ExpandAllChildren(m_Tree->GetSelection());
 }
 
-void FileExplorer::OnCollapseAll(wxCommandEvent &event)
+void FileExplorer::OnCollapseAll(wxCommandEvent &/*event*/)
 {
     m_Tree->CollapseAllChildren(m_Tree->GetSelection());
 }
 
-void FileExplorer::OnSettings(wxCommandEvent &event)
+void FileExplorer::OnSettings(wxCommandEvent &/*event*/)
 {
     FileBrowserSettings fbs(m_favdirs,NULL);
     if(fbs.ShowModal()==wxID_OK)
@@ -1485,45 +1485,45 @@ void FileExplorer::OnSettings(wxCommandEvent &event)
 
 }
 
-void FileExplorer::OnShowHidden(wxCommandEvent &event)
+void FileExplorer::OnShowHidden(wxCommandEvent &/*event*/)
 {
     m_show_hidden=!m_show_hidden;
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnParseCVS(wxCommandEvent &event)
+void FileExplorer::OnParseCVS(wxCommandEvent &/*event*/)
 {
     m_parse_cvs=!m_parse_cvs;
     //cfg->Clear();
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnParseSVN(wxCommandEvent &event)
+void FileExplorer::OnParseSVN(wxCommandEvent &/*event*/)
 {
     m_parse_svn=!m_parse_svn;
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnParseHG(wxCommandEvent &event)
+void FileExplorer::OnParseHG(wxCommandEvent &/*event*/)
 {
     m_parse_hg=!m_parse_hg;
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnParseBZR(wxCommandEvent &event)
+void FileExplorer::OnParseBZR(wxCommandEvent &/*event*/)
 {
     m_parse_bzr=!m_parse_bzr;
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnUpButton(wxCommandEvent &event)
+void FileExplorer::OnUpButton(wxCommandEvent &/*event*/)
 {
     wxFileName loc(m_root);
     loc.RemoveLastDir();
     SetRootFolder(loc.GetFullPath()); //TODO: Check if this is always the root folder
 }
 
-void FileExplorer::OnRefresh(wxCommandEvent &event)
+void FileExplorer::OnRefresh(wxCommandEvent &/*event*/)
 {
     if(m_Tree->GetItemImage(m_selectti[0])==fvsFolder) //SINGLE: m_Tree->GetSelection()
         Refresh(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
@@ -1607,7 +1607,7 @@ void FileExplorer::OnEndDragTreeItem(wxTreeEvent &event)
     Refresh(m_Tree->GetRootItem());
 }
 
-void FileExplorer::OnAddToProject(wxCommandEvent &event)
+void FileExplorer::OnAddToProject(wxCommandEvent &/*event*/)
 {
     wxArrayString files;
     wxString file;
@@ -1864,7 +1864,7 @@ bool FileExplorer::ParseCVSstate(const wxString &path, VCSstatearray &sa)
         return false;
 }
 
-void FileExplorer::OnExecRequest(wxCommandEvent &event)
+void FileExplorer::OnExecRequest(wxCommandEvent &/*event*/)
 {
     m_updater->ExecMain();
 }

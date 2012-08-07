@@ -351,7 +351,7 @@ void LibrariesDlg::OnInit(wxInitDialogEvent& event)
     event.Skip();
 }
 
-void LibrariesDlg::OnButton8Click(wxCommandEvent& event)
+void LibrariesDlg::OnButton8Click(wxCommandEvent& /*event*/)
 {
     LibraryDetectionManager m_Manager(m_WorkingCopy);
 
@@ -459,17 +459,17 @@ void LibrariesDlg::RecreateLibrariesListForceRefresh()
     RecreateLibrariesList(Sel);
 }
 
-void LibrariesDlg::Onm_ShowPredefinedClick(wxCommandEvent& event)
+void LibrariesDlg::Onm_ShowPredefinedClick(wxCommandEvent& /*event*/)
 {
     RecreateLibrariesListForceRefresh();
 }
 
-void LibrariesDlg::Onm_ShowPkgConfigClick(wxCommandEvent& event)
+void LibrariesDlg::Onm_ShowPkgConfigClick(wxCommandEvent& /*event*/)
 {
     RecreateLibrariesListForceRefresh();
 }
 
-void LibrariesDlg::Onm_LibrariesSelect(wxCommandEvent& event)
+void LibrariesDlg::Onm_LibrariesSelect(wxCommandEvent& /*event*/)
 {
     SelectLibrary( m_Libraries->GetStringSelection() );
 }
@@ -687,7 +687,7 @@ void LibrariesDlg::OnWrite(wxCommandEvent& event)
     event.Skip();
 }
 
-void LibrariesDlg::Onm_ConfDeleteClick(wxCommandEvent& event)
+void LibrariesDlg::Onm_ConfDeleteClick(wxCommandEvent& /*event*/)
 {
     if ( m_SelectedShortcut.IsEmpty() || !m_SelectedConfig || m_SelectedConfig->Type!=rtDetected )
     {
@@ -730,7 +730,7 @@ void LibrariesDlg::Onm_ConfDeleteClick(wxCommandEvent& event)
     }
 }
 
-void LibrariesDlg::Onm_ConfigurationsSelect(wxCommandEvent& event)
+void LibrariesDlg::Onm_ConfigurationsSelect(wxCommandEvent& /*event*/)
 {
     if ( m_WhileUpdating ) return;
     StoreConfiguration();
@@ -743,7 +743,7 @@ void LibrariesDlg::Onm_ConfigurationsSelect(wxCommandEvent& event)
     SelectConfiguration( (LibraryResult*) m_Configurations->GetClientData(Index) );
 }
 
-void LibrariesDlg::Onm_ConfDuplicateClick(wxCommandEvent& event)
+void LibrariesDlg::Onm_ConfDuplicateClick(wxCommandEvent& /*event*/)
 {
     if ( m_SelectedShortcut.IsEmpty() || !m_SelectedConfig )
     {
@@ -797,7 +797,7 @@ void LibrariesDlg::StoreConfiguration()
     m_SelectedConfig->Require      = wxStringTokenize( m_Required->GetValue(),     _T("\n\r"), wxTOKEN_STRTOK );
 }
 
-void LibrariesDlg::Onm_NameText(wxCommandEvent& event)
+void LibrariesDlg::Onm_NameText(wxCommandEvent& /*event*/)
 {
     if ( m_WhileUpdating ) return;
     RefreshConfigurationName();
@@ -810,13 +810,13 @@ void LibrariesDlg::RefreshConfigurationName()
     m_Configurations->SetString( m_Configurations->GetSelection(), GetDesc( m_SelectedConfig ) );
 }
 
-void LibrariesDlg::Onm_CompilersText(wxCommandEvent& event)
+void LibrariesDlg::Onm_CompilersText(wxCommandEvent& /*event*/)
 {
     if ( m_WhileUpdating ) return;
     RefreshConfigurationName();
 }
 
-void LibrariesDlg::OnButton1Click(wxCommandEvent& event)
+void LibrariesDlg::OnButton1Click(wxCommandEvent& /*event*/)
 {
     StoreConfiguration();
 
@@ -851,7 +851,7 @@ void LibrariesDlg::OnButton1Click(wxCommandEvent& event)
     //m_WorkingCopy[rtDetected].DebugDump(_T("After add"));
 }
 
-void LibrariesDlg::OnButton2Click(wxCommandEvent& event)
+void LibrariesDlg::OnButton2Click(wxCommandEvent& /*event*/)
 {
     if ( m_SelectedShortcut.IsEmpty() ) return;
 
@@ -912,7 +912,7 @@ void LibrariesDlg::OnButton2Click(wxCommandEvent& event)
     RecreateLibrariesListForceRefresh();
 }
 
-void LibrariesDlg::Onm_ConfigPosChangeDown(wxCommandEvent& event)
+void LibrariesDlg::Onm_ConfigPosChangeDown(wxCommandEvent& /*event*/)
 {
     if ( m_WhileUpdating ) return;
     m_WhileUpdating = true;
@@ -937,7 +937,7 @@ void LibrariesDlg::Onm_ConfigPosChangeDown(wxCommandEvent& event)
     m_WhileUpdating = false;
 }
 
-void LibrariesDlg::Onm_ConfigPosChangeUp(wxCommandEvent& event)
+void LibrariesDlg::Onm_ConfigPosChangeUp(wxCommandEvent& /*event*/)
 {
     if ( m_WhileUpdating ) return;
     m_WhileUpdating = true;
@@ -961,7 +961,7 @@ void LibrariesDlg::Onm_ConfigPosChangeUp(wxCommandEvent& event)
     m_WhileUpdating = false;
 }
 
-void LibrariesDlg::OnButton3Click(wxCommandEvent& event)
+void LibrariesDlg::OnButton3Click(wxCommandEvent& /*event*/)
 {
     DefsDownloadDlg(this).ShowModal();
 }

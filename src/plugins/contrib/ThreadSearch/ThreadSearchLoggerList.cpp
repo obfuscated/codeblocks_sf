@@ -122,7 +122,7 @@ void ThreadSearchLoggerList::OnLoggerListDoubleClick(wxListEvent& event)
 }
 
 
-bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& event, wxString& filepath, long &line)
+bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wxString& filepath, long &line)
 {
     bool success = false;
     wxListItem listItem;
@@ -357,7 +357,7 @@ void ThreadSearchLoggerList::OnLoggerListContextualMenu(wxContextMenuEvent& even
 }
 
 
-void ThreadSearchLoggerList::OnDeleteListItem(wxCommandEvent& event)
+void ThreadSearchLoggerList::OnDeleteListItem(wxCommandEvent& /*event*/)
 {
     // Finds selected item index
     long index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -391,7 +391,7 @@ void ThreadSearchLoggerList::OnDeleteListItem(wxCommandEvent& event)
 }
 
 
-void ThreadSearchLoggerList::OnDeleteAllListItems(wxCommandEvent& event)
+void ThreadSearchLoggerList::OnDeleteAllListItems(wxCommandEvent& /*event*/)
 {
     DeleteListItems();
 }
@@ -480,7 +480,7 @@ struct ItemLine
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-int wxCALLBACK SortLineAscending(long item1, long item2, long data)
+int wxCALLBACK SortLineAscending(long item1, long item2, long /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -495,7 +495,7 @@ int wxCALLBACK SortLineAscending(long item1, long item2, long data)
     return Compare(i1.line, i2.line);
 }
 
-int wxCALLBACK SortLineDescending(long item1, long item2, long data)
+int wxCALLBACK SortLineDescending(long item1, long item2, long /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -539,7 +539,7 @@ struct Item
     }
 };
 
-int wxCALLBACK SortDirectoryAscending(long item1, long item2, long data)
+int wxCALLBACK SortDirectoryAscending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -554,7 +554,7 @@ int wxCALLBACK SortDirectoryAscending(long item1, long item2, long data)
     return i1.CompareDirectory(i2);
 }
 
-int wxCALLBACK SortDirectoryDescending(long item1, long item2, long data)
+int wxCALLBACK SortDirectoryDescending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -569,7 +569,7 @@ int wxCALLBACK SortDirectoryDescending(long item1, long item2, long data)
     return i2.CompareDirectory(i1);
 }
 
-int wxCALLBACK SortFilenameAscending(long item1, long item2, long data)
+int wxCALLBACK SortFilenameAscending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -584,7 +584,7 @@ int wxCALLBACK SortFilenameAscending(long item1, long item2, long data)
     return i1.CompareFile(i2);
 }
 
-int wxCALLBACK SortFilenameDescending(long item1, long item2, long data)
+int wxCALLBACK SortFilenameDescending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -607,7 +607,7 @@ struct ItemText
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-int wxCALLBACK SortTextAscending(long item1, long item2, long data)
+int wxCALLBACK SortTextAscending(long item1, long item2, long /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
@@ -622,7 +622,7 @@ int wxCALLBACK SortTextAscending(long item1, long item2, long data)
     return i1.text.CompareTo(i2.text);
 }
 
-int wxCALLBACK SortTextDescending(long item1, long item2, long data)
+int wxCALLBACK SortTextDescending(long item1, long item2, long /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);

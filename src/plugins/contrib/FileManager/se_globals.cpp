@@ -9,7 +9,7 @@ wxString GetParentDir(const wxString &path)
         return parent;
 }
 
-bool DirIsChildOf(const wxString &path, const wxString &child)
+bool DirIsChildOf(const wxString &path, const wxString &/*child*/)
 {
     wxString parent=path;
     while(!parent.IsEmpty())

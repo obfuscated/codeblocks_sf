@@ -74,7 +74,7 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryDetectionManager& Manager,T
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
 	//*)
 }
@@ -83,7 +83,7 @@ ProcessingDlg::~ProcessingDlg()
 {
 }
 
-void ProcessingDlg::OnButton1Click(wxCommandEvent& event)
+void ProcessingDlg::OnButton1Click(wxCommandEvent& /*event*//*event*/)
 {
     StopBtn->Disable();
     StopFlag = true;

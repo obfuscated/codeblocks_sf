@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 			</Target>
 			<Environment>
 				<Variable name="CBDIR" value="../../.." />
@@ -22,6 +23,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />

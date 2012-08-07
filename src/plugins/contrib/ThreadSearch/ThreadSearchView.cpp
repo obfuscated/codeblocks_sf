@@ -182,7 +182,7 @@ void ThreadSearchView::OnThreadSearchErrorEvent(const ThreadSearchEvent& event)
     Manager::Get()->GetLogManager()->Log(F(_T("ThreadSearch: %s"), event.GetString().wx_str()));
 }
 
-void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &event)
+void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &/*event*/)
 {
     // Event handler used when user clicks on enter after typing
     // in combo box text control.
@@ -193,7 +193,7 @@ void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &event)
 }
 
 
-void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &event)
+void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &/*event*/)
 {
     // User clicked on Search/Cancel
     // m_ThreadSearchEventsArray is shared by two threads, we
@@ -231,7 +231,7 @@ void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &event)
 }
 
 
-void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &event)
+void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &/*event*/)
 {
     // Displays a dialog box with a ThreadSearchConfPanel.
     // All parameters can be set on this dialog.
@@ -268,7 +268,7 @@ void ThreadSearchView::OnBtnShowDirItemsClick(wxCommandEvent& WXUNUSED(event))
 }
 
 
-void ThreadSearchView::OnSplitterDoubleClick(wxSplitterEvent &event)
+void ThreadSearchView::OnSplitterDoubleClick(wxSplitterEvent &/*event*/)
 {
     m_ThreadSearchPlugin.SetShowCodePreview(false);
     ApplySplitterSettings(false, m_pSplitter->GetSplitMode());
@@ -775,7 +775,7 @@ void ThreadSearchView::PostThreadSearchEvent(const ThreadSearchEvent& event)
 }
 
 
-void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& event)
+void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& /*event*/)
 {
     if ( m_MutexSearchEventsArray.Lock() == wxMUTEX_NO_ERROR )
     {

@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
@@ -27,6 +28,7 @@
 			<Add alias="All" targets="KeyBinder plugin;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-g" />
 			<Add option="-Ulinux" />

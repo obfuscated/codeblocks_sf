@@ -35,7 +35,7 @@ public:
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* prj);
 
     // Not used:
-    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) { return 0; };
+    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/) { return 0; };
 
 protected:
     virtual void OnAttach();

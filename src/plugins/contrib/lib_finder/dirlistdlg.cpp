@@ -57,7 +57,7 @@ DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
 	wxButton* Button1;
 	wxButton* Button2;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent, id, _("List of directories with libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Scanned directories:"));
@@ -80,7 +80,7 @@ DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton2Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton3Click);
@@ -95,7 +95,7 @@ DirListDlg::~DirListDlg()
 {
 }
 
-void DirListDlg::OnButton1Click(wxCommandEvent& event)
+void DirListDlg::OnButton1Click(wxCommandEvent& /*event*/)
 {
     wxString DirName = ::wxDirSelector();
     if ( DirName.empty() ) return;
@@ -104,17 +104,17 @@ void DirListDlg::OnButton1Click(wxCommandEvent& event)
     DirList->AppendText(DirName);
 }
 
-void DirListDlg::OnButton2Click(wxCommandEvent& event)
+void DirListDlg::OnButton2Click(wxCommandEvent& /*event*/)
 {
     DirList->Clear();
 }
 
-void DirListDlg::OnButton3Click(wxCommandEvent& event)
+void DirListDlg::OnButton3Click(wxCommandEvent& /*event*/)
 {
     EndModal(wxID_CANCEL);
 }
 
-void DirListDlg::OnButton4Click(wxCommandEvent& event)
+void DirListDlg::OnButton4Click(wxCommandEvent& /*event*/)
 {
     Dirs = wxStringTokenize( DirList->GetValue(), _T("\n"), wxTOKEN_STRTOK );
     Manager::Get()->GetConfigManager(_T("lib_finder"))->Write(_T("search_dirs"),Dirs);

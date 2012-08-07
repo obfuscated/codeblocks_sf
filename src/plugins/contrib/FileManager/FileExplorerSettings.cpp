@@ -28,7 +28,7 @@ BEGIN_EVENT_TABLE(FileBrowserSettings, wxDialog)
 END_EVENT_TABLE()
 
 
-FileBrowserSettings::FileBrowserSettings( const FavoriteDirs &favdirs, wxWindow* parent, int id, wxPoint pos, wxSize size, int style ) //: wxDialog( parent, id, _T("File Explorer Settings"), pos, size, style )
+FileBrowserSettings::FileBrowserSettings( const FavoriteDirs &favdirs, wxWindow* parent, int /*id*/, wxPoint /*pos*/, wxSize /*size*/, int /*style*/ ) //: wxDialog( parent, id, _T("File Explorer Settings"), pos, size, style )
 {
     wxXmlResource::Get()->LoadDialog(this,parent,_T("FileBrowserSettings"));
     idfavlist=XRCCTRL(*this,"idfavlist",wxListBox);
@@ -63,7 +63,7 @@ FileBrowserSettings::FileBrowserSettings( const FavoriteDirs &favdirs, wxWindow*
 
 }
 
-void FileBrowserSettings::New(wxCommandEvent &event)
+void FileBrowserSettings::New(wxCommandEvent &/*event*/)
 {
     FavoriteDir f;
     f.alias=_T("New Path");
@@ -76,7 +76,7 @@ void FileBrowserSettings::New(wxCommandEvent &event)
     idpath->SetValue(f.path);
 }
 
-void FileBrowserSettings::Delete(wxCommandEvent &event)
+void FileBrowserSettings::Delete(wxCommandEvent &/*event*/)
 {
     int i=idfavlist->GetSelection();
     if(i<0)
@@ -99,7 +99,7 @@ void FileBrowserSettings::Delete(wxCommandEvent &event)
     idpath->SetValue(m_favdirs[i].path);
 }
 
-void FileBrowserSettings::OnUp(wxCommandEvent &event)
+void FileBrowserSettings::OnUp(wxCommandEvent &/*event*/)
 {
     int i=idfavlist->GetSelection();
     if(i<=0)
@@ -116,7 +116,7 @@ void FileBrowserSettings::OnUp(wxCommandEvent &event)
     m_selected=i-1;
 }
 
-void FileBrowserSettings::OnDown(wxCommandEvent &event)
+void FileBrowserSettings::OnDown(wxCommandEvent &/*event*/)
 {
     int i=idfavlist->GetSelection();
     if(i<0)
@@ -135,10 +135,10 @@ void FileBrowserSettings::OnDown(wxCommandEvent &event)
     m_selected=i+1;
 }
 
-void FileBrowserSettings::ChangeSelection(wxCommandEvent &event)
+void FileBrowserSettings::ChangeSelection(wxCommandEvent &/*event*/)
 {
     int i=idfavlist->GetSelection();
-    if(i<0) 
+    if(i<0)
         return;
     if((unsigned int)i>=idfavlist->GetCount()) //TODO: Perhaps more correct to define unsigned int j, set j=i, then do the comparison
         return;
@@ -151,7 +151,7 @@ void FileBrowserSettings::ChangeSelection(wxCommandEvent &event)
     idpath->SetValue(m_favdirs[i].path);
 }
 
-void FileBrowserSettings::NameChange(wxCommandEvent &event)
+void FileBrowserSettings::NameChange(wxCommandEvent &/*event*/)
 {
     if(m_selected<0)
         return;
@@ -161,14 +161,14 @@ void FileBrowserSettings::NameChange(wxCommandEvent &event)
 }
 
 
-void FileBrowserSettings::OnOk(wxCommandEvent &event)
+void FileBrowserSettings::OnOk(wxCommandEvent &/*event*/)
 {
     m_favdirs[m_selected].alias=idalias->GetValue();
     m_favdirs[m_selected].path=idpath->GetValue();
     EndModal(wxID_OK);
 }
 
-void FileBrowserSettings::OnBrowse(wxCommandEvent &event)
+void FileBrowserSettings::OnBrowse(wxCommandEvent &/*event*/)
 {
     // todo: change to a dir picker
     wxDirDialog *dd=new wxDirDialog(NULL,_T("Choose a Directory"));

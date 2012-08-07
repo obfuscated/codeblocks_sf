@@ -124,7 +124,7 @@ void PkgConfigManager::Clear()
 {
 }
 
-bool PkgConfigManager::UpdateTarget(const wxString& VarName,CompileTargetBase* Target,bool Force)
+bool PkgConfigManager::UpdateTarget(const wxString& VarName,CompileTargetBase* Target,bool /*Force*/)
 {
     Target->AddCompilerOption(_T("`pkg-config ") + VarName + _T(" --cflags`"));
     Target->AddLinkerOption  (_T("`pkg-config ") + VarName + _T(" --libs`"  ));

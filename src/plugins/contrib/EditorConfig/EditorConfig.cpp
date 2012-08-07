@@ -87,7 +87,7 @@ void EditorConfig::OnAttach()
         new cbEventFunctor<EditorConfig, CodeBlocksEvent>(this, &EditorConfig::OnEditorActivated));
 }
 
-void EditorConfig::OnRelease(bool appShutDown)
+void EditorConfig::OnRelease(bool /*appShutDown*/)
 {
     if (m_InitDone)
         ProjectLoaderHooks::UnregisterHook(m_ECHookID, true);
@@ -209,7 +209,7 @@ void EditorConfig::OnProjectLoadingHook(cbProject* prj, TiXmlElement* elem, bool
     }
 }
 
-void EditorConfig::OnReloadEditorConfig(wxCommandEvent& event)
+void EditorConfig::OnReloadEditorConfig(wxCommandEvent& /*event*/)
 {
     // Reload EditorConfig
     if ( ApplyEditorSettings(Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()) )

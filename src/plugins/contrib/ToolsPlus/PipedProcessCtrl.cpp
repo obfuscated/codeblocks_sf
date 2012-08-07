@@ -76,7 +76,7 @@ void PipedProcessCtrl::OnEndProcess(wxProcessEvent &event)
         m_shellmgr->OnShellTerminate(this);
 }
 
-long PipedProcessCtrl::LaunchProcess(const wxString &processcmd, const wxArrayString &options) // bool ParseLinks, bool LinkClicks, const wxString &LinkRegex
+long PipedProcessCtrl::LaunchProcess(const wxString &processcmd, const wxArrayString &/*options*/) // bool ParseLinks, bool LinkClicks, const wxString &LinkRegex
 {
     if(!m_dead)
         return -1;

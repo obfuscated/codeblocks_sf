@@ -102,7 +102,7 @@ void lib_finder::OnAttach()
     RegisterScripting();
 }
 
-void lib_finder::OnRelease(bool appShutDown)
+void lib_finder::OnRelease(bool /*appShutDown*/)
 {
     // unregister cripting extensions
     UnregisterScripting();

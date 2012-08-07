@@ -51,7 +51,7 @@ class PipedProcessCtrl : public ShellCtrlBase
         void OnDClick(wxMouseEvent &e);
         void OnSize(wxSizeEvent& event);
         bool ParsesLinks(wxString &LinkRegex) {LinkRegex=m_linkregex;return m_parselinks;}
-        void ParseLinks(bool parselinks=true, wxString LinkRegex=LinkRegexDefault) {m_parselinks=parselinks;}
+        void ParseLinks(bool parselinks=true, wxString LinkRegex=LinkRegexDefault) {m_parselinks=parselinks;(void)(LinkRegex);}
         static wxString LinkRegexDefault;
     private:
         PipedTextCtrl *m_textctrl;

@@ -58,7 +58,7 @@ class CommandCollection;
 class CmdConfigDialog : public wxDialog
 {
     public:
-        CmdConfigDialog(CmdConfigDialog &dlg) {}
+        CmdConfigDialog(CmdConfigDialog &/*dlg*/) : wxDialog() {}
 		CmdConfigDialog( wxWindow* parent, ToolsPlus* plugin);
         virtual ~CmdConfigDialog() {}
 

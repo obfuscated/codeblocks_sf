@@ -87,7 +87,7 @@ void ReopenEditor::OnAttach()
     ShowList();
 }
 
-void ReopenEditor::OnRelease(bool appShutDown)
+void ReopenEditor::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
@@ -177,7 +177,7 @@ void ReopenEditor::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
-void ReopenEditor::OnReopenEditor(wxCommandEvent& event)
+void ReopenEditor::OnReopenEditor(wxCommandEvent& /*event*/)
 {
     if(m_pListLog->GetItemsCount() > 0)
     {
@@ -309,7 +309,7 @@ void ReopenEditor::OnViewList(wxCommandEvent& event)
     }
 }
 
-void ReopenEditor::OnUpdateUI(wxUpdateUIEvent& event)
+void ReopenEditor::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idReopenEditorView, IsWindowReallyShown(m_pListLog));
 }

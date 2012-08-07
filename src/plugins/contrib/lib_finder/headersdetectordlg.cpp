@@ -87,7 +87,7 @@ HeadersDetectorDlg::~HeadersDetectorDlg()
 }
 
 
-void HeadersDetectorDlg::OnTimer1Trigger(wxTimerEvent& event)
+void HeadersDetectorDlg::OnTimer1Trigger(wxTimerEvent& /*event*/)
 {
     wxCriticalSectionLocker lock(m_Section);
     Freeze();
@@ -98,7 +98,7 @@ void HeadersDetectorDlg::OnTimer1Trigger(wxTimerEvent& event)
     Thaw();
 }
 
-void HeadersDetectorDlg::Cancel(wxCommandEvent& event)
+void HeadersDetectorDlg::Cancel(wxCommandEvent& /*event*/)
 {
     m_Cancel = true;
 }

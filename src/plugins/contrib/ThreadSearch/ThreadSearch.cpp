@@ -206,7 +206,7 @@ void ThreadSearch::OnAttach()
     m_OnReleased = false;
 }
 
-void ThreadSearch::OnRelease(bool appShutDown)
+void ThreadSearch::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
@@ -372,7 +372,7 @@ void ThreadSearch::OnMnuViewThreadSearch(wxCommandEvent& event)
 }
 
 
-void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& event)
+void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& /*event*/)
 {
     if ( !IsAttached() )
         return;
@@ -390,7 +390,7 @@ void ThreadSearch::OnMnuSearchThreadSearch(wxCommandEvent& event)
     }
 }
 
-void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& event)
+void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& /*event*/)
 {
     if ( !IsAttached() )
         return;
@@ -402,7 +402,7 @@ void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& event)
 }
 
 
-void ThreadSearch::OnCtxThreadSearch(wxCommandEvent& event)
+void ThreadSearch::OnCtxThreadSearch(wxCommandEvent& /*event*/)
 {
     if ( !IsAttached() )
         return;
@@ -412,7 +412,7 @@ void ThreadSearch::OnCtxThreadSearch(wxCommandEvent& event)
 }
 
 
-void ThreadSearch::OnMnuViewThreadSearchUpdateUI(wxUpdateUIEvent& event)
+void ThreadSearch::OnMnuViewThreadSearchUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     if ( !IsAttached() )
         return;
@@ -438,7 +438,7 @@ void ThreadSearch::OnMnuViewFocusThreadSearchUpdateUI(wxUpdateUIEvent& event)
 }
 
 
-void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const FileTreeData* data)
+void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const FileTreeData* /*data*/)
 {
     wxMenuItem* pMenuItem = NULL;
     if (!pMenu || !IsAttached())
@@ -575,7 +575,7 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
 
 
 void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
-                              ThreadSearchViewManagerBase::eManagerTypes mgrType,
+                              ThreadSearchViewManagerBase::eManagerTypes /*mgrType*/,
                               const wxArrayString& searchPatterns)
 {
     ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("ThreadSearch"));

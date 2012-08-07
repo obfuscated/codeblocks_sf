@@ -122,7 +122,7 @@ void ValgrindConfigurationPanel::OnApply()
     cfg->Write(wxT("/cachegrind_args"), m_CachegrindArgs->GetValue());
 }
 
-void ValgrindConfigurationPanel::OnBrowseButtonClick(wxCommandEvent& event)
+void ValgrindConfigurationPanel::OnBrowseButtonClick(wxCommandEvent& /*event*/)
 {
     wxFileDialog dialog(this, wxT("Choose path"));
     if (dialog.ShowModal() == wxID_OK)

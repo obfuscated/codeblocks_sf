@@ -60,7 +60,7 @@ ProjectMissingLibs::ProjectMissingLibs(wxWindow* parent,wxArrayString& missingLi
 	wxStaticLine* StaticLine3;
 	wxStaticText* StaticText2;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent, wxID_ANY, _("Missing libraries definitions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer1->AddGrowableCol(0);
@@ -108,7 +108,7 @@ ProjectMissingLibs::ProjectMissingLibs(wxWindow* parent,wxArrayString& missingLi
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectMissingLibs::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectMissingLibs::OnButton1Click1);
 	//*)
@@ -199,7 +199,7 @@ void ProjectMissingLibs::SetProgress( float progress, int id )
     }
 }
 
-void ProjectMissingLibs::JobFinished( int id )
+void ProjectMissingLibs::JobFinished( int /*id*/ )
 {
     m_StatusText->SetLabel( _("Ready") );
 }
@@ -224,7 +224,7 @@ bool ProjectMissingLibs::AreMissingSearchFilters()
     return false;
 }
 
-void ProjectMissingLibs::OnButton1Click(wxCommandEvent& event)
+void ProjectMissingLibs::OnButton1Click(wxCommandEvent& /*event*/)
 {
     TryDownloadMissing();
     m_DetectionManager.LoadSearchFilters();
@@ -285,7 +285,7 @@ void ProjectMissingLibs::RecreateLibsList()
 
 }
 
-void ProjectMissingLibs::OnButton1Click1(wxCommandEvent& event)
+void ProjectMissingLibs::OnButton1Click1(wxCommandEvent& /*event*/)
 {
     wxArrayString Libs;
     for ( size_t i=0; i<m_Libs.Count(); i++ )

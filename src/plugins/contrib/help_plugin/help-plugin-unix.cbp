@@ -54,6 +54,7 @@
 			<Add alias="All" targets="bzip2;zlib;help_plugin;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />

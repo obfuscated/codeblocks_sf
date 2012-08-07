@@ -232,7 +232,7 @@ void FileExplorerUpdater::ExecMain()
     m_exec_timer->Start(100,true);
 }
 
-void FileExplorerUpdater::OnExecTerminate(wxProcessEvent &e)
+void FileExplorerUpdater::OnExecTerminate(wxProcessEvent &/*e*/)
 {
     ReadStream(true);
     m_exec_timer->Stop();
@@ -243,7 +243,7 @@ void FileExplorerUpdater::OnExecTerminate(wxProcessEvent &e)
     m_exec_mutex->Unlock();
 }
 
-void FileExplorerUpdater::OnExecTimer(wxTimerEvent &e)
+void FileExplorerUpdater::OnExecTimer(wxTimerEvent &/*e*/)
 {
     if(m_exec_proc)
         ReadStream();

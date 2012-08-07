@@ -45,7 +45,7 @@ void FileManagerPlugin::OnAttach()
     Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_fe,_T("Files"));
 }
 
-void FileManagerPlugin::OnRelease(bool appShutDown)
+void FileManagerPlugin::OnRelease(bool /*appShutDown*/)
 {
     if (m_fe) //remove the File Explorer from the managment pane and destroy it.
     {
@@ -66,7 +66,7 @@ void FileManagerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, con
 	}
 }
 
-void FileManagerPlugin::OnOpenProjectInFileBrowser(wxCommandEvent& event)
+void FileManagerPlugin::OnOpenProjectInFileBrowser(wxCommandEvent& /*event*/)
 {
     cbAuiNotebook *m_nb=Manager::Get()->GetProjectManager()->GetNotebook();
     m_nb->SetSelection(m_nb->GetPageIndex(m_fe));

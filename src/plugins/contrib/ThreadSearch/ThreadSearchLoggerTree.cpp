@@ -370,7 +370,7 @@ void ThreadSearchLoggerTree::DeleteTreeItem(wxTreeItemId id)
 }
 
 
-void ThreadSearchLoggerTree::OnDeleteAllTreeItems(wxCommandEvent& event)
+void ThreadSearchLoggerTree::OnDeleteAllTreeItems(wxCommandEvent& /*event*/)
 {
     if ( m_ToDeleteItemId.IsOk() )
     {

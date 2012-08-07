@@ -263,13 +263,13 @@ void CmdConfigDialog::OnApply()
     m_ReUseToolsPageValue = m_ReuseToolsPage->IsChecked();
 }
 
-void CmdConfigDialog::NameChange(wxCommandEvent& event)
+void CmdConfigDialog::NameChange(wxCommandEvent& /*event*/)
 {
     if(m_ic.interps.GetCount()>0)
         m_commandlist->SetString(m_activeinterp, m_commandname->GetValue());
 }
 
-void CmdConfigDialog::ChangeSelection(wxCommandEvent& event)
+void CmdConfigDialog::ChangeSelection(wxCommandEvent& /*event*/)
 {
     if(m_commandlist->GetSelection()>=0)
     {
@@ -366,7 +366,7 @@ void CmdConfigDialog::GetDialogItems()
     interp.envvarset = m_envvars->GetStringSelection();
 }
 
-void CmdConfigDialog::New(wxCommandEvent &event)
+void CmdConfigDialog::New(wxCommandEvent &/*event*/)
 {
     GetDialogItems();
     ShellCommand interp;
@@ -381,7 +381,7 @@ void CmdConfigDialog::New(wxCommandEvent &event)
     SetDialogItems();
 }
 
-void CmdConfigDialog::Copy(wxCommandEvent &event)
+void CmdConfigDialog::Copy(wxCommandEvent &/*event*/)
 {
     GetDialogItems();
     if(m_ic.interps.GetCount()>0)
@@ -399,7 +399,7 @@ void CmdConfigDialog::Copy(wxCommandEvent &event)
     }
 }
 
-void CmdConfigDialog::Delete(wxCommandEvent &event)
+void CmdConfigDialog::Delete(wxCommandEvent &/*event*/)
 {
     if(m_activeinterp>=0 && m_ic.interps.GetCount()>0)
 //        if (cbMessageBox(_("Are you sure you want to remove this command?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
@@ -414,7 +414,7 @@ void CmdConfigDialog::Delete(wxCommandEvent &event)
         }
 }
 
-void CmdConfigDialog::OnUp(wxCommandEvent &event)
+void CmdConfigDialog::OnUp(wxCommandEvent &/*event*/)
 {
     if(m_activeinterp>0 && m_ic.interps.GetCount()>1)
     {
@@ -429,7 +429,7 @@ void CmdConfigDialog::OnUp(wxCommandEvent &event)
     }
 }
 
-void CmdConfigDialog::OnDown(wxCommandEvent &event)
+void CmdConfigDialog::OnDown(wxCommandEvent &/*event*/)
 {
     if(m_activeinterp+1 < static_cast<int>(m_ic.interps.GetCount()) && m_ic.interps.GetCount()>1)
     {
@@ -444,7 +444,7 @@ void CmdConfigDialog::OnDown(wxCommandEvent &event)
     }
 }
 
-void CmdConfigDialog::OnImport(wxCommandEvent &event)
+void CmdConfigDialog::OnImport(wxCommandEvent &/*event*/)
 {
     #ifdef __WXMSW__
     wxFileDialog fd(NULL, _("Import: Select File"),_T(""),_T(""),_T("*.*"),wxFD_OPEN|wxFD_FILE_MUST_EXIST);
@@ -462,7 +462,7 @@ void CmdConfigDialog::OnImport(wxCommandEvent &event)
     SetDialogItems(); // needed in case initial list was empty, otherwise our first imported entry would be overwritten with everything empty (due to GetDialogItems, and all members used in there still empty)
 }
 
-void CmdConfigDialog::OnExport(wxCommandEvent &event)
+void CmdConfigDialog::OnExport(wxCommandEvent &/*event*/)
 {
     #ifdef __WXMSW__
     wxFileDialog fd(NULL, _("Export: Choose a Filename"),_T(""),_T(""),_T("*.*"),wxFD_SAVE);

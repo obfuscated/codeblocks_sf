@@ -147,14 +147,14 @@ void ToolsPlus::OnShowConsole(wxCommandEvent& event)
     Manager::Get()->ProcessEvent(evt);
 }
 
-void ToolsPlus::OnRemoveTerminated(wxCommandEvent& event)
+void ToolsPlus::OnRemoveTerminated(wxCommandEvent& /*event*/)
 {
     // Removes pages from the ToolsPlus window of process that have terminated
     m_shellmgr->RemoveDeadPages();
 }
 
 
-void ToolsPlus::OnConfigure(wxCommandEvent& event)
+void ToolsPlus::OnConfigure(wxCommandEvent& /*event*/)
 {
     // Open the configuration dialog (global settings/add+remove tools)
     CmdConfigDialog *dlg = new CmdConfigDialog(NULL, this);
@@ -186,12 +186,12 @@ void ToolsPlus::HideConsole()
     Manager::Get()->ProcessEvent(evt);
 }
 
-void ToolsPlus::OnSettings(wxCommandEvent& event)
+void ToolsPlus::OnSettings(wxCommandEvent& /*event*/)
 {
     cbMessageBox(_("Settings..."));
 }
 
-void ToolsPlus::OnSubMenuSelect(wxUpdateUIEvent& event)
+void ToolsPlus::OnSubMenuSelect(wxUpdateUIEvent& /*event*/)
 {
 //    int num=event.GetId()-ID_Menu_0;
 //    if (num>=0 && num<=9)
@@ -206,7 +206,7 @@ void ToolsPlus::OnSubMenuSelect(wxUpdateUIEvent& event)
 //    }
 }
 
-void ToolsPlus::OnSetTarget(wxCommandEvent& event)
+void ToolsPlus::OnSetTarget(wxCommandEvent& /*event*/)
 {
     wxString wild(m_wildcard);
     if (wild==_T(""))
@@ -223,7 +223,7 @@ void ToolsPlus::OnSetTarget(wxCommandEvent& event)
     delete fd;
 }
 
-void ToolsPlus::OnSetMultiTarget(wxCommandEvent& event)
+void ToolsPlus::OnSetMultiTarget(wxCommandEvent& /*event*/)
 {
     wxString wild(m_wildcard);
     if (wild==_T(""))
@@ -247,7 +247,7 @@ void ToolsPlus::OnSetMultiTarget(wxCommandEvent& event)
 }
 
 
-void ToolsPlus::OnSetDirTarget(wxCommandEvent& event)
+void ToolsPlus::OnSetDirTarget(wxCommandEvent& /*event*/)
 {
     wxDirDialog *dd=new wxDirDialog(NULL,_("Choose the Target Directory"),_T(""));
     if (dd->ShowModal()==wxID_OK)
@@ -441,7 +441,7 @@ ToolsPlus::ToolsPlus()
     m_ReUseToolsPage = cfg->ReadBool(_T("ReuseToolsPage"), false);
 }
 
-cbConfigurationPanel* ToolsPlus::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel* ToolsPlus::GetConfigurationPanel(wxWindow* /*parent*/)
 {
 //    MyDialog* dlg = new MyDialog(this, *m_pKeyProfArr, parent,
 //        wxT("Keybindings"), mode);
@@ -484,7 +484,7 @@ void ToolsPlus::OnAttach()
 
 }
 
-void ToolsPlus::OnRelease(bool appShutDown)
+void ToolsPlus::OnRelease(bool /*appShutDown*/)
 {
 	// do de-initialization for your plugin
 	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,

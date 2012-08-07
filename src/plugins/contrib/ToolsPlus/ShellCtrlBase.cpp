@@ -51,7 +51,7 @@ ShellCtrlBase *ShellRegistry::CreateControl(const wxString &type,wxWindow* paren
 }
 
 
-void ShellRegistry::FreeControl(ShellCtrlBase *sh) //TODO: Don't think this is necessary?
+void ShellRegistry::FreeControl(ShellCtrlBase */*sh*/) //TODO: Don't think this is necessary?
 {
 //        std::map<wxString, ShellRegInfo>::iterator it
 //            =m_reginfo.find(type);
@@ -156,11 +156,11 @@ ShellCtrlBase *ShellManager::GetPage(const wxString &name)
 
 
 // Forecefully kill the process
-void ShellManager::KillProcess(int id)
+void ShellManager::KillProcess(int /*id*/)
 {
 }
 
-void ShellManager::KillWindow(int id)
+void ShellManager::KillWindow(int /*id*/)
 {
 }
 
@@ -207,7 +207,7 @@ void ShellManager::OnShellTerminate(ShellCtrlBase *term)
 }
 
 
-void ShellManager::OnPollandSyncOutput(wxTimerEvent& te)
+void ShellManager::OnPollandSyncOutput(wxTimerEvent& /*te*/)
 {
     for(unsigned int i=0;i<m_nb->GetPageCount();i++)
     {
@@ -215,7 +215,7 @@ void ShellManager::OnPollandSyncOutput(wxTimerEvent& te)
     }
 }
 
-void ShellManager::OnUserInput(wxKeyEvent& ke)
+void ShellManager::OnUserInput(wxKeyEvent& /*ke*/)
 { //TODO: This shouldn't be necessary as individual pages will have the focus
 //    ShellCtrlBase *sh=(ShellCtrlBase*)m_nb->GetCurrentPage();
 //    sh->OnUserInput(ke);

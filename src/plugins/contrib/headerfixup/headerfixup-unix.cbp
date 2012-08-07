@@ -49,6 +49,7 @@
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="bindings.cpp" />
