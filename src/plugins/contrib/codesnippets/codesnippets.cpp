@@ -93,7 +93,6 @@ CodeSnippets::CodeSnippets()
     m_bMouseLeftKeyDown = false;
     m_bMouseIsDragging = false;
     m_bDragCursorOn = false;
-    m_pDragCursor = false;
     m_MouseDownX = m_MouseDownY = 0;
     m_MouseUpX = m_MouseUpY = 0;
     #if !wxCHECK_VERSION(2, 8, 12)
