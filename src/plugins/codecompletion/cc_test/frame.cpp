@@ -376,12 +376,12 @@ void Frame::AppendToLog(const wxString& log)
     Thaw();
 }
 
-void Frame::OnMenuQuitSelected(wxCommandEvent& event)
+void Frame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
 {
     Close();
 }
 
-void Frame::OnMenuAboutSelected(wxCommandEvent& event)
+void Frame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
 {
     wxString str;
     str.Printf(_("ParserTest build with %s!\nRunning under %s."),
@@ -389,7 +389,7 @@ void Frame::OnMenuAboutSelected(wxCommandEvent& event)
     wxMessageBox(str, _("About ParserTest"), wxOK | wxICON_INFORMATION, this);
 }
 
-void Frame::OnMenuSaveSelected(wxCommandEvent& event)
+void Frame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
 {
     if (m_SaveFile->ShowModal() == wxID_OK)
     {
@@ -398,7 +398,7 @@ void Frame::OnMenuSaveSelected(wxCommandEvent& event)
     }
 }
 
-void Frame::OnMenuOpenSelected(wxCommandEvent& event)
+void Frame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
 {
     if (m_OpenFile->ShowModal() == wxID_OK)
     {
@@ -407,7 +407,7 @@ void Frame::OnMenuOpenSelected(wxCommandEvent& event)
     }
 }
 
-void Frame::OnMenuFindSelected(wxCommandEvent& event)
+void Frame::OnMenuFindSelected(wxCommandEvent& /*event*/)
 {
     if (m_FRDlg != NULL)
     {
@@ -422,7 +422,7 @@ void Frame::OnMenuFindSelected(wxCommandEvent& event)
     }
 }
 
-void Frame::OnMenuTokenSelected(wxCommandEvent& event)
+void Frame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
 {
     ParserBase* pb = CCTest::Get()->GetParser();
     TokensTree* tt = CCTest::Get()->GetTokensTree();
@@ -532,7 +532,7 @@ void Frame::OnFindDialog(wxFindDialogEvent& event)
     }
 }
 
-void Frame::OnMenuReloadSelected(wxCommandEvent& event)
+void Frame::OnMenuReloadSelected(wxCommandEvent& /*event*/)
 {
     Start();
 }

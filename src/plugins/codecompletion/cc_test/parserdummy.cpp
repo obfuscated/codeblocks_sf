@@ -28,7 +28,7 @@ namespace CCTestAppGlobal
     extern wxArrayString s_filesParsed;
 }// CCTestAppGlobal
 
-ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
+ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*force_refresh*/)
 {
     static bool          empty_ext = true;
     static wxArrayString header_ext;
@@ -128,7 +128,7 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
     return wxEmptyString;
 }
 
-bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
+bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool /*locked*/)
 {
     wxString log;
     log.Printf(wxT("ParserDummy::ParserBase::ParseFile() : Parse file request for file name '%s' (isGlobal=%s)"),

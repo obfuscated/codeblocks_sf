@@ -584,7 +584,9 @@ void TokensTree::RecalcInheritanceChain(Token* token)
                 TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
             }
             else
+            {
                 TRACE(_T("RecalcInheritanceChain() :  ! '%s' (unresolved)"), ancestor.wx_str());
+            }
         }
         else // no namespaces in ancestor
         {
