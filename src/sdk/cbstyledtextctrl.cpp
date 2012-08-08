@@ -183,6 +183,7 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
         break;
 
         case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
         case WXK_ESCAPE:
         {
             if (m_tabSmartJump)

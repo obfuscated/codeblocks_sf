@@ -104,6 +104,7 @@ void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
     switch (keycode)
     {
         case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
         {
             wxTreeEvent te = wxTreeEvent(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, this, itemId);
             wxPostEvent(this, te);

@@ -583,7 +583,7 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
         return;
     }
 
-    if (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_RETURN)
+    if (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_RETURN || event.GetKeyCode() == WXK_NUMPAD_ENTER)
     {
         // The window will close, don't select the item under mouse pointer
         m_ptMouse.x = m_ptMouse.y = -2;

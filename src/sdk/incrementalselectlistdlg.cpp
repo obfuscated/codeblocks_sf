@@ -31,6 +31,7 @@ void myHandler::OnKeyDown(wxKeyEvent& event)
     switch (event.GetKeyCode())
     {
         case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
             m_pParent->EndModal(wxID_OK);
             break;
 

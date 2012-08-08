@@ -392,7 +392,7 @@ void AskAssocDialog::OnCharHook(wxKeyEvent& event)
 {
     if ( event.GetKeyCode() == WXK_ESCAPE )
         Close(); //wxDialog::Close() send button event with id wxID_CANCEL (wxWidgets 2.8)
-    else if ( event.GetKeyCode() == WXK_RETURN )
+    else if ( (event.GetKeyCode() == WXK_RETURN) || (event.GetKeyCode() == WXK_NUMPAD_ENTER) )
         EndModal(XRCCTRL(*this, "choice", wxRadioBox)->GetSelection());
 
     event.Skip();
