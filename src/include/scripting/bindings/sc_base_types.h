@@ -33,7 +33,6 @@ DECLARE_INSTANCE_TYPE(wxPoint);
 DECLARE_INSTANCE_TYPE(wxSize);
 DECLARE_INSTANCE_TYPE(wxString);
 
-using SqPlus::GetTypeName;
 // C::B primitives and types
 DECLARE_INSTANCE_TYPE(ConfigManager);
 DECLARE_INSTANCE_TYPE(EditorManager);
@@ -50,6 +49,7 @@ DECLARE_INSTANCE_TYPE(ProjectManager);
 DECLARE_INSTANCE_TYPE(CompilerFactory);
 DECLARE_INSTANCE_TYPE(PluginInfo);
 DECLARE_INSTANCE_TYPE(FileTreeData);
+using SqPlus::GetTypeName;
 
 // make SqPlus aware of enum-type arguments
 #define DECLARE_ENUM_TYPE(T) \
@@ -60,7 +60,6 @@ namespace SqPlus \
     inline T Get(TypeWrapper<T>,HSQUIRRELVM v,int idx) { SQInteger i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return (T)i; } \
 }
 
-using SqPlus::Push;
 DECLARE_ENUM_TYPE(wxPathFormat);
 DECLARE_ENUM_TYPE(wxPathNormalize);
 DECLARE_ENUM_TYPE(PrintColourMode);
@@ -74,6 +73,7 @@ DECLARE_ENUM_TYPE(SearchDirs);
 DECLARE_ENUM_TYPE(ModuleType);
 DECLARE_ENUM_TYPE(FileTreeData::FileTreeDataKind);
 DECLARE_ENUM_TYPE(TargetFilenameGenerationPolicy);
+using SqPlus::Push;
 
 namespace SqPlus
 {
