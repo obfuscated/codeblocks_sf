@@ -1510,7 +1510,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
             else
             {
-                if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
+                if (   style != wxSCI_C_DEFAULT
+                    && style != wxSCI_C_OPERATOR
+                    && style != wxSCI_C_IDENTIFIER
+                    && style != wxSCI_C_WORD2
+                    && style != wxSCI_C_GLOBALCLASS )
                 {
                     event.Skip();
                     return;
@@ -2515,7 +2519,9 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
     int style = event.GetInt();
     if (   (style != wxSCI_C_DEFAULT)
         && (style != wxSCI_C_OPERATOR)
-        && (style != wxSCI_C_IDENTIFIER) )
+        && (style != wxSCI_C_IDENTIFIER)
+        && (style != wxSCI_C_WORD2)
+        && (style != wxSCI_C_GLOBALCLASS) )
     {
         event.Skip();
         return;
@@ -2542,6 +2548,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
         int count = 0;
+        size_t tipWidth = 0;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
             Token* token = tree->at(*it);
@@ -2553,6 +2560,8 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
 
                 tips.Add(tip);
                 calltip << tip << _T("\n");
+                if (tip.Length() > tipWidth)
+                    tipWidth = tip.Length();
                 ++count;
                 if (count > 32) // allow max 32 matches (else something is definitely wrong)
                 {
@@ -2567,6 +2576,20 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         if (!calltip.IsEmpty())
         {
             calltip.RemoveLast(); // last \n
+
+            int lnStart = ed->GetControl()->PositionFromLine(ed->GetControl()->LineFromPosition(pos));
+                         // pos - lnStart   == distance from start of line
+                         //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
+                         //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
+                         //       horizontal scrolling is accounted for by PointFromPosition().x
+            int offset = tipWidth + pos + 1 - lnStart -
+                         (ed->GetControl()->GetSize().x - ed->GetControl()->PointFromPosition(lnStart).x) /
+                          ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
+            if (offset > 0)
+                pos -= offset;
+            if (pos < lnStart) // do not go to previous line if tip is wider than editor
+                pos = lnStart;
+
             ed->GetControl()->CallTipShow(pos, calltip);
             TRACE(calltip);
         }
@@ -2658,7 +2681,9 @@ void CodeCompletion::DoCodeComplete()
     else if (lineFirstChar == _T(':') && curChar == _T(':'))
         return;
 
-    if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
+    if (   style != wxSCI_C_DEFAULT
+        && style != wxSCI_C_OPERATOR
+        && style != wxSCI_C_IDENTIFIER )
         return;
 
     TRACE(_T("DoCodeComplete -> CodeComplete"));
