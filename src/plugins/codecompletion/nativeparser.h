@@ -351,8 +351,14 @@ private:
     /** collect the compiler default header file search directories */
     bool AddCompilerDirs(cbProject* project, ParserBase* parser);
 
-    /** collect compiler predefined preprocessor definition */
+    /** collect compiler specific predefined preprocessor definition */
     bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
+
+    /** collect GCC compiler predefined preprocessor definition */
+    bool AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs);
+
+    /** collect VC compiler predefined preprocessor definition */
+    bool AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs);
 
     /** collect project (user) defined preprocessor definition */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
@@ -360,8 +366,8 @@ private:
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
 
-    /** Add the collected default compiler include file search paths to a parser */
-    void AddGCCCompilerDirs(Compiler* compiler, ParserBase* parser);
+    /** Add the collected default GCC compiler include file search paths to a parser */
+    void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
 
     /** Event handler when the batch parse starts, print some log information */
     void OnParserStart(wxCommandEvent& event);

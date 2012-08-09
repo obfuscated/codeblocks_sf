@@ -219,6 +219,7 @@ private:
     void FindFunctionAndUpdate(int currentLine);
     void UpdateFunctions(unsigned int scopeItem);
     void EnableToolbarTools(bool enable = true);
+    void DoParseOpenedProjectAndActiveEditor();
 
     /** delayed for code completion */
     void OnCodeCompleteTimer(wxTimerEvent& event);

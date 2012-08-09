@@ -80,8 +80,7 @@ private:
     Token* m_Token;
 };
 
-
-/** Setting of the Parser, some of them will be passed down to ParserthreadOptions */
+/** Setting of the Parser, some of them will be passed down to ParserThreadOptions */
 struct ParserOptions
 {
     bool followLocalIncludes;     /// parse XXX.h in directive #include "XXX.h"
@@ -93,7 +92,7 @@ struct ParserOptions
     bool parseComplexMacros;      /// this will let the Tokenizer to recursive expand macros
 };
 
-/**  specify the scope of the shown symbols */
+/** specify the scope of the shown symbols */
 enum BrowserDisplayFilter
 {
     bdfFile = 0,  ///display symbols of current file
@@ -124,25 +123,25 @@ class ClassBrowser;
 
 namespace ParserCommon
 {
-  extern int idParserStart;
-  extern int idParserEnd;
+    extern int idParserStart;
+    extern int idParserEnd;
 
-  enum EFileType
-  {
-      ftHeader,
-      ftSource,
-      ftOther
-  };
-  EFileType FileType(const wxString& filename, bool force_refresh = false);
+    enum ParserState
+    {
+        ptCreateParser    = 1,
+        ptReparseFile     = 2,
+        ptAddFileToParser = 3,
+        ptUndefined       = 4,
+    };
+
+    enum EFileType
+    {
+        ftHeader,
+        ftSource,
+        ftOther
+    };
+    EFileType FileType(const wxString& filename, bool force_refresh = false);
 }// namespace ParserCommon
-
-enum ParsingType
-{
-    ptCreateParser    = 1,
-    ptReparseFile     = 2,
-    ptAddFileToParser = 3,
-    ptUndefined       = 4,
-};
 
 class ParserBase : public wxEvtHandler
 {
@@ -300,68 +299,67 @@ protected:
     void OnReparseTimer(wxTimerEvent& event);
     void OnBatchTimer(wxTimerEvent& event);
 
-    void ProcessParserEvent(ParsingType type, int id, const wxString& info = wxEmptyString);
+    void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
 
 private:
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     void ConnectEvents();
     void DisconnectEvents();
 
-    wxEvtHandler*        m_Parent;
-    cbProject*           m_Project;
+    wxEvtHandler*             m_Parent;
+    cbProject*                m_Project;
 
 protected:
     // the following three members are used to detect changes between
     // in-memory data and cache
-    bool                 m_UsingCache; //!< true if loaded from cache
+    bool                      m_UsingCache; //!< true if loaded from cache
 
+    /** Thread queue, these thread tasks will be executed in FIFO mode as they are added */
     typedef std::vector<ParserThread*> PTVector;
-
-    /** Thread Queue, these thread tasks will be executed in FIFO mode as they are added */
-    std::queue<PTVector> m_PoolTask;
+    std::queue<PTVector>      m_PoolTask;
 
     /** Thread Pool, manages all the ParserThread, used in batch parse mode. The thread pool can
      * add/remove/execute the ParserThread tasks.
      */
-    cbThreadPool         m_Pool;
+    cbThreadPool              m_Pool;
 
     /** true, if the parser is still busy with parsing, false if the parsing stage has finished */
-    bool                 m_IsParsing;
+    bool                      m_IsParsing;
 
     /** Determine whether a Priority header parsing is needed. If yes, the added file will be parsed accordingly.
      * Otherwise, added file will be parsed by thread pool (batch parse mode), thus the sequence
      * of the parsed files is not important
      */
-    bool                 m_IsPriority;
+    bool                      m_IsPriority;
 
     std::set<wxString, std::less<wxString> >
-                         m_LocalFiles;
+                              m_LocalFiles;
 
     /** Indicates some files in the current project need to be re-parsed, this is commonly caused
       * that the "real-time parsing option" is enabled, and user is editing source file.
       */
-    bool                 m_NeedsReparse;
+    bool                      m_NeedsReparse;
 
     /** batch Parse mode flag. Normal files (not in the parse "Priority" files stage) will set this flag. */
-    bool                 m_IsFirstBatch;
+    bool                      m_IsFirstBatch;
 
 private:
-    wxTimer              m_ReparseTimer;
-    wxTimer              m_BatchTimer;
-    wxStopWatch          m_StopWatch;
-    bool                 m_StopWatchRunning;
-    long                 m_LastStopWatchTime;
-    bool                 m_IgnoreThreadEvents;
+    wxTimer                   m_ReparseTimer;
+    wxTimer                   m_BatchTimer;
+    wxStopWatch               m_StopWatch;
+    bool                      m_StopWatchRunning;
+    long                      m_LastStopWatchTime;
+    bool                      m_IgnoreThreadEvents;
 
-    StringList           m_PriorityHeaders;       //!< All priority headers
-    StringList           m_SystemPriorityHeaders; //!< Only system priority headers, for re-parse
-    StringList           m_BatchParseFiles;       //!< All other batch parse files
-    wxString             m_PredefinedMacros;      //!< Pre-defined macros
+    StringList                m_PriorityHeaders;       //!< All priority headers
+    StringList                m_SystemPriorityHeaders; //!< Only system priority headers, for re-parse
+    StringList                m_BatchParseFiles;       //!< All other batch parse files
+    wxString                  m_PredefinedMacros;      //!< Pre-defined macros
     /** used to measure batch parse time*/
-    bool                 m_IsBatchParseDone;
-    ParsingType          m_ParsingType;
+    bool                      m_IsBatchParseDone;
+    ParserCommon::ParserState m_ParserState;           //!< indicated the current state the parser is in
     /** if true, all the files of the current project will be labeled as "local" */
-    bool                 m_NeedMarkFileAsLocal;
+    bool                      m_NeedMarkFileAsLocal;
 };
 
 #endif // PARSER_H

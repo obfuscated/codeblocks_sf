@@ -137,7 +137,7 @@ NativeParser::NativeParser() :
     m_LastResult(-1)
 {
     m_TempParser = new ParserBase;
-    m_Parser = m_TempParser;
+    m_Parser     = m_TempParser;
 
     m_ImageList = new wxImageList(16, 16);
     wxBitmap bmp;
@@ -1880,6 +1880,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         Compiler* compiler = CompilerFactory::GetDefaultCompiler();
         if (compiler)
         {
+            // these dirs were the user's compiler include search dirs
             const wxArrayString& dirs = compiler->GetIncludeDirs();
             for (size_t i = 0; i < dirs.GetCount(); ++i)
             {
@@ -1889,7 +1890,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
             }
 
             if (compiler->GetID().Contains(_T("gcc")))
-                AddGCCCompilerDirs(compiler, parser);
+                AddGCCCompilerDirs(compiler->GetMasterPath(), compiler->GetPrograms().CPP, parser);
         }
 
         return true;
@@ -1922,7 +1923,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
             CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), out.wx_str(), base.wx_str()));
     }
 
-    // alloc array for target's compilers and project compiler
+    // alloc array for project compiler AND "no. of targets" times target compilers
     int nCompilers = 1 + project->GetBuildTargetsCount();
     Compiler** Compilers = new Compiler* [nCompilers];
     memset(Compilers, 0, sizeof(Compiler*) * nCompilers);
@@ -2009,7 +2010,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         // but do only once per C::B session, thus cache for later calls
         wxString CompilerID = (Compilers[idxCompiler])->GetID();
         if (CompilerID.Contains(_T("gcc")))
-            AddGCCCompilerDirs(Compilers[idxCompiler], parser);
+            AddGCCCompilerDirs(Compilers[idxCompiler]->GetMasterPath(), Compilers[idxCompiler]->GetPrograms().CPP, parser);
     } // end of while loop over the found compilers
 
     if (!nCompilers)
@@ -2029,164 +2030,176 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
 
     TRACE(_T("NativeParser::AddCompilerPredefinedMacros()"));
 
+    // Default compiler is used for for single file parser (non project)
+    wxString compilerId = project ? project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID();
+
     wxString defs;
-    wxString compilerId;
-
-    if (project)
-        compilerId = project->GetCompilerID();
-    else
-        compilerId = CompilerFactory::GetDefaultCompilerID(); // for single file parser (non project)
-
     // gcc
     if (compilerId.Contains(_T("gcc")))
     {
-        Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
-        if (!compiler)
+        if ( !AddCompilerPredefinedMacrosGCC(compilerId, project, defs) )
             return false;
-
-        wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
-        wxString masterPath = compiler->GetMasterPath();
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-        fn.SetPath(masterPath);
-        fn.AppendDir(_T("bin"));
-
-        static std::map<wxString, wxString> defsMap;
-        const wxString cpp_compiler(fn.GetFullPath());
-        if (defsMap[cpp_compiler].IsEmpty())
-        {
-#ifdef __WXMSW__
-            const wxString args(_T(" -E -dM -x c++ nul"));
-#else
-            const wxString args(_T(" -E -dM -x c++ /dev/null"));
-#endif
-
-            // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-            if (Manager::IsAppShuttingDown())
-                return false;
-
-            static bool reentry = false;
-            if (reentry)
-                return false;
-
-            wxArrayString output;
-            reentry = true;
-            if ( wxExecute(cpp_compiler + args, output, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
-            {
-                TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
-                reentry = false;
-                return false;
-            }
-            reentry = false;
-
-            wxString& gccDefs = defsMap[cpp_compiler];
-            for (size_t i = 0; i < output.Count(); ++i)
-                gccDefs += output[i] + _T("\n");
-        }
-
-        static const wxString cxx0xOption(_T("-std=c++0x"));
-        static const wxString gnu0xOption(_T("-std=gnu++0x"));
-        bool useCxx0x = false;
-        if (project)
-        {
-            const wxArrayString& options = project->GetCompilerOptions();
-            if (   options.Index(cxx0xOption) != wxNOT_FOUND
-                || options.Index(gnu0xOption) != wxNOT_FOUND )
-            {
-                useCxx0x = true;
-            }
-            else
-            {
-                for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
-                {
-                    ProjectBuildTarget* target = project->GetBuildTarget(i);
-                    const wxArrayString& targetOptions = target->GetCompilerOptions();
-                    if (   targetOptions.Index(cxx0xOption) != wxNOT_FOUND
-                        || targetOptions.Index(gnu0xOption) != wxNOT_FOUND )
-                    {
-                        useCxx0x = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (useCxx0x)
-            defs = defsMap[cpp_compiler] + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1 \n");
-        else
-            defs = defsMap[cpp_compiler];
     }
-
     // vc
     else if (compilerId.StartsWith(_T("msvc")))
     {
-        static wxString vcDefs;
-        static bool firstExecute = true;
-        if (firstExecute)
-        {
-            firstExecute = false;
-            Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
-            if (!compiler)
-                return false;
-
-            wxString masterPath = compiler->GetMasterPath();
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-            wxString cmd = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
-
-            // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-            if (Manager::IsAppShuttingDown())
-                return false;
-
-            static bool flag = false;
-            if (flag)
-                return false;
-
-            wxArrayString output, error;
-            flag = true;
-            if (wxExecute(cmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
-            {
-                TRACE(_T("AddCompilerPredefinedMacros::wxExecute failed!"));
-                flag = false;
-                return false;
-            }
-            flag = false;
-            if (error.IsEmpty())
-            {
-                TRACE(_T("AddCompilerPredefinedMacros:: Can't get pre-defined macros for MSVC."));
-                return false;
-            }
-
-            wxString str = error[0];
-            wxString tmp(_T("Microsoft (R) "));
-            int pos = str.Find(tmp);
-            if (pos != wxNOT_FOUND)
-            {
-                wxString bit = str.Mid(pos + tmp.Length(), 2);
-                if (bit == _T("32"))
-                    defs += _T("#define _WIN32") _T("\n");
-                else if (bit == _T("64"))
-                    defs += _T("#define _WIN64") _T("\n");
-            }
-
-            tmp = _T("Compiler Version ");
-            pos = str.Find(tmp);
-            if (pos != wxNOT_FOUND)
-            {
-                wxString ver = str.Mid(pos + tmp.Length(), 4);
-                pos = ver.Find(_T('.'));
-                if (pos != wxNOT_FOUND)
-                {
-                    ver[pos] = ver[pos + 1];
-                    ver[pos + 1] = _T('0');
-                    defs += _T("#define _MSC_VER ") + ver;
-                }
-            }
-        }
-
-        defs = vcDefs;
+        if ( !AddCompilerPredefinedMacrosVC(compilerId, defs) )
+          return false;
     }
 
     TRACE(_T("Add compiler predefined preprocessor macros:\n%s"), defs.wx_str());
     parser->AddPredefinedMacros(defs);
+    return true;
+}
+
+bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs)
+{
+    Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+    if (!compiler)
+        return false;
+
+    wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
+    wxString masterPath = compiler->GetMasterPath();
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+    fn.SetPath(masterPath);
+    fn.AppendDir(_T("bin"));
+
+    const wxString cpp_compiler(fn.GetFullPath());
+    static std::map<wxString, wxString> gccDefsMap;
+    if (gccDefsMap[cpp_compiler].IsEmpty())
+    {
+#ifdef __WXMSW__
+        const wxString args(_T(" -E -dM -x c++ nul"));
+#else
+        const wxString args(_T(" -E -dM -x c++ /dev/null"));
+#endif
+
+        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+        if (Manager::IsAppShuttingDown())
+            return false;
+
+        static bool reentry = false;
+        if (reentry)
+            return false;
+
+        wxArrayString output;
+        reentry = true;
+        if ( wxExecute(cpp_compiler + args, output, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
+        {
+            TRACE(_T("AddCompilerPredefinedMacrosGCC::wxExecute failed!"));
+            reentry = false;
+            return false;
+        }
+        reentry = false;
+
+        wxString& gccDefs = gccDefsMap[cpp_compiler];
+        for (size_t i = 0; i < output.Count(); ++i)
+            gccDefs += output[i] + _T("\n");
+    }
+
+    static const wxString cxx0xOption(_T("-std=c++0x"));
+    static const wxString gnu0xOption(_T("-std=gnu++0x"));
+    bool useCxx0x = false;
+    if (project)
+    {
+        const wxArrayString& options = project->GetCompilerOptions();
+        if (   options.Index(cxx0xOption) != wxNOT_FOUND
+            || options.Index(gnu0xOption) != wxNOT_FOUND )
+        {
+            useCxx0x = true;
+        }
+        else
+        {
+            for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
+            {
+                ProjectBuildTarget* target = project->GetBuildTarget(i);
+                const wxArrayString& targetOptions = target->GetCompilerOptions();
+                if (   targetOptions.Index(cxx0xOption) != wxNOT_FOUND
+                    || targetOptions.Index(gnu0xOption) != wxNOT_FOUND )
+                {
+                    useCxx0x = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (useCxx0x)
+        defs = gccDefsMap[cpp_compiler] + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1 \n");
+    else
+        defs = gccDefsMap[cpp_compiler];
+
+    return true;
+}
+
+bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs)
+{
+    static wxString vcDefs;
+    static bool     firstExecute = true;
+    if (firstExecute)
+    {
+        firstExecute = false;
+        Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+        if (!compiler)
+            return false;
+
+        wxString masterPath = compiler->GetMasterPath();
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+        wxString cmd = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
+
+        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+        if (Manager::IsAppShuttingDown())
+            return false;
+
+        static bool reentry = false;
+        if (reentry)
+            return false;
+
+        wxArrayString output, error;
+        reentry = true;
+        if (wxExecute(cmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
+        {
+            TRACE(_T("AddCompilerPredefinedMacrosVC::wxExecute failed!"));
+            reentry = false;
+            return false;
+        }
+        reentry = false;
+
+        if (error.IsEmpty())
+        {
+            TRACE(_T("AddCompilerPredefinedMacrosVC:: Can't get pre-defined macros for MSVC."));
+            return false;
+        }
+
+        wxString str = error[0];
+        wxString tmp(_T("Microsoft (R) "));
+        int pos = str.Find(tmp);
+        if (pos != wxNOT_FOUND)
+        {
+            wxString bit = str.Mid(pos + tmp.Length(), 2);
+            if (bit == _T("32"))
+                defs += _T("#define _WIN32") _T("\n");
+            else if (bit == _T("64"))
+                defs += _T("#define _WIN64") _T("\n");
+        }
+
+        tmp = _T("Compiler Version ");
+        pos = str.Find(tmp);
+        if (pos != wxNOT_FOUND)
+        {
+            wxString ver = str.Mid(pos + tmp.Length(), 4);
+            pos = ver.Find(_T('.'));
+            if (pos != wxNOT_FOUND)
+            {
+                ver[pos] = ver[pos + 1];
+                ver[pos + 1] = _T('0');
+                defs += _T("#define _MSC_VER ") + ver;
+            }
+        }
+    }
+
+    defs = vcDefs;
+
     return true;
 }
 
@@ -2240,12 +2253,20 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
     return true;
 }
 
+// These dirs are the built-in search dirs of the compiler itself (GCC).
+// Such as when you install your MinGW GCC in E:/code/MinGW/bin
+// The buildin search dir may contains: E:/code/MinGW/include
 const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler)
 {
     // keep the gcc compiler path's once if found across C::B session
     // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
     static std::map<wxString, wxArrayString> dirs;
     if (!dirs[cpp_compiler].IsEmpty())
+        return dirs[cpp_compiler];
+
+    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+    // This is here, to protect at re-entry:
+    if (Manager::IsAppShuttingDown())
         return dirs[cpp_compiler];
 
     TRACE(_T("NativeParser::GetGCCCompilerDirs()"));
@@ -2262,15 +2283,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // use a null file handler
     // both works fine in Windows and Linux
 
-#ifdef __WXMSW__
-    wxString Command = cpp_compiler + _T(" -v -E -x c++ nul");
-#else
-    wxString Command = cpp_compiler + _T(" -v -E -x c++ /dev/null");
-#endif
-
-    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-    if (Manager::IsAppShuttingDown())
-        return dirs[cpp_compiler];
+    wxString Command(cpp_compiler + _T(" -v -E -x c++ /dev/null"));
+    if (platform::windows)
+      Command = cpp_compiler + _T(" -v -E -x c++ nul"); // on Windows, its different
 
     static bool flag = false;
     if (flag)
@@ -2286,6 +2301,11 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         return dirs[cpp_compiler];
     }
     flag = false;
+
+    // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+    // This is here, to protect a long run:
+    if (Manager::IsAppShuttingDown())
+        return dirs[cpp_compiler];
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
@@ -2308,19 +2328,19 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         if (!fname.DirExists())
             break;
 
-        CCLogger::Get()->DebugLog(_T("Caching GCC dir: ") + fname.GetPath());
+        CCLogger::Get()->DebugLog(_T("Caching GCC default include dir: ") + fname.GetPath());
         dirs[cpp_compiler].Add(fname.GetPath());
     }
 
     return dirs[cpp_compiler];
 }
 
-void NativeParser::AddGCCCompilerDirs(Compiler* compiler, ParserBase* parser)
+void NativeParser::AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser)
 {
-    wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
-    wxString masterPath = compiler->GetMasterPath();
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-    fn.SetPath(masterPath);
+    wxFileName fn(wxEmptyString, compilerCpp);
+    wxString masterPathNoMacros(masterPath);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPathNoMacros);
+    fn.SetPath(masterPathNoMacros);
     fn.AppendDir(_T("bin"));
 
     const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
@@ -2338,11 +2358,11 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
 
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-    const ParsingType type = static_cast<ParsingType>(event.GetInt());
+    const ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
 
-    switch (type)
+    switch (state)
     {
-    case ptCreateParser:
+    case ParserCommon::ptCreateParser:
         CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), prj.wx_str()));
         {
             std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
@@ -2354,15 +2374,15 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
         }
         break;
 
-    case ptAddFileToParser:
+    case ParserCommon::ptAddFileToParser:
         CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), prj.wx_str()));
         break;
 
-    case ptReparseFile:
+    case ParserCommon::ptReparseFile:
         CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), prj.wx_str()));
         break;
 
-    case ptUndefined:
+    case ParserCommon::ptUndefined:
         if (event.GetString().IsEmpty())
             CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), prj.wx_str()));
         else
@@ -2380,11 +2400,11 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
     ParserBase* parser = reinterpret_cast<ParserBase*>(event.GetEventObject());
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-    const ParsingType type = static_cast<ParsingType>(event.GetInt());
+    const ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
 
-    switch (type)
+    switch (state)
     {
-    case ptCreateParser:
+    case ParserCommon::ptCreateParser:
         {
             wxString log(F(_("Project '%s' parsing stage done!"), prj.wx_str()));
             CCLogger::Get()->Log(log);
@@ -2392,10 +2412,10 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
         }
         break;
 
-    case ptAddFileToParser:
+    case ParserCommon::ptAddFileToParser:
         break;
 
-    case ptReparseFile:
+    case ParserCommon::ptReparseFile:
         if (parser != m_Parser)
         {
             std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
@@ -2407,7 +2427,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
         }
         break;
 
-    case ptUndefined:
+    case ParserCommon::ptUndefined:
         CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), prj.wx_str()));
         return;
     }

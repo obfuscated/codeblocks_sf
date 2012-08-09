@@ -1591,7 +1591,7 @@ void CodeCompletion::RereadOptions()
     m_CCAutoLaunchChars    = cfg->ReadInt(_T("/auto_launch_chars"),     3);
     m_CCAutoLaunch         = cfg->ReadBool(_T("/auto_launch"),          true);
     m_CCLaunchDelay        = cfg->ReadInt(_T("/cc_delay"),              300);
-    m_CCMaxMatches         = cfg->ReadInt(_T("/max/matches"),           16384);
+    m_CCMaxMatches         = cfg->ReadInt(_T("/max_matches"),           16384);
     m_CCAutoAddParentheses = cfg->ReadBool(_T("/auto_add_parentheses"), true);
     m_CCFillupChars        = cfg->Read(_T("/fillup_chars"),             wxEmptyString);
     m_CCAutoSelectOne      = cfg->ReadBool(_T("/auto_select_one"),      false);
@@ -1633,6 +1633,8 @@ void CodeCompletion::LoadTokenReplacements()
 {
     ConfigManagerContainer::StringToStringMap repl;
     Manager::Get()->GetConfigManager(_T("code_completion"))->Read(_T("token_replacements"), &repl);
+
+    // Keep this in sync with CodeCompletion::LoadTokenReplacements()
 
     // for GCC
     repl[_T("_GLIBCXX_STD")]                    = _T("std");
@@ -2194,23 +2196,8 @@ void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
 
 void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
 {
-    // Let the app startup before parsing
-    // This is to prevent the Splash Screen from delaying so much. By adding
-    // the timer, the splash screen is closed and Code::Blocks doesn't take
-    // so long in starting.
-    m_InitDone = true;
-
-    // Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
-
-    // parse any projects opened through DDE or the command-line
-    cbProject* curProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (curProject && !m_NativeParser.GetParserByProject(curProject))
-        m_NativeParser.CreateParser(curProject);
-
-    // parse any files opened through DDE or the command-line
-    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (editor)
-        m_NativeParser.OnEditorActivated(editor);
+    if (!m_InitDone)
+        DoParseOpenedProjectAndActiveEditor();
 
     event.Skip();
 }
@@ -2441,9 +2428,8 @@ void CodeCompletion::OnCCDebugLogger(wxCommandEvent& event)
 void CodeCompletion::OnParserStart(wxCommandEvent& event)
 {
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
-    ParsingType type = static_cast<ParsingType>(event.GetInt());
-
-    if (type == ptCreateParser)
+    ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
+    if (state == ParserCommon::ptCreateParser)
     {
         if (m_CCEnableHeaders)
         {
@@ -2460,8 +2446,8 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
-    ParsingType type = static_cast<ParsingType>(event.GetInt());
-    if (type == ptCreateParser)
+    ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
+    if (state == ParserCommon::ptCreateParser)
     {
         if (   m_CCEnableHeaders
             && !m_SystemHeadersThreads.empty()
@@ -3248,6 +3234,27 @@ void CodeCompletion::EnableToolbarTools(bool enable)
         m_Scope->Enable(enable);
     if (m_Function)
         m_Function->Enable(enable);
+}
+
+void CodeCompletion::DoParseOpenedProjectAndActiveEditor()
+{
+    // Let the app startup before parsing
+    // This is to prevent the Splash Screen from delaying so much. By adding
+    // the timer, the splash screen is closed and Code::Blocks doesn't take
+    // so long in starting.
+    m_InitDone = true;
+
+    // Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
+
+    // parse any projects opened through DDE or the command-line
+    cbProject* curProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (curProject && !m_NativeParser.GetParserByProject(curProject))
+        m_NativeParser.CreateParser(curProject);
+
+    // parse any files opened through DDE or the command-line
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (editor)
+        m_NativeParser.OnEditorActivated(editor);
 }
 
 void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)

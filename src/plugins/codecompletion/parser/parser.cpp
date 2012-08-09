@@ -368,7 +368,7 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_LastStopWatchTime(0),
     m_IgnoreThreadEvents(true),
     m_IsBatchParseDone(false),
-    m_ParsingType(ptCreateParser),
+    m_ParserState(ParserCommon::ptCreateParser),
     m_NeedMarkFileAsLocal(true)
 {
     ConnectEvents();
@@ -454,8 +454,8 @@ void Parser::AddPredefinedMacros(const wxString& defs)
 
     m_PredefinedMacros << defs;
 
-    if (m_ParsingType == ptUndefined)
-        m_ParsingType = ptCreateParser;
+    if (m_ParserState == ParserCommon::ptUndefined)
+        m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
@@ -477,8 +477,8 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
     if (systemHeaderFile)
         m_SystemPriorityHeaders.push_back(filename);
 
-    if (m_ParsingType == ptUndefined)
-        m_ParsingType = ptCreateParser;
+    if (m_ParserState == ParserCommon::ptUndefined)
+        m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
@@ -498,8 +498,8 @@ void Parser::AddBatchParse(const StringList& filenames)
     else
         std::copy(filenames.begin(), filenames.end(), std::back_inserter(m_BatchParseFiles));
 
-    if (m_ParsingType == ptUndefined)
-        m_ParsingType = ptCreateParser;
+    if (m_ParserState == ParserCommon::ptUndefined)
+        m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
@@ -765,8 +765,8 @@ bool Parser::AddFile(const wxString& filename, cbProject* project, bool isLocal)
     if (IsFileParsed(file))
         return false;
 
-    if (m_ParsingType == ptUndefined)
-        m_ParsingType = ptAddFileToParser;
+    if (m_ParserState == ParserCommon::ptUndefined)
+        m_ParserState = ParserCommon::ptAddFileToParser;
 
     AddParse(file);
     if (project)
@@ -886,7 +886,8 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         // 4. Begin batch parsing
         m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
     }
-    else if (   (m_ParsingType == ptCreateParser || m_ParsingType == ptAddFileToParser)
+    else if (   (   m_ParserState == ParserCommon::ptCreateParser
+                 || m_ParserState == ParserCommon::ptAddFileToParser )
              && m_NeedMarkFileAsLocal
              && m_Project)
     {
@@ -924,8 +925,8 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-        ProcessParserEvent(m_ParsingType, ParserCommon::idParserEnd, parseEndLog);
-        m_ParsingType = ptUndefined;
+        ProcessParserEvent(m_ParserState, ParserCommon::idParserEnd, parseEndLog);
+        m_ParserState = ParserCommon::ptUndefined;
         ParserCommon::s_CurrentParser = nullptr;
     }
 }
@@ -1028,9 +1029,9 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
     if (send_event)
     {
         if (sendStartParseEvent)
-            ProcessParserEvent(m_ParsingType, ParserCommon::idParserStart);
+            ProcessParserEvent(m_ParserState, ParserCommon::idParserStart);
         else
-            ProcessParserEvent(ptUndefined, ParserCommon::idParserStart, _T("Unexpected behaviour!"));
+            ProcessParserEvent(ParserCommon::ptUndefined, ParserCommon::idParserStart, _T("Unexpected behaviour!"));
     }
 }
 
@@ -1075,8 +1076,8 @@ void Parser::ReparseModifiedFiles()
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-    if (!files_list.empty() && m_ParsingType == ptUndefined)
-        m_ParsingType = ptReparseFile;
+    if (!files_list.empty() && m_ParserState == ParserCommon::ptUndefined)
+        m_ParserState = ParserCommon::ptReparseFile;
     else
         m_NeedsReparse = false;
 
@@ -1110,12 +1111,12 @@ bool Parser::IsFileParsed(const wxString& filename)
     return isParsed;
 }
 
-void Parser::ProcessParserEvent(ParsingType type, int id, const wxString& info)
+void Parser::ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info)
 {
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
     evt.SetEventObject(this);     // Parser*
     evt.SetClientData(m_Project); // cbProject*
-    evt.SetInt(type);
+    evt.SetInt(state);
     evt.SetString(info);
     m_Parent->ProcessEvent(evt);
 }

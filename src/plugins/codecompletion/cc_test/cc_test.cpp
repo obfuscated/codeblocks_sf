@@ -31,6 +31,8 @@ std::auto_ptr<CCTest> CCTest::s_Inst;
 
 void CCTest::Init()
 {
+    // Keep this in sync with CodeCompletion::LoadTokenReplacements()
+
     // for GCC
     Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                     _T("std"));
     Tokenizer::SetReplacementString(_T("_GLIBCXX_STD_D"),                   _T("std"));
