@@ -1788,14 +1788,15 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     m_State.StopDriver();
     Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
     if (!Manager::IsAppShuttingDown())
+    {
         Log(wxString::Format(_("Debugger finished with status %d"), m_LastExitCode));
 
-    if (m_NoDebugInfo)
-    {
-        cbMessageBox(_("This project/target has no debugging info."
-                        "Please change this in the project's build options and retry..."),
-                        _("Error"),
-                        wxICON_STOP);
+        if (m_NoDebugInfo)
+        {
+            cbMessageBox(_("This project/target has no debugging info."
+                            "Please change this in the project's build options, re-compile and retry..."),
+                            _("Error"), wxICON_STOP);
+        }
     }
 
     // Notify debugger plugins for end of debug session
@@ -1804,7 +1805,8 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     plm->NotifyPlugins(evt);
 
     // switch to the user-defined layout when finished debugging
-    SwitchToPreviousLayout();
+    if (!Manager::IsAppShuttingDown())
+        SwitchToPreviousLayout();
     KillConsole();
     MarkAsStopped();
 
