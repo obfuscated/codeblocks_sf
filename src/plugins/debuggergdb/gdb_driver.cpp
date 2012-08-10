@@ -85,8 +85,8 @@ static wxRegEx reInferiorExited2(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited[ \\t]w
 DECLARE_INSTANCE_TYPE(GDB_driver);
 using SqPlus::Push;
 
-GDB_driver::GDB_driver(DebuggerGDB* plugin)
-    : DebuggerDriver(plugin),
+GDB_driver::GDB_driver(DebuggerGDB* plugin) :
+    DebuggerDriver(plugin),
     m_CygwinPresent(false),
     m_BreakOnEntry(false),
     m_ManualBreakOnEntry(false),
@@ -843,7 +843,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             wxString major = re.GetMatch(lines[i],0);
             wxString minor = major;
             major = major.BeforeFirst(_T('.')); // 6.3.2 -> 6
-            minor = minor.AfterFirst(_T('.')); // 6.3.2 -> 3.2
+            minor = minor.AfterFirst(_T('.'));  // 6.3.2 -> 3.2
             minor = minor.BeforeFirst(_T('.')); // 3.2 -> 3
             major.ToLong(&m_GDBVersionMajor);
             minor.ToLong(&m_GDBVersionMinor);
@@ -859,12 +859,13 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // Is the program exited?
-        else if (lines[i].StartsWith(_T("Program exited")) ||
-                 lines[i].Contains(_T("The program is not being run")) ||
-                 lines[i].Contains(_T("Target detached")) ||
-                 lines[i].StartsWith(wxT("Program terminated with signal")) ||
-                 reInferiorExited.Matches(lines[i]) ||
-                 reInferiorExited2.Matches(lines[i]))
+        else if (   lines[i].StartsWith(_T("Error creating process"))
+                 || lines[i].StartsWith(_T("Program exited"))
+                 || lines[i].Contains(_T("The program is not being run"))
+                 || lines[i].Contains(_T("Target detached"))
+                 || lines[i].StartsWith(wxT("Program terminated with signal"))
+                 || reInferiorExited.Matches(lines[i])
+                 || reInferiorExited2.Matches(lines[i]) )
         {
             m_pDBG->Log(lines[i]);
             m_ProgramIsStopped = true;
@@ -908,9 +909,9 @@ void GDB_driver::ParseOutput(const wxString& output)
 
         // general errors
         // we don't deal with them, just relay them back to the user
-        else if (lines[i].StartsWith(_T("Error ")) ||
-                lines[i].StartsWith(_T("No such")) ||
-                lines[i].StartsWith(_T("Cannot evaluate")))
+        else if (   lines[i].StartsWith(_T("Error "))
+                 || lines[i].StartsWith(_T("No such"))
+                 || lines[i].StartsWith(_T("Cannot evaluate")) )
         {
             m_pDBG->Log(lines[i]);
         }
