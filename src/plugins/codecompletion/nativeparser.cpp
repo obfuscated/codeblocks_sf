@@ -525,7 +525,7 @@ void NativeParser::AddPaths(wxArrayString& dirs, const wxString& path, bool hasE
 
 ParserBase* NativeParser::CreateParser(cbProject* project)
 {
-    if (GetParserByProject(project))
+    if ( GetParserByProject(project) )
     {
         CCLogger::Get()->DebugLog(_T("Parser for this project already exists!"));
         return nullptr;
@@ -546,7 +546,7 @@ ParserBase* NativeParser::CreateParser(cbProject* project)
     }
 
     if (m_Parser == m_TempParser)
-        SetParser(parser);
+        SetParser(parser); // Also updates class browser
 
     if (m_ParserPerWorkspace)
         m_ParsedProjects.insert(project);
@@ -592,7 +592,7 @@ bool NativeParser::DeleteParser(cbProject* project)
     if (m_ParsedProjects.empty())
     {
         if (it->second == m_Parser)
-          SetParser(m_TempParser);
+          SetParser(m_TempParser); // Also updates class browser
 
         wxString log(F(_("Delete parser for project '%s'!"), prj.wx_str()));
         CCLogger::Get()->Log(log);
@@ -963,7 +963,7 @@ void NativeParser::CreateClassBrowser()
 
     // Dreaded DDE-open bug related: do not touch unless for a good reason
     // TODO (Loaden) ? what's bug? I test it, it's works well now.
-    m_ClassBrowser->SetParser(m_Parser); // also calls UpdateClassBrowserView()
+    m_ClassBrowser->SetParser(m_Parser); // Also updates class browser
 }
 
 void NativeParser::RemoveClassBrowser(bool appShutDown)
@@ -1170,15 +1170,20 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
 bool NativeParser::SwitchParser(cbProject* project, ParserBase* parser)
 {
     if (!parser || parser == m_Parser || GetParserByProject(project) != parser)
+    {
+        TRACE(_T("NativeParser::SwitchParser(): No need to / cannot switch."));
         return false;
+    }
 
     TRACE(_T("NativeParser::SwitchParser()"));
 
-    SetParser(parser);
+    SetParser(parser); // Also updates class browser
+
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     wxString log(F(_("Switch parser to project '%s'"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
+
     return true;
 }
 
@@ -1192,7 +1197,7 @@ void NativeParser::SetParser(ParserBase* parser)
     m_Parser = parser;
 
     if (m_ClassBrowser)
-        m_ClassBrowser->SetParser(parser); // also calls UpdateClassBrowserView()
+        m_ClassBrowser->SetParser(parser); // Also updates class browser
 }
 
 void NativeParser::ClearParsers()
@@ -2369,7 +2374,7 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
             if (info.second && m_Parser != info.second)
             {
                 CCLogger::Get()->DebugLog(_T("Start switch from OnParserStart::ptCreateParser"));
-                SwitchParser(info.first, info.second);
+                SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
             }
         }
         break;
@@ -2422,7 +2427,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
             if (info.second && info.second != m_Parser)
             {
                 CCLogger::Get()->DebugLog(_T("Start switch from OnParserEnd::ptReparseFile"));
-                SwitchParser(info.first, info.second);
+                SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
             }
         }
         break;
@@ -2451,8 +2456,9 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
         // If there is no parser and an active editor file can be obtained, parse the file according the active project
         if (!info.second && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
         {
+            // NOTE (Morten#1#): Shouldn't this actually be a temp parser??? I think this screws things with re-opening files on load of a projects...
             AddProjectToParser(info.first);
-            CCLogger::Get()->DebugLog(_T("Add active editor's project to parser."));
+            CCLogger::Get()->DebugLog(_T("Add foreign active editor to current active project's parser."));
         }
         // Otherwise, there is a parser already present
         else
@@ -2462,7 +2468,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
             if (m_ParsedProjects.find(activeProject) == m_ParsedProjects.end())
             {
                 AddProjectToParser(activeProject);
-                CCLogger::Get()->DebugLog(_T("Add active project to parser."));
+                CCLogger::Get()->DebugLog(_T("Add new (un-parsed) active project to parser."));
             }
             // Else: add remaining projects one-by-one (if any)
             else
@@ -2474,7 +2480,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
                     if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
                     {
                         AddProjectToParser(projs->Item(i));
-                        CCLogger::Get()->DebugLog(_T("Add next project to parser."));
+                        CCLogger::Get()->DebugLog(_T("Add additional (next) project to parser."));
                         break;
                     }
                 }
@@ -2487,7 +2493,7 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
         if (info.second && info.second != m_Parser)
         {
             CCLogger::Get()->DebugLog(_T("Start switch from OnParsingOneByOneTimer"));
-            SwitchParser(info.first, info.second);
+            SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
         }
     }
     TRACE(_T("NativeParser::~OnParsingOneByOneTimer()"));
@@ -2495,10 +2501,10 @@ void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
 
 void NativeParser::OnEditorActivated(EditorBase* editor)
 {
-    const wxString& lastFile = editor->GetFilename();
-    if (lastFile == g_StartHereTitle)
+    const wxString& activatedFile = editor->GetFilename();
+    if (activatedFile == g_StartHereTitle)
     {
-        SetParser(m_TempParser);
+        SetParser(m_TempParser); // Also updates class browser
         return;
     }
 
@@ -2506,31 +2512,31 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     if (!curEditor)
         return;
 
-    if (!wxFile::Exists(lastFile))
+    if ( !wxFile::Exists(activatedFile) )
         return;
 
     cbProject* project = GetProjectByEditor(curEditor);
-    const int pos = m_StandaloneFiles.Index(lastFile);
+    const int pos = m_StandaloneFiles.Index(activatedFile);
     if (project && pos != wxNOT_FOUND)
     {
         m_StandaloneFiles.RemoveAt(pos);
         if (m_StandaloneFiles.IsEmpty())
             DeleteParser(NULL);
         else
-            RemoveFileFromParser(NULL, lastFile);
+            RemoveFileFromParser(NULL, activatedFile);
     }
 
     ParserBase* parser = GetParserByProject(project);
     if (!parser)
     {
-        ParserCommon::EFileType ft = ParserCommon::FileType(lastFile);
+        ParserCommon::EFileType ft = ParserCommon::FileType(activatedFile);
         if (ft != ParserCommon::ftOther && (parser = CreateParser(project)))
         {
-            if (!project && AddFileToParser(project, lastFile, parser) )
+            if (!project && AddFileToParser(project, activatedFile, parser) )
             {
-                wxFileName file(lastFile);
+                wxFileName file(activatedFile);
                 parser->AddIncludeDir(file.GetPath());
-                m_StandaloneFiles.Add(lastFile);
+                m_StandaloneFiles.Add(activatedFile);
             }
         }
         else
@@ -2538,20 +2544,20 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     }
     else if (!project)
     {
-        if (   !parser->IsFileParsed(lastFile)
-            && m_StandaloneFiles.Index(lastFile) == wxNOT_FOUND
-            && AddFileToParser(project, lastFile, parser) )
+        if (   !parser->IsFileParsed(activatedFile)
+            && m_StandaloneFiles.Index(activatedFile) == wxNOT_FOUND
+            && AddFileToParser(project, activatedFile, parser) )
         {
-            wxFileName file(lastFile);
+            wxFileName file(activatedFile);
             parser->AddIncludeDir(file.GetPath());
-            m_StandaloneFiles.Add(lastFile);
+            m_StandaloneFiles.Add(activatedFile);
         }
     }
 
     if (parser != m_Parser)
     {
         CCLogger::Get()->DebugLog(_T("Start switch from OnEditorActivatedTimer"));
-        SwitchParser(project, parser);
+        SwitchParser(project, parser); // Calls SetParser() which also calls UpdateClassBrowserView()
     }
 
     if (m_ClassBrowser)

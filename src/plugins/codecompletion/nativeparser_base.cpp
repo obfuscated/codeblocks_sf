@@ -1285,7 +1285,7 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*     tree,
 // All functions that call this recursive function, should already entered a critical section.
 size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
                                            const wxString&    target,
-                                           const TokenIdxSet& ptrParentID,
+                                           const TokenIdxSet& parentSet,
                                            TokenIdxSet&       result,
                                            bool               caseSens,
                                            bool               isPrefix,
@@ -1297,7 +1297,7 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
 
     if (target.IsEmpty())
     {
-        for (TokenIdxSet::iterator ptr = ptrParentID.begin(); ptr != ptrParentID.end(); ++ptr)
+        for (TokenIdxSet::iterator ptr = parentSet.begin(); ptr != parentSet.end(); ++ptr)
         {
             size_t parentIdx = (*ptr);
             Token* parent = tree->at(parentIdx);
@@ -1333,51 +1333,66 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
     }
     else
     {
-        // we use FindMatches to get the items from tree directly and eclimate the
+        // we use FindMatches to get the items from tree directly and eliminate the
         // items which are not under the search scope.
-        TokenIdxSet finalResult, tmpResult;
-        if (tree->FindMatches(target, tmpResult, caseSens, isPrefix))
+        TokenIdxSet textMatchSet, tmpMatches;
+        if (tree->FindMatches(target, tmpMatches, caseSens, isPrefix))
         {
             TokenIdxSet::iterator it;
-            for (it = tmpResult.begin(); it != tmpResult.end(); ++it)
+            for (it = tmpMatches.begin(); it != tmpMatches.end(); ++it)
             {
                 Token* token = tree->at(*it);
                 if (token)
-                    finalResult.insert(*it);
+                    textMatchSet.insert(*it);
             }
         }
-
-        if (!finalResult.empty())
+        // eliminate the tokens.
+        if (!textMatchSet.empty())
         {
-            TRACE(_T("Find %d result from the tree."), finalResult.size());
-            //get the tokens under the search scope.
-            for (TokenIdxSet::iterator ptr = ptrParentID.begin(); ptr != ptrParentID.end(); ++ptr)
+            TRACE(_T("Find %d valid text matched tokens from the tree."), textMatchSet.size());
+
+            // get the tokens under the search scope. Note: tokens can have the same names, but we are
+            // only interests those under the search scope, here the search scope is the parentSet,
+            // So, the outer loop is the parentSet, which is the search scope
+            for (TokenIdxSet::iterator parentIterator = parentSet.begin();
+                 parentIterator != parentSet.end();
+                 ++parentIterator)
             {
-                //to make it clear, parentIdx stand for search scope.
+                // to make it clear, parentIdx stands for search scope. (Token Idx)
                 // (*it) stand for matched item id.
-                int parentIdx = (*ptr);
-                for (TokenIdxSet::iterator it = finalResult.begin(); it != finalResult.end(); ++it)
+                int parentIdx = (*parentIterator);
+                // The inner loop is the textMatchSet
+                for (TokenIdxSet::iterator it = textMatchSet.begin(); it != textMatchSet.end(); ++it)
                 {
                     Token* token = tree->at(*it);
+                    // check whether its under the parentIdx
                     if (token && (token->m_ParentIndex == parentIdx))
                         result.insert(*it);
 
-                    //if the matched item id is under the search scope's ancestor scope.
-                    //we need to add them too.
-                    if (parentIdx != -1)
+                    // "result" will become the search scope for the next loop, so
+                    // if the parentIdx has ancestors, we need to add them too.
+                    if (parentIdx != -1) //global namespace does not have ancestors
                     {
-                        Token* tokenParent = tree->at(parentIdx);
-                        if (tokenParent)
+                        Token* tk = tree->at(parentIdx);
+                        if (tk)
                         {
-                            tree->RecalcInheritanceChain(tokenParent);
+                            // Here, we are going to calculate all tk's ancestors
+                            // Finally we will add them in the "result".
+                            tree->RecalcInheritanceChain(tk);
 
-                            //match the ancestor scope,add them
-                            //(*it2) should be the search scope ancestor's id(search scope)
-                            for (TokenIdxSet::iterator it2=tokenParent->m_Ancestors.begin();
-                                 it2!=tokenParent->m_Ancestors.end();
-                                 ++it2)
+                            // This is somewhat tricky, for example, we have one tk, which has the
+                            // tk->m_AncestorsString == wxNavigationEnabled<wxWindow>
+                            // Normally, the wxNavigationEnabled will be added, but if we have:
+                            // template <class W>
+                            // class wxNavigationEnabled : public W
+                            // Shall we add the "W" as tk's ancestors? W is a formalTemplateArgument
+
+                            //Add tk's ancestors
+                            for ( TokenIdxSet::iterator ancestorIterator = tk->m_Ancestors.begin();
+                                  ancestorIterator != tk->m_Ancestors.end();
+                                  ++ancestorIterator )
                             {
-                                if (token->m_ParentIndex == (*it2)) //matched
+                                if (token->m_ParentIndex == (*ancestorIterator)) //matched
                                     result.insert(*it);
                             }
                         }
@@ -1394,9 +1409,9 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
         }
         else
         {
-            //we need to handle namespace aliases too.I hope we can find a good to do this.
-            //TODO: handle template class here.
-            if (ptrParentID.count(-1))
+            // We need to handle namespace aliases too. I hope we can find a good way to do this.
+            // TODO: Handle template class here.
+            if (parentSet.count(-1))
             {
                 for (TokenList::iterator it = tree->m_Tokens.begin(); it != tree->m_Tokens.end(); ++it)
                 {
@@ -1461,7 +1476,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
     int result = -1; bool found = false;
     if (!tree) return result;
 
-    size_t fileIdx = tree->GetFileIndex(file);
+    const size_t fileIdx = tree->InsertFileOrGetIndex(file);
     const Token* classToken = nullptr;
     for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
     {

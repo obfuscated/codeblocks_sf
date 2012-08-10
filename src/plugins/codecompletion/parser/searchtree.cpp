@@ -575,7 +575,7 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
     size_t curpos = 0; /* Current position inside the string */
     bool found = false;
 
-    if (s.empty())
+    if (s.IsEmpty())
     {
         if (result)
         {
@@ -588,7 +588,7 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
     do
     {
         parentnode = m_Nodes[nparent];
-        if (s.empty() || curpos >= s.length() ) // If string is empty, return the node and its vertex's length
+        if (s.IsEmpty() || curpos >= s.length() ) // If string is empty, return the node and its vertex's length
         {
             if (result)
             {
@@ -599,7 +599,7 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
             break;
         }
 
-        nchild=parentnode->GetChild(s[curpos]);
+        nchild = parentnode->GetChild(s[curpos]);
         childnode = GetNode(nchild,true);
         if (!childnode)
         {
@@ -621,11 +621,11 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
         }
         found =(newdepth == childnode->GetDepth() || newdepth == top_depth + s.length());
         curpos = newdepth - top_depth;
+
         if (found)
-        {
             nparent = nchild;
-        }
-    }while (found);
+    } while (found);
+
     return found;
 }
 
@@ -711,7 +711,7 @@ bool BasicSearchTree::HasItem(const wxString& s)
 size_t BasicSearchTree::GetItemNo(const wxString& s)
 {
     SearchTreePoint resultpos;
-    if (!FindNode(s, 0, &resultpos))
+    if ( !FindNode(s, 0, &resultpos) )
         return 0; // Invalid
     return m_Nodes[resultpos.n]->GetItemNo(resultpos.depth);
 }

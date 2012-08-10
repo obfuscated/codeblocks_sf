@@ -118,30 +118,29 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         // Should add locker after called m_NativeParser->GetAllPathsByFilename
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-        TokenFilesSet tmp;
+        TokenFilesSet result;
         for (size_t i = 0; i < paths.GetCount(); ++i)
         {
-            tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
-            for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
+            tree->GetFileMatches(paths[i], result, true, true);
+            for (TokenFilesSet::iterator it = result.begin(); it != result.end(); ++it)
                 m_CurrentFileSet.insert(*it);
         }
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
     else if (   m_BrowserOptions.displayFilter == bdfProject
-             && (user_data != 0) )
+             && m_UserData )
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-        cbProject* prj = (cbProject*)user_data;
+        cbProject* prj = static_cast<cbProject*>(m_UserData);
         for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
             ProjectFile* curfile = *it;
             if (!curfile)
                 continue;
 
-            wxString filename = curfile->file.GetFullPath();
-            size_t fileIdx = tree->m_FilenamesMap.GetItemNo(filename);
+            const size_t fileIdx = tree->GetFileIndex(curfile->file.GetFullPath());
             if (fileIdx)
                 m_CurrentFileSet.insert(fileIdx);
         }

@@ -34,6 +34,7 @@ extern wxMutex s_TokensTreeMutex;
 
 class TokensTree
 {
+    friend class CCDebugInfo;
 public:
     TokensTree();
     virtual ~TokensTree();
@@ -55,15 +56,20 @@ public:
 
     // Token specific functions
     void   RecalcFreeList();
+
+    // This will convert the Token's ancestor string to it's IDs
     void   RecalcInheritanceChain(Token* token);
+
     int    TokenExists(const wxString& name, int parent, short int kindMask);
     int    TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind);
     size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask = tkUndefined);
-    size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
+    size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
     void   RemoveFile(const wxString& filename);
     void   RemoveFile(int fileIndex);
 
     // Parsing related functions
+    size_t         InsertFileOrGetIndex(const wxString& filename);
+    size_t         GetFileMatches(const wxString& filename, std::set<size_t>& result, bool caseSensitive, bool is_prefix);
     size_t         GetFileIndex(const wxString& filename);
     const wxString GetFilename(size_t idx) const;
     size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
@@ -77,7 +83,6 @@ public:
     TokenList         m_Tokens;            /** Contains the pointers to all the tokens */
     TokenSearchTree   m_Tree;              /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
 
-    TokenFilenamesMap m_FilenamesMap;      /** Map: filenames    -> file indexes */
     TokenFilesMap     m_FilesMap;          /** Map: file indexes -> sets of TokenIndexes */
     TokenFilesSet     m_FilesToBeReparsed; /** Set: file indexes */
     TokenIdxList      m_FreeTokens;        /** List of all the deleted (and available) tokens */
@@ -110,7 +115,9 @@ protected:
       * @param fileIndex file index the token belongs to
       * @return if true, we can safely remove the token
       */
-    bool CheckChildRemove(Token * token, int fileIndex);
+    bool CheckChildRemove(const Token* token, int fileIndex);
+
+    TokenFilenamesMap m_FilenamesMap; /** Map: filenames -> file indexes */
 };
 
 #endif // TOKENSTREE_H

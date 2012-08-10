@@ -2504,7 +2504,11 @@ void ParserThread::ReadClsNames(wxString& ancestor)
         else // unexpected
         {
             TRACE(_T("ReadClsNames() : Unexpected token '%s'."), token.wx_str());
+            CCLogger::Get()->DebugLog(F(_T("ReadClsNames() : Unexpected token '%s'."), token.wx_str()));
+            // The following code snippet freezes CC here:
+            // typedef std::enable_if<N > 1, get_type_N<N-1, Tail...>> type;
             m_Tokenizer.UngetToken();
+            // Note: Do NOT remove m_Tokenizer.UngetToken();, otherwise it freezes somewhere else
             break;
         }
     }
@@ -2725,7 +2729,7 @@ bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
 void ParserThread::GetTemplateArgs()
 {
     // need to force the tokenizer _not_ skip anything
-    // or else default values for template params would cause us to miss everything (because of the '=' symbol)
+    // otherwise default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsSkipNone);
     m_TemplateArgument.clear();
@@ -2886,15 +2890,16 @@ bool ParserThread::ResolveTemplateMap(const wxString& typeStr, const wxArrayStri
             Token* normalToken = m_TokensTree->at(id);
             if (normalToken)
             {
-                wxArrayString normals =  normalToken->m_TemplateType;
-                for (size_t i=0; i<normals.GetCount(); ++i)
-                    TRACE(_T("ResolveTemplateMap get the template arguments are '%s'."), normals[i].wx_str());
+                // Get the formal template argument lists
+                wxArrayString formals =  normalToken->m_TemplateType;
+                for (size_t i=0; i<formals.GetCount(); ++i)
+                    TRACE(_T("ResolveTemplateMap get the formal template arguments are '%s'."), formals[i].wx_str());
 
-                size_t n = normals.GetCount() < actuals.GetCount() ? normals.GetCount() : actuals.GetCount();
+                size_t n = formals.GetCount() < actuals.GetCount() ? formals.GetCount() : actuals.GetCount();
                 for (size_t i=0; i<n; ++i)
                 {
-                    results[normals[i]] = actuals[i];
-                    TRACE(_T("In ResolveTemplateMap function the normal is '%s',the actual is '%s'."), normals[i].wx_str(), actuals[i].wx_str());
+                    results[formals[i]] = actuals[i];
+                    TRACE(_T("In ResolveTemplateMap function the normal is '%s',the actual is '%s'."), formals[i].wx_str(), actuals[i].wx_str());
                 }
             }
         }

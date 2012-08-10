@@ -2771,9 +2771,9 @@ int CodeCompletion::DoAllMethodsImpl()
     TokenFilesSet result;
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
-        TokenFilesSet tmp;
-        tree->m_FilenamesMap.FindMatches(paths[i], tmp, true, true);
-        for (TokenFilesSet::iterator it = tmp.begin(); it != tmp.end(); ++it)
+        TokenFilesSet result;
+        tree->GetFileMatches(paths[i], result, true, true);
+        for (TokenFilesSet::iterator it = result.begin(); it != result.end(); ++it)
             result.insert(*it);
     }
 
@@ -3063,7 +3063,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
                 FunctionScope fs;
                 fs.StartLine = token->m_ImplLine - 1;
                 fs.EndLine = token->m_ImplLineEnd - 1;
-                const size_t fileIdx = tree->GetFileIndex(filename);
+                const size_t fileIdx = tree->InsertFileOrGetIndex(filename);
                 if (token->m_TokenKind & tkAnyFunction && fileIdx == token->m_ImplFileIdx)
                 {
                     fs.Scope = token->GetNamespace();

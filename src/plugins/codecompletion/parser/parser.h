@@ -95,18 +95,18 @@ struct ParserOptions
 /** specify the scope of the shown symbols */
 enum BrowserDisplayFilter
 {
-    bdfFile = 0,  ///display symbols of current file
-    bdfProject,   ///display symbols of current project
-    bdfWorkspace, ///display symbols of current workspace
-    bdfEverything ///display every symbols
+    bdfFile = 0,  /// display symbols of current file
+    bdfProject,   /// display symbols of current project
+    bdfWorkspace, /// display symbols of current workspace
+    bdfEverything /// display every symbols
 };
 
-/**  specify the sort order of the symbol tree nodes */
+/** specify the sort order of the symbol tree nodes */
 enum BrowserSortType
 {
-    bstAlphabet = 0, ///alphabet
-    bstKind,         ///class, function, macros
-    bstScope,        ///public, protected, private
+    bstAlphabet = 0, /// alphabetical
+    bstKind,         /// class, function, macros
+    bstScope,        /// public, protected, private
     bstNone
 };
 
@@ -185,7 +185,7 @@ public:
     ParserOptions&  Options()             { return m_Options;        }
     BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 
-    size_t FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask);
+    size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
 
 private:
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);

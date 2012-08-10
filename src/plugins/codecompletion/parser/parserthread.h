@@ -286,11 +286,30 @@ private:
     /** Get the macro's type, if the token is a macro, and saved the type in tokenName */
     bool GetRealTypeIfTokenIsMacro(wxString& tokenName);
 
+    /** Read the <xxxx=yyy, zzz> , and store the value in m_TemplateArgs */
     void GetTemplateArgs();
+
+    /** this function just associate the formal template argument to actual argument
+     *  For example, we have such code:
+     *  template <typename T> class AAA { T m_aaa;};
+     *  AAA<int> bbb;
+     *  When handling the "bbb", we need to construct a TemplateMap, we store the map
+     *  in the "bbb"'s member variable, which is "T"->"int".
+     */
     void ResolveTemplateArgs(Token* newToken);
+
+    /** normally the template argument is all in a wxString, this function just split them
+     *  to a wxArrayString, each element is an actual argument.
+     */
     wxArrayString GetTemplateArgArray(const wxString& templateArgs, bool remove_gt_lt, bool add_last);
+
+    /** Split formal template argument list*/
     void ResolveTemplateFormalArgs(const wxString& templateArgs, wxArrayString& formals);
+
+    /** Split actual template argument list*/
     void ResolveTemplateActualArgs(const wxString& templateArgs, wxArrayString& actuals);
+
+    /** associate formal argument with actual template argument*/
     bool ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,
                             std::map<wxString, wxString>& results);
 
