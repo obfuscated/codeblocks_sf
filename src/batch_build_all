@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# ------------------------------------------------
+# Setup C::B application to run the *binaries* (!)
+# ------------------------------------------------
+export CB_APP=/home/[foo]/bin/cb
+# ------------------------------------------------
+# Setup folder to the C::B *sources* from SVN (!)
+# ------------------------------------------------
+export CB_SRC=/home/[foo]/src/codeblocks/src
+
+# -------------------------------------------
+# Usually below here no changes are required.
+# -------------------------------------------
+if [ -e $CB_APP ]; then
+  if [ -d $CB_SRC ]; then
+    export CB_PARAMS="--batch-build-notify --no-batch-window-close"
+    export CB_TARGET="--target=All"
+    export CB_CMD="--build $CB_SRC/CodeBlocks-unix.workspace"
+
+    echo $CB_APP $CB_PARAMS $CB_TARGET $CB_CMD
+    $CB_APP $CB_PARAMS $CB_TARGET $CB_CMD
+    echo "Do not forget to run 'update' after successful build!"
+  else
+    echo "File '$CB_APP' does not exists."
+  fi
+else
+  echo "C::B sources at '$CB_SRC' not found."
+fi
