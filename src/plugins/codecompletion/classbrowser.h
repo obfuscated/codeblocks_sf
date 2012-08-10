@@ -61,7 +61,7 @@ private:
 
     void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
 
-    void ThreadedBuildTree();
+    void ThreadedBuildTree(cbProject* activeProject);
 
     void OnTreeItemExpanding(wxTreeEvent& event);
 #ifndef CC_NO_COLLAPSE_ITEM
@@ -82,7 +82,6 @@ private:
 
     // filtering
     wxString                   m_ActiveFilename;
-    cbProject*                 m_ActiveProject;
 
     wxSemaphore                m_ClassBrowserSemaphore;
     ClassBrowserBuilderThread* m_ClassBrowserBuilderThread;

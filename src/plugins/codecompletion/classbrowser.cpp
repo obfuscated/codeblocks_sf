@@ -130,7 +130,6 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     m_NativeParser(np),
     m_TreeForPopupMenu(0),
     m_Parser(0L),
-    m_ActiveProject(0),
     m_ClassBrowserSemaphore(0, 1),
     m_ClassBrowserBuilderThread(0)
 {
@@ -187,14 +186,17 @@ void ClassBrowser::SetParser(ParserBase* parser)
     m_Parser = parser;
     if (m_Parser)
     {
-        BrowserDisplayFilter filter = (BrowserDisplayFilter)XRCCTRL(*this, "cmbView", wxChoice)->GetSelection();
+        int sel = XRCCTRL(*this, "cmbView", wxChoice)->GetSelection();
+        BrowserDisplayFilter filter = static_cast<BrowserDisplayFilter>(sel);
         if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
             filter = bdfProject;
+
         m_Parser->ClassBrowserOptions().displayFilter = filter;
         m_Parser->WriteOptions();
+        UpdateClassBrowserView();
     }
-
-    UpdateClassBrowserView();
+    else
+        CCLogger::Get()->DebugLog(wxT("SetParser: No parser available."));
 }
 
 void ClassBrowser::UpdateSash()
@@ -205,9 +207,9 @@ void ClassBrowser::UpdateSash()
 
 void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
 {
-    m_ActiveProject = 0;
     TRACE(_T("ClassBrowser::UpdateClassBrowserView(), m_ActiveFilename = %s"), m_ActiveFilename.wx_str());
-    wxString oldActiveFilename = m_ActiveFilename;
+
+    wxString oldActiveFilename(m_ActiveFilename);
     m_ActiveFilename.Clear();
 
     if (!m_Parser || Manager::IsAppShuttingDown())
@@ -216,12 +218,6 @@ void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor)
         m_ActiveFilename = editor->GetFilename();
-
-    if (!m_NativeParser->IsParserPerWorkspace())
-        m_ActiveProject = m_NativeParser->GetProjectByParser(m_Parser);
-    else
-        m_ActiveProject = m_NativeParser->GetCurrentProject();
-
     TRACE(_T("ClassBrowser::UpdateClassBrowserView(), new m_ActiveFilename = %s"), m_ActiveFilename.wx_str());
 
     if (checkHeaderSwap)
@@ -234,14 +230,23 @@ void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
         if (newShortName.Find(_T('.')) != wxNOT_FOUND)
             newShortName = newShortName.BeforeLast(_T('.'));
 
-        if (oldShortName.IsSameAs(newShortName))
+        if ( oldShortName.IsSameAs(newShortName) )
         {
             TRACE(_T("ClassBrowser::UpdateClassBrowserView() match the old filename, return!"));
             return;
         }
     }
 
-    ThreadedBuildTree(); // (Re-) create tree UI
+    cbProject* activeProject = 0;
+    if (!m_NativeParser->IsParserPerWorkspace())
+        activeProject = m_NativeParser->GetProjectByParser(m_Parser);
+    else
+        activeProject = m_NativeParser->GetCurrentProject();
+
+    if (!activeProject)
+        CCLogger::Get()->DebugLog(wxT("No active project available."));
+
+    ThreadedBuildTree(activeProject); // (Re-) create tree UI
 
     wxSplitterWindow* splitter = XRCCTRL(*this, "splitterWin", wxSplitterWindow);
     if (m_Parser->ClassBrowserOptions().treeMembers)
@@ -631,9 +636,10 @@ void ClassBrowser::OnCBExpandNS(wxCommandEvent& event)
 
 void ClassBrowser::OnViewScope(wxCommandEvent& event)
 {
+    int sel = event.GetSelection();
     if (m_Parser)
     {
-        BrowserDisplayFilter filter = (BrowserDisplayFilter)event.GetSelection();
+        BrowserDisplayFilter filter = static_cast<BrowserDisplayFilter>(sel);
         if (!m_NativeParser->IsParserPerWorkspace() && filter == bdfWorkspace)
         {
             cbMessageBox(_("This feature is not supported in combination with\n"
@@ -648,8 +654,11 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
         UpdateClassBrowserView();
     }
     else
+    {
         // we have no parser; just write the setting in the configuration
-        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), (int)event.GetSelection());
+        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), sel);
+        CCLogger::Get()->DebugLog(wxT("OnViewScope: No parser available."));
+    }
 }
 
 void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
@@ -813,7 +822,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     }
 }
 
-void ClassBrowser::ThreadedBuildTree()
+void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
 {
     if (Manager::IsAppShuttingDown() || !m_Parser)
         return;
@@ -850,7 +859,7 @@ void ClassBrowser::ThreadedBuildTree()
                                       m_CCTreeCtrl,
                                       m_CCTreeCtrlBottom,
                                       m_ActiveFilename,
-                                      m_ActiveProject,
+                                      activeProject,
                                       m_Parser->ClassBrowserOptions(),
                                       m_Parser->GetTokensTree(),
                                       idThreadEvent);
