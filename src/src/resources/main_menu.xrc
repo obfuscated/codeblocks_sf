@@ -533,6 +533,12 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
+      <object class="wxMenuItem" name="idViewStartPage">
+        <label>Start &amp;Page</label>
+        <help>Show/hide start page</help>
+        <checkable>1</checkable>
+        <enabled>1</enabled>
+      </object>
       <object class="wxMenuItem" name="idViewScriptConsole">
         <label>S&amp;cript console</label>
         <help>Show/hide the script console</help>

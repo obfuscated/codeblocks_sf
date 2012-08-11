@@ -248,6 +248,7 @@ int idViewToolMain           = XRCID("idViewToolMain");
 int idViewToolDebugger       = XRCID("idViewToolDebugger");
 int idViewManager            = XRCID("idViewManager");
 int idViewLogManager         = XRCID("idViewLogManager");
+int idViewStartPage          = XRCID("idViewStartPage");
 int idViewStatusbar          = XRCID("idViewStatusbar");
 int idViewScriptConsole      = XRCID("idViewScriptConsole");
 int idViewHideEditorTabs     = XRCID("idViewHideEditorTabs");
@@ -353,6 +354,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_UPDATE_UI(idViewToolMain,           MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewLogManager,         MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewStartPage,          MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewManager,            MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar,          MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewScriptConsole,      MainFrame::OnViewMenuUpdateUI)
@@ -488,6 +490,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewFocusLogsAndOthers,    MainFrame::OnFocusLogsAndOthers)
     EVT_MENU(idViewSwitchTabs,            MainFrame::OnSwitchTabs)
     EVT_MENU(idViewFullScreen,            MainFrame::OnToggleFullScreen)
+    EVT_MENU(idViewStartPage,             MainFrame::OnToggleStartPage)
 
     EVT_MENU(idSettingsEnvironment,    MainFrame::OnSettingsEnvironment)
     EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
@@ -2047,8 +2050,9 @@ void MainFrame::DoUpdateAppTitle()
     SetTitle(fulltitle);
 }
 
-void MainFrame::ShowHideStartPage(bool forceHasProject)
+void MainFrame::ShowHideStartPage(bool forceHasProject, int forceState)
 {
+    Manager::Get()->GetLogManager()->LogWarning(_("Toggling start page"));
     if (Manager::IsBatchBuild())
         return;
 
@@ -2068,11 +2072,21 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
                 Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0 &&
                 Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/start_here_page"), true);
 
+    if(forceState<0)
+        show=false;
+    if(forceState>0)
+        show=true;
+
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (show && !sh)
+    {
         sh = new StartHerePage(this, Manager::Get()->GetEditorManager()->GetNotebook());
+
+    }
     else if (!show && sh)
+    {
         sh->Destroy();
+    }
 
     DoUpdateAppTitle();
 }
@@ -4177,6 +4191,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Check(idViewManager,             manVis);
     mbar->Check(idViewLogManager,          m_LayoutManager.GetPane(m_pInfoPane).IsShown());
+    mbar->Check(idViewStartPage,           Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle)!=NULL);
     mbar->Check(idViewStatusbar,           GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewScriptConsole,       m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
     mbar->Check(idViewHideEditorTabs,      Manager::Get()->GetEditorManager()->GetNotebook()->GetTabCtrlHeight() == 0);
@@ -4416,6 +4431,18 @@ void MainFrame::OnSwitchTabs(wxCommandEvent& /*event*/)
         }
     }
 }
+
+void MainFrame::OnToggleStartPage(wxCommandEvent& /*event*/)
+{
+
+    int toggle=-1;
+    if(Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle)==NULL)
+    {
+        toggle=1;
+    }
+    ShowHideStartPage(false,toggle);
+}
+
 
 void MainFrame::OnToggleFullScreen(wxCommandEvent& /*event*/)
 {

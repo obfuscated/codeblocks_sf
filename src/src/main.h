@@ -217,6 +217,7 @@ class MainFrame : public wxFrame
         void OnFocusLogsAndOthers(wxCommandEvent& event);
         void OnSwitchTabs(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);
+        void OnToggleStartPage(wxCommandEvent& event);
 
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
@@ -324,7 +325,7 @@ class MainFrame : public wxFrame
         void DoUpdateEditorStyle();
         void DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefix, long defaultStyle);
 
-        void ShowHideStartPage(bool forceHasProject = false);
+        void ShowHideStartPage(bool forceHasProject = false, int forceState = 0);
         void ShowHideScriptConsole();
 
         void LoadWindowState();
