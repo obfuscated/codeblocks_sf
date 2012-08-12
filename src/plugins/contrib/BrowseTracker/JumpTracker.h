@@ -115,6 +115,8 @@ class JumpTracker : public cbPlugin
         //-bool IsAttached() {return m_IsAttached;}
         //bool m_IsAttached;
 
+        void SetWrapJumpEntries(const bool tf);
+
     private:
         void JumpDataAdd(const wxString& filename, const long posn, const long edlineNum);
         int  JumpDataContains(const wxString& filename, const long posn);
@@ -126,6 +128,7 @@ class JumpTracker : public cbPlugin
         bool     m_bShuttingDown;
         bool     m_bProjectClosing;      // project close in progress
         bool     m_bJumpInProgress;
+        bool     m_bWrapJumpEntries;
 
         enum{ maxJumpEntries = 20};
         ArrayOfJumpData m_ArrayOfJumpData;

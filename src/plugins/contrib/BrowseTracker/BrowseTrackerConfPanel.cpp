@@ -47,6 +47,7 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
 
 	// Connect Events for choice validation
 	m_pConfigPanel->Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnEnableBrowseMarks ), NULL, this );
+	m_pConfigPanel->Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnWrapJumpEntries ), NULL, this );
 	m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
 	m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
 
@@ -69,6 +70,7 @@ void BrowseTrackerConfPanel::OnApply()
 {
     // get any new user values
     m_BrowseTrackerPlugin.m_BrowseMarksEnabled  = m_pConfigPanel->Cfg_BrowseMarksEnabled->GetValue();
+    m_BrowseTrackerPlugin.m_WrapJumpEntries     = m_pConfigPanel->Cfg_WrapJumpEntries->GetValue();
     m_BrowseTrackerPlugin.m_UserMarksStyle      = m_pConfigPanel->Cfg_MarkStyle->GetSelection();
     m_BrowseTrackerPlugin.m_ToggleKey           = m_pConfigPanel->Cfg_ToggleKey->GetSelection();
 	m_BrowseTrackerPlugin.m_LeftMouseDelay      = m_pConfigPanel->Cfg_LeftMouseDelay->GetValue();
@@ -94,6 +96,7 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 
     // set the current values
     m_pConfigPanel->Cfg_BrowseMarksEnabled->SetValue( m_BrowseTrackerPlugin.m_BrowseMarksEnabled);
+    m_pConfigPanel->Cfg_WrapJumpEntries->SetValue( m_BrowseTrackerPlugin.m_WrapJumpEntries);
     m_pConfigPanel->Cfg_MarkStyle->SetSelection(m_BrowseTrackerPlugin.m_UserMarksStyle);
     m_pConfigPanel->Cfg_ToggleKey->SetSelection( m_BrowseTrackerPlugin.m_ToggleKey );
 	m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
@@ -133,6 +136,22 @@ void BrowseTrackerConfPanel::OnEnableBrowseMarks( wxCommandEvent& event )
             m_pConfigPanel->Cfg_ClearAllKey->Enable(false); ;
 
         }
+    }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void BrowseTrackerConfPanel::OnWrapJumpEntries( wxCommandEvent& event )
+// ----------------------------------------------------------------------------
+{
+    // Enable Jump entry wraps if "Wrap Jum0 Entries" is checked
+    if ( not m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_WrapJumpEntries->Enable(false);
+    }
+
+    if ( m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_WrapJumpEntries->Enable(true);
     }
     event.Skip();
 }

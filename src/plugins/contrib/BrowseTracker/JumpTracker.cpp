@@ -68,6 +68,7 @@ JumpTracker::JumpTracker()
     m_bProjectClosing = false;
     m_IsAttached = false;
     m_bJumpInProgress = false;
+    m_bWrapJumpEntries = false;
 
 }
 // ----------------------------------------------------------------------------
@@ -497,15 +498,23 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
             m_Cursor -= 1;
         if (m_Cursor < 0)
         {
-            //m_Cursor = maxJumpEntries-1;  //(remove wrap code)-
-            m_Cursor = 0;
-            return;
+            if (m_bWrapJumpEntries)
+                m_Cursor = maxJumpEntries-1;  //wrap code
+            else
+            {
+                m_Cursor = 0;
+                return;
+            }
         }
         if (m_Cursor > (int)knt-1)
         {
-            //-m_Cursor = knt-1;          //(remove wrap code)-
-            m_Cursor = (int)knt-1;
-            return;
+            if (m_bWrapJumpEntries)
+                m_Cursor = knt-1;           //wrap code
+            else
+            {
+                m_Cursor = (int)knt-1;
+                return;
+            }
         }
 
         EditorManager* edmgr = Manager::Get()->GetEditorManager();
@@ -567,10 +576,16 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
 
         if ( knt > 1 )
             m_Cursor += 1;
-        //-if (m_Cursor > (int)knt-1) (remove wrap code)
-        //-   m_Cursor = 0;             (remove wrap code)
-        if (m_Cursor > (int)knt-1)
-            m_Cursor = (int)knt-1;
+        if (m_bWrapJumpEntries)
+        {
+            if (m_Cursor > (int)knt-1)  //wrap code
+            m_Cursor = 0;               //wrap code
+        }
+        else //dont wrap
+        {
+            if (m_Cursor > (int)knt-1)
+                m_Cursor = (int)knt-1;
+        }
 
         EditorManager* edmgr = Manager::Get()->GetEditorManager();
         int cursor = m_Cursor;
@@ -637,4 +652,10 @@ void JumpTracker::OnMenuJumpDump(wxCommandEvent &/*event*/)
     }
 
     #endif
+}
+// ----------------------------------------------------------------------------
+void JumpTracker::SetWrapJumpEntries(const bool tf)
+// ----------------------------------------------------------------------------
+{
+    m_bWrapJumpEntries = tf;
 }

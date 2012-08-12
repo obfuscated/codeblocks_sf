@@ -246,6 +246,8 @@ AppVersion::~AppVersion()
 //  Commit 1.2.97 2012/01/11
 //       96) Record last position for deactivated editor
 //           Remove recording position for activated editor
+//  Commit 1.2.98 2012/08/10
+//       98) Add Wrap Jump Entries option
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

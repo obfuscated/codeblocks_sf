@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Dec 17 2007)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -21,22 +21,28 @@
 
 ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_CAPTIONTEXT ) );
+	
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
 	m_staticText2 = new wxStaticText( this, wxID_ANY, wxT("BrowseTracker Options"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText2->Wrap( -1 );
+	m_staticText2->SetFont( wxFont( 9, 74, 90, 92, false, wxT("Tahoma") ) );
+	
 	bSizer3->Add( m_staticText2, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
 	
 	
 	bSizer3->Add( 0, 10, 0, 0, 5 );
 	
 	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer( wxVERTICAL );
+	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 	
 	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, wxT("Enable BrowseMarks"), wxDefaultPosition, wxDefaultSize, 0 );
-	
 	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	Cfg_WrapJumpEntries = new wxCheckBox( this, wxID_ANY, wxT("Wrap Jump Entries"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer7->Add( Cfg_WrapJumpEntries, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 	
 	bSizer3->Add( bSizer7, 0, wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxSHAPED, 5 );
 	
@@ -94,6 +100,7 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	
 	// Connect Events
 	Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnEnableBrowseMarks ), NULL, this );
+	Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnWrapJumpEntries ), NULL, this );
 	Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnToggleBrowseMarkKey ), NULL, this );
 	Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnClearAllBrowseMarksKey ), NULL, this );
 }
@@ -102,6 +109,8 @@ ConfigPanel::~ConfigPanel()
 {
 	// Disconnect Events
 	Cfg_BrowseMarksEnabled->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnEnableBrowseMarks ), NULL, this );
+	Cfg_WrapJumpEntries->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnWrapJumpEntries ), NULL, this );
 	Cfg_ToggleKey->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnToggleBrowseMarkKey ), NULL, this );
 	Cfg_ClearAllKey->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnClearAllBrowseMarksKey ), NULL, this );
+	
 }

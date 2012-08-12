@@ -296,6 +296,9 @@ void BrowseTracker::OnAttach()
 
     ReadUserOptions( m_CfgFilenameStr );
 
+    if (m_pJumpTracker)
+        m_pJumpTracker->SetWrapJumpEntries(m_WrapJumpEntries);
+
     switch(m_UserMarksStyle)
     {
         case BrowseMarksStyle:
@@ -562,6 +565,7 @@ void BrowseTracker::ReadUserOptions(wxString configFullPath)
 	cfgFile.Read( wxT("BrowseMarksToggleKey"),      &m_ToggleKey, Left_Mouse ) ;
 	cfgFile.Read( wxT("LeftMouseDelay"),            &m_LeftMouseDelay, 200 ) ;
 	cfgFile.Read( wxT("BrowseMarksClearAllMethod"), &m_ClearAllKey, ClearAllOnSingleClick ) ;
+	cfgFile.Read( wxT("WrapJumpEntries"),           &m_WrapJumpEntries, 0 ) ;
 
 }
 // ----------------------------------------------------------------------------
@@ -582,6 +586,7 @@ void BrowseTracker::SaveUserOptions(wxString configFullPath)
     cfgFile.Write( wxT("BrowseMarksToggleKey"),     m_ToggleKey ) ;
     cfgFile.Write( wxT("LeftMouseDelay"),           m_LeftMouseDelay ) ;
     cfgFile.Write( wxT("BrowseMarksClearAllMethod"),m_ClearAllKey ) ;
+	cfgFile.Write( wxT("WrapJumpEntries"),          m_WrapJumpEntries ) ;
 
     cfgFile.Flush();
 
@@ -955,7 +960,6 @@ void BrowseTracker::OnConfigApply( )
 // ----------------------------------------------------------------------------
 {
     // Called from OnApply() of BrowseTrackerConfPanel
-
     // reset options according to user responses
 
     // Don't allow set and clear_all key to be the same
@@ -985,6 +989,10 @@ void BrowseTracker::OnConfigApply( )
             evt.SetEditor(eb);
             OnEditorActivated(evt);
         }
+    }
+    if (m_pJumpTracker)
+    {
+        m_pJumpTracker->SetWrapJumpEntries(m_WrapJumpEntries);
     }
 }
 // ----------------------------------------------------------------------------

@@ -173,6 +173,7 @@ class BrowseTracker : public cbPlugin
         void        ImportBrowse_Marks(cbEditor* ed);
         void        RebuildBrowse_Marks(cbEditor* ed, bool addedlines);
         bool        IsBrowseMarksEnabled(){return m_BrowseMarksEnabled;}
+        bool        IsWrapJumpEntriesEnabled(){return m_WrapJumpEntries;}
 
         // Book Marks recording
         void        ToggleBook_Mark(EditorBase* eb);
@@ -190,6 +191,7 @@ class BrowseTracker : public cbPlugin
         bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
         int             m_OldUserMarksStyle;
         bool            m_OldBrowseMarksEnabled;
+        bool            m_WrapJumpEntries;    //wrap jump entries when top or botton reached
 
 	private:
 
