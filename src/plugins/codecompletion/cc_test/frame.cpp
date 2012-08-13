@@ -181,6 +181,7 @@ Frame::Frame(const wxString& main_file) :
     Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
     //*)
 
+    //Setting the macro replacements
     CCTest::Get()->Init();
 
     // TODO: Make this base folders configurable
@@ -384,9 +385,9 @@ void Frame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
 void Frame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
 {
     wxString str;
-    str.Printf(_("ParserTest build with %s!\nRunning under %s."),
+    str.Printf(_("CCTest build with %s!\nRunning under %s."),
                wxVERSION_STRING, wxGetOsDescription().c_str());
-    wxMessageBox(str, _("About ParserTest"), wxOK | wxICON_INFORMATION, this);
+    wxMessageBox(str, _("About CCTest"), wxOK | wxICON_INFORMATION, this);
 }
 
 void Frame::OnMenuSaveSelected(wxCommandEvent& /*event*/)

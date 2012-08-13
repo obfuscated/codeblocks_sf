@@ -11,20 +11,22 @@
  * <CALL_GRAPH>
  * ParserTestApp():
  * - Creates the Frame
- * -> Frame(): holds dummy parser "ParserTest m_ParserTest;"
+ * -> Frame(): will get a singleton CCTest instance pointer by calling CCTest::Get().
  *   - Provided an initial dummy file, can be set by the user later.
  *   -> Frame::Start():
  *      - Reads all UI values into global vars (includes, headers)
  *      - compiles initial global file queue
  *      - Creates global "Busy" dialog
- *      - Calls ParserTest::Clear()
- *      - Iterates over global file queue and calls ParserTest::Start(file)
+ *      - Calls CCTest::Clear()
+ *      - Iterates over global file queue and calls CCTest::Start(file)
+ *      - Creates a local NativeParserTest instance, prepares an expression string
+ *      - Tests the expression matching algorithms by call NativeParserTest::TestExpression()
  *      - Prints results to UI
  *      - destroys "Busy" dialog
- * -> ParserTest(): holds dummy tree "TokensTree* m_pTokensTree;"
- *   -> ParserTest::Start(file)
- *      - Note: In ParserTest::ParserTest() the macro replacements are setup
- *      - Creates and initialises FileLoader for provided file
+ * -> CCTest(): holds dummy tree "TokensTree* m_pTokensTree;"
+ *   -> CCTest::Start(file)
+ *      - Note: In CCTest::Init() the macro replacements are setup
+ *      - Creates and initializes FileLoader for provided file
  *      - Sets up ParserThreadOptions (like follow local/global includes etc...)
  *      - Creates a ParserBase instance "client"
  *      - Creates a new ParserThread
@@ -45,7 +47,8 @@
  *         to parse additionally encountered files (#includes)
  *       - Calls ParserDummy::ParserBase::ParseFile() in ParserThread::HandleIncludes()
  *         to parse additionally encountered files (#includes)
- * -> ParserDummy(): provides the implementation to "Parser", namely:
+ * -> ParserDummy(): it shares the header file "parser.h" with CodeCompletion plugin projects, but
+ *        provides its own implementation to "Parser", namely:
  *      - ParserDummy::ParserCommon::FileType:
  *        - determines file type as source/header according extension
  *      - ParserDummy::ParserBase::GetFullFileName:
