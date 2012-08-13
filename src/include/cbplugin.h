@@ -38,7 +38,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR   1
 #define PLUGIN_SDK_VERSION_MINOR   13
-#define PLUGIN_SDK_VERSION_RELEASE 6
+#define PLUGIN_SDK_VERSION_RELEASE 7
 
 // class decls
 class wxMenuBar;
