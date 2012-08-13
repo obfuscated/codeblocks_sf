@@ -2418,6 +2418,12 @@
 		<Unit filename="sdk/resources/lexers/lexer_cg.xml">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cmake.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cmake.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_cpp.sample">
 			<Option target="scintilla" />
 		</Unit>
