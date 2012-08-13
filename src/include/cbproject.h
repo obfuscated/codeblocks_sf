@@ -10,6 +10,7 @@
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
+#include <wx/string.h>
 
 #include "settings.h"
 #include "misctreeitemdata.h"
@@ -19,6 +20,7 @@
 #include "projectmanager.h"
 
 #include <map>
+#include <vector>
 
 // forward decl
 class cbProject;
@@ -425,6 +427,24 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         bool RemoveFile(ProjectFile* pf);
 
+        struct Glob
+        {
+            wxString m_Path;
+            wxString m_WildCard;
+            bool m_Recursive;
+            Glob(const wxString& path, const wxString& wildCard, bool recursive) : m_Path(path), m_WildCard(wildCard), m_Recursive(recursive) {}
+        };
+
+        /** Set the globs to the project, this are directory paths do retrieve files from to be added to the project, the path can be searched recursively
+          * @param globs the globs to add to the project.
+        */
+        void SetGlobs(const std::vector<Glob>& globs);
+
+        /** Retrieve the current globs from the project
+          * @return globs the globs to add to the project.
+        */
+        std::vector<Glob> GetGlobs() const;
+
         /** Display the project options dialog.
           * @return True if the dialog was closed with "OK", false if closed with "Cancel".
           */
@@ -706,6 +726,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool                   m_CustomMakefile;
         mutable wxString       m_MakefileExecutionDir;
 
+        std::vector<Glob> m_Globs;
         FilesList        m_Files;
         ProjectFileArray m_FileArray;
         wxArrayString    m_ExpandedNodes;

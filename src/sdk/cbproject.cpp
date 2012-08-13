@@ -55,6 +55,7 @@
 // class constructor
 cbProject::cbProject(const wxString& filename)
     : m_CustomMakefile(false),
+    m_Globs(),
     m_FileArray(ProjectFile::CompareProjectFiles),
     m_Loaded(false),
     m_CurrentlyLoading(false),
@@ -2328,3 +2329,14 @@ void cbProject::ProjectFileRenamed(ProjectFile* pf)
         }
     }
 }
+
+void cbProject::SetGlobs(const std::vector<Glob>& globs)
+{
+    m_Globs = globs;
+}
+
+std::vector<cbProject::Glob> cbProject::GetGlobs() const
+{
+    return m_Globs;
+}
+
