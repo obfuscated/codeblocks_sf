@@ -230,6 +230,9 @@ EditorManager::EditorManager()
 
     CreateSearchLog();
     m_Zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
 }
 
 EditorManager::~EditorManager()
@@ -3035,6 +3038,153 @@ void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
 
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
+    event.Skip();
+}
+
+void EditorManager::CollectDefines(CodeBlocksEvent& event)
+{
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (   !prj
+        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/track_preprocessor"), false)
+        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/collect_prj_defines"), false) )
+    {
+        event.Skip();
+        return;
+    }
+
+    wxArrayString compilerFlags = prj->GetCompilerOptions();
+    ProjectBuildTarget* tgt = prj->GetBuildTarget(prj->GetActiveBuildTarget());
+    FilesList* lst;
+    wxString id;
+    if (tgt)
+    {
+        AppendArray(tgt->GetCompilerOptions(), compilerFlags);
+        lst = &tgt->GetFilesList();
+        id  = tgt->GetCompilerID();
+    }
+    else
+    {
+        lst = &prj->GetFilesList();
+        id  = prj->GetCompilerID();
+    }
+
+    wxArrayString defines;
+    for (size_t i = 0; i < compilerFlags.Count(); ++i)
+    {
+        if (   (compilerFlags[i].Left(2) == wxT("-D"))
+            || (compilerFlags[i].Left(2) == wxT("/D")) )
+            defines.Add(compilerFlags[i].Mid(2));
+    }
+
+    defines.Add(wxT("__cplusplus"));
+    for (FilesList::iterator it = lst->begin(); it != lst->end(); ++it)
+    {
+        if ((*it)->relativeFilename.EndsWith(wxT(".c")))
+        {
+            defines.RemoveAt(defines.GetCount() - 1); // do not define '__cplusplus' if even a single C file is found
+            break;
+        }
+    }
+    if (id.Find(wxT("gcc")) != wxNOT_FOUND)
+    {
+        defines.Add(wxT("__GNUC__"));
+        defines.Add(wxT("__GNUG__"));
+    }
+    else if (id.Find(wxT("msvc")) != wxNOT_FOUND)
+    {
+        defines.Add(wxT("_MSC_VER"));
+        defines.Add(wxT("__VISUALC__"));
+    }
+    if (Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/platform_defines"), false))
+    {
+        if (platform::windows)
+        {
+            defines.Add(wxT("_WIN32"));
+            defines.Add(wxT("__WIN32"));
+            defines.Add(wxT("__WIN32__"));
+            defines.Add(wxT("WIN32"));
+            defines.Add(wxT("__WINNT"));
+            defines.Add(wxT("__WINNT__"));
+            defines.Add(wxT("WINNT"));
+            defines.Add(wxT("__WXMSW__"));
+            defines.Add(wxT("__WINDOWS__"));
+            if (platform::bits == 64)
+            {
+                defines.Add(wxT("_WIN64"));
+                defines.Add(wxT("__WIN64__"));
+            }
+        }
+        else if (platform::macosx)
+        {
+            defines.Add(wxT("__WXMAC__"));
+            defines.Add(wxT("__WXOSX__"));
+            defines.Add(wxT("__WXCOCOA__"));
+            defines.Add(wxT("__WXOSX_MAC__"));
+            defines.Add(wxT("__APPLE__"));
+        }
+        else if (platform::linux)
+        {
+            defines.Add(wxT("LINUX"));
+            defines.Add(wxT("linux"));
+            defines.Add(wxT("__linux"));
+            defines.Add(wxT("__linux__"));
+        }
+        else if (platform::freebsd)
+        {
+            defines.Add(wxT("FREEBSD"));
+            defines.Add(wxT("__FREEBSD__"));
+        }
+        else if (platform::netbsd)
+        {
+            defines.Add(wxT("NETBSD"));
+            defines.Add(wxT("__NETBSD__"));
+        }
+        else if (platform::openbsd)
+        {
+            defines.Add(wxT("OPENBSD"));
+            defines.Add(wxT("__OPENBSD__"));
+        }
+        else if (platform::darwin)
+        {
+            defines.Add(wxT("DARWIN"));
+            defines.Add(wxT("__APPLE__"));
+        }
+        else if (platform::solaris)
+        {
+            defines.Add(wxT("sun"));
+            defines.Add(wxT("__sun"));
+            defines.Add(wxT("__SUN__"));
+            defines.Add(wxT("__SUNOS__"));
+            defines.Add(wxT("__SOLARIS__"));
+        }
+        if (platform::unix)
+        {
+            defines.Add(wxT("unix"));
+            defines.Add(wxT("__unix"));
+            defines.Add(wxT("__unix__"));
+            defines.Add(wxT("__UNIX__"));
+        }
+        if (platform::gtk)
+            defines.Add(wxT("__WXGTK__"));
+        if (platform::bits == 32)
+        {
+            defines.Add(wxT("i386"));
+            defines.Add(wxT("__i386"));
+            defines.Add(wxT("__i386__"));
+            defines.Add(wxT("__i386__"));
+            defines.Add(wxT("_X86_"));
+            defines.Add(wxT("__INTEL__"));
+        }
+        else if (platform::bits == 64)
+        {
+            defines.Add(wxT("__amd64"));
+            defines.Add(wxT("__amd64__"));
+            defines.Add(wxT("__x86_64"));
+            defines.Add(wxT("__x86_64__"));
+            defines.Add(wxT("__IA64__"));
+        }
+    }
+    m_Theme->SetKeywords(m_Theme->GetHighlightLanguage(wxT("C/C++")), 4, GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false));
     event.Skip();
 }
 

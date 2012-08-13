@@ -123,8 +123,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         // Returns false on "cancel".
         bool QueryClose(EditorBase* editor);
         bool QueryCloseAll();
-        bool CloseAll(bool dontsave=false);
-        bool CloseAllExcept(EditorBase* editor, bool dontsave=false);
+        bool CloseAll(bool dontsave = false);
+        bool CloseAllExcept(EditorBase* editor, bool dontsave = false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();
@@ -168,6 +168,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnTreeItemSelected(wxTreeEvent &event);
         void OnTreeItemActivated(wxTreeEvent &event);
         void OnTreeItemRightClick(wxTreeEvent &event);
+        void CollectDefines(CodeBlocksEvent& event);
         void SetZoom(int zoom);
         int GetZoom()const;
 

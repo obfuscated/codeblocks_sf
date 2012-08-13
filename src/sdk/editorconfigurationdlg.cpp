@@ -141,6 +141,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "rbTabText",                   wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"),      true)? 1 : 0);
 
     XRCCTRL(*this, "chkTrackPreprocessor",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"),         false));
+    XRCCTRL(*this, "chkCollectPrjDefines",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/collect_prj_defines"),        false));
+    XRCCTRL(*this, "chkPlatDefines",              wxCheckBox)->SetValue(cfg->ReadBool(_T("/platform_defines"),           false));
     XRCCTRL(*this, "chkColoursWxSmith",           wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_wxsmith"),          true));
 
 #if defined __WXMSW__
@@ -152,7 +154,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 #endif
     XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->SetValue(cfg->Read(_T("/open_containing_folder"), openFolderCmds));
 
-    // Highlight Occurence
+    // Highlight Occurrence
     bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
     XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->SetValue(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true));
@@ -814,6 +816,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/camel_case"),                          XRCCTRL(*this, "chkCamelCase",          wxCheckBox)->GetValue());
 
         cfg->Write(_T("/track_preprocessor"),                  XRCCTRL(*this, "chkTrackPreprocessor",  wxCheckBox)->GetValue());
+        cfg->Write(_T("/collect_prj_defines"),                 XRCCTRL(*this, "chkCollectPrjDefines",  wxCheckBox)->GetValue());
+        cfg->Write(_T("/platform_defines"),                    XRCCTRL(*this, "chkPlatDefines",        wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_wxsmith"),                   XRCCTRL(*this, "chkColoursWxSmith",     wxCheckBox)->GetValue());
 
         bool resetZoom = XRCCTRL(*this, "chkResetZoom", wxCheckBox)->GetValue();

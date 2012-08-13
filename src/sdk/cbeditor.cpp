@@ -2570,6 +2570,49 @@ void cbEditor::GotoMatchingBrace()
     if (matchingBrace == wxSCI_INVALID_POSITION)
         matchingBrace = control->BraceMatch(control->GetCurrentPos() - 1);
 
+    // else look for a matching preprocessor command
+    if (matchingBrace == wxSCI_INVALID_POSITION)
+    {
+        wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
+        wxRegEx ppElse(wxT("^[ \t]*#[ \t]*el"));
+        wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
+        wxRegEx pp(wxT("^[ \t]*#[ \t]*[a-z]*")); // generic match to get length
+        if (ppIf.Matches(control->GetCurLine()) || ppElse.Matches(control->GetCurLine()))
+        {
+            int depth = 1; // search forwards
+            for (int i = control->GetCurrentLine() + 1; i < control->GetLineCount(); ++i)
+            {
+                if (ppIf.Matches(control->GetLine(i))) // ignore else's, elif's, ...
+                    ++depth;
+                else if (ppEnd.Matches(control->GetLine(i)))
+                    --depth;
+                if (depth == 0)
+                {
+                    pp.Matches(control->GetLine(i));
+                    matchingBrace = control->PositionFromLine(i) + pp.GetMatch(control->GetLine(i)).Length();
+                    break;
+                }
+            }
+        }
+        else if (ppEnd.Matches(control->GetCurLine()))
+        {
+            int depth = -1; // search backwards
+            for (int i = control->GetCurrentLine() - 1; i > 0; --i)
+            {
+                if (ppIf.Matches(control->GetLine(i))) // ignore else's, elif's, ...
+                    ++depth;
+                else if (ppEnd.Matches(control->GetLine(i)))
+                    --depth;
+                if (depth == 0)
+                {
+                    pp.Matches(control->GetLine(i));
+                    matchingBrace = control->PositionFromLine(i) + pp.GetMatch(control->GetLine(i)).Length();
+                    break;
+                }
+            }
+        }
+    }
+
     // now, we either found it or not
     if (matchingBrace != wxSCI_INVALID_POSITION)
         control->GotoPos(matchingBrace);
@@ -3893,10 +3936,16 @@ void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
 
 bool cbEditor::CanSelectAll() const
 {
-    return GetControl()->GetLength() > 0;
+    int res = 0;
+    cbStyledTextCtrl* control = GetControl();
+    if (control)
+        res = control->GetLength();
+    return res > 0;
 }
 
 void cbEditor::SelectAll()
 {
-    GetControl()->SelectAll();
+    cbStyledTextCtrl* control = GetControl();
+    if (control)
+        control->SelectAll();
 }

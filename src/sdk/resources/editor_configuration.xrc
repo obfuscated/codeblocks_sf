@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
   <object class="wxScrollingDialog" name="dlgConfigureEditor">
+    <title>Configure editor</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
@@ -37,7 +40,7 @@
         <border>5</border>
       </object>
       <object class="sizeritem">
-        <object class="wxStaticLine" name="ID_STATICLINE1"/>
+        <object class="wxStaticLine" name="ID_STATICLINE1" />
         <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
       </object>
       <object class="sizeritem">
@@ -386,7 +389,6 @@
                                     </object>
                                     <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   </object>
-                                                                    
                                   <object class="sizeritem">
                                     <object class="wxCheckBox" name="chkHighlightCaretLine">
                                       <label>Highlight line under caret</label>
@@ -420,40 +422,42 @@
                             <border>5</border>
                           </object>
                         </object>
-                        <pos>33,178</pos>
                       </object>
                       <label>Editor settings</label>
                     </object>
                     <object class="notebookpage">
                       <object class="wxPanel" name="wxID_ANY">
-                        <object class="wxBoxSizer" name="wxID_ANY">
+                        <object class="wxBoxSizer">
                           <orient>wxVERTICAL</orient>
-                                                    
-                                                    
-                                                    
-                                                    
                           <object class="sizeritem">
                             <object class="wxStaticBoxSizer">
+                              <label>Colouring and highlighting options</label>
+                              <orient>wxVERTICAL</orient>
                               <object class="sizeritem">
-                                <object class="wxFlexGridSizer" name="wxID_ANY">
+                                <object class="wxFlexGridSizer">
                                   <cols>1</cols>
                                   <vgap>4</vgap>
                                   <hgap>4</hgap>
-                                                                    
-                                                                    
-                                                                    
-                                                                    
-                                                                    
                                   <object class="sizeritem">
                                     <object class="wxCheckBox" name="chkTrackPreprocessor">
                                       <label>Interpret #if, #else, #endif to grey out inactive preprocessor-code</label>
                                     </object>
                                     <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   </object>
-                                                                    
-                                                                    
-                                                                    
-                                                                    
+                                  <object class="sizeritem">
+                                    <object class="wxCheckBox" name="chkCollectPrjDefines">
+                                      <label>Collect defines from project file</label>
+                                    </object>
+                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                    <border>10</border>
+                                  </object>
+                                  <object class="sizeritem">
+                                    <object class="wxCheckBox" name="chkPlatDefines">
+                                      <label>Include host platform defines</label>
+                                    </object>
+                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                    <border>10</border>
+                                  </object>
                                   <object class="sizeritem">
                                     <object class="wxCheckBox" name="chkColoursWxSmith">
                                       <label>Highlight wxSmith sections differently</label>
@@ -465,20 +469,17 @@
                                 <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 <border>4</border>
                               </object>
-                              <label>Colouring and highlighting options</label>
-                              <orient>wxVERTICAL</orient>
                             </object>
                             <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             <border>5</border>
                           </object>
                         </object>
-                        <pos>64,15</pos>
                       </object>
                       <label>C/C++ Editor settings</label>
                     </object>
                     <object class="notebookpage">
                       <object class="wxPanel" name="wxID_ANY">
-                        <object class="wxBoxSizer" name="tabFolding">
+                        <object class="wxBoxSizer">
                           <orient>wxVERTICAL</orient>
                           <object class="sizeritem">
                             <object class="wxStaticBoxSizer">
@@ -510,7 +511,7 @@
                                   <label>Use this encoding</label>
                                   <content>
                                     <item>As fallback encoding</item>
-                                    <item>As default encoding (bypassing C::B's auto-detection)</item>
+                                    <item>As default encoding (bypassing C::B&apos;s auto-detection)</item>
                                   </content>
                                   <style>wxRA_SPECIFY_COLS</style>
                                 </object>
@@ -544,7 +545,7 @@
                           </object>
                           <object class="sizeritem">
                             <object class="wxRadioBox" name="rbTabText">
-                              <label>Editor title is the file's</label>
+                              <label>Editor title is the file&apos;s</label>
                               <content>
                                 <item>name only (no path information)</item>
                                 <item>relative filename (to the project file)</item>
@@ -609,9 +610,7 @@
                             <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                             <border>5</border>
                           </object>
-                        
-                                                </object>
-                        <pos>64,15</pos>
+                        </object>
                       </object>
                       <label>Other settings</label>
                     </object>
@@ -829,7 +828,7 @@
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxButton" name="btnGutterColour"/>
+                          <object class="wxButton" name="btnGutterColour" />
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
                         <object class="sizeritem">
@@ -899,7 +898,7 @@
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxButton" name="btnCaretColour"/>
+                          <object class="wxButton" name="btnCaretColour" />
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
                         <object class="sizeritem">
@@ -1069,7 +1068,7 @@
                   <border>4</border>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxStaticLine" name="ID_STATICLINE2"/>
+                  <object class="wxStaticLine" name="ID_STATICLINE2" />
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>8</border>
                 </object>
@@ -1097,7 +1096,7 @@
                                   <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxButton" name="btnColoursFore"/>
+                                  <object class="wxButton" name="btnColoursFore" />
                                   <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
@@ -1108,7 +1107,7 @@
                                   <border>8</border>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxButton" name="btnColoursBack"/>
+                                  <object class="wxButton" name="btnColoursBack" />
                                   <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                               </object>
@@ -1146,10 +1145,9 @@
                           </object>
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
-                                                
                         <object class="spacer">
-                          <option>1</option>
                           <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <option>1</option>
                         </object>
                         <object class="sizeritem">
                           <object class="wxButton" name="btnColoursReset">
@@ -1167,8 +1165,8 @@
                 </object>
                 <object class="sizeritem">
                   <object class="unknown" name="txtColoursSample">
-                    <style/>
-                    <style/>
+                    <style></style>
+                    <style></style>
                   </object>
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
@@ -1231,7 +1229,7 @@
         <option>1</option>
       </object>
       <object class="sizeritem">
-        <object class="wxStaticLine" name="ID_STATICLINE3"/>
+        <object class="wxStaticLine" name="ID_STATICLINE3" />
         <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
         <border>8</border>
       </object>
@@ -1239,12 +1237,12 @@
         <object class="wxStdDialogButtonSizer">
           <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label/>
+              <label></label>
             </object>
           </object>
           <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
-              <label/>
+              <label></label>
             </object>
           </object>
         </object>
@@ -1252,8 +1250,5 @@
         <border>4</border>
       </object>
     </object>
-    <title>Configure editor</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
   </object>
 </resource>

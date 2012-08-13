@@ -8,7 +8,7 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2">
-					<label>Note: After autor-detection, at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and change the compiler&apos;s master path later in the compiler options.&#x0A;Select you favourite default compiler here:</label>
+					<label>Note: After auto-detection, at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and change the compiler&apos;s master path later in the compiler options.&#x0A;Select you favourite default compiler here:</label>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 				<border>8</border>
@@ -49,6 +49,7 @@
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblDefCompiler">
 							<label>xxx</label>
+							<fg>#800000</fg>
 						</object>
 						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 						<border>8</border>
