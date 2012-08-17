@@ -68,6 +68,9 @@ private:
     void DoSearch(int fromPos, int startPos=wxSCI_INVALID_POSITION, int endPos=wxSCI_INVALID_POSITION);
     void VerifyPosition();
     void SetRange();
+#ifndef __WXMSW__
+    void OnMenuEditPaste(wxCommandEvent& event);
+#endif
     wxString m_SearchText;
     wxColour m_textCtrlBG_Default;
     wxToolBar* m_pToolbar;

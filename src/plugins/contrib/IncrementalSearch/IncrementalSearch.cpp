@@ -48,6 +48,9 @@ BEGIN_EVENT_TABLE(IncrementalSearch, cbPlugin)
     EVT_TOOL(XRCID("idIncSearchUseRegex"), IncrementalSearch::OnToggleUseRegex)
     EVT_TEXT(XRCID("idIncSearchText"), IncrementalSearch::OnTextChanged)
     EVT_TEXT_ENTER(XRCID("idIncSearchText"), IncrementalSearch::OnSearchNext)
+#ifndef __WXMSW__
+    EVT_MENU(XRCID("idEditPaste"), IncrementalSearch::OnMenuEditPaste)
+#endif
 END_EVENT_TABLE()
 
 // constructor
@@ -691,3 +694,27 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
     m_pTextCtrl->Update();
     #endif
 }
+
+#ifndef __WXMSW__
+void IncrementalSearch::OnMenuEditPaste(wxCommandEvent& event)
+{
+    // Process clipboard data only if we have the focus
+    if ( !IsAttached() )
+    {
+        event.Skip();
+        return;
+    }
+
+    wxWindow* pFocused = wxWindow::FindFocus();
+    if (!pFocused)
+    {
+        event.Skip();
+        return;
+    }
+
+    if (pFocused == m_pTextCtrl)
+        m_pTextCtrl->Paste();
+    else
+        event.Skip();
+}
+#endif
