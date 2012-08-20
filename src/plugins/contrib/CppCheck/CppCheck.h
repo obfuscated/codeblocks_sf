@@ -23,6 +23,8 @@ public:
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
     int Execute();
+
+    virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/);
 private:
     void WriteToLog(const wxString& Text);
     void AppendToLog(const wxString& Text);
@@ -30,7 +32,6 @@ private:
 
     TextCtrlLogger*  m_CppCheckLog;      //!< log tab in the message pane
     CppCheckListLog* m_ListLog;          //!< log tab to click/double click to take you to offending line of code
-    wxString         m_CppCheckApp;      //!< The path to the application (provided by the user on request)
     int              m_LogPageIndex;     //!< index of our log tab (can this change during run time ??)
     int              m_ListLogPageIndex; //!< index of our list log tab
 };

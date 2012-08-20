@@ -13,9 +13,11 @@ libCppCheck_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoi
 libCppCheck_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libCppCheck_la_SOURCES = CppCheck.cpp \
-            CppCheckListLog.cpp
+            CppCheckListLog.cpp \
+            ConfigPanel.cpp
 
 noinst_HEADERS = CppCheck.h \
-            CppCheckListLog.h
+            CppCheck.h \
+            ConfigPanel.h
 
 EXTRA_DIST = $(srcdir)/*.cbp

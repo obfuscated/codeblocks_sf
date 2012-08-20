@@ -16,8 +16,8 @@
 				<Option projectCompilerOptionsRelation="0" />
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -58,14 +58,22 @@
 			<Add after="zip -j9 ../../../devel/share/codeblocks/CppCheck.zip resources/manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="ConfigPanel.cpp" />
+		<Unit filename="ConfigPanel.h" />
 		<Unit filename="CppCheck.cpp" />
 		<Unit filename="CppCheck.h" />
 		<Unit filename="CppCheckListLog.cpp" />
 		<Unit filename="CppCheckListLog.h" />
+		<Unit filename="wxsmith/ConfigPanel.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="1" i18n="1" name="ConfigPanel" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
