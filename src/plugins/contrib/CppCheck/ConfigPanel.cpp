@@ -25,7 +25,7 @@ BEGIN_EVENT_TABLE(ConfigPanel,wxPanel)
     //*)
 END_EVENT_TABLE()
 
-ConfigPanel::ConfigPanel(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size) :
+ConfigPanel::ConfigPanel(wxWindow* parent,wxWindowID id,const wxPoint& /*pos*/,const wxSize& /*size*/) :
   m_CppCheckApp()
 {
     //(*Initialize(ConfigPanel)
@@ -85,7 +85,7 @@ ConfigPanel::~ConfigPanel()
     //*)
 }
 
-void ConfigPanel::OnCppCheckApp(wxCommandEvent& event)
+void ConfigPanel::OnCppCheckApp(wxCommandEvent& /*event*/)
 {
     wxFileDialog dialog (this, _("Select CppCheck application"),
                          wxEmptyString,
