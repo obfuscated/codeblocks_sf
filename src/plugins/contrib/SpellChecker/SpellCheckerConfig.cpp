@@ -109,20 +109,80 @@ const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
 }
 const wxString SpellCheckerConfig::GetDictionaryPath()const
 {
-    wxString dictPath = m_DictPath;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dictPath);
-    return dictPath;
+    wxArrayString dictPaths;
+    dictPaths.Add(m_DictPath);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dictPaths[0]);
+    if (platform::windows)
+    {
+        wxString programs = wxT("C:\\Program Files");
+        wxGetEnv(wxT("ProgramFiles"), &programs);
+        dictPaths.Add(programs + wxT("\\Mozilla Firefox\\dictionaries"));
+        dictPaths.Add(programs + wxT("\\Mozilla\\Firefox\\dictionaries"));
+        dictPaths.Add(programs + wxT("\\Mozilla Thunderbird\\dictionaries"));
+        dictPaths.Add(programs + wxT("\\Mozilla\\Thunderbird\\dictionaries"));
+        wxString libreOffice = wxFindFirstFile(programs + wxT("\\*LibreOffice*"), wxDIR);
+        wxString openOffice = wxFindFirstFile(programs + wxT("\\*OpenOffice*"), wxDIR);
+        wxArrayString langs = GetArrayFromString(wxT("en;fr;es;de"));
+        for (size_t i = 0; i < langs.GetCount(); ++i)
+        {
+            if (!libreOffice.IsEmpty())
+                dictPaths.Add(libreOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            if (!openOffice.IsEmpty())
+                dictPaths.Add(openOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+        }
+    }
+    else
+    {
+        dictPaths.Add(wxT("/usr/share/hunspell"));
+        dictPaths.Add(wxT("/usr/share/myspell/dicts"));
+    }
+    dictPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
+    for (size_t i = 0; i < dictPaths.GetCount(); ++i)
+    {
+        if (!wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
+            return dictPaths[i];
+    }
+    return dictPaths[0];
 }
 const wxString SpellCheckerConfig::GetThesaurusPath()const
 {
-    wxString thesPath = m_ThesPath;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(thesPath);
-    return thesPath;
+    wxArrayString thesPaths;
+    thesPaths.Add(m_ThesPath);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(thesPaths[0]);
+    if (platform::windows)
+    {
+        wxString programs = wxT("C:\\Program Files");
+        wxGetEnv(wxT("ProgramFiles"), &programs);
+        wxString libreOffice = wxFindFirstFile(programs + wxT("\\*LibreOffice*"), wxDIR);
+        wxString openOffice = wxFindFirstFile(programs + wxT("\\*OpenOffice*"), wxDIR);
+        wxArrayString langs = GetArrayFromString(wxT("en;fr;es;de"));
+        for (size_t i = 0; i < langs.GetCount(); ++i)
+        {
+            if (!libreOffice.IsEmpty())
+                thesPaths.Add(libreOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+            if (!openOffice.IsEmpty())
+                thesPaths.Add(openOffice + wxT("\\share\\extensions\\dict-") + langs[i]);
+        }
+    }
+    else
+    {
+        thesPaths.Add(wxT("/usr/share/myspell/dicts"));
+        thesPaths.Add(wxT("/usr/share/mythes"));
+    }
+    thesPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
+    for (size_t i = 0; i < thesPaths.GetCount(); ++i)
+    {
+        if (!wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
+            return thesPaths[i];
+    }
+    return thesPaths[0];
 }
 const wxString SpellCheckerConfig::GetBitmapPath()const
 {
     wxString bitmPath = m_BitmPath;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
+    if (wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
+        return m_pPlugin->GetOnlineCheckerConfigPath();
     return bitmPath;
 }
 
@@ -183,11 +243,13 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("de_DE_comb")] =_T("German (Germany-old & neu ortho)");
     m_LanguageNamesMap[_T("de_DE_neu")] =_T("German (Germany-neu ortho)");
     m_LanguageNamesMap[_T("el_GR")] = _T("Greek (Greece)");
+    m_LanguageNamesMap[_T("en")]    = _T("English");
     m_LanguageNamesMap[_T("en_AU")] = _T("English (Australia)");
     m_LanguageNamesMap[_T("en_CA")] = _T("English (Canada)");
     m_LanguageNamesMap[_T("en_GB")] = _T("English (United Kingdom)");
     m_LanguageNamesMap[_T("en_NZ")] = _T("English (New Zealand)");
     m_LanguageNamesMap[_T("en_US")] = _T("English (United States)");
+    m_LanguageNamesMap[_T("en_ZA")] = _T("English (South Africa)");
     m_LanguageNamesMap[_T("eo_l3")] = _T("Esperanto (Anywhere)");
     m_LanguageNamesMap[_T("es_ES")] = _T("Spanish (Spain-etal)");
     m_LanguageNamesMap[_T("es_MX")] = _T("Spanish (Mexico)");
@@ -199,10 +261,10 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
     m_LanguageNamesMap[_T("he_IL")] = _T("Hebrew (Israel)");
     m_LanguageNamesMap[_T("hr_HR")] = _T("Croatian (Croatia)");
     m_LanguageNamesMap[_T("hu_HU")] = _T("Hungarian (Hungaria)");
-    m_LanguageNamesMap[_T("ia")] =_T("Interligua (x-register)");
+    m_LanguageNamesMap[_T("ia")]    =_T("Interligua (x-register)");
     m_LanguageNamesMap[_T("id_ID")] = _T("Indonesian (Indonesia)");
     m_LanguageNamesMap[_T("it_IT")] = _T("Italian (Italy)");
-    m_LanguageNamesMap[_T("la")] =_T("Latin (x-register)");
+    m_LanguageNamesMap[_T("la")]    =_T("Latin (x-register)");
     m_LanguageNamesMap[_T("lt_LT")] = _T("Lithuanian (Lithuania)");
     m_LanguageNamesMap[_T("lv_LV")] = _T("Latvian (Latvia)");
     m_LanguageNamesMap[_T("mg_MG")] = _T("Malagasy (Madagascar)");
@@ -240,5 +302,19 @@ wxString SpellCheckerConfig::GetLanguageName(const wxString& language_id)
     it = m_LanguageNamesMap.find(language_id);
     if (it != m_LanguageNamesMap.end() )
         return it->second;
+
+    wxString id_fix = language_id;
+    id_fix.Replace(wxT("-"), wxT("_")); // some dictionaries are distributed with hyphens
+
+    it = m_LanguageNamesMap.find(id_fix);
+    if (it != m_LanguageNamesMap.end() )
+        return it->second;
+
+    id_fix = id_fix.BeforeLast(wxT('_')); // may be "*_v2", or root language may be known even if this specification is not
+
+    it = m_LanguageNamesMap.find(id_fix);
+    if (it != m_LanguageNamesMap.end() )
+        return it->second + wxT(" (") + language_id + wxT(")"); // but may be incorrect, so specify the original name
+
     return language_id;
 }

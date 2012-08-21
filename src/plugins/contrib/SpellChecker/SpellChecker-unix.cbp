@@ -65,8 +65,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-lwxSpellChecker" />
 					<Add option="`pkg-config hunspell --libs`" />
-					<Add library="wxSpellChecker" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel" />
 				</Linker>

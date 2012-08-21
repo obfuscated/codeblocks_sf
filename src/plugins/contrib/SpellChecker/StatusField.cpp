@@ -26,7 +26,10 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     //ctor
     m_text = new wxStaticText(this, wxID_ANY, m_sccfg->GetDictionaryName());
 
-    wxBitmap bm(wxImage( m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName() + _T(".png"), wxBITMAP_TYPE_PNG ));
+    wxString name = m_sccfg->GetDictionaryName();
+    if (!wxFileExists(m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + name + _T(".png")))
+        name.Replace(wxT("-"), wxT("_")); // some dictionaries are distributed with hyphens
+    wxBitmap bm(wxImage( m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + name + _T(".png"), wxBITMAP_TYPE_PNG ));
     m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
 
     if ( bm.IsOk() )
@@ -41,6 +44,9 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     m_text->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     m_bitmap->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    m_text->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    m_bitmap->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
 }
 
 SpellCheckerStatusField::~SpellCheckerStatusField()
@@ -58,7 +64,10 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
 void SpellCheckerStatusField::Update()
 {
     m_text->SetLabel(m_sccfg->GetDictionaryName() );
-    wxBitmap bm(wxImage( m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName()  + _T(".png"), wxBITMAP_TYPE_PNG ));
+    wxString name = m_sccfg->GetDictionaryName();
+    if (!wxFileExists(m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + name + _T(".png")))
+        name.Replace(wxT("-"), wxT("_")); // some dictionaries are distributed with hyphens
+    wxBitmap bm(wxImage( m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + name + _T(".png"), wxBITMAP_TYPE_PNG ));
     if ( bm.IsOk() )
     {
         m_text->Hide();
@@ -93,7 +102,7 @@ void SpellCheckerStatusField::OnRightUp(wxMouseEvent &event)
     m_sccfg->ScanForDictionaries();
     wxMenu *popup = new wxMenu();
     std::vector<wxString> dicts = m_sccfg->GetPossibleDictionaries();
-    for ( unsigned int i = 0 ; i < dicts.size()&& i < LANGS ; i++ )
+    for ( unsigned int i = 0 ; i < dicts.size() && i < LANGS ; i++ )
         popup->Append( idCommand[i], m_sccfg->GetLanguageName(dicts[i]), _T(""), wxITEM_CHECK)->Check(dicts[i] == m_sccfg->GetDictionaryName() );
     popup->AppendSeparator();
     wxMenuItem *mnuItm = popup->Append( idEditPersonalDictionary, _T("Edit personal dictionary"), _T(""));

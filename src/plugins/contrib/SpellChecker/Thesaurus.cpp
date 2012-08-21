@@ -56,7 +56,48 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
         m_pT = new wxThes( idxpath, datpath );
     }
     else
+    {
         Manager::Get()->GetLogManager()->Log(_T("SpellChecker: Thesaurus files '") + idxpath + _T("' not found!"));
+        wxString altIdx = wxFindFirstFile(idxpath.BeforeLast(wxT('.')) + wxT("*.idx"), wxFILE); // "*_v2.idx"
+        if (altIdx.IsEmpty()) // try again with more wildcards
+        {
+            altIdx = idxpath.AfterLast(wxFILE_SEP_PATH).BeforeLast(wxT('.')) + wxT("*.idx");
+            altIdx.Replace(wxT("_"), wxT("*"));
+            altIdx.Replace(wxT("-"), wxT("*"));
+            altIdx = wxFindFirstFile(idxpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altIdx, wxFILE);
+        }
+        if (altIdx.IsEmpty()) // try to find the thesaurus of a related language (something is better than nothing)
+        {
+            altIdx = idxpath.AfterLast(wxFILE_SEP_PATH);
+            altIdx.Replace(wxT("_"), wxT("*"));
+            altIdx.Replace(wxT("-"), wxT("*"));
+            altIdx = altIdx.BeforeLast(wxT('*')) + wxT("*.idx");
+            altIdx = wxFindFirstFile(idxpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altIdx, wxFILE);
+        }
+
+        wxString altDat = wxFindFirstFile(datpath.BeforeLast(wxT('.')) + wxT("*.dat"), wxFILE); // "*_v2.dat"
+        if (altDat.IsEmpty()) // try again with more wildcards
+        {
+            altDat = datpath.AfterLast(wxFILE_SEP_PATH).BeforeLast(wxT('.')) + wxT("*.dat");
+            altDat.Replace(wxT("_"), wxT("*"));
+            altDat.Replace(wxT("-"), wxT("*"));
+            altDat = wxFindFirstFile(datpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altDat, wxFILE);
+        }
+        if (altDat.IsEmpty()) // try to find the thesaurus of a related language (something is better than nothing)
+        {
+            altDat = datpath.AfterLast(wxFILE_SEP_PATH);
+            altDat.Replace(wxT("_"), wxT("*"));
+            altDat.Replace(wxT("-"), wxT("*"));
+            altDat = altDat.BeforeLast(wxT('*')) + wxT("*.dat");
+            altDat = wxFindFirstFile(datpath.BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + altDat, wxFILE);
+        }
+
+        if (!altIdx.IsEmpty() && !altDat.IsEmpty() && wxFileExists(altIdx) && wxFileExists(altDat))
+        {
+            m_pT = new  wxThes(altIdx, altDat);
+            Manager::Get()->GetLogManager()->Log(wxT("SpellChecker: Loading '") + altIdx + wxT("' instead..."));
+        }
+    }
 }
 
 
