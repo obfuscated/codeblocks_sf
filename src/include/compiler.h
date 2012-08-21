@@ -30,7 +30,7 @@ class ProjectFile;
     Compiler options: $options
     Linker options: $link_options
     Include dirs: $includes
-    Rsource include dirs: $res_includes
+    Resource include dirs: $res_includes
     Library dirs: $libdirs
     Link libraries: $libs
     Source file: $file
@@ -232,23 +232,23 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Check if the supplied string is a compiler warning/error */
         virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
         /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
-        virtual wxString GetLastErrorFilename(){ return m_ErrorFilename; }
+        virtual wxString GetLastErrorFilename()             { return m_ErrorFilename; }
         /** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
-        virtual wxString GetLastErrorLine(){ return m_ErrorLine; }
+        virtual wxString GetLastErrorLine()                 { return m_ErrorLine; }
         /** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
-        virtual wxString GetLastError(){ return m_Error; }
+        virtual wxString GetLastError()                     { return m_Error; }
         /** @brief Get the compiler's name */
-        virtual const wxString& GetName() const { return m_Name; }
+        virtual const wxString& GetName() const             { return m_Name; }
         /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
-        virtual const wxString& GetMasterPath() const { return m_MasterPath; }
+        virtual const wxString& GetMasterPath() const       { return m_MasterPath; }
         /** @brief Get the compiler's extra paths */
-        virtual const wxArrayString& GetExtraPaths() const { return m_ExtraPaths; }
+        virtual const wxArrayString& GetExtraPaths() const  { return m_ExtraPaths; }
         /** @brief Get the compiler's programs */
         virtual const CompilerPrograms& GetPrograms() const { return m_Programs; }
         /** @brief Get the compiler's generic switches */
         virtual const CompilerSwitches& GetSwitches() const { return m_Switches; }
         /** @brief Get the compiler's options */
-        virtual const CompilerOptions& GetOptions() const { return m_Options; }
+        virtual const CompilerOptions& GetOptions() const   { return m_Options; }
         /** @brief Get a command based on CommandType
           * @param ct The command type to process
           * @param fileExtension the file's extension (no leading dot)
@@ -292,7 +292,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
                                         const wxString& FlatObject,
                                         const wxString& deps);
 
-        /** @brief Get the full include dirs used in the actuall command line.
+        /** @brief Get the full include dirs used in the actual command line.
           *
           * These are the actual include dirs that will be used for building
           * and might be different than target->GetIncludeDirs(). This is
@@ -343,7 +343,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         friend class CompilerFactory;
         Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 
-        /** This is to be overriden, if compiler needs to alter the default
+        /** This is to be overridden, if compiler needs to alter the default
           * command line generation.
           */
         virtual CompilerCommandGenerator* GetCommandGenerator();

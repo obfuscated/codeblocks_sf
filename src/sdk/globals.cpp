@@ -20,6 +20,7 @@
     #include "configmanager.h" // ReadBool
     #include "filemanager.h"
     #include "globals.h"
+    #include "logmanager.h"
     #include "manager.h"
     #include "projectmanager.h"
 #endif
@@ -320,7 +321,7 @@ FileType FileTypeOf(const wxString& filename)
     // DrewBoo: Before giving up, see if the ProjectManager
     // considers this extension a source or header
     // TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-    // TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+    // TODO (Morten#3#): This code should actually be a method of filegroups and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
     else
     {
         ProjectManager *prjMgr = Manager::Get()->GetProjectManager();
@@ -757,6 +758,62 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
         }
     }
     return ret;
+}
+
+/** Adds support for backtick'd expressions under Windows. */
+typedef std::map<wxString, wxString> BackticksMap;
+BackticksMap m_Backticks; // all calls share the same cache
+wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
+{
+    wxString ret;
+
+    // this function is not windows-only anymore because we parse the backticked command's output
+    // for compiler/linker search dirs
+
+    size_t start = str.find(_T('`'));
+    if (start == wxString::npos)
+        return ret; // no backticks here
+    size_t end = str.find(_T('`'), start + 1);
+    if (end == wxString::npos)
+        return ret; // no ending backtick; error?
+
+    while (start != wxString::npos && end != wxString::npos)
+    {
+        wxString cmd = str.substr(start + 1, end - start - 1);
+        cmd.Trim(true);
+        cmd.Trim(false);
+        if (cmd.IsEmpty())
+            break;
+
+        wxString bt;
+        BackticksMap::iterator it = m_Backticks.find(cmd);
+        if (it != m_Backticks.end())
+        {
+            // in cache :)
+            bt = it->second;
+        }
+        else
+        {
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
+            wxArrayString output;
+            if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
+                wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
+            else
+                wxExecute(cmd, output, wxEXEC_NODISABLE);
+            bt = GetStringFromArray(output, _T(" "));
+            // add it in the cache
+            m_Backticks[cmd] = bt;
+            Manager::Get()->GetLogManager()->DebugLog(_T("Cached"));
+        }
+        ret << bt << _T(' ');
+        str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
+
+        // find next occurrence
+        start = str.find(_T('`'));
+        end = str.find(_T('`'), start + 1);
+    }
+
+    return ret; // return a list of the replaced expressions
 }
 
 bool IsWindowReallyShown(wxWindow* win)

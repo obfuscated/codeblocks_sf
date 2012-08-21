@@ -206,6 +206,8 @@ extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
+extern DLLIMPORT wxString ExpandBackticks(wxString &str);
+
 /// Check if CommonControls version is at least 6 (XP and up)
 extern DLLIMPORT bool UsesCommonControls6();
 
@@ -235,7 +237,7 @@ extern DLLIMPORT bool IsWindowReallyShown(wxWindow* win);
 enum SettingsIconsStyle
 {
     sisLargeIcons    = 0, ///< Large icons (default)
-    sisNoIcons       = 1 ///< No icons, just text
+    sisNoIcons       = 1  ///< No icons, just text
 };
 
 class wxListCtrl;

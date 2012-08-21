@@ -20,7 +20,6 @@ class Compiler;
 
 typedef std::map<ProjectBuildTarget*, wxString> OptionsMap;
 typedef std::map<ProjectBuildTarget*, wxArrayString> SearchDirsMap;
-typedef std::map<wxString, wxString> BackticksMap;
 
 /** Generate command-lines needed to produce a build.
   * This pre-generates everything when Init() is called.
@@ -98,9 +97,7 @@ class DLLIMPORT CompilerCommandGenerator
     private:
         wxString GetProcessedIncludeDir(Compiler* compiler, ProjectBuildTarget* target,
                                         const wxArrayString& inc_dirs, const wxString& inc_switch);
-        wxString ExpandBackticks(wxString& str);
         void SearchDirsFromBackticks(Compiler* compiler, ProjectBuildTarget* target, const wxString& btOutput);
-        BackticksMap m_Backticks;
         wxArrayString m_NotLoadedScripts;
         wxArrayString m_ScriptsWithErrors;
 };

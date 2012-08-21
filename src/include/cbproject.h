@@ -10,7 +10,6 @@
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
-#include <wx/string.h>
 
 #include "settings.h"
 #include "misctreeitemdata.h"
@@ -83,9 +82,9 @@ class DLLIMPORT FileTreeData : public MiscTreeItemData
   */
 enum PCHMode
 {
-    pchSourceDir = 0,   /// In a dir (named by the PCH) on the same level as the source header (default).
-    pchObjectDir,       /// In the objects output dir, along with other object files.
-    pchSourceFile      /// In a file alongside the source header (with .gch appended).
+    pchSourceDir = 0, /// In a dir (named by the PCH) on the same level as the source header (default).
+    pchObjectDir,     /// In the objects output dir, along with other object files.
+    pchSourceFile     /// In a file alongside the source header (with .gch appended).
 };
 
 /** @brief Represents a Code::Blocks project.
@@ -328,36 +327,36 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** Close all project files.
           * @param dontsave If true, no project file will be saved even if modified.
           * If false, any modified file will be saved (default).
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool CloseAllFiles(bool dontsave=false);
 
         /** Save all project files.
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool SaveAllFiles();
 
         /** Save the project.
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool Save();
 
         /** Save the project under a different name.
           * A dialog pops up for the user to choose a new filename for the project.
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool SaveAs();
 
         /** Save the project's layout.
           * Layout is the list of open project files, which one is active,
           * where the cursor is located on each one of those, etc.
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool SaveLayout();
 
         /** Load the project's layout.
           * @see SaveLayout() for info.
-          * @return True if succesfull, false otherwise.
+          * @return True if successful, false otherwise.
           */
         bool LoadLayout();
 
@@ -727,12 +726,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
         mutable wxString       m_MakefileExecutionDir;
 
         std::vector<Glob> m_Globs;
-        FilesList        m_Files;
-        ProjectFileArray m_FileArray;
-        wxArrayString    m_ExpandedNodes;
-        wxArrayString    m_SelectedNodes;
-        bool             m_Loaded;
-        wxTreeItemId     m_ProjectNode;
+        FilesList         m_Files;
+        ProjectFileArray  m_FileArray;
+        wxArrayString     m_ExpandedNodes;
+        wxArrayString     m_SelectedNodes;
+        bool              m_Loaded;
+        wxTreeItemId      m_ProjectNode;
 
         wxArrayString m_VirtualFolders; // not saved, just used throughout cbProject's lifetime
 

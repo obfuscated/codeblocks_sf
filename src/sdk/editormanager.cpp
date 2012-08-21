@@ -10,32 +10,33 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/notebook.h>
-    #include <wx/menu.h>
-    #include <wx/splitter.h>
+    #include <wx/dir.h>
+    #include <wx/file.h>
     #include <wx/imaglist.h>
-    #include <wx/regex.h>
     #include <wx/listctrl.h>
-
-    #include "editormanager.h" // class's header file
-    #include "configmanager.h"
+    #include <wx/menu.h>
+    #include <wx/notebook.h>
+    #include <wx/regex.h>
+    #include <wx/splitter.h>
     #include <wx/xrc/xmlres.h>
+
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "compiler.h"
+    #include "compilerfactory.h"
+    #include "configmanager.h"
+    #include "editormanager.h" // class's header file
+    #include "filemanager.h"
+    #include "globals.h"
     #include "infowindow.h"
     #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "projectfile.h"
-    #include "pluginmanager.h"
-    #include "manager.h"
     #include "macrosmanager.h"
-    #include "filemanager.h"
-    #include "sdk_events.h"
+    #include "manager.h"
+    #include "pluginmanager.h"
     #include "projectbuildtarget.h"
-    #include "cbproject.h"
-    #include "cbeditor.h"
-    #include "globals.h"
+    #include "projectfile.h"
+    #include "projectmanager.h"
     #include "sdk_events.h"
-    #include <wx/file.h>
-    #include <wx/dir.h>
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -3045,8 +3046,8 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (   !prj
-        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/track_preprocessor"), false)
-        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/collect_prj_defines"), false) )
+        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/track_preprocessor"),  true)
+        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/collect_prj_defines"), true) )
     {
         event.Skip();
         return;
@@ -3068,12 +3069,31 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
         id  = prj->GetCompilerID();
     }
 
+    Compiler* comp = CompilerFactory::GetCompiler(id); // get global flags
+    if (comp)
+        AppendArray(comp->GetCompilerOptions(), compilerFlags);
+
     wxArrayString defines;
     for (size_t i = 0; i < compilerFlags.Count(); ++i)
     {
-        if (   (compilerFlags[i].Left(2) == wxT("-D"))
-            || (compilerFlags[i].Left(2) == wxT("/D")) )
+        if (   compilerFlags[i].StartsWith(wxT("-D"))
+            || compilerFlags[i].StartsWith(wxT("/D")) )
+        {
             defines.Add(compilerFlags[i].Mid(2));
+        }
+        else if (compilerFlags[i].Find(wxT("`")) != wxNOT_FOUND)
+        {
+            wxString str = compilerFlags[i];
+            ExpandBackticks(str);
+            str.Replace(wxT("`"), wxT(" ")); // remove any leftover backticks to prevent an infinite loop
+            AppendArray(GetArrayFromString(str, wxT(" ")), compilerFlags);
+        }
+        else if (   compilerFlags[i] == wxT("-ansi")
+                 || compilerFlags[i] == wxT("-std=c90")
+                 || compilerFlags[i] == wxT("-std=c++98"))
+        {
+            defines.Add(wxT("__STRICT_ANSI__"));
+        }
     }
 
     defines.Add(wxT("__cplusplus"));

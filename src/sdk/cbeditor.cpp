@@ -1576,7 +1576,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
     // Interpret #if/#else/#endif to grey out code that is not active
-    control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), false) ? _T("1") : _T("0"));
+    control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), true) ? _T("1") : _T("0"));
 
     // code folding
     if (mgr->ReadBool(_T("/folding/show_folds"), true))
