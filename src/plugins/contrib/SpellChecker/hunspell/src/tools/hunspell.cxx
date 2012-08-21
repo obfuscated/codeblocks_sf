@@ -991,7 +991,7 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	case '6':
 	case '7':
 	case '8':
-	case '9': {
+	case '9':
 	    modified=1;
 	    if ((firstletter!='\0') && (firstletter=='1')) {
 		c += 10;
@@ -999,11 +999,9 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    c -= '0';
 	    if (c>=ns) break;
 	    parser->change_token(wlst[c]);
-	    goto ki;
-	}
-	case ' ': { 
-	    goto ki;
-	}
+	    return 0;
+	case ' ':
+	    return 0;
 	case '?': {
 	    clear();
 printw(gettext("Whenever a word is found that is not in the dictionary\n"
@@ -1060,7 +1058,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(i, temp, MAXLNLEN);
+		strncpy(i, temp, MAXLNLEN-1);
+		i[MAXLNLEN-1] = '\0';
 		free(temp);
 
 		parser->change_token(i);
@@ -1104,7 +1103,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	    if ((c==(gettext("u"))[0]) || (c==(gettext("i"))[0]) || (c==(gettext("a"))[0])) {
 		modified=1;
 		putdic(token, pMS);
-		goto ki;
+		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "S)tem" before */
@@ -1114,7 +1113,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		char w[MAXLNLEN], w2[MAXLNLEN], w3[MAXLNLEN];
 		char *temp;
 
-		strncpy(w, token, MAXLNLEN);
+		strncpy(w, token, MAXLNLEN-1);
+		token[MAXLNLEN-1] = '\0';
 		temp = basename(w, '-');
 		if (w < temp) {
 			*(temp-1) = '\0';
@@ -1153,7 +1153,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(w, temp, MAXLNLEN);
+		strncpy(w, temp, MAXLNLEN-1);
+		w[MAXLNLEN-1] = '\0';
 		free(temp);
 
 #ifdef HAVE_READLINE		
@@ -1181,7 +1182,8 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    break;
 		}
 
-		strncpy(w2, temp, MAXLNLEN);
+		strncpy(w2, temp, MAXLNLEN-1);
+		temp[MAXLNLEN-1] = '\0';
 		free(temp);
 
 		if (strlen(w) + strlen(w2) + 2 < MAXLNLEN) {
@@ -1236,7 +1238,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;
 		}
-		goto ki;
+		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "e(X)it" before */
@@ -1259,7 +1261,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	}
     }
     }
-    ki: return 0;
+    return 0;
 }
 
 int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE * tempfile)
@@ -1303,16 +1305,19 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 {
     char buf[MAXLNLEN];
 
-    FILE *text;
-    
-    text = fopen(filename, "r");
+    FILE *text = fopen(filename, "r");
+    if (!text)
+    {
+        perror(gettext("Can't open inputfile"));
+        endwin();
+        exit(1);
+    }
 
     int dialogexit;
     int check=1;
 
-    TextParser * parser;
     char * extension = basename(filename, '.');
-    parser = get_parser(format, extension, pMS[0]);
+    TextParser * parser = get_parser(format, extension, pMS[0]);
 
    
     FILE *tempfile = tmpfile();
@@ -1320,6 +1325,8 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     if (!tempfile)
     {
         perror(gettext("Can't create tempfile"));
+	delete parser;
+        fclose(text);
         endwin();
         exit(1);
     }
@@ -1352,14 +1359,19 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 		rewind(tempfile);
 		text = fopen(filename, "wb");
 
-		size_t n;
-		while ((n = fread(buf, 1, MAXLNLEN, tempfile)) > 0)
-		{
-			if (fwrite(buf, 1, n, text) != n)
-				perror("write failed");
-		}
+		if (text == NULL)
+            perror(gettext("Can't open outputfile"));
+        else
+        {
+		    size_t n;
+		    while ((n = fread(buf, 1, MAXLNLEN, tempfile)) > 0)
+		    {
+		        if (fwrite(buf, 1, n, text) != n)
+				    perror("write failed");
+		    }
 
-		fclose(text);
+		    fclose(text);
+        }
 	}
 	fclose(tempfile); //automatically deleted when closed
 }
@@ -1402,7 +1414,7 @@ int listdicpath(char * dir, int len) {
 	if (!d) return 0;
 	struct dirent * de;
 	while ((de = readdir(d))) {
-		int len = strlen(de->d_name);
+		len = strlen(de->d_name);
 		if ((len > 4 && strcmp(de->d_name + len - 4, ".dic") == 0) ||
 		   (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
 		    char * s = mystrdup(de->d_name);

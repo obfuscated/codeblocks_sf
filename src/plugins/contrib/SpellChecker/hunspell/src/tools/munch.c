@@ -8,7 +8,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef __linux__
+#include <limits.h>
+#if defined(__linux__) && !defined(__ANDROID__)
 #include <error.h>
 #include <errno.h>
 #include <sys/mman.h>
@@ -18,7 +19,6 @@
 
 int main(int argc, char** argv)
 {
-
   int i, j, k, n;
   int rl, p , nwl;
   int al;
@@ -34,6 +34,8 @@ int main(int argc, char** argv)
   struct hentry * ep1;
   struct affent * pfxp;
   struct affent * sfxp;
+
+  (void)argc;
 
   /* first parse the command line options */
   /* arg1 - wordlist, arg2 - affix file */
@@ -143,7 +145,7 @@ int main(int argc, char** argv)
                numwords++;
                n = 0;
                if (al)
-		 expand_rootword(nword,nwl,as,al);
+		 expand_rootword(nword,nwl,as);
                for (k=0; k<numwords; k++) {
 		 if (lookup(wlist[k].word)) n++;
                  free(wlist[k].word);
@@ -578,12 +580,18 @@ int load_tables(FILE * wdlst)
 {
   char * ap;
   char ts[MAX_LN_LEN];
+  int nExtra = 5;
 
   /* first read the first line of file to get hash table size */
   if (! fgets(ts, MAX_LN_LEN-1,wdlst)) return 2;
   mychomp(ts);
   tablesize = atoi(ts);
-  tablesize = tablesize + 5;
+
+  if (tablesize <= 0 || (tablesize >= (INT_MAX - 1 - nExtra) / (int)sizeof(struct hentry *))) {
+      return 3;
+  }
+
+  tablesize += nExtra;
   if ((tablesize %2) == 0) tablesize++;
 
   /* allocate the hash table */
@@ -673,7 +681,8 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 	      /* we have a match so add prefix */
               tlen = 0;
               if (aent->appndl) {
-	          strcpy(tword,aent->appnd);
+	          strncpy(tword, aent->appnd, MAX_WD_LEN-1);
+	          tword[MAX_WD_LEN-1] = '\0';
                   tlen += aent->appndl;
                } 
                pp = tword + tlen;
@@ -715,7 +724,8 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 	}
 	if (cond < 0) {
 	  /* we have a matching condition */
-          strcpy(tword,word);
+          strncpy(tword, word, MAX_WD_LEN-1);
+          tword[MAX_WD_LEN-1] = '\0';
           tlen = len;
 	  if (aent->stripl) {
              tlen -= aent->stripl;
@@ -738,7 +748,7 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 
 
 
-int expand_rootword(const char * ts, int wl, const char * ap, int al)
+int expand_rootword(const char * ts, int wl, const char * ap)
 {
     int i;
     int j;

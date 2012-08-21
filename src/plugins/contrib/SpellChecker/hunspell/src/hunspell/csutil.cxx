@@ -10,6 +10,16 @@
 #include "atypes.hxx"
 #include "langnum.hxx"
 
+// C::B patch begin
+/*
+// Unicode character encoding information
+struct unicode_info {
+  unsigned short c;
+  unsigned short cupper;
+  unsigned short clower;
+};
+*/
+// C::B patch end
 #ifdef OPENOFFICEORG
 #  include <unicode/uchar.h>
 #else
@@ -5469,6 +5479,7 @@ struct cs_info * get_current_cs(const char * es) {
     ccs[i].clower = i;
     ccs[i].cupper = i;
   }
+
 
   nsCOMPtr<nsIUnicodeEncoder> encoder;
   nsCOMPtr<nsIUnicodeDecoder> decoder;

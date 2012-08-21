@@ -292,7 +292,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.2.12"
+#define PACKAGE_VERSION "1.3.3"
 
 /* Define if <inttypes.h> exists and defines unusable PRI* macros. */
 /* #undef PRI_MACROS_BROKEN */
@@ -362,7 +362,7 @@
 /* #undef USE_WIN32_THREADS */
 
 /* Version number of package */
-#define VERSION "1.2.12"
+#define VERSION "1.3.3"
 
 /* Define to 1 if on MINIX. */
 /* #undef _MINIX */

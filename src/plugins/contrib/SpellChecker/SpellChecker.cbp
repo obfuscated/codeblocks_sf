@@ -96,6 +96,8 @@
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
+					<Add after="cmd /c if not exist ..\..\..\devel\share\CodeBlocks\SpellChecker mkdir ..\..\..\devel\share\CodeBlocks\SpellChecker" />
+					<Add after="cmd /c if not exist ..\..\..\devel\share\CodeBlocks\images\settings mkdir ..\..\..\devel\share\CodeBlocks\images\settings" />
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
 					<Add after='xcopy /Y *.png &quot;..\..\..\devel\share\Codeblocks\images\settings\*&quot;' />
 					<Add after='xcopy /Y *.png &quot;..\..\..\output\share\Codeblocks\images\settings\*&quot;' />

@@ -109,12 +109,14 @@ LIBHUNSPELL_DLL_EXPORTED int uniqlist(char ** list, int n);
 // free character array list
 LIBHUNSPELL_DLL_EXPORTED void freelist(char *** list, int n);
 
+// C::B patch begin
 // Unicode character encoding information
 struct unicode_info {
   unsigned short c;
   unsigned short cupper;
   unsigned short clower;
 };
+// C::B patch end
 
 // character encoding information
 struct cs_info {
