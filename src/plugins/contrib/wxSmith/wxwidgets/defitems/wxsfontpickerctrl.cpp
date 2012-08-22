@@ -49,8 +49,7 @@ wxsFontPickerCtrl::wxsFontPickerCtrl(wxsItemResData* Data):
         Data,
         &Reg.Info,
         wxsFontPickerCtrlEvents,
-        wxsFontPickerCtrlStyles,
-        flVariable | flId | flPosition | flSize | flEnabled | flFocused | flHidden | flColours  | flToolTip | flHelpText | flSubclass | flMinMaxSize | flExtraCode)
+        wxsFontPickerCtrlStyles)
 {}
 
 /*! \brief Create the initial control.

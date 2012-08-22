@@ -37,9 +37,6 @@ class wxsContainer: public wxsParent
 {
     public:
 
-        /** \brief Default properties flags used by widgets */
-        static const long flContainer = flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flFont|flHelpText|flSubclass|flMinMaxSize|flExtraCode;
-
         /** \brief Ctor
          *  \param Data data managment object handling this item
          *  \param Info pointer to static widget info

@@ -53,8 +53,7 @@ wxsSimpleHtmlListBox::wxsSimpleHtmlListBox(wxsItemResData *Data):
         Data,
         &Reg.Info,
         wxsSimpleHtmlListBoxEvents,
-        wxsSimpleHtmlListBoxStyles,
-        flVariable | flId | flPosition | flSize | flEnabled | flFocused | flHidden | flColours  | flToolTip | flHelpText | flSubclass | flMinMaxSize | flExtraCode),
+        wxsSimpleHtmlListBoxStyles),
     DefaultSelection(-1)
 {
 }

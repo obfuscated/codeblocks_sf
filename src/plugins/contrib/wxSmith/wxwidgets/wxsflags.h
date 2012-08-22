@@ -52,6 +52,37 @@ namespace wxsFlags
     const long flLocal     = 0x0200000;  ///< \brief Flag set when current item is used only locally while building resource's content (is not member of class)
     const long flRoot      = 0x0100000;  ///< \brief Flag set when current item is root item of resource
 
+    const long flWidget    = flVariable
+                           | flId
+                           | flPosition
+                           | flSize
+                           | flEnabled
+                           | flFocused
+                           | flHidden
+                           | flColours
+                           | flToolTip
+                           | flFont
+                           | flHelpText
+                           | flSubclass
+                           | flMinMaxSize
+                           | flExtraCode
+                           | flValidator; ///< \brief Default properties flags used by widgets for convenience
+
+    const long flContainer = flVariable
+                           | flId
+                           | flPosition
+                           | flSize
+                           | flEnabled
+                           | flFocused
+                           | flHidden
+                           | flColours
+                           | flToolTip
+                           | flFont
+                           | flHelpText
+                           | flSubclass
+                           | flMinMaxSize
+                           | flExtraCode; ///< \brief Default properties flags used by container widgets for convenience
+
     // Preview flags
     const long pfExact     = 0x0000001;  ///< \brief Notify to create exact preview (without any editor-like goodies)
 
