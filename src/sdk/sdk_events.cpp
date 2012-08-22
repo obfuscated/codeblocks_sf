@@ -102,6 +102,7 @@ const wxEventType cbEVT_PROJECT_FILE_CHANGED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_POPUP_MENU = wxNewEventType();
 const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_RENAMED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_OPTIONS_CHANGED = wxNewEventType();
 const wxEventType cbEVT_WORKSPACE_CHANGED = wxNewEventType();
 const wxEventType cbEVT_WORKSPACE_LOADING_COMPLETE = wxNewEventType();
 // build targets events
@@ -142,6 +143,7 @@ const wxEventType cbEVT_COMPILER_FINISHED = wxNewEventType();
 const wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS = wxNewEventType();
 const wxEventType cbEVT_CLEAN_PROJECT_STARTED = wxNewEventType();
 const wxEventType cbEVT_CLEAN_WORKSPACE_STARTED = wxNewEventType();
+const wxEventType cbEVT_COMPILER_SETTINGS_CHANGED = wxNewEventType();
 // request app to compile a single file
 const wxEventType cbEVT_COMPILE_FILE_REQUEST = wxNewEventType();
 // debugger-related events

@@ -281,6 +281,8 @@ extern EVTIMPORT const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED;
 #define EVT_PROJECT_TARGETS_MODIFIED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_TARGETS_MODIFIED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_RENAMED;
 #define EVT_PROJECT_RENAMED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_RENAMED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_OPTIONS_CHANGED;
+#define EVT_PROJECT_OPTIONS_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_OPTIONS_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_CHANGED;
 #define EVT_WORKSPACE_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_LOADING_COMPLETE;
@@ -361,6 +363,8 @@ extern EVTIMPORT const wxEventType cbEVT_CLEAN_PROJECT_STARTED;
 #define EVT_CLEAN_PROJECT_STARTED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_CLEAN_PROJECT_STARTED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_CLEAN_WORKSPACE_STARTED;
 #define EVT_CLEAN_WORKSPACE_STARTED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_CLEAN_WORKSPACE_STARTED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_COMPILER_SETTINGS_CHANGED;
+#define EVT_COMPILER_SETTINGS_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPILER_SETTINGS_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // request app to compile a single file
 extern EVTIMPORT const wxEventType cbEVT_COMPILE_FILE_REQUEST;

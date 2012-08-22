@@ -1724,6 +1724,7 @@ bool cbProject::ShowOptions()
             ProjectFile* f = *it++;
             f->UpdateFileDetails();
         }
+        NotifyPlugins(cbEVT_PROJECT_OPTIONS_CHANGED);
         return true;
     }
     return false;

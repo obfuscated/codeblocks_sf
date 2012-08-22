@@ -63,28 +63,28 @@ void MacrosManager::ReleaseMenu(wxMenuBar* /*menuBar*/)
 
 wxString MacrosManager::ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target)
 {
-    wxString tmp = buffer;
+    wxString tmp(buffer);
     ReplaceMacros(tmp, target);
     return tmp;
 }
 
 void MacrosManager::Reset()
 {
-    m_LastProject = 0;
-    m_LastTarget  = 0;
+    m_LastProject          = 0;
+    m_LastTarget           = 0;
     m_ActiveEditorFilename = wxEmptyString;
     m_ActiveEditorLine     = -1;
     m_ActiveEditorColumn   = -1;
 
-    m_AppPath = UnixFilename(ConfigManager::GetExecutableFolder());
-    m_Plugins = UnixFilename(ConfigManager::GetPluginsFolder());
+    m_AppPath  = UnixFilename(ConfigManager::GetExecutableFolder());
+    m_Plugins  = UnixFilename(ConfigManager::GetPluginsFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     ClearProjectKeys();
-    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"), wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_Unix.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"),               wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_DOS.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"),                               wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_If.Compile(_T("\\$if\\(([^)]*)\\)[::space::]*(\\{([^}]*)\\})(\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_IfSp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_IfSp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"),  wxRE_EXTENDED | wxRE_NEWLINE);
+    m_RE_Script.Compile(_T("(\\[\\[(.*)\\]\\])"),                                        wxRE_EXTENDED | wxRE_NEWLINE);
     m_RE_ToAbsolutePath.Compile(_T("\\$TO_ABSOLUTE_PATH{([^}]*)}"),
 #ifndef __WXMAC__
                                 wxRE_ADVANCED);
@@ -111,7 +111,6 @@ void MacrosManager::Reset()
 
 void MacrosManager::ClearProjectKeys()
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("clear"));
     m_Macros.clear();
 
     m_Macros[_T("AMP")]        = _T("&");
@@ -226,7 +225,6 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
 
     if (!project)
     {
-//        Manager::Get()->GetLogManager()->DebugLog("project == 0");
         m_ProjectFilename = wxEmptyString;
         m_ProjectName     = wxEmptyString;
         m_ProjectDir      = wxEmptyString;
@@ -254,7 +252,6 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     }
     else if (project != m_LastProject)
     {
-//        Manager::Get()->GetLogManager()->DebugLog("project != m_LastProject");
         m_LastTarget      = 0; // reset last target when project changes
         m_ProjectWxFileName.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_ProjectWxFileName.GetFullName());

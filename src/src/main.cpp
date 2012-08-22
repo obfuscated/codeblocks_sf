@@ -34,7 +34,6 @@
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
-#include <wx/gauge.h>
 #include <wx/printdlg.h>
 #include <wx/sstream.h>
 #include <wx/tipdlg.h>

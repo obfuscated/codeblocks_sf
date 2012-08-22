@@ -14,63 +14,62 @@
 
 #ifdef __WIN32__
 
-	#define WIN32_LEAN_AND_MEAN
-	#define NOGDI
-	#include <windows.h>
+    #define WIN32_LEAN_AND_MEAN
+    #define NOGDI
+    #include <windows.h>
     typedef HANDLE shm_handle_t;
     typedef HANDLE semaphore_t;
 
 #else
 
-	#include <fcntl.h>
-	#include <errno.h>
-	#include <sys/types.h>
-	#include <sys/sem.h>
-	#include <sys/ipc.h>
-	#include <sys/shm.h>
+    #include <fcntl.h>
+    #include <errno.h>
+    #include <sys/types.h>
+    #include <sys/sem.h>
+    #include <sys/ipc.h>
+    #include <sys/shm.h>
 
-	#if defined(__APPLE__) && defined(__MACH__)
-		typedef int shm_handle_t;
-		typedef mach_port_t semaphore_t;
-	#else
-		typedef int shm_handle_t;
-		typedef int semaphore_t;
-	#endif
+    #if defined(__APPLE__) && defined(__MACH__)
+        typedef int shm_handle_t;
+        typedef mach_port_t semaphore_t;
+    #else
+        typedef int shm_handle_t;
+        typedef int semaphore_t;
+    #endif
 
 #endif
 
 static const int ipc_buf_size = 1024*64;
 
 
-
 class SharedMemory
 {
-	shm_handle_t handle;
+    shm_handle_t handle;
 
-	union
-	{
-		semaphore_t semid;
-		semaphore_t sem[2];
-	};
+    union
+    {
+        semaphore_t semid;
+        semaphore_t sem[2];
+    };
 
-	void* shared;
-	bool ok;
-	bool server;
+    void* shared;
+    bool ok;
+    bool server;
 
 public:
 
-	enum rw_t{ reader, writer };
+    enum rw_t{ reader, writer };
 
-	SharedMemory();
-	~SharedMemory();
+    SharedMemory();
+    ~SharedMemory();
 
-	bool OK() const { return ok; };
+    bool OK() const { return ok; };
 
-	void* BasePointer() const { return shared; };
-	size_t Size() const { return ipc_buf_size; };
+    void* BasePointer() const { return shared; };
+    size_t Size() const { return ipc_buf_size; };
 
-	bool Server() const { return server; };
-	bool Client() const { return !server; };
+    bool Server() const { return server; };
+    bool Client() const { return !server; };
 
 
     /*
@@ -88,37 +87,27 @@ public:
      *   1. unlocks the reader semaphore, waking up the Server thread
      *   2. unlocks the writer mutex, so the Server thread can acquire it and prevent other processes from writing
      */
-	bool Lock(rw_t rw);
-	void Unlock(rw_t rw);
+    bool Lock(rw_t rw);
+    void Unlock(rw_t rw);
 };
-
-
-
 
 
 class IPC : public wxThread
 {
-	volatile bool is_shutdown;
-	SharedMemory  shm;
+    volatile bool is_shutdown;
+    SharedMemory  shm;
 
 public:
-	IPC() : is_shutdown(false) {};
+    IPC() : is_shutdown(false) {};
 
-	virtual ExitCode Entry();
+    virtual ExitCode Entry();
 
-	bool Server() const { return shm.Server(); };
+    bool Server() const { return shm.Server(); };
 
-	void Shutdown();
+    void Shutdown();
 
-	void Send(const wxString& value);
+    void Send(const wxString& value);
 };
-
-
-
-
-
-
-
 
 
 /*
@@ -127,41 +116,41 @@ public:
  *
 IPC *ipc = new IPC; // don't delete
 
-if(ipc->Server())
+if (ipc->Server())
 {
-	ipc->Run();
+    ipc->Run();
 }
 else
 {
-	// parser is the wxCmdLineParser
-	wxString item;
-	wxString buf;
+    // parser is the wxCmdLineParser
+    wxString item;
+    wxString buf;
 
-	static const unsigned int max_size = ipc_buf_size / sizeof(wxChar);
+    static const unsigned int max_size = ipc_buf_size / sizeof(wxChar);
 
-	buf.Alloc(4096);
+    buf.Alloc(4096);
 
-	int count = parser.GetParamCount();
+    int count = parser.GetParamCount();
 
-	for (int i = 0; i < count; ++i)
-	{
-		item = parser.GetParam(i);
-		item.append(_T('\n'));
+    for (int i = 0; i < count; ++i)
+    {
+        item = parser.GetParam(i);
+        item.append(_T('\n'));
 
-		if(buf.length() + item.length() + 1) >= max_size)
-		{
-			buf.append(_T('\0'));
-			ipc->Send(buf);
-			buf.Empty();
-		}
-		buf.append(item);
-	}
+        if (buf.length() + item.length() + 1) >= max_size)
+        {
+            buf.append(_T('\0'));
+            ipc->Send(buf);
+            buf.Empty();
+        }
+        buf.append(item);
+    }
 
-	if(buf.length())
-	{
-		buf.append(_T('\0'));
-		ipc->Send(buf);
-	}
+    if (buf.length())
+    {
+        buf.append(_T('\0'));
+        ipc->Send(buf);
+    }
 }
  *
  *
