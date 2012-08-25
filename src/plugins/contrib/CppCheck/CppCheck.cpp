@@ -16,8 +16,10 @@
     #include <wx/menu.h>
     #include <wx/string.h>
     #include <wx/xrc/xmlres.h>
+
     #include "cbproject.h"
     #include "cbplugin.h"
+    #include "configmanager.h"
     #include "manager.h"
     #include "logmanager.h"
     #include "pluginmanager.h"
