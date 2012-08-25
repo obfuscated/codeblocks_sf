@@ -17,7 +17,7 @@ libCppCheck_la_SOURCES = CppCheck.cpp \
             ConfigPanel.cpp
 
 noinst_HEADERS = CppCheck.h \
-            CppCheck.h \
+            CppCheckListLog.h \
             ConfigPanel.h
 
 EXTRA_DIST = $(srcdir)/*.cbp
