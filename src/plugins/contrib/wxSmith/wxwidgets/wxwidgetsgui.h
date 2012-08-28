@@ -40,7 +40,7 @@ class wxWidgetsGUI : public wxsGUI
         /** \brief Getting coding language of application's source */
         inline wxsCodingLang GetLanguage() { return m_AppLanguage; }
 
-        /** \brief Setting new coding language for applicatino's source */
+        /** \brief Setting new coding language for application's source */
         inline void SetLanguage(wxsCodingLang Language) { m_AppLanguage = Language; }
 
         /** \brief Getting application source file */
@@ -48,7 +48,7 @@ class wxWidgetsGUI : public wxsGUI
 
         /** \brief Setting new application source file
          *  \note remember to call RebuildApplicationCode to regenerate sources
-         *  \note This functin will also set valid language according to file's extension
+         *  \note This function will also set valid language according to file's extension
          */
         void SetAppSourceFile(const wxString& NewAppFile);
 

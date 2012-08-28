@@ -29,15 +29,15 @@ class wxsResource;
 
 /** \brief Base class for editors used inside wxSmith
  *
- * This class is responsible for proper binding / unbinging editor
+ * This class is responsible for proper binding / unbinding editor
  * from resource.
  *
  * Resource is only an information that given resource should exist.
  * Editor does load this resource and allow user to edit it.
  *
- * When edting resource it should always be done in such form:
+ * When editing resource it should always be done in such form:
  *  - Call BeginChange() to put resource into unstable state
- *  - Change datga of reosource (without updating informations on screen)
+ *  - Change data of resource (without updating information on screen)
  *  - Call EndChange() which should update data on screen
  *
  */
@@ -51,7 +51,7 @@ class wxsEditor: public EditorBase
         /** \brief Dctor */
         virtual ~wxsEditor();
 
-        /** \brief Getting current resouce */
+        /** \brief Getting current resource */
         inline wxsResource* GetResource() { return m_Resource; }
 
     private:

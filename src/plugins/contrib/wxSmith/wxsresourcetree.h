@@ -35,7 +35,7 @@
 class wxsResource;
 class wxsProject;
 
-/** \brief Definition of resource tree identifier. Separate name of type could be usefull in future */
+/** \brief Definition of resource tree identifier. Separate name of type could be useful in future */
 typedef wxTreeItemId wxsResourceItemId;
 
 // TODO: Rewrite this class with custom widget

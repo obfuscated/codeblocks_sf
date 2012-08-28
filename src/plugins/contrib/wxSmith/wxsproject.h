@@ -73,7 +73,7 @@ class wxsProject
          */
         bool AddResource(wxsResource* Resource);
 
-        /** \brief Getting number of resources in this prject */
+        /** \brief Getting number of resources in this project */
         inline int GetResourcesCount() { return (int)m_Resources.Count(); }
 
         /** \brief Getting resource from index */
@@ -118,7 +118,7 @@ class wxsProject
 
         /** \brief Function updating project's name
          *
-         * Curently it only updates name of project in resource browser
+         * Currently it only updates name of project in resource browser
          */
         void UpdateName();
 

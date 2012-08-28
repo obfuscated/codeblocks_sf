@@ -87,7 +87,7 @@ namespace wxsFlags
     const long pfExact     = 0x0000001;  ///< \brief Notify to create exact preview (without any editor-like goodies)
 
     // Header flags
-    const long hfLocal     = 0x0000001;  ///< \brief Header is neede only locally (while manually generating resource)
+    const long hfLocal     = 0x0000001;  ///< \brief Header is needed only locally (while manually generating resource)
     const long hfInPCH     = 0x0000002;  ///< \brief This header has been included in default pch file
     const long hfForbidFwd = 0x0000004;  ///< \brief This header (when included in resource's header file) can not be replaced by forward declaration
 }

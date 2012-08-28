@@ -67,7 +67,7 @@ void wxsItem::OnEnumProperties(long Flags)
     if ( (Flags & flPropGrid) && (m_Parent != 0) )
     {
         // Parent item does take care of enumerating properties if we are
-        // ceating property grid
+        // creating property grid
         m_Parent->OnEnumChildProperties(this,Flags);
     }
     else

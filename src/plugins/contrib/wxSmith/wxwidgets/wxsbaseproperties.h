@@ -29,7 +29,7 @@
 
 /** \brief Structure holding most commonly used properties
  *
- * This class doesn't support style since it require too many informations
+ * This class doesn't support style since it require too many information
  * from base class.
  *
  * \note All availability flags used inside this class are declared in wxsItem
@@ -40,7 +40,7 @@ class wxsBaseProperties: public wxsPropertyContainer
 
         bool            m_ParentFromArg;   ///< \brief Use parent from constructor's argument
         wxString        m_VarName;         ///< \brief Variable name
-        bool            m_IsMember;        ///< \brief Swith between local and global variable
+        bool            m_IsMember;        ///< \brief Switch between local and global variable
         wxString        m_IdName;          ///< \brief Name of identifier
         bool            m_IdFromArg;       ///< \brief Set to true if we should consider taking id from constructor's argument
         wxString        m_Subclass;        ///< \brief Subclass (class used instead of original base class)
@@ -51,7 +51,7 @@ class wxsBaseProperties: public wxsPropertyContainer
         wxString        m_Validator;       ///< \brief Specific validator, setup by the user (not wxDefaultValidator)
         wxsSizeData     m_MinSize;         ///< \brief Mininum size (not available in XRC)
         wxsSizeData     m_MaxSize;         ///< \brief Maximum size (not available in XRC)
-        bool            m_Enabled;         ///< \brief If false, widget is disabled (true by deefault)
+        bool            m_Enabled;         ///< \brief If false, widget is disabled (true by default)
         bool            m_Focused;         ///< \brief If true, widget is focused (false by default)
         bool            m_Hidden;          ///< \brief If true, widget is hidden (false by default)
         wxsColourData   m_Fg;              ///< \brief Foreground colour when using custom colour

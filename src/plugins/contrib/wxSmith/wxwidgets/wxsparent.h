@@ -68,8 +68,8 @@ class wxsParent: public wxsItem
         /** \brief Moving item from one position to another
          *  \param OldIndex old position of item
          *  \param NewIndex new position of item
-         *  \return Real positionof item after moving it (and after checking
-         *          boundings) or -1, if OldIndex was invalid.
+         *  \return Real position of item after moving it (and after checking
+         *          bindings) or -1, if OldIndex was invalid.
          */
         int MoveChild(int OldIndex,int NewIndex);
 
@@ -78,10 +78,10 @@ class wxsParent: public wxsItem
          */
         int GetChildIndex(wxsItem* Child);
 
-        /** \brief Function checking if give item is grandchild (chld or child of child or...) of this item
+        /** \brief Function checking if give item is grandchild (child or child of child or...) of this item
          *  \param Child searched child
-         *  \param Safe set to true if there's no certainity that Child pointer is valid one.
-         *         It will work slower but won't produse seg faults.
+         *  \param Safe set to true if there's no certainty that Child pointer is valid one.
+         *         It will work slower but won't produce segfaults.
          */
         bool IsGrandChild(wxsItem* Child,bool Safe=false);
 
@@ -112,22 +112,22 @@ class wxsParent: public wxsItem
     protected:
 
         /* *********************************************************************** */
-        /*  Followig functions may be used to easy create wxsParent-derived class  */
+        /*  Following functions may be used to easy create wxsParent-derived class  */
         /* *********************************************************************** */
 
         /** \brief Function building extra data block for item
          *
          * This function may be overridden in child classes to add extra
-         * configuration for each child, f.ex. configuration of sizer enteries.
+         * configuration for each child, f.ex. configuration of sizer entries.
          */
         virtual wxsPropertyContainer* OnBuildExtra() { return 0; }
 
         /** \brief Returning name of additional object created for child items
          *
-         * This function affects behaviour of standard OnXmlReadChild and OnXmlWriteChild
+         * This function affects behavior of standard OnXmlReadChild and OnXmlWriteChild
          * functions. If it returns non-empty string, child items will have
          * additional <object...> xml node created and it will use StoreExtraData and
-         * RestoreExtraData to save extra informations.
+         * RestoreExtraData to save extra information.
          */
         virtual wxString OnXmlGetExtraObjectClass() { return wxEmptyString; }
 
@@ -148,7 +148,7 @@ class wxsParent: public wxsItem
 
         /* **************************************************************** */
         /*  Following functions may be also overridden but it shouldn't be  */
-        /*  necessarry                                                      */
+        /*  necessary                                                      */
         /* **************************************************************** */
 
         /** \brief Function enumerating properties for given child
@@ -182,7 +182,7 @@ class wxsParent: public wxsItem
          */
         virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
 
-        /** \brief Function saving child to goven xml node
+        /** \brief Function saving child to given xml node
          *
          * This function will be called for each child. Element passed
          * as param is pointer to newly created <object...> node where
@@ -204,7 +204,7 @@ class wxsParent: public wxsItem
         /** \brief Function ensuring that given child of this item is visible inside editor
          *
          * This function is used to automatically switch visible child for containers
-         * like wxNotebook (only one chid is show, other are hidden) when somebody
+         * like wxNotebook (only one child is show, other are hidden) when somebody
          * clicks on it on resource browser.
          * \note This function does not make sure that parent is visible
          * \return false if nothing has changed, true if preview must be refreshed

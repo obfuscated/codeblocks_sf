@@ -46,7 +46,7 @@ class wxsResourceFactory
         /** \brief Building external resource object */
         static wxsResource* BuildExternal(const wxString& FileName);
 
-        /** \brief Building wxSmith menu enteries */
+        /** \brief Building wxSmith menu entries */
         static void BuildSmithMenu(wxMenu* menu);
 
         /** \brief Processing menu event for creating new resources
@@ -80,7 +80,7 @@ class wxsResourceFactory
         /** \brief Called when plugin is being released */
         virtual void OnRelease() {}
 
-        /** \brief Getting number of resouce types inside this factory */
+        /** \brief Getting number of resource types inside this factory */
         virtual int OnGetCount() = 0;
 
         /** \brief Checking if given resource can be main in application */

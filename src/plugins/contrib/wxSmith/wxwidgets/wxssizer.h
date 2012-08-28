@@ -85,7 +85,7 @@ class wxsSizer: public wxsParent
          */
         virtual wxSizer* OnBuildSizerPreview(wxWindow* Parent) = 0;
 
-        /** \brief Function building code genearating sizer
+        /** \brief Function building code generating sizer
          *
          * This function must append code generating sizer to the end of Code
          * param. Adding items into sizer is handled automatically.
@@ -142,7 +142,7 @@ class wxsSizer: public wxsParent
          */
          wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
 
-        /** \brief Funciton creating additional data
+        /** \brief Function creating additional data
          *
          * There's additional data configuring widget inside sizer - it does
          * define placement, borders and some other flags.
@@ -164,7 +164,7 @@ class wxsSizer: public wxsParent
         /** \brief Function enumerating properties for sizers*/
         virtual void OnEnumItemProperties(long Flags);
 
-        /** \brief Adding generic sizer proeprties to QPP */
+        /** \brief Adding generic sizer properties to QPP */
         virtual void OnAddItemQPP(wxsAdvQPP* QPP);
 
 };

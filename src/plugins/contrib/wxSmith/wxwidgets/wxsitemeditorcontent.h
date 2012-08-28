@@ -122,7 +122,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
         bool m_RebuildMaps;                                 ///< \brief Set to true when internal maps need to be recalculated
         MouseStatesT m_MouseState;                          ///< \brief Current mouse state
         static const int m_DragBoxSize = 6;                 ///< \brief Size of boxes used to drag borders of widgets
-        static const int m_MinDragDistance = 8;             ///< \brief Minimal distace which must be done to apply dragging
+        static const int m_MinDragDistance = 8;             ///< \brief Minimal distance which must be done to apply dragging
 
         DragPointData* m_CurDragPoint;                      ///< \brief Dragged drag point
         wxsItem*       m_CurDragItem;                       ///< \brief Dragged item
@@ -189,7 +189,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
         /** \brief Snapping coordinates to grid if necessary for global coordinates */
         void GridFixupForGlobalCoordinates(int& PosX,int& PosY,wxsItem* Owner);
 
-        /** \brief Checking if we're using continous insert mode */
+        /** \brief Checking if we're using continuous insert mode */
         static bool IsContinousInsert();
 
         friend class wxsItemEditorDragAssist;

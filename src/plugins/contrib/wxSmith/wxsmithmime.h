@@ -46,7 +46,7 @@ class wxSmithMime : public cbMimePlugin
         /** \brief Opening file
          *
          * If this is wxs file and it's project is opened, proper editor will be
-         * opened / selected for xrc files, new editor withour project will be used
+         * opened / selected for xrc files, new editor without project will be used
          */
         virtual int OpenFile(const wxString& filename);
 

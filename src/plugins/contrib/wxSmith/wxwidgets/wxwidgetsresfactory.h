@@ -25,7 +25,7 @@
 
 #include "../wxsresourcefactory.h"
 
-/** \brief Factory supporting all basic wxWidgets resoruce types */
+/** \brief Factory supporting all basic wxWidgets resource types */
 class wxWidgetsResFactory : public wxsResourceFactory
 {
     public:

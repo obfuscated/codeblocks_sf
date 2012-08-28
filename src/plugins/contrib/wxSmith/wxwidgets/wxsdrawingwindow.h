@@ -61,7 +61,7 @@ class wxsDrawingWindow: public wxScrolledWindow
          */
         void BeforeContentChanged();
 
-        /** \brief Function notifying that windo's content has been changed
+        /** \brief Function notifying that window's content has been changed
          *
          * This function should be called right after change of window content
          * (to be more exact: after changing window's children). It makes
@@ -76,9 +76,9 @@ class wxsDrawingWindow: public wxScrolledWindow
         /** \brief Function repainting window
          *
          * Repainting window content may be done in two ways.
-         * First is by raising paint event (so by caling wxWindow::Refresh),
+         * First is by raising paint event (so by calling wxWindow::Refresh),
          * in current implementation this require refetching bitmap from
-         * wndow area (just like calling AfterContentChanged). Second way is by
+         * window area (just like calling AfterContentChanged). Second way is by
          * calling this function. It does not raise any events if not needed
          * and draws using wxClientDC object. It may be used when extra
          * graphics has been changed only.
@@ -97,7 +97,7 @@ class wxsDrawingWindow: public wxScrolledWindow
          */
         virtual void PaintExtra(wxDC* DC) = 0;
 
-        /** \brief Function called right after taking screenshoot and just before hiding children */
+        /** \brief Function called right after taking screen shoot and just before hiding children */
         virtual void ScreenShootTaken() {}
 
     private:
@@ -120,7 +120,7 @@ class wxsDrawingWindow: public wxScrolledWindow
         /** \brief Starting second step of fetch sequence
          *
          * In this step, the screen content is grabbed from the screen
-         * and put into internall bitmap.
+         * and put into internal bitmap.
          */
         void FetchSequencePhase2();
 
@@ -146,11 +146,11 @@ class wxsDrawingWindow: public wxScrolledWindow
         bool m_DuringFetch;             ///< \brief Set to true if we're during fetching sequence
         int m_DuringChangeCnt;          ///< \brief When >0, window's content is changed somewhere
         int m_LastSizeX, m_LastSizeY;   ///< \brief client size during last fetch
-        int m_LastVirtX, m_LastVirtY;   ///< \brief virtusl area shift relative to client area during last fetch
+        int m_LastVirtX, m_LastVirtY;   ///< \brief virtual area shift relative to client area during last fetch
         bool m_WasContentChanged;       ///< \brief If there was a call to WasContentChanged from last fetch
         bool m_IsDestroyed;             ///< \brief Set to true after calling Destroy(), used to track destroyed but not yet deleted windows
 
-        wxTimer m_RefreshTimer;         ///< \brief Timer used wihle fetching screen content
+        wxTimer m_RefreshTimer;         ///< \brief Timer used while fetching screen content
 
         DECLARE_EVENT_TABLE()
 };

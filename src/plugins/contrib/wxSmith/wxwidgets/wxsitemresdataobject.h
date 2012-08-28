@@ -43,10 +43,10 @@ class wxsItemResDataObject : public wxDataObject
         virtual ~wxsItemResDataObject();
 
         //=====================================
-        // Opertating on data
+        // Operating on data
         //=====================================
 
-        /** \brief Clering all data */
+        /** \brief Clearing all data */
         void Clear();
 
         /** \brief Adding widget into this data object */
@@ -65,7 +65,7 @@ class wxsItemResDataObject : public wxDataObject
         /** \brief Setting Xml string describing widget */
         bool SetXmlData(const wxString& Data);
 
-        /** \brief Getting Xml strting desecribing widget */
+        /** \brief Getting Xml string describing widget */
         wxString GetXmlData() const;
 
         //=====================================
@@ -86,7 +86,7 @@ class wxsItemResDataObject : public wxDataObject
         /** \brief Returns number of data bytes */
         virtual size_t GetDataSize(const wxDataFormat& format) const;
 
-        /** \brief Returns number of suported formats (in both cases - 2) */
+        /** \brief Returns number of supported formats (in both cases - 2) */
         virtual size_t GetFormatCount(Direction dir) const;
 
         /** \brief Returning best format - "wxSmith XML" */

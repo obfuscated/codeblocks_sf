@@ -39,7 +39,7 @@ class wxsToolSpace: public wxScrolledWindow
         /** \brief Dctor */
         virtual ~wxsToolSpace();
 
-        /** \brief Function shiwch must be called before changing preview */
+        /** \brief Function which must be called before changing preview */
         void BeforePreviewChanged();
 
         /** \brief Function which must be called after changing preview */
@@ -87,9 +87,9 @@ class wxsToolSpace: public wxScrolledWindow
         };
 
         Entry*          m_First;        ///< \brief First tool in resource
-        int             m_Count;        ///< \brief Number of enteries
+        int             m_Count;        ///< \brief Number of entries
         wxsItemResData* m_Data;         ///< \brief Resource's data
-        bool            m_Unstable;     ///< \brief True between BeforePreviewChanged and AfterPreviewChanged to prevent some rare seg faults
+        bool            m_Unstable;     ///< \brief True between BeforePreviewChanged and AfterPreviewChanged to prevent some rare segfaults
 
         DECLARE_EVENT_TABLE()
 };

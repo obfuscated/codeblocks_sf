@@ -112,7 +112,7 @@ class wxsStyleSet
         /** \brief Generating Bitfield from given string (where styles are separated through '|') */
         long GetBits(const wxString& Style,bool IsExtra) const;
 
-        /** \brief Converting given style set bitfield to wxString usning given language (note that CPP is same format like the one used in XRC files) */
+        /** \brief Converting given style set bitfield to wxString using given language (note that CPP is same format like the one used in XRC files) */
         wxString GetString(long Bits,bool IsExtra,wxsCodingLang Language) const;
 
         /** \brief Converting style bits to value which can be used in wxWidgets */
@@ -134,7 +134,7 @@ class wxsStyleSet
 };
 
 /* ************************************************************************** */
-/*  Usefull defines used while creating set of widget's styles                */
+/*  Useful defines used while creating set of widget's styles                */
 /* ************************************************************************** */
 
 /** Beginning definition of array (source file) */

@@ -29,7 +29,7 @@
 
 /** \brief Class putting new code into proper files
  *
- * \warning Current implementation does not shedule coded upgrades which may
+ * \warning Current implementation does not schedule coded upgrades which may
  *          cause bad results in performance.
  */
 class wxsCoder: public wxEvtHandler
@@ -49,9 +49,9 @@ class wxsCoder: public wxEvtHandler
          * \param End Sequence ending code block
          * \param Code new code
          * \param Immediately flag forcing immediate apply (currently not used
-         *        but may be aded in future when updates will be sheduled)
-         * \param CodeHasHeader if true, heder will also be recreated
-         *        (new hwader should be placed at the beginning of Code)
+         *        but may be added in future when updates will be scheduled)
+         * \param CodeHasHeader if true, header will also be recreated
+         *        (new header should be placed at the beginning of Code)
          * \param CodeHasEnd if true, ending sequence will also be recreated
          *        (new ending sequence should be placed at the end of Code)
          */
@@ -105,7 +105,7 @@ class wxsCoder: public wxEvtHandler
         };
         WX_DEFINE_ARRAY(CodeChange*,CodeChangeArray);
 
-        /** \brief Mutex for this object - added in case of multi-threading shedules */
+        /** \brief Mutex for this object - added in case of multi-threading schedules */
         wxMutex DataMutex;
 
         /** \brief Timer used for delayed flushes */
@@ -117,7 +117,7 @@ class wxsCoder: public wxEvtHandler
         /** \brief File names which are changed */
         wxArrayString CodeChangesFiles;
 
-        /** \brief Function applying hanges to currently opened editor */
+        /** \brief Function applying changes to currently opened editor */
         bool ApplyChangesEditor(
             cbEditor* Editor,
             const wxString& Header,
@@ -165,12 +165,12 @@ class wxsCoder: public wxEvtHandler
  * Here's list of automatically generated code:
  *
  * \li \c //(*EventTable($CLASSNAME) - generated in class source file, contains
- *                                  enteries for event table
+ *                                  entries for event table
  * \li \c //(*Initialize($CLASSNAME) - generated in class source file, this code
  *                                  does all resource initialization (loading
  *                                  XRC, adding widgets etc.)
  * \li \c //(*Headers($CLASSNAME) - generated in class header file, this block
- *                                  contains set of #%includes including required
+ *                                  contains set of #includes including required
  *                                  header files for this resource
  * \li \c //(*Identifiers($CLASSNAME) - generated in class header file, this
  *                                  code generates identifiers for window
@@ -194,7 +194,7 @@ class wxsCoder: public wxEvtHandler
  * Blocks which will be added in future:
  *
  * \li \c //(*AppHeaders - declared in main application's source file.
- *                                 This block will contain set of #%includes
+ *                                 This block will contain set of #includes
  *                                 required by application.
  * \li \c //(*AppInitialize - declared in main application's source file.
  *                                 This block will automatically load resources

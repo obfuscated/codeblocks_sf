@@ -47,8 +47,8 @@ class wxsWidget: public wxsItem
     public:
 
         /** \brief Ctor
-         *  \param Data data managment object handling this item
-         *  \param PropertiesFlags flags filtering sed base properties
+         *  \param Data data management object handling this item
+         *  \param PropertiesFlags flags filtering set base properties
          *         (see wxsBaseProperties for details)
          *  \param Info pointer to static widget info
          *  \param EventArray pointer to static set of events

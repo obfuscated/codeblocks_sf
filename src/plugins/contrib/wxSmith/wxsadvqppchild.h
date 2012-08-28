@@ -39,7 +39,7 @@ class wxsAdvQPPChild : public wxPanel
 
         /** \brief Getting container class
          *  \note You should always compare returned value to 0 since
-         *        container may be accidentially unbinded from quick properties
+         *        container may be accidentally unbinded from quick properties
          *        panel.
          */
         inline wxsPropertyContainer* GetPropertyContainer()

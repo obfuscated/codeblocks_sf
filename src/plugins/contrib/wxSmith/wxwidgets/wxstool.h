@@ -75,7 +75,7 @@ class wxsTool: public wxsParent
         /** \brief Checking if this tool can be added to given resource
          *
          * One can override this function to limit tool's availability.
-         * Default implemetnation checks if we are in XRC edit mode and if this
+         * Default implementation checks if we are in XRC edit mode and if this
          * item can not be used inside XRC
          *
          * \param Data data of checked resource

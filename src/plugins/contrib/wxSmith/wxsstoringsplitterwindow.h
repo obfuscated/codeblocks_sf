@@ -27,7 +27,7 @@
 #include <wx/splitter.h>
 #include <wx/event.h>
 
-/** \brief This class extends behaviour of standard splitter window
+/** \brief This class extends behavior of standard splitter window
  *         fixing some bugs with them when using docking systems
  */
 class wxsStoringSplitterWindow : public wxPanel

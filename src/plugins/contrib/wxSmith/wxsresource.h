@@ -44,10 +44,10 @@ class wxsResource: public wxObject
     public:
 
         /** \brief Ctor
-         *  \param Owher project owning resource
+         *  \param Owner project owning resource
          *  \param ResourceName name of resource (f.ex. class name)
          *  \param ResourceType name of resource type (f.ex. wxDialog)
-         *  \param GUI name of gui using this resource, put empty string if this is universal resource like bitmap file
+         *  \param GUI name of GUI using this resource, put empty string if this is universal resource like bitmap file
          *  \param Language coding language used for this resource
          */
         wxsResource(wxsProject* Owner,const wxString& ResourceType,const wxString& GUI);
@@ -88,16 +88,16 @@ class wxsResource: public wxObject
         /** \brief Getting tree item id in resource browser */
         inline const wxsResourceItemId& GetTreeItemId() { return m_TreeItemId; }
 
-        /** \brief Creating entry in resoruce browser */
+        /** \brief Creating entry in resource browser */
         void BuildTreeEntry(const wxsResourceItemId& Parent);
 
         /** \brief Getting name of declaration file
-          * \note this function is only a wrapper to OnGetDeclarationFile (to hold ocnsistency of functions to override)
+          * \note this function is only a wrapper to OnGetDeclarationFile (to hold consistency of functions to override)
           */
         inline wxString GetDeclarationFile() { return OnGetDeclarationFile(); }
 
         /** \brief Getting code creating this resource
-         *  \note this function is only a wrapper to OnGetAppBuildingCode (to hold ocnsistency of functions to override)
+         *  \note this function is only a wrapper to OnGetAppBuildingCode (to hold consistency of functions to override)
          */
         inline wxString GetAppBuildingCode() { return OnGetAppBuildingCode(); }
 

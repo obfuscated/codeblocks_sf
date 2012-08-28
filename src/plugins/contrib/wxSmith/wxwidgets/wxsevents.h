@@ -126,7 +126,7 @@ struct wxsEventDesc
  * them).
  *
  * After building new wxsEvents class, SetEventArray() should be called to
- * connect clas with specified set of events
+ * connect class with specified set of events
  *
  */
 class wxsEvents
@@ -148,7 +148,7 @@ class wxsEvents
         /** \brief Setting event handler name */
         inline void SetHandler(int Index,const wxString& Name) { m_Functions[Index] = Name; }
 
-        /** \brief Function genrating code which binds events with main resource class
+        /** \brief Function generating code which binds events with main resource class
          *
          * Connecting events is done through wxsEvtHandler::Connect function.
          * Event table is not used because not all events could be processed.

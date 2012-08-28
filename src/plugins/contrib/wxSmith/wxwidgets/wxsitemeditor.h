@@ -64,7 +64,7 @@ class wxsItemEditor : public wxsEditor
         /** \brief Checking if can Undo */
         virtual bool CanUndo() const;
 
-        /** \brief Ckecing if can Redo */
+        /** \brief Checking if can Redo */
         virtual bool CanRedo() const;
 
         /** \brief Checking if we can cut */
@@ -156,7 +156,7 @@ class wxsItemEditor : public wxsEditor
         /** \brief Updating things related to current selection */
         void UpdateSelection();
 
-        /** \brief Updating editor's title applying asterix before name of file when modified */
+        /** \brief Updating editor's title applying asterisk before name of file when modified */
         void UpdateModified();
 
         /** \brief Getting item which will be used as reference item when adding new
@@ -176,7 +176,7 @@ class wxsItemEditor : public wxsEditor
         /** \brief Showing popup menu */
         void ShowPopup(wxsItem* Item,wxMenu* Menu);
 
-        wxsItemResData* m_Data;             ///< \brief Data managment object
+        wxsItemResData* m_Data;             ///< \brief Data management object
 
         wxsItemEditorContent* m_Content;    ///< \brief Window with content area
         wxsToolSpace* m_ToolSpace;          ///< \brief Space for tools in resource
@@ -194,7 +194,7 @@ class wxsItemEditor : public wxsEditor
         wxBitmapButton* m_PreviewBtn;
         wxBitmapButton* m_QuickPanelBtn;
         wxWindow* m_TopPreview;             ///< \brief Top window of preview
-        wxPanel* m_PreviewBackground;       ///< \brief Background panel used as background for peview
+        wxPanel* m_PreviewBackground;       ///< \brief Background panel used as background for preview
         int m_InsType;                      ///< \brief Current insertion type
         int m_InsTypeMask;                  ///< \brief Current insertion type mask
         bool m_QuickPropsOpen;              ///< \brief Set to true if quick properties panel is opened

@@ -38,12 +38,12 @@ class wxsContainer: public wxsParent
     public:
 
         /** \brief Ctor
-         *  \param Data data managment object handling this item
+         *  \param Data data management object handling this item
          *  \param Info pointer to static widget info
          *  \param EventArray pointer to static set of events
          *  \param StyleSet set of used styles, if 0, this widget won't
          *         provide styles by default
-         *  \param PropertiesFlags flags filtering sed base properties
+         *  \param PropertiesFlags flags filtering set base properties
          *         (see wxsBaseProperties for details)
          */
         wxsContainer(
@@ -78,9 +78,9 @@ class wxsContainer: public wxsParent
 
         /** \brief Checking if can add child item
          *
-         * This function is by fedault implemented inside wxsContainer.
+         * This function is by default implemented inside wxsContainer.
          * In case of some limitations made for children (like inside
-         * wxSplitterWindow), this functino should be overridden
+         * wxSplitterWindow), this function should be overridden
          * to avoid invalidating item.
          *
          * Default implementation matches few rules:

@@ -45,7 +45,7 @@ class wxsItemResData
          * parameters are empty strings, given type of file is assumed.
          *  - If Wxs, Src and Hdr file names are empty, it's only Xrc file.
          *  - If Xrc is empty but no other, it's resource not using Xrc file
-         *  - If all file names are not empty, it's resoure using Xrc file
+         *  - If all file names are not empty, it's resource using Xrc file
          *  - Other combinations are invalid.
          *
          * Parameters passed to constructor are GLOBAL paths (opposite to
@@ -104,7 +104,7 @@ class wxsItemResData
          * This function Notifies that resource is going to change.
          * It locks data from other changes. Each resource
          * change must be finished with call to EndChange function.
-         * Between BeginChagne and EndChange call there should not
+         * Between BeginChange and EndChange call there should not
          * be any call to gui item, so do not jump out of event
          * function before EndChange is called.
          *
@@ -173,7 +173,7 @@ class wxsItemResData
         /** \brief Checking if can Undo */
         inline bool CanUndo() { return m_Undo.CanUndo(); }
 
-        /** \brief Ckecing if can Redo */
+        /** \brief Checking if can Redo */
         inline bool CanRedo() { return m_Undo.CanRedo(); }
 
         /** \brief Undoing */
@@ -195,7 +195,7 @@ class wxsItemResData
         /** \brief Cutting current selection to clipboard */
         void Cut();
 
-        /** \brief Copying current selectin to clipboard */
+        /** \brief Copying current selection to clipboard */
         void Copy();
 
         /** \brief Pasting components from clipboard
@@ -240,7 +240,7 @@ class wxsItemResData
         /** \brief Adding new tool
          *
          * This function adds new tool into this resource.
-         * Since tools require special threatment, they
+         * Since tools require special treatment, they
          * need separate function.
          * \param Tool new tool
          * \return true on success, false otherwise
@@ -290,7 +290,7 @@ class wxsItemResData
         WX_DEFINE_ARRAY(wxsTool*,ToolArrayT);
 
         /** \brief Generating string with xml data for this item
-         *  \note used when creating undo enteries
+         *  \note used when creating undo entries
          */
         wxString GetXmlData();
 
@@ -306,7 +306,7 @@ class wxsItemResData
         /** \brief Rebuilding XRC file managed by this resource */
         bool RebuildXrcFile();
 
-        // Various loading functinos
+        // Various loading functions
         bool SilentLoad();
         bool LoadInFileMode();
         bool LoadInMixedMode();

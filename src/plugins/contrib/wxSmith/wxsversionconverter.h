@@ -40,7 +40,7 @@ class wxsVersionConverter
 {
     public:
 
-        /** \brief Checking if given configuratino node represents Old-wxSmith configuration */
+        /** \brief Checking if given configuration node represents Old-wxSmith configuration */
         bool DetectOldConfig(TiXmlElement* ConfigNode,wxsProject* Project) const;
 
         /** \brief Converting data from Old-wxSmith configuration style

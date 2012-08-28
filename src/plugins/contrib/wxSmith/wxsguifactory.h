@@ -70,7 +70,7 @@ class wxsGUIFactory
 
 /** \brief template for easy GUI registering
  *
- * To register gui in wxSmith, put following code somewhere in gui cpp file:
+ * To register GUI in wxSmith, put following code somewhere in GUI cpp file:
  * \code static wxsRegisterGUI<GUIClassName> Reg(_T("GUIClassName")); \endcode
  * Where GUIClassName should be replaced by name of real class
  */

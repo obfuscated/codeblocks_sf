@@ -61,7 +61,7 @@ class wxWindow;
  * setup, but it usually won't be necessary. In default implementation, it
  * initializes components which are using virtual functions of wxsItem class.
  *
- * Create Function is automatically called inside wxsWidgetFactory class
+ * Create function is automatically called inside wxsWidgetFactory class
  * (not wxsWidgetManager !!!), so there's no need to remember about calling that
  * manually.
  *
@@ -388,7 +388,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          *
          * Default implementation loads base properties using
          * wxsPropertyContainer::XmlRead() function and loads extra data from
-         * node passed as argument using defautl scheme.
+         * node passed as argument using default scheme.
          *
          * \param Element element containing configuration for this item
          * \param IsXRC if true, this function should load XRC structure from
@@ -411,7 +411,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          * \param IsExtra if true, this function should write Extra information
          *        not conforming to XRC standard to given Xml element.
 
-         * \note This function will be called twice when saving Sresource which
+         * \note This function will be called twice when saving resource which
          *       uses additional XRC file because XRC structure data and extra
          *       data are in separate files.
          */

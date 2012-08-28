@@ -45,11 +45,11 @@ class wxsItemResData;
 /** \brief Class managing creation, destruction and enumeration of supported
  *         items
  *
- * All public functinos are static which means that this class is something
+ * All public functions are static which means that this class is something
  * like singleton but using static members for global operations.
  * Each instance of this class does represent one wxsItem - provides it's info
  * and is able to build this item.
- * Addind new supported item to factory is done by deriving other class from
+ * Adding new supported item to factory is done by deriving other class from
  * this one and writing it's
  */
 class wxsItemFactory
@@ -65,13 +65,13 @@ class wxsItemFactory
          */
         static const wxsItemInfo* GetInfo(const wxString& ClassName);
 
-        /** \brief Getting onfo of first item */
+        /** \brief Getting info of first item */
         static const wxsItemInfo* GetFirstInfo();
 
         /** \brief Continuing getting item infos */
         static const wxsItemInfo* GetNextInfo();
 
-        /** \brief Getting global image list with enteries for items
+        /** \brief Getting global image list with entries for items
          *
          * In fact this function takes image list from resource browser
          */

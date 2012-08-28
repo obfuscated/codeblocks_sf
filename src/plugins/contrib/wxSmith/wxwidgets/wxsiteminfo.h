@@ -37,7 +37,7 @@ enum wxsItemType
     wxsTTool             ///< \brief Tool
 };
 
-/** \brief Structure containing all global informations about item */
+/** \brief Structure containing all global information about item */
 struct wxsItemInfo
 {
     wxString        ClassName;      ///< \brief Item's class name

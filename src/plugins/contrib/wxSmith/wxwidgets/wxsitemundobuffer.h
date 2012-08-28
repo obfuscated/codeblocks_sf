@@ -29,7 +29,7 @@
  *
  * This class bases on idea that any class can be represented
  * as Xml structure which can be hold inside simple string.
- * Each uundo position entry holds whole structure of resource, what
+ * Each undo position entry holds whole structure of resource, what
  * in case of standard resources should not exceed 50 kB. In case
  * of memory consumption problems this can be changed to hold differences
  * between two xml nodes only.
@@ -44,7 +44,7 @@ class wxsItemUndoBuffer
         /** \brief Dctor */
         ~wxsItemUndoBuffer();
 
-        /** \brief Checkign if we can undo */
+        /** \brief Checking if we can undo */
         inline bool CanUndo() { return m_CurrentPos > 0; }
 
         /** \brief Checking if we can redo */
@@ -54,12 +54,12 @@ class wxsItemUndoBuffer
         inline bool IsModified() { return m_CurrentPos != m_SavedPos; }
 
         /** \brief Adding new undo position
-         *  \param XmlData xml form of reosurce stored inside string
+         *  \param XmlData xml form of resource stored inside string
          */
         void StoreChange(const wxString& XmlData);
 
 
-        /** \brief Setting lastest undo buffer to saved state (equialent to content on files) */
+        /** \brief Setting lastest undo buffer to saved state (equivalent to content on files) */
         inline void Saved() { m_SavedPos = m_CurrentPos; }
 
         /** \brief Undoing
@@ -74,13 +74,13 @@ class wxsItemUndoBuffer
 
     private:
 
-        /** \brief Getting number of enteries in undo array */
+        /** \brief Getting number of entries in undo array */
         inline int GetCount() { return (int)m_Enteries.Count(); }
 
-        wxArrayString m_Enteries;   ///< \brief Array enteries
+        wxArrayString m_Enteries;   ///< \brief Array entries
         int m_CurrentPos;           ///< \brief Current position in undo buffer
         int m_SavedPos;             ///< \brief Undo position representing not-changed resource (in form it's on disk)
-        int m_MaxEnteries;          ///< \brief Max enteries in undo buffer
+        int m_MaxEnteries;          ///< \brief Max entries in undo buffer
 };
 
 #endif
