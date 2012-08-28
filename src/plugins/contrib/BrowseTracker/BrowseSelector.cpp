@@ -118,7 +118,6 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 	m_listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxSize(400, 150), 0, NULL, flags);
 
 	static int panelHeight = 0;
-	static int fontWidth = 0;
 	if( panelHeight == 0 )
 	{
 		wxMemoryDC mem_dc;
@@ -136,7 +135,6 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 
 		font.SetWeight( wxNORMAL );
 		mem_dc.SetFont(font);
-        fontWidth = mem_dc.GetCharWidth();
 
 		// Out signpost bitmap is 24 pixels
 		if( panelHeight < 24 )
