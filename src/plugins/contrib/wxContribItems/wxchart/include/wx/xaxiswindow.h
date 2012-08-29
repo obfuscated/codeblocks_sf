@@ -75,7 +75,7 @@ private:
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
 
-    DECLARE_CLASS(wxXAxisWindow)
+    DECLARE_DYNAMIC_CLASS(wxXAxisWindow)
     DECLARE_EVENT_TABLE()
 };
 

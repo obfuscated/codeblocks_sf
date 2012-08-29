@@ -67,7 +67,7 @@ private:
     void OnMouse(wxMouseEvent &event);
     void OnMouseMove(wxMouseEvent &event);
 
-    DECLARE_CLASS(wxLegendWindow)
+    DECLARE_DYNAMIC_CLASS(wxLegendWindow)
     DECLARE_EVENT_TABLE()
 };
 

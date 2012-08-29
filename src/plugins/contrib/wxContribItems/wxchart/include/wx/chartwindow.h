@@ -101,7 +101,7 @@ private:
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
 
-    DECLARE_CLASS(wxChartWindow)
+    DECLARE_DYNAMIC_CLASS(wxChartWindow)
     DECLARE_EVENT_TABLE()
 };
 

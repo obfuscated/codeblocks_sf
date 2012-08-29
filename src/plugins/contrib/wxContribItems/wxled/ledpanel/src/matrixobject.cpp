@@ -38,7 +38,7 @@ MatrixObject::MatrixObject(const MatrixObject& mo) :
 
 MatrixObject::~MatrixObject()
 {
-    wxDELETE(m_data)
+    wxDELETE(m_data);
 }
 
 MatrixObject& MatrixObject::operator=(const MatrixObject& mo)

@@ -153,7 +153,7 @@ AdvancedMatrixObject* wxLEDFont::GetMOForText(const wxString& text, wxAlignment 
 		y+=m_LetterHeight+m_letterspace;
 
 		// free the line
-		wxDELETE(mo_lines[i])
+		wxDELETE(mo_lines[i]);
 	}
 
 	// Fit the right and left border

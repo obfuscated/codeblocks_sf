@@ -1155,7 +1155,11 @@ void wxEditTextCtrl::EndEdit(bool isCancelled) {
 
 bool wxEditTextCtrl::Destroy() {
     Hide();
+#if wxCHECK_VERSION(2, 9, 0)
+    wxTheApp->ScheduleForDestruction(this);
+#else
     wxTheApp->GetTraits()->ScheduleForDestroy(this);
+#endif
     return true;
 }
 
@@ -3952,7 +3956,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         default:
             if (event.GetKeyCode() >= (int)' ') {
                 if (!m_findTimer->IsRunning()) m_findStr.Clear();
-                m_findStr.Append (event.GetKeyCode());
+                m_findStr << event.GetKeyCode();
                 m_findTimer->Start (FIND_TIMER_TICKS, wxTIMER_ONE_SHOT);
                 wxTreeItemId prev = m_curItem? (wxTreeItemId*)m_curItem: (wxTreeItemId*)NULL;
                 while (true) {
