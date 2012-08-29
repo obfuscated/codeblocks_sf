@@ -107,7 +107,7 @@ private:
   int RunScan(const wxArrayString& FilesToProcess, const wxArrayString& Groups);
 
   void AddFilesFromProject(wxArrayString& Files, cbProject* Project);
-  int ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups);
+  int ProcessFile(const wxString& GlobalFileName,const wxArrayString& Groups);
   void OperateToken(const wxString&      Token,
                     const wxArrayString& Groups,
                     const wxArrayString& IncludedHeaders,

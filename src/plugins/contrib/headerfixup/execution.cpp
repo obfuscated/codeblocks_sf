@@ -506,7 +506,7 @@ void Execution::AddFilesFromProject(wxArrayString& Files,cbProject* Project)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-int Execution::ProcessFile(wxString& GlobalFileName, const wxArrayString& Groups)
+int Execution::ProcessFile(const wxString& GlobalFileName, const wxArrayString& Groups)
 {
   m_FileAnalysis.ReInit(GlobalFileName);
 
