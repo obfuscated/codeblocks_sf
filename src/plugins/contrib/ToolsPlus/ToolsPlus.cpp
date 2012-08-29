@@ -288,7 +288,7 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
         {
             m_RunTarget=wxEmptyString;
             EditorManager* edMan = Manager::Get()->GetEditorManager();
-            if (edMan && edMan->GetActiveEditor() && edMan->GetActiveEditor()->GetFilename())
+            if (edMan && edMan->GetActiveEditor() && ! edMan->GetActiveEditor()->GetFilename().IsEmpty())
             {
                 wxFileName activefile(edMan->GetActiveEditor()->GetFilename());
                 wxString filename=activefile.GetFullPath();
