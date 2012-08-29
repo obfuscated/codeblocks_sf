@@ -779,7 +779,7 @@ bool ThreadSearch::GetCursorWord(wxString& sWord)
                 sWord.Trim(false);
             }
 
-            return sWord;
+            return !sWord.IsEmpty();
         }
 
         // Gets word under cursor
