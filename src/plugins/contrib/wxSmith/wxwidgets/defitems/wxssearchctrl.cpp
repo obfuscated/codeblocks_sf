@@ -75,11 +75,7 @@ void wxsSearchCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/srchctrl.h>"),GetInfo().ClassName,hfInPCH);
 
-            #if wxCHECK_VERSION(2, 9, 0)
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.wx_str(),);
-            #else
-            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.c_str());
-            #endif
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sValue.wx_str());
 
             if(!m_bShowSearchBtn){
                 Codef(_T("%AShowSearchButton(%b);\n"), m_bShowSearchBtn);

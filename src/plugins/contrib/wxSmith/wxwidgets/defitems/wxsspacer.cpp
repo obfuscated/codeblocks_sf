@@ -53,7 +53,11 @@ namespace
             void OnPaint(wxPaintEvent& event)
             {
                 wxPaintDC DC(this);
+#if wxCHECK_VERSION(2,9,0)
+                DC.SetBrush(wxBrush(wxColour(0,0,0),wxHATCHSTYLE_CROSSDIAG));
+#else
                 DC.SetBrush(wxBrush(wxColour(0,0,0),wxCROSSDIAG_HATCH));
+#endif
                 DC.SetPen(wxPen(wxColour(0,0,0),1));
                 DC.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
             }

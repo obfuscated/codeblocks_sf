@@ -88,13 +88,13 @@ void wxsImage::OnBuildCreatingCode()
 
                 // if there is no data, then just make empty image and bitmap
                 if(m_ImageData.Count() == 0) {
-                    Codef(_T("%s = new wxImage();\n"), vname.c_str());
-                    Codef(_T("%s = new wxBitmap();\n"), bname.c_str());
+                    Codef(_T("%s = new wxImage();\n"), vname.wx_str());
+                    Codef(_T("%s = new wxBitmap();\n"), bname.wx_str());
                 }
                 // else fill it with XPM data
                 else {
-                    Codef(_T("%s = new wxImage(%s);\n"),  vname.c_str(), xname.c_str());
-                    Codef(_T("%s = new wxBitmap(%s);\n"), bname.c_str(), xname.c_str());
+                    Codef(_T("%s = new wxImage(%s);\n"),  vname.wx_str(), xname.wx_str());
+                    Codef(_T("%s = new wxBitmap(%s);\n"), bname.wx_str(), xname.wx_str());
                 }
 
                 BuildSetupWindowCode();

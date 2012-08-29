@@ -1336,7 +1336,6 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
     wxBitmap        bmp;
     wxArrayString   aa;
     wxString        ss, tt;
-    wxImageList     *list;
 
     // get the size of the image list
     w = 16;
@@ -1355,8 +1354,8 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
         }
     }
 
-    // make a temp list of correct size
-    list = new wxImageList(w, h, 128);
+    outList.RemoveAll();
+    outList.Create(w, h, 128);
 
     // extract sub-arrays from the big array and make pictures out of them
     aa.Clear();
@@ -1378,7 +1377,7 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
         }
         else{                                      // end of XPM data; start next block of data
             ArrayToBitmap(aa, bmp);
-            list->Add(bmp);
+            outList.Add(bmp);
             aa.Clear();
             aa.Add(ss);
         }
@@ -1387,12 +1386,11 @@ void wxsImageListEditorDlg::ArrayToImageList(wxArrayString &inArray, wxImageList
     // any left-over data?
     if(aa.GetCount() > 0){
         ArrayToBitmap(aa, bmp);
-        list->Add(bmp);
+        outList.Add(bmp);
         aa.Clear();
     }
 
     // return the image list, and decrement usage count for our local copy
-    outList = (*list);
 }
 
 /*! \brief Copy an image list.
@@ -1407,23 +1405,22 @@ void wxsImageListEditorDlg::CopyImageList(wxImageList &inList, wxImageList &outL
     int         i, n;
     int         w, h;
     wxBitmap    bmp;
-    wxImageList *list;
 
     // size of old list
     inList.GetSize(0, w, h);
     n = inList.GetImageCount();
 
     // make a new list
-    list = new wxImageList(w, h, n);
+    outList.RemoveAll();
+    outList.Create(w, h, n);
 
     // copy it
     for(i = 0; i < n; i++){
         bmp = inList.GetBitmap(i);
-        list->Add(bmp);
+        outList.Add(bmp);
     }
 
     // copy the reference back to the user
-    outList = (*list);
 }
 
 /*! \brief Find a pointer to a wxsTool given its name.

@@ -118,7 +118,7 @@ bool        ilist;
 
 // add the text item
 
-        Codef(_T("%s->Append(_T(\"%s\"));\n"), vv.c_str(), tt.c_str());
+        Codef(_T("%s->Append(_T(\"%s\"));\n"), vv.wx_str(), tt.wx_str());
 
 // add the bitmap at the bottom of the code
 

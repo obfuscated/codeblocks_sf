@@ -49,12 +49,8 @@ namespace
     {
         for ( size_t i=FileName.Length(); i-->0; )
         {
-            switch ( FileName[i] )
-            {
-                case _T('/'):
-                case _T('\\'):
-                    return FileName.Mid(0,i+1);
-            }
+            if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
+                return FileName.Mid(0,i+1);
         }
 
         return wxEmptyString;
@@ -64,15 +60,11 @@ namespace
     {
         for ( size_t i=FileName.Length(); i-->0; )
         {
-            switch ( FileName[i] )
-            {
-                case _T('/'):
-                case _T('\\'):
-                    return FileName;
+            if ( FileName[i] == _T('/') || FileName[i] == _T('\\') )
+                return FileName;
 
-                case _T('.'):
-                    return FileName.Mid(0,i);
-            }
+            if ( FileName[i] == _T('.') )
+                return FileName.Mid(0,i);
         }
         return FileName;
     }

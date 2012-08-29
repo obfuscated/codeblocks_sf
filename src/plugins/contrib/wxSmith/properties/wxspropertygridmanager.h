@@ -34,7 +34,7 @@
 #include <wx/propgrid/manager.h>
 
 #if wxCHECK_VERSION(2, 9, 0)
-typedef wxPGProperty* wxPGId;
+#define wxPGId wxPGProperty*
 #endif
 
 class wxsPropertyContainer;

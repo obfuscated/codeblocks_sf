@@ -91,14 +91,14 @@ void wxsImageList::OnBuildCreatingCode()
                 vname = GetVarName();
                 // if there is no data, then just make empty image and bitmap
                 if(m_Count == 0){
-                    Codef(_T("%s = new wxImageList(%d, %d, 1);\n"), vname.c_str(), m_Width, m_Height);
+                    Codef(_T("%s = new wxImageList(%d, %d, 1);\n"), vname.wx_str(), m_Width, m_Height);
                 }
                 // else fill it with XPM data
                 else{
-                    Codef(_T("%s = new wxImageList(%d, %d, %d);\n"),  vname.c_str(), m_Width, m_Height, (m_Count + 1));
+                    Codef(_T("%s = new wxImageList(%d, %d, %d);\n"),  vname.wx_str(), m_Width, m_Height, (m_Count + 1));
                     for(i = 0; i < m_Count; i++) {
                         ss.Printf(_("%s_%d_XPM"), vname.c_str(), i);
-                        Codef(_T("%s->Add(wxBitmap(%s));\n"), vname.c_str(), ss.c_str());
+                        Codef(_T("%s->Add(wxBitmap(%s));\n"), vname.wx_str(), ss.wx_str());
                     }
                 }
 

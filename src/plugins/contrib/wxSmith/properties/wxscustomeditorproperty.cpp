@@ -67,7 +67,11 @@ namespace
                 return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
             }
 
+#if wxCHECK_VERSION(2,9,0)
+            virtual wxString ValueToString(  wxVariant& WXUNUSED(value), int argFlags = 0 ) const
+#else
             virtual wxString GetValueAsString( int flags = 0 ) const
+#endif
             {
                 return Property->GetStr(Object);
             }

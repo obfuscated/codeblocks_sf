@@ -61,13 +61,8 @@ void wxsAnimationCtrl::OnBuildCreatingCode()
             AddHeader(_T("<wx/animate.h>"),GetInfo().ClassName,hfInPCH);
 
             wxString sAnimName = GetCoderContext()->GetUniqueName(_T("anim"));
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\twxAnimation %s(%n);\n"), sAnimName.wx_str(), m_sAnimation.wx_str());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.wx_str(),);
-            #else
-            Codef(_T("\twxAnimation %s(%n);\n"), sAnimName.c_str(), m_sAnimation.c_str());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.c_str());
-            #endif
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"), sAnimName.wx_str());
 
             if(!m_bmpInactive.IsEmpty()){
                 Codef(_T("%ASetInactiveBitmap(%i);\n"), &m_bmpInactive, _T("wxART_OTHER"));

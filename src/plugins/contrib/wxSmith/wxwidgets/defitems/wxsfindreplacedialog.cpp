@@ -80,19 +80,10 @@ void wxsFindReplaceDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/fdrepdlg.h>"), GetInfo().ClassName, 0);
 
             sfindReplaceData = GetCoderContext()->GetUniqueName(_T("findReplaceData"));
-            #if wxCHECK_VERSION(2, 9, 0)
-            AddDeclaration(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str());
-            #else
-            AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.c_str()));
-            #endif
+            AddDeclaration(wxString::Format(wxT("wxFindReplaceData %s;"), sfindReplaceData.wx_str()));
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("\t%s\n"), sNote.wx_str());
             Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.wx_str(), m_sCaption.wx_str());
-            #else
-            Codef(_T("\t%s\n"), sNote.c_str());
-            Codef(_T("%C(%W, &%s, %t, %T);\n"), sfindReplaceData.c_str(), m_sCaption.c_str());
-            #endif
 
             BuildSetupWindowCode();
             break;
