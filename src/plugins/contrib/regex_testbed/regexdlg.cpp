@@ -214,7 +214,7 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
     }
 
     for(size_t i = 0; i < m_wxre.GetMatchCount(); ++i)
-        if (m_wxre.GetMatch(text, i))
+        if (!m_wxre.GetMatch(text, i).IsEmpty())
             ret.Add(m_wxre.GetMatch(text, i));
 
     return ret;
