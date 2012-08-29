@@ -475,8 +475,8 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
     unsigned int startAt = FindCCTokenStart(line);
     wxString res = GetNextCCToken(line, startAt, tokenOperatroType);
 
-    TRACE(_T("GetCCToken() : FindCCTokenStart returned %d \"%s\""), startAt, line.c_str());
-    TRACE(_T("GetCCToken() : GetNextCCToken returned %d \"%s\""), startAt, res.c_str());
+    TRACE(_T("GetCCToken() : FindCCTokenStart returned %d \"%s\""), startAt, line.wx_str());
+    TRACE(_T("GetCCToken() : GetNextCCToken returned %d \"%s\""), startAt, res.wx_str());
 
 
     if (startAt == line.Len())
@@ -508,7 +508,7 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
             line.Clear();
     }
 
-    TRACE(_T("GetCCToken() : Left \"%s\""), line.c_str());
+    TRACE(_T("GetCCToken() : Left \"%s\""), line.wx_str());
 
     if (tokenOperatroType == otOperatorParentheses)
         tokenType = pttFunction;
@@ -584,7 +584,7 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 
     startAt = AfterWhitespace(startAt, line);
 
-    TRACE(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).c_str());
+    TRACE(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).wx_str());
 
     return startAt;
 }
@@ -612,7 +612,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
         }
     }
 
-    TRACE(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
+    TRACE(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     while (InsideToken(startAt, line))
     {
@@ -627,7 +627,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
         ++startAt;
     }
 
-    TRACE(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
+    TRACE(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     startAt = AfterWhitespace(startAt, line);
     if (IsOpeningBracket(startAt, line))
@@ -663,7 +663,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
     if (IsOperatorBegin(startAt, line))
         ++startAt;
 
-    TRACE(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
+    TRACE(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     return res;
 }
