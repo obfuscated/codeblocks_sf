@@ -588,7 +588,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
 	InitializeDragScroll();
 
 	// Add TreeCtrl to DragScroll managed windows
-    DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT , idDragScrollAddWindow);
+    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT , idDragScrollAddWindow);
     dsevt.SetEventObject(GetConfig()->GetSnippetsTreeCtrl());
     dsevt.SetString( GetConfig()->GetSnippetsTreeCtrl()->GetName() );
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent( dsevt );
@@ -940,7 +940,7 @@ void CodeSnippetsAppFrame::OnEventTest(wxCommandEvent &event)
     ////    ToolBox toolbox;
     ////    toolbox.ShowWindowsAndEvtHandlers();
 
-    DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+    sDragScrollEvent dsEvt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollRescan);
     dsEvt.SetEventObject( GetConfig()->GetSnippetsTreeCtrl());
     dsEvt.SetString( GetConfig()->GetSnippetsTreeCtrl()->GetName() );
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent(dsEvt);

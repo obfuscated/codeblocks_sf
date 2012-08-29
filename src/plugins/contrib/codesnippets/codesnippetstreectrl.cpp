@@ -1955,7 +1955,7 @@ bool CodeSnippetsTreeCtrl::EditSnippetProperties(wxTreeItemId& itemId)
     SnippetProperty* pdlg = new SnippetProperty(GetSnippetsTreeCtrl(), itemId, &waitSem);
 
 	// Add Properties edit window to DragScroll managed windows
-    DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT , idDragScrollAddWindow);
+    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT , idDragScrollAddWindow);
     dsevt.SetEventObject((wxObject*)pdlg->m_SnippetEditCtrl);
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent( dsevt );
 

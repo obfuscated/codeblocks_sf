@@ -226,7 +226,7 @@ bool ThreadSearchLoggerTree::GetFileLineFromTreeEvent(wxTreeEvent& event, wxStri
 }
 
 
-void ThreadSearchLoggerTree::OnThreadSearchEvent(const ThreadSearchEvent& event)
+void ThreadSearchLoggerTree::OnThreadSearchEvent(const sThreadSearchEvent& event)
 {
 	// A search event has been sent by the worker thread.
 	// Tree log upddate

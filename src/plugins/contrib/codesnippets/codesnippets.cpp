@@ -509,7 +509,7 @@ void CodeSnippets::CreateSnippetWindow()
 	Manager::Get()->ProcessEvent(evt);
 
     // Add new code snippets scrollable windows to DragScroll plugin
-    DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT,idDragScrollRescan);
+    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT,idDragScrollRescan);
     dsevt.SetEventObject( GetConfig()->GetSnippetsTreeCtrl());
     dsevt.SetString( GetConfig()->GetSnippetsTreeCtrl()->GetName());
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent(dsevt);
@@ -1850,7 +1850,7 @@ cbDragScroll* CodeSnippets::FindDragScroll()
     if ( GetConfig()->m_pDragScrollPlugin )
         return GetConfig()->GetDragScrollPlugin();
 
-    // If DragScroll isn't loaded, absorb the DragScrollEvents
+    // If DragScroll isn't loaded, absorb the sDragScrollEvents
     // (fake out the plugin address) so
     // ProcessEvent() and AddPendingEvent() don't crash
     GetConfig()->SetDragScrollPlugin( (cbDragScroll*)this );
@@ -1860,18 +1860,18 @@ cbDragScroll* CodeSnippets::FindDragScroll()
     if ( pPlgn )
     {
         GetConfig()->SetDragScrollPlugin( (cbDragScroll*)pPlgn );
-        // Hack to get actual DragScrollEvent value
+        // Hack to get actual sDragScrollEvent value
         PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(pPlgn));
         pInfo->authorWebsite.ToLong(&m_nDragScrollEventId);
         if ( m_nDragScrollEventId )
         {
             // Reset our copy of the DragScroll event to the actual from DragScroll plugin
-            wxEventType* p = (wxEventType*)&wxEVT_DRAGSCROLL_EVENT;
+            wxEventType* p = (wxEventType*)&wxEVT_S_DRAGSCROLL_EVENT;
                         *p = m_nDragScrollEventId ;
         }
         #if defined(LOGGING)
         LOGIT( _T("CodeSnippets found DragScroll @[%p]EvemtId[%ld]"), GetConfig()->GetDragScrollPlugin(), m_nDragScrollEventId);
-        LOGIT( _T("DragScroll events are[%d]"), wxEVT_DRAGSCROLL_EVENT );
+        LOGIT( _T("DragScroll events are[%d]"), wxEVT_S_DRAGSCROLL_EVENT );
         #endif
     }
 

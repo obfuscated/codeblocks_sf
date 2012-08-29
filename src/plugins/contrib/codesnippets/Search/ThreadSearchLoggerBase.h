@@ -2,7 +2,7 @@
  * Name:      ThreadSearchLoggerBase
  * Purpose:   ThreadSearchLoggerBase is an interface to the
  *            different graphical controls that are able to
- *            manage ThreadSearchEvents received by the view.
+ *            manage sThreadSearchEvents received by the view.
  * Author:    Jerome ANTOINE
  * Created:   2007-07-28
  * Copyright: Jerome ANTOINE
@@ -20,7 +20,7 @@ class wxEvtHandler;
 
 class ThreadSearch;
 class ThreadSearchView;
-class ThreadSearchEvent;
+class sThreadSearchEvent;
 
 
 class ThreadSearchLoggerBase
@@ -51,10 +51,10 @@ public:
 	/** Called by ThreadSearchView when new settings are applied. */
 	virtual void Update();
 
-	/** Called by ThreadSearchView to process a ThreadSearchEvent
+	/** Called by ThreadSearchView to process a sThreadSearchEvent
 	  * sent by worker thread.
 	  */
-	virtual void OnThreadSearchEvent(const ThreadSearchEvent& event) = 0;
+	virtual void OnThreadSearchEvent(const sThreadSearchEvent& event) = 0;
 
 	/** Removes all items from logger. */
 	virtual void Clear() = 0;

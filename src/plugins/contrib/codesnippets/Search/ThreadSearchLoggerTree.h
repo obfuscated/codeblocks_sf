@@ -23,7 +23,7 @@ class wxTreeEvent;
 
 class ThreadSearch;
 class ThreadSearchView;
-class ThreadSearchEvent;
+class sThreadSearchEvent;
 
 
 // MessageLog inheritance is necessary to be able to
@@ -41,10 +41,10 @@ public:
 	/** Getter */
 	virtual eLoggerTypes GetLoggerType() {return TypeTree;}
 
-	/** Called by ThreadSearchView to process a ThreadSearchEvent
+	/** Called by ThreadSearchView to process a sThreadSearchEvent
 	  * sent by worker thread.
 	  */
-	virtual void OnThreadSearchEvent(const ThreadSearchEvent& event);
+	virtual void OnThreadSearchEvent(const sThreadSearchEvent& event);
 
 	/** Removes all items from logger. */
 	virtual void Clear();

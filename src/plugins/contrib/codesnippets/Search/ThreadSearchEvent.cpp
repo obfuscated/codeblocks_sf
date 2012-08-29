@@ -16,24 +16,24 @@
 
  #include "ThreadSearchEvent.h"
 
-DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH)
-DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH_ERROR)
-DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH_SHOWMSG)
-IMPLEMENT_DYNAMIC_CLASS(ThreadSearchEvent, wxCommandEvent)
+DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH)
+DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH_ERROR)
+DEFINE_EVENT_TYPE(wxEVT_S_THREAD_SEARCH_SHOWMSG)
+IMPLEMENT_DYNAMIC_CLASS(sThreadSearchEvent, wxCommandEvent)
 
-ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)
+sThreadSearchEvent::sThreadSearchEvent(wxEventType commandType, int id)
 					 :wxCommandEvent(commandType, id)
 {
 }
 
 
-ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event)
+sThreadSearchEvent::sThreadSearchEvent(const sThreadSearchEvent& Event)
 				  :wxCommandEvent(Event)
 {
 	m_LineTextArray = Event.GetLineTextArray();
 }
 
 
-ThreadSearchEvent::~ThreadSearchEvent()
+sThreadSearchEvent::~sThreadSearchEvent()
 {
 }

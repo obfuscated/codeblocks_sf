@@ -110,7 +110,7 @@ ThreadSearchView::ThreadSearchView( ThreadSearch& threadSearchPlugin)
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchMaskTextEvent);
 
-    Connect(wxEVT_THREAD_SEARCH_ERROR,
+    Connect(wxEVT_S_THREAD_SEARCH_ERROR,
             (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 
 ////    //EVT_BUTTON(idBtnSearch, ThreadSearchView::OnBtnSearchClick)
@@ -151,7 +151,7 @@ ThreadSearchView::~ThreadSearchView()
     Disconnect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchMaskTextEvent);
-    Disconnect(wxEVT_THREAD_SEARCH_ERROR,
+    Disconnect(wxEVT_S_THREAD_SEARCH_ERROR,
             (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 
     m_ThreadSearchPlugin.OnThreadSearchViewDestruction();
@@ -183,7 +183,7 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_TIMER(idTmrListCtrlUpdate,          ThreadSearchView::OnTmrListCtrlUpdate)
 END_EVENT_TABLE();
 // ----------------------------------------------------------------------------
-void ThreadSearchView::OnThreadSearchErrorEvent(const ThreadSearchEvent& event)
+void ThreadSearchView::OnThreadSearchErrorEvent(const sThreadSearchEvent& event)
 // ----------------------------------------------------------------------------
 {
     cbMessageBox(event.GetString(), _T("Error"), wxICON_ERROR);
@@ -257,7 +257,7 @@ void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &event)
 
     // Ask DragScroll to rescan the frame windows tree and catch any switched windows
     // eg. user changed list view to tree view
-    DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+    sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollRescan);
     dsevt.SetEventObject( GetConfig()->GetThreadSearchFrame());
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent(dsevt);
 
@@ -615,7 +615,7 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
     // Open the file in a lower split window
     GetConfig()->GetThreadSearchPlugin()->SplitThreadSearchWindow();
     // Add the file to DragScroll
-    DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT,idDragScrollRescan);
+    sDragScrollEvent dsEvt(wxEVT_S_DRAGSCROLL_EVENT,idDragScrollRescan);
     dsEvt.SetEventObject( GetConfig()->GetThreadSearchFrame());
     GetConfig()->GetDragScrollEvtHandler()->AddPendingEvent(dsEvt);
 
@@ -842,7 +842,7 @@ void ThreadSearchView::EnableControls(bool enable)
     }
 }
 // ----------------------------------------------------------------------------
-void ThreadSearchView::PostThreadSearchEvent(const ThreadSearchEvent& event)
+void ThreadSearchView::PostThreadSearchEvent(const sThreadSearchEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Clone the worker thread event to the mutex protected m_ThreadSearchEventsArray
@@ -863,7 +863,7 @@ void ThreadSearchView::OnTmrListCtrlUpdate(wxTimerEvent& event)
     {
         if ( m_ThreadSearchEventsArray.GetCount() > 0 )
         {
-            ThreadSearchEvent *pEvent = static_cast<ThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
+            sThreadSearchEvent *pEvent = static_cast<sThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
             m_pLogger->OnThreadSearchEvent(*pEvent);
             delete pEvent;
             m_ThreadSearchEventsArray.RemoveAt(0,1);
@@ -893,10 +893,10 @@ bool ThreadSearchView::ClearThreadSearchEventsArray()
     if ( success == true )
     {
         size_t i                  = m_ThreadSearchEventsArray.GetCount();
-        ThreadSearchEvent* pEvent = NULL;
+        sThreadSearchEvent* pEvent = NULL;
         while ( i != 0 )
         {
-            pEvent = static_cast<ThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
+            pEvent = static_cast<sThreadSearchEvent*>(m_ThreadSearchEventsArray[0]);
             delete pEvent;
             m_ThreadSearchEventsArray.RemoveAt(0,1);
             i--;

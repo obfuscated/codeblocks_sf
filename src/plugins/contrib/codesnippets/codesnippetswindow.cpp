@@ -1062,7 +1062,7 @@ void CodeSnippetsWindow::OnMnuSearchExtended(wxCommandEvent& event)
         // Add new code snippets scrollable windows to DragScroll plugin
         if ( wxEvtHandler* pds = GetConfig()->GetDragScrollEvtHandler())
         {
-            DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT,idDragScrollRescan);
+            sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT,idDragScrollRescan);
             dsevt.SetEventObject( pThreadSearchFrame );
             dsevt.SetString(wxEmptyString);
             pds->AddPendingEvent(dsevt);
@@ -1302,7 +1302,7 @@ void CodeSnippetsWindow::OnMnuSettings(wxCommandEvent& event)
         if (GetConfig()->GetSettingsWindowState() == _T("External"))
         {   // Invoke the DragScroll configuration for CodeSnippets. Use position of
             // dlg to position DragScroll dlg also.
-            DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT, idDragScrollInvokeConfig);
+            sDragScrollEvent dsevt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollInvokeConfig);
             dsevt.SetEventObject(pDlg);
             GetConfig()->GetDragScrollEvtHandler()->ProcessEvent(dsevt);
         }
@@ -1490,16 +1490,16 @@ void CodeSnippetsWindow::OnMnuTest(wxCommandEvent& event)
     // Used to issue assorted tests during debugging
 
     #if defined(LOGGING)
-    LOGIT( _T("Test::EVT_DRAGSCROLL_EVENT[%d]"),event.GetId() );
+    LOGIT( _T("Test::EVT_S_DRAGSCROLL_EVENT[%d]"),event.GetId() );
     #endif
     wxEvtHandler* ph = GetConfig()->GetDragScrollEvtHandler();
     if (ph){
-        DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+        sDragScrollEvent dsEvt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollRescan);
         dsEvt.SetEventObject(GetConfig()->GetSnippetsWindow());
         dsEvt.SetString(GetConfig()->GetSnippetsTreeCtrl()->GetName());
         int done = ph->ProcessEvent(dsEvt);
         #if defined(LOGGING)
-        LOGIT( _T("CodeSnippetWindow Issueing EVT_DRAGSCROLL_RESCAN[%s]"), done?_T("success"):_T("failed"));
+        LOGIT( _T("CodeSnippetWindow Issueing EVT_S_DRAGSCROLL_RESCAN[%s]"), done?_T("success"):_T("failed"));
         #endif
         //::wxPostEvent( ph, dsEvt);
         wxUnusedVar(done);

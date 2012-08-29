@@ -54,7 +54,7 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
                                                                   findData.GetRegEx());
     if (!m_pTextFileSearcher)
     {
-        ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+        sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
         event.SetString(_T("TextFileSearcher could not be instantiated."));
 
         // Using wxPostEvent, we avoid multi-threaded memory violation.
@@ -169,7 +169,7 @@ void *ThreadSearchThread::Entry()
         //-cbMessageBox(wxT("No files to search in!"), wxT("Error"), wxICON_WARNING);
         ////(pecan 2008/4/26)
         // DO NOT issue graphics calls from this thread !!!!!!
-        ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+        sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
         event.SetString(_T("No files to search.\nCheck options "));
         // Using wxPostEvent, we avoid multi-threaded memory violation.
         wxPostEvent( m_pThreadSearchView,event);
@@ -235,7 +235,7 @@ void ThreadSearchThread::FindInFile(const wxString& path)
     {
         case TextFileSearcher::idStringFound:
         {
-            ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
+            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH, -1);
             event.SetString(path);
             event.SetLineTextArray(m_LineTextArray);
 
@@ -249,7 +249,7 @@ void ThreadSearchThread::FindInFile(const wxString& path)
         }
         case TextFileSearcher::idFileNotFound:
         {
-            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
             event.SetString(path + _T(" does not exist."));
 
             // Using wxPostEvent, we avoid multi-threaded memory violation.
@@ -258,7 +258,7 @@ void ThreadSearchThread::FindInFile(const wxString& path)
         }
         case TextFileSearcher::idFileOpenError:
         {
-            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+            sThreadSearchEvent event(wxEVT_S_THREAD_SEARCH_ERROR, -1);
             event.SetString(_T("Failed to open ") + path);
 
             // Using wxPostEvent, we avoid multi-threaded memory violation.

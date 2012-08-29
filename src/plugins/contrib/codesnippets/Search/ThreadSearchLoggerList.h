@@ -23,7 +23,7 @@ class wxString;
 
 class ThreadSearch;
 class ThreadSearchView;
-class ThreadSearchEvent;
+class sThreadSearchEvent;
 
 class ThreadSearchLoggerList : public wxEvtHandler, public ThreadSearchLoggerBase
 {
@@ -41,10 +41,10 @@ public:
 	/** Called by ThreadSearchView when new settings are applied. */
 	virtual void Update();
 
-	/** Called by ThreadSearchView to process a ThreadSearchEvent
+	/** Called by ThreadSearchView to process a sThreadSearchEvent
 	  * sent by worker thread.
 	  */
-	virtual void OnThreadSearchEvent(const ThreadSearchEvent& event);
+	virtual void OnThreadSearchEvent(const sThreadSearchEvent& event);
 
 	/** Removes all items from logger. */
 	virtual void Clear();

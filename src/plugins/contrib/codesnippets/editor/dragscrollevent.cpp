@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      DragScrollEvent
+ * Name:      sDragScrollEvent
  *
  * Purpose:   This class implements the events sent by/for a
  *            DragScroll request to the
@@ -16,12 +16,12 @@
  #include "dragscroll.h"
  #include "version.h"
 
-IMPLEMENT_DYNAMIC_CLASS(DragScrollEvent, wxCommandEvent)
+IMPLEMENT_DYNAMIC_CLASS(sDragScrollEvent, wxCommandEvent)
 
-const wxEventType wxEVT_DRAGSCROLL_EVENT = wxNewEventType();
+const wxEventType wxEVT_S_DRAGSCROLL_EVENT = wxNewEventType();
 
 // ----------------------------------------------------------------------------
-DragScrollEvent::DragScrollEvent(wxEventType commandType, int id)
+sDragScrollEvent::sDragScrollEvent(wxEventType commandType, int id)
 // ----------------------------------------------------------------------------
 					 :wxCommandEvent(commandType, id)
 {
@@ -31,39 +31,39 @@ DragScrollEvent::DragScrollEvent(wxEventType commandType, int id)
     //-m_pWindow = 0;
     m_EventTypeLabel = _T("UNKOWN");
     if ( idDragScrollAddWindow == id)
-        m_EventTypeLabel = _T("EVT_DRAGSCROLL_ADD_WINDOW");
+        m_EventTypeLabel = _T("EVT_S_DRAGSCROLL_ADD_WINDOW");
     if ( idDragScrollRemoveWindow == id)
-        m_EventTypeLabel = _T("EVT_DRAGSCROLL_REMOVE_WINDOW");
+        m_EventTypeLabel = _T("EVT_S_DRAGSCROLL_REMOVE_WINDOW");
     if ( idDragScrollRescan == id)
-        m_EventTypeLabel = _T("EVT_DRAGSCROLL_RESCAN");
+        m_EventTypeLabel = _T("EVT_S_DRAGSCROLL_RESCAN");
     if ( idDragScrollReadConfig == id)
-        m_EventTypeLabel = _T("EVT_DRAGSCROLL_READ_CONFIG");
+        m_EventTypeLabel = _T("EVT_S_DRAGSCROLL_READ_CONFIG");
     if ( idDragScrollInvokeConfig == id)
-        m_EventTypeLabel = _T("EVT_DRAGSCROLL_INVOKE_CONFIG");
+        m_EventTypeLabel = _T("EVT_S_DRAGSCROLL_INVOKE_CONFIG");
 }
 // -- clone -------------------------------------------------------------------
-DragScrollEvent::DragScrollEvent( const DragScrollEvent& Event)
+sDragScrollEvent::sDragScrollEvent( const sDragScrollEvent& Event)
 // ----------------------------------------------------------------------------
 				  :wxCommandEvent(Event)
 				  //-,m_WindowID(0)
 				  //-,m_pWindow(0)
 {
-    // This is invoked by DragScrollEvent::Clone() from AddPendingEvent etc
+    // This is invoked by sDragScrollEvent::Clone() from AddPendingEvent etc
 	//-m_WindowID = Event.GetWindowID();
 	//-m_pWindow = Event.GetWindow();
 	m_EventTypeLabel = Event.GetEventTypeLabel();
 }
 // ----------------------------------------------------------------------------
-DragScrollEvent::~DragScrollEvent()
+sDragScrollEvent::~sDragScrollEvent()
 // ----------------------------------------------------------------------------
 {
     //dtor
 }
 // ----------------------------------------------------------------------------
-bool DragScrollEvent::PostDragScrollEvent(const cbPlugin* targetWin)
+bool sDragScrollEvent::PostDragScrollEvent(const cbPlugin* targetWin)
 // ----------------------------------------------------------------------------
 {
-    // Propagate DragScrollEvent to ThreadSearchFrame
+    // Propagate sDragScrollEvent to ThreadSearchFrame
 
     #if defined(LOGGING)
         //-int windowID = GetWindowID();
@@ -95,10 +95,10 @@ bool DragScrollEvent::PostDragScrollEvent(const cbPlugin* targetWin)
 
 }//PostDragScrollEvent
 // ----------------------------------------------------------------------------
-bool DragScrollEvent::ProcessDragScrollEvent(const cbPlugin* targetWin)
+bool sDragScrollEvent::ProcessDragScrollEvent(const cbPlugin* targetWin)
 // ----------------------------------------------------------------------------
 {
-    // Propagate DragScrollEvent
+    // Propagate sDragScrollEvent
 
     #if defined(LOGGING)
         //-int windowID = GetWindowID();

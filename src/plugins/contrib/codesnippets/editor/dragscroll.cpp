@@ -66,7 +66,7 @@ BEGIN_EVENT_TABLE(cbDragScroll, cbPlugin)
 	// End Configuration event
     EVT_UPDATE_UI(ID_DLG_DONE, cbDragScroll::OnDoConfigRequests)
     // DragScroll Event types
-    EVT_DRAGSCROLL_EVENT(wxID_ANY, cbDragScroll::OnDragScrollEvent_Dispatcher)
+    EVT_S_DRAGSCROLL_EVENT(wxID_ANY, cbDragScroll::OnDragScrollEvent_Dispatcher)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 //  Statics
@@ -1088,7 +1088,7 @@ void cbDragScroll::OnProjectClose(CodeBlocksEvent& /*event*/)
         return;
 
     // Issue a pending event so we rescan after other events have settled down.
-    DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+    sDragScrollEvent dsEvt(wxEVT_S_DRAGSCROLL_EVENT, idDragScrollRescan);
     dsEvt.SetEventObject( m_pCB_AppWindow);
     dsEvt.SetString( _T("") );
     this->AddPendingEvent(dsEvt);

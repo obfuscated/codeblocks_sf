@@ -19,21 +19,21 @@
 #include <wx/event.h>
 #include <wx/arrstr.h>
 
-class ThreadSearchEvent : public wxCommandEvent
+class sThreadSearchEvent : public wxCommandEvent
 {
 public:
 	/** Constructor. */
-	ThreadSearchEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
+	sThreadSearchEvent(wxEventType commandType = wxEVT_NULL, int id = 0);
 
 	/** Copy constructor. */
-	ThreadSearchEvent(const ThreadSearchEvent& event);
+	sThreadSearchEvent(const sThreadSearchEvent& event);
 
 	/** Destructor. */
-	~ThreadSearchEvent();
+	~sThreadSearchEvent();
 
-	virtual wxEvent *Clone() const {return new ThreadSearchEvent(*this);}
+	virtual wxEvent *Clone() const {return new sThreadSearchEvent(*this);}
 
-	DECLARE_DYNAMIC_CLASS(ThreadSearchEvent);
+	DECLARE_DYNAMIC_CLASS(sThreadSearchEvent);
 
 	wxArrayString GetLineTextArray() const {return m_LineTextArray;};   // Contains a series of string containing
 																		// line index (starting from 1), matching line
@@ -43,25 +43,25 @@ private:
 	wxArrayString m_LineTextArray;
 };
 
-typedef void (wxEvtHandler::*ThreadSearchEventFunction)(ThreadSearchEvent&);
+typedef void (wxEvtHandler::*sThreadSearchEventFunction)(sThreadSearchEvent&);
 
 BEGIN_DECLARE_EVENT_TYPES()
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH, wxID_ANY)
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH_ERROR, wxID_ANY)
-	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH_SHOWMSG, wxID_ANY)
+	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_S_THREAD_SEARCH, wxID_ANY)
+	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_S_THREAD_SEARCH_ERROR, wxID_ANY)
+	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_S_THREAD_SEARCH_SHOWMSG, wxID_ANY)
 END_DECLARE_EVENT_TYPES()
 
-#define EVT_THREAD_SEARCH(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_THREAD_SEARCH, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (ThreadSearchEventFunction) & fn,(wxObject *) NULL ),
+#define EVT_S_THREAD_SEARCH(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(wxEVT_S_THREAD_SEARCH, id, -1, \
+	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (sThreadSearchEventFunction) & fn,(wxObject *) NULL ),
 
-#define EVT_THREAD_SEARCH_ERROR(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_THREAD_SEARCH_ERROR, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (ThreadSearchEventFunction) & fn,(wxObject *) NULL ),
+#define EVT_S_THREAD_SEARCH_ERROR(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(wxEVT_S_THREAD_SEARCH_ERROR, id, -1, \
+	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (sThreadSearchEventFunction) & fn,(wxObject *) NULL ),
 
-#define EVT_THREAD_SEARCH_SHOWMSG(id, fn) \
-	DECLARE_EVENT_TABLE_ENTRY(wxEVT_THREAD_SEARCH_SHOWMSG, id, -1, \
-	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (ThreadSearchEventFunction) & fn,(wxObject *) NULL ),
+#define EVT_S_THREAD_SEARCH_SHOWMSG(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(wxEVT_S_THREAD_SEARCH_SHOWMSG, id, -1, \
+	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (sThreadSearchEventFunction) & fn,(wxObject *) NULL ),
 
 #endif // THREAD_SEARCH_EVENT_H
 

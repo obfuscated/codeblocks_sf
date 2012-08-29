@@ -212,7 +212,7 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wx
 	return success;
 }
 // ----------------------------------------------------------------------------
-void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
+void ThreadSearchLoggerList::OnThreadSearchEvent(const sThreadSearchEvent& event)
 // ----------------------------------------------------------------------------
 {
 	// A search event has been sent by the worker thread.
