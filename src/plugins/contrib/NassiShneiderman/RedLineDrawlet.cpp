@@ -14,7 +14,11 @@ RedLineDrawlet::~RedLineDrawlet()
 }
 bool RedLineDrawlet::Draw(wxDC &dc)
 {
+#if wxCHECK_VERSION(2, 9, 0)
+    wxRasterOperationMode old_lf = dc.GetLogicalFunction();
+#else
     int old_lf = dc.GetLogicalFunction();
+#endif
     dc.SetLogicalFunction(wxXOR);
 
     wxPen old_pen = dc.GetPen();
