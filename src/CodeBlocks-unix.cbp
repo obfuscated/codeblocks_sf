@@ -23,7 +23,7 @@
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/libtxml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -56,7 +56,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/libsquirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -67,7 +67,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/sqstdlib" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/libsqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
 				<Option type="2" />
@@ -79,7 +79,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/libsqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;" />
 				<Option type="2" />
@@ -91,7 +91,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -110,7 +110,7 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="wxpropgrid">
-				<Option output="devel/wxpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/libwxpropgrid" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -123,7 +123,7 @@
 				</Compiler>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel/codeblocks" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/libcodeblocks" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option external_deps="base/tinyxml/libtxml.a;sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;sdk/scripting/lib/libsqplus.a;devel/libwxscintilla_cb.a;" />
 				<Option type="3" />
@@ -232,7 +232,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/depslib" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/libdepslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
