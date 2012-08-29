@@ -1,8 +1,8 @@
 SUBDIRS = scripting tinyxml
 
 if PRECOMPILE_HEADERS
-BUILT_SOURCES = $(top_srcdir)/src/include/sdk.h.gch \
-		$(top_srcdir)/src/include/sdk_precomp.h.gch
+BUILT_SOURCES = $(top_builddir)/src/include/sdk.h.gch \
+		$(top_builddir)/src/include/sdk_precomp.h.gch
 else
 BUILT_SOURCES = 
 endif
@@ -158,16 +158,16 @@ ALLHEADERS = annoyingdialog.h \
 
 sdk_HEADERS = $(ALLHEADERS)
 
-$(top_srcdir)/src/include/sdk.h.gch: $(top_srcdir)/src/include/sdk_precomp.h.gch $(ALLHEADERS)
-	-rm -f $(top_srcdir)/src/include/sdk.h.gch
-	$(CXXCOMPILE) -o $(top_srcdir)/src/include/sdk.h.gch -xc++-header $(srcdir)/sdk.h
+$(top_builddir)/src/include/sdk.h.gch: $(top_builddir)/src/include/sdk_precomp.h.gch $(ALLHEADERS)
+	-rm -f $(top_builddir)/src/include/sdk.h.gch
+	$(CXXCOMPILE) -o $(top_builddir)/src/include/sdk.h.gch -xc++-header $(srcdir)/sdk.h
 
-$(top_srcdir)/src/include/sdk_precomp.h.gch: $(ALLHEADERS)
-	-rm -f $(top_srcdir)/src/include/sdk_precomp.h.gch
-	$(CXXCOMPILE) -o $(top_srcdir)/src/include/sdk_precomp.h.gch -xc++-header $(srcdir)/sdk_precomp.h
+$(top_builddir)/src/include/sdk_precomp.h.gch: $(ALLHEADERS)
+	-rm -f $(top_builddir)/src/include/sdk_precomp.h.gch
+	$(CXXCOMPILE) -o $(top_builddir)/src/include/sdk_precomp.h.gch -xc++-header $(srcdir)/sdk_precomp.h
 
 clean-local:
-	-rm -f $(top_srcdir)/src/include/sdk.h.gch
-	-rm -f $(top_srcdir)/src/include/sdk_precomp.h.gch
+	-rm -f $(top_builddir)/src/include/sdk.h.gch
+	-rm -f $(top_builddir)/src/include/sdk_precomp.h.gch
 
 EXTRA_DIST = autorevision.h
