@@ -55,13 +55,13 @@ void wxsLcdWindow::OnBuildCreatingCode()
             Codef(_T("%C(%W,%P,%S);\n"));
             Codef( _T( "%ASetNumberDigits( %d);\n"), NumberOfDigits);
             if( ColourLight.GetColour() != wxColour( 00, 255, 00))
-                Codef( _T( "%ASetLightColour( %s);\n"), s1.c_str());
+                Codef( _T( "%ASetLightColour( %s);\n"), s1.wx_str());
             if( ColourGray.GetColour() != wxColour( 00, 64, 00))
-                Codef( _T( "%ASetGrayColour( %s);\n"), s2.c_str());
+                Codef( _T( "%ASetGrayColour( %s);\n"), s2.wx_str());
             if( BackGround.GetColour() != wxColour( 0, 0, 0))
-                Codef( _T( "%ASetBackgroundColour( %s);\n"), s3.c_str());
+                Codef( _T( "%ASetBackgroundColour( %s);\n"), s3.wx_str());
             if( Content.Len() > 0)
-                Codef( _T( "%ASetValue( _T(\"%s\"));\n"), Content.c_str());
+                Codef( _T( "%ASetValue( _T(\"%s\"));\n"), Content.wx_str());
             break;
 
         default:

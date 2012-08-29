@@ -53,7 +53,7 @@ void wxsLed::OnBuildCreatingCode()
     {
         case wxsCPP:
             AddHeader(_T("<wx/led.h>"),GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,%s,%s,%P,%S);\n"), ss.c_str(), ss2.c_str());
+            Codef(_T("%C(%W,%I,%s,%s,%P,%S);\n"), ss.wx_str(), ss2.wx_str());
             if ( !GetBaseProps()->m_Enabled)
                 Codef(_T("%ADisable();\n"));
             break;

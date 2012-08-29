@@ -244,7 +244,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
         ss.Trim (false);
         if (ss[0] == '!') { continue; }
 
-        Codef (_ ("%AAddColumn(%t, %d);\n"), ss.c_str(), m_ColWidth);
+        Codef (_ ("%AAddColumn(%t, %d);\n"), ss.wx_str(), m_ColWidth);
         n += 1;
     };
 
@@ -277,7 +277,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // make our own root item
 
-    Codef (_ ("%s[0] = %AAddRoot(_(\"(root)\"));\n"), idname.c_str() );
+    Codef (_ ("%s[0] = %AAddRoot(_(\"(root)\"));\n"), idname.wx_str() );
     id[0] = 0;
 
 // and now each item in the tree data list
@@ -318,7 +318,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // make the base item
 
-        Codef (_ ("%s = %AAppendItem(%s, _(\"%s\"));\n"), ss.c_str(), pp.c_str(), tt.c_str() );
+        Codef (_ ("%s = %AAppendItem(%s, _(\"%s\"));\n"), ss.wx_str(), pp.wx_str(), tt.wx_str() );
 
 // now each of the sub-items
 
@@ -326,13 +326,13 @@ void wxsTreeListCtrl::BuildItemCode (void)
         {
             if (j >= m_ColCount) { break; }
             tt = items.Item (j);
-            Codef (_ ("%ASetItemText(%s, %d, %t);\n"), ss.c_str(), j, tt.c_str() );
+            Codef (_ ("%ASetItemText(%s, %d, %t);\n"), ss.wx_str(), j, tt.wx_str() );
         };
     };
 
 // show everything
 
-    Codef (_ ("%AExpandAll(%s[0]);\n"), idname.c_str() );
+    Codef (_ ("%AExpandAll(%s[0]);\n"), idname.wx_str() );
 
 // read-only or editable?
 

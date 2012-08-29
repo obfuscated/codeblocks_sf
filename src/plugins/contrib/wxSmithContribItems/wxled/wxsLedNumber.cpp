@@ -53,21 +53,14 @@ void wxsLedNumber::OnBuildCreatingCode()
     {
         case wxsCPP:
             AddHeader(_T("<wx/gizmos/ledctrl.h>"),GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,%P,%S,%d|wxFULL_REPAINT_ON_RESIZE %s);\n"), Align, (Faded ? _("| wxLED_DRAW_FADED") : _("")));
+            Codef( _T("%C(%W,%I,%P,%S,%d|wxFULL_REPAINT_ON_RESIZE %s);\n"), Align, (Faded ? "| wxLED_DRAW_FADED" : ""));
             Codef( _T( "%ASetMinSize( %S);\n"));
-            #if wxCHECK_VERSION(2, 9, 0)
-                if ( !FGCol.empty() )
-                    Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.wx_str());
-                if ( !BGCol.empty() )
-                    Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.wx_str());
-            #else
-                if ( !FGCol.empty() )
-                   Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.c_str());
-                if ( !BGCol.empty() )
-                    Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.c_str());
-            #endif
+            if ( !FGCol.empty() )
+                Codef( _T("%ASetForegroundColour(%s);\n"),FGCol.wx_str());
+            if ( !BGCol.empty() )
+                Codef( _T("%ASetBackgroundColour(%s);\n"),BGCol.wx_str());
             if( Content.Len() > 0)
-                Codef( _T( "%ASetValue( _T(\"%s\"));\n"), Content.c_str());
+                Codef( _T( "%ASetValue( _T(\"%s\"));\n"), Content.wx_str());
             break;
 
         default:

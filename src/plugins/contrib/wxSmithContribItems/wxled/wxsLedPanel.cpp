@@ -75,7 +75,7 @@ void wxsLedPanel::OnBuildCreatingCode()
     {
         case wxsCPP:
             AddHeader(_T("<wx/wxledpanel.h>"),GetInfo().ClassName);
-            Codef(_T("%C(%W,%I,wxSize( %d, %d),wxSize( %d, %d),%d);\n"), LedMatrixSize.X, LedMatrixSize.Y, LedMatrix.X, LedMatrix.Y, Space);
+            Codef( _T("%C(%W,%I,wxSize( %d, %d),wxSize( %d, %d),%d);\n"), LedMatrixSize.X, LedMatrixSize.Y, LedMatrix.X, LedMatrix.Y, Space);
             Codef( _T( "%ASetContentAlign( %d);\n"), ContentAlign);
             Codef( _T( "%ASetLEDColour( (wxLEDColour)%d);\n"), Colour);
             Codef( _T( "%AShowInvertet(%b);\n"), Invert);
@@ -90,7 +90,7 @@ void wxsLedPanel::OnBuildCreatingCode()
                 Codef( _T( "%ASetLetterSpace( %d);\n"), TextPlace);
                 if( Bold)
                     Codef( _T("%ASetFontType( wxLEDFont7x7);\n"));
-                Codef( _T( "%ASetText( _T(\"%s\"), %d);\n"), Text.c_str(), Align);
+                Codef( _T( "%ASetText( _T(\"%s\"), %d);\n"), Text.wx_str(), Align);
             }
             break;
 

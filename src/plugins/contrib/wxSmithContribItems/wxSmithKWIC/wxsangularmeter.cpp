@@ -420,15 +420,25 @@ bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager *Grid, wxPGId 
 //    if(Global)
 	if(Desc->id == id){
 
-#if wxCHECK_PROPGRID_VERSION(1, 3, 0)
+#if wxCHECK_VERSION(2,9,0)
+        wxVariant var = Grid->GetPropertyValue(id);
+        wxString sPropType = var.GetType();
+		if(sPropType.IsSameAs(wxT("wxColourPropertyValue"))){
+			wxColourPropertyValue pcolval;
+			pcolval << var;
+			Desc->colour = pcolval.m_colour;
+		}
+#else
+    #if wxCHECK_PROPGRID_VERSION(1, 3, 0)
 		wxString sPropType = Grid->GetPropertyValueType(id);
 		if(sPropType.IsSameAs(wxT("wxColourPropertyValue"))){
-#else
+    #else
 		if(Grid->IsPropertyValueType(id, CLASSINFO(wxColourPropertyValue))){
-#endif
+    #endif
 			wxColourPropertyValue* pcolval = wxDynamicCast(Grid->GetPropertyValueAsWxObjectPtr(id), wxColourPropertyValue);
 			Desc->colour = pcolval->m_colour;
 		}
+#endif
         Changed = true;
     }
 

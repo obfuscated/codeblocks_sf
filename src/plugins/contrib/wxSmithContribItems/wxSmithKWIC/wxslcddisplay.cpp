@@ -95,11 +95,7 @@ void wxsLCDDisplay::OnBuildCreatingCode()
 			if (m_iNumDigits && m_iNumDigits != 6){
 				Codef(_T("%ASetNumberDigits(%d);\n"), m_iNumDigits);
 			}
-			#if wxCHECK_VERSION(2, 9, 0)
-			if (!m_sValue.IsEmpty()) Codef(_T("%ASetValue(wxT(\"%s\");\n")), m_sValue.wx_str());
-			#else
-			if (!m_sValue.IsEmpty()) Codef(_T("%ASetValue(wxT(\"%s\"));\n"), m_sValue.c_str());
-			#endif
+			if (!m_sValue.IsEmpty()) Codef(_T("%ASetValue(wxT(\"%s\");\n"), m_sValue.wx_str());
 
             BuildSetupWindowCode();
             break;
