@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="FileManager Plugin  wx2.9.x" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel29\share\CodeBlocks\plugins\FileManager" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\FileManager" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="..\..\..\devel29\codeblocks.exe" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="..\..\..\devel29" />
+					<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="..\..\..\include\mozilla_chardet" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel29\share\codeblocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc" />
+		</ExtraCommands>
+		<Unit filename="FileExplorer.cpp" />
+		<Unit filename="FileExplorer.h" />
+		<Unit filename="FileExplorerSettings.cpp" />
+		<Unit filename="FileExplorerSettings.h" />
+		<Unit filename="FileExplorerUpdater.cpp" />
+		<Unit filename="FileExplorerUpdater.h" />
+		<Unit filename="FileManager.cpp" />
+		<Unit filename="FileManager.h" />
+		<Unit filename="directorymonitor.cpp" />
+		<Unit filename="directorymonitor.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="se_globals.cpp" />
+		<Unit filename="se_globals.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

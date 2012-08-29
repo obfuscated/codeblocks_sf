@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DevPak  wx2.9.x" />
+		<Option pch_mode="0" />
+		<Option default_target="default" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="libbz2">
+				<Option output="bzip2\libbz2.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\devpak_plugin" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-mthreads" />
+				</Compiler>
+				<Linker>
+					<Add option="-mthreads" />
+				</Linker>
+			</Target>
+			<Target title="default">
+				<Option output="..\..\..\devel29\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\devpak_plugin" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="..\..\..\devel29\codeblocks.exe" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-mthreads" />
+					<Add option="-fexceptions" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="..\..\..\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-mthreads" />
+					<Add library="bz2" />
+					<Add directory="..\..\..\devel29" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip ..\..\..\devel29\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="libbz2;default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add directory="bzip2" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29)\contrib\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX29.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="bzip2" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="bzip2\blocksort.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\bzlib.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\bzlib.h">
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\bzlib_private.h">
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\compress.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\crctable.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\decompress.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\huffman.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="bzip2\randtable.c">
+			<Option compilerVar="CC" />
+			<Option target="libbz2" />
+		</Unit>
+		<Unit filename="cbiniparser.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="cbiniparser.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="cbnetwork.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="cbnetwork.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="conf.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="conf.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="crc32.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="crc32.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="devpakinstaller.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="devpakinstaller.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="devpakupdater.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="devpakupdater.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="mytar.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="mytar.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="update.xrc">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="updatedlg.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="updatedlg.h">
+			<Option target="default" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxWidgets - Contrib Items  wx2.9.x" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxFlatNoteBook">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxflatnotebook" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxFlatNotebook" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGDLL_FNB" />
+					<Add directory="wxFlatNotebook\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxChartCtrl">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxchartctrl" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxChartCtrl" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGDLL_CHART" />
+					<Add directory="wxchart\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxCustomButton">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxcustombutton" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxthings" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGDLL_THINGS" />
+					<Add directory="wxthings\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxImagePanel">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wximagepanel" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxImagePanel" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="wxImagePanel\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--export-all-symbols" />
+				</Linker>
+			</Target>
+			<Target title="wxSpeedButton">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxspeedbutton" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxSpeedButton" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Linker>
+					<Add option="-Wl,--export-all-symbols" />
+				</Linker>
+			</Target>
+			<Target title="wxKWIC">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxkwic" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\KWIC" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="KWIC\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--export-all-symbols" />
+				</Linker>
+			</Target>
+			<Target title="wxTreeList">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxtreelist" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxtreelist" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="wxTreeList\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxLED">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel29\wxled" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\wxContribItems\wxled" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="wxled\ledpanel\include" />
+					<Add directory="wxled\lcdWindow\include" />
+					<Add directory="wxled\led\include" />
+					<Add directory="wxled\gizmosled\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--export-all-symbols" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxTreeList;wxLED;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXMAKINGDLL" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="wxFlatNotebook\include" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="..\..\..\devel29" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="KWIC\include\wx\KWIC\AngularMeter.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\AngularRegulator.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\BmpCheckBox.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\BmpSwitcher.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\LCDClock.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\LCDWindow.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\LinearMeter.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\LinearRegulator.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\KWIC\TimeAlarm.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxangularmeterhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxangularregulatorhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxlcdclockhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxlcddisplayhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxlinearmeterhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\include\wx\xrc\xh_kwxlinearregulatorhandler.h">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\AngularMeter.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\AngularRegulator.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\BmpCheckBox.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\BmpSwitcher.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\LCDClock.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\LCDWindow.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\LinearMeter.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\LinearRegulator.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\KWIC\TimeAlarm.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxangularmeterhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxangularregulatorhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxlcdclockhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxlcddisplayhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxlinearmeterhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="KWIC\src\wx\xrc\xh_kwxlinearregulatorhandler.cpp">
+			<Option target="wxKWIC" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\fnb_customize_dlg.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\fnb_resources.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\fnb_singleton.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\fnb_smart_ptr.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\popup_dlg.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\renderer.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\wxFNBDropTarget.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\wxFlatNotebook.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\wxFlatNotebookSDK.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\include\wx\wxFlatNotebook\xh_fnb.h">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\fnb_customize_dlg.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\fnb_resources.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\popup_dlg.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\renderer.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\wxFlatNotebook.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxFlatNotebook\src\wxFlatNotebook\xh_fnb.cpp">
+			<Option target="wxFlatNoteBook" />
+		</Unit>
+		<Unit filename="wxImagePanel\include\wx\wxImagePanel.h">
+			<Option target="wxImagePanel" />
+		</Unit>
+		<Unit filename="wxImagePanel\src\wxImagePanel.cpp">
+			<Option target="wxImagePanel" />
+		</Unit>
+		<Unit filename="wxSpeedButton\wxSpeedButton.cpp">
+			<Option target="wxSpeedButton" />
+		</Unit>
+		<Unit filename="wxSpeedButton\wxSpeedButton.h">
+			<Option target="wxSpeedButton" />
+		</Unit>
+		<Unit filename="wxTreeList\include\wx\treelistctrl.h">
+			<Option target="wxTreeList" />
+		</Unit>
+		<Unit filename="wxTreeList\src\treelistctrl.cpp">
+			<Option target="wxTreeList" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\axis.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\bar3dchartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\barchartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chart.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartart\chart_zin.bmp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartart\chart_zin.xpm">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartart\chart_zot.bmp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartart\chart_zot.xpm">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartcolors.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartctrl.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartdef.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartpointstypes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartsizes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\charttypes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\chartwindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\label.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\legend.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\legendwindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\pie3dchartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\piechartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\points.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\xaxis.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\xaxiswindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\yaxis.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\include\wx\yaxiswindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\axis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\bar3dchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\barchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\chart.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\chartcolors.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\chartctrl.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\chartsizes.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\chartwindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\label.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\legend.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\legendwindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\pie3dchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\piechartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\points.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\xaxis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\xaxiswindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\yaxis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\src\yaxiswindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxled\gizmosled\include\wx\gizmos\gizmos.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\gizmosled\include\wx\gizmos\ledctrl.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\gizmosled\src\ledctrl.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\lcdWindow\include\wx\lcdwindow.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\lcdWindow\src\lcdwindow.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\led\include\wx\led.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\led\src\led.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\include\wx\advancedmatrixobject.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\include\wx\matrixobject.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\include\wx\wxledfont.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\include\wx\wxledpanel.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\advancedmatrixobject.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\font75.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\font77.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\matrixobject.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\wxledfont.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled\ledpanel\src\wxledpanel.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxthings\include\wx\things\toggle.h">
+			<Option target="wxCustomButton" />
+		</Unit>
+		<Unit filename="wxthings\src\toggle.cpp">
+			<Option target="wxCustomButton" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

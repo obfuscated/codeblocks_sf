@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="CodeBlocks Workspace (Unix)">
-		<Project filename="CodeBlocks-unix.cbp" active="1" />
+	<Workspace title="CodeBlocks Workspace wx2.8.x (Unix)">
+		<Project filename="CodeBlocks-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
 		<Project filename="plugins/codecompletion/cc_test-unix.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />

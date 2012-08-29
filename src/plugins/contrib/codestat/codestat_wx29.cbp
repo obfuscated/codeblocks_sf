@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Code Stat  wx2.9.x" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel29\share\CodeBlocks\plugins\codestat.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\codestat" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="..\..\..\devel29\codeblocks.exe" />
+				<Option projectCompilerOptionsRelation="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="$(#WX29.INCLUDE)" />
+			<Add directory="$(#WX29)\contrib\include" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX29.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="..\..\..\devel29" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel29\share\codeblocks\codestat.zip resources\manifest.xml resources\*.xrc" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="codestat.cpp" />
+		<Unit filename="codestat.h" />
+		<Unit filename="codestatconfig.cpp" />
+		<Unit filename="codestatconfig.h" />
+		<Unit filename="codestatexec.cpp" />
+		<Unit filename="codestatexec.h" />
+		<Unit filename="language_def.h" />
+		<Unit filename="resources\config_dialog.xrc" />
+		<Unit filename="resources\main_dialog.xrc" />
+		<Unit filename="resources\manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

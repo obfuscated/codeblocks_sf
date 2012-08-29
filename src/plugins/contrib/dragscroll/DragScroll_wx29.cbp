@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DragScroll  wx2.9.x" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel29\share\CodeBlocks\plugins\DragScroll.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\dragscroll" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="..\..\..\devel29\codeblocks.exe" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29)\contrib\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\src" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+		</Compiler>
+		<Linker>
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="..\..\..\devel29" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel29\share\CodeBlocks\DragScroll.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="dragscroll.cpp" />
+		<Unit filename="dragscroll.h" />
+		<Unit filename="dragscrollcfg.cpp" />
+		<Unit filename="dragscrollcfg.h" />
+		<Unit filename="dragscrollevent.cpp" />
+		<Unit filename="dragscrollevent.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

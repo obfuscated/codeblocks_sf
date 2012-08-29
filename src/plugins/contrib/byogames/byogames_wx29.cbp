@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Games  wx2.9.x" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel29\share\CodeBlocks\plugins\byogames.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs29\plugins\contrib\byogames" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="..\..\..\devel29\codeblocks.exe" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29)\contrib\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="..\..\..\include\tinyxml" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX29.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="..\..\..\devel29" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel29\share\CodeBlocks\byogames.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="byocbtris.cpp" />
+		<Unit filename="byocbtris.h" />
+		<Unit filename="byoconf.cpp" />
+		<Unit filename="byoconf.h" />
+		<Unit filename="byogame.cpp" />
+		<Unit filename="byogame.h" />
+		<Unit filename="byogamebase.cpp" />
+		<Unit filename="byogamebase.h" />
+		<Unit filename="byogames.cpp" />
+		<Unit filename="byogames.h" />
+		<Unit filename="byogameselect.cpp" />
+		<Unit filename="byogameselect.h" />
+		<Unit filename="byosnake.cpp" />
+		<Unit filename="byosnake.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxScrollingDialog wxs="wxsmith/byoGameSelect.wxs" src="byogameselect.cpp" hdr="byogameselect.h" name="byoGameSelect" language="CPP" />
+					<wxPanel wxs="wxsmith/byoConf.wxs" src="byoconf.cpp" hdr="byoconf.h" name="byoConf" language="CPP" />
+				</resources>
+			</wxsmith>
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxSmithAui wx2.9.x - wxAUI" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Unix">
+				<Option platforms="Unix;Mac;" />
+				<Option output="../../../devel29/share/codeblocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs29/plugins/contrib/wxSmithAui" />
+				<Option external_deps="../../../devel29/libwxsmithlib.so;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni" />
+				<Option host_application="../../../devel29/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-Ulinux" />
+					<Add option="-Uunix" />
+					<Add option="`$(WX_CONFIG) --cflags`" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fexceptions" />
+					<Add option="-fPIC" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs std, propgrid`" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel29/share/codeblocks/wxSmithAui.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Windows">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel29/share/codeblocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs29/plugins/contrib/wxSmithAui" />
+				<Option external_deps="../../../devel29/wxsmithlib.dll;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option host_application="../../../devel29/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add directory="$(#WX29.include)" />
+					<Add directory="$(#WX29.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--export-all-symbols" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="$(#WX29.lib)/gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel29\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+				<Environment>
+					<Variable name="WX_CFG" value="" />
+					<Variable name="WX_SUFFIX" value="u" />
+                    <Variable name="WX_VERSION" value="29" />
+				</Environment>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=2.9" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Unix;Windows;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-g" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../wxSmith" />
+		</Compiler>
+		<Linker>
+			<Add library="codeblocks" />
+			<Add library="wxsmithlib" />
+			<Add directory="../../../devel29" />
+		</Linker>
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxAuiManager/wxSmithAuiManager.h" />
+		<Unit filename="wxAuiManager/wxsAuiManager.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiManager.h" />
+		<Unit filename="wxAuiManager/wxsAuiManagerParentQP.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiManagerParentQP.h" />
+		<Unit filename="wxAuiManager/wxsAuiPaneInfoProperty.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiPaneInfoProperty.h" />
+		<Unit filename="wxAuiNotebook/wxSmithAuiNotebook.cpp" />
+		<Unit filename="wxAuiNotebook/wxSmithAuiNotebook.h" />
+		<Unit filename="wxAuiNotebook/wxsAuiNotebook.cpp" />
+		<Unit filename="wxAuiNotebook/wxsAuiNotebook.h" />
+		<Unit filename="wxAuiToolBar/wxSmithAuiToolBar.cpp" />
+		<Unit filename="wxAuiToolBar/wxSmithAuiToolBar.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBar.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBar.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItem.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItem.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItemBase.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItemBase.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarLabel.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarLabel.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSeparator.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSeparator.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSpacer.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSpacer.h" />
+		<Unit filename="wxSmithAui.cpp" />
+		<Unit filename="wxSmithAui.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxPanel wxs="wxsmith/wxsAuiNotebookParentQP.wxs" src="wxAuiNotebook/wxsAuiNotebook.cpp" hdr="wxAuiNotebook/wxsAuiNotebook.cpp" fwddecl="0" i18n="1" name="wxsAuiNotebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsAuiManagerParentQP.wxs" src="wxAuiManager/wxsAuiManagerParentQP.cpp" hdr="wxAuiManager/wxsAuiManagerParentQP.h" fwddecl="0" i18n="1" name="wxsAuiManagerParentQP" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

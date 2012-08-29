@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CC Test  wx2.9.x" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="cc_test">
+				<Option output="..\..\devel29\cc_test" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\.objs29\plugins\codecompletion\cc_test" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="29" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="cc_test;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCC_PARSER_TEST" />
+			<Add directory="." />
+			<Add directory="cc_test" />
+			<Add directory="parser" />
+			<Add directory="..\..\include" />
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll\mswu" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX29.include)" />
+			<Add directory="$(#WX29.lib)\gcc_dll\mswu" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="$(#WX29.lib)\gcc_dll" />
+			<Add directory="..\..\devel29" />
+		</Linker>
+		<Unit filename="cc_test\app.cpp" />
+		<Unit filename="cc_test\cc_test.cpp" />
+		<Unit filename="cc_test\cc_test.h" />
+		<Unit filename="cc_test\frame.cpp" />
+		<Unit filename="cc_test\frame.h" />
+		<Unit filename="cc_test\nativeparser_test.cpp" />
+		<Unit filename="cc_test\nativeparser_test.h" />
+		<Unit filename="cc_test\parserdummy.cpp" />
+		<Unit filename="cc_test\resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="cc_test\test.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="nativeparser_base.cpp" />
+		<Unit filename="nativeparser_base.h" />
+		<Unit filename="parser\ccdebuginfo.cpp" />
+		<Unit filename="parser\ccdebuginfo.h" />
+		<Unit filename="parser\cclogger.cpp" />
+		<Unit filename="parser\cclogger.h" />
+		<Unit filename="parser\expression.cpp" />
+		<Unit filename="parser\expression.h" />
+		<Unit filename="parser\parser.h" />
+		<Unit filename="parser\parserthread.cpp" />
+		<Unit filename="parser\parserthread.h" />
+		<Unit filename="parser\searchtree.cpp" />
+		<Unit filename="parser\searchtree.h" />
+		<Unit filename="parser\token.cpp" />
+		<Unit filename="parser\token.h" />
+		<Unit filename="parser\tokenizer.cpp" />
+		<Unit filename="parser\tokenizer.h" />
+		<Unit filename="parser\tokenstree.cpp" />
+		<Unit filename="parser\tokenstree.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="cc_test\app.cpp" main="-- None --" init_handlers="never" language="CPP" />
+				<resources>
+					<wxFrame wxs="wxsmith/Frame.wxs" src="cc_test\frame.cpp" hdr="cc_test\frame.h" fwddecl="0" i18n="1" name="Frame" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
