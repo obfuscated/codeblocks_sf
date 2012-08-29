@@ -113,7 +113,7 @@ wxPdfDCImpl::wxPdfDCImpl(wxPdfDC* owner, const wxPrintData& data)
   m_ok = true;
 }
 
-wxPdfDCImpl::wxPdfDCImpl(wxPdfDC* owner, const wxString& file, int w, int h)
+wxPdfDCImpl::wxPdfDCImpl(wxPdfDC* owner, const wxString& file, int /* w */, int /* h */)
   : wxDCImpl(owner)
 {
   Init();
