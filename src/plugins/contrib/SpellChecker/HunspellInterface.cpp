@@ -195,7 +195,7 @@ wxArrayString HunspellInterface::GetSuggestions(const wxString& strMisspelledWor
     char **wlst;
 
     wxCharBuffer misspelledWordCharBuffer = ConvertToUnicode(strMisspelledWord);
-    if ( misspelledWordCharBuffer != NULL)
+    if ( misspelledWordCharBuffer.data() != NULL)
     {
         int ns = m_pHunspell->suggest(&wlst, misspelledWordCharBuffer);
         for (int i=0; i < ns; i++)
@@ -216,7 +216,7 @@ bool HunspellInterface::IsWordInDictionary(const wxString& strWord)
     return false;
 
   wxCharBuffer wordCharBuffer = ConvertToUnicode(strWord);
-  if ( wordCharBuffer == NULL )
+  if ( wordCharBuffer.data() == NULL )
     return false;
   return ((m_pHunspell->spell(wordCharBuffer) == 1) || (m_PersonalDictionary.IsWordInDictionary(strWord)));
 }

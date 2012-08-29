@@ -89,7 +89,7 @@ void wxSpellCheckEngineInterface::DefineContext(const wxString& strText, long nO
     }
 
     bool bTrimEnd = false;
-    long nEndPosition = wxStringBase::npos;
+    long nEndPosition = wxString::npos;
     if ((unsigned)(nStartPosition + nLength + 50) < strLocalText.Length())
     {
       nEndPosition = (nLength + 50);
@@ -98,7 +98,7 @@ void wxSpellCheckEngineInterface::DefineContext(const wxString& strText, long nO
 
 	  nEndPosition += nOffset - nStartPosition;  // Without this, we're only grabbing the number of characters for starting at the misspelled word
 	  wxString strContext;
-  	if ((unsigned)nEndPosition == wxStringBase::npos)
+  	if ((unsigned)nEndPosition == wxString::npos)
 	    strContext = strLocalText.Mid(nStartPosition);
   	else
 	    strContext = strLocalText.Mid(nStartPosition, nEndPosition);
