@@ -49,13 +49,21 @@
 // icons
 // ----------------------------------------------------------------------------
 
+#if !wxCHECK_VERSION(2,9,0)
 BEGIN_EVENT_TABLE(GenericMessageDialog, wxScrollingDialog)
+#else
+BEGIN_EVENT_TABLE(GenericMessageDialog, wxMessageDialogBase)
+#endif
         EVT_BUTTON(wxID_YES, GenericMessageDialog::OnYes)
         EVT_BUTTON(wxID_NO, GenericMessageDialog::OnNo)
         EVT_BUTTON(wxID_CANCEL, GenericMessageDialog::OnCancel)
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(GenericMessageDialog, wxScrollingDialog)
+#if !wxCHECK_VERSION(2,9,0)
+IMPLEMENT_CLASS(GenericMessageDialog, wxScrollingDialog )
+#else
+IMPLEMENT_CLASS(GenericMessageDialog, wxMessageDialogBase )
+#endif
 
 // ----------------------------------------------------------------------------
 GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
@@ -64,9 +72,13 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
                                                 long style,
                                                 const wxPoint& pos)
 // ----------------------------------------------------------------------------
+#if !wxCHECK_VERSION(2,9,0)
     : wxScrollingDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
 {
-
+#else
+{
+    SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
+#endif
     SetMessageDialogStyle(style);
 
     bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);

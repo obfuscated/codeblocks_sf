@@ -38,12 +38,23 @@
 //-extern WXDLLEXPORT_DATA(const wxChar) wxMessageBoxCaptionStr[];
 
 // ----------------------------------------------------------------------------
-class GenericMessageDialog: public wxScrollingDialog, public wxMessageDialogBase
+class GenericMessageDialog:
+#if !wxCHECK_VERSION(2,9,0)
+    public wxScrollingDialog,
+#endif
+    public wxMessageDialogBase
 // ----------------------------------------------------------------------------
 {
 DECLARE_DYNAMIC_CLASS(GenericMessageDialog)
 
 public:
+#if wxCHECK_VERSION(2,9,0)
+    //backported from wxDialogBase in wx2.8
+    enum
+    {
+        ButtonSizerFlags = wxOK|wxCANCEL|wxYES|wxNO|wxHELP|wxNO_DEFAULT
+    };
+#endif
     GenericMessageDialog(wxWindow *parent, const wxString& message,
         const wxString& caption = wxMessageBoxCaptionStr,
         long style = wxOK|wxCENTRE, const wxPoint& pos = wxDefaultPosition);

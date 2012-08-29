@@ -2246,7 +2246,9 @@ void CodeSnippetsTreeCtrl::SaveDataAndCloseEditorFrame(EditSnippetFrame* pEdFram
         // else an edit frame is done, save any changed data
         int retcode = aEdFrameRetcodes.Item(i);
         EditSnippetFrame* pEdFrame = (EditSnippetFrame*)m_aEdFramePtrs.Item(i);
+#if !wxCHECK_VERSION(2,9,0)
         pEdFrame->MakeModal(false);
+#endif
 		if (retcode == wxID_OK)
 		{
             // If XML text snippet, just save back to XML file

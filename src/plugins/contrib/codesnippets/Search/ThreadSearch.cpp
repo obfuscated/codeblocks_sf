@@ -43,7 +43,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
+#if !wxCHECK_VERSION(2,9,0)
+    // SashSize can not be changed in wx>=2.9
     int m_nSashSize = 2;
+#endif
     // -- next stmt commented because we're only emulating a plugin --
     //-PluginRegistrant<ThreadSearch> reg(_T("ThreadSearch"));
 }
@@ -228,7 +231,10 @@ void ThreadSearch::OnAttach()
     m_pMainPanel->m_pSplitterWindow->SetSashGravity(0.3);
     // The sash size gets set initially, but when the user moves it, it gets set
     // to one line only. I've found no solution.
+#if !wxCHECK_VERSION(2,9,0)
+    // deprected in wx2.9 and does nothing atall (at least there)
     m_pMainPanel->m_pSplitterWindow->SetSashSize(m_nSashSize);
+#endif
         ////// nogo on the sash size adjustment
         ////m_pMainPanel->m_pSplitterWindow->Connect(wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,
         ////            (wxObjectEventFunction)(wxEventFunction)(wxSplitterEventFunction)
@@ -1133,7 +1139,10 @@ void ThreadSearch::OnIdle(wxIdleEvent& event)
     if ( m_OnReleased ) return;
     if (m_bSashPositionChanged)
     {
+#if !wxCHECK_VERSION(2,9,0)
+    // deprected in wx2.9 and does nothing atall (at least there)
         m_pMainPanel->m_pSplitterWindow->SetSashSize(m_nSashSize);
+#endif
         m_pMainPanel->m_pSplitterWindow->Refresh();
         m_bSashPositionChanged = false;
         #if defined(LOGGING)
