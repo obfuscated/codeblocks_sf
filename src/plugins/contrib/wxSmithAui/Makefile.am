@@ -1,7 +1,7 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
+		$(WXPROPGRID_INCLUDE) \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith \
 		-I$(srcdir)/wxAuiManager \
 		-I$(srcdir)/wxAuiNotebook \

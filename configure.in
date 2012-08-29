@@ -218,9 +218,15 @@ AM_CONDITIONAL([HAVE_WX29], [test $wx_config_major_version -gt 2 || test $wx_con
 if test "x$HAVE_WX29_TRUE" = "x" ; then
     AC_MSG_RESULT(yes (version $WX_VERSION))
     AC_MSG_NOTICE([(Re)setting libs for wxWidgets $WX_VERSION])
-    WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid`
+    WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,aui,propgrid,richtext`
+    WXPROPGRID_DIR=
+    WXPROPGRID_LIB=
+    WXPROPGRID_INCLUDE=
 else
     AC_MSG_RESULT(no)
+    WXPROPGRID_DIR=wxpropgrid
+    WXPROPGRID_LIB=wxpropgrid/libwxpropgrid.la
+    WXPROPGRID_INCLUDE=-I\$\(top_srcdir\)/src/sdk/wxpropgrid/include
 fi
 
 AC_SUBST(WX_GTK2_CFLAGS)
@@ -231,6 +237,9 @@ AC_SUBST(CB_HUNSPELL_CFLAGS)
 AC_SUBST(CB_HUNSPELL_LIBS)
 AC_SUBST(WX_X11_CFLAGS)
 AC_SUBST(WX_X11_LIBS)
+AC_SUBST(WXPROPGRID_DIR)
+AC_SUBST(WXPROPGRID_LIB)
+AC_SUBST(WXPROPGRID_INCLUDE)
 
 AC_SUBST(POSTLINK_COMMAND)
 AC_SUBST(MACSETFILE)
