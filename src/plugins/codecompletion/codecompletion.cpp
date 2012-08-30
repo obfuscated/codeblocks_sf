@@ -2771,9 +2771,9 @@ int CodeCompletion::DoAllMethodsImpl()
     TokenFilesSet result;
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
-        TokenFilesSet result;
-        tree->GetFileMatches(paths[i], result, true, true);
-        for (TokenFilesSet::iterator it = result.begin(); it != result.end(); ++it)
+        TokenFilesSet result_file;
+        tree->GetFileMatches(paths[i], result_file, true, true);
+        for (TokenFilesSet::const_iterator it = result_file.begin(); it != result_file.end(); ++it)
             result.insert(*it);
     }
 
@@ -2781,7 +2781,7 @@ int CodeCompletion::DoAllMethodsImpl()
     {
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
-        cbMessageBox(_("Can not find any file in parser's database."), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("Could not find any file match in parser's database."), _("Warning"), wxICON_WARNING);
         return -5;
     }
 
