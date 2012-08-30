@@ -632,6 +632,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 
     wxArrayString saveWhat;
     saveWhat.Add(_("Dump the tokens tree"));
+    saveWhat.Add(_("Dump the serialised tokens tree"));
     saveWhat.Add(_("Dump the file list"));
     saveWhat.Add(_("Dump the list of include directories"));
     saveWhat.Add(_("Dump the token list of files"));
@@ -660,6 +661,19 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
             break;
         case 1:
             {
+                wxString tt_ser;
+                { // life time of wxWindowDisabler/wxBusyInfo
+                    wxWindowDisabler disableAll;
+                    wxBusyInfo running(_("Serialising tokens tree... please wait (this may take several seconds)..."),
+                                       Manager::Get()->GetAppWindow());
+
+                    tt_ser = tree->m_Tree.Serialize();
+                }
+                CCDebugInfoHelper::SaveCCDebugInfo(_("Save serialised tokens tree"), tt_ser);
+            }
+            break;
+        case 2:
+            {
                 wxString files;
                 for (size_t i = 0; i < tree->m_FilenamesMap.size(); ++i)
                 {
@@ -671,7 +685,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                 CCDebugInfoHelper::SaveCCDebugInfo(_("Save file list"), files);
             }
             break;
-        case 2:
+        case 3:
             {
                 wxString dirs;
                 const wxArrayString& dirsArray = m_Parser->GetIncludeDirs();
@@ -684,7 +698,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                 CCDebugInfoHelper::SaveCCDebugInfo(_("Save list of include directories"), dirs);
             }
             break;
-        case 3:
+        case 4:
             {
                 wxString fileTokens;
                 {
