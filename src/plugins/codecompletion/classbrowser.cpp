@@ -203,6 +203,7 @@ void ClassBrowser::UpdateSash()
 {
     int pos = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadInt(_T("/splitter_pos"), 250);
     XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetSashPosition(pos, false);
+    XRCCTRL(*this, "splitterWin", wxSplitterWindow)->Refresh();
 }
 
 void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
@@ -361,7 +362,7 @@ bool ClassBrowser::FoundMatch(const wxString& search, wxTreeCtrl* tree, const wx
     ClassTreeData* ctd = static_cast<ClassTreeData*>(tree->GetItemData(item));
     if (ctd && ctd->GetToken())
     {
-        Token* token = ctd->GetToken();
+        const Token* token = ctd->GetToken();
         if (   token->m_Name.Lower().StartsWith(search)
             || token->m_Name.Lower().StartsWith(_T('~') + search) ) // C++ destructor
         {
@@ -693,7 +694,6 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     TokensTree* tree = m_Parser->GetTokensTree();
 
     TokenIdxSet result;
-    Token* token = 0;
     size_t count = 0;
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
@@ -703,6 +703,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
     }
 
+    const Token* token = 0;
     if (count == 0)
     {
         cbMessageBox(_("No matches were found: ") + search,
@@ -725,7 +726,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         {
             CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-            Token* sel = tree->at(*it);
+            const Token* sel = tree->at(*it);
             if (sel)
             {
                 selections.Add(sel->DisplayName());

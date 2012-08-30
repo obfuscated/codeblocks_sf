@@ -67,13 +67,13 @@ protected:
 
 private:
     // Called from AddChildrenOf(), AddAncestorsOf(), AddDescendantsOf():
-    bool AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens,
+    bool AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet* tokens,
                   short int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
 
     // Called from RemoveInvalidNodes(), AddNodes(), CreateSpecialFolder():
-    bool TokenMatchesFilter(Token* token, bool locked = false);
+    bool TokenMatchesFilter(const Token* token, bool locked = false);
     // Called from AddNodes():
-    bool TokenContainsChildrenOfKind(Token* token, int kind);
+    bool TokenContainsChildrenOfKind(const Token* token, int kind);
 
     // Called from BuildTree():
     void SaveExpandedItems(CCTreeCtrl* tree, wxTreeItemId parent, int level);

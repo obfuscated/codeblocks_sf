@@ -122,7 +122,7 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         for (size_t i = 0; i < paths.GetCount(); ++i)
         {
             tree->GetFileMatches(paths[i], result, true, true);
-            for (TokenFilesSet::iterator it = result.begin(); it != result.end(); ++it)
+            for (TokenFilesSet::const_iterator it = result.begin(); it != result.end(); ++it)
                 m_CurrentFileSet.insert(*it);
         }
 
@@ -134,13 +134,14 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
         cbProject* prj = static_cast<cbProject*>(m_UserData);
-        for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator it = prj->GetFilesList().begin();
+                                       it != prj->GetFilesList().end(); ++it)
         {
-            ProjectFile* curfile = *it;
-            if (!curfile)
+            ProjectFile* curFile = *it;
+            if (!curFile)
                 continue;
 
-            const size_t fileIdx = tree->GetFileIndex(curfile->file.GetFullPath());
+            const size_t fileIdx = tree->GetFileIndex(curFile->file.GetFullPath());
             if (fileIdx)
                 m_CurrentFileSet.insert(fileIdx);
         }
@@ -569,7 +570,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
             removeCurrent = true;
         else if (data && data->m_Token)
         {
-            Token* token = nullptr;
+            const Token* token = nullptr;
             {
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
@@ -661,7 +662,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
 
     for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
     {
-        Token* token = tt->at(*it);
+        const Token* token = tt->at(*it);
         if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
         {
             if      (!hasGF && token->m_TokenKind == tkFunction)
@@ -746,9 +747,9 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
     if (CBBT_SANITY_CHECK)
         return false;
 
-    Token* parentToken = 0;
+    const Token* parentToken = 0;
     bool parentTokenError = false;
-    TokenIdxSet* tokens = 0;
+    const TokenIdxSet* tokens = 0;
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
@@ -768,14 +769,15 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
             TRACE(_T("Token not found?!?"));
             parentTokenError = true;
         }
-        if (!parentTokenError) tokens = &parentToken->m_Children;
+        if (!parentTokenError)
+            tokens = &parentToken->m_Children;
     }
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
     if (parentTokenError) return false;
 
-    return AddNodes(tree, parent, *tokens, tokenKindMask, tokenScopeMask,
+    return AddNodes(tree, parent, tokens, tokenKindMask, tokenScopeMask,
                     m_BrowserOptions.displayFilter == bdfEverything);
 }
 
@@ -797,7 +799,7 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(CCTreeCtrl* tree, wxTreeItemId pa
     if (!token)
         return false;
 
-    return AddNodes(tree, parent, token->m_DirectAncestors, tkClass | tkTypedef, 0, true);
+    return AddNodes(tree, parent, &token->m_DirectAncestors, tkClass | tkTypedef, 0, true);
 }
 
 bool ClassBrowserBuilderThread::AddDescendantsOf(CCTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
@@ -821,7 +823,7 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CCTreeCtrl* tree, wxTreeItemId 
     bool oldShowInheritance = m_BrowserOptions.showInheritance;
     m_BrowserOptions.showInheritance = allowInheritance;
 
-    bool ret = AddNodes(tree, parent, token->m_Descendants, tkClass | tkTypedef, 0, true);
+    bool ret = AddNodes(tree, parent, &token->m_Descendants, tkClass | tkTypedef, 0, true);
 
     m_BrowserOptions.showInheritance = oldShowInheritance;
     return ret;
@@ -956,7 +958,7 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
     }
 }
 
-bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens,
+bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet* tokens,
                                          short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
 {
     TRACE(_T("ClassBrowserBuilderThread::AddNodes"));
@@ -979,8 +981,8 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
         }
     }
 
-    TokenIdxSet::iterator end = tokens.end();
-    for (TokenIdxSet::iterator start = tokens.begin(); start != end; ++start)
+    TokenIdxSet::const_iterator end = tokens->end();
+    for (TokenIdxSet::const_iterator start = tokens->begin(); start != end; ++start)
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
@@ -1010,7 +1012,7 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
 //            if (!token->m_ActualType.IsEmpty())
 //                 str = str + _T(" : ") + token->m_ActualType;
             if (!token->m_BaseType.IsEmpty())
-                 str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
+                str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
 
             wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CCTreeCtrlData(sfToken, token, tokenKindMask));
 
@@ -1040,7 +1042,7 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
     return count != 0;
 }
 
-bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
+bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token* token, bool locked)
 {
     TRACE(_T("ClassBrowserBuilderThread::TokenMatchesFilter"));
 
@@ -1058,12 +1060,12 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
 
         // we got to check all children of this token (recursively)
         // to see if any of them matches the filter...
-        for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+        for (TokenIdxSet::const_iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
         {
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-            Token* token = m_TokensTree->at(*it);
+            const Token* token = m_TokensTree->at(*it);
 
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
@@ -1081,7 +1083,7 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token, bool locked)
     return false;
 }
 
-bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int kind)
+bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(const Token* token, int kind)
 {
     TRACE(_T("ClassBrowserBuilderThread::TokenContainsChildrenOfKind"));
 
@@ -1089,13 +1091,13 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
         return false;
 
     bool isOfKind = false;
-    TokensTree* tt = token->GetTree();
+    const TokensTree* tree = token->GetTree();
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+    for (TokenIdxSet::const_iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
     {
-        Token* child = tt->at(*it);
+        const Token* child = tree->at(*it);
         if (child->m_TokenKind & kind)
         {
             isOfKind = true;
