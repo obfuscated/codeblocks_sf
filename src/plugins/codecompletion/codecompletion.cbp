@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Code::Blocks Code-completion" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Code-completion">
+				<Option output="../../devel/share/CodeBlocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../devel" />
+				<Option object_output="../../.objs/plugins/codecompletion" />
+				<Option external_deps="../../devel/libcodeblocks.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
+				<Option host_application="codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+				</Compiler>
+			</Target>
+			<Target title="cctest">
+				<Option output="../../devel/cctest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs/plugins/codecompletion/cctest" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DCC_PARSER_TEST" />
+					<Add directory="cctest" />
+					<Add directory="parser" />
+					<Add directory="." />
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="28" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Code-completion;cctest;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../include" />
+			<Add directory="../../include/mozilla_chardet" />
+			<Add directory="../../sdk/wxscintilla/include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--no-undefined" />
+			<Add option="-mthreads" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../devel" />
+		</Linker>
+		<Unit filename="ccoptionsdlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="ccoptionsdlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="ccoptionsprjdlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="ccoptionsprjdlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="cctest/cctest_app.cpp">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/cctest.cpp">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/cctest.h">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/cctest_frame.cpp">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/cctest_frame.h">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/nativeparser_test.cpp">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/nativeparser_test.h">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/parserdummy.cpp">
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/resource.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="cctest" />
+		</Unit>
+		<Unit filename="cctest/test.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="cctreectrl.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="cctreectrl.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="classbrowser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="classbrowser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="classbrowserbuilderthread.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="classbrowserbuilderthread.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="codecompletion.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="codecompletion.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="coderefactoring.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="coderefactoring.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="insertclassmethoddlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="insertclassmethoddlg.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="nativeparser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="nativeparser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="nativeparser_base.cpp" />
+		<Unit filename="nativeparser_base.h" />
+		<Unit filename="parser/ccdebuginfo.cpp" />
+		<Unit filename="parser/ccdebuginfo.h" />
+		<Unit filename="parser/cclogger.cpp" />
+		<Unit filename="parser/cclogger.h" />
+		<Unit filename="parser/expression.cpp" />
+		<Unit filename="parser/expression.h" />
+		<Unit filename="parser/parser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="parser/parser.h" />
+		<Unit filename="parser/parserthread.cpp" />
+		<Unit filename="parser/parserthread.h" />
+		<Unit filename="parser/parserthreadedtask.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="parser/parserthreadedtask.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="parser/profiletimer.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="parser/profiletimer.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="parser/searchtree.cpp" />
+		<Unit filename="parser/searchtree.h" />
+		<Unit filename="parser/token.cpp" />
+		<Unit filename="parser/token.h" />
+		<Unit filename="parser/tokenizer.cpp" />
+		<Unit filename="parser/tokenizer.h" />
+		<Unit filename="parser/tokenstree.cpp" />
+		<Unit filename="parser/tokenstree.h" />
+		<Unit filename="resources/classbrowser.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/insert_class_method.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/manifest.xml">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/project_settings.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/selectincludefile.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="resources/settings.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="selectincludefile.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="selectincludefile.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="systemheadersthread.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="systemheadersthread.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="cctest\cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
+				<resources>
+					<wxScrollingDialog wxs="../../wxsmith/CCDebugInfo.wxs" src="parser/ccdebuginfo.cpp" hdr="parser/ccdebuginfo.h" fwddecl="0" i18n="1" name="CCDebugInfo" language="CPP" />
+				</resources>
+				<wxCCTestFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
+			</wxsmith>
+			<debugger />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
