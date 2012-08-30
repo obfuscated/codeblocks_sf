@@ -19,7 +19,7 @@
 
 #include "ccdebuginfo.h"
 
-#include "frame.h"
+#include "cctest_frame.h"
 #include "finddlg.h"
 #include "cclogger.h"
 #include "token.h"
@@ -27,7 +27,7 @@
 
 #include "nativeparser_test.h"
 
-//(*InternalHeaders(Frame)
+//(*InternalHeaders(CCTestFrame)
 #include <wx/settings.h>
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -39,8 +39,8 @@
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 
-//(*IdInit(Frame)
-const long Frame::wxID_TOKEN = wxNewId();
+//(*IdInit(CCTestFrame)
+const long CCTestFrame::wxID_TOKEN = wxNewId();
 //*)
 
 namespace CCTestAppGlobal
@@ -53,26 +53,26 @@ namespace CCTestAppGlobal
 int idCCLogger   = wxNewId();
 int idCCAddToken = wxNewId();
 
-BEGIN_EVENT_TABLE(Frame, wxFrame)
-    //(*EventTable(Frame)
+BEGIN_EVENT_TABLE(CCTestFrame, wxFrame)
+    //(*EventTable(CCTestFrame)
     //*)
-    EVT_FIND            (wxID_ANY,     Frame::OnFindDialog)
-    EVT_FIND_NEXT       (wxID_ANY,     Frame::OnFindDialog)
-    EVT_FIND_REPLACE    (wxID_ANY,     Frame::OnFindDialog)
-    EVT_FIND_REPLACE_ALL(wxID_ANY,     Frame::OnFindDialog)
-    EVT_FIND_CLOSE      (wxID_ANY,     Frame::OnFindDialog)
-    EVT_MENU            (idCCLogger,   Frame::OnCCLogger  )
-    EVT_MENU            (idCCAddToken, Frame::OnCCAddToken)
+    EVT_FIND            (wxID_ANY,     CCTestFrame::OnFindDialog)
+    EVT_FIND_NEXT       (wxID_ANY,     CCTestFrame::OnFindDialog)
+    EVT_FIND_REPLACE    (wxID_ANY,     CCTestFrame::OnFindDialog)
+    EVT_FIND_REPLACE_ALL(wxID_ANY,     CCTestFrame::OnFindDialog)
+    EVT_FIND_CLOSE      (wxID_ANY,     CCTestFrame::OnFindDialog)
+    EVT_MENU            (idCCLogger,   CCTestFrame::OnCCLogger  )
+    EVT_MENU            (idCCAddToken, CCTestFrame::OnCCAddToken)
 END_EVENT_TABLE()
 
-Frame::Frame(const wxString& main_file) :
+CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_ProgDlg(NULL),
     m_MainFile(main_file),
     m_CurrentFile(),
     m_LogCount(0),
     m_FRDlg(NULL)
 {
-    //(*Initialize(Frame)
+    //(*Initialize(CCTestFrame)
     wxMenuItem* mnu_itm_save_log;
     wxStaticText* lbl_search_tree;
     wxMenuItem* mnu_item_find;
@@ -171,14 +171,14 @@ Frame::Frame(const wxString& main_file) :
     bsz_main->SetSizeHints(this);
     Center();
 
-    Connect(wxID_ANY,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Frame::OnDoHeadersClick);
-    Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuOpenSelected);
-    Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuReloadSelected);
-    Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuSaveSelected);
-    Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuQuitSelected);
-    Connect(wxID_FIND,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuFindSelected);
-    Connect(wxID_TOKEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuTokenSelected);
-    Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&Frame::OnMenuAboutSelected);
+    Connect(wxID_ANY,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
+    Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
+    Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReloadSelected);
+    Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuSaveSelected);
+    Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuQuitSelected);
+    Connect(wxID_FIND,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuFindSelected);
+    Connect(wxID_TOKEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuTokenSelected);
+    Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuAboutSelected);
     //*)
 
     //Setting the macro replacements
@@ -203,14 +203,14 @@ Frame::Frame(const wxString& main_file) :
     m_StatuBar->SetStatusText(_("Ready!"));
 }
 
-Frame::~Frame()
+CCTestFrame::~CCTestFrame()
 {
-    //(*Destroy(Frame)
+    //(*Destroy(CCTestFrame)
     //*)
     delete m_FRDlg;
 }
 
-void Frame::Start()
+void CCTestFrame::Start()
 {
     CCTestAppGlobal::s_includeDirs.Clear();
     CCTestAppGlobal::s_fileQueue.Clear();
@@ -364,7 +364,7 @@ void Frame::Start()
                                       tt->size(), tt->m_FilesMap.size())));
 }
 
-void Frame::AppendToLog(const wxString& log)
+void CCTestFrame::AppendToLog(const wxString& log)
 {
     Freeze();
 
@@ -377,12 +377,12 @@ void Frame::AppendToLog(const wxString& log)
     Thaw();
 }
 
-void Frame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
 {
     Close();
 }
 
-void Frame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
 {
     wxString str;
     str.Printf(_("CCTest build with %s!\nRunning under %s."),
@@ -390,7 +390,7 @@ void Frame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
     wxMessageBox(str, _("About CCTest"), wxOK | wxICON_INFORMATION, this);
 }
 
-void Frame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
 {
     if (m_SaveFile->ShowModal() == wxID_OK)
     {
@@ -399,7 +399,7 @@ void Frame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
     }
 }
 
-void Frame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
 {
     if (m_OpenFile->ShowModal() == wxID_OK)
     {
@@ -408,7 +408,7 @@ void Frame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
     }
 }
 
-void Frame::OnMenuFindSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuFindSelected(wxCommandEvent& /*event*/)
 {
     if (m_FRDlg != NULL)
     {
@@ -423,7 +423,7 @@ void Frame::OnMenuFindSelected(wxCommandEvent& /*event*/)
     }
 }
 
-void Frame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
 {
     ParserBase* pb = CCTest::Get()->GetParser();
     TokensTree* tt = CCTest::Get()->GetTokensTree();
@@ -453,7 +453,7 @@ void Frame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
     }
 }
 
-void Frame::OnFindDialog(wxFindDialogEvent& event)
+void CCTestFrame::OnFindDialog(wxFindDialogEvent& event)
 {
     wxEventType type = event.GetEventType();
     if (type == wxEVT_COMMAND_FIND || type == wxEVT_COMMAND_FIND_NEXT)
@@ -533,18 +533,18 @@ void Frame::OnFindDialog(wxFindDialogEvent& event)
     }
 }
 
-void Frame::OnMenuReloadSelected(wxCommandEvent& /*event*/)
+void CCTestFrame::OnMenuReloadSelected(wxCommandEvent& /*event*/)
 {
     Start();
 }
 
-void Frame::OnDoHeadersClick(wxCommandEvent& event)
+void CCTestFrame::OnDoHeadersClick(wxCommandEvent& event)
 {
     if (m_HeadersCtrl)
         m_HeadersCtrl->Enable(event.IsChecked());
 }
 
-void Frame::OnCCLogger(wxCommandEvent& event)
+void CCTestFrame::OnCCLogger(wxCommandEvent& event)
 {
     wxString log(event.GetString());
 
@@ -565,7 +565,7 @@ void Frame::OnCCLogger(wxCommandEvent& event)
     AppendToLog(log);
 }
 
-void Frame::OnCCAddToken(wxCommandEvent& event)
+void CCTestFrame::OnCCAddToken(wxCommandEvent& event)
 {
     wxString log(event.GetString());
 

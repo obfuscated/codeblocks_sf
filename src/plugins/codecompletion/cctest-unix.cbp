@@ -5,9 +5,9 @@
 		<Option title="CC Test (unix)" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="cc_test">
-				<Option output="../../devel/cc_test" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../.objs/plugins/codecompletion/cc_test" />
+			<Target title="cctest">
+				<Option output="../../devel/cctest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs/plugins/codecompletion/cctest" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -17,7 +17,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="cc_test;" />
+			<Add alias="All" targets="cctest;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -32,7 +32,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCC_PARSER_TEST" />
 			<Add directory="." />
-			<Add directory="cc_test" />
+			<Add directory="cctest" />
 			<Add directory="parser" />
 			<Add directory="../../include" />
 		</Compiler>
@@ -42,15 +42,15 @@
 			<Add library="wxpropgrid" />
 			<Add directory="../../devel" />
 		</Linker>
-		<Unit filename="cc_test/app.cpp" />
-		<Unit filename="cc_test/cc_test.cpp" />
-		<Unit filename="cc_test/cc_test.h" />
-		<Unit filename="cc_test/frame.cpp" />
-		<Unit filename="cc_test/frame.h" />
-		<Unit filename="cc_test/nativeparser_test.cpp" />
-		<Unit filename="cc_test/nativeparser_test.h" />
-		<Unit filename="cc_test/parserdummy.cpp" />
-		<Unit filename="cc_test/test.h">
+		<Unit filename="cctest/cctest_app.cpp" />
+		<Unit filename="cctest/cctest.cpp" />
+		<Unit filename="cctest/cctest.h" />
+		<Unit filename="cctest/cctest_frame.cpp" />
+		<Unit filename="cctest/cctest_frame.h" />
+		<Unit filename="cctest/nativeparser_test.cpp" />
+		<Unit filename="cctest/nativeparser_test.h" />
+		<Unit filename="cctest/parserdummy.cpp" />
+		<Unit filename="cctest/test.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="nativeparser_base.cpp" />
@@ -77,9 +77,9 @@
 			<debugger />
 			<envvars />
 			<wxsmith version="1">
-				<gui name="wxWidgets" src="cc_test/app.cpp" main="-- None --" init_handlers="never" language="CPP" />
+				<gui name="wxWidgets" src="cctest/cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
 				<resources>
-					<wxFrame wxs="wxsmith/Frame.wxs" src="cc_test/frame.cpp" hdr="cc_test/frame.h" fwddecl="0" i18n="1" name="Frame" language="CPP" />
+					<wxCCTestFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest/cctest_frame.cpp" hdr="cctest/cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

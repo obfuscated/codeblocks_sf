@@ -13,12 +13,12 @@
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/app.h>
-#include <wx/filename.h>
+    #include <wx/app.h>
+    #include <wx/filename.h>
 #endif
 #include <wx/thread.h>
 
-#include "cc_test.h"
+#include "cctest.h"
 
 #include "token.h"
 #include "parserthread.h"
@@ -26,6 +26,7 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+bool                  s_DebugSmartSense = true;
 wxCriticalSection     g_ParserCritical;
 std::auto_ptr<CCTest> CCTest::s_Inst;
 

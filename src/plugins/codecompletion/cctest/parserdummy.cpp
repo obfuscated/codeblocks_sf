@@ -8,7 +8,7 @@
 
 #include <sdk.h>
 #include "parser.h"
-#include "cc_test.h"
+#include "cctest.h"
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>

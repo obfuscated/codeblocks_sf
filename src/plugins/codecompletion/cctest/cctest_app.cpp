@@ -9,11 +9,11 @@
 /**
  * Purpose: Simulate a CC parsing run.
  * <CALL_GRAPH>
- * ParserTestApp():
- * - Creates the Frame
- * -> Frame(): will get a singleton CCTest instance pointer by calling CCTest::Get().
+ * CCTestApp():
+ * - Creates the CCTestFrame
+ * -> CCTestFrame(): will get a singleton CCTest instance pointer by calling CCTest::Get().
  *   - Provided an initial dummy file, can be set by the user later.
- *   -> Frame::Start():
+ *   -> CCTestFrame::Start():
  *      - Reads all UI values into global vars (includes, headers)
  *      - compiles initial global file queue
  *      - Creates global "Busy" dialog
@@ -75,7 +75,7 @@
 
 #include <wx/arrstr.h>
 
-#include "frame.h"
+#include "cctest_frame.h"
 
 namespace CCTestAppGlobal
 {
@@ -85,18 +85,16 @@ namespace CCTestAppGlobal
     wxArrayString s_filesParsed;
 }// CCTestAppGlobal
 
-bool s_DebugSmartSense = true;
-
-class ParserTestApp : public wxApp
+class CCTestApp : public wxApp
 {
 public:
     virtual bool OnInit();
 };
 
-IMPLEMENT_APP(ParserTestApp)
-DECLARE_APP(ParserTestApp)
+IMPLEMENT_APP(CCTestApp)
+DECLARE_APP(CCTestApp)
 
-bool ParserTestApp::OnInit()
+bool CCTestApp::OnInit()
 {
     //(*AppInitialize
     bool wxsOK = true;
@@ -105,7 +103,7 @@ bool ParserTestApp::OnInit()
 
     wxLog::SetActiveTarget(new wxLogStderr());
 
-    Frame* frame = new Frame(_T("cc_test/test.h"));
+    CCTestFrame* frame = new CCTestFrame(_T("cctest/test.h"));
     frame->Center();
     frame->Show();
     frame->Start();

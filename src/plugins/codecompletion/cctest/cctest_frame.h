@@ -6,9 +6,9 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "cc_test.h"
+#include "cctest.h"
 
-//(*Headers(Frame)
+//(*Headers(CCTestFrame)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/menu.h>
@@ -23,22 +23,22 @@
 
 class wxProgressDialog;
 
-class Frame : public wxFrame
+class CCTestFrame : public wxFrame
 {
 public:
-    Frame(const wxString& main_file);
-    virtual ~Frame();
+    CCTestFrame(const wxString& main_file);
+    virtual ~CCTestFrame();
 
     void AppendToLog(const wxString& log);
     void Start();
 
 protected:
-    //(*Identifiers(Frame)
+    //(*Identifiers(CCTestFrame)
     static const long wxID_TOKEN;
     //*)
 
 private:
-    //(*Handlers(Frame)
+    //(*Handlers(CCTestFrame)
     void OnMenuQuitSelected(wxCommandEvent& event);
     void OnMenuAboutSelected(wxCommandEvent& event);
     void OnMenuSaveSelected(wxCommandEvent& event);
@@ -53,7 +53,7 @@ private:
     void OnCCLogger(wxCommandEvent& event);
     void OnCCAddToken(wxCommandEvent& event);
 
-    //(*Declarations(Frame)
+    //(*Declarations(CCTestFrame)
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
     wxFileDialog* m_SaveFile;
