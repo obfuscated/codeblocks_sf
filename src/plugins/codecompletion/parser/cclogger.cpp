@@ -14,7 +14,7 @@
 #include <wx/utils.h> // wxNewId
 
 #include <logmanager.h> // F()
-#include <globals.h> // cbC2U for cbAssert macro
+#include <globals.h>    // cbC2U for cbAssert macro
 
 std::auto_ptr<CCLogger> CCLogger::s_Inst;
 
