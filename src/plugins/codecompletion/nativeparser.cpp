@@ -259,7 +259,7 @@ ParserBase* NativeParser::GetParserByProject(cbProject* project)
     }
     else
     {
-        for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+        for (ParserList::const_iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
         {
             if (it->first == project)
                 return it->second;
@@ -278,7 +278,7 @@ ParserBase* NativeParser::GetParserByFilename(const wxString& filename)
 
 cbProject* NativeParser::GetProjectByParser(ParserBase* parser)
 {
-    for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+    for (ParserList::const_iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
     {
         if (it->second == parser)
             return it->first;
@@ -348,7 +348,7 @@ bool NativeParser::Done()
     TRACE(_T("NativeParser::Done()"));
 
     bool done = true;
-    for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+    for (ParserList::const_iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
     {
         if (!it->second->Done())
         {
@@ -360,7 +360,7 @@ bool NativeParser::Done()
     return done;
 }
 
-int NativeParser::GetTokenKindImage(Token* token)
+int NativeParser::GetTokenKindImage(const Token* token)
 {
     if (!token)
         return PARSER_IMG_NONE;
@@ -451,7 +451,6 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
 
     wxArrayString dirs;
     const wxFileName fn(filename);
-    const wxString filespec = fn.HasExt() ? fn.GetName() + _T(".*") : fn.GetName();
 
     wxDir dir(fn.GetPath());
     if (!dir.IsOpened())
@@ -459,14 +458,13 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
 
     wxArrayString files;
     NativeParserHelper::ParserDirTraverser traverser(wxEmptyString, files);
+    const wxString filespec = fn.HasExt() ? fn.GetName() + _T(".*") : fn.GetName();
+    CCLogger::Get()->DebugLog(_T("Traversing '") + fn.GetPath() + _T("' for: ") + filespec);
     dir.Traverse(traverser, filespec, wxDIR_FILES);
     if (files.GetCount() == 1)
     {
-        cbProject* project = nullptr;
-        if (IsParserPerWorkspace())
-            project = GetCurrentProject();
-        else
-            project = GetProjectByParser(m_Parser);
+        cbProject* project = IsParserPerWorkspace() ? GetCurrentProject()
+                                                    : GetProjectByParser(m_Parser);
         if (project)
         {
             const wxString prjPath = project->GetCommonTopLevelPath();
@@ -479,13 +477,14 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
                 {
                     priorityPath = priFn.GetFullPath();
                     wxDir priorityDir(priorityPath);
-                    if (priorityDir.IsOpened())
+                    if ( priorityDir.IsOpened() )
                     {
-                        wxArrayString others;
-                        NativeParserHelper::ParserDirTraverser traverser(wxEmptyString, others);
+                        wxArrayString priorityPathSub;
+                        NativeParserHelper::ParserDirTraverser traverser(wxEmptyString, priorityPathSub);
+                        CCLogger::Get()->DebugLog(_T("Traversing '") + priorityPath + _T("' for: ") + filespec);
                         priorityDir.Traverse(traverser, filespec, wxDIR_FILES | wxDIR_DIRS);
-                        if (others.GetCount() == 1)
-                            AddPaths(dirs, others[0], fn.HasExt());
+                        if (priorityPathSub.GetCount() == 1)
+                            AddPaths(dirs, priorityPathSub[0], fn.HasExt());
                     }
                 }
             }
@@ -495,15 +494,20 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
                 wxDir prjDir(prjPath);
                 if (prjDir.IsOpened())
                 {
-                    wxArrayString others;
-                    NativeParserHelper::ParserDirTraverser traverser(priorityPath, others);
+                    wxArrayString prjDirSub;
+                    NativeParserHelper::ParserDirTraverser traverser(priorityPath, prjDirSub);
+                    CCLogger::Get()->DebugLog(_T("Traversing '") + priorityPath + wxT(" - ") + prjPath + _T("' for: ") + filespec);
                     prjDir.Traverse(traverser, filespec, wxDIR_FILES | wxDIR_DIRS);
-                    if (others.GetCount() == 1)
-                        AddPaths(dirs, others[0], fn.HasExt());
+                    if (prjDirSub.GetCount() == 1)
+                        AddPaths(dirs, prjDirSub[0], fn.HasExt());
                 }
             }
         }
     }
+
+    CCLogger::Get()->DebugLog(F(_T("Found %d files:"), files.GetCount()));
+    for (size_t i=0; i<files.GetCount(); i++)
+        CCLogger::Get()->DebugLog(F(_T("- %s"), files[i].wx_str()));
 
     if (!files.IsEmpty())
         AddPaths(dirs, files[0], fn.HasExt());
@@ -1102,7 +1106,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
 
     if (project)
     {
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (!pf)
@@ -1228,7 +1232,7 @@ void NativeParser::RemoveObsoleteParsers()
     while (m_ParserList.size() > maxParsers)
     {
         bool deleted = false;
-        for (ParserList::iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
+        for (ParserList::const_iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
         {
             if (it->second == info.second)
                 continue;
@@ -1410,7 +1414,7 @@ size_t NativeParser::AI(TokenIdxSet&    result,
     else
     {
         // add scopes
-        for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+        for (TokenIdxSet::const_iterator it = scope_result.begin(); it != scope_result.end(); ++it)
             search_scope->insert(*it);
     }
 
@@ -1472,7 +1476,7 @@ size_t NativeParser::FindCurrentFunctionToken(ccSearchData* searchData, TokenIdx
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+    for (TokenIdxSet::const_iterator it = scope_result.begin(); it != scope_result.end(); ++it)
     {
         GenerateResultSet(m_Parser->GetTokensTree(), procName, *it, result,
                           true, false, tkAnyFunction | tkClass);
@@ -1537,7 +1541,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData,
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
     const int idx = GetTokenFromCurrentLine(tree, result, curLine, searchData->file);
-    Token* token = tree->at(idx);
+    const Token* token = tree->at(idx);
     if (token)
     {
         // got it :)
@@ -1669,7 +1673,7 @@ bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& se
 
         if (s_DebugSmartSense && parentIdx != -1)
         {
-            Token* token = tree->at(parentIdx);
+            const Token* token = tree->at(parentIdx);
             if (token)
                 CCLogger::Get()->DebugLog(F(_T("ParseUsingNamespace() Found %s%s"),
                                             token->GetNamespace().wx_str(), token->m_Name.wx_str()));
@@ -1705,7 +1709,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
     const unsigned int curLine = searchData->control->LineFromPosition(pos) + 1;
 
     bool locked = false;
-    for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
+    for (TokenIdxSet::const_iterator it = proc_result.begin(); it != proc_result.end(); ++it)
     {
         wxString buffer;
         int initLine = -1;
@@ -1717,7 +1721,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
         locked = true;
 
-        Token* token = tree->at(*it);
+        const Token* token = tree->at(*it);
 
         if (!token)
             continue;
@@ -1795,7 +1799,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-        Token* parent = tree->at(parentIdx);
+        const Token* parent = tree->at(parentIdx);
         if (parent && (parent->m_TokenKind & tkAnyFunction))
         {
             m_LastFuncTokenIdx = parent->m_Index;
@@ -1848,11 +1852,11 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
 
                 for (size_t i = 0; i < tree->size(); ++i)
                 {
-                    Token* token = tree->at(i);
+                    const Token* token = tree->at(i);
                     if (token && token->m_IsTemp)
                     {
                         wxString log(wxString::Format(_T(" + %s (%d)"), token->DisplayName().wx_str(), token->m_Index));
-                        Token* parent = tree->at(token->m_ParentIndex);
+                        const Token* parent = tree->at(token->m_ParentIndex);
                         if (parent)
                             log += wxString::Format(_T("; Parent = %s (%d)"), parent->m_Name.wx_str(), token->m_ParentIndex);
                         CCLogger::Get()->DebugLog(log);
@@ -2639,7 +2643,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
     if (project)
     {
         size_t fileCount = 0;
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
@@ -2648,7 +2652,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
                     ++fileCount;
             }
         }
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
@@ -2694,7 +2698,7 @@ bool NativeParser::RemoveProjectFromParser(cbProject* project)
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
-    for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+    for (FilesList::const_iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
         if (pf && ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)

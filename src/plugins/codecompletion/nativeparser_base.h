@@ -118,10 +118,10 @@ protected:
     int FindFunctionOpenParenthesis(const wxString& calltip);
 
     /** Decides if the token belongs to its parent or one of its ancestors */
-    bool BelongsToParentOrItsAncestors(TokensTree* tree,
-                                       Token*      token,
-                                       int         parentIdx,
-                                       bool        use_inheritance = true);
+    bool BelongsToParentOrItsAncestors(TokensTree*  tree,
+                                       const Token* token,
+                                       int          parentIdx,
+                                       bool         use_inheritance = true);
 
     /** helper function to split the statement*/
     wxString GetCCToken(wxString&        line,
@@ -394,12 +394,13 @@ private:
     // should already entered a critical section.
 
     // for GenerateResultSet()
-    bool AddChildrenOfUnnamed(TokensTree* tree, Token* parent, TokenIdxSet& result)
+    bool AddChildrenOfUnnamed(TokensTree* tree, const Token* parent, TokenIdxSet& result)
     {
         if (parent->m_TokenKind == tkClass && parent->m_Name.StartsWith(g_UnnamedSymbol))
         {
             // add all its children
-            for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
+            for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
+                                             it != parent->m_Children.end(); ++it)
             {
                 Token* tokenChild = tree->at(*it);
                 if (tokenChild)

@@ -116,7 +116,7 @@ public:
 
     /** Returns the image assigned to a specific token for a symbol browser
      */
-    int GetTokenKindImage(Token* token);
+    int GetTokenKindImage(const Token* token);
 
     /** Get the implementation file path if the input is a header file. or Get the header file path
      * if the input is an implementation file.
