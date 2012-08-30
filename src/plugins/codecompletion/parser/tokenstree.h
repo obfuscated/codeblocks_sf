@@ -16,12 +16,7 @@
 #include "searchtree.h"
 
 enum FileParsingStatus
-{
-    fpsNotParsed = 0,
-    fpsAssigned,
-    fpsBeingParsed,
-    fpsDone
-};
+{ fpsNotParsed = 0, fpsAssigned, fpsBeingParsed, fpsDone };
 
 typedef std::deque<int>                                          TokenIdxList;
 typedef std::vector<Token*>                                      TokenList;
@@ -39,20 +34,20 @@ public:
     TokensTree();
     virtual ~TokensTree();
 
-    inline void Clear()                    { clear(); }
-
     // STL compatibility functions
-    void          clear();
-    inline Token* operator[](int idx)      { return GetTokenAt(idx); }
-    inline Token* at(int idx)              { return GetTokenAt(idx); }
-    inline const Token * at(int idx) const { return GetTokenAt(idx); }
-    size_t        size();
-    size_t        realsize();
-    inline bool   empty()                  { return size()==0; }
-    int           insert(Token* newToken);
-    int           insert(int loc, Token* newToken);
-    int           erase(int loc);
-    void          erase(Token* oldToken);
+    void                  clear();
+    inline Token* operator[](int idx)       { return GetTokenAt(idx); }
+    inline Token*         at(int idx)       { return GetTokenAt(idx); }
+    inline const Token *  at(int idx) const { return GetTokenAt(idx); }
+    size_t                size();
+    size_t                realsize();
+    inline bool           empty()           { return size()==0;       }
+    int                   insert(Token* newToken);
+    int                   insert(int loc, Token* newToken);
+    int                   erase(int loc);
+    void                  erase(Token* oldToken);
+
+    inline void Clear()                     { clear();                }
 
     // Token specific functions
     void   RecalcFreeList();
@@ -102,11 +97,11 @@ protected:
     Token const * GetTokenAt(int idx) const;
     int           AddToken(Token* newToken, int fileIndex);
 
-    void RemoveToken(int idx);
-    void RemoveToken(Token* oldToken);
+    void          RemoveToken(int idx);
+    void          RemoveToken(Token* oldToken);
 
-    int  AddTokenToList(Token* newToken, int forceidx);
-    void RemoveTokenFromList(int idx);
+    int           AddTokenToList(Token* newToken, int forceidx);
+    void          RemoveTokenFromList(int idx);
 
     void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData
 

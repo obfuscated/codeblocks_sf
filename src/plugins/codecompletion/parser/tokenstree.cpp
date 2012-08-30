@@ -145,16 +145,15 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
     if (!idx)
         return -1;
 
-    TokenIdxSet::iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
     int result = -1;
-    for (it = curList.begin(); it != curList.end(); ++it)
+    for (TokenIdxSet::const_iterator it = curList.begin(); it != curList.end(); ++it)
     {
         result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
-        Token* curToken = m_Tokens[result];
+        const Token* curToken = m_Tokens[result];
         if (!curToken)
             continue;
 
@@ -173,7 +172,7 @@ int TokensTree::TokenExists(const wxString& name, const wxString& baseArgs, int 
     if (!idx)
         return -1;
 
-    TokenIdxSet::iterator it;
+    TokenIdxSet::const_iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
     int result = -1;
     for (it = curList.begin(); it != curList.end(); ++it)
@@ -182,7 +181,7 @@ int TokensTree::TokenExists(const wxString& name, const wxString& baseArgs, int 
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
-        Token* curToken = m_Tokens[result];
+        const Token* curToken = m_Tokens[result];
         if (!curToken)
             continue;
 
@@ -208,16 +207,16 @@ size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool case
 
     // now the lists contains indexes to all the matching keywords
     // first loop will find all the keywords
-    for (std::set<size_t>::iterator it = lists.begin(); it != lists.end(); ++it)
+    for (std::set<size_t>::const_iterator it = lists.begin(); it != lists.end(); ++it)
     {
-        TokenIdxSet* curset = &(m_Tree.GetItemAtPos(*it));
+        const TokenIdxSet* curset = &(m_Tree.GetItemAtPos(*it));
         // second loop will get all the items mapped by the same keyword,
         // for example, we have ClassA::foo, ClassB::foo ...
         if (curset)
         {
-            for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
+            for (TokenIdxSet::const_iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
             {
-                Token* token = at(*it2);
+                const Token* token = at(*it2);
                 if (   token
                     && (   (kindMask == tkUndefined)
                         || (token->m_TokenKind & kindMask) ) )
@@ -246,9 +245,9 @@ size_t TokensTree::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
 
     // loop all results and add to final result set after filtering on token kind
     TokenIdxSet& tokens = itf->second;
-    for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    for (TokenIdxSet::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
-        Token* token = at(*it);
+        const Token* token = at(*it);
         if (token && (kindMask & token->m_TokenKind))
             result.insert(*it);
     }
@@ -293,6 +292,7 @@ void TokensTree::RemoveToken(int idx)
 {
     if (idx<0 || (size_t)idx >= m_Tokens.size())
         return;
+
     RemoveToken(m_Tokens[idx]);
 }
 
@@ -316,7 +316,7 @@ void TokensTree::RemoveToken(Token* oldToken)
         parentToken->m_Children.erase(idx);
 
     TokenIdxSet nodes;
-    TokenIdxSet::iterator it;
+    TokenIdxSet::const_iterator it;
 
     // Step 2: Detach token from its ancestors
 
@@ -448,7 +448,7 @@ void TokensTree::RemoveFile(int fileIndex)
         return;
 
     TokenIdxSet& the_list = m_FilesMap[fileIndex];
-    for (TokenIdxSet::iterator it = the_list.begin(); it != the_list.end();)
+    for (TokenIdxSet::const_iterator it = the_list.begin(); it != the_list.end();)
     {
         int idx = *it;
         if (idx < 0 || (size_t)idx > m_Tokens.size())
@@ -593,7 +593,7 @@ void TokensTree::RecalcInheritanceChain(Token* token)
             // accept multiple matches for inheritance
             TokenIdxSet result;
             FindMatches(ancestor, result, true, false);
-            for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+            for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
             {
                 Token* ancestorToken = at(*it);
                 // only classes take part in inheritance
@@ -628,11 +628,11 @@ void TokensTree::RecalcInheritanceChain(Token* token)
 
     // recalc
     TokenIdxSet result;
-    for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
+    for (TokenIdxSet::const_iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
         RecalcFullInheritance(*it, result);
 
     // now, add the resulting set to ancestors set
-    for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+    for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
     {
         Token* ancestor = at(*it);
         if (ancestor)
@@ -647,9 +647,9 @@ void TokensTree::RecalcInheritanceChain(Token* token)
     {
         // debug loop
         TRACE(_T("RecalcInheritanceChain() : Ancestors for %s:"), token->m_Name.wx_str());
-        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
+        for (TokenIdxSet::const_iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); ++it)
         {
-            Token* anc_token = at(*it);
+            const Token* anc_token = at(*it);
             if (anc_token)
                 TRACE(_T("RecalcInheritanceChain() :  + %s"), anc_token->m_Name.wx_str());
             else
@@ -673,7 +673,7 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
         return;
 
     // no parent token? no ancestors...
-    Token* ancestor = at(parentIdx);
+    const Token* ancestor = at(parentIdx);
     if (!ancestor)
         return;
 
@@ -684,7 +684,7 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
     TRACE(_T("RecalcFullInheritance() : Anc: '%s'"), ancestor->m_Name.wx_str());
 
     // for all its ancestors
-    for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); ++it)
+    for (TokenIdxSet::const_iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); ++it)
     {
         if (*it != -1 && // not global scope
             *it != parentIdx && // not the same token (avoid infinite loop)
@@ -723,7 +723,7 @@ size_t TokensTree::InsertFileOrGetIndex(const wxString& filename)
 }
 
 size_t TokensTree::GetFileMatches(const wxString& filename, std::set<size_t>& result,
-                                  bool caseSensitive, bool is_prefix)
+                                  bool caseSensitive,       bool              is_prefix)
 {
   wxString f(filename); while (f.Replace(_T("\\"),_T("/"))) { ; }
 
@@ -764,12 +764,12 @@ void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
         return;
 
     TokenIdxSet& tokens = m_FilesMap[file];
-    for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    for (TokenIdxSet::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
         Token* token = m_Tokens.at(*it);
         if (token)
         {
-            token->m_IsLocal = local;
+            token->m_IsLocal  = local;
             token->m_UserData = userData;
         }
     }
