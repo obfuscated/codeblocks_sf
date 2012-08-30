@@ -462,7 +462,7 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
     wxBitmap bmp(width, height, 32);
 /* C::B begin */
     if (!bmp.IsOk())
-        wxNullBitmap;
+        return wxNullBitmap;
 /* C::B end */
     wxAlphaPixelData pixData(bmp);
 /* C::B begin */
