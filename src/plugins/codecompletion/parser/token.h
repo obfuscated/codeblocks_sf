@@ -58,7 +58,7 @@ public:
 
     bool AddChild(int childIdx);
     bool DeleteAllChildren();
-    bool HasChildren() { return !m_Children.empty(); }
+    bool HasChildren() const { return !m_Children.empty(); }
     wxString GetNamespace() const;
     bool InheritsFrom(int idx) const;
     wxString DisplayName() const;
@@ -71,7 +71,7 @@ public:
     size_t GetTicket() const { return m_Ticket; }
     bool MatchesFiles(const TokenFilesSet& files);
 
-    TokensTree* GetTree() { return m_TokensTree; }
+    TokensTree* GetTree() const { return m_TokensTree; }
     bool IsValidAncestor(const wxString& ancestor);
 
     wxString                     m_FullType; // this is the full return value (if any): e.g. const wxString&

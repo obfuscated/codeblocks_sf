@@ -266,7 +266,7 @@ bool Token::DeleteAllChildren()
         return false;
     for (;;)
     {
-        TokenIdxSet::iterator it = m_Children.begin();
+        TokenIdxSet::const_iterator it = m_Children.begin();
         if (it == m_Children.end())
             break;
         m_TokensTree->erase(*it);
@@ -283,11 +283,10 @@ bool Token::InheritsFrom(int idx) const
     if (!token)
         return false;
 
-    for (TokenIdxSet::iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
+    for (TokenIdxSet::const_iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
     {
         int idx2 = *it;
-        Token* ancestor = m_TokensTree->at(idx2);
-
+        const Token* ancestor = m_TokensTree->at(idx2);
         if (!ancestor)
             continue;
 

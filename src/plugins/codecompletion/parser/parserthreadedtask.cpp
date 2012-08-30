@@ -126,8 +126,8 @@ MarkFileAsLocalThreadedTask::MarkFileAsLocalThreadedTask(Parser* parser, cbProje
 int MarkFileAsLocalThreadedTask::Execute()
 {
     // mark all project files as local
-    for (FilesList::iterator it  = m_Project->GetFilesList().begin();
-                             it != m_Project->GetFilesList().end(); ++it)
+    for (FilesList::const_iterator it  = m_Project->GetFilesList().begin();
+                                   it != m_Project->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
         if (!pf)

@@ -291,7 +291,7 @@ template <class T> T SearchTree<T>::GetItem(const wxChar* s)
 template <class T> T SearchTree<T>::GetItem(const wxString& s)
 {
     size_t itemno = GetItemNo(s);
-    if(!itemno && !s.empty())
+    if (!itemno && !s.empty())
         return T();
     return GetItemAtPos(itemno);
 }
@@ -300,11 +300,11 @@ template <class T> size_t SearchTree<T>::AddItem(const wxString& s, T item, bool
 {
     size_t itemno = insert(s);
 
-    if(itemno > m_Items.size())
+    if (itemno > m_Items.size())
         m_Items.resize(itemno);
-    else if(itemno == m_Items.size())
+    else if (itemno == m_Items.size())
         m_Items.push_back(item);
-    else if(replaceexisting)
+    else if (replaceexisting)
         m_Items[itemno] = item;
 
     return itemno;
@@ -312,7 +312,7 @@ template <class T> size_t SearchTree<T>::AddItem(const wxString& s, T item, bool
 
 template <class T> T& SearchTree<T>::GetItemAtPos(size_t i)
 {
-    if(i>=m_Items.size() || i < 1)
+    if (i>=m_Items.size() || i < 1)
         i = 0;
     return m_Items[i];
 }
@@ -338,7 +338,7 @@ template <class T> bool SearchTree<T>::AddFirstNullItem()
 template <class T> T& SearchTree<T>::operator[](const wxString& s)
 {
     size_t curpos = GetItemNo(s);
-    if(!curpos)
+    if (!curpos)
     {
         T newitem;
         curpos = AddItem(s, newitem);
@@ -350,19 +350,15 @@ template <class T> T& SearchTree<T>::operator[](const wxString& s)
 template <class T> wxString SearchTree<T>::Serialize()
 {
     wxString result;
-    size_t i;
     result << _T("<SearchTree>\n");
     result << SerializeLabels();
     result << _T("<nodes>\n");
-    for (i = 0; i < m_Nodes.size(); ++i)
+    for (size_t i = 0; i < m_Nodes.size(); ++i)
         result << m_Nodes[i]->Serialize(this, i, false);
     result << _T("</nodes>\n");
     result << _T(" <items>\n");
-    for (i = 1; i < m_Items.size(); ++i)
-    {
+    for (size_t i = 1; i < m_Items.size(); ++i)
         result << SerializeItem(i);
-
-    }
     result << _T(" </items>\n");
     result << _T("</SearchTree>\n");
     return result;
