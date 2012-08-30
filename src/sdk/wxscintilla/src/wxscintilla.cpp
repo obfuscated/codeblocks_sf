@@ -1592,13 +1592,13 @@ int wxScintilla::FindText(int minPos, int maxPos,
 }
 
 // On Windows, will draw the document into a display context such as a printer.
- int wxScintilla::FormatRange(bool doDraw,
-                              int startPos,
-                              int endPos,
-                              wxDC* draw,
-                              wxDC* target,
-                              wxRect renderRect,
-                              wxRect pageRect)
+int wxScintilla::FormatRange(bool doDraw,
+                             int startPos,
+                             int endPos,
+                             wxDC* draw,
+                             wxDC* target,
+                             wxRect renderRect,
+                             wxRect pageRect)
 {
     RangeToFormat fr;
 

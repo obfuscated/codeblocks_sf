@@ -356,7 +356,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
                                  int /*flags*/)
 {
 #if wxUSE_GRAPHICS_CONTEXT
-    wxGCDC dc(*(wxMemoryDC*)hdc);
+    wxGCDC dc(*(wxMemoryDC*)hDC);
     wxColour penColour(wxColourFromCDandAlpha(outline, alphaOutline));
     wxColour brushColour(wxColourFromCDandAlpha(fill, alphaFill));
     dc.SetPen(wxPen(penColour));
