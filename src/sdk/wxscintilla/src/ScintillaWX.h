@@ -62,11 +62,6 @@
     #define WXDLLIMPEXP_SCI
 #endif
 
-class WXDLLIMPEXP_SCI wxScintilla;
-class wxSCIDropTarget;
-
-//----------------------------------------------------------------------
-
 
 #ifdef SCI_NAMESPACE
 	#ifndef SCI_NAMESPACE_PREFIX
@@ -78,44 +73,87 @@ class wxSCIDropTarget;
 	#endif
 #endif
 
+//----------------------------------------------------------------------
+
+
+class wxScintilla;           // forward
+class ScintillaWX;
+
+
+//----------------------------------------------------------------------
+// Helper classes
+
+#if wxUSE_DRAG_AND_DROP
+class wxSCIDropTarget : public wxTextDropTarget {
+public:
+    void SetScintilla(ScintillaWX* swx) {
+        m_swx = swx;
+    }
+
+    bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
+    wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def);
+    wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def);
+    void OnLeave();
+
+private:
+    ScintillaWX* m_swx;
+};
+#endif
+
+//----------------------------------------------------------------------
+
+/* C::B begin */
 class ScintillaWX : public SCI_NAMESPACE_PREFIX(ScintillaBase) {
+/* C::B end */
 public:
 
     ScintillaWX(wxScintilla* win);
-    virtual ~ScintillaWX();
+    ~ScintillaWX();
 
     // base class virtuals
     virtual void Initialise();
     virtual void Finalise();
+    virtual void StartDrag();
+    virtual bool SetIdle(bool on);
+    virtual void SetTicking(bool on);
+    virtual void SetMouseCapture(bool on);
+    virtual bool HaveMouseCapture();
     virtual void ScrollText(int linesToMove);
     virtual void SetVerticalScrollPos();
     virtual void SetHorizontalScrollPos();
     virtual bool ModifyScrollBars(int nMax, int nPage);
     virtual void Copy();
-    virtual void CopyToClipboard(const SCI_NAMESPACE_PREFIX(SelectionText) &selectedText);
     virtual void Paste();
+/* C::B begin */
+    virtual void CopyToClipboard(const SCI_NAMESPACE_PREFIX(SelectionText) &selectedText);
 
+    virtual void CreateCallTipWindow(SCI_NAMESPACE_PREFIX(PRectangle) rc);
+/* C::B end */
+    virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
     virtual void ClaimSelection();
-    virtual void NotifyChange();
 
-    virtual void NotifyFocus(bool focus);
+    virtual sptr_t DefWndProc(unsigned int iMessage,
+                              uptr_t wParam,
+                              sptr_t lParam);
+    virtual sptr_t WndProc(unsigned int iMessage,
+                           uptr_t wParam,
+                           sptr_t lParam);
+/* C::B begin */
+    static sptr_t DirectFunction(ScintillaWX *wxsci,
+                                 unsigned int iMessage,
+                                 uptr_t wParam,
+                                 sptr_t lParam);
+/* C::B end */
+
+    virtual void NotifyChange();
     virtual void NotifyParent(SCI_NAMESPACE_PREFIX(SCNotification) scn);
-    virtual void SetTicking(bool on);
-    virtual bool SetIdle(bool on);
-    virtual void SetMouseCapture(bool on);
-    virtual bool HaveMouseCapture();
-    virtual void StartDrag();
+/* C::B begin */
+    virtual void NotifyFocus(bool focus);
+/* C::B end */
+
     virtual void CancelModes();
 
     virtual void UpdateSystemCaret();
-
-    virtual void CreateCallTipWindow(SCI_NAMESPACE_PREFIX(PRectangle) rc);
-    virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
-    virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
-    virtual sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
-
-    static sptr_t DirectFunction(ScintillaWX *wxsci,
-        unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 
     // Event delegates
     void DoPaint(wxDC* dc, wxRect rect);
@@ -125,10 +163,12 @@ public:
     void DoLoseFocus();
     void DoGainFocus();
     void DoSysColourChange();
+/* C::B begin */
     void DoLeftButtonDown(SCI_NAMESPACE_PREFIX(Point) pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
     void DoLeftButtonUp(SCI_NAMESPACE_PREFIX(Point) pt, unsigned int curTime, bool ctrl);
     void DoLeftButtonMove(SCI_NAMESPACE_PREFIX(Point) pt);
     void DoMiddleButtonUp(SCI_NAMESPACE_PREFIX(Point) pt);
+/* C::B end */
     void DoMouseWheel(int rotation, int delta, int linesPerAction, int ctrlDown, bool isPageScroll);
     void DoAddChar(int key);
     int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
@@ -143,17 +183,24 @@ public:
 #endif
 
     void DoCommand(int ID);
+/* C::B begin */
     void DoContextMenu(SCI_NAMESPACE_PREFIX(Point) pt);
+/* C::B ebd */
     void DoOnListBox();
 
 
     // helpers
     void FullPaint();
+    void FullPaintDC(wxDC* dc);
     bool CanPaste();
     bool GetHideSelection() { return hideSelection; }
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
+/* C::B begin */
     void ClipChildren(wxDC& dc, SCI_NAMESPACE_PREFIX(PRectangle) rect);
+/* C::B end */
+    void SetUseAntiAliasing(bool useAA);
+    bool GetUseAntiAliasing();
 
 private:
     bool                capturedMouse;
@@ -163,7 +210,9 @@ private:
 #if wxUSE_DRAG_AND_DROP
     wxSCIDropTarget*    dropTarget;
     wxDragResult        dragResult;
+/* C::B begin */
     bool                dragRectangle;
+/* C::B end */
 #endif
 
     int                 wheelRotation;
@@ -181,4 +230,5 @@ private:
     friend class wxSCICallTipContent;
 };
 
+//----------------------------------------------------------------------
 #endif

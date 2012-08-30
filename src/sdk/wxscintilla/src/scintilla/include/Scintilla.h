@@ -272,6 +272,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define INDIC_DOTS 10
 #define INDIC_SQUIGGLELOW 11
 #define INDIC_DOTBOX 12
+#define INDIC_SQUIGGLEPIXMAP 13
 #define INDIC_MAX 31
 #define INDIC_CONTAINER 8
 /* C::B begin */
@@ -890,6 +891,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_PROPERTYTYPE 4015
 #define SCI_DESCRIBEPROPERTY 4016
 #define SCI_DESCRIBEKEYWORDSETS 4017
+#define SCI_VCHOMEDISPLAY 4018
+#define SCI_VCHOMEDISPLAYEXTEND 4019
 #define SC_MOD_INSERTTEXT 0x1
 #define SC_MOD_DELETETEXT 0x2
 #define SC_MOD_CHANGESTYLE 0x4

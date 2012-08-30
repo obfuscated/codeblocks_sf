@@ -30,87 +30,20 @@ inline wxColour wxColourFromCD(ColourDesired cd)
     return wxColour((unsigned char)r, (unsigned char)g, (unsigned char)b);
 }
 
-inline wxRect wxRectFromPRect(PRectangle pr)
+inline wxRect wxRectFromPRectangle(PRectangle prc)
 {
-    return wxRect(pr.left, pr.top, pr.Width(), pr.Height());
+    return wxRect(prc.left, prc.top, prc.Width(), prc.Height());
 }
 
-inline PRectangle PRectFromwxRect(wxRect wxr)
+inline PRectangle PRectangleFromwxRect(wxRect rc)
 {
-    return PRectangle(wxr.GetLeft(), wxr.GetTop(), wxr.GetRight()+1, wxr.GetBottom()+1);
+    return PRectangle(rc.GetLeft(), rc.GetTop(), rc.GetRight()+1, rc.GetBottom()+1);
 }
 
 inline Point Point::FromLong(long lpoint)
 {
     return Point(lpoint & 0xFFFF, lpoint >> 16);
 }
-
-class SurfaceImpl : public Surface {
-private:
-    wxDC*       hDC;
-    wxBitmap*   bitmap;
-    bool        hDCOwned;
-    int         x, y;
-    bool        unicodeMode;
-
-public:
-    SurfaceImpl();
-    ~SurfaceImpl();
-
-    virtual void Init(WindowID wid);
-    virtual void Init(SurfaceID sid, WindowID wid);
-    virtual void InitPixMap(int width, int height,
-        Surface *surface_, WindowID wid);
-
-    virtual void Release();
-    virtual bool Initialised();
-    virtual void PenColour(ColourDesired fore);
-    virtual int LogPixelsY();
-    virtual int DeviceHeightFont(int points);
-    virtual void MoveTo(int x_, int y_);
-    virtual void LineTo(int x_, int y_);
-    virtual void Polygon(Point *pts, int npts, ColourDesired fore,
-        ColourDesired back);
-    virtual void RectangleDraw(PRectangle rc, ColourDesired fore,
-        ColourDesired back);
-    virtual void FillRectangle(PRectangle rc, ColourDesired back);
-    virtual void FillRectangle(PRectangle rc, Surface &surfacePattern);
-    virtual void RoundedRectangle(PRectangle rc, ColourDesired fore,
-        ColourDesired back);
-    virtual void AlphaRectangle(PRectangle rc, int corner, ColourDesired fill,
-        int alphaFill, ColourDesired outline, int alphaOutline, int flags);
-    virtual void DrawRGBAImage(PRectangle rc, int width, int height,
-        const unsigned char *pixelsImage);
-    virtual void Ellipse(PRectangle rc, ColourDesired fore,
-        ColourDesired back);
-    virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource);
-
-    virtual void DrawTextNoClip(PRectangle rc, Font &font_, XYPOSITION ybase,
-        const char *s, int len, ColourDesired fore, ColourDesired back);
-    virtual void DrawTextClipped(PRectangle rc, Font &font_, XYPOSITION ybase,
-        const char *s, int len, ColourDesired fore, ColourDesired back);
-    virtual void DrawTextTransparent(PRectangle rc, Font &font_, XYPOSITION ybase,
-        const char *s, int len, ColourDesired fore);
-    virtual void MeasureWidths(Font &font_, const char *s, int len,
-        XYPOSITION *positions);
-    virtual XYPOSITION WidthText(Font &font_, const char *s, int len);
-    virtual XYPOSITION WidthChar(Font &font_, char ch);
-    virtual XYPOSITION Ascent(Font &font_);
-    virtual XYPOSITION Descent(Font &font_);
-    virtual XYPOSITION InternalLeading(Font &font_);
-    virtual XYPOSITION ExternalLeading(Font &font_);
-    virtual XYPOSITION Height(Font &font_);
-    virtual XYPOSITION AverageCharWidth(Font &font_);
-
-    virtual void SetClip(PRectangle rc);
-    virtual void FlushCachedState();
-
-    virtual void SetUnicodeMode(bool unicodeMode_);
-    virtual void SetDBCSMode(int codePage);
-
-    void BrushColour(ColourDesired back);
-    void SetFont(Font &font_);
-};
 
 #ifdef SCI_NAMESPACE
 }

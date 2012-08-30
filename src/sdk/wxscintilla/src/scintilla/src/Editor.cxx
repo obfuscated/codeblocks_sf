@@ -4809,6 +4809,8 @@ void Editor::NotifyMacroRecord(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 	case SCI_VCHOMEEXTEND:
 	case SCI_VCHOMEWRAP:
 	case SCI_VCHOMEWRAPEXTEND:
+	case SCI_VCHOMEDISPLAY:
+	case SCI_VCHOMEDISPLAYEXTEND:
 	case SCI_DELWORDLEFT:
 	case SCI_DELWORDRIGHT:
 	case SCI_DELWORDRIGHTEND:
@@ -5605,10 +5607,30 @@ int Editor::KeyCommand(unsigned int iMessage) {
 		            StartEndDisplayLine(sel.MainCaret(), true), -1));
 		SetLastXChosen();
 		break;
+	case SCI_VCHOMEDISPLAY: {
+			SelectionPosition homePos = SelectionPosition(pdoc->VCHomePosition(sel.MainCaret()));
+			SelectionPosition viewLineStart = MovePositionSoVisible(StartEndDisplayLine(sel.MainCaret(), true), -1);
+			if (viewLineStart > homePos)
+				homePos = viewLineStart;
+
+			MovePositionTo(homePos);
+			SetLastXChosen();
+		}
+		break;
 	case SCI_HOMEDISPLAYEXTEND:
 		MovePositionTo(MovePositionSoVisible(
 		            StartEndDisplayLine(sel.MainCaret(), true), -1), Selection::selStream);
 		SetLastXChosen();
+		break;
+	case SCI_VCHOMEDISPLAYEXTEND: {
+			SelectionPosition homePos = SelectionPosition(pdoc->VCHomePosition(sel.MainCaret()));
+			SelectionPosition viewLineStart = MovePositionSoVisible(StartEndDisplayLine(sel.MainCaret(), true), -1);
+			if (viewLineStart > homePos)
+				homePos = viewLineStart;
+
+			MovePositionTo(homePos, Selection::selStream);
+			SetLastXChosen();
+		}
 		break;
 	case SCI_LINEENDDISPLAY:
 		MovePositionTo(MovePositionSoVisible(
@@ -8752,6 +8774,8 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	case SCI_VCHOMEEXTEND:
 	case SCI_VCHOMEWRAP:
 	case SCI_VCHOMEWRAPEXTEND:
+	case SCI_VCHOMEDISPLAY:
+	case SCI_VCHOMEDISPLAYEXTEND:
 	case SCI_ZOOMIN:
 	case SCI_ZOOMOUT:
 	case SCI_DELWORDLEFT:

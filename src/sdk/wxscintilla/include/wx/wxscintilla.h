@@ -22,7 +22,7 @@
 
 #include <wx/defs.h>
 
-#define wxSCINTILLA_VERSION _T("3.20.0")
+#define wxSCINTILLA_VERSION _T("3.22.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -197,6 +197,7 @@
 #define wxSCI_INDIC_DOTS 10
 #define wxSCI_INDIC_SQUIGGLELOW 11
 #define wxSCI_INDIC_DOTBOX 12
+#define wxSCI_INDIC_SQUIGGLEPIXMAP 13
 /* C::B begin */
 #define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
 /* C::B end */
@@ -306,27 +307,18 @@
 // This way, we favour the displaying of useful information: the begining of lines,
 // where most code reside, and the lines after the caret, eg. the body of a function.
 #define wxSCI_CARET_EVEN 0x08
-
-// Selection modes
 #define wxSCI_SEL_STREAM 0
 #define wxSCI_SEL_RECTANGLE 1
 #define wxSCI_SEL_LINES 2
 #define wxSCI_SEL_THIN 3
-
 #define wxSCI_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE 0
 #define wxSCI_CASEINSENSITIVEBEHAVIOUR_IGNORECASE 1
-
-// Caret visualisation
 #define wxSCI_CARETSTICKY_OFF 0
 #define wxSCI_CARETSTICKY_ON 1
 #define wxSCI_CARETSTICKY_WHITESPACE 2
-
-// Caret line alpha background
 #define wxSCI_ALPHA_TRANSPARENT 0
 #define wxSCI_ALPHA_OPAQUE 255
 #define wxSCI_ALPHA_NOALPHA 256
-
-// Caret style modes
 #define wxSCI_CARETSTYLE_INVISIBLE 0
 #define wxSCI_CARETSTYLE_LINE 1
 #define wxSCI_CARETSTYLE_BLOCK 2
@@ -336,8 +328,6 @@
 #define wxSCI_ANNOTATION_STANDARD 1
 #define wxSCI_ANNOTATION_BOXED 2
 #define wxSCI_UNDO_MAY_COALESCE 1
-
-// virtual space options
 #define wxSCI_SCVS_NONE 0
 #define wxSCI_SCVS_RECTANGULARSELECTION 1
 #define wxSCI_SCVS_USERACCESSIBLE 2
@@ -572,7 +562,7 @@
 #define wxSCI_C_STRINGRAW 20
 #define wxSCI_C_TRIPLEVERBATIM 21
 #define wxSCI_C_HASHQUOTEDSTRING 22
-#define wxSTC_C_PREPROCESSORCOMMENT 23
+#define wxSCI_C_PREPROCESSORCOMMENT 23
 
 /* C::B begin */
 // Keep in sync with SciLexer.h      -> SCE_C_WXSMITH
@@ -2501,6 +2491,21 @@
 // Move caret right one word, position cursor at end of word, extending selection to new caret position.
 #define wxSCI_CMD_WORDRIGHTENDEXTEND 2442
 
+// Centre current line in window.
+#define wxSCI_CMD_VERTICALCENTRECARET 2619
+
+// Move the selected lines up one line, shifting the line above after the selection
+#define wxSCI_CMD_MOVESELECTEDLINESUP 2620
+
+// Move the selected lines down one line, shifting the line below before the selection
+#define wxSCI_CMD_MOVESELECTEDLINESDOWN 2621
+
+// Scroll to start of document.
+#define wxSCI_CMD_SCROLLTOSTART 2628
+
+// Scroll to end of document.
+#define wxSCI_CMD_SCROLLTOEND 2629
+
 //}}}
 //----------------------------------------------------------------------
 
@@ -2726,7 +2731,7 @@ public:
     void MarkerSetBackground(int markerNumber, const wxColour& back);
 
     // Set the background colour used for a particular marker number when its folding block is selected.
-    void MarkerSetBackSelected(int markerNumber, const wxColour& back);
+    void MarkerSetBackgroundSelected(int markerNumber, const wxColour& back);
 
     // Enable/disable highlight for current folding bloc (smallest one that contains the caret)
     void MarkerEnableHighlight(bool enabled);
@@ -2784,10 +2789,10 @@ public:
     bool GetMarginSensitive(int margin) const;
 
     // Set the cursor shown when the mouse is inside a margin.
-    void SetMarginCursorN(int margin, int cursor);
+    void SetMarginCursor(int margin, int cursor);
 
     // Retrieve the cursor shown in a margin.
-    int GetMarginCursorN(int margin) const;
+    int GetMarginCursor(int margin) const;
 
     // Clear all the styles and make equivalent to the global default style.
     void StyleClearAll();
@@ -2846,7 +2851,7 @@ public:
     // Get is a style mixed case, or to force upper or lower case.
     int StyleGetCase(int style) const;
 
-    // Get the character get of the font in a style.
+    // Get the character set of the font in a style.
     int StyleGetCharacterSet(int style) const;
 
     // Get is a style visible or not.
@@ -2924,7 +2929,6 @@ public:
     void SetWordChars(const wxString& characters);
 
     // Get the set of characters making up words for when moving or selecting by word.
-    // Retuns the number of characters
     wxString GetWordChars() const;
 
     // Start a sequence of actions that is undone and redone as a unit.
@@ -3069,9 +3073,6 @@ public:
 
     // Register an image for use in autocompletion lists.
     void RegisterImage(int type, const wxBitmap& bmp);
-
-    // Register an image for use in autocompletion lists.
-    void RegisterRGBAImage(int type, const wxBitmap& bmp);
 
     // Clear all the registered images.
     void ClearRegisteredImages();
@@ -3522,7 +3523,7 @@ public:
     void AppendText(int length, const wxString& text);
 /* C::B end */
 
-    // Is drawing done in two phases with backgrounds drawn before faoregrounds?
+    // Is drawing done in two phases with backgrounds drawn before foregrounds?
     bool GetTwoPhaseDraw() const;
 
     // In twoPhaseDraw mode, drawing is performed in two phases, first the background
@@ -3548,7 +3549,7 @@ public:
 
     // Retrieve the value of a tag from a regular expression search.
 /* C::B begin */
-    wxString GetTag(int tagNumber);
+    wxString GetTag(int tagNumber) const;
 /* C::B end */
 
     // Make the target range start and end be the same as the selection range start and end.
@@ -3890,14 +3891,14 @@ public:
     // Delete forwards from the current position to the end of the line.
     void DelLineRight();
 
-    // Get and Set the xOffset (ie, horizonal scroll position).
+    // Get and Set the xOffset (ie, horizontal scroll position).
     void SetXOffset(int newOffset);
     int GetXOffset() const;
 
     // Set the last x chosen value to be the caret x position.
     void ChooseCaretX();
 
-    // Set the way the caret is kept visible when going sideway.
+    // Set the way the caret is kept visible when going sideways.
     // The exclusion zone is given in pixels.
     void SetXCaretPolicy(int caretPolicy, int caretSlop);
 
@@ -4046,15 +4047,15 @@ public:
     int AutoCompGetCurrent() const;
 
     // Set auto-completion case insensitive behaviour to either prefer case-sensitive matches or have no preference.
-    void AutoCSetCaseInsensitiveBehaviour(int behaviour);
+    void AutoCompSetCaseInsensitiveBehaviour(int behaviour);
 
     // Get auto-completion case insensitive behaviour.
-    int AutoCGetCaseInsensitiveBehaviour() const;
+    int AutoCompGetCaseInsensitiveBehaviour() const;
 
 /* C::B begin */
     // Get currently selected item text in the auto-completion list
     // Returns the length of the item text
-    wxString AutoCGetCurrentText();
+    wxString AutoCompGetCurrentText() const;
 /* C::B end */
 
     // Enlarge the document to a particular size of text bytes.
@@ -4103,7 +4104,7 @@ public:
     // Set the value used for IndicatorFillRange
     void SetIndicatorValue(int value);
 
-    // Get the current indicator vaue
+    // Get the current indicator value
     int GetIndicatorValue() const;
 
     // Turn a indicator on over a range.
@@ -4137,12 +4138,12 @@ public:
     // characters in the document.
 /* C::B begin */
     // defined later as wxUIntPtr GetCharacterPointer() const;
-    const char* GetCharacterPointer();
+//    const char* GetCharacterPointer() const;
 /* C::B end */
     // Return a read-only pointer to a range of characters in the document.
     // May move the gap so that the range is contiguous, but will only move up
     // to rangeLength bytes.
-    int GetRangePointer(int position, int rangeLength) const;
+    const char* GetRangePointer(int position, int rangeLength) const;
 
     // Return a position which, to avoid performance costs, should not be within
     // the range of a call to GetRangePointer.
@@ -4155,18 +4156,16 @@ public:
     bool GetKeysUnicode() const;
 
     // Set the alpha fill colour of the given indicator.
-/* C::B begin */
-    void IndicSetAlpha(int indicator, int alpha);
+    void IndicatorSetAlpha(int indicator, int alpha);
 
     // Get the alpha fill colour of the given indicator.
-    int IndicGetAlpha(int indicator) const;
-/* C::B end */
+    int IndicatorGetAlpha(int indicator) const;
 
     // Set the alpha outline colour of the given indicator.
-    void IndicSetOutlineAlpha(int indicator, int alpha);
+    void IndicatorSetOutlineAlpha(int indicator, int alpha);
 
     // Get the alpha outline colour of the given indicator.
-    int IndicGetOutlineAlpha(int indicator) const;
+    int IndicatorGetOutlineAlpha(int indicator) const;
 
     // Set extra ascent for each line
     void SetExtraAscent(int extraAscent);
@@ -4353,15 +4352,11 @@ public:
 
     // Set the foreground colour of additional selections.
     // Must have previously called SetSelFore with non-zero first argument for this to have an effect.
-/* C::B begin */
-    void SetAdditionalSelFore(const wxColour& fore);
-/* C::B end */
+    void SetAdditionalSelForeground(const wxColour& fore);
 
     // Set the background colour of additional selections.
     // Must have previously called SetSelBack with non-zero first argument for this to have an effect.
-/* C::B begin */
-    void SetAdditionalSelBack(const wxColour& back);
-/* C::B end */
+    void SetAdditionalSelBackground(const wxColour& back);
 
     // Set the alpha of the selection.
     void SetAdditionalSelAlpha(int alpha);
@@ -4370,14 +4365,10 @@ public:
     int GetAdditionalSelAlpha() const;
 
     // Set the foreground colour of additional carets.
-/* C::B begin */
-    void SetAdditionalCaretFore(const wxColour& fore);
-/* C::B end */
+    void SetAdditionalCaretForeground(const wxColour& fore);
 
     // Get the foreground colour of additional carets.
-/* C::B begin */
-    wxColour GetAdditionalCaretFore() const;
-/* C::B end */
+    wxColour GetAdditionalCaretForeground() const;
 
     // Set the main selection to the next selection.
     void RotateSelection();
@@ -4414,13 +4405,16 @@ public:
     // Set the height for future RGBA image data.
     void RGBAImageSetHeight(int height);
 
+    // Set the scale factor in percent for future RGBA image data.
+    void RGBAImageSetScale(int scalePercent);
+
     // Define a marker from RGBA data.
     // It has the width and height from RGBAImageSetWidth/Height
-    void MarkerDefineRGBAImage(int markerNumber, const wxString& pixels);
+    void MarkerDefineRGBAImage(int markerNumber, const unsigned char* pixels);
 
     // Register an RGBA image for use in autocompletion lists.
     // It has the width and height from RGBAImageSetWidth/Height
-    void RegisterRGBAImage(int type, const wxString& pixels);
+    void RegisterRGBAImage(int type, const unsigned char* pixels);
 
     // Scroll to start of document.
     void ScrollToStart();
@@ -4428,14 +4422,14 @@ public:
     // Scroll to end of document.
     void ScrollToEnd();
 
-    // Set the technolgy used.
+    // Set the technology used.
     void SetTechnology(int technology);
 
     // Get the tech.
     int GetTechnology() const;
 
     // Create an ILoader*.
-    int CreateLoader(int bytes);
+    void* CreateLoader(int bytes) const;
 
     // On OS X, show a find indicator.
     void FindIndicatorShow(int start, int end);
@@ -4485,25 +4479,26 @@ public:
     int GetStyleBitsNeeded() const;
 
     // For private communication between an application and a known lexer.
-    int PrivateLexerCall(int operation, int pointer);
+    void* PrivateLexerCall(int operation, void* pointer);
 
     // Retrieve a '\n' separated list of properties understood by the current lexer.
-/* C::B begin */
-    wxString PropertyNames();
-/* C::B end */
+    wxString PropertyNames() const;
 
     // Retrieve the type of a property.
     int PropertyType(const wxString& name);
 
     // Describe a property.
-/* C::B begin */
-    wxString DescribeProperty(const wxString& name);
-/* C::B end */
+    wxString DescribeProperty(const wxString& name) const;
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
-/* C::B begin */
-    wxString DescribeKeyWordSets();
-/* C::B end */
+    wxString DescribeKeyWordSets() const;
+
+    // Move caret to before first visible character on display line.
+    // If already there move to first character on display line.
+    void VCHomeDisplay();
+
+    // Like VCHomeDisplay but extending selection to new caret position.
+    void VCHomeDisplayExtend();
 
 /* C::B begin */
     // Retrieve the name of the lexer.
@@ -4511,7 +4506,7 @@ public:
 /* C::B end */
 
     //}}}
-//----------------------------------------------------------------------
+    //----------------------------------------------------------------------
 
     // Manually declared methods
 
@@ -4803,6 +4798,9 @@ public:
     void SetListType(int val)             { m_listType = val; }
     void SetX(int val)                    { m_x = val; }
     void SetY(int val)                    { m_y = val; }
+    void SetToken(int val)                { m_token = val; }
+    void SetAnnotationLinesAdded(int val) { m_annotationLinesAdded = val; }
+    void SetUpdated(int val)              { m_updated = val; }
 #ifdef  SCI_USE_DND
     void SetDragText(const wxString& val) { m_dragText = val; }
     void SetDragFlags(int flags)          { m_dragFlags = flags; }
@@ -4839,6 +4837,10 @@ public:
     int  GetListType() const         { return m_listType; }
     int  GetX() const                { return m_x; }
     int  GetY() const                { return m_y; }
+    int  GetToken() const                 { return m_token; }
+    int  GetAnnotationsLinesAdded() const { return m_annotationLinesAdded; }
+    int  GetUpdated() const               { return m_updated; }
+
 #ifdef SCI_USE_DND
     wxString GetDragText()           { return m_dragText; }
     int GetDragFlags()               { return m_dragFlags; }
@@ -4881,6 +4883,11 @@ private:
     int m_listType;
     int m_x;
     int m_y;
+
+    int m_token;                // wxEVT_SCI__MODIFIED with SC_MOD_CONTAINER
+    int m_annotationLinesAdded; // wxEVT_SCI_MODIFIED with SC_MOD_CHANGEANNOTATION
+    int m_updated;              // wxEVT_SCI_UPDATEUI
+
 
 #if wxUSE_DRAG_AND_DROP
     wxString m_dragText;        // wxEVT_SCI_START_DRAG, wxEVT_SCI_DO_DROP
@@ -4925,12 +4932,13 @@ DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_CLICK,      16
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_INDICATOR_RELEASE,    1678)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CANCELLED,   1679)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_CHAR_DELETED,1680)
+DECLARE_EXPORTED_EVENT_TYPE( WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_RELEASE_CLICK,1681)
 /* C::B begin */
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SETFOCUS,             1681)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_KILLFOCUS,            1682)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_FINISHED_DRAG,        1683)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_TAB,                  1684)
-DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ESC,                  1685)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SETFOCUS,             1682)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_KILLFOCUS,            1683)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_FINISHED_DRAG,        1684)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_TAB,                  1685)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ESC,                  1686)
 /* C::B end */
 END_DECLARE_EVENT_TYPES()
 #else
@@ -4965,6 +4973,7 @@ END_DECLARE_EVENT_TYPES()
         wxEVT_SCI_INDICATOR_RELEASE,
         wxEVT_SCI_AUTOCOMP_CANCELLED,
         wxEVT_SCI_AUTOCOMP_CHAR_DELETED,
+        wxEVT_SCI_HOTSPOT_RELEASE_CLICK
 /* C::B begin */
         wxEVT_SCI_SETFOCUS,
         wxEVT_SCI_KILLFOCUS,
@@ -5020,6 +5029,7 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #define EVT_SCI_INDICATOR_RELEASE(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_INDICATOR_RELEASE      id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_AUTOCOMP_CANCELLED(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_CANCELLED     id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_AUTOCOMP_CHAR_DELETED(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_CHAR_DELETED  id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_RELEASE_CLICK(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_STC_HOTSPOT_RELEASE_CLICK, id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 /* C::B begin */
 #define EVT_SCI_SETFOCUS(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SETFOCUS               id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_KILLFOCUS(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KILLFOCUS              id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
