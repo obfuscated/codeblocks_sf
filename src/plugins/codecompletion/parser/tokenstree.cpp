@@ -47,7 +47,6 @@
 wxMutex s_TokensTreeMutex;
 
 TokensTree::TokensTree() :
-    m_Modified(false),
     m_StructUnionUnnamedCount(0),
     m_EnumUnnamedCount(0),
     m_TokenTicketCount(255) // Reserve some space for the class browser
@@ -61,7 +60,7 @@ TokensTree::TokensTree() :
     m_FreeTokens.clear();
 
     m_TopNameSpaces.clear();
-    m_GlobalNameSpace.clear();
+    m_GlobalNameSpaces.clear();
 
     m_FilesStatus.clear();
 }
@@ -82,7 +81,7 @@ void TokensTree::clear()
     m_FreeTokens.clear();
 
     m_TopNameSpaces.clear();
-    m_GlobalNameSpace.clear();
+    m_GlobalNameSpaces.clear();
 
     m_FilesStatus.clear();
 
@@ -196,12 +195,12 @@ int TokensTree::TokenExists(const wxString& name, const wxString& baseArgs, int 
     return -1;
 }
 
-size_t TokensTree::FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask)
+size_t TokensTree::FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask)
 {
     result.clear();
 
     std::set<size_t> lists;
-    int numitems = m_Tree.FindMatches(s, lists, caseSensitive, is_prefix);
+    int numitems = m_Tree.FindMatches(query, lists, caseSensitive, is_prefix);
     if (!numitems)
         return 0;
 
@@ -234,14 +233,22 @@ size_t TokensTree::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
     // get file idx
     wxString f(filename); while (f.Replace(_T("\\"),_T("/"))) { ; }
     if ( !m_FilenamesMap.HasItem(f) )
+    {
+        CCLogger::Get()->DebugLog(F(_T("TokensTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str()));
+        TRACE(_T("TokensTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str());
         return 0;
+    }
 
     int idx = m_FilenamesMap.GetItemNo(f);
 
     // now get the tokens set matching this file idx
     TokenFilesMap::iterator itf = m_FilesMap.find(idx);
     if (itf == m_FilesMap.end())
+    {
+        CCLogger::Get()->DebugLog(F(_T("TokensTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx));
+        TRACE(_T("TokensTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx);
         return 0;
+    }
 
     // loop all results and add to final result set after filtering on token kind
     TokenIdxSet& tokens = itf->second;
@@ -252,11 +259,12 @@ size_t TokensTree::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
             result.insert(*it);
     }
 
+    CCLogger::Get()->DebugLog(F(_T("TokensTree::FindTokensInFile() : Found %d results for file '%s'."), result.size(), f.wx_str()));
     TRACE(_T("TokensTree::FindTokensInFile() : Found %d results for file '%s'."), result.size(), f.wx_str());
     return result.size();
 }
 
-int TokensTree::AddToken(Token* newToken, int fileIndex)
+int TokensTree::AddToken(Token* newToken, int fileIdx)
 {
     if (!newToken)
         return -1;
@@ -266,20 +274,20 @@ int TokensTree::AddToken(Token* newToken, int fileIndex)
     static TokenIdxSet tmpTokens = TokenIdxSet();
 
     // Insert the token's name and the token in the (inserted?) list
-    size_t idx = m_Tree.AddItem(name, tmpTokens);
-    TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
+    size_t tokenIdx = m_Tree.AddItem(name, tmpTokens);
+    TokenIdxSet& curList = m_Tree.GetItemAtPos(tokenIdx);
 
-    int newItem = AddTokenToList(newToken, fileIndex);
+    int newItem = AddTokenToList(newToken, fileIdx);
     curList.insert(newItem);
 
-    size_t fileIdx = (fileIndex<0) ? newToken->m_FileIdx : (size_t)fileIndex;
-    m_FilesMap[fileIdx].insert(newItem);
+    size_t fIdx = (fileIdx<0) ? newToken->m_FileIdx : (size_t)fileIdx;
+    m_FilesMap[fIdx].insert(newItem);
 
     // Add Token (if applicable) to the namespaces indexes
     if (newToken->m_ParentIndex < 0)
     {
         newToken->m_ParentIndex = -1;
-        m_GlobalNameSpace.insert(newItem);
+        m_GlobalNameSpaces.insert(newItem);
         if (newToken->m_TokenKind == tkNamespace)
             m_TopNameSpaces.insert(newItem);
     }
@@ -368,7 +376,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     // Now, from the global namespace (if applicable)
     if (oldToken->m_ParentIndex == -1)
     {
-        m_GlobalNameSpace.erase(idx);
+        m_GlobalNameSpaces.erase(idx);
         m_TopNameSpaces.erase(idx);
     }
 
@@ -442,12 +450,11 @@ void TokensTree::RemoveFile(const wxString& filename)
     RemoveFile( InsertFileOrGetIndex(filename) );
 }
 
-void TokensTree::RemoveFile(int fileIndex)
+void TokensTree::RemoveFile(int fileIdx)
 {
-    if (fileIndex <= 0)
-        return;
+    if (fileIdx <= 0) return; // nothing to do
 
-    TokenIdxSet& the_list = m_FilesMap[fileIndex];
+    TokenIdxSet& the_list = m_FilesMap[fileIdx];
     for (TokenIdxSet::const_iterator it = the_list.begin(); it != the_list.end();)
     {
         int idx = *it;
@@ -468,9 +475,9 @@ void TokensTree::RemoveFile(int fileIndex)
         // only if both its decl filename and impl filename are either empty or match this file
         // if one of those filenames do not match the above criteria
         // just clear the relevant info, leaving the token where it is...
-        bool match1 = the_token->m_FileIdx     == 0 || static_cast<int>(the_token->m_FileIdx)     == fileIndex;
-        bool match2 = the_token->m_ImplFileIdx == 0 || static_cast<int>(the_token->m_ImplFileIdx) == fileIndex;
-        bool match3 = CheckChildRemove(the_token, fileIndex);
+        bool match1 = the_token->m_FileIdx     == 0 || static_cast<int>(the_token->m_FileIdx)     == fileIdx;
+        bool match2 = the_token->m_ImplFileIdx == 0 || static_cast<int>(the_token->m_ImplFileIdx) == fileIdx;
+        bool match3 = CheckChildRemove(the_token, fileIdx);
         if (match1 && match2 && match3)
         {
             RemoveToken(the_token); // safe to remove the token
@@ -496,7 +503,7 @@ void TokensTree::RemoveFile(int fileIndex)
     }
 }
 
-bool TokensTree::CheckChildRemove(const Token* token, int fileIndex)
+bool TokensTree::CheckChildRemove(const Token* token, int fileIdx)
 {
     const TokenIdxSet& nodes = (token->m_Children); // Copy the list to avoid interference
     TokenIdxSet::const_iterator it;
@@ -510,8 +517,8 @@ bool TokensTree::CheckChildRemove(const Token* token, int fileIndex)
         if (!the_token)
             continue;
 
-        bool match1 = the_token->m_FileIdx     == 0 || static_cast<int>(the_token->m_FileIdx)     == fileIndex;
-        bool match2 = the_token->m_ImplFileIdx == 0 || static_cast<int>(the_token->m_ImplFileIdx) == fileIndex;
+        bool match1 = the_token->m_FileIdx     == 0 || static_cast<int>(the_token->m_FileIdx)     == fileIdx;
+        bool match2 = the_token->m_ImplFileIdx == 0 || static_cast<int>(the_token->m_ImplFileIdx) == fileIdx;
         if (match1 && match2)
             continue;
         else
@@ -737,18 +744,18 @@ size_t TokensTree::GetFileIndex(const wxString& filename)
   return m_FilenamesMap.GetItemNo(f);
 }
 
-const wxString TokensTree::GetFilename(size_t idx) const
+const wxString TokensTree::GetFilename(size_t fileIdx) const
 {
-    return m_FilenamesMap.GetString(idx);
+    return m_FilenamesMap.GetString(fileIdx);
 }
 
 bool TokensTree::IsFileParsed(const wxString& filename)
 {
-    size_t index = InsertFileOrGetIndex(filename);
+    size_t fileIdx = InsertFileOrGetIndex(filename);
 
-    bool parsed = (   m_FilesMap.count(index)
-                   && (m_FilesStatus[index]!=fpsNotParsed)
-                   && !m_FilesToBeReparsed.count(index) );
+    bool parsed = (   m_FilesMap.count(fileIdx)
+                   && (m_FilesStatus[fileIdx]!=fpsNotParsed)
+                   && !m_FilesToBeReparsed.count(fileIdx) );
 
     return parsed;
 }
@@ -758,12 +765,12 @@ void TokensTree::MarkFileTokensAsLocal(const wxString& filename, bool local, voi
     MarkFileTokensAsLocal( InsertFileOrGetIndex(filename), local, userData );
 }
 
-void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
+void TokensTree::MarkFileTokensAsLocal(size_t fileIdx, bool local, void* userData)
 {
-    if (file == 0)
+    if (!fileIdx)
         return;
 
-    TokenIdxSet& tokens = m_FilesMap[file];
+    TokenIdxSet& tokens = m_FilesMap[fileIdx];
     for (TokenIdxSet::const_iterator it = tokens.begin(); it != tokens.end(); ++it)
     {
         Token* token = m_Tokens.at(*it);
@@ -777,18 +784,18 @@ void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
 
 size_t TokensTree::ReserveFileForParsing(const wxString& filename, bool preliminary)
 {
-    const size_t index = InsertFileOrGetIndex(filename);
-    if (   m_FilesToBeReparsed.count(index)
-        && (  !m_FilesStatus.count(index)
-            || m_FilesStatus[index]==fpsDone) )
+    const size_t fileIdx = InsertFileOrGetIndex(filename);
+    if (   m_FilesToBeReparsed.count(fileIdx)
+        && (!m_FilesStatus.count(fileIdx) || m_FilesStatus[fileIdx]==fpsDone) )
     {
         RemoveFile(filename);
-        m_FilesToBeReparsed.erase(index);
-        m_FilesStatus[index]=fpsNotParsed;
+        m_FilesToBeReparsed.erase(fileIdx);
+        m_FilesStatus[fileIdx]=fpsNotParsed;
     }
-    if (m_FilesStatus.count(index))
+
+    if (m_FilesStatus.count(fileIdx))
     {
-        FileParsingStatus status = m_FilesStatus[index];
+        FileParsingStatus status = m_FilesStatus[fileIdx];
         if (preliminary)
         {
             if (status >= fpsAssigned)
@@ -800,9 +807,9 @@ size_t TokensTree::ReserveFileForParsing(const wxString& filename, bool prelimin
                 return 0; // No parsing needed
         }
     }
-    m_FilesToBeReparsed.erase(index);
-    m_FilesStatus[index] = preliminary ? fpsAssigned : fpsBeingParsed; // Reserve file
-    return index;
+    m_FilesToBeReparsed.erase(fileIdx);
+    m_FilesStatus[fileIdx] = preliminary ? fpsAssigned : fpsBeingParsed; // Reserve file
+    return fileIdx;
 }
 
 void TokensTree::FlagFileForReparsing(const wxString& filename)

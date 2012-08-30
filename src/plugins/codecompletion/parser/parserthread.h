@@ -259,10 +259,10 @@ private:
       * @param parent parent token pointer, we only search under the parent token scope
       * @param kindMask filter for the result token, only the specified type of tokens were matched
       */
-    Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF);
+    Token* TokenExists(const wxString& name, const Token* parent = 0, short int kindMask = 0xFFFF);
 
     /** Support function overloading */
-    Token* TokenExists(const wxString& name, const wxString& baseArgs, Token* parent, TokenKind kind);
+    Token* TokenExists(const wxString& name, const wxString& baseArgs, const Token* parent, TokenKind kind);
 
     /** TODO comment here?
       */

@@ -463,7 +463,8 @@ bool ParserThread::InitTokenizer()
         {
             // record filename for buffer parsing
             m_Filename = m_Options.fileOfBuffer;
-            m_FileIdx  = m_TokensTree->GetFileIndex(m_Filename);
+            m_FileIdx  = m_TokensTree->InsertFileOrGetIndex(m_Filename);
+
             return m_Tokenizer.InitFromBuffer(m_Buffer, m_Filename, m_Options.initLineOfBuffer);
         }
     }
@@ -1105,14 +1106,14 @@ void ParserThread::DoParse()
     m_Tokenizer.SetState(oldState);
 }
 
-Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
+Token* ParserThread::TokenExists(const wxString& name, const Token* parent, short int kindMask)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
     return m_TokensTree->at(m_TokensTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask));
 }
 
-Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs, Token* parent, TokenKind kind)
+Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs, const Token* parent, TokenKind kind)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
@@ -1304,7 +1305,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         && (   kind & tkAnyFunction
             || newToken->m_Args == args ) )
     {
-        m_TokensTree->m_Modified = true;
+        ; // nothing to do
     }
     else
     {
@@ -1375,7 +1376,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         newToken->m_ImplLine      = line;
         newToken->m_ImplLineStart = implLineStart;
         newToken->m_ImplLineEnd   = implLineEnd;
-        m_TokensTree->m_FilesMap[newToken->m_ImplFileIdx].insert(newToken->m_Index);
+        m_TokensTree->InsertFileMapByIndex(newToken->m_ImplFileIdx, newToken->m_Index);
     }
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
           name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
@@ -2884,7 +2885,7 @@ bool ParserThread::ResolveTemplateMap(const wxString& typeStr, const wxArrayStri
     size_t tokenCounts = m_TokensTree->FindMatches(parentType, parentResult, true, false, tkClass);
     if (tokenCounts > 0)
     {
-        for (TokenIdxSet::iterator it=parentResult.begin(); it!=parentResult.end(); ++it)
+        for (TokenIdxSet::const_iterator it=parentResult.begin(); it!=parentResult.end(); ++it)
         {
             int id = (*it);
             Token* normalToken = m_TokensTree->at(id);

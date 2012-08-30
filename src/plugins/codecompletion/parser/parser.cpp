@@ -338,9 +338,9 @@ size_t ParserBase::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
     TokenIdxSet tmpresult;
     if ( m_TokensTree->FindTokensInFile(filename, tmpresult, kindMask) )
     {
-        for (TokenIdxSet::iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
+        for (TokenIdxSet::const_iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
         {
-            Token* token = m_TokensTree->at(*it);
+            const Token* token = m_TokensTree->at(*it);
             if (token)
                 result.insert(*it);
         }
@@ -740,14 +740,13 @@ bool Parser::RemoveFile(const wxString& filename)
 {
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    const size_t index  = m_TokensTree->InsertFileOrGetIndex(filename);
-    const bool   result = m_TokensTree->m_FilesStatus.count(index);
+    const size_t fileIdx = m_TokensTree->InsertFileOrGetIndex(filename);
+    const bool   result  = m_TokensTree->GetFileStatusCountForIndex(fileIdx);
 
     m_TokensTree->RemoveFile(filename);
-    m_TokensTree->m_FilesMap.erase(index);
-    m_TokensTree->m_FilesStatus.erase(index);
-    m_TokensTree->m_FilesToBeReparsed.erase(index);
-    m_TokensTree->m_Modified = true;
+    m_TokensTree->EraseFileMapByIndex(fileIdx);
+    m_TokensTree->EraseFileStatusByIndex(fileIdx);
+    m_TokensTree->EraseFilesToBeReparsedByIndex(fileIdx);
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
 
@@ -913,7 +912,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         parseEndLog.Printf(_T("Project '%s' parsing stage done (%lu total parsed files, ")
                            _T("%lu tokens in %ld minute(s), %ld.%03ld seconds)."), prj.wx_str(),
-                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->m_FilesMap.size()) : 0,
+                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->GetFilesMapSize()) : 0,
                            m_TokensTree ? static_cast<unsigned long>(m_TokensTree->realsize())        : 0,
                            (m_LastStopWatchTime / 60000),
                            (m_LastStopWatchTime / 1000) % 60,
@@ -1033,7 +1032,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
 
 void Parser::ReparseModifiedFiles()
 {
-    if (!Done())
+    if ( !Done() )
     {
         wxString msg(_T("Parser::ReparseModifiedFiles : The Parser is not done."));
         msg += NotDoneReason();
@@ -1045,29 +1044,38 @@ void Parser::ReparseModifiedFiles()
     if (!m_NeedsReparse)
         m_NeedsReparse = true;
 
+    std::queue<size_t>   files_idx;
     std::queue<wxString> files_list;
-    TokenFilesSet::iterator it;
+    TokenFilesSet::const_iterator it;
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    // loop two times so that we reparse modified *header* files first
+    // Collect files to be re-parsed and therefore be removed before:
+    // Loop two times so that we reparse modified *header* files first
     // because they usually hold definitions which need to exist
     // when we parse the normal source files...
-    for (it = m_TokensTree->m_FilesToBeReparsed.begin(); it != m_TokensTree->m_FilesToBeReparsed.end(); ++it)
+    for (it = m_TokensTree->GetFilesToBeReparsed()->begin(); it != m_TokensTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokensTree->GetFilename(*it);
-        if (FileTypeOf(filename) == ftSource) // ignore source files (*.cpp etc)
+        if ( FileTypeOf(filename) == ftSource ) // ignore source files (*.cpp etc)
             continue;
         files_list.push(filename);
-        m_TokensTree->RemoveFile(*it);
+        files_idx.push(*it);
     }
-    for (it = m_TokensTree->m_FilesToBeReparsed.begin(); it != m_TokensTree->m_FilesToBeReparsed.end(); ++it)
+    for (it = m_TokensTree->GetFilesToBeReparsed()->begin(); it != m_TokensTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokensTree->GetFilename(*it);
-        if (FileTypeOf(filename) != ftSource) // ignore non-source files (*.h etc)
+        if ( FileTypeOf(filename) != ftSource ) // ignore non-source files (*.h etc)
             continue;
         files_list.push(filename);
-        m_TokensTree->RemoveFile(*it);
+        files_idx.push(*it);
+    }
+
+    // Now actually remove the files from the tree
+    while (!files_idx.empty())
+    {
+        m_TokensTree->RemoveFile(files_idx.front());
+        files_idx.pop();
     }
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)

@@ -155,17 +155,20 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
 
         m_CurrentTokenSet.clear();
         m_CurrentGlobalTokensSet.clear();
-        for (TokenFilesSet::iterator it = m_CurrentFileSet.begin();it != m_CurrentFileSet.end(); ++it)
+        for (TokenFilesSet::const_iterator itf = m_CurrentFileSet.begin(); itf != m_CurrentFileSet.end(); ++itf)
         {
-            TokenIdxSet* curset = &(tree->m_FilesMap[*it]);
-            for (TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); ++it2)
+            const TokenIdxSet* tokens = tree->GetFilesMapByIndex(*itf);
+            if (!tokens) continue;
+
+            // loop tokens in file
+            for (TokenIdxSet::const_iterator its = tokens->begin(); its != tokens->end(); ++its)
             {
-                Token* curtoken = tree->at(*it2);
-                if (curtoken)
+                Token* curToken = tree->at(*its);
+                if (curToken)
                 {
-                    m_CurrentTokenSet.insert(*it2);
-                    if (curtoken->m_ParentIndex == -1)
-                        m_CurrentGlobalTokensSet.insert(*it2);
+                    m_CurrentTokenSet.insert(*its);
+                    if (curToken->m_ParentIndex == -1)
+                        m_CurrentGlobalTokensSet.insert(*its);
                 }
             }
         }
@@ -660,7 +663,8 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
 
-    for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
+    const TokenIdxSet* tis = tt->GetGlobalNameSpaces();
+    for (TokenIdxSet::const_iterator it = tis->begin(); it != tis->end(); ++it)
     {
         const Token* token = tt->at(*it);
         if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
@@ -757,7 +761,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId par
     {
         if (   m_BrowserOptions.displayFilter == bdfWorkspace
             || m_BrowserOptions.displayFilter == bdfEverything )
-            tokens = &m_TokensTree->m_GlobalNameSpace;
+            tokens =  m_TokensTree->GetGlobalNameSpaces();
         else
             tokens = &m_CurrentGlobalTokensSet;
     }

@@ -156,6 +156,8 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
         return false;
     }
 
+    while (m_Filename.Replace(_T("\\"),_T("/"))) { ; }
+
     m_IsOK = true;
     return true;
 }
@@ -169,6 +171,8 @@ bool Tokenizer::InitFromBuffer(const wxString& buffer, const wxString& fileOfBuf
     m_IsOK       = true;
     m_Filename   = fileOfBuffer;
     m_LineNumber = initLineNumber;
+
+    while (m_Filename.Replace(_T("\\"),_T("/"))) { ; }
 
     return true;
 }

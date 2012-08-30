@@ -1249,7 +1249,8 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*     tree,
     else
     {
         // all global tokens
-        for (TokenList::iterator it = tree->m_Tokens.begin(); it != tree->m_Tokens.end(); ++it)
+        const TokenList* tl = tree->GetTokens();
+        for (TokenList::const_iterator it = tl->begin(); it != tl->end(); ++it)
         {
             const Token* token = *it;
             if (token && token->m_ParentIndex == -1)
@@ -1413,7 +1414,8 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
             // TODO: Handle template class here.
             if (parentSet.count(-1))
             {
-                for (TokenList::iterator it = tree->m_Tokens.begin(); it != tree->m_Tokens.end(); ++it)
+                const TokenList* tl = tree->GetTokens();
+                for (TokenList::const_iterator it = tl->begin(); it != tl->end(); ++it)
                 {
                     const Token* token = (*it);
                     if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size())
