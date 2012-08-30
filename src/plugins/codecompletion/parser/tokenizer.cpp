@@ -107,6 +107,7 @@ Tokenizer::Tokenizer(TokensTree* tokensTree, const wxString& filename) :
     m_RepeatReplaceCount(0)
 {
     m_TokenizerOptions.wantPreprocessor = true;
+
     if (!m_Filename.IsEmpty())
         Init(m_Filename);
 }
@@ -119,7 +120,7 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 {
     m_Loader = loader;
     BaseInit();
-    if (filename.IsEmpty())
+    if ( filename.IsEmpty() )
     {
         if (m_Filename.IsEmpty())
         {
@@ -137,13 +138,13 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 #endif
     }
 
-    if (!wxFileExists(m_Filename))
+    if ( !wxFileExists(m_Filename) )
     {
         TRACE(_T("Init() : File '%s' does not exist."), m_Filename.wx_str());
         return false;
     }
 
-    if (!ReadFile())
+    if ( !ReadFile() )
     {
         TRACE(_T("Init() : File '%s' could not be read."), m_Filename.wx_str());
         return false;
@@ -198,7 +199,7 @@ bool Tokenizer::ReadFile()
     wxString fileName = wxEmptyString;
     if (m_Loader)
     {
-        fileName = m_Loader->FileName();
+        fileName    = m_Loader->FileName();
         char* data  = m_Loader->GetData();
         m_BufferLen = m_Loader->GetLength();
 
@@ -222,17 +223,16 @@ bool Tokenizer::ReadFile()
     }
     else
     {
-        if (!wxFileExists(m_Filename))
+        if ( !wxFileExists(m_Filename) )
             return false;
 
         // open file
         wxFile file(m_Filename);
-
-        if (!cbRead(file, m_Buffer))
+        if ( !cbRead(file, m_Buffer) )
             return false;
 
         fileName = m_Filename;
-        success = true;
+        success  = true;
     }
 
     m_BufferLen = m_Buffer.Length();
@@ -1167,15 +1167,15 @@ void Tokenizer::MacroReplace(wxString& str)
         const int id = m_TokensTree->TokenExists(str, -1, tkPreprocessor);
         if (id != -1)
         {
-            Token* tk = m_TokensTree->at(id);
-            if (tk)
+            const Token* token = m_TokensTree->at(id);
+            if (token)
             {
                 bool replaced = false;
-                if (!tk->m_Args.IsEmpty())
-                    replaced = ReplaceMacroActualContext(tk, false);
-                else if (tk->m_FullType != tk->m_Name)
-                    replaced = ReplaceBufferForReparse(tk->m_FullType, false);
-                if (replaced || tk->m_FullType.IsEmpty())
+                if (!token->m_Args.IsEmpty())
+                    replaced = ReplaceMacroActualContext(token, false);
+                else if (token->m_FullType != token->m_Name)
+                    replaced = ReplaceBufferForReparse(token->m_FullType, false);
+                if (replaced || token->m_FullType.IsEmpty())
                 {
                     SkipUnwanted();
                     str = DoGetToken();
@@ -1273,7 +1273,7 @@ bool Tokenizer::CalcConditionExpression()
             const int id = m_TokensTree->TokenExists(token, -1, tkPreprocessor);
             if (id != -1)
             {
-                Token* tk = m_TokensTree->at(id);
+                const Token* tk = m_TokensTree->at(id);
                 if (tk)
                 {
                     if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
@@ -1703,10 +1703,10 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
     return true;
 }
 
-bool Tokenizer::ReplaceMacroActualContext(Token* tk, bool updatePeekToken)
+bool Tokenizer::ReplaceMacroActualContext(const Token* tk, bool updatePeekToken)
 {
     wxString actualContext;
-    if (GetActualContextForMacro(tk, actualContext))
+    if ( GetActualContextForMacro(tk, actualContext) )
         return ReplaceBufferForReparse(actualContext, updatePeekToken);
     return false;
 }
@@ -1777,7 +1777,7 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
         return -1;
 }
 
-bool Tokenizer::GetActualContextForMacro(Token* tk, wxString& actualContext)
+bool Tokenizer::GetActualContextForMacro(const Token* tk, wxString& actualContext)
 {
     // e.g. "#define AAA AAA" and usage "AAA(x)"
     if (!tk || tk->m_Name == tk->m_FullType)

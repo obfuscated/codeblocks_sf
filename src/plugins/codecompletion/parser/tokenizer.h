@@ -257,7 +257,7 @@ public:
     bool ReplaceBufferForReparse(const wxString& target, bool updatePeekToken = true);
 
     /** Get actual context for macro, then replace buffer for re-parsing */
-    bool ReplaceMacroActualContext(Token* tk, bool updatePeekToken = true);
+    bool ReplaceMacroActualContext(const Token* tk, bool updatePeekToken = true);
 
     /** Get first token position in buffer */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
@@ -415,7 +415,7 @@ private:
     void SplitArguments(wxArrayString& results);
 
     /** Get the actual context for macro */
-    bool GetActualContextForMacro(Token* tk, wxString& actualContext);
+    bool GetActualContextForMacro(const Token* tk, wxString& actualContext);
 
     /** Just for KMP find */
     void KMP_GetNextVal(const wxChar* pattern, int next[]);
