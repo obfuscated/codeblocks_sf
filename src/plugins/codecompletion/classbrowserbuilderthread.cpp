@@ -305,7 +305,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     if (m_NativeParser && !m_BrowserOptions.treeMembers)
         AddMembersOf(m_CCTreeCtrlTop, item);
 #ifdef CC_BUILDTREE_MEASURING
-    CCLogger::Get()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms for %d items."),sw.Time(),m_CCTreeCtrlTop->GetCount()));
+    CCLogger::Get()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms for %u items."),sw.Time(),m_CCTreeCtrlTop->GetCount()));
 #endif
 
     if (locked)

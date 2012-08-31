@@ -777,7 +777,7 @@ namespace
 {
 wxString MakeSleepCommand()
 {
-    return wxString::Format(wxT("sleep %d"), 80000000 + ::wxGetProcessId());
+    return wxString::Format(wxT("sleep %lu"), 80000000 + ::wxGetProcessId());
 }
 }
 #endif

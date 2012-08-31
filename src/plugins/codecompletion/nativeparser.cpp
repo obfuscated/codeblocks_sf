@@ -505,7 +505,7 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
         }
     }
 
-    CCLogger::Get()->DebugLog(F(_T("Found %d files:"), files.GetCount()));
+    CCLogger::Get()->DebugLog(F(_T("Found %lu files:"), static_cast<unsigned long>(files.GetCount())));
     for (size_t i=0; i<files.GetCount(); i++)
         CCLogger::Get()->DebugLog(F(_T("- %s"), files[i].wx_str()));
 
@@ -1156,14 +1156,14 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             parser->AddPriorityHeaders(file, systemHeaderFile);
         }
 
-        CCLogger::Get()->DebugLog(F(_T("Add %d priority parsing file(s) for project '%s'..."),
-                                    priority_files.size(), prj.wx_str()));
+        CCLogger::Get()->DebugLog(F(_T("Add %lu priority parsing file(s) for project '%s'..."),
+                                    static_cast<unsigned long>(priority_files.size()), prj.wx_str()));
     }
 
     if (!headers.empty() || !sources.empty())
     {
-        CCLogger::Get()->DebugLog(F(_T("Added %d file(s) for project '%s' to batch-parser..."),
-                                    headers.size() + sources.size(), prj.wx_str()));
+        CCLogger::Get()->DebugLog(F(_T("Added %lu file(s) for project '%s' to batch-parser..."),
+                                    static_cast<unsigned long>(headers.size() + sources.size()), prj.wx_str()));
         parser->AddBatchParse(headers);
         parser->AddBatchParse(sources);
     }
@@ -1432,7 +1432,7 @@ size_t NativeParser::AI(TokenIdxSet&    result,
     ResolveExpression(tree, components, *search_scope, result, caseSensitive, isPrefix);
 
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("AI() AI leave, returned %d results"),result.size()));
+        CCLogger::Get()->DebugLog(F(_T("AI() AI leave, returned %lu results"),static_cast<unsigned long>(result.size())));
 
     return result.size();
 }
@@ -1534,7 +1534,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData,
     TokenIdxSet result;
     size_t num_results = m_Parser->FindTokensInFile(searchData->file, result, tkAnyFunction | tkClass);
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Found %d results"), num_results));
+        CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Found %lu results"), static_cast<unsigned long>(num_results)));
 
     TokensTree* tree = m_Parser->GetTokensTree();
 
@@ -1546,7 +1546,7 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData,
     {
         // got it :)
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Current function: '%s' (at line %d)"),
+            CCLogger::Get()->DebugLog(F(_T("FindCurrentFunctionStart() Current function: '%s' (at line %u)"),
                                         token->DisplayName().wx_str(),
                                         token->m_ImplLine));
 
@@ -2353,7 +2353,7 @@ void NativeParser::AddGCCCompilerDirs(const wxString& masterPath, const wxString
     fn.AppendDir(_T("bin"));
 
     const wxArrayString& gccDirs = GetGCCCompilerDirs(fn.GetFullPath());
-    TRACE(_T("Adding %d cached gcc dirs to parser..."), gccDirs.GetCount());
+    TRACE(_T("Adding %lu cached gcc dirs to parser..."), static_cast<unsigned long>(gccDirs.GetCount()));
     for (size_t i=0; i<gccDirs.GetCount(); ++i)
     {
         parser->AddIncludeDir(gccDirs[i]);
@@ -2662,7 +2662,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
             }
         }
 
-        wxString log(F(_("Done adding %d files of project (%s) to parser."), fileCount, prj.wx_str()));
+        wxString log(F(_("Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
         CCLogger::Get()->DebugLog(log);
     }
     else

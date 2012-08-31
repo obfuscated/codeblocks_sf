@@ -250,11 +250,11 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     wxString info;
 #ifndef __GNUC__
     info.Printf(_T( " application info:\n"
-                    "\t svn_revision:\t%d\n"
+                    "\t svn_revision:\t%u\n"
                     "\t build_date:\t%s, %s "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
 #else
     info.Printf(_T( " application info:\n"
-                    "\t svn_revision:\t%d\n"
+                    "\t svn_revision:\t%u\n"
                     "\t build_date:\t%s, %s\n"
                     "\t gcc_version:\t%d.%d.%d "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__),
                 __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);

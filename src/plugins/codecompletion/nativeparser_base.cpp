@@ -131,7 +131,7 @@ size_t NativeParserBase::FindAIMatches(TokensTree*                 tree,
                       (isLastComponent && !isPrefix), kindMask);
 
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looping %d results"), local_result.size()));
+        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looping %lu results"), static_cast<unsigned long>(local_result.size())));
 
     // loop all matches, and recurse
     for (TokenIdxSet::const_iterator it = local_result.begin(); it != local_result.end(); it++)
@@ -186,7 +186,7 @@ size_t NativeParserBase::FindAIMatches(TokensTree*                 tree,
             // until we find a result, or reach -1...
 
             if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looking for type: '%s' (%d components)"), actual.wx_str(), type_components.size()));
+                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looking for type: '%s' (%lu components)"), actual.wx_str(), static_cast<unsigned long>(type_components.size())));
 
             // search under all search-scope namespaces too
             TokenIdxSet temp_search_scope;
@@ -272,9 +272,9 @@ size_t NativeParserBase::FindAIMatches(TokensTree*                 tree,
                 {
                     CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
                     if (type_result.size() > 1)
-                        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Multiple types matched for '%s': %d results"),
+                        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Multiple types matched for '%s': %lu results"),
                                                     token->m_BaseType.wx_str(),
-                                                    type_result.size()));
+                                                    static_cast<unsigned long>(type_result.size())));
                 }
             }
             else if (s_DebugSmartSense)
@@ -475,8 +475,8 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
     unsigned int startAt = FindCCTokenStart(line);
     wxString res = GetNextCCToken(line, startAt, tokenOperatroType);
 
-    TRACE(_T("GetCCToken() : FindCCTokenStart returned %d \"%s\""), startAt, line.wx_str());
-    TRACE(_T("GetCCToken() : GetNextCCToken returned %d \"%s\""), startAt, res.wx_str());
+    TRACE(_T("GetCCToken() : FindCCTokenStart returned %u \"%s\""), startAt, line.wx_str());
+    TRACE(_T("GetCCToken() : GetNextCCToken returned %u \"%s\""), startAt, res.wx_str());
 
 
     if (startAt == line.Len())
@@ -584,7 +584,7 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 
     startAt = AfterWhitespace(startAt, line);
 
-    TRACE(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).wx_str());
+    TRACE(_T("FindCCTokenStart() : Starting at %u \"%s\""), startAt, line.Mid(startAt).wx_str());
 
     return startAt;
 }
@@ -612,7 +612,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
         }
     }
 
-    TRACE(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
+    TRACE(_T("GetNextCCToken() : at %u (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     while (InsideToken(startAt, line))
     {
@@ -627,7 +627,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
         ++startAt;
     }
 
-    TRACE(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
+    TRACE(_T("GetNextCCToken() : Done nest: at %u (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     startAt = AfterWhitespace(startAt, line);
     if (IsOpeningBracket(startAt, line))
@@ -663,7 +663,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
     if (IsOperatorBegin(startAt, line))
         ++startAt;
 
-    TRACE(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
+    TRACE(_T("GetNextCCToken() : Return at %u (%c): res=%s"), startAt, line.GetChar(startAt), res.wx_str());
 
     return res;
 }
@@ -802,7 +802,7 @@ size_t NativeParserBase::ResolveExpression(TokensTree*                 tree,
 
         if (s_DebugSmartSense)
         {
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope is %d result."), initialScope.size()));
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope is %lu result."), static_cast<unsigned long>(initialScope.size())));
             for (TokenIdxSet::const_iterator tt = initialScope.begin(); tt != initialScope.end(); ++tt)
                 CCLogger::Get()->DebugLog(F(_T("search scope: %d"), (*tt)));
         }
@@ -825,7 +825,7 @@ size_t NativeParserBase::ResolveExpression(TokensTree*                 tree,
         //-------------------------------------
 
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Looping %d result."), initialResult.size()));
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Looping %lu result."), static_cast<unsigned long>(initialResult.size())));
 
         //------------------------------------
         if (!initialResult.empty())
@@ -859,8 +859,8 @@ size_t NativeParserBase::ResolveExpression(TokensTree*                 tree,
                     continue;
 
                 if (s_DebugSmartSense)
-                    CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%d) : type='%s'"),
-                                                token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
+                    CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%lu) : type='%s'"),
+                                                token->m_Name.wx_str(), static_cast<unsigned long>(id), token->m_BaseType.wx_str()));
 
                 // recond the template map message here. hope it will work.
                 // wxString tkname = token->m_Name;
@@ -1350,7 +1350,7 @@ size_t NativeParserBase::GenerateResultSet(TokensTree*        tree,
         // eliminate the tokens.
         if (!textMatchSet.empty())
         {
-            TRACE(_T("Find %d valid text matched tokens from the tree."), textMatchSet.size());
+            TRACE(_T("Find %lu valid text matched tokens from the tree."), static_cast<unsigned long>(textMatchSet.size()));
 
             // get the tokens under the search scope. Note: tokens can have the same names, but we are
             // only interests those under the search scope, here the search scope is the parentSet,
@@ -1486,7 +1486,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
         if (!token)
             continue;
 
-        TRACE(_T("GetTokenFromCurrentLine() Iterating: tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+        TRACE(_T("GetTokenFromCurrentLine() Iterating: tN='%s', tF='%s', tStart=%u, tEnd=%u"),
               token->DisplayName().wx_str(), token->GetFilename().wx_str(),
               token->m_ImplLineStart, token->m_ImplLineEnd);
 
@@ -1495,7 +1495,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
             && token->m_ImplLine    <= curLine
             && token->m_ImplLineEnd >= curLine)
         {
-            TRACE(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+            TRACE(_T("GetTokenFromCurrentLine() tkAnyFunction : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
                    token->DisplayName().wx_str(), token->GetFilename().wx_str(),
                    token->m_ImplLineStart, token->m_ImplLineEnd);
             result = token->m_Index;
@@ -1506,7 +1506,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
                  && token->m_ImplLine <= curLine
                  && token->m_ImplLineStart >= curLine)
         {
-            TRACE(_T("GetTokenFromCurrentLine() tkConstructor : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+            TRACE(_T("GetTokenFromCurrentLine() tkConstructor : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
                   token->DisplayName().wx_str(), token->GetFilename().wx_str(),
                   token->m_ImplLineStart, token->m_ImplLineEnd);
             result = token->m_Index;
@@ -1516,7 +1516,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
                  && token->m_ImplLineStart <= curLine
                  && token->m_ImplLineEnd >= curLine)
         {
-            TRACE(_T("GetTokenFromCurrentLine() tkClass : tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+            TRACE(_T("GetTokenFromCurrentLine() tkClass : tN='%s', tF='%s', tStart=%u, tEnd=%u"),
                   token->DisplayName().wx_str(), token->GetFilename().wx_str(),
                   token->m_ImplLineStart, token->m_ImplLineEnd);
             classToken = token;
@@ -1525,10 +1525,10 @@ int NativeParserBase::GetTokenFromCurrentLine(TokensTree*        tree,
 
         if (found) break; // exit for-loop
 
-        TRACE(_T("GetTokenFromCurrentLine() Function out of bounds: tN='%s', tF='%s', tStart=%d, ")
-              _T("tEnd=%d, line=%d (size_t)line=%d"), token->DisplayName().wx_str(),
+        TRACE(_T("GetTokenFromCurrentLine() Function out of bounds: tN='%s', tF='%s', tStart=%u, ")
+              _T("tEnd=%u, line=%lu (size_t)line=%lu"), token->DisplayName().wx_str(),
               token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd,
-              curLine, curLine);
+              static_cast<unsigned long>(curLine), static_cast<unsigned long>(curLine));
     }
 
     if (classToken)

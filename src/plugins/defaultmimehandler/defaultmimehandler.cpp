@@ -134,7 +134,7 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
         txt << mt->wildcard << _T(";");
         txt << mt->program << _T(' ');
         wxString key;
-        key.Printf(_T("MimeType%d"), i);
+        key.Printf(_T("MimeType%u"), i);
         conf->Write(key, txt);
     }
     WX_CLEAR_ARRAY(m_MimeTypes);

@@ -588,7 +588,7 @@ void GDB_driver::CPURegisters()
 void GDB_driver::SwitchToFrame(size_t number)
 {
     ResetCursor();
-    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("frame %d"), number)));
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("frame %lu"), static_cast<unsigned long>(number))));
 }
 
 void GDB_driver::SetVarValue(const wxString& var, const wxString& value)
@@ -649,7 +649,7 @@ void GDB_driver::EnableCatchingThrow(bool enable)
 void GDB_driver::SwitchThread(size_t threadIndex)
 {
     ResetCursor();
-    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("thread %d"), threadIndex)));
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("thread %lu"), static_cast<unsigned long>(threadIndex))));
     if (Manager::Get()->GetDebuggerManager()->UpdateBacktrace())
         QueueCommand(new GdbCmd_Backtrace(this));
 }
@@ -746,7 +746,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             long pid = 0;
             pidStr.ToLong(&pid);
             SetChildPID(pid);
-            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+            m_pDBG->Log(wxString::Format(_("Child process PID: %ld"), pid));
         }
     }
     else if (!platform::windows && m_ChildPID == 0)
@@ -757,7 +757,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             long pid = 0;
             pidStr.ToLong(&pid);
             SetChildPID(pid);
-            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+            m_pDBG->Log(wxString::Format(_("Child process PID: %ld"), pid));
         }
     }
 

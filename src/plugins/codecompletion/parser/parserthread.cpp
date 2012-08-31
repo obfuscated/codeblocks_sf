@@ -447,7 +447,7 @@ bool ParserThread::InitTokenizer()
                 m_Filename = m_Buffer;
                 m_FileSize = file.Length();
 
-                TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%d."), m_Filename.wx_str(), m_FileSize);
+                TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%u."), m_Filename.wx_str(), m_FileSize);
 
                 bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
                 Delete(m_Options.loader);
@@ -1310,8 +1310,8 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     else
     {
         newToken = new Token(newname, m_FileIdx, line, ++m_TokensTree->m_TokenTicketCount);
-        TRACE(_T("DoAddToken() : Created token='%s', file_idx=%d, line=%d, ticket="), newname.wx_str(),
-              m_FileIdx, line, m_TokensTree->m_TokenTicketCount);
+        TRACE(_T("DoAddToken() : Created token='%s', file_idx=%u, line=%d, ticket=%lu"), newname.wx_str(),
+              m_FileIdx, line, static_cast<unsigned long>(m_TokensTree->m_TokenTicketCount));
 
         Token* finalParent = localParent ? localParent : m_LastParent;
         if (kind == tkVariable && m_Options.parentIdxOfBuffer != -1)
@@ -1760,11 +1760,11 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
-            unnamedTmp.Printf(_T("%s%s%d"),
+            unnamedTmp.Printf(_T("%s%s%lu"),
                               g_UnnamedSymbol.wx_str(),
                               ct == ctClass ? _T("Class") :
                               ct == ctUnion ? _T("Union") :
-                              _T("Struct"), ++m_TokensTree->m_StructUnionUnnamedCount);
+                              _T("Struct"), static_cast<unsigned long>(++m_TokensTree->m_StructUnionUnnamedCount));
             Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
             // Maybe it is a bug here. I just fixed it.
             if (!newToken)
@@ -2035,7 +2035,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
                 if (!m_IsBuffer)
-                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%d)."),
+                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%u)."),
                           name.wx_str(), (lineEnd-lineStart), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
 
                 break;
@@ -2087,7 +2087,7 @@ void ParserThread::HandleEnum()
         // we have an un-named enum
         if (m_ParsingTypedef)
         {
-            token.Printf(_T("%sEnum%d"), g_UnnamedSymbol.wx_str(), ++m_TokensTree->m_EnumUnnamedCount);
+            token.Printf(_T("%sEnum%lu"), g_UnnamedSymbol.wx_str(), static_cast<unsigned long>(++m_TokensTree->m_EnumUnnamedCount));
             m_LastUnnamedTokenName = token;
         }
         else

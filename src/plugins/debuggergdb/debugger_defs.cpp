@@ -153,7 +153,7 @@ wxString DebuggerBreakpoint::GetInfo() const
                     s += wxT(" ");
                 s += _("temporary");
             }
-            s += wxString::Format(wxT(" (index: %d)"), index);
+            s += wxString::Format(wxT(" (index: %ld)"), index);
             return s;
         }
         case bptFunction:

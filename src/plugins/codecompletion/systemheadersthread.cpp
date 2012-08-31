@@ -133,7 +133,7 @@ void* SystemHeadersThread::Entry()
 
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, SystemHeadersThreadHelper::idSystemHeadersThreadUpdate);
         evt.SetClientData(this);
-        evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %d"), dirs[i].wx_str(), m_SystemHeadersMap[dirs[i]].size()));
+        evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %lu"), dirs[i].wx_str(), static_cast<unsigned long>(m_SystemHeadersMap[dirs[i]].size())));
         wxPostEvent(m_Parent, evt);
     }
 
@@ -142,7 +142,7 @@ void* SystemHeadersThread::Entry()
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, SystemHeadersThreadHelper::idSystemHeadersThreadCompleted);
         evt.SetClientData(this);
         if (!dirs.IsEmpty())
-            evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %d"), dirs.GetCount()));
+            evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %lu"), static_cast<unsigned long>(dirs.GetCount())));
         wxPostEvent(m_Parent, evt);
     }
 
@@ -216,7 +216,7 @@ void HeaderDirTraverser::AddLock(bool is_file)
 
     if ((m_Files+m_Dirs) % 100 == 1)
     {
-        TRACE(_T("HeaderDirTraverser: %d directories and %d files traversed. Unlocking temporarily."), m_Dirs, m_Files);
+        TRACE(_T("HeaderDirTraverser: %lu directories and %lu files traversed. Unlocking temporarily."), static_cast<unsigned long>(m_Dirs), static_cast<unsigned long>(m_Files));
 
         if (m_Locked)
         {

@@ -3595,7 +3595,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            wxString msg = wxString::Format(_("%d errors, %d warnings (%d minutes, %d seconds)"),
+            wxString msg = wxString::Format(_("%u errors, %u warnings (%d minutes, %d seconds)"),
                                             m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning), mins, secs);
             LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,

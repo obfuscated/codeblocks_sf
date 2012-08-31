@@ -529,7 +529,7 @@ void EditorColourSet::Save()
         {
             OptionColour* opt = it->second.m_Colours.Item(i);
             wxString tmpKey;
-            tmpKey << key << _T("/style") << wxString::Format(_T("%d"), i);
+            tmpKey << key << _T("/style") << wxString::Format(_T("%u"), i);
 
             bool saved = false;
 
@@ -649,7 +649,7 @@ void EditorColourSet::Load()
         for (unsigned int i = 0; i < it->second.m_Colours.GetCount(); ++i)
         {
             wxString tmpKey;
-            tmpKey << key << _T("/style") << wxString::Format(_T("%d"), i);
+            tmpKey << key << _T("/style") << wxString::Format(_T("%u"), i);
             if (!cfg->Exists(tmpKey + _T("/name")))
             {
                 // make sure we didn't create it accidentally

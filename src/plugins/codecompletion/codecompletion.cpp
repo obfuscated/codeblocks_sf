@@ -845,8 +845,8 @@ int CodeCompletion::CodeComplete()
         || m_NativeParser.LastAISearchWasGlobal() ) // enter even if no match (code-complete C++ keywords)
     {
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("%d results"), result.size()));
-        TRACE(F(_T("%d results"), result.size()));
+            CCLogger::Get()->DebugLog(F(_T("%lu results"), static_cast<unsigned long>(result.size())));
+        TRACE(F(_T("%lu results"), static_cast<unsigned long>(result.size())));
 
         if (result.size() <= m_CCMaxMatches)
         {
@@ -1230,8 +1230,8 @@ void CodeCompletion::CodeCompleteIncludes()
         CodeCompletionHelper::GetStringFromSet(final_str, files, _T(" "));
         final_str.RemoveLast(); // remove last space
         control->AutoCompShow(pos - lineStartPos - keyPos, final_str);
-        CCLogger::Get()->DebugLog(F(_T("Get include file count is %d, use time is %d"),
-                                    files.size(), sw.Time()));
+        CCLogger::Get()->DebugLog(F(_T("Get include file count is %lu, use time is %ld"),
+                                    static_cast<unsigned long>(files.size()), sw.Time()));
     }
 }
 
@@ -1818,7 +1818,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             const Token* token = tmpsearch.GetItem(sel);
             if (ed && token)
             {
-                TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %d."), token->m_Name.wx_str(), token->m_Line));
+                TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), token->m_Name.wx_str(), token->m_Line));
                 ed->GotoTokenPosition(token->m_Line - 1, token->m_Name);
             }
         }
@@ -3010,7 +3010,7 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 void CodeCompletion::ParseFunctionsAndFillToolbar()
 {
     TRACE(_T("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, "),
-          m_ToolbarNeedReparse, m_ToolbarNeedRefresh);
+          m_ToolbarNeedReparse?1:0, m_ToolbarNeedRefresh?1:0);
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     if (!edMan) // Closing the app?
         return;
@@ -3102,7 +3102,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         it = unique(functionsScopes.begin(), functionsScopes.end(), CodeCompletionHelper::EqualFunctionScope);
         functionsScopes.resize(it - functionsScopes.begin());
 
-        TRACE(F(_T("Found %d namespace locations"), nameSpaces.size()));
+        TRACE(F(_T("Found %lu namespace locations"), static_cast<unsigned long>(nameSpaces.size())));
         /*
         for (unsigned int i = 0; i < nameSpaces.size(); ++i)
             CCLogger::Get()->DebugLog(F(_T("\t%s (%d:%d)"),
@@ -3137,7 +3137,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         }
     }
 
-    TRACE(F(_T("Parsed %d functionscope items"), m_FunctionsScope.size()));
+    TRACE(F(_T("Parsed %lu functionscope items"), static_cast<unsigned long>(m_FunctionsScope.size())));
     /*
     for (unsigned int i = 0; i < m_FunctionsScope.size(); ++i)
         CCLogger::Get()->DebugLog(F(_T("\t%s%s (%d:%d)"),
@@ -3406,7 +3406,7 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
             }
 
             if (reparseCount)
-                CCLogger::Get()->DebugLog(F(_T("Re-parsed %d files."), reparseCount));
+                CCLogger::Get()->DebugLog(F(_T("Re-parsed %lu files."), static_cast<unsigned long>(reparseCount)));
         }
 
         if (files.IsEmpty())

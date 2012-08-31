@@ -103,7 +103,7 @@ void MSVCWorkspaceBase::updateProjects()
     for (projIt = _projects.begin(); projIt != _projects.end(); ++projIt)
     {
         proj = projIt->second;
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %d dependencies"), proj._project->GetTitle().wx_str(), proj._dependencyList.GetCount()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %lu dependencies"), proj._project->GetTitle().wx_str(), static_cast<unsigned long>(proj._dependencyList.GetCount())));
         for (i=0; i<proj._dependencyList.GetCount(); ++i)
         {
             depIt = _projects.find(proj._dependencyList[i]);

@@ -259,8 +259,8 @@ size_t TokensTree::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
             result.insert(*it);
     }
 
-    CCLogger::Get()->DebugLog(F(_T("TokensTree::FindTokensInFile() : Found %d results for file '%s'."), result.size(), f.wx_str()));
-    TRACE(_T("TokensTree::FindTokensInFile() : Found %d results for file '%s'."), result.size(), f.wx_str());
+    CCLogger::Get()->DebugLog(F(_T("TokensTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str()));
+    TRACE(_T("TokensTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str());
     return result.size();
 }
 

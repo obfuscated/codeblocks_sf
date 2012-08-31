@@ -369,7 +369,7 @@ bool Expression::CalcPostfix()
             {
                 --cntNumeric;
                 stack.push(pair.first);
-                TRACE(_T("CalcPostfix() : stack.push(pair.first) : %d"), pair.first);
+                TRACE(_T("CalcPostfix() : stack.push(pair.first) : %ld"), pair.first);
                 pair.first = pair.second;
                 pair.second = node.GetTokenValue();
             }
@@ -403,14 +403,14 @@ bool Expression::CalcPostfix()
                     }
                     pair.second = pair.first;
                     pair.first = stack.top();
-                    TRACE(_T("CalcPostfix() : stack.pop() : %d"), pair.first);
+                    TRACE(_T("CalcPostfix() : stack.pop() : %ld"), pair.first);
                     stack.pop();
                     pair.first = Calculate(type, pair.first, pair.second);
                 }
             }
         }
 
-        TRACE(_T("CalcPostfix() : pair.first : %d, pair.second : %d"), pair.first, pair.second);
+        TRACE(_T("CalcPostfix() : pair.first : %ld, pair.second : %ld"), pair.first, pair.second);
 
         if (!m_Status)
             return false;

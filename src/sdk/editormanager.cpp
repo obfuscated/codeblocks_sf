@@ -2622,7 +2622,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         }
         else
         {
-            msg.Printf(_("not found in %d files"), filesList.GetCount());
+            msg.Printf(_("not found in %lu files"), static_cast<unsigned long>(filesList.GetCount()));
             LogSearch(_T(""), -1, msg );
             m_pSearchLog->FocusEntry(oldcount);
         }

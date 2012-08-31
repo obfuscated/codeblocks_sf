@@ -434,11 +434,11 @@ void CCDebugInfo::DisplayTokenInfo()
     FillDescendants();
 
     if (!m_Token->GetFilename().IsEmpty())
-        txtDeclFile->SetLabel(wxString::Format(_T("%s : %d"), m_Token->GetFilename().c_str(), m_Token->m_Line));
+        txtDeclFile->SetLabel(wxString::Format(_T("%s : %u"), m_Token->GetFilename().c_str(), m_Token->m_Line));
     else
         txtDeclFile->SetLabel(wxEmptyString);
     if (!m_Token->GetImplFilename().IsEmpty())
-        txtImplFile->SetLabel(wxString::Format(_("%s : %d (code lines: %d to %d)"), m_Token->GetImplFilename().c_str(), m_Token->m_ImplLine, m_Token->m_ImplLineStart, m_Token->m_ImplLineEnd));
+        txtImplFile->SetLabel(wxString::Format(_("%s : %u (code lines: %u to %u)"), m_Token->GetImplFilename().c_str(), m_Token->m_ImplLine, m_Token->m_ImplLineStart, m_Token->m_ImplLineEnd));
     else
         txtImplFile->SetLabel(wxEmptyString);
     txtUserData->SetLabel(wxString::Format(_T("0x%p"), m_Token->m_UserData));
@@ -497,9 +497,9 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
     if (!m_Parser || !m_Parser->GetTokensTree())
         return;
 
-    lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
-                                       m_Parser->GetTokensTree()->size(),
-                                       m_Parser->GetTokensTree()->m_FilesMap.size()));
+    lblInfo->SetLabel(wxString::Format(_("The parser contains %lu tokens, found in %lu files"),
+                                       static_cast<unsigned long>(m_Parser->GetTokensTree()->size()),
+                                       static_cast<unsigned long>(m_Parser->GetTokensTree()->m_FilesMap.size())));
 
     DisplayTokenInfo();
     FillFiles();

@@ -255,7 +255,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
 //                DebuggerGDB::ConvertToGDBFile(out);
                 QuoteStringIfNeeded(out);
                 // we add one to line,  because scintilla uses 0-based line numbers, while cdb uses 1-based
-                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) bp->index) << _T(' ');
+                m_Cmd << _T("bu") << wxString::Format(_T("%ld"), (int) bp->index) << _T(' ');
                 if (m_BP->temporary)
                     m_Cmd << _T("/1 ");
                 if (bp->func.IsEmpty())

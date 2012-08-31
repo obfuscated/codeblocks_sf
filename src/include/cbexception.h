@@ -58,7 +58,7 @@ class cbException
     #if wxUSE_UNICODE
         #define cbAssertMessage(expr) \
             wxString err; \
-            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), cbC2U(__PRETTY_FUNCTION__).c_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(#expr).c_str());
+            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), cbC2U(__PRETTY_FUNCTION__).wx_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(#expr).c_str());
     #else
         #define cbAssertMessage(expr) \
             wxString err; \

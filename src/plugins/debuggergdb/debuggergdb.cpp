@@ -1398,7 +1398,7 @@ void DebuggerGDB::ShiftBreakpoint(int index, int lines_to_shift)
 void DebuggerGDB::EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool enable)
 {
     bool debuggerIsRunning = !IsStopped();
-    DebugLog(wxString::Format(wxT("DebuggerGDB::EnableBreakpoint(running=%d);"), (int)debuggerIsRunning));
+    DebugLog(wxString::Format(wxT("DebuggerGDB::EnableBreakpoint(running=%d);"), debuggerIsRunning?1:0));
     if (debuggerIsRunning)
         DoBreak(true);
 
@@ -1946,7 +1946,7 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
 
             BringCBToFront();
             if (cursor.line != -1)
-                Log(wxString::Format(_("At %s:%d"), cursor.file.wx_str(), cursor.line));
+                Log(wxString::Format(_("At %s:%ld"), cursor.file.wx_str(), cursor.line));
             else
                 Log(wxString::Format(_("In %s (%s)"), cursor.function.wx_str(), cursor.file.wx_str()));
 

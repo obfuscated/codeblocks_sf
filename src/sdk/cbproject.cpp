@@ -2012,7 +2012,9 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
     LogManager* msgMan = Manager::Get()->GetLogManager();
     if (nameOrder.GetCount() != m_Targets.GetCount())
     {
-        msgMan->DebugLog(F(_T("cbProject::ReOrderTargets() : Count does not match (%d sent, %d had)..."), nameOrder.GetCount(), m_Targets.GetCount()));
+        msgMan->DebugLog(F(_T("cbProject::ReOrderTargets() : Count does not match (%lu sent, %lu had)..."),
+                           static_cast<unsigned long>(nameOrder.GetCount()),
+                           static_cast<unsigned long>(m_Targets.GetCount())));
         return;
     }
 

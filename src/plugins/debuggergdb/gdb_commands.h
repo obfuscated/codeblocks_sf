@@ -392,7 +392,7 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
             : DebuggerCmd(driver),
             m_BP(bp)
         {
-            m_Cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->index);
+            m_Cmd << _T("condition ") << wxString::Format(_T("%ld"), (int) m_BP->index);
             if (m_BP->useCondition)
                 m_Cmd << _T(" ") << m_BP->condition;
         }
@@ -400,7 +400,7 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
         {
             if (output.StartsWith(_T("No symbol ")))
             {
-                wxString s = wxString::Format(_("While setting up custom conditions for breakpoint %d (%s, line %d),\n"
+                wxString s = wxString::Format(_("While setting up custom conditions for breakpoint %ld (%s, line %d),\n"
                                                 "the debugger responded with the following error:\n"
                                                 "\nError: %s\n\n"
                                                 "Do you want to make this an un-conditional breakpoint?"),

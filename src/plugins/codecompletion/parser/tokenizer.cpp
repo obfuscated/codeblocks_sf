@@ -418,7 +418,7 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
 {
     if (stripUnneeded)
     {
-        TRACE(_T("%s : line=%d, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
+        TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
               wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
               PreviousChar(), NextChar(), nestBraces ? 1 : 0);
 
@@ -480,7 +480,7 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
         if (p > buffer)
             str.Append(buffer, p - buffer);
 
-        TRACE(_T("ReadToEOL(): (END) We are now at line %d, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
+        TRACE(_T("ReadToEOL(): (END) We are now at line %u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
               m_LineNumber, CurrentChar(), PreviousChar(), NextChar());
         TRACE(_T("ReadToEOL(): %s"), str.wx_str());
 
@@ -642,7 +642,7 @@ void Tokenizer::ReadParentheses(wxString& str)
                 {
                     if (writeLen > maxBufferLen)
                     {
-                        TRACE(_T("ReadParentheses(): Catched exception 1: %d"), writeLen);
+                        TRACE(_T("ReadParentheses(): Catched exception 1: %lu"), static_cast<unsigned long>(writeLen));
                         return;
                     }
 
@@ -777,14 +777,14 @@ void Tokenizer::ReadParentheses(wxString& str)
 
     if (p > realBuffer)
         str.Append(realBuffer, p - realBuffer);
-    TRACE(_T("ReadParentheses(): %s, line=%d"), str.wx_str(), m_LineNumber);
+    TRACE(_T("ReadParentheses(): %s, line=%u"), str.wx_str(), m_LineNumber);
     if (str.Len() > 512)
-        TRACE(_T("ReadParentheses(): Catched exception 2: %d"), str.Len());
+        TRACE(_T("ReadParentheses(): Catched exception 2: %lu"), static_cast<unsigned long>(str.Len()));
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)
 {
-    TRACE(_T("%s : line=%d, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
+    TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
           wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
           PreviousChar(), NextChar(), nestBraces ? 1 : 0);
 
@@ -814,7 +814,7 @@ bool Tokenizer::SkipToEOL(bool nestBraces)
             MoveToNextChar();
     }
 
-    TRACE(_T("SkipToEOL(): (END) We are now at line %d, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
+    TRACE(_T("SkipToEOL(): (END) We are now at line %u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
           m_LineNumber, CurrentChar(), PreviousChar(), NextChar());
 
     return NotEOF();
@@ -822,7 +822,7 @@ bool Tokenizer::SkipToEOL(bool nestBraces)
 
 bool Tokenizer::SkipToInlineCommentEnd()
 {
-    TRACE(_T("%s : line=%d, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
+    TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
           wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
           PreviousChar(), NextChar());
 
@@ -836,7 +836,7 @@ bool Tokenizer::SkipToInlineCommentEnd()
             MoveToNextChar();
     }
 
-    TRACE(_T("SkipToInlineCommentEnd(): (END) We are now at line %d, CurrentChar='%c', PreviousChar='%c',")
+    TRACE(_T("SkipToInlineCommentEnd(): (END) We are now at line %u, CurrentChar='%c', PreviousChar='%c',")
           _T(" NextChar='%c'"), m_LineNumber, CurrentChar(), PreviousChar(), NextChar());
 
     return NotEOF();
@@ -898,7 +898,7 @@ bool Tokenizer::SkipComment()
     else
         return false;     // Not a comment, return false;
 
-    TRACE(_T("SkipComment() : Start from line = %d"), m_LineNumber);
+    TRACE(_T("SkipComment() : Start from line = %u"), m_LineNumber);
     MoveToNextChar(2);    // Skip the comment prompt
 
     // Here, we are in the comment body
@@ -917,7 +917,7 @@ bool Tokenizer::SkipComment()
         }
         else             // C++ style comment
         {
-            TRACE(_T("SkipComment() : Need to call SkipToInlineCommentEnd() here at line = %d"), m_LineNumber);
+            TRACE(_T("SkipComment() : Need to call SkipToInlineCommentEnd() here at line = %u"), m_LineNumber);
             SkipToInlineCommentEnd();
             break;
         }
@@ -1192,7 +1192,7 @@ void Tokenizer::MacroReplace(wxString& str)
     if (it == s_Replacements.end())
         return;
 
-    TRACE(_T("MacroReplace() : Replacing '%s' with '%s' (file='%s', line='%d')."), it->first.wx_str(),
+    TRACE(_T("MacroReplace() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
           it->second.wx_str(), m_Filename.wx_str(), m_LineNumber);
 
     if (it->second.IsEmpty())
@@ -1334,7 +1334,7 @@ bool Tokenizer::CalcConditionExpression()
     if (exp.CalcPostfix())
     {
         TRACE(_T("CalcConditionExpression() : exp.GetStatus() : %d, exp.GetResult() : %d"),
-              exp.GetStatus(), exp.GetResult());
+              exp.GetStatus()?1:0, exp.GetResult()?1:0);
         return exp.GetStatus() && exp.GetResult();
     }
 
@@ -1485,7 +1485,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
     {
     case ptIf:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #if at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #if at line = %u"), m_LineNumber);
             bool result;
             if (m_TokenizerOptions.wantPreprocessor)
                 result = CalcConditionExpression();
@@ -1503,7 +1503,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptIfdef:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #ifdef at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #ifdef at line = %u"), m_LineNumber);
             bool result;
             if (m_TokenizerOptions.wantPreprocessor)
                 result = IsMacroDefined();
@@ -1521,7 +1521,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptIfndef:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #ifndef at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #ifndef at line = %u"), m_LineNumber);
             bool result;
             if (m_TokenizerOptions.wantPreprocessor)
                 result = !IsMacroDefined();
@@ -1539,7 +1539,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptElif:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #elif at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #elif at line = %u"), m_LineNumber);
             bool result = false;
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
                 result = CalcConditionExpression();
@@ -1552,7 +1552,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptElifdef:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %u"), m_LineNumber);
             bool result = false;
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
                 result = IsMacroDefined();
@@ -1565,7 +1565,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptElifndef:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %u"), m_LineNumber);
             bool result = false;
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
                 result = !IsMacroDefined();
@@ -1578,7 +1578,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptElse:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #else at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #else at line = %u"), m_LineNumber);
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
                 SkipToEOL(false);
             else
@@ -1588,7 +1588,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 
     case ptEndif:
         {
-            TRACE(_T("HandleConditionPreprocessor() : #endif at line = %d"), m_LineNumber);
+            TRACE(_T("HandleConditionPreprocessor() : #endif at line = %u"), m_LineNumber);
             SkipToEOL(false);
             if (!m_ExpressionResult.empty())
                 m_ExpressionResult.pop();
