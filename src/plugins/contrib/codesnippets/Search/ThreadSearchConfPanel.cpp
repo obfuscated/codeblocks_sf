@@ -276,6 +276,9 @@ void ThreadSearchConfPanel::set_properties()
 
 void ThreadSearchConfPanel::do_layout()
 {
+#if wxCHECK_VERSION(2, 9, 0)
+    #define wxADJUST_MINSIZE 0
+#endif
     // begin wxGlade: ThreadSearchConfPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchLayout = new wxStaticBoxSizer(SizerThreadSearchLayout_staticbox, wxVERTICAL);

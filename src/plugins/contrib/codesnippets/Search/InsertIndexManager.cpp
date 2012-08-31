@@ -21,7 +21,7 @@ long InsertIndexManager::GetInsertionIndex(const wxString& filePath, long nbItem
 	wxASSERT(nbItemstoInsert > 0);
 	wxFileName fileName(filePath);
 	wxString   string(filePath);
-	long index;
+	long index = 0;
 
 	if ( m_FileSorting == SortByFileName )
 	{

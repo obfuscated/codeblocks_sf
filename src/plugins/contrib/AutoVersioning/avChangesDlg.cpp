@@ -41,7 +41,7 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     //(*Initialize(avChangesDlg)
     wxBoxSizer* sizerButtons;
     wxBoxSizer* sizerConfirmation;
-    
+
     Create(parent, wxID_ANY, _("AutoVersioning :: Changes Log"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(700,300));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -72,7 +72,7 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
     BoxSizer1->Add(sizerConfirmation, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->SetSizeHints(this);
-    
+
     Connect(ID_ADD_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnAddClick);
     Connect(ID_EDIT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnEditClick);
     Connect(ID_DELETE_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnDeleteClick);
@@ -114,10 +114,15 @@ void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
-        grdChanges->SelectRow(grdChanges->GetCursorRow());
+#if wxCHECK_VERSION(2, 9, 0)
+        int row = grdChanges->GetGridCursorRow();
+#else
+        int row = grdChanges->GetCursorRow();
+#endif
+        grdChanges->SelectRow(row);
         if (wxMessageBox(_("You are about to delete the selected row"), _("Warning"), wxICON_EXCLAMATION|wxOK|wxCANCEL, this) == wxOK)
         {
-            grdChanges->DeleteRows(grdChanges->GetCursorRow(), 1, true);
+            grdChanges->DeleteRows(row, 1, true);
         }
     }
 }
