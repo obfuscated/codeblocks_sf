@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="wxSmith - Contrib Items  wx2.9.x" />
+		<Option title="wxSmith - Contrib Items wx2.9.x" />
 		<Option platforms="Windows;" />
 		<Option pch_mode="2" />
 		<Option default_target="wxSmithContribItems" />

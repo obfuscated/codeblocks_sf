@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="DevPak  wx2.9.x" />
+		<Option title="DevPak wx2.9.x" />
 		<Option pch_mode="0" />
 		<Option default_target="default" />
 		<Option compiler="gcc" />
