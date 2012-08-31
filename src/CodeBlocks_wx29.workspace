@@ -5,7 +5,7 @@
 		<Project filename="tools/cb_share_config/cb_share_config_wx29.cbp" />
 		<Project filename="tools/CbLauncher/CbLauncher_wx29.cbp" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx29.cbp" />
-		<Project filename="plugins/codecompletion/cc_test_wx29.cbp" />
+		<Project filename="plugins/codecompletion/cctest_wx29.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx29.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx29.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx29.cbp">

@@ -3,7 +3,7 @@
 	<Workspace title="CodeBlocks Workspace wx2.9x (Unix)">
 		<Project filename="CodeBlocks_wx29-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx29-unix.cbp" />
-		<Project filename="plugins/codecompletion/cc_test_wx29-unix.cbp" />
+		<Project filename="plugins/codecompletion/cctest_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx29-unix.cbp">
