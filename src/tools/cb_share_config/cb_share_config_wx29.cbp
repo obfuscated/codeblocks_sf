@@ -44,7 +44,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="txml" />
+			<Add library="txml29" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\base\tinyxml" />
