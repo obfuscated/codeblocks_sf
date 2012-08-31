@@ -151,9 +151,11 @@ class wxsItemEditorContent: public wxsDrawingWindow
 
         /** \brief Processing mouse events */
         void OnKeyDown(wxKeyEvent& event);
-
+#if wxCHECK_VERSION(2, 9, 0)
+        inline void SetCur(wxStockCursor Cur) { SetCursor(wxCursor(Cur)); }
+#else
         inline void SetCur(int Cur) { SetCursor(wxCursor(Cur)); }
-
+#endif
         void RebuildDragPoints();
         void ClearDragPoints();
         void GreyDragPoints();

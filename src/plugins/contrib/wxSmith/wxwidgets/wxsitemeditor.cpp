@@ -216,9 +216,15 @@ void wxsItemEditor::RebuildPreview()
         BackgroundSizer->Fit(m_PreviewBackground);
         wxSizer* NewSizer = new wxGridSizer(1);
         NewSizer->Add(m_PreviewBackground,0,wxALL,10);
+#if !wxCHECK_VERSION(2, 9, 0)
         m_Content->SetVirtualSizeHints(1,1);
+#endif
         m_Content->SetSizer(NewSizer);
+#if wxCHECK_VERSION(2, 9, 0)
+        NewSizer->FitInside(m_Content);
+#else
         NewSizer->SetVirtualSizeHints(m_Content);
+#endif
         NewSizer->FitInside(m_Content);
         m_PreviewBackground->Layout();
         m_Content->Layout();
@@ -715,7 +721,11 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
             }
         }
         CurrentPanel->SetSizer(RowSizer);
+#if wxCHECK_VERSION(2, 9, 0)
+        RowSizer->FitInside(CurrentPanel);
+#else
         RowSizer->SetVirtualSizeHints(CurrentPanel);
+#endif
     }
 }
 

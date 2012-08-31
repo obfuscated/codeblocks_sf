@@ -57,7 +57,7 @@ const int ID_ZOOM_OUT  =    1501;
 
 IMPLEMENT_DYNAMIC_CLASS(wxChartCtrl, wxScrolledWindow)
 
-BEGIN_EVENT_TABLE(wxChartCtrl, wxScrolledWindow)  
+BEGIN_EVENT_TABLE(wxChartCtrl, wxScrolledWindow)
   EVT_BUTTON(ID_ZOOM_IN, wxChartCtrl::OnZoomIn)
   EVT_BUTTON(ID_ZOOM_OUT, wxChartCtrl::OnZoomOut)
   EVT_SCROLLWIN(wxChartCtrl::OnScroll)
@@ -66,21 +66,21 @@ END_EVENT_TABLE()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
-//	PARAMETERS:	wxWindow *parent, 
-//				wxWindowID id, 
+//	DESC:
+//	PARAMETERS:	wxWindow *parent,
+//				wxWindowID id,
 //				wxChartStyle style,
-//				const wxPoint &pos, 
-//				const wxSize &size, 
+//				const wxPoint &pos,
+//				const wxSize &size,
 //				int flags
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxChartCtrl::wxChartCtrl(
-	wxWindow *parent, 
-	wxWindowID id, 
+	wxWindow *parent,
+	wxWindowID id,
 	wxChartStyle style,
-	const wxPoint &pos, 
-	const wxSize &size, 
+	const wxPoint &pos,
+	const wxSize &size,
 	int flags
 ) : wxScrolledWindow(parent, id, pos, size, flags),
 	m_xZoom(1),
@@ -118,7 +118,7 @@ wxChartCtrl::wxChartCtrl(
 		Hor1Sizer->Add( m_YAxisWin, 0, wxEXPAND );
 	}
 	Hor1Sizer->Add( m_ChartWin, 1, wxEXPAND );
-	
+
 	//-----------------------------------------------------------------------
 	// Add previuos to vertical sizer and add x-axis
 	//-----------------------------------------------------------------------
@@ -128,7 +128,7 @@ wxChartCtrl::wxChartCtrl(
 		wxBoxSizer *Hor3Sizer = new wxBoxSizer( wxHORIZONTAL );
 		if ( m_YAxisWin )
 			Hor3Sizer->Add( YAXIS_WIDTH, XAXIS_HEIGHT );
-		
+
 		m_XAxisWin = new wxXAxisWindow( this );
 		Hor3Sizer->Add( m_XAxisWin, 1, wxEXPAND );
 		VerSizer->Add( Hor3Sizer, 0, wxEXPAND );
@@ -143,25 +143,25 @@ wxChartCtrl::wxChartCtrl(
 
 		if ( m_Style & USE_ZOOM_BUT )
 		{
-			buttonlist->Add( new wxBitmapButton( this, 
-												 ID_ZOOM_IN, 
-												 GetZoomInBitmap() ), 
+			buttonlist->Add( new wxBitmapButton( this,
+												 ID_ZOOM_IN,
+												 GetZoomInBitmap() ),
 												 0, wxEXPAND|wxALL, 2 );
-			buttonlist->Add( new wxBitmapButton( this, 
-												 ID_ZOOM_OUT, 
-												 GetZoomOutBitmap() ), 
+			buttonlist->Add( new wxBitmapButton( this,
+												 ID_ZOOM_OUT,
+												 GetZoomOutBitmap() ),
 												 0, wxEXPAND|wxALL, 2 );
 		}
 #if 0
 		if ( m_Style & USE_DEPTH_BUT )
 		{
-			buttonlist->Add( new wxBitmapButton( this, 
-												 ID_ZOOM_IN, 
-												 *GetZoomInBitmap() ), 
+			buttonlist->Add( new wxBitmapButton( this,
+												 ID_ZOOM_IN,
+												 *GetZoomInBitmap() ),
 							 0, wxEXPAND|wxALL, 2 );
-			buttonlist->Add( new wxBitmapButton( this, 
-												 ID_ZOOM_OUT, 
-												 *GetZoomOutBitmap() ), 
+			buttonlist->Add( new wxBitmapButton( this,
+												 ID_ZOOM_OUT,
+												 *GetZoomOutBitmap() ),
 							 0, wxEXPAND|wxALL, 2 );
 		}
 
@@ -198,7 +198,7 @@ wxChartCtrl::wxChartCtrl(
     SetScrollRate( m_Sizes->GetScroll(), m_Sizes->GetScroll() );
 
 	MainSizer->Fit( this );
-	
+
 	//-----------------------------------------------------------------------
 	// set size hints to honour minimum size
 	//-----------------------------------------------------------------------
@@ -213,12 +213,12 @@ wxChartCtrl::wxChartCtrl(
 	// set color
 	//-----------------------------------------------------------------------
 	SetBackgroundColour( *wxWHITE );
-    
+
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		dtor
-//	DESC:		
+//	DESC:
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxChartCtrl::~wxChartCtrl()
@@ -227,17 +227,17 @@ wxChartCtrl::~wxChartCtrl()
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Add()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: CChartPoints* cp
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxChartCtrl::Add(
     wxChartPoints* cp
-) 
+)
 {
     wxASSERT( m_ChartWin != NULL );
 
-    m_ChartWin->Add( cp ); 
+    m_ChartWin->Add( cp );
     SetSizes();
     m_ChartWin->SetSizes( m_Sizes );
     ResetScrollbar();
@@ -258,7 +258,7 @@ void wxChartCtrl::Add(
         m_XAxisWin->SetVirtualMin( m_ChartWin->GetMinX() );
         m_XAxisWin->SetSizes( m_Sizes );
     }
-    
+
     if ( m_LegendWin )
     {
         m_LegendWin->Add( cp->GetName(), cp->GetColor() );
@@ -267,12 +267,12 @@ void wxChartCtrl::Add(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Clear()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
-void wxChartCtrl::Clear() 
-{ 
+void wxChartCtrl::Clear()
+{
     wxASSERT( m_ChartWin != NULL );
 
     m_ChartWin->Clear();
@@ -294,7 +294,7 @@ void wxChartCtrl::Clear()
         m_XAxisWin->SetVirtualMin( 0 );
         m_XAxisWin->SetSizes( m_Sizes );
     }
-    
+
     if ( m_LegendWin )
     {
         m_LegendWin->Clear();
@@ -340,7 +340,7 @@ void wxChartCtrl::Resize()
 
 	//-----------------------------------------------------------------------
 	// Try to fit all the charts to the actual window size.
-	// Firstly reduce the size by 8/10 and if still not enough repeat the 
+	// Firstly reduce the size by 8/10 and if still not enough repeat the
 	// same procedure
 	//-----------------------------------------------------------------------
 
@@ -350,17 +350,17 @@ void wxChartCtrl::Resize()
         m_Sizes->GetWidthBar3d() * m_xZoom)) );
     m_Sizes->SetGap( static_cast<int>(floor(
         m_Sizes->GetGap() * m_xZoom)) );
-    
+
     m_xZoom = 1;
-    do 
+    do
 	{
-        if ( m_Sizes->GetWidthBar() < MIN_BAR_WIDTH || 
-             m_Sizes->GetWidthBar3d() < MIN_BAR3D_WIDTH || 
+        if ( m_Sizes->GetWidthBar() < MIN_BAR_WIDTH ||
+             m_Sizes->GetWidthBar3d() < MIN_BAR3D_WIDTH ||
              m_Sizes->GetGap() < MIN_GAP_WIDTH )
 			break;
 
-        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(), 
-                               m_Sizes->GetNumBar3d(), m_Sizes->GetWidthBar(), 
+        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(),
+                               m_Sizes->GetNumBar3d(), m_Sizes->GetWidthBar(),
                                m_Sizes->GetWidthBar3d(), m_Sizes->GetGap() );
 		if ( iWidth > w )
 		{
@@ -373,7 +373,7 @@ void wxChartCtrl::Resize()
 		}
 		else
 			break;
-	} 
+	}
 	while( true );
 
 	//-----------------------------------------------------------------------
@@ -420,24 +420,24 @@ void wxChartCtrl::Fit()
 
 	//-----------------------------------------------------------------------
 	// Try to fit all the charts to the actual window size.
-	// Firstly reduce the size by 8/10 and if still not enough repeat the 
+	// Firstly reduce the size by 8/10 and if still not enough repeat the
 	// same procedure
 	//-----------------------------------------------------------------------
 
     m_xZoom = 1;
-    
+
     m_Sizes->SetWidthBar( DEFAULT_BAR_WIDTH );
     m_Sizes->SetWidthBar3d( DEFAULT_BAR3D_WIDTH );
     m_Sizes->SetGap( DEFAULT_GAP_WIDTH );
-    
+
     bool wasSmaller = false;
-    do 
+    do
     {
-        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(), 
-                               m_Sizes->GetNumBar3d(), m_Sizes->GetWidthBar(), 
+        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(),
+                               m_Sizes->GetNumBar3d(), m_Sizes->GetWidthBar(),
                                m_Sizes->GetWidthBar3d(), m_Sizes->GetGap() );
-        
-        if ( iWidth < w && 
+
+        if ( iWidth < w &&
              !wasSmaller )
         {
             m_Sizes->SetWidthBar( static_cast<int>(
@@ -446,10 +446,10 @@ void wxChartCtrl::Fit()
                     floor(m_Sizes->GetWidthBar() * static_cast<double>(12)/10)) );
             m_Sizes->SetGap( static_cast<int>(
                     floor(m_Sizes->GetGap() * static_cast<double>(12)/10)) );
-            
+
             continue;
         }
-        
+
         if ( iWidth > w )
         {
             wasSmaller = true;
@@ -462,7 +462,7 @@ void wxChartCtrl::Fit()
         }
         else
             break;
-    } 
+    }
     while( true );
 
 	//-----------------------------------------------------------------------
@@ -502,7 +502,7 @@ void wxChartCtrl::LoadImageHandler(
     wxChartImageType type
 )
 {
-    if ( !wxImage::FindHandler(type) )
+    if ( !wxImage::FindHandler(static_cast<wxBitmapType>(type)) )
     {
         switch ( type )
         {
@@ -537,7 +537,7 @@ void wxChartCtrl::LoadImageHandler(
 //----------------------------------------------------------------------E-+++
 void wxChartCtrl::WriteToFile(
 	wxString file,
-    wxChartImageType type   
+    wxChartImageType type
 )
 {
 	wxASSERT( m_ChartWin != NULL );
@@ -549,7 +549,7 @@ void wxChartCtrl::WriteToFile(
     // Load handler for image type if not loaded yet
     //-----------------------------------------------------------------------
     LoadImageHandler( type );
-    
+
 	//-----------------------------------------------------------------------
 	// Get the size of the chart
 	//-----------------------------------------------------------------------
@@ -559,7 +559,7 @@ void wxChartCtrl::WriteToFile(
 
 	w = 0;
 	if ( iMax > 0 )
-        w = CalWidth( iMax+1, m_Sizes->GetNumBar(), m_Sizes->GetNumBar3d(), 
+        w = CalWidth( iMax+1, m_Sizes->GetNumBar(), m_Sizes->GetNumBar3d(),
             m_Sizes->GetWidthBar(), m_Sizes->GetWidthBar(), m_Sizes->GetGap() );
 
     //-----------------------------------------------------------------------
@@ -567,27 +567,27 @@ void wxChartCtrl::WriteToFile(
     // w1 is the size on screen w is the relative size
     //-----------------------------------------------------------------------
     w = w1 > w ? w1 : w;
-        
+
 	//-----------------------------------------------------------------------
 	// add extra size, so legend window can be a bit far from the graph
 	//-----------------------------------------------------------------------
-	const int ENLARGE_WIDTH = 30;	
+	const int ENLARGE_WIDTH = 30;
 	if ( iMax > 0 )
-    {   
+    {
         if ( m_YAxisWin )
             w += YAXIS_WIDTH;
-        
+
         if ( m_LegendWin )
             w += LEGEND_WIDTH;
-            
+
 		w += ENLARGE_WIDTH;
-    }      
+    }
 
 	//-----------------------------------------------------------------------
 	// Create the bitmap to hold the chart
 	//-----------------------------------------------------------------------
 	memChart = new wxBitmap( w, h );
-		
+
 	memDC.SelectObject( *memChart );
 	memDC.Clear();
 
@@ -597,9 +597,9 @@ void wxChartCtrl::WriteToFile(
 	//m_ChartWin->Draw( &memDC, YAXIS_WIDTH, 0 );
 	if ( m_YAxisWin )
 	{
-        m_ChartWin->Draw( &memDC, YAXIS_WIDTH, 0 );   
+        m_ChartWin->Draw( &memDC, YAXIS_WIDTH, 0 );
 		m_YAxisWin->Draw( &memDC, 0, 0 );
-	
+
         if ( m_XAxisWin )
         {
             m_XAxisWin->Draw( &memDC, YAXIS_WIDTH, h - XAXIS_HEIGHT );
@@ -608,13 +608,13 @@ void wxChartCtrl::WriteToFile(
     else
     {
         m_ChartWin->Draw( &memDC, 0, 0 );
-        
+
         if ( m_XAxisWin )
         {
             m_XAxisWin->Draw( &memDC, 0, h - XAXIS_HEIGHT );
         }
-        
-    }   
+
+    }
 
 	if ( m_LegendWin )
 	{
@@ -622,49 +622,49 @@ void wxChartCtrl::WriteToFile(
 	}
 
 	memDC.SelectObject( wxNullBitmap );
-  
+
 	memChart->SaveFile( file, wxBITMAP_TYPE_PNG, (wxPalette*)NULL );
 	//memChart->SaveFile( file, wxBITMAP_TYPE_BMP, (wxPalette*)NULL );
-  
+
 	delete memChart;
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		CalWidth()
 //	DESC:		Calculate the size of the chart
-//	PARAMETERS:	int n, 
-//				int nbar, 
-//				int nbar3d, 
-//				int wbar, 
-//				int wbar3d, 
+//	PARAMETERS:	int n,
+//				int nbar,
+//				int nbar3d,
+//				int wbar,
+//				int wbar3d,
 //				int gap
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 int wxChartCtrl::CalWidth(
-	int n, 
-	int nbar, 
-	int nbar3d, 
-	int wbar, 
-	int wbar3d, 
+	int n,
+	int nbar,
+	int nbar3d,
+	int wbar,
+	int wbar3d,
 	int gap
 )
 {
 	//-----------------------------------------------------------------------
 	// formula to calcolate the width
 	//-----------------------------------------------------------------------
-    int iWidth = static_cast<int>(n * m_xZoom * 
+    int iWidth = static_cast<int>(n * m_xZoom *
                                   ( nbar  * wbar + nbar3d * wbar3d + gap ));
 	return ( iWidth );
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetZoom()
-//	DESC:		
-//	PARAMETERS:	double zoom 
+//	DESC:
+//	PARAMETERS:	double zoom
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-void wxChartCtrl::SetZoom( 
-	double zoom 
+void wxChartCtrl::SetZoom(
+	double zoom
 )
 {
 	wxASSERT( m_ChartWin != NULL );
@@ -686,7 +686,7 @@ void wxChartCtrl::SetZoom(
 	// Set the new zoom to all windows
 	//-----------------------------------------------------------------------
     m_Sizes->SetXZoom( m_xZoom );
-    
+
 	m_ChartWin->SetZoom( m_xZoom );
 
 	if ( m_YAxisWin )
@@ -709,7 +709,7 @@ void wxChartCtrl::SetZoom(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetSizes()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -720,7 +720,7 @@ void wxChartCtrl::SetSizes()
 	//-----------------------------------------------------------------------
 	// update sizes descriptor
 	//-----------------------------------------------------------------------
-    m_Sizes->SetNumBar( m_ChartWin->GetNumBarPoints() );    
+    m_Sizes->SetNumBar( m_ChartWin->GetNumBarPoints() );
     m_Sizes->SetNumBar3d( m_ChartWin->GetNumBar3DPoints() );
     m_Sizes->SetMaxY( m_ChartWin->GetMaxY() );
     m_Sizes->SetMinY( m_ChartWin->GetMinY() );
@@ -730,7 +730,7 @@ void wxChartCtrl::SetSizes()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ResetScrollbar()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -740,15 +740,15 @@ void wxChartCtrl::ResetScrollbar()
 	wxASSERT( m_ChartWin != NULL );
 
     int iMax = static_cast<int>(ceil( m_ChartWin->GetMaxX() ));
-    
+
 	if ( iMax > 0 )
 	{
-        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(), 
+        int iWidth = CalWidth( iMax+1, m_Sizes->GetNumBar(),
                                m_Sizes->GetNumBar3d(), m_Sizes->GetWidthBar(),
                                m_Sizes->GetWidthBar3d(), m_Sizes->GetGap() );
 		//int x, y;
 		//GetClientSize( &x, &y );
-		
+
 		m_ChartWin->SetVirtualSize( iWidth, -1 );
 		FitInside();
 	}
@@ -757,7 +757,7 @@ void wxChartCtrl::ResetScrollbar()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		RedrawXAxis()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -769,7 +769,7 @@ void wxChartCtrl::RedrawXAxis()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		RedrawYAxis()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -781,7 +781,7 @@ void wxChartCtrl::RedrawYAxis()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		RedrawLegend()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -793,7 +793,7 @@ void wxChartCtrl::RedrawLegend()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		RedrawEverything()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -804,13 +804,13 @@ void wxChartCtrl::RedrawEverything()
 	RedrawXAxis();
 	RedrawYAxis();
     RedrawLegend();
-    
+
 	m_ChartWin->Refresh( TRUE );
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnZoomIn()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxCommandEvent& event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -823,7 +823,7 @@ void wxChartCtrl::OnZoomIn(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnZoomOut()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxCommandEvent& event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -836,17 +836,21 @@ void wxChartCtrl::OnZoomOut(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnScroll()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxScrollWinEvent& event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChartCtrl::OnScroll(
 	wxScrollWinEvent& event
 )
-{    
+{
     //    if (event.GetEventType() != wxEVT_SCROLLWIN_THUMBTRACK)
     {
+#if wxCHECK_VERSION(2, 9, 0)
+        wxScrolledWindow::HandleOnScroll( event );
+#else
         wxScrolledWindow::OnScroll( event );
+#endif
         RedrawXAxis();
     }
 
@@ -854,7 +858,7 @@ void wxChartCtrl::OnScroll(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       OnSize()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: wxSizeEvent& event
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -867,7 +871,7 @@ void wxChartCtrl::OnSize(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetZoomInBitmap()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		wxBitmap *
 //----------------------------------------------------------------------E-+++
@@ -892,7 +896,7 @@ wxBitmap wxChartCtrl::GetZoomInBitmap()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetZoomOutBitmap()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		wxBitmap *
 //----------------------------------------------------------------------E-+++

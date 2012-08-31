@@ -109,7 +109,11 @@ void wxsSlider::OnBuildCreatingCode()
 wxObject* wxsSlider::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxSlider* Preview = new wxSlider(Parent,GetId(),Value,Min,Max,Pos(Parent),Size(Parent),Style());
+#if wxCHECK_VERSION(2, 9, 0)
+    if ( TickFrequency )    Preview->SetTickFreq(TickFrequency);
+#else
     if ( TickFrequency )    Preview->SetTickFreq(TickFrequency,0);
+#endif
     if ( PageSize )         Preview->SetPageSize(PageSize);
     if ( LineSize )         Preview->SetLineSize(LineSize);
     if ( ThumbLength )      Preview->SetThumbLength(ThumbLength);

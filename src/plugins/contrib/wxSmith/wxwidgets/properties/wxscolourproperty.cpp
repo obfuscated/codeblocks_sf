@@ -26,6 +26,9 @@
 #include <wx/settings.h>
 #include <wx/colordlg.h>
 #include <wx/dc.h>
+#if wxCHECK_VERSION(2, 9, 0)
+#include <wx/wxcrtvararg.h>
+#endif
 #include "../wxsflags.h"
 
 #if wxPG_USING_WXOWNERDRAWNCOMBOBOX || wxCHECK_VERSION(2,9,0)
