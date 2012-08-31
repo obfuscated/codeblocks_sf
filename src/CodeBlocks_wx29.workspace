@@ -3,7 +3,7 @@
 	<Workspace title="CodeBlocks Workspace  wx2.9.x">
 		<Project filename="CodeBlocks_wx29.cbp" active="1" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx29.cbp" />
-		<Project filename="tools/CbLauncher/CbLauncher_wx29.cbp" />
+		<Project filename="tools/CBLauncher/CbLauncher_wx29.cbp" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx29.cbp" />
 		<Project filename="plugins/codecompletion/cctest_wx29.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx29.cbp" />
