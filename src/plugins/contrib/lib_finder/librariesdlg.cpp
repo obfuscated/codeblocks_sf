@@ -371,12 +371,10 @@ void LibrariesDlg::OnButton8Click(wxCommandEvent& /*event*/)
     // Do the processing
     FileNamesMap FNMap;
     ProcessingDlg PDlg(Manager::Get()->GetAppWindow(),m_Manager,m_WorkingCopy);
-    PDlg.Show();
-    PDlg.MakeModal(true);
+    PDlg.ShowModal();
 
     bool apply = PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs();
 
-    PDlg.MakeModal(false);
     PDlg.Hide();
 
     if ( apply )

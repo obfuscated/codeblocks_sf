@@ -626,7 +626,11 @@ void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& /*event*/)
     }
 
     wxArrayInt Choices;
+#if wxCHECK_VERSION(2, 9, 0)
+    wxGetSelectedChoices(
+#else
     wxGetMultipleChoices(
+#endif
         Choices,
         _("Select libraries to include in your project"),
         _("Adding new libraries"),

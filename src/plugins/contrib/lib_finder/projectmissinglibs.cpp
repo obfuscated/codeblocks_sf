@@ -308,12 +308,10 @@ void ProjectMissingLibs::OnButton1Click1(wxCommandEvent& /*event*/)
 
     // Do the processing
     ProcessingDlg PDlg( this, m_DetectionManager, m_CurrentResults );
-    PDlg.Show();
-    PDlg.MakeModal(true);
+    PDlg.ShowModal();
 
     bool apply = PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs(Libs);
 
-    PDlg.MakeModal( false );
     PDlg.Hide();
 
     if ( apply )
