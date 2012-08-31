@@ -3,7 +3,6 @@
 // Purpose:     wxSTEditor Preferences/Styles/Languages initialization
 // Maintainer:
 // Created:     2003-04-04
-// RCS-ID:      $Id$
 // Copyright:   (c) John Labenski, Otto Wyss
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////

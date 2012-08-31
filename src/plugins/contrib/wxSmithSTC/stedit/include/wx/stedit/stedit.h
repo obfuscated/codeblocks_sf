@@ -42,10 +42,12 @@ class WXDLLIMPEXP_FWD_STEDIT wxSTETreeItemData;
 /// Create a wxSTEPointerLocker as a member of a class (or whereever) and pass
 /// it a pointer to keep track of. Other objects can create wxSTEPointerLockers
 /// and ref the locker (as you would a wxPen/wxBitmap) and can access the
-/// shared pointer, BUT only after checking it it's valid by calling IsOk().
+/// shared pointer, BUT only after checking if it's valid by calling IsOk().
 /// This can be used as an alternative to tracking wxWindows by connecting to
 ///   wxEVT_DESTROY for each of them.
 /// This class is NOT threadsafe for simplicity.
+/// In wxWidgets 2.9 there are MUCH better classes, wxTrackable and wxWeakRef,
+/// and this exists in a basic form for compatibility with wx2.8.
 //-----------------------------------------------------------------------------
 
 template <class T>
@@ -82,30 +84,30 @@ public:
     virtual ~wxSTEPointerLocker() { }
 
     /// Returns true if the pointer is valid.
-    bool IsOk() const { return (GetPointer() != NULL); }
+    bool IsOk() const { return (get() != NULL); }
 
     /// Get the pointer, which may be NULL.
-    T*       GetPointer()       { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
+    T*       get()       { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
     /// Get the pointer, which may be NULL.
-    const T* GetPointer() const { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
+    const T* get() const { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
 
     /// Set the pointer, clearing the reference to the previous one.
-    void     SetPointer(T* ptr, bool is_static) { UnRef(); m_refData = new wxSTEPointerLockerRefData<T>(ptr, is_static); }
+    void     set(T* ptr, bool is_static) { UnRef(); m_refData = new wxSTEPointerLockerRefData<T>(ptr, is_static); }
 
     // ------------------------------------------------------------------------
     /// @name std/boost::shared_ptr compatibility functions.
     /// @{
 
-    T*     get()       const { return m_refData ? dynamic_cast<wxSTEPointerLockerRefData<T> >(m_refData)->m_pointer : NULL; }
-    void   reset(T* ptr, bool is_static) { SetPointer(ptr, is_static); }
+    void   reset()           { set(NULL, false); }
     size_t use_count() const { return m_refData ? m_refData->GetRefCount() : 0; }
-    size_t unique()    const { return use_count() == 0; }
+    bool   unique()    const { return use_count() == 1; }
+    bool   expired()   const { return !IsOk(); }
 
     /// @}
     // ------------------------------------------------------------------------
     /// @name Operators
     /// @{
-    wxSTEditorPrefs& operator = (const wxSTEPointerLocker& locker)
+    wxSTEPointerLocker& operator = (const wxSTEPointerLocker& locker)
     {
         if ( (*this) != locker )
             Ref(locker);
@@ -117,7 +119,7 @@ public:
     bool operator != (const wxSTEPointerLocker& locker) const
         { return m_refData != locker.m_refData; }
 
-    operator bool() const { return unique(); }
+    operator bool() const { return IsOk(); }
     /// @}
 };
 
@@ -250,6 +252,8 @@ protected:
     long    m_state;                // what state does this editor have, enum STE_StateType
     bool    m_dirty_flag;           // set if file format is changed by the user, in the properties dialog
                                     // There is no opposite of SCI_SETSAVEPOINT
+    wxString   m_hilighted_word;    // The last selected word that has been indicated.
+    wxArrayInt m_hilightedArray;    // Start pos of each hilighted word
 
     wxSTEditorOptions m_options;    // options, always created
 
@@ -303,7 +307,7 @@ public :
     /// Override if you need to create your own type for the wxSTEditorSplitter to use in
     ///   wxSTEditorSplitter::CreateEditor().
     /// Be sure to use DECLARE_DYNAMIC_CLASS() and IMPLEMENT_DYNAMIC_CLASS()
-    /// in you derived editor.
+    /// in your derived editor.
     virtual wxSTEditor* Clone(wxWindow *parent, wxWindowID id = wxID_ANY,
                               const wxPoint& pos = wxDefaultPosition,
                               const wxSize& size = wxDefaultSize,
@@ -397,7 +401,7 @@ public :
 #if (wxVERSION_NUMBER < 2900)
     wxString GetRange(int startPos, int endPos) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
 #endif
-    wxString GetTextRange(int startPos, int endPos) const { return GetRange(startPos, endPos); }
+    wxString GetTextRange(int startPos, int endPos) const { return  wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
 
 #if (wxVERSION_NUMBER >= 2900)
 
@@ -473,6 +477,9 @@ public :
     bool TranslateLines(int  top_line,       int  bottom_line,
                         int* trans_top_line, int* trans_bottom_line,
                         STE_TranslatePosType type = STE_TRANSLATE_SELECTION);
+
+    /// Returns true if the text range is a complete word.
+    bool TextRangeIsWord(STE_TextPos start_pos, STE_TextPos end_pos) const;
 
     // ------------------------------------------------------------------------
 
@@ -692,7 +699,7 @@ public :
     virtual bool SaveFile( const wxFileName& fileName,
                            const wxString& fileEncoding,
                            bool write_file_bom );
-    
+
     /// Helper function to create the dialog to ask the user if they want to save.
     /// The selected* variables are only changed if the user presses Ok
     /// and the the function returns true.
@@ -775,11 +782,11 @@ public :
     /// Note: found_end_pos - found_start_pos might not be the string length for regexp.
     /// @returns Starting position of the found string.
     STE_TextPos FindString(const wxString &findString,
-                           STE_TextPos start_pos = -1, 
+                           STE_TextPos start_pos = -1,
                            STE_TextPos end_pos = -1,
                            int flags = -1,
                            int action = STE_FINDSTRING_SELECT|STE_FINDSTRING_GOTO,
-                           STE_TextPos* found_start_pos = NULL, 
+                           STE_TextPos* found_start_pos = NULL,
                            STE_TextPos* found_end_pos = NULL);
     /// Does the current selection match the findString using the flags.
     /// If flags = -1 uses GetFindFlags(), else use ored values of STEFindReplaceFlags.
@@ -830,16 +837,18 @@ public :
     /// @name Set/ClearIndicator methods
     /// @{
 
-    /// Indicate a section of text starting at pos of length len, of indic type wxSTC_INDIC(0,1,2)_MASK.
+    /// Indicate a section of text starting at pos of length len with indic type wxSTC_INDIC(0,1,2)_MASK.
     void SetIndicator(STE_TextPos pos, int len, int indic);
     /// Indicates all strings using indic type wxSTC_INDIC(0,1,2)_MASK.
-    /// If str = wxEmptyString use GetFindString(), if flags = -1 use GetFindFlags()|STE_FR_WHOLEDOC.
-    bool IndicateAllStrings(const wxString &str = wxEmptyString, int flags = -1, int indic = wxSTC_INDIC0_MASK);
+    /// If str = wxEmptyString use GetFindString(), if find_flags = -1 use GetFindFlags()|STE_FR_WHOLEDOC.
+    /// The optional arrays will be filled with start and or end positions that were indicated.
+    bool IndicateAllStrings(const wxString &str = wxEmptyString, int find_flags = -1, int indic = wxSTC_INDIC0_MASK,
+                            wxArrayInt* startPositions = NULL, wxArrayInt* endPositions = NULL);
     /// Clear a single character of indicated text of indic type wxSTC_INDIC(0,1,2)_MASK or -1 for all.
     bool ClearIndicator(int pos, int indic = wxSTC_INDIC0_MASK);
     /// Clear an indicator starting at any position within the indicated text of
     ///   Indic type wxSTC_INDIC(0,1,2)_MASK or -1 for all.
-    /// @returns The position after last indicated text or -1 if nothing done.
+    /// @return The position after last indicated text or -1 if nothing done.
     int ClearIndication(int pos, int indic = wxSTC_INDIC0_MASK);
     /// Clears all the indicators of type wxSTC_INDIC(0,1,2)_MASK or -1 for all.
     void ClearAllIndicators(int indic = -1);
@@ -875,8 +884,9 @@ public :
     /// Get keywords as a space separated list from the langs that begin with root
     virtual wxString GetAutoCompleteKeyWords(const wxString& root);
     /// Add the matching keywords from the langs to the array string.
-    /// @returns The number added.
-    size_t DoGetAutoCompleteKeyWords(const wxString& root, wxArrayString& words);
+    /// You may override this function to provide additional words if desired.
+    /// @returns The number of words added.
+    virtual size_t DoGetAutoCompleteKeyWords(const wxString& root, wxArrayString& words);
 
     /// Show the autocompletion box if any keywords from the langs match the start
     /// of the current word.

@@ -44,9 +44,9 @@ class wxsSTEditor : public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
 
-        wxSize          mSize;                          // used to check for default size
-        wxArrayString   mText;                          // initial text contents
-        wxsPositionSizeData     mVirtualSize;
+        wxSize              mSize;                          // used to check for default size
+        wxArrayString       mText;                          // initial text contents
+        wxsPositionSizeData mVirtualSize;
 
 };
 

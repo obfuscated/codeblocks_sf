@@ -179,6 +179,3 @@ void wxsSTEditor::OnEnumWidgetProperties(long Flags) {
     WXS_SIZE(       wxsSTEditor, mVirtualSize,   _T("Default Virtual Size?"),           _T("Virtual Width"),    _T("Virtual Height"), _T("Use Dialog Units?"), _T("mVirtualSize"));
 
 };
-
-
-

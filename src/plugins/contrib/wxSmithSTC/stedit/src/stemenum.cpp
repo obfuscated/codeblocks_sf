@@ -61,8 +61,8 @@ void wxSTEditorMenuManager::InitAcceleratorArray() const
         m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_EXIT));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_ALT,                  WXK_RETURN, ID_STE_PROPERTIES));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'W',        ID_STN_CLOSE_PAGE));
-        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'W',        ID_STN_CLOSE_ALL));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 WXK_F4,     ID_STN_CLOSE_PAGE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'W',        ID_STN_CLOSE_ALL));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'A',        ID_STN_SAVE_ALL));
     }
 
@@ -121,8 +121,8 @@ void wxSTEditorMenuManager::InitAcceleratorArray() const
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'U', ID_STE_LOWERCASE));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'J', ID_STE_LINES_JOIN));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'K', ID_STE_LINES_SPLIT));
-        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_ALT,   'W', ID_STE_TRAILING_WHITESPACE));
-        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'W', ID_STE_REMOVE_CHARSAROUND));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_ALT,   'E', ID_STE_TRAILING_WHITESPACE));
+        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'E', ID_STE_REMOVE_CHARSAROUND));
     }
 
     // Bookmark menu items  ---------------------------------------------------

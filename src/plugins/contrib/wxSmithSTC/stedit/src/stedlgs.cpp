@@ -3,7 +3,6 @@
 // Purpose:     Preferences dialog
 // Maintainer:
 // Created:     2003-04-28
-// RCS-ID:      $Id$
 // Copyright:   (c) John Labenski, Otto Wyss
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -1363,6 +1362,16 @@ bool wxSTEditorPrefDialog::Create( const wxSTEditorPrefPageData& editorPrefData,
     m_imageList->Add(wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_STYLES,    wxART_TOOLBAR, wxSTEIconSize));
     m_imageList->Add(wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_LANGS,     wxART_TOOLBAR, wxSTEIconSize));
 
+    wxBitmap b1 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_VIEW,      wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b2 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_TABSEOL,   wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b3 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_FOLDWRAP,  wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b4 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_PRINT,     wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b5 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_LOADSAVE,  wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b6 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_HIGHLIGHT, wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b7 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_STYLES,    wxART_TOOLBAR, wxSTEIconSize);
+    wxBitmap b8 = wxArtProvider::GetBitmap(wxART_STEDIT_PREFDLG_LANGS,     wxART_TOOLBAR, wxSTEIconSize);
+
+
     wxPanel *panel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                  wxTAB_TRAVERSAL|wxCLIP_CHILDREN|wxNO_BORDER);
     m_noteBook = new wxListbook(panel, ID_STEDLG_PREF_NOTEBOOK,
@@ -2208,13 +2217,15 @@ wxSTEditorInsertTextDialog::wxSTEditorInsertTextDialog(wxSTEditor* editor,
     wxStaticCast(FindWindow(ID_STEDLG_INSERT_COLUMN_SPINCTRL), wxSpinCtrl)->SetValue(m_column);
     wxStaticCast(FindWindow(sm_radioID), wxRadioButton)->SetValue(true);
 
-    UpdateControls();
+    InitFromEditor();
 
     Fit();
     GetSizer()->SetSizeHints(this);
     Centre();
 
     m_created = true;  // now we can handle events
+
+    UpdateControls();
 }
 
 wxSTEditorInsertTextDialog::~wxSTEditorInsertTextDialog()

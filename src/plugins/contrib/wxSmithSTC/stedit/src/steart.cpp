@@ -66,7 +66,7 @@ wxSTEditorArtProvider::wxSTEditorArtProvider() : wxArtProvider()
 }
 
 // static
-wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& id,
+wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& art_id,
                                             const wxArtClient& client,
                                             const wxSize& size_)
 {
@@ -74,9 +74,9 @@ wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& id,
     {
         // wxArtID id; - can't have wxString in struct for MSVC6
 #if (wxVERSION_NUMBER >= 2902)
-        const char* id;
+        const char* art_id;
 #else
-        const wxChar* id;
+        const wxChar* art_id;
 #endif
         const char* const* xpm;
     } s_xpm_array[] =
@@ -112,23 +112,23 @@ wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& id,
     if (size == wxDefaultSize)
         size = GetSizeHint(client);
 
-    if (id == wxART_STEDIT_PREFDLG_VIEW)
+    if (art_id == wxART_STEDIT_PREFDLG_VIEW)
         bmp = wxArtProvider::GetBitmap(wxART_FIND, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_TABSEOL)
+    else if (art_id == wxART_STEDIT_PREFDLG_TABSEOL)
         bmp = wxArtProvider::GetBitmap(wxART_LIST_VIEW, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_FOLDWRAP)
+    else if (art_id == wxART_STEDIT_PREFDLG_FOLDWRAP)
         bmp = wxArtProvider::GetBitmap(wxART_COPY, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_PRINT)
+    else if (art_id == wxART_STEDIT_PREFDLG_PRINT)
         bmp = wxArtProvider::GetBitmap(wxART_PRINT, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_LOADSAVE)
+    else if (art_id == wxART_STEDIT_PREFDLG_LOADSAVE)
         bmp = wxArtProvider::GetBitmap(wxART_FILE_SAVE, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_HIGHLIGHT)
+    else if (art_id == wxART_STEDIT_PREFDLG_HIGHLIGHT)
         bmp = wxArtProvider::GetBitmap(wxART_TIP, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_STYLES)
+    else if (art_id == wxART_STEDIT_PREFDLG_STYLES)
         bmp = wxArtProvider::GetBitmap(wxART_HELP_BOOK, client, size);
-    else if (id == wxART_STEDIT_PREFDLG_LANGS)
+    else if (art_id == wxART_STEDIT_PREFDLG_LANGS)
         bmp = wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, client, size);
-    else if (id == wxART_STEDIT_APP)
+    else if (art_id == wxART_STEDIT_APP)
     {
         // try to get the bitmap that is closest in size to the requested size
         // we will resize it later if necessary
@@ -143,7 +143,7 @@ wxBitmap wxSTEditorArtProvider::DoGetBitmap(const wxArtID& id,
         // we don't need to be fast about this since the wxArtProvider caches them
         for (size_t i = 0; i < s_xpm_array_size; ++i)
         {
-            if (s_xpm_array[i].id == id)
+            if (s_xpm_array[i].art_id == art_id)
             {
                 bmp = wxBitmap(s_xpm_array[i].xpm);
                 break;

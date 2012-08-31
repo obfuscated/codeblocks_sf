@@ -3,7 +3,6 @@
 // Purpose:     Preferences dialog
 // Maintainer:
 // Created:     2003-04-28
-// RCS-ID:      $Id$
 // Copyright:   (c) John Labenski, Otto Wyss
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,6 +25,7 @@ class WXDLLIMPEXP_FWD_CORE wxImageList;
 class WXDLLIMPEXP_FWD_CORE wxListBox;
 class WXDLLIMPEXP_FWD_CORE wxStaticText;
 class WXDLLIMPEXP_FWD_CORE wxColourData;
+class WXDLLIMPEXP_FWD_CORE wxCheckBox;
 
 class WXDLLIMPEXP_FWD_STEDIT wxSTEditorPrefDialog;
 
