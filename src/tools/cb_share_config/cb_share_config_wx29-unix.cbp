@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="C::B Share Config (Unix)" />
+		<Option title="C::B Share Config wx2.9x (Unix)" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -39,11 +39,9 @@
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add library="txml29" />
-			<Add library="codeblocks" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel29" />
 		</Linker>
-		<Unit filename="../../base/tinyxml/tinywxuni.cpp" />
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
 		<Unit filename="mainframe.cpp" />
