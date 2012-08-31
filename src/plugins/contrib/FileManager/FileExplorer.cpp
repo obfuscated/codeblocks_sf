@@ -705,7 +705,7 @@ bool FileExplorer::AddTreeItems(const wxTreeItemId &ti)
     bool cont = dir.GetFirst(&filename,wxEmptyString,flags);
     while ( cont )
     {
-        int itemstate;
+        int itemstate=fvsNormal;
         bool match=true;
         wxString fullpath=wxFileName(path,filename).GetFullPath();
         if(wxFileName::DirExists(fullpath))

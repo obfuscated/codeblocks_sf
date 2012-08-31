@@ -257,12 +257,39 @@ WXLIKE_LIBRARY_NAMES( wxThingsLib wxthings "${wxThings_VERSION}")
 
 # ---------------------------------------------------------------------------
 
+install(TARGETS wxThingsLib
+        EXPORT  wxThings_export
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+install(EXPORT wxThings_export
+        DESTINATION share/wxthings/
+        FILE wxThings-config.cmake)
+
 export( TARGETS wxThingsLib
         FILE "${CMAKE_BINARY_DIR}/build/wxThings-config.cmake")
 
 install(FILES
-    ${wxThings_ROOT_DIR}/docs/readme.txt
-    DESTINATION "doc")
+        ${wxThings_ROOT_DIR}/docs/readme.txt
+        DESTINATION "doc")
+
+install(FILES
+        ${wxThings_ROOT_DIR}/include/wx/things/block.h
+        ${wxThings_ROOT_DIR}/include/wx/things/bmpcombo.h
+        ${wxThings_ROOT_DIR}/include/wx/things/dropdown.h
+        ${wxThings_ROOT_DIR}/include/wx/things/filebrws.h
+        ${wxThings_ROOT_DIR}/include/wx/things/genergdi.h
+        ${wxThings_ROOT_DIR}/include/wx/things/geometry.h
+        ${wxThings_ROOT_DIR}/include/wx/things/matrix2d.h
+        ${wxThings_ROOT_DIR}/include/wx/things/medsort.h
+        ${wxThings_ROOT_DIR}/include/wx/things/menubtn.h
+        ${wxThings_ROOT_DIR}/include/wx/things/optvalue.h
+        ${wxThings_ROOT_DIR}/include/wx/things/range.h
+        ${wxThings_ROOT_DIR}/include/wx/things/spinctld.h
+        ${wxThings_ROOT_DIR}/include/wx/things/thingdef.h
+        ${wxThings_ROOT_DIR}/include/wx/things/toggle.h
+        DESTINATION "include/wx/things")
 
 # ---------------------------------------------------------------------------
 # CMake build file for wxThings sample

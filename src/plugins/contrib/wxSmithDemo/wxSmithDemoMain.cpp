@@ -891,7 +891,7 @@ void wxSmithDemoFrame::InitWithListItems()
 void wxSmithDemoFrame::InitTreebook()
 {
     wxPanel *Panel99 = new wxPanel(Treebook1 , ID_PANEL99, wxPoint(0, 0), wxDefaultSize, wxTAB_TRAVERSAL|wxSTATIC_BORDER, _T("ID_PANEL99"));
-	wxStaticText *text = new wxStaticText(Panel99, wxNewId(), wxString(_("This is a sub-page.")), wxPoint(88, 96));
+//	wxStaticText *text = new wxStaticText(Panel99, wxNewId(), wxString(_("This is a sub-page.")), wxPoint(88, 96));
 	Treebook1->InsertSubPage(0, Panel99, wxT("1-1"));
 	Treebook1->InsertSubPage(0, Panel99, wxT("1-2"));
 	Treebook1->InsertSubPage(3, Panel99, wxT("2-1"));

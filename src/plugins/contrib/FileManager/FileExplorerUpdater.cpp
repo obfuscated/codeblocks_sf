@@ -122,7 +122,7 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
     bool cont = dir.GetFirst(&filename,wxEmptyString,flags);
     while ( cont && !TestDestroy() && !m_kill)
     {
-        int itemstate;
+        int itemstate=fvsNormal;
         bool match=true;
         wxString fullpath=wxFileName(path,filename).GetFullPath();
         if(wxFileName::DirExists(fullpath))

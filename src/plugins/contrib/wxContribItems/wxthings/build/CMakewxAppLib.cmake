@@ -37,6 +37,11 @@ endif()
 
 set_property(GLOBAL PROPERTY CMAKEWXAPPLIB_RUN_ONCE TRUE)
 
+set(CMakewxAppLib_LIST_DIR ${CMAKE_CURRENT_LIST_DIR})
+
+# Load the helper file with additional functions
+include( "${CMAKE_CURRENT_LIST_DIR}/CMakeFunctions.txt" )
+
 # ===========================================================================
 # Display to the caller what the options are that may be passed to
 # CMake to control the build before we do anything.
@@ -50,7 +55,7 @@ message( STATUS "* sometimes once is not enough, after a few configurations, pre
 message( STATUS "* " )
 message( STATUS "* Usage: cmake -D[OPTION_NAME]=[OPTION_VALUE] /path/to/CMakeLists.txt/" )
 message( STATUS "* ---------------------------------------------------------------------------" )
-message( STATUS "* -DHELP=1 " )
+message( STATUS "* -DHELP=TRUE " )
 message( STATUS "*   Show this help message and exit, no files will be generated." )
 message( STATUS "* -DCMAKE_BUILD_TYPE=[Debug, Release, RelWithDebInfo, MinSizeRel] : (Default Debug)")
 message( STATUS "*   Makefiles : Set the build type to Debug, Release..." )
@@ -66,7 +71,7 @@ message( STATUS "*   Path to the root of the wxWidgets build, must at least set 
 message( STATUS "* -DwxWidgets_LIB_DIR=[path] : (e.g. /path/to/wxWidgets/lib/vc_lib/)")
 message( STATUS "*   Path to the wxWidgets lib dir also set this if libs can't be found." )
 message( STATUS "* -DwxWidgets_CONFIGURATION=[configuration] : ")
-message( STATUS "*   Set wxWidgets configuration; e.g. msw, mswd, mswud, mswunivud..." )
+message( STATUS "*   Set wxWidgets configuration; e.g. msw, mswu, mswunivu..." )
 message( STATUS "*   Where 'u' = unicode and 'd' = debug." )
 message( STATUS "*   MSVC GUI : You need only choose msw, mswu, mswuniv, mswunivu since " )
 message( STATUS "*              release or debug mode is chosen in the GUI." )
@@ -113,7 +118,7 @@ if (UNIX)
 else()
     file(WRITE "${CMAKE_BINARY_DIR}/cmake-gui.bat"
          "cd /D \"${CMAKE_BINARY_DIR}\"\n"
-         "\"${CMAKE_EDIT_COMMAND}\" \"${CMAKE_HOME_DIRECTORY}\"\n" )
+         "start \"Title\" \"${CMAKE_EDIT_COMMAND}\" \"${CMAKE_HOME_DIRECTORY}\"\n" )
 endif()
 
 # ===========================================================================
@@ -159,22 +164,6 @@ set( BUILD_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE PATH     "Install Direct
 set( CMAKE_INSTALL_PREFIX ${BUILD_INSTALL_PREFIX} CACHE INTERNAL "Install Directory prefix for INSTALL target" FORCE)
 
 # ---------------------------------------------------------------------------
-# Set bool variables IS_32_BIT and IS_64_BIT
-# ---------------------------------------------------------------------------
-
-if ((CMAKE_SIZEOF_VOID_P MATCHES 4) OR (CMAKE_CL_64 MATCHES 0))
-    set(IS_32_BIT TRUE  CACHE INTERNAL "")
-    set(IS_64_BIT FALSE CACHE INTERNAL "")
-elseif((CMAKE_SIZEOF_VOID_P MATCHES 8) OR (CMAKE_CL_64 MATCHES 1))
-    set(IS_32_BIT FALSE CACHE INTERNAL "")
-    set(IS_64_BIT TRUE  CACHE INTERNAL "")
-elseif(NOT DEFINED IS_32_BIT)
-    # Sometimes CMake doesn't set CMAKE_SIZEOF_VOID_P, so we remember the last good value.
-    # http://www.cmake.org/pipermail/cmake/2011-January/042058.html
-    MESSAGE(WARNING "Oops, unable to determine if using 32 or 64 bit compilation.")
-endif()
-
-# ---------------------------------------------------------------------------
 # Default build is Debug, change on the command line with
 # $cmake -DCMAKE_BUILD_TYPE=Release /path/to/CMakeLists.txt
 # Possible options are "Debug, Release, RelWithDebInfo and MinSizeRel"
@@ -201,6 +190,7 @@ if (NOT MSVC)
     # This is used only for the Makefile generator.
     # In MSVC you can choose the build type in the IDE.
     SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "Set build type, options are one of ${CMAKE_BUILD_TYPES}" FORCE)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_BUILD_TYPES})
 endif ()
 
 # Useful, since I cannot find a case-insensitive string comparison function
@@ -241,6 +231,19 @@ if (BUILD_SHARED_LIBS) # CMake has problems with "if ("ON" AND "TRUE")"
     if (WIN32)
         set(BUILDING_DLLS TRUE)
     endif()
+endif()
+
+# ---------------------------------------------------------------------------
+# Put all the binaries, libs, and DLL's from different targets into the same dir.
+# By default they go into the build dir equivalent to the src dir, so they're
+# spread all over and it's hard to find/run them unless you already know
+# about them.
+# ---------------------------------------------------------------------------
+
+if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 endif()
 
 # ---------------------------------------------------------------------------
@@ -339,7 +342,6 @@ elseif (UNIX) # elseif (CMAKE_BUILD_TOOL MATCHES "(gmake)")
     # -----------------------------------------------------------------------
     if (IS_64_BIT)
         add_definitions( -fPIC )
-        #set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -fPIC)
     endif()
 endif()
 
@@ -393,6 +395,21 @@ message(STATUS " ")
 
 set(DOXYGEN_PREDEFINED_WXWIDGETS "WXUNUSED(x)=x DECLARE_EXPORTED_EVENT_TYPE(x,y,z)=y")
 
+# The component list is in wxWidgets/build/bakefiles/wxwin.py
+set(wxWidgets_ALL_COMPONENTS_29 gl stc richtext propgrid ribbon aui xrc qa media webview net xml html adv core base)
+# contrib libs in 28 gizmos, ogl, plot, ...
+set(wxWidgets_ALL_COMPONENTS_28 gl stc richtext                 aui xrc qa media         net xml html adv core base)
+
+set(wxWidgets_ALL_COMPONENTS ${wxWidgets_ALL_COMPONENTS_28} ${wxWidgets_ALL_COMPONENTS_29})
+list(REMOVE_DUPLICATES wxWidgets_ALL_COMPONENTS)
+
+set(wxWidgets_ALL_COMPONENTS    ${wxWidgets_ALL_COMPONENTS}    CACHE STRING "All wxWidgets library names in 2.8, 2.9, ..." FORCE)
+set(wxWidgets_ALL_COMPONENTS_28 ${wxWidgets_ALL_COMPONENTS_28} CACHE STRING "All wxWidgets library names in < 2.9" FORCE)
+set(wxWidgets_ALL_COMPONENTS_29 ${wxWidgets_ALL_COMPONENTS_29} CACHE STRING "All wxWidgets library names in >= 2.9" FORCE)
+mark_as_advanced(wxWidgets_ALL_COMPONENTS)
+mark_as_advanced(wxWidgets_ALL_COMPONENTS_28)
+mark_as_advanced(wxWidgets_ALL_COMPONENTS_29)
+
 macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
 
     # We only want this function called once per CMake configure, but we may link
@@ -406,6 +423,17 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
 
     # call this function without ${} around wxWidgets_COMPONENTS_
     set(wxWidgets_COMPONENTS ${${wxWidgets_COMPONENTS_}})
+
+    # The wxWidgets_CONFIGURATION should never be mswd since then
+    # wxWidgets_USE_REL_AND_DBG can't be set since mswdd will never exist.
+    string(REGEX MATCH "([a-zA-Z]+)d$" wxWidgets_CONFIGURATION_is_debug "${wxWidgets_CONFIGURATION}")
+    if (wxWidgets_CONFIGURATION_is_debug)
+        #set(wxWidgets_CONFIGURATION ${CMAKE_MATCH_1} CACHE STRING "Set wxWidgets configuration (${WX_CONFIGURATION_LIST})" FORCE)
+    endif()
+    unset(wxWidgets_CONFIGURATION_is_debug)
+
+    # Nobody probably needs to see this...
+    mark_as_advanced(wxWidgets_wxrc_EXECUTABLE)
 
     # -----------------------------------------------------------------------
     # Get the version of wxWidgets, we'll need it before finding wxWidgets to get stc lib right.
@@ -422,42 +450,47 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
     if (idx_mono GREATER "-1")
         set(wxWidgets_MONOLITHIC TRUE)
     endif()
+    set(wxWidgets_MONOLITHIC ${wxWidgets_MONOLITHIC} CACHE BOOL "wxWidgets library is monolithic." FORCE)
+    mark_as_advanced(wxWidgets_MONOLITHIC)
 
     # -----------------------------------------------------------------------
     # wxWidgets has stc lib in < 2.9 and stc + scintilla lib in >= 2.9
     # Let people specify either stc and/or scintilla
     # -----------------------------------------------------------------------
 
-    if (wxWidgets_VERSION VERSION_LESS 2.9)
-        # remove these >= 2.9 libs, they should if #ifdefed it in the code
-        # so we allow them to specify them as link libs, but remove them for 2.8
-        list(REMOVE_ITEM wxWidgets_COMPONENTS propgrid)
+    list(FIND wxWidgets_COMPONENTS stc       idx_stc)
+    list(FIND wxWidgets_COMPONENTS scintilla idx_scintilla)
 
-        list(FIND wxWidgets_COMPONENTS scintilla idx)
-        if (idx GREATER "-1")
-            message(STATUS "* Note: wxWidgets libs; Linking to stc lib and not scintilla lib for wx < 2.9")
+    if (wxWidgets_VERSION VERSION_LESS 2.9)
+        # Remove these >= 2.9 libs, they should if #ifdefed it in the C++ code.
+        # We allow them to specify them as link libs, but remove them for 2.8.
+
+        list(FIND wxWidgets_COMPONENTS propgrid idx_propgrid)
+        if (idx_propgrid GREATER "-1")
+            message(STATUS "* Note: wxWidgets libs; Removing 'propgrid' lib from wxWidgets_COMPONENTS since it didn't exit in wx < 2.9")
+            list(REMOVE_ITEM wxWidgets_COMPONENTS propgrid)
+        endif()
+
+        if (idx_scintilla GREATER "-1")
+            message(STATUS "* Note: wxWidgets libs; Linking to 'stc' lib and not 'scintilla' lib for wx < 2.9")
             list(REMOVE_ITEM wxWidgets_COMPONENTS scintilla)
             set(wxWidgets_COMPONENTS stc ${wxWidgets_COMPONENTS})
         endif()
 
         if (NOT UNIX)
-            list(FIND wxWidgets_COMPONENTS stc idx)
-            if (idx GREATER "-1")
-                include_directories(${wxWidgets_ROOT_DIR}/contrib/include)
+            if (idx_stc GREATER "-1")
+                include_directories("${wxWidgets_ROOT_DIR}/contrib/include")
             endif()
         endif()
     else()
 
         # In 2.8 stc was in not in the mono lib, but was a separate contrib
-        list(FIND wxWidgets_COMPONENTS stc       idx_stc)
-        list(FIND wxWidgets_COMPONENTS scintilla idx_scintilla)
-
         if (wxWidgets_MONOLITHIC)
             if (idx_stc GREATER "-1")
                 message(STATUS "* Note: wxWidgets libs; automatically removing stc component for mono build in >= 2.9, but note that stc is a separate lib in 2.8.")
                 list(REMOVE_ITEM wxWidgets_COMPONENTS stc)
             endif()
-            if (NOT UNIX)
+            if (NOT UNIX) # scintilla is static in Unix and we don't have to link to it
                 if (idx_scintilla EQUAL "-1")
                     message(STATUS "* Note: wxWidgets libs; automatically adding scintilla lib for stc in mono build in >= 2.9, but note that the scintilla lib doesn't exist in 2.8.")
                     set(wxWidgets_COMPONENTS "scintilla" ${wxWidgets_COMPONENTS})
@@ -468,6 +501,7 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
                 # Need scintilla lib in 2.9, just remove both and add them back in correct order
                 list(REMOVE_ITEM wxWidgets_COMPONENTS stc)
                 list(REMOVE_ITEM wxWidgets_COMPONENTS scintilla)
+
                 if (NOT UNIX)
                     set(wxWidgets_COMPONENTS "stc" "scintilla" ${wxWidgets_COMPONENTS})
                 else()
@@ -477,26 +511,45 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
         endif()
     endif()
 
+    unset(idx_stc)
+    unset(idx_scintilla)
+    unset(idx_propgrid)
+
     # -----------------------------------------------------------------------
 
     message(STATUS "* Using these wxWidgets components: ${wxWidgets_COMPONENTS}")
 
-    # Note: it is essential that 'core' is mentioned before 'base'.
-    # Don't use REQUIRED since it only gives a useless error message on failure.
-    find_package( wxWidgets COMPONENTS ${wxWidgets_COMPONENTS})
+    if (EXISTS "${CMakewxAppLib_LIST_DIR}/FindwxWidgets.cmake")
+        # Use our own copy of FindwxWidgets.cmake that has some fixes
+        set(CMAKE_MODULE_PATH_old ${CMAKE_MODULE_PATH})
+        set(CMAKE_MODULE_PATH     ${CMakewxAppLib_LIST_DIR})
+
+        # Note: it is essential that 'core' is mentioned before 'base'.
+        # Don't use REQUIRED since it only gives a useless error message on failure.
+        find_package( wxWidgets COMPONENTS ${wxWidgets_COMPONENTS})
+
+        set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_old})
+        unset(CMAKE_MODULE_PATH_old)
+    else()
+        # Use the default CMake FindwxWidgets.cmake
+        # Note: it is essential that 'core' is mentioned before 'base'.
+        # Don't use REQUIRED since it only gives a useless error message on failure.
+        find_package( wxWidgets COMPONENTS ${wxWidgets_COMPONENTS})
+    endif()
 
     # Set the variables FindwxWidgets.cmake uses so they show up in cmake-gui
-    # so you'll actually have a chance to find wxWidgets...
+    # so people will actually have a chance of finding wxWidgets...
+
+    set( wxWidgets_COMPONENTS ${wxWidgets_COMPONENTS} CACHE STRING "wxWidgets components to link to: xrc;xml;gl;net;media;propgrid;richtext;aui;stc;html;adv;core;base or mono" FORCE)
 
     if ("${wxWidgets_FIND_STYLE}" STREQUAL "win32")
 
         # We show the user the version so we can fix stc and scintilla libs
-        set( wxWidgets_VERSION       ${wxWidgets_VERSION}       CACHE string "wxWidgets version e.g. 2.8.3, 2.9.2..." FORCE)
+        set( wxWidgets_VERSION       ${wxWidgets_VERSION}       CACHE STRING "wxWidgets version e.g. 2.8.12, 2.9.4..." FORCE)
         # These are used by FindwxWidgets.cmake
         set( wxWidgets_ROOT_DIR      ${wxWidgets_ROOT_DIR}      CACHE PATH   "Root directory of wxWidgets install (set 1st)" FORCE)
         set( wxWidgets_LIB_DIR       ${wxWidgets_LIB_DIR}       CACHE PATH   "Lib directory of wxWidgets install (set 2nd)" FORCE)
-        set( wxWidgets_CONFIGURATION ${wxWidgets_CONFIGURATION} CACHE string "wxWidgets configuration e.g. msw, mswd, mswu, mswud, mswunivud..." FORCE)
-        set( wxWidgets_COMPONENTS    ${wxWidgets_COMPONENTS}    CACHE string "wxWidgets components: xrc;xml;gl;net;media;propgrid;richtext;aui;stc;html;adv;core;base or mono" FORCE)
+        set( wxWidgets_CONFIGURATION ${wxWidgets_CONFIGURATION} CACHE STRING "wxWidgets configuration e.g. msw, mswu, mswunivu..." FORCE)
 
     else()
 
@@ -523,6 +576,7 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
         if (EXISTS ${wxWidgets_CONFIG_EXECUTABLE})
             execute_process(COMMAND ${wxWidgets_CONFIG_EXECUTABLE} --prefix OUTPUT_VARIABLE wxWidgets_ROOT_DIR)
             string(STRIP "${wxWidgets_ROOT_DIR}" wxWidgets_ROOT_DIR)
+            set(wxWidgets_ROOT_DIR "${wxWidgets_ROOT_DIR}" CACHE PATH "wxWidgets root directory" FORCE)
         endif()
 
         PARSE_WXWIDGETS_LIB_NAMES()
@@ -547,15 +601,6 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
     message(STATUS "* - wxWidgets_DEBUGFLAG    = ${wxWidgets_DEBUGFLAG}" )
 
     # -----------------------------------------------------------------------
-
-    # The component list is in wxWidgets/build/bakefiles/wxwin.py
-    set(wxWidgets_ALL_COMPONENTS_29 gl stc richtext propgrid ribbon aui xrc qa media webview net xml html adv core base)
-    # contrib libs in 28 gizmos, ogl, plot, ...
-    set(wxWidgets_ALL_COMPONENTS_28 gl stc richtext                 aui xrc qa media         net xml html adv core base)
-
-    set(wxWidgets_ALL_COMPONENTS ${wxWidgets_ALL_COMPONENTS_28} ${wxWidgets_ALL_COMPONENTS_29})
-    list(REMOVE_DUPLICATES wxWidgets_ALL_COMPONENTS)
-
     # Always verify the libs, for success or failure in finding wxWidgets.
     VERIFY_WXWIDGETS_COMPONENTS()
 
@@ -647,7 +692,7 @@ function( PARSE_WXWIDGETS_LIB_NAMES )
     set(wxWidgets_UNICODEFLAG "" CACHE STRING "wxWidgets unicode build, either 'u' or ''" FORCE)
     set(wxWidgets_DEBUGFLAG   "" CACHE STRING "wxWidgets debug build, either 'd' or ''" FORCE)
 
-    # wxWidgets lib/dll build using MSVC
+    # wxWidgets lib/dll build using MSVC (wxmsw29u_core.lib) or MinGW (libwxmsw29ud_core.a)
     if ("${wxWidgets_PORTNAME}" STREQUAL "")
         string(REGEX MATCH "wx(msw)(univ)?([0-9][0-9])(u)?(d)?_core" _match_msw "${wxWidgets_LIBRARIES}")
 
@@ -663,6 +708,19 @@ function( PARSE_WXWIDGETS_LIB_NAMES )
     # wxWidgets monolithic DLL build using nmake MSVC : lib/vc_amd64_dll/wxmsw29ud.lib and wxmsw294ud_vc_custom.dll
     if ("${wxWidgets_PORTNAME}" STREQUAL "")
         string(REGEX MATCH "wx(msw)(univ)?([0-9][0-9])(u)?(d)?\\.lib" _match_msw_mono "${wxWidgets_LIBRARIES}")
+
+        if (NOT "${_match_msw_mono}" STREQUAL "")
+            set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
+            set(wxWidgets_UNIVNAME    "${CMAKE_MATCH_2}" )
+            #set(wxWidgets_LIB_VERSION "${CMAKE_MATCH_3}" )
+            set(wxWidgets_UNICODEFLAG "${CMAKE_MATCH_4}" )
+            set(wxWidgets_DEBUGFLAG   "${CMAKE_MATCH_5}" )
+        endif()
+    endif()
+
+    # wxWidgets monolithic DLL build using mingw : lib/gcc_dll/libwxmsw29ud.a and libwxmsw294ud_gcc_custom.dll
+    if ("${wxWidgets_PORTNAME}" STREQUAL "")
+        string(REGEX MATCH "libwx(msw)(univ)?([0-9][0-9])(u)?(d)?\\.a" _match_msw_mono "${wxWidgets_LIBRARIES}")
 
         if (NOT "${_match_msw_mono}" STREQUAL "")
             set(wxWidgets_PORTNAME    "${CMAKE_MATCH_1}" )
@@ -825,16 +883,10 @@ function( WXLIKE_LIBRARY_NAMES target_name lib_prefix lib_postfix )
     # wx$(PORTNAME)$(WXUNIVNAME)$(WX_RELEASE_NODOT)$(WXUNICODEFLAG)$(WXDEBUGFLAG)$(WX_LIB_FLAVOUR).lib
     # wxmsw28[ud]_core.lib, wx_gtk2[ud]_core-2.8.so
 
-    if (WIN32)
-        # Don't use ${wxWidgets_DEBUGFLAG} since in MSW you MUST link to either
-        # the debug or release MSCRT libs so if you're building debug, wxWidgets must be debug too.
-        SET( _libname_debug   "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}d")
-        SET( _libname_release "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}")
-    else()
-        # In Unix we can link our release lib to wxWidgets debug lib and vice versa.
-        SET( _libname_debug   "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}${wxWidgets_DEBUGFLAG}")
-        SET( _libname_release "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}${wxWidgets_DEBUGFLAG}")
-    endif()
+    # We could use ${wxWidgets_DEBUGFLAG}, but it's probably more important
+    # to specify how this lib was built.
+    SET( _libname_debug   "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}d")
+    SET( _libname_release "wx${wxWidgets_RELEASE_NODOT}${wxWidgets_PORTNAME}${wxWidgets_UNIVNAME}${wxWidgets_UNICODEFLAG}")
 
     if (NOT "${lib_prefix}" STREQUAL "")
         SET( _libname_debug   "${lib_prefix}-${_libname_debug}")

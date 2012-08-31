@@ -522,7 +522,7 @@ mpWindow::mpWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const w
 {
     m_scaleX = m_scaleY = 1.0;
     m_posX   = m_posY   = 0;
-    m_scrX   = m_scrX   = 64;
+    m_scrX   = m_scrY   = 64;
     m_minX   = m_minY   = 0;
     m_maxX   = m_maxY   = 0;
     m_last_lx= m_last_ly= 0;

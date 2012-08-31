@@ -328,7 +328,9 @@ void ThreadSearchView::set_properties()
 
 void ThreadSearchView::do_layout()
 {
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/");
+#if wxCHECK_VERSION(2, 9, 0)
+    #define wxADJUST_MINSIZE 0
+#endif
     // begin wxGlade: ThreadSearchView::do_layout
     wxBoxSizer* m_pSizerTop = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* m_pSizerSplitter = new wxBoxSizer(wxHORIZONTAL);

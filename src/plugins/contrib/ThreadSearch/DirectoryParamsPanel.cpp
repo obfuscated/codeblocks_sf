@@ -102,6 +102,9 @@ void DirectoryParamsPanel::set_properties()
 
 void DirectoryParamsPanel::do_layout()
 {
+#if wxCHECK_VERSION(2, 9, 0)
+    #define wxADJUST_MINSIZE 0
+#endif
     // begin wxGlade: DirectoryParamsPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
     SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);

@@ -56,6 +56,67 @@ set_property(DIRECTORY ${CMAKE_HOME_DIRECTORY}
 # ===========================================================================
 
 # ---------------------------------------------------------------------------
+# Set bool variables IS_32_BIT and IS_64_BIT
+# ---------------------------------------------------------------------------
+
+if ((CMAKE_SIZEOF_VOID_P MATCHES 4) OR (CMAKE_CL_64 MATCHES 0))
+    set(IS_32_BIT TRUE  CACHE INTERNAL "True if compiling for 32-bit.")
+    set(IS_64_BIT FALSE CACHE INTERNAL "True if compiling for 64-bit.")
+elseif((CMAKE_SIZEOF_VOID_P MATCHES 8) OR (CMAKE_CL_64 MATCHES 1))
+    set(IS_32_BIT FALSE CACHE INTERNAL "True if compiling for 32-bit.")
+    set(IS_64_BIT TRUE  CACHE INTERNAL "True if compiling for 64-bit.")
+elseif(NOT DEFINED IS_32_BIT)
+    # Sometimes CMake doesn't set CMAKE_SIZEOF_VOID_P, so we remember the last good value.
+    # http://www.cmake.org/pipermail/cmake/2011-January/042058.html
+    MESSAGE(WARNING "Oops, unable to determine if using 32 or 64 bit compilation, please rerun CMake.")
+endif()
+
+# ---------------------------------------------------------------------------
+# Determine the number of processors on this machine
+# ---------------------------------------------------------------------------
+
+FUNCTION( FIND_PROCESSOR_COUNT )
+    # only run the find code once and store it in the internal var PROCESSOR_COUNT_
+    if(NOT DEFINED PROCESSOR_COUNT_)
+        # Unknown:
+        set(PROCESSOR_COUNT 1)
+
+        # Linux:
+        set(cpuinfo_file "/proc/cpuinfo")
+        if(EXISTS "${cpuinfo_file}")
+            file(STRINGS "${cpuinfo_file}" procs REGEX "^processor.: [0-9]+$")
+            list(LENGTH procs PROCESSOR_COUNT)
+        endif()
+
+        # Mac:
+        if(APPLE)
+            find_program(cmd_sys_pro "system_profiler")
+            if(cmd_sys_pro)
+                execute_process(COMMAND ${cmd_sys_pro} OUTPUT_VARIABLE info)
+                string(REGEX REPLACE "^.*Total Number Of Cores: ([0-9]+).*$" "\\1"
+                       PROCESSOR_COUNT "${info}")
+            endif()
+        endif()
+
+        # Windows:
+        if(WIN32)
+            set(PROCESSOR_COUNT "$ENV{NUMBER_OF_PROCESSORS}")
+        endif()
+
+        if ("${PROCESSOR_COUNT}" LESS "1")
+            set(PROCESSOR_COUNT 1)
+        endif()
+
+        set(PROCESSOR_COUNT_ ${PROCESSOR_COUNT} CACHE INTERNAL "Number of CPUs found on this machine." FORCE)
+    endif()
+
+    # Copy the found # of processors to PROCESSOR_COUNT, in case someone changed it.
+    set(PROCESSOR_COUNT ${PROCESSOR_COUNT_} CACHE STRING "Number of CPUs found on this machine." FORCE)
+    mark_as_advanced( PROCESSOR_COUNT )
+
+ENDFUNCTION()
+
+# ---------------------------------------------------------------------------
 # CONFIGURE_FILE_TO_ALL_BUILD_CONFIGURATION_DIRS(filename input_dir output_dir [COPYONLY] [ESCAPE_QUOTES] [@ONLY])
 #
 # Configure a file from ${input_dir}/${filename}
@@ -66,14 +127,15 @@ set_property(DIRECTORY ${CMAKE_HOME_DIRECTORY}
 # ---------------------------------------------------------------------------
 
 FUNCTION( CONFIGURE_FILE_TO_BUILD_CONFIGURATION_DIRS filename input_dir output_dir)
-    if (UNIX)
-        # Only a single build type in Unix, don't create other dirs and confuse people
-        configure_file(${input_dir}/${filename} ${output_dir}/${CMAKE_BUILD_TYPE}/${filename} ${ARGN})
-    else() # MSW
-        # Copy them to all the output dirs for msw since you can change build in MSVC GUI
+    if (MSVC)
+        # Copy them to all the output dirs for msvc since you can change the build in MSVC GUI.
+        # Note that CMAKE_CONFIGURATION_TYPES is empty if the generator doesn't support it
         foreach (t ${CMAKE_CONFIGURATION_TYPES})
             configure_file(${input_dir}/${filename} ${output_dir}/${t}/${filename} ${ARGN})
         endforeach()
+    else() # MSW
+        # Only a single build type in Unix, don't create other dirs and confuse people
+        configure_file(${input_dir}/${filename} ${output_dir}/${CMAKE_BUILD_TYPE}/${filename} ${ARGN})
     endif()
 ENDFUNCTION()
 
@@ -126,15 +188,17 @@ FUNCTION( ADD_FILE_TO_LIST file_list filename )
     endif()
 
     foreach( f ${filename})
-        HAS_WILDCARD(is_wild ${f})
+        set(filenames )
+        HAS_WILDCARD(is_wild "${f}")
 
         if (is_wild)
-            # Expand the path and handle wildcards
-            file( GLOB filenames ${filename} )
+            # Expand the path and handle wildcards.
+            # Note "*.cxx;*.cpp" doesn't work so we have to do one at a time.
+            file( GLOB filenames ${f} )
             set(${file_list} ${${file_list}} ${filenames} PARENT_SCOPE)
         elseif ((EXISTS ${f}) OR (EXISTS "${CMAKE_CURRENT_LIST_DIR}/${f}"))
             # Cleanup the path
-            file( GLOB filenames ${filename} )
+            file( GLOB filenames ${f} )
             set(${file_list} ${${file_list}} ${filenames} PARENT_SCOPE)
         elseif (_ALLOW_MISSING)
             # Just add the file which doesn't exist right now
@@ -147,64 +211,26 @@ FUNCTION( ADD_FILE_TO_LIST file_list filename )
     endforeach()
 ENDFUNCTION()
 
-# ---------------------------------------------------------------------------
-# GET_OBJECT_FILES( target_name object_file_list source_files )
-#
-# Append to the object_file_list the object file(s) which would be generated by an
-# ADD_EXECUTABLE() or ADD_LIBRARY() call.
-# Usage :
-#   GET_OBJECT_FILES(blah objlist "a.cpp;b.cpp") ...
-#   objlist = "/path/to/.../blah.dir/.../a.obj; .../b.obj or *.o as appropriate.
-# ---------------------------------------------------------------------------
 
-FUNCTION( GET_OBJECT_FILES target_name object_file_list source_files )
-    if (MSVC)
-        foreach(f ${source_files})
-            GET_FILENAME_COMPONENT(fname ${f} NAME)
-            string(REPLACE ".cpp" ".obj" fname2 ${fname})
-            string(REPLACE ".c"   ".obj" fname2 ${fname2})
-            if (MSVC60)
-                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${fname2}")
-            else()
-                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/${target_name}.dir/${CMAKE_CFG_INTDIR}/${fname2}")
-            endif()
-        endforeach()
-    else()
-        # Backwards compat to CMake <= 2.8.4
-        if ("${CMAKE_CURRENT_LIST_DIR}" STREQUAL "")
-            get_filename_component(CMAKE_CURRENT_LIST_DIR
-                                  ${CMAKE_CURRENT_LIST_FILE} PATH ABSOLUTE)
-        endif()
-
-        foreach(f ${source_files})
-            #GET_FILENAME_COMPONENT(fname ${f} NAME)
-            string(REPLACE "${CMAKE_CURRENT_LIST_DIR}" "" fname "${f}")
-            set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${target_name}.dir/${fname}.o")
-        endforeach()
-    endif()
-
-    set(${object_file_list} ${${object_file_list}} ${objects} PARENT_SCOPE)
-
-ENDFUNCTION()
 
 # ===========================================================================
 # Replace some CMake functions to be able to track the targets
 # that will be in the generated Makefiles
 # ===========================================================================
 
-UNSET(ADD_SUBDIRECTORY_LIST CACHE)
-UNSET(ADD_LIBRARY_LIST CACHE)
-UNSET(ADD_LIBRARY_DIR_LIST CACHE)
-UNSET(ADD_LIBRARY_DIR_NAME_LIST CACHE)
-UNSET(ADD_EXECUTABLE_LIST CACHE)
-UNSET(ADD_EXECUTABLE_DIR_LIST CACHE)
-UNSET(ADD_EXECUTABLE_DIR_NAME_LIST CACHE)
-UNSET(ADD_TEST_LIST CACHE)
-UNSET(ADD_TEST_DIR_LIST CACHE)
-UNSET(ADD_TEST_DIR_NAME_LIST CACHE)
-UNSET(ADD_CPPCHECK_TEST_LIST CACHE)
-UNSET(ADD_CPPCHECK_TEST_DIR_LIST CACHE)
-UNSET(ADD_CPPCHECK_TEST_DIR_NAME_LIST CACHE)
+UNSET(ADD_SUBDIRECTORY_LIST             CACHE)
+UNSET(ADD_LIBRARY_LIST                  CACHE)
+UNSET(ADD_LIBRARY_DIR_LIST              CACHE)
+UNSET(ADD_LIBRARY_DIR_NAME_LIST         CACHE)
+UNSET(ADD_EXECUTABLE_LIST               CACHE)
+UNSET(ADD_EXECUTABLE_DIR_LIST           CACHE)
+UNSET(ADD_EXECUTABLE_DIR_NAME_LIST      CACHE)
+UNSET(ADD_TEST_LIST                     CACHE)
+UNSET(ADD_TEST_DIR_LIST                 CACHE)
+UNSET(ADD_TEST_DIR_NAME_LIST            CACHE)
+UNSET(ADD_CPPCHECK_TEST_LIST            CACHE)
+UNSET(ADD_CPPCHECK_TEST_DIR_LIST        CACHE)
+UNSET(ADD_CPPCHECK_TEST_DIR_NAME_LIST   CACHE)
 
 # ---------------------------------------------------------------------------
 # PRINT_TARGET() - Print all the information about the target.
@@ -215,24 +241,49 @@ FUNCTION( PRINT_TARGET target_name )
     message( STATUS "- Printing all information about target : ${target_name}")
     message( STATUS "----------------------------------------------------------------------------")
 
+    set(_CONFIGS
+        Release
+        Debug
+        RelWithDebInfo
+        MinSizeRel
+    )
+
     set(VAR_POSTFIXES
         _BINARY_DIR
+        _LIB_DEPENDS
+        _SOURCE_DIR
+
+        _ROOT_DIR
+        _SETUP_INCLUDE_PATH
+
+        # These are generated by ADD_LIBRARY/EXECUTABLE_FULL()
+        _CXX_FLAGS
+        _CXX_FLAGS_<CONFIG>
         _DIRECTORY
         _HEADER_FILES
         _OBJECT_FILES
-        _ROOT_DIR
-        _SETUP_INCLUDE_PATH
-        _SOURCE_DIR
         _SOURCE_FILES
     )
 
-    foreach(var_postfix ${VAR_POSTFIXES})
-        if (DEFINED ${target_name}${var_postfix})
-            MESSAGE(STATUS " - ${target_name}${var_postfix} = ${${target_name}${var_postfix}}")
-        endif()
-    endforeach()
+    # get the flags if they haven't already
+    if (NOT DEFINED ${target_name}_CXX_FLAGS)
+        DO_GET_TARGET_FLAGS(${target_name})
+    endif()
 
-    set(_CONFIGS Release Debug RelWithDebInfo MinSizeRel)
+    foreach(var_postfix ${VAR_POSTFIXES})
+        foreach(c ${_CONFIGS})
+            string(REPLACE "<CONFIG>" "${c}" var_postfix2 "${var_postfix}")
+
+            if (DEFINED ${target_name}${var_postfix2})
+                MESSAGE(STATUS " - ${target_name}${var_postfix2} = ${${target_name}${var_postfix2}}")
+            endif()
+
+            # We do it this way since foreach() won't even be run once for an "" empty string
+            if ("${var_postfix}" STREQUAL "${var_postfix2}")
+                 break()
+            endif()
+        endforeach()
+    endforeach()
 
     set(_TARGET_PROPS
         #<CONFIG>_OUTPUT_NAME deprecated
@@ -347,13 +398,15 @@ FUNCTION( PRINT_TARGET target_name )
         #XCODE_ATTRIBUTE_<an-attribute>
     )
 
+    message(STATUS " - TARGET PROPERTIES")
+
     foreach(p ${_TARGET_PROPS})
         foreach(c ${_CONFIGS})
             string(REPLACE "<CONFIG>" "${c}" p2 "${p}")
 
             get_target_property(_${p2} ${target_name} "${p2}")
             if(NOT "_${p2}" MATCHES "-NOTFOUND$")
-                message(STATUS " - ${p2} = ${_${p2}}")
+                message(STATUS " - - ${p2} = ${_${p2}}")
             endif()
 
             # We do it this way since foreach() won't even be run once for an "" empty string
@@ -363,92 +416,10 @@ FUNCTION( PRINT_TARGET target_name )
         endforeach()
     endforeach()
 
-    set(list_dir "${${target_name}_DIRECTORY}")
-
-    set(cxx_flags ${CMAKE_CXX_FLAGS})
-
-    if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        set(cxx_flags ${cxx_flags} ${CMAKE_CXX_FLAGS_DEBUG})
-    endif()
-
-        get_target_property(target_type ${target_name} TYPE)
-        if ("${target_type}" STREQUAL "SHARED_LIBRARY")
-            set(cxx_flags ${cxx_flags} ${CMAKE_SHARED_LIBRARY_CXX_FLAGS})
-
-            get_target_property(target_define_symbol ${target_name} DEFINE_SYMBOL)
-            if (target_define_symbol)
-                list(APPEND cxx_flags "-D${target_define_symbol}")
-            else()
-                list(APPEND cxx_flags "-D${target_name}_EXPORTS")
-            endif()
-        endif()
-
-        get_target_property(target_flags ${target_name} COMPILE_FLAGS)
-        if (target_flags)
-            set(cxx_flags ${cxx_flags} ${target_flags})
-            set(target_flags "${target_flags};") # append ; for use later
-        else()
-            set(target_flags) # clear it for use later
-        endif()
-
-        get_target_property(target_defs ${target_name} COMPILE_DEFINITIONS)
-        if (target_defs)
-            foreach (i ${target_defs})
-                list(APPEND cxx_flags "-D${i}")
-            endforeach()
-        endif()
-
-        #set(list_dir ${CMAKE_CURRENT_LIST_DIR})
-        #while (EXISTS ${list_dir})
-            get_directory_property( dir_defs DIRECTORY ${list_dir} COMPILE_DEFINITIONS)
-            foreach (i ${dir_defs})
-                list(APPEND cxx_flags "-D${i}")
-            endforeach()
-
-            get_directory_property(dir_includes DIRECTORY ${list_dir} INCLUDE_DIRECTORIES)
-            foreach (i ${dir_includes})
-                list(APPEND cxx_flags "-I${i}")
-            endforeach()
-
-            #get_directory_property(list_dir DIRECTORY ${list_dir} PARENT_DIRECTORY)
-        #endwhile()
-
-        set(cxx_flags ${cxx_flags} ${CMAKE_CXX_FLAGS})
-        list(REMOVE_DUPLICATES cxx_flags)
-
-    message(STATUS " - CXX FLAGS = ${cxx_flags} ${list_dir}")
-
     message( STATUS "----------------------------------------------------------------------------")
     message( STATUS "- End printing all information about target : ${target_name}")
     message( STATUS "----------------------------------------------------------------------------")
-	MESSAGE( STATUS " ")
-ENDFUNCTION()
-
-# ---------------------------------------------------------------------------
-# EXPORT_TARGET() - Export information about the target to the given filename.
-# ---------------------------------------------------------------------------
-
-FUNCTION( EXPORT_TARGET target_name filename )
-
-    set(export_string "")
-
-
-
-
-    set(export_string
-        "${target_name}"
-
-    )
-
-# Import target "wxSheetLib" for configuration "Debug"
-SET_PROPERTY(TARGET wxSheetLib APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
-SET_TARGET_PROPERTIES(wxSheetLib PROPERTIES
-  IMPORTED_LINK_INTERFACE_LIBRARIES_DEBUG "-L/home/jlabenski/wx/wx-svn/wx/wxWidgets/wxWidgets-trunk/build_gtk2ud/lib;-pthread;-Wl,-rpath,/home/jlabenski/wx/wx-svn/wx/wxWidgets/wxWidgets-trunk/build_gtk2ud/lib;-lwx_gtk2u_stc-2.9;-lwx_gtk2u_gl-2.9;-lwx_gtk2u_xrc-2.9;-lwx_baseu_xml-2.9;-lwx_baseu_net-2.9;-lwx_gtk2u_media-2.9;-lwx_gtk2u_propgrid-2.9;-lwx_gtk2u_richtext-2.9;-lwx_gtk2u_aui-2.9;-lwx_gtk2u_html-2.9;-lwx_gtk2u_adv-2.9;-lwx_gtk2u_core-2.9;-lwx_baseu-2.9"
-  IMPORTED_LOCATION_DEBUG "/home/jlabenski/wx/wx-svn/wx/build-2.9-wx_gtk2u/bin/libwxSheetLib.so"
-  IMPORTED_SONAME_DEBUG "libwxSheetLib.so"
-  )
-
-
+    MESSAGE( STATUS " ")
 ENDFUNCTION()
 
 # ---------------------------------------------------------------------------
@@ -456,12 +427,12 @@ ENDFUNCTION()
 # ---------------------------------------------------------------------------
 FUNCTION( PRINT_ADD_SUBDIRECTORY VERBOSE )
     if (VERBOSE)
-	    MESSAGE( STATUS "* Subdirectories that contain projects from ADD_SUBDIRECTORY():" )
+        MESSAGE( STATUS "* Subdirectories that contain projects from ADD_SUBDIRECTORY():" )
 
         SET(ADD_SUBDIRECTORY_LIST_SORTED ${ADD_SUBDIRECTORY_LIST})
-	    LIST(SORT ADD_SUBDIRECTORY_LIST_SORTED)
-	    STRING(REGEX REPLACE ";" "\n* - " ADD_SUBDIRECTORY_LIST_STR "${ADD_SUBDIRECTORY_LIST_SORTED}")
-	    MESSAGE( STATUS "* - ${ADD_SUBDIRECTORY_LIST_STR}")
+        LIST(SORT ADD_SUBDIRECTORY_LIST_SORTED)
+        STRING(REGEX REPLACE ";" "\n* - " ADD_SUBDIRECTORY_LIST_STR "${ADD_SUBDIRECTORY_LIST_SORTED}")
+        MESSAGE( STATUS "* - ${ADD_SUBDIRECTORY_LIST_STR}")
     endif()
 
     list(LENGTH ADD_SUBDIRECTORY_LIST ADD_SUBDIRECTORY_LIST_LENGTH)
@@ -624,6 +595,7 @@ FUNCTION( ADD_CPPCHECK_TEST name )
     IF ( "${cppcheck}" STREQUAL "")
         # Find the program cppcheck; ${cppcheck} will be either the exe path or "cppcheck-NOTFOUND"
         FIND_PROGRAM( cppcheck "cppcheck" )
+        mark_as_advanced(cppcheck) # we don't need to see this
 
         IF ( "${cppcheck}" STREQUAL "cppcheck-NOTFOUND" )
             MESSAGE( STATUS "* WARNING: cppcheck NOT found, NOT generating ADD_CPPCHECK_TEST() tests" )
@@ -669,23 +641,39 @@ ENDFUNCTION()
 #       LINK_LIBRARIES                             # Replaces TARGET_LINK_LIBRARIES(target_name lib1 lib2 ...)
 #           gtest ${Boost_LIBRARIES}
 #       PROPERTIES FOLDER "Foo/Bar"                # replaces SET_TARGET_PROPERTIES(target_name PROPERTIES ...)
-#       PROPERTIES LINKER_LANGUAGE CXX ... )       # use PROPERTIES XXX YYY as many times as you like
+#       PROPERTIES LINKER_LANGUAGE CXX ...         # use PROPERTIES XXX YYY as many times as you like
+#       INSTALL "${ADD_LIBRARY_FULL_INSTALL_DEFAULT}" # INSTALL(TARGETS ${target_name} ${ADD_LIBRARY_FULL_INSTALL_DEFAULT})
+#                                                  # is called with the parameters expanded into a list.
+#                                                  # Create list as shown below or use the default flags as shown here.
+#   )
+#
+# For the 'INSTALL' command create a variable like this to use:
+#   SET( MY_INSTALL_FLAG_LIST
+#        EXPORT \${target_name}_exports
+#        RUNTIME DESTINATION bin
+#        LIBRARY DESTINATION lib
+#        ARCHIVE DESTINATION lib )
 #
 # Internal cached variables will be created:
 #   ${target_name}_HEADER_FILES - List of HEADERS given above
 #   ${target_name}_SOURCE_FILES - List of SOURCES given above
 #   ${target_name}_OBJECT_FILES - List of object files CMake will create compiling SOURCES
 #
-# INSTALL() put the lib into CMAKE_INSTALL_PREFIX/bin or lib/ and the
-# headers will be put into include/<path>/ from the root CMakeLists file.
 # ---------------------------------------------------------------------------
 
+# These are flags for a default "normal" install for a ADD_LIBRARY_FULL() target.
+set(ADD_LIBRARY_FULL_INSTALL_DEFAULT
+    EXPORT \${target_name}_exports
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib )
+
 function( ADD_LIBRARY_FULL target_name )
-	set(_SHARED)                   # ADD_LIBRARY's SHARED directive
-	set(_STATIC)                   # ADD_LIBRARY's STATIC directive
-	set(_MODULE)                   # ADD_LIBRARY's MODULE directive
-	set(_CUDA FALSE)               # Use CUDA_ADD_LIBRARY() not ADD_LIBRARY()
-	set(_EXCLUDE_FROM_ALL)         # ADD_LIBRARY's EXCLUDE_FROM_ALL directive
+    set(_SHARED)                   # ADD_LIBRARY's SHARED directive
+    set(_STATIC)                   # ADD_LIBRARY's STATIC directive
+    set(_MODULE)                   # ADD_LIBRARY's MODULE directive
+    set(_CUDA FALSE)               # Use CUDA_ADD_LIBRARY() not ADD_LIBRARY()
+    set(_EXCLUDE_FROM_ALL)         # ADD_LIBRARY's EXCLUDE_FROM_ALL directive
     set(_ALLOW_MISSING_FILES)      # Don't warn on missing HEADERS or SOURCES files on disk
     set(_HEADERS)                  # ADD_LIBRARY's list of header files
     set(_SOURCES)                  # ADD_LIBRARY's list of source files
@@ -699,6 +687,8 @@ function( ADD_LIBRARY_FULL target_name )
     set(_PRECOMPILED_FORCED)       # Force including the PRECOMPILED_INCLUDE
     set(_LINK_LIBRARIES)           # TARGET_LINK_LIBRARIES's list of libraries to link to
     set(_PROPERTIES)               # SET_TARGET_PROPERTIES's list of PROPERTIES
+    set(_INSTALL)                  # INSTALL's list of commands
+
 
     set(cmd)                       # Current directive we're processing
     set(HEADER_FILES)
@@ -709,18 +699,18 @@ function( ADD_LIBRARY_FULL target_name )
     FOREACH(arg ${ARGN})
         set(read_args FALSE) # TRUE if we didn't find a keyword
 
-		if     ("${arg}" STREQUAL    "SHARED")
-			set(_SHARED              "SHARED")
-		elseif ("${arg}" STREQUAL    "STATIC")
-			set(_STATIC              "STATIC")
-		elseif ("${arg}" STREQUAL    "MODULE")
-			set(_MODULE              "MODULE")
-		elseif ("${arg}" STREQUAL    "CUDA")
-			set(_CUDA                 TRUE)
-		elseif ("${arg}" STREQUAL    "EXCLUDE_FROM_ALL")
-			set(_EXCLUDE_FROM_ALL    "EXCLUDE_FROM_ALL")
-		elseif ("${arg}" STREQUAL    "ALLOW_MISSING_FILES")
-			set(_ALLOW_MISSING_FILES "ALLOW_MISSING")
+        if     ("${arg}" STREQUAL    "SHARED")
+            set(_SHARED              "SHARED")
+        elseif ("${arg}" STREQUAL    "STATIC")
+            set(_STATIC              "STATIC")
+        elseif ("${arg}" STREQUAL    "MODULE")
+            set(_MODULE              "MODULE")
+        elseif ("${arg}" STREQUAL    "CUDA")
+            set(_CUDA                 TRUE)
+        elseif ("${arg}" STREQUAL    "EXCLUDE_FROM_ALL")
+            set(_EXCLUDE_FROM_ALL    "EXCLUDE_FROM_ALL")
+        elseif ("${arg}" STREQUAL    "ALLOW_MISSING_FILES")
+            set(_ALLOW_MISSING_FILES "ALLOW_MISSING")
         elseif ("${arg}" STREQUAL    "HEADERS")
             set(cmd                  "HEADERS")
         elseif ("${arg}" STREQUAL    "SOURCES")
@@ -739,6 +729,8 @@ function( ADD_LIBRARY_FULL target_name )
             set(cmd                  "LINK_LIBRARIES")
         elseif ("${arg}" STREQUAL    "PROPERTIES")
             set(cmd                  "PROPERTIES")
+        elseif ("${arg}" STREQUAL    "INSTALL")
+            set(cmd                  "INSTALL")
         else()
             set(read_args TRUE) # hopefully a file
         endif()
@@ -765,13 +757,17 @@ function( ADD_LIBRARY_FULL target_name )
                 set(_LINK_LIBRARIES ${_LINK_LIBRARIES} ${arg})
             elseif ("${cmd}" STREQUAL "PROPERTIES")
                 set(_PROPERTIES ${_PROPERTIES} ${arg})
+            elseif ("${cmd}" STREQUAL "INSTALL")
+                set(_INSTALL ${_INSTALL} ${arg})
             else()
-                MESSAGE(FATAL_ERROR "Unknown directive '${cmd}' in ADD_LIBRARY_FULL")
+                MESSAGE(FATAL_ERROR "Unknown directive '${arg}' or '${cmd}' in ADD_LIBRARY_FULL")
             endif()
         endif()
     ENDFOREACH(arg)
 
     SET("${target_name}_DIRECTORY" "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "")
+    SET("${target_name}_SOURCE_DIR" "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "")
+    SET("${target_name}_BINARY_DIR" "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "")
 
     SET("${target_name}_HEADER_FILES" ${HEADER_FILES} CACHE INTERNAL "")
     SET("${target_name}_SOURCE_FILES" ${SOURCE_FILES} CACHE INTERNAL "")
@@ -817,6 +813,8 @@ function( ADD_LIBRARY_FULL target_name )
                                   SOURCES      ${PRECOMP_SRCS})
     endif()
 
+    DO_GET_TARGET_FLAGS(${target_name})
+
     # Set the install includes to use same dir structure as the source directories
     #STRING(REPLACE "${CMAKE_HOME_DIRECTORY}/" "" PROJ_DIR_TEMP ${CMAKE_CURRENT_SOURCE_DIR})
     #INSTALL(FILES
@@ -837,11 +835,15 @@ function( ADD_LIBRARY_FULL target_name )
     # so that targetC can import them both. There is no reason that
     # targetB absolutely must export targetA, but I don't know how to do that.
 
-    INSTALL(TARGETS ${target_name}
-            #EXPORT  ${target_name}_exports
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib)
+    if ("${_EXCLUDE_FROM_ALL}" STREQUAL "")
+    if (NOT "${_INSTALL}" STREQUAL "")
+        INSTALL(TARGETS ${target_name} ${_INSTALL})
+                #EXPORT  "${target_name}_export"
+                #RUNTIME DESTINATION bin
+                #LIBRARY DESTINATION lib
+                #ARCHIVE DESTINATION lib)
+    endif()
+    endif()
 
 endfunction()
 
@@ -862,7 +864,18 @@ endfunction()
 #       LINK_LIBRARIES                             # Replaces TARGET_LINK_LIBRARIES(target_name lib1 lib2 ...)
 #           gtest ${Boost_LIBRARIES}
 #       PROPERTIES FOLDER "Foo/Bar"                # replaces SET_TARGET_PROPERTIES(target_name PROPERTIES ...)
-#       PROPERTIES LINKER_LANGUAGE CXX ... )       # use PROPERTIES XXX YYY as many times as you like
+#       PROPERTIES LINKER_LANGUAGE CXX ...         # use PROPERTIES XXX YYY as many times as you like
+#       INSTALL "${ADD_EXECUTABLE_FULL_INSTALL_DEFAULT}" # INSTALL(TARGETS ${target_name} ${ADD_EXECUTABLE_FULL_INSTALL_DEFAULT})
+#                                                  # is called with the parameters expanded into a list.
+#                                                  # Create list as shown below or use the default flags as shown here.
+#   )
+#
+# For the 'INSTALL' command create a variable like this to use: (see also ADD_EXECUTABLE_FULL_INSTALL_DEFAULT)
+#   SET( MY_INSTALL_FLAG_LIST
+#        DESTINATION bin
+#        LIBRARY DESTINATION lib
+#        ARCHIVE DESTINATION lib
+#        BUNDLE  DESTINATION bin)
 #
 # Internal cached variables will be created:
 #   ${target_name}_HEADER_FILES - List of HEADERS given above
@@ -872,11 +885,18 @@ endfunction()
 # INSTALL() put the exe into CMAKE_INSTALL_PREFIX/bin.
 # ---------------------------------------------------------------------------
 
+# These are flags for a default "normal" install for a ADD_EXECUTABLE_FULL() target.
+set(ADD_EXECUTABLE_FULL_INSTALL_DEFAULT
+    DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    BUNDLE  DESTINATION bin)
+
 function( ADD_EXECUTABLE_FULL target_name )
 
     set(_WIN32)                    # ADD_EXECUTABLE's WIN32 directive
     set(_MACOSX_BUNDLE)            # ADD_EXECUTABLE's MACOSX_BUNDLE directive
-	set(_CUDA FALSE)               # Use CUDA_ADD_EXECUTABLE() not ADD_EXECUTABLE()
+    set(_CUDA FALSE)               # Use CUDA_ADD_EXECUTABLE() not ADD_EXECUTABLE()
     set(_EXCLUDE_FROM_ALL)         # ADD_EXECUTABLE's EXCLUDE_FROM_ALL directive
     set(_ALLOW_MISSING_FILES)      # was ALLOW_MISSING_FILES directive used
     set(_HEADERS)                  # ADD_LIBRARY's list of header files
@@ -891,6 +911,7 @@ function( ADD_EXECUTABLE_FULL target_name )
     set(_PRECOMPILED_FORCED)       # Force including the PRECOMPILED_INCLUDE
     set(_LINK_LIBRARIES)           # TARGET_LINK_LIBRARIES's list of libraries to link to
     set(_PROPERTIES)               # SET_TARGET_PROPERTIES's list of PROPERTIES
+    set(_INSTALL)                  # INSTALL's list of commands
 
     set(cmd)                       # current directive we're processing
     set(HEADER_FILES)
@@ -905,12 +926,12 @@ function( ADD_EXECUTABLE_FULL target_name )
             set(_WIN32               "WIN32")
         elseif ("${arg}" STREQUAL    "MACOSX_BUNDLE")
             set(_MACOSX_BUNDLE       "MACOSX_BUNDLE")
-		elseif ("${arg}" STREQUAL    "CUDA")
-			set(_CUDA                 TRUE)
+        elseif ("${arg}" STREQUAL    "CUDA")
+            set(_CUDA                 TRUE)
         elseif ("${arg}" STREQUAL    "EXCLUDE_FROM_ALL")
             set(_EXCLUDE_FROM_ALL    "EXCLUDE_FROM_ALL")
-		elseif ("${arg}" STREQUAL    "ALLOW_MISSING_FILES")
-			set(_ALLOW_MISSING_FILES "ALLOW_MISSING")
+        elseif ("${arg}" STREQUAL    "ALLOW_MISSING_FILES")
+            set(_ALLOW_MISSING_FILES "ALLOW_MISSING")
         elseif ("${arg}" STREQUAL    "HEADERS")
             set(cmd                  "HEADERS")
         elseif ("${arg}" STREQUAL    "SOURCES")
@@ -929,6 +950,8 @@ function( ADD_EXECUTABLE_FULL target_name )
             set(cmd                  "LINK_LIBRARIES")
         elseif ("${arg}" STREQUAL    "PROPERTIES")
             set(cmd                  "PROPERTIES")
+        elseif ("${arg}" STREQUAL    "INSTALL")
+            set(cmd                  "INSTALL")
         else()
             set(read_args TRUE) # hopefully a file
         endif()
@@ -955,13 +978,17 @@ function( ADD_EXECUTABLE_FULL target_name )
                 set(_LINK_LIBRARIES ${_LINK_LIBRARIES} ${arg})
             elseif ("${cmd}" STREQUAL "PROPERTIES")
                 set(_PROPERTIES ${_PROPERTIES} ${arg})
+            elseif ("${cmd}" STREQUAL "INSTALL")
+                set(_INSTALL ${_INSTALL} ${arg})
             else()
-                MESSAGE(FATAL_ERROR "Unknown directive in ADD_EXECUTABLE_FULL")
+                MESSAGE(FATAL_ERROR "Unknown directive '${arg}' or '${cmd}' in ADD_EXECUTABLE_FULL")
             endif()
         endif()
     ENDFOREACH(arg)
 
     SET("${target_name}_DIRECTORY" "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "")
+    SET("${target_name}_SOURCE_DIR" "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "")
+    SET("${target_name}_BINARY_DIR" "${CMAKE_CURRENT_BINARY_DIR}" CACHE INTERNAL "")
 
     SET("${target_name}_HEADER_FILES" ${HEADER_FILES} CACHE INTERNAL "")
     SET("${target_name}_SOURCE_FILES" ${SOURCE_FILES} CACHE INTERNAL "")
@@ -1007,11 +1034,15 @@ function( ADD_EXECUTABLE_FULL target_name )
                                   SOURCES      ${PRECOMP_SRCS})
     endif()
 
-    INSTALL(TARGETS ${target_name}
-            RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
-            ARCHIVE DESTINATION lib
-            BUNDLE  DESTINATION bin)
+    if ("${_EXCLUDE_FROM_ALL}" STREQUAL "")
+    if (NOT "${_INSTALL}" STREQUAL "")
+    	INSTALL(TARGETS ${target_name} ${_INSTALL})
+                #DESTINATION bin
+                #LIBRARY DESTINATION lib
+                #ARCHIVE DESTINATION lib
+                #BUNDLE  DESTINATION bin)
+    endif()
+    endif()
 
 endfunction()
 
@@ -1142,6 +1173,127 @@ function(APPEND_SOURCE_FILES_PROPERTIES)
         message(FATAL_ERROR "Missing value in PROPERTIES directive in APPEND_SOURCE_FILES_PROPERTIES()")
     endif()
 endfunction()
+
+# ---------------------------------------------------------------------------
+# GET_OBJECT_FILES( target_name object_file_list source_files )
+#
+# Append to the object_file_list the object file(s) which would be generated by an
+# ADD_EXECUTABLE() or ADD_LIBRARY() call.
+# Usage :
+#   GET_OBJECT_FILES(blah objlist "a.cpp;b.cpp") ...
+#   objlist = "/path/to/.../blah.dir/.../a.obj; .../b.obj or *.o as appropriate.
+# ---------------------------------------------------------------------------
+
+FUNCTION( GET_OBJECT_FILES target_name object_file_list source_files )
+    if (MSVC)
+        foreach(f ${source_files})
+            GET_FILENAME_COMPONENT(fname ${f} NAME)
+            string(REPLACE ".cpp" ".obj" fname2 ${fname})
+            string(REPLACE ".c"   ".obj" fname2 ${fname2})
+            if (MSVC60)
+                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${fname2}")
+            else()
+                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/${target_name}.dir/${CMAKE_CFG_INTDIR}/${fname2}")
+            endif()
+        endforeach()
+    else()
+        # Backwards compat to CMake <= 2.8.4
+        if ("${CMAKE_CURRENT_LIST_DIR}" STREQUAL "")
+            get_filename_component(CMAKE_CURRENT_LIST_DIR
+                                  ${CMAKE_CURRENT_LIST_FILE} PATH ABSOLUTE)
+        endif()
+
+        foreach(f ${source_files})
+            #GET_FILENAME_COMPONENT(fname ${f} NAME)
+            string(REPLACE "${CMAKE_CURRENT_LIST_DIR}" "" fname "${f}")
+            if ("${CMAKE_GENERATOR}" MATCHES "MinGW Makefiles")
+                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${target_name}.dir/${fname}.obj")
+            else()
+                set(objects ${objects} "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${target_name}.dir/${fname}.o")
+            endif()
+        endforeach()
+    endif()
+
+    set(${object_file_list} ${${object_file_list}} ${objects} PARENT_SCOPE)
+
+ENDFUNCTION()
+
+# ---------------------------------------------------------------------------
+# DO_GET_TARGET_FLAGS( target_name )
+#
+# Create these variables as internal cache variables.
+#   ${target_name}_CXX_FLAGS
+#   ${target_name}_CXX_FLAGS_Release[ or _Debug, _RelWithDebInfo, _MinSizeRel]
+#
+# This function is automatically called by ADD_EXECUTABLE/LIBRARY_FULL()
+# and you do not have to call it afterwards, unless you change the target.
+#
+# Usage :
+#   GET_TARGET_INCLUDES(mytarget) ...
+# ---------------------------------------------------------------------------
+
+FUNCTION( DO_GET_TARGET_FLAGS target_name )
+
+    set(cxx_flags "")
+
+    # Get DLL export define, CMake automatically defines ${target_name}_EXPORTS
+    # unless it has been changed.
+    get_target_property(target_type ${target_name} TYPE)
+    if ("${target_type}" STREQUAL "SHARED_LIBRARY")
+        set(cxx_flags ${cxx_flags} ${CMAKE_SHARED_LIBRARY_CXX_FLAGS})
+
+        get_target_property(target_define_symbol ${target_name} DEFINE_SYMBOL)
+        if (target_define_symbol)
+            list(APPEND cxx_flags "-D${target_define_symbol}")
+        else()
+            list(APPEND cxx_flags "-D${target_name}_EXPORTS")
+        endif()
+    endif()
+
+    get_target_property(target_flags ${target_name} COMPILE_FLAGS)
+    if (target_flags)
+        set(cxx_flags ${cxx_flags} ${target_flags})
+        set(target_flags "${target_flags};") # append ; for use later
+    else()
+        set(target_flags) # clear it for use later
+    endif()
+
+    get_target_property(target_defs ${target_name} COMPILE_DEFINITIONS)
+    if (target_defs)
+        foreach (i ${target_defs})
+            list(APPEND cxx_flags "-D${i}")
+        endforeach()
+    endif()
+
+    set(list_dir ${CMAKE_CURRENT_LIST_DIR})
+    #while (EXISTS ${list_dir})
+        get_directory_property( dir_defs DIRECTORY ${list_dir} COMPILE_DEFINITIONS)
+        foreach (i ${dir_defs})
+            list(APPEND cxx_flags "-D${i}")
+        endforeach()
+
+        get_directory_property(dir_includes DIRECTORY ${list_dir} INCLUDE_DIRECTORIES)
+        foreach (i ${dir_includes})
+            list(APPEND cxx_flags "-I${i}")
+        endforeach()
+
+        #get_directory_property(list_dir DIRECTORY ${list_dir} PARENT_DIRECTORY)
+    #endwhile()
+
+    set(cxx_flags ${cxx_flags} ${CMAKE_CXX_FLAGS})
+    list(REMOVE_DUPLICATES cxx_flags)
+
+    set("${target_name}_CXX_FLAGS" ${cxx_flags} CACHE INTERNAL "")
+    list(REMOVE_DUPLICATES "${target_name}_CXX_FLAGS")
+
+    set(_CONFIGS "" Release Debug RelWithDebInfo MinSizeRel)
+    foreach(c ${_CONFIGS})
+        string(TOUPPER ${c} c_UPPERCASE)
+        set("${target_name}_CXX_FLAGS_${c}" ${cxx_flags} ${CMAKE_CXX_FLAGS_${c_UPPERCASE}} CACHE INTERNAL "")
+        list(REMOVE_DUPLICATES "${target_name}_CXX_FLAGS_${c}")
+    endforeach()
+
+ENDFUNCTION()
 
 # ---------------------------------------------------------------------------
 # TARGET_PRECOMPILED_HEADER() function to add a precomp header to a target.
@@ -1307,73 +1459,28 @@ function( TARGET_PRECOMPILED_HEADER target_name )
         # need to delete this file for clean too, otherwise we may be mismatched.
         set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${PCH_BINARY})
 
-        # Compile the gch header using the same flags and includes as a normal cpp file.
-        set(cxx_flags ${CMAKE_CXX_FLAGS})
-
-        if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            set(cxx_flags ${cxx_flags} ${CMAKE_CXX_FLAGS_DEBUG})
+        # get the cxx flags if they haven't already
+        if (NOT DEFINED ${target_name}_CXX_FLAGS)
+            DO_GET_TARGET_FLAGS(${target_name})
         endif()
 
-        get_target_property(target_type ${target_name} TYPE)
-        if ("${target_type}" STREQUAL "SHARED_LIBRARY")
-            set(cxx_flags ${cxx_flags} ${CMAKE_SHARED_LIBRARY_CXX_FLAGS})
-
-            get_target_property(target_define_symbol ${target_name} DEFINE_SYMBOL)
-            if (target_define_symbol)
-                list(APPEND cxx_flags "-D${target_define_symbol}")
-            else()
-                list(APPEND cxx_flags "-D${target_name}_EXPORTS")
-            endif()
-        endif()
-
-        get_target_property(target_flags ${target_name} COMPILE_FLAGS)
-        if (target_flags)
-            set(cxx_flags ${cxx_flags} ${target_flags})
-            set(target_flags "${target_flags};") # append ; for use later
-        else()
-            set(target_flags) # clear it for use later
-        endif()
-
-        get_target_property(target_defs ${target_name} COMPILE_DEFINITIONS)
-        if (target_defs)
-            foreach (i ${target_defs})
-                list(APPEND cxx_flags "-D${i}")
-            endforeach()
-        endif()
-
-        set(list_dir ${CMAKE_CURRENT_LIST_DIR})
-        #while (EXISTS ${list_dir})
-            get_directory_property( dir_defs DIRECTORY ${list_dir} COMPILE_DEFINITIONS)
-            foreach (i ${dir_defs})
-                list(APPEND cxx_flags "-D${i}")
-            endforeach()
-
-            get_directory_property(dir_includes DIRECTORY ${list_dir} INCLUDE_DIRECTORIES)
-            foreach (i ${dir_includes})
-                list(APPEND cxx_flags "-I${i}")
-            endforeach()
-
-            #get_directory_property(list_dir DIRECTORY ${list_dir} PARENT_DIRECTORY)
-        #endwhile()
-
-        set(cxx_flags ${cxx_flags} ${CMAKE_CXX_FLAGS})
+        # combine all the appropriate flags and remove duplicates
+        set(cxx_flags ${${target_name}_CXX_FLAGS} ${${target_name}_CXX_FLAGS_${CMAKE_BUILD_TYPE}})
         list(REMOVE_DUPLICATES cxx_flags)
-
         list(APPEND cxx_flags -c ${_PCH_HEADER} -o ${PCH_BINARY})
-
         separate_arguments(cxx_flags)
 
         add_custom_command(OUTPUT "${PCH_BINARY}"
                            COMMAND rm -f ${PCH_BINARY}
                            COMMAND ${CMAKE_CXX_COMPILER} ${cxx_flags}
-			               DEPENDS "${_PCH_HEADER}")
+                           DEPENDS "${_PCH_HEADER}")
 
         add_custom_target( "${target_name}_precomp" ALL DEPENDS "${PCH_BINARY}")
 
         add_dependencies(${target_name} ${target_name}_precomp)
 
-        # Check for changed files
-		set_target_properties( ${target_name} PROPERTIES COMPILE_FLAGS "${target_flags}-Winvalid-pch")
+        # Check for changed files included by the precomp header and warn them.
+        append_target_properties( ${target_name} PROPERTIES COMPILE_FLAGS "-Winvalid-pch")
     ENDIF()
 endfunction()
 

@@ -80,7 +80,6 @@ wxsMarker::wxsMarker(wxsItemResData* Data):
 // need to set line color and style
 
 void wxsMarker::OnBuildCreatingCode() {
-int         n;
 wxString    vname;
 wxString    pname;
 wxString    cname;
@@ -128,8 +127,10 @@ wxString    s;
 
 // add to parent window -- should be a mpWindow
 
-    if ((GetPropertiesFlags() & flHidden) && GetBaseProps()->m_Hidden) n = 0;        // do nothing
-    else Codef(_T("%s->AddLayer(%s);\n"), pname.c_str(), vname.c_str());
+    if ((GetPropertiesFlags() & flHidden) && GetBaseProps()->m_Hidden)
+        ; // do nothing
+    else
+        Codef(_T("%s->AddLayer(%s);\n"), pname.c_str(), vname.c_str());
 
 
 }
