@@ -93,7 +93,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="cctest\cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
 				<resources>
-					<wxCCTestFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
+					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

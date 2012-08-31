@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxFrame" name="Frame">
+	<object class="wxFrame" name="CCTestFrame">
 		<title>CC Testing</title>
 		<centered>1</centered>
 		<bg>wxSYS_COLOUR_MENUBAR</bg>
@@ -24,7 +24,7 @@
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="wxID_ANY" variable="m_IncludeCtrl" member="yes">
 									<minsize>-1,60</minsize>
-									<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE</style>
+									<style>wxTE_MULTILINE</style>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
@@ -72,7 +72,7 @@
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
 							<minsize>640,250</minsize>
-							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+							<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -111,7 +111,7 @@
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="wxID_ANY" variable="m_TreeCtrl" member="yes">
 							<minsize>640,150</minsize>
-							<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+							<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
