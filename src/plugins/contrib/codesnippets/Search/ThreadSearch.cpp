@@ -57,6 +57,30 @@ namespace
 // we have to capture the entire edit UPDATE_UI range to see if it really belongs to us
 // ----------------------------------------------------------------------------
 int idEditUndo = XRCID("idEditUndo");                   //First main.cpp UPDATE_UI id
+int idEditRedo = XRCID("idEditRedo");
+int idEditCopy = XRCID("idEditCopy");
+int idEditCut = XRCID("idEditCut");
+int idEditPaste = XRCID("idEditPaste");
+int idEditSwapHeaderSource = XRCID("idEditSwapHeaderSource");
+int idEditGotoMatchingBrace = XRCID("idEditGotoMatchingBrace");
+int idEditBookmarks = XRCID("idEditBookmarks");
+int idEditBookmarksToggle = XRCID("idEditBookmarksToggle");
+int idEditBookmarksPrevious = XRCID("idEditBookmarksPrevious");
+int idEditBookmarksNext = XRCID("idEditBookmarksNext");
+int idEditFoldAll = XRCID("idEditFoldAll");
+int idEditUnfoldAll = XRCID("idEditUnfoldAll");
+int idEditToggleAllFolds = XRCID("idEditToggleAllFolds");
+int idEditFoldBlock = XRCID("idEditFoldBlock");
+int idEditUnfoldBlock = XRCID("idEditUnfoldBlock");
+int idEditToggleFoldBlock = XRCID("idEditToggleFoldBlock");
+int idEditEOLCRLF = XRCID("idEditEOLCRLF");
+int idEditEOLCR = XRCID("idEditEOLCR");
+int idEditEOLLF = XRCID("idEditEOLLF");
+int idEditEncoding = XRCID("idEditEncoding");
+int idEditSelectAll = XRCID("idEditSelectAll");
+int idEditCommentSelected = XRCID("idEditCommentSelected");
+int idEditUncommentSelected = XRCID("idEditUncommentSelected");
+int idEditToggleCommentSelected = XRCID("idEditToggleCommentSelected");
 int idEditAutoComplete = XRCID("idEditAutoComplete");   //Last main.cpp UPDATE_UI id
 // ----------------------------------------------------------------------------
 
@@ -92,7 +116,34 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     // Therefore, to enable/disable copy/paste, we have to capture the entire range
     // to see if the event actually belongs to us.
     // ---------------------------------------------------------------------------
-    EVT_UPDATE_UI_RANGE(idEditUndo,idEditAutoComplete, ThreadSearch::OnMnuEditCopyUpdateUI)
+    // do not use range here, because we don't know which Id is greater , so we (can?) run into
+    // an assert in debug mode (at least on wx2.9)
+//    EVT_UPDATE_UI_RANGE(idEditUndo,idEditAutoComplete, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditUndo, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditRedo, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditCopy, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditCut, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditPaste, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditSwapHeaderSource, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditGotoMatchingBrace, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditFoldAll, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditUnfoldAll, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditToggleAllFolds, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditFoldBlock, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditUnfoldBlock, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditToggleFoldBlock, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditEOLCRLF, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditEOLCR, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditEOLLF, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditEncoding, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditSelectAll, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditBookmarksToggle, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditBookmarksNext, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditBookmarksPrevious, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditCommentSelected, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditAutoComplete, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditUncommentSelected, ThreadSearch::OnMnuEditCopyUpdateUI)
+    EVT_UPDATE_UI(idEditToggleCommentSelected, ThreadSearch::OnMnuEditCopyUpdateUI)
 
 END_EVENT_TABLE()
 
