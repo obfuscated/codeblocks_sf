@@ -29,12 +29,13 @@
     #include "personalitymanager.h"
 #endif
 
+#include <vector>
 #include "wx/fileconf.h"
 #include "cbstyledtextctrl.h"
 
 #include "menuutils.h"
 #include "cbkeybinder.h"
-
+extern wxString GetFullMenuPath(int);
 // ----------------------------------------------------------------------------
 wxString* pKeyFilename = 0;     // used by keybinder key definition dialog
 // ----------------------------------------------------------------------------
@@ -100,6 +101,9 @@ void cbKeyBinder::OnAttach()
         /* wxLogWindow* */
         wxLog::EnableLogging(true);
         pMyLog = new wxLogWindow(pcbWindow,wxT("KeyBinder"),true,false);
+        wxRect logRect = pMyLog->GetFrame()->GetSize();
+        logRect.width = logRect.width << 1;
+        pMyLog->GetFrame()->SetSize(logRect);
         wxLog::SetActiveTarget(pMyLog);
         LOGIT(_T("keybinder log open"));
         pMyLog->Flush();
@@ -138,8 +142,10 @@ void cbKeyBinder::OnAttach()
 
     //block any dynamic update attempts
 	m_mergeEnabled = 0;
-	// remove any predefined command keys set in main.cpp accelerator table
-    Manager::Get()->GetAppWindow()->SetAcceleratorTable(wxNullAcceleratorTable);
+//	// remove any predefined command keys set in main.cpp accelerator table
+//	// Users cannot override keys already in accelerator tables
+//    Manager::Get()->GetAppWindow()->SetAcceleratorTable(wxNullAcceleratorTable);
+//    wxAcceleratorTable* ptbl = Manager::Get()->GetAppWindow()->GetAcceleratorTable();
 
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
@@ -225,8 +231,10 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 	// or codeblocks disables another plugin and rebuilds the menu bar
     if ( m_menuPreviouslyBuilt )
     {
+        #if defined(LOGGING)
          LOGIT( _T("KeyBinder re-entered at BuildMenu") );
          LOGIT( _T("OldMenuBar[%p] NewMenuBar[%p]"), m_pMenuBar, menuBar );
+        #endif
         m_pMenuBar = menuBar;
        	wxMenuCmd::Register(m_pMenuBar);
        	EnableMerge(false);
@@ -252,10 +260,12 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     m_sExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
     m_sDataFolder = ConfigManager::GetDataFolder();
 
+    #if defined(LOGGING)
     //*bug* GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
     LOGIT(_T("GetConfigFolder() is returning [%s]"), m_sConfigFolder.GetData());
     LOGIT(_T("GetExecutableFolder() is returning [%s]"), m_sExecuteFolder.GetData());
     //LOGIT(_T("GetDataFolder() is returning [%s]"), m_sDataFolder.GetData());
+    #endif
 
     // remove the double //s from filename //+v0.4.11
     m_sConfigFolder.Replace(_T("//"),_T("/"));
@@ -326,7 +336,7 @@ bool cbKeyBinder::BuildToolBar(wxToolBar* /*toolBar*/)
 	return false;
 }
 // ----------------------------------------------------------------------------
-void cbKeyBinder::Rebind()
+void cbKeyBinder::Rebind(bool update)
 // ----------------------------------------------------------------------------
 {
     // called when we can't do anything else. Makes a virgin key profile
@@ -356,7 +366,8 @@ void cbKeyBinder::Rebind()
 	m_pKeyProfArr->SetSelProfile(0);
 
 	//bind keys to menu items
-	UpdateArr(*m_pKeyProfArr);
+	if (update)
+        UpdateArr(*m_pKeyProfArr);
 
  	#ifdef LOGGING
         wxLogDebug(_T("cbKeyBinder Rebind\n"));
@@ -387,6 +398,9 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
         //r.UpdateAllCmd(m_pMenuBar); //+v0.4.17
         r.GetSelProfile()->UpdateAllCmd(m_pMenuBar);                  //+v0.4.25
 
+    if (VerifyKeyBind(_T("Ctrl-C"),1))
+        RemoveCopyPasteBindings(r.GetSelProfile());
+
     #if LOGGING
       LOGIT(_T("UpdateArr::End"));
     #endif
@@ -407,16 +421,18 @@ int cbKeyBinder::EnableMerge(bool allow)
     }
     // enable Merge
     m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : m_mergeEnabled + 1);
+
     // StartMergetTimer removed for testing 2007/05/10
-    //  re-enables 2007/05/31 to record plugin menu key changes
+    //  re-enabled 2007/05/31 to record plugin menu key changes
     StartMergeTimer( 15 );
+
     return m_mergeEnabled;
+
 }//LockMerge
 // ----------------------------------------------------------------------------// ----------------------------------------------------------------------------
 void cbKeyBinder::MergeDynamicMenus()
 // ----------------------------------------------------------------------------
 {
-    //v0.4.25
     // Add or adjust any dynamic menu/key assignments made by plugins etal.
 
     // Caller must have previously enabled merging
@@ -432,10 +448,10 @@ void cbKeyBinder::MergeDynamicMenus()
     // dont allow re-entry from other calls (eg. OnTimer() )
     EnableMerge(false);
 
-    //#ifdef LOGGING
+    #if defined(LOGGING)
     // if ( n != 1)
     // LOGIT( _T("MergeDynamicMenus: EnabelMerge Out of synch. Count[%d]"), n );
-    //#endif //LOGGING
+    #endif
 
     IsMerging(true);
     m_MenuModifiedByMerge +=
@@ -553,15 +569,13 @@ void cbKeyBinder::OnLoad()
 
     // if compatible, copy old key defs file to new key definitions
     if (not m_OldKeyFilename.IsEmpty() )
-    {    wxString oldKeyFile = m_sKeyFilePath+wxFILE_SEP_PATH+m_OldKeyFilename;
+    {    wxString oldKeyFile = m_sKeyFilePath + wxFILE_SEP_PATH + m_OldKeyFilename;
         if (not ::wxFileExists(m_sKeyFilename) )
             if (::wxFileExists( oldKeyFile ) )
                 ::wxCopyFile( oldKeyFile, m_sKeyFilename);
     }
     // Load key binding definitions from a file %HOME%\cbKeyBinder{ver}.ini
 
-	// before loading we must register in wxCmd arrays the various types
-	// of commands we want wxCmd::Load to be able to recognize...
     #if LOGGING
 	 LOGIT(_T("--------------"));
 	 LOGIT(_T("OnLoad()Begin"));
@@ -579,7 +593,9 @@ void cbKeyBinder::OnLoad()
 	// before loading we must register in wxCmd arrays the various types
 	// of commands we want wxCmd::Load to be able to recognize...
 	wxMenuCmd::Register(m_pMenuBar);
+	#if defined(LOGGING)
      LOGIT( _T("OnLoad Register MenuBar[%p]"),m_pMenuBar );
+	#endif
 	wxString strLoadFilename = m_sKeyFilename;
 	#if LOGGING
 	 LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
@@ -625,6 +641,9 @@ void cbKeyBinder::OnLoad()
 
         }//endelse
 
+	    // Remove any menu keys defined in app accelerator table
+	    MergeAcceleratorTable(false);
+
 		// reattach frames to the loaded keybinder
 		// which updates the menu items to current profile
 		UpdateArr(*m_pKeyProfArr);
@@ -633,13 +652,21 @@ void cbKeyBinder::OnLoad()
         #ifdef LOGGING
 	     LOGIT(_T("cbKeyBinder:Error loading key file.\nCreating Defaults")); //doing nothing for now
 	    #endif
-//	    wxString strErrMsg = "Error loading Key Bindings file:\n"+m_sKeyFilename;
+//	    wxString strErrMsg = "Error loading Key Bindings file:\n" + m_sKeyFilename;
 //	    if ( ! bKeyFileErrMsgShown)
 //	      wxMessageBox(strErrMsg);
 //	    bKeyFileErrMsgShown = TRUE; //say message has been shown
 
         // The last resort, create a virgin key profile array
-	    Rebind();
+        // Rebind but don't add all menu items yet
+
+	    Rebind(false);
+	    // Merge any menu keys defined in app accelerator table
+	    MergeAcceleratorTable(true);
+
+		// reattach frames to the loaded keybinder
+		// which updates the menu items to current profile
+		UpdateArr(*m_pKeyProfArr);
 	}
 
     #ifdef LOGGING
@@ -709,6 +736,250 @@ void cbKeyBinder::OnSave(bool backitup)
 	delete cfg;
 }//OnSave
 // ----------------------------------------------------------------------------
+void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
+// ----------------------------------------------------------------------------
+{
+    // Scan the accelerator table and merge any menu entries to the app menu
+    // Add any others back to the system.
+
+    // Accelerator table as of 2012/08/30. The first four can be removed and added
+    // to the app menu system. The others have no equivalent menu id's.
+    // We remove the entries duplicated by the menu system so that the user
+    // may redefine them. The non-menu entries are re-registered.
+    //wxAcceleratorEntry entries[8];
+    //entries[0].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  (int) 'W', idFileCloseAll);
+    //entries[1].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F4,    idFileCloseAll);
+    //entries[2].Set(wxACCEL_CTRL,                  (int) 'W', idFileClose);
+    //entries[3].Set(wxACCEL_CTRL,                  WXK_F4,    idFileClose);
+    //entries[4].Set(wxACCEL_CTRL,                  WXK_F6,    idFileNext);
+    //entries[5].Set(wxACCEL_CTRL | wxACCEL_SHIFT,  WXK_F6,    idFilePrev);
+    //entries[6].Set(wxACCEL_SHIFT,                 WXK_TAB,   idShiftTab);
+    //entries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
+
+  #if defined(__WXGTK__)
+    // modifying global accelerators on linux is
+    // practically impossible (as far as I can determine)
+    // So we'll just leave 'em as is...
+    return;
+  #endif //__WXGTK__
+
+  #if defined(__WXMSW__)
+    wxKeyProfile* pkp = m_pKeyProfArr->GetSelProfile();
+
+    wxAcceleratorTable* ptbl = ::wxGetTopLevelParent(Manager::Get()->GetAppWindow())->GetAcceleratorTable();
+    if (not ptbl) return;
+    if (not ptbl->IsOk()) return;
+    WXHACCEL hACCEL = ptbl->GetHACCEL();
+    if (0 == hACCEL) return;
+    // We have an hACCEL, fetch it from the OS
+    int accelCount = ::CopyAcceleratorTable((HACCEL)hACCEL, 0, 0);
+    if (0 == accelCount) return;
+    //wxAcceleratorEntry.Set(flags, keycode, command); //modifiers, keycode, id
+    ACCEL accels[accelCount];
+    accelCount = ::CopyAcceleratorTable((HACCEL)hACCEL, accels, accelCount);
+
+    std::vector<wxAcceleratorEntry> entries(accelCount);
+    for (int ii = 0; ii < accelCount ; ++ii)
+    {
+        BYTE vert = accels[ii].fVirt;
+        WORD key  = accels[ii].key;
+        WORD cmd  = accels[ii].cmd ;
+        int modifiers = 0;
+
+        if (vert & FVIRTKEY)
+        {
+            if (vert & FALT)                   //1 0000
+                modifiers |= wxACCEL_ALT;
+            if (vert & FSHIFT)                  //0 0100
+                modifiers |= wxACCEL_SHIFT;
+            if (vert & FCONTROL)                //0 1000
+                modifiers |= wxACCEL_CTRL;
+        }
+
+        WXWORD keyCode = wxCharCodeMSWToWX(key);
+        if (not keyCode) keyCode = key;
+        entries[ii].Set(modifiers, keyCode, cmd);
+        #if defined(LOGGING)
+        LOGIT( _T("accelEntry[%d]mods[%d]code[%d],id[%d]"),
+                    entries[ii].GetFlags(),
+                    entries[ii].GetKeyCode(),
+                    entries[ii].GetCommand()
+                  );
+        #endif
+    }
+
+    // Invalidate the app accelerator tobale so we can add the entries to the menu system
+    Manager::Get()->GetAppFrame()->SetAcceleratorTable(wxNullAcceleratorTable);
+
+    // Saved Accelerator table entries for later re-registration
+    std::vector<wxAcceleratorEntry> keepEntries;
+
+    // Scan the Accelerator table for keys that can be added to the app menu system
+    // Remove keys that can be added to the app, and save keys that can't be.
+    for (int ii = 0; entries.size(); )
+    {
+        wxString strKeyCode = wxKeyBind::KeyCodeToString(entries[ii].GetKeyCode());
+        if (entries[ii].GetFlags() & wxACCEL_SHIFT)
+            strKeyCode.Prepend(_T("Shift-"));
+        if (entries[ii].GetFlags() & wxACCEL_CTRL)
+            strKeyCode.Prepend(_T("Ctrl-"));
+        if (entries[ii].GetFlags() & wxACCEL_ALT)
+            strKeyCode.Prepend(_T("Alt-"));
+
+        wxMenuItem* pMenuId = m_pMenuBar->FindItem(entries[ii].GetCommand());
+        if (not pMenuId)
+        {   // keep accelerators that have no matching menu item
+            keepEntries.push_back(entries[ii]);
+            entries.erase(entries.begin());
+            continue;
+        }
+
+        // example command string for keybinder:
+        // bind1044-type4660=Build\\Build|Build current project|Ctrl-F9|F9|
+        wxString cfgString = wxString::Format(_T("bind%d-type%d="), entries[ii].GetCommand(), wxMENUCMD_TYPE);
+        wxString menuPath = wxEmptyString;
+        wxString menuHelp = wxEmptyString;
+        if (pMenuId)
+        {
+            menuPath = GetFullMenuPath(entries[ii].GetCommand());
+            menuHelp = pMenuId->GetHelp();
+        }
+
+        RemoveKeyBindingsFor(strKeyCode, pkp);
+
+        cfgString << menuPath <<  _T("|") << menuHelp  << _T("|") << strKeyCode;
+        cfgString << _T("|");
+
+        // search forward for additional keys defined for this menu id
+        for (size_t jj = 1; jj < entries.size(); ++jj )
+        {
+            if (entries[jj].GetCommand() == entries[ii].GetCommand())
+            {   //additional key defined for current menu id
+                strKeyCode = wxKeyBind::KeyCodeToString(entries[jj].GetKeyCode());
+                if (entries[jj].GetFlags() & wxACCEL_SHIFT)
+                    strKeyCode.Prepend(_T("Shift-"));
+                if (entries[jj].GetFlags() & wxACCEL_CTRL)
+                    strKeyCode.Prepend(_T("Ctrl-"));
+                if (entries[jj].GetFlags() & wxACCEL_ALT)
+                    strKeyCode.Prepend(_T("Alt-"));
+                cfgString << strKeyCode << _T('|');
+                entries.erase(entries.begin() + jj);
+                RemoveKeyBindingsFor(strKeyCode, pkp);
+                jj -= 1;
+            }
+        }//for
+
+        // strings for debugging
+        //wxString cfgString = _T("bind663-type4660=File\\\\Close all files|Close all open files|Ctrl-Shift-W|Ctrl-Shift-F4|");
+        //wxString cfgString = _T("bind663-type4660=File\\\\Close all files|Close all open files|Ctrl-Shift-F4|");
+
+        if (mergeAccelTable)
+            pkp->LoadFromString(cfgString);
+        entries.erase(entries.begin());
+        // ii is always 0, no need to decrement
+    }//for ii
+
+    // Re-register only the accelerators for which there were no menu items
+    if (keepEntries.size())
+    {
+        wxAcceleratorEntry keep[keepEntries.size()];
+        for (size_t ii=0; ii< keepEntries.size(); ++ii )
+            keep[ii] = keepEntries[ii];
+        wxAcceleratorTable* pKeepAccelTable = new wxAcceleratorTable(keepEntries.size(), keep);
+        Manager::Get()->GetAppFrame()->SetAcceleratorTable(*pKeepAccelTable);
+    }
+
+    if (mergeAccelTable)
+        RemoveCopyPasteBindings(pkp);
+
+  #endif //__WXMSW__
+}
+// ----------------------------------------------------------------------------
+int cbKeyBinder::RemoveKeyBindingsFor(const wxString& strKeyCode, wxKeyProfile* pkp)
+// ----------------------------------------------------------------------------
+{
+    int knt = 0;
+    wxCmd* pwxcmd = 0;
+    do{
+        pwxcmd = pkp->GetCmdBindTo(strKeyCode);
+        if (pwxcmd)
+        {
+            ++knt;
+            pkp->RemoveCmd(pwxcmd);
+        }
+    }while(pwxcmd);
+    return knt;
+}
+// ----------------------------------------------------------------------------
+int cbKeyBinder::RemoveCopyPasteBindings(wxKeyProfile* pkp)
+// ----------------------------------------------------------------------------
+{
+    // revert Copy/Paste Ctrl-C, Ctrl-V to their native actions
+
+    wxCmd* pwxcmd = 0;
+    int knt = 0;
+
+    pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-C"));
+    if (pwxcmd->GetName() == _T("Copy"))
+        knt +=  RemoveKeyBindingsFor(_T("Ctrl-C"), pkp);
+
+    pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-V"));
+    if (pwxcmd->GetName() == _T("Paste"))
+        knt +=  RemoveKeyBindingsFor(_T("Ctrl-V"),pkp);
+
+    pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-X"));
+    if (pwxcmd->GetName() == _T("Cut"))
+        knt +=  RemoveKeyBindingsFor(_T("Ctrl-X"),pkp);
+
+    return knt;
+}
+// ----------------------------------------------------------------------------
+bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcuts)
+// ----------------------------------------------------------------------------
+{
+    wxKeyProfile* pkp = m_pKeyProfArr->GetSelProfile();
+
+    //wxKeyBind keybind(entries[ii].GetFlags(), entries[ii].GetKeyCode());
+    bool kbOk = true;
+
+    wxCmd* pcmd = pkp->GetCmdBindTo(strKeyCode);
+    if (pcmd)
+    {
+        //int id = pcmd->GetId();
+        int shortcutsCount = pcmd->GetShortcutCount();
+        wxString desc = pcmd->GetDescription();
+        wxString name = pcmd->GetName();
+        //int type = pcmd->GetType();
+        #if defined(LOGGING)
+        LOGIT( _T("shortcut count for[%s]is[%d]type[%d]"),
+              strKeyCode.c_str(), shortcutsCount, type);
+        #endif
+        if (shortcutsCount not_eq numShortcuts)
+            kbOk = false;
+        for (int kk = 0; kk < shortcutsCount; ++kk )
+        {
+            wxKeyBind* pkbind = pcmd->GetShortcut(kk);
+            if (pkbind)
+            {   wxString strKeyCode = wxKeyBind::KeyCodeToString(pkbind->GetKeyCode());
+                if (pkbind->GetModifiers() & wxACCEL_SHIFT)
+                    strKeyCode.Prepend(_T("Shift-"));
+                if (pkbind->GetModifiers() & wxACCEL_CTRL)
+                    strKeyCode.Prepend(_T("Ctrl-"));
+                if (pkbind->GetModifiers() & wxACCEL_ALT)
+                    strKeyCode.Prepend(_T("Alt-"));
+                #if defined(LOGGING)
+                LOGIT( _T("keybind[%d.%d] for [%s] is [%s]"),
+                        id, kk, name.c_str(), strKeyCode.c_str());
+                #endif
+            }
+            else kbOk = false;
+        }//for kk
+    }//if
+    else kbOk = false;
+
+    return kbOk;
+}//VerifyKeyBind
+// ----------------------------------------------------------------------------
 //                          D I A L O G
 // ----------------------------------------------------------------------------
 //     keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
@@ -746,6 +1017,7 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 	//SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
 	//CentreOnScreen();
 }//MyDialog
+// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 MyDialog::~MyDialog()

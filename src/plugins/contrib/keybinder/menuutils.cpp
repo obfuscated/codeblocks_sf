@@ -50,8 +50,6 @@
 
 // static
 wxMenuBar* wxMenuCmd::m_pMenuBar = NULL;
-extern wxKeyProfileArray* m_pKeyProfArr;  // ptr to key profile array in cbKeybinder
-
 
 // ----------------------------------------------------------------------------
 // Global utility functions
@@ -390,7 +388,8 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     wxMenuItem* pLclMnuItem = m_pItem;
 
     // Test if caller wants a different menu item than in wxCmd item
-    if (pSpecificMenuItem) pLclMnuItem = pSpecificMenuItem;
+    if (pSpecificMenuItem)
+        pLclMnuItem = pSpecificMenuItem;
 
     // verify menu item has not changed its id or disappeared
     if ( NULL == m_pMenuBar->FindItem(m_nId) )
@@ -571,7 +570,7 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // --+v0.3---------------------------------------------------------------------
 wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
 // ----------------------------------------------------------------------------
-{//+v0.3+v0.5
+{
     if (!m_pMenuBar) return NULL;
 
     // search for a matching menu item

@@ -160,7 +160,6 @@ END_EVENT_TABLE()
 // window used by AttachRecursively, App.TopWindow
     wxWindow* mainAppWindow = 0;
     extern wxString* pKeyFilename;              // Name of .ini key file
-    extern wxKeyProfileArray* m_pKeyProfArr;    // ptr to key profile array in cbKeybinder
 
 // ----------------------------------------------------------------------------
 // wxKeyBind STATIC utilities
@@ -618,7 +617,7 @@ wxCmd::wxCmdType *wxCmd::FindCmdType(int type)
 //
 //	// create the wxCmd-derived class & init it
 //	wxCmd *ret = fnc(id);
-//	wxASSERT(ret);			// for debug builds
+//	//-wxASSERT(ret);			// for debug builds
 //	if (!ret) return NULL;	// for release builds
 //	ret->Update();
 //
@@ -736,10 +735,49 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
 	// or when a plugin farts a bunch with the menu items.
 	wxASSERT_MSG(m_nId != wxID_INVALID,
 		wxT("ID must be set while creating of this wxCmd"));
+	// extract the keybindings...
+	while (tknzr.HasMoreTokens())
+    {   wxString token = tknzr.GetNextToken();
+		AddShortcut(token);
+    }
+
+	Update();
+	return TRUE;
+}
+// ----------------------------------------------------------------------------
+bool wxCmd::LoadFromString(const wxString& cfgCmdString)
+// ----------------------------------------------------------------------------
+{
+	wxString fmt = cfgCmdString;;
+	if (fmt.empty())
+		return FALSE;
+
+	// extract name & desc
+	wxStringTokenizer tknzr(fmt, wxT("|"));
+	m_strName = tknzr.GetNextToken();
+	m_strDescription = tknzr.GetNextToken();
+	if (m_strName.IsEmpty())
+		return FALSE;	// this is an invalid entry...
+
+    //(pecan 2007/6/15)
+    wxString fullMenuPath = m_strName;
+    m_strName = fullMenuPath.AfterLast(wxT('\\'));
+    //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
+
+	// the ID of this command should have been already set by the caller
+	// which created us... niz, wxCmd::Create() called from wxKeyBinder::Load().
+	// NB: the id came from the cfg file and it could be invalid if the menu
+	// id's have changed or shifted. Happens a lot during CodeBlocks development
+	// or when a plugin farts a bunch with the menu items.
+	wxASSERT_MSG(m_nId != wxID_INVALID,
+		wxT("ID must be set while creating of this wxCmd"));
 
 	// extract the keybindings...
 	while (tknzr.HasMoreTokens())
-		AddShortcut(tknzr.GetNextToken());
+    {
+        wxString token = tknzr.GetNextToken();
+		AddShortcut(token);
+    }
 
 	Update();
 	return TRUE;
@@ -935,10 +973,11 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //            n?GetShortcutStr(nMenuItemID,0).GetData():wxEmptyString );
             //   #endif //LOGGING
             //}
-        }//fi
-        else{// menu item not found in KeyProfileArray
+        }//if
+        else
+        {// menu item not found in KeyProfileArray
             changed = 4;
-        }//esle
+        }
 
         if ( changed )
         {   // menu item has been changed dynamically by core or plugins
@@ -965,9 +1004,28 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             {   // remove pre-existing mis-matching wxCmd
                 RemoveCmd(pCmd);
             }
+            // Leave Ctrl-C/V/X alone
+            if ( (6 == menuItemKeyStr.Length())
+                 && (menuItemKeyStr.StartsWith(_T("Ctrl-"))) )
+            {
+                wxChar c = menuItemKeyStr.GetChar(5);
+                switch(c)
+                {
+                    case _T('C'):
+                        if (menuItemLabel.Matches(_T("Copy"))) continue;
+                    case _T('V'):
+                        if (menuItemLabel.Matches(_T("Paste"))) continue;
+                    case _T('S'):
+                        if (menuItemLabel.Matches(_T("Cut"))) continue;
+                }
+                if ( (c == _T('C')) || (c == _T('V')) || (c == _T('X')) )
+                    continue;
+
+            }
             // add the missing menu item as a wxCmd and update app menu items
             pCmd = wxCmd::CreateNew(menuItemLabel, wxMENUCMD_TYPE, nMenuItemID, false);
-            if (not pCmd) { //CreateNew command did not allocate
+            if (not pCmd)
+            { //CreateNew command did not allocate
                 LOGIT(wxT("Merge:CreateNew refused to allocate the new wxCmd"));
                 LOGIT(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);
                 return modified;
@@ -1015,9 +1073,9 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
     {
         wxMenu* pMenu = pMenuBar->GetMenu(i);
         MergeSubMenu(pMenu, changed);
-    }//rof
+    }
     #ifdef LOGGING
-     //LOGIT( _T("MergeDynamicMenuItems() modified %d items"), changed );
+     LOGIT( _T("MergeDynamicMenuItems() modified %d items"), changed );
     #endif //LOGGING
 
     // ---------------------------------------------------------------
@@ -1371,14 +1429,13 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 	// AVOID TO INTERCEPT Alt+F4 KEYPRESSES !!!
 	// For some reasons on wxMSW 2.5.2 (at least) this provokes a crash
 	// which is really difficult to spot... better leave it...
-	if (p && p->IsBindTo(wxKeyBind(wxT("Alt+F4")))) {
-
+	if (p && p->IsBindTo(wxKeyBind(wxT("Alt+F4"))))
+    {
 		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt+F4 event [%d]"),
 					event.GetKeyCode());
 		event.Skip();
 		return;
 	}
-
     ////#if 0
     ////	// for some reason we need to avoid processing also of the ENTER keypresses...
     ////	if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
@@ -1500,8 +1557,9 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 			type = type.Right(type.Len()-wxString(wxT("type")).Len());
 
 			// is this a valid entry ?
-			if (id.IsNumber() && type.IsNumber() &&
-				p->GetEntryType(str) == wxConfigBase::Type_String)
+			if (id.IsNumber() && type.IsNumber()
+                //&& p->GetEntryType(str) == wxConfigBase::Type_String)
+                )
             {
 				// we will interpret this group as a command ID
 				int nid = wxAtoi(id);
@@ -1512,10 +1570,10 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 				//+v0.3get command name and descriptions string
 				wxString cmdName;
                 wxString cmdDesc;
-				if (! GetNameandDescription(p, str, cmdName, cmdDesc))
-				 {  //-v0.3 cont = FALSE; continue to load next command
+				if (not GetNameandDescription(p, str, cmdName, cmdDesc))
+				{  //-v0.3 cont = FALSE; continue to load next command
                     //-break;
-				 }
+				}
 				wxCmd* cmd = wxCmd::CreateNew(cmdName, ntype, nid);
                 if (cmd && cmd->Load(p, str))
                  {
@@ -1531,6 +1589,75 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 
 	return (b && total > 0);
 }//Load
+// ----------------------------------------------------------------------------
+bool wxKeyBinder::LoadFromString(const wxString& cfgCmdString)
+// ----------------------------------------------------------------------------
+{
+    // example cfgCmdString
+    // bind1044-type4660=Build\\Build|Build current project|Ctrl-F9|F9|
+
+	wxString str = cfgCmdString;
+	//-bool cont;
+	bool b = TRUE;
+	int total = 0;
+	//-long idx;
+
+	// before starting...
+	//p->SetPath(key);
+	// dont clear or we'll wipe out our previus key definitions
+	//m_arrCmd.Clear();
+
+	//-cont = p->GetFirstEntry(str, idx);
+	for (int once = 0; once == 0 ; ++once)
+        {
+
+		// try to decode this entry
+		if (str.StartsWith(wxCMD_CONFIG_PREFIX))    // "bind" string ?
+		{
+			wxString id(str.BeforeFirst(wxT('-')));
+			wxString type(str.AfterFirst(wxT('-')));
+			type = type.BeforeFirst(_T('='));
+			type = type.Mid(4);
+			id = id.Right(id.Len()-wxString(wxCMD_CONFIG_PREFIX).Len());
+
+			// is this a valid entry ?
+			if (id.IsNumber() && type.IsNumber()
+                //&& p->GetEntryType(str) == wxConfigBase::Type_String)
+                )
+            {
+				// we will interpret this group as a command ID
+				int nid = wxAtoi(id);
+				int ntype = wxAtoi(type);
+
+				// create & load this command
+				//-v0.3 wxCmd *cmd = wxCmd::CreateNew(ntype, nid);
+				//+v0.3get command name and descriptions string
+				wxString cmdName;
+                wxString cmdDesc;
+				//if (not GetNameandDescription(p, str, cmdName, cmdDesc))
+				//{  //-v0.3 cont = FALSE; continue to load next command
+                //    //-break;
+				//}
+				cmdDesc = str.AfterFirst(_T('|'));
+				cmdDesc = cmdDesc.BeforeFirst(_T('|'));
+				cmdName = str.After(_T('\\'));
+				cmdName = cmdName.BeforeFirst(_T('|'));
+
+				wxCmd* cmd = wxCmd::CreateNew(cmdName, ntype, nid);
+                if (cmd && cmd->LoadFromString( str))
+                 {
+                    m_arrCmd.Add(cmd);		// add to the array
+                    total++;
+                 }
+			}//if(id.
+		}//if(str.
+
+		// proceed with next entry (if it does exist)
+		//cont &= p->GetNextEntry(str, idx);
+	}//for only once
+
+	return (b && total > 0);
+}//wxKeyBinder::LoadFromString
 
 // ----------------------------------------------------------------------------
 // wxKeyProfile
@@ -1561,6 +1688,8 @@ bool wxKeyProfile::Save(wxConfigBase *cfg, const wxString &key, bool bCleanOld) 
 bool wxKeyProfile::Load(wxConfigBase *p, const wxString &key)
 // ----------------------------------------------------------------------------
 {
+    // wxKeyProfile is derived from wxKeyBinder
+
 	p->SetPath(key);		// enter into this group
 
 	wxString name;
@@ -2057,6 +2186,40 @@ void wxKeyConfigPanel::AddProfiles(const wxKeyProfileArray &arr)
 	}
 
 	SetSelProfile(arr.GetSelProfileIdx() >= 0 ? arr.GetSelProfileIdx() : 0);
+
+    //#if defined(LOGGING)
+    ////wxKeyBind keybind(entries[ii].GetFlags(), entries[ii].GetKeyCode());
+    //const wxKeyProfile* pkp = arr.GetSelProfile();
+    //wxString strKeyCode = _T("Ctrl-Shift-W");
+    //wxCmd* pcmd = pkp->GetCmdBindTo(strKeyCode);
+    //if (pcmd)
+    //{
+    //    int id = pcmd->GetId();
+    //    int shortcutsCount = pcmd->GetShortcutCount();
+    //    wxString desc = pcmd->GetDescription();
+    //    wxString name = pcmd->GetName();
+    //    int type = pcmd->GetType();
+    //    LOGIT( _T("shortcut count for[%s]is[%d]type[%d]"),
+    //          strKeyCode.c_str(), shortcutsCount, type);
+    //    for (int kk = 0; kk < shortcutsCount; ++kk )
+    //    {
+    //        wxKeyBind* pkbind = pcmd->GetShortcut(kk);
+    //        if (pkbind)
+    //        {   wxString strKeyCode = wxKeyBind::KeyCodeToString(pkbind->GetKeyCode());
+    //            if (pkbind->GetModifiers() & wxACCEL_SHIFT)
+    //                strKeyCode.Prepend(_T("Shift-"));
+    //            if (pkbind->GetModifiers() & wxACCEL_CTRL)
+    //                strKeyCode.Prepend(_T("Ctrl-"));
+    //            if (pkbind->GetModifiers() & wxACCEL_ALT)
+    //                strKeyCode.Prepend(_T("Alt-"));
+    //
+    //            LOGIT( _T("keybind[%d.%d] for [%s] is [%s]"),
+    //                    id, kk, name.c_str(), strKeyCode.c_str());
+    //        }
+    //    }//for kk
+    //}//if
+    //#endif
+
 }
 
 // ----------------------------------------------------------------------------
@@ -2413,6 +2576,7 @@ void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
     // This routine is screwing up unix, and its never called on MSW
     // so.. forget it //(pecan 2006/9/23)
     return ;
+
 	wxString oldname = m_kBinder.GetName();
         // on unix, this routine is being entered with oldname == ""
         // We're not going to save the blank temp profile anyway

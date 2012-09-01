@@ -248,8 +248,8 @@ public:        // static
 
     //! Creates a new command of the given type with the given ID.
     //! This function is used mainly in wxCmd::Load.
-    static wxCmd *CreateNew(int type, int id, bool updateMnu = true);
-    static wxCmd *CreateNew(wxString cmdName, int type, int id, bool updateMnu = true); //+v0.3
+    static wxCmd* CreateNew(int type, int id, bool updateMnu = true);
+    static wxCmd* CreateNew(wxString cmdName, int type, int id, bool updateMnu = true); //+v0.3
 
     //! Adds a new command type to our static list.
     static void AddCmdType(int type, wxCmdCreationFnc fnc);
@@ -398,9 +398,7 @@ public:
     //! Returns FALSE if the given key does not contain info about
     //! this command's type.
     bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
-
-
-
+    bool LoadFromString(const wxString& cfgCmdString);
 
     // Getters
     // ---------------------
@@ -821,6 +819,7 @@ public:        // miscellaneous
 
     //! Loads from the given wxConfig object a set of keybindings.
     bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
+    bool LoadFromString(const wxString& cfgCmdString);
 
     //+v0.3 get name and description from loaded commands
     bool GetNameandDescription(wxConfigBase* p, const wxString &key, wxString& strName, wxString& strDescription);
