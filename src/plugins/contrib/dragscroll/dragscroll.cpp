@@ -1586,7 +1586,18 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
         // if editor window, use scintilla scroll
         if (pStyledTextCtrl )//&& (m_pEvtObject == p_cbStyledTextCtrl))
         {
+            if (scrollx >= 0)
                 pStyledTextCtrl->LineScroll (scrollx,scrolly);
+            else
+            {   //work around scintilla colume scroll left bug
+                // any LineScroll(-1,y) will jump to colume 0
+                int xpixels = 0; int ypixels = 0; int xoffset = 0;
+                xoffset = pStyledTextCtrl->GetXOffset();
+                pStyledTextCtrl->GetTextExtent(_T("M"),&xpixels, &ypixels);
+                xoffset = pStyledTextCtrl->GetXOffset() + (scrollx * xpixels);
+                if (xoffset < 0) xoffset = 0;
+                pStyledTextCtrl->SetXOffset(xoffset);
+            }
         }
         else //use wxControl scrolling
         {
@@ -1812,11 +1823,21 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
         if ((scrollx==0) && (scrolly==0)) return;
         scrollx *= m_Direction; scrolly *= m_Direction;
 
-
         // if editor window, use scintilla scroll
-        if (pStyledTextCtrl )
+        if (pStyledTextCtrl )//&& (m_pEvtObject == p_cbStyledTextCtrl))
         {
+            if (scrollx >= 0)
                 pStyledTextCtrl->LineScroll (scrollx,scrolly);
+            else
+            {   //work around scintilla colume scroll left bug
+                // any LineScroll(-1,y) will jump to colume 0
+                int xpixels = 0; int ypixels = 0; int xoffset = 0;
+                xoffset = pStyledTextCtrl->GetXOffset();
+                pStyledTextCtrl->GetTextExtent(_T("M"),&xpixels, &ypixels);
+                xoffset = pStyledTextCtrl->GetXOffset() + (scrollx * xpixels);
+                if (xoffset < 0) xoffset = 0;
+                pStyledTextCtrl->SetXOffset(xoffset);
+            }
         }
         else //use wxControl scrolling
         {
