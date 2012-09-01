@@ -2063,7 +2063,7 @@ void wxKeyConfigPanel::AddProfiles(const wxKeyProfileArray &arr)
 void wxKeyConfigPanel::SetSelProfile(int n)
 // ----------------------------------------------------------------------------
 {
-	wxASSERT(m_pKeyProfiles && n >= 0 && n < m_pKeyProfiles->GetCount());
+	wxASSERT(m_pKeyProfiles && n >= 0 && n < static_cast<int>(m_pKeyProfiles->GetCount()));
 
 	m_pKeyProfiles->SetSelection(n);
 	m_nCurrentProf = n;
@@ -2753,7 +2753,7 @@ void wxKeyConfigPanel::OnRemoveProfile(wxCommandEvent &)
 	// update the currently selected profile
 	int newsel = m_nCurrentProf-1;
 	if (newsel < 0) newsel=0;
-	wxASSERT(newsel < m_pKeyProfiles->GetCount());
+	wxASSERT(newsel < static_cast<int>(m_pKeyProfiles->GetCount()));
 
 	// keep sync m_nCurrentProf with the currently really selected item
 	SetSelProfile(newsel);

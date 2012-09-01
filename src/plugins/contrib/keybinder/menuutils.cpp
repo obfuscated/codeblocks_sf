@@ -312,7 +312,11 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     if (IsNumericMenuItem(pLclMnuItem))
       return;
 
+#if wxCHECK_VERSION(2, 9, 0)
+    wxString strText = pLclMnuItem->GetItemLabel();
+#else
     wxString strText = pLclMnuItem->GetText();
+#endif
 
     // *bug* 2007/01/19 v1.0.15
     // Dont use  GetLabel to re-establish the menu text. It doesn't
@@ -350,7 +354,11 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
         // no more shortcuts for this menuitem: SetText()
         // will delete the hotkeys associated...
+#if wxCHECK_VERSION(2, 9, 0)
+        pLclMnuItem->SetItemLabel(str);
+#else
         pLclMnuItem->SetText(str);
+#endif
         return;
     }
 
@@ -359,7 +367,11 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
 
     // on GTK, the SetAccel() function doesn't have any effect...
+#if wxCHECK_VERSION(2, 9, 0)
+    pLclMnuItem->SetItemLabel(newtext);
+#else
     pLclMnuItem->SetText(newtext);
+#endif
 
 #ifdef __WXGTK20__
 
