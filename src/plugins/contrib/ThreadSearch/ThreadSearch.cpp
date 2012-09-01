@@ -34,7 +34,7 @@ namespace
 }
 
 // ----------------------------------------------------------------------------
-// CodeBlocks main.cpp managers all the following UI entires in one routine.
+// CodeBlocks main.cpp managers all the following UI entries in one routine.
 // So if only one changes, all will change. Therefore, to enable/disable copy/paste,
 // we have to capture all the following to see if it really belongs to us
 int idEditUndo = XRCID("idEditUndo");

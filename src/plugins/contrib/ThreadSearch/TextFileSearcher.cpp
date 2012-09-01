@@ -149,7 +149,7 @@ TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxStrin
                 line.Trim(false);
                 line.Trim(true);
 
-                foundLines.Add(wxString::Format(wxT("%d"), i + 1));
+                foundLines.Add(wxString::Format(wxT("%lu"), static_cast<unsigned long>(i + 1)));
                 foundLines.Add(line);
             }
         }
