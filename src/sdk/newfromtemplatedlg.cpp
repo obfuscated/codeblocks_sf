@@ -378,17 +378,17 @@ void NewFromTemplateDlg::ChangeView()
     int style = sel == 0 ? wxLC_ICON : wxLC_LIST;
 
     XRCCTRL(*this, "listProjects", wxListCtrl)->SetSingleStyle(style);
-    XRCCTRL(*this, "listTargets", wxListCtrl)->SetSingleStyle(style);
-    XRCCTRL(*this, "listFiles", wxListCtrl)->SetSingleStyle(style);
-    XRCCTRL(*this, "listCustoms", wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listTargets",  wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listFiles",    wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listCustoms",  wxListCtrl)->SetSingleStyle(style);
 
     // in non-windows platforms, the above clears the control contents too
     // so rebuild them
 #ifndef __WXMSW__
     BuildListFor(totProject, XRCCTRL(*this, "listProjects", wxListCtrl), XRCCTRL(*this, "cmbProjectCategories", wxChoice));
-    BuildListFor(totTarget, XRCCTRL(*this, "listTargets", wxListCtrl), XRCCTRL(*this, "cmbTargetCategories", wxChoice));
-    BuildListFor(totFiles, XRCCTRL(*this, "listFiles", wxListCtrl), XRCCTRL(*this, "cmbFileCategories", wxChoice));
-    BuildListFor(totCustom, XRCCTRL(*this, "listCustoms", wxListCtrl), XRCCTRL(*this, "cmbCustomCategories", wxChoice));
+    BuildListFor(totTarget,  XRCCTRL(*this, "listTargets",  wxListCtrl), XRCCTRL(*this, "cmbTargetCategories",  wxChoice));
+    BuildListFor(totFiles,   XRCCTRL(*this, "listFiles",    wxListCtrl), XRCCTRL(*this, "cmbFileCategories",    wxChoice));
+    BuildListFor(totCustom,  XRCCTRL(*this, "listCustoms",  wxListCtrl), XRCCTRL(*this, "cmbCustomCategories",  wxChoice));
 #endif
 }
 
@@ -398,7 +398,7 @@ void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
     if (!list)
         return;
     wxMenu* menu = new wxMenu;
-    ListItemData* data = (ListItemData*)event.GetData();
+    ListItemData* data = reinterpret_cast<ListItemData*>(event.GetData());
 
     if (data && data->plugin)
     {
