@@ -70,7 +70,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						filefilters.cpp \
 						filegroupsandmasks.cpp \
 						filemanager.cpp \
-						finddlg.cpp \
+						findreplacedlg.cpp \
 						genericmultilinenotesdlg.cpp \
 						globals.cpp \
 						importers_globals.cpp \
@@ -100,7 +100,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						projectoptionsdlg.cpp \
 						projectsfilemasksdlg.cpp \
 						projecttemplateloader.cpp \
-						replacedlg.cpp \
 						scriptingmanager.cpp \
 						scriptsecuritywarningdlg.cpp \
 						scrollingdialog.cpp \

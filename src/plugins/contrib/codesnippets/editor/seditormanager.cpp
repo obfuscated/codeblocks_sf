@@ -48,8 +48,7 @@
 #include "seditorcolourset.h"
 //-#include "editorconfigurationdlg.h" //(pecan 2008/5/06)
 #include "encodingdetector.h"
-#include "finddlg.h"
-#include "replacedlg.h"
+#include "findreplacedlg.h"
 #include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "searchresultslog.h"
@@ -1518,13 +1517,8 @@ int SEditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 
     }
 
-    FindReplaceBase* dlg;
-    if (!replace)
-        //-dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
-        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, false, false);
-    else
-        //-dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
-        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, false, false);
+    FindReplaceBase* dlg = new FindReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection,
+                             !replace, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     // Move dlg into the parents frame space //(pecan 2008/7/21)

@@ -24,38 +24,33 @@
     #include "globals.h"
 #endif
 
-#include "replacedlg.h"
+#include "findreplacedlg.h"
 
 #define CONF_GROUP _T("/replace_options")
 
-BEGIN_EVENT_TABLE(ReplaceDlg, wxScrollingDialog)
-    EVT_ACTIVATE(                        ReplaceDlg::OnActivate)
-    EVT_CHECKBOX(XRCID("chkRegEx1"),     ReplaceDlg::OnRegEx)
+BEGIN_EVENT_TABLE(FindReplaceDlg, wxScrollingDialog)
+    EVT_ACTIVATE(                        FindReplaceDlg::OnActivate)
+    EVT_CHECKBOX(XRCID("chkRegEx1"),     FindReplaceDlg::OnRegEx)
 
     // Special events for Replace
-    EVT_CHECKBOX(XRCID("chkMultiLine1"), ReplaceDlg::OnMultiChange)
-    EVT_CHECKBOX(XRCID("chkMultiLine2"), ReplaceDlg::OnMultiChange)
-    EVT_CHECKBOX(XRCID("chkLimitTo1"),   ReplaceDlg::OnLimitToChange)
-    EVT_CHECKBOX(XRCID("chkLimitTo2"),   ReplaceDlg::OnLimitToChange)
+    EVT_CHECKBOX(XRCID("chkMultiLine1"), FindReplaceDlg::OnMultiChange)
+    EVT_CHECKBOX(XRCID("chkMultiLine2"), FindReplaceDlg::OnMultiChange)
+    EVT_CHECKBOX(XRCID("chkLimitTo1"),   FindReplaceDlg::OnLimitToChange)
+    EVT_CHECKBOX(XRCID("chkLimitTo2"),   FindReplaceDlg::OnLimitToChange)
+    EVT_RADIOBOX(XRCID("rbScope2"),      FindReplaceDlg::OnScopeChange)
+    EVT_BUTTON(  XRCID("btnBrowsePath"), FindReplaceDlg::OnBrowsePath)
+    EVT_CHOICE(  XRCID("chProject"),     FindReplaceDlg::OnSearchProject)
 END_EVENT_TABLE()
 
-ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelection,
-                       bool replaceInFilesOnly, bool replaceInFilesActive)
+FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelection,
+                       bool findMode, bool findReplaceInFilesOnly, bool findReplaceInFilesActive)
     : FindReplaceBase(parent, initial, hasSelection),
-    m_ReplaceInFilesActive(replaceInFilesActive)
+    m_findReplaceInFilesActive(findReplaceInFilesActive),
+    m_findMode(findMode)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgReplace"),_T("wxScrollingDialog"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-    // TODO: What to use: GetClientSize / GetEffectiveMinSize / GetBestSize ???
-    wxSize szReplaceMulti = XRCCTRL(*this, "nbReplaceMulti", wxPanel)->GetEffectiveMinSize();
-    XRCCTRL(*this, "nbReplaceSingle", wxPanel)->SetMinSize(szReplaceMulti);
-    XRCCTRL(*this, "nbReplaceMulti",  wxPanel)->SetMinSize(szReplaceMulti);
-
-    // TODO: What to use: GetClientSize / GetEffectiveMinSize / GetBestSize ???
-    wxSize szReplaceInFilesMulti = XRCCTRL(*this, "nbReplaceInFilesMulti", wxPanel)->GetEffectiveMinSize();
-    XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel)->SetMinSize(szReplaceInFilesMulti);
-    XRCCTRL(*this, "nbReplaceInFilesMulti",  wxPanel)->SetMinSize(szReplaceInFilesMulti);
 
     // load last searches
     FillComboWithLastValues(XRCCTRL(*this, "cmbFind1",    wxComboBox), CONF_GROUP _T("/last"));
@@ -109,33 +104,100 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
     XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/fix_eols2"), false));
     XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->Enable(XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue());
 
-    XRCCTRL(*this, "nbReplaceSingle",        wxPanel)->Show();
-    XRCCTRL(*this, "nbReplaceMulti",         wxPanel)->Hide();
-    XRCCTRL(*this, "nbReplaceMulti",         wxPanel)->Disable();
-    XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel)->Show();
-    XRCCTRL(*this, "nbReplaceInFilesMulti",  wxPanel)->Hide();
-    XRCCTRL(*this, "nbReplaceInFilesMulti",  wxPanel)->Disable();
+    wxSize szReplaceMulti = XRCCTRL(*this, "nbReplaceMulti", wxPanel)->GetEffectiveMinSize();
+    XRCCTRL(*this, "nbReplaceSingle", wxPanel)->SetMinSize(szReplaceMulti);
+    XRCCTRL(*this, "nbReplaceMulti",  wxPanel)->SetMinSize(szReplaceMulti);
 
-    if (replaceInFilesOnly)
+    wxSize szReplaceInFilesMulti = XRCCTRL(*this, "nbReplaceInFilesMulti", wxPanel)->GetEffectiveMinSize();
+    XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel)->SetMinSize(szReplaceInFilesMulti);
+    XRCCTRL(*this, "nbReplaceInFilesMulti",  wxPanel)->SetMinSize(szReplaceInFilesMulti);
+
+    wxSize szFindMulti = XRCCTRL(*this, "nbFindMulti", wxPanel)->GetEffectiveMinSize();
+    XRCCTRL(*this, "nbFindSingle", wxPanel)->SetMinSize(szFindMulti);
+    XRCCTRL(*this, "nbFindMulti",  wxPanel)->SetMinSize(szFindMulti);
+
+    wxSize szFindInFilesMulti = XRCCTRL(*this, "nbFindInFilesMulti", wxPanel)->GetEffectiveMinSize();
+    XRCCTRL(*this, "nbFindInFilesSingle", wxPanel)->SetMinSize(szFindInFilesMulti);
+    XRCCTRL(*this, "nbFindInFilesMulti",  wxPanel)->SetMinSize(szFindInFilesMulti);
+
+    wxSize szSearchPath = XRCCTRL(*this, "pnSearchPath", wxPanel)->GetEffectiveMinSize();
+    XRCCTRL(*this, "pnSearchProject", wxPanel)->SetMinSize(szSearchPath);
+    XRCCTRL(*this, "pnSearchPath",  wxPanel)->SetMinSize(szSearchPath);
+
+    wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
+    switch(rbScope->GetSelection())
+    {
+        case 1:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Hide();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
+            break;
+        case 3:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Enable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+            break;
+        default:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+            break;
+    }
+    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+
+
+    ProjectManager *pm = Manager::Get()->GetProjectManager();
+    ProjectsArray *pa = pm->GetProjects();
+    cbProject *active_project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+    wxChoice *chProject = XRCCTRL(*this, "chProject", wxChoice);
+    wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);
+    for(unsigned int i=0;i<pa->size();++i)
+    {
+        chProject->AppendString((*pa)[i]->GetTitle());
+        if((*pa)[i] == active_project)
+        {
+            chProject->SetSelection(i);
+            chTarget->Clear();
+            chTarget->AppendString(_("All project files"));
+            chTarget->SetSelection(0);
+            for(int j=0;j<active_project->GetBuildTargetsCount();++j)
+                chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
+        }
+    }
+
+    if (findReplaceInFilesOnly)
     {
         // NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
         XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1);
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only replace-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
-    else if (m_ReplaceInFilesActive)
+    else if (m_findReplaceInFilesActive)
     {
         XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1); // Search->Replace in Files was selected
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
 
+    if(findMode)
+    {
+        SetTitle(_T("Find"));
+        XRCCTRL(*this, "nbReplaceSingle", wxPanel)->Hide();
+        XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel)->Hide();
+        XRCCTRL(*this, "nbReplace", wxNotebook)->SetPageText(0,_T("Find"));
+        XRCCTRL(*this, "nbReplace", wxNotebook)->SetPageText(1,_T("Find in files"));
+        XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("&Find"));
+        XRCCTRL(*this, "chkFixEOLs1",   wxCheckBox)->Hide();
+        XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->Hide();
+    }
+
     GetSizer()->SetSizeHints(this);
 
     // NOTE (jens#1#): Dynamically connect these events, to avoid asserts in debug-mode
-    Connect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ReplaceDlg::OnReplaceChange));
+    Connect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(FindReplaceDlg::OnReplaceChange));
 }
 
-ReplaceDlg::~ReplaceDlg()
+FindReplaceDlg::~FindReplaceDlg()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
@@ -159,7 +221,7 @@ ReplaceDlg::~ReplaceDlg()
         cfg->Write(CONF_GROUP _T("/lastMultiLineReplace"), XRCCTRL(*this, "txtMultiLineReplace1", wxTextCtrl)->GetValue());
     }
 
-    if (!m_ReplaceInFilesActive)
+    if (!m_findReplaceInFilesActive)
     {
         // find(replace) options
         cfg->Write(CONF_GROUP _T("/fix_eols1"),  XRCCTRL(*this, "chkFixEOLs1",   wxCheckBox)->GetValue());
@@ -192,10 +254,10 @@ ReplaceDlg::~ReplaceDlg()
     cfg->Write(CONF_GROUP _T("/regex2"),      XRCCTRL(*this, "chkRegEx2",     wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/scope2"),      XRCCTRL(*this, "rbScope2",      wxRadioBox)->GetSelection());
 
-    Disconnect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ReplaceDlg::OnReplaceChange));
+    Disconnect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(FindReplaceDlg::OnReplaceChange));
 }
 
-wxString ReplaceDlg::GetFindString() const
+wxString FindReplaceDlg::GetFindString() const
 {
     if ( IsMultiLine() )
     {
@@ -208,7 +270,7 @@ wxString ReplaceDlg::GetFindString() const
     return XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue();
 }
 
-wxString ReplaceDlg::GetReplaceString() const
+wxString FindReplaceDlg::GetReplaceString() const
 {
     if ( IsMultiLine() )
     {
@@ -223,22 +285,22 @@ wxString ReplaceDlg::GetReplaceString() const
     return XRCCTRL(*this, "cmbReplace1", wxComboBox)->GetValue();
 }
 
-bool ReplaceDlg::IsFindInFiles() const
+bool FindReplaceDlg::IsFindInFiles() const
 {
-    return (m_ReplaceInFilesActive || XRCCTRL(*this, "nbReplace", wxNotebook)->GetSelection() == 1);
+    return (m_findReplaceInFilesActive || XRCCTRL(*this, "nbReplace", wxNotebook)->GetSelection() == 1);
 }
 
-bool ReplaceDlg::GetDeleteOldSearches() const
-{
-    return true; // checkbox doesn't exist
-}
-
-bool ReplaceDlg::GetSortSearchResult() const
+bool FindReplaceDlg::GetDeleteOldSearches() const
 {
     return true; // checkbox doesn't exist
 }
 
-bool ReplaceDlg::GetMatchWord() const
+bool FindReplaceDlg::GetSortSearchResult() const
+{
+    return true; // checkbox doesn't exist
+}
+
+bool FindReplaceDlg::GetMatchWord() const
 {
     if ( IsFindInFiles() )
     {
@@ -249,7 +311,7 @@ bool ReplaceDlg::GetMatchWord() const
     return flgLimitTo && XRCCTRL(*this, "rbLimitTo1", wxRadioBox)->GetSelection() == 0;
 }
 
-bool ReplaceDlg::GetStartWord() const
+bool FindReplaceDlg::GetStartWord() const
 {
     if ( IsFindInFiles() )
     {
@@ -260,33 +322,33 @@ bool ReplaceDlg::GetStartWord() const
     return flgLimitTo && XRCCTRL(*this, "rbLimitTo1", wxRadioBox)->GetSelection() == 1;
 }
 
-bool ReplaceDlg::GetMatchCase() const
+bool FindReplaceDlg::GetMatchCase() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue();
     return XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetRegEx() const
+bool FindReplaceDlg::GetRegEx() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue();
     return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetAutoWrapSearch() const
+bool FindReplaceDlg::GetAutoWrapSearch() const
 {
     if ( IsFindInFiles() )
         return false; // not for replace in files
     return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetFindUsesSelectedText() const
+bool FindReplaceDlg::GetFindUsesSelectedText() const
 {
     return false; // not for replace
 }
 
-bool ReplaceDlg::GetStartFile() const
+bool FindReplaceDlg::GetStartFile() const
 {
     if ( IsFindInFiles() )
     {
@@ -297,55 +359,72 @@ bool ReplaceDlg::GetStartFile() const
     return flgLimitTo && XRCCTRL(*this, "rbLimitTo1", wxRadioBox)->GetSelection() == 2;
 }
 
-bool ReplaceDlg::GetFixEOLs() const
+bool FindReplaceDlg::GetMultiLine() const
+{
+    if ( IsFindInFiles() )
+        return XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue();
+    return XRCCTRL(*this, "chkMultiLine1", wxCheckBox)->GetValue();
+}
+
+bool FindReplaceDlg::GetFixEOLs() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkFixEOLs2", wxCheckBox)->GetValue();
     return XRCCTRL(*this, "chkFixEOLs1", wxCheckBox)->GetValue();
 }
 
-int ReplaceDlg::GetDirection() const
+int FindReplaceDlg::GetDirection() const
 {
     if ( IsFindInFiles() )
         return 1;
     return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
 }
 
-int ReplaceDlg::GetOrigin() const
+int FindReplaceDlg::GetOrigin() const
 {
     if ( IsFindInFiles() )
         return 1;
     return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
 }
 
-int ReplaceDlg::GetScope() const
+int FindReplaceDlg::GetScope() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
     return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
 }
 
-bool ReplaceDlg::GetRecursive() const
+bool FindReplaceDlg::GetRecursive() const
 {
-    return false;
+    return XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->IsChecked();
 }
 
-bool ReplaceDlg::GetHidden() const
+bool FindReplaceDlg::GetHidden() const
 {
-    return false;
+    return XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->IsChecked();
 }
 
-wxString ReplaceDlg::GetSearchPath() const
+wxString FindReplaceDlg::GetSearchPath() const
 {
-    return wxEmptyString;
+    return XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
 }
 
-wxString ReplaceDlg::GetSearchMask() const
+wxString FindReplaceDlg::GetSearchMask() const
 {
-    return wxEmptyString;
+    return XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue();
 }
 
-bool ReplaceDlg::IsMultiLine() const
+int FindReplaceDlg::GetProject() const
+{
+    return XRCCTRL(*this, "chProject", wxChoice)->GetSelection();
+}
+
+int FindReplaceDlg::GetTarget() const
+{
+    return XRCCTRL(*this, "chTarget", wxChoice)->GetSelection()-1;
+}
+
+bool FindReplaceDlg::IsMultiLine() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue();
@@ -354,7 +433,54 @@ bool ReplaceDlg::IsMultiLine() const
 
 // events
 
-void ReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
+void FindReplaceDlg::OnScopeChange(wxCommandEvent& /*event*/)
+{
+    wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
+    switch(rbScope->GetSelection())
+    {
+        case 1:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Hide();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Show();
+            break;
+        case 3:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Enable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+            break;
+        default:
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+            break;
+    }
+    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+}
+
+void FindReplaceDlg::OnBrowsePath(wxCommandEvent& /*event*/)
+{
+    wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
+    wxString dir = ChooseDirectory(0, _("Select search path"), txtSearchPath);
+    if (!dir.IsEmpty())
+        XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
+}
+
+void FindReplaceDlg::OnSearchProject(wxCommandEvent& /*event*/)
+{
+    wxChoice *chProject = XRCCTRL(*this, "chProject", wxChoice);
+    wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);
+    int i=chProject->GetSelection();
+    if(i<0)
+        return;
+    cbProject *active_project=(*Manager::Get()->GetProjectManager()->GetProjects())[i];
+    chTarget->Clear();
+    chTarget->AppendString(_("All project files"));
+    chTarget->SetSelection(0);
+    for(int j=0;j<active_project->GetBuildTargetsCount();++j)
+        chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
+}
+
+void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
 {
     // Replace / in files triggered
     wxComboBox* cmbFind1    = XRCCTRL(*this, "cmbFind1",          wxComboBox);
@@ -386,13 +512,13 @@ void ReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
     event.Skip();
 }
 
-void ReplaceDlg::OnRegEx(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnRegEx(wxCommandEvent& /*event*/)
 {
-    if (!m_ReplaceInFilesActive)
+    if (!m_findReplaceInFilesActive)
         XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
 }
 
-void ReplaceDlg::OnActivate(wxActivateEvent& event)
+void FindReplaceDlg::OnActivate(wxActivateEvent& event)
 {
     if ( IsMultiLine() )
     {
@@ -411,7 +537,7 @@ void ReplaceDlg::OnActivate(wxActivateEvent& event)
 
 // special events for Replace
 
-void ReplaceDlg::OnMultiChange(wxCommandEvent& event)
+void FindReplaceDlg::OnMultiChange(wxCommandEvent& event)
 {
     // Multi-Line replacements triggered
     wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1",          wxComboBox);
@@ -440,41 +566,33 @@ void ReplaceDlg::OnMultiChange(wxCommandEvent& event)
     else
         return;
 
-    wxPanel* nbReplaceSingle = XRCCTRL(*this, "nbReplaceSingle", wxPanel);
-    if (nbReplaceSingle)
-    {
-        nbReplaceSingle->Enable(!enabledMultiLine);
-        nbReplaceSingle->Show(!enabledMultiLine);
-    }
-    wxPanel* nbReplaceInFilesSingle = XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel);
-    if (nbReplaceInFilesSingle)
-    {
-        nbReplaceInFilesSingle->Enable(!enabledMultiLine);
-        nbReplaceInFilesSingle->Show(!enabledMultiLine);
-    }
+    XRCCTRL(*this, "nbFindSingle", wxPanel)->Show(!enabledMultiLine);
+    XRCCTRL(*this, "nbFindInFilesSingle", wxPanel)->Show(!enabledMultiLine);
+    XRCCTRL(*this, "nbFindMulti", wxPanel)->Show(enabledMultiLine);
+    XRCCTRL(*this, "nbFindInFilesMulti", wxPanel)->Show(enabledMultiLine);
 
-    wxPanel* nbReplaceMulti = XRCCTRL(*this, "nbReplaceMulti", wxPanel);
-    if (nbReplaceMulti)
+    if(!m_findMode)
     {
-        nbReplaceMulti->Enable(enabledMultiLine);
-        nbReplaceMulti->Show(enabledMultiLine);
-    }
-    wxPanel* nbReplaceInFilesMulti = XRCCTRL(*this, "nbReplaceInFilesMulti", wxPanel);
-    if (nbReplaceInFilesMulti)
-    {
-        nbReplaceInFilesMulti->Show(enabledMultiLine);
-        nbReplaceInFilesMulti->Enable(enabledMultiLine);
+        XRCCTRL(*this, "nbReplaceSingle", wxPanel)->Show(!enabledMultiLine);
+        XRCCTRL(*this, "nbReplaceInFilesSingle", wxPanel)->Show(!enabledMultiLine);
+        XRCCTRL(*this, "nbReplaceMulti", wxPanel)->Show(enabledMultiLine);
+        XRCCTRL(*this, "nbReplaceInFilesMulti", wxPanel)->Show(enabledMultiLine);
     }
 
     if (chkFixEOLs1) chkFixEOLs1->Enable(enabledMultiLine);
     if (chkFixEOLs2) chkFixEOLs2->Enable(enabledMultiLine);
     if (ctrlToFocus) ctrlToFocus->SetFocus();
 
+    //After hiding/showing panels, redo the layout in the notebook pages
+    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
+    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+
+
     Refresh();
     event.Skip();
 }
 
-void ReplaceDlg::OnLimitToChange(wxCommandEvent& event)
+void FindReplaceDlg::OnLimitToChange(wxCommandEvent& event)
 {
     if (event.GetId() == XRCID("chkLimitTo1"))
         XRCCTRL(*this, "rbLimitTo1", wxRadioBox)->Enable(XRCCTRL(*this, "chkLimitTo1", wxCheckBox)->GetValue());
@@ -484,7 +602,7 @@ void ReplaceDlg::OnLimitToChange(wxCommandEvent& event)
 
 // special methods for Replace
 
-void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)
+void FindReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)
 {
     wxArrayString values;
     Manager::Get()->GetConfigManager(_T("editor"))->Read(configKey, &values);
@@ -495,7 +613,7 @@ void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& conf
     }
 }
 
-void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
+void FindReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 {
     wxArrayString values;
     for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)

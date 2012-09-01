@@ -1,4 +1,4 @@
-codeblocks (10.05svn7641) unstable; urgency=low
+codeblocks (10.05svn8324) unstable; urgency=low
 
   * Linux build-fixes; moved wxSmithKWIC into wxContribItems and
     splitted it into the items lib and the wxSmith part

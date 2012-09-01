@@ -48,8 +48,7 @@
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
 #include "encodingdetector.h"
-#include "finddlg.h"
-#include "replacedlg.h"
+#include "findreplacedlg.h"
 #include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "searchresultslog.h"
@@ -86,6 +85,8 @@ struct cbFindReplaceData
     int scope;
     wxString searchPath;
     wxString searchMask;
+    int searchProject;
+    int searchTarget;
     bool recursiveSearch;
     bool hiddenSearch;
     bool NewSearch;     //!< only true when a new search has been started
@@ -93,6 +94,7 @@ struct cbFindReplaceData
     int SearchInSelectionEnd;  //!< keep track of the end of a 'search' selection
     bool autoWrapSearch;
     bool findUsesSelectedText;
+    bool multiLine; //!< for multi-line S&R.
     bool fixEOLs; //!< for multi-line S&R. Fixes EOLs in all the files searched.
     int eolMode; //!< for multi-line S&R
 
@@ -136,6 +138,9 @@ void cbFindReplaceData::ConvertEOLs(int newmode)
 
 bool cbFindReplaceData::IsMultiLine()
 {
+    if (regEx) //For regex always assume multiline if the multiline checkbox is enabled because the user can enter "\n" to search for newlines
+        return multiLine;
+    // otherwise only treat the search as a multiline search only if there are newline characters in the search string
     return  ((findText.Find(_T("\n")) != wxNOT_FOUND) || (findText.Find(_T("\r")) != wxNOT_FOUND));
 }
 
@@ -1353,11 +1358,8 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 
     }
 
-    FindReplaceBase* dlg;
-    if (!replace)
-        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
-    else
-        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
+    FindReplaceBase* dlg = new FindReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection,
+                             !replace, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
@@ -1382,6 +1384,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->findText = dlg->GetFindString();
     m_LastFindReplaceData->replaceText = dlg->GetReplaceString();
     m_LastFindReplaceData->eolMode = wxSCI_EOL_LF;
+    m_LastFindReplaceData->multiLine = dlg->GetMultiLine();
     m_LastFindReplaceData->fixEOLs = dlg->GetFixEOLs();
     m_LastFindReplaceData->startFile = dlg->GetStartFile();
 
@@ -1407,6 +1410,8 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->searchPath = dlg->GetSearchPath();
     m_LastFindReplaceData->searchMask = dlg->GetSearchMask();
     m_LastFindReplaceData->recursiveSearch = dlg->GetRecursive();
+    m_LastFindReplaceData->searchProject = dlg->GetProject();
+    m_LastFindReplaceData->searchTarget = dlg->GetTarget();
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
     m_LastFindReplaceData->NewSearch = true;
@@ -1558,7 +1563,8 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         return -1;
     }
 
-    bool AdvRegex=false;
+    bool advRegex=false;
+    bool advRegexNewLinePolicy=!data->IsMultiLine();
     int replacecount=0;
     int foundcount=0;
     int flags = 0;
@@ -1595,18 +1601,18 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
     wxRegEx re;
     #ifdef wxHAS_REGEX_ADVANCED
-    if (AdvRegex)
+    if (advRegex)
     {
         if (data->matchCase)
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy));
         else
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
     #endif
 
@@ -1623,7 +1629,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     while (!stop)
     {
         int lengthFound = 0;
-        if (!AdvRegex)
+        if (!advRegex)
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
         else
         {
@@ -1752,7 +1758,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                     // set target same as selection
                     control->SetTargetStart(control->GetSelectionStart());
                     control->SetTargetEnd(control->GetSelectionEnd());
-                    if (AdvRegex)
+                    if (advRegex)
                     {
                         wxString text=control->GetSelectedText();
                         re.Replace(&text,data->replaceText,1);
@@ -1834,22 +1840,28 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     else if (data->scope == 1) // find in project files
     {
         // fill the search list with all the project files
-        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (!prj)
+        if(data->searchProject<0)
+        {
+            cbMessageBox(_("No project to search in!"), _("Error"), wxICON_WARNING);
             return 0;
-
+        }
+        cbProject* prj = (*Manager::Get()->GetProjectManager()->GetProjects())[data->searchProject];
+        wxString target;
         wxString fullpath = _T("");
+        if(data->searchTarget >= 0)
+            target = prj->GetBuildTarget(data->searchTarget)->GetTitle();
         for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (pf)
             {
+                if(target!=wxEmptyString && pf->buildTargets.Index(target)<0)
+                    continue;
                 fullpath = pf->file.GetFullPath();
-                if (filesList.Index(fullpath) == -1) // avoid adding duplicates
-                {
-                    if (wxFileExists(fullpath))  // Does the file exist?
-                        filesList.Add(fullpath);
-                }
+                if (filesList.Index(fullpath) >= 0) // avoid adding duplicates
+                    continue;
+                if (wxFileExists(fullpath))  // Does the file exist?
+                    filesList.Add(fullpath);
             }
         }
     }
@@ -1884,7 +1896,23 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             } // end for : idx : idxProject
         }
     }
-
+    else if (data->scope == 3) // reaplce in custom search path and mask
+     {
+        // fill the search list with the files found under the search path
+        int flags = wxDIR_FILES |
+                    (data->recursiveSearch ? wxDIR_DIRS : 0) |
+                    (data->hiddenSearch ? wxDIR_HIDDEN : 0);
+        wxArrayString masks = GetArrayFromString(data->searchMask);
+        if (!masks.GetCount())
+            masks.Add(_T("*"));
+        unsigned int count = masks.GetCount();
+        wxLogNull ln; // no logging
+        for (unsigned int i = 0; i < count; ++i)
+        {
+            // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
+            wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
+        }
+    }
     // if the list is empty, leave
     int filesCount = filesList.GetCount();
     if (filesCount == 0)
@@ -1893,7 +1921,8 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         return 0;
     }
 
-    bool AdvRegex=false;
+    bool advRegex=false;
+    bool advRegexNewLinePolicy=!data->IsMultiLine();
     int flags = 0;
     if (data->matchWord)
         flags |= wxSCI_FIND_WHOLEWORD;
@@ -1907,18 +1936,18 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
     wxRegEx re;
     #ifdef wxHAS_REGEX_ADVANCED
-    if (AdvRegex)
+    if (advRegex)
     {
         if (data->matchCase)
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy));
         else
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
     #endif
 
@@ -2032,7 +2061,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         while(!stop || wholeFile)
         {
             int lengthFound = 0;
-            if (!AdvRegex)
+            if (!advRegex)
                 pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
             else
             {
@@ -2144,7 +2173,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                         // set target same as selection
                         control->SetTargetStart(control->GetSelectionStart());
                         control->SetTargetEnd(control->GetSelectionEnd());
-                        if (AdvRegex)
+                        if (advRegex)
                         {
                             wxString text=control->GetSelectedText();
                             re.Replace(&text,data->replaceText,1);
@@ -2210,7 +2239,8 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     if (!control || !data)
         return -1;
 
-    bool AdvRegex=false;
+    bool advRegex=false;
+    bool advRegexNewLinePolicy=!data->IsMultiLine();
     int flags = 0;
     data->ConvertEOLs(control->GetEOLMode());
     CalculateFindReplaceStartEnd(control, data);
@@ -2227,18 +2257,18 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
     wxRegEx re;
     #ifdef wxHAS_REGEX_ADVANCED
-    if (AdvRegex)
+    if (advRegex)
     {
         if (data->matchCase)
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy));
         else
-            re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
+            re.Compile(data->findText,wxRE_ADVANCED|(wxRE_NEWLINE*advRegexNewLinePolicy)|wxRE_ICASE);
     }
     #endif
 
@@ -2256,7 +2286,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     while (true) // loop while not found and user selects to start again from the top
     {
         int lengthFound = 0;
-        if (!AdvRegex)
+        if (!advRegex)
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
         else
         {
@@ -2417,25 +2447,28 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     else if (data->scope == 1) // find in project files
     {
         // fill the search list with all the project files
-        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (!prj)
+        if(data->searchProject<0)
         {
             cbMessageBox(_("No project to search in!"), _("Error"), wxICON_WARNING);
             return 0;
         }
-
+        cbProject* prj = (*Manager::Get()->GetProjectManager()->GetProjects())[data->searchProject];
+        wxString target;
         wxString fullpath = _T("");
+        if(data->searchTarget >= 0)
+            target = prj->GetBuildTarget(data->searchTarget)->GetTitle();
         for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (pf)
             {
+                if(target!=wxEmptyString && pf->buildTargets.Index(target)<0)
+                    continue;
                 fullpath = pf->file.GetFullPath();
-                if (filesList.Index(fullpath) == -1) // avoid adding duplicates
-                {
-                    if (wxFileExists(fullpath))  // Does the file exist?
-                        filesList.Add(fullpath);
-                }
+                if (filesList.Index(fullpath) >= 0) // avoid adding duplicates
+                    continue;
+                if (wxFileExists(fullpath))  // Does the file exist?
+                    filesList.Add(fullpath);
             }
         }
     }

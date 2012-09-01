@@ -23,7 +23,7 @@
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/libtxml" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -56,7 +56,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/libsquirrel" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -67,7 +67,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/libsqstdlib" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqstdlib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
 				<Option type="2" />
@@ -79,7 +79,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/libsqplus" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;" />
 				<Option type="2" />
@@ -91,7 +91,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel/libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -232,7 +232,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/libdepslib" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/depslib" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -441,6 +441,7 @@
 			<Add option="-Uunix" />
 			<Add option="-fPIC" />
 			<Add option="`wx-config --cflags`" />
+			<Add option="`pkg-config --cflags gtk+-2.0`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />
@@ -450,6 +451,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="`wx-config --libs aui`" />
+			<Add option="`pkg-config --libs gtk+-2.0`" />
 			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">
@@ -639,10 +641,10 @@
 		<Unit filename="include/filemanager.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/finddlg.h">
+		<Unit filename="include/findreplacebase.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/findreplacebase.h">
+		<Unit filename="include/findreplacedlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/genericmultilinenotesdlg.h">
@@ -820,9 +822,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/projecttemplateloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/replacedlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/safedelete.h">
@@ -2148,7 +2147,7 @@
 		<Unit filename="sdk/filemanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/finddlg.cpp">
+		<Unit filename="sdk/findreplacedlg.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/genericmultilinenotesdlg.cpp">
@@ -2331,9 +2330,6 @@
 		<Unit filename="sdk/projecttemplateloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/replacedlg.cpp">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/resources/auto_detect_compilers.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -2371,9 +2367,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/external_deps.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/find_dialog.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/generic_multi_select.xrc">

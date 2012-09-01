@@ -13,7 +13,7 @@
 							<object class="wxBoxSizer">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
-									<object class="wxPanel" name="nbReplaceSingle">
+									<object class="wxPanel" name="nbFindSingle">
 										<object class="wxBoxSizer">
 											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
@@ -28,8 +28,16 @@
 												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 												<border>8</border>
 											</object>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceSingle">
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
-												<object class="wxStaticText" name="wxID_ANY">
+												<object class="wxStaticText" name="stReplace1">
 													<label>Re&amp;place with:</label>
 												</object>
 												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -44,10 +52,9 @@
 									</object>
 									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
-									<object class="wxPanel" name="nbReplaceMulti">
+									<object class="wxPanel" name="nbFindMulti">
 										<hidden>1</hidden>
 										<object class="wxBoxSizer">
 											<orient>wxVERTICAL</orient>
@@ -67,8 +74,17 @@
 												<border>8</border>
 												<option>1</option>
 											</object>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceMulti">
+										<hidden>1</hidden>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
-												<object class="wxStaticText" name="wxID_ANY">
+												<object class="wxStaticText" name="stMultiLineReplace1">
 													<label>Re&amp;place with:</label>
 												</object>
 												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -87,7 +103,6 @@
 									</object>
 									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
@@ -102,28 +117,10 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkFixEOLs1">
-												<label>Fix EOLs before search</label>
+												<label>Make end of line characters consistent before search</label>
+												<tooltip>Slower but catches mixed line endings</tooltip>
 											</object>
 											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-										</object>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="spacer">
-													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>8</border>
-													<size>15,-1</size>
-												</object>
-												<object class="sizeritem">
-													<object class="wxStaticText" name="wxID_ANY">
-														<label>(slower but catches mixed line endings)</label>
-													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
 										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -245,7 +242,7 @@
 							<object class="wxBoxSizer">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
-									<object class="wxPanel" name="nbReplaceInFilesSingle">
+									<object class="wxPanel" name="nbFindInFilesSingle">
 										<object class="wxBoxSizer">
 											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
@@ -260,8 +257,17 @@
 												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 												<border>8</border>
 											</object>
+										</object>
+									</object>
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceInFilesSingle">
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
-												<object class="wxStaticText" name="wxID_ANY">
+												<object class="wxStaticText" name="stReplace2">
 													<label>Re&amp;place with:</label>
 												</object>
 												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -276,10 +282,9 @@
 									</object>
 									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
-									<object class="wxPanel" name="nbReplaceInFilesMulti">
+									<object class="wxPanel" name="nbFindInFilesMulti">
 										<hidden>1</hidden>
 										<object class="wxBoxSizer">
 											<orient>wxVERTICAL</orient>
@@ -299,8 +304,17 @@
 												<border>8</border>
 												<option>1</option>
 											</object>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="nbReplaceInFilesMulti">
+										<hidden>1</hidden>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
-												<object class="wxStaticText" name="wxID_ANY">
+												<object class="wxStaticText" name="stMultiLineReplace2">
 													<label>Re&amp;place with:</label>
 												</object>
 												<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -319,7 +333,6 @@
 									</object>
 									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
@@ -338,25 +351,6 @@
 											</object>
 											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>4</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="spacer">
-													<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-													<border>8</border>
-													<size>15,-1</size>
-												</object>
-												<object class="sizeritem">
-													<object class="wxStaticText" name="wxID_ANY">
-														<label>(slower but catches mixed line endings)</label>
-													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-													<border>5</border>
-													<option>1</option>
-												</object>
-											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
 										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -420,15 +414,155 @@
 													<item>&amp;Open files</item>
 													<item>&amp;Project files</item>
 													<item>Workspace files</item>
+													<item>Search path</item>
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>4</border>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+											<option>1</option>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="pnSearchPath">
+										<object class="wxStaticBoxSizer">
+											<label>Search path</label>
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer">
+													<cols>3</cols>
+													<rows>3</rows>
+													<vgap>4</vgap>
+													<growablecols>1</growablecols>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="wxID_STATIC">
+															<label>Path:</label>
+														</object>
+														<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<border>4</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="txtSearchPath" />
+														<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="btnBrowsePath">
+															<label>...</label>
+															<size>24,-1</size>
+														</object>
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="wxID_STATIC">
+															<label>Mask:</label>
+														</object>
+														<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<border>4</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="txtSearchMask" />
+														<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<option>1</option>
+													</object>
+													<object class="spacer">
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+													<object class="spacer">
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="wxID_STATIC">
+															<label>Example mask: *.cpp;*.h</label>
+															<fg>#800000</fg>
+														</object>
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+													<object class="spacer">
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+												</object>
+												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>4</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxBoxSizer">
+													<object class="sizeritem">
+														<object class="wxCheckBox" name="chkSearchRecursively">
+															<label>Recurse subdirectories</label>
+														</object>
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+													<object class="spacer">
+														<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<option>1</option>
+													</object>
+													<object class="sizeritem">
+														<object class="wxCheckBox" name="chkSearchHidden">
+															<label>Hidden files</label>
+														</object>
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													</object>
+												</object>
+												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<border>4</border>
+											</object>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxPanel" name="pnSearchProject">
+										<hidden>1</hidden>
+										<object class="wxStaticBoxSizer">
+											<label>Project to search in</label>
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer">
+													<cols>3</cols>
+													<rows>3</rows>
+													<growablecols>1</growablecols>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT1">
+															<label>Project:</label>
+														</object>
+														<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>4</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxChoice" name="chProject" />
+														<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<option>1</option>
+													</object>
+													<object class="spacer">
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT2">
+															<label>Target:</label>
+														</object>
+														<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>4</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxChoice" name="chTarget" />
+														<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<option>1</option>
+													</object>
+													<object class="spacer">
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													</object>
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											</object>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
 								</object>
 							</object>
 						</object>

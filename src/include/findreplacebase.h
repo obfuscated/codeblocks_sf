@@ -25,6 +25,7 @@ class FindReplaceBase : public wxScrollingDialog
         virtual bool GetStartWord() const = 0;
         virtual bool GetStartFile() const = 0;
         virtual bool GetMatchCase() const = 0;
+        virtual bool GetMultiLine() const = 0;
         virtual bool GetFixEOLs() const = 0;
         virtual bool GetRegEx() const = 0;
         virtual bool GetAutoWrapSearch() const = 0;
@@ -36,6 +37,8 @@ class FindReplaceBase : public wxScrollingDialog
         virtual bool GetHidden() const = 0; // for find in search path
         virtual wxString GetSearchPath() const = 0; // for find in search path
         virtual wxString GetSearchMask() const = 0; // for find in search path
+        virtual int GetProject() const = 0; // for find in project
+        virtual int GetTarget() const = 0; // for find in project
 };
 
 #endif // FINDREPLACEBASE_H

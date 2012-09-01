@@ -74,7 +74,7 @@ ALLHEADERS = annoyingdialog.h \
 				filefilters.h \
 				filegroupsandmasks.h \
 				filemanager.h \
-				finddlg.h \
+				findreplacedlg.h \
 				findreplacebase.h \
 				genericmultilinenotesdlg.h \
 				globals.h \
@@ -112,7 +112,6 @@ ALLHEADERS = annoyingdialog.h \
 				projectoptionsdlg.h \
 				projectsfilemasksdlg.h \
 				projecttemplateloader.h \
-				replacedlg.h \
 				safedelete.h \
 				scriptingmanager.h \
 				scriptsecuritywarningdlg.h \
