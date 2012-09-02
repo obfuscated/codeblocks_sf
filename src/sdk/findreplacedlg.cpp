@@ -9,9 +9,12 @@
 
 #include "sdk_precomp.h"
 
+#include "findreplacedlg.h"
+
 #ifndef CB_PRECOMP
     #include <wx/button.h>
     #include <wx/checkbox.h>
+    #include <wx/choice.h>
     #include <wx/combobox.h>
     #include <wx/intl.h>
     #include <wx/notebook.h>
@@ -20,11 +23,11 @@
     #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
 
+    #include "cbproject.h"
     #include "configmanager.h"
     #include "globals.h"
+    #include "projectmanager.h"
 #endif
-
-#include "findreplacedlg.h"
 
 #define CONF_GROUP _T("/replace_options")
 
