@@ -151,6 +151,15 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     }
 
     wxString Selection = Grid->GetPropertyValueAsString(Id);
+    wxString oldHandlerName = m_Events->GetHandler(Index);
+    if ( (!oldHandlerName.IsEmpty()) && oldHandlerName.IsSameAs(Selection) )
+    {
+        // which means this event is emulated from the double click on the event ID name,
+        // user want to jump to the implementation of this event handler function body,
+        // no need to rebuild the event and notify other part
+        GotoHandler(Index);
+        return;
+     }
 
     if ( Selection == NoneStr )
     {

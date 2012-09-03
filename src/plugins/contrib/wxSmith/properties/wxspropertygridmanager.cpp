@@ -306,4 +306,5 @@ wxsPropertyGridManager* wxsPropertyGridManager::Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxsPropertyGridManager,wxPropertyGridManager)
     EVT_PG_CHANGED(-1,wxsPropertyGridManager::OnChange)
+    EVT_PG_DOUBLE_CLICK(-1,wxsPropertyGridManager::OnChange)
 END_EVENT_TABLE()
