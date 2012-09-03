@@ -498,7 +498,7 @@ void cbAuiNotebook::ShowToolTip(wxWindow* win)
     CancelToolTip();
     if (win)
     {
-        wxString text = win->GetName();
+        wxString text = win->GetLabel();
         if (!text.IsEmpty())
         {
             m_pToolTip = new wxTipWindow(Manager::Get()->GetAppWindow(),text, 640, &m_pToolTip);
@@ -533,7 +533,7 @@ void cbAuiNotebook::SetTabToolTip(wxWindow* win, wxString msg)
         m_pDwellTimer->Start(100,false);
     }
     if (win)
-        win->SetName(msg);
+        win->SetLabel(msg);
     AllowToolTips();
 
 }
