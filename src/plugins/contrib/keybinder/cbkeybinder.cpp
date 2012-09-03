@@ -757,6 +757,7 @@ void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
     //entries[7].Set(wxACCEL_CTRL | wxACCEL_ALT,    WXK_TAB,   idCtrlAltTab);
 
   #if defined(__WXGTK__)
+    wxUnusedVar(mergeAccelTable);
     // modifying global accelerators on linux is
     // practically impossible (as far as I can determine)
     // So we'll just leave 'em as is...
