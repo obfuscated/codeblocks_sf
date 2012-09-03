@@ -169,17 +169,17 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         }
     }
 
-    if (findReplaceInFilesOnly)
+    if (pa->IsEmpty())
     {
-        // NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
-        XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1);
-        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only replace-in-files
-        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
-    }
-    else if (m_findReplaceInFilesActive)
-    {
-        XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1); // Search->Replace in Files was selected
-        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+        if (rbScope->GetSelection() == 1 || rbScope->GetSelection() == 2)
+        {
+            rbScope->SetSelection(0);
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Show();
+            XRCCTRL(*this, "pnSearchPath", wxPanel)->Disable();
+            XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
+        }
+        rbScope->Enable(1, false);
+        rbScope->Enable(2, false);
     }
 
     if(findMode)
@@ -192,6 +192,19 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("&Find"));
         XRCCTRL(*this, "chkFixEOLs1",   wxCheckBox)->Hide();
         XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->Hide();
+    }
+
+    if (findReplaceInFilesOnly)
+    {
+        // NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
+        XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1);
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only replace-in-files
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+    }
+    else if (m_findReplaceInFilesActive)
+    {
+        XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1); // Search->Replace in Files was selected
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
 
     GetSizer()->SetSizeHints(this);
