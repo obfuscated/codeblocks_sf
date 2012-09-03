@@ -139,7 +139,7 @@ const wxString SpellCheckerConfig::GetDictionaryPath()const
     dictPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
     for (size_t i = 0; i < dictPaths.GetCount(); ++i)
     {
-        if (!wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
+        if (wxDirExists(dictPaths[i]) && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
             return dictPaths[i];
     }
     return dictPaths[0];
@@ -172,7 +172,7 @@ const wxString SpellCheckerConfig::GetThesaurusPath()const
     thesPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
     for (size_t i = 0; i < thesPaths.GetCount(); ++i)
     {
-        if (!wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
+        if (wxDirExists(thesPaths[i]) && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
             return thesPaths[i];
     }
     return thesPaths[0];
@@ -181,9 +181,9 @@ const wxString SpellCheckerConfig::GetBitmapPath()const
 {
     wxString bitmPath = m_BitmPath;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
-    if (wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
-        return m_pPlugin->GetOnlineCheckerConfigPath();
-    return bitmPath;
+    if (wxDirExists(bitmPath) && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
+        return bitmPath;
+    return m_pPlugin->GetOnlineCheckerConfigPath();
 }
 
 const wxString SpellCheckerConfig::GetRawDictionaryPath()const{return m_DictPath;}

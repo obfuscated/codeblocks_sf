@@ -58,6 +58,8 @@ void Thesaurus::SetFiles(wxString idxpath, const wxString datpath)
     else
     {
         Manager::Get()->GetLogManager()->Log(_T("SpellChecker: Thesaurus files '") + idxpath + _T("' not found!"));
+        if (!wxDirExists(idxpath.BeforeLast(wxFILE_SEP_PATH)) || !wxDirExists(datpath.BeforeLast(wxFILE_SEP_PATH)))
+            return; // path does not exist, silence invalid directory warnings
         wxString altIdx = wxFindFirstFile(idxpath.BeforeLast(wxT('.')) + wxT("*.idx"), wxFILE); // "*_v2.idx"
         if (altIdx.IsEmpty()) // try again with more wildcards
         {
