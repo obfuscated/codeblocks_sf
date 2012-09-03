@@ -28,7 +28,7 @@
 class wxsItemEditor;
 class wxsItemResData;
 
-/** \brief Some abstract interface allowing wxsItemResData to access some resource-specific functinos easily */
+/** \brief Some abstract interface allowing wxsItemResData to access some resource-specific functions easily */
 class wxsItemResFunctions
 {
     public:

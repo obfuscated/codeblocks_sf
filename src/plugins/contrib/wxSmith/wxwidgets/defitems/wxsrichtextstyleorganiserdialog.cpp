@@ -105,27 +105,14 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
                 sFlags.RemoveLast();
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
             AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.wx_str()));
             Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.wx_str());
-            #else
-            AddDeclaration(wxString::Format(wxT("wxRichTextStyleSheet  *%s;"), sStyleSheetName.c_str()));
-            Codef(_T("\t%s = new wxRichTextStyleSheet;\n"), sStyleSheetName.c_str());
-            #endif
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
-                            sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
-            #else
-            Codef(_T("%C(%s, %s, NULL, %W, %I, %t, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
-                            wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
-                            sFlags.c_str(), sStyleSheetName.c_str(), m_sCaption.c_str());
-            #endif
+                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_POSITION, ")
+                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_SIZE, ")
+                  wxT("SYMBOL_WXRICHTEXTSTYLEORGANISERDIALOG_STYLE);\n"),
+                  sFlags.wx_str(), sStyleSheetName.wx_str(), m_sCaption.wx_str());
 
             BuildSetupWindowCode();
             break;

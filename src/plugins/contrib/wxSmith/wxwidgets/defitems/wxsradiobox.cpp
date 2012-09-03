@@ -81,14 +81,9 @@ void wxsRadioBox::OnBuildCreatingCode()
             if ( Dimension < 1 ) Dimension = 1;
 
             Codef(_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
-                        #if wxCHECK_VERSION(2, 9, 0)
-                        Label.wx_str(),ArrayChoices.GetCount(),
-                        (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.wx_str()),
-                        #else
-                        Label.c_str(),ArrayChoices.GetCount(),
-                        (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.c_str()),
-                        #endif
-                        Dimension);
+                  Label.wx_str(),ArrayChoices.GetCount(),
+                  (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.wx_str()),
+                  Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
             {

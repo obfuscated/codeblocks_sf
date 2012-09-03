@@ -94,13 +94,8 @@ void wxsDialUpManager::OnBuildCreatingCode()
                 Codef(_T("%ASetWellKnownHost(%n, %d);\n"), m_sWellKnownHost.wx_str(), m_iPortNo);
             }
 
-            if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff"))){
-                #if wxCHECK_VERSION(2, 9, 0)
+            if(!m_sDialCommand.IsSameAs(wxT("/usr/bin/pon")) || !m_sHangUpCommand.IsSameAs(wxT("/usr/bin/poff")))
                 Codef(_T("%ASetConnectCommand(%n);\n"), m_sDialCommand.wx_str(), m_sHangUpCommand.wx_str());
-                #else
-                Codef(_T("%ASetConnectCommand(%n);\n"), m_sWellKnownHost.c_str(), m_sHangUpCommand.c_str());
-                #endif
-            }
 #endif
 
             BuildSetupWindowCode();

@@ -245,31 +245,20 @@ void wxsItem::BuildSetupWindowCode()
             {
                 wxString FontVal = m_BaseProperties.m_Font.BuildFontCode(GetVarName() + _T("Font"), GetCoderContext());
                 if ( !FontVal.empty() )
-                {
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%s%ASetFont(%sFont);\n"),FontVal.wx_str(),GetVarName().wx_str());
-                    #else
-                    Codef(_T("%s%ASetFont(%sFont);\n"),FontVal.c_str(),GetVarName().c_str());
-                    #endif
-                }
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
-            if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
-            if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
-            #else
-            if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.c_str());
-            if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.c_str());
-            #endif
+            if ( (PropertiesFlags&flToolTip)   && !m_BaseProperties.m_ToolTip.IsEmpty()  )
+                Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
+            if ( (PropertiesFlags&flHelpText)  && !m_BaseProperties.m_HelpText.IsEmpty() )
+                Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
             if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty() )
             {
                 wxString& ExtraCode = m_BaseProperties.m_ExtraCode;
                 AddBuildingCode(ExtraCode);
                 // Adding extra \n character if it's not presend in extra code
                 if ( ExtraCode.GetChar(ExtraCode.Length()-1) != _T('\n') )
-                {
                     AddBuildingCode(_T("\n"));
-                }
             }
 
             if ( m_BaseProperties.m_StyleSet && m_BaseProperties.m_ExStyleBits )

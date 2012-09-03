@@ -59,30 +59,17 @@ void wxsFileDialog::OnBuildCreatingCode()
             if ( m_Wildcard.empty() )
             {
                 Codef(_T("%C(%W, %t, %t, %t, wxFileSelectorDefaultWildcardStr, %T, %P, %S, %N);\n"),
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    m_Message.wx_str(),
-                    m_DefaultDir.wx_str(),
-                    m_DefaultFile.wx_str());
-                    #else
-                    m_Message.c_str(),
-                    m_DefaultDir.c_str(),
-                    m_DefaultFile.c_str());
-                    #endif
+                      m_Message.wx_str(),
+                      m_DefaultDir.wx_str(),
+                      m_DefaultFile.wx_str());
             }
             else
             {
                 Codef(_T("%C(%W, %t, %t, %t, %t, %T, %P, %S, %N);\n"),
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    m_Message.wx_str(),
-                    m_DefaultDir.wx_str(),
-                    m_DefaultFile.wx_str(),
-                    m_Wildcard.wx_str());
-                    #else
-                    m_Message.c_str(),
-                    m_DefaultDir.c_str(),
-                    m_DefaultFile.c_str(),
-                    m_Wildcard.c_str());
-                    #endif
+                      m_Message.wx_str(),
+                      m_DefaultDir.wx_str(),
+                      m_DefaultFile.wx_str(),
+                      m_Wildcard.wx_str());
             }
             BuildSetupWindowCode();
             return;

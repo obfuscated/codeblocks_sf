@@ -144,7 +144,7 @@ class wxsItemEditor : public wxsEditor
         /** \brief Building icon for one button */
         void BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,int ButtonType);
 
-        /** \brief Opening or closiung Quick Props panel */
+        /** \brief Opening or closing Quick Props panel */
         void ToggleQuickPropsPanel(bool Open);
 
         /** \brief Refreshing content of Quick Props panel */

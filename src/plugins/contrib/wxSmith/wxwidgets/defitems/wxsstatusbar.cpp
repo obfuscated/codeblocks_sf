@@ -73,13 +73,8 @@ void wxsStatusBar::OnBuildCreatingCode()
                                                      _T("wxSB_NORMAL"),
                         i==(m_Fields-1) ? _T(" };\n") : _T(", "));
                 }
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.wx_str());
                 Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.wx_str());
-                #else
-                Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.c_str());
-                Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.c_str());
-                #endif
                 Codef(_T("SetStatusBar(%O);\n"));
             }
             BuildSetupWindowCode();

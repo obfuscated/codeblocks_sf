@@ -77,7 +77,7 @@ bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
         VALUE.Clear();
         return false;
     }
-    // TODO: Use proper endocing
+    // TODO: Use proper encoding
     wxString Base = cbC2U(Element->GetText());
     wxString Result;
     for ( const wxChar* Ch = Base.c_str(); *Ch; Ch++ )

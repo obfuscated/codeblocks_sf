@@ -81,12 +81,8 @@ void wxsProgressDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/progdlg.h>"), GetInfo().ClassName, 0);
 
             if(m_bRunAtStartup){
-                // Initialise and display the dialogue at application start-up.
-                #if wxCHECK_VERSION(2, 9, 0)
+                // Initialize and display the dialogue at application start-up.
                 Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.wx_str(), m_sMessage.wx_str(), m_iMaxValue);
-                #else
-                Codef(_T("%C(%t, %t, %d, %W, %T);\n"), m_sTitle.c_str(), m_sMessage.c_str(), m_iMaxValue);
-                #endif
             }
 
             BuildSetupWindowCode();

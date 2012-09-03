@@ -99,23 +99,13 @@ void wxsToolBarItem::OnBuildCreatingCode()
                     if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
 
                     Codef(_T("%v = %MAddTool(%I, %t, %i, %i, %s, %t, %t);\n"),
-                        #if wxCHECK_VERSION(2, 9, 0)
-                        GetVarName().wx_str(),
-                        m_Label.wx_str(),
-                        #else
-                        GetVarName().c_str(),
-                        m_Label.c_str(),
-                        #endif
-                        &m_Bitmap,_T("wxART_TOOLBAR"),
-                        &m_Bitmap2,_T("wxART_TOOLBAR"),
-                        ItemType,
-                        #if wxCHECK_VERSION(2, 9, 0)
-                        m_ToolTip.wx_str(),
-                        m_HelpText.wx_str());
-                        #else
-                        m_ToolTip.c_str(),
-                        m_HelpText.c_str());
-                        #endif
+                          GetVarName().wx_str(),
+                          m_Label.wx_str(),
+                          &m_Bitmap,_T("wxART_TOOLBAR"),
+                          &m_Bitmap2,_T("wxART_TOOLBAR"),
+                          ItemType,
+                          m_ToolTip.wx_str(),
+                          m_HelpText.wx_str());
                     break;
                 }
 

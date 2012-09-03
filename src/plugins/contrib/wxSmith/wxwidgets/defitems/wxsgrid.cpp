@@ -107,13 +107,8 @@ void wxsGrid::OnBuildCreatingCode()
                     wxString tt = m_LabelFont.BuildFontCode(ss, GetCoderContext());
                     if (tt.Len() > 0)
                     {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%s"), tt.wx_str());
                         Codef(_T("%ASetLabelFont(%s);\n"), ss.wx_str());
-                        #else
-                        Codef(_T("%s"), tt.c_str());
-                        Codef(_T("%ASetLabelFont(%s);\n"), ss.c_str());
-                        #endif
                     }
 
                     int n = wxMin( (int)m_ColLabels.GetCount(), m_ColsCount );

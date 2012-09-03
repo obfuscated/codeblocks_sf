@@ -57,15 +57,14 @@ void wxsHtmlWindow::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/html/htmlwin.h>"),GetInfo().ClassName,0);
             Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            #if wxCHECK_VERSION(2, 9, 0)
-            if ( Borders.Value ) Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).wx_str());
-            if ( !Url.empty() ) Codef(_T("%ALoadPage(%t);\n"),Url.wx_str());
-            else if ( !HtmlCode.empty() ) Codef(_T("%ASetPage(%t);\n"),HtmlCode.wx_str());
-            #else
-            if ( Borders.Value ) Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).c_str());
-            if ( !Url.empty() ) Codef(_T("%ALoadPage(%t);\n"),Url.c_str());
-            else if ( !HtmlCode.empty() ) Codef(_T("%ASetPage(%t);\n"),HtmlCode.c_str());
-            #endif
+            if ( Borders.Value )
+                Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).wx_str());
+
+            if ( !Url.empty() )
+                Codef(_T("%ALoadPage(%t);\n"),Url.wx_str());
+            else if ( !HtmlCode.empty() )
+                Codef(_T("%ASetPage(%t);\n"),HtmlCode.wx_str());
+
             BuildSetupWindowCode();
             break;
         }

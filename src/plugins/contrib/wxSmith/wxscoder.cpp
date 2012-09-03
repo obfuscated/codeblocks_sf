@@ -361,13 +361,8 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     if ( Position == -1 )
     {
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
-            #if wxCHECK_VERSION(2, 9, 0)
-            Header.wx_str(),
-            Editor->GetFilename().wx_str()));
-            #else
-            Header.c_str(),
-            Editor->GetFilename().c_str()));
-            #endif
+                                                    Header.wx_str(),
+                                                    Editor->GetFilename().wx_str()));
         return false;
     }
 
@@ -378,13 +373,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     if ( EndPosition == -1 )
     {
         Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
-            #if wxCHECK_VERSION(2, 9, 0)
-            Header.wx_str(),
-            Editor->GetFilename().wx_str()));
-            #else
-            Header.c_str(),
-            Editor->GetFilename().c_str()));
-            #endif
+                                                    Header.wx_str(),
+                                                    Editor->GetFilename().wx_str()));
+
         return false;
     }
 

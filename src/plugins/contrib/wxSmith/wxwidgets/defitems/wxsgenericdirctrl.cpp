@@ -62,11 +62,7 @@ void wxsGenericDirCtrl::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/dirctrl.h>"),GetInfo().ClassName,0);
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %n, %P, %S, %T, %n, %d, %N);\n"),DefaultFolder.wx_str(),Filter.wx_str(),DefaultFilter);
-            #else
-            Codef(_T("%C(%W, %I, %n, %P, %S, %T, %n, %d, %N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
-            #endif
             BuildSetupWindowCode();
             return;
         }

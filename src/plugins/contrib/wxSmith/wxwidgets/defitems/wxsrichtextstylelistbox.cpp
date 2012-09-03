@@ -66,24 +66,13 @@ void wxsRichTextStyleListBox::OnBuildCreatingCode()
             wxString sVarName = GetVarName();
             // Add the control and stylesheet setting calls at the bottom of the code, hopefully after the control and stylesheet have been declared.
             if(!m_sControl.IsEmpty()){
-                #if wxCHECK_VERSION(2, 9, 0)
                 AddEventCode(wxString::Format(_("// Set the wxRichtTextCtrl for %s. \n"), sVarName.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->SetRichTextCtrl(%s);\n"), sVarName.wx_str(), m_sControl.wx_str()));
-                #else
-                AddEventCode(wxString::Format(_("// Set the wxRichtTextCtrl for %s. \n"), sVarName.c_str()));
-                AddEventCode(wxString::Format(wxT("%s->SetRichTextCtrl(%s);\n"), sVarName.c_str(), m_sControl.c_str()));
-                #endif
             }
             if(!m_sStyleSheet.IsEmpty()){
-                #if wxCHECK_VERSION(2, 9, 0)
                 AddEventCode(wxString::Format(_("// Set the wxRichTextStyleSheet for %s. \n"), sVarName.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->SetStyleSheet(%s);\n"), sVarName.wx_str(), m_sStyleSheet.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->UpdateStyles();\n"), sVarName.wx_str()));
-                #else
-                AddEventCode(wxString::Format(_("// Set the wxRichTextStyleSheet for %s. \n"), sVarName.c_str()));
-                AddEventCode(wxString::Format(wxT("%s->SetStyleSheet(%s);\n"), sVarName.c_str(), m_sStyleSheet.c_str()));
-                AddEventCode(wxString::Format(wxT("%s->UpdateStyles();\n"), sVarName.c_str()));
-                #endif
             }
 
             // wxRichTextStyleListBox::wxRICHTEXT_STYLE_PARAGRAPH is the default value.

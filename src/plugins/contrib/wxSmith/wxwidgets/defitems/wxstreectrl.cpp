@@ -127,12 +127,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
                 {
                     // Locator comment.
                     AddEventCode(wxString::Format(_("// Set the images for %s.\n"), sVarName.wx_str()));
-
-                    #if wxCHECK_VERSION(2, 9, 0)
                     sSource.Printf(_T("%s->SetImageList(%s);\n"), sVarName.wx_str(), m_sImageList.wx_str());
-                    #else
-                    sSource.Printf(_T("%s->SetImageList(%s);\n"), sVarName.c_str(), m_sImageList.c_str());
-                    #endif
                     AddEventCode(sSource);
                 }
 
@@ -172,21 +167,9 @@ void wxsTreeCtrl::OnBuildCreatingCode()
 
                     // make the new item -- level 0 is the root item
                     if(iLevel <= 0)
-                    {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("wxTreeItemId %s = %s->AddRoot(%n);\n"), sItem.wx_str(), sVarName.wx_str(), sText.wx_str());
-                        #else
-                        Codef(_T("wxTreeItemId %s = %s->AddRoot(%n);\n"), sItem.c_str(), sVarName.c_str(), sText.c_str());
-                        #endif
-                    }
                     else
-                    {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("wxTreeItemId %s = %s->AppendItem(%s, %n);\n"), sItem.wx_str(), sVarName.wx_str(), sPrevItem.wx_str(), sText.wx_str());
-                        #else
-                        Codef(_T("wxTreeItemId %s = %s->AppendItem(%s, %n);\n"), sItem.c_str(), sVarName.c_str(), sPrevItem.c_str(), sText.c_str());
-                        #endif
-                    }
 
                     // set text color of current item if not the default color of black
                     iRed = colour.Red();
@@ -195,11 +178,7 @@ void wxsTreeCtrl::OnBuildCreatingCode()
                     if((colour.IsOk()) && ((iRed + iGreen + iBlue) != 0))
                     {
                         sSource.Printf(_("%d,%d,%d"), iRed, iGreen, iBlue);
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%ASetItemTextColour(%s, wxColour(%s));\n"), sItem.wx_str(), sSource.wx_str());
-                        #else
-                        Codef(_T("%ASetItemTextColour(%s, wxColour(%s));\n"), sItem.c_str(), sSource.c_str());
-                        #endif
                     }
 
                     if(bBold)
@@ -212,38 +191,22 @@ void wxsTreeCtrl::OnBuildCreatingCode()
                     {
                         if(iImg1 >= 0)
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Normal);\n"), sVarName.wx_str(), sItem.wx_str(), iImg1);
-                            #else
-                            sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Normal);\n"), sVarName.c_str(), sItem.c_str(), iImg1);
-                            #endif
                             AddEventCode(sSource);
                         }
                         if(iImg2 >= 0)
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Selected);\n"), sVarName.wx_str(), sItem.wx_str(), iImg2);
-                            #else
-                            sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Selected);\n"), sVarName.c_str(), sItem.c_str(), iImg2);
-                            #endif
                             AddEventCode(sSource);
                         }
                         if(iImg3 >= 0)
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Expanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg3);
-                            #else
-                            sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_Expanded);\n"), sVarName.c_str(), sItem.c_str(), iImg3);
-                            #endif
                             AddEventCode(sSource);
                         }
                         if(iImg4 >= 0)
                         {
-                            #if wxCHECK_VERSION(2, 9, 0)
                             sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_SelectedExpanded);\n"), sVarName.wx_str(), sItem.wx_str(), iImg4);
-                            #else
-                            sSource.Printf(_T("%s->SetItemImage(%s, %d, wxTreeItemIcon_SelectedExpanded);\n"), sVarName.c_str(), sItem.c_str(), iImg4);
-                            #endif
                             AddEventCode(sSource);
                         }
                     }

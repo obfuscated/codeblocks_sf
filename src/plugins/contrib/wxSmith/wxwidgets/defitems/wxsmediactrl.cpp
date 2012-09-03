@@ -74,35 +74,18 @@ void wxsMediaCtrl::OnBuildCreatingCode()
             AddHeader(_T("<wx/mediactrl.h>"),GetInfo().ClassName,hfInPCH);
 
             Codef(_T("%C(%W, %I, %s, %P, %S, %T);\n"), wxT("wxEmptyString"));
-            #if wxCHECK_VERSION(2, 9, 0)
-            if(m_sMediaFile.StartsWith(wxT("http://"))){
+
+            if(m_sMediaFile.StartsWith(wxT("http://")))
+            {
                 // Online media, possibly with proxy.
-                if(!m_sProxy.IsEmpty()){
+                if(!m_sProxy.IsEmpty())
                     Codef(_T("%ALoadURIWithProxy(%n, %n);\n"), m_sMediaFile.wx_str(), m_sProxy.wx_str());
-                }
-                else{
+                else
                     Codef(_T("%ALoadURI(%n);\n"), m_sMediaFile.wx_str());
-                }
             }
-            else{
-                // Local media file.
+            else // Local media file.
                 Codef(_T("%ALoad(%n);\n"), m_sMediaFile.wx_str());
-            }
-            #else
-            if(m_sMediaFile.StartsWith(wxT("http://"))){
-                // Online media, possibly with proxy.
-                if(!m_sProxy.IsEmpty()){
-                    Codef(_T("%ALoadURIWithProxy(%n, %n);\n"), m_sMediaFile.c_str(), m_sProxy.c_str());
-                }
-                else{
-                    Codef(_T("%ALoadURI(%n);\n"), m_sMediaFile.c_str());
-                }
-            }
-            else{
-                // Local media file.
-                Codef(_T("%ALoad(%n);\n"), m_sMediaFile.c_str());
-            }
-            #endif
+
             switch(m_iControls){
                 case wxMEDIACTRLPLAYERCONTROLS_NONE:
                     Codef(_T("%AShowPlayerControls(%s);\n"), wxT("wxMEDIACTRLPLAYERCONTROLS_NONE"));

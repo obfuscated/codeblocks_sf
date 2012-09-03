@@ -51,11 +51,7 @@ void wxsDirDialog::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/dirdlg.h>"),GetInfo().ClassName,hfInPCH);
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %t, %t, %T, %P, %S, %N);\n"),m_Message.wx_str(),m_DefaultPath.wx_str());
-            #else
-            Codef(_T("%C(%W, %t, %t, %T, %P, %S, %N);\n"),m_Message.c_str(),m_DefaultPath.c_str());
-            #endif
             BuildSetupWindowCode();
             return;
         }

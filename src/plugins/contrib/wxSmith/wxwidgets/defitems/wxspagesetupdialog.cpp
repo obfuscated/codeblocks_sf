@@ -112,13 +112,8 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
 
             wxString sDataName = GetCoderContext()->GetUniqueName(_T("pageSetupDialogData"));
-            #if wxCHECK_VERSION(2, 9, 0)
             AddDeclaration(wxString::Format(wxT("wxPageSetupDialogData  *%s;"), sDataName.wx_str()));
             Codef(_T("\t%s = new wxPageSetupDialogData;\n"), sDataName.wx_str());
-            #else
-            AddDeclaration(wxString::Format(wxT("wxPageSetupDialogData  *%s;"), sDataName.c_str()));
-            Codef(_T("\t%s = new wxPageSetupDialogData;\n"), sDataName.c_str());
-            #endif
 
             // These functions are Windows only.
             if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){
@@ -163,11 +158,7 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
             // If PaperId = wxPAPER_NONE and paper size = wxDefaultSize, the default system settings will be used.
             if(m_iPaperID != wxPAPER_NONE){
                 // Set paper wxPAPER_NONE is not set.
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("\t%s->SetPaperId(%s);\n"), sDataName.wx_str(), arrPaperIDs[m_iPaperID].wx_str());
-                #else
-                Codef(_T("\t%s->SetPaperId(%s);\n"), sDataName.c_str(), arrPaperIDs[m_iPaperID].c_str());
-                #endif
             }
             else{
                 // Set paper size if wxPAPER_NONE is set.

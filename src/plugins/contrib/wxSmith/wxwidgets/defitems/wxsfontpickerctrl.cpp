@@ -70,14 +70,8 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
             if(!sFnt.Len() > 0){
                 sFntName = wxT("wxNullFont");
             }
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%s"), sFnt.wx_str());
             Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.wx_str());
-            #else
-            Codef(_T("%s"), sFnt.c_str());
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %V, %N);\n"), sFntName.c_str());
-            #endif
-
             BuildSetupWindowCode();
             return;
         }

@@ -83,7 +83,7 @@ class wxSmith : public cbPlugin
         /** \brief unregistering scripting stuff */
         void UnregisterScripting();
 
-        /** \brief Getting wxsProject addition for given cbPrject */
+        /** \brief Getting wxsProject addition for given cbProject */
         wxsProject* GetSmithProject(cbProject* Proj);
 
         /** \brief Getting cbProject class from wxsProject addition */
@@ -125,7 +125,7 @@ class wxSmith : public cbPlugin
         /** \brief Called when clicked "Configure..." from wxSmith menu */
         void OnConfigure(wxCommandEvent& event);
 
-        /** \brief Called for any menu, used to find possible "Add ...." enteries */
+        /** \brief Called for any menu, used to find possible "Add ...." entries */
         void OnMenu(wxCommandEvent& event);
 
         /** \brief Function building resource and properties browser */

@@ -75,13 +75,7 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/filepicker.h>"),GetInfo().ClassName,0);
-
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %n %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.wx_str(), m_sMessage.wx_str(), m_sWildcard.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %n, %t, %n, %P, %S, %T, %V, %N);\n"), m_sPath.c_str(), m_sMessage.c_str(), m_sWildcard.c_str());
-            #endif
-
             BuildSetupWindowCode();
             return;
         }

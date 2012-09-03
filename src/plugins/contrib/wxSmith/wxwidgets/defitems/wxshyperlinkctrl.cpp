@@ -67,11 +67,7 @@ void wxsHyperlinkCtrl::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/hyperlink.h>"),GetInfo().ClassName,hfInPCH);
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.wx_str(), m_URL.wx_str());
-            #else
-            Codef(_T("%C(%W, %I, %t, %t, %P, %S, %T, %N);\n"),m_Label.c_str(), m_URL.c_str());
-            #endif
 
             wxString ss = m_NormalColour.BuildCode( GetCoderContext() );
             if (!ss.IsEmpty()) Codef(_T("%ASetNormalColour(%s);\n"), ss.wx_str());

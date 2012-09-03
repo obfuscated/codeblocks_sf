@@ -66,17 +66,10 @@ void wxsSingleChoiceDialog::OnBuildCreatingCode()
             }
 
             Codef(_T("%C(%W, %t, %t, %d, %s, 0, %T, %P);\n"),
-                #if wxCHECK_VERSION(2, 9, 0)
-                m_Message.wx_str(),
-                m_Caption.wx_str(),
-                (int)m_Content.GetCount(),
-                (m_Content.IsEmpty()?_T("0"):ChoicesName.wx_str()));
-                #else
-                m_Message.c_str(),
-                m_Caption.c_str(),
-                (int)m_Content.GetCount(),
-                (m_Content.IsEmpty()?_T("0"):ChoicesName.c_str()));
-                #endif
+                  m_Message.wx_str(),
+                  m_Caption.wx_str(),
+                  (int)m_Content.GetCount(),
+                  (m_Content.IsEmpty()?_T("0"):ChoicesName.wx_str()));
 
             BuildSetupWindowCode();
             return;

@@ -250,7 +250,7 @@ cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cb
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
-    // Genearating separate wxSmith menu entry
+    // Generating separate wxSmith menu entry
     wxMenu* SmithMenu = new wxMenu;
 
     wxsResourceFactory::BuildSmithMenu(SmithMenu);

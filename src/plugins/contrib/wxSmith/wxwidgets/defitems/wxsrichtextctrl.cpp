@@ -256,12 +256,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             }
             if(!sFlags.IsEmpty()){
                 sFlags.RemoveLast();
-
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-                #else
-                Codef( _T("%s.SetFlags(%s);\n"), sAttrName.c_str(), sFlags.c_str());
-                #endif
             }
             // Bullet flags.
             sFlags.Clear();
@@ -272,12 +267,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             }
             if(!sFlags.IsEmpty()){
                 sFlags.RemoveLast();
-
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetBulletStyle(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-                #else
-                Codef( _T("%s.SetBulletStyle(%s);\n"), sAttrName.c_str(), sFlags.c_str());
-                #endif
             }
             // Line spacing.
             // wxTEXT_ATTR_LINE_SPACING_NORMAL is the default.
@@ -297,52 +287,30 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             if(!sFlags.IsEmpty()){
                 sFlags.RemoveLast();
 
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetTextEffects(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
                 Codef( _T("%s.SetTextEffectFlags(%s);\n"), sAttrName.wx_str(), sFlags.wx_str());
-                #else
-                Codef( _T("%s.SetTextEffects(%s);\n"), sAttrName.c_str(), sFlags.c_str());
-                Codef( _T("%s.SetTextEffectFlags(%s);\n"), sAttrName.c_str(), sFlags.c_str());
-                #endif
             }
             // Text colours.
             wxString ss = m_cdTextColour.BuildCode(GetCoderContext());
             if(!ss.IsEmpty()){
                 bClrChanged = true;
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetTextColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
-                #else
-                Codef( _T("%s.SetTextColour(%s);\n"), sAttrName.c_str(), ss.c_str());
-                #endif
             }
             ss = m_cdTextBackground.BuildCode(GetCoderContext());
             if(!ss.IsEmpty()){
                 bClrChanged = true;
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef( _T("%s.SetBackgroundColour(%s);\n"), sAttrName.wx_str(), ss.wx_str());
-                #else
-                Codef( _T("%s.SetBackgroundColour(%s);\n"), sAttrName.c_str(), ss.c_str());
-                #endif
             }
             // Font characteristics.
             wxString sFntName = GetCoderContext()->GetUniqueName(_T("Font"));
             wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
             if(sFnt.Len() > 0){
-                #if wxCHECK_VERSION(2, 9, 0)
                 Codef(_T("%s"), sFnt.wx_str());
                 Codef( _T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.wx_str(), sFnt.wx_str());
                 Codef( _T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.wx_str(), sFnt.wx_str());
                 Codef( _T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.wx_str(), sFnt.wx_str());
                 Codef( _T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.wx_str(), sFnt.wx_str());
                 Codef( _T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.wx_str(), sFnt.wx_str());
-                #else
-                Codef(_T("%s"), sFnt.c_str());
-                Codef( _T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.c_str(), sFntName.c_str());
-                Codef( _T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.c_str(), sFntName.c_str());
-                Codef( _T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.c_str(), sFntName.c_str());
-                Codef( _T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.c_str(), sFntName.c_str());
-                Codef( _T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.c_str(), sFntName.c_str());
-                #endif
             }
 
             if(m_iAlignment != wxTEXT_ALIGNMENT_LEFT || m_iAttribute != 0 || m_iBullets != wxTEXT_ATTR_BULLET_STYLE_NONE ||

@@ -73,13 +73,7 @@ void wxsPasswordEntryDialog::OnBuildCreatingCode()
     {
         case wxsCPP:
             AddHeader(_T("<wx/textdlg.h>"), GetInfo().ClassName, 0);
-
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.wx_str(), m_sCaption.wx_str(), m_sDefaultValue.wx_str());
-            #else
-            Codef(_T("%C(%W, %t, %t, %t, %T, %P);\n"), m_sMessage.c_str(), m_sCaption.c_str(), m_sDefaultValue.c_str());
-            #endif
-
             BuildSetupWindowCode();
             break;
 

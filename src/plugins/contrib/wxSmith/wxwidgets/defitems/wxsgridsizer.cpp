@@ -48,13 +48,8 @@ void wxsGridSizer::OnBuildSizerCreatingCode()
         {
             AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    VGap.GetPixelsCode(GetCoderContext()).wx_str(),
-                    HGap.GetPixelsCode(GetCoderContext()).wx_str());
-                    #else
-                    VGap.GetPixelsCode(GetCoderContext()).c_str(),
-                    HGap.GetPixelsCode(GetCoderContext()).c_str());
-                    #endif
+                  VGap.GetPixelsCode(GetCoderContext()).wx_str(),
+                  HGap.GetPixelsCode(GetCoderContext()).wx_str());
             return;
         }
 

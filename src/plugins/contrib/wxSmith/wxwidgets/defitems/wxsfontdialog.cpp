@@ -59,18 +59,12 @@ void wxsFontDialog::OnBuildCreatingCode()
             Codef(_T("\twxFontData %s;\n"), sfontName.wx_str());
 
             wxString sClr = m_cdColour.BuildCode(GetCoderContext());
-            #if wxCHECK_VERSION(2, 9, 0)
-            if(!sClr.IsEmpty()){
+            if(!sClr.IsEmpty())
                 Codef(_T("\t%s.SetColour(%s);\n"), sfontName.wx_str(), sClr.wx_str());
-            }
-            #else
-            if(!sClr.IsEmpty()){
-                Codef(_T("\t%s.SetColour(%s);\n"), sfontName.c_str(), sClr.c_str());
-            }
-            #endif
-            if(!m_bEnableEffects){
+
+            if(!m_bEnableEffects)
                 Codef(_T("\t%s.EnableEffects(%b);\n"), sfontName.wx_str(), m_bEnableEffects);
-            }
+
             Codef(_T("\t%s.SetInitialFont(*wxNORMAL_FONT);\n"), sfontName.wx_str());
 
             // These functions are Windows only.

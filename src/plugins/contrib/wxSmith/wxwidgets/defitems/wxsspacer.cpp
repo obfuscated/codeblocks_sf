@@ -107,19 +107,11 @@ void wxsSpacer::OnBuildCreatingCode()
 
                 Codef(_T("wxSize %s = %z;\n")
                       _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),
-                         #if wxCHECK_VERSION(2, 9, 0)
-                         SizeName.wx_str(),
-                         &Size,
-                         SizeName.wx_str(),
-                         SizeName.wx_str(),
-                         Extra->AllParamsCode(GetCoderContext()).wx_str());
-                         #else
-                         SizeName.c_str(),
-                         &Size,
-                         SizeName.c_str(),
-                         SizeName.c_str(),
-                         Extra->AllParamsCode(GetCoderContext()).c_str());
-                         #endif
+                      SizeName.wx_str(),
+                      &Size,
+                      SizeName.wx_str(),
+                      SizeName.wx_str(),
+                      Extra->AllParamsCode(GetCoderContext()).wx_str());
             }
             else
             {

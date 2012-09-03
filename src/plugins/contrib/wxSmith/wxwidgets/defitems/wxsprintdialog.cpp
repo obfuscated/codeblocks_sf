@@ -63,13 +63,8 @@ void wxsPrintDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/printdlg.h>"),GetInfo().ClassName,hfInPCH);
 
             wxString sDataName = GetCoderContext()->GetUniqueName(_T("printDialogData"));
-            #if wxCHECK_VERSION(2, 9, 0)
             AddDeclaration(wxString::Format(wxT("wxPrintDialogData  *%s;"), sDataName.wx_str()));
             Codef(_T("\t%s = new wxPrintDialogData;\n"), sDataName.wx_str());
-            #else
-            AddDeclaration(wxString::Format(wxT("wxPrintDialogData  *%s;"), sDataName.c_str()));
-            Codef(_T("\t%s = new wxPrintDialogData;\n"), sDataName.c_str());
-            #endif
 
             if(m_bEnableHelp){
                 Codef(_T("\t%s->EnableHelp(%b);\n"), sDataName.wx_str(), m_bEnableHelp);
