@@ -269,6 +269,11 @@ bool wxsMenuItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 if ( Node && (cbC2U(Node->GetText())==_T("1")) )
                 {
                     m_Type = Check;
+                    // Now, we are going to check its state, either checked or not checked
+                    TiXmlElement* checkedNode = Element->FirstChildElement("checked");
+                    if (checkedNode && (cbC2U(checkedNode->GetText())==_T("1")))
+                        m_Checked = true;
+                    // otherwise, the m_Checked will default to false.
                 }
                 else
                 {
