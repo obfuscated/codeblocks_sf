@@ -300,7 +300,10 @@ bool wxsFontProperty::ShowEditor(wxsPropertyContainer* Object)
 
 wxString wxsFontProperty::GetStr(wxsPropertyContainer* Object)
 {
-    wxString res = VALUE.BuildFont().GetNativeFontInfoUserDesc();
+    wxFont fnt = VALUE.BuildFont();
+    wxString res = wxEmptyString;
+    if (fnt.IsOk())
+        res = fnt.GetNativeFontInfoUserDesc();
     return res.IsEmpty()?wxsCustomEditorProperty::GetStr(Object):res;
 }
 
