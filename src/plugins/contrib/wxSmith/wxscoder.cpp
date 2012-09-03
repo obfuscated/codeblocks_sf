@@ -537,12 +537,14 @@ wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int 
         {
             case _T('\n'):
                 {
-                    while (Result.Last() == _T(' ') || Result.Last() == _T('\t'))
+                    while (!Result.IsEmpty() &&
+                           (Result.Last() == _T(' ') || Result.Last() == _T('\t')))
                         Result.RemoveLast();
                     Result << BaseIndentation;
                     break;
                 }
             case _T('\t'): if ( UseTab ) { Result << Tab; break; }
+
             default:       Result << *Code;
         }
         Code++;
