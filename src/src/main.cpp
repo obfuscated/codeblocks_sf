@@ -2051,7 +2051,7 @@ void MainFrame::DoUpdateAppTitle()
 
 void MainFrame::ShowHideStartPage(bool forceHasProject, int forceState)
 {
-    Manager::Get()->GetLogManager()->LogWarning(_("Toggling start page"));
+//    Manager::Get()->GetLogManager()->LogWarning(_("Toggling start page"));
     if (Manager::IsBatchBuild())
         return;
 
@@ -2078,14 +2078,9 @@ void MainFrame::ShowHideStartPage(bool forceHasProject, int forceState)
 
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (show && !sh)
-    {
         sh = new StartHerePage(this, Manager::Get()->GetEditorManager()->GetNotebook());
-
-    }
     else if (!show && sh)
-    {
         sh->Destroy();
-    }
 
     DoUpdateAppTitle();
 }
