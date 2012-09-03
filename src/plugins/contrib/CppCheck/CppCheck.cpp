@@ -125,6 +125,7 @@ void CppCheck::OnRelease(bool /*appShutDown*/)
         if (m_ListLog)
         {
             CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_ListLog);
+            m_ListLog->DestroyControls();
             Manager::Get()->ProcessEvent(evt);
         }
     }

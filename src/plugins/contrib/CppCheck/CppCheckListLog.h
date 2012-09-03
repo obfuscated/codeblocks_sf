@@ -20,6 +20,7 @@ public:
     CppCheckListLog(const wxArrayString& Titles, wxArrayInt& Widths);
     ~CppCheckListLog();
     wxWindow* CreateControl(wxWindow* Parent);
+    void DestroyControls();
 
 private:
     void OnDoubleClick(wxCommandEvent& Event);

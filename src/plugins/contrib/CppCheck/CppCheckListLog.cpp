@@ -30,9 +30,9 @@ CppCheckListLog::CppCheckListLog(const wxArrayString& Titles, wxArrayInt& Widths
 CppCheckListLog::~CppCheckListLog()
 {
     //dtor
-    if (control && !Manager::IsAppShuttingDown())
-    control->RemoveEventHandler(this);
-
+    Disconnect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &CppCheckListLog::OnDoubleClick);
 }
 
 
@@ -45,9 +45,18 @@ wxWindow* CppCheckListLog::CreateControl(wxWindow* parent)
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &CppCheckListLog::OnDoubleClick);
-    control->PushEventHandler(this);
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
 }
+
+void CppCheckListLog::DestroyControls()
+{
+    if ( !Manager::Get()->IsAppShuttingDown() )
+    {
+        Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    }
+}
+
 
 void CppCheckListLog::OnDoubleClick(wxCommandEvent& /*event*/)
 {
