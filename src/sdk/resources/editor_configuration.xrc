@@ -200,6 +200,7 @@
                                                 <item>CR LF</item>
                                                 <item>CR</item>
                                                 <item>LF</item>
+                                                <item>AUTO</item>
                                               </content>
                                               <style>wxCB_READONLY</style>
                                             </object>

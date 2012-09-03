@@ -731,6 +731,97 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 
 END_EVENT_TABLE()
 
+// Count lines of EOL style in the opened file
+static void CountLineEnds(cbStyledTextCtrl* control, int &linesCR, int &linesLF, int &linesCRLF)
+{
+    linesCR = 0;
+    linesLF = 0;
+    linesCRLF = 0;
+
+    int lengthDoc = control->GetLength();
+    const int maxLengthDoc = 1000000;
+    char chPrev = ' ';
+    char chNext = control->GetCharAt(0);
+    for (int i = 0; i < lengthDoc; i++)
+    {
+        char ch = chNext;
+        chNext = control->GetCharAt(i + 1);
+        if (ch == '\r')
+        {
+            if (chNext == '\n')
+                linesCRLF++;
+            else
+                linesCR++;
+        }
+        else if (ch == '\n')
+        {
+            if (chPrev != '\r')
+            {
+                linesLF++;
+            }
+        }
+        else if (i > maxLengthDoc)     // stop the loop if the file contains too many characters
+            return;
+
+        chPrev = ch;
+    }
+}
+
+// Detect the EOL mode of the control. If a file has mixed EOLs, we will using the voting
+// logic, and give user a InfoWindow notification.
+static int DetectLineEnds(cbStyledTextCtrl* control)
+{
+    int eolMode;
+    wxString eolModeStr;
+    // initial EOL mode depend on OS
+    if (platform::windows)
+    {
+        eolMode =  wxSCI_EOL_CRLF;
+        eolModeStr = _T("\"CR-LF\"");
+    }
+    else
+    {
+        eolMode =  wxSCI_EOL_LF;
+        eolModeStr = _T("\"LF\"");
+    }
+
+    int linesCR;
+    int linesLF;
+    int linesCRLF;
+    // count lines of each EOL style
+    CountLineEnds(control, linesCR, linesLF, linesCRLF);
+
+    // voting logic
+    // if the file does not contain any line-feed or the most largest counts are equal( e.g.: linesLF=5,
+    // linesCRLF=5, linesCR=0 ), then we will use the initial EOL mode
+    if ( (linesLF > linesCR) && (linesLF > linesCRLF) )
+    {
+        eolMode = wxSCI_EOL_LF;
+        eolModeStr = _T("\"LF\"");
+    }
+    else if ( (linesCR > linesLF) && (linesCR > linesCRLF) )
+    {
+        eolMode = wxSCI_EOL_CR;
+        eolModeStr = _T("\"CR\"");
+    }
+    else if ( (linesCRLF > linesLF) && (linesCRLF > linesCR))
+    {
+        eolMode = wxSCI_EOL_CRLF;
+        eolModeStr = _T("\"CR-LF\"");
+    }
+
+    unsigned int delay = 2000;
+    if (  ( (linesCR>0) && (linesCRLF>0) )
+       || ( (linesLF>0) && (linesCRLF>0) )
+       || ( (linesCR>0) && (linesLF>0) ) )
+    {
+        //In mixed EOL file, give the user a beep and InfoWindow notification.
+        wxBell();
+        InfoWindow::Display(_("Mixed Line Endings"), _("Mixed line endings found, setting mode ") + eolModeStr, delay);
+    }
+    return eolMode;
+}
+
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename),
@@ -1557,7 +1648,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetMarginWidth(C_CHANGEBAR_MARGIN, 0);
 
     // NOTE: duplicate line in editorconfigurationdlg.cpp (ctor)
-    control->SetEOLMode(                  mgr->ReadInt(_T("/eol/eolmode"),                   platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF)); // Windows takes CR+LF, other platforms LF only
     control->SetScrollWidthTracking(      mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
     control->SetMultipleSelection(        mgr->ReadBool(_T("/selection/multi_select"),       false));
     control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"),       false));
@@ -1574,6 +1664,14 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         return;
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+    // set the EOL, fall back value: Windows takes CR+LF, other platforms LF only
+    int eolMode = mgr->ReadInt(_T("/eol/eolmode"), platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF);
+
+    if (eolMode == 3) //auto detect the EOL
+        eolMode = DetectLineEnds(control);
+
+    control->SetEOLMode(eolMode);
 
     // Interpret #if/#else/#endif to grey out code that is not active
     control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), true) ? _T("1") : _T("0"));
