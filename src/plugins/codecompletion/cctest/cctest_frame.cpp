@@ -20,7 +20,6 @@
 #include "ccdebuginfo.h"
 
 #include "cctest_frame.h"
-#include "finddlg.h"
 #include "cclogger.h"
 #include "token.h"
 #include "tokenstree.h"
