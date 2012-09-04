@@ -174,11 +174,7 @@ void MSVCWorkspaceBase::updateProjects()
                         continue;
                     }
 
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Match '%s' to '%s'"), targetProj->GetFullTitle().wx_str(), targetDep->GetFullTitle().wx_str()));
-                    #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Match '%s' to '%s'"), targetProj->GetFullTitle().c_str(), targetDep->GetFullTitle().c_str()));
-                    #endif
 
                     // now, update dependencies
                     TargetType type = targetDep->GetTargetType();

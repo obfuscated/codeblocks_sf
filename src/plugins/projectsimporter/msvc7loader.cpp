@@ -689,12 +689,7 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
                 name.Replace(_T("|"), _T(" "), true); // Replace '|' to ensure proper check
                 pf->RemoveBuildTarget(name);
                 Manager::Get()->GetLogManager()->DebugLog(
-                    F(_("removed %s from %s"),
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    pf->file.GetFullPath().wx_str(), name.wx_str()));
-                    #else
-                    pf->file.GetFullPath().c_str(), name.c_str()));
-                    #endif
+                    F(_("removed %s from %s"), pf->file.GetFullPath().wx_str(), name.wx_str()));
             }
         }
         fconf = fconf->NextSiblingElement("FileConfiguration");

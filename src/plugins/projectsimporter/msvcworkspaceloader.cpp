@@ -181,18 +181,10 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             if (!fname.FileExists())
             {
-                #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Project '%s' from '%s' not found."), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Project '%s' from '%s' not found."), prjTitle.c_str(), fname.GetFullPath().c_str()));
-                #endif
                 continue;
             }
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
-            #endif
 
             int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());
             // While updating the progrerss dialog check for cancellation - probably interrupt.
@@ -204,18 +196,10 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
                 firstproject = project;
 
             if (!project)
-                #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->Log(F(_("Warning: Unable to load project '%s' from '%s'"), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->Log(F(_("Warning: Unable to load project '%s' from '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
-                #endif
             else
             {
-                #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->Log(F(_("Registering project '%s' from '%s'"), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->Log(F(_("Registering project '%s' from '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
-                #endif
                 registerProject(project->GetTitle(), project);
                 ++count;
             }

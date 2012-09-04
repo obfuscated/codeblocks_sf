@@ -196,11 +196,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             ++count;
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
-            #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.wx_str(), fname.GetFullPath().wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
-            #endif
 
             int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());
             if (!progress.Update(percentage, _("Importing project: ") + prjTitle))

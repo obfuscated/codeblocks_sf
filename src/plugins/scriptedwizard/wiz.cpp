@@ -698,11 +698,7 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
                 // attempt to create file outside the project dir
                 // remove any path info from the filename
                 fname = fname.GetFullName();
-                #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.wx_str(), fname.GetFullPath().wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str()));
-                #endif
                 break;
             }
         }

@@ -155,13 +155,8 @@ bool MSVC10Loader::GetProjectGlobals(const TiXmlElement* root)
             if (pProjectName) m_ProjectName = GetText(pProjectName);
 
             // logging
-            #if wxCHECK_VERSION(2, 9, 0)
             pMsg->DebugLog(wxString::Format(_("Project global properties: GUID=%s, Type=%s, Name=%s"),
                                              m_ProjectGUID.wx_str(), m_ProjectType.wx_str(), m_ProjectName.wx_str()));
-            #else
-            pMsg->DebugLog(wxString::Format(_("Project global properties: GUID=%s, Type=%s, Name=%s"),
-                                             m_ProjectGUID.c_str(), m_ProjectType.c_str(), m_ProjectName.c_str()));
-            #endif
 
             bResult = true; // got everything we need
             break; // exit loop
