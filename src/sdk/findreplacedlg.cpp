@@ -483,7 +483,10 @@ void FindReplaceDlg::OnScopeChange(wxCommandEvent& /*event*/)
             XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
             break;
     }
-    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+    if(m_findPage==0)
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+    else
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
 }
 
 void FindReplaceDlg::OnBrowsePath(wxCommandEvent& /*event*/)
@@ -614,7 +617,8 @@ void FindReplaceDlg::OnMultiChange(wxCommandEvent& event)
 
     //After hiding/showing panels, redo the layout in the notebook pages
     (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
-    (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
+    if(m_findPage==0)
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
 
 
     Refresh();
