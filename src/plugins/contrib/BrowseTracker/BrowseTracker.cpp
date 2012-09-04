@@ -725,7 +725,7 @@ void BrowseTracker::SetSelection(int index)
     {
         Manager::Get()->GetEditorManager()->SetActiveEditor(eb);
         #if defined(LOGGING)
-        LOGIT( _T("BT SetSelection[%d] editor[%p][%s]"), index, eb, eb->GetShortName().c_str() );
+        LOGIT( _T("BT SetSelection[%d] editor[%p][%s]"), index, eb, eb->GetShortName().wx_str() );
         #endif
 
         // Tell OnIdle to focus the new editor. CB sdk editorManager::OnUpdateUI used to
@@ -1337,7 +1337,7 @@ void BrowseTracker::OnMenuTrackerDump(wxCommandEvent& WXUNUSED(event))
         for (int i=0;i<MaxEntries ;++i )
         {
             wxString edName = GetPageFilename(i);
-            LOGIT( _T("BT Index[%d]Editor[%p]Name[%s]"), i, GetEditor(i), edName.c_str()  );;
+            LOGIT( _T("BT Index[%d]Editor[%p]Name[%s]"), i, GetEditor(i), edName.wx_str()  );;
         }
         return; //FIXME: remove this line to get rest of diagnostics
         for (EbBrowse_MarksHash::iterator it = m_EbBrowse_MarksHash.begin(); it != m_EbBrowse_MarksHash.end(); ++it)
@@ -2231,7 +2231,7 @@ void BrowseTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
         #if defined(LOGGING)
         if (m_UpdateUIFocusEditor)
         {   LOGIT( _T("BT OnProjectActivated m_nProjectClosingFileCount[%d]"), m_nProjectClosingFileCount);
-            LOGIT( _T("BT OnProjectActivated setting Next Ed[%s]"), m_UpdateUIFocusEditor->GetShortName().c_str());
+            LOGIT( _T("BT OnProjectActivated setting Next Ed[%s]"), m_UpdateUIFocusEditor->GetShortName().wx_str());
         }
         #endif
         m_nProjectClosingFileCount = 0;
@@ -2419,7 +2419,7 @@ void BrowseTracker::AddBook_Mark(EditorBase* eb, int /*line*/ /*=-1*/)
             EdBook_Marks.RecordMark(pos);
             #if defined(LOGGING)
             LOGIT( _T("BT AddBook_Mark: pos[%d]line[%d]eb[%p][%s]"),
-                pos, m_CurrScrLine, eb, eb->GetShortName().c_str() );
+                pos, m_CurrScrLine, eb, eb->GetShortName().wx_str() );
             ///EdBook_Marks.Dump();
             #endif
         }while(false);//if do
@@ -2435,7 +2435,7 @@ void BrowseTracker::AddBook_Mark(EditorBase* eb, int /*line*/ /*=-1*/)
             EdBrowse_Marks.RecordMark(pos);
             #if defined(LOGGING)
             LOGIT( _T("BT AddBrowseMarkByEb: pos[%d]line[%d]eb[%p][%s]"),
-                pos, m_CurrScrLine, eb, eb->GetShortName().c_str() );
+                pos, m_CurrScrLine, eb, eb->GetShortName().wx_str() );
             #endif
         }while(false);//if do
 
@@ -2466,7 +2466,7 @@ void BrowseTracker::ToggleBook_Mark(EditorBase* eb)
             EdBook_Marks.RecordMark(pos);
             #if defined(LOGGING)
             LOGIT( _T("BT RecordBook_Mark: pos[%d]line[%d]eb[%p][%s]"),
-                pos, m_CurrScrLine, eb, eb->GetShortName().c_str() );
+                pos, m_CurrScrLine, eb, eb->GetShortName().wx_str() );
             ///EdBook_Marks.Dump();
             #endif
         }while(false);//if do
@@ -2488,7 +2488,7 @@ void BrowseTracker::ToggleBook_Mark(EditorBase* eb)
             EdBrowse_Marks.RecordMark(pos);
             #if defined(LOGGING)
             LOGIT( _T("BT RecordBrowseMarkByEb: pos[%d]line[%d]eb[%p][%s]"),
-                pos, m_CurrScrLine, eb, eb->GetShortName().c_str() );
+                pos, m_CurrScrLine, eb, eb->GetShortName().wx_str() );
             #endif
         }while(false);//if do
 

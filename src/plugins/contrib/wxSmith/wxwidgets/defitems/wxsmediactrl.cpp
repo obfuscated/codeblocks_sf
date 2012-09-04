@@ -107,7 +107,7 @@ void wxsMediaCtrl::OnBuildCreatingCode()
                 sVol = wxT("1.0");
             }
             else{
-                sVol = wxString::Format(wxT("0.%d"), m_iVolume);
+                sVol = wxString::Format(wxT("0.%ld"), m_iVolume);
             }
             Codef(_T("%ASetVolume(%s);\n"), sVol.c_str());
 

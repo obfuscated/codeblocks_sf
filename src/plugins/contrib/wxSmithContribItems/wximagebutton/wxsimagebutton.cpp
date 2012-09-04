@@ -122,38 +122,22 @@ void wxsImageButton::OnBuildCreatingCode() {
 
         long ll = 0;
         if (mLabelIndex.ToLong(&ll)) {
-			#if wxCHECK_VERSION(2, 9, 0)
-            tt.Printf(_T("%s->SetBitmapLabel(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
-			#else
-            tt.Printf(_T("%s->SetBitmapLabel(%s->GetBitmap(%d));\n"), vv.c_str(), ss.c_str(), ll);
-			#endif
+            tt.Printf(_T("%s->SetBitmapLabel(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
         if (mDisabledIndex.ToLong(&ll)) {
-			#if wxCHECK_VERSION(2, 9, 0)
             tt.Printf(_T("%s->SetBitmapDisabled(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
-			#else
-            tt.Printf(_T("%s->SetBitmapDisabled(%s->GetBitmap(%d));\n"), vv.c_str(), ss.c_str(), ll);
-			#endif
             AddEventCode(tt);
         };
 
         if (mSelectedIndex.ToLong(&ll)) {
-			#if wxCHECK_VERSION(2, 9, 0)
             tt.Printf(_T("%s->SetBitmapSelected(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
-			#else
-            tt.Printf(_T("%s->SetBitmapSelected(%s->GetBitmap(%d));\n"), vv.c_str(), ss.c_str(), ll);
-			#endif
             AddEventCode(tt);
         };
 
         if (mFocusIndex.ToLong(&ll)) {
-			#if wxCHECK_VERSION(2, 9, 0)
             tt.Printf(_T("%s->SetBitmapFocus(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
-			#else
-            tt.Printf(_T("%s->SetBitmapFocus(%s->GetBitmap(%d));\n"), vv.c_str(), ss.c_str(), ll);
-			#endif
             AddEventCode(tt);
         };
     };

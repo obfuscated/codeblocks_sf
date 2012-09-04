@@ -235,7 +235,7 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // find and compare file key path levels to each level of the actual menu
     for (int i=1; i < (int)levels.GetCount(); ++i)
     {
-        LOGIT( _T("Searcing for Level[%d][%s]"), i, levels[i].c_str() );
+        LOGIT( _T("Searcing for Level[%d][%s]"), i, levels[i].wx_str() );
         if (not pMenu) return wxNOT_FOUND;
         found = false;
         for (int j=0; j < (int)pMenu->GetMenuItemCount(); ++j )
@@ -329,7 +329,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     for ( size_t i=0; i<str.Length(); ++i)
         if ( str[i]=='_'){ str[i] = ' ';}
     #if defined(LOGGING)
-     LOGIT( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.c_str(), strText.c_str(), pLclMnuItem->GetId() );
+     LOGIT( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.wx_str(), strText.wx_str(), pLclMnuItem->GetId() );
     #endif
 
 
@@ -418,7 +418,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
         #if LOGGING
-         LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.c_str(), m_nId, newtext.c_str());
+         LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.wx_str(), m_nId, newtext.wx_str());
         #endif
         // set "non bitmapped" text to preserve menu width
         #if wxCHECK_VERSION(2, 9, 0)
@@ -447,7 +447,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
     #if LOGGING
-     LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.c_str());
+     LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.wx_str());
     #endif
     #if wxCHECK_VERSION(2, 9, 0)
     pLclMnuItem->SetItemLabel(newtext);

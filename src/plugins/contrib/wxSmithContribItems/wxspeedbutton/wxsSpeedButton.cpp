@@ -132,7 +132,7 @@ wxString    ss, tt;
 // and individual button settings
 
     if (mButtonDown) Codef(_T("%s->SetDown(true);\n"), vname.wx_str());
-    Codef(_T("%s->SetUserData(%d);\n"), vname.wx_str(), mUserData);
+    Codef(_T("%s->SetUserData(%ld);\n"), vname.wx_str(), mUserData);
 }
 
 //------------------------------------------------------------------------------

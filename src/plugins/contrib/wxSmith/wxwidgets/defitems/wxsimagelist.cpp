@@ -97,7 +97,7 @@ void wxsImageList::OnBuildCreatingCode()
                 else{
                     Codef(_T("%s = new wxImageList(%d, %d, %d);\n"),  vname.wx_str(), m_Width, m_Height, (m_Count + 1));
                     for(i = 0; i < m_Count; i++) {
-                        ss.Printf(_("%s_%d_XPM"), vname.c_str(), i);
+                        ss.Printf(_("%s_%d_XPM"), vname.wx_str(), i);
                         Codef(_T("%s->Add(wxBitmap(%s));\n"), vname.wx_str(), ss.wx_str());
                     }
                 }
@@ -160,10 +160,10 @@ void wxsImageList::StoreXpmData(void)
         m_Count = 0;
 
         m_ImageData.Clear();
-        ss.Printf(_T("%d"), m_Width);
+        ss.Printf(_T("%ld"), m_Width);
         m_ImageData.Add(ss);
 
-        ss.Printf(_T("%d"), m_Height);
+        ss.Printf(_T("%ld"), m_Height);
         m_ImageData.Add(ss);
     }
     // else reset the displayed size
@@ -209,7 +209,7 @@ void wxsImageList::StoreXpmData(void)
 
         // the beginning of a new XPM image means the end of the previous image
         if(ss.Find(_T("xpm_data")) >= 0){
-            vv.Printf(_T("%s_%d_XPM"), vname.c_str(), n);
+            vv.Printf(_T("%s_%d_XPM"), vname.wx_str(), n);
             ss.Replace(_T("xpm_data"), vv);
             n += 1;
 

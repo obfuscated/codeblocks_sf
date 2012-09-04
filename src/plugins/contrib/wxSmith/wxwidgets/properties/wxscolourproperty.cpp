@@ -875,7 +875,7 @@ wxString wxsColourData::BuildCode(wxsCoderContext* Context)
         {
             if ( m_type == wxPG_COLOUR_CUSTOM )
             {
-                return wxString::Format(_T("wxColour(%d,%d,%d)"),
+                return wxString::Format(_T("wxColour(%u,%u,%u)"),
                     (unsigned int)m_colour.Red(),
                     (unsigned int)m_colour.Green(),
                     (unsigned int)m_colour.Blue());

@@ -98,8 +98,8 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 			AddHeader(_T("\"wx/KWIC/AngularRegulator.h\""), GetInfo().ClassName);
 			Codef(_T("%C(%W,%I,%P,%S, %s);\n"), wxT("wxBORDER_NONE"));
 
-			Codef(_T("%ASetRange(%d, %d);\n"), m_iRangeMin, m_iRangeMax);
-			Codef(_T("%ASetAngle(%d, %d);\n"), m_iAngleMin, m_iAngleMax);
+			Codef(_T("%ASetRange(%ld, %ld);\n"), m_iRangeMin, m_iRangeMax);
+			Codef(_T("%ASetAngle(%ld, %ld);\n"), m_iAngleMin, m_iAngleMax);
 			wxString ss = m_cdExternalCircleColour.BuildCode(GetCoderContext());
 			if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.wx_str());
 			ss = m_cdInternalCircleColour.BuildCode(GetCoderContext());
@@ -119,7 +119,7 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 			// Value needs to be set after other params for correct display and, in this case,
 			// should always be set to ensure that the knob is drawn at the correct location.
 			// If the value is not set the knob is drawn in the centre of the control.
-			Codef(_T("%ASetValue(%d);\n"), m_iValue);
+			Codef(_T("%ASetValue(%ld);\n"), m_iValue);
 
 			BuildSetupWindowCode();
 			break;
@@ -322,7 +322,7 @@ bool wxsAngularRegulator::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsE
 {
     for(size_t i = 0;i < m_arrTags.Count();i++){
         TagDesc *Desc = m_arrTags[i];
-        wxString s = wxString::Format(wxT("tag_%d_value"), i + 1);
+        wxString s = wxString::Format(wxT("tag_%lu_value"), static_cast<unsigned long>(i + 1));
         TiXmlElement *msg = new TiXmlElement(s.mb_str());
         msg->LinkEndChild(new TiXmlText(wxString::Format(wxT("%d"), Desc->val).mb_str()));
 		Element->LinkEndChild(msg);

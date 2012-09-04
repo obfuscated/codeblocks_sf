@@ -335,7 +335,7 @@ void CCTestFrame::Start()
                                     searchScope,
                                     result );
 
-    wxLogMessage(_T("Result have %d matches"), result.size());
+    wxLogMessage(_T("Result have %lu matches"), static_cast<unsigned long>(result.size()));
 
 
     for (TokenIdxSet::iterator it=result.begin(); it!=result.end(); ++it)
@@ -359,8 +359,8 @@ void CCTestFrame::Start()
 
     TokensTree* tt = CCTest::Get()->GetTokensTree();
     if (tt)
-        AppendToLog((wxString::Format(_("The parser contains %d tokens, found in %d files."),
-                                      tt->size(), tt->m_FilesMap.size())));
+        AppendToLog((wxString::Format(_("The parser contains %lu tokens, found in %lu files."),
+                                      static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FilesMap.size()))));
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)

@@ -362,7 +362,7 @@ void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBro
         phash = &m_FileBook_MarksArchive;
     FileBrowse_MarksHash& hash = *phash;
     #if defined(LOGGING)
-    LOGIT( _T("Dump_%s Size[%d]"), hashType.c_str(), hash.size() );
+    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()) );
     #endif
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); ++it)
     {

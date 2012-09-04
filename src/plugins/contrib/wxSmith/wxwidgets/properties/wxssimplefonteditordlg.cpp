@@ -130,7 +130,7 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
 
         if ( m_WorkingCopy.HasSize )
         {
-            Description << wxString::Format(_("Size: %d\n"),m_WorkingCopy.Size);
+            Description << wxString::Format(_("Size: %ld\n"),m_WorkingCopy.Size);
         }
         else if ( m_WorkingCopy.HasRelativeSize && m_WorkingCopy.HasSysFont )
         {

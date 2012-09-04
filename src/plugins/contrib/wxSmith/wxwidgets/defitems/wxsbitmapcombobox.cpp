@@ -123,7 +123,7 @@ bool        ilist;
 // add the bitmap at the bottom of the code
 
         if ((ilist) && (n >= 0)) {
-            tt.Printf(_T("%s->SetItemBitmap(%d, %s->GetBitmap(%d));\n"), vv.c_str(), i-2, mImageList.c_str(), n);
+            tt.Printf(_T("%s->SetItemBitmap(%d, %s->GetBitmap(%d));\n"), vv.wx_str(), i-2, mImageList.wx_str(), n);
             AddEventCode(tt);
         };
     };

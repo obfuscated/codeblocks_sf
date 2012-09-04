@@ -1039,7 +1039,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-             LOGIT(wxT("Merge change type[%d]:item[%d]:id[%d]:@[%p]text[%s]key[%s]"), changed, j, nMenuItemID, pMenuItem, pMenuItem->GetText().c_str(), menuItemKeyStr.c_str() );
+             LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
             #endif
         }//if changed
         else
@@ -1477,7 +1477,7 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
         #ifdef LOGGING
             LOGIT(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
-				p->GetName().c_str(), event.GetKeyCode(), event.GetTimestamp());
+				p->GetName().wx_str(), event.GetKeyCode(), event.GetTimestamp());
             wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
                 ((wxWindow*)event.GetEventObject())->GetName().GetData(),
                  event.GetEventObject() );
@@ -1505,7 +1505,7 @@ bool wxKeyBinder::Save(wxConfigBase *cfg, const wxString &key, bool bCleanOld) c
 
 		// write the key in the format: bindID-typeID
 		wxString keyname = wxString::Format(wxT("%s%s%d-type%d"),
-			basekey.c_str(), wxCMD_CONFIG_PREFIX, curr->GetId(), curr->GetType());
+			basekey.wx_str(), wxCMD_CONFIG_PREFIX, curr->GetId(), curr->GetType());
 
 		// save this wxCmd...
 		b &= curr->Save(cfg, keyname);

@@ -457,7 +457,7 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                         break;
                     }
                     Cnt++;
-                    WxsName = wxString::Format(_T("%s%d.wxs"),WxsNameBase.c_str(),Cnt);
+                    WxsName = wxString::Format(_T("%s%d.wxs"),WxsNameBase.wx_str(),Cnt);
                 }
 
                 m_WxsFileName = WxsName;

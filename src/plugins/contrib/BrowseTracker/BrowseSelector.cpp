@@ -208,7 +208,7 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
 	long selected = m_listBox->GetSelection();
 	long maxItems = m_listBox->GetCount();
 	long itemToSelect;
-    LOGIT( _T("OnNavigationKey selected[%d]maxItems[%d]key[%d]"), selected, maxItems, event.GetKeyCode() );
+    LOGIT( _T("OnNavigationKey selected[%ld]maxItems[%ld]key[%d]"), selected, maxItems, event.GetKeyCode() );
 
 	if( (event.GetKeyCode() == WXK_RIGHT) || (event.GetKeyCode() == WXK_DOWN) )
 	{
@@ -228,7 +228,7 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
 	}
 
 	m_listBox->SetSelection( itemToSelect );
-	LOGIT( _T("OnNavigationKey Selection[%d]"), itemToSelect );
+	LOGIT( _T("OnNavigationKey Selection[%ld]"), itemToSelect );
 }
 // ----------------------------------------------------------------------------
 int BrowseSelector::PopulateListControl(EditorBase* /*pEditor*/)
@@ -287,7 +287,7 @@ void BrowseSelector::CloseDialog()
 
 	if ((m_selectedItem > -1) && (m_selectedItem < MaxEntries))
 	{   std::map<int, int>::iterator iter = m_indexMap.find(m_selectedItem);
-        LOGIT( _T("ListBox[%d] Map[%d]"), m_selectedItem, iter->second );
+        LOGIT( _T("ListBox[%ld] Map[%d]"), m_selectedItem, iter->second );
         // we have to end the dlg before activating the editor or else
         // the old editor get re-activated.
         //-m_pBrowseTracker->SetSelection( iter->second ); logic error

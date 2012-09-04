@@ -246,7 +246,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
         ss.Trim (false);
         if (ss[0] == '!') { continue; }
 
-        Codef (_ ("%AAddColumn(%t, %d);\n"), ss.wx_str(), m_ColWidth);
+        Codef (_ ("%AAddColumn(%t, %ld);\n"), ss.wx_str(), m_ColWidth);
         n += 1;
     };
 
@@ -270,7 +270,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
 
 // add declaration for that many IDs
 
-    ss.Printf (_ ("wxTreeItemId    %s[%d];"), idname.c_str(), n);
+    ss.Printf (_ ("wxTreeItemId    %s[%d];"), idname.wx_str(), n);
     AddDeclaration (ss);
 
 // make sure there is no false readings

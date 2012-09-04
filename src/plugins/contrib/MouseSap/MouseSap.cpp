@@ -368,7 +368,7 @@ void MouseSap::DetachAll()
 {
 	// delete all handlers
     #if defined(LOGGING)
-	LOGIT(wxT("MMSap:DetachAll - detaching all [%d] targets"),m_EditorPtrs.GetCount() );
+	LOGIT(wxT("MMSap:DetachAll - detaching all [%lu] targets"), static_cast<unsigned long>(m_EditorPtrs.GetCount()) );
     #endif
 
     // Detach from memorized windows and remove event handlers

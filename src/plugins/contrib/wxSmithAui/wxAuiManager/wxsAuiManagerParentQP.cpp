@@ -351,9 +351,9 @@ void wxsAuiManagerParentQP::ReadData()
     Docked->   SetValue( m_Extra->m_Docked );
     DockFixed->SetValue( m_Extra->m_DockFixed );
 
-    Layer->   SetValue( wxString::Format(_T("%d"),m_Extra->m_Layer) );
-    Row->     SetValue( wxString::Format(_T("%d"),m_Extra->m_Row) );
-    Position->SetValue( wxString::Format(_T("%d"),m_Extra->m_Position) );
+    Layer->   SetValue( wxString::Format(_T("%ld"),m_Extra->m_Layer) );
+    Row->     SetValue( wxString::Format(_T("%ld"),m_Extra->m_Row) );
+    Position->SetValue( wxString::Format(_T("%ld"),m_Extra->m_Position) );
 
     switch ( m_Extra->m_DockDirection )
     {

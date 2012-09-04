@@ -141,7 +141,7 @@ wxArrayString nsEnvVars::GetEnvvarSetNames()
   // Read all envvar sets available
   wxArrayString sets     = cfg->EnumerateSubPaths(_T("/sets"));
   unsigned int  num_sets = sets.GetCount();
-  EV_DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
+  EV_DBGLOG(_T("EnvVars: Found %u envvar sets in config."), num_sets);
 
   if (num_sets==0)
     set_names.Add(nsEnvVars::EnvVarsDefault);
@@ -151,7 +151,7 @@ wxArrayString nsEnvVars::GetEnvvarSetNames()
     {
       wxString set_name = sets[i];
       if (set_name.IsEmpty())
-        set_name.Printf(_T("Set%d"), i);
+        set_name.Printf(_T("Set%u"), i);
 
       set_names.Add(set_name);
     }// for
@@ -244,8 +244,8 @@ wxArrayString nsEnvVars::GetEnvvarsBySetPath(const wxString& set_path)
     else
       EV_DBGLOG(_T("EnvVars: Warning: empty envvar detected and skipped."));
   }
-  EV_DBGLOG(_T("EnvVars: Read %d/%d envvars in path '%s'."),
-    envvars.GetCount(), num_envvars, set_path.wx_str());
+  EV_DBGLOG(_T("EnvVars: Read %lu/%u envvars in path '%s'."),
+    static_cast<unsigned long>(envvars.GetCount()), num_envvars, set_path.wx_str());
 
   return envvars;
 }// GetEnvvarsBySetPath
@@ -540,7 +540,7 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name, bool even_if_active)
       envvars_applied++;
     else
     {
-      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%u."),
         set_path.wx_str(), i);
     }
   }// for
@@ -548,8 +548,8 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name, bool even_if_active)
   if (envvars_total>0)
   {
     last_set_applied = set_to_apply;
-    EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
-      envvars_applied, envvars_total);
+    EV_DBGLOG(_T("EnvVars: %lu/%lu envvars applied within C::B focus."),
+      static_cast<unsigned long>(envvars_applied), static_cast<unsigned long>(envvars_total));
   }
 }// EnvvarSetApply
 
@@ -596,14 +596,14 @@ void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
     }
     else
     {
-      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%u."),
         set_path.wx_str(), i);
     }
   }// for
 
   if (envvars_total>0)
   {
-    EV_DBGLOG(_T("EnvVars: %d/%d envvars discarded within C::B focus."),
-      envvars_discarded, envvars_total);
+    EV_DBGLOG(_T("EnvVars: %lu/%lu envvars discarded within C::B focus."),
+      static_cast<unsigned long>(envvars_discarded), static_cast<unsigned long>(envvars_total));
   }
 }// EnvvarSetDiscard

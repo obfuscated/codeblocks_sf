@@ -75,22 +75,22 @@ void wxsLedPanel::OnBuildCreatingCode()
     {
         case wxsCPP:
             AddHeader(_T("<wx/wxledpanel.h>"),GetInfo().ClassName);
-            Codef( _T("%C(%W,%I,wxSize( %d, %d),wxSize( %d, %d),%d);\n"), LedMatrixSize.X, LedMatrixSize.Y, LedMatrix.X, LedMatrix.Y, Space);
-            Codef( _T( "%ASetContentAlign( %d);\n"), ContentAlign);
-            Codef( _T( "%ASetLEDColour( (wxLEDColour)%d);\n"), Colour);
+            Codef( _T("%C(%W,%I,wxSize( %ld, %ld),wxSize( %ld, %ld),%ld);\n"), LedMatrixSize.X, LedMatrixSize.Y, LedMatrix.X, LedMatrix.Y, Space);
+            Codef( _T( "%ASetContentAlign( %ld);\n"), ContentAlign);
+            Codef( _T( "%ASetLEDColour( (wxLEDColour)%ld);\n"), Colour);
             Codef( _T( "%AShowInvertet(%b);\n"), Invert);
             Codef( _T( "%AShowInactivLEDs( %b);\n"), Inactiv);
             if( ScrollDirection != 0)
             {
-                Codef( _T( "%ASetScrollDirection( (wxDirection)%d);\n"), ScrollDirection);
-                Codef( _T( "%ASetScrollSpeed( %d);\n"), ScrollSpeed);
+                Codef( _T( "%ASetScrollDirection( (wxDirection)%ld);\n"), ScrollDirection);
+                Codef( _T( "%ASetScrollSpeed( %ld);\n"), ScrollSpeed);
             }
             if( Text.Len() > 0)
             {
-                Codef( _T( "%ASetLetterSpace( %d);\n"), TextPlace);
+                Codef( _T( "%ASetLetterSpace( %ld);\n"), TextPlace);
                 if( Bold)
                     Codef( _T("%ASetFontType( wxLEDFont7x7);\n"));
-                Codef( _T( "%ASetText( _T(\"%s\"), %d);\n"), Text.wx_str(), Align);
+                Codef( _T( "%ASetText( _T(\"%s\"), %ld);\n"), Text.wx_str(), Align);
             }
             break;
 

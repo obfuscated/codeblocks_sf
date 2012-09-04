@@ -177,7 +177,7 @@ void ExpressionTester::OnButton1Click(wxCommandEvent& /*event*/)
         m_Result->SetLabel( _T("---") );
         int pos = 0;
         wxString desc = parser.ParseErrorDesc( pos );
-        m_Parsing->SetLabel( wxString::Format( _("Err at %d: %s"), pos, desc.c_str() ) );
+        m_Parsing->SetLabel( wxString::Format( _("Err at %d: %s"), pos, desc.wx_str() ) );
     }
 }
 

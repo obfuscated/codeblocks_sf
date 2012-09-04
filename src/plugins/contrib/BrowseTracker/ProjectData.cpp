@@ -287,7 +287,7 @@ void ProjectData::DumpHash( const wxString
         phash = &m_FileBook_MarksArchive;
     FileBrowse_MarksHash& hash = *phash;
 
-    LOGIT( _T("--- DumpProjectHash ---[%s]Count[%d]"), hashType.c_str(), hash.size(), m_ProjectFilename.c_str() );
+    LOGIT( _T("--- DumpProjectHash ---[%s]Count[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()), m_ProjectFilename.wx_str() );
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); it++)
     {
         wxString filename = it->first; //an Editor filename withing this project
@@ -314,7 +314,7 @@ void ProjectData::DumpBrowse_Marks( const wxString
         phash = &m_FileBook_MarksArchive;
     FileBrowse_MarksHash& hash = *phash;
 
-    LOGIT( _T("Dump_%s Size[%d]"), hashType.c_str(), hash.size() );
+    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()) );
 
     for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); ++it)
     {

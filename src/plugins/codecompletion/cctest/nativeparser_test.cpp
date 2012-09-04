@@ -72,7 +72,7 @@ bool NativeParserTest::TestExpression(wxString&          expression,
     ResolveExpression(tree, components, searchScope, result, true, false);
 
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("NativeParserTest::TestExpression, returned %d results"), result.size()));
+        CCLogger::Get()->DebugLog(F(_T("NativeParserTest::TestExpression, returned %lu results"), static_cast<unsigned long>(result.size())));
 
     return true;
 }

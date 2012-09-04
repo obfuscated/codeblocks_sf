@@ -126,7 +126,7 @@ class TestCasesHelper: public T, public TestCasesBase
             {
                 // Display test's info
                 pass = false;
-                result = wxString::Format( _T("Test %d FAILED: %s"), testNo, err.m_Msg.c_str() );
+                result = wxString::Format( _T("Test %d FAILED: %s"), testNo, err.m_Msg.wx_str() );
             }
 
             if ( m_NoSuchTest )

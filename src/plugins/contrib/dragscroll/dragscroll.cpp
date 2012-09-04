@@ -853,7 +853,7 @@ void cbDragScroll::DetachAll()
 // ----------------------------------------------------------------------------
 {
 	// delete all handlers
-	LOGIT(wxT("cbDS:DetachAll - detaching all [%d] targets"),m_WindowPtrs.GetCount() );
+	LOGIT(wxT("cbDS:DetachAll - detaching all [%lu] targets"), static_cast<unsigned long>(m_WindowPtrs.GetCount()) );
 
     // Detach from memorized windows and remove event handlers
     while( m_WindowPtrs.GetCount() )

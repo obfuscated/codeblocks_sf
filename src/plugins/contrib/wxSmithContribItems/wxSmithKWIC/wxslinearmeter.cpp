@@ -97,7 +97,7 @@ void wxsLinearMeter::OnBuildCreatingCode()
 
 			// Default range is 0-100.
 			if(m_iRangeMin != 0 || m_iRangeMax != 100){
-				Codef(_T("%ASetRangeVal(%d, %d);\n"), m_iRangeMin, m_iRangeMax);
+				Codef(_T("%ASetRangeVal(%ld, %ld);\n"), m_iRangeMin, m_iRangeMax);
 			}
 			if(!m_bHorizontal){
 				Codef(_T("%ASetOrizDirection(false);\n"));
@@ -137,7 +137,7 @@ void wxsLinearMeter::OnBuildCreatingCode()
 			}
 			// Value needs to be set after other params for correct display.
 			if(m_iValue){
-				Codef(_T("%ASetValue(%d);\n"), m_iValue);
+				Codef(_T("%ASetValue(%ld);\n"), m_iValue);
 			}
 
 			BuildSetupWindowCode();
@@ -384,7 +384,7 @@ bool wxsLinearMeter::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
 //    }
     for(size_t i = 0;i < m_arrTags.Count();i++){
         TagDesc *Desc = m_arrTags[i];
-        wxString s = wxString::Format(wxT("tag_%d_value"), i + 1);
+        wxString s = wxString::Format(wxT("tag_%lu_value"), static_cast<unsigned long>(i + 1));
         TiXmlElement *msg = new TiXmlElement(s.mb_str());
         msg->LinkEndChild(new TiXmlText(wxString::Format(wxT("%d"), Desc->val).mb_str()));
 		Element->LinkEndChild(msg);

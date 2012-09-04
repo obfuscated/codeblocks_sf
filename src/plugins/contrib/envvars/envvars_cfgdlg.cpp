@@ -136,7 +136,7 @@ void EnvVarsConfigDlg::LoadSettings()
   // Read all envvar sets available
   wxArrayString set_names = nsEnvVars::GetEnvvarSetNames();
   unsigned int  num_sets  = set_names.GetCount();
-  EV_DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
+  EV_DBGLOG(_T("EnvVars: Found %u envvar sets in config."), num_sets);
   unsigned int num_sets_applied = 0;
   for (unsigned int i=0; i<num_sets; ++i)
   {
@@ -145,7 +145,7 @@ void EnvVarsConfigDlg::LoadSettings()
       active_set_idx = i;
     num_sets_applied++;
   }
-  EV_DBGLOG(_T("EnvVars: Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
+  EV_DBGLOG(_T("EnvVars: Setup %u/%u envvar sets from config."), num_sets_applied, num_sets);
   if ((int)choSet->GetCount()>active_set_idx) // Select the last active set (from config)
     choSet->SetSelection(active_set_idx);
 
@@ -167,15 +167,15 @@ void EnvVarsConfigDlg::LoadSettings()
       envvars_applied++;
     else
     {
-      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%u."),
         active_set_path.wx_str(), i);
     }
   }// for
 
   if (envvars_total>0)
   {
-    EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
-      envvars_applied, envvars_total);
+    EV_DBGLOG(_T("EnvVars: %lu/%lu envvars applied within C::B focus."),
+      static_cast<unsigned long>(envvars_applied), static_cast<unsigned long>(envvars_total));
   }
 }// LoadSettings
 

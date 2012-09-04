@@ -211,7 +211,7 @@ bool wxsCustomWidget::RebuildXmlDataDoc()
             wxString::Format(
             _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
                 m_XmlDataDoc.ErrorRow(),m_XmlDataDoc.ErrorCol(),
-                wxGetTranslation(cbC2U(m_XmlDataDoc.ErrorDesc()).c_str())));
+                wxGetTranslation(cbC2U(m_XmlDataDoc.ErrorDesc()).wx_str())));
         return false;
     }
 

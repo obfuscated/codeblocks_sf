@@ -280,7 +280,7 @@ void wxsCorrector::SetNewVarName(wxsItem* Item)
     wxString NewName;
     for ( int i=1;; i++ )
     {
-        NewName = wxString::Format(_T("%s%d"),Prefix.c_str(),i);
+        NewName = wxString::Format(_T("%s%d"),Prefix.wx_str(),i);
         if ( m_Vars.find(NewName) == m_Vars.end() ) break;
     }
     Item->SetVarName(NewName);
@@ -293,7 +293,7 @@ void wxsCorrector::SetNewIdName(wxsItem* Item)
     wxString NewName;
     for ( int i=1;; i++ )
     {
-        NewName = wxString::Format(_T("%s%d"),Prefix.c_str(),i);
+        NewName = wxString::Format(_T("%s%d"),Prefix.wx_str(),i);
         if ( m_Ids.find(NewName) == m_Ids.end() ) break;
     }
     Item->SetIdName(NewName);
@@ -385,10 +385,10 @@ bool wxsCorrector::FixVarName(wxString& Name)
         {
             if ( NextChars.Find(Name.GetChar(i)) == -1 )
             {
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %lu)"),
                                                             Name.wx_str(),
                                                             wxChar(Name.GetChar(i)),
-                                                            i));
+                                                            static_cast<unsigned long>(i)));
             }
             else
                 Corrected.Append(Name.GetChar(i));

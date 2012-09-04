@@ -555,7 +555,7 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
 
     #if LOGGING
         LOGIT(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
-            sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
+            sel+1, m_pKeyProfArr->Item(sel)->GetName().wx_str()),
             wxT("Profile selected"));
     #endif
 
@@ -953,7 +953,7 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
         //int type = pcmd->GetType();
         #if defined(LOGGING)
         LOGIT( _T("shortcut count for[%s]is[%d]type[%d]"),
-              strKeyCode.c_str(), shortcutsCount, type);
+              strKeyCode.wx_str(), shortcutsCount, type);
         #endif
         if (shortcutsCount not_eq numShortcuts)
             kbOk = false;
@@ -970,7 +970,7 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
                     strKeyCode.Prepend(_T("Alt-"));
                 #if defined(LOGGING)
                 LOGIT( _T("keybind[%d.%d] for [%s] is [%s]"),
-                        id, kk, name.c_str(), strKeyCode.c_str());
+                        id, kk, name.wx_str(), strKeyCode.wx_str());
                 #endif
             }
             else kbOk = false;
@@ -1414,7 +1414,7 @@ void cbKeyBinder::OnMenuBarModify(CodeBlocksEvent& event)
     int modType = event.GetEventType();
     if ( modType == cbEVT_MENUBAR_CREATE_BEGIN ) sEventType = wxT("BEGIN");
     if ( modType == cbEVT_MENUBAR_CREATE_END ) sEventType = wxT("END");
-    LOGIT( _T("OnMenuBarModify[%d][%s]"), modType , sEventType.c_str() );
+    LOGIT( _T("OnMenuBarModify[%d][%s]"), modType , sEventType.wx_str() );
 
     if ( modType == cbEVT_MENUBAR_CREATE_BEGIN )
     {

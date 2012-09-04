@@ -346,39 +346,21 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                 {
                     wxsAuiToolBarLabel* Label = (wxsAuiToolBarLabel*) Child;
                     if ( Label->m_IsDefault )
-                    {
-                        #if wxCHECK_VERSION(2, 9, 0)
                         Codef(_T("%AAddLabel(%s, %t);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str());
-                        #else
-                        Codef(_T("%AAddLabel(%s, %t);\n"),Child->GetIdName().c_str(),Extra->m_Label.c_str());
-                        #endif
-
-                    }
                     else
-                    {
-                        #if wxCHECK_VERSION(2, 9, 0)
-                        Codef(_T("%AAddLabel(%s, %t, %d);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str(),Label->m_Width);
-                        #else
-                        Codef(_T("%AAddLabel(%s, %t, %d);\n"),Child->GetIdName().c_str(),Extra->m_Label.c_str(),Label->m_Width);
-                        #endif
-                    }
+                        Codef(_T("%AAddLabel(%s, %t, %ld);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str(),Label->m_Width);
                 }
                 else if ( ClassName == _T("wxAuiToolBarSpacer") )
                 {
                     wxsAuiToolBarSpacer* Spacer = (wxsAuiToolBarSpacer*) Child;
-                    if ( Spacer->m_Stretch ) Codef(_T("%AAddStretchSpacer(%d);\n"),Spacer->m_Proportion);
-                    else                     Codef(_T("%AAddSpacer(%d);\n"),Spacer->m_Pixels);
+                    if ( Spacer->m_Stretch ) Codef(_T("%AAddStretchSpacer(%ld);\n"),Spacer->m_Proportion);
+                    else                     Codef(_T("%AAddSpacer(%ld);\n"),Spacer->m_Pixels);
                 }
                 else
                 {
                     // If child is not any of wxAuiToolBarItems, it is a wxControl
-                    #if wxCHECK_VERSION(2, 9, 0)
                     Codef(_T("%AAddControl(%o, %t);\n"),i,Extra->m_Label.wx_str());
                     if ( !Extra->m_Enabled && Child->GetBaseProps()->m_Enabled ) Codef(_T("%s->Enable(false);\n"),Child->GetVarName().wx_str());
-                    #else
-                    Codef(_T("%AAddControl(%o, %t);\n"),i,Extra->m_Label.c_str());
-                    if ( !Extra->m_Enabled && Child->GetBaseProps()->m_Enabled ) Codef(_T("%s->Enable(false);\n"),Child->GetVarName().c_str());
-                    #endif
                     continue;
                 }
 

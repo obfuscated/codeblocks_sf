@@ -426,7 +426,7 @@ void JumpTracker::JumpDataAdd(const wxString& filename, const long posn, const l
         m_Cursor = 0;
 
     #if defined(LOGGING)
-    LOGIT( _T("JT JumpDataAdd[%s][%ld][%d]"), filename.c_str(), posn, m_Cursor);
+    LOGIT( _T("JT JumpDataAdd[%s][%ld][%d]"), filename.wx_str(), posn, m_Cursor);
     #endif
 
     do {
@@ -538,7 +538,7 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
         m_Cursor = cursor;
 
         #if defined(LOGGING)
-        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
+        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_Cursor);
         #endif
         // activate editor
         EditorBase* eb = edmgr->GetEditor(edFilename);
@@ -608,7 +608,7 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
         m_Cursor = cursor;
 
         #if defined(LOGGING)
-        LOGIT( _T("JT OnMenuJumpNext [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
+        LOGIT( _T("JT OnMenuJumpNext [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_Cursor);
         #endif
         // activate editor
         EditorBase* eb = edmgr->GetEditor(edFilename);
@@ -645,7 +645,7 @@ void JumpTracker::OnMenuJumpDump(wxCommandEvent &/*event*/)
         JumpData& jumpData = m_ArrayOfJumpData.Item(count);
         wxString edFilename = jumpData.GetFilename();
         long edPosn = jumpData.GetPosition();
-        wxString msg = wxString::Format(_T("[%d][%s][%ld]"), count, edFilename.c_str(), edPosn);
+        wxString msg = wxString::Format(_T("[%lu][%s][%ld]"), static_cast<unsigned long>(count), edFilename.wx_str(), edPosn);
         if (count == (size_t)m_Cursor)
             msg.Append(_T("<--"));
         LOGIT( msg );
