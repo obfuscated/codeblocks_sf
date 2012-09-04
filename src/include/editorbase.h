@@ -93,7 +93,7 @@ class DLLIMPORT EditorBase : public wxPanel
           * close it (i.e. it is not modified).
           * @return True if this editor can be closed.
           */
-        virtual bool QueryClose(){ return true; }
+        virtual bool QueryClose();
 
         /** @brief Close this editor.
           *

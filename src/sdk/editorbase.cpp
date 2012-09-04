@@ -168,6 +168,28 @@ void EditorBase::Activate()
     Manager::Get()->GetEditorManager()->SetActiveEditor(this);
 }
 
+bool EditorBase::QueryClose()
+{
+    if ( GetModified() )
+    {
+        wxString msg;
+        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), GetFilename().c_str());
+        switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        {
+        case wxID_YES:
+            if (!Save())
+                return false;
+            break;
+        case wxID_NO:
+            break;
+        case wxID_CANCEL:
+            return false;
+        }
+        SetModified(false);
+    }
+    return true;
+}
+
 bool EditorBase::Close()
 {
     Destroy();
@@ -188,7 +210,7 @@ wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
 {
     wxMenu* menu = 0;
 
-    if(id == idSwitchTo)
+    if (id == idSwitchTo)
     {
         menu = new wxMenu;
         m_SwitchTo.clear();
@@ -201,7 +223,7 @@ wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
             m_SwitchTo[id] = other;
             menu->Append(id, other->GetShortName());
         }
-        if(!menu->GetMenuItemCount())
+        if (!menu->GetMenuItemCount())
         {
             delete menu;
             menu = 0;
@@ -231,7 +253,7 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup, ModuleType type)
     if (type != mtEditorManager) // no editor
     {
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
-        if(switchto)
+        if (switchto)
             popup->Append(idSwitchTo, _("Switch to"), switchto);
     }
 }
@@ -259,7 +281,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        if(wxMinimumVersion<2,6,1>::eval)
+        if (wxMinimumVersion<2,6,1>::eval)
         {
             popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
             popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
@@ -268,7 +290,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         lastWord = text;
 
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
-        if(switchto)
+        if (switchto)
         {
             popup->AppendSeparator();
             popup->Append(idSwitchTo, _("Switch to"), switchto);
