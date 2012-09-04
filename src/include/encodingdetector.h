@@ -14,27 +14,26 @@
 class wxString;
 
 /** Try to detect the encoding of a file on disk. */
-class DLLIMPORT EncodingDetector :
-            public nsUniversalDetector
+class DLLIMPORT EncodingDetector : public nsUniversalDetector
 {
-	public:
-		EncodingDetector(const wxString& filename, bool useLog=true);
-		EncodingDetector(LoaderBase* fileLdr, bool useLog=true);
-		EncodingDetector(const wxByte* buffer, size_t size, bool useLog=true);
-		EncodingDetector(const EncodingDetector& rhs, bool useLog=true);
-		~EncodingDetector();
+    public:
+        EncodingDetector(const wxString& filename, bool useLog=true);
+        EncodingDetector(LoaderBase* fileLdr, bool useLog=true);
+        EncodingDetector(const wxByte* buffer, size_t size, bool useLog=true);
+        EncodingDetector(const EncodingDetector& rhs, bool useLog=true);
+        ~EncodingDetector();
 
         const wxString& DoIt(const char* aBuf, PRUint32 aLen);
         /** @return True if file was read, false if not. */
         bool IsOK() const;
         /** @return True if the file contains a BOM (Byte Order Mark), false if not. */
-		bool UsesBOM() const;
-		/** @return The BOM size in bytes. Returns zero if no BOM. */
-		int GetBOMSizeInBytes() const;
-		/** @return The detected encoding. Currently ISO8859-1 is returned if no BOM is present. */
-		wxFontEncoding GetFontEncoding() const;
-		wxString GetWxStr() const;
-	protected:
+        bool UsesBOM() const;
+        /** @return The BOM size in bytes. Returns zero if no BOM. */
+        int GetBOMSizeInBytes() const;
+        /** @return The detected encoding. Currently ISO8859-1 is returned if no BOM is present. */
+        wxFontEncoding GetFontEncoding() const;
+        wxString GetWxStr() const;
+    protected:
         /** @return True if succeeded, false if not (e.g. file didn't exist). */
         bool DetectEncoding(const wxString& filename, bool ConvertToWxString = true);
         bool DetectEncoding(const wxByte* buffer, size_t size, bool ConvertToWxString = true);
@@ -45,7 +44,7 @@ class DLLIMPORT EncodingDetector :
         bool m_UseLog;
         int m_BOMSizeInBytes;
         wxFontEncoding m_Encoding;
-	private:
+    private:
         wxString mResult;
         wxString m_ConvStr;
         bool ConvertToWxStr(const wxByte* buffer, size_t size);

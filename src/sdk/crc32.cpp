@@ -31,7 +31,7 @@ static wxUint32 *GetCRC32Table( wxUint32 *crc_table )
         // Allocate memory
         crc_table = new wxUint32[256];
 
-        // Was the allocation succesfull?
+        // Was the allocation successful?
         if ( crc_table )
         {
             // Generate the crc table

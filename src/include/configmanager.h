@@ -154,7 +154,7 @@ public:
     /* Backwards compatible functions. For new code, please use GetFolder() instead.
     *
     * Query "standard" paths that work across platforms.
-    * NEVER harcode a path like "C:\CodeBlocks\share\data". Always use one of the following functions to compose a path.
+    * NEVER hard-code a path like "C:\CodeBlocks\share\data". Always use one of the following functions to compose a path.
     */
     static wxString GetHomeFolder() { return home_folder; }
     static wxString GetConfigFolder(){ return config_folder; }
@@ -225,7 +225,7 @@ public:
 
     /* -----------------------------------------------------------------------------------------------------
     *  Set and unset keys, or test for existence. Note that these functions cannot be used to remove paths
-    *  or test existence of paths (it may be used to implicitely create paths, though).
+    *  or test existence of paths (it may be used to implicitly create paths, though).
     */
     bool Exists(const wxString& name);
     void Set(const wxString& name);

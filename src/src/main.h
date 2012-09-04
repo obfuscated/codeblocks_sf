@@ -380,8 +380,8 @@ class MainFrame : public wxFrame
 
         wxScrollingDialog* m_pBatchBuildDialog;
 
-        DebuggerMenuHandler *m_debuggerMenuHandler;
-        DebuggerToolbarHandler *m_debuggerToolbarHandler;
+        DebuggerMenuHandler*    m_debuggerMenuHandler;
+        DebuggerToolbarHandler* m_debuggerToolbarHandler;
 
         DECLARE_EVENT_TABLE()
 };

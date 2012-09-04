@@ -37,7 +37,7 @@ enum TargetType
     ttStaticLib     = 2, /**< Target produces a static library */
     ttDynamicLib    = 3, /**< Target produces a dynamic library */
     ttCommandsOnly  = 4, /**< Target only runs commands in pre-build and/or post-build steps */
-    ttNative        = 5 /**< Target produces a native binary */
+    ttNative        = 5  /**< Target produces a native binary */
 };
 
 enum MakeCommand
