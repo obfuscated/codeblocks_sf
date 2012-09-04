@@ -151,15 +151,27 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     }
 
     wxString Selection = Grid->GetPropertyValueAsString(Id);
-    wxString oldHandlerName = m_Events->GetHandler(Index);
-    if ( (!oldHandlerName.IsEmpty()) && oldHandlerName.IsSameAs(Selection) )
+    wxString usedHandlerName = m_Events->GetHandler(Index);
+
+    // jump action should have both the conditions
+    // 1, the event sink already have a real function name associated
+    // 2, the current selected name is the same as the sink name
+    if (   ( !usedHandlerName.IsEmpty() )
+        && usedHandlerName.IsSameAs(Selection) )
     {
         // which means this event is emulated from the double click on the event ID name,
         // user want to jump to the implementation of this event handler function body,
         // no need to rebuild the event and notify other part
         GotoHandler(Index);
         return;
-     }
+    }
+    else if (  usedHandlerName.IsEmpty()
+             && Selection.IsSameAs(NoneStr) )
+    {
+        // special case here(cause by the emulate of OnChange when user double click on the event
+        // name, nothing should be done in this case.
+        return;
+    }
 
     if ( Selection == NoneStr )
     {

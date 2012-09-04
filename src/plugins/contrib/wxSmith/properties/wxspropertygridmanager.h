@@ -95,7 +95,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
 
         /** \brief Function unbinding given container
          *
-         * This function destroys all property enteries using given container.
+         * This function destroys all property entries using given container.
          * It's automatically called in container's destructor but it may
          * be used in other places too.
          *
@@ -130,8 +130,11 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Changing main property container */
         void SetNewMainContainer(wxsPropertyContainer* NewMain);
 
-        /** \brief Handler for roporting change event */
+        /** \brief Handler for reporting change event */
         void OnChange(wxPropertyGridEvent& event);
+
+        /** \brief Handler for jumping to event handler when user double click on the event name */
+        void OnDoubleClick(wxPropertyGridEvent& event);
 
         /** \brief Data of selected property */
         struct SelectionData
@@ -150,7 +153,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Restoring selected property
          *
          * \param Data structure containing selection data, if NULL,
-         *        selection will be resotred from internal variable
+         *        selection will be restored from internal variable
          */
         void RestoreSelected(const SelectionData* Data=0);
 
@@ -171,7 +174,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         WX_DECLARE_HASH_SET(wxsPropertyContainer*,wxPointerHash,wxPointerEqual,wxSetCont);
 
         wxArrayPGId  PGIDs;                         ///< \brief Array of property identifiers
-        wxArrayProps PGEnteries;                    ///< \brief Array mapping enteries in grid to properties
+        wxArrayProps PGEnteries;                    ///< \brief Array mapping entries in grid to properties
         wxArrayLong  PGIndexes;                     ///< \brief Array of internal property indexes used inside wxsProperty
         wxArrayCont  PGContainers;                  ///< \brief Array of container objects associated with properties
         wxSetCont    PGContainersSet;               ///< \brief Set of used containers, will be used to quickly determine if given container is used in manager

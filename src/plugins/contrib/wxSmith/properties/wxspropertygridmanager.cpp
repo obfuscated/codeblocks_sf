@@ -101,6 +101,24 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
     MainContainer->OnExtraPropertyChanged(this,ID);
 }
 
+void wxsPropertyGridManager::OnDoubleClick(wxPropertyGridEvent& event)
+{
+    // We are only interested in the double click event from the wxPropertyGridPage of "Events" (page index 1)
+    // So, we are going to filter out the events come from the wxPropertyGridPage of "Properties" (page index 0)
+    // loop the PGIDs member is another kind of filtering (see wxsPropertyGridManager::OnChange()), since
+    // normally the properties were stored in the page 0.
+
+    int pageIndex = GetSelectedPage();
+    if ( pageIndex != 1) //wxPropertyGridPage of "Events"
+        return;
+
+    // No need to call any notification of change function here, since double click of the event name
+    // just jump to the function handler body of the event. We call the OnExtraPropertyChanged()
+    // function to emulate an event handler change, it in-fact does not add a new event handler.
+    wxPGId ID = event.GetProperty();
+    MainContainer->OnExtraPropertyChanged(this,ID);
+}
+
 void wxsPropertyGridManager::Update(wxsPropertyContainer* PC)
 {
     if ( PC && PGContainersSet.find(PC) == PGContainersSet.end() )
@@ -306,5 +324,5 @@ wxsPropertyGridManager* wxsPropertyGridManager::Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxsPropertyGridManager,wxPropertyGridManager)
     EVT_PG_CHANGED(-1,wxsPropertyGridManager::OnChange)
-    EVT_PG_DOUBLE_CLICK(-1,wxsPropertyGridManager::OnChange)
+    EVT_PG_DOUBLE_CLICK(-1,wxsPropertyGridManager::OnDoubleClick)
 END_EVENT_TABLE()

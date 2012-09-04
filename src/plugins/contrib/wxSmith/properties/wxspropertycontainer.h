@@ -43,7 +43,7 @@ class wxsPropertyContainer
         /** \brief Dctor */
         virtual ~wxsPropertyContainer();
 
-        /** \brief Changid Property Grid focus to this object
+        /** \brief Changing Property Grid focus to this object
          *
          * This function can be used when this object is selected
          * to make main property grid point to it.
@@ -56,9 +56,9 @@ class wxsPropertyContainer
          */
         void XmlRead(TiXmlElement* Element);
 
-        /** \brief Function writing all proeprties to Xml node
+        /** \brief Function writing all properties to Xml node
          *  \param Element Xml element where all elements of properties
-         *         will be addeed
+         *         will be added
          */
         void XmlWrite(TiXmlElement* Element);
 
@@ -77,7 +77,7 @@ class wxsPropertyContainer
 
         /** \brief Function notifying about property change
          *
-         * This funcntion must be called when value of any property
+         * This function must be called when value of any property
          * has been changed externally (not from property grid nor
          * quick properties - there are special functions for them)
          * It causes property grid and quick properties panel to
@@ -87,14 +87,14 @@ class wxsPropertyContainer
          */
         void NotifyPropertyChange(bool CallPropertyChangeHandler=false);
 
-        /** \brief Opearator reading from property stream */
+        /** \brief Operator reading from property stream */
         inline wxsPropertyStream& operator>>(wxsPropertyStream& Stream)
         {
             PropStreamRead(&Stream);
             return Stream;
         }
 
-        /** \brief operator writing to property stream */
+        /** \brief Operator writing to property stream */
         inline wxsPropertyStream& operator<<(wxsPropertyStream& Stream)
         {
             PropStreamWrite(&Stream);
@@ -127,7 +127,7 @@ class wxsPropertyContainer
          * This function MUST call Property or one of SubContainer functions
          * for each  property or sub container which will be used. Properties
          * must be declared as static objects - static class members or static
-         * function variables (the second one is preffered since properties will
+         * function variables (the second one is preferred since properties will
          * be created when they are really needed).
          *
          * Example of registering function:
@@ -220,7 +220,7 @@ class wxsPropertyContainer
         virtual void OnAddExtraProperties(wxsPropertyGridManager* Grid) {}
 
         /** \brief Function notifying that some extra property (which could be added
-         *         inside OnAddExtraProperties call) has chaged.
+         *         inside OnAddExtraProperties call) has changed.
          */
         virtual void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id) {}
 
@@ -234,10 +234,10 @@ class wxsPropertyContainer
 
         wxsQuickPropsPanel* CurrentQP;          /// \brief Currently associated quick properties panel
         bool BlockChangeCallback;               /// \brief set to true if should block NotifyChange functions -
-                                                ///        it will be used to aviod recursive calling of property
+                                                ///        it will be used to avoid recursive calling of property
                                                 ///        change when updating editors
         static long Flags;                      /// \brief Local cache of availability flags
-        static bool IsRead;                     /// \brief Used to determine whether we are reading or writting data
+        static bool IsRead;                     /// \brief Used to determine whether we are reading or writing data
         static TiXmlElement* CurrentElement;    /// \brief Local cache of current xml node
         static wxsPropertyStream* CurrentStream;/// \brief Local cache of current property stream
         static wxMutex Mutex;                   /// \brief Mutex used when operating on properties
@@ -268,7 +268,7 @@ class wxsPropertyContainer
  Each object using properties system has list of properties objects - classes
  which manage data. Each property object is responsible for first three purposes
  described above. Mainly property object takes one or more variables from
- class and provides procedures operating on them. These prodecures are unified
+ class and provides procedures operating on them. These procedures are unified
  and thus operating on properties is identical in all cases, no matter what's
  type of data.
 
@@ -289,10 +289,10 @@ class wxsPropertyContainer
     Deriving from wxsPropertyContainer class require defining GetProperties
  method. This method is used to get list of properties associated with this
  class. This function should return static array of wxsProperty* objects
- (properties should be created once for class, not for instalce of class)
+ (properties should be created once for class, not for instance of class)
 
    wxsPropertyContainer additionally provides NotifyPropertyChange function
- which is called whenever value of any property is changed. This funcntion may
+ which is called whenever value of any property is changed. This function may
  be used to refresh other components and to validate property values. When
  value of property is changed inside NotifyPropertyChange, it will be refreshed
  automatically after return.
@@ -324,7 +324,7 @@ class wxsPropertyContainer
 
  \subsection wxsPropertyObject property object
 
-    Property objct is object responsible for managing one or more variables in
+    Property object is object responsible for managing one or more variables in
  class and for providing unified functions operating on it. These functions can
  be divided to three groups (almost same as property container base tasks,
  without support for quick properties):
@@ -332,7 +332,7 @@ class wxsPropertyContainer
         - \link wxsProperty::PGCreate PGCreate \endlink function creating entry
           in property grid and filling it with proper data
         - \link wxsProperty::PGRead PGRead \endlink function reading values from
-          property grid and storing them in real variabless
+          property grid and storing them in real variables
         - \link wxsProperty::PGWrite PGWrite \endlink function updating value
           of property in property grid (reading from real variables and storing
           it inside property grid)
@@ -348,7 +348,7 @@ class wxsPropertyContainer
           reading value from property stream and storing it inside real
           variables
         - \link wxsProperty::PropStreamWrite PropStreamWrite \endlink function
-          writing value of real variabeles to property stream
+          writing value of real variables to property stream
 
     Adding new property require defining all those functions in new property
  class. Additionally wxsCutomEditorProperty class may be used. This class
@@ -356,12 +356,12 @@ class wxsPropertyContainer
     \li \link wxsCustomEditorProperty::ShowEditor ShowEditor \endlink inside
         this function, edit dialog should be created and showed in modal. Dialog
         should be destroyed before exiting (in usual case). This function is
-        declared public to allow other ithems than property grid to show
+        declared public to allow other items than property grid to show
         property editor.
     \li \link wxsCustomEditorProperty::GetStr GetStr \endlink this function
         returns string built from property value. This function and
         next ones are not required but may be added to increase property
-        functinality.
+        functionality.
     \li \link wxsCustomEditorProperty::ParseStr ParseStr \endlink this function
         should parse given string and fetch property value from it. It's not
         required.
@@ -371,22 +371,22 @@ class wxsPropertyContainer
         property editor or by writing string in property grid. This function
         is not required.
 
-    \note Usually when savind data to Xml node, it should not be stored when
+    \note Usually when saving data to Xml node, it should not be stored when
         values are equal to default ones. If it's not done in such way, this
-        must be nitified in class documentation.
+        must be notified in class documentation.
 
  \subsection wxsQuickPropsPanel Quick Properties Panel
 
     Quick properties panel is additional editor area where properties can be
- changed. It's purpose is to allow editing most usefull properties in easier
+ changed. It's purpose is to allow editing most useful properties in easier
  way than in property grid  and to make the edition more intuitive (very
- standarised threatment in property grid does not leave much place to any kind
+ standardized treatment in property grid does not leave much place to any kind
  of invention).
 
     Each property container may have one quick properties editor at one time.
  Panel may be taken using wxsPropertyContainer::BuildQuickPropsPanel function.
  To create panel inside class, OnCreateQuickProperties member function must be
- redeclared and must return pointer to newly created quick properties panel.
+ re-declared and must return pointer to newly created quick properties panel.
  Valid wxsPropertyContainer pointer must be passed to wxsQuickPropsPanel
  constructor.
 
