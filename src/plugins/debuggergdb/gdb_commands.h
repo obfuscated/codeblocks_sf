@@ -1718,6 +1718,7 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
                     break;
             }
 
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_Cmd);
             if (!m_Cmd.IsEmpty())
                 driver->Log(_("Connecting to remote target"));
             else
