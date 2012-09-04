@@ -106,6 +106,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/fix_eols2"), false));
     XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->Enable(XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue());
+    XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
 
     wxSize szReplaceMulti = XRCCTRL(*this, "nbReplaceMulti", wxPanel)->GetEffectiveMinSize();
     XRCCTRL(*this, "nbReplaceSingle", wxPanel)->SetMinSize(szReplaceMulti);
@@ -192,13 +193,16 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         XRCCTRL(*this, "wxID_OK",                wxButton)->SetLabel(_T("&Find"));
         XRCCTRL(*this, "chkFixEOLs1",            wxCheckBox)->Hide();
         XRCCTRL(*this, "chkFixEOLs2",            wxCheckBox)->Hide();
+        XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->Show();
     }
 
+    m_findPage=0;
     if (findReplaceInFilesOnly)
     {
-        // NOTE (jens#1#): Do not delete, just hide the page, to avoid asserts in debug-mode
+        //Remove, but don't destroy the Find/Replace page until this dialog is destroyed.
         XRCCTRL(*this,  "nbReplace", wxNotebook)->SetSelection(1);
-        (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Hide(); // no active editor, so only replace-in-files
+        m_findPage=(XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0)); // no active editor, so only replace-in-files
+        (XRCCTRL(*this, "nbReplace", wxNotebook)->RemovePage(0)); // no active editor, so only replace-in-files
         XRCCTRL(*this,  "cmbFind2",  wxComboBox)->SetFocus();
     }
     else if (m_findReplaceInFilesActive)
@@ -269,6 +273,12 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/regex2"),      XRCCTRL(*this, "chkRegEx2",     wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/scope2"),      XRCCTRL(*this, "rbScope2",      wxRadioBox)->GetSelection());
+    cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
+
+    if(m_findPage!=0)
+    {
+        m_findPage->Destroy();
+    }
 
     Disconnect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(FindReplaceDlg::OnReplaceChange));
 }
@@ -308,7 +318,10 @@ bool FindReplaceDlg::IsFindInFiles() const
 
 bool FindReplaceDlg::GetDeleteOldSearches() const
 {
-    return true; // checkbox doesn't exist
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
+    else
+        return true;  // checkbox doesn't exist in Find dialog
 }
 
 bool FindReplaceDlg::GetSortSearchResult() const

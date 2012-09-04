@@ -62,6 +62,7 @@ class FindReplaceDlg : public FindReplaceBase
         void SaveComboValues(wxComboBox* combo, const wxString& configKey);
         bool m_findReplaceInFilesActive;
         bool m_findMode;
+        wxWindow *m_findPage;
 
         DECLARE_EVENT_TABLE()
 };
