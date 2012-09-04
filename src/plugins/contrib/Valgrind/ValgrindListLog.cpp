@@ -30,9 +30,9 @@ ValgrindListLog::ValgrindListLog(const wxArrayString& Titles, wxArrayInt& Widths
 ValgrindListLog::~ValgrindListLog()
 {
 	//dtor
-    if (control && !Manager::IsAppShuttingDown())
-    control->RemoveEventHandler(this);
-
+	Disconnect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &ValgrindListLog::OnDoubleClick);
 }
 
 
@@ -45,8 +45,16 @@ wxWindow* ValgrindListLog::CreateControl(wxWindow* parent)
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ValgrindListLog::OnDoubleClick);
-	control->PushEventHandler(this);
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
 	return control;
+}
+
+void ValgrindListLog::DestroyControls()
+{
+    if ( !Manager::Get()->IsAppShuttingDown() )
+    {
+        Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    }
 }
 
 void ValgrindListLog::OnDoubleClick(wxCommandEvent& /*event*/)

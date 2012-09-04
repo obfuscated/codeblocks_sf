@@ -31,8 +31,8 @@ CppCheckListLog::~CppCheckListLog()
 {
     //dtor
     Disconnect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CppCheckListLog::OnDoubleClick);
+               (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+               &CppCheckListLog::OnDoubleClick);
 }
 
 
@@ -56,7 +56,6 @@ void CppCheckListLog::DestroyControls()
         Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
     }
 }
-
 
 void CppCheckListLog::OnDoubleClick(wxCommandEvent& /*event*/)
 {
