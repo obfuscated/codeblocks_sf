@@ -60,7 +60,7 @@ void wxsSizerExtra::OnEnumProperties(long Flags)
 {
     static const int Priority = 20;
     WXS_SIZERFLAGS_P(wxsSizerExtra,Flags,Priority);
-    WXS_DIMENSION_P(wxsSizerExtra,Border,_("Border"),_("  Dialog Units"),_T("border"),0,false,Priority);
+    WXS_DIMENSION_P(wxsSizerExtra,Border,_("Border width"),_("  Dialog Units"),_T("border"),0,false,Priority);
     WXS_LONG_P(wxsSizerExtra,Proportion,_("Proportion"),_T("option"),0,Priority);
 }
 
