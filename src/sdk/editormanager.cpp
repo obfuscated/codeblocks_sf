@@ -138,7 +138,7 @@ void cbFindReplaceData::ConvertEOLs(int newmode)
 
 bool cbFindReplaceData::IsMultiLine()
 {
-    if (regEx) //For regex always assume multiline if the multiline checkbox is enabled because the user can enter "\n" to search for newlines
+    if (regEx) // For regex always assume multiline if the multiline checkbox is enabled because the user can enter "\n" to search for newlines
         return multiLine;
     // otherwise only treat the search as a multiline search only if there are newline characters in the search string
     return  ((findText.Find(_T("\n")) != wxNOT_FOUND) || (findText.Find(_T("\r")) != wxNOT_FOUND));
@@ -744,29 +744,8 @@ bool EditorManager::QueryClose(EditorBase *ed)
 {
     if (!ed)
         return true;
-    if (ed->GetModified())
-    {
-        // TODO (mandrav#1#): Move this in EditorBase
-        wxString msg;
-        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), ed->GetFilename().c_str());
-        switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
-        {
-        case wxID_YES:
-            if (!ed->Save())
-                return false;
-            break;
-        case wxID_NO:
-            break;
-        case wxID_CANCEL:
-            return false;
-        }
-        ed->SetModified(false);
-    }
-    else
-    {
-        return ed->QueryClose();
-    }
-    return true;
+
+    return ed->QueryClose();
 }
 
 int EditorManager::FindPageFromEditor(EditorBase* eb)
@@ -1359,7 +1338,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     }
 
     FindReplaceBase* dlg = new FindReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection,
-                             !replace, !ed, explicitly_find_in_files);
+                                              !replace, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
@@ -1564,7 +1543,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     }
 
     bool advRegex=false;
-    bool advRegexNewLinePolicy=!data->IsMultiLine();
+    bool advRegexNewLinePolicy =! data->IsMultiLine();
     int replacecount=0;
     int foundcount=0;
     int flags = 0;
@@ -1840,7 +1819,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     else if (data->scope == 1) // find in project files
     {
         // fill the search list with all the project files
-        if(data->searchProject<0)
+        if (data->searchProject<0)
         {
             cbMessageBox(_("No project to search in!"), _("Error"), wxICON_WARNING);
             return 0;
@@ -1848,14 +1827,14 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         cbProject* prj = (*Manager::Get()->GetProjectManager()->GetProjects())[data->searchProject];
         wxString target;
         wxString fullpath = _T("");
-        if(data->searchTarget >= 0)
+        if (data->searchTarget >= 0)
             target = prj->GetBuildTarget(data->searchTarget)->GetTitle();
         for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
         {
             ProjectFile* pf = *it;
             if (pf)
             {
-                if(target!=wxEmptyString && pf->buildTargets.Index(target)<0)
+                if (target!=wxEmptyString && pf->buildTargets.Index(target)<0)
                     continue;
                 fullpath = pf->file.GetFullPath();
                 if (filesList.Index(fullpath) >= 0) // avoid adding duplicates
@@ -1896,7 +1875,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             } // end for : idx : idxProject
         }
     }
-    else if (data->scope == 3) // reaplce in custom search path and mask
+    else if (data->scope == 3) // replace in custom search path and mask
      {
         // fill the search list with the files found under the search path
         int flags = wxDIR_FILES |
@@ -1922,7 +1901,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     }
 
     bool advRegex=false;
-    bool advRegexNewLinePolicy=!data->IsMultiLine();
+    bool advRegexNewLinePolicy =! data->IsMultiLine();
     int flags = 0;
     if (data->matchWord)
         flags |= wxSCI_FIND_WHOLEWORD;
@@ -2240,7 +2219,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         return -1;
 
     bool advRegex=false;
-    bool advRegexNewLinePolicy=!data->IsMultiLine();
+    bool advRegexNewLinePolicy =! data->IsMultiLine();
     int flags = 0;
     data->ConvertEOLs(control->GetEOLMode());
     CalculateFindReplaceStartEnd(control, data);
