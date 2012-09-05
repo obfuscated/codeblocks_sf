@@ -2813,7 +2813,7 @@
 		<Unit filename="sdk\resources\projectfile_options.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\resources\replace_dialog.xrc">
+		<Unit filename="sdk\resources\findreplacedlg.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\scripting_security_dlg.xrc">

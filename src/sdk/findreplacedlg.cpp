@@ -51,7 +51,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     m_findReplaceInFilesActive(findReplaceInFilesActive),
     m_findMode(findMode)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgReplace"),_T("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgFindReplace"),_T("wxScrollingDialog"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
 
@@ -103,9 +103,9 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     XRCCTRL(*this, "chkFixEOLs1",   wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/fix_eols1"), false));
     XRCCTRL(*this, "chkFixEOLs1",   wxCheckBox)->Enable(XRCCTRL(*this, "chkMultiLine1", wxCheckBox)->GetValue());
 
-    XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->SetValue(false);
-    XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/fix_eols2"), false));
-    XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->Enable(XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue());
+    XRCCTRL(*this, "chkMultiLine2",       wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkFixEOLs2",         wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/fix_eols2"), false));
+    XRCCTRL(*this, "chkFixEOLs2",         wxCheckBox)->Enable(XRCCTRL(*this, "chkMultiLine2", wxCheckBox)->GetValue());
     XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
 
     wxSize szReplaceMulti = XRCCTRL(*this, "nbReplaceMulti", wxPanel)->GetEffectiveMinSize();
@@ -193,15 +193,15 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         XRCCTRL(*this, "wxID_OK",                wxButton)->SetLabel(_T("&Find"));
         XRCCTRL(*this, "chkFixEOLs1",            wxCheckBox)->Hide();
         XRCCTRL(*this, "chkFixEOLs2",            wxCheckBox)->Hide();
-        XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->Show();
+        XRCCTRL(*this, "chkDelOldSearchRes2",    wxCheckBox)->Show();
     }
 
-    m_findPage=0;
+    m_findPage = 0;
     if (findReplaceInFilesOnly)
     {
-        //Remove, but don't destroy the Find/Replace page until this dialog is destroyed.
+        // Remove, but don't destroy the Find/Replace page until this dialog is destroyed.
         XRCCTRL(*this,  "nbReplace", wxNotebook)->SetSelection(1);
-        m_findPage=(XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0)); // no active editor, so only replace-in-files
+        m_findPage = (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0)); // no active editor, so only replace-in-files
         (XRCCTRL(*this, "nbReplace", wxNotebook)->RemovePage(0)); // no active editor, so only replace-in-files
         XRCCTRL(*this,  "cmbFind2",  wxComboBox)->SetFocus();
     }
@@ -269,10 +269,10 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/start_word2"), flgLimitTo && valLimitTo == 1);
     cfg->Write(CONF_GROUP _T("/start_file2"), flgLimitTo && valLimitTo == 2);
 
-    cfg->Write(CONF_GROUP _T("/fix_eols2"),   XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox)->GetValue());
-    cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
-    cfg->Write(CONF_GROUP _T("/regex2"),      XRCCTRL(*this, "chkRegEx2",     wxCheckBox)->GetValue());
-    cfg->Write(CONF_GROUP _T("/scope2"),      XRCCTRL(*this, "rbScope2",      wxRadioBox)->GetSelection());
+    cfg->Write(CONF_GROUP _T("/fix_eols2"),            XRCCTRL(*this, "chkFixEOLs2",         wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/match_case2"),          XRCCTRL(*this, "chkMatchCase2",       wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/regex2"),               XRCCTRL(*this, "chkRegEx2",           wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/scope2"),               XRCCTRL(*this, "rbScope2",            wxRadioBox)->GetSelection());
     cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
 
     if(m_findPage!=0)
@@ -318,10 +318,9 @@ bool FindReplaceDlg::IsFindInFiles() const
 
 bool FindReplaceDlg::GetDeleteOldSearches() const
 {
-    if (IsFindInFiles())
+    if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
-    else
-        return true;  // checkbox doesn't exist in Find dialog
+    return true; // checkbox doesn't exist in Find dialog
 }
 
 bool FindReplaceDlg::GetSortSearchResult() const
@@ -483,7 +482,7 @@ void FindReplaceDlg::OnScopeChange(wxCommandEvent& /*event*/)
             XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
             break;
     }
-    if(m_findPage==0)
+    if (m_findPage==0)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
     else
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
@@ -616,9 +615,8 @@ void FindReplaceDlg::OnMultiChange(wxCommandEvent& event)
 
     //After hiding/showing panels, redo the layout in the notebook pages
     (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
-    if(m_findPage==0)
+    if (m_findPage==0)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
-
 
     Refresh();
     event.Skip();
