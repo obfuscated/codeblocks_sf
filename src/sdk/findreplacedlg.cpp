@@ -313,7 +313,7 @@ wxString FindReplaceDlg::GetReplaceString() const
 
 bool FindReplaceDlg::IsFindInFiles() const
 {
-    return (m_findReplaceInFilesActive || XRCCTRL(*this, "nbReplace", wxNotebook)->GetSelection() == 1);
+    return (m_findReplaceInFilesActive || m_findPage==0);
 }
 
 bool FindReplaceDlg::GetDeleteOldSearches() const
