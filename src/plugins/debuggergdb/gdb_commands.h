@@ -17,17 +17,19 @@
 #include <wx/regex.h>
 #include <wx/tipwin.h>
 #include <wx/tokenzr.h>
-#include "configmanager.h"
+
+#include <cbeditor.h>
+#include <cbdebugger_interfaces.h>
+#include <configmanager.h>
 #include <globals.h>
 #include <manager.h>
 #include <editormanager.h>
-#include <cbeditor.h>
+#include <infowindow.h>
+#include <logmanager.h>
+#include <macrosmanager.h>
 #include <scriptingmanager.h>
 #include <sqplus.h>
-#include <infowindow.h>
-#include "logmanager.h"
 
-#include <cbdebugger_interfaces.h>
 #include "debugger_defs.h"
 #include "debuggergdb.h"
 #include "gdb_driver.h"

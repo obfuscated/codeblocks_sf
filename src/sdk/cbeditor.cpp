@@ -18,22 +18,24 @@
     #include <wx/wfstream.h>
 
     #include "cbeditor.h" // class's header file
+
     #include "cbauibook.h"
-    #include "globals.h"
-    #include "sdk_events.h"
+    #include "cbplugin.h"
     #include "cbproject.h"
-    #include "projectfile.h"
-    #include "projectbuildtarget.h"
-    #include "editorcolourset.h"
-    #include "manager.h"
     #include "configmanager.h"
     #include "debuggermanager.h"
-    #include "projectmanager.h"
-    #include "pluginmanager.h"
+    #include "editorcolourset.h"
     #include "editormanager.h"
+    #include "globals.h"
+    #include "infowindow.h"
     #include "logmanager.h"
     #include "macrosmanager.h" // ReplaceMacros
-    #include "cbplugin.h"
+    #include "manager.h"
+    #include "pluginmanager.h"
+    #include "projectbuildtarget.h"
+    #include "projectfile.h"
+    #include "projectmanager.h"
+    #include "sdk_events.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -42,7 +44,6 @@
 
 #include "cbeditorprintout.h"
 #include "cbdebugger_interfaces.h"
-#include "debuggermanager.h"
 #include "editor_hooks.h"
 #include "encodingdetector.h"
 #include "filefilters.h"
