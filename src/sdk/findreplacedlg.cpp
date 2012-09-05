@@ -546,8 +546,7 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
 
 void FindReplaceDlg::OnRegEx(wxCommandEvent& /*event*/)
 {
-    if (!m_findReplaceInFilesActive)
-        XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
+    XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
 }
 
 void FindReplaceDlg::OnActivate(wxActivateEvent& event)
