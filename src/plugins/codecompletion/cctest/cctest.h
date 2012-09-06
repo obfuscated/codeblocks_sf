@@ -22,7 +22,7 @@ public:
     }
 
     void        Init();
-    ParserBase* GetParser()    { return m_pClient;     }
+    ParserBase* GetParser()    { return m_pClient;    }
     TokenTree*  GetTokenTree() { return m_pTokenTree; }
 
     bool     Start(const wxString& file);
@@ -36,7 +36,7 @@ protected:
     virtual ~CCTest()
     {
         if (m_pTokenTree)  { delete m_pTokenTree;  m_pTokenTree = NULL; }
-        if (m_pClient)     { delete m_pClient;     m_pClient     = NULL; }
+        if (m_pClient)     { delete m_pClient;     m_pClient    = NULL; }
     }
 
     CCTest(const CCTest&) { ; }

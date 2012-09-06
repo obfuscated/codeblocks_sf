@@ -425,7 +425,7 @@ void CCTestFrame::OnMenuFindSelected(wxCommandEvent& /*event*/)
 void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
 {
     ParserBase* pb = CCTest::Get()->GetParser();
-    TokenTree* tt = CCTest::Get()->GetTokenTree();
+    TokenTree*  tt = CCTest::Get()->GetTokenTree();
     if (!pb || !tt) return;
 
     wxTextEntryDialog dlg(this, _T("Enter name of token to debug:"), _T("CCTest"));

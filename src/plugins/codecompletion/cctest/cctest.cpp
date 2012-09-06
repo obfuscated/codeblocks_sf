@@ -69,7 +69,7 @@ TokenTree* ParserBase::GetTokenTree()
 
 bool CCTest::Start(const wxString& file)
 {
-    if (!m_pClient)     m_pClient     = new ParserBase();
+    if (!m_pClient)    m_pClient    = new ParserBase();
     if (!m_pTokenTree) m_pTokenTree = new TokenTree();
 
     FileLoader* loader = new FileLoader(file);

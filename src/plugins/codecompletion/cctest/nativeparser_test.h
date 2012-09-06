@@ -9,10 +9,10 @@ class NativeParserTest : public NativeParserBase
 public:
     NativeParserTest();
     ~NativeParserTest();
-    bool TestExpression(wxString& expression,
-                        TokenTree * tree,
+    bool TestExpression(wxString&          expression,
+                        TokenTree*         tree,
                         const TokenIdxSet& searchScope,
-                        TokenIdxSet&   result);
+                        TokenIdxSet&       result);
 };
 
 #endif //NATIVEPARSERTEST_H
