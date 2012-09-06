@@ -462,12 +462,12 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
     CCLogger::Get()->DebugLog(_T("Traversing '") + fn.GetPath() + _T("' for: ") + filespec);
     dir.Traverse(traverser, filespec, wxDIR_FILES);
 
-    //only find one file in the dir, go other place
+    // only find one file in the dir, go other place
     if (files.GetCount() == 1)
     {
         cbProject* project = IsParserPerWorkspace() ? GetCurrentProject()
                                                     : GetProjectByParser(m_Parser);
-        //search in the project
+        // search in the project
         if (project)
         {
             const wxString prjPath = project->GetCommonTopLevelPath();

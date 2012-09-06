@@ -176,11 +176,11 @@ namespace ParserConsts
     const wxString kw_attribute    (_T("__attribute__"));
 };
 
-ParserThread::ParserThread(ParserBase* parent,
-                           const wxString& bufferOrFilename,
-                           bool isLocal,
+ParserThread::ParserThread(ParserBase*          parent,
+                           const wxString&      bufferOrFilename,
+                           bool                 isLocal,
                            ParserThreadOptions& parserThreadOptions,
-                           TokenTree* tokensTree) :
+                           TokenTree*           tokensTree) :
     m_Tokenizer(tokensTree),
     m_Parent(parent),
     m_TokenTree(tokensTree),

@@ -74,16 +74,16 @@ public:
       TokenFileMap::const_iterator it = m_FileMap.find(fileIdx);
       return (it == m_FileMap.end() ? 0 : &(it->second));
     }
-    const TokenFileSet* GetFilesToBeReparsed() const             { return &m_FilesToBeReparsed;   }
+    const TokenFileSet* GetFilesToBeReparsed() const                   { return &m_FilesToBeReparsed;   }
 
-    size_t       GetFileMapSize() const                            { return m_FileMap.size();             }
+    size_t       GetFileMapSize() const                                { return m_FileMap.size();             }
     void         InsertTokenBelongToFile(size_t fileIdx, int tokenIdx) { m_FileMap[fileIdx].insert(tokenIdx); }
-    void         EraseFileMapInFileMap(size_t fileIdx)                { m_FileMap.erase(fileIdx);            }
+    void         EraseFileMapInFileMap(size_t fileIdx)                 { m_FileMap.erase(fileIdx);            }
 
-    size_t       GetFileStatusCountForIndex(size_t fileIdx) const   { return m_FileStatusMap.count(fileIdx);  }
-    void         EraseFileStatusByIndex(size_t fileIdx)             { m_FileStatusMap.erase(fileIdx);         }
+    size_t       GetFileStatusCountForIndex(size_t fileIdx) const      { return m_FileStatusMap.count(fileIdx);  }
+    void         EraseFileStatusByIndex(size_t fileIdx)                { m_FileStatusMap.erase(fileIdx);         }
 
-    void         EraseFilesToBeReparsedByIndex(size_t fileIdx)      { m_FilesToBeReparsed.erase(fileIdx);   }
+    void         EraseFilesToBeReparsedByIndex(size_t fileIdx)         { m_FilesToBeReparsed.erase(fileIdx);   }
 
     // Parsing related functions
     size_t         InsertFileOrGetIndex(const wxString& filename);
