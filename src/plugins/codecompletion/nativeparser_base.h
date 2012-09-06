@@ -13,7 +13,7 @@
 
 #include "parser/parserthread.h" // g_UnnamedSymbol
 #include "parser/token.h"
-#include "parser/tokenstree.h"
+#include "parser/tokentree.h"
 
 /** debug only variable, used to print the AI match related log message*/
 extern bool s_DebugSmartSense;
@@ -166,7 +166,7 @@ protected:
     /** used to solve the overloaded operator functions return type
      * @param tokenOperatorType overloaded operator type, could be [], (), ->
      * @param tokens input tokens set
-     * @param tree Tokenstree pointer
+     * @param tree Token tree pointer
      * @param searchScope search scope
      * @param result output result
      */
@@ -200,7 +200,7 @@ protected:
      * @param id template token id
      * @param actualTypeScope search scope
      * @param initialScope resolved result
-     * @param tree Tokenstree pointer.
+     * @param tree Token tree pointer.
      */
     void AddTemplateAlias(TokenTree*         tree,
                           const int&         id,
@@ -226,8 +226,8 @@ protected:
                              bool            isPrefix = false,
                              short int       kindMask = 0xFFFF);
 
-    /** This function is just like the one above, especially that no Tokenstree information is used
-     * So, it use the current parser's Tokenstree.
+    /** This function is just like the one above, especially that no Token tree information is used
+     * So, it use the current parser's Token tree.
      *
      * All functions that call this recursive function, should already entered a critical section.
      *

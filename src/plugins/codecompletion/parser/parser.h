@@ -197,7 +197,7 @@ protected:
       */
     TokenTree*           m_TokenTree;
 
-    /** a temp Tokenstree hold some temporary tokens, e.g. parsing a buffer containing some
+    /** a temp Token tree hold some temporary tokens, e.g. parsing a buffer containing some
       * preprocessor directives, see ParseBufferForFunctions() like functions
       * this tree will be created in the constructor and destroyed in destructor.
       */

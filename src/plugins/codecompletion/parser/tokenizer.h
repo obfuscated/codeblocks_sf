@@ -99,7 +99,7 @@ public:
     /** Tokenizer constructor.
      * @param filename the file to be opened.
      */
-    Tokenizer(TokenTree* tokensTree, const wxString& filename = wxEmptyString);
+    Tokenizer(TokenTree* tokenTree, const wxString& filename = wxEmptyString);
 
     /** Tokenizer destructor.*/
     ~Tokenizer();

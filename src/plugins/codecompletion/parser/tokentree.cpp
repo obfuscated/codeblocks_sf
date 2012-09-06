@@ -7,7 +7,7 @@
  * $HeadURL$
  */
 
-#include "tokenstree.h"
+#include "tokentree.h"
 
 #include <wx/tokenzr.h>
 

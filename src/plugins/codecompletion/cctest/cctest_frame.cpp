@@ -22,7 +22,7 @@
 #include "cctest_frame.h"
 #include "cclogger.h"
 #include "token.h"
-#include "tokenstree.h"
+#include "tokentree.h"
 
 #include "nativeparser_test.h"
 

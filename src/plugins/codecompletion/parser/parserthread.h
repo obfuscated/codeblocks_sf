@@ -21,7 +21,7 @@
 #include "cclogger.h"
 #include "tokenizer.h"
 #include "token.h"
-#include "tokenstree.h"
+#include "tokentree.h"
 
 extern const wxString g_UnnamedSymbol;
 
@@ -103,13 +103,13 @@ public:
       * @param bufferOrFilename if isLocal is true, it's the filename to open, otherwise it is a wxString already in memory.
       * @param isLocal determine whether this is a file in local disk or already in memory.
       * @param parserThreadOptions parser thread options, see ParserThreadOptions Class for details.
-      * @param tokensTree it is the tree structure holding all the tokens, ParserThread will add every token when it parsed.
+      * @param tokenTree it is the tree structure holding all the tokens, ParserThread will add every token when it parsed.
       */
     ParserThread(ParserBase*          parent,
                  const wxString&      bufferOrFilename,
                  bool                 isLocal,
                  ParserThreadOptions& parserThreadOptions,
-                 TokenTree*           tokensTree);
+                 TokenTree*           tokenTree);
 
     /** ParserThread destructor.*/
     virtual ~ParserThread();
@@ -205,7 +205,7 @@ protected:
     void HandleTypedef();
 
     /** handle macro expansion
-      * @param id token id in Tokenstree
+      * @param id token id in Token tree
       * @param peek macro body
       */
     void HandleMacroExpansion(int id, const wxString& peek);

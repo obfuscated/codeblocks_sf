@@ -336,7 +336,7 @@ private:
      */
     bool ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
-    /** collect function argument, add them to the tokenstree (as temporary tokens)
+    /** collect function argument, add them to the token tree (as temporary tokens)
      * @param searchData search location
      * @param caretPos caret position, if not specified, we use the current caret position
      */

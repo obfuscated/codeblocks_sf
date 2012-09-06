@@ -10,7 +10,7 @@
 #include <wx/event.h>
 #include <wx/string.h>
 
-#include "tokenstree.h"
+#include "tokentree.h"
 
 #include "token.h"
 

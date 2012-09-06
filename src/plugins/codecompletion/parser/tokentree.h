@@ -3,8 +3,8 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#ifndef TOKENSTREE_H
-#define TOKENSTREE_H
+#ifndef TOKENTREE_H
+#define TOKENTREE_H
 
 #include <wx/string.h>
 #include <wx/thread.h>
@@ -136,4 +136,4 @@ protected:
     TokenFileSet        m_FilesToBeReparsed;   /** Set: file indices */
 };
 
-#endif // TOKENSTREE_H
+#endif // TOKENTREE_H

@@ -180,10 +180,10 @@ ParserThread::ParserThread(ParserBase*          parent,
                            const wxString&      bufferOrFilename,
                            bool                 isLocal,
                            ParserThreadOptions& parserThreadOptions,
-                           TokenTree*           tokensTree) :
-    m_Tokenizer(tokensTree),
+                           TokenTree*           tokenTree) :
+    m_Tokenizer(tokenTree),
     m_Parent(parent),
-    m_TokenTree(tokensTree),
+    m_TokenTree(tokenTree),
     m_LastParent(0),
     m_LastScope(tsUndefined),
     m_FileSize(0),
@@ -1495,7 +1495,7 @@ void ParserThread::HandleDefines()
     // #ifdef AAA
     // void fly() {}
     // #endif
-    // The AAA is not add to tokenstree, so, when call GetToken(), "#ifdef AAA" parse failed
+    // The AAA is not add to token tree, so, when call GetToken(), "#ifdef AAA" parse failed
     m_Str.Clear();
     wxString readToEOL = m_Tokenizer.ReadToEOL(false, true);
     wxString para; // function-like macro's args

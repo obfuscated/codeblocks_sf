@@ -33,7 +33,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			parser/profiletimer.cpp \
 			parser/token.cpp \
 			parser/tokenizer.cpp \
-			parser/tokenstree.cpp \
+			parser/tokentree.cpp \
 			parser/searchtree.cpp \
 			parser/expression.cpp
 
@@ -57,6 +57,6 @@ noinst_HEADERS = ccoptionsdlg.h \
 			parser/profiletimer.h \
 			parser/token.h \
 			parser/tokenizer.h \
-			parser/tokenstree.h \
+			parser/tokentree.h \
 			parser/searchtree.h \
 			parser/expression.h

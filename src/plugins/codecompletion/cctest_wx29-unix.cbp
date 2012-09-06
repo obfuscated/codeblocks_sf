@@ -70,8 +70,8 @@
 		<Unit filename="parser/token.h" />
 		<Unit filename="parser/tokenizer.cpp" />
 		<Unit filename="parser/tokenizer.h" />
-		<Unit filename="parser/tokenstree.cpp" />
-		<Unit filename="parser/tokenstree.h" />
+		<Unit filename="parser/tokentree.cpp" />
+		<Unit filename="parser/tokentree.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

@@ -1470,10 +1470,10 @@
 		<Unit filename="plugins\codecompletion\parser\tokenizer.h">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\parser\tokenstree.cpp">
+		<Unit filename="plugins\codecompletion\parser\tokentree.cpp">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\parser\tokenstree.h">
+		<Unit filename="plugins\codecompletion\parser\tokentree.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\resources\classbrowser.xrc">

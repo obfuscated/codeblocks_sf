@@ -21,7 +21,7 @@
 #include "cclogger.h"
 #include "expression.h"
 #include "tokenizer.h"
-#include "tokenstree.h"
+#include "tokentree.h"
 
 #define CC_TOKENIZER_DEBUG_OUTPUT 0
 
@@ -84,8 +84,8 @@ namespace TokenizerConsts
 wxStringHashMap     Tokenizer::s_Replacements;
 static const size_t s_MaxRepeatReplaceCount = 50;
 
-Tokenizer::Tokenizer(TokenTree* tokensTree, const wxString& filename) :
-    m_TokenTree(tokensTree),
+Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
+    m_TokenTree(tokenTree),
     m_Filename(filename),
     m_BufferLen(0),
     m_TokenIndex(0),
