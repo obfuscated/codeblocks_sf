@@ -328,7 +328,7 @@ void CCTestFrame::Start()
 
     TokenIdxSet result;
 
-    TokensTree *tree = CCTest::Get()->GetTokensTree();
+    TokenTree *tree = CCTest::Get()->GetTokenTree();
 
     nativeParserTest.TestExpression(exp,
                                     tree,
@@ -357,10 +357,10 @@ void CCTestFrame::Start()
 
     Show();
 
-    TokensTree* tt = CCTest::Get()->GetTokensTree();
+    TokenTree* tt = CCTest::Get()->GetTokenTree();
     if (tt)
         AppendToLog((wxString::Format(_("The parser contains %lu tokens, found in %lu files."),
-                                      static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FilesMap.size()))));
+                                      static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FileMap.size()))));
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
@@ -425,7 +425,7 @@ void CCTestFrame::OnMenuFindSelected(wxCommandEvent& /*event*/)
 void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
 {
     ParserBase* pb = CCTest::Get()->GetParser();
-    TokensTree* tt = CCTest::Get()->GetTokensTree();
+    TokenTree* tt = CCTest::Get()->GetTokenTree();
     if (!pb || !tt) return;
 
     wxTextEntryDialog dlg(this, _T("Enter name of token to debug:"), _T("CCTest"));

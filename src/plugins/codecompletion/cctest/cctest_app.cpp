@@ -23,7 +23,7 @@
  *      - Tests the expression matching algorithms by call NativeParserTest::TestExpression()
  *      - Prints results to UI
  *      - destroys "Busy" dialog
- * -> CCTest(): holds dummy tree "TokensTree* m_pTokensTree;"
+ * -> CCTest(): holds dummy tree "TokenTree* m_pTokenTree;"
  *   -> CCTest::Start(file)
  *      - Note: In CCTest::Init() the macro replacements are setup
  *      - Creates and initializes FileLoader for provided file
@@ -31,12 +31,12 @@
  *      - Creates a ParserBase instance "client"
  *      - Creates a new ParserThread
  *      - Calls ParserThread::Parse() and provides:
- *        ParserBase, file, ParserThreadOptions, TokensTree
+ *        ParserBase, file, ParserThreadOptions, TokenTree
  *      - Allows to access the results, like tokens tree
  * -> ParserThread(): same as in Code::Blocks implementation
  *    -> ParserThread::Parse():
  *       - Calls ParserThread::InitTokenizer()
- *       - Reserves file for parsing in TokensTree
+ *       - Reserves file for parsing in TokenTree
  *       - Calls ParserThread::DoParse() (if file is not flagged as assigned already)
  *       - Flags file as parsed.
  *    -> ParserThread::InitTokenizer():

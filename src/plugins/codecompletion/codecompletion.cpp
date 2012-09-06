@@ -864,9 +864,9 @@ int CodeCompletion::CodeComplete()
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
             m_SearchItem.clear();
 
-            TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+            TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
             {
@@ -907,7 +907,7 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
             if (m_NativeParser.LastAISearchWasGlobal())
             {
@@ -1790,9 +1790,9 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     wxArrayString tokens;
     SearchTree<Token*> tmpsearch;
 
-    TokensTree* tree = m_NativeParser.GetParser().GetTempTokensTree();
+    TokenTree* tree = m_NativeParser.GetParser().GetTempTokenTree();
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     if (tree->empty())
         cbMessageBox(_("No functions parsed in this file..."));
@@ -1826,7 +1826,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         tree->clear();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 }
 
 void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
@@ -1884,9 +1884,9 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     TokenIdxSet result;
     m_NativeParser.MarkItemsByAI(result, true, false, true, endPos);
 
-    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+    TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     // special handle destructor function
     if (target[0] == _T('~'))
@@ -2021,7 +2021,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     if (selections.GetCount() > 1)
     {
@@ -2542,9 +2542,9 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         wxString      calltip;
         wxArrayString tips;
 
-        TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         int count = 0;
         size_t tipWidth = 0;
@@ -2570,7 +2570,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         if (!calltip.IsEmpty())
         {
@@ -2713,9 +2713,9 @@ int CodeCompletion::DoClassMethodDeclImpl()
 
     int success = -6;
 
-//    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree(); // The one used inside InsertClassMethodDlg
+//    TokenTree* tree = m_NativeParser.GetParser().GetTokenTree(); // The one used inside InsertClassMethodDlg
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     // open the insert class dialog
     wxString filename = ed->GetFilename();
@@ -2741,7 +2741,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         success = 0;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
@@ -2761,24 +2761,24 @@ int CodeCompletion::DoAllMethodsImpl()
         return -4;
 
     wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
-    TokensTree*   tree  = m_NativeParser.GetParser().GetTokensTree();
+    TokenTree*   tree  = m_NativeParser.GetParser().GetTokenTree();
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     // get all filenames' indices matching our mask
-    TokenFilesSet result;
+    TokenFileSet result;
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
         CCLogger::Get()->DebugLog(_T("Trying to find matches for: ") + paths[i]);
-        TokenFilesSet result_file;
+        TokenFileSet result_file;
         tree->GetFileMatches(paths[i], result_file, true, true);
-        for (TokenFilesSet::const_iterator it = result_file.begin(); it != result_file.end(); ++it)
+        for (TokenFileSet::const_iterator it = result_file.begin(); it != result_file.end(); ++it)
             result.insert(*it);
     }
 
     if (result.empty())
     {
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         cbMessageBox(_("Could not find any file match in parser's database."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -2789,9 +2789,9 @@ int CodeCompletion::DoAllMethodsImpl()
     wxArrayInt arrint; // for selection (keeps indices)
     typedef std::map<int, std::pair<int, wxString> > ImplMap;
     ImplMap im;
-    for (TokenFilesSet::const_iterator itf = result.begin(); itf != result.end(); ++itf)
+    for (TokenFileSet::const_iterator itf = result.begin(); itf != result.end(); ++itf)
     {
-        const TokenIdxSet* tokens = tree->GetFilesMapByIndex(*itf);
+        const TokenIdxSet* tokens = tree->GetTokensBelongToFile(*itf);
         if (!tokens) continue;
 
         // loop tokens in file
@@ -2815,7 +2815,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
     if (arr.empty())
     {
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         cbMessageBox(_("No classes declared or no un-implemented class methods found."), _("Warning"), wxICON_WARNING);
         return -5;
@@ -2879,7 +2879,7 @@ int CodeCompletion::DoAllMethodsImpl()
         success = 0;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
@@ -3052,9 +3052,9 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         else
             fileParseFinished = false;
 
-        TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
         {
@@ -3086,7 +3086,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             }
         }
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         FunctionsScopeVec& functionsScopes = funcdata->m_FunctionsScope;
         NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;

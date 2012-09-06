@@ -91,7 +91,7 @@ struct ParserThreadOptions
 /** @brief A parser thread
   *
   * This class represents a worker thread for the Code Completion plug-in, the main task is doing the syntax
-  * analysis and add every token to the token tree. The Token tree (sometimes, we call it TokensTree ) is a
+  * analysis and add every token to the token tree. The Token tree (sometimes, we call it TokenTree ) is a
   * Patricia tree structure, more details can be seen in token.h and token.cpp. The buffer can  either be loaded
   * from a local file or directly used of a wxString.
   */
@@ -109,7 +109,7 @@ public:
                  const wxString&      bufferOrFilename,
                  bool                 isLocal,
                  ParserThreadOptions& parserThreadOptions,
-                 TokensTree*          tokensTree);
+                 TokenTree*           tokensTree);
 
     /** ParserThread destructor.*/
     virtual ~ParserThread();
@@ -145,11 +145,11 @@ protected:
       */
     int Execute()
     {
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         bool success = Parse();
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         return success ? 0 : 1;
     }
@@ -235,14 +235,14 @@ protected:
       * @param isOperator bool variable to determine an operator override function or not
       * @param isTmpl bool variable to determine it is a function declaration or implementation
       */
-    Token* DoAddToken(TokenKind kind,
+    Token* DoAddToken(TokenKind       kind,
                       const wxString& name,
-                      int line,
-                      int implLineStart = 0,
-                      int implLineEnd = 0,
+                      int             line,
+                      int             implLineStart = 0,
+                      int             implLineEnd = 0,
                       const wxString& args = wxEmptyString,
-                      bool isOperator = false,
-                      bool isImpl = false);
+                      bool            isOperator = false,
+                      bool            isImpl = false);
 
     /** return the actual token's base type.
       * e.g.: if the token type string is: "const wxString &"
@@ -267,9 +267,9 @@ private:
     /** TODO comment here?
       */
     Token* FindTokenFromQueue(std::queue<wxString>& q,
-                              Token* parent = 0,
-                              bool createIfNotExist = false,
-                              Token* parentIfCreated = 0);
+                              Token*                parent = 0,
+                              bool                  createIfNotExist = false,
+                              Token*                parentIfCreated = 0);
 
     /** Converts a full argument list (including variable names) to argument types only and strips spaces.
       * eg: if the argument list is like "(const TheClass* the_class, int my_int)"
@@ -325,7 +325,7 @@ private:
     ParserBase*          m_Parent;
 
     /** a pointer to the token tree, all the tokens will be added to that tree structure */
-    TokensTree*          m_TokensTree;
+    TokenTree*           m_TokenTree;
 
     /** parent Token, for example, when you are parsing in the class member variables, m_LastParent
       * holds a pointer to the current context, which is a token holding class name

@@ -10,7 +10,7 @@ public:
     NativeParserTest();
     ~NativeParserTest();
     bool TestExpression(wxString& expression,
-                        TokensTree * tree,
+                        TokenTree * tree,
                         const TokenIdxSet& searchScope,
                         TokenIdxSet&   result);
 };

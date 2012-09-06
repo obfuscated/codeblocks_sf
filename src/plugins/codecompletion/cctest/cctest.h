@@ -22,8 +22,8 @@ public:
     }
 
     void        Init();
-    ParserBase* GetParser()     { return m_pClient;     }
-    TokensTree* GetTokensTree() { return m_pTokensTree; }
+    ParserBase* GetParser()    { return m_pClient;     }
+    TokenTree*  GetTokenTree() { return m_pTokenTree; }
 
     bool     Start(const wxString& file);
     void     Clear();
@@ -32,10 +32,10 @@ public:
     wxString SerializeTree();
 
 protected:
-    CCTest() : m_pClient(NULL), m_pTokensTree(NULL) { ; }
+    CCTest() : m_pClient(NULL), m_pTokenTree(NULL) { ; }
     virtual ~CCTest()
     {
-        if (m_pTokensTree) { delete m_pTokensTree; m_pTokensTree = NULL; }
+        if (m_pTokenTree)  { delete m_pTokenTree;  m_pTokenTree = NULL; }
         if (m_pClient)     { delete m_pClient;     m_pClient     = NULL; }
     }
 
@@ -48,7 +48,7 @@ private:
     void PrintTokenTree(Token* token);
 
     ParserBase* m_pClient;
-    TokensTree* m_pTokensTree;
+    TokenTree*  m_pTokenTree;
 };
 
 #endif // CCTEST_H

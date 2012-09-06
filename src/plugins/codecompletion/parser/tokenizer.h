@@ -99,7 +99,7 @@ public:
     /** Tokenizer constructor.
      * @param filename the file to be opened.
      */
-    Tokenizer(TokensTree* tokensTree, const wxString& filename = wxEmptyString);
+    Tokenizer(TokenTree* tokensTree, const wxString& filename = wxEmptyString);
 
     /** Tokenizer destructor.*/
     ~Tokenizer();
@@ -422,7 +422,7 @@ private:
 
     /** Tokenizer options specify the skipping option */
     TokenizerOptions     m_TokenizerOptions;
-    TokensTree*          m_TokensTree;
+    TokenTree*           m_TokenTree;
 
     /** Filename of the buffer */
     wxString             m_Filename;

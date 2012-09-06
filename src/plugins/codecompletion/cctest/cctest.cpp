@@ -62,15 +62,15 @@ void CCTest::Init()
     Tokenizer::SetReplacementString(_T("WXIMPORT"),                         _T(""));
 }
 
-TokensTree* ParserBase::GetTokensTree()
+TokenTree* ParserBase::GetTokenTree()
 {
-    return CCTest::Get()->GetTokensTree();
+    return CCTest::Get()->GetTokenTree();
 }
 
 bool CCTest::Start(const wxString& file)
 {
     if (!m_pClient)     m_pClient     = new ParserBase();
-    if (!m_pTokensTree) m_pTokensTree = new TokensTree();
+    if (!m_pTokenTree) m_pTokenTree = new TokenTree();
 
     FileLoader* loader = new FileLoader(file);
     (*loader)();
@@ -97,7 +97,7 @@ bool CCTest::Start(const wxString& file)
 
     opts.loader                = loader;
 
-    ParserThread* pt = new ParserThread(m_pClient, file, true, opts, m_pTokensTree);
+    ParserThread* pt = new ParserThread(m_pClient, file, true, opts, m_pTokenTree);
     bool success = pt->Parse();
     delete pt;
 
@@ -106,21 +106,21 @@ bool CCTest::Start(const wxString& file)
 
 void CCTest::Clear()
 {
-    if (!m_pTokensTree) m_pTokensTree = new TokensTree();
-    m_pTokensTree->clear();
+    if (!m_pTokenTree) m_pTokenTree = new TokenTree();
+    m_pTokenTree->clear();
 }
 
 void CCTest::PrintTree()
 {
-    if (!m_pTokensTree) return;
+    if (!m_pTokenTree) return;
 
-    TokenList& tokens = m_pTokensTree->m_Tokens;
+    TokenList& tokens = m_pTokenTree->m_Tokens;
     for (TokenList::iterator it=tokens.begin(); it!=tokens.end(); ++it)
     {
         Token* token = (*it);
         if (token)
         {
-          Token* parent = m_pTokensTree->at(token->m_ParentIndex);
+          Token* parent = m_pTokenTree->at(token->m_ParentIndex);
           if (!parent)
               PrintTokenTree(token);
         }
@@ -129,7 +129,7 @@ void CCTest::PrintTree()
 
 void CCTest::PrintTokenTree(Token* token)
 {
-    if (!token || !m_pTokensTree) return;
+    if (!token || !m_pTokenTree) return;
 
     wxString log;
     if (!token->m_Children.empty()) log << _T("+");
@@ -143,16 +143,16 @@ void CCTest::PrintTokenTree(Token* token)
     TokenIdxSet& ids = token->m_Children;
     for (TokenIdxSet::iterator it=ids.begin(); it!=ids.end(); ++it)
     {
-        Token* token = m_pTokensTree->at(*it);
+        Token* token = m_pTokenTree->at(*it);
         PrintTokenTree(token); // recursion
     }
 }
 
 void CCTest::PrintList()
 {
-    if (!m_pTokensTree) return;
+    if (!m_pTokenTree) return;
 
-    TokenList& tokens = m_pTokensTree->m_Tokens;
+    TokenList& tokens = m_pTokenTree->m_Tokens;
     for (TokenList::iterator it=tokens.begin(); it!=tokens.end(); ++it)
     {
         Token* token = (*it);
@@ -170,7 +170,7 @@ void CCTest::PrintList()
 
 wxString CCTest::SerializeTree()
 {
-  if (!m_pTokensTree) return wxEmptyString;
+  if (!m_pTokenTree) return wxEmptyString;
 
-  return m_pTokensTree->m_Tree.Serialize();
+  return m_pTokenTree->m_Tree.Serialize();
 }

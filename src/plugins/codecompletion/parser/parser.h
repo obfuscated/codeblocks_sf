@@ -172,8 +172,8 @@ public:
     virtual bool     Done()          { return true;             }
     virtual wxString NotDoneReason() { return wxEmptyString;    }
 
-    virtual TokensTree* GetTokensTree(); // allow other implementations of derived (dummy) classes
-    TokensTree* GetTempTokensTree()  { return m_TempTokensTree; }
+    virtual TokenTree* GetTokenTree(); // allow other implementations of derived (dummy) classes
+    TokenTree* GetTempTokenTree()  { return m_TempTokenTree; }
 
     void AddIncludeDir(const wxString& dir);
     const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
@@ -192,16 +192,16 @@ private:
     wxString FindFirstFileInIncludeDirs(const wxString& file);
 
 protected:
-    /** each Parser class contains a TokensTree object which used to record tokens per project
+    /** each Parser class contains a TokenTree object which used to record tokens per project
       * this tree will be created in the constructor and destroyed in destructor.
       */
-    TokensTree*          m_TokensTree;
+    TokenTree*           m_TokenTree;
 
     /** a temp Tokenstree hold some temporary tokens, e.g. parsing a buffer containing some
       * preprocessor directives, see ParseBufferForFunctions() like functions
       * this tree will be created in the constructor and destroyed in destructor.
       */
-    TokensTree*          m_TempTokensTree;
+    TokenTree*           m_TempTokenTree;
 
     ParserOptions        m_Options;
     BrowserOptions       m_BrowserOptions;
@@ -213,7 +213,7 @@ private:
 
 /** @brief Parser class holds all the tokens of a C::B project
   *
-  * Parser class contains the TokensTree which is a trie structure to record the token information.
+  * Parser class contains the TokenTree which is a trie structure to record the token information.
   * For details about trie, see http://en.wikipedia.org/wiki/Trie
   * The parser class controls ParserThreads in a pool, which holds ParserThread objects for each source file.
   * Batch parse mode means we have a lot of files to be parsed, so a lot of ParserThreads were generated and

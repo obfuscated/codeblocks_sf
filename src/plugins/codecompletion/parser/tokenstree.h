@@ -21,21 +21,21 @@ enum FileParsingStatus
 typedef std::deque<int>                                          TokenIdxList;
 typedef std::vector<Token*>                                      TokenList;
 typedef SearchTree<TokenIdxSet>                                  TokenSearchTree;
-typedef BasicSearchTree                                          TokenFilenamesMap;
-typedef std::map< size_t, TokenIdxSet,       std::less<size_t> > TokenFilesMap;
-typedef std::map< size_t, FileParsingStatus, std::less<size_t> > TokenFilesStatus;
+typedef BasicSearchTree                                          TokenFilenameMap;
+typedef std::map< size_t, TokenIdxSet,       std::less<size_t> > TokenFileMap;
+typedef std::map< size_t, FileParsingStatus, std::less<size_t> > TokenFileStatusMap;
 
-extern wxMutex s_TokensTreeMutex;
+extern wxMutex s_TokenTreeMutex;
 
-class TokensTree
+class TokenTree
 {
     friend class CCDebugInfo;
     friend class CCTest;
     friend class CCTestFrame;
 public:
 
-    TokensTree();
-    virtual ~TokensTree();
+    TokenTree();
+    virtual ~TokenTree();
 
     // STL compatibility functions
     void                  clear();
@@ -68,20 +68,20 @@ public:
     // Protected access to internal lists / maps
     const TokenList*     GetTokens() const                        { return &m_Tokens;              }
     const TokenIdxSet*   GetGlobalNameSpaces() const              { return &m_GlobalNameSpaces;    }
-    const TokenFilesMap* GetFilesMap() const                      { return &m_FilesMap;            }
-    const TokenIdxSet*   GetFilesMapByIndex(size_t fileIdx) const
+    const TokenFileMap*  GetFilesMap() const                      { return &m_FileMap;            }
+    const TokenIdxSet*   GetTokensBelongToFile(size_t fileIdx) const
     {
-      TokenFilesMap::const_iterator it = m_FilesMap.find(fileIdx);
-      return (it == m_FilesMap.end() ? 0 : &(it->second));
+      TokenFileMap::const_iterator it = m_FileMap.find(fileIdx);
+      return (it == m_FileMap.end() ? 0 : &(it->second));
     }
-    const TokenFilesSet* GetFilesToBeReparsed() const             { return &m_FilesToBeReparsed;   }
+    const TokenFileSet* GetFilesToBeReparsed() const             { return &m_FilesToBeReparsed;   }
 
-    size_t       GetFilesMapSize() const                            { return m_FilesMap.size();             }
-    void         InsertFileMapByIndex(size_t fileIdx, int tokenIdx) { m_FilesMap[fileIdx].insert(tokenIdx); }
-    void         EraseFileMapByIndex(size_t fileIdx)                { m_FilesMap.erase(fileIdx);            }
+    size_t       GetFileMapSize() const                            { return m_FileMap.size();             }
+    void         InsertTokenBelongToFile(size_t fileIdx, int tokenIdx) { m_FileMap[fileIdx].insert(tokenIdx); }
+    void         EraseFileMapInFileMap(size_t fileIdx)                { m_FileMap.erase(fileIdx);            }
 
-    size_t       GetFileStatusCountForIndex(size_t fileIdx) const   { return m_FilesStatus.count(fileIdx);  }
-    void         EraseFileStatusByIndex(size_t fileIdx)             { m_FilesStatus.erase(fileIdx);         }
+    size_t       GetFileStatusCountForIndex(size_t fileIdx) const   { return m_FileStatusMap.count(fileIdx);  }
+    void         EraseFileStatusByIndex(size_t fileIdx)             { m_FileStatusMap.erase(fileIdx);         }
 
     void         EraseFilesToBeReparsedByIndex(size_t fileIdx)      { m_FilesToBeReparsed.erase(fileIdx);   }
 
@@ -130,10 +130,10 @@ protected:
     TokenIdxSet       m_TopNameSpaces;
     TokenIdxSet       m_GlobalNameSpaces;
 
-    TokenFilenamesMap m_FilenamesMap;      /** Map: file names -> file indices */
-    TokenFilesMap     m_FilesMap;          /** Map: file indices -> sets of TokenIndexes */
-    TokenFilesStatus  m_FilesStatus;       /** Map: file indices -> status */
-    TokenFilesSet     m_FilesToBeReparsed; /** Set: file indices */
+    TokenFilenameMap    m_FilenameMap;         /** Map: file names -> file indices */
+    TokenFileMap        m_FileMap;             /** Map: file indices -> sets of TokenIndexes */
+    TokenFileStatusMap  m_FileStatusMap;       /** Map: file indices -> status */
+    TokenFileSet        m_FilesToBeReparsed;   /** Set: file indices */
 };
 
 #endif // TOKENSTREE_H

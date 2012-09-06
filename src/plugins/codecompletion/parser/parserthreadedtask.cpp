@@ -135,13 +135,13 @@ int MarkFileAsLocalThreadedTask::Execute()
 
         if (ParserCommon::FileType(pf->relativeFilename) != ParserCommon::ftOther)
         {
-            TokensTree* tree = m_Parser->GetTokensTree();
+            TokenTree* tree = m_Parser->GetTokenTree();
 
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             tree->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, m_Project);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
         }
     }
 

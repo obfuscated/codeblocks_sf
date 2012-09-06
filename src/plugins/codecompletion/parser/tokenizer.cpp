@@ -84,8 +84,8 @@ namespace TokenizerConsts
 wxStringHashMap     Tokenizer::s_Replacements;
 static const size_t s_MaxRepeatReplaceCount = 50;
 
-Tokenizer::Tokenizer(TokensTree* tokensTree, const wxString& filename) :
-    m_TokensTree(tokensTree),
+Tokenizer::Tokenizer(TokenTree* tokensTree, const wxString& filename) :
+    m_TokenTree(tokensTree),
     m_Filename(filename),
     m_BufferLen(0),
     m_TokenIndex(0),
@@ -1168,10 +1168,10 @@ void Tokenizer::MacroReplace(wxString& str)
 {
     if (m_IsReplaceParsing)
     {
-        const int id = m_TokensTree->TokenExists(str, -1, tkPreprocessor);
+        const int id = m_TokenTree->TokenExists(str, -1, tkPreprocessor);
         if (id != -1)
         {
-            const Token* token = m_TokensTree->at(id);
+            const Token* token = m_TokenTree->at(id);
             if (token)
             {
                 bool replaced = false;
@@ -1274,10 +1274,10 @@ bool Tokenizer::CalcConditionExpression()
 
         if (token.Len() > 1 && !wxIsdigit(token[0])) // handle macro
         {
-            const int id = m_TokensTree->TokenExists(token, -1, tkPreprocessor);
+            const int id = m_TokenTree->TokenExists(token, -1, tkPreprocessor);
             if (id != -1)
             {
-                const Token* tk = m_TokensTree->at(id);
+                const Token* tk = m_TokenTree->at(id);
                 if (tk)
                 {
                     if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
@@ -1345,7 +1345,7 @@ bool Tokenizer::IsMacroDefined()
 {
     while (SkipWhiteSpace() || SkipComment())
         ;
-    int id = m_TokensTree->TokenExists(DoGetToken(), -1, tkPreprocessor);
+    int id = m_TokenTree->TokenExists(DoGetToken(), -1, tkPreprocessor);
     SkipToEOL(false);
     return (id != -1);
 }

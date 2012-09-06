@@ -32,7 +32,7 @@ namespace InsertClassMethodDlgHelper
     {
         if (!parentToken)
             return;
-        TokensTree* tree = parentToken->GetTree();
+        TokenTree* tree = parentToken->GetTree();
         if (!tree)
             return;
 
@@ -134,7 +134,7 @@ void InsertClassMethodDlg::FillClasses()
     lb->Freeze();
     lb->Clear();
 
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     for (size_t i = 0; i < tree->size(); ++i)
     {
         Token* token = tree->at(i);

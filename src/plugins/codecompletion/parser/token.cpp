@@ -59,7 +59,7 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line, size_t 
     m_Index(-1),
     m_ParentIndex(-1),
     m_UserData(0),
-    m_TokensTree(0),
+    m_TokenTree(0),
     m_Ticket(ticket)
 {
     //ctor
@@ -172,16 +172,16 @@ bool Token::IsValidAncestor(const wxString& ancestor)
 
 wxString Token::GetFilename() const
 {
-    if (!m_TokensTree)
+    if (!m_TokenTree)
         return wxString(_T(""));
-    return m_TokensTree->GetFilename(m_FileIdx);
+    return m_TokenTree->GetFilename(m_FileIdx);
 }
 
 wxString Token::GetImplFilename() const
 {
-    if (!m_TokensTree)
+    if (!m_TokenTree)
         return wxString(_T(""));
-    return m_TokensTree->GetFilename(m_ImplFileIdx);
+    return m_TokenTree->GetFilename(m_ImplFileIdx);
 }
 
 wxString Token::GetFormattedArgs() const
@@ -224,7 +224,7 @@ wxString Token::GetStrippedArgs() const
     return args;
 }
 
-bool Token::MatchesFiles(const TokenFilesSet& files)
+bool Token::MatchesFiles(const TokenFileSet& files)
 {
     if (!files.size())
         return true;
@@ -242,12 +242,12 @@ wxString Token::GetNamespace() const
 {
     const wxString dcolon(_T("::"));
     wxString res;
-    Token* parentToken = m_TokensTree->at(m_ParentIndex);
+    Token* parentToken = m_TokenTree->at(m_ParentIndex);
     while (parentToken)
     {
         res.Prepend(dcolon);
         res.Prepend(parentToken->m_Name);
-        parentToken = m_TokensTree->at(parentToken->m_ParentIndex);
+        parentToken = m_TokenTree->at(parentToken->m_ParentIndex);
     }
     return res;
 }
@@ -262,31 +262,31 @@ bool Token::AddChild(int childIdx)
 
 bool Token::DeleteAllChildren()
 {
-    if (!m_TokensTree)
+    if (!m_TokenTree)
         return false;
     for (;;)
     {
         TokenIdxSet::const_iterator it = m_Children.begin();
         if (it == m_Children.end())
             break;
-        m_TokensTree->erase(*it);
+        m_TokenTree->erase(*it);
     }
     return true;
 }
 
 bool Token::InheritsFrom(int idx) const
 {
-    if (idx < 0 || !m_TokensTree)
+    if (idx < 0 || !m_TokenTree)
         return false;
 
-    Token* token = m_TokensTree->at(idx);
+    Token* token = m_TokenTree->at(idx);
     if (!token)
         return false;
 
     for (TokenIdxSet::const_iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
     {
         int idx2 = *it;
-        const Token* ancestor = m_TokensTree->at(idx2);
+        const Token* ancestor = m_TokenTree->at(idx2);
         if (!ancestor)
             continue;
 

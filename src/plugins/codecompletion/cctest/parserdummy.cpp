@@ -87,7 +87,7 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
     return ParserCommon::ftOther;
 }
 
-ParserBase::ParserBase() : m_TokensTree(NULL), m_TempTokensTree(NULL)
+ParserBase::ParserBase() : m_TokenTree(NULL), m_TempTokenTree(NULL)
 {
     // override default constructor of ParserBase (parser.h)
 }

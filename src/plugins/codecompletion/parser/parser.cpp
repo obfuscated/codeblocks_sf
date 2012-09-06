@@ -138,24 +138,24 @@ namespace ParserCommon
 
 ParserBase::ParserBase()
 {
-    m_TokensTree     = new TokensTree;
-    m_TempTokensTree = new TokensTree;
+    m_TokenTree     = new TokenTree;
+    m_TempTokenTree = new TokenTree;
     ReadOptions();
 }
 
 ParserBase::~ParserBase()
 {
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    Delete(m_TokensTree);
-    Delete(m_TempTokensTree);
+    Delete(m_TokenTree);
+    Delete(m_TempTokenTree);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 }
 
-TokensTree* ParserBase::GetTokensTree()
+TokenTree* ParserBase::GetTokenTree()
 {
-    return m_TokensTree;
+    return m_TokenTree;
 }
 
 bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
@@ -333,21 +333,21 @@ size_t ParserBase::FindTokensInFile(const wxString& filename, TokenIdxSet& resul
 
     TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), filename.wx_str());
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     TokenIdxSet tmpresult;
-    if ( m_TokensTree->FindTokensInFile(filename, tmpresult, kindMask) )
+    if ( m_TokenTree->FindTokensInFile(filename, tmpresult, kindMask) )
     {
         for (TokenIdxSet::const_iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
         {
-            const Token* token = m_TokensTree->at(*it);
+            const Token* token = m_TokenTree->at(*it);
             if (token)
                 result.insert(*it);
         }
         tokens_found = result.size();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return tokens_found;
 }
@@ -542,14 +542,14 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         bool canparse = false;
         {
             if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            canparse = !m_TokensTree->IsFileParsed(filename);
+            canparse = !m_TokenTree->IsFileParsed(filename);
             if (canparse)
-                canparse = m_TokensTree->ReserveFileForParsing(filename, true) != 0;
+                canparse = m_TokenTree->ReserveFileForParsing(filename, true) != 0;
 
             if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
         }
 
         if (!canparse)
@@ -565,7 +565,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         if (!opts.loader)
             opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
 
-        ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokensTree);
+        ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokenTree);
         TRACE(_T("Parse() : Parsing %s"), filename.wx_str());
 
         if (m_IsPriority)
@@ -575,13 +575,13 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
                 TRACE(_T("Parse() : Parsing priority header, %s"), filename.wx_str());
 
                 if (!locked)
-                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
                 result = thread->Parse();
                 delete thread;
 
                 if (!locked)
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
                 return true;
             }
@@ -656,13 +656,13 @@ bool Parser::ParseBuffer(const wxString& buffer,   bool isLocal,
 
     opts.handleFunctions      = false;
 
-    ParserThread thread(this, buffer, isLocal, opts, m_TokensTree);
+    ParserThread thread(this, buffer, isLocal, opts, m_TokenTree);
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     bool success = thread.Parse();
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
@@ -681,13 +681,13 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 
     opts.handleFunctions      = true;
 
-    ParserThread thread(this, buffer, false, opts, m_TempTokensTree);
+    ParserThread thread(this, buffer, false, opts, m_TempTokenTree);
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     bool success = thread.Parse();
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
@@ -703,13 +703,13 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = false;
 
-    ParserThread thread(this, wxEmptyString, true, opts, m_TempTokensTree);
+    ParserThread thread(this, wxEmptyString, true, opts, m_TempTokenTree);
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     bool success = thread.ParseBufferForNamespaces(buffer, result);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
@@ -725,30 +725,30 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = false;
 
-    ParserThread thread(this, wxEmptyString, false, opts, m_TempTokensTree);
+    ParserThread thread(this, wxEmptyString, false, opts, m_TempTokenTree);
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     bool success = thread.ParseBufferForUsingNamespace(buffer, result);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
 }
 
 bool Parser::RemoveFile(const wxString& filename)
 {
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    const size_t fileIdx = m_TokensTree->InsertFileOrGetIndex(filename);
-    const bool   result  = m_TokensTree->GetFileStatusCountForIndex(fileIdx);
+    const size_t fileIdx = m_TokenTree->InsertFileOrGetIndex(filename);
+    const bool   result  = m_TokenTree->GetFileStatusCountForIndex(fileIdx);
 
-    m_TokensTree->RemoveFile(filename);
-    m_TokensTree->EraseFileMapByIndex(fileIdx);
-    m_TokensTree->EraseFileStatusByIndex(fileIdx);
-    m_TokensTree->EraseFilesToBeReparsedByIndex(fileIdx);
+    m_TokenTree->RemoveFile(filename);
+    m_TokenTree->EraseFileMapInFileMap(fileIdx);
+    m_TokenTree->EraseFileStatusByIndex(fileIdx);
+    m_TokenTree->EraseFilesToBeReparsedByIndex(fileIdx);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return result;
 }
@@ -789,11 +789,11 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     else
         m_LocalFiles.erase(filename);
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    m_TokensTree->FlagFileForReparsing(filename);
+    m_TokenTree->FlagFileForReparsing(filename);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     m_NeedsReparse = true;
     m_ReparseTimer.Start(ParserCommon::PARSER_REPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
@@ -846,8 +846,8 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         return;
     }
 
-    if (!m_TokensTree)
-        cbThrow(_T("m_TokensTree is a nullptr?!"));
+    if (!m_TokenTree)
+        cbThrow(_T("m_TokenTree is a nullptr?!"));
 
     if (!m_IsParsing)
     {
@@ -908,17 +908,17 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         wxString prj = (m_Project ? m_Project->GetTitle() : _T("*NONE*"));
         wxString parseEndLog;
 
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         parseEndLog.Printf(_T("Project '%s' parsing stage done (%lu total parsed files, ")
                            _T("%lu tokens in %ld minute(s), %ld.%03ld seconds)."), prj.wx_str(),
-                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->GetFilesMapSize()) : 0,
-                           m_TokensTree ? static_cast<unsigned long>(m_TokensTree->realsize())        : 0,
+                           m_TokenTree ? static_cast<unsigned long>(m_TokenTree->GetFileMapSize()) : 0,
+                           m_TokenTree ? static_cast<unsigned long>(m_TokenTree->realsize())       : 0,
                            (m_LastStopWatchTime / 60000),
                            (m_LastStopWatchTime / 1000) % 60,
                            (m_LastStopWatchTime % 1000) );
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
         ProcessParserEvent(m_ParserState, ParserCommon::idParserEnd, parseEndLog);
         m_ParserState = ParserCommon::ptUndefined;
@@ -1046,25 +1046,25 @@ void Parser::ReparseModifiedFiles()
 
     std::queue<size_t>   files_idx;
     std::queue<wxString> files_list;
-    TokenFilesSet::const_iterator it;
+    TokenFileSet::const_iterator it;
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     // Collect files to be re-parsed and therefore be removed before:
     // Loop two times so that we reparse modified *header* files first
     // because they usually hold definitions which need to exist
     // when we parse the normal source files...
-    for (it = m_TokensTree->GetFilesToBeReparsed()->begin(); it != m_TokensTree->GetFilesToBeReparsed()->end(); ++it)
+    for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
-        wxString filename = m_TokensTree->GetFilename(*it);
+        wxString filename = m_TokenTree->GetFilename(*it);
         if ( FileTypeOf(filename) == ftSource ) // ignore source files (*.cpp etc)
             continue;
         files_list.push(filename);
         files_idx.push(*it);
     }
-    for (it = m_TokensTree->GetFilesToBeReparsed()->begin(); it != m_TokensTree->GetFilesToBeReparsed()->end(); ++it)
+    for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
-        wxString filename = m_TokensTree->GetFilename(*it);
+        wxString filename = m_TokenTree->GetFilename(*it);
         if ( FileTypeOf(filename) != ftSource ) // ignore non-source files (*.h etc)
             continue;
         files_list.push(filename);
@@ -1074,11 +1074,11 @@ void Parser::ReparseModifiedFiles()
     // Now actually remove the files from the tree
     while (!files_idx.empty())
     {
-        m_TokensTree->RemoveFile(files_idx.front());
+        m_TokenTree->RemoveFile(files_idx.front());
         files_idx.pop();
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     if (!files_list.empty() && m_ParserState == ParserCommon::ptUndefined)
         m_ParserState = ParserCommon::ptReparseFile;
@@ -1096,11 +1096,11 @@ bool Parser::IsFileParsed(const wxString& filename)
 {
     bool isParsed = false;
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    isParsed = m_TokensTree->IsFileParsed(filename);
+    isParsed = m_TokenTree->IsFileParsed(filename);
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     if (!isParsed)
     {

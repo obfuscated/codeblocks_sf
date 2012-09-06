@@ -61,7 +61,7 @@ NativeParserTest::~NativeParserTest()
 }
 
 bool NativeParserTest::TestExpression(wxString&          expression,
-                                      TokensTree*        tree,
+                                      TokenTree*         tree,
                                       const TokenIdxSet& searchScope,
                                       TokenIdxSet&       result)
 {

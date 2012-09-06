@@ -171,9 +171,9 @@ bool CodeRefactoring::Parse()
     // handle local variables
     bool isLocalVariable = false;
 
-    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+    TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     const Token* token = tree->at(*targetResult.begin());
     if (token)
@@ -183,7 +183,7 @@ bool CodeRefactoring::Parse()
             isLocalVariable = true;
     }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     wxArrayString files;
     cbProject* project = m_NativeParser.GetProjectByEditor(editor);
@@ -290,14 +290,14 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
     const Token* parentOfLocalVariable = nullptr;
     if (isLocalVariable)
     {
-        TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         const Token* token = tree->at(*targetResult.begin());
         parentOfLocalVariable = tree->at(token->m_ParentIndex);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
 
     // now that list is filled, we'll search
@@ -390,9 +390,9 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                 {
                     bool do_continue = false;
 
-                    TokensTree* tree = m_NativeParser.GetParser().GetTokensTree();
+                    TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
-                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
                     const Token* token = tree->at(*findIter);
                     if (token)
@@ -405,7 +405,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
                         }
                     }
 
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
                     if (do_continue) continue;
                 }

@@ -13,10 +13,10 @@
 #include <map>
 
 class Token;
-class TokensTree;
+class TokenTree;
 
 typedef std::set< int,    std::less<int>    > TokenIdxSet;
-typedef std::set< size_t, std::less<size_t> > TokenFilesSet;
+typedef std::set< size_t, std::less<size_t> > TokenFileSet;
 
 enum TokenScope
 {
@@ -51,7 +51,7 @@ enum TokenKind
 
 class Token
 {
-friend class TokensTree;
+friend class TokenTree;
 public:
     Token(const wxString& name, unsigned int file, unsigned int line, size_t ticket);
     ~Token();
@@ -69,21 +69,21 @@ public:
     wxString GetFormattedArgs() const; // remove all '\n'
     wxString GetStrippedArgs() const; // remove all default value
     size_t GetTicket() const { return m_Ticket; }
-    bool MatchesFiles(const TokenFilesSet& files);
+    bool MatchesFiles(const TokenFileSet& files);
 
-    TokensTree* GetTree() const { return m_TokensTree; }
+    TokenTree* GetTree() const { return m_TokenTree; }
     bool IsValidAncestor(const wxString& ancestor);
 
     wxString                     m_FullType; // this is the full return value (if any): e.g. const wxString&
     wxString                     m_BaseType; // this is what the parser believes is the actual return value: e.g. wxString
-    wxString                     m_Name;     // Token's name, it can be searched in the TokensTree
+    wxString                     m_Name;     // Token's name, it can be searched in the TokenTree
     wxString                     m_Args;     // If it is a function Token, then this value is function arguments
                                              // e.g.   (int arg1 = 10, float arg2 = 9.0)
     wxString                     m_BaseArgs; // stripped arguments e.g. (int arg1, float arg2)
 
     wxString                     m_AncestorsString; // all ancestors comma-separated list
 
-    unsigned int                 m_FileIdx;       // File index in TokensTree
+    unsigned int                 m_FileIdx;       // File index in TokenTree
     unsigned int                 m_Line;          // Line index where the token was met, which is 0/1 based
     unsigned int                 m_ImplFileIdx;   // function implementation file index
     unsigned int                 m_ImplLine;      // function implementation line index
@@ -115,7 +115,7 @@ public:
     void*                        m_UserData;        // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
 
 protected:
-    TokensTree*                  m_TokensTree;      // a pointer to TokensTree
+    TokenTree*                   m_TokenTree;      // a pointer to TokenTree
     size_t                       m_Ticket;          // This is used in classbrowser to avoid duplication
 };
 

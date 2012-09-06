@@ -339,15 +339,15 @@ CCDebugInfo::~CCDebugInfo()
 
 void CCDebugInfo::FillFiles()
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     lstFiles->Freeze();
     lstFiles->Clear();
 
-    for (size_t i = 0; i < tree->m_FilenamesMap.size(); ++i)
+    for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
     {
-        wxString file = tree->m_FilenamesMap.GetString(i);
+        wxString file = tree->m_FilenameMap.GetString(i);
         if (!file.IsEmpty())
             lstFiles->Append(file);
     }
@@ -396,7 +396,7 @@ void CCDebugInfo::DisplayTokenInfo()
         return;
     }
 
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     const Token* parent = tree->at(m_Token->m_ParentIndex);
@@ -446,7 +446,7 @@ void CCDebugInfo::DisplayTokenInfo()
 
 void CCDebugInfo::FillChildren()
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     cmbChildren->Clear();
@@ -462,7 +462,7 @@ void CCDebugInfo::FillChildren()
 
 void CCDebugInfo::FillAncestors()
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     cmbAncestors->Clear();
@@ -478,7 +478,7 @@ void CCDebugInfo::FillAncestors()
 
 void CCDebugInfo::FillDescendants()
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     cmbDescendants->Clear();
@@ -494,12 +494,12 @@ void CCDebugInfo::FillDescendants()
 
 void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 {
-    if (!m_Parser || !m_Parser->GetTokensTree())
+    if (!m_Parser || !m_Parser->GetTokenTree())
         return;
 
     lblInfo->SetLabel(wxString::Format(_("The parser contains %lu tokens, found in %lu files"),
-                                       static_cast<unsigned long>(m_Parser->GetTokensTree()->size()),
-                                       static_cast<unsigned long>(m_Parser->GetTokensTree()->m_FilesMap.size())));
+                                       static_cast<unsigned long>(m_Parser->GetTokenTree()->size()),
+                                       static_cast<unsigned long>(m_Parser->GetTokenTree()->m_FileMap.size())));
 
     DisplayTokenInfo();
     FillFiles();
@@ -510,7 +510,7 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 
 void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
 
     wxString search = txtFilter->GetValue();
@@ -570,7 +570,7 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
     for (TokenIdxSet::const_iterator it = m_Token->m_Ancestors.begin(); it != m_Token->m_Ancestors.end(); ++it)
     {
         if (count == idx)
-            m_Token = m_Parser->GetTokensTree()->at(*it);
+            m_Token = m_Parser->GetTokenTree()->at(*it);
         {
             DisplayTokenInfo();
             break;
@@ -590,7 +590,7 @@ void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
     {
         if (count == idx)
         {
-            m_Token = m_Parser->GetTokensTree()->at(*it);
+            m_Token = m_Parser->GetTokenTree()->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -603,7 +603,7 @@ void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
     if (!m_Token || m_Token->m_ParentIndex == -1)
         return;
 
-    m_Token = m_Parser->GetTokensTree()->at(m_Token->m_ParentIndex);
+    m_Token = m_Parser->GetTokenTree()->at(m_Token->m_ParentIndex);
     DisplayTokenInfo();
 }
 
@@ -618,7 +618,7 @@ void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
     {
         if (count == idx)
         {
-            m_Token = m_Parser->GetTokensTree()->at(*it);
+            m_Token = m_Parser->GetTokenTree()->at(*it);
             DisplayTokenInfo();
             break;
         }
@@ -628,7 +628,7 @@ void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
 
 void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 {
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
 
     wxArrayString saveWhat;
     saveWhat.Add(_("Dump the tokens tree"));
@@ -675,9 +675,9 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
         case 2:
             {
                 wxString files;
-                for (size_t i = 0; i < tree->m_FilenamesMap.size(); ++i)
+                for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
                 {
-                    wxString file = tree->m_FilenamesMap.GetString(i);
+                    wxString file = tree->m_FilenameMap.GetString(i);
                     if (!file.IsEmpty())
                         files += file + _T("\r\n");
                 }
@@ -705,9 +705,9 @@ void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
                     wxWindowDisabler disableAll;
                     wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
                                        Manager::Get()->GetAppWindow());
-                    for (size_t i = 0; i < tree->m_FilenamesMap.size(); ++i)
+                    for (size_t i = 0; i < tree->m_FilenameMap.size(); ++i)
                     {
-                        const wxString file = tree->m_FilenamesMap.GetString(i);
+                        const wxString file = tree->m_FilenameMap.GetString(i);
                         if (!file.IsEmpty())
                         {
                             fileTokens += file + _T("\r\n");

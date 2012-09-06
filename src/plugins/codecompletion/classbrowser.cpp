@@ -527,14 +527,14 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
-//            TokensTree* tree = m_Parser->GetTokensTree(); // the one used inside CCDebugInfo
+//            TokenTree* tree = m_Parser->GetTokenTree(); // the one used inside CCDebugInfo
 
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             CCDebugInfo info(wx_tree, m_Parser, ctd->m_Token);
             info.ShowModal();
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
             return;
         }
@@ -691,16 +691,16 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     if (search.IsEmpty() || !m_Parser)
         return;
 
-    TokensTree* tree = m_Parser->GetTokensTree();
+    TokenTree* tree = m_Parser->GetTokenTree();
 
     TokenIdxSet result;
     size_t count = 0;
     {
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         count = tree->FindMatches(search, result, false, true);
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
 
     const Token* token = 0;
@@ -712,11 +712,11 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     }
     else if (count == 1)
     {
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         token = tree->at(*result.begin());
 
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
     else if (count > 1)
     {
@@ -724,7 +724,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             const Token* sel = tree->at(*it);
             if (sel)
@@ -733,7 +733,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
                 int_selections.Add(*it);
             }
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
         }
         if (selections.GetCount() > 1)
         {
@@ -741,21 +741,21 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             if (sel == -1)
                 return;
 
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             token = tree->at(int_selections[sel]);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
         }
         else if (selections.GetCount() == 1)
         {
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
             // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
             token = tree->at(int_selections[0]);
 
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokensTreeMutex)
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
         }
     }
 
@@ -862,7 +862,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
                                       m_ActiveFilename,
                                       activeProject,
                                       m_Parser->ClassBrowserOptions(),
-                                      m_Parser->GetTokensTree(),
+                                      m_Parser->GetTokenTree(),
                                       idThreadEvent);
 
     if      (thread_needs_run)

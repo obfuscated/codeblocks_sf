@@ -25,7 +25,7 @@ public:
     // Called from external:
     void Init(NativeParser* np, CCTreeCtrl* treeTop, CCTreeCtrl* treeBottom,
               const wxString& active_filename, void* user_data/*active project*/,
-              const BrowserOptions& bo, TokensTree* tt,
+              const BrowserOptions& bo, TokenTree* tt,
               int idThreadEvent);
 
     // Called from external, BuildTree():
@@ -91,10 +91,10 @@ protected:
     wxString         m_ActiveFilename;
     void*            m_UserData; // active project
     BrowserOptions   m_BrowserOptions;
-    TokensTree*      m_TokensTree;
+    TokenTree*       m_TokenTree;
 
     // pair of current-file-filter
-    TokenFilesSet    m_CurrentFileSet;
+    TokenFileSet     m_CurrentFileSet;
     TokenIdxSet      m_CurrentTokenSet;
     TokenIdxSet      m_CurrentGlobalTokensSet;
 
