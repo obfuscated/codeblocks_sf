@@ -204,11 +204,16 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         m_findPage = (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0)); // no active editor, so only replace-in-files
         (XRCCTRL(*this, "nbReplace", wxNotebook)->RemovePage(0)); // no active editor, so only replace-in-files
         XRCCTRL(*this,  "cmbFind2",  wxComboBox)->SetFocus();
+        m_findReplaceInFilesActive = true;
     }
     else if (m_findReplaceInFilesActive)
     {
         XRCCTRL(*this, "nbReplace", wxNotebook)->SetSelection(1); // Search->Replace in Files was selected
         XRCCTRL(*this, "cmbFind2",  wxComboBox)->SetFocus();
+    }
+    else
+    {
+        XRCCTRL(*this, "cmbFind1",  wxComboBox)->SetFocus();
     }
 
     GetSizer()->SetSizeHints(this);
@@ -313,7 +318,7 @@ wxString FindReplaceDlg::GetReplaceString() const
 
 bool FindReplaceDlg::IsFindInFiles() const
 {
-    return (m_findReplaceInFilesActive || m_findPage==0);
+    return m_findReplaceInFilesActive;
 }
 
 bool FindReplaceDlg::GetDeleteOldSearches() const
@@ -529,6 +534,11 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
             txtFind1->SetValue(txtFind2->GetValue());
             cmbFind1->SetValue(cmbFind2->GetValue());
             cmbReplace1->SetValue(cmbReplace2->GetValue());
+            if(IsMultiLine())
+                txtFind1->SetFocus();
+            else
+                cmbFind1->SetFocus();
+            m_findReplaceInFilesActive = false;
         }
         else if (event.GetSelection() == 1)
         {
@@ -536,6 +546,12 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
             txtFind2->SetValue(txtFind1->GetValue());
             cmbFind2->SetValue(cmbFind1->GetValue());
             cmbReplace2->SetValue(cmbReplace1->GetValue());
+            cmbFind1->SetFocus();
+            if(IsMultiLine())
+                txtFind2->SetFocus();
+            else
+                cmbFind2->SetFocus();
+            m_findReplaceInFilesActive = true;
         }
     }
 
