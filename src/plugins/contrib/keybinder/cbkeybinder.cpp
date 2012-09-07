@@ -11,7 +11,7 @@
 // its "minimal.cpp" sample program
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "cbkeybinder.h"
+    #pragma implementation "cbkeybinder.h"
 #endif
 
 #include <sdk.h>
@@ -29,8 +29,13 @@
     #include "personalitymanager.h"
 #endif
 
+#include <wx/fileconf.h>
+#if wxCHECK_VERSION(2,9,0)
+    #include <wx/msw/private/keyboard.h>
+#endif
+
 #include <vector>
-#include "wx/fileconf.h"
+
 #include "cbstyledtextctrl.h"
 
 #include "menuutils.h"
@@ -48,7 +53,7 @@ namespace
 
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
-	// add events here...
+    // add events here...
 
     EVT_IDLE            (cbKeyBinder::OnIdle)
     EVT_TIMER           (-1, cbKeyBinder::OnTimerAlarm)
@@ -63,26 +68,26 @@ cbKeyBinder::cbKeyBinder()
 // ---------------------------------------------------------------------------
     : m_Timer(this,0)
 {
-	//ctor
-	m_menuPreviouslyBuilt = false;
+    //ctor
+    m_menuPreviouslyBuilt = false;
 }
 // ----------------------------------------------------------------------------
 cbKeyBinder::~cbKeyBinder()
 // ----------------------------------------------------------------------------
 {
-	//dtor
+    //dtor
 }
 
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnAttach()
 // ----------------------------------------------------------------------------
 {
-	// do whatever initialization you need for your plugin
-	// :NOTE: after this function, the inherited member variable
-	// IsAttached() will be TRUE...
-	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* ""
-	// (see: does not need) this plugin...
+    // do whatever initialization you need for your plugin
+    // :NOTE: after this function, the inherited member variable
+    // IsAttached() will be TRUE...
+    // You should check for it in other functions, because if it
+    // is FALSE, it means that the application did *not* ""
+    // (see: does not need) this plugin...
 
 
     // Only stable windows can be attached for codeblocks; currently
@@ -112,16 +117,16 @@ void cbKeyBinder::OnAttach()
 
     // Allocate array but do actual key bindings after all menuitems have
     // been implemented by other plugins
-	m_pKeyProfArr = new wxKeyProfileArray;
-	m_bBound = FALSE;   //say keys are unbound to menus
-	m_MenuModifiedByMerge = 0;
-	m_bTimerAlarm = false;
-	m_bAppShutDown = false;
-	m_bConfigBusy = false;
-	IsMerging(false);
+    m_pKeyProfArr = new wxKeyProfileArray;
+    m_bBound = FALSE;   //say keys are unbound to menus
+    m_MenuModifiedByMerge = 0;
+    m_bTimerAlarm = false;
+    m_bAppShutDown = false;
+    m_bConfigBusy = false;
+    IsMerging(false);
 
-	// Add window names to which keybinder may attach
-	// a "*" allows attaching to ALL windows for debugging
+    // Add window names to which keybinder may attach
+    // a "*" allows attaching to ALL windows for debugging
    #if LOGGING
     //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
@@ -141,32 +146,32 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("treectrl"));          //+v0.4.4
 
     //block any dynamic update attempts
-	m_mergeEnabled = 0;
-//	// remove any predefined command keys set in main.cpp accelerator table
-//	// Users cannot override keys already in accelerator tables
+    m_mergeEnabled = 0;
+//    // remove any predefined command keys set in main.cpp accelerator table
+//    // Users cannot override keys already in accelerator tables
 //    Manager::Get()->GetAppWindow()->SetAcceleratorTable(wxNullAcceleratorTable);
 //    wxAcceleratorTable* ptbl = Manager::Get()->GetAppWindow()->GetAcceleratorTable();
 
     // Set current plugin version
-	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
-	pInfo->version = wxT(VERSION);
+    PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+    pInfo->version = wxT(VERSION);
 
     // if old key definitions file is valid for new keybinder release
     //  set it here.
-	m_OldKeyFilename = wxEmptyString;
-	//-m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
+    m_OldKeyFilename = wxEmptyString;
+    //-m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
 
-	// register event sink
-	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectClosed));
-	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorOpen));
-	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorClose));
-	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectOpened));
-	Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartupDone));
+    // register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectClosed));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorOpen));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorClose));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectOpened));
+    Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartupDone));
     Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartShutdown));
     Manager::Get()->RegisterEventSink(cbEVT_MENUBAR_CREATE_BEGIN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnMenuBarModify)); //never invoked
     Manager::Get()->RegisterEventSink(cbEVT_MENUBAR_CREATE_END, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnMenuBarModify)); //never invoked
 
-	return;
+    return;
 
 }//OnAttach
 
@@ -174,11 +179,11 @@ void cbKeyBinder::OnAttach()
 void cbKeyBinder::OnRelease(bool /*appShutDown*/)
 // ----------------------------------------------------------------------------
 {
-	// do de-initialization for your plugin
-	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
-	// which means you must not use any of the SDK Managers
-	// NOTE: after this function, the inherited member variable
-	// IsAttached() will be FALSE...
+    // do de-initialization for your plugin
+    // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
+    // which means you must not use any of the SDK Managers
+    // NOTE: after this function, the inherited member variable
+    // IsAttached() will be FALSE...
 
     // -------------------------------------------
     // Saving disabled when no editors attached because
@@ -187,9 +192,9 @@ void cbKeyBinder::OnRelease(bool /*appShutDown*/)
     // an empty .ini file is written. The profiles are never built because no
     // opens took place, no attaches took place, no events handed to KeyBinder.
     // -------------------------------------------
-	// stop the merge timer, do a final merge to catch any changes
+    // stop the merge timer, do a final merge to catch any changes
     StopMergeTimer();
-	if (m_bBound)
+    if (m_bBound)
     {   // m_bBound is false when KB re-enabled and no events occured
         // Do *not* do a merge here. CB code has already remove some menu items
         //-*MergeDynamicMenus();*//
@@ -199,17 +204,17 @@ void cbKeyBinder::OnRelease(bool /*appShutDown*/)
         //-OnSave();
     }
     // remove keyboard and window close event //+v0.4.7
-	m_pKeyProfArr->DetachAll();
-	delete m_pKeyProfArr; // Valgrind complaint about it not being deleted
+    m_pKeyProfArr->DetachAll();
+    delete m_pKeyProfArr; // Valgrind complaint about it not being deleted
 }
 // ----------------------------------------------------------------------------
 //  cbKeyBinder GetConfigurationPanel
 // ----------------------------------------------------------------------------
 cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 {
-	//create and display the configuration dialog for your plugin
-	//NotImplemented(_T("cbKeyBinder::Configure()"));
-    if(!IsAttached()) {	return 0;}
+    //create and display the configuration dialog for your plugin
+    //NotImplemented(_T("cbKeyBinder::Configure()"));
+    if(!IsAttached()) {    return 0;}
 
     //call configuation dialogue
     return OnKeyConfig(parent);
@@ -219,16 +224,16 @@ cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 {
-	//The application is offering its menubar for your plugin,
-	//to add any menu items you want...
-	//Append any items you need in the menu...
-	//NOTE: Be careful in here... The application's menubar is at your disposal.
-	//-NotImplemented(_T("cbKeyBinder::OfferMenuSpace()"));
+    //The application is offering its menubar for your plugin,
+    //to add any menu items you want...
+    //Append any items you need in the menu...
+    //NOTE: Be careful in here... The application's menubar is at your disposal.
+    //-NotImplemented(_T("cbKeyBinder::OfferMenuSpace()"));
 
-	if(!IsAttached()) {	return;	 }
+    if(!IsAttached()) {    return;     }
 
-	// This routine may be called when another plugin modifies the menu.
-	// or codeblocks disables another plugin and rebuilds the menu bar
+    // This routine may be called when another plugin modifies the menu.
+    // or codeblocks disables another plugin and rebuilds the menu bar
     if ( m_menuPreviouslyBuilt )
     {
         #if defined(LOGGING)
@@ -236,20 +241,20 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
          LOGIT( _T("OldMenuBar[%p] NewMenuBar[%p]"), m_pMenuBar, menuBar );
         #endif
         m_pMenuBar = menuBar;
-       	wxMenuCmd::Register(m_pMenuBar);
-       	EnableMerge(false);
-       	for (int i=0;i<5;i++)
+           wxMenuCmd::Register(m_pMenuBar);
+           EnableMerge(false);
+           for (int i=0;i<5;i++)
         {
             if ( IsMerging() ) wxSleep(1);
             else break;
         }
-       	OnLoad();
+           OnLoad();
         return;
     }
     m_menuPreviouslyBuilt = true;
 
     // init the keybinder
-	// memorize incomming menubar
+    // memorize incomming menubar
     m_pMenuBar = menuBar;
 
     // Create filename like cbKeyBinder{pluginversion}.ini
@@ -280,7 +285,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
     // get the CodeBlocks "personality" argument
     wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
-	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+    if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
     LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
 
     // if cbKeyBinder##.ini is in the executable folder, use it
@@ -315,25 +320,25 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 void cbKeyBinder::BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/)
 // ----------------------------------------------------------------------------
 {
-	//Some library module is ready to display a pop-up menu.
-	//Check the parameter "type" and see which module it is
-	//and append any items you need in the menu...
-	//TIP: for consistency, add a separator as the first item...
-	//-v0.1--NotImplemented(_T("cbKeyBinder::OfferModuleMenuSpace()"));
-	if(!IsAttached()) {	return;	 }
-	return;
+    //Some library module is ready to display a pop-up menu.
+    //Check the parameter "type" and see which module it is
+    //and append any items you need in the menu...
+    //TIP: for consistency, add a separator as the first item...
+    //-v0.1--NotImplemented(_T("cbKeyBinder::OfferModuleMenuSpace()"));
+    if(!IsAttached()) {    return;     }
+    return;
 }
 // ----------------------------------------------------------------------------
 bool cbKeyBinder::BuildToolBar(wxToolBar* /*toolBar*/)
 // ----------------------------------------------------------------------------
 {
-	//The application is offering its toolbar for your plugin,
-	//to add any toolbar items you want...
-	//Append any items you need on the toolbar...
-	//NotImplemented(_T("cbKeyBinder::BuildToolBar()"));
-	// return true if you add toolbar items
-	if(!IsAttached()) {	return false; }
-	return false;
+    //The application is offering its toolbar for your plugin,
+    //to add any toolbar items you want...
+    //Append any items you need on the toolbar...
+    //NotImplemented(_T("cbKeyBinder::BuildToolBar()"));
+    // return true if you add toolbar items
+    if(!IsAttached()) {    return false; }
+    return false;
 }
 // ----------------------------------------------------------------------------
 void cbKeyBinder::Rebind(bool update)
@@ -342,38 +347,38 @@ void cbKeyBinder::Rebind(bool update)
     // called when we can't do anything else. Makes a virgin key profile
     // array from the C::B menu items.
 
- 	wxKeyProfile *pPrimary;
+     wxKeyProfile *pPrimary;
 
-	pPrimary = new wxKeyProfile(wxT("Primary"), wxT("Our primary keyprofile"));
-	pPrimary->ImportMenuBarCmd(m_pMenuBar);
+    pPrimary = new wxKeyProfile(wxT("Primary"), wxT("Our primary keyprofile"));
+    pPrimary->ImportMenuBarCmd(m_pMenuBar);
 
-	#if LOGGING
+    #if LOGGING
         LOGIT(_T("cbKB:ReBind:Imported MenuBar"));
     #endif
 
-	// remove keyprofiles from our array
+    // remove keyprofiles from our array
     for (int i=0; i<m_pKeyProfArr->GetCount();i++)
       m_pKeyProfArr->Remove(m_pKeyProfArr->Item(i));
 
-	// clear out old array
+    // clear out old array
     m_pKeyProfArr->DetachAll();
-	m_pKeyProfArr->Cleanup();
+    m_pKeyProfArr->Cleanup();
 
-	wxMenuCmd::Register(m_pMenuBar);
-	m_pKeyProfArr->Add(pPrimary);
+    wxMenuCmd::Register(m_pMenuBar);
+    m_pKeyProfArr->Add(pPrimary);
 
-	// attach to this window the default primary keybinder
-	m_pKeyProfArr->SetSelProfile(0);
+    // attach to this window the default primary keybinder
+    m_pKeyProfArr->SetSelProfile(0);
 
-	//bind keys to menu items
-	if (update)
+    //bind keys to menu items
+    if (update)
         UpdateArr(*m_pKeyProfArr);
 
- 	#ifdef LOGGING
+    #ifdef LOGGING
         wxLogDebug(_T("cbKeyBinder Rebind\n"));
     #endif
 
-	return;
+    return;
 }//Rebind
 // ----------------------------------------------------------------------------
 //  cbKeyBinder UpdateArr
@@ -384,11 +389,11 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
       LOGIT(_T("UpdateArr::Begin"));
     #endif
 
-	// detach all windows bound to keys
-	r.DetachAll();
+    // detach all windows bound to keys
+    r.DetachAll();
 
-	// enable & attach to this window only one profile
-	r.GetSelProfile()->Enable(TRUE);
+    // enable & attach to this window only one profile
+    r.GetSelProfile()->Enable(TRUE);
 
         // VERY IMPORTANT: we should not use this function when we
         //                 have temporary children... they would be
@@ -495,19 +500,19 @@ cbConfigurationPanel* cbKeyBinder::OnKeyConfig(wxWindow* parent)
     // The commented lines are from the original wxKeyBinder
     // They may be useful later
 
-	//bool btree = GetMenuBar()->IsChecked(Minimal_UseTreeCtrl);
-	bool btree = true;
-	//bool baddprofile = GetMenuBar()->IsChecked(Minimal_ShowAddRemoveProfile);
-	bool baddprofile = true;
-	//bool bprofiles = GetMenuBar()->IsChecked(Minimal_ShowKeyProfiles);
-	bool bprofiles = true;
-	//bool bprofileedit = GetMenuBar()->IsChecked(Minimal_EnableProfileEdit);
-	bool bprofileedit = true;
+    //bool btree = GetMenuBar()->IsChecked(Minimal_UseTreeCtrl);
+    bool btree = true;
+    //bool baddprofile = GetMenuBar()->IsChecked(Minimal_ShowAddRemoveProfile);
+    bool baddprofile = true;
+    //bool bprofiles = GetMenuBar()->IsChecked(Minimal_ShowKeyProfiles);
+    bool bprofiles = true;
+    //bool bprofileedit = GetMenuBar()->IsChecked(Minimal_EnableProfileEdit);
+    bool bprofileedit = true;
 
-	// setup build flags
-	int mode = btree ? wxKEYBINDER_USE_TREECTRL : wxKEYBINDER_USE_LISTBOX;
-	if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
-	if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
+    // setup build flags
+    int mode = btree ? wxKEYBINDER_USE_TREECTRL : wxKEYBINDER_USE_LISTBOX;
+    if (baddprofile) mode |= wxKEYBINDER_SHOW_ADDREMOVE_PROFILE;
+    if (bprofileedit) mode |= wxKEYBINDER_ENABLE_PROFILE_EDITING;
 
 
     MyDialog* dlg = new MyDialog(this, *m_pKeyProfArr, parent,
@@ -564,7 +569,7 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
 void cbKeyBinder::OnLoad()
 // ----------------------------------------------------------------------------
 {
-	// stop any dynamic update attempts
+    // stop any dynamic update attempts
     EnableMerge(false);
 
     // if compatible, copy old key defs file to new key definitions
@@ -577,29 +582,29 @@ void cbKeyBinder::OnLoad()
     // Load key binding definitions from a file %HOME%\cbKeyBinder{ver}.ini
 
     #if LOGGING
-	 LOGIT(_T("--------------"));
-	 LOGIT(_T("OnLoad()Begin"));
-	#endif
+     LOGIT(_T("--------------"));
+     LOGIT(_T("OnLoad()Begin"));
+    #endif
 
     // tell other routines that binding has taken place
     m_bBound = TRUE;
 
-	// clear our old array
-	// could be some orphaned wxMenuItem ptrs left in it
+    // clear our old array
+    // could be some orphaned wxMenuItem ptrs left in it
     m_pKeyProfArr->DetachAll();
-	m_pKeyProfArr->Cleanup();
+    m_pKeyProfArr->Cleanup();
 
 
-	// before loading we must register in wxCmd arrays the various types
-	// of commands we want wxCmd::Load to be able to recognize...
-	wxMenuCmd::Register(m_pMenuBar);
-	#if defined(LOGGING)
+    // before loading we must register in wxCmd arrays the various types
+    // of commands we want wxCmd::Load to be able to recognize...
+    wxMenuCmd::Register(m_pMenuBar);
+    #if defined(LOGGING)
      LOGIT( _T("OnLoad Register MenuBar[%p]"),m_pMenuBar );
-	#endif
-	wxString strLoadFilename = m_sKeyFilename;
-	#if LOGGING
-	 LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
-	#endif
+    #endif
+    wxString strLoadFilename = m_sKeyFilename;
+    #if LOGGING
+     LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
+    #endif
 
     wxFileConfig cfg(wxEmptyString,         // appname
                     wxEmptyString,          // vendor
@@ -607,73 +612,73 @@ void cbKeyBinder::OnLoad()
                     wxEmptyString,          // global file
                     wxCONFIG_USE_LOCAL_FILE);
 
-	if (m_pKeyProfArr->Load(&cfg, wxEmptyString))
+    if (m_pKeyProfArr->Load(&cfg, wxEmptyString))
     {
         // get the cmd count
-		int total = 0;
-		for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
-			total += m_pKeyProfArr->Item(i)->GetCmdCount();
+        int total = 0;
+        for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
+            total += m_pKeyProfArr->Item(i)->GetCmdCount();
 
-		if (total == 0)
+        if (total == 0)
         {
             wxString msg;
-            msg  	<< wxT("KeyBinder: No keyprofiles have been found...\n")
-					<< strLoadFilename.c_str()
-					<< wxT("\nmay be corrupted.\n")
-					<< wxT("A default keyprofile will be set.");
-			wxMessageBox(msg,wxT("KeyBinder"));
+            msg      << wxT("KeyBinder: No keyprofiles have been found...\n")
+                    << strLoadFilename.c_str()
+                    << wxT("\nmay be corrupted.\n")
+                    << wxT("A default keyprofile will be set.");
+            wxMessageBox(msg,wxT("KeyBinder"));
             Rebind();
-		}//endif
+        }//endif
         else
         { //all is loaded
             ;
-		    #ifdef LOGGING
-			 wxLogMessage(wxString::Format(
-					wxT("All the [%d] keyprofiles have been correctly loaded ")
-					wxT("(%d commands in total).\n")
-					wxT("The #%d loaded profile ('%s') will be applied."),
-					m_pKeyProfArr->GetCount(),
+            #ifdef LOGGING
+             wxLogMessage(wxString::Format(
+                    wxT("All the [%d] keyprofiles have been correctly loaded ")
+                    wxT("(%d commands in total).\n")
+                    wxT("The #%d loaded profile ('%s') will be applied."),
+                    m_pKeyProfArr->GetCount(),
                     total, m_pKeyProfArr->GetSelProfileIdx()+1,
-					m_pKeyProfArr->GetSelProfile()->GetName().c_str()),
-						wxT("Load Successful"));
+                    m_pKeyProfArr->GetSelProfile()->GetName().c_str()),
+                        wxT("Load Successful"));
              LOGIT(_T("cbKeyBinder Matched %d MenuItems"), total);
             #endif
 
         }//endelse
 
-	    // Remove any menu keys defined in app accelerator table
-	    MergeAcceleratorTable(false);
+        // Remove any menu keys defined in app accelerator table
+        MergeAcceleratorTable(false);
 
-		// reattach frames to the loaded keybinder
-		// which updates the menu items to current profile
-		UpdateArr(*m_pKeyProfArr);
+        // reattach frames to the loaded keybinder
+        // which updates the menu items to current profile
+        UpdateArr(*m_pKeyProfArr);
 
-	} else {
+    } else {
         #ifdef LOGGING
-	     LOGIT(_T("cbKeyBinder:Error loading key file.\nCreating Defaults")); //doing nothing for now
-	    #endif
-//	    wxString strErrMsg = "Error loading Key Bindings file:\n" + m_sKeyFilename;
-//	    if ( ! bKeyFileErrMsgShown)
-//	      wxMessageBox(strErrMsg);
-//	    bKeyFileErrMsgShown = TRUE; //say message has been shown
+         LOGIT(_T("cbKeyBinder:Error loading key file.\nCreating Defaults")); //doing nothing for now
+        #endif
+//        wxString strErrMsg = "Error loading Key Bindings file:\n" + m_sKeyFilename;
+//        if ( ! bKeyFileErrMsgShown)
+//          wxMessageBox(strErrMsg);
+//        bKeyFileErrMsgShown = TRUE; //say message has been shown
 
         // The last resort, create a virgin key profile array
         // Rebind but don't add all menu items yet
 
-	    Rebind(false);
-	    // Merge any menu keys defined in app accelerator table
-	    MergeAcceleratorTable(true);
+        Rebind(false);
+        // Merge any menu keys defined in app accelerator table
+        MergeAcceleratorTable(true);
 
-		// reattach frames to the loaded keybinder
-		// which updates the menu items to current profile
-		UpdateArr(*m_pKeyProfArr);
-	}
+        // reattach frames to the loaded keybinder
+        // which updates the menu items to current profile
+        UpdateArr(*m_pKeyProfArr);
+    }
 
     #ifdef LOGGING
-	 LOGIT(_T("OnLoad()Ended, EnableMerge[%d]"), IsEnabledMerge());
-	#endif
+     LOGIT(_T("OnLoad()Ended, EnableMerge[%d]"), IsEnabledMerge());
+    #endif
     if (not IsEnabledMerge()) EnableMerge(true);
-	return;
+    return;
 
 }//OnLoad
 // ----------------------------------------------------------------------------
@@ -693,21 +698,21 @@ void cbKeyBinder::OnSave(bool backitup)
        LOGIT(_T("cbKB:File %s deleted."),m_sKeyFilename.GetData());
     #endif
 
-	wxString path = m_sKeyFilename;
-	#ifdef LOGGING
-	  LOGIT( _T("cbKB:SavePath %s"), path.GetData() );
-	#endif //LOGGING
-	wxFileConfig *cfg = new wxFileConfig(wxEmptyString,wxEmptyString,path); //v04.11
+    wxString path = m_sKeyFilename;
+    #ifdef LOGGING
+      LOGIT( _T("cbKB:SavePath %s"), path.GetData() );
+    #endif //LOGGING
+    wxFileConfig *cfg = new wxFileConfig(wxEmptyString,wxEmptyString,path); //v04.11
 
-	if (m_pKeyProfArr->Save(cfg, wxEmptyString, TRUE))
-	 {
-		// get the cmd count
-		int total = 0;
-		for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
-			total += m_pKeyProfArr->Item(i)->GetCmdCount();
+    if (m_pKeyProfArr->Save(cfg, wxEmptyString, TRUE))
+     {
+        // get the cmd count
+        int total = 0;
+        for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
+            total += m_pKeyProfArr->Item(i)->GetCmdCount();
         cfg->Flush();
-		LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
+        LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
+            wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
               m_pKeyProfArr->GetCount(), total) );
 
         // copy the .ini file to a .ini.bak file
@@ -727,13 +732,13 @@ void cbKeyBinder::OnSave(bool backitup)
     }//if (done..
 
 
-	 } else {
+     } else {
 
-		wxMessageBox(wxT("Keybinder:Error saving key file!"), wxT("Save Error"),
-			wxOK | wxICON_ERROR);
-	 }
+        wxMessageBox(wxT("Keybinder:Error saving key file!"), wxT("Save Error"),
+            wxOK | wxICON_ERROR);
+     }
 
-	delete cfg;
+    delete cfg;
 }//OnSave
 // ----------------------------------------------------------------------------
 void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
@@ -797,9 +802,15 @@ void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
                 modifiers |= wxACCEL_CTRL;
         }
 
+#if wxCHECK_VERSION(2,9,0)
+        WXWORD keyCode = wxMSWKeyboard::VKToWX(key);
+        if (keyCode==WXK_NONE) keyCode = key;
+        entries[ii].Set(modifiers, keyCode, cmd);
+#else
         WXWORD keyCode = wxCharCodeMSWToWX(key);
         if (not keyCode) keyCode = key;
         entries[ii].Set(modifiers, keyCode, cmd);
+#endif
         #if defined(LOGGING)
         LOGIT( _T("accelEntry[%d]mods[%d]code[%d],id[%d]"),
                     entries[ii].GetFlags(),
@@ -986,37 +997,37 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
 //     keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
 // ----------------------------------------------------------------------------
 MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
-				   wxWindow *parent, const wxString & /*title*/, int mode)
+                   wxWindow *parent, const wxString & /*title*/, int mode)
 // ----------------------------------------------------------------------------
     :m_pBinder(binder)
 {
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
-		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+        wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-	// we can do our task in two ways:
-	// 1) we can use wxKeyConfigPanel::ImportMenuBarCmd which gives
-	//    better appearances (for me, at least, :-))
-	// 2) we can use wxKeyConfigPanel::ImportKeyBinderCmd
+    // we can do our task in two ways:
+    // 1) we can use wxKeyConfigPanel::ImportMenuBarCmd which gives
+    //    better appearances (for me, at least, :-))
+    // 2) we can use wxKeyConfigPanel::ImportKeyBinderCmd
 
-	// STEP #1: create a simple wxKeyConfigPanel
-	m_p = new wxKeyConfigPanel(this, mode);
+    // STEP #1: create a simple wxKeyConfigPanel
+    m_p = new wxKeyConfigPanel(this, mode);
 
-	// STEP #2: add a profile array to the wxKeyConfigPanel
-	m_p->AddProfiles(prof);
+    // STEP #2: add a profile array to the wxKeyConfigPanel
+    m_p->AddProfiles(prof);
 
-	// STEP #3: populate the wxTreeCtrl widget of the panel
-	m_p->ImportMenuBarCmd(((wxFrame*)Manager::Get()->GetAppWindow())->GetMenuBar());
+    // STEP #3: populate the wxTreeCtrl widget of the panel
+    m_p->ImportMenuBarCmd(((wxFrame*)Manager::Get()->GetAppWindow())->GetMenuBar());
 
-	// and embed it in a little sizer
-	wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
-	main->Add(m_p, 1, wxGROW);
-	SetSizer(main);
-	main->SetSizeHints(this);
+    // and embed it in a little sizer
+    wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
+    main->Add(m_p, 1, wxGROW);
+    SetSizer(main);
+    main->SetSizeHints(this);
 
-	// this is a little modification to make dlg look nicer
-	//wxSize sz(GetSizer()->GetMinSize());
-	//SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
-	//CentreOnScreen();
+    // this is a little modification to make dlg look nicer
+    //wxSize sz(GetSizer()->GetMinSize());
+    //SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
+    //CentreOnScreen();
 }//MyDialog
 // ----------------------------------------------------------------------------
 
@@ -1391,7 +1402,7 @@ void cbKeyBinder::OnAppStartShutdown(CodeBlocksEvent& event)
     // and never called. Another sdk gotcha! And another reason to avoid it.
      LOGIT( _T("OnAppStartShutdown") );
     m_bAppShutDown = true;
-	// stop the merge timer
+    // stop the merge timer
     EnableMerge(false);
     m_bTimerAlarm = false;
     // wait for any current merge to complete
