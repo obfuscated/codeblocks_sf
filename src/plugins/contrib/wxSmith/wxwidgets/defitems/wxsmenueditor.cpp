@@ -330,7 +330,6 @@ void wxsMenuEditor::UpdateMenuContent()
     m_BlockSel = false;
     wxTreeItemId RootId = m_Content->AddRoot(_T("Menu"));
     UpdateMenuContentReq(RootId,m_First);
-    m_Content->Expand(RootId);
     m_Content->Thaw();
     if ( m_Selected )
     {
