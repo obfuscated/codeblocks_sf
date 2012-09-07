@@ -247,7 +247,7 @@ void wxsToolSpace::OnKeyDown(wxKeyEvent& event)
 
 void wxsToolSpace::RecalculateVirtualSize()
 {
-    SetVirtualSize(
+    SetSizeHints(
         m_Count*(ExtraBorderSize + IconSize) + ExtraBorderSize,
         2*ExtraBorderSize + IconSize);
 }

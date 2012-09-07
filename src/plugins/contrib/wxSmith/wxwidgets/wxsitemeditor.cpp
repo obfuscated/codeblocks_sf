@@ -225,12 +225,9 @@ void wxsItemEditor::RebuildPreview()
 #else
         NewSizer->SetVirtualSizeHints(m_Content);
 #endif
-        NewSizer->FitInside(m_Content);
         m_PreviewBackground->Layout();
         m_Content->Layout();
         m_HorizSizer->Layout();
-        m_VertSizer->Layout();
-        Layout();
     }
 
     m_ToolSpace->AfterPreviewChanged();
@@ -244,8 +241,9 @@ void wxsItemEditor::RebuildPreview()
     }
     m_VertSizer->Layout();
 
+    Layout();
     Thaw();
-    Update();
+    Refresh();
 
     // Updating all informations in Content
     m_Content->AfterPreviewChanged();
