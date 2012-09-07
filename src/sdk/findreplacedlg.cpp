@@ -212,9 +212,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         XRCCTRL(*this, "cmbFind2",  wxComboBox)->SetFocus();
     }
     else
-    {
         XRCCTRL(*this, "cmbFind1",  wxComboBox)->SetFocus();
-    }
 
     GetSizer()->SetSizeHints(this);
 
@@ -534,7 +532,7 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
             txtFind1->SetValue(txtFind2->GetValue());
             cmbFind1->SetValue(cmbFind2->GetValue());
             cmbReplace1->SetValue(cmbReplace2->GetValue());
-            if(IsMultiLine())
+            if ( IsMultiLine() )
                 txtFind1->SetFocus();
             else
                 cmbFind1->SetFocus();
@@ -547,7 +545,7 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
             cmbFind2->SetValue(cmbFind1->GetValue());
             cmbReplace2->SetValue(cmbReplace1->GetValue());
             cmbFind1->SetFocus();
-            if(IsMultiLine())
+            if ( IsMultiLine() )
                 txtFind2->SetFocus();
             else
                 cmbFind2->SetFocus();
