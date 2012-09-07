@@ -316,7 +316,9 @@ void wxsPropertyGridManager::RestoreSelected(const SelectionData* Data)
     if ( Data->m_PropertyName.IsEmpty() ) return;
 
     SelectPage(Data->m_PageIndex);
-    SelectProperty(Data->m_PropertyName);
+    // avoid assert message with wx2.9
+    if (GetPropertyByName(Data->m_PropertyName))
+        SelectProperty(Data->m_PropertyName);
 }
 
 
