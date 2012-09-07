@@ -72,8 +72,9 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     wxsPGRID()->NewPropertyContainerFinish(this);
     Flags = 0;
     OnAddExtraProperties(wxsPGRID());
-    wxsPGRID()->RestoreSelected();
     wxsPGRID()->Thaw();
+    // call RestoreSelected() after Thaw(), to ensure the selected property is visible
+    wxsPGRID()->RestoreSelected();
 }
 
 void wxsPropertyContainer::XmlRead(TiXmlElement* Element)
