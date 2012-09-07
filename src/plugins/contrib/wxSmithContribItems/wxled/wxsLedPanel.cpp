@@ -124,18 +124,18 @@ void wxsLedPanel::OnEnumWidgetProperties(long Flags)
              wxsLedPanel,
              LedMatrixSize,
              _("LedMatrix Size"),
-             _("Width"),
-             _("Height"),
-             _("Dialog-Units"),
+             _("Matrixwidth"),
+             _("Matrixheight"),
+             _("Matrix in Dialog-Units"),
              _T("ledMatrix_Size"));
 
     WXS_SIZE(
              wxsLedPanel,
              LedMatrix,
              _("LedCtrl Size"),
-             _("Width"),
-             _("Height"),
-             _("Dialog-Units"),
+             _("Ctrlwidth"),
+             _("Ctrlheight"),
+             _("Ctrl in Dialog-Units"),
              _T("ledCtrl_Size"));
 
     WXS_LONG(
