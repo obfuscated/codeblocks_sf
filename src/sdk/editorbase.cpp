@@ -160,7 +160,7 @@ void EditorBase::SetTitle(const wxString& newTitle)
         toolTip += _("\nProject: ") + prj->GetTitle();
     cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (nb)
-        nb->SetTabToolTip(this, toolTip);
+        nb->SetPageToolTip(nb->GetPageIndex(this), toolTip);
 }
 
 void EditorBase::Activate()

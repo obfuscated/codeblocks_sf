@@ -34,7 +34,6 @@ class EnvironmentSettingsDlg : public wxScrollingDialog
         void OnSettingsIconsSize(wxCommandEvent& event);
         void OnDblClickMaximizes(wxCommandEvent& event);
         void OnMousewheelModifier(wxKeyEvent& event);
-        void OnUseTabToolTips(wxCommandEvent& event);
         void OnUseTabMousewheel(wxCommandEvent& event);
 	private:
         void AddPluginPanels();

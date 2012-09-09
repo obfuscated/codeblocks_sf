@@ -65,22 +65,25 @@ class cbAuiNotebook : public wxAuiNotebook
          * \return int the visible position
          */
         int GetTabPositionFromIndex(int index);
+#if !wxCHECK_VERSION(2, 9, 4)
         /** \brief Set a tab tooltip
          *
          * Sets the tooltip for the tab belonging to win.
          * Starts the dwell timer and the stopwatch if it is not already done.
-         * \param win the pane that belongs to the tab
-         * \param msg the tooltip
+         * \param idx the index of the pane that belongs to the tab
+         * \param text the tooltip
          * @remarks Uses the name of the wxWindow to store the message
+         * \return bool true if tooltip was updated
          */
-        void SetTabToolTip(wxWindow* win, wxString msg);
-        /** \brief Allow tooltips
+        bool SetPageToolTip(size_t idx, const wxString & text );
+        /** \brief Get a tab tooltip
          *
-         * Allows or forbids tooltips.
-         * Cancels already shown tooltips, if allow is false
-         * \param allow if false toltips are not allowed
+         * Returns the tooltip for the tab label of the page.
+         * @remarks Uses the name of the wxWindow to store the message
+         * \return wxString the tooltip of the page with the given index
          */
-        void AllowToolTips(bool allow = true);
+        wxString GetPageToolTip(size_t idx	);
+#endif
         /** \brief Minmize free horizontal page
          *
          * Moves the active tab of all tabCtrl's to the rightmost place,
@@ -149,11 +152,15 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event unused
          */
         void OnIdle(wxIdleEvent& /*event*/);
-        /** \brief Check whether the mouse is over a tab
+#if !wxCHECK_VERSION(2, 9, 4)
+        /** \brief Catch mousemotion-events
          *
-         * \param event unused
+         * Needed for the backport of tabtooltip from wx2.9
+         *
+         * \param event holds the wxTabCtrl, that sends the event
          */
-        void OnDwellTimerTrigger(wxTimerEvent& /*event*/);
+        void OnMotion(wxMouseEvent& event);
+#endif
         /** \brief Catch doubleclick-events from wxTabCtrl
          *
          * Sends cbEVT_CBAUIBOOK_LEFT_DCLICK, if doubleclick was on a tab,
@@ -170,12 +177,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event holds the wxTabCtrl, that sends the event
          */
         void OnTabCtrlMouseWheel(wxMouseEvent& event);
-        /** \brief Catch mousewheel-events from tooltipwindow
-         *
-         * Closes Tooltip.
-         * \param event the tipwindow, that sends the event
-         */
-        void OnToolTipMouseWheel(wxMouseEvent& event);
         /** \brief Catch resize-events and call MinimizeFreeSpace()
          *
          * \param event unused
@@ -223,14 +224,6 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Updates the array, that holds the wxTabCtrls
          */
         void UpdateTabControlsArray();
-        /** \brief Shows tooltip for win
-         *
-         * \param win
-         */
-        void ShowToolTip(wxWindow* win);
-        /** \brief Cancels tooltip
-         */
-        void CancelToolTip();
         /** \brief Check for pressed modifier-keys
          *
          * Check whether all modifier keys in keyModifier are pressed
@@ -244,32 +237,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * before it's used
          */
         cbAuiTabCtrlArray m_TabCtrls;
-        /** \brief Stopwatch used to determine how long the mouse has not
-         * been moved over a tab.
-         */
-        wxStopWatch m_StopWatch;
-        /** \brief Timer used to check the mouse-position
-         */
-        wxTimer* m_pDwellTimer;
-        /** \brief The actual shown tooltip or nullptr
-         */
-        wxTipWindow* m_pToolTip;
-        /** \brief Position of the mouse, at last dwell timmer event.
-         *
-         * Used to determine whether the mouse was moved or not.
-         */
-        wxPoint m_LastMousePosition;
-        /** \brief Position of tooltip
-         *
-         * Used to determine, whether a tooltiop is already shown at
-         * the actual mouse-position
-         */
-        wxPoint m_LastShownAt;
-        /** \brief Last time the dwell timer triggered an event
-         *
-         * Used to determine how long the mouse has not been moved over a tab .
-         */
-        long m_LastTime;
 #ifdef __WXMSW__
         // needed for wxMSW-hack, see above
         /** \brief Last selected tab
@@ -284,11 +251,15 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         long m_LastId;
 #endif // #ifdef __WXMSW__
-        /** \brief If false, tooltips are temporary forbidden
+#if !wxCHECK_VERSION(2, 9, 4)
+        /** \brief If false, tooltips are not shown
          *
-         * Needed to not interfere with context-menus etc.
+         * Needed to only show tooltips, if they have been explicitely set.
+         * We store the tooltip-text in the tabs name, without this flag, we
+         * get the wxWidgets default-names as tooltips.
          */
-        bool m_AllowToolTips;
+        bool m_HasToolTip;
+#endif
         /** \brief If true, mouse pointer is over a tabCtrl
          */
         bool m_OverTabCtrl;
@@ -300,9 +271,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * in next OnIdle-call
          */
         bool m_MinimizeFreeSpaceOnIdle;
-        /** \brief Holds the id of the dwell timer
-         */
-        long m_IdNoteBookTimer;
         /** \brief Holds the size of a tabCtrl after a resize event
          *
          * Needed to skip a resize event, if size did not change
@@ -317,11 +285,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param use If true tooltips are allowed
          */
         static void UseToolTips(bool use = true);
-        /** \brief Set the time before a tab-tooltip kicks in
-         *
-         * \param time The dwell time
-         */
-        static void SetDwellTime(long time = 1000);
         /** \brief Enable or disable tab-scrolling with mousewheel
          *
          * \param allow If true scrolling is allowed
@@ -347,9 +310,6 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Enable or disable tab tooltips
          */
         static bool s_UseTabTooltips;
-        /** \brief Tab tooltip dwell time
-         */
-        static long s_DwellTime;
         /** \brief Enable or disable scrolling tabs with mousewheel
          */
         static bool s_AllowMousewheel;

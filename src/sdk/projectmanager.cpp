@@ -2487,11 +2487,11 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
                 wxString toolTip;
                 for (size_t i = 0; i < nb->GetPageCount(); ++i)
                 {
-                    toolTip = nb->GetPage(i)->GetName();
+                    toolTip = nb->GetPageToolTip(i);
                     if (toolTip.EndsWith(_("Project: ") + backupTitle))
                     {
                         toolTip.Replace(_("Project: ") + backupTitle,_("Project: ") + newTitle);
-                        nb->SetTabToolTip(nb->GetPage(i), toolTip);
+                        nb->SetPageToolTip(i, toolTip);
                     }
 
                 }
