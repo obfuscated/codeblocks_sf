@@ -30,7 +30,7 @@
 #endif
 
 #include <wx/fileconf.h>
-#if wxCHECK_VERSION(2,9,0)
+#if defined(__WXMSW__) && wxCHECK_VERSION(2,9,0)
     #include <wx/msw/private/keyboard.h>
 #endif
 
