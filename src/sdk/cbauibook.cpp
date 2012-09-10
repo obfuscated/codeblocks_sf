@@ -136,9 +136,6 @@ void cbAuiNotebook::UpdateTabControlsArray()
 
 void cbAuiNotebook::ResetTabCtrlEvents()
 {
-    Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
-    if (s_AllowMousewheel)
-        Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
     for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
     {
 #if !wxCHECK_VERSION(2, 9, 4)
@@ -149,6 +146,9 @@ void cbAuiNotebook::ResetTabCtrlEvents()
         m_TabCtrls[i]->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
         m_TabCtrls[i]->Disconnect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
         m_TabCtrls[i]->Connect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
+        m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+        if (s_AllowMousewheel)
+            m_TabCtrls[i]->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
         m_TabCtrls[i]->Disconnect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
         m_TabCtrls[i]->Disconnect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
         m_TabCtrls[i]->Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
