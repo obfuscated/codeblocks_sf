@@ -122,7 +122,7 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
             doc.Parse(buf);
 
             if(doc.Error())
-                return 0;
+                return false;
 
             TiXmlHandle hCommit(&doc);
             hCommit = hCommit.FirstChildElement("info").FirstChildElement("entry").FirstChildElement("commit");
@@ -143,9 +143,9 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
                     {
                         date = date.substr(0, pos);            }
                     }
-                return 1;
+                    return true;
             }
-            return 0;
+            return false;
         }
     }
 
@@ -179,10 +179,10 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
                 fread(buf, 16383, 1, svn);
                 int ret = pclose(svn);
                 if (!WIFEXITED(ret) || (WEXITSTATUS(ret) != 0))
-                    return 1;
+                    return true;
             }
             else
-                return 1;
+                return true;
         }
         string what("Last Changed Rev: ");
         string output(buf);
@@ -217,10 +217,10 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
         if (len != 0)
             date = output.substr(pos, len);
 
-        return 0;
+        return false;
     }
     // if we are here, we could not read the info
-    return 1;
+    return true;
 }
 
 
