@@ -911,6 +911,9 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
     if (paintState == paintAbandoned) {
         // Painting area was insufficient to cover new styling or brace
         // highlight positions
+/* C::B begin */
+        sci->Refresh(false); //Without a refresh, changes outside of the original clip region won't appear on screen
+/* C::B end */
         FullPaintDC(dc);
     }
     paintState = notPainting;
