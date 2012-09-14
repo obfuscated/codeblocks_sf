@@ -34,7 +34,6 @@
 //On wxGTK changing the focus of widgets inside the notebook page change event doesn't work
 //so we create this custom event (and associated handler) to do the focus change after
 //the notebook page change is complete
-DECLARE_EVENT_TYPE(wxDEFERRED_FOCUS_EVENT, -1)
 DEFINE_EVENT_TYPE(wxDEFERRED_FOCUS_EVENT)
 
 BEGIN_EVENT_TABLE(FindReplaceDlg, wxScrollingDialog)
