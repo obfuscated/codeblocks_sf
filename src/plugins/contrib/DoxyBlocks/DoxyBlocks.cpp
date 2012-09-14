@@ -432,7 +432,7 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
         wxMenuItem *MenuItemRunHTML = new wxMenuItem(submenu, ID_MENU_RUNHTML, _("Run &HTML\tCtrl-Alt-H"), _("Run HTML documentation."));
         MenuItemRunHTML->SetBitmap(wxBitmap(prefix + wxT("html.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemRunHTML);
-        wxMenuItem *MenuItemRunCHM = new wxMenuItem(submenu, ID_MENU_RUNCHM, _("Run &CHM\tCtrl-Alt-C"), _("Insert a comment block at the current line."));
+        wxMenuItem *MenuItemRunCHM = new wxMenuItem(submenu, ID_MENU_RUNCHM, _("Run &CHM\tCtrl-Alt-C"), _("Run CHM documentation."));
         MenuItemRunCHM->SetBitmap(wxBitmap(prefix + wxT("chm.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemRunCHM);
         submenu->AppendSeparator();
