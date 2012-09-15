@@ -174,28 +174,30 @@ void AppendArray(const wxArrayString& from, wxArrayString& to)
         to.Add(from[i]);
 }
 
-wxString UnixFilename(const wxString& filename)
+wxString UnixFilename(const wxString& filename, wxPathFormat format)
 {
     wxString result = filename;
-
-    if (platform::windows)
+    if (format == wxPATH_NATIVE)
+    {
+        if (platform::windows)
+            format = wxPATH_WIN;
+        else
+            format = wxPATH_UNIX;
+    }
+    if (format == wxPATH_WIN) // wxPATH_WIN == wxPATH_DOS == wxPATH_OS2
     {
         bool unc_name = result.StartsWith(_T("\\\\"));
-
-        while (result.Replace(_T("/"), _T("\\")))
-            ;
-        while (result.Replace(_T("\\\\"), _T("\\")))
-            ;
-
+        result.Replace(wxT("/"), wxT("\\"));
+        while (result.Replace(wxT("\\\\"), wxT("\\")))
+            ; // loop for recursive removal of duplicate slashes
         if (unc_name)
-            result = _T("\\") + result;
+            result.Prepend(wxT("\\"));
     }
     else
     {
-        while (result.Replace(_T("\\"), _T("/")))
-            ;
-        while (result.Replace(_T("//"), _T("/")))
-            ;
+        result.Replace(wxT("\\"), wxT("/"));
+        while (result.Replace(wxT("//"), wxT("/")))
+            ; // loop for recursive removal of duplicate slashes
     }
 
     return result;

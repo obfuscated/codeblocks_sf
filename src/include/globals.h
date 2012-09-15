@@ -180,7 +180,7 @@ extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wx
 extern DLLIMPORT wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens);
 extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
 
-extern DLLIMPORT wxString UnixFilename(const wxString& filename);
+extern DLLIMPORT wxString UnixFilename(const wxString& filename, wxPathFormat format = wxPATH_NATIVE);
 extern DLLIMPORT void QuoteStringIfNeeded(wxString& str);
 
 /// Escapes spaces and tabs (NOT quoting the string)

@@ -416,13 +416,13 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
 
         else if (node->Attribute("makefile")) // there is only one attribute per option, so "else" is a safe optimisation
-            makefile = cbC2U(node->Attribute("makefile"));
+            makefile = UnixFilename(cbC2U(node->Attribute("makefile")));
 
         else if (node->Attribute("makefile_is_custom"))
             makefile_custom = strncmp(node->Attribute("makefile_is_custom"), "1", 1) == 0;
 
         else if (node->Attribute("execution_dir"))
-            execution_dir = cbC2U(node->Attribute("execution_dir"));
+            execution_dir = UnixFilename(cbC2U(node->Attribute("execution_dir")));
 
         // old default_target (int) node
         else if (node->QueryIntAttribute("default_target", &m_1_4_to_1_5_deftarget) == TIXML_SUCCESS)
@@ -699,7 +699,7 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
     while (child)
     {
         wxString option = cbC2U(child->Attribute("option"));
-        wxString dir = cbC2U(child->Attribute("directory"));
+        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -728,7 +728,7 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectB
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString dir = cbC2U(child->Attribute("directory"));
+        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
         if (!dir.IsEmpty())
         {
             if (target)
@@ -810,7 +810,7 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = cbC2U(child->Attribute("option"));
+        wxString option = UnixFilename(cbC2U(child->Attribute("option")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -865,6 +865,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 {
     if (!base)
         return;
+
     TiXmlElement* node = parentNode->FirstChildElement("Environment");
     while (node)
     {
@@ -1164,7 +1165,7 @@ void ProjectLoader::AddArrayOfElements(TiXmlElement* parent, const char* name, c
     {
         if (array[i].IsEmpty())
             continue;
-        AddElement(parent, name, attr, (isPath ? UnixFilename(array[i]) : array[i]));
+        AddElement(parent, name, attr, (isPath ? UnixFilename(array[i], wxPATH_UNIX) : array[i]));
     }
 }
 
@@ -1233,11 +1234,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddElement(prjnode, "Option", "platforms", platforms);
     }
     if (m_pProject->GetMakefile() != _T("Makefile"))
-        AddElement(prjnode, "Option", "makefile", m_pProject->GetMakefile());
+        AddElement(prjnode, "Option", "makefile", UnixFilename(m_pProject->GetMakefile(), wxPATH_UNIX));
     if (m_pProject->IsMakefileCustom())
         AddElement(prjnode, "Option", "makefile_is_custom", 1);
     if (m_pProject->GetMakefileExecutionDir() != m_pProject->GetBasePath())
-        AddElement(prjnode, "Option", "execution_dir", m_pProject->GetMakefileExecutionDir());
+        AddElement(prjnode, "Option", "execution_dir", UnixFilename(m_pProject->GetMakefileExecutionDir(), wxPATH_UNIX));
     if (m_pProject->GetModeForPCH() != pchObjectDir)
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
     if (!m_pProject->GetDefaultExecuteTarget().IsEmpty() && m_pProject->GetDefaultExecuteTarget() != m_pProject->GetFirstValidBuildTargetName())
@@ -1274,7 +1275,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     TiXmlElement* buildnode = prjnode->FirstChildElement("Build");
 
     for (size_t x = 0; x < m_pProject->GetBuildScripts().GetCount(); ++x)
-        AddElement(buildnode, "Script", "file", m_pProject->GetBuildScripts().Item(x));
+        AddElement(buildnode, "Script", "file", UnixFilename(m_pProject->GetBuildScripts().Item(x), wxPATH_UNIX));
 
     // now decide which target we're exporting.
     // remember that if onlyTarget is empty, we export all targets (i.e. normal save).
@@ -1335,28 +1336,28 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
                 }
             }
 
-            TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", UnixFilename(outputFileName));
+            TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", UnixFilename(outputFileName, wxPATH_UNIX));
             if (target->GetTargetType() == ttDynamicLib)
             {
                 if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
-                  outnode->SetAttribute("imp_lib",  cbU2C(UnixFilename(target->GetDynamicLibImportFilename())));
+                  outnode->SetAttribute("imp_lib",  cbU2C(UnixFilename(target->GetDynamicLibImportFilename(), wxPATH_UNIX)));
                 if (target->GetDynamicLibImportFilename() != _T("$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)"))
-                  outnode->SetAttribute("def_file", cbU2C(UnixFilename(target->GetDynamicLibDefFilename())));
+                  outnode->SetAttribute("def_file", cbU2C(UnixFilename(target->GetDynamicLibDefFilename(), wxPATH_UNIX)));
             }
             outnode->SetAttribute("prefix_auto",    prefixPolicy    == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
 
             if (target->GetWorkingDir() != _T("."))
-                AddElement(tgtnode, "Option", "working_dir",   UnixFilename(target->GetWorkingDir()));
+                AddElement(tgtnode, "Option", "working_dir",   UnixFilename(target->GetWorkingDir(), wxPATH_UNIX));
             if (target->GetObjectOutput() != _T(".objs"))
-                AddElement(tgtnode, "Option", "object_output", UnixFilename(target->GetObjectOutput()));
+                AddElement(tgtnode, "Option", "object_output", UnixFilename(target->GetObjectOutput(), wxPATH_UNIX));
             if (target->GetDepsOutput() != _T(".deps"))
-                AddElement(tgtnode, "Option", "deps_output",   UnixFilename(target->GetDepsOutput()));
+                AddElement(tgtnode, "Option", "deps_output",   UnixFilename(target->GetDepsOutput(), wxPATH_UNIX));
         }
         if (!target->GetExternalDeps().IsEmpty())
-            AddElement(tgtnode, "Option", "external_deps",     UnixFilename(target->GetExternalDeps()));
+            AddElement(tgtnode, "Option", "external_deps",     UnixFilename(target->GetExternalDeps(), wxPATH_UNIX));
         if (!target->GetAdditionalOutputFiles().IsEmpty())
-            AddElement(tgtnode, "Option", "additional_output", UnixFilename(target->GetAdditionalOutputFiles()));
+            AddElement(tgtnode, "Option", "additional_output", UnixFilename(target->GetAdditionalOutputFiles(), wxPATH_UNIX));
         AddElement(tgtnode, "Option", "type", target->GetTargetType());
         AddElement(tgtnode, "Option", "compiler", target->GetCompilerID());
         if (target->GetTargetType() == ttConsoleOnly && !target->GetUseConsoleRunner())
@@ -1365,7 +1366,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(tgtnode, "Option", "parameters", target->GetExecutionParameters());
         if (!target->GetHostApplication().IsEmpty())
         {
-            AddElement(tgtnode, "Option", "host_application", UnixFilename(target->GetHostApplication()));
+            AddElement(tgtnode, "Option", "host_application", UnixFilename(target->GetHostApplication(), wxPATH_UNIX));
             if (target->GetRunHostApplicationInTerminal())
                 AddElement(tgtnode, "Option", "run_host_application_in_terminal", 1);
             else
@@ -1524,7 +1525,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         ProjectFile* f = pfa[i];
         FileType ft = FileTypeOf(f->relativeFilename);
 
-        TiXmlElement* unitnode = AddElement(prjnode, "Unit", "filename", UnixFilename(f->relativeFilename));
+        TiXmlElement* unitnode = AddElement(prjnode, "Unit", "filename", UnixFilename(f->relativeFilename, wxPATH_UNIX));
         if (!f->compilerVar.IsEmpty())
         {
             const wxString ext = f->relativeFilename.AfterLast(_T('.')).Lower();
@@ -1551,7 +1552,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(unitnode, "Option", "weight", f->weight);
 
         if (!f->virtual_path.IsEmpty())
-            AddElement(unitnode, "Option", "virtualFolder", UnixFilename(f->virtual_path));
+            AddElement(unitnode, "Option", "virtualFolder", UnixFilename(f->virtual_path, wxPATH_UNIX));
 
         // loop and save custom build commands
         for (pfCustomBuildMap::iterator it = f->customBuild.begin(); it != f->customBuild.end(); ++it)
