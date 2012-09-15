@@ -208,6 +208,17 @@ extern DLLIMPORT wxString URLEncode(const wxString &str);
 
 extern DLLIMPORT wxString ExpandBackticks(wxString &str);
 
+/** This function creates a new wxMenu object on the heap and recursively
+  * copies a given menu into it.
+  *
+  * It's up to the user to make sure the returned menu is deleted.
+  *
+  * @param mnu The menu to copy
+  * @param with_accelerators If true, also copies the accelerators (defaults to false).
+  * @return The copied menu or a nullptr, if the menu to copy was empty or NULL
+  */
+extern DLLIMPORT wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators = false);
+
 /// Check if CommonControls version is at least 6 (XP and up)
 extern DLLIMPORT bool UsesCommonControls6();
 

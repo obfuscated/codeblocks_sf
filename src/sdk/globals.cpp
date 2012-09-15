@@ -816,6 +816,26 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
     return ret; // return a list of the replaced expressions
 }
 
+wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
+{
+    if (!mnu || mnu->GetMenuItemCount() < 1)
+        return nullptr;
+    wxMenu* theMenu = new wxMenu();
+
+    for (size_t i = 0; i < mnu->GetMenuItemCount();++i)
+    {
+        wxMenuItem* tmpItem = mnu->FindItemByPosition(i);
+        wxMenuItem* theItem = new wxMenuItem(NULL,
+                                             tmpItem->GetId(),
+                                             with_accelerators?tmpItem->GetItemLabel():tmpItem->GetItemLabelText(),
+                                             tmpItem->GetHelp(),
+                                             tmpItem->GetKind(),
+                                             CopyMenu(tmpItem->GetSubMenu()));
+        theMenu->Append(theItem);
+    }
+    return theMenu;
+}
+
 bool IsWindowReallyShown(wxWindow* win)
 {
     while (win && win->IsShown())

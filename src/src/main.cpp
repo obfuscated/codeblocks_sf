@@ -2668,14 +2668,21 @@ bool MainFrame::OnDropFiles(wxCoord /*x*/, wxCoord /*y*/, const wxArrayString& f
 
 void MainFrame::OnFileNew(wxCommandEvent& /*event*/)
 {
-    wxMenu* popup = 0;
+    wxMenu* popup = nullptr;
     wxMenuBar* bar = GetMenuBar();
     if (!bar)
         return;
 
     bar->FindItem(idFileNewProject, &popup);
     if (popup)
-        PopupMenu(popup); // this will lead us in OnFileNewWhat() - the meat is there ;)
+    {
+        popup = CopyMenu(popup);
+        if (popup)
+        {
+            PopupMenu(popup); // this will lead us in OnFileNewWhat() - the meat is there ;)
+            delete popup;
+        }
+    }
 }
 
 // in case we are opening a project (bProject == true) we do not want to interfere
