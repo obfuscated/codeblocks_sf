@@ -39,6 +39,7 @@ BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
     EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKey)
 #endif
     EVT_IDLE(cbAuiNotebook::OnIdle)
+    EVT_AUINOTEBOOK_DRAG_DONE(wxID_ANY, cbAuiNotebook::OnDragDone)
 END_EVENT_TABLE()
 
 cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
@@ -292,6 +293,11 @@ void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
         }
     }
 
+}
+
+void cbAuiNotebook::OnDragDone(wxAuiNotebookEvent& /*event*/)
+{
+    UpdateTabControlsArray();
 }
 
 #ifdef __WXMSW__

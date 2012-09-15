@@ -193,6 +193,10 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event holds the wxTabCtrl, that sends the event
          */
         void OnLeaveTabCtrl(wxMouseEvent& event);
+        /** \brief Catch dragdone-events from wxTabCtrl
+         *
+         */
+        void OnDragDone(wxAuiNotebookEvent& event);
 #ifdef __WXMSW__
         // hack needed on wxMSW, because only focused windows get mousewheel-events
         /** \brief Checks the old focus
