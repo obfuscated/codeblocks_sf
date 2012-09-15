@@ -3046,13 +3046,13 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     // Hide the window
     Hide();
 
+    Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
+
     if (!Manager::IsBatchBuild())
     {
         m_pInfoPane->Destroy();
         m_pInfoPane = 0L;
     }
-
-    Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
 
     Destroy();
 }
