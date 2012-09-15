@@ -15,6 +15,7 @@
     #include <wx/filesys.h>
     #include <wx/image.h>
     #include <wx/listctrl.h>
+    #include <wx/menu.h>
 
     #include "cbexception.h"
     #include "configmanager.h" // ReadBool
@@ -65,13 +66,10 @@ int GetPlatformsFromString(const wxString& platforms)
     if (pA || (pW && pU && pM))
         return spAll;
 
-    int p = 0;
-    if (pW)
-        p |= spWindows;
-    if (pU)
-        p |= spUnix;
-    if (pM)
-        p |= spMac;
+    int     p  = 0;
+    if (pW) p |= spWindows;
+    if (pU) p |= spUnix;
+    if (pM) p |= spMac;
     return p;
 }
 
@@ -418,7 +416,7 @@ void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxStri
                 }
                 else
                 {
-                    item=tree->GetNextChild(item, cookie);
+                    item = tree->GetNextChild(item, cookie);
                     DoSelectRememberedNode(tree, item, tmpPath);
                 }
             }
@@ -504,6 +502,7 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
     nodePaths.Clear();
     if (!parent.IsOk() || !tree || !tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
         return;
+
     wxString tmp;
     if (!DoRememberExpandedNodes(tree, parent, nodePaths, tmp))
         nodePaths.Add(tmp); // just the tree root
@@ -516,16 +515,20 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 {
     if (!parent.IsOk() || !tree)
         return;
+
     if (nodePaths.GetCount() == 0)
     {
         tree->Collapse(parent);
         return;
     }
+
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
         DoExpandRememberedNode(tree, parent, nodePaths[i]);
+
     nodePaths.Clear();
     for (unsigned int i = 0; i < selectedItemPaths.GetCount(); ++i)
         DoSelectRememberedNode(tree, tree->GetRootItem(), selectedItemPaths[i]);
+
     selectedItemPaths.Clear();
 }
 
@@ -536,12 +539,10 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
 
     wxArrayString dirs;
     wxString currdir;
+    wxFileName tmp(full_path);
+    currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + wxFILE_SEP_PATH;
+    dirs = tmp.GetDirs();
 
-    {
-        wxFileName tmp(full_path);
-        currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + wxFILE_SEP_PATH;
-        dirs = tmp.GetDirs();
-    }
     for (size_t i = 0; i < dirs.GetCount(); ++i)
     {
         currdir << dirs[i];
@@ -567,9 +568,7 @@ wxString ChooseDirectory(wxWindow* parent,
                          bool askToMakeRelative, // relative to initialPath
                          bool showCreateDirButton) // where supported
 {
-    wxDirDialog dlg(parent,
-                    message,
-                    _T(""),
+    wxDirDialog dlg(parent, message, _T(""),
                     (showCreateDirButton ? wxDD_NEW_DIR_BUTTON : 0) | wxRESIZE_BORDER);
     dlg.SetPath(initialPath);
     PlaceWindow(&dlg);
@@ -596,6 +595,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     st.Empty();
     if (!file.IsOpened())
         return false;
+
     int len = file.Length();
     if (!len)
     {
@@ -648,7 +648,7 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
     return Manager::Get()->GetFileManager()->Save(filename, contents, encoding, bom);
 }
 
-// Saves a TinyXML document correctly, even if the path contains unicode characters.
+// Save a TinyXML document correctly, even if the path contains unicode characters.
 bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
 {
     return TinyXML::SaveDocument(filename, doc);
@@ -738,7 +738,7 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
 {
     wxString ret;
     wxString t;
-    for(unsigned int i = 0; i < str.length(); ++i)
+    for (unsigned int i = 0; i < str.length(); ++i)
     {
         wxChar c = str[i];
         if (  (c >= _T('A') && c <= _T('Z'))
@@ -907,7 +907,6 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
 }
 
 // function to check the common controls version
-// (should it be moved in sdk globals?)
 #ifdef __WXMSW__
 #include <windows.h>
 #include <shlwapi.h>
@@ -1303,9 +1302,7 @@ wxString realpath(const wxString& path)
 int cbMessageBox(const wxString& message, const wxString& caption, int style, wxWindow *parent, int x, int y)
 {
     if (!parent)
-    {
         parent = Manager::Get()->GetAppWindow();
-    }
 
     // Cannot create a wxMessageDialog with a NULL as parent
     if (!parent)
