@@ -3024,6 +3024,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
+    Manager::SetAppShuttingDown(true);
+
     Manager::Get()->GetLogManager()->DebugLog(_T("Deinitializing plugins..."));
     CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evtShutdown);
@@ -3046,13 +3048,13 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     // Hide the window
     Hide();
 
-    Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
-
     if (!Manager::IsBatchBuild())
     {
         m_pInfoPane->Destroy();
         m_pInfoPane = 0L;
     }
+
+    Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
 
     Destroy();
 }

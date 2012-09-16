@@ -57,6 +57,7 @@ class DLLIMPORT Manager
 
 public:
     static void SetAppStartedUp(bool app_started_up);
+    static void SetAppShuttingDown(bool app_shutting_down);
     static void SetBatchBuild(bool is_batch);
     static bool IsBatchBuild() { return m_IsBatch; }
     /// Blocks/unblocks Manager::Yield(). Be careful when using it. Actually, do *not* use it ;)

@@ -124,6 +124,11 @@ void Manager::SetAppStartedUp(bool app_started_up)
     m_AppStartedUp = app_started_up;
 }
 
+void Manager::SetAppShuttingDown(bool app_shutting_down)
+{
+    m_AppShuttingDown = app_shutting_down;
+}
+
 void Manager::SetBatchBuild(bool is_batch)
 {
     m_IsBatch = is_batch;
