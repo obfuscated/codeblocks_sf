@@ -182,6 +182,11 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event unused
          */
         void OnResize(wxSizeEvent& event);
+        /** \brief Catch dragdone-events from wxTabCtrl
+         *
+         */
+        void OnDragDone(wxAuiNotebookEvent& event);
+#ifdef __WXMSW__
         /** \brief Catch mouseenter-events from wxTabCtrl
          *
          * Set focus on wxTabCtrl
@@ -193,11 +198,6 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event holds the wxTabCtrl, that sends the event
          */
         void OnLeaveTabCtrl(wxMouseEvent& event);
-        /** \brief Catch dragdone-events from wxTabCtrl
-         *
-         */
-        void OnDragDone(wxAuiNotebookEvent& event);
-#ifdef __WXMSW__
         // hack needed on wxMSW, because only focused windows get mousewheel-events
         /** \brief Checks the old focus
          *
@@ -264,9 +264,6 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         bool m_HasToolTip;
 #endif
-        /** \brief If true, mouse pointer is over a tabCtrl
-         */
-        bool m_OverTabCtrl;
         /** \brief If true, zoom for all editors
          * is set in next OnIdle-call
          */
