@@ -102,25 +102,25 @@ void wxsAngularMeter::OnBuildCreatingCode()
 			Codef(_T("%C(%W,%I,%P,%S);\n"));
 
 			if(m_iNumTicks > 0){
-				Codef(_T("%ASetNumTick(%ld);\n"), m_iNumTicks);
+				Codef(_T("%ASetNumTick(%d);\n"), static_cast<int>(m_iNumTicks));
 			}
 			// Default range is 0-220.
 			if(m_iRangeMin != 0 || m_iRangeMax != 220){
-				Codef(_T("%ASetRange(%ld, %ld);\n"), m_iRangeMin, m_iRangeMax);
+				Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
 			}
 			// Default angles are -20, 200.
 			if(m_iAngleMin != -20 || m_iAngleMax != 200){
-				Codef(_T("%ASetAngle(%ld, %ld);\n"), m_iAngleMin, m_iAngleMax);
+				Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
 			}
 			m_iNumSectors = m_arrSectors.Count();
 			// Default number of sectors is 1.
 			if(m_iNumSectors > 1){
-				Codef(_T("%ASetNumSectors(%ld);\n"), m_iNumSectors);
+				Codef(_T("%ASetNumSectors(%d);\n"), static_cast<int>(m_iNumSectors));
 			}
 			for(size_t i = 0; i < m_arrSectors.Count(); i++){
 				SectorDesc *Desc = m_arrSectors[i];
 				wxString sClr = wxString::Format(wxT("wxColour(%d, %d, %d)"), Desc->colour.Red(),  Desc->colour.Green(), Desc->colour.Blue());
-				Codef(_T("\t%ASetSectorColor(%lu, %s);\n"), static_cast<unsigned long>(i), sClr.wx_str());
+				Codef(_T("\t%ASetSectorColor(%d, %s);\n"), static_cast<int>(i), sClr.wx_str());
 			}
 			if(!m_bShowVal){
 				Codef(_T("%ADrawCurrent(false);\n"));
@@ -140,7 +140,7 @@ void wxsAngularMeter::OnBuildCreatingCode()
 			}
 			// Value needs to be set after other params for correct display.
 			if(m_iValue){
-				Codef(_T("%ASetValue(%ld);\n"), m_iValue);
+				Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
 			}
 
 			BuildSetupWindowCode();

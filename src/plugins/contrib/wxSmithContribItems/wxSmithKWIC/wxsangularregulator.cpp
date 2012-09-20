@@ -98,8 +98,8 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 			AddHeader(_T("\"wx/KWIC/AngularRegulator.h\""), GetInfo().ClassName);
 			Codef(_T("%C(%W,%I,%P,%S, %s);\n"), wxT("wxBORDER_NONE"));
 
-			Codef(_T("%ASetRange(%ld, %ld);\n"), m_iRangeMin, m_iRangeMax);
-			Codef(_T("%ASetAngle(%ld, %ld);\n"), m_iAngleMin, m_iAngleMax);
+			Codef(_T("%ASetRange(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
+			Codef(_T("%ASetAngle(%d, %d);\n"), static_cast<int>(m_iAngleMin), static_cast<int>(m_iAngleMax));
 			wxString ss = m_cdExternalCircleColour.BuildCode(GetCoderContext());
 			if(!ss.IsEmpty()) Codef(_T("%ASetExtCircleColour(%s);\n"), ss.wx_str());
 			ss = m_cdInternalCircleColour.BuildCode(GetCoderContext());
@@ -119,7 +119,7 @@ void wxsAngularRegulator::OnBuildCreatingCode()
 			// Value needs to be set after other params for correct display and, in this case,
 			// should always be set to ensure that the knob is drawn at the correct location.
 			// If the value is not set the knob is drawn in the centre of the control.
-			Codef(_T("%ASetValue(%ld);\n"), m_iValue);
+			Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
 
 			BuildSetupWindowCode();
 			break;

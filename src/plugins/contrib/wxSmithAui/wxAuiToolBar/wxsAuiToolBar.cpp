@@ -348,13 +348,13 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                     if ( Label->m_IsDefault )
                         Codef(_T("%AAddLabel(%s, %t);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str());
                     else
-                        Codef(_T("%AAddLabel(%s, %t, %ld);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str(),Label->m_Width);
+                        Codef(_T("%AAddLabel(%s, %t, %d);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str(),static_cast<int>(Label->m_Width));
                 }
                 else if ( ClassName == _T("wxAuiToolBarSpacer") )
                 {
                     wxsAuiToolBarSpacer* Spacer = (wxsAuiToolBarSpacer*) Child;
-                    if ( Spacer->m_Stretch ) Codef(_T("%AAddStretchSpacer(%ld);\n"),Spacer->m_Proportion);
-                    else                     Codef(_T("%AAddSpacer(%ld);\n"),Spacer->m_Pixels);
+                    if ( Spacer->m_Stretch ) Codef(_T("%AAddStretchSpacer(%d);\n"),static_cast<int>(Spacer->m_Proportion));
+                    else                     Codef(_T("%AAddSpacer(%d);\n"),static_cast<int>(Spacer->m_Pixels));
                 }
                 else
                 {

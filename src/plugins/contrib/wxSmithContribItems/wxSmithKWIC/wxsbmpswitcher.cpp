@@ -98,7 +98,7 @@ void wxsBmpSwitcher::OnBuildCreatingCode()
 			}
 			// Default is 0. If state <= 0 or > number of bitmaps, use default.
 			if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
-				Codef(_T("\t%ASetState(%ld);\n"), m_iState);
+				Codef(_T("\t%ASetState(%d);\n"), static_cast<int>(m_iState));
 			}
 
 			BuildSetupWindowCode();

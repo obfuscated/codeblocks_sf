@@ -246,7 +246,7 @@ void wxsTreeListCtrl::BuildItemCode (void)
         ss.Trim (false);
         if (ss[0] == '!') { continue; }
 
-        Codef (_ ("%AAddColumn(%t, %ld);\n"), ss.wx_str(), m_ColWidth);
+        Codef (_ ("%AAddColumn(%t, %d);\n"), ss.wx_str(), static_cast<int>(m_ColWidth));
         n += 1;
     };
 

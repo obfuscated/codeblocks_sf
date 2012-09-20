@@ -97,7 +97,7 @@ void wxsLinearMeter::OnBuildCreatingCode()
 
 			// Default range is 0-100.
 			if(m_iRangeMin != 0 || m_iRangeMax != 100){
-				Codef(_T("%ASetRangeVal(%ld, %ld);\n"), m_iRangeMin, m_iRangeMax);
+				Codef(_T("%ASetRangeVal(%d, %d);\n"), static_cast<int>(m_iRangeMin), static_cast<int>(m_iRangeMax));
 			}
 			if(!m_bHorizontal){
 				Codef(_T("%ASetOrizDirection(false);\n"));
@@ -137,7 +137,7 @@ void wxsLinearMeter::OnBuildCreatingCode()
 			}
 			// Value needs to be set after other params for correct display.
 			if(m_iValue){
-				Codef(_T("%ASetValue(%ld);\n"), m_iValue);
+				Codef(_T("%ASetValue(%d);\n"), static_cast<int>(m_iValue));
 			}
 
 			BuildSetupWindowCode();

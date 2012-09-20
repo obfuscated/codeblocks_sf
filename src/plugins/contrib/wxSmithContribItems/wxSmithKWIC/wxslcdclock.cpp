@@ -88,7 +88,7 @@ void wxsLCDClock::OnBuildCreatingCode()
 
 			// 6 digits is the default value.
 			if (m_iNumDigits && m_iNumDigits != 6){
-				Codef(_T("%ASetNumberDigits(%ld);\n"), m_iNumDigits);
+				Codef(_T("%ASetNumberDigits(%d);\n"), static_cast<int>(m_iNumDigits));
 			}
 			wxString ss = m_cdLightColour.BuildCode( GetCoderContext() );
 			if (!ss.IsEmpty()) Codef(_T("%ASetLightColour(%s);\n"), ss.wx_str());
