@@ -14,6 +14,7 @@
 #include <wx/statline.h>
 #ifndef CB_PRECOMP
     #include <wx/combobox.h>
+    #include <wx/menu.h>
     #include <wx/sizer.h>
     #include <wx/splitter.h>
     #include <wx/statbox.h>
@@ -161,6 +162,18 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_TEXT_ENTER(idTxtSearchMask, ThreadSearchView::OnCboSearchExprEnter)
     EVT_BUTTON(idBtnSearch, ThreadSearchView::OnBtnSearchClick)
     EVT_BUTTON(idBtnOptions, ThreadSearchView::OnBtnOptionsClick)
+
+    EVT_MENU(idOptionDialog, ThreadSearchView::OnShowOptionsDialog)
+    EVT_MENU(idOptionWholeWord, ThreadSearchView::OnQuickOptions)
+    EVT_MENU(idOptionStartWord, ThreadSearchView::OnQuickOptions)
+    EVT_MENU(idOptionMatchCase, ThreadSearchView::OnQuickOptions)
+    EVT_MENU(idOptionRegEx, ThreadSearchView::OnQuickOptions)
+
+    EVT_UPDATE_UI(idOptionWholeWord, ThreadSearchView::OnQuickOptionsUpdateUI)
+    EVT_UPDATE_UI(idOptionStartWord, ThreadSearchView::OnQuickOptionsUpdateUI)
+    EVT_UPDATE_UI(idOptionMatchCase, ThreadSearchView::OnQuickOptionsUpdateUI)
+    EVT_UPDATE_UI(idOptionRegEx, ThreadSearchView::OnQuickOptionsUpdateUI)
+
     EVT_BUTTON(idBtnShowDirItemsClick, ThreadSearchView::OnBtnShowDirItemsClick)
     EVT_SPLITTER_DCLICK(-1, ThreadSearchView::OnSplitterDoubleClick)
     // end wxGlade
@@ -233,6 +246,19 @@ void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &/*event*/)
 
 void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &/*event*/)
 {
+    wxMenu menu;
+    menu.Append(idOptionDialog, _("Options"), _("Shows the options dialog"));
+    menu.AppendSeparator();
+    menu.AppendCheckItem(idOptionWholeWord, _("Whole word"), _("Search text matches only whole words"));
+    menu.AppendCheckItem(idOptionStartWord, _("Start word"), _("Matches only word starting with search expression"));
+    menu.AppendCheckItem(idOptionMatchCase, _("Match case"), _("Case sensitive search."));
+    menu.AppendCheckItem(idOptionRegEx, _("Regular expression"), _("Search expression is a regular expression"));
+
+    PopupMenu(&menu);
+}
+
+void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
+{
     // Displays a dialog box with a ThreadSearchConfPanel.
     // All parameters can be set on this dialog.
     // It is the same as doing 'Settings/environment/Thread search'
@@ -245,6 +271,49 @@ void ThreadSearchView::OnBtnOptionsClick(wxCommandEvent &/*event*/)
     pDlg->Destroy();
 }
 
+void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
+{
+    ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
+    switch (event.GetId())
+    {
+    case idOptionWholeWord:
+        findData.SetMatchWord(event.IsChecked());
+        m_ThreadSearchPlugin.SetFindData(findData);
+        break;
+    case idOptionStartWord:
+        findData.SetStartWord(event.IsChecked());
+        m_ThreadSearchPlugin.SetFindData(findData);
+        break;
+    case idOptionMatchCase:
+        findData.SetMatchCase(event.IsChecked());
+        m_ThreadSearchPlugin.SetFindData(findData);
+        break;
+    case idOptionRegEx:
+        findData.SetRegEx(event.IsChecked());
+        m_ThreadSearchPlugin.SetFindData(findData);
+        break;
+    }
+}
+
+void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
+{
+    ThreadSearchFindData &findData = m_ThreadSearchPlugin.GetFindData();
+    switch (event.GetId())
+    {
+    case idOptionWholeWord:
+        event.Check(findData.GetMatchWord());
+        break;
+    case idOptionStartWord:
+        event.Check(findData.GetStartWord());
+        break;
+    case idOptionMatchCase:
+        event.Check(findData.GetMatchCase());
+        break;
+    case idOptionRegEx:
+        event.Check(findData.GetRegEx());
+        break;
+    }
+}
 
 void ThreadSearchView::OnBtnShowDirItemsClick(wxCommandEvent& WXUNUSED(event))
 {

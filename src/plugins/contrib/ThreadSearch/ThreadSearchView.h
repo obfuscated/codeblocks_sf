@@ -232,6 +232,10 @@ public:
     void OnBtnShowDirItemsClick(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnSplitterDoubleClick(wxSplitterEvent &event); // wxGlade: <event_handler>
 
+    void OnShowOptionsDialog(wxCommandEvent &event);
+    void OnQuickOptions(wxCommandEvent &event);
+    void OnQuickOptionsUpdateUI(wxUpdateUIEvent &event);
+
     void OnMarginClick(wxScintillaEvent& event);
     void OnContextMenu(wxContextMenuEvent& event);
     void OnLoggerClick      (const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance
