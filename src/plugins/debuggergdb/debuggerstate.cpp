@@ -50,7 +50,7 @@ bool DebuggerState::StartDriver(ProjectBuildTarget* target)
 
 struct MatchDataAndTempBreakpoints
 {
-    bool operator()(const DebuggerBreakpoint::Pointer &bp) const
+    bool operator()(const cb::shared_ptr<DebuggerBreakpoint> &bp) const
     {
         return bp->type == DebuggerBreakpoint::bptData || bp->temporary;
     }
@@ -84,7 +84,7 @@ void DebuggerState::CleanUp()
 {
     // FIXME (obfuscated#): This is not a good API design! Replace with RemoveAllBreakpoints
     if (m_pDriver)
-        m_pDriver->RemoveBreakpoint(DebuggerBreakpoint::Pointer());
+        m_pDriver->RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint>());
     StopDriver();
 
     m_Breakpoints.clear();
@@ -100,8 +100,8 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
     return fname;
 } // end of ConvertToValidFilename
 
-DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, int line,
-                                                         bool temp, const wxString& lineText)
+cb::shared_ptr<DebuggerBreakpoint> DebuggerState::AddBreakpoint(const wxString& file, int line,
+                                                                bool temp, const wxString& lineText)
 {
     wxString bpfile = ConvertToValidFilename(file);
 
@@ -113,7 +113,7 @@ DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, i
 
     // create new bp
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerState::AddBreakpoint() : bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str()));
-    DebuggerBreakpoint::Pointer bp(new DebuggerBreakpoint);
+    cb::shared_ptr<DebuggerBreakpoint> bp(new DebuggerBreakpoint);
     bp->type = DebuggerBreakpoint::bptCode;
     bp->filename = bpfile;
     bp->filenameAsPassed = file;
@@ -126,9 +126,9 @@ DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& file, i
     return bp;
 }
 
-DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& dataAddr, bool onRead, bool onWrite)
+cb::shared_ptr<DebuggerBreakpoint> DebuggerState::AddBreakpoint(const wxString& dataAddr, bool onRead, bool onWrite)
 {
-    DebuggerBreakpoint::Pointer bp(new DebuggerBreakpoint);
+    cb::shared_ptr<DebuggerBreakpoint> bp(new DebuggerBreakpoint);
     bp->type = DebuggerBreakpoint::bptData;
     bp->breakAddress = dataAddr;
     bp->breakOnRead = onRead;
@@ -138,7 +138,7 @@ DebuggerBreakpoint::Pointer DebuggerState::AddBreakpoint(const wxString& dataAdd
     return bp;
 }
 
-int DebuggerState::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
+int DebuggerState::AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     if (!bp)
         return -1;
@@ -153,7 +153,7 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
     return bp->index;
 }
 
-void DebuggerState::RemoveBreakpoint(DebuggerBreakpoint::Pointer bp, bool removeFromDriver)
+void DebuggerState::RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp, bool removeFromDriver)
 {
     int index = 0;
     for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it, ++index)
@@ -172,10 +172,9 @@ void DebuggerState::RemoveBreakpoint(int idx, bool removeFromDriver)
     if (idx < 0 || idx >= (int)m_Breakpoints.size())
         return;
     // yes, remove it from the list
-    //DebuggerBreakpoint::Pointer bp = m_Breakpoints[idx];
     BreakpointsList::iterator it = m_Breakpoints.begin();
     std::advance(it, idx);
-    DebuggerBreakpoint::Pointer bp = *it;
+    cb::shared_ptr<DebuggerBreakpoint> bp = *it;
     m_Breakpoints.erase(it);
 
     // notify driver if it is active
@@ -196,7 +195,7 @@ void DebuggerState::RemoveAllBreakpoints()
 struct MatchProject
 {
     MatchProject(cbProject *project) : project(project) {}
-    bool operator()(const DebuggerBreakpoint::Pointer &bp)
+    bool operator()(const cb::shared_ptr<DebuggerBreakpoint> &bp)
     {
         return static_cast<cbProject*>(bp->userData) == project;
     }
@@ -215,7 +214,7 @@ void DebuggerState::RemoveAllProjectBreakpoints(cbProject* prj)
     m_Breakpoints.erase(start, m_Breakpoints.end());
 }
 
-void DebuggerState::ShiftBreakpoint(DebuggerBreakpoint::Pointer bp, int nroflines)
+void DebuggerState::ShiftBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp, int nroflines)
 {
     // notify driver if it is active
     if (m_pDriver)
@@ -241,34 +240,34 @@ int DebuggerState::HasBreakpoint(const wxString& file, int line, bool temp)
     return -1;
 }
 
-DebuggerBreakpoint::Pointer DebuggerState::GetBreakpoint(int idx)
+cb::shared_ptr<DebuggerBreakpoint> DebuggerState::GetBreakpoint(int idx)
 {
     if (idx < 0 || idx >= (int)m_Breakpoints.size())
-        return DebuggerBreakpoint::Pointer();
+        return cb::shared_ptr<DebuggerBreakpoint>();
     return m_Breakpoints[idx];
 }
 
-DebuggerBreakpoint::Pointer DebuggerState::GetBreakpointByNumber(int num)
+cb::shared_ptr<DebuggerBreakpoint> DebuggerState::GetBreakpointByNumber(int num)
 {
     for (BreakpointsList::iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
     {
         if ((*it)->index == num)
             return *it;
     }
-    return DebuggerBreakpoint::Pointer();
+    return cb::shared_ptr<DebuggerBreakpoint>();
 }
 
-const DebuggerBreakpoint::Pointer DebuggerState::GetBreakpointByNumber(int num) const
+const cb::shared_ptr<DebuggerBreakpoint> DebuggerState::GetBreakpointByNumber(int num) const
 {
     for (BreakpointsList::const_iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)
     {
         if ((*it)->index == num)
             return *it;
     }
-    return DebuggerBreakpoint::Pointer();
+    return cb::shared_ptr<DebuggerBreakpoint>();
 }
 
-void DebuggerState::ResetBreakpoint(DebuggerBreakpoint::Pointer bp)
+void DebuggerState::ResetBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     // notify driver if it is active
     if (m_pDriver)
@@ -280,7 +279,7 @@ void DebuggerState::ResetBreakpoint(DebuggerBreakpoint::Pointer bp)
 
 struct MatchSetTempBreakpoint
 {
-    bool operator()(const DebuggerBreakpoint::Pointer &bp) const
+    bool operator()(const cb::shared_ptr<DebuggerBreakpoint> &bp) const
     {
         return bp->temporary && bp->alreadySet;
     }
@@ -294,7 +293,7 @@ void DebuggerState::ApplyBreakpoints()
     m_Breakpoints.erase(std::remove_if(m_Breakpoints.begin(), m_Breakpoints.end(), MatchSetTempBreakpoint()),
                         m_Breakpoints.end());
 
-    m_pDriver->RemoveBreakpoint(DebuggerBreakpoint::Pointer());
+    m_pDriver->RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint>());
     m_pPlugin->Log(_("Setting breakpoints"));
 
     for (BreakpointsList::const_iterator it = m_Breakpoints.begin(); it != m_Breakpoints.end(); ++it)

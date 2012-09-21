@@ -108,7 +108,7 @@ class DLLIMPORT cbWatchesDlg
         virtual wxWindow* GetWindow() = 0;
 
         virtual void UpdateWatches() = 0;
-        virtual void AddWatch(cbWatch::Pointer watch) = 0;
+        virtual void AddWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void RenameWatch(wxObject *prop, const wxString &newSymbol) = 0;
         virtual void RefreshUI() = 0;
 };
@@ -170,7 +170,7 @@ class DLLIMPORT cbDebugInterfaceFactory
         /** @brief Show new value tooltip
           * @return Return True only if new tooltip was shown, else return False.
           */
-        virtual bool ShowValueTooltip(const cbWatch::Pointer &watch, const wxRect &rect) = 0;
+        virtual bool ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect) = 0;
         virtual void HideValueTooltip() = 0;
         virtual bool IsValueTooltipShown() = 0;
         virtual void UpdateValueTooltip() = 0;

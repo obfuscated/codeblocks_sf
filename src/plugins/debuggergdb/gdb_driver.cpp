@@ -654,7 +654,7 @@ void GDB_driver::SwitchThread(size_t threadIndex)
         QueueCommand(new GdbCmd_Backtrace(this));
 }
 
-void GDB_driver::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
+void GDB_driver::AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     if (bp->type == DebuggerBreakpoint::bptData)
     {
@@ -689,7 +689,7 @@ void GDB_driver::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
     }
 }
 
-void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint::Pointer bp)
+void GDB_driver::RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     if (bp && bp->index != -1)
         QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
@@ -713,7 +713,7 @@ void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, WatchesContainer &wat
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
 }
 
-void GDB_driver::UpdateWatch(GDBWatch::Pointer const &watch)
+void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
@@ -967,7 +967,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                     lineStr.ToLong(&line);
                     DebuggerState& state = m_pDBG->GetState();
                     int bpindex = state.HasBreakpoint(file, line - 1, false);
-                    DebuggerBreakpoint::Pointer bp = state.GetBreakpoint(bpindex);
+                    cb::shared_ptr<DebuggerBreakpoint> bp = state.GetBreakpoint(bpindex);
                     if (bp)
                     {
     //                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
@@ -988,7 +988,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 long index;
                 rePendingFound1.GetMatch(lines[i],1).ToLong(&index);
                 DebuggerState& state = m_pDBG->GetState();
-                DebuggerBreakpoint::Pointer bp = state.GetBreakpointByNumber(index);
+                cb::shared_ptr<DebuggerBreakpoint> bp = state.GetBreakpointByNumber(index);
                 if(bp && bp->wantsCondition)
                 {
                     bp->wantsCondition = false;
@@ -1004,7 +1004,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 long index;
                 reTempBreakFound.GetMatch(lines[i],1).ToLong(&index);
                 DebuggerState& state = m_pDBG->GetState();
-                DebuggerBreakpoint::Pointer bp = state.GetBreakpointByNumber(index);
+                cb::shared_ptr<DebuggerBreakpoint> bp = state.GetBreakpointByNumber(index);
                 state.RemoveBreakpoint(bp, false);
                 Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
             }

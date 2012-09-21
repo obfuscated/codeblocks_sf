@@ -61,7 +61,7 @@ void ThreadsDlg::Reload()
     long active_index = -1;
     for (int ii = 0; ii < plugin->GetThreadsCount(); ++ii)
     {
-        cbThread::ConstPointer thread = plugin->GetThread(ii);
+        cb::shared_ptr<const cbThread> thread = plugin->GetThread(ii);
 
         long index = m_list->InsertItem(m_list->GetItemCount(), thread->IsActive() ? wxT("-->") : wxT(""));
 

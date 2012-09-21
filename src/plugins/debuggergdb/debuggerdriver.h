@@ -40,8 +40,8 @@ class DebuggerDriver
             Low = 0,
             High
         };
-        typedef std::vector<cbStackFrame::Pointer> StackFrameContainer;
-        typedef std::vector<cbThread::Pointer> ThreadsContainer;
+        typedef std::vector<cb::shared_ptr<cbStackFrame> > StackFrameContainer;
+        typedef std::vector<cb::shared_ptr<cbThread> > ThreadsContainer;
 
         DebuggerDriver(DebuggerGDB* plugin);
         virtual ~DebuggerDriver();
@@ -120,12 +120,12 @@ class DebuggerDriver
             @param bp The breakpoint to add.
             @param editor The editor this breakpoint is set (might be NULL).
         */
-        virtual void AddBreakpoint(DebuggerBreakpoint::Pointer bp) = 0;
+        virtual void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp) = 0;
 
         /** Remove a breakpoint.
             @param bp The breakpoint to remove. If NULL, all reakpoints are removed.
         */
-        virtual void RemoveBreakpoint(DebuggerBreakpoint::Pointer bp) = 0;
+        virtual void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp) = 0;
 
         /** Evaluate a symbol.
             @param symbol The symbol to evaluate.
@@ -139,7 +139,7 @@ class DebuggerDriver
             @param tree The watches tree control.
         */
         virtual void UpdateWatches(bool doLocals, bool doArgs, WatchesContainer &watches) = 0;
-        virtual void UpdateWatch(GDBWatch::Pointer const &watch) = 0;
+        virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch) = 0;
 
         /** Attach to process */
         virtual void Attach(int pid) = 0;

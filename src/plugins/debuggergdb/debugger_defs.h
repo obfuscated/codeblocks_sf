@@ -127,8 +127,6 @@ class DbgCmd_UpdateWatchesTree : public DebuggerCmd
 ////////////////////////////////////////////////////////////////////////////////
 struct DebuggerBreakpoint : cbBreakpoint
 {
-    typedef cb::shared_ptr<DebuggerBreakpoint> Pointer;
-
     enum BreakpointType
     {
         bptCode = 0,    ///< Normal file/line breakpoint
@@ -190,7 +188,7 @@ struct DebuggerBreakpoint : cbBreakpoint
     bool breakOnWrite; ///< Valid only for type==bptData: break when memory is written to.
     void* userData; ///< Custom user data.
 };
-typedef std::deque<DebuggerBreakpoint::Pointer> BreakpointsList;
+typedef std::deque<cb::shared_ptr<DebuggerBreakpoint> > BreakpointsList;
 
 /** Watch variable format.
   *
@@ -213,8 +211,6 @@ enum WatchFormat
 
 class GDBWatch : public cbWatch
 {
-    public:
-        typedef cb::shared_ptr<GDBWatch> Pointer;
     public:
         GDBWatch(wxString const &symbol);
         virtual ~GDBWatch();
@@ -259,7 +255,7 @@ class GDBWatch : public cbWatch
         bool m_forTooltip;
     };
 
-typedef std::vector<GDBWatch::Pointer> WatchesContainer;
+typedef std::vector<cb::shared_ptr<GDBWatch> > WatchesContainer;
 
 bool IsPointerType(wxString type);
 

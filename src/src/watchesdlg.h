@@ -27,7 +27,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
         wxWindow* GetWindow() { return this; }
 
         void UpdateWatches();
-        void AddWatch(cbWatch::Pointer watch);
+        void AddWatch(cb::shared_ptr<cbWatch> watch);
         void RenameWatch(wxObject *prop, const wxString &newSymbol);
         void RefreshUI();
     private:
@@ -54,7 +54,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         struct WatchItem
         {
-            cbWatch::Pointer watch;
+            cb::shared_ptr<cbWatch> watch;
             wxPGProperty *property;
         };
         typedef std::vector<WatchItem> WatchItems;
@@ -73,7 +73,7 @@ class ValueTooltip :
 #endif
 {
     public:
-        ValueTooltip(const cbWatch::Pointer &watch, wxWindow *parent);
+        ValueTooltip(const cb::shared_ptr<cbWatch> &watch, wxWindow *parent);
         ~ValueTooltip();
 
         void Dismiss();
@@ -96,7 +96,7 @@ class ValueTooltip :
         wxTimer m_timer;
         int m_outsideCount;
 
-        cbWatch::Pointer m_watch;
+        cb::shared_ptr<cbWatch> m_watch;
     private:
         DECLARE_CLASS(ValueTooltip)
         DECLARE_EVENT_TABLE()

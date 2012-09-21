@@ -192,7 +192,7 @@ void DebugInterfaceFactory::DeleteWatches(cbWatchesDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-bool DebugInterfaceFactory::ShowValueTooltip(const cbWatch::Pointer &watch, const wxRect &rect)
+bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect)
 {
     delete m_tooltip;
     m_tooltip = nullptr;

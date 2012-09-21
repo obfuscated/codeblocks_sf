@@ -2458,7 +2458,7 @@ void cbEditor::RefreshBreakpointMarkers()
         {
             for (int ii = 0; ii < debugger->GetBreakpointsCount(); ++ii)
             {
-                cbBreakpoint::ConstPointer bp = debugger->GetBreakpoint(ii);
+                cb::shared_ptr<const cbBreakpoint> bp = debugger->GetBreakpoint(ii);
                 if (bp->GetLocation() == GetFilename())
                 {
                     if (bp->IsEnabled())
@@ -2473,7 +2473,7 @@ void cbEditor::RefreshBreakpointMarkers()
             // all breakpoints for the non active debugger use the other breakpoint marker
             for (int ii = 0; ii < debugger->GetBreakpointsCount(); ++ii)
             {
-                cbBreakpoint::ConstPointer bp = debugger->GetBreakpoint(ii);
+                cb::shared_ptr<const cbBreakpoint> bp = debugger->GetBreakpoint(ii);
                 if (bp->GetLocation() == GetFilename())
                     MarkerToggle(BREAKPOINT_OTHER_MARKER, bp->GetLine() - 1);
             }

@@ -34,23 +34,24 @@ class DebuggerState
 
         void CleanUp();
 
-        int AddBreakpoint(DebuggerBreakpoint::Pointer bp); // returns -1 if not found
-        DebuggerBreakpoint::Pointer AddBreakpoint(const wxString& file, int line, bool temp = false,
-                                          const wxString& lineText = wxEmptyString);
-        DebuggerBreakpoint::Pointer AddBreakpoint(const wxString& dataAddr, bool onRead = false, bool onWrite = true);
+        int AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp); // returns -1 if not found
+        cb::shared_ptr<DebuggerBreakpoint> AddBreakpoint(const wxString& file, int line, bool temp = false,
+                                                         const wxString& lineText = wxEmptyString);
+        cb::shared_ptr<DebuggerBreakpoint> AddBreakpoint(const wxString& dataAddr, bool onRead = false,
+                                                         bool onWrite = true);
         void RemoveBreakpoint(int idx, bool removeFromDriver = true);
-        void RemoveBreakpoint(DebuggerBreakpoint::Pointer bp, bool removeFromDriver = true);
+        void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp, bool removeFromDriver = true);
         void RemoveAllBreakpoints();
         void RemoveAllProjectBreakpoints(cbProject* prj);
 
         // helpers to keep in sync with the editors
-        void ShiftBreakpoint(DebuggerBreakpoint::Pointer bp, int nroflines);
+        void ShiftBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp, int nroflines);
 
         int HasBreakpoint(const wxString& file, int line, bool temp); // returns -1 if not found
-        DebuggerBreakpoint::Pointer GetBreakpoint(int idx);
-        DebuggerBreakpoint::Pointer GetBreakpointByNumber(int num);
-        const DebuggerBreakpoint::Pointer GetBreakpointByNumber(int num) const;
-        void ResetBreakpoint(DebuggerBreakpoint::Pointer bp);
+        cb::shared_ptr<DebuggerBreakpoint> GetBreakpoint(int idx);
+        cb::shared_ptr<DebuggerBreakpoint> GetBreakpointByNumber(int num);
+        const cb::shared_ptr<DebuggerBreakpoint> GetBreakpointByNumber(int num) const;
+        void ResetBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
         void ApplyBreakpoints();
     protected:
         wxString ConvertToValidFilename(const wxString& filename);

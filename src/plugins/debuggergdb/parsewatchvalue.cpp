@@ -260,31 +260,31 @@ bool GetNextToken(wxString const &str, int pos, Token &token)
     }
 }
 
-GDBWatch::Pointer AddChild(GDBWatch::Pointer parent, wxString const &full_value, Token &name)
+cb::shared_ptr<GDBWatch> AddChild(cb::shared_ptr<GDBWatch> parent, wxString const &full_value, Token &name)
 {
     wxString const &str_name = name.ExtractString(full_value);
-    cbWatch::Pointer old_child = parent->FindChild(str_name);
-    GDBWatch::Pointer child;
+    cb::shared_ptr<cbWatch> old_child = parent->FindChild(str_name);
+    cb::shared_ptr<GDBWatch> child;
     if (old_child)
         child = cb::static_pointer_cast<GDBWatch>(old_child);
     else
     {
-        child = GDBWatch::Pointer(new GDBWatch(str_name));
+        child = cb::shared_ptr<GDBWatch>(new GDBWatch(str_name));
         cbWatch::AddChild(parent, child);
     }
     child->MarkAsRemoved(false);
     return child;
 }
 
-GDBWatch::Pointer AddChild(GDBWatch::Pointer parent, wxString const &str_name)
+cb::shared_ptr<GDBWatch> AddChild(cb::shared_ptr<GDBWatch> parent, wxString const &str_name)
 {
     int index = parent->FindChildIndex(str_name);
-    GDBWatch::Pointer child;
+    cb::shared_ptr<GDBWatch> child;
     if (index != -1)
         child = cb::static_pointer_cast<GDBWatch>(parent->GetChild(index));
     else
     {
-        child = GDBWatch::Pointer(new GDBWatch(str_name));
+        child = cb::shared_ptr<GDBWatch>(new GDBWatch(str_name));
         cbWatch::AddChild(parent, child);
     }
     child->MarkAsRemoved(false);
@@ -293,7 +293,7 @@ GDBWatch::Pointer AddChild(GDBWatch::Pointer parent, wxString const &str_name)
 
 wxRegEx regexRepeatedChar(wxT(".+[ \\t](<repeats[ \\t][0-9]+[ \\t]times>)$"));
 
-bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value, int &start, int length)
+bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value, int &start, int length)
 {
     watch->SetDebugValue(value);
     watch->MarkChildsAsRemoved();
@@ -461,13 +461,13 @@ bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value, int &sta
                 {
                     if (token_value.type != Token::Undefined)
                     {
-                        GDBWatch::Pointer child = AddChild(watch, value, token_name);
+                        cb::shared_ptr<GDBWatch> child = AddChild(watch, value, token_name);
                         child->SetValue(token_value.ExtractString(value));
                     }
                     else
                     {
                         int start = watch->IsArray() ? watch->GetArrayStart() : 0;
-                        GDBWatch::Pointer child = AddChild(watch, wxString::Format(wxT("[%d]"), start + added_children));
+                        cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"), start + added_children));
                         child->SetValue(token_name.ExtractString(value));
                     }
                     token_name.type = token_value.type = Token::Undefined;
@@ -479,7 +479,7 @@ bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value, int &sta
             break;
         case Token::OpenBrace:
             {
-                GDBWatch::Pointer child;
+                cb::shared_ptr<GDBWatch> child;
                 if(token_name.type == Token::Undefined)
                 {
                     int start = watch->IsArray() ? watch->GetArrayStart() : 0;
@@ -507,13 +507,14 @@ bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value, int &sta
                 {
                     if (token_value.type != Token::Undefined)
                     {
-                        GDBWatch::Pointer child = AddChild(watch, value, token_name);
+                        cb::shared_ptr<GDBWatch> child = AddChild(watch, value, token_name);
                         child->SetValue(token_value.ExtractString(value));
                     }
                     else
                     {
                         int start = watch->IsArray() ? watch->GetArrayStart() : 0;
-                        GDBWatch::Pointer child = AddChild(watch, wxString::Format(wxT("[%d]"), start + added_children));
+                        cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"),
+                                                                                          start + added_children));
                         child->SetValue(token_name.ExtractString(value));
                     }
                     token_name.type = token_value.type = Token::Undefined;
@@ -539,13 +540,13 @@ bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value, int &sta
     {
         if (token_value.type != Token::Undefined)
         {
-            GDBWatch::Pointer child = AddChild(watch, value, token_name);
+            cb::shared_ptr<GDBWatch> child = AddChild(watch, value, token_name);
             child->SetValue(token_value.ExtractString(value));
         }
         else
         {
             int start = watch->IsArray() ? watch->GetArrayStart() : 0;
-            GDBWatch::Pointer child = AddChild(watch, wxString::Format(wxT("[%d]"), start + added_children));
+            cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"), start + added_children));
             child->SetValue(token_name.ExtractString(value));
         }
     }
@@ -593,7 +594,7 @@ void RemoveBefore(wxString &str, const wxString &s)
     }
 }
 
-bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &inputValue)
+bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &inputValue)
 {
     if(inputValue.empty())
     {
@@ -667,7 +668,7 @@ bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &inputValue)
 //    int [10] 0x0012fee8
 //    0
 
-bool ParseCDBWatchValue(GDBWatch::Pointer watch, wxString const &value)
+bool ParseCDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value)
 {
     wxArrayString lines = GetArrayFromString(value, wxT('\n'));
     watch->SetDebugValue(value);
@@ -772,7 +773,7 @@ bool ParseCDBWatchValue(GDBWatch::Pointer watch, wxString const &value)
         {
             if (class_line.Matches(lines[ii]))
             {
-                GDBWatch::Pointer w = AddChild(watch, class_line.GetMatch(lines[ii], 2));
+                cb::shared_ptr<GDBWatch> w = AddChild(watch, class_line.GetMatch(lines[ii], 2));
                 w->SetValue(class_line.GetMatch(lines[ii], 3));
                 w->SetDebugValue(lines[ii]);
             }

@@ -387,10 +387,10 @@ class GdbCmd_Detach : public DebuggerCmd
   */
 class GdbCmd_AddBreakpointCondition : public DebuggerCmd
 {
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
     public:
         /** @param bp The breakpoint to set its condition. */
-        GdbCmd_AddBreakpointCondition(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        GdbCmd_AddBreakpointCondition(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -432,10 +432,10 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
   */
 class GdbCmd_AddBreakpoint : public DebuggerCmd
 {
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
     public:
         /** @param bp The breakpoint to set. */
-        GdbCmd_AddBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        GdbCmd_AddBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -555,10 +555,10 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
   */
 class GdbCmd_AddDataBreakpoint : public DebuggerCmd
 {
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
     public:
         /** @param bp The breakpoint to set. */
-        GdbCmd_AddDataBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        GdbCmd_AddDataBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -592,7 +592,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 {
     public:
         /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
-        GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        GdbCmd_RemoveBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -623,7 +623,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 //            m_pDriver->DebugLog(wxString::Format(_("Breakpoint removed: file %s, line %d"), m_BP->filename.c_str(), m_BP->line + 1));
         }
 
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
 };
 
 /**
@@ -758,7 +758,8 @@ class GdbCmd_Threads : public DebuggerCmd
 
                     long number;
                     num.ToLong(&number, 10);
-                    m_pDriver->GetThreads().push_back(cbThread::Pointer(new cbThread(!active.empty(), number, info)));
+                    DebuggerDriver::ThreadsContainer &threads = m_pDriver->GetThreads();
+                    threads.push_back(cb::shared_ptr<cbThread>(new cbThread(!active.empty(), number, info)));
                 }
             }
             Manager::Get()->GetDebuggerManager()->GetThreadsDialog()->Reload();
@@ -770,10 +771,10 @@ class GdbCmd_Threads : public DebuggerCmd
   */
 class GdbCmd_Watch : public DebuggerCmd
 {
-        GDBWatch::Pointer m_watch;
+        cb::shared_ptr<GDBWatch> m_watch;
         wxString m_ParseFunc;
     public:
-        GdbCmd_Watch(DebuggerDriver* driver, GDBWatch::Pointer watch) :
+        GdbCmd_Watch(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch) :
             DebuggerCmd(driver),
             m_watch(watch)
         {
@@ -861,10 +862,10 @@ class GdbCmd_Watch : public DebuggerCmd
   */
 class GdbCmd_FindWatchType : public DebuggerCmd
 {
-        GDBWatch::Pointer m_watch;
+        cb::shared_ptr<GDBWatch> m_watch;
         bool m_firstTry;
     public:
-        GdbCmd_FindWatchType(DebuggerDriver* driver, GDBWatch::Pointer watch, bool firstTry = true) :
+        GdbCmd_FindWatchType(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool firstTry = true) :
             DebuggerCmd(driver),
             m_watch(watch),
             m_firstTry(firstTry)
@@ -1004,7 +1005,7 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             contents.Trim(true);
             contents.Trim(false);
 
-            GDBWatch::Pointer watch(new GDBWatch(m_What));
+            cb::shared_ptr<GDBWatch> watch(new GDBWatch(m_What));
             watch->SetType(m_Type);
 
             ParseGDBWatchValue(watch, contents);
@@ -1157,7 +1158,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
                         validSF = sf;
                         validFrameNumber = sf.GetNumber();
                     }
-                    m_pDriver->GetStackFrames().push_back(cbStackFrame::Pointer(new cbStackFrame(sf)));
+                    m_pDriver->GetStackFrames().push_back(cb::shared_ptr<cbStackFrame>(new cbStackFrame(sf)));
                 }
             }
             if (validFrameNumber > 0) // if it's 0, then the driver already synced the editor

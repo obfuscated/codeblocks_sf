@@ -61,14 +61,14 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
 
         struct Item
         {
-            Item(const cbBreakpoint::Pointer &breakpoint_,  cbDebuggerPlugin *plugin_, wxString const &pluginName_) :
-                breakpoint(breakpoint_),
-                plugin(plugin_),
-                pluginName(pluginName_)
+            Item(const cb::shared_ptr<cbBreakpoint> &breakpoint, cbDebuggerPlugin *plugin, wxString const &pluginName) :
+                breakpoint(breakpoint),
+                plugin(plugin),
+                pluginName(pluginName)
             {
             }
 
-            cbBreakpoint::Pointer breakpoint;
+            cb::shared_ptr<cbBreakpoint> breakpoint;
             cbDebuggerPlugin *plugin;
             wxString pluginName;
         };

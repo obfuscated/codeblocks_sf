@@ -209,7 +209,7 @@ bool GDBWatch::SetValue(const wxString &value)
 }
 void GDBWatch::GetFullWatchString(wxString &full_watch) const
 {
-    cbWatch::ConstPointer parent = GetParent();
+    cb::shared_ptr<const cbWatch> parent = GetParent();
     if (parent)
     {
         parent->GetFullWatchString(full_watch);

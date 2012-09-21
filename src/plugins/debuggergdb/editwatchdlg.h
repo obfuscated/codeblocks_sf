@@ -13,13 +13,13 @@
 class EditWatchDlg : public wxScrollingDialog
 {
     public:
-        EditWatchDlg(GDBWatch::Pointer w, wxWindow* parent);
+        EditWatchDlg(cb::shared_ptr<GDBWatch> w, wxWindow* parent);
         virtual ~EditWatchDlg();
 
     protected:
         void EndModal(int retCode);
 
-        GDBWatch::Pointer m_watch;
+        cb::shared_ptr<GDBWatch> m_watch;
 };
 
 #endif // EDITWATCHDLG_H

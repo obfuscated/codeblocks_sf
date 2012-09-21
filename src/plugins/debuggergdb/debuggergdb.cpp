@@ -1202,7 +1202,7 @@ int DebuggerGDB::GetStackFrameCount() const
     return m_State.GetDriver()->GetStackFrames().size();
 }
 
-cbStackFrame::ConstPointer DebuggerGDB::GetStackFrame(int index) const
+cb::shared_ptr<const cbStackFrame> DebuggerGDB::GetStackFrame(int index) const
 {
     return m_State.GetDriver()->GetStackFrames()[index];
 }
@@ -1232,7 +1232,7 @@ int DebuggerGDB::GetThreadsCount() const
         return m_State.GetDriver()->GetThreads().size();
 }
 
-cbThread::ConstPointer DebuggerGDB::GetThread(int index) const
+cb::shared_ptr<const cbThread> DebuggerGDB::GetThread(int index) const
 {
     return m_State.GetDriver()->GetThreads()[index];
 }
@@ -1256,13 +1256,13 @@ bool DebuggerGDB::SwitchToThread(int thread_number)
     return false;
 }
 
-cbBreakpoint::Pointer DebuggerGDB::AddBreakpoint(const wxString& filename, int line)
+cb::shared_ptr<cbBreakpoint> DebuggerGDB::AddBreakpoint(const wxString& filename, int line)
 {
     bool debuggerIsRunning = !IsStopped();
     if (debuggerIsRunning)
         DoBreak(true);
 
-    DebuggerBreakpoint::Pointer bp = m_State.AddBreakpoint(filename, line, false);
+    cb::shared_ptr<DebuggerBreakpoint> bp = m_State.AddBreakpoint(filename, line, false);
 
     if (debuggerIsRunning)
         Continue();
@@ -1270,7 +1270,7 @@ cbBreakpoint::Pointer DebuggerGDB::AddBreakpoint(const wxString& filename, int l
     return bp;
 }
 
-cbBreakpoint::Pointer DebuggerGDB::AddDataBreakpoint(const wxString& dataExpression)
+cb::shared_ptr<cbBreakpoint> DebuggerGDB::AddDataBreakpoint(const wxString& dataExpression)
 {
     DataBreakpointDlg dlg(Manager::Get()->GetAppWindow(), dataExpression, true, 1);
     PlaceWindow(&dlg);
@@ -1278,11 +1278,11 @@ cbBreakpoint::Pointer DebuggerGDB::AddDataBreakpoint(const wxString& dataExpress
     {
         const wxString& newDataExpression = dlg.GetDataExpression();
         int sel = dlg.GetSelection();
-        DebuggerBreakpoint::Pointer bp = m_State.AddBreakpoint(newDataExpression, sel != 1, sel != 0);
+        cb::shared_ptr<DebuggerBreakpoint> bp = m_State.AddBreakpoint(newDataExpression, sel != 1, sel != 0);
         return bp;
     }
     else
-        return cbBreakpoint::Pointer();
+        return cb::shared_ptr<cbBreakpoint>();
 }
 
 int DebuggerGDB::GetBreakpointsCount() const
@@ -1290,7 +1290,7 @@ int DebuggerGDB::GetBreakpointsCount() const
     return m_State.GetBreakpoints().size();
 }
 
-cbBreakpoint::Pointer DebuggerGDB::GetBreakpoint(int index)
+cb::shared_ptr<cbBreakpoint> DebuggerGDB::GetBreakpoint(int index)
 {
     BreakpointsList::const_iterator it = m_State.GetBreakpoints().begin();
     std::advance(it, index);
@@ -1298,7 +1298,7 @@ cbBreakpoint::Pointer DebuggerGDB::GetBreakpoint(int index)
     return *it;
 }
 
-cbBreakpoint::ConstPointer DebuggerGDB::GetBreakpoint(int index) const
+cb::shared_ptr<const cbBreakpoint> DebuggerGDB::GetBreakpoint(int index) const
 {
     BreakpointsList::const_iterator it = m_State.GetBreakpoints().begin();
     std::advance(it, index);
@@ -1306,13 +1306,13 @@ cbBreakpoint::ConstPointer DebuggerGDB::GetBreakpoint(int index) const
     return *it;
 }
 
-void DebuggerGDB::UpdateBreakpoint(cbBreakpoint::Pointer breakpoint)
+void DebuggerGDB::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
     const BreakpointsList &breakpoints = m_State.GetBreakpoints();
     BreakpointsList::const_iterator it = std::find(breakpoints.begin(), breakpoints.end(), breakpoint);
     if (it == breakpoints.end())
         return;
-    DebuggerBreakpoint::Pointer bp = cb::static_pointer_cast<DebuggerBreakpoint>(breakpoint);
+    cb::shared_ptr<DebuggerBreakpoint> bp = cb::static_pointer_cast<DebuggerBreakpoint>(breakpoint);
     bool reset = false;
     switch (bp->type)
     {
@@ -1363,7 +1363,7 @@ void DebuggerGDB::UpdateBreakpoint(cbBreakpoint::Pointer breakpoint)
     }
 }
 
-void DebuggerGDB::DeleteBreakpoint(cbBreakpoint::Pointer breakpoint)
+void DebuggerGDB::DeleteBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
 {
     bool debuggerIsRunning = !IsStopped();
     if (debuggerIsRunning)
@@ -1402,7 +1402,7 @@ void DebuggerGDB::EnableBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint, bool
     if (debuggerIsRunning)
         DoBreak(true);
 
-    DebuggerBreakpoint::Pointer bp = cb::static_pointer_cast<DebuggerBreakpoint>(breakpoint);
+    cb::shared_ptr<DebuggerBreakpoint> bp = cb::static_pointer_cast<DebuggerBreakpoint>(breakpoint);
     bp->enabled = enable;
     m_State.ResetBreakpoint(bp);
 
@@ -1992,7 +1992,7 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
 
 cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
 {
-    GDBWatch::Pointer watch(new GDBWatch(symbol));
+    cb::shared_ptr<GDBWatch> watch(new GDBWatch(symbol));
     m_watches.push_back(watch);
 
     if (m_pProcess)
@@ -2001,34 +2001,34 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
     return watch;
 }
 
-void DebuggerGDB::AddWatchNoUpdate(const GDBWatch::Pointer &watch)
+void DebuggerGDB::AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch)
 {
     m_watches.push_back(watch);
 }
 
-void DebuggerGDB::DeleteWatch(cbWatch::Pointer watch)
+void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
     m_watches.erase(std::find(m_watches.begin(), m_watches.end(), watch));
 }
 
-bool DebuggerGDB::HasWatch(cbWatch::Pointer watch)
+bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
 {
     return std::find(m_watches.begin(), m_watches.end(), watch) != m_watches.end();
 }
 
-void DebuggerGDB::ShowWatchProperties(cbWatch::Pointer watch)
+void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
     // not supported for child nodes!
     if (watch->GetParent())
         return;
 
-    GDBWatch::Pointer real_watch = cb::static_pointer_cast<GDBWatch>(watch);
+    cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
     EditWatchDlg dlg(real_watch, nullptr);
     if (dlg.ShowModal() == wxID_OK)
         DoWatches();
 }
 
-bool DebuggerGDB::SetWatchValue(cbWatch::Pointer watch, const wxString &value)
+bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value)
 {
     if (!HasWatch(cbGetRootWatch(watch)))
         return false;
@@ -2037,7 +2037,7 @@ bool DebuggerGDB::SetWatchValue(cbWatch::Pointer watch, const wxString &value)
         return false;
 
     wxString full_symbol;
-    cbWatch::Pointer temp_watch = watch;
+    cb::shared_ptr<cbWatch> temp_watch = watch;
     while (temp_watch)
     {
         wxString symbol;
@@ -2059,11 +2059,11 @@ bool DebuggerGDB::SetWatchValue(cbWatch::Pointer watch, const wxString &value)
     return true;
 }
 
-void DebuggerGDB::ExpandWatch(cbWatch::Pointer watch)
+void DebuggerGDB::ExpandWatch(cb::shared_ptr<cbWatch> watch)
 {
 }
 
-void DebuggerGDB::CollapseWatch(cbWatch::Pointer watch)
+void DebuggerGDB::CollapseWatch(cb::shared_ptr<cbWatch> watch)
 {
 }
 

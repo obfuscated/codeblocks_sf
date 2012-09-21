@@ -242,7 +242,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
         static int m_lastIndex;
     public:
         /** @param bp The breakpoint to set. */
-        CdbCmd_AddBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        CdbCmd_AddBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -280,7 +280,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
             }
         }
 
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
 };
 
 int CdbCmd_AddBreakpoint::m_lastIndex=1;
@@ -292,7 +292,7 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
 {
     public:
         /** @param bp The breakpoint to remove. If NULL, all breakpoints are removed. */
-        CdbCmd_RemoveBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint::Pointer bp)
+        CdbCmd_RemoveBreakpoint(DebuggerDriver* driver, cb::shared_ptr<DebuggerBreakpoint> bp)
             : DebuggerCmd(driver),
             m_BP(bp)
         {
@@ -308,7 +308,7 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
                 m_pDriver->Log(output);
         }
 
-        DebuggerBreakpoint::Pointer m_BP;
+        cb::shared_ptr<DebuggerBreakpoint> m_BP;
 };
 
 /**
@@ -316,9 +316,9 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
   */
 class CdbCmd_Watch : public DebuggerCmd
 {
-        GDBWatch::Pointer m_watch;
+        cb::shared_ptr<GDBWatch> m_watch;
     public:
-        CdbCmd_Watch(DebuggerDriver* driver, GDBWatch::Pointer const &watch)
+        CdbCmd_Watch(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> const &watch)
             : DebuggerCmd(driver),
             m_watch(watch)
         {
@@ -443,7 +443,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
                         sf.SetFile(reBT2.GetMatch(lines[i], 1) + reBT2.GetMatch(lines[i], 2),
                                    reBT2.GetMatch(lines[i], 3));
                     }
-                    m_pDriver->GetStackFrames().push_back(cbStackFrame::Pointer(new cbStackFrame(sf)));
+                    m_pDriver->GetStackFrames().push_back(cb::shared_ptr<cbStackFrame>(new cbStackFrame(sf)));
 
                     if (m_SwitchToFirst && sf.IsValid() && firstValid)
                     {

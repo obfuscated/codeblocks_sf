@@ -249,12 +249,12 @@ void CDB_driver::EnableCatchingThrow(bool enable)
     NOT_IMPLEMENTED();
 }
 
-void CDB_driver::AddBreakpoint(DebuggerBreakpoint::Pointer bp)
+void CDB_driver::AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     QueueCommand(new CdbCmd_AddBreakpoint(this, bp));
 }
 
-void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint::Pointer bp)
+void CDB_driver::RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp)
 {
     QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
 }
@@ -290,7 +290,7 @@ void CDB_driver::UpdateWatches(bool doLocals, bool /*doArgs*/, WatchesContainer 
 //    QueueCommand(new DbgCmd_UpdateWatchesTree(this, tree));
 }
 
-void CDB_driver::UpdateWatch(GDBWatch::Pointer const &watch)
+void CDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new CdbCmd_Watch(this, watch));
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));

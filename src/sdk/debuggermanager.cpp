@@ -53,7 +53,7 @@ cbWatch::~cbWatch()
     m_children.clear();
 }
 
-void cbWatch::AddChild(cbWatch::Pointer parent, cbWatch::Pointer watch)
+void cbWatch::AddChild(cb::shared_ptr<cbWatch> parent, cb::shared_ptr<cbWatch> watch)
 {
     watch->m_parent = parent;
     parent->m_children.push_back(watch);
@@ -61,12 +61,12 @@ void cbWatch::AddChild(cbWatch::Pointer parent, cbWatch::Pointer watch)
 
 void cbWatch::RemoveChild(int index)
 {
-    PtrContainer::iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin();
     std::advance(it, index);
     m_children.erase(it);
 }
 
-bool TestIfMarkedForRemoval(cbWatch::Pointer watch)
+bool TestIfMarkedForRemoval(cb::shared_ptr<cbWatch> watch)
 {
     if(watch->IsRemoved())
         return true;
@@ -80,7 +80,8 @@ bool TestIfMarkedForRemoval(cbWatch::Pointer watch)
 bool cbWatch::RemoveMarkedChildren()
 {
     size_t start_size = m_children.size();
-    PtrContainer::iterator new_last = std::remove_if(m_children.begin(), m_children.end(), &TestIfMarkedForRemoval);
+    std::vector<cb::shared_ptr<cbWatch> >::iterator new_last;
+    new_last = std::remove_if(m_children.begin(), m_children.end(), &TestIfMarkedForRemoval);
     m_children.erase(new_last, m_children.end());
 
     return start_size != m_children.size();
@@ -96,36 +97,38 @@ int cbWatch::GetChildCount() const
     return m_children.size();
 }
 
-cbWatch::Pointer cbWatch::GetChild(int index)
+cb::shared_ptr<cbWatch> cbWatch::GetChild(int index)
 {
-    PtrContainer::iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin();
     std::advance(it, index);
     return *it;
 }
 
-cbWatch::ConstPointer cbWatch::GetChild(int index) const
+cb::shared_ptr<const cbWatch> cbWatch::GetChild(int index) const
 {
-    PtrContainer::const_iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch> >::const_iterator it = m_children.begin();
     std::advance(it, index);
     return *it;
 }
 
-cbWatch::Pointer cbWatch::FindChild(const wxString& symbol)
+cb::shared_ptr<cbWatch> cbWatch::FindChild(const wxString& symbol)
 {
-    for (PtrContainer::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
     {
         wxString s;
         (*it)->GetSymbol(s);
         if(s == symbol)
             return *it;
     }
-    return cbWatch::Pointer();
+    return cb::shared_ptr<cbWatch>();
 }
 
 int cbWatch::FindChildIndex(const wxString& symbol) const
 {
     int index = 0;
-    for (PtrContainer::const_iterator it = m_children.begin(); it != m_children.end(); ++it, ++index)
+    for (std::vector<cb::shared_ptr<cbWatch> >::const_iterator it = m_children.begin();
+         it != m_children.end();
+         ++it, ++index)
     {
         wxString s;
         (*it)->GetSymbol(s);
@@ -135,12 +138,12 @@ int cbWatch::FindChildIndex(const wxString& symbol) const
     return -1;
 }
 
-cbWatch::ConstPointer cbWatch::GetParent() const
+cb::shared_ptr<const cbWatch> cbWatch::GetParent() const
 {
     return m_parent.lock();
 }
 
-cbWatch::Pointer cbWatch::GetParent()
+cb::shared_ptr<cbWatch> cbWatch::GetParent()
 {
     return m_parent.lock();
 }
@@ -162,7 +165,7 @@ void cbWatch::MarkAsRemoved(bool flag)
 
 void cbWatch::MarkChildsAsRemoved()
 {
-    for(PtrContainer::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for(std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
         (*it)->MarkAsRemoved(true);
 }
 void cbWatch::MarkAsChanged(bool flag)
@@ -173,7 +176,7 @@ void cbWatch::MarkAsChanged(bool flag)
 void cbWatch::MarkAsChangedRecursive(bool flag)
 {
     m_changed = flag;
-    for(PtrContainer::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for(std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
         (*it)->MarkAsChangedRecursive(flag);
 }
 
@@ -187,12 +190,12 @@ void cbWatch::Expand(bool expand)
     m_expanded = expand;
 }
 
-cbWatch::Pointer DLLIMPORT cbGetRootWatch(cbWatch::Pointer watch)
+cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch)
 {
-    cbWatch::Pointer root = watch;
+    cb::shared_ptr<cbWatch> root = watch;
     while (root)
     {
-        cbWatch::Pointer parent = root->GetParent();
+        cb::shared_ptr<cbWatch> parent = root->GetParent();
         if (!parent)
             break;
         root = parent;
@@ -1052,7 +1055,7 @@ bool DebuggerManager::UpdateThreads()
     return m_threadsDialog && IsWindowReallyShown(m_threadsDialog->GetWindow());
 }
 
-cbDebuggerPlugin* DebuggerManager::GetDebuggerHavingWatch(cbWatch::Pointer watch)
+cbDebuggerPlugin* DebuggerManager::GetDebuggerHavingWatch(cb::shared_ptr<cbWatch> watch)
 {
     watch = cbGetRootWatch(watch);
     for (RegisteredPlugins::iterator it = m_registered.begin(); it != m_registered.end(); ++it)
@@ -1063,7 +1066,7 @@ cbDebuggerPlugin* DebuggerManager::GetDebuggerHavingWatch(cbWatch::Pointer watch
     return NULL;
 }
 
-bool DebuggerManager::ShowValueTooltip(const cbWatch::Pointer &watch, const wxRect &rect)
+bool DebuggerManager::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect)
 {
     return m_interfaceFactory->ShowValueTooltip(watch, rect);
 }

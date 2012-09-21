@@ -9,6 +9,6 @@
 
 #include "debugger_defs.h"
 
-bool ParseGDBWatchValue(GDBWatch::Pointer watch, wxString const &value);
+bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value);
 
-bool ParseCDBWatchValue(GDBWatch::Pointer watch, wxString const &value);
+bool ParseCDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value);

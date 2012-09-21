@@ -50,11 +50,11 @@ class CDB_driver : public DebuggerDriver
 
         virtual void SwitchThread(size_t /*threadIndex*/){} // not implemented
 
-        virtual void AddBreakpoint(DebuggerBreakpoint::Pointer bp);
-        virtual void RemoveBreakpoint(DebuggerBreakpoint::Pointer bp);
+        virtual void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
+        virtual void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
         virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
         virtual void UpdateWatches(bool doLocals, bool doArgs, WatchesContainer &watches);
-        virtual void UpdateWatch(GDBWatch::Pointer const &watch);
+        virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const;
 #ifdef __WXMSW__

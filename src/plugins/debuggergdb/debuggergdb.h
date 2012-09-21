@@ -61,13 +61,13 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         // stack frame calls;
         int GetStackFrameCount() const;
-        cbStackFrame::ConstPointer GetStackFrame(int index) const;
+        cb::shared_ptr<const cbStackFrame> GetStackFrame(int index) const;
         void SwitchToFrame(int number);
         int GetActiveStackFrame() const;
 
         // threads
         int GetThreadsCount() const;
-        cbThread::ConstPointer GetThread(int index) const;
+        cb::shared_ptr<const cbThread> GetThread(int index) const;
         bool SwitchToThread(int thread_number);
 
         bool Debug(bool breakOnEntry);
@@ -89,14 +89,14 @@ class DebuggerGDB : public cbDebuggerPlugin
         int GetExitCode() const { return m_LastExitCode; }
 
         cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol);
-        void DeleteWatch(cbWatch::Pointer watch);
-        bool HasWatch(cbWatch::Pointer watch);
-        void ShowWatchProperties(cbWatch::Pointer watch);
-        bool SetWatchValue(cbWatch::Pointer watch, const wxString &value);
-        void ExpandWatch(cbWatch::Pointer watch);
-        void CollapseWatch(cbWatch::Pointer watch);
+        void DeleteWatch(cb::shared_ptr<cbWatch> watch);
+        bool HasWatch(cb::shared_ptr<cbWatch> watch);
+        void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
+        bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value);
+        void ExpandWatch(cb::shared_ptr<cbWatch> watch);
+        void CollapseWatch(cb::shared_ptr<cbWatch> watch);
 
-        void AddWatchNoUpdate(const GDBWatch::Pointer &watch);
+        void AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch);
 
         void OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObject *property, int &disabledMenus);
 
