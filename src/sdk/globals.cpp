@@ -149,6 +149,38 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
+std::vector<wxString> GetVectorFromString(const wxString& text, const wxString& separator, bool trimSpaces)
+{
+    std::vector<wxString> out;
+    wxString search = text;
+    int seplen = separator.Length();
+    while (true)
+    {
+        int idx = search.Find(separator);
+        if (idx == -1)
+        {
+            if (trimSpaces)
+            {
+                search.Trim(false);
+                search.Trim(true);
+            }
+            if (!search.IsEmpty())
+                out.push_back(search);
+            break;
+        }
+        wxString part = search.Left(idx);
+        search.Remove(0, idx + seplen);
+        if (trimSpaces)
+        {
+            part.Trim(false);
+            part.Trim(true);
+        }
+        if (!part.IsEmpty())
+            out.push_back(part);
+    }
+    return out;
+}
+
 wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
 {
     wxArrayString out;
