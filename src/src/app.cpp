@@ -443,7 +443,7 @@ void CodeBlocksApp::InitLocale()
 
     wxString path(ConfigManager::GetDataFolder() + _T("/locale"));
 
-    if (cfg->ReadBool(_T("/locale/enable"), true) == false)
+    if (cfg->ReadBool(_T("/locale/enable"), false) == false)
         return;
 
     wxString lang(cfg->Read(_T("/locale/language")));
