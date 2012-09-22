@@ -593,7 +593,10 @@ void GDB_driver::SwitchToFrame(size_t number)
 
 void GDB_driver::SetVarValue(const wxString& var, const wxString& value)
 {
-    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), value.c_str())));
+    wxString cleanValue=value;
+    while (cleanValue.EndsWith(wxT("\\")))
+        cleanValue.RemoveLast();
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), cleanValue.c_str())));
 }
 
 void GDB_driver::MemoryDump()
