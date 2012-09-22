@@ -59,20 +59,15 @@
  * </CALL_GRAPH>
  */
 
-#include <sdk.h>
-
 #ifdef __BORLANDC__
 #pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/app.h>
 #endif
 
 //(*AppHeaders
 #include <wx/image.h>
 //*)
 
+#include <wx/app.h>
 #include <wx/arrstr.h>
 
 #include "cctest_frame.h"

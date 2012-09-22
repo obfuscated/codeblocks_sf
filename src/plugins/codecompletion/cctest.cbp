@@ -6,15 +6,26 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cctest">
-				<Option output="..\..\devel\cctest" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\.objs\plugins\codecompletion\cctest" />
+				<Option output="../../devel/cctest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs/plugins/codecompletion/cctest" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DCC_PARSER_TEST" />
+					<Add directory="cctest" />
+					<Add directory="parser" />
+					<Add directory="." />
+				</Compiler>
+				<Linker>
+					<Add library="wxscintilla_cb" />
+				</Linker>
 			</Target>
 			<Environment>
+				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="28" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -27,30 +38,28 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-D__GNUWIN32__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCC_PARSER_TEST" />
-			<Add directory="." />
-			<Add directory="cctest" />
-			<Add directory="parser" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-D__GNUWIN32__" />
 			<Add directory="..\..\include" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll\mswu" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll\mswu" />
+			<Add directory="$(#WX)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--no-undefined" />
 			<Add option="-mthreads" />
-			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX.lib)\gcc_dll" />
-			<Add directory="..\..\devel" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../devel" />
 		</Linker>
 		<Unit filename="cctest\cctest_app.cpp" />
 		<Unit filename="cctest\cctest.cpp" />
@@ -87,7 +96,6 @@
 		<Unit filename="parser\tokentree.h" />
 		<Extensions>
 			<code_completion />
-			<debugger />
 			<envvars />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="cctest\cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
@@ -95,6 +103,7 @@
 					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
 				</resources>
 			</wxsmith>
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

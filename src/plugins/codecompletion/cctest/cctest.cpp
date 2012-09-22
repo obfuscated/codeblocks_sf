@@ -6,8 +6,6 @@
  * $HeadURL$
  */
 
-#include <sdk.h>
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif

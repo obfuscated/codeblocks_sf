@@ -6,8 +6,6 @@
  * $HeadURL$
  */
 
-#include <sdk.h>
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
@@ -34,6 +32,7 @@
 
 #include <wx/arrstr.h>
 #include <wx/filename.h>
+#include <wx/font.h>
 #include <wx/progdlg.h>
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
@@ -51,6 +50,8 @@ namespace CCTestAppGlobal
 
 int idCCLogger   = wxNewId();
 int idCCAddToken = wxNewId();
+
+const int C_FOLDING_MARGIN = 3; // as in C::B (fwiw...)
 
 BEGIN_EVENT_TABLE(CCTestFrame, wxFrame)
     //(*EventTable(CCTestFrame)
@@ -73,25 +74,30 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
 {
     //(*Initialize(CCTestFrame)
     wxMenuItem* mnu_itm_save_log;
-    wxStaticText* lbl_search_tree;
     wxMenuItem* mnu_item_find;
+    wxBoxSizer* bsz_parser;
+    wxBoxSizer* bszParserInput;
     wxBoxSizer* bsz_search_tree;
-    wxStaticText* lbl_log;
-    wxMenuItem* mnu_itm_reload;
+    wxPanel* panParserInput;
+    wxPanel* panParserOutput;
+    wxBoxSizer* bszParserSearchTree;
+    wxBoxSizer* bszParserOutput;
     wxMenu* mnu_help;
-    wxBoxSizer* bsz_parserlog;
-    wxBoxSizer* bsz_search_tree_opts;
     wxStaticText* lbl_include;
     wxMenuItem* mnu_itm_quit;
     wxBoxSizer* bsz_headers;
+    wxButton* btnParse;
     wxBoxSizer* bsz_include;
     wxBoxSizer* bsz_misc;
     wxMenuItem* mnu_item_about;
     wxMenuBar* mnu_main;
     wxMenuItem* mnu_item_token;
     wxMenu* mnu_search;
+    wxPanel* panParserSearchTree;
+    wxNotebook* nbParser;
     wxMenuItem* mnu_itm_open;
     wxMenu* mnu_file;
+    wxMenuItem* mnu_itm_reparse;
     wxBoxSizer* bsz_main;
 
     Create(0, wxID_ANY, _("CC Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
@@ -114,32 +120,51 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_headers->Add(m_HeadersCtrl, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_misc->Add(bsz_headers, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_misc, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bsz_parserlog = new wxBoxSizer(wxVERTICAL);
-    lbl_log = new wxStaticText(this, wxID_ANY, _("The parser\'s log output:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    bsz_parserlog->Add(lbl_log, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_LogCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
-    m_LogCtrl->SetMinSize(wxSize(640,250));
-    bsz_parserlog->Add(m_LogCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bsz_main->Add(bsz_parserlog, 2, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bsz_search_tree = new wxBoxSizer(wxVERTICAL);
-    bsz_search_tree_opts = new wxBoxSizer(wxHORIZONTAL);
-    lbl_search_tree = new wxStaticText(this, wxID_ANY, _("The parser\'s internal search tree:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    bsz_search_tree_opts->Add(lbl_search_tree, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation (careful, might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_search_tree = new wxBoxSizer(wxHORIZONTAL);
+    m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation of parser\'s internal search tree (careful, might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
     m_DoTreeCtrl->SetValue(false);
-    bsz_search_tree_opts->Add(m_DoTreeCtrl, 1, wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bsz_search_tree->Add(bsz_search_tree_opts, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_TreeCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_search_tree->Add(m_DoTreeCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_search_tree->Add(-1,-1,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    btnParse = new wxButton(this, wxID_ANY, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_search_tree->Add(btnParse, 0, wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_parser = new wxBoxSizer(wxVERTICAL);
+    nbParser = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    panParserInput = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    bszParserInput = new wxBoxSizer(wxVERTICAL);
+    m_Control = new wxScintilla(panParserInput,wxID_ANY,wxDefaultPosition,wxDefaultSize);
+    bszParserInput->Add(m_Control, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panParserInput->SetSizer(bszParserInput);
+    bszParserInput->Fit(panParserInput);
+    bszParserInput->SetSizeHints(panParserInput);
+    panParserOutput = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    bszParserOutput = new wxBoxSizer(wxVERTICAL);
+    m_LogCtrl = new wxTextCtrl(panParserOutput, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    m_LogCtrl->SetMinSize(wxSize(640,250));
+    bszParserOutput->Add(m_LogCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panParserOutput->SetSizer(bszParserOutput);
+    bszParserOutput->Fit(panParserOutput);
+    bszParserOutput->SetSizeHints(panParserOutput);
+    panParserSearchTree = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    bszParserSearchTree = new wxBoxSizer(wxVERTICAL);
+    m_TreeCtrl = new wxTextCtrl(panParserSearchTree, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
     m_TreeCtrl->SetMinSize(wxSize(640,150));
-    bsz_search_tree->Add(m_TreeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    bsz_main->Add(bsz_search_tree, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bszParserSearchTree->Add(m_TreeCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panParserSearchTree->SetSizer(bszParserSearchTree);
+    bszParserSearchTree->Fit(panParserSearchTree);
+    bszParserSearchTree->SetSizeHints(panParserSearchTree);
+    nbParser->AddPage(panParserInput, _("Parser input"), true);
+    nbParser->AddPage(panParserOutput, _("Parser output"), false);
+    nbParser->AddPage(panParserSearchTree, _("Parser search tree"), false);
+    bsz_parser->Add(nbParser, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_main->Add(bsz_parser, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(bsz_main);
     mnu_main = new wxMenuBar();
     mnu_file = new wxMenu();
     mnu_itm_open = new wxMenuItem(mnu_file, wxID_OPEN, _("&Open...\tCtrl+O"), _("Open the source code to be tested"), wxITEM_NORMAL);
     mnu_file->Append(mnu_itm_open);
-    mnu_itm_reload = new wxMenuItem(mnu_file, wxID_REFRESH, _("&Reload\tF5"), _("Reload test file"), wxITEM_NORMAL);
-    mnu_file->Append(mnu_itm_reload);
+    mnu_itm_reparse = new wxMenuItem(mnu_file, wxID_REFRESH, _("&Re-parse\tF5"), _("Re-parse test file / buffer"), wxITEM_NORMAL);
+    mnu_file->Append(mnu_itm_reparse);
     mnu_file->AppendSeparator();
     mnu_itm_save_log = new wxMenuItem(mnu_file, wxID_SAVE, _("&Save Log...\tCtrl+S"), _("Save log file to hard disk "), wxITEM_NORMAL);
     mnu_file->Append(mnu_itm_save_log);
@@ -171,8 +196,9 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     Center();
 
     Connect(wxID_ANY,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
+    Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
-    Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReloadSelected);
+    Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReparseSelected);
     Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuSaveSelected);
     Connect(wxID_EXIT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuQuitSelected);
     Connect(wxID_FIND,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuFindSelected);
@@ -185,21 +211,24 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
 
     // TODO: Make this base folders configurable
     wxString wx_base (_T("C:\\Devel\\wxWidgets\\"));
-    wxString gcc_base(_T("C:\\Devel\\GCC46TDM\\" ));
+    wxString gcc_base(_T("C:\\Devel\\GCC47TDM\\" ));
 
     m_IncludeCtrl->SetValue(wx_base  + _T("include")                                          + _T("\n") +
                             wx_base  + _T("lib\\gcc_dll\\mswu")                               + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include\\c++")           + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include\\c++\\mingw32")  + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include\\c++\\backward") + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include")                + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++")           + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++\\mingw32")  + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++\\backward") + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include")                + _T("\n") +
                             gcc_base + _T("include")                                          + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.6.1\\include-fixed")          + _T("\n"));
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include-fixed")          + _T("\n"));
 
     m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 
     CCLogger::Get()->Init(this, idCCLogger, idCCLogger, idCCAddToken);
     m_StatuBar->SetStatusText(_("Ready!"));
+
+    InitControl();
+    LoadToControl();
 }
 
 CCTestFrame::~CCTestFrame()
@@ -260,12 +289,9 @@ void CCTestFrame::Start()
         }
     }
 
-    if (!m_MainFile.IsEmpty() && wxFileExists(m_MainFile))
-        CCTestAppGlobal::s_fileQueue.Add(m_MainFile);
-
-    if (CCTestAppGlobal::s_fileQueue.IsEmpty())
+    if (CCTestAppGlobal::s_fileQueue.IsEmpty() && !m_Control->GetLength())
     {
-        wxMessageBox(wxT("Main file not found. Nothing to do."),
+        wxMessageBox(wxT("Main file not found and buffer empty. Nothing to do."),
                      _("Information"), wxOK | wxICON_INFORMATION, this);
         return;
     }
@@ -281,24 +307,36 @@ void CCTestFrame::Start()
     m_LogCtrl->Clear();
     CCTest::Get()->Clear(); // initial clearance
 
+    // make sure not to over-write an existing file (in case content had changed)
+    wxString tf(wxFileName::CreateTempFileName(wxT("cc")));
+    // make the parser recognise it as header file:
+    wxFileName fn(tf); fn.SetExt(wxT("h")); wxRemoveFile(tf); // no longer needed
+    if (m_Control->SaveFile(fn.GetFullPath()))
+        CCTestAppGlobal::s_fileQueue.Add(fn.GetFullPath());
+    else
+        AppendToLog(_T("Unable to parse buffer (could not convert to file)."));
+
     AppendToLog(_T("--------------M-a-i-n--L-o-g--------------\r\n\r\n"));
 
+    // parse file from the queue one-by-one
     while (!CCTestAppGlobal::s_fileQueue.IsEmpty())
     {
-      wxString file = CCTestAppGlobal::s_fileQueue.Item(0);
-      CCTestAppGlobal::s_fileQueue.Remove(file);
-      if (file.IsEmpty()) continue;
+        wxString file = CCTestAppGlobal::s_fileQueue.Item(0);
+        CCTestAppGlobal::s_fileQueue.Remove(file);
+        if (file.IsEmpty()) continue;
 
-      AppendToLog(_T("-----------I-n-t-e-r-i-m--L-o-g-----------"));
-      m_CurrentFile = file;
+        AppendToLog(_T("-----------I-n-t-e-r-i-m--L-o-g-----------"));
+        m_CurrentFile = file;
 
-      m_ProgDlg->Update(-1, m_CurrentFile);
-      m_StatuBar->SetStatusText(m_CurrentFile);
+        m_ProgDlg->Update(-1, m_CurrentFile);
+        m_StatuBar->SetStatusText(m_CurrentFile);
 
-      // This is the core parse stage
-      CCTest::Get()->Start(m_CurrentFile);
-      CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
+        // This is the core parse stage for files
+        CCTest::Get()->Start(m_CurrentFile);
+        CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
+    // don't forget to remove the temporary file (w/ ".h" extension)
+    wxRemoveFile(fn.GetFullPath());
 
     m_ProgDlg->Update(-1, wxT("Creating tree log..."));
     AppendToLog(_T("--------------T-r-e-e--L-o-g--------------\r\n"));
@@ -310,11 +348,11 @@ void CCTestFrame::Start()
 
     if (m_DoTreeCtrl->IsChecked())
     {
-      m_ProgDlg->Update(-1, wxT("Serializing tree..."));
+        m_ProgDlg->Update(-1, wxT("Serializing tree..."));
 
-      Freeze();
-      m_TreeCtrl->SetValue( CCTest::Get()->SerializeTree() );
-      Thaw();
+        Freeze();
+        m_TreeCtrl->SetValue( CCTest::Get()->SerializeTree() );
+        Thaw();
     }
 
     // Here we are going to test the expression solving algorithm
@@ -376,17 +414,125 @@ void CCTestFrame::AppendToLog(const wxString& log)
     Thaw();
 }
 
+void CCTestFrame::InitControl()
+{
+    m_Control->StyleClearAll();
+
+    m_Control->SetLexer(wxSCI_LEX_CPP);
+
+    m_Control->StyleSetForeground(wxSCI_C_DEFAULT,        wxColour(0, 0, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_DEFAULT,        10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_COMMENT,        wxColour(160, 160, 160));
+    m_Control->StyleSetFontAttr  (wxSCI_C_COMMENT,        10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_COMMENTLINE,    wxColour(190, 190, 230));
+    m_Control->StyleSetFontAttr  (wxSCI_C_COMMENTLINE,    10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_COMMENTDOC,     wxColour(128, 128, 255));
+    m_Control->StyleSetFontAttr  (wxSCI_C_COMMENTDOC,     10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_NUMBER,         wxColour(240, 0, 240));
+    m_Control->StyleSetFontAttr  (wxSCI_C_NUMBER,         10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_WORD,           wxColour(0, 0, 160));
+    m_Control->StyleSetFontAttr  (wxSCI_C_WORD,           10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_STRING,         wxColour(0, 0, 255));
+    m_Control->StyleSetFontAttr  (wxSCI_C_STRING,         10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_CHARACTER,      wxColour(224, 160, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_CHARACTER,      10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_UUID,           wxColour(0, 0, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_UUID,           10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_PREPROCESSOR,   wxColour(0, 128, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_PREPROCESSOR,   10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_OPERATOR,       wxColour(255, 0, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_OPERATOR,       10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_IDENTIFIER,     wxColour(0, 0, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_IDENTIFIER,     10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_STRINGEOL,      wxColour(0, 0, 255));
+    m_Control->StyleSetFontAttr  (wxSCI_C_STRINGEOL,      10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_COMMENTLINEDOC, wxColour(128, 128, 255));
+    m_Control->StyleSetFontAttr  (wxSCI_C_COMMENTLINEDOC, 10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_WORD2,          wxColour(0, 160, 0));
+    m_Control->StyleSetFontAttr  (wxSCI_C_WORD2,          10, wxT("Courier New"), false, false, false);
+
+    m_Control->StyleSetForeground(wxSCI_C_PREPROCESSORCOMMENT, wxColour(160, 160, 160));
+    m_Control->StyleSetFontAttr  (wxSCI_C_PREPROCESSORCOMMENT, 10, wxT("Courier New"), false, false, false);
+
+    const wxString kw(wxT(
+    "_Char16_t _Char32_t align_union alignof asm auto bool break case catch char class const "
+    "const_cast constexpr continue decltype default delete do double dynamic_cast else enum "
+    "explicit export extern false final float for friend goto if import inline int long "
+    "mutable namespace new nullptr operator override private protected public register "
+    "reinterpret_cast return short signed sizeof static static_cast struct switch template "
+    "this throw true try typedef typeid typename union unsigned using virtual void volatile "
+    "wchar_t while static_assert int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t "
+    "uint64_t int_least8_t uint_least8_t int_least16_t uint_least16_t int_least32_t "
+    "uint_least32_t int_least64_t uint_least64_t int_fast8_t uint_fast8_t int_fast16_t "
+    "uint_fast16_t int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t intptr_t uintptr_t "
+    "intmax_t uintmax_t wint_t wchar_t wctrans_t wctype_t size_t time_t and and_eq bitand "
+    "bitor compl not not_eq or or_eq xor xor_eq"));
+
+    m_Control->SetKeyWords(0, kw);
+
+    m_Control->SetProperty(_T("fold"),              _T("1"));
+    m_Control->SetProperty(_T("fold.html"),         _T("1"));
+    m_Control->SetProperty(_T("fold.comment"),      _T("1"));
+    m_Control->SetProperty(_T("fold.compact"),      _T("0"));
+    m_Control->SetProperty(_T("fold.preprocessor"), _T("1"));
+
+    m_Control->SetFoldFlags(16);
+    m_Control->SetMarginType(C_FOLDING_MARGIN, wxSCI_MARGIN_SYMBOL);
+    m_Control->SetMarginWidth(C_FOLDING_MARGIN, 16);
+    // use "|" here or we might break plugins that use the margin (none at the moment)
+    m_Control->SetMarginMask(C_FOLDING_MARGIN,
+                             m_Control->GetMarginMask(C_FOLDING_MARGIN)
+                             | (  wxSCI_MASK_FOLDERS
+                                - (  (1 << wxSCI_MARKNUM_CHANGEUNSAVED)
+                                   | (1 << wxSCI_MARKNUM_CHANGESAVED))) );
+    m_Control->SetMarginSensitive(C_FOLDING_MARGIN, 1);
+
+    wxColor f(0xff, 0xff, 0xff); // foreground colour
+    wxColor b(0x80, 0x80, 0x80); // background colour
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN,    wxSCI_MARK_MINUS,      f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDER,        wxSCI_MARK_PLUS,       f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB,     wxSCI_MARK_BACKGROUND, f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL,    wxSCI_MARK_BACKGROUND, f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND,     wxSCI_MARK_PLUS,       f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS,      f, b);
+    SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, f, b);
+
+    Connect(m_Control->GetId(), -1, wxEVT_SCI_MARGINCLICK,
+            (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+            &CCTestFrame::OnMarginClick);
+}
+
+void CCTestFrame::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back)
+{
+    m_Control->MarkerDefine(marker, markerType);
+    m_Control->MarkerSetForeground(marker, fore);
+    m_Control->MarkerSetBackground(marker, back);
+}
+
+void CCTestFrame::LoadToControl()
+{
+  if (!m_MainFile.IsEmpty() && !m_Control->LoadFile(m_MainFile))
+      wxMessageBox(_("Could not load input file."), _("CCTest"),
+                   wxOK | wxICON_EXCLAMATION, this);
+}
+
 void CCTestFrame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
 {
     Close();
-}
-
-void CCTestFrame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
-{
-    wxString str;
-    str.Printf(_("CCTest build with %s!\nRunning under %s."),
-               wxVERSION_STRING, wxGetOsDescription().c_str());
-    wxMessageBox(str, _("About CCTest"), wxOK | wxICON_INFORMATION, this);
 }
 
 void CCTestFrame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
@@ -403,7 +549,7 @@ void CCTestFrame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
     if (m_OpenFile->ShowModal() == wxID_OK)
     {
         m_MainFile = m_OpenFile->GetPath();
-        Start();
+        LoadToControl();
     }
 }
 
@@ -449,6 +595,41 @@ void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
         if (!found)
             wxMessageBox(_("Token not found."), _("CCTest"),
                          wxOK | wxICON_INFORMATION, this);
+    }
+}
+
+void CCTestFrame::OnMenuReparseSelected(wxCommandEvent& /*event*/)
+{
+    Start();
+}
+
+void CCTestFrame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
+{
+    wxString str;
+    str.Printf(_("CCTest build with %s!\nRunning under %s."),
+               wxVERSION_STRING, wxGetOsDescription().c_str());
+    wxMessageBox(str, _("About CCTest"), wxOK | wxICON_INFORMATION, this);
+}
+
+void CCTestFrame::OnDoHeadersClick(wxCommandEvent& event)
+{
+    if (m_HeadersCtrl)
+        m_HeadersCtrl->Enable(event.IsChecked());
+}
+
+void CCTestFrame::OnParse(wxCommandEvent& event)
+{
+    Start();
+}
+
+void CCTestFrame::OnMarginClick(wxScintillaEvent& event)
+{
+    if (event.GetMargin()==C_FOLDING_MARGIN)
+    {
+        int lineYpix = event.GetPosition();
+        int line     = m_Control->LineFromPosition(lineYpix);
+
+        m_Control->ToggleFold(line);
     }
 }
 
@@ -530,17 +711,6 @@ void CCTestFrame::OnFindDialog(wxFindDialogEvent& event)
         delete m_FRDlg;
         m_FRDlg = NULL;
     }
-}
-
-void CCTestFrame::OnMenuReloadSelected(wxCommandEvent& /*event*/)
-{
-    Start();
-}
-
-void CCTestFrame::OnDoHeadersClick(wxCommandEvent& event)
-{
-    if (m_HeadersCtrl)
-        m_HeadersCtrl->Enable(event.IsChecked());
 }
 
 void CCTestFrame::OnCCLogger(wxCommandEvent& event)

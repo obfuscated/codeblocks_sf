@@ -9,12 +9,16 @@
 #include "cctest.h"
 
 //(*Headers(CCTestFrame)
+#include "wx/wxscintilla.h"
+#include <wx/notebook.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
+#include <wx/panel.h>
 #include <wx/filedlg.h>
+#include <wx/button.h>
 #include <wx/frame.h>
 #include <wx/statusbr.h>
 //*)
@@ -38,22 +42,30 @@ protected:
     //*)
 
 private:
+    void InitControl();
+    void LoadToControl();
+    void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
+
     //(*Handlers(CCTestFrame)
     void OnMenuQuitSelected(wxCommandEvent& event);
-    void OnMenuAboutSelected(wxCommandEvent& event);
     void OnMenuSaveSelected(wxCommandEvent& event);
     void OnMenuOpenSelected(wxCommandEvent& event);
     void OnMenuFindSelected(wxCommandEvent& event);
-    void OnMenuReloadSelected(wxCommandEvent& event);
-    void OnDoHeadersClick(wxCommandEvent& event);
+    void OnMenuReparseSelected(wxCommandEvent& event);
     void OnMenuTokenSelected(wxCommandEvent& event);
+    void OnMenuAboutSelected(wxCommandEvent& event);
+    void OnDoHeadersClick(wxCommandEvent& event);
+    void OnParse(wxCommandEvent& event);
     //*)
 
+    void OnMarginClick(wxScintillaEvent& event);
     void OnFindDialog(wxFindDialogEvent& event);
     void OnCCLogger(wxCommandEvent& event);
     void OnCCAddToken(wxCommandEvent& event);
 
+
     //(*Declarations(CCTestFrame)
+    wxScintilla* m_Control;
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
     wxFileDialog* m_SaveFile;

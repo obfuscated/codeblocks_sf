@@ -60,58 +60,90 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer" variable="bsz_parserlog" member="no">
-					<orient>wxVERTICAL</orient>
+				<object class="wxBoxSizer" variable="bsz_search_tree" member="no">
 					<object class="sizeritem">
-						<object class="wxStaticText" name="wxID_ANY" variable="lbl_log" member="no">
-							<label>The parser&apos;s log output:</label>
+						<object class="wxCheckBox" name="wxID_ANY" variable="m_DoTreeCtrl" member="yes">
+							<label>Enable creation of parser&apos;s internal search tree (careful, might get HUGE!!!)</label>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
-					<object class="sizeritem">
-						<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
-							<minsize>640,250</minsize>
-							<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
-						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+					<object class="spacer">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_ANY" variable="btnParse" member="no">
+							<label>Parse</label>
+							<handler function="OnParse" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
 					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
-				<option>2</option>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer" variable="bsz_search_tree" member="no">
+				<object class="wxBoxSizer" variable="bsz_parser" member="no">
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxBoxSizer" variable="bsz_search_tree_opts" member="no">
-							<object class="sizeritem">
-								<object class="wxStaticText" name="wxID_ANY" variable="lbl_search_tree" member="no">
-									<label>The parser&apos;s internal search tree:</label>
+						<object class="wxNotebook" name="wxID_ANY" variable="nbParser" member="no">
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserInput" member="no">
+									<object class="wxBoxSizer" variable="bszParserInput" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="Custom" name="wxID_ANY" subclass="wxScintilla" variable="m_Control" member="yes">
+												<creating_code>$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE));</creating_code>
+												<include_file>wx/wxscintilla.h</include_file>
+												<local_include>1</local_include>
+												<style></style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
 								</object>
-								<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
+								<label>Parser input</label>
+								<selected>1</selected>
 							</object>
-							<object class="sizeritem">
-								<object class="wxCheckBox" name="wxID_ANY" variable="m_DoTreeCtrl" member="yes">
-									<label>Enable creation (careful, might get HUGE!!!)</label>
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserOutput" member="no">
+									<object class="wxBoxSizer" variable="bszParserOutput" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
+												<minsize>640,250</minsize>
+												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
 								</object>
-								<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
+								<label>Parser output</label>
 							</object>
-						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxTextCtrl" name="wxID_ANY" variable="m_TreeCtrl" member="yes">
-							<minsize>640,150</minsize>
-							<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserSearchTree" member="no">
+									<object class="wxBoxSizer" variable="bszParserSearchTree" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="wxID_ANY" variable="m_TreeCtrl" member="yes">
+												<minsize>640,150</minsize>
+												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+								</object>
+								<label>Parser search tree</label>
+							</object>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -132,11 +164,11 @@
 					<help>Open the source code to be tested</help>
 					<handler function="OnMenuOpenSelected" entry="EVT_MENU" />
 				</object>
-				<object class="wxMenuItem" name="wxID_REFRESH" variable="mnu_itm_reload" member="no">
-					<label>&amp;Reload</label>
+				<object class="wxMenuItem" name="wxID_REFRESH" variable="mnu_itm_reparse" member="no">
+					<label>&amp;Re-parse</label>
 					<accel>F5</accel>
-					<help>Reload test file</help>
-					<handler function="OnMenuReloadSelected" entry="EVT_MENU" />
+					<help>Re-parse test file / buffer</help>
+					<handler function="OnMenuReparseSelected" entry="EVT_MENU" />
 				</object>
 				<object class="separator" />
 				<object class="wxMenuItem" name="wxID_SAVE" variable="mnu_itm_save_log" member="no">
