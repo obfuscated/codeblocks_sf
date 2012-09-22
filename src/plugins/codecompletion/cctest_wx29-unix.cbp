@@ -36,6 +36,7 @@
 			<Add directory="cctest" />
 			<Add directory="parser" />
 			<Add directory="../../include" />
+			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
