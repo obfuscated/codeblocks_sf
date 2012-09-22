@@ -932,15 +932,15 @@ int cbKeyBinder::RemoveCopyPasteBindings(wxKeyProfile* pkp)
     int knt = 0;
 
     pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-C"));
-    if (pwxcmd->GetName() == _T("Copy"))
+    if (pwxcmd && (pwxcmd->GetName() == _T("Copy")))
         knt +=  RemoveKeyBindingsFor(_T("Ctrl-C"), pkp);
 
     pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-V"));
-    if (pwxcmd->GetName() == _T("Paste"))
+    if (pwxcmd && (pwxcmd->GetName() == _T("Paste")))
         knt +=  RemoveKeyBindingsFor(_T("Ctrl-V"),pkp);
 
     pwxcmd = pkp->GetCmdBindTo(_T("Ctrl-X"));
-    if (pwxcmd->GetName() == _T("Cut"))
+    if (pwxcmd && (pwxcmd->GetName() == _T("Cut")))
         knt +=  RemoveKeyBindingsFor(_T("Ctrl-X"),pkp);
 
     return knt;
