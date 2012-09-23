@@ -11,6 +11,12 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DCC_PARSER_TEST" />
+					<Add directory="cctest" />
+					<Add directory="parser" />
+					<Add directory="." />
+				</Compiler>
 			</Target>
 			<Environment>
 				<Variable name="WX_CONFIG" value="wx-config --version=2.9" />
@@ -23,7 +29,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
-			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
@@ -31,16 +36,13 @@
 			<Add option="-Uunix" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCC_PARSER_TEST" />
-			<Add directory="." />
-			<Add directory="cctest" />
-			<Add directory="parser" />
+			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add directory="../../include" />
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add library="codeblocks" />
+			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add directory="../../devel" />
 		</Linker>
 		<Unit filename="cctest/cctest_app.cpp" />
@@ -75,7 +77,6 @@
 		<Unit filename="parser/tokentree.h" />
 		<Extensions>
 			<code_completion />
-			<debugger />
 			<envvars />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="cctest/cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
@@ -83,6 +84,7 @@
 					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
 				</resources>
 			</wxsmith>
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
