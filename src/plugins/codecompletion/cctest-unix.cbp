@@ -35,19 +35,19 @@
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />
 			<Add option="-fPIC" />
-			<Add option="-DcbDEBUG" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add option="-DcbDEBUG" />
 			<Add directory="../../include" />
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
+			<Add option="`$(WX_CONFIG) --libs std`" />
 			<Add library="codeblocks" />
-			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add directory="../../devel" />
 		</Linker>
-		<Unit filename="cctest/cctest_app.cpp" />
 		<Unit filename="cctest/cctest.cpp" />
 		<Unit filename="cctest/cctest.h" />
+		<Unit filename="cctest/cctest_app.cpp" />
 		<Unit filename="cctest/cctest_frame.cpp" />
 		<Unit filename="cctest/cctest_frame.h" />
 		<Unit filename="cctest/nativeparser_test.cpp" />
