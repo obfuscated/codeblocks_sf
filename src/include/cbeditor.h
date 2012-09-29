@@ -299,6 +299,8 @@ class DLLIMPORT cbEditor : public EditorBase
 
         /// Apply the editor defaults to any (possibly foreign) cbStyledTextCtrl.
         static void ApplyStyles(cbStyledTextCtrl* control);
+
+        void AutoIndentDone();
     private:
         cbEditor(const cbEditor& /*rhs*/); // prevent copy construction
 
@@ -366,6 +368,7 @@ class DLLIMPORT cbEditor : public EditorBase
         EditorColourSet* m_pTheme;
         HighlightLanguage m_lang;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
+        bool m_autoIndentDone;
 
         // DO NOT ADD ANY MORE VARIABLES HERE!
         // ADD THEM IN cbEditorInternalData INSTEAD!

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
-		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning-unix.cbp" active="1" />
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning-unix.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker-unix.cbp" />
 		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp" />
 		<Project filename="plugins/contrib/CppCheck/CppCheck-unix.cbp" />
@@ -31,6 +31,7 @@
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed-unix.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor-unix.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent-unix.cbp" />
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker-unix.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp">

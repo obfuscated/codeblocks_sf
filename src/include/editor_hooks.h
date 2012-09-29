@@ -9,6 +9,7 @@
 #include "settings.h"
 
 class cbEditor;
+class cbSmartIndentPlugin;
 class wxScintillaEvent;
 
 /** Provides static functions to add hooks to the editor modification operations. */
@@ -74,6 +75,25 @@ namespace EditorHooks
       * @param event Parameter (wxScintilla event) to provide to the registered hook
       */
     extern DLLIMPORT void CallHooks(cbEditor* editor, wxScintillaEvent& event);
+
+    /** Provides a HookFunctor which redirects the Call() of a cbSmartIndentPlugin
+      * so only the interface of cbSmartIndentPlugin has to be implemented for a new language.
+      */
+    class cbSmartIndentEditorHookFunctor : public HookFunctorBase
+    {
+        public:
+            /** ctor. */
+            cbSmartIndentEditorHookFunctor(cbSmartIndentPlugin* plugin);
+            /** dtor. */
+            virtual ~cbSmartIndentEditorHookFunctor(){}
+            /** Needs to be implemented by the plugin to act(smart indent) accordingly.
+              * @param editor The editor that is active and whose content is changed
+              * @param event  The wxScintilla event fired to react accordingly (see cbEditor::CreateEditor, namely scintilla_events)
+              */
+            virtual void Call(cbEditor* editor, wxScintillaEvent& event) const;
+        private:
+            cbSmartIndentPlugin* m_plugin;
+    };
 };
 
 #endif // EDITOR_HOOKS_H

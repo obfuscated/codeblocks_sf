@@ -42,6 +42,7 @@
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed-unix.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor-unix.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent-unix.cbp" />
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker-unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />

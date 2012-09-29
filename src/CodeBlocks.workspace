@@ -46,6 +46,7 @@
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor.cbp" />
 		<Project filename="plugins/contrib/rndgen/rndgen.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent.cbp" />
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab.cbp" />

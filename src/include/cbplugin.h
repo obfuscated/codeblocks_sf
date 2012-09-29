@@ -806,6 +806,71 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };
 
+/** @brief Base class for SmartIndent plugins
+  *
+  * SmartIndent plugins provide the smart indenting for different languages.
+  * These plugins don't eat processing time after startup when they are not active.
+  * The hook gets installed during OnAttach.
+  */
+class cbStyledTextCtrl;
+class cbSmartIndentPlugin : public cbPlugin
+{
+    public:
+        cbSmartIndentPlugin();
+    private:
+        // "Hide" some virtual members, that are not needed in cbSmartIndentPlugin
+        void BuildMenu(wxMenuBar* /*menuBar*/){}
+        void RemoveMenu(wxMenuBar* /*menuBar*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
+        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+        void RemoveToolBar(wxToolBar* /*toolBar*/){}
+    protected:
+        void OnAttach();
+        void OnRelease(bool appShutDown);
+
+    public:
+        /** When this is called, the smartIndent mechanism must get to work ;).
+          *
+          * Please check if this is the right smartIndent mechanism first:
+          * Don't indent for languages you don't know.
+          */
+        virtual void OnEditorHook(cbEditor* editor, wxScintillaEvent& event) const = 0;
+
+    protected:
+        /**
+          *returns true if the style is a comment style (which depends on the lexer)
+          */
+         virtual bool InComment(const wxString& LanguageName, int style) const = 0;
+
+        /** (reverse) search for the last word which is not comment **/
+        wxString GetLastNonCommentWord(cbEditor* ed, int position = -1, unsigned int NumberOfWords = 1 ) const;
+        /** (reverse) search for the last characters, which are not whitespace and not comment **/
+        wxString GetLastNonWhitespaceChars(cbEditor* ed, int position = -1, unsigned int NumberOfChars = 1) const;
+
+        /** forward search to the next character which is not a whitespace **/
+        wxChar GetLastNonWhitespaceChar(cbEditor* ed, int position = -1) const;
+        wxChar GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc, int position = -1, int *pos = 0) const;
+
+        int FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, bool skipNested = true) const;
+        int FindBlockStart(cbStyledTextCtrl* stc, int position, wxString blockStart, wxString blockEnd, bool CaseSensitive = true) const;
+
+        void Indent(cbStyledTextCtrl* stc, wxString& indent)const;
+        bool Indent(cbStyledTextCtrl* stc, wxString& indent, int posInLine)const;
+
+        /** Get the first brace in the line according to the line style */
+        int GetFirstBraceInLine(cbStyledTextCtrl* stc, int string_style)const;
+
+        /** Get the last non-whitespace character from position in line */
+        wxChar GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc, int position = -1, int *pos = 0)const;
+        bool AutoIndentEnabled()const;
+        bool SmartIndentEnabled()const;
+        bool BraceSmartIndentEnabled()const;
+        bool BraceCompletionEnabled()const;
+        bool SelectionBraceCompletionEnabled()const;
+    private:
+        int m_FunctorId;
+};
+
 /** @brief Plugin registration object.
   *
   * Use this class to register your new plugin with Code::Blocks.

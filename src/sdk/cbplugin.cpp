@@ -12,23 +12,26 @@
 #ifndef CB_PRECOMP
     #include <wx/frame.h> // wxFrame
     #include <wx/menu.h>
-    #include "cbplugin.h"
-    #include "compiler.h" // GetSwitches
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
-    #include "logmanager.h"
-    #include "editormanager.h"
+
     #include "cbeditor.h"
-    #include "projectmanager.h"
-    #include "infowindow.h"
-    #include "macrosmanager.h"
+    #include "cbplugin.h"
+    #include "cbproject.h"
+    #include "compiler.h" // GetSwitches
     #include "configmanager.h"
     #include "debuggermanager.h"
+    #include "editorcolourset.h"
+    #include "editormanager.h"
+    #include "infowindow.h"
+    #include "logmanager.h"
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "projectbuildtarget.h"
+    #include "projectmanager.h"
+    #include "sdk_events.h"
 #endif
 
 #include <wx/toolbar.h>
+
 #include "annoyingdialog.h"
 #include "cbdebugger_interfaces.h"
 #include "cbstyledtextctrl.h"
@@ -43,10 +46,8 @@
     #include <sys/types.h>
 #endif
 
-
-
-cbPlugin::cbPlugin()
-    : m_Type(ptNone),
+cbPlugin::cbPlugin() :
+    m_Type(ptNone),
     m_IsAttached(false)
 {
     SetEvtHandlerEnabled(false);
@@ -183,11 +184,11 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint *mousePosition)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return wxEmptyString;
-    cbStyledTextCtrl* control = ed->GetControl();
-    if (!control)
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
         return wxEmptyString;
 
-    wxString selected_text = control->GetSelectedText();
+    wxString selected_text = stc->GetSelectedText();
     if (selected_text != wxEmptyString)
     {
         selected_text.Trim(true);
@@ -203,12 +204,12 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint *mousePosition)
         // check if the mouse is over the selected text
         if (mousePosition)
         {
-            int startPos = control->GetSelectionStart();
-            int endPos = control->GetSelectionEnd();
-            wxPoint startPoint = control->PointFromPosition(startPos);
-            wxPoint endPoint = control->PointFromPosition(endPos);
-            int endLine = control->LineFromPosition(endPos);
-            int textHeight = control->TextHeight(endLine);
+            int startPos = stc->GetSelectionStart();
+            int endPos = stc->GetSelectionEnd();
+            wxPoint startPoint = stc->PointFromPosition(startPos);
+            wxPoint endPoint = stc->PointFromPosition(endPos);
+            int endLine = stc->LineFromPosition(endPos);
+            int textHeight = stc->TextHeight(endLine);
             endPoint.y+=textHeight;
             if (wxRect(startPoint, endPoint).Contains(*mousePosition))
                 return selected_text;
@@ -221,16 +222,16 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint *mousePosition)
 
     if (mousePosition)
     {
-        int pos = control->PositionFromPoint(*mousePosition);
-        int start = control->WordStartPosition(pos, true);
-        int end = control->WordEndPosition(pos, true);
-        selected_text = control->GetTextRange(start, end);
+        int pos = stc->PositionFromPoint(*mousePosition);
+        int start = stc->WordStartPosition(pos, true);
+        int end = stc->WordEndPosition(pos, true);
+        selected_text = stc->GetTextRange(start, end);
     }
     else
     {
-        int start = control->WordStartPosition(control->GetCurrentPos(), true);
-        int end = control->WordEndPosition(control->GetCurrentPos(), true);
-        selected_text = control->GetTextRange(start, end);
+        int start = stc->WordStartPosition(stc->GetCurrentPos(), true);
+        int end = stc->WordEndPosition(stc->GetCurrentPos(), true);
+        selected_text = stc->GetTextRange(start, end);
     }
     return selected_text;
 }
@@ -1009,4 +1010,315 @@ cbCodeCompletionPlugin::cbCodeCompletionPlugin()
 cbWizardPlugin::cbWizardPlugin()
 {
     m_Type = ptWizard;
+}
+
+/////
+///// cbSmartIndentPlugin
+/////
+
+cbSmartIndentPlugin::cbSmartIndentPlugin()
+{
+    m_Type = ptOther;
+}
+
+void cbSmartIndentPlugin::OnAttach()
+{
+    m_FunctorId = EditorHooks::RegisterHook( new EditorHooks::cbSmartIndentEditorHookFunctor(this) );
+}
+
+void cbSmartIndentPlugin::OnRelease(bool appShutDown)
+{
+    EditorHooks::UnregisterHook(m_FunctorId);
+}
+
+bool cbSmartIndentPlugin::AutoIndentEnabled()const
+{
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
+}
+
+bool cbSmartIndentPlugin::SmartIndentEnabled()const
+{
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
+}
+
+bool cbSmartIndentPlugin::BraceSmartIndentEnabled()const
+{
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_smart_indent"), true);
+}
+
+bool cbSmartIndentPlugin::BraceCompletionEnabled()const
+{
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true);
+}
+
+bool cbSmartIndentPlugin::SelectionBraceCompletionEnabled()const
+{
+    return Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false);
+}
+
+void cbSmartIndentPlugin::Indent(cbStyledTextCtrl* stc, wxString &indent)const
+{
+    if (stc->GetUseTabs())
+        indent << _T('\t'); // 1 tab
+    else
+        indent << wxString(_T(' '), stc->GetTabWidth()); // n spaces
+}
+
+bool cbSmartIndentPlugin::Indent(cbStyledTextCtrl* stc, wxString &indent, int posInLine)const
+{
+    if (posInLine >= 0)
+    {
+        if (stc->GetUseTabs())
+            indent = wxString(_T('\t'), posInLine/stc->GetTabWidth());
+        else
+            indent = wxString(_T(' '), posInLine); // n spaces
+        return true;
+    }
+    return false;
+}
+
+wxString cbSmartIndentPlugin::GetLastNonCommentWord(cbEditor* ed, int position, unsigned int NumberOfWords)const
+{
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if ( !stc )
+        return wxEmptyString;
+
+    if ( position == -1 )
+        position = stc->GetCurrentPos();
+
+
+    wxString str;
+    str.Empty();
+    int count = 0;
+    bool foundlf = false; // For the rare case of CR's without LF's
+    while (position)
+    {
+        wxChar c = stc->GetCharAt(--position);
+        int style = stc->GetStyleAt(position);
+        bool inComment = InComment(Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage()), style);
+        if (c == _T('\n'))
+        {
+            count++;
+            foundlf = true;
+        }
+        else if (c == _T('\r') && !foundlf)
+            count++;
+        else
+            foundlf = false;
+
+        if (count > 1) return str;
+        if (!inComment && c != _T(' ') && c != _T('\t') && c != _T('\n') && c != _T('\r') )
+        {
+            int startpos = stc->WordStartPosition( position, true );
+            for ( unsigned int i = 1; i < NumberOfWords ; ++i )
+                startpos = stc->WordStartPosition( startpos - 1, true );
+            int endpos = stc->WordEndPosition(startpos, true);
+            str = stc->GetTextRange(startpos, endpos);
+            return str;
+        }
+    }
+    return str;
+}
+
+wxChar cbSmartIndentPlugin::GetLastNonWhitespaceChar(cbEditor* ed, int position)const
+{
+    return GetLastNonWhitespaceChars(ed, position, 1)[0];
+}
+
+wxString cbSmartIndentPlugin::GetLastNonWhitespaceChars(cbEditor* ed, int position, unsigned int NumberOfChars)const
+{
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if ( !stc )
+        return wxEmptyString;
+
+    if (position == -1)
+        position = stc->GetCurrentPos();
+
+    int count = 0; // Used to count the number of blank lines
+    bool foundlf = false; // For the rare case of CR's without LF's
+    while (position)
+    {
+        wxChar c = stc->GetCharAt(--position);
+        int style = stc->GetStyleAt(position);
+        bool inComment = InComment(Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage()), style);
+        if (c == _T('\n'))
+        {
+            count++;
+            foundlf = true;
+        }
+        else if (c == _T('\r') && !foundlf)
+            count++;
+        else
+            foundlf = false;
+        if (count > 1) return wxEmptyString;
+        if (!inComment && c != _T(' ') && c != _T('\t') && c != _T('\n') && c != _T('\r'))
+            return stc->GetTextRange(position-NumberOfChars+1, position+1);
+    }
+    return wxEmptyString;
+}
+
+wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc, int position, int *pos)const
+{
+    if (position == -1)
+        position = stc->GetCurrentPos();
+
+    while (position < stc->GetLength())
+    {
+        wxChar c = stc->GetCharAt(position);
+        if ( c == _T('\n') || c ==  _T('\r') )
+        {
+            if ( pos ) *pos = position;
+            return 0;
+        }
+        if ( c !=  _T(' ') && c != _T('\t') )
+        {
+            if ( pos ) *pos = position;
+            return c;
+        }
+        position++;
+    }
+
+    return 0;
+}
+
+int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, bool skipNested)const
+{
+    int lvl = 0;
+    wxChar b = stc->GetCharAt(position);
+    while (b)
+    {
+        if (b == blockEnd)
+            ++lvl;
+        else if (b == blockStart)
+        {
+            if (lvl == 0)
+                return position;
+            --lvl;
+        }
+        --position;
+        b = stc->GetCharAt(position);
+    }
+    return -1;
+}
+
+int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxString blockStart, wxString blockEnd, bool CaseSensitive)const
+{
+    int pos = position;
+    int pb, pe;
+    int lvl = 0;
+
+    int flags = wxSCI_FIND_WHOLEWORD;
+    if ( CaseSensitive )
+        flags |= wxSCI_FIND_MATCHCASE;
+
+    do
+    {
+        pb =  stc->FindText(pos, 0, blockStart, flags);
+        pe =  stc->FindText(pos, 0, blockEnd, flags);
+        if ( pe > pb )
+        {
+            pos = pe;
+            ++lvl;
+            continue;
+        }
+        pos = pb;
+        if ( lvl == 0 ) return pb;
+        --lvl;
+    }
+    while( pos != -1 );
+
+    return -1;
+}
+
+//ToDo: Is this c++ only?
+int cbSmartIndentPlugin::GetFirstBraceInLine(cbStyledTextCtrl* stc, int string_style)const
+{
+    int curr_position = stc->GetCurrentPos();
+    int position = curr_position;
+    int min_brace_position = position;
+    int closing_braces = 0;
+    bool found_brace = false;
+    bool has_braces = false;
+
+    while (position)
+    {
+        wxChar c = stc->GetCharAt(--position);
+
+        int style = stc->GetStyleAt(position);
+        if (style == string_style)
+            continue;
+
+        if (c == _T(';'))
+        {
+            found_brace = false;
+            break;
+        }
+        else if (c == _T(')'))
+        {
+            ++closing_braces;
+            has_braces = true;
+        }
+        else if (c == _T('('))
+        {
+            has_braces = true;
+            if (closing_braces > 0)
+                --closing_braces;
+            else if (!found_brace)
+            {
+                min_brace_position = position + 1;
+                found_brace = true;
+                break;
+            }
+        }
+        else if (c == _T('\n') && position + 1 != curr_position && !has_braces)
+        {
+            break;
+        }
+    }
+
+    if (!found_brace)
+        return -1;
+
+    int tab_characters = 0;
+
+    while (position)
+    {
+        wxChar c = stc->GetCharAt(--position);
+        if (c == _T('\n') && position + 1 != curr_position)
+        {
+            break;
+        }
+        else if (c == _T('\t'))
+            ++tab_characters;
+    }
+
+    if (stc->GetUseTabs())
+    {
+        position -= tab_characters * stc->GetTabWidth();
+    }
+    return min_brace_position - position - 1;
+}
+
+wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc, int position, int *pos)const
+{
+    if (position == -1)
+        position = stc->GetCurrentPos();
+
+    while (position < stc->GetLength())
+    {
+        wxChar c = stc->GetCharAt(position);
+        if ( c == _T('\n') || c ==  _T('\r') )
+        {
+            if ( pos ) *pos = position;
+            return 0;
+        }
+        if ( c !=  _T(' ') && c != _T('\t') )
+        {
+            if ( pos ) *pos = position;
+            return c;
+        }
+        position++;
+    }
+
+    return 0;
 }

@@ -86,6 +86,10 @@ if BUILD_EXPORTER
 MAYBE_EXPORTER=source_exporter
 endif
 
+if BUILD_SMARTINDENT
+MAYBE_SMARTINDENT=SmartIndent
+endif
+
 if BUILD_SPELLCHECKER
 MAYBE_SPELLCHECKER=SpellChecker
 endif
@@ -173,6 +177,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_PROFILER) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
+		$(MAYBE_SMARTINDENT) \
 		$(MAYBE_SPELLCHECKER) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_REOPENEDITOR) \
@@ -211,6 +216,7 @@ DIST_SUBDIRS = AutoVersioning \
 		NassiShneiderman \
 		profiler \
 		source_exporter \
+		SmartIndent \
 		SpellChecker \
 		symtab \
 		regex_testbed \

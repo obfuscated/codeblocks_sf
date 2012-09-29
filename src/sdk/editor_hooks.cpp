@@ -69,3 +69,14 @@ void EditorHooks::CallHooks(cbEditor* editor, wxScintillaEvent& event)
             functor->Call(editor, event);
     }
 }
+
+namespace EditorHooks
+{
+    cbSmartIndentEditorHookFunctor::cbSmartIndentEditorHookFunctor(cbSmartIndentPlugin *plugin):
+    m_plugin(plugin){}
+
+    void cbSmartIndentEditorHookFunctor::Call(cbEditor *editor, wxScintillaEvent &event) const
+    {
+        m_plugin->OnEditorHook(editor, event);
+    }
+};

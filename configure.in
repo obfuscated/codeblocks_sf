@@ -431,6 +431,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/profiler/resources/Makefile
 	src/plugins/contrib/source_exporter/Makefile
 	src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
+	src/plugins/contrib/SmartIndent/Makefile
 	src/plugins/contrib/SpellChecker/Makefile
 	src/plugins/contrib/SpellChecker/wxspellchecker/Makefile
 	src/plugins/contrib/symtab/Makefile
