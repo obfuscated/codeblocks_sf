@@ -3252,7 +3252,11 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
             defines.Add(wxT("__IA64__"));
         }
     }
-    m_Theme->SetKeywords(m_Theme->GetHighlightLanguage(wxT("C/C++")), 4, GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false));
+    wxString keywords = GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false);
+    m_Theme->SetKeywords(m_Theme->GetHighlightLanguage(wxT("C/C++")), 4, keywords);
+    wxString key = wxT("/colour_sets/") + m_Theme->GetName() + wxT("/cc/");
+    Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("editor/keywords/set4"), keywords);
+    Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("name"), wxT("C/C++"));
     event.Skip();
 }
 
