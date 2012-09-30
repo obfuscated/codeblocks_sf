@@ -281,18 +281,19 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        if (wxMinimumVersion<2,6,1>::eval)
+        if (wxMinimumVersion<2,6,1>::eval && !text.IsEmpty())
         {
-            popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
-            popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
-            popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
+            popup->Append(idGoogle,     _("Search the Internet for \"") + text + _("\""));
+            popup->Append(idMsdn,       _("Search MSDN for \"")         + text + _("\""));
+            popup->Append(idGoogleCode, _("Search Google Code for \"")  + text + _("\""));
         }
         lastWord = text;
 
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
         if (switchto)
         {
-            popup->AppendSeparator();
+            if (popup->GetMenuItemCount() > 0)
+                popup->AppendSeparator();
             popup->Append(idSwitchTo, _("Switch to"), switchto);
         }
     }
@@ -383,8 +384,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     {
         Manager::Get()->GetEditorManager()->SaveAll();
     }
-    else
-    if (id >= idSwitchFile1 && id <= idSwitchFileMax)
+    else if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item
         EditorBase *const ed = m_SwitchTo[id];
