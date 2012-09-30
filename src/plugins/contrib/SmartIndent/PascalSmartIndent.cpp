@@ -19,7 +19,7 @@ namespace
     PluginRegistrant<PascalSmartIndent> reg(wxT("PascalSmartIndent"));
 }
 
-bool PascalSmartIndent::InComment(const wxString& LanguageName, int style) const
+bool PascalSmartIndent::InComment(const wxString& WXUNUSED(LanguageName), int style) const
 {
     return style == wxSCI_C_COMMENT ||
            style == wxSCI_C_COMMENTDOC ||
@@ -56,7 +56,7 @@ void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
         DoUnIndent(ed, langname); // un-indent because not a newline added
 }
 
-void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& langname) const
+void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -82,7 +82,7 @@ void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& langname) const
     }
 }
 
-void PascalSmartIndent::DoUnIndent(cbEditor* ed, const wxString& langname) const
+void PascalSmartIndent::DoUnIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 
