@@ -97,6 +97,10 @@
                     BoxCommentStart="(* "
                     BoxCommentMid=" * "
                     BoxCommentEnd=" *)"
-                    CaseSensitive="0"/>
+                    CaseSensitive="0"
+                    LexerCommentStyles="2,3,4"
+                    LexerCharacterStyles="12"
+                    LexerStringStyles="10,11"
+                    LexerPreprocessorStyles="5,6"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

@@ -17,8 +17,6 @@ class PythonSmartIndent : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
-    private:
-        virtual bool InComment(const wxString& LanguageName, int style) const;
 };
 
 #endif // PYTHONSMARTINDENT_H_INCLUDED

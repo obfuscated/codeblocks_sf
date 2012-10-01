@@ -18,14 +18,6 @@ namespace
 {
     PluginRegistrant<LuaSmartIndent> reg(wxT("LuaSmartIndent"));
 }
-
-bool LuaSmartIndent::InComment(const wxString& LanguageName, int style) const
-{
-    return style == wxSCI_LUA_COMMENT ||
-           style == wxSCI_LUA_COMMENTLINE ||
-           style == wxSCI_LUA_COMMENTDOC;
-}
-
 void LuaSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

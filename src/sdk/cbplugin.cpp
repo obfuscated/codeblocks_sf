@@ -1095,7 +1095,7 @@ wxString cbSmartIndentPlugin::GetLastNonCommentWord(cbEditor* ed, int position, 
     {
         wxChar c = stc->GetCharAt(--position);
         int style = stc->GetStyleAt(position);
-        bool inComment = InComment(Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage()), style);
+        bool inComment = stc->IsComment(style);
         if (c == _T('\n'))
         {
             count++;
@@ -1140,7 +1140,7 @@ wxString cbSmartIndentPlugin::GetLastNonWhitespaceChars(cbEditor* ed, int positi
     {
         wxChar c = stc->GetCharAt(--position);
         int style = stc->GetStyleAt(position);
-        bool inComment = InComment(Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage()), style);
+        bool inComment = stc->IsComment(style);
         if (c == _T('\n'))
         {
             count++;

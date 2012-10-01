@@ -18,18 +18,6 @@ namespace
 {
     PluginRegistrant<HDLSmartIndent> reg(wxT("HDLSmartIndent"));
 }
-
-bool HDLSmartIndent::InComment(const wxString& LanguageName, int style) const
-{
-    if ( LanguageName == wxT("VHDL") )
-        return style == wxSCI_VHDL_COMMENT ||
-               style == wxSCI_VHDL_COMMENTLINEBANG;
-    else //if ( LanguageName == wxT("Verilog") )
-        return style == wxSCI_V_COMMENT ||
-               style == wxSCI_V_COMMENTLINE ||
-               style == wxSCI_V_COMMENTLINEBANG;
-}
-
 void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

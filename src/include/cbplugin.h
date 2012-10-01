@@ -837,11 +837,6 @@ class cbSmartIndentPlugin : public cbPlugin
         virtual void OnEditorHook(cbEditor* editor, wxScintillaEvent& event) const = 0;
 
     protected:
-        /**
-          *returns true if the style is a comment style (which depends on the lexer)
-          */
-         virtual bool InComment(const wxString& LanguageName, int style) const = 0;
-
         /** (reverse) search for the last word which is not comment **/
         wxString GetLastNonCommentWord(cbEditor* ed, int position = -1, unsigned int NumberOfWords = 1 ) const;
         /** (reverse) search for the last characters, which are not whitespace and not comment **/

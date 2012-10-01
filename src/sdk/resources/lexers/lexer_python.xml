@@ -180,6 +180,9 @@
                     BoxCommentStart=""
                     BoxCommentMid=""
                     BoxCommentEnd=""
-                    CaseSensitive="1"/>
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,12"
+                    LexerCharacterStyles="4"
+                    LexerStringStyles="3,13"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

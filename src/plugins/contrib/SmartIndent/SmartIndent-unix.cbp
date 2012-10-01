@@ -128,7 +128,7 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;" />
+			<Add alias="All" targets="CppSmartIndent;HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wextra" />

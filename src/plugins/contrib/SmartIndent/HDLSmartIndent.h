@@ -19,7 +19,6 @@ class HDLSmartIndent : public cbSmartIndentPlugin
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 
     private:
-        virtual bool InComment(const wxString& LanguageName, int style) const;
         int FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const;
 
         void DoIndent  (cbEditor* ed, const wxString& langname) const;

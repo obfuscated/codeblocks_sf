@@ -17,9 +17,6 @@ class FortranSmartIndent : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
-
-    private:
-        virtual bool InComment(const wxString& LanguageName, int style) const;
 };
 
 #endif // FORTRANSMARTINDENT_H_INCLUDED

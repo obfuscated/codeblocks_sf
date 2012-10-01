@@ -19,8 +19,6 @@ class PascalSmartIndent : public cbSmartIndentPlugin
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 
     private:
-        virtual bool InComment(const wxString& LanguageName, int style) const;
-
         void DoIndent  (cbEditor* ed, const wxString& langname) const;
         void DoUnIndent(cbEditor* ed, const wxString& langname) const;
 };

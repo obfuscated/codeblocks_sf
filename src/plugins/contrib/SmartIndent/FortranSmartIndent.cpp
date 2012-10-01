@@ -18,12 +18,6 @@ namespace
 {
     PluginRegistrant<FortranSmartIndent> reg(wxT("FortranSmartIndent"));
 }
-
-bool FortranSmartIndent::InComment(const wxString& LanguageName, int style) const
-{
-    return style == wxSCI_F_COMMENT;
-}
-
 void FortranSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

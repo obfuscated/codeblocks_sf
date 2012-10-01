@@ -19,7 +19,6 @@ class LuaSmartIndent : public cbSmartIndentPlugin
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 
     private:
-        virtual bool InComment(const wxString& LanguageName, int style) const;
         bool BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const;
 };
 

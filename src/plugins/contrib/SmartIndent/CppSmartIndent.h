@@ -16,7 +16,6 @@ class CppSmartIndent : public cbSmartIndentPlugin
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 
     private:
-        virtual bool InComment(const wxString &LanguageName, int style) const;
         void DoSmartIndent(cbEditor *ed, const wxChar &ch)const;
         bool BraceIndent(cbStyledTextCtrl *control, wxString &indent)const;
         void DoSelectionBraceCompletion(cbStyledTextCtrl *control, const wxChar &ch)const;

@@ -18,13 +18,6 @@ namespace
 {
     PluginRegistrant<PythonSmartIndent> reg(wxT("PythonSmartIndent"));
 }
-
-bool PythonSmartIndent::InComment(const wxString& WXUNUSED(LanguageName), int style) const
-{
-    return style == wxSCI_P_COMMENTBLOCK ||
-           style == wxSCI_P_COMMENTLINE;
-}
-
 void PythonSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

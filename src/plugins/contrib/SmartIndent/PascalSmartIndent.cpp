@@ -18,16 +18,6 @@ namespace
 {
     PluginRegistrant<PascalSmartIndent> reg(wxT("PascalSmartIndent"));
 }
-
-bool PascalSmartIndent::InComment(const wxString& WXUNUSED(LanguageName), int style) const
-{
-    return style == wxSCI_C_COMMENT ||
-           style == wxSCI_C_COMMENTDOC ||
-           style == wxSCI_C_COMMENTDOCKEYWORD ||
-           style == wxSCI_C_COMMENTDOCKEYWORDERROR ||
-           style == wxSCI_C_COMMENTLINE;
-}
-
 void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     if (!ed) return;
