@@ -74,7 +74,7 @@ void CppSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 
     const wxChar ch = event.GetKey();
 
-    if ( SelectionBraceCompletionEnabled() )
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
         DoSelectionBraceCompletion(stc, ch);
 
     DoSmartIndent(ed, ch);
@@ -461,10 +461,9 @@ bool CppSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
     }
     return false;
 }
-
 void CppSmartIndent::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar &ch)const
 {
-    if (( control->IsBraceShortcutActive()) && !control->GetLastSelectedText().IsEmpty())
+    if (!control->GetLastSelectedText().IsEmpty())
     {
 
         const int pos = control->GetCurrentPos();
