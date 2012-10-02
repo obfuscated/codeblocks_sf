@@ -202,8 +202,8 @@
 											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxTextCtrl" name="txtConsoleTerm" />
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<object class="wxComboBox" name="cbConsoleTerm" />
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<option>1</option>
 										</object>
 									</object>

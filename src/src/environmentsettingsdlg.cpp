@@ -117,18 +117,33 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkModifiedFiles",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
     XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"), true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
-    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
-    txt->SetValue(cfg->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM));
-#ifdef __WXMSW__
-    // under win32, this option is not needed, so disable it
-    txt->Enable(false);
-#endif
-    txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
+
+    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     txt->SetValue(cfg->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL));
 #ifdef __WXMSW__
     // under win32, this option is not needed, so disable it
     txt->Enable(false);
 #endif
+
+    wxComboBox *combo = XRCCTRL(*this, "cbConsoleTerm", wxComboBox);
+    combo->Append(DEFAULT_CONSOLE_TERM);
+
+    if (platform::id == platform::windows)
+        combo->Enable(false);
+    else
+    {
+        if (platform::id != platform::macosx && platform::id != platform::darwin)
+        {
+            combo->Append(wxT("gnome-terminal --disable-factory -t $TITLE -x "));
+            combo->Append(wxT("konsole -e "));
+        }
+        wxString terminal = cfg->Read(wxT("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        if (!combo->SetStringSelection(terminal))
+        {
+            combo->Insert(terminal, 0);
+            combo->SetStringSelection(terminal);
+        }
+    }
 
     // tab "View"
     bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
@@ -486,7 +501,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/ignore_invalid_targets"),(bool) XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->GetValue());
         cfg->Write(_T("/console_shell"),                            XRCCTRL(*this, "txtConsoleShell", wxTextCtrl)->GetValue());
-        cfg->Write(_T("/console_terminal"),                         XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl)->GetValue());
+        cfg->Write(_T("/console_terminal"),                         XRCCTRL(*this, "cbConsoleTerm", wxComboBox)->GetValue());
 
         // tab "View"
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
