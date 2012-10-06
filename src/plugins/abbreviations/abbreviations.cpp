@@ -244,6 +244,11 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
 
             // replace any other macros in the generated code
             Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
+            // match current EOL mode
+            if (control->GetEOLMode() == wxSCI_EOL_CRLF)
+                code.Replace(wxT("\n"), wxT("\r\n"));
+            else if (control->GetEOLMode() == wxSCI_EOL_CR)
+                code.Replace(wxT("\n"), wxT("\r"));
             // add the text
             control->InsertText(curPos, code);
 
