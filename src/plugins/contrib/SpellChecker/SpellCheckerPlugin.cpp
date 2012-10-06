@@ -18,8 +18,9 @@
 */
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <configmanager.h>
     #include <cbeditor.h>
+    #include <configmanager.h>
+    #include <editorcolourset.h>
     #include <editormanager.h>
 #endif
 #include <configurationpanel.h>
