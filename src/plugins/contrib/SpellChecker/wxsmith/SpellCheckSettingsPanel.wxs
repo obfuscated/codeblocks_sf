@@ -3,6 +3,8 @@
 	<resource_extra>
 		<object root="1" />
 		<object name="ID_CHECKBOX1" class="wxCheckBox" variable="m_checkEnableOnlineSpellChecker" member="yes" />
+		<object name="ID_CHECKBOX2" class="wxCheckBox" variable="m_checkSpellTooltips" member="yes" />
+		<object name="ID_CHECKBOX3" class="wxCheckBox" variable="m_checkThesaurusTooltips" member="yes" />
 		<object name="ID_STATICTEXT3" class="wxStaticText" variable="StaticText3" member="yes" />
 		<object name="ID_CHOICE3" class="wxChoice" variable="m_choiceDictionary" member="yes" />
 		<object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText1" member="yes" />

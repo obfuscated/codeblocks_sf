@@ -47,6 +47,8 @@ SpellCheckSettingsPanel::SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerC
     //(*Initialize(SpellCheckSettingsPanel)
     wxXmlResource::Get()->LoadObject(this,parent,_T("SpellCheckSettingsPanel"),_T("wxPanel"));
     m_checkEnableOnlineSpellChecker = (wxCheckBox*)FindWindow(XRCID("ID_CHECKBOX1"));
+    m_checkSpellTooltips = (wxCheckBox*)FindWindow(XRCID("ID_CHECKBOX2"));
+    m_checkThesaurusTooltips = (wxCheckBox*)FindWindow(XRCID("ID_CHECKBOX3"));
     StaticText3 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT3"));
     m_choiceDictionary = (wxChoice*)FindWindow(XRCID("ID_CHOICE3"));
     StaticText1 = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
@@ -115,6 +117,8 @@ void SpellCheckSettingsPanel::InitDictionaryChoice(const wxString &path)
 
     m_checkEnableOnlineSpellChecker->Enable(!dics.empty());
     m_checkEnableOnlineSpellChecker->SetValue( m_sccfg->GetEnableOnlineChecker() && (!dics.empty()) );
+    m_checkSpellTooltips->SetValue( m_sccfg->GetEnableSpellTooltips() && (!dics.empty()) );
+    m_checkThesaurusTooltips->SetValue( m_sccfg->GetEnableThesaurusTooltips() && (!dics.empty()) );
 }
 wxString SpellCheckSettingsPanel::GetTitle() const {return _T("SpellChecker");}
 
@@ -123,6 +127,8 @@ wxString SpellCheckSettingsPanel::GetBitmapBaseName() const {return _T("SpellChe
 void SpellCheckSettingsPanel::PostConfig()
 {
     m_sccfg->SetEnableOnlineChecker(m_checkEnableOnlineSpellChecker->GetValue());
+    m_sccfg->SetEnableSpellTooltips(m_checkSpellTooltips->GetValue());
+    m_sccfg->SetEnableThesaurusTooltips(m_checkThesaurusTooltips->GetValue());
     std::vector<wxString> dics = m_sccfg->GetPossibleDictionaries();
     const int sel = m_choiceDictionary->GetSelection();
     if ( sel < static_cast<int>(dics.size()) && sel != wxNOT_FOUND )

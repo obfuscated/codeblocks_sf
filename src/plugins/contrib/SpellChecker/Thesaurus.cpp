@@ -123,6 +123,13 @@ bool Thesaurus::GetSynonym(const wxString Word, wxString &Syn)
 
 }
 
+synonyms Thesaurus::GetSynonyms(const wxString& Word)
+{
+    synonyms syn;
+    if (m_pT)
+        syn = m_pT->Lookup(Word);
+    return syn;
+}
 
 bool Thesaurus::IsOk()
 {

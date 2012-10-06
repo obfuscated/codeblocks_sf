@@ -33,6 +33,10 @@ class SpellCheckerConfig
 
         bool GetEnableOnlineChecker();
         void SetEnableOnlineChecker(bool val);
+        bool GetEnableSpellTooltips();
+        void SetEnableSpellTooltips(bool val);
+        bool GetEnableThesaurusTooltips();
+        void SetEnableThesaurusTooltips(bool val);
         const wxString GetDictionaryName()const;
         void SetDictionaryName(wxString val);
         void Load();
@@ -64,6 +68,8 @@ class SpellCheckerConfig
         wxString m_ThesPath;
         wxString m_BitmPath;
         bool m_EnableOnlineChecker;
+        bool m_EnableSpellTooltips;
+        bool m_EnableThesaurusTooltips;
         wxString m_strDictionaryName;
         std::vector<wxString> m_dictionaries;
         int selectedDictionary;

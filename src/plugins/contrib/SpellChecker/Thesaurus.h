@@ -26,6 +26,10 @@
 #include "wx/wx.h"
 #endif
 
+#include <map>
+#include <vector>
+typedef std::map<wxString, std::vector< wxString > > synonyms;
+
 class wxThes;
 class Thesaurus
 {
@@ -35,6 +39,7 @@ class Thesaurus
         virtual ~Thesaurus();
 
         bool GetSynonym(const wxString Word, wxString &Syn);
+        synonyms GetSynonyms(const wxString& Word);
         void SetFiles(wxString idxpath, const wxString datpath);
         bool IsOk();
 

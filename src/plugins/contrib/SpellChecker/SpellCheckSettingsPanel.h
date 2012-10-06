@@ -60,12 +60,14 @@ class SpellCheckSettingsPanel: public cbConfigurationPanel
 		wxTextCtrl* m_TextThPath;
 		wxChoice* m_choiceDictionary;
 		wxStaticText* StaticText2;
+		wxCheckBox* m_checkThesaurusTooltips;
 		wxTextCtrl* m_TextDictPath;
 		wxButton* Button1;
 		wxStaticText* StaticText1;
 		wxStaticText* StaticText3;
 		wxHyperlinkCtrl* HyperlinkCtrl1;
 		wxButton* Button2;
+		wxCheckBox* m_checkSpellTooltips;
 		wxButton* Button3;
 		wxTextCtrl* m_TextBitmapPath;
 		wxStaticText* StaticText4;

@@ -149,6 +149,8 @@ class SpellCheckerPlugin : public cbPlugin
         void OnUpdateSpelling(wxUpdateUIEvent &event);
         void OnUpdateThesaurus(wxUpdateUIEvent &event);
         void OnThesaurus(wxCommandEvent &event);
+        void OnCamelCase(wxCommandEvent &event);
+        bool DoGetWordStarts(const wxString& word, wxArrayInt& wordStarts, int numWords);
         void OnReplaceBySuggestion(wxCommandEvent &event);
         void OnMoreSuggestions(wxCommandEvent &event);
         void OnAddToPersonalDictionary(wxCommandEvent &event);
@@ -158,6 +160,7 @@ class SpellCheckerPlugin : public cbPlugin
         void ConfigurePersonalDictionary();
         void SavePersonalDictionary();
         void OnEditorSaved(CodeBlocksEvent& event);
+        void OnEditorTooltip(CodeBlocksEvent& event);
         //void OnRightUpOverStatus(wxMouseEvent &event);
         bool ActiveEditorHasTextSelected(void);
 

@@ -51,6 +51,7 @@ namespace
 
     const int idSpellCheck                 = wxNewId();
     const int idThesaurus                  = wxNewId();
+    const int idCamelCase                  = wxNewId();
 
     const unsigned int MaxSuggestEntries = 5;
     const int idSuggest[MaxSuggestEntries] =
@@ -114,7 +115,7 @@ void SpellCheckerPlugin::OnAttach()
     ConfigureHunspellSpellCheckEngine();
     m_pSpellChecker->InitializeSpellCheckEngine();
 
-    // initialze Helper and online checker
+    // initialize Helper and online checker
     m_pSpellHelper = new SpellCheckHelper();
     m_pOnlineChecker = new OnlineSpellChecker(m_pSpellChecker, m_pSpellHelper);
     m_FunctorId = EditorHooks::RegisterHook( m_pOnlineChecker );
@@ -135,8 +136,10 @@ void SpellCheckerPlugin::OnAttach()
     Connect(idAddToDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnAddToPersonalDictionary), NULL, this);
     Connect(idThesaurus,       wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnThesaurus));
     Connect(idThesaurus,       wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateThesaurus));
+    Connect(idCamelCase,       wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnCamelCase));
 
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<SpellCheckerPlugin, CodeBlocksEvent>(this, &SpellCheckerPlugin::OnEditorSaved));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new cbEventFunctor<SpellCheckerPlugin, CodeBlocksEvent>(this, &SpellCheckerPlugin::OnEditorTooltip));
 }
 #ifdef wxUSE_STATUSBAR
 void SpellCheckerPlugin::CreateStatusField(cbStatusBar *bar)
@@ -216,7 +219,7 @@ void SpellCheckerPlugin::OnRelease(bool appShutDown)
     Disconnect(idAddToDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnAddToPersonalDictionary), NULL, this);
     Disconnect(idThesaurus,  wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnThesaurus));
     Disconnect(idThesaurus,  wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateThesaurus));
-
+    Disconnect(idCamelCase,  wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnCamelCase));
 }
 void SpellCheckerPlugin::SavePersonalDictionary()
 {
@@ -242,7 +245,7 @@ void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
     // if not attached, exit
     if (!IsAttached()) return;
 
-    // insert entry in the View menu
+    // insert entry in the Edit menu
     int EditPos = menuBar->FindMenu(_("&Edit"));
     if (EditPos != wxNOT_FOUND)
     {
@@ -251,6 +254,22 @@ void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
         EditMenu->AppendSeparator();
         EditMenu->Append(idSpellCheck, _("Spelling..."), _("Spell check the selected text"));
         EditMenu->Append(idThesaurus,  _("Thesaurus..."), _T(""));
+
+        // find menu - Edit/Special commands/Case
+        int id = EditMenu->FindItem(_("Special commands"));
+        if (id == wxNOT_FOUND) return;
+        wxMenuItem* subMenuItem = EditMenu->FindItem(id, 0);
+        if (!subMenuItem)      return;
+        wxMenu* subMenu = subMenuItem->GetSubMenu();
+        if (!subMenu)          return;
+        id = EditMenu->FindItem(_("Case"));
+        if (id == wxNOT_FOUND) return;
+        subMenuItem = EditMenu->FindItem(id, 0);
+        if (!subMenuItem)      return;
+        subMenu = subMenuItem->GetSubMenu();
+        if (!subMenu)          return;
+        // and append
+        subMenu->Append(idCamelCase, _("CamelCase"), _("Make selection CamelCase"));
     }
 }
 void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -266,6 +285,35 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, co
     cbStyledTextCtrl *stc = ed->GetControl();
     if ( !stc ) return;
 
+    const int id = menu->FindItem(_("Edit"));
+    if (id != wxNOT_FOUND)
+    {
+        wxMenuItem* subMenuItem = menu->FindItem(id, 0);
+        wxMenu* subMenu;
+        if (subMenuItem)
+            subMenu = subMenuItem->GetSubMenu();
+        if (subMenu)
+        {
+            int insertPos = wxNOT_FOUND;
+            const wxMenuItemList itemsList = subMenu->GetMenuItems();
+            for (size_t i = 0; i < itemsList.GetCount(); ++i)
+            {
+                #if wxCHECK_VERSION(2, 9, 0)
+                if (itemsList[i]->GetItemLabelText() == _("lowercase"))
+                #else
+                if (itemsList[i]->GetLabel() == _("lowercase"))
+                #endif
+                {
+                    insertPos = i + 1;
+                    break;
+                }
+            }
+            if (insertPos != wxNOT_FOUND)
+                subMenu->Insert(insertPos, idCamelCase, _("CamelCase"));
+            else
+                subMenu->Append(idCamelCase, _("CamelCase"));
+        }
+    }
 
     int pos = stc->GetCurrentPos();
     stc->GetIndicatorValue();
@@ -397,6 +445,127 @@ void SpellCheckerPlugin::OnUpdateThesaurus(wxUpdateUIEvent &event)
     else
         event.Enable(false);
 }
+void SpellCheckerPlugin::OnCamelCase(wxCommandEvent &event)
+{
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed || !m_pSpellChecker->IsInitialized()) return;
+    cbStyledTextCtrl *stc = ed->GetControl();
+    if (!stc) return;
+
+    // take only the first word from the selection
+    int selstart = stc->GetSelectionStart();
+    while (selstart < stc->GetLength())
+    {
+        if ( !m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(selstart)) )
+            break;
+        ++selstart;
+    }
+    // and scan back for the actual word start
+    while (selstart > 0)
+    {
+        if ( m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(selstart - 1)) )
+            break;
+        --selstart;
+    }
+    if (selstart > stc->GetSelectionEnd())
+        return;
+    int selend = selstart;
+    while (selend < stc->GetLength())
+    {
+        if ( m_pSpellHelper->IsWhiteSpace(stc->GetCharAt(++selend)) )
+            break;
+    }
+
+    if (selend - selstart < 4) // too small
+        return;
+    else if (selend - selstart > 30) // max limit (DoGetWordStarts() is recursive, so watch out)
+        selend = selstart + 30;
+
+    wxString text = stc->GetTextRange(selstart, selend);
+    wxArrayString prefixes = GetArrayFromString(wxT("Get;Set;Do;On;Is;wx"));
+    prefixes.Add(wxEmptyString); // check without prefix
+    prefixes.Add(wxT("p")); // less common prefix, check last
+    for (size_t i = 0; i < prefixes.GetCount(); ++i)
+    {
+        wxString word = text;
+        if (!prefixes[i].IsEmpty()) // try with prefix
+        {
+            if (!text.Lower().StartsWith(prefixes[i].Lower(), &word))
+                continue; // no, try next prefix
+        }
+        wxString camelWord;
+        for (size_t j = 0; j < word.Length() / 2; ++j) // 0 index number of words to break into
+        {
+            wxArrayInt wordStarts;
+            if (DoGetWordStarts(word.Lower(), wordStarts, j))
+            {
+                for (size_t k = 0; k < word.Length(); ++k) // make CamelCase
+                {
+                    if (wordStarts.Index(k) == wxNOT_FOUND)
+                        camelWord << word.Lower()[k];
+                    else
+                        camelWord << word.Upper()[k];
+                }
+                break;
+            }
+        }
+        if (!camelWord.IsEmpty())
+        {
+            if (i != prefixes.GetCount())
+                camelWord.Prepend(prefixes[i]);
+            if (text == camelWord)
+                return; // already formed, so do nothing
+            stc->BeginUndoAction();
+            stc->DeleteRange(selstart, text.Length());
+            stc->InsertText(selstart, camelWord);
+            stc->SetSelectionStart(selstart);
+            stc->SetSelectionEnd(selend);
+            stc->EndUndoAction();
+            return; // exit
+        }
+    }
+}
+bool SpellCheckerPlugin::DoGetWordStarts(const wxString& word, wxArrayInt& wordStarts, int numWords)
+{
+    if (numWords <= 0) // finish split
+    {
+        wordStarts.Add(0); // first word
+        wxString currWord;
+        for (int i = wordStarts.GetCount() - 1; i > 0; --i) // reverse iteration (so numbers are checked lowest to highest)
+        {
+            currWord = word(wordStarts[i], wordStarts[i - 1] - wordStarts[i]);
+            if (currWord.Length() > 3) // capitalize medium/long words so proper nouns work
+                currWord = currWord(0, 1).Upper() + currWord.Mid(1);
+            if (!m_pSpellChecker->IsWordInDictionary(currWord))
+            {
+                wordStarts.RemoveAt(wordStarts.GetCount() - 1);
+                return false; // no, fall back a level
+            }
+        }
+        currWord = word.Mid(wordStarts[0]);
+        if (currWord.Length() > 3) // capitalize
+            currWord = currWord(0, 1).Upper() + currWord.Mid(1);
+        if (!m_pSpellChecker->IsWordInDictionary(currWord)) // last word (wordStarts[] is reverse sorted)
+        {
+            wordStarts.RemoveAt(wordStarts.GetCount() - 1);
+            return false; // no, fall back a level
+        }
+        return true; // all parts are correctly spelled
+    }
+
+    // iterate through possibilities of the current word start
+    for (int i = (wordStarts.IsEmpty() ? word.Length() : wordStarts[wordStarts.GetCount() - 1]) - 2;
+         i >= numWords * 2; --i)
+    {
+        wordStarts.Add(i);
+        if (DoGetWordStarts(word, wordStarts, numWords - 1))
+        {
+            return true; // yes, fall through and return
+        }
+        wordStarts.RemoveAt(wordStarts.GetCount() - 1);
+    }
+    return false; // no, fall back an iteration
+}
 
 bool SpellCheckerPlugin::ActiveEditorHasTextSelected(void)
 {
@@ -526,4 +695,140 @@ void SpellCheckerPlugin::OnEditorSaved(CodeBlocksEvent& event)
     }
 
 
+}
+
+void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
+{
+    if (   !IsAttached() || wxGetKeyState(WXK_CONTROL)
+        || !(m_sccfg->GetEnableSpellTooltips() || m_sccfg->GetEnableThesaurusTooltips()))
+    {
+        event.Skip();
+        return;
+    }
+    EditorBase* base = event.GetEditor();
+    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
+    if (   !ed || ed->IsContextMenuOpened()
+        || wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()) )
+    {
+        event.Skip();
+        return;
+    }
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+    int pos = stc->PositionFromPointClose(event.GetX(), event.GetY());
+    if (pos < 0 || pos >= stc->GetLength())
+    {
+        event.Skip();
+        return;
+    }
+
+    wxString tip;
+    int wordstart = pos, wordend = pos;
+    while (wordstart)
+    {
+        if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(wordstart - 1) ) )
+            break;
+        --wordstart;
+    }
+    while ( wordend < stc->GetLength() )
+    {
+        if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(++wordend) ) )
+            break;
+    }
+    int tipWidth = 0;
+    if (   m_sccfg->GetEnableSpellTooltips()
+        && m_pSpellChecker->IsInitialized()
+        && stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
+    {
+        // indicator is on -> check if we can find a suggestion
+        wxString misspelledWord = stc->GetTextRange(wordstart, wordend);
+        m_suggestions = m_pSpellChecker->GetSuggestions(misspelledWord);
+        if (!m_suggestions.IsEmpty())
+        {
+            // allow maximum 12 entries in 3 rows
+            int lineWidth = 0;
+            for (size_t i = 0; i < 12 && i < m_suggestions.size(); ++i)
+            {
+                tip << m_suggestions[i];
+                lineWidth += m_suggestions[i].Length();
+                if (i % 4 == 3)
+                {
+                    tip << wxT(",\n");
+                    if (lineWidth > tipWidth)
+                        tipWidth = lineWidth;
+                    lineWidth = 0;
+                }
+                else
+                {
+                    tip << wxT(", ");
+                    lineWidth += 2;
+                }
+            }
+            tip.RemoveLast(2);
+            lineWidth -= 2;
+            if (lineWidth > tipWidth) // in case the last line was not full, and thereby not checked
+                tipWidth = lineWidth;
+        }
+    }
+    else if (   m_sccfg->GetEnableThesaurusTooltips()
+             && m_pThesaurus->IsOk()
+             && m_pSpellHelper->HasStyleToBeChecked(ed->GetColourSet()->GetLanguageName(ed->GetLanguage()), event.GetInt()))
+    {
+        wxString word = stc->GetTextRange(wordstart, wordend);
+        synonyms syn = m_pThesaurus->GetSynonyms(word);
+        if (!syn.size()) // if not found, try lower case
+            syn = m_pThesaurus->GetSynonyms(word.Lower());
+        if (syn.size())
+        {
+            wxArrayString usedSyns; // avoid duplicate synonyms
+            // allow maximum 12 entries in 4 rows
+            synonyms::iterator it = syn.begin();
+            for (size_t i = 0; i < 4 && it != syn.end(); ++i, ++it)
+            {
+                wxString tipLine(it->first + wxT(": "));
+                std::vector< wxString > syns = syn[it->first];
+                size_t j = 0;
+                for (size_t k = 0; k < 3 && j < syns.size(); ++j, ++k)
+                {
+                    if (usedSyns.Index(syns[j]) == wxNOT_FOUND)
+                    {
+                        tipLine << syns[j] << wxT(", ");
+                        usedSyns.Add(syns[j]);
+                    }
+                    else
+                        --k; // synonym already listed, look for another word
+                }
+                tipLine.RemoveLast(2);
+                if (tipLine.Length() > tipWidth)
+                    tipWidth = tipLine.Length();
+                tip << tipLine << wxT("\n");
+            }
+            tip.RemoveLast();
+        }
+    }
+
+    if (tip.IsEmpty())
+    {
+        event.Skip();
+        return;
+    }
+
+    if (stc->CallTipActive())
+        stc->CallTipCancel();
+    // calculation from CC
+    int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
+                  // pos - lnStart   == distance from start of line
+                  //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
+                  //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
+                  //       horizontal scrolling is accounted for by PointFromPosition().x
+    int offset = tipWidth + pos + 1 - lnStart -
+                 (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
+                  stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
+    if (offset > 0)
+        pos -= offset;
+    if (pos < lnStart) // do not go to previous line if tip is wider than editor
+        pos = lnStart;
+
+    stc->CallTipShow(pos, tip);
 }

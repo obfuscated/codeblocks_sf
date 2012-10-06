@@ -26,11 +26,13 @@
 
 #include <configmanager.h>
 
-#define CFG_SPELLCHECK_ENABLE_ONLINE_CHECK _T("/SpellChecker/EnableOnlineChecker")
-#define CFG_SPELLCHECK_DICTIONARY_NAME     _T("/SpellChecker/Dictionary")
-#define CFG_SPELLCHECK_DICTIONARY_PATH     _T("/SpellChecker/DictPath")
-#define CFG_SPELLCHECK_THESAURI_PATH       _T("/SpellChecker/ThesPath")
-#define CFG_SPELLCHECK_BITMAPS_PATH        _T("/SpellChecker/BitmPath")
+#define CFG_SPELLCHECK_ENABLE_ONLINE_CHECK      _T("/SpellChecker/EnableOnlineChecker")
+#define CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK     _T("/SpellChecker/SpellTooltips")
+#define CFG_SPELLCHECK_THESAURUS_TOOLTIPS_CHECK _T("/SpellChecker/ThesTooltips")
+#define CFG_SPELLCHECK_DICTIONARY_NAME          _T("/SpellChecker/Dictionary")
+#define CFG_SPELLCHECK_DICTIONARY_PATH          _T("/SpellChecker/DictPath")
+#define CFG_SPELLCHECK_THESAURI_PATH            _T("/SpellChecker/ThesPath")
+#define CFG_SPELLCHECK_BITMAPS_PATH             _T("/SpellChecker/BitmPath")
 
 SpellCheckerConfig::SpellCheckerConfig(SpellCheckerPlugin *plugin)
     ://m_DictionaryPath(plugin->GetDic),
@@ -54,6 +56,22 @@ bool SpellCheckerConfig::GetEnableOnlineChecker()
 void SpellCheckerConfig::SetEnableOnlineChecker(bool val)
 {
     m_EnableOnlineChecker = val;
+}
+bool SpellCheckerConfig::GetEnableSpellTooltips()
+{
+    return m_EnableSpellTooltips;
+}
+void SpellCheckerConfig::SetEnableSpellTooltips(bool val)
+{
+    m_EnableSpellTooltips = val;
+}
+bool SpellCheckerConfig::GetEnableThesaurusTooltips()
+{
+    return m_EnableThesaurusTooltips;
+}
+void SpellCheckerConfig::SetEnableThesaurusTooltips(bool val)
+{
+    m_EnableThesaurusTooltips = val;
 }
 const wxString SpellCheckerConfig::GetDictionaryName()const
 {
@@ -210,6 +228,8 @@ void SpellCheckerConfig::Load()
     if (ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor")))
     {
         m_EnableOnlineChecker = cfg->ReadBool(CFG_SPELLCHECK_ENABLE_ONLINE_CHECK, true);
+        m_EnableSpellTooltips = cfg->ReadBool(CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK, true);
+        m_EnableThesaurusTooltips = cfg->ReadBool(CFG_SPELLCHECK_THESAURUS_TOOLTIPS_CHECK, true);
         m_strDictionaryName = cfg->Read(CFG_SPELLCHECK_DICTIONARY_NAME, _T("de_CH") );
         m_DictPath = cfg->Read(CFG_SPELLCHECK_DICTIONARY_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
         m_ThesPath = cfg->Read(CFG_SPELLCHECK_THESAURI_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
@@ -221,6 +241,8 @@ void SpellCheckerConfig::Save()
     if(ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor")))
     {
         cfg->Write(CFG_SPELLCHECK_ENABLE_ONLINE_CHECK, m_EnableOnlineChecker);
+        cfg->Write(CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK, m_EnableSpellTooltips);
+        cfg->Write(CFG_SPELLCHECK_THESAURUS_TOOLTIPS_CHECK, m_EnableThesaurusTooltips);
         cfg->Write(CFG_SPELLCHECK_DICTIONARY_NAME, m_strDictionaryName);
         cfg->Write(CFG_SPELLCHECK_DICTIONARY_PATH, m_DictPath);
         cfg->Write(CFG_SPELLCHECK_THESAURI_PATH, m_ThesPath);
