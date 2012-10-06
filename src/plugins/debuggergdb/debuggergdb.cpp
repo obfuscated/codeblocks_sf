@@ -783,7 +783,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
                 newLibPath << libPathSep;
             newLibPath << oldLibPath;
             wxSetEnv(CB_LIBRARY_ENVVAR, newLibPath);
-            DebugLog(CB_LIBRARY_ENVVAR _T("=") + newLibPath);
+            Log(wxString(_("Set variable: ")) + CB_LIBRARY_ENVVAR wxT("=") + newLibPath);
         }
     }
 
