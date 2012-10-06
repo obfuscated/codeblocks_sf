@@ -67,7 +67,7 @@ int main()
 	*/
 
 	IrrlichtDevice *device =
-		createDevice(EDT_SOFTWARE, dimension2d<s32>(640, 480), 16,
+		createDevice(EDT_SOFTWARE, dimension2d<u32>(640, 480), 16,
 			false, false, false, 0);
 
 	/*
