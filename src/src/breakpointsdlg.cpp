@@ -408,11 +408,6 @@ void BreakpointsDlg::OnBreakpointEdit(CodeBlocksEvent& event)
     Reload();
 }
 
-void BreakpointsDlg::OnBreakpointDelete(CodeBlocksEvent& event)
-{
-    RemoveBreakpoint(event.GetString(), event.GetInt());
-}
-
 void BreakpointsDlg::OnShowTemp(wxCommandEvent& event)
 {
     bool old = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::ShowTemporaryBreakpoints);

@@ -46,7 +46,6 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
         void OnDoubleClick(wxListEvent& event);
         void OnBreakpointAdd(CodeBlocksEvent& event);
         void OnBreakpointEdit(CodeBlocksEvent& event);
-        void OnBreakpointDelete(CodeBlocksEvent& event);
         void OnKeyUp(wxKeyEvent& event);
         void OnUpdateUI(wxUpdateUIEvent &event);
     private:
