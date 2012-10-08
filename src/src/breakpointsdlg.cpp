@@ -217,22 +217,6 @@ bool BreakpointsDlg::RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& 
         return false;
 }
 
-void BreakpointsDlg::RemoveBreakpoint(int sel)
-{
-    if(sel < 0 || sel >= static_cast<int>(m_breakpoints.size()))
-        return;
-    Item const &item = m_breakpoints[sel];
-
-    if (item.breakpoint->IsVisibleInEditor())
-    {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(item.breakpoint->GetLocation());
-        if (ed)
-            ed->RemoveBreakpoint(item.breakpoint->GetLine() - 1, false);
-    }
-
-    item.plugin->DeleteBreakpoint(item.breakpoint);
-}
-
 void BreakpointsDlg::EditBreakpoint(const wxString& filename, int line)
 {
     Items::iterator it = FindBreakpoint(filename, line);
@@ -260,13 +244,28 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
 {
     long item = -1;
     bool reload = false;
+    std::set<cbEditor*> editors;
+
     while ((item = m_pList->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1)
     {
-        RemoveBreakpoint(item);
-        reload = true;
+        if (item >= 0 || item < static_cast<int>(m_breakpoints.size()))
+        {
+            Item const &data = m_breakpoints[item];
+            if (data.breakpoint->IsVisibleInEditor())
+            {
+                cbEditor *ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(data.breakpoint->GetLocation());
+                if (ed)
+                    editors.insert(ed);
+            }
+
+            data.plugin->DeleteBreakpoint(data.breakpoint);
+            reload = true;
+        }
     }
     if (reload)
         Reload();
+    for (std::set<cbEditor*>::iterator it = editors.begin(); it != editors.end(); ++it)
+        (*it)->RefreshBreakpointMarkers();
 }
 
 void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
@@ -388,11 +387,8 @@ void BreakpointsDlg::OnKeyUp(wxKeyEvent& event)
 {
     if (event.GetKeyCode() == WXK_DELETE || event.GetKeyCode() == WXK_NUMPAD_DELETE)
     {
-        long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-        if (item == -1)
-            return;
-        RemoveBreakpoint(item);
-        Reload();
+        wxCommandEvent event;
+        OnRemove(event);
     }
 }
 

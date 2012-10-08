@@ -75,7 +75,6 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
         };
         typedef std::vector<Item> Items;
     private:
-        void RemoveBreakpoint(int sel);
         Items::iterator FindBreakpoint(const wxString &filename, int line);
         void BreakpointProperties(const Item &item);
 
