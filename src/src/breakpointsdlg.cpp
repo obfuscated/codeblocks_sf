@@ -7,11 +7,12 @@
  * $HeadURL$
  */
 
-#include <set>
-
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+#   include <algorithm>
+#   include <set>
+
 #   include "globals.h"
 #   include "manager.h"
 #   include "editormanager.h"
@@ -169,13 +170,9 @@ BreakpointsDlg::Items::iterator BreakpointsDlg::FindBreakpoint(const wxString &f
     return m_breakpoints.end();
 }
 
-bool BreakpointsDlg::AddBreakpoint(const wxString& filename, int line)
+bool BreakpointsDlg::AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line)
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    if (!plugin)
-        return false;
-
-    if (plugin->AddBreakpoint(filename, line))
+    if (plugin && plugin->AddBreakpoint(filename, line))
     {
         Reload();
         return true;
@@ -184,9 +181,32 @@ bool BreakpointsDlg::AddBreakpoint(const wxString& filename, int line)
         return false;
 }
 
-bool BreakpointsDlg::RemoveBreakpoint(const wxString& filename, int line)
+struct FindBreakpointPred
 {
-    Items::iterator it = FindBreakpoint(filename, line);
+    FindBreakpointPred(cbDebuggerPlugin *plugin, const wxString &filename, int line) :
+        plugin(plugin),
+        filename(filename),
+        line(line)
+    {}
+    bool operator()(const BreakpointsDlg::Item &item) const
+    {
+        return plugin == item.plugin
+                && item.breakpoint->IsVisibleInEditor()
+                && item.breakpoint->GetLocation() == filename
+                && item.breakpoint->GetLine() == line;
+    }
+private:
+    cbDebuggerPlugin *plugin;
+    const wxString &filename;
+    int line;
+};
+
+bool BreakpointsDlg::RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line)
+{
+    if (!plugin)
+        return false;
+    Items::iterator it;
+    it = std::find_if(m_breakpoints.begin(), m_breakpoints.end(), FindBreakpointPred(plugin, filename, line));
     if (it != m_breakpoints.end())
     {
         it->plugin->DeleteBreakpoint(it->breakpoint);

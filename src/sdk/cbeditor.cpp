@@ -2106,7 +2106,8 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    if (Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->AddBreakpoint(m_Filename, line + 1))
+    DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
+    if (dbgManager->GetBreakpointDialog()->AddBreakpoint(dbgManager->GetActiveDebugger(), m_Filename, line + 1))
     {
         BreakpointMarkerToggle(line);
         return true;
@@ -2128,7 +2129,8 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    if (Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->RemoveBreakpoint(m_Filename, line + 1))
+    DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
+    if (dbgManager->GetBreakpointDialog()->RemoveBreakpoint(dbgManager->GetActiveDebugger(), m_Filename, line + 1))
     {
         BreakpointMarkerToggle(line);
         return true;
@@ -2155,12 +2157,12 @@ void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
     bool toggle = false;
     if (HasBreakpoint(line))
     {
-        if (dialog->RemoveBreakpoint(m_Filename, line + 1))
+        if (dialog->RemoveBreakpoint(plugin, m_Filename, line + 1))
             toggle = true;
     }
     else
     {
-        if (dialog->AddBreakpoint(m_Filename, line + 1))
+        if (dialog->AddBreakpoint(plugin, m_Filename, line + 1))
             toggle = true;
     }
 

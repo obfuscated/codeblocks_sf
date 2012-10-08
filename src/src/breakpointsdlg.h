@@ -28,8 +28,8 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
 
         wxWindow* GetWindow() { return this; }
 
-        bool AddBreakpoint(const wxString& filename, int line);
-        bool RemoveBreakpoint(const wxString& filename, int line);
+        bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
+        bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
         void EditBreakpoint(const wxString& filename, int line);
         void EnableBreakpoint(const wxString& filename, int line, bool enable);
 
@@ -57,6 +57,8 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
             Info,
             Debugger
         };
+
+        friend struct FindBreakpointPred;
 
         struct Item
         {
