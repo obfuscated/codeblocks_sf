@@ -35,6 +35,7 @@ class DLLIMPORT cbBreakpointsDlg
 
         virtual bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) = 0;
         virtual bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line) = 0;
+        virtual void RemoveAllBreakpoints() = 0;
         virtual void EditBreakpoint(const wxString& filename, int line) = 0;
         virtual void EnableBreakpoint(const wxString& filename, int line, bool enable) = 0;
 

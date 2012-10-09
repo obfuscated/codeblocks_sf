@@ -30,6 +30,7 @@ class BreakpointsDlg : public wxPanel, public cbBreakpointsDlg
 
         bool AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
         bool RemoveBreakpoint(cbDebuggerPlugin *plugin, const wxString& filename, int line);
+        void RemoveAllBreakpoints();
         void EditBreakpoint(const wxString& filename, int line);
         void EnableBreakpoint(const wxString& filename, int line, bool enable);
 
