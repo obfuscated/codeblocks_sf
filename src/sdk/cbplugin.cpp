@@ -422,18 +422,6 @@ void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor* editor, int startline
 
         for (std::vector<cb::shared_ptr<cbBreakpoint> >::iterator it = to_remove.begin(); it != to_remove.end(); ++it)
             DeleteBreakpoint(*it);
-
-        // special case:
-        // when deleting a block of lines, if these lines contain at least one marker,
-        // one marker is retained at the cursor position.
-        // In our case here, this means that all breakpoints will be deleted in the range
-        // but one "orphan" breakpoint (i.e. editor mark only, no actual breakpoint behind it)
-        // will be visible on the line with the cursor.
-        //
-        // If we really have an "orphan", we remove it.
-        bool is_orphan = !HasBreakpoint(*this, editor->GetFilename(), endline - lines + 1);
-        if (is_orphan)
-            editor->RemoveBreakpoint(endline - lines, false);
     }
     else
     {
@@ -444,8 +432,6 @@ void cbDebuggerPlugin::EditorLinesAddedOrRemoved(cbEditor* editor, int startline
                 ShiftBreakpoint(*it, lines);
         }
     }
-    cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-    dlg->Reload();
 }
 
 void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent& event)

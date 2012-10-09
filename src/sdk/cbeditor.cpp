@@ -3169,14 +3169,20 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         // well, scintilla events happen regularly
         // although we only reach this part of the code only if a line has been added/removed
         // so, yes, it might not be that bad after all
-        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
         int startline = m_pControl->LineFromPosition(event.GetPosition());
-        for (size_t i=0;i<arr.GetCount();i++)
+        DebuggerManager::RegisteredPlugins plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+        cbDebuggerPlugin *active = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
         {
-            cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
-            debugger->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
+            if (it->first != active)
+                it->first->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
         }
+        if (active)
+            active->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
 
+        cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
+        dlg->Reload();
+        RefreshBreakpointMarkers();
     }
     // If we remove the folding-point (the brace or whatever) from a folded block,
     // we have to make the hidden lines visible, otherwise, they
