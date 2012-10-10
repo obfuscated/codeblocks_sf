@@ -393,6 +393,7 @@ void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cb
     wxString value, symbol, type;
     watch->GetSymbol(symbol);
     watch->GetValue(value);
+    property->SetLabel(symbol);
     property->SetValue(value);
     property->SetExpanded(watch->IsExpanded());
     watch->GetType(type);
