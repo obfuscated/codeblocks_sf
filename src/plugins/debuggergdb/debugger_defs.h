@@ -258,5 +258,6 @@ class GDBWatch : public cbWatch
 typedef std::vector<cb::shared_ptr<GDBWatch> > WatchesContainer;
 
 bool IsPointerType(wxString type);
+wxString CleanStringValue(wxString value);
 
 #endif // DEBUGGER_DEFS_H

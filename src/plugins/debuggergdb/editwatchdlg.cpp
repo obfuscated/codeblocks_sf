@@ -47,7 +47,7 @@ void EditWatchDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK && m_watch)
     {
-        m_watch->SetSymbol(XRCCTRL(*this, "txtKeyword", wxTextCtrl)->GetValue());
+        m_watch->SetSymbol(CleanStringValue(XRCCTRL(*this, "txtKeyword", wxTextCtrl)->GetValue()));
         m_watch->SetFormat((WatchFormat)XRCCTRL(*this, "rbFormat", wxRadioBox)->GetSelection());
         m_watch->SetArray(XRCCTRL(*this, "chkArray", wxCheckBox)->GetValue());
         m_watch->SetArrayParams(XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->GetValue(),

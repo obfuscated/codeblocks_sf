@@ -309,3 +309,12 @@ bool IsPointerType(wxString type)
     return false;
 }
 
+// Use this function to sanitize user input which might end as the last part of GDB commands.
+// If the last character is '\', GDB will treat it as line continuation and it will stall.
+wxString CleanStringValue(wxString value)
+{
+    while (value.EndsWith(wxT("\\")))
+        value.RemoveLast();
+    return value;
+}
+

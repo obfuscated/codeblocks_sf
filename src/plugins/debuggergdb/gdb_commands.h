@@ -1624,7 +1624,8 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
             : DebuggerCmd(driver)
         {
             cbExamineMemoryDlg *dialog = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
-            m_Cmd.Printf(_T("x/%dxb %s"), dialog->GetBytes(), dialog->GetBaseAddress().c_str());
+            const wxString &address = CleanStringValue(dialog->GetBaseAddress());
+            m_Cmd.Printf(_T("x/%dxb %s"), dialog->GetBytes(), address.c_str());
         }
         void ParseOutput(const wxString& output)
         {

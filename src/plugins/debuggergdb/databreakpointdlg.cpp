@@ -8,6 +8,7 @@
  */
 
 #include "databreakpointdlg.h"
+#include "debugger_defs.h"
 
 //(*InternalHeaders(DataBreakpointDlg)
 #include <wx/intl.h>
@@ -81,5 +82,5 @@ int DataBreakpointDlg::GetSelection()
 
 wxString DataBreakpointDlg::GetDataExpression() const
 {
-    return m_dataExpression->GetValue();
+    return CleanStringValue(m_dataExpression->GetValue());
 }

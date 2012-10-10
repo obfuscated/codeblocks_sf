@@ -1013,13 +1013,14 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 
 void DebuggerGDB::SendCommand(const wxString& cmd, bool debugLog)
 {
+    const wxString &cleandCmd = CleanStringValue(cmd);
     if (!debugLog)
-        Log(_T("> ") + cmd);
+        Log(_T("> ") + cleandCmd);
 
     if (debugLog)
-        DoSendCommand(cmd);
+        DoSendCommand(cleandCmd);
     else if (m_State.HasDriver())
-        m_State.GetDriver()->QueueCommand(new DebuggerCmd(m_State.GetDriver(), cmd, true));
+        m_State.GetDriver()->QueueCommand(new DebuggerCmd(m_State.GetDriver(), cleandCmd, true));
 }
 
 void DebuggerGDB::DoSendCommand(const wxString& cmd)
@@ -1992,7 +1993,7 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
 
 cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
 {
-    cb::shared_ptr<GDBWatch> watch(new GDBWatch(symbol));
+    cb::shared_ptr<GDBWatch> watch(new GDBWatch(CleanStringValue(symbol)));
     m_watches.push_back(watch);
 
     if (m_pProcess)

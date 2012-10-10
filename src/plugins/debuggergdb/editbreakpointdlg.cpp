@@ -52,7 +52,7 @@ void EditBreakpointDlg::EndModal(int retCode)
         m_breakpoint.useIgnoreCount = XRCCTRL(*this, "chkIgnore", wxCheckBox)->IsChecked();
         m_breakpoint.ignoreCount = XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->GetValue();
         m_breakpoint.useCondition = XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked();
-        m_breakpoint.condition = XRCCTRL(*this, "txtExpr", wxTextCtrl)->GetValue();
+        m_breakpoint.condition = CleanStringValue(XRCCTRL(*this, "txtExpr", wxTextCtrl)->GetValue());
     }
     wxScrollingDialog::EndModal(retCode);
 }
