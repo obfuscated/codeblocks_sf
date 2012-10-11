@@ -141,7 +141,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             TiXmlElement* dep = proj->FirstChildElement("Depends");
             while (dep)
             {
-                wxFileName fname(UnixFilename(cbC2U(dep->Attribute("filename"))));
+                wxFileName fname( UnixFilename(cbC2U(dep->Attribute("filename"))) );
                 wxFileName wfname(filename);
                 fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 cbProject* depprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
@@ -154,13 +154,6 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     }
 
     return true;
-}
-
-static wxString ExportFilename(const wxFileName &filename)
-{
-    wxString fn = filename.GetFullPath();
-    fn.Replace(_T("\\"), _T("/"), true);
-    return fn;
 }
 
 bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
@@ -187,7 +180,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
         TiXmlElement* node = static_cast<TiXmlElement*>(wksp->InsertEndChild(TiXmlElement("Project")));
-        node->SetAttribute("filename", cbU2C( ExportFilename(fname) ) );
+        node->SetAttribute("filename", cbU2C( UnixFilename(fname.GetFullPath(), wxPATH_UNIX) ) );
 
         const ProjectsArray* deps = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
         if (deps && deps->GetCount())
@@ -198,7 +191,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
                 fname.Assign(prj->GetFilename());
                 fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 TiXmlElement* dnode = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Depends")));
-                dnode->SetAttribute("filename", cbU2C( ExportFilename(fname) ) );
+                dnode->SetAttribute("filename", cbU2C( UnixFilename(fname.GetFullPath(), wxPATH_UNIX) ) );
             }
         }
     }
@@ -229,7 +222,7 @@ bool WorkspaceLoader::SaveLayout(const wxString& filename)
         wxFileName wfname(filename);
         wxFileName fname( project->GetFilename() );
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
-        el->SetAttribute("path", cbU2C( ExportFilename(fname) ) );
+        el->SetAttribute("path", cbU2C( UnixFilename(fname.GetFullPath(), wxPATH_UNIX) ) );
     }
     // else Workspace has no active project?!
 

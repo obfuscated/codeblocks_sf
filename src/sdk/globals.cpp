@@ -209,6 +209,7 @@ void AppendArray(const wxArrayString& from, wxArrayString& to)
 wxString UnixFilename(const wxString& filename, wxPathFormat format)
 {
     wxString result = filename;
+
     if (format == wxPATH_NATIVE)
     {
         if (platform::windows)
@@ -216,9 +217,11 @@ wxString UnixFilename(const wxString& filename, wxPathFormat format)
         else
             format = wxPATH_UNIX;
     }
-    if (format == wxPATH_WIN) // wxPATH_WIN == wxPATH_DOS == wxPATH_OS2
+
+    // Unc-names always override platform specific settings otherwise they become corrupted
+    bool unc_name = result.StartsWith(_T("\\\\"));
+    if (format == wxPATH_WIN || unc_name) // wxPATH_WIN == wxPATH_DOS == wxPATH_OS2
     {
-        bool unc_name = result.StartsWith(_T("\\\\"));
         result.Replace(wxT("/"), wxT("\\"));
         while (result.Replace(wxT("\\\\"), wxT("\\")))
             ; // loop for recursive removal of duplicate slashes
