@@ -177,7 +177,7 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
             {
                 memset(buf, 0, 16384);
                 fread(buf, 16383, 1, svn);
-                int ret = pclose(svn);
+                ret = pclose(svn);
                 if (!WIFEXITED(ret) || (WEXITSTATUS(ret) != 0))
                     return true;
             }
