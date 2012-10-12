@@ -9,7 +9,8 @@ pluginlib_LTLIBRARIES = libHDLSmartIndent.la \
 			libCppSmartIndent.la \
 			libPythonSmartIndent.la \
 			libLuaSmartIndent.la \
-			libFortranSmartIndent.la
+			libFortranSmartIndent.la \
+			libXMLSmartIndent.la
 
 libHDLSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
