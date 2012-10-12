@@ -7,13 +7,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="CppSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\CppSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/CppSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -28,13 +28,13 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="HDLSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\HDLSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/HDLSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns -nd" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -49,13 +49,13 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="PascalSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\PascalSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/PascalSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -70,13 +70,13 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="PythonSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\PythonSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/PythonSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -91,13 +91,13 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="LuaSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\LuaSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/LuaSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns -nd" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -112,13 +112,13 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="FortranSmartIndent">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\FortranSmartIndent" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SmartIndent" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/FortranSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns -nd" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
@@ -132,13 +132,34 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
+			<Target title="XMLSmartIndent">
+				<Option output="../../../devel/share/CodeBlocks/plugins/XMLSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log" />
+				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add directory="." />
+				</Compiler>
+				<ExtraCommands>
+					<Add after="cmd.exe /c copy /Y xmlmanifest.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\XMLSmartIndent.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="CppSmartIndent;HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;" />
+			<Add alias="All" targets="CppSmartIndent;HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;XMLSmartIndent;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-pipe" />
@@ -154,16 +175,16 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DNOPCH" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#wx.include)" />
-			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="..\..\..\devel" />
-			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="../../../devel" />
+			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="CppSmartIndent.cpp">
 			<Option target="CppSmartIndent" />
@@ -201,6 +222,12 @@
 		<Unit filename="PythonSmartIndent.h">
 			<Option target="PythonSmartIndent" />
 		</Unit>
+		<Unit filename="XMLSmartIndent.cpp">
+			<Option target="XMLSmartIndent" />
+		</Unit>
+		<Unit filename="XMLSmartIndent.h">
+			<Option target="XMLSmartIndent" />
+		</Unit>
 		<Unit filename="cppmanifest.xml">
 			<Option target="CppSmartIndent" />
 		</Unit>
@@ -218,6 +245,9 @@
 		</Unit>
 		<Unit filename="pythonmanifest.xml">
 			<Option target="PythonSmartIndent" />
+		</Unit>
+		<Unit filename="xmlmanifest.xml">
+			<Option target="XMLSmartIndent" />
 		</Unit>
 		<Extensions>
 			<code_completion />

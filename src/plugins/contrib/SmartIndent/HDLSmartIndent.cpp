@@ -22,7 +22,7 @@ void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language
-    // if it is not a CharAdded event or the language is not python return
+    // if it is not a CharAdded event or the language is neither VHDL nor Verilog return
 
     if (!ed)
         return;

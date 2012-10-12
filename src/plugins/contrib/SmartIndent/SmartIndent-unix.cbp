@@ -126,9 +126,29 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
+			<Target title="XMLSmartIndent">
+				<Option output="../../../devel/share/codeblocks/plugins/XMLSmartIndent" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add directory="." />
+				</Compiler>
+				<ExtraCommands>
+					<Add after="cp xmlmanifest.xml ./manifest.xml" />
+					<Add after="zip -j9 ../../../devel/share/codeblocks/XMLSmartIndent.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="CppSmartIndent;HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;" />
+			<Add alias="All" targets="HDLSmartIndent;PascalSmartIndent;CppSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;XMLSmartIndent;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wextra" />
@@ -188,6 +208,12 @@
 		<Unit filename="PythonSmartIndent.h">
 			<Option target="PythonSmartIndent" />
 		</Unit>
+		<Unit filename="XMLSmartIndent.cpp">
+			<Option target="XMLSmartIndent" />
+		</Unit>
+		<Unit filename="XMLSmartIndent.h">
+			<Option target="XMLSmartIndent" />
+		</Unit>
 		<Unit filename="cppmanifest.xml">
 			<Option target="CppSmartIndent" />
 		</Unit>
@@ -205,6 +231,9 @@
 		</Unit>
 		<Unit filename="pythonmanifest.xml">
 			<Option target="PythonSmartIndent" />
+		</Unit>
+		<Unit filename="xmlmanifest.xml">
+			<Option target="XMLSmartIndent" />
 		</Unit>
 		<Extensions>
 			<code_completion />

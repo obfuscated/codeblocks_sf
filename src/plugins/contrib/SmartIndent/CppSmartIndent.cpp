@@ -25,7 +25,7 @@ void CppSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 
     // check if smart indent is enabled
     // check the event type and the currently set language
-    // if it is not a CharAdded event or the language is not python return
+    // if it is not a CharAdded event or the language is not C/C++, D, or Java return
 
     if (!ed)
         return;
@@ -42,14 +42,14 @@ void CppSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         return;
 
     wxString langname = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
-    if ( langname != _T("C/C++") && langname != _T("D") ) return;
+    if ( langname != _T("C/C++") && langname != _T("D") && langname != _T("Java") ) return;
 
     ed->AutoIndentDone(); // we are responsible.
 
     const int pos = stc->GetCurrentPos();
     int currLine = stc->LineFromPosition(pos);
 
-    if ( currLine == 0)
+    if (currLine == 0)
         return;
 
     const wxChar ch = event.GetKey();
@@ -551,6 +551,59 @@ void CppSmartIndent::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
 {
     int pos = control->GetCurrentPos();
     int style = control->GetStyleAt(pos);
+
+    // match preprocessor commands
+    if ( (ch == _T('\n')) || ( (control->GetEOLMode() == wxSCI_EOL_CR) && (ch == _T('\r')) ) )
+    {
+        wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
+        wxRegEx ppElse(wxT("^[ \t]*#[ \t]*el"));
+        wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
+        wxRegEx pp(wxT("^([ \t]*#[ \t]*)[a-z]*([ \t]+([a-zA-Z0-9_]+)|())")); // generic match to extract parts
+        const int ppLine = control->GetCurrentLine() - 1;
+        if (ppIf.Matches(control->GetLine(ppLine)) || ppElse.Matches(control->GetLine(ppLine)))
+        {
+            int depth = 1;
+            for (int i = ppLine + 1; i < control->GetLineCount(); ++i)
+            {
+                if (control->GetLine(i).Find(wxT('#')) != wxNOT_FOUND) // limit testing due to performance cost
+                {
+                    if (ppIf.Matches(control->GetLine(i))) // ignore else's, elif's, ...
+                        ++depth;
+                    else if (ppEnd.Matches(control->GetLine(i)))
+                        --depth;
+                }
+                if (depth == 0)
+                    break;
+            }
+            if (depth > 0)
+            {
+                wxString endIf = wxT("endif");
+                if (pp.Matches(control->GetLine(ppLine)))
+                {
+                    endIf.Prepend(pp.GetMatch(control->GetLine(ppLine), 1));
+                    if (!pp.GetMatch(control->GetLine(ppLine), 3).IsEmpty())
+                        endIf.Append(wxT(" // ") + pp.GetMatch(control->GetLine(ppLine), 3));
+                }
+                else
+                    endIf.Prepend(wxT("#"));
+                switch (control->GetEOLMode())
+                {
+                case wxSCI_EOL_LF:
+                    endIf.Prepend(wxT("\n"));
+                    break;
+                case wxSCI_EOL_CRLF:
+                    endIf.Prepend(wxT("\r\n"));
+                    break;
+                case wxSCI_EOL_CR:
+                    endIf.Prepend(wxT("\r"));
+                    break;
+                }
+                control->InsertText(pos, endIf);
+                return;
+            }
+        }
+    }
+
     if ( control->IsComment(style) || control->IsPreprocessor(style) )
         return;
     if (ch == _T('\'') || ch == _T('"'))

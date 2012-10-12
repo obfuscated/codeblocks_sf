@@ -22,7 +22,7 @@ void PythonSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
 {
     // check if smart indent is enabled
     // check the event type and the currently set language
-    // if it is not a CharAdded event or the language is not python return
+    // if it is not a CharAdded event or the language is not Python return
 
     if (!ed)
         return;
