@@ -156,7 +156,7 @@ This package extends Code::Blocks functionality a great deal with the included p
  * NassiShneiderman
  * Regular expression testbed
  * Reopen last closed editor(s) via menu or hotkey
- * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal)
+ * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal, XML)
  * Spellchecker plugin
  * Symbol table plugin
  * ThreadSearch

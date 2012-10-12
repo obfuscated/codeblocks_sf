@@ -63,12 +63,21 @@ libFortranSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
 
 libFortranSmartIndent_la_SOURCES = FortranSmartIndent.cpp
 
+
+libXMLSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+
+libXMLSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+			../../../sdk/libcodeblocks.la
+
+libXMLSmartIndent_la_SOURCES = XMLSmartIndent.cpp
+
 noinst_HEADERS = HDLSmartIndent.h \
 		PascalSmartIndent.h \
 		CppSmartIndent.h \
 		PythonSmartIndent.h \
 		LuaSmartIndent.h \
-		FortranSmartIndent.h
+		FortranSmartIndent.h \
+		XMLSmartIndent.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		hdlmanifest.xml \
@@ -76,14 +85,16 @@ EXTRA_DIST = 	$(srcdir)/*.cbp \
 		cppmanifest.xml \
 		pythonmanifest.xml \
 		luamanifest.xml \
-		fortranmanifest.xml
+		fortranmanifest.xml \
+		xmlmanifest.xml
 
 pkgdata_DATA = HDLSmartIndent.zip \
 		PascalSmartIndent.zip \
 		CppSmartIndent.zip \
 		PythonSmartIndent.zip \
 		LuaSmartIndent.zip \
-		FortranSmartIndent.zip
+		FortranSmartIndent.zip \
+		XMLSmartIndent.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
@@ -116,4 +127,9 @@ FortranSmartIndent.zip: fortranmanifest.xml
 	PWD=`pwd` cd $(srcdir) && \
 	cp fortranmanifest.xml ./manifest.xml && \
 	zip -R $(PWD)/FortranSmartIndent.zip manifest.xml
+
+XMLSmartIndent.zip: xmlmanifest.xml
+	PWD=`pwd` cd $(srcdir) && \
+	cp xmlmanifest.xml ./manifest.xml && \
+	zip -R $(PWD)/XMLSmartIndent.zip manifest.xml
 
