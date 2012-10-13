@@ -140,6 +140,13 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     ProjectsArray *pa = pm->GetProjects();
     cbProject *active_project = Manager::Get()->GetProjectManager()->GetActiveProject();
 
+    // load search path options
+    XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path"),
+                                                                    (active_project ? active_project->GetBasePath() : wxT(""))));
+    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_mask")));
+    XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_recursive"), false));
+    XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
+
     wxChoice *chProject = XRCCTRL(*this, "chProject", wxChoice);
     wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);
     for(unsigned int i=0;i<pa->size();++i)
@@ -301,6 +308,11 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/regex2"),               XRCCTRL(*this, "chkRegEx2",           wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/scope2"),               XRCCTRL(*this, "rbScope2",            wxRadioBox)->GetSelection());
     cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
+
+    cfg->Write(CONF_GROUP _T("/search_path"),      XRCCTRL(*this, "txtSearchPath",        wxTextCtrl)->GetValue());
+    cfg->Write(CONF_GROUP _T("/search_mask"),      XRCCTRL(*this, "txtSearchMask",        wxTextCtrl)->GetValue());
+    cfg->Write(CONF_GROUP _T("/search_recursive"), XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/search_hidden"),    XRCCTRL(*this, "chkSearchHidden",      wxCheckBox)->GetValue());
 
     if (m_findPage!=0)
         m_findPage->Destroy();
