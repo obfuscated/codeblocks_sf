@@ -41,6 +41,7 @@
 #include "projectloader_hooks.h"
 #include "annoyingdialog.h"
 #include "cbstyledtextctrl.h"
+#include "compilercommandgenerator.h"
 
 #include <cbdebugger_interfaces.h>
 #include "editbreakpointdlg.h"
@@ -778,7 +779,11 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
             wxString newLibPath;
             const wxString libPathSep = platform::windows ? _T(";") : _T(":");
             newLibPath << _T(".") << libPathSep;
-            newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
+
+            CompilerCommandGenerator *generator = actualCompiler->GetCommandGenerator(m_pProject);
+            newLibPath << GetStringFromArray(generator->GetLinkerSearchDirs(target), libPathSep);
+            delete generator;
+
             if (newLibPath.Mid(newLibPath.Length() - 1, 1) != libPathSep)
                 newLibPath << libPathSep;
             newLibPath << oldLibPath;

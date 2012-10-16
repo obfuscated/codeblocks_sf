@@ -43,9 +43,11 @@ Compiler * CompilerOW::CreateCopy()
     return c;
 }
 
-CompilerCommandGenerator* CompilerOW::GetCommandGenerator()
+CompilerCommandGenerator* CompilerOW::GetCommandGenerator(cbProject *project)
 {
-    return new CompilerOWGenerator;
+    CompilerOWGenerator *generator = new CompilerOWGenerator;
+    generator->Init(project);
+    return generator;
 }
 
 void CompilerOW::Reset()

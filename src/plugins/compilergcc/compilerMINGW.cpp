@@ -46,9 +46,11 @@ Compiler * CompilerMINGW::CreateCopy()
     return c;
 }
 
-CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator()
+CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator(cbProject *project)
 {
-    return new CompilerMINGWGenerator;
+    CompilerMINGWGenerator *generator = new CompilerMINGWGenerator;
+    generator->Init(project);
+    return generator;
 }
 
 void CompilerMINGW::Reset()

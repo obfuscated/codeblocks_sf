@@ -36,6 +36,7 @@
 #include <wx/tokenzr.h>
 
 #include <cbstyledtextctrl.h>
+#include <compilercommandgenerator.h>
 #include <projectloader_hooks.h>
 
 #include "nativeparser.h"
@@ -1918,9 +1919,8 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     // ...so we can access post-processed project's search dirs
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
 
-    // so we can access post-processed project's search dirs
-    if (compiler)
-        compiler->Init(project);
+    cb::shared_ptr<CompilerCommandGenerator> generator(compiler->GetCommandGenerator(project));
+    generator->Init(project);
 
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
@@ -1952,9 +1952,9 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
             if (compiler)
             {
                 // post-processed search dirs (from build scripts)
-                for (unsigned int ti = 0; ti < compiler->GetCompilerSearchDirs(target).GetCount(); ++ti)
+                for (unsigned int ti = 0; ti < generator->GetCompilerSearchDirs(target).GetCount(); ++ti)
                 {
-                    wxString out = compiler->GetCompilerSearchDirs(target)[ti];
+                    wxString out = generator->GetCompilerSearchDirs(target)[ti];
                     wxFileName dir(out);
                     if ( NormalizePath(dir, base) )
                     {

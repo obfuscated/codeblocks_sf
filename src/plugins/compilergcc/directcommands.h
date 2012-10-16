@@ -4,12 +4,14 @@
 #include <wx/string.h>
 #include <wx/hashmap.h>
 
+
 #define COMPILER_SIMPLE_LOG     _T("SLOG:")
 #define COMPILER_TARGET_CHANGE  _T("TGT:")
 #define COMPILER_WAIT           _T("WAIT")
 #define COMPILER_WAIT_LINK      _T("LINK")
 
 // forward decls
+class CompilerCommandGenerator;
 class CompilerGCC;
 class Compiler;
 class cbProject;
@@ -21,6 +23,8 @@ WX_DEFINE_ARRAY(ProjectFile*, MyFilesArray); // keep our own copy, to sort it by
 
 class DirectCommands
 {
+        DirectCommands(DirectCommands &);
+        DirectCommands& operator=(DirectCommands &);
     public:
         DirectCommands(CompilerGCC* compilerPlugin,
                         Compiler* compiler,
@@ -53,6 +57,7 @@ class DirectCommands
         Compiler* m_pCompiler;
         cbProject* m_pProject;
         ProjectBuildTarget* m_pCurrTarget; // temp
+        CompilerCommandGenerator *m_pGenerator;
     private:
 };
 

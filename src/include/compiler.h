@@ -278,40 +278,6 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Set the array of regexes used in errors/warnings recognition */
         virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
-        /** Initialize for use with the specified @c project.
-          * Transfers the call to the generator returned by GetCommandGenerator()*/
-        virtual void Init(cbProject* project);
-
-        /** Get the command line to compile/link the specific file.
-          * Transfers the call to the generator returned by GetCommandGenerator()*/
-        virtual void GenerateCommandLine(wxString& macro,
-                                        ProjectBuildTarget* target,
-                                        ProjectFile* pf,
-                                        const wxString& file,
-                                        const wxString& object,
-                                        const wxString& FlatObject,
-                                        const wxString& deps);
-
-        /** @brief Get the full include dirs used in the actual command line.
-          *
-          * These are the actual include dirs that will be used for building
-          * and might be different than target->GetIncludeDirs(). This is
-          * because it's the sum of target include dirs + project include dirs +
-          * build-script include dirs.
-          * @note This is only valid after Init() has been called.
-          */
-        virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
-
-        /** @brief Get the full linker dirs used in the actual command line.
-          *
-          * These are the actual linker dirs that will be used for building
-          * and might be different than target->GetLibDirs(). This is
-          * because it's the sum of target linker dirs + project linker dirs +
-          * build-script linker dirs.
-          * @note This is only valid after Init() has been called.
-          */
-        virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
-
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
         /** @brief Load settings */
@@ -339,14 +305,14 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
         /** @brief Get the compiler version string */
         const wxString GetVersionString() const { return m_VersionString; };
-    protected:
-        friend class CompilerFactory;
-        Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 
         /** This is to be overridden, if compiler needs to alter the default
           * command line generation.
           */
-        virtual CompilerCommandGenerator* GetCommandGenerator();
+        virtual CompilerCommandGenerator* GetCommandGenerator(cbProject *project);
+    protected:
+        friend class CompilerFactory;
+        Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 
         /** @brief Implement this in new compilers, to return a new copy */
         virtual Compiler* CreateCopy() = 0;
@@ -376,7 +342,6 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_ID;
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
         static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
-        CompilerCommandGenerator* m_pGenerator;
         bool m_Valid; // 'valid' flag
         bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
 

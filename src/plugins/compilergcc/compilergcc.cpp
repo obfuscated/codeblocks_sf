@@ -32,6 +32,7 @@
 #include <sdk_events.h>
 #include <pipedprocess.h>
 #include <configmanager.h>
+#include <compilercommandgenerator.h>
 #include <debuggermanager.h>
 #include <logmanager.h>
 #include <macrosmanager.h>
@@ -1880,12 +1881,15 @@ wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
     Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
     if (compiler)
     {
+        CompilerCommandGenerator *generator = compiler->GetCommandGenerator(m_pProject);
         wxString libPath;
         const wxString libPathSep = platform::windows ? _T(";") : _T(":");
         libPath << _T(".") << libPathSep;
-        libPath << GetStringFromArray(compiler->GetLinkerSearchDirs(target), libPathSep);
+        libPath << GetStringFromArray(generator->GetLinkerSearchDirs(target), libPathSep);
         if (!libPath.IsEmpty() && libPath.Mid(libPath.Length() - 1, 1) == libPathSep)
             libPath.Truncate(libPath.Length() - 1);
+
+        delete generator;
         return libPath;
     }
     return wxEmptyString;
@@ -1966,10 +1970,6 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 
     if (m_pProject)
         wxSetWorkingDirectory(m_pProject->GetBasePath());
-
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-    if (compiler)
-        compiler->Init(m_pProject);
 
     if ( UseMake() )
     {
@@ -2165,27 +2165,13 @@ void CompilerGCC::BuildStateManagement()
         if (bt)
             SwitchCompiler(bt->GetCompilerID());
 
-        // avoid calling Compiler::Init() twice below, if it is the same compiler
-        Compiler* initCompiler = 0;
-
         if (m_pBuildingProject != m_pLastBuildingProject)
         {
             m_pLastBuildingProject = m_pBuildingProject;
             wxSetWorkingDirectory(m_pBuildingProject->GetBasePath());
-            initCompiler = CompilerFactory::GetCompiler(m_CompilerId);
-            if (initCompiler)
-                initCompiler->Init(m_pBuildingProject);
         }
         if (bt != m_pLastBuildingTarget)
-        {
-            // check if we 're switching compilers, now that we 're switching targets
-            // if so, we must Init() the target's compiler...
-            Compiler* last = m_pLastBuildingTarget ? CompilerFactory::GetCompiler(m_pLastBuildingTarget->GetCompilerID()) : 0;
-            Compiler* curr = bt ? CompilerFactory::GetCompiler(bt->GetCompilerID()) : 0;
-            if (curr && last != curr && curr != initCompiler)
-                curr->Init(m_pBuildingProject);
             m_pLastBuildingTarget = bt;
-        }
     }
 
     m_pBuildingProject->SetCurrentlyCompilingTarget(bt);
@@ -2821,8 +2807,6 @@ int CompilerGCC::CompileFileWithoutProject(const wxString& file)
     Manager::Get()->GetMacrosManager()->Reset();
 
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
-    if (compiler)
-        compiler->Init(0);
 
     // get compile commands for file (always linked as console-executable)
     DirectCommands dc(this, compiler, 0, m_PageIndex);
@@ -2835,8 +2819,6 @@ int CompilerGCC::CompileFileWithoutProject(const wxString& file)
 int CompilerGCC::CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt)
 {
     Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
-    if (compiler)
-        compiler->Init(project);
 
     DirectCommands dc(this, compiler, project, m_PageIndex);
     wxArrayString compile = dc.CompileFile(bt, pf);
