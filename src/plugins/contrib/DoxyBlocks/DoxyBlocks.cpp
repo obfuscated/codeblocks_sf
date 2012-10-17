@@ -58,8 +58,24 @@ namespace
 // events handling
 BEGIN_EVENT_TABLE(DoxyBlocks, cbPlugin)
     // add any events you want to handle here
-    EVT_UPDATE_UI_RANGE(ID_TB_WIZARD, ID_MENU_CONFIG,    DoxyBlocks::OnUpdateUI)
-    EVT_TEXT_URL(ID_LOG_DOXYBLOCKS,                      DoxyBlocks::OnTextURL)
+    EVT_UPDATE_UI(ID_TB_WIZARD,           DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_EXTRACTPROJECT,   DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_BLOCKCOMMENT,     DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_LINECOMMENT,      DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_RUNHTML,          DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_RUNCHM,           DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_TB_CONFIG,           DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_DOXYBLOCKS,     DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_EXTRACTPROJECT, DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_BLOCKCOMMENT,   DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_LINECOMMENT,    DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_RUNHTML,        DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_RUNCHM,         DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_CONFIG,         DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_SAVE_TEMPLATE,  DoxyBlocks::OnUpdateUI)
+    EVT_UPDATE_UI(ID_MENU_LOAD_TEMPLATE,  DoxyBlocks::OnUpdateUI)
+
+    EVT_TEXT_URL(ID_LOG_DOXYBLOCKS, DoxyBlocks::OnTextURL)
 END_EVENT_TABLE()
 
 // constructor
@@ -319,6 +335,11 @@ cbConfigurationPanel* DoxyBlocks::GetProjectConfigurationPanel(wxWindow* /*paren
     return 0;
 }
 
+void DoxyBlocks::Configure(wxCommandEvent & WXUNUSED(event))
+{
+    Configure();
+}
+
 int DoxyBlocks::Configure()
 {
     //create and display the configuration dialog for your plugin
@@ -447,15 +468,15 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
         MenuItemSaveTemplate->SetBitmap(wxBitmap(sDataFolder + wxT("/images/16x16/filesave.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemSaveTemplate);
 
-        Connect(ID_MENU_DOXYWIZARD, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunDoxywizard);
-        Connect(ID_MENU_EXTRACTPROJECT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::ExtractProject);
-        Connect(ID_MENU_BLOCKCOMMENT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::BlockComment);
-        Connect(ID_MENU_LINECOMMENT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::LineComment);
-        Connect(ID_MENU_RUNHTML, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunHTML);
-        Connect(ID_MENU_RUNCHM, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunCHM);
-        Connect(ID_MENU_CONFIG, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::Configure);
-        Connect(ID_MENU_LOAD_TEMPLATE, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::ReadPrefsTemplate);
-        Connect(ID_MENU_SAVE_TEMPLATE, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::WritePrefsTemplate);
+        Connect(ID_MENU_DOXYWIZARD,     wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunDoxywizard));
+        Connect(ID_MENU_EXTRACTPROJECT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::ExtractProject));
+        Connect(ID_MENU_BLOCKCOMMENT,   wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::BlockComment));
+        Connect(ID_MENU_LINECOMMENT,    wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::LineComment));
+        Connect(ID_MENU_RUNHTML,        wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunHTML));
+        Connect(ID_MENU_RUNCHM,         wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunCHM));
+        Connect(ID_MENU_CONFIG,         wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::Configure));
+        Connect(ID_MENU_LOAD_TEMPLATE,  wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::ReadPrefsTemplate));
+        Connect(ID_MENU_SAVE_TEMPLATE,  wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::WritePrefsTemplate));
 
         menuBar->Insert(idx + 1, submenu, wxT("Do&xyBlocks"));
     }
@@ -518,13 +539,13 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
     m_pToolbar->SetBestFittingSize();
 #endif
 
-    Connect(ID_TB_WIZARD, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunDoxywizard);
-    Connect(ID_TB_EXTRACTPROJECT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::ExtractProject);
-    Connect(ID_TB_BLOCKCOMMENT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::BlockComment);
-    Connect(ID_TB_LINECOMMENT, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::LineComment);
-    Connect(ID_TB_RUNHTML, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunHTML);
-    Connect(ID_TB_RUNCHM, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::RunCHM);
-    Connect(ID_TB_CONFIG, wxEVT_COMMAND_TOOL_CLICKED, (wxObjectEventFunction)&DoxyBlocks::Configure);
+    Connect(ID_TB_WIZARD,         wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunDoxywizard));
+    Connect(ID_TB_EXTRACTPROJECT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::ExtractProject));
+    Connect(ID_TB_BLOCKCOMMENT,   wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::BlockComment));
+    Connect(ID_TB_LINECOMMENT,    wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::LineComment));
+    Connect(ID_TB_RUNHTML,        wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunHTML));
+    Connect(ID_TB_RUNCHM,         wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::RunCHM));
+    Connect(ID_TB_CONFIG,         wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(DoxyBlocks::Configure));
 
     return true;
 }
@@ -533,7 +554,16 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
  *
  * \return    bool    true on success, otherwise false.
  */
-bool DoxyBlocks::RunDoxywizard(void)
+void DoxyBlocks::RunDoxywizard(wxCommandEvent & WXUNUSED(event))
+{
+    DoRunDoxywizard();
+}
+
+/*! \brief Run doxywizard. Load the project's doxyfile, if one exists.
+ *
+ * \return    bool    true on success, otherwise false.
+ */
+bool DoxyBlocks::DoRunDoxywizard()
 {
     if(!IsProjectOpen()){
         return false;
@@ -578,7 +608,7 @@ bool DoxyBlocks::RunDoxywizard(void)
 /*! \brief Append a message to DoxyBlocks' log window.
  *
  * \param    sText           wxString&    The text to display.
- * \param    flag            int          A flag controlling the entry's style. Defaults to LOG_NORMAL.
+ * \param    flag            eLogLevel    A flag controlling the entry's style. Defaults to LOG_NORMAL.
  * \param    bReturnFocus    bool         Whether to return the focus to the editor window after logging.
  *
  * The style flags are:
@@ -586,7 +616,7 @@ bool DoxyBlocks::RunDoxywizard(void)
  *     \li LOG_WARNING    - italic text
  *     \li LOG_ERROR      - bold red text
  */
-void DoxyBlocks::AppendToLog(const wxString &sText, int flag /*  = LOG_NORMAL */, bool bReturnFocus /* = true */) const
+void DoxyBlocks::AppendToLog(const wxString &sText, eLogLevel flag /*  = LOG_NORMAL */, bool bReturnFocus /* = true */) const
 {
     if(LogManager *LogMan = Manager::Get()->GetLogManager()){
         CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_DoxyBlocksLog);
@@ -632,11 +662,16 @@ bool DoxyBlocks::IsProjectOpen() const
     return true;
 }
 
+void DoxyBlocks::RunHTML(wxCommandEvent & WXUNUSED(event))
+{
+    DoRunHTML();
+}
+
 /*! \brief Run the HTML documentation.
  *
  * This function checks configuration settings and either runs the HTML in the internal viewer or the default browser.
  */
-void DoxyBlocks::RunHTML()
+void DoxyBlocks::DoRunHTML()
 {
     if(!IsProjectOpen()){
         return;
@@ -676,12 +711,16 @@ void DoxyBlocks::RunHTML()
     }
 }
 
+void DoxyBlocks::RunCHM(wxCommandEvent & WXUNUSED(event))
+{
+    DoRunCHM();
+}
+
 /*! \brief Get parameters and call RunCompiledHelp() to run the Compiled Help documentation.
  */
-void DoxyBlocks::RunCHM()
+void DoxyBlocks::DoRunCHM()
 {
-    if(!IsProjectOpen())
-    {
+    if(!IsProjectOpen()){
         return;
     }
 
@@ -984,7 +1023,7 @@ void DoxyBlocks::LoadSettings()
             // If the DoxyBlocks entry doesn't exist in the project file and "Load Settings Template If No Saved Settings Exist" is set,
             // try loading saved template settings.
             if(cfg->ReadBool(wxT("doxyblocks/load_template"))){
-                ReadPrefsTemplate();
+                DoReadPrefsTemplate();
             }
         }
     }
@@ -1205,12 +1244,17 @@ void DoxyBlocks::OnTextURL(wxTextUrlEvent& event)
     }
 }
 
+void DoxyBlocks::WritePrefsTemplate(wxCommandEvent & WXUNUSED(event))
+{
+    DoWritePrefsTemplate();
+}
+
 /*! \brief Write the settings template.
  *
  * \return void
  *
  */
-void DoxyBlocks::WritePrefsTemplate()
+void DoxyBlocks::DoWritePrefsTemplate()
 {
     if(m_pConfig->WritePrefsTemplate()){
         AppendToLog(_("Settings template saved."));
@@ -1220,12 +1264,17 @@ void DoxyBlocks::WritePrefsTemplate()
     }
 }
 
+void DoxyBlocks::ReadPrefsTemplate(wxCommandEvent & WXUNUSED(event))
+{
+    DoReadPrefsTemplate();
+}
+
 /*! \brief Read the settings template.
  *
  * \return void
  *
  */
-void DoxyBlocks::ReadPrefsTemplate()
+void DoxyBlocks::DoReadPrefsTemplate()
 {
     if(m_pConfig->ReadPrefsTemplate()){
         AppendToLog(_("Settings template loaded."));

@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="DoxyBlocks">
         <Value title="DoxyBlocks" />
-        <Value version="1.7.658" />
+        <Value version="1.7.659" />
         <Value description="
 Doxygen integration for Code::Blocks.
 Supported doxygen version: 1.7.3" />

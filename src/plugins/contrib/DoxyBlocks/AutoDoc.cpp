@@ -33,9 +33,14 @@
 #include "DoxyBlocks.h"
 #include "Expressions.h"
 
+void DoxyBlocks::BlockComment(wxCommandEvent & WXUNUSED(event))
+{
+  DoBlockComment();
+}
+
 /*! \brief Insert a comment block at the current line.
  */
-void DoxyBlocks::BlockComment(void)
+void DoxyBlocks::DoBlockComment()
 {
     if(!IsProjectOpen()){
         return;
@@ -131,9 +136,14 @@ void DoxyBlocks::BlockComment(void)
     control->EndUndoAction();
 }
 
+void DoxyBlocks::LineComment(wxCommandEvent & WXUNUSED(event))
+{
+  DoLineComment();
+}
+
 /*! \brief Insert an inline comment at the current cursor position.
  */
-void DoxyBlocks::LineComment(void)
+void DoxyBlocks::DoLineComment()
 {
     if(!IsProjectOpen()){
         return;

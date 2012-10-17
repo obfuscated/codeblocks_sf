@@ -31,36 +31,24 @@
 
 /*! \brief Toolbar control IDs
  */
-enum eControlIds
-{
-    ID_TB_WIZARD = wxID_HIGHEST + 9000,
-    ID_TB_EXTRACTPROJECT,
-    ID_TB_BLOCKCOMMENT,
-    ID_TB_LINECOMMENT,
-    ID_TB_RUNHTML,
-    ID_TB_RUNCHM,
-    ID_TB_CONFIG,
+const long ID_TB_WIZARD           = wxNewId();
+const long ID_TB_EXTRACTPROJECT   = wxNewId();
+const long ID_TB_BLOCKCOMMENT     = wxNewId();
+const long ID_TB_LINECOMMENT      = wxNewId();
+const long ID_TB_RUNHTML          = wxNewId();
+const long ID_TB_RUNCHM           = wxNewId();
+const long ID_TB_CONFIG           = wxNewId();
 
-    ID_MENU_DOXYBLOCKS,
-    ID_MENU_DOXYWIZARD,
-    ID_MENU_EXTRACTPROJECT,
-    ID_MENU_BLOCKCOMMENT,
-    ID_MENU_LINECOMMENT,
-    ID_MENU_RUNHTML,
-    ID_MENU_RUNCHM,
-    ID_MENU_CONFIG,
-    ID_MENU_SAVE_TEMPLATE,
-    ID_MENU_LOAD_TEMPLATE
-};
-
-/*! \brief Log entry style IDs
- */
-enum eLogStatusIds
-{
-    LOG_NORMAL = wxID_HIGHEST + 9050, //!< A normal message.
-    LOG_WARNING,                      //!< A warning message.
-    LOG_ERROR                         //!< An error message.
-};
+const long ID_MENU_DOXYBLOCKS     = wxNewId();
+const long ID_MENU_DOXYWIZARD     = wxNewId();
+const long ID_MENU_EXTRACTPROJECT = wxNewId();
+const long ID_MENU_BLOCKCOMMENT   = wxNewId();
+const long ID_MENU_LINECOMMENT    = wxNewId();
+const long ID_MENU_RUNHTML        = wxNewId();
+const long ID_MENU_RUNCHM         = wxNewId();
+const long ID_MENU_CONFIG         = wxNewId();
+const long ID_MENU_SAVE_TEMPLATE  = wxNewId();
+const long ID_MENU_LOAD_TEMPLATE  = wxNewId();
 
 // Forward declarations.
 class ConfigPanel;
@@ -71,8 +59,18 @@ class DoxyBlocksLogger;
 class DoxyBlocks : public cbPlugin
 {
     public:
+        /*! \brief Log entry style IDs
+         */
+        enum eLogLevel
+        {
+            LOG_NORMAL,  //!< A normal message.
+            LOG_WARNING, //!< A warning message.
+            LOG_ERROR    //!< An error message.
+        };
+
         /** Constructor. */
         DoxyBlocks();
+
         /** Destructor. */
         virtual ~DoxyBlocks();
 
@@ -175,20 +173,31 @@ class DoxyBlocks : public cbPlugin
           */
         virtual void OnRelease(bool appShutDown);
 
+        void RunDoxywizard(wxCommandEvent & event);
+        void BlockComment(wxCommandEvent & event);
+        void LineComment(wxCommandEvent & event);
+        void ExtractProject(wxCommandEvent & event);
+        void RunHTML(wxCommandEvent & event);
+        void RunCHM(wxCommandEvent & event);
+
+        void Configure(wxCommandEvent & event);
+        void ReadPrefsTemplate(wxCommandEvent & event);
+        void WritePrefsTemplate(wxCommandEvent & event);
 
     private:
-        bool RunDoxywizard(void);
-        void BlockComment(void);
-        void LineComment(void);
+        bool DoRunDoxywizard();
+        void DoBlockComment();
+        void DoLineComment();
         // Extract docs.
-        void ExtractProject();
+        void DoExtractProject();
+
         void WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString sPrjPath, wxString sDoxygenDir, wxFileName fnDoxyfile, wxFileName fnDoxygenLog);
         int GenerateDocuments(cbProject *prj);
-        void AppendToLog(const wxString& sText, int flag = LOG_NORMAL, bool bReturnFocus = true) const;
+        void AppendToLog(const wxString& sText, eLogLevel flag = LOG_NORMAL, bool bReturnFocus = true) const;
         bool IsProjectOpen() const;
         wxString GetInputList(cbProject *prj, wxFileName fnDoxyfile);
-        void RunHTML();
-        void RunCHM();
+        void DoRunHTML();
+        void DoRunCHM();
         void RunCompiledHelp(wxString sDocPath, wxString sPrjName);
         wxString GetDocPath() const;
         wxString GetProjectName();
@@ -211,8 +220,8 @@ class DoxyBlocks : public cbPlugin
         void LoadSettings();
         void SaveSettings();
         wxString ValidateRelativePath(wxString path);
-        void ReadPrefsTemplate();
-        void WritePrefsTemplate();
+        void DoReadPrefsTemplate();
+        void DoWritePrefsTemplate();
 
         wxToolBar               *m_pToolbar;       //!< The plug-in toolbar.
         DoxyBlocksLogger        *m_DoxyBlocksLog;  //!< The log tab in the message pane.

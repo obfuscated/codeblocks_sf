@@ -30,7 +30,7 @@ class wxBoxSizer;
 class wxPanel;
 class wxWindow;
 
-const int ID_LOG_DOXYBLOCKS =  wxID_HIGHEST + 9060; //!< The all-important control ID.
+const long ID_LOG_DOXYBLOCKS = wxNewId(); //!< The all-important control ID.
 
 /*! \brief DoxyBlocks log window class.
  *

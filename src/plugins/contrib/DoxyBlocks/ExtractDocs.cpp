@@ -47,9 +47,14 @@
 #include "DoxyBlocks.h"
 
 
+void DoxyBlocks::ExtractProject(wxCommandEvent & WXUNUSED(event))
+{
+    DoExtractProject();
+}
+
 /*! \brief Extract and compile documentation for the currently active project.
  */
-void DoxyBlocks::ExtractProject()
+void DoxyBlocks::DoExtractProject()
 {
     if(!IsProjectOpen()){
         return;
@@ -595,7 +600,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
         if(m_pConfig->GetGenerateHTML()){
             // Open the newly created HTML docs, if prefs allow.
             if(m_pConfig->GetRunHTML()){
-                RunHTML();
+                DoRunHTML();
             }
             if(m_pConfig->GetGenerateHTMLHelp()){
                 // Open the newly created CHM if prefs allow.
