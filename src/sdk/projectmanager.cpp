@@ -2572,54 +2572,50 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
         return;
     }
 
-    typedef std::vector<ProjectFile*> ProjectFiles;
-    ProjectFiles files;
-    for (size_t proj_index = 0; proj_index < m_pProjects->GetCount(); ++proj_index)
+    typedef std::vector<ProjectFile*> VProjectFiles;
+    VProjectFiles pfiles;
+    for (size_t prjIdx = 0; prjIdx < m_pProjects->GetCount(); ++prjIdx)
     {
-        cbProject *project = (*m_pProjects)[proj_index];
+        cbProject* project = (*m_pProjects)[prjIdx];
+        if (!project) continue;
 
         for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
-            files.push_back(*it);
+            pfiles.push_back(*it);
     }
 
-    if (!files.empty())
+    if (!pfiles.empty())
     {
-        std::sort(files.begin(), files.end(), ProjectFileAbsolutePathCmp());
-        ProjectFiles::iterator last = std::unique(files.begin(), files.end(), ProjectFileAbsolutePathEqual());
+        std::sort(pfiles.begin(), pfiles.end(), ProjectFileAbsolutePathCmp());
+        VProjectFiles::iterator last = std::unique(pfiles.begin(), pfiles.end(), ProjectFileAbsolutePathEqual());
 
-        if (last != files.end())
-        {
-            files.erase(last, files.end());
-        }
+        if (last != pfiles.end())
+            pfiles.erase(last, pfiles.end());
 
-        std::sort(files.begin(), files.end(), ProjectFileRelativePathCmp(m_pActiveProject));
+        std::sort(pfiles.begin(), pfiles.end(), ProjectFileRelativePathCmp(m_pActiveProject));
     }
 
     class Iterator : public IncrementalSelectIterator
     {
         public:
-            Iterator(ProjectFiles &files, bool showProject) : m_Files(files), m_ShowProject(showProject) {}
-            virtual long GetCount() const { return m_Files.size(); }
-            virtual wxString GetItem(long index) const
-            {
-                return m_Files[index]->relativeFilename;
-            }
+            Iterator(VProjectFiles& pfiles, bool showProject) : m_PFiles(pfiles), m_ShowProject(showProject) {}
+            virtual long GetCount() const              { return m_PFiles.size();                    }
+            virtual wxString GetItem(long index) const { return m_PFiles[index]->relativeFilename; }
             virtual wxString GetDisplayItem(long index) const
             {
                 if (m_ShowProject)
                 {
-                    ProjectFile *f = m_Files[index];
+                    ProjectFile *f = m_PFiles[index];
                     return f->relativeFilename + wxT(" (") + f->GetParentProject()->GetTitle() + wxT(")");
                 }
                 else
-                    return m_Files[index]->relativeFilename;
+                    return m_PFiles[index]->relativeFilename;
             }
         private:
-            ProjectFiles &m_Files;
-            bool m_ShowProject;
+            VProjectFiles& m_PFiles;
+            bool           m_ShowProject;
     };
 
-    Iterator iterator(files, m_pProjects->GetCount() > 1);
+    Iterator iterator(pfiles, m_pProjects->GetCount() > 1);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
                                  _("Select file..."), _("Please select file to open:"));
     PlaceWindow(&dlg);
@@ -2627,7 +2623,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
     {
         long selection = dlg.GetSelection();
         if (selection != -1)
-            DoOpenFile(files[selection], files[selection]->file.GetFullPath());
+            DoOpenFile(pfiles[selection], pfiles[selection]->file.GetFullPath());
     }
 }
 
