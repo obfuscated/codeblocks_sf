@@ -103,6 +103,7 @@ class EditorTweaks : public cbPlugin
         void OnEditorDeactivate(CodeBlocksEvent& event);
 
         void OnKeyPress(wxKeyEvent& event);
+        void OnChar(wxKeyEvent& event);
         void OnWordWrap(wxCommandEvent &event);
         void OnShowLineNumbers(wxCommandEvent &event);
         void OnTabChar(wxCommandEvent &event);
@@ -130,6 +131,7 @@ class EditorTweaks : public cbPlugin
 		void OnAlign(wxCommandEvent& event);
 		void OnAlignOthers(wxCommandEvent& event);
 		void OnSuppressInsert(wxCommandEvent& event);
+		void OnConvertBraces(wxCommandEvent& event);
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
 		bool GetSelectionLines(int& LineStart, int& LineEnd);
@@ -139,6 +141,7 @@ class EditorTweaks : public cbPlugin
     private:
         int m_EditorHookId;
         int m_suppress_insert;
+        int m_convert_braces;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
 

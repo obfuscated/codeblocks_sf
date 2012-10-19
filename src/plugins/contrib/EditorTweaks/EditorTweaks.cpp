@@ -67,6 +67,7 @@ int id_et_Unfold4= wxNewId();
 int id_et_Unfold5= wxNewId();
 int id_et_align_others= wxNewId();
 int id_et_SuppressInsertKey= wxNewId();
+int id_et_ConvertBraces= wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -112,6 +113,7 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_Unfold5, EditorTweaks::OnUnfold)
 
     EVT_MENU(id_et_SuppressInsertKey, EditorTweaks::OnSuppressInsert)
+    EVT_MENU(id_et_ConvertBraces, EditorTweaks::OnConvertBraces)
     EVT_MENU(id_et_align_others, EditorTweaks::OnAlignOthers)
 END_EVENT_TABLE()
 
@@ -158,6 +160,7 @@ void EditorTweaks::OnAttach()
         {
             ed->GetControl()->SetOvertype(false);
             ed->GetControl()->Connect(wxEVT_KEY_DOWN,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress,NULL,this);
+            ed->GetControl()->Connect(wxEVT_CHAR,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnChar,NULL,this);
         }
     }
 
@@ -176,6 +179,7 @@ void EditorTweaks::OnAttach()
         Connect(e.id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
     m_suppress_insert=cfg->ReadBool(_("SuppressInsertKey"),false);
+    m_convert_braces=cfg->ReadBool(_("ConvertBraces"),false);
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -188,7 +192,10 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     {
         cbEditor* ed=em->GetBuiltinEditor(i);
         if (ed && ed->GetControl())
+        {
             ed->GetControl()->Disconnect(wxEVT_NULL,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress);
+            ed->GetControl()->Disconnect(wxEVT_NULL,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnChar);
+        }
     }
 
     AlignerMenuEntry e;
@@ -208,6 +215,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
+    cfg->Write(_("ConvertBrace"),m_convert_braces);
 }
 
 cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
@@ -279,6 +287,7 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ), _( "Convert End-of-Line Characters to the Active Setting" ) );
     submenu->AppendSeparator();
     submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"), _("Disable toggle between insert and overwrite mode using the insert key") );
+    submenu->AppendCheckItem( id_et_ConvertBraces, _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
 
 
     wxMenu *foldmenu = 0;
@@ -350,6 +359,7 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_EOLLF,ed->GetControl()->GetEOLMode()==wxSCI_EOL_LF);
     submenu->Check(id_et_ShowEOL,ed->GetControl()->GetViewEOL());
     submenu->Check(id_et_SuppressInsertKey,m_suppress_insert);
+    submenu->Check(id_et_ConvertBraces,m_convert_braces);
 }
 
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
@@ -397,6 +407,7 @@ void EditorTweaks::OnEditorOpen(CodeBlocksEvent& /*event*/)
     {
         ed->GetControl()->SetOvertype(false);
         ed->GetControl()->Connect(wxEVT_KEY_DOWN,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress,NULL,this);
+        ed->GetControl()->Connect(wxEVT_CHAR,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnChar,NULL,this);
     }
 }
 
@@ -418,11 +429,100 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
         event.Skip(false);
     else
         event.Skip(true);
+    if (m_convert_braces && event.GetKeyCode() == WXK_DELETE && (event.GetModifiers()==wxMOD_NONE || event.GetModifiers()==wxMOD_SHIFT))
+    {
+        event.Skip(true);
+        cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (!ed)
+            return;
+        cbStyledTextCtrl *control = ed->GetControl();
+        int start,end;
+        int p = control->GetCurrentPos();
+        int a = control->GetAnchor();
+        if (abs(p-a) != 1)
+            return;
+        int l = a<p? a: p;
+        int m = control->BraceMatch(l);
+        if (m == wxSCI_INVALID_POSITION)
+            return;
+        control->BeginUndoAction();
+        control->DeleteRange(m, 1);
+        if(m<p)
+            p--;
+        if(m<a)
+            a--;
+        control->SetCurrentPos(p);
+        control->SetAnchor(a);
+        control->EndUndoAction();
+    }
+}
+
+void EditorTweaks::OnChar(wxKeyEvent& event)
+{
+    event.Skip(true);
+    wxChar ch = event.GetKeyCode();
+    if (m_convert_braces &&
+            (ch == _T('(') ||
+             ch == _T(')') ||
+             ch == _T('[') ||
+             ch == _T(']') ||
+             ch == _T('{') ||
+             ch == _T('}')
+             ))
+    {
+        event.Skip(true);
+        cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (!ed)
+            return;
+        cbStyledTextCtrl *control = ed->GetControl();
+        int start,end;
+        int p = control->GetCurrentPos();
+        int a = control->GetAnchor();
+        if (abs(p-a) != 1)
+            return;
+        int l = a<p? a: p;
+        wxString opch;
+        switch (ch)
+        {
+            case _T('('):
+                opch = _T(")");
+                break;
+            case _T(')'):
+                opch = _T("(");
+                break;
+            case _T('['):
+                opch = _T("]");
+                break;
+            case _T(']'):
+                opch = _T("[");
+                break;
+            case _T('{'):
+                opch = _T("}");
+                break;
+            case _T('}'):
+                opch = _T("{");
+                break;
+        }
+        int m = control->BraceMatch(l);
+        if (m == wxSCI_INVALID_POSITION)
+            return;
+        control->BeginUndoAction();
+        control->InsertText(m, opch);
+        control->DeleteRange(m+1, 1);
+        control->SetCurrentPos(p);
+        control->SetAnchor(a);
+        control->EndUndoAction();
+    }
 }
 
 void EditorTweaks::OnSuppressInsert(wxCommandEvent& event)
 {
     m_suppress_insert = event.IsChecked();
+}
+
+void EditorTweaks::OnConvertBraces(wxCommandEvent& event)
+{
+    m_convert_braces = event.IsChecked();
 }
 
 //void EditorTweaks::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
