@@ -198,6 +198,8 @@ bool GetNextToken(wxString const &str, int pos, Token &token)
                             return true;
                         }
                     }
+                    else
+                        escape_next = false;
                 }
                 else
                 {

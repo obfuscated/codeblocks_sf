@@ -216,6 +216,14 @@ TEST(StringWithQuotes)
     CHECK_EQUAL(wxT("t= {b=0x3e24e4 \"AAAA,\\\"BBBB\\\",CCCC,DDDDD\"}"), *w);
 }
 
+TEST(StringWithQuotedQuotes)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{<wxStringBase> = {static npos = 18446744073709551615")
+                                wxT(", m_pchData = 0x3106c98 L\"\\\"test\\\"\"}, <No data fields>}")));
+    CHECK_EQUAL(wxT("s= {<wxStringBase>= {static npos=18446744073709551615,m_pchData=0x3106c98 L\"\\\"test\\\"\"},[1]=<No data fields>}"), *w);
+}
+
 TEST(RepeatingChars0)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
