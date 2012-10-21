@@ -436,7 +436,6 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
         if (!ed)
             return;
         cbStyledTextCtrl *control = ed->GetControl();
-        int start,end;
         int p = control->GetCurrentPos();
         int a = control->GetAnchor();
         if (abs(p-a) != 1)
@@ -446,14 +445,21 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
         if (m == wxSCI_INVALID_POSITION)
             return;
         control->BeginUndoAction();
-        control->DeleteRange(m, 1);
-        if(m<p)
-            p--;
-        if(m<a)
-            a--;
-        control->SetCurrentPos(p);
-        control->SetAnchor(a);
+        if(l<m)
+        {
+            control->DeleteRange(m, 1);
+            control->DeleteRange(l, 1);
+        }
+        else
+        {
+            control->DeleteRange(l, 1);
+            control->DeleteRange(m, 1);
+            l--;
+        }
+        control->SetCurrentPos(l);
+        control->SetAnchor(l);
         control->EndUndoAction();
+        event.Skip(false);
     }
 }
 
@@ -466,6 +472,8 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
              ch == _T(')') ||
              ch == _T('[') ||
              ch == _T(']') ||
+             ch == _T('<') ||
+             ch == _T('>') ||
              ch == _T('{') ||
              ch == _T('}')
              ))
@@ -475,7 +483,6 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
         if (!ed)
             return;
         cbStyledTextCtrl *control = ed->GetControl();
-        int start,end;
         int p = control->GetCurrentPos();
         int a = control->GetAnchor();
         if (abs(p-a) != 1)
@@ -496,6 +503,12 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
             case _T(']'):
                 opch = _T("[");
                 break;
+            case _T('<'):
+                opch = _T(">");
+                break;
+            case _T('>'):
+                opch = _T("<");
+                break;
             case _T('{'):
                 opch = _T("}");
                 break;
@@ -507,11 +520,14 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
         if (m == wxSCI_INVALID_POSITION)
             return;
         control->BeginUndoAction();
+        control->InsertText(l, wxString(ch,1));
+        control->DeleteRange(l+1, 1);
         control->InsertText(m, opch);
         control->DeleteRange(m+1, 1);
         control->SetCurrentPos(p);
         control->SetAnchor(a);
         control->EndUndoAction();
+        event.Skip(false);
     }
 }
 
