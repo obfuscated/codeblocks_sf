@@ -215,7 +215,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
-    cfg->Write(_("ConvertBrace"),m_convert_braces);
+    cfg->Write(_("ConvertBraces"),m_convert_braces);
 }
 
 cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
