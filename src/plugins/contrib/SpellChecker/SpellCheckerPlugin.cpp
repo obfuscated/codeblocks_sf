@@ -801,7 +801,7 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
                         --k; // synonym already listed, look for another word
                 }
                 tipLine.RemoveLast(2);
-                if (tipLine.Length() > tipWidth)
+                if (tipLine.Length() > static_cast<size_t>(tipWidth))
                     tipWidth = tipLine.Length();
                 tip << tipLine << wxT("\n");
             }
@@ -818,12 +818,12 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     if (stc->CallTipActive())
         stc->CallTipCancel();
     // calculation from CC
-    int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
+    const int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
                   // pos - lnStart   == distance from start of line
                   //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
                   //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
                   //       horizontal scrolling is accounted for by PointFromPosition().x
-    int offset = tipWidth + pos + 1 - lnStart -
+    const int offset = tipWidth + pos + 1 - lnStart -
                  (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
                   stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
     if (offset > 0)
