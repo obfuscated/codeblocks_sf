@@ -202,7 +202,7 @@ public:
      * @param items array to store result in.
      * @param typedCommas how much comma characters the user has typed in the current line before the cursor.
      */
-    void GetCallTips(int chars_per_line, wxArrayString& items, int &typedCommas);
+    void GetCallTips(int chars_per_line, wxArrayString& items, int &typedCommas, int pos = wxNOT_FOUND);
 
     /** Word start position in the editor
      * @return position index

@@ -1005,6 +1005,11 @@ int CodeCompletion::CodeComplete()
 
 void CodeCompletion::ShowCallTip()
 {
+    DoShowCallTip();
+}
+
+void CodeCompletion::DoShowCallTip(int caretPos)
+{
     if (!IsAttached() || !m_InitDone)
         return;
 
@@ -1021,7 +1026,9 @@ void CodeCompletion::ShowCallTip()
         return;
 
     // calculate the size of the calltips window
-    int pos = ed->GetControl()->GetCurrentPos();
+    int pos = caretPos;
+    if (pos == wxNOT_FOUND)
+        pos = ed->GetControl()->GetCurrentPos();
     wxPoint p = ed->GetControl()->PointFromPosition(pos); // relative point
     int pixelWidthPerChar = ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
     int maxCalltipLineSizeInChars = (ed->GetSize().x - p.x) / pixelWidthPerChar;
@@ -1041,7 +1048,7 @@ void CodeCompletion::ShowCallTip()
     int start = 0, end = 0, count = 0, typedCommas = 0;
 
     wxArrayString items;
-    m_NativeParser.GetCallTips(maxCalltipLineSizeInChars, items, typedCommas);
+    m_NativeParser.GetCallTips(maxCalltipLineSizeInChars, items, typedCommas, caretPos);
     std::set< wxString, std::less<wxString> > unique_tips; // check against this before inserting a new tip in the list
     wxString definition;
     for (unsigned int i = 0; i < items.GetCount(); ++i)
@@ -2514,6 +2521,13 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         return;
     }
 
+    int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
+    if (pos < 0 || pos >= ed->GetControl()->GetLength())
+    {
+        event.Skip();
+        return;
+    }
+
     // ignore comments, strings, preprocesor, etc
     int style = event.GetInt();
     if (   (style != wxSCI_C_DEFAULT)
@@ -2522,13 +2536,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         && (style != wxSCI_C_WORD2)
         && (style != wxSCI_C_GLOBALCLASS) )
     {
-        event.Skip();
-        return;
-    }
-
-    int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
-    if (pos < 0 || pos >= ed->GetControl()->GetLength())
-    {
+        DoShowCallTip(pos);
         event.Skip();
         return;
     }
@@ -2572,7 +2580,9 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-        if (!calltip.IsEmpty())
+        if (calltip.IsEmpty())
+            DoShowCallTip(pos);
+        else
         {
             calltip.RemoveLast(); // last \n
 
@@ -2593,6 +2603,8 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
             TRACE(calltip);
         }
     }
+    else
+        DoShowCallTip(pos);
 
     event.Skip();
 }

@@ -196,6 +196,7 @@ private:
 
     /** show code suggestion list*/
     void DoCodeComplete();
+    void DoShowCallTip(int caretPos = wxNOT_FOUND);
 
     /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();

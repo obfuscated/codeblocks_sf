@@ -850,7 +850,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result,
     return MarkItemsByAI(&searchData, result, reallyUseAI, isPrefix, caseSensitive, caretPos);
 }
 
-void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& typedCommas)
+void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& typedCommas, int pos)
 {
     items.Clear();
     typedCommas = 0;
@@ -866,7 +866,8 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
     TRACE(_T("NativeParser::GetCallTips()"));
 
     ccSearchData searchData = { ed->GetControl(), ed->GetFilename() };
-    int pos = searchData.control->GetCurrentPos();
+    if (pos == wxNOT_FOUND)
+        pos = searchData.control->GetCurrentPos();
     int nest = 0;
     while (--pos > 0)
     {
