@@ -121,7 +121,7 @@ wxArrayString InsertClassMethodDlg::GetCode() const
             }
             str << clb->GetString(i);
             str.Replace(_T("&&"), _T("&"));
-            array.Add(str + (m_Decl ? _T(";\n") : _T("\n{\n\n}\n\n")));
+            array.Add(str + (m_Decl ? _T(";\n") : _T("\n{\n\t\n}\n\n")));
         }
     }
 

@@ -203,6 +203,8 @@ private:
     /** ContextMenu->Insert-> All class methods*/
     int DoAllMethodsImpl();
 
+    void MatchCodeStyle(wxString& str, int eolStyle = wxSCI_EOL_LF, const wxString& indent = wxEmptyString, bool useTabs = false, int tabSize = 4);
+
     // CC's toolbar related functions
     /** help method in finding the function position in the vector for the function containing the current line*/
     void FunctionPosition(int &scopeItem, int &functionItem) const;

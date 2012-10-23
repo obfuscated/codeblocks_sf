@@ -2735,20 +2735,22 @@ int CodeCompletion::DoClassMethodDeclImpl()
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        int pos = ed->GetControl()->GetCurrentPos();
-        int line = ed->GetControl()->LineFromPosition(pos);
-        ed->GetControl()->GotoPos(ed->GetControl()->PositionFromLine(line));
+        cbStyledTextCtrl* control = ed->GetControl();
+        int pos = control->GetCurrentPos();
+        int line = control->LineFromPosition(pos);
+        control->GotoPos(control->PositionFromLine(line));
 
         wxArrayString result = dlg.GetCode();
         for (unsigned int i = 0; i < result.GetCount(); ++i)
         {
-            pos = ed->GetControl()->GetCurrentPos();
-            line = ed->GetControl()->LineFromPosition(pos);
+            pos = control->GetCurrentPos();
+            line = control->LineFromPosition(pos);
             wxString str = ed->GetLineIndentString(line - 1) + result[i];
-            ed->GetControl()->SetTargetStart(pos);
-            ed->GetControl()->SetTargetEnd(pos);
-            ed->GetControl()->ReplaceTarget(str);
-            ed->GetControl()->GotoPos(pos + str.Length());// - 3);
+            MatchCodeStyle(str, control->GetEOLMode(), ed->GetLineIndentString(line - 1), control->GetUseTabs(), control->GetTabWidth());
+            control->SetTargetStart(pos);
+            control->SetTargetEnd(pos);
+            control->ReplaceTarget(str);
+            control->GotoPos(pos + str.Length());// - 3);
         }
         success = 0;
     }
@@ -2860,7 +2862,8 @@ int CodeCompletion::DoAllMethodsImpl()
             wxString str;
             if (i > 0)
                 str << _T("\n");
-            str << ed->GetLineIndentString(line - 1);
+            else
+                str << ed->GetLineIndentString(line - 1);
             if (addDoxgenComment)
                 str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
             wxString type = token->m_BaseType;
@@ -2880,7 +2883,9 @@ int CodeCompletion::DoAllMethodsImpl()
             str << token->m_Name << token->GetStrippedArgs();
             if (token->m_IsConst)
                 str << _T(" const");
-            str << _T("\n{\n}\n");
+            str << _T("\n{\n\t\n}\n");
+
+            MatchCodeStyle(str, control->GetEOLMode(), ed->GetLineIndentString(line - 1), control->GetUseTabs(), control->GetTabWidth());
 
             // add code in editor
             control->SetTargetStart(pos);
@@ -2888,12 +2893,29 @@ int CodeCompletion::DoAllMethodsImpl()
             control->ReplaceTarget(str);
             control->GotoPos(pos + str.Length());
         }
+        if (!indices.IsEmpty())
+        {
+            pos  = control->GetCurrentPos();
+            line = control->LineFromPosition(pos);
+            control->GotoPos(control->GetLineEndPosition(line - 2));
+        }
         success = 0;
     }
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     return success;
+}
+
+void CodeCompletion::MatchCodeStyle(wxString& str, int eolStyle, const wxString& indent, bool useTabs, int tabSize)
+{
+    str.Replace(wxT("\n"), (eolStyle == wxSCI_EOL_LF   ? wxT("\n")   :
+                            eolStyle == wxSCI_EOL_CRLF ? wxT("\r\n") :
+                          /*eolStyle == wxSCI_EOL_CR ?*/ wxT("\r")   ) + indent );
+    if (!useTabs)
+        str.Replace(wxT("\t"), wxString(wxT(' '), tabSize));
+    if (!indent.IsEmpty())
+        str.RemoveLast(indent.Length());
 }
 
 // help method in finding the function position in the vector for the function containing the current line
