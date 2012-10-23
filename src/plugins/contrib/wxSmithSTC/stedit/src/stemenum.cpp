@@ -421,11 +421,11 @@ bool wxSTEditorMenuManager::CreateToolBar(wxToolBar *tb) const
         tb->AddTool(ID_STE_FIND_PREV, wxEmptyString, STE_ARTTOOL(wxART_STEDIT_FINDUP  ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(_("Find previous"), *m_accelEntryArray, ID_STE_FIND_PREV), _("Find previous occurance in document"));
         tb->AddTool(wxID_REPLACE    , wxEmptyString, STE_ARTTOOL(wxART_STEDIT_REPLACE ), wxNullBitmap, wxITEM_NORMAL, ::wxToolBarTool_MakeShortHelp(*m_accelEntryArray, wxID_REPLACE), _("Replace text in document"));
     }
-    if (HasToolbarToolType(STE_TOOLBAR_EDIT_FIND_CTRL))
+    if (HasToolbarToolType(STE_TOOLBAR_EDIT_SEARCH_CTRL))
     {
         if (tb->GetToolsCount()) tb->AddSeparator();
-        wxSearchCtrl *searchCtrl = new wxSearchCtrl(tb, ID_STE_TOOLBAR_FIND_CTRL, wxT(""), wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER);
-        searchCtrl->SetMenu(new wxMenu);
+        wxSearchCtrl *searchCtrl = new wxSearchCtrl(tb, ID_STE_TOOLBAR_SEARCHCTRL, wxT(""), wxDefaultPosition, wxSize(200, -1), wxTE_PROCESS_ENTER);
+        //searchCtrl->SetMenu(new wxMenu);
         tb->AddControl(searchCtrl);
     }
     if (HasToolbarToolType(STE_TOOLBAR_BOOKMARK))

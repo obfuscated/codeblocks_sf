@@ -98,6 +98,42 @@ void wxSTEInitMenuStrings(const wxArrayString& values, wxMenu* menu, int start_w
 }
 
 //-----------------------------------------------------------------------------
+// wxSearchCtrl update functions
+//-----------------------------------------------------------------------------
+
+void wxSTEUpdateSearchCtrl(wxToolBar* toolBar,
+                           wxWindowID win_id,
+                           const wxSTEditorFindReplaceData* findReplaceData)
+{
+    if (toolBar == NULL) return;
+    wxControl* ctrl = toolBar->FindControl(win_id);
+    if (ctrl == NULL) return;
+    wxSearchCtrl* searchCtrl = wxDynamicCast(ctrl, wxSearchCtrl);
+    if (searchCtrl == NULL) return;
+
+    wxSTEUpdateSearchCtrl(searchCtrl, findReplaceData);
+}
+
+void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
+                           const wxSTEditorFindReplaceData* findReplaceData)
+{
+    if ((searchCtrl == NULL) || (findReplaceData == NULL)) return;
+
+    wxString findString(findReplaceData->GetFindString());
+    if (searchCtrl->GetValue() != findString)
+        searchCtrl->SetValue(findString);
+
+    if (searchCtrl->GetMenu() != NULL)
+    {
+        const wxArrayString& findStrings = findReplaceData->GetFindStrings();
+        wxSTEInitMenuStrings(findStrings, searchCtrl->GetMenu(),
+                             ID_STE_TOOLBAR_SEARCHCTRL_MENU0,
+                             ID_STE_TOOLBAR_SEARCHCTRL_MENU__LAST-ID_STE_TOOLBAR_SEARCHCTRL_MENU0);
+    }
+}
+
+
+//-----------------------------------------------------------------------------
 // wxSTEditorFindReplaceData
 //-----------------------------------------------------------------------------
 

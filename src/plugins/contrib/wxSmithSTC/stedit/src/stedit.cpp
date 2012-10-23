@@ -150,7 +150,7 @@ END_EVENT_TABLE()
 
 // Put these macros at the top of a function you want to block executing
 // when either the editor is starting up or shutting down.
-#define STE_INITRETURN if (!m_sendEvents || IsBeingDeleted()) return
+#define STE_INITRETURN       if (!m_sendEvents || IsBeingDeleted()) return
 #define STE_INITRETURNVAL(a) if (!m_sendEvents || IsBeingDeleted()) return (a)
 
 void wxSTEditor::Init()
@@ -183,6 +183,7 @@ wxSTEditor::~wxSTEditor()
     // Yes we're in the destructor... strange things happen.
     m_sendEvents = false;
 
+    // remove us from everything so nothing can "get at us"
     GetSTERefData()->RemoveEditor(this);
 
     // don't destroy prefs since we may be a refed editor, remove us though
@@ -233,7 +234,7 @@ bool wxSTEditor::Create( wxWindow *parent, wxWindowID id,
 
     GetSTERefData()->AddEditor(this);
 
-    // turn on sending events after vars are fully initialized.
+    // turn on sending events after variables are fully initialized.
     m_sendEvents = true;
 
     return true;
@@ -1292,7 +1293,7 @@ void wxSTEditor::ExpandFoldsToLevel(int level, bool expand)
 
 // --------------------------------------------------------------------------
 
-#define STE_VERSION_STRING_SVN STE_VERSION_STRING wxT(" svn 2920")
+#define STE_VERSION_STRING_SVN STE_VERSION_STRING // wxT(" svn 2920")
 
 #if (wxVERSION_NUMBER >= 2902)
 /*static*/ wxVersionInfo wxSTEditor::GetStEditorVersionInfo()
@@ -1382,7 +1383,7 @@ bool wxSTEditor::LoadFile( const wxFileName &fileName_,
         fileName = GetFileName();
         wxString path;
 
-        if (fileName.GetFullPath().Length())
+        if (!fileName.GetFullPath().IsEmpty())
         {
             wxFileName fn(fileName);
             path     = fileName.GetPath();
@@ -2399,8 +2400,6 @@ bool wxSTEditor::ClearIndicator(int pos, int indic)
 {
     int sty = GetStyleAt(pos);
 
-    printf("CLEAR %d - %x - %x\n", pos, indic, sty); fflush(stdout);
-
     if (STE_HASBIT(sty, indic))
     {
         sty &= (~indic);
@@ -3151,31 +3150,7 @@ void wxSTEditor::UpdateItems(wxMenu *menu, wxMenuBar *menuBar, wxToolBar *toolBa
     STE_MM::DoEnableItem(menu, menuBar, toolBar, ID_STE_INSERT_DATETIME, !readonly);
     STE_MM::DoEnableItem(menu, menuBar, toolBar, ID_STE_COLUMNIZE,       !readonly && sel_lines);
 
-    if (toolBar != NULL)
-    {
-        wxControl* ctrl = toolBar->FindControl(ID_STE_TOOLBAR_FIND_CTRL);
-
-        if (ctrl != NULL)
-        {
-            wxSearchCtrl* searchCtrl = wxDynamicCast(ctrl, wxSearchCtrl);
-
-            if (searchCtrl != NULL)
-            {
-                wxString findString(GetFindString());
-                if (searchCtrl->GetValue() != findString)
-                    searchCtrl->SetValue(findString);
-
-                wxSTEditorFindReplaceData* frData = GetFindReplaceData();
-                if ((frData != NULL) && (searchCtrl->GetMenu() != NULL))
-                {
-                    const wxArrayString& findStrings = frData->GetFindStrings();
-                    wxSTEInitMenuStrings(findStrings, searchCtrl->GetMenu(),
-                                         ID_STE_TOOLBAR_FIND_CTRL_MENU1,
-                                         ID_STE_TOOLBAR_FIND_CTRL_MENU__LAST-ID_STE_TOOLBAR_FIND_CTRL_MENU0);
-                }
-            }
-        }
-    }
+    wxSTEUpdateSearchCtrl(toolBar, ID_STE_TOOLBAR_SEARCHCTRL, GetFindReplaceData());
 
     // View menu items
     STE_MM::DoSetTextItem(menu, menuBar, ID_STE_PREF_EDGE_COLUMN,
@@ -3284,20 +3259,59 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
         case ID_STE_LINE_TRANSPOSE : LineTranspose(); return true;
         case ID_STE_LINE_DUPLICATE : LineDuplicate(); return true;
 
-        case wxID_FIND        : ShowFindReplaceDialog(true); return true;
-        case ID_STE_FIND_PREV :
-        case ID_STE_FIND_NEXT :
-        case ID_STE_TOOLBAR_FIND_CTRL :
+        case wxID_FIND             : ShowFindReplaceDialog(true); return true;
+        
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU0 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU1 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU2 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU3 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU4 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU5 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU6 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU7 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU8 :
+        case ID_STE_TOOLBAR_SEARCHCTRL_MENU9 :
         {
-            if (win_id == ID_STE_TOOLBAR_FIND_CTRL)
+            wxSTEditorFindReplaceData* findReplaceData = GetFindReplaceData();
+            if (findReplaceData == NULL) return true;
+            
+            int index = win_id - ID_STE_TOOLBAR_SEARCHCTRL_MENU0;
+            if (index >= (int)findReplaceData->GetFindStrings().GetCount()) return true;
+            wxString findString(findReplaceData->GetFindStrings()[index]);
+            
+            SetFindString(findString, true);
+            wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, ID_STE_FIND_NEXT);
+            GetEventHandler()->AddPendingEvent(menuEvent);
+            return true;
+        }
+        case ID_STE_TOOLBAR_SEARCHCTRL :
+        {
+            if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
             {
-                wxString findString(event.GetString());
-                if (GetFindString() != findString)
-                    SetFindString(findString, true);
-                // call our find next processing code
-                win_id = ID_STE_FIND_NEXT;
+                wxSearchCtrl* searchCtrl = wxDynamicCast(event.GetEventObject(), wxSearchCtrl);
+                //if (searchCtrl != NULL)
+                //	searchCtrl->Clear();
+
+                return true;
+            }
+            else if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
+            {
+                // popup menu is shown
+                return true;
             }
 
+            wxString findString(event.GetString());
+            if (GetFindString() != findString)
+                SetFindString(findString, true);
+            
+            // call our find next processing code
+            win_id = ID_STE_FIND_NEXT; 
+
+            // fall though...
+        }
+        case ID_STE_FIND_PREV :
+        case ID_STE_FIND_NEXT :
+        {
             // try our parents (stenotebook) to see if they can handle it
             // we need to use a wxFindDialogEvent to set string and flags
             wxFindDialogEvent event2(wxEVT_COMMAND_FIND_NEXT, GetId());
@@ -3317,7 +3331,7 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
             SetFindFlags(orig_flags, true);
 
             // Make it easy to keep pressing enter to search again, normally the editor gets the focus.
-            if ((event.GetId() == ID_STE_TOOLBAR_FIND_CTRL) &&
+            if ((event.GetId() == ID_STE_TOOLBAR_SEARCHCTRL) &&
                 (wxDynamicCast(event.GetEventObject(), wxWindow) != NULL))
             {
                 wxDynamicCast(event.GetEventObject(), wxWindow)->SetFocus();
@@ -3691,6 +3705,7 @@ void wxSTEditor::OnSTEState(wxSTEditorEvent &event)
     {
         STE_MM::DoEnableItem(menu, menuBar, toolBar, ID_STE_FIND_NEXT, event.GetStateValue(STE_CANFIND));
         STE_MM::DoEnableItem(menu, menuBar, toolBar, ID_STE_FIND_PREV, event.GetStateValue(STE_CANFIND));
+        wxSTEUpdateSearchCtrl(toolBar, ID_STE_TOOLBAR_SEARCHCTRL, GetFindReplaceData());
     }
 
     // update everything for a big change like this
@@ -4022,7 +4037,7 @@ void wxSTEditor::OnSTCUpdateUI(wxStyledTextEvent &event)
     }
 
     // todo add pref for this
-    if (1)
+    if (0)
     {
         STE_TextPos start_pos = 0, end_pos = 0;
         GetSelection(&start_pos, &end_pos);
@@ -4049,7 +4064,7 @@ void wxSTEditor::OnSTCUpdateUI(wxStyledTextEvent &event)
 
                 IndicateAllStrings(text, STE_FR_WHOLEWORD|STE_FR_MATCHCASE, wxSTC_INDIC1_MASK,
                                    &GetSTERefData()->m_hilightedArray);
-                Refresh(false);
+                //Refresh(false);
             }
         }
         else if (!GetSTERefData()->m_hilighted_word.IsEmpty())
@@ -4061,7 +4076,7 @@ void wxSTEditor::OnSTCUpdateUI(wxStyledTextEvent &event)
                 ClearIndication(startPositions[n], wxSTC_INDIC1_MASK);
 
             startPositions.Clear();
-            Refresh(false);
+            //Refresh(false);
         }
     }
 

@@ -29,8 +29,9 @@ IMPLEMENT_DYNAMIC_CLASS(wxSTEditorFrame, wxFrame)
 BEGIN_EVENT_TABLE(wxSTEditorFrame, wxFrame)
     EVT_MENU_OPEN               (wxSTEditorFrame::OnMenuOpen)
     EVT_MENU                    (wxID_ANY, wxSTEditorFrame::OnMenu)
-    EVT_SEARCHCTRL_SEARCH_BTN   (ID_STE_TOOLBAR_FIND_CTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
-    EVT_TEXT_ENTER              (ID_STE_TOOLBAR_FIND_CTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
+    EVT_SEARCHCTRL_SEARCH_BTN   (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
+	EVT_SEARCHCTRL_CANCEL_BTN   (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu)
+    EVT_TEXT_ENTER              (ID_STE_TOOLBAR_SEARCHCTRL, wxSTEditorFrame::OnMenu) // wxCommandEvent so we can treat it like a menu
 
     //EVT_STEDITOR_CREATED      (wxID_ANY, wxSTEditorFrame::OnSTECreated)
     EVT_STEDITOR_STATE_CHANGED  (wxID_ANY, wxSTEditorFrame::OnSTEState)

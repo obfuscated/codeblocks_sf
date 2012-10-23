@@ -15,6 +15,7 @@
 #define _STEFINDR_H_
 
 #include <wx/fdrepdlg.h>
+#include <wx/srchctrl.h>
 
 #include "wx/stedit/stedefs.h"
 #include "wx/stedit/steopts.h"
@@ -49,7 +50,22 @@ WXDLLIMPEXP_STEDIT void wxSTEInitComboBoxStrings(const wxArrayString& values,
 WXDLLIMPEXP_STEDIT void wxSTEInitMenuStrings(const wxArrayString& values,
                                              wxMenu* menu,
                                              int start_win_id, int max_count);
+
 /// @}
+
+//-----------------------------------------------------------------------------
+// wxSearchCtrl update functions
+//-----------------------------------------------------------------------------
+
+/// Update a wxSearchCtrl in a wxToolBar by window id to the find replace data.
+WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxToolBar* toolbar,
+                                              wxWindowID win_id,
+                                              const wxSTEditorFindReplaceData* findReplaceData);
+
+/// Update a wxSearchCtrl to the find replace data.
+WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
+                                              const wxSTEditorFindReplaceData* findReplaceData);
+
 
 //-----------------------------------------------------------------------------
 /// STEFindReplaceFlags Flags for wxSTEditorFindReplaceData find/replace behavior.
@@ -110,6 +126,10 @@ public:
     //const wxString& GetReplaceString() { return m_ReplaceWith; }
     //void  SetFindString(const wxString& str) { m_FindWhat = str; }
     //void  SetReplaceString(const wxString& str) { m_ReplaceWith = str; }
+
+#if !wxCHECK_VERSION(2,9,0)
+    const wxString& GetFindString() const { return ((wxFindReplaceData*)this)->GetFindString(); }
+#endif //!wxCHECK_VERSION(2,9,0)
 
     bool HasFlag(int flag) const { return (GetFlags() & flag) != 0; }
 
