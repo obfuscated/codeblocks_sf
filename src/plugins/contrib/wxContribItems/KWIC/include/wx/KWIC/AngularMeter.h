@@ -11,6 +11,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#include <wx/dcmemory.h>
 
 #define MAXSECTORCOLOR 10
 
@@ -19,27 +20,28 @@ class kwxAngularMeter : public wxWindow
 public:
     kwxAngularMeter(wxWindow *parent, const wxWindowID id = -1, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize);
     kwxAngularMeter(){};
-	virtual ~kwxAngularMeter();
-	bool Create(wxWindow* parent, const wxWindowID id, const wxPoint& pos, const wxSize& size);
 
+	virtual ~kwxAngularMeter();
 	void SetSectorColor(int nSector, wxColour colour) ;
-	void SetNumSectors(int nSector) { m_nSec = nSector ; };
-	void SetNumTick(int nTick) { m_nTick = nTick ; };
-	void SetRange(int min, int max) { m_nRangeStart = min ; m_nRangeEnd = max ; } ;
-	void SetAngle(int min, int max) { m_nAngleStart = min ; m_nAngleEnd = max ; } ;
+	void SetNumSectors(int nSector) { m_nSec = nSector ; m_bNeedRedrawBackground = true;};
+	void SetNumTick(int nTick) { m_nTick = nTick ; m_bNeedRedrawBackground = true;};
+	void SetRange(int min, int max) { m_nRangeStart = min ; m_nRangeEnd = max ; m_bNeedRedrawBackground = true;} ;
+	void SetAngle(int min, int max) { m_nAngleStart = min ; m_nAngleEnd = max ; m_bNeedRedrawBackground = true;} ;
 	void SetValue(int val);
 	void SetNeedleColour(wxColour colour) { m_cNeedleColour = colour ; } ;
-	void SetBackColour(wxColour colour) { m_cBackColour = colour ; } ;
+	void SetBackColour(wxColour colour) { m_cBackColour = colour ; m_bNeedRedrawBackground = true;} ;
 	void SetBorderColour(wxColour colour) { m_cBorderColour = colour ; } ;
 	void SetTxtFont(wxFont &font) { m_Font = font ; } ;
 	void DrawCurrent(bool state) { m_bDrawCurrent = state ; } ;
+	void ConstructBackground();
 
 
 private:
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 
-	void OnPaint(wxPaintEvent& event);
+	void    OnPaint(wxPaintEvent& event);
+	void	OnEraseBackGround(wxEraseEvent& event) {};
 	void	DrawTicks(wxDC &dc) ;
 	void	DrawNeedle(wxDC &dc) ;
 	void	DrawSectors(wxDC &dc) ;
@@ -65,4 +67,10 @@ private:
 	wxColour m_cBorderColour ;
 
     wxBitmap  *m_pPreviewBmp ;
+
+    wxMemoryDC m_BackgroundDc;
+
+    bool m_bNeedRedrawBackground;
+
+
 };
