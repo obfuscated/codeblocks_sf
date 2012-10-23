@@ -123,11 +123,7 @@ void wxsCustomButton::OnBuildCreatingCode()
                 Style = _T("0");
             }
 
-            #if wxCHECK_VERSION(2, 9, 0)
             Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.wx_str(),&m_Bitmap,wxART_OTHER,Style.wx_str());
-            #else
-            Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.c_str(),&m_Bitmap,wxART_OTHER,Style.c_str());
-            #endif
 
             if ( !m_BitmapSelected.IsEmpty() )
             {

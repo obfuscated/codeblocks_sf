@@ -265,10 +265,10 @@ install(TARGETS wxThingsLib
 
 install(EXPORT wxThings_export
         DESTINATION share/wxthings/
-        FILE wxThings-config.cmake)
+        FILE wxThingsConfig.cmake)
 
 export( TARGETS wxThingsLib
-        FILE "${CMAKE_BINARY_DIR}/build/wxThings-config.cmake")
+        FILE "${CMAKE_BINARY_DIR}/build/wxThingsConfig.cmake")
 
 install(FILES
         ${wxThings_ROOT_DIR}/docs/readme.txt
