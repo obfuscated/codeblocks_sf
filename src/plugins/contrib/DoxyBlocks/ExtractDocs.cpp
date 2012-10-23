@@ -47,7 +47,7 @@
 #include "DoxyBlocks.h"
 
 
-void DoxyBlocks::ExtractProject(wxCommandEvent & WXUNUSED(event))
+void DoxyBlocks::OnExtractProject(wxCommandEvent & WXUNUSED(event))
 {
     DoExtractProject();
 }

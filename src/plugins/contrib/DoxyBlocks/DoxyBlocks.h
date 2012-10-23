@@ -173,16 +173,16 @@ class DoxyBlocks : public cbPlugin
           */
         virtual void OnRelease(bool appShutDown);
 
-        void RunDoxywizard(wxCommandEvent & event);
-        void BlockComment(wxCommandEvent & event);
-        void LineComment(wxCommandEvent & event);
-        void ExtractProject(wxCommandEvent & event);
-        void RunHTML(wxCommandEvent & event);
-        void RunCHM(wxCommandEvent & event);
+        void OnRunDoxywizard(wxCommandEvent & event);
+        void OnBlockComment(wxCommandEvent & event);
+        void OnLineComment(wxCommandEvent & event);
+        void OnExtractProject(wxCommandEvent & event);
+        void OnRunHTML(wxCommandEvent & event);
+        void OnRunCHM(wxCommandEvent & event);
 
-        void Configure(wxCommandEvent & event);
-        void ReadPrefsTemplate(wxCommandEvent & event);
-        void WritePrefsTemplate(wxCommandEvent & event);
+        void OnConfigure(wxCommandEvent & event);
+        void OnReadPrefsTemplate(wxCommandEvent & event);
+        void OnWritePrefsTemplate(wxCommandEvent & event);
 
     private:
         bool DoRunDoxywizard();

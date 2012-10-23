@@ -33,7 +33,7 @@
 #include "DoxyBlocks.h"
 #include "Expressions.h"
 
-void DoxyBlocks::BlockComment(wxCommandEvent & WXUNUSED(event))
+void DoxyBlocks::OnBlockComment(wxCommandEvent & WXUNUSED(event))
 {
   DoBlockComment();
 }
@@ -136,7 +136,7 @@ void DoxyBlocks::DoBlockComment()
     control->EndUndoAction();
 }
 
-void DoxyBlocks::LineComment(wxCommandEvent & WXUNUSED(event))
+void DoxyBlocks::OnLineComment(wxCommandEvent & WXUNUSED(event))
 {
   DoLineComment();
 }
