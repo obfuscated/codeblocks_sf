@@ -785,6 +785,13 @@
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkImageBP">
+                        <label>Use images for breakpoints</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
                       <object class="wxCheckBox" name="chkUseChangebar">
                         <label>Use changebar</label>
                         <checked>1</checked>
