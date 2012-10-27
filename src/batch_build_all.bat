@@ -16,7 +16,9 @@ if not exist "%GCC_ROOT%" goto ErrNoGCC
 set PATH=%CB_ROOT%;%GCC_ROOT%;%PATH%
 
 set BUILD_TYPE=--build
+if "%1"=="r"        set BUILD_TYPE=--rebuild
 if "%1"=="-r"       set BUILD_TYPE=--rebuild
+if "%1"=="rebuild"  set BUILD_TYPE=--rebuild
 if "%1"=="-rebuild" set BUILD_TYPE=--rebuild
 
 set START_CMD=start "Code::Blocks Build" /D"%~dp0" /min /b
