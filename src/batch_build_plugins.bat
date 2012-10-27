@@ -6,7 +6,7 @@ set CB_ROOT=C:\Devel\CodeBlocks
 rem ------------------------------------------
 rem Setup GCC root folder with "bin" subfolder
 rem ------------------------------------------
-set GCC_ROOT=C:\Devel\GCC46TDM
+set GCC_ROOT=%CB_ROOT%\MinGW
 
 rem -------------------------------------------
 rem Usually below here no changes are required.
@@ -15,10 +15,14 @@ if not exist "%CB_ROOT%"  goto ErrNoCB
 if not exist "%GCC_ROOT%" goto ErrNoGCC
 set PATH=%CB_ROOT%;%GCC_ROOT%;%PATH%
 
+set BUILD_TYPE=--build
+if "%1"=="-r"       set BUILD_TYPE=--rebuild
+if "%1"=="-rebuild" set BUILD_TYPE=--rebuild
+
 set START_CMD=start "Code::Blocks Build" /D%~dp0 /min /b
 set CB_EXE="%CB_ROOT%\codeblocks.exe"
 set CB_PARAMS=--batch-build-notify --no-batch-window-close
-set CB_CMD=--build "%~dp0ContribPlugins.workspace"
+set CB_CMD=%BUILD_TYPE% "%~dp0ContribPlugins.workspace"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
