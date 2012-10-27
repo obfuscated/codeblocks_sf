@@ -64,8 +64,10 @@ void TemplateManager::LoadUserTemplates()
     m_UserTemplates.Clear();
     wxString baseDir = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
 
-    wxDir dir(baseDir);
+    if (!wxDirExists(baseDir)) // avoid warnings in debug builds
+        return;
 
+    wxDir dir(baseDir);
     if (!dir.IsOpened())
         return;
 
@@ -134,15 +136,18 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
         path.RemoveLast();
 
     // check for existing files; if found, notify about overwriting them
-    wxDir dir(path);
-    if (dir.HasFiles() || dir.HasSubDirs())
+    if (wxDirExists(path))
     {
-        if (cbMessageBox(path + _(" already contains other files.\n"
-                                "If you continue, files with the same names WILL BE OVERWRITTEN.\n"
-                                "Are you sure you want to continue?"),
-                                _("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+        wxDir dir(path);
+        if (dir.HasFiles() || dir.HasSubDirs())
         {
-            return 0;
+            if (cbMessageBox(path + _(" already contains other files.\n"
+                                      "If you continue, files with the same names WILL BE OVERWRITTEN.\n"
+                                      "Are you sure you want to continue?"),
+                                    _("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+            {
+                return 0;
+            }
         }
     }
 
