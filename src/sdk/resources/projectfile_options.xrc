@@ -33,6 +33,20 @@
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT17">
+												<label>Project base path:</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtProjectBasePath">
+												<style>wxTE_READONLY</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT2">
 												<label>File name (absolute) :</label>
 											</object>

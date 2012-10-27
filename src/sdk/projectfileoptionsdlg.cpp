@@ -177,9 +177,10 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf) 
         FillCompilers();
         UpdateBuildCommand();
 
-        XRCCTRL(*this, "txtProject", wxTextCtrl)->SetValue(prj?(prj->GetTitle() + _T("\n") + prj->GetFilename()):_T("-"));
-        XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(m_FileNameStr);
-        XRCCTRL(*this, "txtRelName", wxTextCtrl)->SetValue(pf->relativeFilename);
+        XRCCTRL(*this, "txtProject",         wxTextCtrl)->SetValue(prj?(prj->GetTitle() + _T("\n") + prj->GetFilename()):_T("-"));
+        XRCCTRL(*this, "txtProjectBasePath", wxTextCtrl)->SetValue(prj?prj->GetCommonTopLevelPath():_T("-"));
+        XRCCTRL(*this, "txtAbsName",         wxTextCtrl)->SetValue(m_FileNameStr);
+        XRCCTRL(*this, "txtRelName",         wxTextCtrl)->SetValue(pf->relativeFilename);
 
         SetTitle(_("Properties of ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
     }
