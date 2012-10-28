@@ -278,11 +278,11 @@ void Abbreviations::LoadAutoCompleteConfig()
         if (name.IsEmpty())
             continue;
         // convert non-printable chars to printable
-        code.Replace(_T("\\n"),  _T("\n"));
-        code.Replace(_T("\\t"),  _T("\t"));
-        // ... but remove if it does (EOL style is matched just before code generation)
-        code.Replace(_T("\r\n"), _T("\n"));
-        code.Replace(_T("\r"),   _T("\n"));
+        code.Replace(_T("\\n"),   _T("\n"));
+        code.Replace(_T("\\t"),   _T("\t"));
+        // should not exist, but remove if it does (EOL style is matched just before code generation)
+        code.Replace(_T("\\r\n"), _T("\n"));
+        code.Replace(_T("\\r"),   _T("\n"));
         m_AutoCompleteMap[name] = code;
     }
 
@@ -351,9 +351,9 @@ void Abbreviations::SaveAutoCompleteConfig()
     {
         wxString code = it->second;
         // convert non-printable chars to printable
-        code.Replace(_T("\r\n"), _T("\\n"));
+        code.Replace(_T("\r\n"), _T("\\n")); // EOL style will be matched just before code generation
         code.Replace(_T("\n"),   _T("\\n"));
-        code.Replace(_T("\r"),   _T("\\n")); // should not exist ...
+        code.Replace(_T("\r"),   _T("\\n"));
         code.Replace(_T("\t"),   _T("\\t"));
 
         ++count;
