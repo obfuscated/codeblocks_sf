@@ -103,4 +103,7 @@ void FortranSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
 
         stc->EndUndoAction();
     }
+
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+        ed->DoSelectionBraceCompletion(stc, ch);
 }

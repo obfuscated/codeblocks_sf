@@ -67,6 +67,9 @@ void LuaSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
             stc->EndUndoAction();
         }
     }
+
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+        ed->DoSelectionBraceCompletion(stc, ch);
 }
 
 bool LuaSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const

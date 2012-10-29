@@ -301,6 +301,7 @@ class DLLIMPORT cbEditor : public EditorBase
         static void ApplyStyles(cbStyledTextCtrl* control);
 
         void AutoIndentDone();
+        void DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const;
     private:
         cbEditor(const cbEditor& /*rhs*/); // prevent copy construction
 

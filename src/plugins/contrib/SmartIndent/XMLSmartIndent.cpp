@@ -47,16 +47,28 @@ void XMLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 
     ed->AutoIndentDone(); // we are responsible
 
-    const int pos = stc->GetCurrentPos();
+    int pos = stc->GetCurrentPos();
     int currLine = stc->LineFromPosition(pos);
 
     const wxChar ch = event.GetKey();
     wxRegEx reTag(wxT("***:<[ \t]*?(|/)[ \t]*?([a-zA-Z][a-zA-Z0-9_-]*).*?(|/)[ \t]*?>"));
 
+    bool complQuote = true;
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+    {
+        ed->DoSelectionBraceCompletion(stc, ch);
+        if (pos != stc->GetCurrentPos())
+        {
+            complQuote = false;
+            pos = stc->GetCurrentPos();
+            currLine = stc->LineFromPosition(pos);
+        }
+    }
+
     if (BraceCompletionEnabled())
     {
         // finish tag
-        if (ch == wxT('>'))
+        if ( ch == wxT('>') && !stc->IsString(stc->GetStyleAt(pos)) )
         {
             wxString tag;
             for (int i = pos - 2; i > 0; --i)
@@ -72,7 +84,7 @@ void XMLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
                 stc->InsertText(pos, wxT("</") + reTag.GetMatch(tag, 2) + wxT(">"));
         }
         // close string
-        else if (ch == wxT('"') || ch == wxT('\''))
+        else if (complQuote && (ch == wxT('"') || ch == wxT('\'')))
         {
             if (stc->GetCharAt(pos) == ch)
             {
@@ -113,14 +125,14 @@ void XMLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         }
     }
     // indent
-    if ( (ch == wxT('\n')) || ( (stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r')) ) )
+    if (   AutoIndentEnabled()
+        && ( (ch == wxT('\n')) || ((stc->GetEOLMode() == wxSCI_EOL_CR) && (ch == wxT('\r'))) ) )
     {
-        if (AutoIndentEnabled())
+        wxString indent = ed->GetLineIndentString(currLine - 1);
+        stc->BeginUndoAction();
+        if (SmartIndentEnabled()) // smart indent
         {
-            wxString indent = ed->GetLineIndentString(currLine - 1);
             int idx = stc->GetLine(currLine - 1).Find(wxT('>'), true);
-
-            stc->BeginUndoAction();
             if (idx != wxNOT_FOUND)
             {
                 wxString tag;
@@ -167,10 +179,10 @@ void XMLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
                     }
                 }
             }
-            stc->InsertText(pos, indent);
-            stc->GotoPos(pos + indent.Length());
-            stc->ChooseCaretX();
-            stc->EndUndoAction();
         }
+        stc->InsertText(pos, indent);
+        stc->GotoPos(pos + indent.Length());
+        stc->ChooseCaretX();
+        stc->EndUndoAction();
     }
 }

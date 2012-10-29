@@ -49,6 +49,9 @@ void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         DoIndent(ed, langname);   // indent because \n added
     else if ( ch != wxT(' ') )
         DoUnIndent(ed, langname); // un-indent because not a newline added
+
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+        ed->DoSelectionBraceCompletion(stc, ch);
 }
 
 int HDLSmartIndent::FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const

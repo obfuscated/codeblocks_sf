@@ -3093,12 +3093,34 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 control->EndUndoAction();
             }
         }
+        if(   Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true)
+           || control->IsBraceShortcutActive())
+            DoSelectionBraceCompletion(control, ch);
     }
 }
 
 void cbEditor::AutoIndentDone()
 {
     m_autoIndentDone = true;
+}
+
+void cbEditor::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const
+{
+    if (control->GetLastSelectedText().IsEmpty())
+        return;
+    const wxString braces(wxT("([{<'\")]}>'\""));
+    const int braceAIdx = braces.Find(ch, true); // from end (so caret ends after quotes)
+    if (braceAIdx == wxNOT_FOUND)
+        return;
+    const int braceBIdx = (braceAIdx + (braces.Length() / 2)) % braces.Length();
+    control->BeginUndoAction();
+    control->DeleteBack();
+    if (braceAIdx < braceBIdx)
+        control->InsertText(control->GetCurrentPos(),
+                            braces[braceAIdx] + control->GetLastSelectedText() + braces[braceBIdx]);
+    else
+        control->AddText(braces[braceBIdx] + control->GetLastSelectedText() + braces[braceAIdx]);
+    control->EndUndoAction();
 }
 
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)

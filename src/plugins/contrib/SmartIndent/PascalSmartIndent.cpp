@@ -44,6 +44,9 @@ void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
         DoIndent(ed, langname);   // indent because \n added
     else if ( ch != wxT(' ') )
         DoUnIndent(ed, langname); // un-indent because not a newline added
+
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+        ed->DoSelectionBraceCompletion(stc, ch);
 }
 
 void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const

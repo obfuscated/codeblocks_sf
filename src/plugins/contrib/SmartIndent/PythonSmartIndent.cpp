@@ -69,4 +69,7 @@ void PythonSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
             stc->EndUndoAction();
         }
     }
+
+    if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
+        ed->DoSelectionBraceCompletion(stc, ch);
 }
