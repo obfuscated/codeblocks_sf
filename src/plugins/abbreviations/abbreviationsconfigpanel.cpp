@@ -62,6 +62,7 @@ void AbbreviationsConfigPanel::InitCompText()
 {
     if (m_AutoCompTextControl)
         delete m_AutoCompTextControl;
+
     m_AutoCompTextControl = new cbStyledTextCtrl(this, wxID_ANY);
     m_AutoCompTextControl->SetTabWidth(4);
     m_AutoCompTextControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
@@ -174,10 +175,15 @@ void AbbreviationsConfigPanel::OnApply()
 }
 
 void AbbreviationsConfigPanel::OnCancel()
-{}
+{
+}
 
 wxString AbbreviationsConfigPanel::GetTitle() const
-{ return _("Abbreviations"); }
+{
+  return _("Abbreviations");
+}
 
 wxString AbbreviationsConfigPanel::GetBitmapBaseName() const
-{ return _T("abbrev"); }
+{
+  return _T("abbrev");
+}

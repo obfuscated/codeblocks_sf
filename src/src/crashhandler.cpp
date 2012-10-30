@@ -145,6 +145,4 @@ CrashHandler::~CrashHandler()
     }
 }
 
-
 #endif //(__WXMSW__)
-

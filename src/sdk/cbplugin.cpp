@@ -179,7 +179,7 @@ void cbDebuggerPlugin::BuildMenu(wxMenuBar* menuBar)
     Manager::Get()->GetDebuggerManager()->GetMenu();
 }
 
-wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint *mousePosition)
+wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
@@ -205,12 +205,12 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint *mousePosition)
         if (mousePosition)
         {
             int startPos = stc->GetSelectionStart();
-            int endPos = stc->GetSelectionEnd();
+            int endPos   = stc->GetSelectionEnd();
             wxPoint startPoint = stc->PointFromPosition(startPos);
-            wxPoint endPoint = stc->PointFromPosition(endPos);
+            wxPoint endPoint   = stc->PointFromPosition(endPos);
             int endLine = stc->LineFromPosition(endPos);
             int textHeight = stc->TextHeight(endLine);
-            endPoint.y+=textHeight;
+            endPoint.y += textHeight;
             if (wxRect(startPoint, endPoint).Contains(*mousePosition))
                 return selected_text;
             else

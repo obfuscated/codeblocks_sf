@@ -387,5 +387,3 @@ class MainFrame : public wxFrame
 };
 
 #endif // MAIN_H
-
-

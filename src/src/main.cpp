@@ -4446,7 +4446,6 @@ void MainFrame::OnToggleStartPage(wxCommandEvent& /*event*/)
     ShowHideStartPage(false,toggle);
 }
 
-
 void MainFrame::OnToggleFullScreen(wxCommandEvent& /*event*/)
 {
     ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR// | wxFULLSCREEN_NOSTATUSBAR

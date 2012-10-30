@@ -295,11 +295,8 @@ void DebuggerGDB::OnConfigurationChange(bool isActive)
 wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
 {
     SearchDirsMap::iterator it = m_SearchDirs.find(prj);
-    if (it == m_SearchDirs.end())
-    {
-        // create an empty set for this project
+    if (it == m_SearchDirs.end()) // create an empty set for this project
         it = m_SearchDirs.insert(m_SearchDirs.begin(), std::make_pair(prj, wxArrayString()));
-    }
 
     return it->second;
 }
@@ -308,12 +305,11 @@ RemoteDebuggingMap& DebuggerGDB::GetRemoteDebuggingMap(cbProject* project)
 {
     if (!project)
         project = m_pProject;
+
     ProjectRemoteDebuggingMap::iterator it = m_RemoteDebugging.find(project);
-    if (it == m_RemoteDebugging.end())
-    {
-        // create an empty set for this project
+    if (it == m_RemoteDebugging.end()) // create an empty set for this project
         it = m_RemoteDebugging.insert(m_RemoteDebugging.begin(), std::make_pair(project, RemoteDebuggingMap()));
-    }
+
     return it->second;
 }
 
@@ -729,9 +725,8 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
         // now add all per-project user-set search dirs
         wxArrayString& pdirs = GetSearchDirs(m_pProject);
         for (size_t i = 0; i < pdirs.GetCount(); ++i)
-        {
             AddSourceDir(pdirs[i]);
-        }
+
         // lastly, add THE project as source dir
         AddSourceDir(m_pProject->GetBasePath());
         AddSourceDir(m_pProject->GetCommonTopLevelPath());

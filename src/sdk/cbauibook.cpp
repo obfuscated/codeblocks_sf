@@ -140,13 +140,13 @@ void cbAuiNotebook::ResetTabCtrlEvents()
     {
 #if !wxCHECK_VERSION(2, 9, 4)
         m_TabCtrls[i]->Disconnect(wxEVT_MOTION, wxMouseEventHandler(cbAuiNotebook::OnMotion));
-        m_TabCtrls[i]->Connect(wxEVT_MOTION , wxMouseEventHandler(cbAuiNotebook::OnMotion));
+        m_TabCtrls[i]->Connect(wxEVT_MOTION ,   wxMouseEventHandler(cbAuiNotebook::OnMotion));
 #endif
         m_TabCtrls[i]->Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
-        m_TabCtrls[i]->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
-        m_TabCtrls[i]->Disconnect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
-        m_TabCtrls[i]->Connect(wxEVT_SIZE, wxSizeEventHandler(cbAuiNotebook::OnResize));
-        m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
+        m_TabCtrls[i]->Connect(wxEVT_LEFT_DCLICK,    wxMouseEventHandler(cbAuiNotebook::OnTabCtrlDblClick));
+        m_TabCtrls[i]->Disconnect(wxEVT_SIZE,        wxSizeEventHandler(cbAuiNotebook::OnResize));
+        m_TabCtrls[i]->Connect(wxEVT_SIZE,           wxSizeEventHandler(cbAuiNotebook::OnResize));
+        m_TabCtrls[i]->Disconnect(wxEVT_MOUSEWHEEL,  wxMouseEventHandler(cbAuiNotebook::OnTabCtrlMouseWheel));
 #ifdef __WXMSW__
         m_TabCtrls[i]->Disconnect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnEnterTabCtrl));
         m_TabCtrls[i]->Disconnect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(cbAuiNotebook::OnLeaveTabCtrl));
@@ -261,9 +261,7 @@ void cbAuiNotebook::OnLeaveTabCtrl(wxMouseEvent& event)
     {
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
         if (nb)
-        {
             nb->RestoreFocus();
-        }
     }
 
 }
@@ -424,9 +422,8 @@ void cbAuiNotebook::OnMotion(wxMouseEvent& event)
 bool cbAuiNotebook::SetPageToolTip(size_t idx, const wxString & text )
 {
     if (!m_HasToolTip)
-    {
         UpdateTabControlsArray();
-    }
+
     m_HasToolTip = true;
     wxWindow* win = GetPage(idx);
     if (win && win->GetName() != text)
@@ -475,8 +472,8 @@ void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
                 }
             }
         }
-        while (tabOffset > 0 && tabCtrl->IsTabVisible(lastTabIdx, tabOffset-1, & dc, win) )
-                --tabOffset;
+        while (tabOffset > 0 && tabCtrl->IsTabVisible(lastTabIdx, tabOffset-1, & dc, win))
+            --tabOffset;
 
         tabCtrl->SetTabOffset(tabOffset);
     }

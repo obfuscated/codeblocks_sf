@@ -686,7 +686,7 @@ class GdbCmd_Start : public DebuggerContinueBaseCmd
             const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
             for (size_t ii = 0; ii < lines.GetCount(); ++ii)
             {
-                if (lines[ii].StartsWith(wxT("No symbol table loaded"))
+                if (   lines[ii].StartsWith(wxT("No symbol table loaded"))
                     || lines[ii].StartsWith(wxT("No executable file specified"))
                     || lines[ii].StartsWith(wxT("No executable specified"))
                     || lines[ii].StartsWith(wxT("Don't know how to run")))

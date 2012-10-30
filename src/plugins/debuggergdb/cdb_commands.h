@@ -249,7 +249,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
             if (bp->enabled)
             {
                 if (bp->index==-1)
-                    bp->index=m_lastIndex++;
+                    bp->index = m_lastIndex++;
 
                 wxString out = m_BP->filename;
 //                DebuggerGDB::ConvertToGDBFile(out);
@@ -283,7 +283,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
         cb::shared_ptr<DebuggerBreakpoint> m_BP;
 };
 
-int CdbCmd_AddBreakpoint::m_lastIndex=1;
+int CdbCmd_AddBreakpoint::m_lastIndex = 1;
 
 /**
   * Command to remove a breakpoint.

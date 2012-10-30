@@ -1518,7 +1518,7 @@ int SEditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     }
 
     FindReplaceBase* dlg = new FindReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection,
-                             !replace, !ed, explicitly_find_in_files);
+                                              !replace, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     // Move dlg into the parents frame space //(pecan 2008/7/21)

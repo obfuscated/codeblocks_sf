@@ -219,7 +219,7 @@ void Compiler::MakeValidID()
 
 CompilerCommandGenerator* Compiler::GetCommandGenerator(cbProject *project)
 {
-    CompilerCommandGenerator *generator = new CompilerCommandGenerator;
+    CompilerCommandGenerator* generator = new CompilerCommandGenerator;
     generator->Init(project);
     return generator;
 }
@@ -525,9 +525,9 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.DBG       = cfg->Read(tmp + _T("/debugger"),        m_Programs.DBG);
     m_Programs.DBGconfig = cfg->Read(tmp + _T("/debugger_config"), m_Programs.DBGconfig);
 
-    // set member variable containing the version string with the configurated toolchain executables, not only
+    // set member variable containing the version string with the configuration toolchain executables, not only
     // with the default ones, otherwise we might have an empty version-string
-    // Some MinGW installations do not includee "mingw32-gcc" !!
+    // Some MinGW installations do not include "mingw32-gcc" !!
     SetVersionString();
 
     SetCompilerOptions    (GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
@@ -612,7 +612,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.desc     = cfg->Read(group + _T("/description"));
         rs.lt       = (CompilerLineType)cfg->ReadInt(group + _T("/type"), 0);
         rs.regex    = cfg->Read(group + _T("/regex"));
-        rs.msg[0  ] = cfg->ReadInt(group + _T("/msg1"), 0);
+        rs.msg[0]   = cfg->ReadInt(group + _T("/msg1"), 0);
         rs.msg[1]   = cfg->ReadInt(group + _T("/msg2"), 0);
         rs.msg[2]   = cfg->ReadInt(group + _T("/msg3"), 0);
         rs.filename = cfg->ReadInt(group + _T("/filename"), 0);

@@ -824,8 +824,8 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
                   //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
                   //       horizontal scrolling is accounted for by PointFromPosition().x
     const int offset = tipWidth + pos + 1 - lnStart -
-                 (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
-                  stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
+                       (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
+                       stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
     if (offset > 0)
         pos -= offset;
     if (pos < lnStart) // do not go to previous line if tip is wider than editor
