@@ -18,6 +18,7 @@ namespace
 {
     PluginRegistrant<FortranSmartIndent> reg(wxT("FortranSmartIndent"));
 }
+
 void FortranSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

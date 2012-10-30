@@ -18,6 +18,7 @@ namespace
 {
     PluginRegistrant<PythonSmartIndent> reg(wxT("PythonSmartIndent"));
 }
+
 void PythonSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

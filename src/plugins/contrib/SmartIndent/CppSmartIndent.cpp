@@ -425,6 +425,7 @@ void CppSmartIndent::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
     }
 
 }
+
 bool CppSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
 {
     if ( BraceSmartIndentEnabled() )
@@ -440,6 +441,7 @@ bool CppSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
     }
     return false;
 }
+
 void CppSmartIndent::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar &ch)const
 {
     if (!control->GetLastSelectedText().IsEmpty())
@@ -547,6 +549,7 @@ void CppSmartIndent::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
         }
     } // SelectionBraceCompletion
 }
+
 void CppSmartIndent::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch)const
 {
     int pos = control->GetCurrentPos();

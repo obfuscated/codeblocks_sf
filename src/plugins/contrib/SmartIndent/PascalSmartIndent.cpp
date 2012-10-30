@@ -18,6 +18,7 @@ namespace
 {
     PluginRegistrant<PascalSmartIndent> reg(wxT("PascalSmartIndent"));
 }
+
 void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     if (!ed) return;

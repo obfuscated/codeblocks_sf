@@ -18,6 +18,7 @@ namespace
 {
     PluginRegistrant<LuaSmartIndent> reg(wxT("LuaSmartIndent"));
 }
+
 void LuaSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled

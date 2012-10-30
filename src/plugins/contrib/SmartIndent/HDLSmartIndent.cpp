@@ -18,6 +18,7 @@ namespace
 {
     PluginRegistrant<HDLSmartIndent> reg(wxT("HDLSmartIndent"));
 }
+
 void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
