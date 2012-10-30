@@ -172,14 +172,22 @@ public:
 
     virtual bool AddPage(wxWindow *page, const wxString& text,
                          bool bSelect = false, int imageId = -1);
-    virtual bool InsertPage(int nPage, wxNotebookPage *pPage,
+    virtual bool InsertPage(size_t nPage, wxNotebookPage *pPage,
                             const wxString& strText, bool bSelect = false,
                             int imageId = -1);
     virtual int  GetSelection() const;
-    virtual int  SetSelection(int nPage);
-    virtual bool DeletePage(int nPage);
-    virtual bool RemovePage(int nPage);
+    virtual int  SetSelection(size_t nPage);
+    virtual bool DeletePage(size_t nPage);
+    virtual bool RemovePage(size_t nPage);
     virtual bool DeleteAllPages();
+
+    // Override for 2.6 compatibility
+    //virtual bool InsertPage(int nPage, wxNotebookPage *pPage,
+    //                        const wxString& strText, bool bSelect = false,
+    //                        int imageId = -1) { return InsertPage((size_t)nPage, pPage, strText, bSelect, imageId); }
+    //virtual int  SetSelection(int nPage) { return SetSelection((size_t)nPage); } /// Override for 2.6 compatibility
+    //virtual bool DeletePage(int nPage)   { return DeletePage((size_t)nPage); } /// Override for 2.6 compatibility
+    //virtual bool RemovePage(int nPage)   { return RemovePage((size_t)nPage); } /// Override for 2.6 compatibility
 
     /// @}
 

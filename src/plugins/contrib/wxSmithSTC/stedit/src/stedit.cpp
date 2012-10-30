@@ -3260,7 +3260,7 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
         case ID_STE_LINE_DUPLICATE : LineDuplicate(); return true;
 
         case wxID_FIND             : ShowFindReplaceDialog(true); return true;
-        
+
         case ID_STE_TOOLBAR_SEARCHCTRL_MENU0 :
         case ID_STE_TOOLBAR_SEARCHCTRL_MENU1 :
         case ID_STE_TOOLBAR_SEARCHCTRL_MENU2 :
@@ -3274,11 +3274,11 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
         {
             wxSTEditorFindReplaceData* findReplaceData = GetFindReplaceData();
             if (findReplaceData == NULL) return true;
-            
+
             int index = win_id - ID_STE_TOOLBAR_SEARCHCTRL_MENU0;
             if (index >= (int)findReplaceData->GetFindStrings().GetCount()) return true;
             wxString findString(findReplaceData->GetFindStrings()[index]);
-            
+
             SetFindString(findString, true);
             wxCommandEvent menuEvent(wxEVT_COMMAND_MENU_SELECTED, ID_STE_FIND_NEXT);
             GetEventHandler()->AddPendingEvent(menuEvent);
@@ -3288,7 +3288,7 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
         {
             if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN)
             {
-                wxSearchCtrl* searchCtrl = wxDynamicCast(event.GetEventObject(), wxSearchCtrl);
+                //wxSearchCtrl* searchCtrl = wxDynamicCast(event.GetEventObject(), wxSearchCtrl);
                 //if (searchCtrl != NULL)
                 //	searchCtrl->Clear();
 
@@ -3297,15 +3297,15 @@ bool wxSTEditor::HandleMenuEvent(wxCommandEvent& event)
             else if (event.GetEventType() == wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN)
             {
                 // popup menu is shown
-                return true;
+                //return true;
             }
 
             wxString findString(event.GetString());
             if (GetFindString() != findString)
                 SetFindString(findString, true);
-            
+
             // call our find next processing code
-            win_id = ID_STE_FIND_NEXT; 
+            win_id = ID_STE_FIND_NEXT;
 
             // fall though...
         }

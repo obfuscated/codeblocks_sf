@@ -380,7 +380,7 @@ void wxSTEditorFindResultsEditor::SetResults(const wxSTEditorFindReplaceData& fi
     size_t n, count = findAllStrings.GetCount();
 
     m_lineArrayMap.Clear();
-    Clear();
+    ClearAll();
     ClearAllIndicators();
 
     if (count < 1)

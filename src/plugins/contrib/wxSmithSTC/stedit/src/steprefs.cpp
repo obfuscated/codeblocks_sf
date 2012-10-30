@@ -205,6 +205,8 @@ void wxSTEditorPrefs::Init()
     AddInitPref(wxT("Auto Completion Auto Hide"),         1,             STE_PREF_FLAG_BOOL|STE_PREF_FLAG_NOCONFIG);
     AddInitPref(wxT("Auto Completion Drop Rest of Word"), 1,             STE_PREF_FLAG_BOOL|STE_PREF_FLAG_NOCONFIG);
     AddInitPref(wxT("Auto Completion Type Separator"),    int('?'),      STE_PREF_FLAG_INT|STE_PREF_FLAG_NOCONFIG);
+
+    wxASSERT(s_STE_PrefNames.GetCount() == STE_PREF__MAX);
 }
 
 wxString wxSTEditorPrefs::GetPrefName(size_t pref_n) const

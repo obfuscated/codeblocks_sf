@@ -2735,32 +2735,25 @@ wxSTEditorFileDialog::wxSTEditorFileDialog(wxWindow* parent,
                                            long style)
                      :wxFileDialog(parent, message, defaultDir, wxEmptyString, extensions, style)
 {
-    //m_encoding = wxBOM_UTF8;
-    //SetFilterIndex(extensions.Freq('|')/2); // "All Files (*)" is at the very bottom of the combobox
 #if STE_FILEOPENEXTRA
     SetExtraControlCreator(&wxSTEditorFileOpenPanel::ControlCreator);
-#else
-    switch (wxTextEncoding::TypeFromString(wxSTEditorFileDialog::m_encoding))
-    {
-        case wxTextEncoding::UTF8:
-            SetFilterIndex(filterindex_utf8);
-            break;
-        case wxTextEncoding::Unicode_LE:
-            SetFilterIndex(filterindex_unicode);
-            break;
-    #ifdef __WXMSW__
-        case wxTextEncoding::OEM:
-            SetFilterIndex(filterindex_oem);
-            break;
-    #endif
-        default:
-            break;
-    }
 #endif
 }
 
 int wxSTEditorFileDialog::ShowModal()
 {
+#if !STE_FILEOPENEXTRA
+    switch (wxTextEncoding::TypeFromString(wxSTEditorFileDialog::m_encoding))
+    {
+        case wxTextEncoding::UTF8       : SetFilterIndex(filterindex_utf8);    break;
+        case wxTextEncoding::Unicode_LE : SetFilterIndex(filterindex_unicode); break;
+    #ifdef __WXMSW__
+        case wxTextEncoding::OEM        : SetFilterIndex(filterindex_oem);     break;
+    #endif
+        default                         : break;
+    }
+#endif //!STE_FILEOPENEXTRA
+
     int n = wxFileDialog::ShowModal();
 
 #if STE_FILEOPENEXTRA

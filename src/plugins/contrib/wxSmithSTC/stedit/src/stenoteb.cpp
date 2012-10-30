@@ -1119,7 +1119,7 @@ bool wxSTEditorNotebook::AddPage(wxWindow *page, const wxString& text,
     if (!guard.IsInside()) UpdatePageState();
     return ret;
 }
-bool wxSTEditorNotebook::InsertPage(int nPage, wxNotebookPage *pPage,
+bool wxSTEditorNotebook::InsertPage(size_t nPage, wxNotebookPage *pPage,
                                     const wxString& strText, bool bSelect, int imageId)
 {
     wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
@@ -1135,21 +1135,21 @@ int wxSTEditorNotebook::GetSelection() const
     if (!guard.IsInside()) noteBook->UpdatePageState();
     return ret;
 }
-int wxSTEditorNotebook::SetSelection(int nPage)
+int wxSTEditorNotebook::SetSelection(size_t nPage)
 {
     wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
     int  ret = wxNotebook::SetSelection(nPage);
     if (!guard.IsInside()) UpdatePageState();
     return ret;
 }
-bool wxSTEditorNotebook::DeletePage(int nPage)
+bool wxSTEditorNotebook::DeletePage(size_t nPage)
 {
     wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
     bool ret = wxNotebook::DeletePage(nPage);
     if (!guard.IsInside()) UpdatePageState();
     return ret;
 }
-bool wxSTEditorNotebook::RemovePage(int nPage)
+bool wxSTEditorNotebook::RemovePage(size_t nPage)
 {
     wxSTERecursionGuard guard(m_rGuard_UpdatePageState);
     bool ret = wxNotebook::RemovePage(nPage);
@@ -1263,7 +1263,7 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
     }
     else if (eventType == wxEVT_COMMAND_FIND_REPLACE)
     {
-        if (!editor->GetFindReplaceData()->StringCmp(findString, editor->GetSelectedText(), flags))
+        if (!editor->SelectionIsFindString(findString, flags))
         {
             wxBell();
             return;

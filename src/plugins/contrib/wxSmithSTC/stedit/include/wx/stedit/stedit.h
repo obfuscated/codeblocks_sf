@@ -381,7 +381,10 @@ public :
     void ShowPosition(STE_TextPos pos)      { GotoPos(pos); }
     void SetValue(const wxString& text)     { SetText(text); }
     void ChangeValue(const wxString& text)  { SetText(text); }
-    wxString GetValue() const               { return wxConstCast(this, wxSTEditor)->GetText(); }
+    wxString GetValue() const               { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText(); }
+    wxString GetText() const                { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetText(); }
+    void ClearSelections()                  { SetSelection(GetInsertionPoint() , GetInsertionPoint()); }
+
 
     // verbatim copy of wx trunk wxTextAreaBase::SetModified()
     void SetModified(bool modified) { if ( modified ) MarkDirty(); else DiscardEdits(); }
@@ -398,9 +401,6 @@ public :
     // ------------------------------------------------------------------------
     // wxWidgets 2.8 <--> 2.9 compatibility functions (most functions are const in wx2.9)
 
-#if (wxVERSION_NUMBER < 2900)
-    wxString GetRange(int startPos, int endPos) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
-#endif
     wxString GetTextRange(int startPos, int endPos) const { return  wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
 
 #if (wxVERSION_NUMBER >= 2900)
@@ -415,7 +415,9 @@ public :
 
     wxString GetLine(int line) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLine(line); }
     int GetLength() const            { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetLength(); }
+    int GetTextLength() const        { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextLength(); }
     long GetNumberOfLines() const    { return wxConstCast(this, wxSTEditor)->GetLineCount(); } // not in wx2.8
+    wxString GetRange(int startPos, int endPos) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTextRange(startPos, endPos); }
 
     void GetSelection(STE_TextPos* iStart, STE_TextPos* iEnd) const // forwards compatibility, wx2.8 uses int*
         { int s=0,e=0; wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelection(&s, &e); if (iStart) *iStart=s; if (iEnd) *iEnd=e; }
@@ -425,13 +427,16 @@ public :
     STE_TextPos GetSelectionStart() const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionStart(); }
     STE_TextPos GetSelectionEnd() const   { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetSelectionEnd(); }
 
-    STE_TextPos GetTargetStart() const   { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetStart(); }
-    STE_TextPos GetTargetEnd() const     { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetEnd(); }
+    STE_TextPos GetTargetStart() const    { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetStart(); }
+    STE_TextPos GetTargetEnd() const      { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetTargetEnd(); }
 
-    virtual bool IsEditable() const { return !wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetReadOnly(); } // not in wx2.8; virtual in wx trunk so make it virtual here too
+    virtual bool IsEditable() const       { return !wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::GetReadOnly(); } // not in wx2.8; virtual in wx trunk so make it virtual here too
 
     int LineFromPosition(STE_TextPos pos) const  { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::LineFromPosition(pos); }
     STE_TextPos PositionFromLine(int line) const { return wxConstCast(this, wxSTEditor)->wxStyledTextCtrl::PositionFromLine(line); }
+
+    STE_TextPos GetLastPosition() const { return GetTextLength(); }
+    bool IsEmpty() const                { return GetLastPosition() <= 0; }
 #endif // (wxVERSION_NUMBER >= 2900)
 
 #ifdef __WXGTK__
