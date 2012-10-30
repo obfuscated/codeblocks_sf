@@ -17,6 +17,7 @@
     #include <wx/regex.h>
     #include <wx/wfstream.h>
 
+    #include <cbauibook.h>
     #include <cbeditor.h>
     #include <cbexception.h>
     #include <cbproject.h>
@@ -27,10 +28,10 @@
     #include <macrosmanager.h>
     #include <manager.h>
     #include <pluginmanager.h>
+    #include <prep.h> // nullptr
     #include <projectmanager.h>
-    #include <tinyxml/tinyxml.h>
 
-    #include <cbauibook.h>
+    #include <tinyxml/tinyxml.h>
 #endif
 
 #include <wx/tokenzr.h>
@@ -1919,9 +1920,9 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
 
     // ...so we can access post-processed project's search dirs
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
-
-    cb::shared_ptr<CompilerCommandGenerator> generator(compiler->GetCommandGenerator(project));
-    generator->Init(project);
+    cb::shared_ptr<CompilerCommandGenerator> generator(compiler ? compiler->GetCommandGenerator(project) : nullptr);
+    if (compiler && generator)
+        generator->Init(project);
 
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
@@ -1950,7 +1951,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         ProjectBuildTarget* target = project->GetBuildTarget(i);
         if (target && target->SupportsCurrentPlatform())
         {
-            if (compiler)
+            if (compiler && generator)
             {
                 // post-processed search dirs (from build scripts)
                 for (unsigned int ti = 0; ti < generator->GetCompilerSearchDirs(target).GetCount(); ++ti)
