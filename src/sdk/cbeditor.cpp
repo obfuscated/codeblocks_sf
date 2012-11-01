@@ -3076,9 +3076,9 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     {
         const wxChar ch = event.GetKey();
         cbStyledTextCtrl* control = GetControl();
+        const int pos = control->GetCurrentPos();
         if ( (ch == _T('\n')) || ( (control->GetEOLMode() == wxSCI_EOL_CR) && (ch == _T('\r')) ) )
         {
-            const int pos = control->GetCurrentPos();
             const int currLine = control->LineFromPosition(pos);
             const bool autoIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
             if (autoIndent && currLine > 0)
@@ -3093,9 +3093,32 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 control->EndUndoAction();
             }
         }
-        if(   Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true)
-           || control->IsBraceShortcutActive())
+
+        // selection brace completion
+        if (   Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false)
+            || control->IsBraceShortcutActive() )
+        {
             DoSelectionBraceCompletion(control, ch);
+        }
+
+        // brace completion
+        const wxString braces(wxT("([{)]}"));
+        const int braceIdx = braces.Find(ch);
+        if (   braceIdx != wxNOT_FOUND && pos == control->GetCurrentPos() // pos != curPos if selection brace completion succeeded
+            && Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true) )
+        {
+            if (control->GetCharAt(pos) == ch)
+            {
+                control->DeleteBack();
+                control->CharRight();
+            }
+            else if (braceIdx < (braces.Length() / 2))
+            {
+                const int closeIdx = braceIdx + (braces.Length() / 2);
+                if (control->GetCharAt(pos) != braces[closeIdx] || control->BraceMatch(pos) != wxNOT_FOUND)
+                    control->InsertText(pos, braces[closeIdx]);
+            }
+        }
     }
 }
 
