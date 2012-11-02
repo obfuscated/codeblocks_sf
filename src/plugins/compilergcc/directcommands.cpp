@@ -30,17 +30,23 @@
 #include <depslib.h>
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
-                               Compiler* compiler,
-                               cbProject* project,
-                               int logPageIndex)
-    : m_doYield(false),
+                               Compiler*    compiler,
+                               cbProject*   project,
+                               int          logPageIndex) :
+    m_doYield(false),
     m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
     m_pCompiler(compiler),
     m_pProject(project),
-    m_pCurrTarget(0)
+    m_pCurrTarget(0),
+    m_pGenerator(0)
 {
-    //ctor
+    // even if there is no project, the command generator need to be
+    // initialised for single file compilation to work.
+    // it can handle a NULL pointer argument... ;-)
+    m_pGenerator = m_pCompiler->GetCommandGenerator(m_pProject);
+
+    // ctor
     if (!m_pProject)
         return; // probably a compile file cmd without a project
 
@@ -52,13 +58,11 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
     wxFileName fname(m_pProject->GetFilename());
     fname.SetExt(_T("depend"));
     depsCacheRead(fname.GetFullPath().mb_str());
-
-    m_pGenerator = m_pCompiler->GetCommandGenerator(m_pProject);
 }
 
 DirectCommands::~DirectCommands()
 {
-    //dtor
+    // dtor
     if (!m_pProject)
         return; // probably a compile file cmd without a project
 
@@ -70,6 +74,7 @@ DirectCommands::~DirectCommands()
         fname.SetExt(_T("depend"));
         depsCacheWrite(fname.GetFullPath().mb_str());
     }
+
     Manager::Get()->GetLogManager()->DebugLog(
         F(_("Scanned %ld files for #includes, cache used %ld, cache updated %ld"),
         stats.scanned, stats.cache_used, stats.cache_updated));
@@ -231,10 +236,17 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         QuoteStringIfNeeded(source_file);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCompileFileCommand[2]: source_file='%s'."),
-                                                source_file.wx_str()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCompileFileCommand[2]: source_file='%s'."),
+                                                    source_file.wx_str()));
 #endif
-        m_pGenerator->GenerateCommandLine(compiler_cmd, target, pf, source_file, object, pfd.object_file_flat, pfd.dep_file);
+
+        m_pGenerator->GenerateCommandLine(compiler_cmd,
+                                          target,
+                                          pf,
+                                          source_file,
+                                          object,
+                                          pfd.object_file_flat,
+                                          pfd.dep_file);
     }
 
     if (compiler_cmd.IsEmpty())
@@ -287,6 +299,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         wxString object_abs = (compiler->GetSwitches().UseFlatObjects)
                             ? pfd.object_file_flat_absolute_native
                             : pfd.object_file_absolute_native;
+
         if ( !wxRemoveFile(object_abs) )
             Manager::Get()->GetLogManager()->DebugLog(_("Cannot remove old PCH file:\n") + object_abs);
     }
@@ -321,10 +334,25 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     if (!compiler)
         return ret;
 
+    // please leave this check here for convenience: single file compilation is "special"
+    if (!m_pGenerator) cbThrow(_T("Command generator not initialised through ctor!"));
+
     wxString compilerCmd = compiler->GetCommand(ctCompileObjectCmd, srcExt);
-    m_pGenerator->GenerateCommandLine(compilerCmd, 0, 0, s_filename, o_filename, o_filename, wxEmptyString);
+    m_pGenerator->GenerateCommandLine(compilerCmd,
+                                      0,
+                                      0,
+                                      s_filename,
+                                      o_filename,
+                                      o_filename,
+                                      wxEmptyString);
     wxString linkerCmd = compiler->GetCommand(ctLinkConsoleExeCmd, fname.GetExt());
-    m_pGenerator->GenerateCommandLine(linkerCmd, 0, 0, wxEmptyString, o_filename, o_filename, wxEmptyString);
+    m_pGenerator->GenerateCommandLine(linkerCmd,
+                                      0,
+                                      0,
+                                      wxEmptyString,
+                                      o_filename,
+                                      o_filename,
+                                      wxEmptyString);
 
     if (!compilerCmd.IsEmpty())
     {
@@ -412,7 +440,6 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
     wxArrayString ret;
     m_pCurrTarget = target;
 
@@ -571,8 +598,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (!fileMissing.IsEmpty())
     {
         wxString warn;
-        warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependencies:"),
-                    target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()));
+        warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependenc%s:"),
+                    target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()), wxString(fileMissing.Count() == 1 ? _("y") : _("ies")).wx_str());
         ret.Add(wxString(COMPILER_SIMPLE_LOG) + warn);
         for (size_t i=0; i<fileMissing.Count(); i++)
             ret.Add(wxString(COMPILER_SIMPLE_LOG) + fileMissing[i]);
@@ -609,6 +636,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     }
     if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)
         linkfiles << _T("file ");
+
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
@@ -724,8 +752,13 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         break;
     }
     wxString compilerCmd = compiler->GetCommand(ct);
-    m_pGenerator->GenerateCommandLine(compilerCmd, target, 0, _T(""), linkfiles, FlatLinkFiles, resfiles);
-
+    m_pGenerator->GenerateCommandLine(compilerCmd,
+                                      target,
+                                      0,
+                                      _T(""),
+                                      linkfiles,
+                                      FlatLinkFiles,
+                                      resfiles);
     if (!compilerCmd.IsEmpty())
     {
         switch (compiler->GetSwitches().logging)

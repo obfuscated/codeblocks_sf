@@ -2775,7 +2775,7 @@ int CodeCompletion::DoAllMethodsImpl()
         return -4;
 
     wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());
-    TokenTree*   tree  = m_NativeParser.GetParser().GetTokenTree();
+    TokenTree*    tree  = m_NativeParser.GetParser().GetTokenTree();
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
