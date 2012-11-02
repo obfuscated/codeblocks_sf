@@ -4,7 +4,6 @@
 #include <wx/string.h>
 #include <wx/hashmap.h>
 
-
 #define COMPILER_SIMPLE_LOG     _T("SLOG:")
 #define COMPILER_TARGET_CHANGE  _T("TGT:")
 #define COMPILER_WAIT           _T("WAIT")
@@ -27,9 +26,9 @@ class DirectCommands
         DirectCommands& operator=(DirectCommands &);
     public:
         DirectCommands(CompilerGCC* compilerPlugin,
-                        Compiler* compiler,
-                        cbProject* project,
-                        int logPageIndex = 0);
+                       Compiler*    compiler,
+                       cbProject*   project,
+                       int          logPageIndex = 0);
         ~DirectCommands();
 
         wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
@@ -44,20 +43,21 @@ class DirectCommands
         wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
         wxArrayString GetCleanSingleFileCommand(const wxString& filename);
         wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+
         bool m_doYield;
     protected:
-        bool AreExternalDepsOutdated(ProjectBuildTarget* target, const wxString& buildOutput, wxArrayString* filesMissing);
-        bool IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr = 0);
-        void DepsSearchStart(ProjectBuildTarget* target);
+        bool         AreExternalDepsOutdated(ProjectBuildTarget* target, const wxString& buildOutput, wxArrayString* filesMissing);
+        bool         IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr = 0);
+        void         DepsSearchStart(ProjectBuildTarget* target);
         MyFilesArray GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link);
-        void AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd = false, bool isLinkCmd = false);
+        void         AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd = false, bool isLinkCmd = false);
 
-        int m_PageIndex;
-        CompilerGCC* m_pCompilerPlugin;
-        Compiler* m_pCompiler;
-        cbProject* m_pProject;
-        ProjectBuildTarget* m_pCurrTarget; // temp
-        CompilerCommandGenerator *m_pGenerator;
+        int                       m_PageIndex;
+        CompilerGCC*              m_pCompilerPlugin;
+        Compiler*                 m_pCompiler;
+        cbProject*                m_pProject;
+        ProjectBuildTarget*       m_pCurrTarget; // temp
+        CompilerCommandGenerator* m_pGenerator;
     private:
 };
 
