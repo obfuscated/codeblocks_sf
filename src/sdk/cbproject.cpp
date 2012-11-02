@@ -53,8 +53,8 @@
 #include "genericmultilinenotesdlg.h"
 
 // class constructor
-cbProject::cbProject(const wxString& filename)
-    : m_CustomMakefile(false),
+cbProject::cbProject(const wxString& filename) :
+    m_CustomMakefile(false),
     m_Globs(),
     m_FileArray(ProjectFile::CompareProjectFiles),
     m_Loaded(false),
@@ -86,18 +86,18 @@ cbProject::cbProject(const wxString& filename)
         if (realFile.IsEmpty())
         {
             m_Filename = CreateUniqueFilename();
-            m_Loaded = SaveAs();
+            m_Loaded   = SaveAs();
         }
         else
         {
             m_Filename = realFile;
-            m_Loaded = Save();
+            m_Loaded   = Save();
         }
         if (m_Loaded)
         {
             wxFileName fname(m_Filename);
-            m_Title = fname.GetName();
-            m_BasePath = GetBasePath();
+            m_Title              = fname.GetName();
+            m_BasePath           = GetBasePath();
             m_CommonTopLevelPath = GetBasePath() + wxFileName::GetPathSeparator();
 
             // moved to ProjectManager::LoadProject()
@@ -147,8 +147,8 @@ void cbProject::SetCompilerID(const wxString& id)
                 {
                     ProjectFile* pf = *it;
                     wxFileName obj(pf->GetObjName());
-                    if (FileTypeOf(pf->relativeFilename) != ftResource &&
-                        obj.GetExt() == compiler->GetSwitches().objectExtension)
+                    if (   (FileTypeOf(pf->relativeFilename) != ftResource)
+                        && (obj.GetExt() == compiler->GetSwitches().objectExtension) )
                     {
                         obj.SetExt(compiler->GetSwitches().objectExtension);
                         pf->SetObjName(obj.GetFullName());
@@ -288,7 +288,7 @@ void cbProject::Open()
         if (m_Loaded)
         {
             CalculateCommonTopLevelPath();
-            Manager::Get()->GetLogManager()->Log(_("done"));
+            Manager::Get()->GetLogManager()->Log(_("Done."));
             if (!m_Targets.GetCount())
                 AddDefaultBuildTarget();
             // in case of batch build discard upgrade messages
@@ -316,22 +316,40 @@ void cbProject::CalculateCommonTopLevelPath()
 {
     // find the common toplevel path
     // for simple projects, this might be the path to the project file
-    // for projects where the project file is in a subdir, files will have ..
-    // in their paths
-    wxString sep = wxFileName::GetPathSeparator();
-    wxFileName base = GetBasePath() + sep;
+    // for projects where the project file is in a subdir, files will
+    // have ".." in their paths
+    wxString   sep            = wxFileName::GetPathSeparator();
+    wxFileName base           = GetBasePath() + sep;
+    wxString   vol            = base.GetVolume();
+    bool       prjHasUNCName  = base.GetFullPath().StartsWith(_T("\\\\"));
+    bool       fileHasUNCName = false;
+
     Manager::Get()->GetLogManager()->DebugLog(_T("Project's base path: ") + base.GetFullPath());
 
-    // this loop takes ~30ms for 1000 project files
+    // This loop takes ~30ms for 1000 project files
     // it's as fast as it can get, considered that it used to take ~1200ms ;)
     // don't even bother making it faster - you can't :)
+#ifdef ctlp_measuring
+    wxStopWatch sw;
+#endif
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
         ProjectFile* f = (*it);
         if (!f)
             continue;
 
-        wxString tmp = f->relativeFilename;
+        if ( !vol.IsSameAs(f->file.GetVolume()) )
+            continue;
+
+        fileHasUNCName = f->file.GetFullPath().StartsWith(_T("\\\\"));
+
+        if (   (!prjHasUNCName &&  fileHasUNCName)
+            || ( prjHasUNCName && !fileHasUNCName) )
+        {
+            continue;
+        }
+
+        wxString tmp     = f->relativeFilename;
         wxString tmpbase = m_BasePath;
 
         size_t pos = 0;
@@ -345,12 +363,16 @@ void cbProject::CalculateCommonTopLevelPath()
         if ( (pos > 0) && (pos < tmp.Length()) )
             tmpbase << sep << tmp.Left(pos) << sep;
 
-        wxFileName tmpbaseF(tmpbase);
-        tmpbaseF.Normalize(wxPATH_NORM_DOTS);
-        if ( tmpbaseF.GetDirCount() < base.GetDirCount() &&
-             base.GetPath().StartsWith(tmpbaseF.GetPath()))
+        wxFileName tmpbaseF(tmpbase); tmpbaseF.Normalize(wxPATH_NORM_DOTS);
+        if (   (tmpbaseF.GetDirCount() < base.GetDirCount())
+            && (base.GetPath().StartsWith(tmpbaseF.GetPath())) )
+        {
             base = tmpbaseF;
+        }
     }
+#ifdef ctlp_measuring
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("%s::%s:%d  took : %d ms"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__, (int)sw.Time()));
+#endif
 
     m_CommonTopLevelPath = base.GetFullPath();
     Manager::Get()->GetLogManager()->DebugLog(_T("Project's common toplevel path: ") + m_CommonTopLevelPath);
@@ -358,12 +380,37 @@ void cbProject::CalculateCommonTopLevelPath()
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
         ProjectFile* f = (*it);
-
         if (!f)
             continue;
 
         wxString fileName = f->file.GetFullPath();
-        f->relativeToCommonTopLevelPath = fileName.Right(fileName.Length() - m_CommonTopLevelPath.Length());
+        fileHasUNCName = fileName.StartsWith(_T("\\\\"));
+
+        if (   (prjHasUNCName && fileHasUNCName)
+            || (   !prjHasUNCName
+                && !fileHasUNCName
+                && vol.IsSameAs(f->file.GetVolume()) ) )
+        {
+            wxFileName relFileCTLP(f->file);
+            relFileCTLP.MakeRelativeTo( m_CommonTopLevelPath );
+            wxFileName relFileBase(f->file);
+            relFileBase.MakeRelativeTo( GetBasePath() );
+
+            // The commented (old) method to obtain the relativeToCommonTopLevelPath is fast, but does *not* work, if you save
+            // the project on a different drive in a sub-folder of an existing source file on that (different) drive:
+            // I.e.: Project on C:\Folder\Project.cbp has file C:\Folder\SubFolder\foo.cpp and D:\Folder\bar.cpp
+            // Saved the project under D:\Folder\SubFolder\ProjectNew.cbp would cause a wrong computation of bar.cpp otherwise!!!
+//            f->relativeToCommonTopLevelPath = fileName.Right(fileName.Length() - m_CommonTopLevelPath.Length());
+            // Using wxFileName instead, although its costly:
+            f->relativeToCommonTopLevelPath = relFileCTLP.GetFullPath();
+            f->relativeFilename             = relFileBase.GetFullPath();
+        }
+        else
+        {
+            f->relativeToCommonTopLevelPath = fileName;
+            f->relativeFilename             = fileName;
+        }
+
         f->SetObjName(f->relativeToCommonTopLevelPath);
     }
 }
@@ -383,16 +430,22 @@ bool cbProject::SaveAs()
     wxFileName fname;
     fname.Assign(m_Filename);
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
-                    _("Save file"),
-                    fname.GetPath(),
-                    fname.GetFullName(),
-                    FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
-                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+                     _("Save file"),
+                     fname.GetPath(),
+                     fname.GetFullName(),
+                     FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return false;
-    m_Filename = dlg.GetPath();
+
+    wxFileName newName(dlg.GetPath());
+
+    // if the filename has changed, we need to recalulate the common toplevel path
+    bool pathChanged = !newName.GetPath().IsSameAs(fname.GetPath());
+
+    m_Filename = newName.GetFullPath();
     fname.Assign(m_Filename);
 
     // make sure the project file uses the correct extension
@@ -406,6 +459,8 @@ bool cbProject::SaveAs()
 //    Manager::Get()->GetProjectManager()->GetTree()->SetItemText(m_ProjectNode, fname.GetFullName());
     if (!m_Loaded)
         AddDefaultBuildTarget();
+    if (pathChanged)
+        CalculateCommonTopLevelPath();
     ProjectLoader loader(this);
     if (loader.Save(m_Filename, m_pExtensionsElement))
     {
@@ -629,14 +684,12 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     std::map<Compiler*, const CompilerTool*> GenFilesHackMap;
     if (targetIndex < 0 || targetIndex >= (int)m_Targets.GetCount())
     {
-        Compiler* c = CompilerFactory::GetCompiler(GetCompilerID());
+        Compiler* c = CompilerFactory::GetCompiler( GetCompilerID() );
         if (c)
         {
             const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
             if (t && t->generatedFiles.GetCount())
-            {
                 GenFilesHackMap[c] = t;
-            }
         }
 
         for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -649,9 +702,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
             {
                 const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
                 if (t && t->generatedFiles.GetCount())
-                {
                     GenFilesHackMap[c] = t;
-                }
             }
         }
     }
@@ -663,11 +714,10 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         {
             const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
             if (t && t->generatedFiles.GetCount())
-            {
                 GenFilesHackMap[c] = t;
-            }
         }
     }
+
     // so... now, if GenFilesHackMap is not empty, we know
     // 1) this file generates other files and
     // 2) iterating the map will give us the generated file names :)
@@ -688,15 +738,20 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
                     || ft == ftStaticLib );
 
     pf->compile = localCompile;
-    pf->link = localLink;
+    pf->link    = localLink;
 
     wxString local_filename = filename;
 
 #ifdef __WXMSW__
-    // for windows, make sure the filename is not on another drive...
-    if (local_filename.Length() > 1 &&
-        local_filename.GetChar(1) == _T(':') && // quick test to avoid the costly wxFileName ctor below
-        fname.GetVolume() != wxFileName(m_Filename).GetVolume())
+    // for Windows, make sure the filename is not on another drive...
+    if (   (local_filename.Length() > 1)
+        && (local_filename.GetChar(1) == _T(':'))
+        && (fname.GetVolume() != wxFileName(m_Filename).GetVolume()) )
+        // (this is a quick test to avoid the costly wxFileName ctor below)
+    {
+        fname.Assign(filename);
+    }
+    else if (fname.GetFullPath().StartsWith(_T("\\\\"))) // UNC path
     {
         fname.Assign(filename);
     }
@@ -706,16 +761,17 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         // make sure the filename is relative to the project's base path
         if (fname.IsAbsolute())
         {
-            fname.MakeRelativeTo(GetBasePath());
+            fname.MakeRelativeTo( GetBasePath() );
             local_filename = fname.GetFullPath();
         }
+        // this call is costly (wxFileName ctor):
         fname.Assign(GetBasePath() + wxFILE_SEP_PATH + local_filename);
     }
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, GetBasePath());
 
     wxString fullFilename = realpath(fname.GetFullPath());
-    pf->file = fullFilename;
-    pf->relativeFilename = UnixFilename(local_filename);
+    pf->file              = fullFilename;
+    pf->relativeFilename  = UnixFilename(local_filename);
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
@@ -738,7 +794,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         if ( m_FileArray.GetCount() > 0 )
             m_FileArray.Add(pf);
         // check if we really need to recalculate the common top-level path for the project
-        if (!fullFilename.StartsWith(m_CommonTopLevelPath))
+        if ( !fullFilename.StartsWith(m_CommonTopLevelPath) )
             CalculateCommonTopLevelPath();
         else
         {
@@ -754,7 +810,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     else if (!wxFile::Access(fullFilename.c_str(), wxFile::write)) // readonly
         pf->SetFileState(fvsReadOnly);
 
-    if (!GenFilesHackMap.empty())
+    if ( !GenFilesHackMap.empty() )
     {
         // auto-generated files!
         wxFileName tmp = pf->file;
@@ -853,7 +909,6 @@ void cbProject::BuildTree(cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, 
 #ifdef fileload_measuring
     wxStopWatch sw;
 #endif
-
     int  fldIdx    = Manager::Get()->GetProjectManager()->FolderIconIndex();
     int  vfldIdx   = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
     bool read_only = (!wxFile::Access(GetFilename().c_str(), wxFile::write));
@@ -907,9 +962,7 @@ void cbProject::BuildTree(cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, 
         ftd->SetProjectFile(f);
         ftd->SetFolder(f->file.GetFullPath());
 
-        wxFileName nodefile = f->file;
-        nodefile.MakeRelativeTo(m_CommonTopLevelPath);
-        wxString nodetext = nodefile.GetFullPath();
+        wxString nodetext = f->relativeToCommonTopLevelPath;
         FileTreeData::FileTreeDataKind folders_kind = FileTreeData::ftdkFolder;
 
         // by default, the parent node is the project node (in case of no grouping, no virtual folders)
@@ -1009,14 +1062,14 @@ static wxString GetRelativeFolderPath(wxTreeCtrl* tree, wxTreeItemId parent)
     return fld;
 }
 
-wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
-                                    const wxString& text,
-                                    const wxTreeItemId& parent,
-                                    bool  useFolders,
+wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl*                    tree,
+                                    const wxString&                text,
+                                    const wxTreeItemId&            parent,
+                                    bool                           useFolders,
                                     FileTreeData::FileTreeDataKind folders_kind,
-                                    bool compiles,
-                                    int image,
-                                    FileTreeData* data)
+                                    bool                           compiles,
+                                    int                            image,
+                                    FileTreeData*                  data)
 {
     // see if the text contains any path info, e.g. plugins/compilergcc/compilergcc.cpp
     // in that case, take the first element (plugins in this example), create a sub-folder
@@ -1030,15 +1083,22 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
     wxString path = text;
 
     // special case for windows and files on a different drive
-    if (platform::windows && path.Length() > 1 && path.GetChar(1) == _T(':'))
+    if ( platform::windows && (path.Length() > 1) && (path.GetChar(1) == _T(':')) )
         path.Remove(1, 1);
+
+    // avoid empty node names in case of UNC paths, then, at least the first two chars are slashes
+    while ((path.Length() > 1) && (path.GetChar(0) == _T('\\') || path.GetChar(0) == _T('/')) )
+        path.Remove(0, 1);
+
+    if (path.IsEmpty())
+        return ret;
 
     int pos = path.Find(_T('/'));
     if (pos == -1)
         pos = path.Find(_T('\\'));
     if (useFolders && pos >= 0)
     {
-        // ok, we got it. now split it up and recurse
+        // ok, we got it. now split it up and re-curse
         wxString folder = path.Left(pos);
         // avoid consecutive path separators
         while (path.GetChar(pos + 1) == _T('/') || path.GetChar(pos + 1) == _T('\\'))
@@ -1578,7 +1638,7 @@ const wxString& cbProject::GetMakefile()
     makefile.Assign(m_Filename);
     makefile.SetName(_T("Makefile"));
     makefile.SetExt(_T(""));
-    makefile.MakeRelativeTo(GetBasePath());
+    makefile.MakeRelativeTo( GetBasePath() );
 
     m_Makefile = makefile.GetFullPath();
 
@@ -1598,7 +1658,7 @@ wxString cbProject::GetMakefileExecutionDir()
 {
     if (m_MakefileExecutionDir.IsEmpty())
     {
-        wxFileName execution_dir(GetBasePath());
+        wxFileName execution_dir( GetBasePath() );
         m_MakefileExecutionDir = execution_dir.GetFullPath();
     }
     return m_MakefileExecutionDir;
@@ -1638,7 +1698,7 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
     {
         // if the search is not relative, make it
         wxFileName fname(realpath(filename));
-        fname.MakeRelativeTo(GetBasePath());
+        fname.MakeRelativeTo( GetBasePath() );
         tmp = fname.GetFullPath();
     }
     else
@@ -2342,4 +2402,3 @@ std::vector<cbProject::Glob> cbProject::GetGlobs() const
 {
     return m_Globs;
 }
-
