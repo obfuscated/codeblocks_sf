@@ -633,7 +633,7 @@ void cbDebuggerPlugin::SwitchToPreviousLayout()
 bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target)
 {
     if (!target)
-        return wxEmptyString;
+        return false;
 
     wxString out;
     switch (target->GetTargetType())
