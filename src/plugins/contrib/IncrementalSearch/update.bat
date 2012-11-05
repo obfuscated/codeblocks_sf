@@ -5,9 +5,9 @@ rem http://www.gnu.org/licenses/gpl-3.0.html
 rem
 rem Copyright: 2008 Jens Lody
 rem
-rem $Revision$
-rem $Id$
-rem $HeadURL$
+rem $Revision: 7443 $
+rem $Id: update.bat 7443 2011-09-01 16:29:16Z mortenmacfly $
+rem $HeadURL: https://mortenmacfly@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/IncrementalSearch/update.bat $
 rem
 
 md ..\..\..\devel\share\CodeBlocks\images\settings > nul 2>&1
