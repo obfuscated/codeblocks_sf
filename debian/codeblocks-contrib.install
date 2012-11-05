@@ -5,7 +5,7 @@ usr/lib/codeblocks/plugins/libBrowseTracker.so
 usr/lib/codeblocks/plugins/libbyogames.so
 usr/lib/codeblocks/plugins/libCccc.so
 usr/lib/codeblocks/plugins/libCppCheck.so
-usr/lib/codeblocks/plugins/lib*SmartIndent.so
+usr/lib/codeblocks/plugins/libSmartIndent*.so
 usr/lib/codeblocks/plugins/libcb_koders.so
 usr/lib/codeblocks/plugins/libcodesnippets.so
 usr/lib/codeblocks/plugins/libcodestat.so

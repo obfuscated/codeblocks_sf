@@ -160,7 +160,7 @@ Description: contrib plugins for Code::Blocks IDE
     * NassiShneiderman
     * Regular expression testbed
     * Reopen last closed editor(s) via menu or hotkey
-    * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal, XML)
+    * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal, Python, XML)
     * Spellchecker plugin
     * Symbol table plugin
     * ThreadSearch
