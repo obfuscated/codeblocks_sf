@@ -1,4 +1,4 @@
-#include "PascalSmartIndent.h"
+#include "SmartIndentPascal.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -16,10 +16,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<PascalSmartIndent> reg(wxT("PascalSmartIndent"));
+    PluginRegistrant<SmartIndentPascal> reg(wxT("SmartIndentPascal"));
 }
 
-void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentPascal::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     if (!ed) return;
 
@@ -50,7 +50,7 @@ void PascalSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
         ed->DoSelectionBraceCompletion(stc, ch);
 }
 
-void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
+void SmartIndentPascal::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -76,7 +76,7 @@ void PascalSmartIndent::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname
     }
 }
 
-void PascalSmartIndent::DoUnIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
+void SmartIndentPascal::DoUnIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 

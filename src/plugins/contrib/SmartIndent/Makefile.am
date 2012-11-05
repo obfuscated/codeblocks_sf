@@ -4,133 +4,133 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 pluginlibdir = $(pkglibdir)/plugins
 
-pluginlib_LTLIBRARIES = libHDLSmartIndent.la \
-			libPascalSmartIndent.la \
-			libCppSmartIndent.la \
-			libPythonSmartIndent.la \
-			libLuaSmartIndent.la \
-			libFortranSmartIndent.la \
-			libXMLSmartIndent.la
+pluginlib_LTLIBRARIES = libSmartIndentHDL.la \
+			libSmartIndentPascal.la \
+			libSmartIndentCpp.la \
+			libSmartIndentPython.la \
+			libSmartIndentLua.la \
+			libSmartIndentFortran.la \
+			libSmartIndentXML.la
 
-libHDLSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentHDL_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libHDLSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentHDL_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libHDLSmartIndent_la_SOURCES = HDLSmartIndent.cpp
+libSmartIndentHDL_la_SOURCES = SmartIndentHDL.cpp
 
 
 
-libPascalSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentPascal_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libPascalSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentPascal_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libPascalSmartIndent_la_SOURCES = PascalSmartIndent.cpp
+libSmartIndentPascal_la_SOURCES = SmartIndentPascal.cpp
 
 
 
-libCppSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentCpp_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libCppSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentCpp_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libCppSmartIndent_la_SOURCES = CppSmartIndent.cpp
+libSmartIndentCpp_la_SOURCES = SmartIndentCpp.cpp
 
 
 
-libPythonSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentPython_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libPythonSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentPython_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libPythonSmartIndent_la_SOURCES = PythonSmartIndent.cpp
+libSmartIndentPython_la_SOURCES = SmartIndentPython.cpp
 
 
 
-libLuaSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentLua_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libLuaSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentLua_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libLuaSmartIndent_la_SOURCES = LuaSmartIndent.cpp
+libSmartIndentLua_la_SOURCES = SmartIndentLua.cpp
 
 
 
-libFortranSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentFortran_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libFortranSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentFortran_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libFortranSmartIndent_la_SOURCES = FortranSmartIndent.cpp
+libSmartIndentFortran_la_SOURCES = SmartIndentFortran.cpp
 
 
-libXMLSmartIndent_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentXML_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libXMLSmartIndent_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libSmartIndentXML_la_LIBADD = $(PLUGIN_WX_LIBS) \
 			../../../sdk/libcodeblocks.la
 
-libXMLSmartIndent_la_SOURCES = XMLSmartIndent.cpp
+libSmartIndentXML_la_SOURCES = SmartIndentXML.cpp
 
-noinst_HEADERS = HDLSmartIndent.h \
-		PascalSmartIndent.h \
-		CppSmartIndent.h \
-		PythonSmartIndent.h \
-		LuaSmartIndent.h \
-		FortranSmartIndent.h \
-		XMLSmartIndent.h
+noinst_HEADERS = SmartIndentHDL.h \
+		SmartIndentPascal.h \
+		SmartIndentCpp.h \
+		SmartIndentPython.h \
+		SmartIndentLua.h \
+		SmartIndentFortran.h \
+		SmartIndentXML.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
-		hdlmanifest.xml \
-		pascalmanifest.xml \
-		cppmanifest.xml \
-		pythonmanifest.xml \
-		luamanifest.xml \
-		fortranmanifest.xml \
-		xmlmanifest.xml
+		manifest_hdl.xml \
+		manifest_pascal.xml \
+		manifest_cpp.xml \
+		manifest_python.xml \
+		manifest_lua.xml \
+		manifest_fortran.xml \
+		manifest_xml.xml
 
-pkgdata_DATA = HDLSmartIndent.zip \
-		PascalSmartIndent.zip \
-		CppSmartIndent.zip \
-		PythonSmartIndent.zip \
-		LuaSmartIndent.zip \
-		FortranSmartIndent.zip \
-		XMLSmartIndent.zip
+pkgdata_DATA = SmartIndentHDL.zip \
+		SmartIndentPascal.zip \
+		SmartIndentCpp.zip \
+		SmartIndentPython.zip \
+		SmartIndentLua.zip \
+		SmartIndentFortran.zip \
+		SmartIndentXML.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
-HDLSmartIndent.zip: hdlmanifest.xml
+SmartIndentHDL.zip: manifest_hdl.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp hdlmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/HDLSmartIndent.zip manifest.xml
+	cp manifest_hdl.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentHDL.zip manifest.xml
 
-PascalSmartIndent.zip: pascalmanifest.xml
+SmartIndentPascal.zip: manifest_pascal.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp pascalmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/PascalSmartIndent.zip manifest.xml
+	cp manifest_pascal.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentPascal.zip manifest.xml
 
-CppSmartIndent.zip: cppmanifest.xml
+SmartIndentCpp.zip: manifest_cpp.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp cppmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/CppSmartIndent.zip manifest.xml
+	cp manifest_cpp.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentCpp.zip manifest.xml
 
-PythonSmartIndent.zip: pythonmanifest.xml
+SmartIndentPython.zip: manifest_python.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp pythonmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/PythonSmartIndent.zip manifest.xml
+	cp manifest_python.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentPython.zip manifest.xml
 
-LuaSmartIndent.zip: luamanifest.xml
+SmartIndentLua.zip: manifest_lua.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp luamanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/LuaSmartIndent.zip manifest.xml
+	cp manifest_lua.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentLua.zip manifest.xml
 
-FortranSmartIndent.zip: fortranmanifest.xml
+SmartIndentFortran.zip: manifest_fortran.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp fortranmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/FortranSmartIndent.zip manifest.xml
+	cp manifest_fortran.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentFortran.zip manifest.xml
 
-XMLSmartIndent.zip: xmlmanifest.xml
+SmartIndentXML.zip: manifest_xml.xml
 	PWD=`pwd` cd $(srcdir) && \
-	cp xmlmanifest.xml ./manifest.xml && \
-	zip -R $(PWD)/XMLSmartIndent.zip manifest.xml
+	cp manifest_xml.xml ./manifest.xml && \
+	zip -R $(PWD)/SmartIndentXML.zip manifest.xml
 

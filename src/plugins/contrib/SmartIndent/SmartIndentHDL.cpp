@@ -1,4 +1,4 @@
-#include "HDLSmartIndent.h"
+#include "SmartIndentHDL.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -16,10 +16,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<HDLSmartIndent> reg(wxT("HDLSmartIndent"));
+    PluginRegistrant<SmartIndentHDL> reg(wxT("SmartIndentHDL"));
 }
 
-void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentHDL::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language
@@ -55,7 +55,7 @@ void HDLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         ed->DoSelectionBraceCompletion(stc, ch);
 }
 
-int HDLSmartIndent::FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const
+int SmartIndentHDL::FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
     if (!stc) return -1;
@@ -84,7 +84,7 @@ int HDLSmartIndent::FindBlockStartVHDL(cbEditor* ed, int position, wxString bloc
     return -1;
 }
 
-void HDLSmartIndent::DoIndent(cbEditor* ed, const wxString& langname) const
+void SmartIndentHDL::DoIndent(cbEditor* ed, const wxString& langname) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -174,7 +174,7 @@ void HDLSmartIndent::DoIndent(cbEditor* ed, const wxString& langname) const
     stc->EndUndoAction();
 }
 
-void HDLSmartIndent::DoUnIndent(cbEditor* ed, const wxString& langname) const
+void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 

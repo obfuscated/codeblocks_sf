@@ -1,4 +1,4 @@
-#include "LuaSmartIndent.h"
+#include "SmartIndentLua.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -16,10 +16,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<LuaSmartIndent> reg(wxT("LuaSmartIndent"));
+    PluginRegistrant<SmartIndentLua> reg(wxT("SmartIndentLua"));
 }
 
-void LuaSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentLua::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language
@@ -73,7 +73,7 @@ void LuaSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         ed->DoSelectionBraceCompletion(stc, ch);
 }
 
-bool LuaSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
+bool SmartIndentLua::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
 {
     if ( BraceSmartIndentEnabled() )
     {

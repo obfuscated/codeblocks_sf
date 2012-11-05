@@ -1,5 +1,5 @@
-#ifndef HDLSMARTINDENT_H_INCLUDED
-#define HDLSMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTHDL_H_INCLUDED
+#define SMARTINDENTHDL_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -13,7 +13,7 @@
 class cbEditor;
 class wxScintillaEvent;
 
-class HDLSmartIndent : public cbSmartIndentPlugin
+class SmartIndentHDL : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
@@ -25,4 +25,4 @@ class HDLSmartIndent : public cbSmartIndentPlugin
         void DoUnIndent(cbEditor* ed, const wxString& langname) const;
 };
 
-#endif // HDLSMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTHDL_H_INCLUDED

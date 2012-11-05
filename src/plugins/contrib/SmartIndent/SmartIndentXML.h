@@ -1,5 +1,5 @@
-#ifndef XMLSMARTINDENT_H_INCLUDED
-#define XMLSMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTXML_H_INCLUDED
+#define SMARTINDENTXML_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -13,10 +13,10 @@
 class cbEditor;
 class wxScintillaEvent;
 
-class XMLSmartIndent : public cbSmartIndentPlugin
+class SmartIndentXML : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 };
 
-#endif // XMLSMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTXML_H_INCLUDED

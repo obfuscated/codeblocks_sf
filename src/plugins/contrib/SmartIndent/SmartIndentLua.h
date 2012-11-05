@@ -1,5 +1,5 @@
-#ifndef LUASMARTINDENT_H_INCLUDED
-#define LUASMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTLUA_H_INCLUDED
+#define SMARTINDENTLUA_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -13,7 +13,7 @@
 class cbEditor;
 class wxScintillaEvent;
 
-class LuaSmartIndent : public cbSmartIndentPlugin
+class SmartIndentLua : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
@@ -22,5 +22,5 @@ class LuaSmartIndent : public cbSmartIndentPlugin
         bool BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const;
 };
 
-#endif // LUASMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTLUA_H_INCLUDED
 

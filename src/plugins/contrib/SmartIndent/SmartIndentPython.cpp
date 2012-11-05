@@ -1,4 +1,4 @@
-#include "PythonSmartIndent.h"
+#include "SmartIndentPython.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -16,10 +16,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<PythonSmartIndent> reg(wxT("PythonSmartIndent"));
+    PluginRegistrant<SmartIndentPython> reg(wxT("SmartIndentPython"));
 }
 
-void PythonSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentPython::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language

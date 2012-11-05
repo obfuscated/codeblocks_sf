@@ -1,4 +1,4 @@
-#include "CppSmartIndent.h"
+#include "SmartIndentCpp.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -18,9 +18,9 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<CppSmartIndent> reg(_T("CppSmartIndent"));
+    PluginRegistrant<SmartIndentCpp> reg(_T("SmartIndentCpp"));
 }
-void CppSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentCpp::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
 
     // check if smart indent is enabled
@@ -62,7 +62,7 @@ void CppSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     if ( BraceCompletionEnabled() )
         DoBraceCompletion(stc, ch);
 }
-void CppSmartIndent::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
+void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
 {
     static bool autoIndentStart = false;
     static bool autoIndentDone = true;
@@ -426,7 +426,7 @@ void CppSmartIndent::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
 
 }
 
-bool CppSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
+bool SmartIndentCpp::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
 {
     if ( BraceSmartIndentEnabled() )
     {
@@ -442,7 +442,7 @@ bool CppSmartIndent::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
     return false;
 }
 
-void CppSmartIndent::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar &ch)const
+void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar &ch)const
 {
     if (!control->GetLastSelectedText().IsEmpty())
     {
@@ -550,7 +550,7 @@ void CppSmartIndent::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
     } // SelectionBraceCompletion
 }
 
-void CppSmartIndent::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch)const
+void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch)const
 {
     int pos = control->GetCurrentPos();
     int style = control->GetStyleAt(pos);

@@ -6,8 +6,8 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="CppSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/CppSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentCpp">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentCpp" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -22,13 +22,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y cppmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\CppSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_cpp.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentCpp.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="HDLSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/HDLSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentHDL">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentHDL" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -43,13 +43,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y hdlmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\HDLSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_hdl.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentHDL.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="PascalSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/PascalSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentPascal">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentPascal" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -64,13 +64,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y pascalmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\PascalSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_pascal.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentPascal.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="PythonSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/PythonSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentPython">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentPython" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -85,13 +85,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y pythonmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\PythonSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_python.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentPython.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="LuaSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/LuaSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentLua">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentLua" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -106,13 +106,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y luamanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\LuaSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_lua.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentLua.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="FortranSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/FortranSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentFortran">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentFortran" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -127,13 +127,13 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y fortranmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\FortranSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_fortran.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentFortran.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Target title="XMLSmartIndent">
-				<Option output="../../../devel/share/CodeBlocks/plugins/XMLSmartIndent" prefix_auto="1" extension_auto="1" />
+			<Target title="SmartIndentXML">
+				<Option output="../../../devel/share/CodeBlocks/plugins/SmartIndentXML" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -148,8 +148,8 @@
 					<Add directory="." />
 				</Compiler>
 				<ExtraCommands>
-					<Add after="cmd.exe /c copy /Y xmlmanifest.xml manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\XMLSmartIndent.zip manifest.xml" />
+					<Add after="cmd.exe /c copy /Y manifest_xml.xml manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\SmartIndentXML.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -159,7 +159,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="CppSmartIndent;HDLSmartIndent;PascalSmartIndent;PythonSmartIndent;LuaSmartIndent;FortranSmartIndent;XMLSmartIndent;" />
+			<Add alias="All" targets="SmartIndentCpp;SmartIndentHDL;SmartIndentPascal;SmartIndentPython;SmartIndentLua;SmartIndentFortran;SmartIndentXML;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-pipe" />
@@ -186,68 +186,68 @@
 			<Add directory="../../../devel" />
 			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
-		<Unit filename="CppSmartIndent.cpp">
-			<Option target="CppSmartIndent" />
+		<Unit filename="SmartIndentCpp.cpp">
+			<Option target="SmartIndentCpp" />
 		</Unit>
-		<Unit filename="CppSmartIndent.h">
-			<Option target="CppSmartIndent" />
+		<Unit filename="SmartIndentCpp.h">
+			<Option target="SmartIndentCpp" />
 		</Unit>
-		<Unit filename="FortranSmartIndent.cpp">
-			<Option target="FortranSmartIndent" />
+		<Unit filename="SmartIndentFortran.cpp">
+			<Option target="SmartIndentFortran" />
 		</Unit>
-		<Unit filename="FortranSmartIndent.h">
-			<Option target="FortranSmartIndent" />
+		<Unit filename="SmartIndentFortran.h">
+			<Option target="SmartIndentFortran" />
 		</Unit>
-		<Unit filename="HDLSmartIndent.cpp">
-			<Option target="HDLSmartIndent" />
+		<Unit filename="SmartIndentHDL.cpp">
+			<Option target="SmartIndentHDL" />
 		</Unit>
-		<Unit filename="HDLSmartIndent.h">
-			<Option target="HDLSmartIndent" />
+		<Unit filename="SmartIndentHDL.h">
+			<Option target="SmartIndentHDL" />
 		</Unit>
-		<Unit filename="LuaSmartIndent.cpp">
-			<Option target="LuaSmartIndent" />
+		<Unit filename="SmartIndentLua.cpp">
+			<Option target="SmartIndentLua" />
 		</Unit>
-		<Unit filename="LuaSmartIndent.h">
-			<Option target="LuaSmartIndent" />
+		<Unit filename="SmartIndentLua.h">
+			<Option target="SmartIndentLua" />
 		</Unit>
-		<Unit filename="PascalSmartIndent.cpp">
-			<Option target="PascalSmartIndent" />
+		<Unit filename="SmartIndentPascal.cpp">
+			<Option target="SmartIndentPascal" />
 		</Unit>
-		<Unit filename="PascalSmartIndent.h">
-			<Option target="PascalSmartIndent" />
+		<Unit filename="SmartIndentPascal.h">
+			<Option target="SmartIndentPascal" />
 		</Unit>
-		<Unit filename="PythonSmartIndent.cpp">
-			<Option target="PythonSmartIndent" />
+		<Unit filename="SmartIndentPython.cpp">
+			<Option target="SmartIndentPython" />
 		</Unit>
-		<Unit filename="PythonSmartIndent.h">
-			<Option target="PythonSmartIndent" />
+		<Unit filename="SmartIndentPython.h">
+			<Option target="SmartIndentPython" />
 		</Unit>
-		<Unit filename="XMLSmartIndent.cpp">
-			<Option target="XMLSmartIndent" />
+		<Unit filename="SmartIndentXML.cpp">
+			<Option target="SmartIndentXML" />
 		</Unit>
-		<Unit filename="XMLSmartIndent.h">
-			<Option target="XMLSmartIndent" />
+		<Unit filename="SmartIndentXML.h">
+			<Option target="SmartIndentXML" />
 		</Unit>
-		<Unit filename="cppmanifest.xml">
-			<Option target="CppSmartIndent" />
+		<Unit filename="manifest_cpp.xml">
+			<Option target="SmartIndentCpp" />
 		</Unit>
-		<Unit filename="fortranmanifest.xml">
-			<Option target="FortranSmartIndent" />
+		<Unit filename="manifest_fortran.xml">
+			<Option target="SmartIndentFortran" />
 		</Unit>
-		<Unit filename="hdlmanifest.xml">
-			<Option target="HDLSmartIndent" />
+		<Unit filename="manifest_hdl.xml">
+			<Option target="SmartIndentHDL" />
 		</Unit>
-		<Unit filename="luamanifest.xml">
-			<Option target="LuaSmartIndent" />
+		<Unit filename="manifest_lua.xml">
+			<Option target="SmartIndentLua" />
 		</Unit>
-		<Unit filename="pascalmanifest.xml">
-			<Option target="PascalSmartIndent" />
+		<Unit filename="manifest_pascal.xml">
+			<Option target="SmartIndentPascal" />
 		</Unit>
-		<Unit filename="pythonmanifest.xml">
-			<Option target="PythonSmartIndent" />
+		<Unit filename="manifest_python.xml">
+			<Option target="SmartIndentPython" />
 		</Unit>
-		<Unit filename="xmlmanifest.xml">
-			<Option target="XMLSmartIndent" />
+		<Unit filename="manifest_xml.xml">
+			<Option target="SmartIndentXML" />
 		</Unit>
 		<Extensions>
 			<code_completion />

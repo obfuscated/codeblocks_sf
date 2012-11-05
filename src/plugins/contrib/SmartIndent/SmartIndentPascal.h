@@ -1,5 +1,5 @@
-#ifndef PASCALSMARTINDENT_H_INCLUDED
-#define PASCALSMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTPASCAL_H_INCLUDED
+#define SMARTINDENTPASCAL_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -13,7 +13,7 @@
 class cbEditor;
 class wxScintillaEvent;
 
-class PascalSmartIndent : public cbSmartIndentPlugin
+class SmartIndentPascal : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
@@ -23,4 +23,4 @@ class PascalSmartIndent : public cbSmartIndentPlugin
         void DoUnIndent(cbEditor* ed, const wxString& langname) const;
 };
 
-#endif // PASCALSMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTPASCAL_H_INCLUDED

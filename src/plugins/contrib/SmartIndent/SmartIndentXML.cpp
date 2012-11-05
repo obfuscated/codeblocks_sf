@@ -1,4 +1,4 @@
-#include "XMLSmartIndent.h"
+#include "SmartIndentXML.h"
 
 #include <sdk.h> // Code::Blocks SDK
 
@@ -18,10 +18,10 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<XMLSmartIndent> reg(wxT("XMLSmartIndent"));
+    PluginRegistrant<SmartIndentXML> reg(wxT("SmartIndentXML"));
 }
 
-void XMLSmartIndent::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
+void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 {
     // check if smart indent is enabled
     // check the event type and the currently set language

@@ -1,5 +1,5 @@
-#ifndef CPPSMARTINDENT_H_INCLUDED
-#define CPPSMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTCPP_H_INCLUDED
+#define SMARTINDENTCPP_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -10,7 +10,7 @@
 
 #include <cbplugin.h> // for "class cbSmartIndentPlugin"
 
-class CppSmartIndent : public cbSmartIndentPlugin
+class SmartIndentCpp : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
@@ -22,5 +22,5 @@ class CppSmartIndent : public cbSmartIndentPlugin
         void DoBraceCompletion(cbStyledTextCtrl *control, const wxChar& ch)const;
 };
 
-#endif // CPPSMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTCPP_H_INCLUDED
 

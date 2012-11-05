@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
     <SdkVersion major="1" minor="11"  release="12" />
-    <Plugin name="PythonSmartIndent">
-        <Value title="PythonSmartIndent" />
+    <Plugin name="SmartIndentPython">
+        <Value title="SmartIndentPython" />
         <Value version="0.1" />
         <Value description="Provides Smart indenting for Python (refactored from cbEditor)" />
         <Value author="Daniel Anselmi" />

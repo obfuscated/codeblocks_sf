@@ -1,5 +1,5 @@
-#ifndef PYTHONSMARTINDENT_H_INCLUDED
-#define PYTHONSMARTINDENT_H_INCLUDED
+#ifndef SMARTINDENTPYTHON_H_INCLUDED
+#define SMARTINDENTPYTHON_H_INCLUDED
 
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
@@ -13,10 +13,10 @@
 class cbEditor;
 class wxScintillaEvent;
 
-class PythonSmartIndent : public cbSmartIndentPlugin
+class SmartIndentPython : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
 };
 
-#endif // PYTHONSMARTINDENT_H_INCLUDED
+#endif // SMARTINDENTPYTHON_H_INCLUDED
