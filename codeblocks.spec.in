@@ -303,7 +303,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{plugindir}/libbyogames.so
 %{plugindir}/libCccc.so
 %{plugindir}/libCppCheck.so
-%{plugindir}/lib*SmartIndent.so
+%{plugindir}/libSmartIndent*.so
 %{plugindir}/libcb_koders.so
 %{plugindir}/libcodesnippets.so
 %{plugindir}/libcodestat.so
@@ -343,7 +343,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/byogames.zip
 %{pkgdatadir}/Cccc.zip
 %{pkgdatadir}/CppCheck.zip
-%{pkgdatadir}/*SmartIndent.zip
+%{pkgdatadir}/SmartIndent*.zip
 %{pkgdatadir}/cb_koders.zip
 %{pkgdatadir}/codesnippets.zip
 %{pkgdatadir}/codestat.zip
