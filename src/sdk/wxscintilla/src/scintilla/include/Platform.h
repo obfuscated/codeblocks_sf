@@ -69,10 +69,8 @@
 namespace Scintilla {
 #endif
 
-#include <cstdint>
-
-typedef intptr_t XYPOSITION;
-typedef intptr_t XYACCUMULATOR;
+typedef float XYPOSITION;
+typedef double XYACCUMULATOR;
 //#define XYPOSITION int
 
 // Underlying the implementation of the platform classes are platform specific types.
