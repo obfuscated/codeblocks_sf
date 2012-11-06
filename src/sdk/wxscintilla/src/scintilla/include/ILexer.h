@@ -43,6 +43,7 @@ public:
 	virtual bool SCI_METHOD IsDBCSLeadByte(char ch) const = 0;
 	virtual const char * SCI_METHOD BufferPointer() = 0;
 	virtual int SCI_METHOD GetLineIndentation(int line) = 0;
+	virtual ~IDocument(){}
 };
 
 enum { lvOriginal=0 };
@@ -71,6 +72,7 @@ public:
 	// Returns a status code from SC_STATUS_*
 	virtual int SCI_METHOD AddData(char *data, int length) = 0;
 	virtual void * SCI_METHOD ConvertToDocument() = 0;
+	virtual ~ILoader(){}
 };
 
 #ifdef SCI_NAMESPACE

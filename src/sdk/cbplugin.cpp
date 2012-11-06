@@ -172,7 +172,7 @@ void cbDebuggerPlugin::OnRelease(bool appShutDown)
     Manager::Get()->GetDebuggerManager()->UnregisterDebugger(this);
 }
 
-void cbDebuggerPlugin::BuildMenu(wxMenuBar* menuBar)
+void cbDebuggerPlugin::BuildMenu(wxMenuBar* /* menuBar */)
 {
     if (!IsAttached())
         return;
@@ -236,7 +236,7 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
     return selected_text;
 }
 
-void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /* data */)
 {
     cbDebuggerPlugin *active_plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (active_plugin != this)
@@ -261,7 +261,7 @@ void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cons
     Manager::Get()->GetDebuggerManager()->BuildContextMenu(*menu, word, IsRunning());
 }
 
-bool cbDebuggerPlugin::BuildToolBar(wxToolBar* toolBar)
+bool cbDebuggerPlugin::BuildToolBar(wxToolBar* /* toolBar */)
 {
     return false;
 }
@@ -730,7 +730,7 @@ bool cbDebuggerPlugin::EnsureBuildUpToDate(StartType startType)
     return true;
 }
 
-void cbDebuggerPlugin::OnCompilerFinished(CodeBlocksEvent& event)
+void cbDebuggerPlugin::OnCompilerFinished(CodeBlocksEvent& /* event */)
 {
     if (m_WaitingCompilerToFinish)
     {
@@ -958,7 +958,7 @@ void cbDebuggerPlugin::ProcessValueTooltip(CodeBlocksEvent& event)
     }
 }
 
-void cbDebuggerPlugin::CancelValueTooltip(CodeBlocksEvent& event)
+void cbDebuggerPlugin::CancelValueTooltip(CodeBlocksEvent& /* event */)
 {
     Manager::Get()->GetDebuggerManager()->GetInterfaceFactory()->HideValueTooltip();
 }
@@ -1012,7 +1012,7 @@ void cbSmartIndentPlugin::OnAttach()
     m_FunctorId = EditorHooks::RegisterHook( new EditorHooks::cbSmartIndentEditorHookFunctor(this) );
 }
 
-void cbSmartIndentPlugin::OnRelease(bool appShutDown)
+void cbSmartIndentPlugin::OnRelease(bool /* appShutDown */)
 {
     EditorHooks::UnregisterHook(m_FunctorId);
 }

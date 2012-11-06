@@ -198,8 +198,8 @@ struct CompilerTool
 {
     // extensions string will be converted to array by GetArrayFromString using DEFAULT_ARRAY_SEP (;)
     // as separator
-    CompilerTool(const wxString& command = wxEmptyString, const wxString& extensions = wxEmptyString)
-        : command(command), extensions(GetArrayFromString(extensions))
+    CompilerTool(const wxString& command_in = wxEmptyString, const wxString& extensions_in = wxEmptyString)
+        : command(command_in), extensions(GetArrayFromString(extensions_in))
     {}
     CompilerTool(const CompilerTool& rhs)
         : command(rhs.command), extensions(rhs.extensions), generatedFiles(rhs.generatedFiles)

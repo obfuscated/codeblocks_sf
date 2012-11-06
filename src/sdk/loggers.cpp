@@ -170,34 +170,34 @@ void TextCtrlLogger::ToggleWrapMode()
 
     wxWindowUpdateLocker noUpdates(control);
 
-    long style = control->GetWindowStyle();
+    long ctrl_style = control->GetWindowStyle();
 
     // wxTE_DONTWRAP is an equivalent for wxHSCROLL (see <wx/textctrl.h>)
-    bool is_dontwrap = ((style & wxTE_DONTWRAP)==wxTE_DONTWRAP);
+    bool is_dontwrap = ((ctrl_style & wxTE_DONTWRAP)==wxTE_DONTWRAP);
     if (is_dontwrap)
-        style &= ~wxTE_DONTWRAP; // don't wrap = OFF means wrapping = ON
+        ctrl_style &= ~wxTE_DONTWRAP; // don't wrap = OFF means wrapping = ON
     else
-        style |=  wxTE_DONTWRAP; // don't wrap = ON means wrapping = OFF
+        ctrl_style |=  wxTE_DONTWRAP; // don't wrap = ON means wrapping = OFF
 
 // On Windows the wrap-style can not easily be changed on the fly, but if the align flags
 // change wxWidgets recreates the textcontrol, doing this ourselves seems not to be so easy,
 // so we use this hack here (testing if the centred-flag is set, is not needed for our loggers)
 #ifdef __WXMSW__
-    bool is_centred = ((style & wxALIGN_CENTER)==wxALIGN_CENTER);
+    bool is_centred = ((ctrl_style & wxALIGN_CENTER)==wxALIGN_CENTER);
     if (is_centred)
     {
-        style &= ~wxALIGN_CENTRE;
-        control->SetWindowStyleFlag(style);
-        style |= wxALIGN_CENTRE;
+        ctrl_style &= ~wxALIGN_CENTRE;
+        control->SetWindowStyleFlag(ctrl_style);
+        ctrl_style |= wxALIGN_CENTRE;
     }
     else
     {
-        style |= wxALIGN_CENTRE;
-        control->SetWindowStyleFlag(style);
-        style &= ~wxALIGN_CENTRE;
+        ctrl_style |= wxALIGN_CENTRE;
+        control->SetWindowStyleFlag(ctrl_style);
+        ctrl_style &= ~wxALIGN_CENTRE;
     }
 #endif
-    control->SetWindowStyleFlag(style);
+    control->SetWindowStyleFlag(ctrl_style);
 }
 
 
@@ -213,11 +213,11 @@ void TimestampTextCtrlLogger::Append(const wxString& msg, Logger::level lv)
     control->AppendText(::temp_string);
 }
 
-ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont) :
+ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles_in, const wxArrayInt& widths_in, bool fixedPitchFont) :
     control(0),
     fixed(fixedPitchFont),
-    titles(titles),
-    widths(widths)
+    titles(titles_in),
+    widths(widths_in)
 {
     cbAssert(titles.GetCount() == widths.GetCount());
 }

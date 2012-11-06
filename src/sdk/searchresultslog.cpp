@@ -30,8 +30,8 @@ BEGIN_EVENT_TABLE(SearchResultsLog, wxEvtHandler)
 //
 END_EVENT_TABLE()
 
-SearchResultsLog::SearchResultsLog(const wxArrayString& titles, wxArrayInt& widths)
-    : ListCtrlLogger(titles, widths)
+SearchResultsLog::SearchResultsLog(const wxArrayString& titles_in, wxArrayInt& widths_in)
+    : ListCtrlLogger(titles_in, widths_in)
 {
     //ctor
 }
@@ -54,7 +54,7 @@ wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
 
 void SearchResultsLog::FocusEntry(size_t index)
 {
-    if (index >= 0 && index < (size_t)control->GetItemCount())
+    if (index < (size_t)control->GetItemCount())
     {
         control->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
         control->EnsureVisible(index);
@@ -85,8 +85,8 @@ void SearchResultsLog::SyncEditor(int selIndex)
     ed->Activate();
     ed->GotoLine(line);
 
-    if (cbStyledTextCtrl* control = ed->GetControl()) {
-        control->EnsureVisible(line);
+    if (cbStyledTextCtrl* ctrl = ed->GetControl()) {
+        ctrl->EnsureVisible(line);
     }
 }
 

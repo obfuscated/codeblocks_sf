@@ -101,7 +101,7 @@ bool CompilerFactory::CompilerInheritsFrom(Compiler* compiler, const wxString& f
 
     while (compiler)
     {
-        wxString id = compiler->GetParentID();
+        id = compiler->GetParentID();
         if (id.Matches(from_id))
             return true;
 

@@ -43,7 +43,7 @@ class WizPageBase : public wxWizardPageSimple
         virtual wxWizardPage* GetNext() const;
         wxString GetPageName() const {return m_PageName;}
         bool GetSkipPage() const {return m_SkipPage;}
-        void SetSkipPage(bool SkipPage) {m_SkipPage = SkipPage;}
+        void SetSkipPage(bool skip) {m_SkipPage = skip;}
 
     private:
         static PagesByName s_PagesByName;

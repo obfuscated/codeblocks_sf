@@ -555,7 +555,7 @@ public:
                 wxObjectEventFunction(&DebugLogPanel::OnUpdateUI));
     }
 
-    void OnEntryCommand(wxCommandEvent& event)
+    void OnEntryCommand(wxCommandEvent& /* event */)
     {
         assert(m_command_entry);
         wxString cmd = m_command_entry->GetValue();
@@ -579,7 +579,7 @@ public:
         }
     }
 
-    void OnClearLog(wxCommandEvent& event)
+    void OnClearLog(wxCommandEvent& /* event */)
     {
         assert(m_command_entry);
         assert(m_text_control_logger);
@@ -587,7 +587,7 @@ public:
         m_command_entry->SetFocus();
     }
 
-    void OnLoadFile(wxCommandEvent& event)
+    void OnLoadFile(wxCommandEvent& /* event */)
     {
         cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         if (!plugin)
@@ -829,7 +829,7 @@ void DebuggerManager::ProcessSettings(RegisteredPlugins::iterator it)
     }
 }
 
-ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin *plugin, const wxString &name)
+ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin *plugin, const wxString& /* name */)
 {
     RegisteredPlugins::iterator it = m_registered.find(plugin);
     if (it == m_registered.end())
@@ -1084,7 +1084,7 @@ cbDebuggerPlugin* DebuggerManager::GetActiveDebugger()
     return m_activeDebugger;
 }
 
-void RefreshBreakpoints(const cbDebuggerPlugin *plugin)
+void RefreshBreakpoints(const cbDebuggerPlugin* /* plugin */)
 {
     EditorManager *editorManager = Manager::Get()->GetEditorManager();
     int count = editorManager->GetEditorsCount();
@@ -1254,13 +1254,13 @@ void DebuggerManager::SetDisassemblyMixedMode(bool mixed)
     m_isDisassemblyMixedMode = mixed;
 }
 
-void DebuggerManager::OnProjectActivated(CodeBlocksEvent& event)
+void DebuggerManager::OnProjectActivated(CodeBlocksEvent& /* event */)
 {
     if (m_useTargetsDefault)
         FindTargetsDebugger();
 }
 
-void DebuggerManager::OnTargetSelected(CodeBlocksEvent& event)
+void DebuggerManager::OnTargetSelected(CodeBlocksEvent& /* event */)
 {
     if (m_useTargetsDefault)
         FindTargetsDebugger();
@@ -1275,7 +1275,7 @@ void DebuggerManager::OnSettingsChanged(CodeBlocksEvent& event)
     }
 }
 
-void DebuggerManager::OnPluginLoadingComplete(CodeBlocksEvent& event)
+void DebuggerManager::OnPluginLoadingComplete(CodeBlocksEvent& /* event */)
 {
     RefreshUI();
     if (!m_activeDebugger)

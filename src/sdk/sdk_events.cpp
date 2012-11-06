@@ -24,9 +24,9 @@ IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLayoutEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)
 
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger, const wxString& title, wxBitmap *icon)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(logger), logIndex(-1), icon(icon), title(title), window(0)
+    logger(logger_in), logIndex(-1), icon(icon_in), title(title_in), window(0)
 {
     // special case for add
     if (commandType == cbEVT_ADD_LOG_WINDOW && logger)

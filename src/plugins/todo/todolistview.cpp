@@ -56,12 +56,12 @@ BEGIN_EVENT_TABLE(ToDoListView, wxEvtHandler)
     EVT_BUTTON  (idButtonTypes,   ToDoListView::OnButtonTypes)
 END_EVENT_TABLE()
 
-ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& m_Types) :
-    ListCtrlLogger(titles, widths, false),
+ToDoListView::ToDoListView(const wxArrayString& titles_in, const wxArrayInt& widths_in, const wxArrayString& Types) :
+    ListCtrlLogger(titles_in, widths_in, false),
     m_pPanel(0),
     m_pSource(0L),
     m_pUser(0L),
-    m_Types(m_Types),
+    m_Types(Types),
     m_LastFile(wxEmptyString),
     m_Ignore(false),
     m_SortAscending(false),
@@ -132,12 +132,12 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     return m_pPanel;
 }
 
-void ToDoListView::DestroyControls(bool control)
+void ToDoListView::DestroyControls(bool destr_control)
 {
     if (Manager::Get()->IsAppShuttingDown())
         return;
     Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
-    if (control)
+    if (destr_control)
     {
         m_pPanel->Destroy();
         m_pPanel = nullptr;
@@ -569,13 +569,13 @@ void ToDoListView::FocusEntry(size_t index)
         control->EnsureVisible(index);
     }
 }
-void ToDoListView::OnComboChange(wxCommandEvent& event)
+void ToDoListView::OnComboChange(wxCommandEvent& /* event */)
 {
     Manager::Get()->GetConfigManager( _T("todo_list"))->Write(_T("source"), m_pSource->GetSelection() );
     Parse();
 }
 
-void ToDoListView::OnListItemSelected(wxCommandEvent& event)
+void ToDoListView::OnListItemSelected(wxCommandEvent& /* event */)
 {
     long index = control->GetNextItem(-1,
                                       wxLIST_NEXT_ALL,
@@ -585,17 +585,17 @@ void ToDoListView::OnListItemSelected(wxCommandEvent& event)
     FocusEntry(index);
 }
 
-void ToDoListView::OnButtonTypes(wxCommandEvent& event)
+void ToDoListView::OnButtonTypes(wxCommandEvent& /* event */)
 {
     m_pAllowedTypesDlg->Show(!m_pAllowedTypesDlg->IsShown());
 }
 
-void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
+void ToDoListView::OnButtonRefresh(wxCommandEvent& /* event */)
 {
     Parse();
 }
 
-void ToDoListView::OnDoubleClick(wxCommandEvent& event)
+void ToDoListView::OnDoubleClick(wxCommandEvent& /* event */)
 {    // pecan 1/2/2006 12PM : Switched with OnListItemSelected by Rick 20/07/2007
     long item = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
@@ -668,7 +668,7 @@ CheckListDialog::~CheckListDialog()
     m_okBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this);
 }
 
-void CheckListDialog::OkOnButtonClick(wxCommandEvent& event)
+void CheckListDialog::OkOnButtonClick(wxCommandEvent& /* event */)
 {
     Show(false);
     Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types_selected"), GetChecked());

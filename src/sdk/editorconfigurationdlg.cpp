@@ -525,7 +525,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
     }
 }
 
-void EditorConfigurationDlg::OnCaretStyle(wxCommandEvent& event)
+void EditorConfigurationDlg::OnCaretStyle(wxCommandEvent& /* event */)
 {
     XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->Enable(XRCCTRL(*this, "lstCaretStyle", wxChoice)->GetSelection() == wxSCI_CARETSTYLE_LINE);
 }
@@ -615,8 +615,8 @@ void EditorConfigurationDlg::ChangeTheme()
     cmbLangs->Enable(langs.GetCount() != 0);
     if (m_Theme)
     {
-        wxString sel = cmbLangs->GetStringSelection();
-        m_Lang = m_Theme->GetHighlightLanguage(sel);
+        wxString str_sel = cmbLangs->GetStringSelection();
+        m_Lang = m_Theme->GetHighlightLanguage(str_sel);
     }
 
     CreateColoursSample();

@@ -1525,14 +1525,14 @@ void cbEditor::SetUseBom( bool bom )
     SetModified(true);
 }
 
-bool cbEditor::Reload(bool DetectEncoding)
+bool cbEditor::Reload(bool detect_encoding)
 {
     // keep current pos
     const int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
     const int pos2 = m_pControl2 ? m_pControl2->GetCurrentPos() : 0;
 
     // call open
-    if (!Open(DetectEncoding))
+    if (!Open(detect_encoding))
     {
         return false;
     }
@@ -1781,7 +1781,7 @@ bool cbEditor::SaveAs()
     if (mgr)
     {
         int Index = dlg.GetFilterIndex();
-        wxString Filter;
+        Filter.Empty();
         if (FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
             mgr->Write(_T("/file_dialogs/save_file_as/filter"), Filter);
         wxString Test = dlg.GetDirectory();

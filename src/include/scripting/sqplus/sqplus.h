@@ -1747,8 +1747,8 @@ struct SQClassDef {
 
   // Register a member function.
   template<typename Func>
-  SQClassDef & func(Func pfunc,const SQChar * name) {
-    RegisterInstance(v,newClass.GetObjectHandle(),*(TClassType *)0,pfunc,name);
+  SQClassDef & func(Func pfunc,const SQChar * name_) {
+    RegisterInstance(v,newClass.GetObjectHandle(),*(TClassType *)0,pfunc,name_);
     return *this;
   } // func
 
@@ -1756,8 +1756,8 @@ struct SQClassDef {
   // typeMask: "*" means don't check parameters, typeMask=0 means function takes no arguments (and is type checked for that case).
   // All the other Squirrel type-masks are passed normally.
   template<typename Func>
-  SQClassDef & funcVarArgs(Func pfunc,const SQChar * name,const SQChar * typeMask=sqT("*")) {
-    RegisterInstanceVarArgs(v,newClass.GetObjectHandle(),*(TClassType *)0,pfunc,name,typeMask);
+  SQClassDef & funcVarArgs(Func pfunc,const SQChar * name_,const SQChar * typeMask=sqT("*")) {
+    RegisterInstanceVarArgs(v,newClass.GetObjectHandle(),*(TClassType *)0,pfunc,name_,typeMask);
     return *this;
   } // funcVarArgs
 
@@ -1768,24 +1768,24 @@ struct SQClassDef {
   // All the other Squirrel type-masks are passed normally.
 
   template<typename Func>
-  SQClassDef & staticFuncVarArgs(Func pfunc,const SQChar * name,const SQChar * typeMask=sqT("*")) {
+  SQClassDef & staticFuncVarArgs(Func pfunc,const SQChar * name_,const SQChar * typeMask=sqT("*")) {
     SquirrelVM::PushObject(newClass);
-    SquirrelVM::CreateFunction(pfunc,name,typeMask);
+    SquirrelVM::CreateFunction(pfunc,name_,typeMask);
     SquirrelVM::Pop(1);
     return *this;
   } // staticFuncVarArgs
 
   // Register a standard global function (effectively embedding a global function in TClassType's script namespace: does not need or use a 'this' pointer).
   template<typename Func>
-  SQClassDef & staticFunc(Func pfunc,const SQChar * name) {
-    Register(v,newClass.GetObjectHandle(),pfunc,name);
+  SQClassDef & staticFunc(Func pfunc,const SQChar * name_) {
+    Register(v,newClass.GetObjectHandle(),pfunc,name_);
     return *this;
   } // staticFunc
 
   // Register a function to a pre-allocated class/struct member function: will use callee's 'this' (effectively embedding a global function in TClassType's script namespace).
   template<typename Callee,typename Func>
-  SQClassDef & staticFunc(Callee & callee,Func pfunc,const SQChar * name) {
-    Register(v,newClass.GetObjectHandle(),callee,pfunc,name);
+  SQClassDef & staticFunc(Callee & callee,Func pfunc,const SQChar * name_) {
+    Register(v,newClass.GetObjectHandle(),callee,pfunc,name_);
     return *this;
   } // staticFunc
 
@@ -1793,33 +1793,33 @@ struct SQClassDef {
 
   // Register a member variable.
   template<typename VarType>
-  SQClassDef & var(VarType TClassType::* pvar,const SQChar * name,VarAccessType access=VAR_ACCESS_READ_WRITE) {
+  SQClassDef & var(VarType TClassType::* pvar,const SQChar * name_,VarAccessType access=VAR_ACCESS_READ_WRITE) {
     struct CV {
       VarType TClassType::* var;
     } cv; // Cast Variable helper.
     cv.var = pvar;
-    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name,access);
+    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name_,access);
     return *this;
   } // var
 
   // Register a member variable as a UserPointer (read only).
   template<typename VarType>
-  SQClassDef & varAsUserPointer(VarType TClassType::* pvar,const SQChar * name) {
+  SQClassDef & varAsUserPointer(VarType TClassType::* pvar,const SQChar * name_) {
     struct CV {
       VarType TClassType::* var;
     } cv; // Cast Variable helper.
     cv.var = pvar;
-    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(SQAnything **)&cv,name,VAR_ACCESS_READ_ONLY);
+    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(SQAnything **)&cv,name_,VAR_ACCESS_READ_ONLY);
     return *this;
   } // varAsUserPointer
 
   template<typename VarType>
-  SQClassDef & staticVar(VarType * pvar,const SQChar * name,VarAccessType access=VAR_ACCESS_READ_WRITE) {
+  SQClassDef & staticVar(VarType * pvar,const SQChar * name_,VarAccessType access=VAR_ACCESS_READ_WRITE) {
     struct CV {
       VarType * var;
     } cv; // Cast Variable helper.
     cv.var = pvar;
-    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name,VarAccessType(access|VAR_ACCESS_STATIC));
+    RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name_,VarAccessType(access|VAR_ACCESS_STATIC));
     return *this;
   } // staticVar
 
@@ -1830,14 +1830,14 @@ struct SQClassDef {
 
   // Register a constant (read-only in script, passed by value (only INT, FLOAT, or BOOL types)).
   template<typename ConstantType>
-  SQClassDef & constant(ConstantType constant,const SQChar * name) {
-    RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant,name);
+  SQClassDef & constant(ConstantType constant_,const SQChar * name_) {
+    RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant_,name_);
     return *this;
   } // constant
 
   // Register an enum as an integer (read-only in script).
-  SQClassDef & enumInt(SQInteger constant,const SQChar * name) {
-      RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant,name);
+  SQClassDef & enumInt(SQInteger constant_,const SQChar * name_) {
+      RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant_,name_);
       return *this;
   } // enumInt
 

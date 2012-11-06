@@ -15,7 +15,7 @@ public:
   void Reset(void); // Release (any) reference and reset _o.
   SquirrelObject Clone();
 	BOOL SetValue(const SquirrelObject &key,const SquirrelObject &val);
-	
+
 	BOOL SetValue(SQInteger key,const SquirrelObject &val);
 	BOOL SetValue(INT key,bool b); // Compiler treats SQBool as INT.
 	BOOL SetValue(INT key,INT n);
@@ -98,9 +98,9 @@ private:
 };
 
 struct StackHandler {
-	StackHandler(HSQUIRRELVM v) {
-		_top = sq_gettop(v);
-		this->v = v;
+	StackHandler(HSQUIRRELVM vm) {
+		_top = sq_gettop(vm);
+		this->v = vm;
 	}
 	SQFloat GetFloat(SQInteger idx) {
 		SQFloat x = 0.0f;
@@ -175,7 +175,7 @@ struct StackHandler {
 		}
 		return -1;
 	}
-	
+
 	SQInteger GetParamCount() {
 		return _top;
 	}

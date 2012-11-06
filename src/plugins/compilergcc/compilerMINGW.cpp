@@ -101,7 +101,7 @@ void CompilerMINGW::Reset()
                 _("Debugging"),
                 _T(""),
                 true,
-                _T("-O -O1 -O2 -O3 -Os"),
+                _T("-s"),
                 _("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
     wxString gprof_link = _T("-pg");
     if (platform::windows)

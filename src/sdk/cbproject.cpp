@@ -464,7 +464,7 @@ bool cbProject::SaveAs()
     ProjectLoader loader(this);
     if (loader.Save(m_Filename, m_pExtensionsElement))
     {
-        wxFileName fname(m_Filename);
+        fname = m_Filename;
         m_LastModified = fname.GetModificationTime();
         NotifyPlugins(cbEVT_PROJECT_SAVE);
         return true;
@@ -545,17 +545,17 @@ bool cbProject::LoadLayout()
 
                 // Load all requested files
                 std::vector<LoaderBase*> filesInMemory;
-                for (open_files_map::iterator it = open_files.begin(); it != open_files.end(); ++it)
+                for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
                 {
-                    filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*it).second->file.GetFullPath()));
+                    filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*ofm_it).second->file.GetFullPath()));
                 }
                 // Open all requested files:
                 size_t i = 0;
-                for (open_files_map::iterator it = open_files.begin(); it != open_files.end(); ++it)
+                for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
                 {
-                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filesInMemory[i], (*it).second->file.GetFullPath(),0,(*it).second);
+                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filesInMemory[i], (*ofm_it).second->file.GetFullPath(),0,(*ofm_it).second);
                     if (ed)
-                        ed->SetProjectFile((*it).second);
+                        ed->SetProjectFile((*ofm_it).second);
                     ++i;
                 }
 
@@ -694,7 +694,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
         for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
         {
-            Compiler* c = CompilerFactory::GetCompiler(m_Targets[i]->GetCompilerID());
+            c = CompilerFactory::GetCompiler(m_Targets[i]->GetCompilerID());
             if (GenFilesHackMap.find(c) != GenFilesHackMap.end())
                 continue; // compiler already in map
 
@@ -852,15 +852,17 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     m_ProjectFilesMap.erase(UnixFilename(pf->relativeFilename)); // remove from hashmap
     Manager::Get()->GetEditorManager()->Close(pf->file.GetFullPath());
 
-    FilesList::iterator it = m_Files.find(pf);
-    if (it == m_Files.end())
-        Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
-    else
-        m_Files.erase(it);
+	{
+		FilesList::iterator it = m_Files.find(pf);
 
-    if ( m_FileArray.GetCount() > 0 )
-        m_FileArray.Remove(*it);
+		if (it == m_Files.end())
+			Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
+		else
+			m_Files.erase(it);
 
+		if ( m_FileArray.GetCount() > 0 )
+			m_FileArray.Remove(*it);
+	}
     // remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
@@ -1849,7 +1851,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
         for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
         {
             wxArrayString& tgts = it->second;
-            int index = tgts.Index(target->GetTitle());
+            index = tgts.Index(target->GetTitle());
             if (index != -1)
             {
                 tgts[index] = targetName;
@@ -1957,9 +1959,9 @@ bool cbProject::RemoveBuildTarget(int index)
         for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
         {
             wxArrayString& tgts = it->second;
-            int index = tgts.Index(target->GetTitle());
-            if (index != -1)
-                tgts.RemoveAt(index);
+            int virt_idx = tgts.Index(target->GetTitle());
+            if (virt_idx != -1)
+                tgts.RemoveAt(virt_idx);
         }
 
         // remove target from any project files that reference it

@@ -320,12 +320,12 @@ int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7) const,HSQUIRRE
 
 #ifdef SQ_REG_CONST_STATIC_VAR
 template<typename VarType>
-SQClassDef & staticVar(const VarType * pvar,const SQChar * name,VarAccessType access=VAR_ACCESS_READ_ONLY) {
+SQClassDef & staticVar(const VarType * pvar,const SQChar * name_,VarAccessType access=VAR_ACCESS_READ_ONLY) {
   struct CV {
     const VarType * var;
   } cv; // Cast Variable helper.
   cv.var = pvar;
-  RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name,VarAccessType(access|VAR_ACCESS_STATIC));
+  RegisterInstanceVariable(newClass,ClassType<TClassType>::type(),*(VarType **)&cv,name_,VarAccessType(access|VAR_ACCESS_STATIC));
   return *this;
 } // staticVar
 #endif

@@ -289,15 +289,15 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
 
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
         {
-            ProjectBuildTarget* target = project->GetBuildTarget(i);
-            if (!target)
+            ProjectBuildTarget* it_target = project->GetBuildTarget(i);
+            if (!it_target)
                 continue;
-            wxString title = target->GetTitle().Upper();
+            wxString title = it_target->GetTitle().Upper();
             while (title.Replace(_T(" "), _T("_")))
                 ; // replace spaces with underscores (what about other invalid chars?)
-            m_Macros[title + _T("_OUTPUT_FILE")]     = UnixFilename(target->GetOutputFilename());
-            m_Macros[title + _T("_OUTPUT_DIR")]      = UnixFilename(target->GetBasePath());
-            m_Macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(target->GetOutputFilename()).GetName();
+            m_Macros[title + _T("_OUTPUT_FILE")]     = UnixFilename(it_target->GetOutputFilename());
+            m_Macros[title + _T("_OUTPUT_DIR")]      = UnixFilename(it_target->GetBasePath());
+            m_Macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(it_target->GetOutputFilename()).GetName();
         }
         m_LastProject = project;
     }
@@ -501,8 +501,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while (m_RE_Unix.Matches(buffer))
     {
         replace.Empty();
+        search = m_RE_Unix.GetMatch(buffer, 2);
 
-        wxString search = m_RE_Unix.GetMatch(buffer, 2);
         wxString var = m_RE_Unix.GetMatch(buffer, 3).Upper();
 
         if (var.GetChar(0) == _T('#'))
@@ -534,8 +534,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while (m_RE_DOS.Matches(buffer))
     {
         replace.Empty();
+        search = m_RE_DOS.GetMatch(buffer, 2);
 
-        wxString search = m_RE_DOS.GetMatch(buffer, 2);
         wxString var = m_RE_DOS.GetMatch(buffer, 3).Upper();
 
         if (var.GetChar(0) == _T('#'))

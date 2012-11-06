@@ -129,7 +129,7 @@ void ToDoList::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
 }
 
-void ToDoList::OnRelease(bool appShutDown)
+void ToDoList::OnRelease(bool /* appShutDown */)
 {
     if (m_StandAlone)
     {
@@ -181,7 +181,7 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
 
 }
 
-void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /* data */)
 {
     if (!menu || !IsAttached())
         return;
@@ -192,7 +192,7 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTr
     }
 }
 
-bool ToDoList::BuildToolBar(wxToolBar* toolBar)
+bool ToDoList::BuildToolBar(wxToolBar* /* toolBar */)
 {
     return false;
 }
@@ -276,7 +276,7 @@ void ToDoList::OnAppDoneStartup(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
+void ToDoList::OnUpdateUI(wxUpdateUIEvent& /* event */)
 {
     Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog->GetWindow()));
 }
@@ -311,7 +311,7 @@ void ToDoList::OnViewList(wxCommandEvent& event)
     }
 }
 
-void ToDoList::OnAddItem(wxCommandEvent& event)
+void ToDoList::OnAddItem(wxCommandEvent& /* event */)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)

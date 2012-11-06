@@ -108,8 +108,10 @@ void CompilerCommandGenerator::Init(cbProject* project)
     CompileTargetBase backup = *(CompileTargetBase*)project;
 
     // Invoke plugins
-    CodeBlocksEvent evt(cbEVT_COMPILER_SET_BUILD_OPTIONS, 0, project);
-    Manager::Get()->ProcessEvent(evt);
+    {
+		CodeBlocksEvent evt(cbEVT_COMPILER_SET_BUILD_OPTIONS, 0, project);
+		Manager::Get()->ProcessEvent(evt);
+	}
 
     // project build scripts
     DoBuildScripts(project, project, _T("SetBuildOptions"));
@@ -144,9 +146,11 @@ void CompilerCommandGenerator::Init(cbProject* project)
         CompileTargetBase backuptarget = *(CompileTargetBase*)target;
 
         // invoke plugins
-        CodeBlocksEvent evt(cbEVT_COMPILER_SET_BUILD_OPTIONS, 0, project);
-        evt.SetBuildTargetName(target->GetTitle());
-        Manager::Get()->ProcessEvent(evt);
+        {
+			CodeBlocksEvent evt(cbEVT_COMPILER_SET_BUILD_OPTIONS, 0, project);
+			evt.SetBuildTargetName(target->GetTitle());
+			Manager::Get()->ProcessEvent(evt);
+        }
 
         // target build scripts
         DoBuildScripts(project, target, _T("SetBuildOptions"));

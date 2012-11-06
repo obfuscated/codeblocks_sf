@@ -791,7 +791,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& /*event*/)
     XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->SetValue(fname.GetFullPath());
 }
 
-void ProjectOptionsDlg::OnBrowseImportLibraryFilenameClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnBrowseImportLibraryFilenameClick(wxCommandEvent& /* event */)
 {
     wxFileName fname;
     fname.Assign(XRCCTRL(*this, "txtImportLibraryFilename", wxTextCtrl)->GetValue());
@@ -811,7 +811,7 @@ void ProjectOptionsDlg::OnBrowseImportLibraryFilenameClick(wxCommandEvent& event
     XRCCTRL(*this, "txtImportLibraryFilename", wxTextCtrl)->SetValue(fname.GetFullPath());
 }
 
-void ProjectOptionsDlg::OnBrowseDefinitionFileFilenameClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnBrowseDefinitionFileFilenameClick(wxCommandEvent& /* event */)
 {
     wxFileName fname;
     fname.Assign(XRCCTRL(*this, "txtDefinitionFileFilename", wxTextCtrl)->GetValue());
@@ -831,7 +831,7 @@ void ProjectOptionsDlg::OnBrowseDefinitionFileFilenameClick(wxCommandEvent& even
     XRCCTRL(*this, "txtDefinitionFileFilename", wxTextCtrl)->SetValue(fname.GetFullPath());
 }
 
-void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& /* event */)
 {
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 
@@ -1202,7 +1202,7 @@ void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
     event.Skip();
 }
 
-void ProjectOptionsDlg::OnCreateDefFileClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnCreateDefFileClick(wxCommandEvent& /* event */)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 
@@ -1229,7 +1229,7 @@ void ProjectOptionsDlg::OnCreateDefFileClick(wxCommandEvent& event)
     browseD->Enable(chkCD->IsChecked() && cmb->GetSelection() == ttDynamicLib);
 }
 
-void ProjectOptionsDlg::OnCreateImportFileClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnCreateImportFileClick(wxCommandEvent& /* event */)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 

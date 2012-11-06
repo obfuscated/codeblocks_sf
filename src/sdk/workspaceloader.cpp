@@ -185,9 +185,9 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         const ProjectsArray* deps = Manager::Get()->GetProjectManager()->GetDependenciesForProject(prj);
         if (deps && deps->GetCount())
         {
-            for (size_t i = 0; i < deps->GetCount(); ++i)
+            for (size_t j = 0; j < deps->GetCount(); ++j)
             {
-                prj = deps->Item(i);
+                prj = deps->Item(j);
                 fname.Assign(prj->GetFilename());
                 fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 TiXmlElement* dnode = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Depends")));
