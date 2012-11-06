@@ -139,7 +139,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           *
           * @param menuBar the wxMenuBar to create items in
           */
-        virtual void BuildMenu(wxMenuBar* menuBar) = 0;
+        virtual void BuildMenu(wxMenuBar* /* menuBar */) {}
 
         /** This method is called by Code::Blocks core modules (EditorManager,
           * ProjectManager etc) and is used by the plugin to add any menu
@@ -156,7 +156,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param menu pointer to the popup menu
           * @param data pointer to FileTreeData object (to access/modify the file tree)
           */
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) = 0;
+        virtual void BuildModuleMenu(const ModuleType /* type */, wxMenu* /* menu */, const FileTreeData* data = 0) { (void) data; }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -166,7 +166,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param toolBar the wxToolBar to create items on
           * @return The plugin should return true if it needed the toolbar, false if not
           */
-        virtual bool BuildToolBar(wxToolBar* toolBar) = 0;
+        virtual bool BuildToolBar(wxToolBar* /* toolBar */) {}
 
         /** This method return the priority of the plugin's toolbar, the less value
           * indicates a more preceding position when C::B starts with no configuration file
