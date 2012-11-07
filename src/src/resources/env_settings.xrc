@@ -381,6 +381,35 @@
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer">
 										<cols>2</cols>
+										<vgap>4</vgap>
+										<hgap>4</hgap>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT23">
+												<label>Warning message text colour:</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="btnLogWarningTextColour" />
+											<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT24">
+												<label>Error message text colour:</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="btnLogErrorTextColour" />
+											<flag>wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT</flag>
+										</object>
+									</object>
+									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
 										<vgap>8</vgap>
 										<hgap>8</hgap>
 										<object class="sizeritem">

@@ -68,7 +68,8 @@ void TextCtrlLogger::UpdateSettings()
 
     control->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
-    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
+    ConfigManager* cfgman = Manager::Get()->GetConfigManager(_T("message_manager"));
+    int size = cfgman->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
 
     wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxFont bold_font(default_font);
@@ -108,7 +109,7 @@ void TextCtrlLogger::UpdateSettings()
     style[warning].SetFont(italic_font);
 
     style[error].SetFont(bold_font);
-    style[error].SetTextColour(BlendTextColour(*wxRED));
+    style[error].SetTextColour( cfgman->ReadColour(_T("/log_error_text_colour"),wxColour(0xf0, 0x00, 0x00)) ); // red
 
     style[critical].SetFont(bold_font);
     style[critical].SetTextColour(BlendTextColour(*wxWHITE));     // we're setting both fore and background colors here
@@ -279,7 +280,8 @@ void ListCtrlLogger::UpdateSettings()
     if (!control)
         return;
 
-    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
+    ConfigManager* cfgman = Manager::Get()->GetConfigManager(_T("message_manager"));
+    int size = cfgman->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
     wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxFont bold_font(default_font);
     wxFont italic_font(default_font);
@@ -306,9 +308,9 @@ void ListCtrlLogger::UpdateSettings()
     style[failure].colour = BlendTextColour(wxColour(0x00, 0x00, 0xa0));
 
     style[warning].font = italic_font;
-    style[warning].colour = BlendTextColour(wxColour(0x00, 0x00, 0xa0));    // navy blue
+    style[warning].colour = cfgman->ReadColour(_T("/log_warning_text_colour"), wxColour(0x00, 0x00, 0xa0)); // navy blue
 
-    style[error].colour = BlendTextColour(*wxRED);
+    style[error].colour = cfgman->ReadColour(_T("/log_error_text_colour"), wxColour(0xf0, 0x00, 0x00)); // red
 
     style[critical].font = bold_font;
     style[critical].colour = BlendTextColour(wxColour(0x0a, 0x00, 0x00));   // maroon
