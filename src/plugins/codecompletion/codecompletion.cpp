@@ -803,7 +803,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     menu->FindChildItem(id, &position);
                 menu->Insert(position, idSelectedProjectReparse, _("Reparse this project"),
                              _("Reparse current actived project"));
-                menu->InsertSeparator(position + 1);
             }
             else if (data->GetKind() == FileTreeData::ftdkFile)
                 menu->Append(idSelectedFileReparse, _("Reparse this file"), _("Reparse current selected file"));
