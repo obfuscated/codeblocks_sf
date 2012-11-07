@@ -6,7 +6,7 @@ void DLL_EXPORT SomeFunction(const LPCSTR sometext)
     MessageBoxA(0, sometext, "DLL Message", MB_OK | MB_ICONINFORMATION);
 }
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+extern "C" DLL_EXPORT BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     switch (fdwReason)
     {

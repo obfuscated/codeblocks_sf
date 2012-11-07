@@ -82,6 +82,7 @@ function SetupProject(project)
     project.AddLinkLib(_T("gdi32"));
     project.AddLinkLib(_T("user32"));
     project.AddLinkLib(_T("kernel32"));
+    project.AddLinkLib(_T("comctl32"));
     if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
         project.AddLinkLib(_T("cw32mti"));
 

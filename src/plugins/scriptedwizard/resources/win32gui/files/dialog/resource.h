@@ -1,8 +1,5 @@
-#include <windows.h>
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
 
-// ID of Main Dialog
-#define DLG_MAIN 101
-
-// ID of Button Controls
-#define IDC_BTN_TEST 1001
-#define IDC_BTN_QUIT 1002
+#define DLG_MAIN                                100
