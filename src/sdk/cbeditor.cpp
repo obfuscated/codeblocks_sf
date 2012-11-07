@@ -3076,9 +3076,10 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     {
         const wxChar ch = event.GetKey();
         cbStyledTextCtrl* control = GetControl();
-        const int pos = control->GetCurrentPos();
+        // auto indent
         if ( (ch == _T('\n')) || ( (control->GetEOLMode() == wxSCI_EOL_CR) && (ch == _T('\r')) ) )
         {
+            const int pos = control->GetCurrentPos();
             const int currLine = control->LineFromPosition(pos);
             const bool autoIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
             if (autoIndent && currLine > 0)
@@ -3095,29 +3096,18 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         }
 
         // selection brace completion
+        bool braceCompleted = false;
         if (   Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection_brace_completion"), false)
             || control->IsBraceShortcutActive() )
         {
-            DoSelectionBraceCompletion(control, ch);
+            braceCompleted = control->DoSelectionBraceCompletion(ch);
         }
 
         // brace completion
-        const wxString braces(wxT("([{)]}"));
-        const int braceIdx = braces.Find(ch);
-        if (   braceIdx != wxNOT_FOUND && pos == control->GetCurrentPos() // pos != curPos if selection brace completion succeeded
+        if (  !braceCompleted
             && Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true) )
         {
-            if (control->GetCharAt(pos) == ch)
-            {
-                control->DeleteBack();
-                control->CharRight();
-            }
-            else if (braceIdx < (braces.Length() / 2))
-            {
-                const int closeIdx = braceIdx + (braces.Length() / 2);
-                if (control->GetCharAt(pos) != braces[closeIdx] || control->BraceMatch(pos) != wxNOT_FOUND)
-                    control->InsertText(pos, braces[closeIdx]);
-            }
+            control->DoBraceCompletion(ch);
         }
     }
 }
@@ -3125,25 +3115,6 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 void cbEditor::AutoIndentDone()
 {
     m_autoIndentDone = true;
-}
-
-void cbEditor::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const
-{
-    if (control->GetLastSelectedText().IsEmpty())
-        return;
-    const wxString braces(wxT("([{<'\")]}>'\""));
-    const int braceAIdx = braces.Find(ch, true); // from end (so caret ends after quotes)
-    if (braceAIdx == wxNOT_FOUND)
-        return;
-    const int braceBIdx = (braceAIdx + (braces.Length() / 2)) % braces.Length();
-    control->BeginUndoAction();
-    control->DeleteBack();
-    if (braceAIdx < braceBIdx)
-        control->InsertText(control->GetCurrentPos(),
-                            braces[braceAIdx] + control->GetLastSelectedText() + braces[braceBIdx]);
-    else
-        control->AddText(braces[braceBIdx] + control->GetLastSelectedText() + braces[braceAIdx]);
-    control->EndUndoAction();
 }
 
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)

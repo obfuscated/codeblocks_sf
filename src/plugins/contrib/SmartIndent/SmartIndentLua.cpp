@@ -69,8 +69,11 @@ void SmartIndentLua::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         }
     }
 
+    bool braceCompleted = false;
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
-        ed->DoSelectionBraceCompletion(stc, ch);
+        braceCompleted = stc->DoSelectionBraceCompletion(ch);
+    if (!braceCompleted && BraceCompletionEnabled())
+        stc->DoBraceCompletion(ch);
 }
 
 bool SmartIndentLua::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const

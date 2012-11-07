@@ -51,8 +51,11 @@ void SmartIndentHDL::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     else if ( ch != wxT(' ') )
         DoUnIndent(ed, langname); // un-indent because not a newline added
 
+    bool braceCompleted = false;
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
-        ed->DoSelectionBraceCompletion(stc, ch);
+        braceCompleted = stc->DoSelectionBraceCompletion(ch);
+    if (!braceCompleted && BraceCompletionEnabled())
+        stc->DoBraceCompletion(ch);
 }
 
 int SmartIndentHDL::FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const

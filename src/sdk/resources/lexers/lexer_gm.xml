@@ -50,19 +50,19 @@
 						bg="255,0,0"/>
 				<Keywords>
 						<Language index="0"
-								value="if else for foreach while dowhile 
-								break continue return true false null 
-								in and or function global local member 
+								value="if else for foreach while dowhile
+								break continue return true false null
+								in and or function global local member
 								table this"/>
 						<User index="1"
-								value="debug typeId typeName typeRegisterOperator 
-								typeRegisterVariable sysCollectGarbage sysGetMemoryUsage 
-								sysSetDesiredMemoryUsageHard sysSetDesiredMemoryUsageSoft 
-								sysSetDesiredMemoryUsageAuto sysGetDesiredMemoryUsageHard 
-								sysGetDesiredMemoryUsageSoft sysTime doString globals 
-								threadTime threadId threadAllIds threadKill threadKillAll 
+								value="debug typeId typeName typeRegisterOperator
+								typeRegisterVariable sysCollectGarbage sysGetMemoryUsage
+								sysSetDesiredMemoryUsageHard sysSetDesiredMemoryUsageSoft
+								sysSetDesiredMemoryUsageAuto sysGetDesiredMemoryUsageHard
+								sysGetDesiredMemoryUsageSoft sysTime doString globals
+								threadTime threadId threadAllIds threadKill threadKillAll
 								thread yield exit assert sleep signal block stateSet
-								stateSetOnThread stateGet stateGetLast stateSetExitFunction 
+								stateSetOnThread stateGet stateGetLast stateSetExitFunction
 								tableCount tableDuplicate print format "/>
 				</Keywords>
 				<SampleCode value="lexer_gm.sample"
@@ -73,6 +73,10 @@
                     StreamCommentEnd="*/"
                     BoxCommentStart="/* "
                     BoxCommentMid=" * "
-                    BoxCommentEnd=" */"/>
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

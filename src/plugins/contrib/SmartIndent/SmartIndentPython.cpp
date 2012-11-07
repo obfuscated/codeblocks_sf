@@ -71,6 +71,18 @@ void SmartIndentPython::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
         }
     }
 
+    bool braceCompleted = false;
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
-        ed->DoSelectionBraceCompletion(stc, ch);
+        braceCompleted = stc->DoSelectionBraceCompletion(ch);
+    if (!braceCompleted && BraceCompletionEnabled())
+    {
+        stc->DoBraceCompletion(ch);
+        if (  !(stc->IsComment(stc->GetStyleAt(pos)) || stc->IsComment(stc->GetStyleAt(pos - 2)))
+            && (ch == wxT('"') || ch == wxT('\'')) )
+        {
+            const wxString tripleQuote(3, ch);
+            if (stc->GetTextRange(pos - 3, pos) == tripleQuote && !stc->IsString(stc->GetStyleAt(pos - 4)))
+                stc->InsertText(pos, tripleQuote);
+        }
+    }
 }

@@ -69,11 +69,11 @@
 						bg="255,0,0"/>
 				<Keywords>
 						<Language index="0"
-								value="break case catch class clone continue 
-										default delegate delete else extends for 
-										foreach function if in local null resume 
-										return switch this throw try typeof 
-										while parent yield constructor vargc vargv 
+								value="break case catch class clone continue
+										default delegate delete else extends for
+										foreach function if in local null resume
+										return switch this throw try typeof
+										while parent yield constructor vargc vargv
 										instanceof true false static"/>
 						<Documentation index="2"
 								value="a addindex addtogroup anchor arg attention
@@ -94,6 +94,10 @@
                     StreamCommentEnd="*/"
                     BoxCommentStart="/* "
                     BoxCommentMid=" * "
-                    BoxCommentEnd=" */"/>
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

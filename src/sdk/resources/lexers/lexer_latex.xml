@@ -30,14 +30,14 @@
                index="5"
                fg="0,0,255"
                bold="1"/>
-				<Style name="Matching brace highlight"
-						index="34"
-						bg="128,255,255"
-						bold="1"/>
-				<Style name="No matching brace highlight"
-						index="35"
-						fg="255,0,0"
-						bold="1"/>
+        <Style name="Matching brace highlight"
+                index="34"
+                bg="128,255,255"
+                bold="1"/>
+        <Style name="No matching brace highlight"
+                index="35"
+                fg="255,0,0"
+                bold="1"/>
         <Style name="Selection"
                index="-99"
                bg="192,192,192"/>
@@ -52,6 +52,10 @@
             BoxCommentStart=""
             BoxCommentMid=""
             BoxCommentEnd=""
-            CaseSensitive="1"/>
+            CaseSensitive="1"
+            LexerCommentStyles="4,5"
+            LexerCharacterStyles=""
+            LexerStringStyles=""
+            LexerPreprocessorStyles=""/>
     </Lexer>
 </CodeBlocks_lexer_properties>

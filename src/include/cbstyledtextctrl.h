@@ -33,6 +33,9 @@ class cbStyledTextCtrl : public wxScintilla
         void CallTipCancel();
         bool IsBraceShortcutActive();
 
+        void DoBraceCompletion(const wxChar& ch);
+        bool DoSelectionBraceCompletion(const wxChar& ch);
+
         static std::map<int, std::set<int> > &GetCharacterLexerStyles();
         static std::map<int, std::set<int> > &GetStringLexerStyles();
         static std::map<int, std::set<int> > &GetPreprocessorLexerStyles();

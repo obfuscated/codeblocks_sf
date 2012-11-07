@@ -491,35 +491,12 @@ void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
             }
             case _T('('):
             case _T(')'):
-            {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                control->InsertText(pos - 1, wxT("(") + selectedText + wxT(")"));
-                if (ch == _T(')'))
-                    control->SetEmptySelection(pos + selectedText.Length() + 1);
-                control->EndUndoAction();
-                return;
-            }
             case _T('['):
             case _T(']'):
-            {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                control->InsertText(pos - 1, wxT("[") + selectedText + wxT("]"));
-                if (ch == _T(']'))
-                    control->SetEmptySelection(pos + selectedText.Length() + 1);
-                control->EndUndoAction();
-                return;
-            }
             case _T('<'):
             case _T('>'):
             {
-                control->BeginUndoAction();
-                control->DeleteBack();
-                control->InsertText(pos - 1, wxT("<") + selectedText + wxT(">"));
-                if (ch == _T('>'))
-                    control->SetEmptySelection(pos + selectedText.Length() + 1);
-                control->EndUndoAction();
+                control->DoSelectionBraceCompletion(ch);
                 return;
             }
             case _T('{'):
@@ -695,5 +672,3 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
         }
     }
 }
-
-

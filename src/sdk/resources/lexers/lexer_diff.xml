@@ -37,6 +37,10 @@
                     BoxCommentStart=""
                     BoxCommentMid=""
                     BoxCommentEnd=""
-                    CaseSensitive="1"/>
+                    CaseSensitive="1"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles=""/>
         </Lexer>
 </CodeBlocks_lexer_properties>

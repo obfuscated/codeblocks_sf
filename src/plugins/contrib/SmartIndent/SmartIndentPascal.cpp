@@ -46,8 +46,11 @@ void SmartIndentPascal::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) cons
     else if ( ch != wxT(' ') )
         DoUnIndent(ed, langname); // un-indent because not a newline added
 
+    bool braceCompleted = false;
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
-        ed->DoSelectionBraceCompletion(stc, ch);
+        braceCompleted = stc->DoSelectionBraceCompletion(ch);
+    if (!braceCompleted && BraceCompletionEnabled())
+        stc->DoBraceCompletion(ch);
 }
 
 void SmartIndentPascal::DoIndent(cbEditor* ed, const wxString& WXUNUSED(langname)) const

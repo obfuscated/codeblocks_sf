@@ -541,6 +541,11 @@
                     LineComment="#"
                     CaseSensitive="0"
                     LexerCommentStyles="1"
-                    LexerStringStyles="2,3,4"/>
+                    LexerStringStyles="2,3,4"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="2,3,4"
+                    LexerPreprocessorStyles=""/>
         </Lexer>
 </CodeBlocks_lexer_properties>

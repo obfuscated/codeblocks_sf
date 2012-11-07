@@ -108,6 +108,10 @@
                     StreamCommentEnd=""
                     BoxCommentStart=""
                     BoxCommentMid=""
-                    BoxCommentEnd=""/>
+                    BoxCommentEnd=""
+                    LexerCommentStyles="1,2,3,4,5,6"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="12"
+                    LexerPreprocessorStyles="13"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

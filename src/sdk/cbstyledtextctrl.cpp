@@ -313,6 +313,65 @@ bool cbStyledTextCtrl::IsBraceShortcutActive()
     return state;
 }
 
+void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
+{
+    const int pos   = GetCurrentPos();
+    const int style = GetStyleAt(pos);
+    if (IsComment(style) || IsComment(GetStyleAt(pos - 2)))
+        return; // do nothing
+    if (ch == wxT('\'') || ch == wxT('"'))
+    {
+        if (GetCharAt(pos) == ch)
+        {
+            DeleteBack();
+            CharRight();
+        }
+        else if (!IsString(GetStyleAt(pos - 2)) && !IsCharacter(GetStyleAt(pos - 2)))
+            InsertText(pos, ch);
+        return; // done
+    }
+    if (IsString(style) || IsCharacter(style))
+        return; // do nothing
+    const wxString braces(wxT("([{)]}"));
+    const int braceIdx = braces.Find(ch);
+    if (braceIdx != wxNOT_FOUND)
+    {
+        if (GetCharAt(pos) == ch)
+        {
+            DeleteBack();
+            CharRight();
+        }
+        else if (braceIdx < (braces.Length() / 2))
+        {
+            const int closeIdx = braceIdx + (braces.Length() / 2);
+            int nextPos = pos;
+            while (wxIsspace(GetCharAt(nextPos)) && nextPos < GetLength())
+                ++nextPos;
+            if ((wxChar)GetCharAt(nextPos) != braces[closeIdx] || BraceMatch(nextPos) != wxNOT_FOUND)
+                InsertText(pos, braces[closeIdx]);
+        }
+    }
+}
+
+bool cbStyledTextCtrl::DoSelectionBraceCompletion(const wxChar& ch)
+{
+    if (GetLastSelectedText().IsEmpty())
+        return false; // nothing changed
+    const wxString braces(wxT("([{<'\")]}>'\""));
+    const int braceAIdx = braces.Find(ch, true); // from end (so caret is placed after quotes)
+    if (braceAIdx == wxNOT_FOUND)
+        return false; // nothing changed
+    const int braceBIdx = (braceAIdx + (braces.Length() / 2)) % braces.Length();
+    BeginUndoAction();
+    DeleteBack();
+    if (braceAIdx < braceBIdx)
+        InsertText(GetCurrentPos(), braces[braceAIdx] + GetLastSelectedText() + braces[braceBIdx]);
+    else
+        AddText(braces[braceBIdx] + GetLastSelectedText() + braces[braceAIdx]);
+    EndUndoAction();
+    return true; // succeeded
+}
+
 bool cbStyledTextCtrl::AllowTabSmartJump()
 {
     const int pos = GetCurrentPos();

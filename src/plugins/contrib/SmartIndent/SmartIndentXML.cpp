@@ -56,8 +56,7 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     bool complQuote = true;
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
     {
-        ed->DoSelectionBraceCompletion(stc, ch);
-        if (pos != stc->GetCurrentPos())
+        if (stc->DoSelectionBraceCompletion(ch))
         {
             complQuote = false;
             pos = stc->GetCurrentPos();
