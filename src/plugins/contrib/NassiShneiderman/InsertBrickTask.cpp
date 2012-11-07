@@ -60,6 +60,8 @@ wxCursor InsertBrickTask::Start()
         case NassiView::NASSI_TOOL_IF:          return wxCursor(wxImage(ifcur_xpm));
         case NassiView::NASSI_TOOL_SWITCH:      return wxCursor(switchcur_xpm);
         default:
+        case NassiView::NASSI_TOOL_SELECT:
+        case NassiView::NASSI_TOOL_PASTE:
         case NassiView::NASSI_TOOL_INSTRUCTION: return wxCursor(instrcur_xpm);
     }
 }

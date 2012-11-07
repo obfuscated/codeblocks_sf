@@ -41,35 +41,27 @@ enum {
 
 NassiBrick::NassiBrick():
     previous(0),
-    next(0),
+    mNext(0),
     parent(0),
     Source(_T("")),
     Comment(_T(""))
 {}
 NassiBrick::~NassiBrick()
 {
-    if ( next != (NassiBrick *)0 )
-    {
-        //wxMessageBox(_T("deleting next"));
-        delete next;
-        next = (NassiBrick *)0;
-    }
-    //wxMessageBox(_T("destructing brick"));
+	delete mNext;
 }
 
 NassiBrick *NassiBrick::SetNext(NassiBrick *nex)
 {
-    NassiBrick *tmp;
-    tmp = next;
-    next = nex;
-    if ( next )
-        next->SetPrevious(this);
-    return( tmp );
+    NassiBrick *tmp = mNext;
+    mNext = nex;
+    if ( mNext )
+        mNext->SetPrevious(this);
+    return tmp;
 }
 NassiBrick *NassiBrick::SetPrevious(NassiBrick *prev)
 {
-    NassiBrick *tmp;
-    tmp = previous;
+    NassiBrick *tmp = previous;
     previous = prev;
     if ( previous )
         parent = (NassiBrick *)0;
@@ -110,8 +102,8 @@ bool NassiBrick::IsOlderSibling(NassiBrick *brick)
 }
 bool NassiBrick::IsYoungerSibling(NassiBrick *brick)
 {
-    if (next == brick ) return true;
-    if ( next && next->IsYoungerSibling(brick) ) return true;
+    if (mNext == brick ) return true;
+    if ( mNext && mNext->IsYoungerSibling(brick) ) return true;
     return false;
 }
 
@@ -1727,13 +1719,13 @@ void NassiSwitchBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
 
-    wxString src = _T("switch ( ") + Source + _T(" )\n{");
-    SaveSourceString(text_stream, src, n);
+    const wxString srce = _T("switch ( ") + Source + _T(" )\n{");
+    SaveSourceString(text_stream, srce, n);
 
     for ( wxUint32 i = 0 ; i < GetChildCount(); i++ )
     {
         NassiBrick *child = GetChild(i);
-        wxString cmt(*GetTextByNumber((i+1)*2));
+        const wxString cmt(*GetTextByNumber((i+1)*2));
 
         wxString src = *GetTextByNumber((i+1)*2+1);
         if ( src.StartsWith( _T("default") ) )

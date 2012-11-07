@@ -52,8 +52,7 @@ NassiDataObject::NassiDataObject(NassiBrick *brick, NassiView *view, wxString st
         memdc->SelectObject(bitmap);
         memdc->SetPen(*wxBLACK_PEN);
         ///draw the diagram
-        BricksMap::iterator it;
-        for ( it = GraphBricks.begin() ; it != GraphBricks.end() ; it++)
+        for (BricksMap::iterator it = GraphBricks.begin() ; it != GraphBricks.end() ; ++it)
             it->second->Draw(memdc);
 
         memdc->SelectObject(wxNullBitmap);
