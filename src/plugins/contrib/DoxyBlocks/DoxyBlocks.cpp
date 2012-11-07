@@ -631,6 +631,8 @@ void DoxyBlocks::AppendToLog(const wxString &sText, eLogLevel flag /*  = LOG_NOR
             case LOG_ERROR:
                 LogMan->LogError(sText, m_LogPageIndex);
                 break;
+            default:
+                break;
         }
 
         // Stop the log window stealing the focus so that the caret remains positioned for comment entry...

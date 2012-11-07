@@ -94,6 +94,8 @@ void Cccc::AppendToLog(const wxString& Text)
     }
 } // end of AppendToLog
 
+namespace
+{
 bool CheckRequirements()
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -107,6 +109,7 @@ bool CheckRequirements()
     }
     return true;
 }  // end of CheckRequirements
+}
 
 int Cccc::Execute()
 {

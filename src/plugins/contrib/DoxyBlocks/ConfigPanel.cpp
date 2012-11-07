@@ -672,6 +672,8 @@ void ConfigPanel::WriteBlockComment(cbStyledTextCtrl *stc, int iBlockComment, bo
             sMidComment = wxT("///");
             sEndComment = wxT("/////////////////////////////////////////////////");
             break;
+        default:
+            break;
     }
     if(iBlockComment == 4 || iBlockComment == 5){
         stc->AddText(sStartComment);
@@ -739,6 +741,8 @@ void ConfigPanel::WriteLineComment(cbStyledTextCtrl *stc, int iLineComment)
         case 3:            // Qt.
             sStartComment = wxT("/*!< ");
             sEndComment = wxT(" */");
+            break;
+        default:
             break;
     }
     stc->AddText(sGlobal + sStartComment + sComment + sEndComment);

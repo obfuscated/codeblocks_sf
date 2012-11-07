@@ -62,6 +62,8 @@ void copystrings::OnRelease(bool /*appShutDown*/)
 	// m_IsAttached will be FALSE...
 }
 
+namespace
+{
 void GetStrings(const wxString& buffer,wxString& result)
 {
     typedef map<wxString, bool, less<wxString> > mymaptype;
@@ -139,6 +141,8 @@ void GetStrings(const wxString& buffer,wxString& result)
                 else
                     mode = 8;
             break;
+            default:
+            break;
         }
     } // end for : idx : i
     result.Clear();
@@ -153,6 +157,7 @@ void GetStrings(const wxString& buffer,wxString& result)
     }
     return;
 } // end of GetStrings
+}
 
 int copystrings::Execute()
 {

@@ -220,6 +220,8 @@ void Valgrind::ProcessStack(const TiXmlElement& Stack, bool AddHeader)
     } // end while
 } // end of ProcessStack
 
+namespace
+{
 bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& CommandLineArguments)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -291,6 +293,7 @@ bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& Command
 	CommandLineArguments = Target->GetExecutionParameters();
 	return true;
 }  // end of CheckRequirements
+}
 
 long Valgrind::DoValgrindVersion()
 {
@@ -336,9 +339,9 @@ void Valgrind::ParseMemCheckXML(TiXmlDocument &Doc)
             Error = Error->NextSiblingElement("error"), Errors++)
     {
         wxString WhatValue, KindValue;
-        if (const TiXmlElement* What = Error->FirstChildElement("xwhat"))
+        if (const TiXmlElement* XWhat = Error->FirstChildElement("xwhat"))
         {	// style use since Valgrind 3.5.0
-            if (const TiXmlElement* Text = What->FirstChildElement("text"))
+            if (const TiXmlElement* Text = XWhat->FirstChildElement("text"))
             {
                 WhatValue = wxString::FromAscii(Text->GetText());
             }

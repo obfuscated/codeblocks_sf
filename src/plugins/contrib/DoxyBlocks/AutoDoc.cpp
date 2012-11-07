@@ -172,6 +172,8 @@ void DoxyBlocks::DoLineComment()
         case 3:            // Qt.
             sComment = wxT("/*!<  */");
             break;
+        default:
+            break;
     }
 
     // Make the changes undoable in one step.
@@ -228,6 +230,8 @@ void DoxyBlocks::GetBlockCommentStrings(int iBlockComment, wxString &sStartComme
             sStartComment = wxT("/////////////////////////////////////////////////");
             sMidComment = wxT("///");
             sEndComment = wxT("/////////////////////////////////////////////////");
+            break;
+        default:
             break;
     }
 }

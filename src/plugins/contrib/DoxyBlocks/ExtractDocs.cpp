@@ -512,26 +512,25 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
  */
 int DoxyBlocks::GenerateDocuments(cbProject *prj)
 {
-    wxString sMsg;
 
     // First, I need to change into the project directory. All following actions
     // will work with relative pathes. This way, stored pathes in doxygen
     // configuration files won't cause problems after moving to other places.
     // The current path is to be restored after my actions...
 
-    wxString sOldPath = wxGetCwd();
+    const wxString sOldPath = wxGetCwd();
     wxFileName fnProject;
     fnProject.Assign(prj->GetFilename(), ::wxPATH_NATIVE);
 
-    wxString sPrjPath = fnProject.GetPath(wxPATH_GET_VOLUME);
+    const wxString sPrjPath = fnProject.GetPath(wxPATH_GET_VOLUME);
     wxSetWorkingDirectory(sPrjPath);
 
     // project name, name and path of base config file and logfile
-    wxString sPrjName = fnProject.GetName();
-    wxString sOutputDir = m_pConfig->GetOutputDirectory();
+    const wxString sPrjName = fnProject.GetName();
+    const wxString sOutputDir = m_pConfig->GetOutputDirectory();
     wxString sDoxygenDir = wxT("doxygen");
-    wxString sCfgBaseFile = wxT("doxyfile");
-    wxString sLogFile     = wxT("doxygen.log");
+    const wxString sCfgBaseFile = wxT("doxyfile");
+    const wxString sLogFile     = wxT("doxygen.log");
 
     if(!sOutputDir.IsEmpty()){
         sDoxygenDir = sOutputDir;
@@ -545,7 +544,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     fnDoxygenLog.Normalize();
 
     if (!fnOutput.Mkdir(0777, wxPATH_MKDIR_FULL)){
-        wxString sMsg = _("Failed. ") + fnOutput.GetFullPath() + _(" was not created.");
+        const wxString sMsg = _("Failed. ") + fnOutput.GetFullPath() + _(" was not created.");
         AppendToLog(sMsg, LOG_WARNING);
         wxSetWorkingDirectory(sOldPath);
         return -1;
@@ -555,7 +554,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     WriteConfigFiles(prj, sPrjName, sPrjPath, sDoxygenDir, fnDoxyfile, fnDoxygenLog);
 
     if(!wxFile::Exists(fnDoxyfile.GetFullPath())){
-        wxString sMsg = _("Failed. ") + fnDoxyfile.GetFullPath() + _(" was not created.");
+        const wxString sMsg = _("Failed. ") + fnDoxyfile.GetFullPath() + _(" was not created.");
         AppendToLog(sMsg, LOG_WARNING);
         wxSetWorkingDirectory(sOldPath);
         return -1;
@@ -566,7 +565,6 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     // now tango, launch doxygen...
     wxArrayString sOutput;
     wxArrayString sErrors;
-    long ret;
     // Default command.
     wxString cmd = wxT("doxygen");
     // If a path is configured, use that instead.
@@ -574,7 +572,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
     if(!sDoxygenPath.IsEmpty()){
         cmd = sDoxygenPath;
     }
-    ret = wxExecute(cmd + wxT(" ") + fnDoxyfile.GetFullPath(), sOutput, sErrors);
+    const long ret = wxExecute(cmd + wxT(" ") + fnDoxyfile.GetFullPath(), sOutput, sErrors);
     if(ret != -1){
         // Write doxygen logfile to the log or remove it if it's empty
         if(wxFile::Exists(fnDoxygenLog.GetFullPath())){
@@ -611,7 +609,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
         }
 
         // tell the user where to find the docs
-        sMsg = wxT("Success.\nYour documents are in: ");
+        const wxString sMsg = wxT("Success.\nYour documents are in: ");
         AppendToLog(sMsg + fnDoxyfile.GetPathWithSep());
     }
     else{

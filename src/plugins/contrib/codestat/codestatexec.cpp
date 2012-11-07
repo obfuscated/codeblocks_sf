@@ -315,6 +315,8 @@ void CodeStatExecDlg::ShowResults(int index) {
 
 }
 
+namespace
+{
 /** This function determines the caracteristics of a given line (code line, comment line etc...).
  *  It is called by the "CountLines" function.
  *  @see CountLines
@@ -384,6 +386,7 @@ void AnalyseLine(bool &comment, bool &code, bool &multi_line_comment, const Lang
         else
             code = true;
     }
+}
 }
 
 /** This function analyses a given source file and count the lines of code, comments etc...
