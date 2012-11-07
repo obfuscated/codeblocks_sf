@@ -38,7 +38,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR   1
 #define PLUGIN_SDK_VERSION_MINOR   13
-#define PLUGIN_SDK_VERSION_RELEASE 11
+#define PLUGIN_SDK_VERSION_RELEASE 12
 
 // class decls
 class wxMenuBar;
@@ -166,7 +166,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param toolBar the wxToolBar to create items on
           * @return The plugin should return true if it needed the toolbar, false if not
           */
-        virtual bool BuildToolBar(wxToolBar* /* toolBar */) {}
+        virtual bool BuildToolBar(wxToolBar* /* toolBar */) { return false; }
 
         /** This method return the priority of the plugin's toolbar, the less value
           * indicates a more preceding position when C::B starts with no configuration file

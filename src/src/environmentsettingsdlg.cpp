@@ -113,9 +113,9 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/raise_via_ipc"), true));
     XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(useIpc);
 
-    XRCCTRL(*this, "chkAssociations",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
-    XRCCTRL(*this, "chkModifiedFiles",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
-    XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"), true));
+    XRCCTRL(*this, "chkAssociations",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"),          true));
+    XRCCTRL(*this, "chkModifiedFiles",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"),        true));
+    XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"),      true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
 
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
@@ -151,20 +151,20 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->SetValue(cfg->ReadInt(_T("/dialog_placement/dialog_position"), 0) == pdlHead ? 1 : 0);
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(do_place);
 
-    XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
-    XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
-    XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
-    XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
-    XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
+    XRCCTRL(*this, "rbProjectOpen",           wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
+    XRCCTRL(*this, "rbToolbarSize",           wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
+    XRCCTRL(*this, "rbSettingsIconsSize",     wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
+    XRCCTRL(*this, "chkShowStartPage",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
+    XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
 
     bool en = mcfg->ReadBool(_T("/auto_hide"), false);
-    XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(en);
+    XRCCTRL(*this, "chkAutoHideMessages",         wxCheckBox)->SetValue(en);
     XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_search"), true));
-    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_warnings"), true));
-    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_errors"), true));
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn",   wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_warnings"), true));
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr",    wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_errors"), true));
     XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn",   wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr",    wxCheckBox)->Enable(en);
 
     XRCCTRL(*this, "chkSaveSelectionChangeInMP", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/save_selection_change_in_mp"), true));
 
@@ -493,15 +493,15 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         ConfigManager *acfg = Manager::Get()->GetConfigManager(_T("an_dlg"));
 
         // tab "General"
-        cfg->Write(_T("/environment/show_splash"),           (bool) XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/use_ipc"),               (bool) XRCCTRL(*this, "chkUseIPC", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/raise_via_ipc"),         (bool) XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/ignore_invalid_targets"),(bool) XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->GetValue());
-        cfg->Write(_T("/console_shell"),                            XRCCTRL(*this, "txtConsoleShell", wxTextCtrl)->GetValue());
-        cfg->Write(_T("/console_terminal"),                         XRCCTRL(*this, "cbConsoleTerm", wxComboBox)->GetValue());
+        cfg->Write(_T("/environment/show_splash"),                 (bool) XRCCTRL(*this, "chkShowSplash",         wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/single_instance"),             (bool) XRCCTRL(*this, "chkSingleInstance",     wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/use_ipc"),                     (bool) XRCCTRL(*this, "chkUseIPC",             wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/raise_via_ipc"),               (bool) XRCCTRL(*this, "chkRaiseViaIPC",        wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/check_associations"),          (bool) XRCCTRL(*this, "chkAssociations",       wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/check_modified_files"),        (bool) XRCCTRL(*this, "chkModifiedFiles",      wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/ignore_invalid_targets"),      (bool) XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->GetValue());
+        cfg->Write(_T("/console_shell"),                                  XRCCTRL(*this, "txtConsoleShell",       wxTextCtrl)->GetValue());
+        cfg->Write(_T("/console_terminal"),                               XRCCTRL(*this, "cbConsoleTerm",         wxComboBox)->GetValue());
 
         // tab "View"
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
@@ -526,7 +526,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         else
             cfg->Write(_T("/locale/language"), wxEmptyString);
 
-        mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->GetValue());
+        mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->GetValue());
+
         cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace",     wxCheckBox)->GetValue());
         cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead",   wxCheckBox)->GetValue() ? pdlHead : pdlCentre);
 

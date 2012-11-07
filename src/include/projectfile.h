@@ -23,9 +23,9 @@ WX_DECLARE_HASH_MAP(ProjectBuildTarget*, pfDetails*, wxPointerHash, wxPointerEqu
 
 struct pfCustomBuild
 {
-    pfCustomBuild() : useCustomBuildCommand(false) {}
+    pfCustomBuild() : useCustomBuildCommand(false) { }
     wxString buildCommand;
-    bool useCustomBuildCommand;
+    bool     useCustomBuildCommand;
 };
 WX_DECLARE_HASH_MAP(wxString, pfCustomBuild, wxStringHash, wxStringEqual, pfCustomBuildMap);
 

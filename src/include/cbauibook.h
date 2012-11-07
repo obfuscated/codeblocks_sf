@@ -83,7 +83,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * \return wxString the tooltip of the page with the given index
          */
         wxString GetPageToolTip(size_t idx	);
-#endif
+#endif // !wxCHECK_VERSION(2, 9, 4)
         /** \brief Minmize free horizontal page
          *
          * Moves the active tab of all tabCtrl's to the rightmost place,
@@ -146,7 +146,7 @@ class cbAuiNotebook : public wxAuiNotebook
         void OnNavigationKeyNotebook(wxNavigationKeyEvent& event);
 #else
         void OnNavigationKey(wxNavigationKeyEvent& event);
-#endif
+#endif // wxCHECK_VERSION(2, 9, 0)
         /** \brief OnIdle
          *
          * \param event unused
@@ -160,7 +160,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event holds the wxTabCtrl, that sends the event
          */
         void OnMotion(wxMouseEvent& event);
-#endif
+#endif // !wxCHECK_VERSION(2, 9, 4)
         /** \brief Catch doubleclick-events from wxTabCtrl
          *
          * Sends cbEVT_CBAUIBOOK_LEFT_DCLICK, if doubleclick was on a tab,
@@ -221,7 +221,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * \param event holds the wxTabCtrl, that sends the event
          */
         void RestoreFocus();
-#endif // #ifdef __WXMSW__
+#endif // __WXMSW__
         /** \brief Reset tabctrl events
          */
         void ResetTabCtrlEvents();
@@ -254,7 +254,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * Used to restore the focus after a mouseleave-event on wxTabCtrl.
          */
         long m_LastId;
-#endif // #ifdef __WXMSW__
+#endif // __WXMSW__
 #if !wxCHECK_VERSION(2, 9, 4)
         /** \brief If false, tooltips are not shown
          *
@@ -263,7 +263,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * get the wxWidgets default-names as tooltips.
          */
         bool m_HasToolTip;
-#endif
+#endif // !wxCHECK_VERSION(2, 9, 4)
         /** \brief If true, zoom for all editors
          * is set in next OnIdle-call
          */

@@ -311,7 +311,7 @@ namespace compatibility
             unsigned int Z(){return GetID<foo>(); };    // shared with A
         };
 
-        In this example, A::X() will return a counter that is globally unique througout the lifetime of the application.
+        In this example, A::X() will return a counter that is globally unique throughout the lifetime of the application.
         A::Y() and B::Y() will return counters that increment independently for A and B. In other words,
         B does not know about A's counter, nor can it influence it.
         A::Z() and B::Z() will return a shared counter that increments if either A or B is asked to return a value.

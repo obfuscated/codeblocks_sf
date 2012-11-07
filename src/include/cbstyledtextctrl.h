@@ -62,7 +62,10 @@ class cbStyledTextCtrl : public wxScintilla
         wxString m_lastSelectedText;
         bool m_braceShortcutState;
 
-        static std::map<int, std::set<int> > CharacterLexerStyles, StringLexerStyles, PreprocessorLexerStyles, CommentLexerStyles;
+        static std::map<int, std::set<int> > CharacterLexerStyles;
+        static std::map<int, std::set<int> > StringLexerStyles;
+        static std::map<int, std::set<int> > PreprocessorLexerStyles;
+        static std::map<int, std::set<int> > CommentLexerStyles;
 
         DECLARE_EVENT_TABLE()
 };
