@@ -89,6 +89,7 @@ public:
     virtual wxArrayString GetCallTips() { return wxArrayString(); }
     virtual int CodeComplete();
     virtual void ShowCallTip();
+    virtual bool IsProviderFor(cbEditor* ed);
 
     /** give auto suggestions on preprocessor directives*/
     void CodeCompletePreprocessor();
