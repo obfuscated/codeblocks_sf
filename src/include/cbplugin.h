@@ -95,11 +95,6 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
         /** The plugin must return its type on request. */
         virtual PluginType GetType() const { return m_Type; }
 
-        /** If a plugin provides some sort of configuration dialog,
-          * this is the place to invoke it.
-          */
-        virtual int Configure(){ return 0; }
-
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
           * in configuration dialogs. Lower numbers mean the plugin's
@@ -364,7 +359,6 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
         /** @brief Get the exit code of the last build process. */
         virtual int GetExitCode() const = 0;
 
-        virtual int Configure() { return 0; }
         /** @brief Display configuration dialog.
           *
           * @param project The selected project (can be NULL).

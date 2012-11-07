@@ -117,7 +117,7 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int KillProcess();
         virtual bool IsRunning() const;
         virtual int GetExitCode() const { return m_LastExitCode; }
-        virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L);
+        virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L); // this is NOT the obsolete cbPlugin::Configure! Do not remove!!!
 
         int GetConfigurationPriority() const { return 0; }
         int GetConfigurationGroup() const { return cgCompiler; }

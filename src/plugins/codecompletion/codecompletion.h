@@ -76,7 +76,6 @@ public:
     virtual int GetConfigurationGroup() const { return cgEditor; }
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
-    virtual int Configure() { return 0; }
     /** offer for menu space by host */
     virtual void BuildMenu(wxMenuBar* menuBar);
     /** offer for Context menu */

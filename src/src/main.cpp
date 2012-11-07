@@ -2516,15 +2516,6 @@ void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("No plugin found for ID %d"), event.GetId()));
 }
 
-void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
-{
-    wxString pluginName = m_PluginIDsMap[event.GetId()];
-    if (!pluginName.IsEmpty())
-        Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
-    else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("No plugin found for ID %d"), event.GetId()));
-}
-
 void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
 {
     wxString pluginName = m_PluginIDsMap[event.GetId()];

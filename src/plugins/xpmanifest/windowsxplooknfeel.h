@@ -17,10 +17,7 @@ class WindowsXPLookNFeel : public cbToolPlugin
 	public:
 		WindowsXPLookNFeel();
 		~WindowsXPLookNFeel();
-		int Configure(){ return -1; }
 		int Execute();
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 };
 
 #endif // WINDOWSXPLOOKNFEEL_H

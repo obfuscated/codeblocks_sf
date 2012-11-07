@@ -16,7 +16,6 @@ class DefaultMimeHandler : public cbMimePlugin
     public:
         DefaultMimeHandler();
         ~DefaultMimeHandler();
-        int Configure();
         int GetConfigurationGroup() const { return cgCorePlugin; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
         bool HandlesEverything() const { return true; }

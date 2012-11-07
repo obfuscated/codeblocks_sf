@@ -64,7 +64,6 @@ class Wiz : public cbWizardPlugin
         	return *this;
 		}
 
-		int Configure(){ return 0; }
 		int GetCount() const;
         TemplateOutputType GetOutputType(int index) const;
 		wxString GetTitle(int index) const;

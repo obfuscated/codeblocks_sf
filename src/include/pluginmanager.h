@@ -91,7 +91,6 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         void UnloadAllPlugins();
         void UnloadPlugin(cbPlugin* plugin);
         int ExecutePlugin(const wxString& pluginName);
-        int ConfigurePlugin(const wxString& pluginName);
 
         bool AttachPlugin(cbPlugin* plugin, bool ignoreSafeMode = false);
         bool DetachPlugin(cbPlugin* plugin);

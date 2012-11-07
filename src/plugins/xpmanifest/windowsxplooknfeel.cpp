@@ -39,23 +39,6 @@ WindowsXPLookNFeel::~WindowsXPLookNFeel()
 	//dtor
 }
 
-void WindowsXPLookNFeel::OnAttach()
-{
-	// do whatever initialization you need for your plugin
-	// NOTE: after this function, the inherited member variable
-	// IsAttached() will be TRUE...
-	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* "load"
-	// (see: does not need) this plugin...
-}
-
-void WindowsXPLookNFeel::OnRelease(bool appShutDown)
-{
-	// do de-initialization for your plugin
-	// NOTE: after this function, the inherited member variable
-	// IsAttached() will be FALSE...
-}
-
 int WindowsXPLookNFeel::Execute()
 {
 	if (!IsAttached())

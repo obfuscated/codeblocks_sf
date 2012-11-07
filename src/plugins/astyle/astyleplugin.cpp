@@ -65,20 +65,6 @@ AStylePlugin::~AStylePlugin()
     //dtor
 }
 
-void AStylePlugin::OnAttach()
-{}
-
-void AStylePlugin::OnRelease(bool /*appShutDown*/)
-{
-    // do de-initialization for your plugin
-    // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be FALSE...
-}
-
-int AStylePlugin::Configure()
-{
-    return 0;
-}
 
 cbConfigurationPanel* AStylePlugin::GetConfigurationPanel(wxWindow* parent)
 {

@@ -1258,23 +1258,6 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     return 0;
 }
 
-int PluginManager::ConfigurePlugin(const wxString& pluginName)
-{
-    cbPlugin* plug = FindPluginByName(pluginName);
-    if (plug)
-    {
-        try
-        {
-            return plug->Configure();
-        }
-        catch (cbException& exception)
-        {
-            exception.ShowErrorMessage(false);
-        }
-    }
-    return 0;
-}
-
 int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
 {
     return (*first)->GetConfigurationPriority() - (*second)->GetConfigurationPriority();

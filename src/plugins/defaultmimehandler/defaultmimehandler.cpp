@@ -140,11 +140,6 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
     WX_CLEAR_ARRAY(m_MimeTypes);
 }
 
-int DefaultMimeHandler::Configure()
-{
-    return 0;
-}
-
 cbConfigurationPanel* DefaultMimeHandler::GetConfigurationPanel(wxWindow* parent)
 {
     EditMimeTypesDlg* dlg = new EditMimeTypesDlg(parent, m_MimeTypes);

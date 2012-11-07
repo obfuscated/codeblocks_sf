@@ -90,7 +90,7 @@ namespace ScriptBindings
     }
     int ConfigurePlugin(const wxString& pluginName)
     {
-        return Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
+        return 0; /* leaving script binding intact for compatibility, but this is factually not implemented at all */
     }
     // locate and call a menu from string (e.g. "/Valgrind/Run Valgrind::MemCheck")
     void CallMenu(const wxString& menuPath)

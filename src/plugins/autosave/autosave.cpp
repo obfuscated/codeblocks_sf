@@ -268,11 +268,6 @@ cbConfigurationPanel* Autosave::GetConfigurationPanel(wxWindow* parent)
 }
 
 
-int Autosave::Configure()
-{
-    return 0;
-}
-
 
 BEGIN_EVENT_TABLE(AutosaveConfigDlg, cbConfigurationPanel)
     EVT_CHECKBOX(XRCID("do_project"), AutosaveConfigDlg::OnProjectsChecked)

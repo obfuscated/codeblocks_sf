@@ -203,7 +203,6 @@ class MainFrame : public wxFrame
         void OnSettingsCompiler(wxCommandEvent& event);
         void OnSettingsDebugger(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
-        void OnPluginSettingsMenu(wxCommandEvent& event);
         void OnSettingsScripting(wxCommandEvent& event);
 
         void OnHelpAbout(wxCommandEvent& event);

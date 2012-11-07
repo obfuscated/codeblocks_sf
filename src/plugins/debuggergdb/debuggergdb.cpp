@@ -2129,11 +2129,6 @@ bool DebuggerGDB::IsAttachedToProcess() const
     return m_PidToAttach != 0;
 }
 
-void DebuggerGDB::OnSettings(wxCommandEvent& event)
-{
-    Configure();
-}
-
 bool DebuggerGDB::CompilerFinished(bool compilerFailed, StartType startType)
 {
     if (compilerFailed || startType == StartTypeUnknown)

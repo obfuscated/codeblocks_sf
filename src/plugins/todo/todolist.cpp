@@ -192,20 +192,10 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTr
     }
 }
 
-bool ToDoList::BuildToolBar(wxToolBar* /* toolBar */)
-{
-    return false;
-}
-
 cbConfigurationPanel* ToDoList::GetConfigurationPanel(wxWindow* parent)
 {
     ToDoSettingsDlg* dlg = new ToDoSettingsDlg(parent);
     return dlg;
-}
-
-int ToDoList::Configure()
-{
-    return 0;
 }
 
 void ToDoList::LoadUsers()

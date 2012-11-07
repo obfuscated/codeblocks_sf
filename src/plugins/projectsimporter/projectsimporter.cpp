@@ -56,25 +56,6 @@ ProjectsImporter::~ProjectsImporter()
     //dtor
 }
 
-void ProjectsImporter::OnAttach()
-{
-}
-
-
-void ProjectsImporter::OnRelease(bool appShutDown)
-{
-}
-
-int ProjectsImporter::Configure()
-{
-    return 0;
-}
-
-cbConfigurationPanel* ProjectsImporter::GetConfigurationPanel(wxWindow* parent)
-{
-    return 0;
-}
-
 void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
 {
     if (!IsAttached() || !menuBar)
