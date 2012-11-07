@@ -109,7 +109,9 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
 
 static int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
 {
-    return (*one)->weight - (*two)->weight;
+    int diff = (*one)->weight - (*two)->weight;
+    diff = (diff == 0 ? (*one)->relativeFilename.CmpNoCase((*two)->relativeFilename) : diff);
+    return (diff == 0 ? (*one)->relativeFilename.Cmp((*two)->relativeFilename) : diff);
 }
 
 MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link)
@@ -450,6 +452,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     size_t counter = ret.GetCount();
     MyFilesArray files = GetProjectFilesSortedByWeight(target, true, false);
     size_t fcount = files.GetCount();
+    bool hasWeight = false;
+    unsigned short int lastWeight = 0;
     for (unsigned int i = 0; i < fcount; ++i)
     {
         ProjectFile* pf = files[i];
@@ -461,9 +465,20 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         wxString err;
         if (force || IsObjectOutdated(target, pfd, &err))
         {
+            // Add a wait command if the weight of the current file is different from the previous one
+            // Because GetCompileFileCommand() already adds a wait command if it compiled a PCH we
+            // check the last command to prevent two consecutive wait commands
+            if (hasWeight && lastWeight != pf->weight && (ret.IsEmpty() || ret.Last() != COMPILER_WAIT))
+                ret.Add(wxString(COMPILER_WAIT));
+
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
             AppendArray(filecmd, ret);
+
+            // Update the weight
+            if (!hasWeight)
+                hasWeight = true;
+            lastWeight = pf->weight;
         }
         else
         {
