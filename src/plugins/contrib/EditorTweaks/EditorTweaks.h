@@ -140,8 +140,8 @@ class EditorTweaks : public cbPlugin
 
     private:
         int m_EditorHookId;
-        int m_suppress_insert;
-        int m_convert_braces;
+        bool m_suppress_insert;
+        bool m_convert_braces;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
 

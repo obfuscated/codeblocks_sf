@@ -22,7 +22,7 @@ EditorTweaksConfDlg::EditorTweaksConfDlg(wxWindow* parent)
 	SpinCtrl1->SetRange(1, 100);
 
 	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));
-    int maxSavedAlignerEntries = cfg->ReadInt(_T("AlingerMaxSavedEntries"),4);
+    int maxSavedAlignerEntries = cfg->ReadInt(_T("/aligner/max_saved_entries"),4);
     SpinCtrl1->SetValue(maxSavedAlignerEntries);
 
 }
@@ -36,10 +36,10 @@ EditorTweaksConfDlg::~EditorTweaksConfDlg()
 void EditorTweaksConfDlg::SaveSettings()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));
-    int oldSavedAlignerEntries = cfg->ReadInt(_T("AlingerMaxSavedEntries"),4);
+    int oldSavedAlignerEntries = cfg->ReadInt(_T("/aligner/max_saved_entries"),4);
     int newSavedAlignerEntries = SpinCtrl1->GetValue();
 
     if(oldSavedAlignerEntries != newSavedAlignerEntries )
-        cfg->Write(_T("AlingerMaxSavedEntries"),newSavedAlignerEntries);
+        cfg->Write(_T("aligner/max_saved_entries"),newSavedAlignerEntries);
 }
 
