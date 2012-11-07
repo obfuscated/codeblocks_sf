@@ -148,7 +148,7 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
 
         case WXK_TAB:
         {
-            if (m_tabSmartJump && !(event.ControlDown() || event.ShiftDown() || event.AltDown()))
+            if (m_tabSmartJump && event.GetModifiers() == wxMOD_NONE)
             {
                 if (!AutoCompActive() && m_bracePosition != wxSCI_INVALID_POSITION)
                 {
@@ -330,25 +330,30 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
             InsertText(pos, ch);
         return; // done
     }
+
     if (IsString(style) || IsCharacter(style))
         return; // do nothing
-    const wxString braces(wxT("([{)]}"));
-    const int braceIdx = braces.Find(ch);
-    if (braceIdx != wxNOT_FOUND)
+
+    const wxString opBraces(wxT("([{")); const int opBraceIdx = opBraces.Find(ch);
+    const wxString clBraces(wxT(")]}")); const int clBraceIdx = clBraces.Find(ch);
+    if ( (opBraceIdx != wxNOT_FOUND) || (clBraceIdx != wxNOT_FOUND) )
     {
-        if (GetCharAt(pos) == ch)
+        if ( GetCharAt(pos) == ch )
         {
             DeleteBack();
             CharRight();
         }
-        else if (braceIdx < (braces.Length() / 2))
+        else if (opBraceIdx != wxNOT_FOUND)
         {
-            const int closeIdx = braceIdx + (braces.Length() / 2);
             int nextPos = pos;
-            while (wxIsspace(GetCharAt(nextPos)) && nextPos < GetLength())
+            while ( wxIsspace(GetCharAt(nextPos)) && (nextPos < GetLength()) )
                 ++nextPos;
-            if ((wxChar)GetCharAt(nextPos) != braces[closeIdx] || BraceMatch(nextPos) != wxNOT_FOUND)
-                InsertText(pos, braces[closeIdx]);
+
+            if (   ((wxChar)GetCharAt(nextPos) != clBraces[opBraceIdx])
+                || (BraceMatch(nextPos)        != wxNOT_FOUND) )
+            {
+                InsertText(pos, clBraces[opBraceIdx]);
+            }
         }
     }
 }
