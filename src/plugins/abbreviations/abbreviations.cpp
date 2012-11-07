@@ -11,6 +11,8 @@
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
 
+#include <editor_hooks.h>
+
 #include "abbreviations.h"
 #include "abbreviationsconfigpanel.h"
 
@@ -41,9 +43,9 @@ Abbreviations::Abbreviations()
     // In the generated boilerplate code we have no resources but when
     // we add some, it will be nice that this code is in place already ;)
     if (!Manager::LoadResource(_T("abbreviations.zip")))
-    {
         NotifyMissingFile(_T("abbreviations.zip"));
-    }
+
+    m_IsAutoCompVisible = false;
 }
 
 // destructor
@@ -65,6 +67,10 @@ void Abbreviations::OnAttach()
 
     LoadAutoCompleteConfig();
     RegisterScripting();
+
+    // hook to editors
+    EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<Abbreviations>(this, &Abbreviations::EditorEventHook);
+    m_EditorHookId = EditorHooks::RegisterHook(myhook);
 }
 
 void Abbreviations::OnRelease(bool appShutDown)
@@ -79,18 +85,18 @@ void Abbreviations::OnRelease(bool appShutDown)
     SaveAutoCompleteConfig();
 
     if (m_Singleton == this)
-    {
         m_Singleton = nullptr;
-    }
+
+    // unregister hook
+    // 'true' will delete the functor too
+    EditorHooks::UnregisterHook(m_EditorHookId, true);
 }
 
 void Abbreviations::RegisterScripting()
 {
     Manager::Get()->GetScriptingManager();
     if (SquirrelVM::GetVMPtr())
-    {
         SqPlus::RegisterGlobal(&Abbreviations::AutoComplete, "AutoComplete");
-    }
 }
 
 void Abbreviations::UnregisterScripting()
@@ -125,7 +131,8 @@ void Abbreviations::BuildMenu(wxMenuBar* menuBar)
     //NOTE: Be careful in here... The application's menubar is at your disposal.
 
     // if not attached, exit
-    if (!IsAttached()) return;
+    if ( !IsAttached() )
+        return;
 
     int editmenuPos = menuBar->FindMenu(_("&Edit"));
     if (editmenuPos == wxNOT_FOUND) return;
@@ -158,8 +165,34 @@ bool Abbreviations::BuildToolBar(wxToolBar* toolBar)
 
 void Abbreviations::OnEditAutoComplete(wxCommandEvent& /*event*/)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    DoAutoComplete(ed);
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbStyledTextCtrl* control = editor->GetControl();
+
+    const AutoCompleteMap& acm = m_AutoCompleteMap;
+
+    int curPos = control->GetCurrentPos();
+    int startPos = control->WordStartPosition(curPos, true);
+    const int endPos = control->WordEndPosition(curPos, true);
+
+    const wxString keyword = control->GetTextRange(startPos, endPos);
+    AutoCompleteMap::const_iterator it = acm.find(keyword);
+
+    if (it != acm.end())
+        DoAutoComplete(editor);
+    else
+    {
+        wxArrayString items;
+        for (AutoCompleteMap::const_iterator it = acm.begin(); it != acm.end(); ++it)
+        {
+            if (it->first.Lower().StartsWith(keyword))
+                items.Add(it->first);
+        }
+        items.Sort();
+        wxString itemsStr = GetStringFromArray(items, _T(" "));
+        control->AutoCompShow(endPos-startPos, itemsStr);
+        m_IsAutoCompVisible = control->AutoCompActive();
+    }
+
 }
 
 void Abbreviations::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
@@ -178,6 +211,7 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
 {
     if (!ed)
         return;
+
     cbStyledTextCtrl* control = ed->GetControl();
     if (!control)
         return;
@@ -187,83 +221,77 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
     if (control->CallTipActive())
         control->CallTipCancel();
 
+    m_IsAutoCompVisible = false;
+
     LogManager* msgMan = Manager::Get()->GetLogManager();
     int curPos = control->GetCurrentPos();
     int wordStartPos = control->WordStartPosition(curPos, true);
-    wxString keyword = control->GetTextRange(wordStartPos, curPos);
+    const int endPos = control->WordEndPosition(curPos, true);
+    wxString keyword = control->GetTextRange(wordStartPos, endPos);
     wxString lineIndent = ed->GetLineIndentString(control->GetCurrentLine());
     msgMan->DebugLog(_T("Auto-complete keyword: ") + keyword);
 
-    AutoCompleteMap::iterator it;
-    for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
+    AutoCompleteMap::iterator it = m_AutoCompleteMap.find(keyword);
+    if (it != m_AutoCompleteMap.end() )
     {
-        if (keyword == it->first)
+        // found; auto-complete it
+        msgMan->DebugLog(_T("Auto-complete match for keyword found."));
+
+        // indent code accordingly
+        wxString code = it->second;
+        code.Replace(_T("\n"), _T('\n') + lineIndent);
+
+        // look for and replace macros
+        int macroPos = code.Find(_T("$("));
+        while (macroPos != -1)
         {
-            // found; auto-complete it
-            msgMan->DebugLog(_T("Auto-complete match for keyword found."));
+            // locate ending parenthesis
+            int macroPosEnd = macroPos + 2;
+            int len = (int)code.Length();
+            while (macroPosEnd < len && code.GetChar(macroPosEnd) != _T(')'))
+                ++macroPosEnd;
 
-            // indent code accordingly
-            wxString code = it->second;
-            code.Replace(_T("\n"), _T('\n') + lineIndent);
+            if (macroPosEnd == len)
+                return; // no ending parenthesis
 
-            // look for and replace macros
-            bool canceled = false;
-            int macroPos = code.Find(_T("$("));
-            while (macroPos != -1)
-            {
-                // locate ending parenthesis
-                int macroPosEnd = macroPos + 2;
-                int len = (int)code.Length();
-                while (macroPosEnd < len && code.GetChar(macroPosEnd) != _T(')'))
-                    ++macroPosEnd;
-                if (macroPosEnd == len)
-                    break; // no ending parenthesis
+            wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
+            msgMan->DebugLog(_T("Found macro: ") + macroName);
+            wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"),
+                                               _("Macro substitution"));
+            if (macro.IsEmpty())
+                return;
 
-                wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
-                msgMan->DebugLog(_T("Found macro: ") + macroName);
-                wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"),
-                                                   _("Macro substitution"));
-                if (macro.IsEmpty())
-                {
-                    canceled = true;
-                    break;
-                }
-                code.Replace(_T("$(") + macroName + _T(")"), macro);
-                macroPos = code.Find(_T("$("));
-            }
-
-            if (canceled)
-                break;
-
-            control->BeginUndoAction();
-
-            // delete keyword
-            control->SetSelectionVoid(wordStartPos, curPos);
-            control->ReplaceSelection(wxEmptyString);
-            curPos = wordStartPos;
-
-            // replace any other macros in the generated code
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
-            // match current EOL mode
-            if (control->GetEOLMode() == wxSCI_EOL_CRLF)
-                code.Replace(wxT("\n"), wxT("\r\n"));
-            else if (control->GetEOLMode() == wxSCI_EOL_CR)
-                code.Replace(wxT("\n"), wxT("\r"));
-            // add the text
-            control->InsertText(curPos, code);
-
-            // put cursor where "|" appears in code (if it appears)
-            int caretPos = code.Find(_T('|'));
-            if (caretPos != -1)
-            {
-                control->SetCurrentPos(curPos + caretPos);
-                control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
-                control->ReplaceSelection(wxEmptyString);
-            }
-
-            control->EndUndoAction();
-            break;
+            code.Replace(_T("$(") + macroName + _T(")"), macro);
+            macroPos = code.Find(_T("$("));
         }
+
+        control->BeginUndoAction();
+
+        // delete keyword
+        control->SetSelectionVoid(wordStartPos, endPos);
+        control->ReplaceSelection(wxEmptyString);
+        curPos = wordStartPos;
+
+        // replace any other macros in the generated code
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
+        // match current EOL mode
+        if (control->GetEOLMode() == wxSCI_EOL_CRLF)
+            code.Replace(wxT("\n"), wxT("\r\n"));
+        else if (control->GetEOLMode() == wxSCI_EOL_CR)
+            code.Replace(wxT("\n"), wxT("\r"));
+        // add the text
+        control->InsertText(curPos, code);
+
+        // put cursor where "|" appears in code (if it appears)
+        int caretPos = code.Find(_T('|'));
+        if (caretPos != -1)
+        {
+            control->SetCurrentPos(curPos + caretPos);
+            control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
+            control->ReplaceSelection(wxEmptyString);
+        }
+
+        control->EndUndoAction();
     }
 }
 
@@ -363,6 +391,45 @@ void Abbreviations::SaveAutoCompleteConfig()
         key.Printf(_T("/auto_complete/entry%d/code"), count);
         Manager::Get()->GetConfigManager(_T("editor"))->Write(key, code);
     }
+}
+
+void Abbreviations::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
+{
+    cbStyledTextCtrl* control = editor->GetControl();
+
+    if ( !IsAttached() || !m_IsAutoCompVisible || !control )
+    {
+        event.Skip();
+        return;
+    }
+
+    if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
+    {
+        const wxString& itemText = event.GetText();
+        int curPos = control->GetCurrentPos();
+        int startPos = control->WordStartPosition(curPos, true);
+        const int endPos = control->WordEndPosition(curPos, true);
+
+        control->BeginUndoAction();
+        control->SetTargetStart(startPos);
+        control->SetTargetEnd(endPos);
+        control->ReplaceTarget(itemText);
+        control->GotoPos(startPos + itemText.size() );
+        control->EndUndoAction();
+
+        DoAutoComplete(editor);
+
+        // prevent other plugins from insertion this keyword
+        event.SetText(wxEmptyString);
+        event.SetEventType(wxEVT_NULL);
+    }
+    else // here should be: else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
+    {    // but is this event doesn't occur.
+        m_IsAutoCompVisible = control->AutoCompActive();
+    }
+
+    if (!m_IsAutoCompVisible)
+      event.Skip(); // allow others to handle this event
 }
 
 cbConfigurationPanel* Abbreviations::GetConfigurationPanel(wxWindow* parent)

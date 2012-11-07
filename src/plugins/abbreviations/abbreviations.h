@@ -148,10 +148,15 @@ private:
     void OnEditAutoComplete(wxCommandEvent& /*event*/);
     void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
 
+public:
+  void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
+
 private:
     friend class AbbreviationsConfigPanel;
-    AutoCompleteMap m_AutoCompleteMap;
 
+    AutoCompleteMap m_AutoCompleteMap;
+    int             m_EditorHookId;
+    bool            m_IsAutoCompVisible; //!< is AutoComp opened by Abbreviations
 private:
     DECLARE_EVENT_TABLE();
 };
