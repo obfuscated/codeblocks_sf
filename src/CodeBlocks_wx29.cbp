@@ -3161,6 +3161,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPLM.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPO.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\lexers\LexPOV.cxx">
 			<Option target="scintilla" />
 		</Unit>

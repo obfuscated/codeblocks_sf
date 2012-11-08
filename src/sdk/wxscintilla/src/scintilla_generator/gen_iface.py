@@ -18,8 +18,10 @@ from fileinput import FileInput
 
 IFACE         = os.path.abspath('./scintilla/include/Scintilla.iface')
 H_TEMPLATE    = os.path.abspath('./stc.h.in')
+IH_TEMPLATE   = os.path.abspath('./stc.interface.h.in')
 CPP_TEMPLATE  = os.path.abspath('./stc.cpp.in')
 H_DEST        = os.path.abspath('./stc.h')
+IH_DEST       = os.path.abspath('./stc.i.h')
 CPP_DEST      = os.path.abspath('./stc.cpp')
 DOCSTR_DEST   = os.path.abspath('./stc.doc')
 
@@ -929,7 +931,7 @@ constNonGetterMethods = (
 
 #----------------------------------------------------------------------------
 
-def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
+def processIface(iface, h_tmplt, cpp_tmplt, ih_tmplt, h_dest, cpp_dest, docstr_dest, ih_dest):
     curDocStrings = []
     values = []
     methods = []
@@ -976,23 +978,26 @@ def processIface(iface, h_tmplt, cpp_tmplt, h_dest, cpp_dest, docstr_dest):
     data = {}
     data['VALUES'] = processVals(values)
     data['CMDS']   = processVals(cmds)
-    defs, imps, docstrings = processMethods(methods)
+    defs, imps, docstrings, idefs = processMethods(methods)
     data['METHOD_DEFS'] = defs
+    data['METHOD_IDEFS'] = idefs
     data['METHOD_IMPS'] = imps
 
     # get template text
     h_text = open(h_tmplt).read()
+    ih_text = open(ih_tmplt).read()
     cpp_text = open(cpp_tmplt).read()
 
     # do the substitutions
     h_text = h_text % data
     cpp_text = cpp_text % data
+    ih_text = ih_text % data
 
     # write out destination files
     open(h_dest, 'w').write(h_text)
     open(cpp_dest, 'w').write(cpp_text)
     open(docstr_dest, 'w').write(docstrings)
-
+    open(ih_dest, 'w').write(ih_text)
 
 
 def joinWithNewLines(values):
@@ -1006,7 +1011,7 @@ def processVals(values):
         if docs:
             text.append('')
             for x in docs:
-                text.append('// ' + x)
+                text.append('/// ' + x)
         text.append('#define %s %s' % (name, value))
     return joinWithNewLines(text)
 
@@ -1014,6 +1019,7 @@ def processVals(values):
 
 def processMethods(methods):
     defs = []
+    idefs = []
     imps = []
     dstr = []
 
@@ -1043,6 +1049,18 @@ def processMethods(methods):
             theDef = theDef + ';'
         defs.append(theDef)
 
+        # Build the method definition for the interface .h file
+        if docs:
+            idefs.append('')
+            idefs.append('    /**')
+            for x in docs:
+                idefs.append('        ' + x)
+            idefs.append('    */')
+        if name == 'GetCurLine':
+            idefs.append('    wxString GetCurLine(int* linePos=NULL);')
+        else:
+            idefs.append(theDef)
+                     
         # Build the method implementation string
         if docs:
             imps.append('')
@@ -1069,7 +1087,7 @@ def processMethods(methods):
         imps.append(theImp)
 
 
-    return joinWithNewLines(defs), joinWithNewLines(imps), joinWithNewLines(dstr)
+    return joinWithNewLines(defs), joinWithNewLines(imps), joinWithNewLines(dstr), joinWithNewLines(idefs)
 
 
 #----------------------------------------------------------------------------
@@ -1194,7 +1212,7 @@ def main(args):
         sys.exit(1)
 
     # Now just do it
-    processIface(IFACE, H_TEMPLATE, CPP_TEMPLATE, H_DEST, CPP_DEST, DOCSTR_DEST)
+    processIface(IFACE, H_TEMPLATE, CPP_TEMPLATE, IH_TEMPLATE, H_DEST, CPP_DEST, DOCSTR_DEST, IH_DEST)
 
 
 

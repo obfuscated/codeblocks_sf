@@ -22,7 +22,7 @@
 
 #include <wx/defs.h>
 
-#define wxSCINTILLA_VERSION _T("3.22.0")
+#define wxSCINTILLA_VERSION _T("3.23.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -1931,6 +1931,13 @@
 #define wxSCI_PO_MSGCTXT 6
 #define wxSCI_PO_MSGCTXT_TEXT 7
 #define wxSCI_PO_FUZZY 8
+#define wxSCI_PO_PROGRAMMER_COMMENT 9
+#define wxSCI_PO_REFERENCE 10
+#define wxSCI_PO_FLAGS 11
+#define wxSCI_PO_MSGID_TEXT_EOL 12
+#define wxSCI_PO_MSGSTR_TEXT_EOL 13
+#define wxSCI_PO_MSGCTXT_TEXT_EOL 14
+#define wxSCI_PO_ERROR 15
 
 // Lexical states for SCLEX_PASCAL
 #define wxSCI_PAS_DEFAULT 0
@@ -4431,6 +4438,13 @@ public:
     // Create an ILoader*.
     void* CreateLoader(int bytes) const;
 
+    // Move caret to before first visible character on display line.
+    // If already there move to first character on display line.
+    void VCHomeDisplay();
+
+    // Like VCHomeDisplay but extending selection to new caret position.
+    void VCHomeDisplayExtend();
+
     // On OS X, show a find indicator.
     void FindIndicatorShow(int start, int end);
 
@@ -4492,13 +4506,6 @@ public:
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
     wxString DescribeKeyWordSets() const;
-
-    // Move caret to before first visible character on display line.
-    // If already there move to first character on display line.
-    void VCHomeDisplay();
-
-    // Like VCHomeDisplay but extending selection to new caret position.
-    void VCHomeDisplayExtend();
 
 /* C::B begin */
     // Retrieve the name of the lexer.

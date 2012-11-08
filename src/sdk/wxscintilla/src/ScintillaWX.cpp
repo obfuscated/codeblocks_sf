@@ -107,7 +107,9 @@ public:
     void OnPaint(wxPaintEvent& WXUNUSED(evt))
     {
         wxAutoBufferedPaintDC dc(this);
+/* C::B begin */
         Surface* surfaceWindow = Surface::Allocate(SC_TECHNOLOGY_DEFAULT);
+/* C::B end */
         surfaceWindow->Init(&dc, m_ct->wDraw.GetID());
         m_ct->PaintCT(surfaceWindow);
         surfaceWindow->Release();
@@ -1115,9 +1117,14 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
 {
     int key = evt.GetKeyCode();
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,0)
-    if (key == 0 && evt.GetUnicodeKey() != 0)
-        key = evt.GetUnicodeKey();
+#if wxCHECK_VERSION(2, 9, 0)
+    if (key == WXK_NONE) {
+        // This is a Unicode character not representable in Latin-1 or some key
+        // without key code at all (e.g. dead key or VK_PROCESSKEY under MSW).
+        if ( consumed )
+            *consumed = false;
+        return 0;
+    }
 #endif
 /* C::B end */
     bool shift = evt.ShiftDown(),

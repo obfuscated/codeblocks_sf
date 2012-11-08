@@ -237,6 +237,9 @@ public:
     // Returns the current UseAntiAliasing setting.
     bool GetUseAntiAliasing();
 
+    // Clear annotations from the given line.
+    void AnnotationClearLine(int line);
+
 
 
     // The following methods are nearly equivalent to their similarly named
@@ -285,7 +288,11 @@ public:
     // implement wxTextEntryBase pure virtual methods
     // ----------------------------------------------
 
-    virtual void WriteText(const wxString& text) { AddText(text); }
+    virtual void WriteText(const wxString& text)
+    {
+        ReplaceSelection(text);
+    }
+
     virtual void Remove(long from, long to)
     {
         Replace(from, to, "");
@@ -327,6 +334,11 @@ public:
             SetSelectionStart(from);
             SetSelectionEnd(to);
         }
+    }
+
+    virtual void SelectNone()
+    {
+        ClearSelections();
     }
 
 #ifdef SWIG
@@ -440,6 +452,7 @@ public:
     static wxVersionInfo GetLibraryVersionInfo();
 
 protected:
+    virtual void DoSetValue(const wxString& value, int flags);
     virtual wxString DoGetValue() const { return GetText(); }
     virtual wxWindow *GetEditableWindow() { return this; }
 

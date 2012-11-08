@@ -4196,6 +4196,19 @@ void* wxScintilla::CreateLoader(int bytes) const
     return reinterpret_cast<void*>(SendMsg(SCI_CREATELOADER, bytes, 0));
 }
 
+// Move caret to before first visible character on display line.
+// If already there move to first character on display line.
+void wxScintilla::VCHomeDisplay()
+{
+    SendMsg(SCI_VCHOMEDISPLAY, 0, 0);
+}
+
+// Like VCHomeDisplay but extending selection to new caret position.
+void wxScintilla::VCHomeDisplayExtend()
+{
+    SendMsg(SCI_VCHOMEDISPLAYEXTEND, 0, 0);
+}
+
 // On OS X, show a find indicator.
 void wxScintilla::FindIndicatorShow(int start, int end)
 {
@@ -4356,19 +4369,6 @@ wxString wxScintilla::DescribeKeyWordSets() const
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
-}
-
-// Move caret to before first visible character on display line.
-// If already there move to first character on display line.
-void wxScintilla::VCHomeDisplay()
-{
-    SendMsg(SCI_VCHOMEDISPLAY, 0, 0);
-}
-
-// Like VCHomeDisplay but extending selection to new caret position.
-void wxScintilla::VCHomeDisplayExtend()
-{
-    SendMsg(SCI_VCHOMEDISPLAYEXTEND, 0, 0);
 }
 
 /* C::B begin */
@@ -5393,7 +5393,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 3, 22, 0, "Scintilla 3.22");
+    return wxVersionInfo("Scintilla", 3, 23, 0, "Scintilla 3.23");
 }
 #endif
 /* C::B end */
