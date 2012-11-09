@@ -228,21 +228,62 @@ namespace platform
     const int bits = 8*sizeof(void*);
 
 
+
+    // Function and parameter attributes
+    // ----------------------------------
+    //
+    // These parameters possibly allow more fine-grained optimization and better diagnostics.
+    // They are implemented for the GCC compiler family and 'quiet' for all others
+    //
+    // IMPORTANT: Do not lie to the compiler when giving an optimization hint, or you will cause great evil.
+    //
+    // a) Optimization hints:
+    //
+    // pure_function        Function has no observable effects other than the return value
+    //                      and the return value depends only on parameters and global variables
+    //                      ALSO: function does not throw (makes sense with the above requirement).
+    //
+    // const_function       Function has no observable effects other than the return value
+    //                      and the return value depends only on parameters.
+    //                      ALSO: No external memory, including memory referenced by parameters, may be touched.
+    //                      ALSO: function does not throw (makes sense with the above requirement).
+    //
+    // force_inline         What the name says. This is the strongest available inline hint (the compiler may still ignore it).
+    //
+    //
+    // b) Usage hints:
+    //
+    // must_consume_result  The return value of a function must be consumed (usually because of taking ownership), i.e.
+    //                          ObjType* result = function();  ---> valid
+    //                          function();                    ---> will raise a warning
+    //
+    // deprecated_function  The function is deprecated and may be removed in a future revision of the API.
+    //                      New code should not call the function. Doing so will work, but will raise a warning.
+    //
+    // optional             No warning will be raised if the parameter is not used. Identical to "unused",
+    //                      but the wording sounds more like "you may omit using this" rather than "we are not using this"
+    //
+    // unused               No warning will be raised if the parameter is not used.
+
     #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2)
         const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
-        #define pure_function       __attribute__ ((pure, nothrow))
-        #define const_function      __attribute__ ((const, nothrow))
-        #define force_inline        __attribute__ ((always_inline))
-        #define warn_unused         __attribute__ ((warn_unused_result))
-        #define deprecated_function __attribute__ ((deprecated))
+        #define pure_function       __attribute__ ((__pure__,  __nothrow__))
+        #define const_function      __attribute__ ((__const__, __nothrow__))
+        #define force_inline        __attribute__ ((__always_inline__))
+        #define must_consume_result __attribute__ ((__warn_unused_result__))
+        #define deprecated_function __attribute__ ((__deprecated__))
+        #define unused              __attribute__ ((__unused__))
     #else
         const int gcc = 0;
         #define pure_function
         #define const_function
         #define force_inline
-        #define warn_unused
+        #define must_consume_result
         #define deprecated_function
+        #define unused
     #endif
+
+	#define optional unused
 }
 
 

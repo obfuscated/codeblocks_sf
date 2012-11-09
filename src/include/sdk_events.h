@@ -147,7 +147,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
         bool asTab;         ///< Add this window as a tab of an existing docked window (NOT IMPLEMENTED).
         wxString bitmap;    ///< The bitmap to use.
 
-        char unused[64];    ///< Unused space in this class for later enhancements.
+        char padding[64];    ///< Unused space in this class for later enhancements.
 	private:
 		DECLARE_DYNAMIC_CLASS(CodeBlocksDockEvent)
 };
