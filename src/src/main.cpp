@@ -687,8 +687,6 @@ void MainFrame::ShowTips(bool forceShow)
 void MainFrame::CreateIDE()
 {
     int leftW = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_width"), 200);
-//    int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
-//    SetSize(1000, 800);
     wxSize clientsize = GetClientSize();
 
     // Create CloseFullScreen Button, and hide it initially
@@ -1275,16 +1273,29 @@ void MainFrame::LoadWindowSize()
                 Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/height"), h));
     // maximize if needed
     bool maximized = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/main_frame/layout/maximized"), true);
-    Maximize(maximized);
+    Maximize(maximized); // toggle
+
     // set size and position
+    int index = wxDisplay::GetFromWindow(this);
+    wxDisplay display(index);
     if (maximized)
     {
-        int index = wxDisplay::GetFromWindow(this);
-        wxDisplay display(index);
-        rect = display.GetClientArea();
-        rect.width-=100;
-        rect.height-=100;
+        rect = display.GetClientArea(); // apply from display, overriding settinzs above
+        rect.width  -= 100;
+        rect.height -= 100;
     }
+    else
+    {
+        // Adjust to actual screen size. This is useful for portable C::B versions,
+        // where the window might be out of screen when saving on a two-monitor
+        // system an re-opening on a one-monitor system (on Windows, at least).
+        wxRect displayRect = display.GetClientArea();
+        if (displayRect.GetWidth() <rect.GetLeft())   rect.SetLeft  (displayRect.GetLeft());
+        if (displayRect.GetWidth() <rect.GetRight())  rect.SetRight (displayRect.GetRight());
+        if (displayRect.GetHeight()<rect.GetTop())    rect.SetTop   (displayRect.GetTop());
+        if (displayRect.GetHeight()<rect.GetBottom()) rect.SetBottom(displayRect.GetBottom());
+    }
+
     SetSize(rect);
 }
 
@@ -3020,6 +3031,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     Manager::Get()->GetLogManager()->DebugLog(_T("Deinitializing plugins..."));
     CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evtShutdown);
+    Manager::Yield();
 
     if (!Manager::IsBatchBuild())
         SaveWindowState();
