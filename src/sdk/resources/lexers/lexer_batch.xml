@@ -78,7 +78,6 @@
                     BoxCommentMid=""
                     BoxCommentEnd=""
                     CaseSensitive="0"
-                    CaseSensitive="1"
                     LexerCommentStyles="1"
                     LexerCharacterStyles=""
                     LexerStringStyles=""
