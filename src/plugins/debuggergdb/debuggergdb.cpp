@@ -611,7 +611,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
     // select the build target to debug
     ProjectBuildTarget* target = 0;
     Compiler* actualCompiler = 0;
-    if (m_PidToAttach == 0)
+    if ( (m_PidToAttach == 0) && m_pProject)
     {
         Log(_("Selecting target: "));
         if (!m_pProject->BuildTargetValid(m_ActiveBuildTarget, false))
@@ -624,23 +624,24 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
                 return 3;
             }
             target = m_pProject->GetBuildTarget(tgtIdx);
-            m_ActiveBuildTarget = target->GetTitle();
+            m_ActiveBuildTarget = (target ? target->GetTitle() : wxString(wxEmptyString));
         }
         else
             target = m_pProject->GetBuildTarget(m_ActiveBuildTarget);
 
         // make sure it's not a commands-only target
-        if (target->GetTargetType() == ttCommandsOnly)
+        if (target && target->GetTargetType() == ttCommandsOnly)
         {
             cbMessageBox(_("The selected target is only running pre/post build step commands\n"
-                        "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
+                           "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
             Log(_("aborted"));
             return 3;
         }
-        Log(target->GetTitle());
+        if (target) Log(target->GetTitle());
 
         // find the target's compiler (to see which debugger to use)
-        actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : m_pProject->GetCompilerID());
+        actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID()
+                                                             : m_pProject->GetCompilerID());
     }
     else
         actualCompiler = CompilerFactory::GetDefaultCompiler();
@@ -728,8 +729,11 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
             AddSourceDir(pdirs[i]);
 
         // lastly, add THE project as source dir
-        AddSourceDir(m_pProject->GetBasePath());
-        AddSourceDir(m_pProject->GetCommonTopLevelPath());
+        if (m_pProject)
+        {
+            AddSourceDir(m_pProject->GetBasePath());
+            AddSourceDir(m_pProject->GetCommonTopLevelPath());
+        }
 
         // set the file to debug (depends on the target type)
         wxString debuggee, path;
@@ -1795,8 +1799,8 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
         if (m_NoDebugInfo)
         {
             cbMessageBox(_("This project/target has no debugging info."
-                            "Please change this in the project's build options, re-compile and retry..."),
-                            _("Error"), wxICON_STOP);
+                           "Please change this in the project's build options, re-compile and retry..."),
+                         _("Error"), wxICON_STOP);
         }
     }
 
