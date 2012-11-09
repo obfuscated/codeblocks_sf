@@ -260,7 +260,10 @@ void CompilerFactory::LoadSettings()
         Manager::Get()->ProcessEvent(event);
 
         if (Compilers[i]->GetMasterPath().IsEmpty())
+        {
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Master path of compiler ID \"%s\" is empty -> triggers auto-detection."), Compilers[i]->GetID().wx_str()));
             needAutoDetection = true;
+        }
     }
 
     // auto-detect missing compilers
@@ -269,6 +272,7 @@ void CompilerFactory::LoadSettings()
         AutoDetectCompilers adc(Manager::Get()->GetAppWindow());
         PlaceWindow(&adc);
         adc.ShowModal();
+        adc.Raise();
     }
 }
 
