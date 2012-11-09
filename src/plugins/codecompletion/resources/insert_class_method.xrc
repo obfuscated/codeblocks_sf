@@ -28,7 +28,6 @@
               <content/>
             </object>
             <flag>wxEXPAND</flag>
-            <minsize>196,-1</minsize>
           </object>
           <object class="sizeritem">
             <object class="wxBoxSizer">
@@ -102,7 +101,6 @@
             </object>
             <option>1</option>
             <flag>wxEXPAND</flag>
-            <minsize>320, 240</minsize>
           </object>
         </object>
         <option>1</option>

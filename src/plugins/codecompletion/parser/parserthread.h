@@ -6,10 +6,10 @@
 #ifndef PARSERTHREAD_H
 #define PARSERTHREAD_H
 
-#include <wx/thread.h>
+#include <wx/dynarray.h>
 #include <wx/event.h>
 #include <wx/string.h>
-#include <wx/dynarray.h>
+#include <wx/thread.h>
 
 #include <queue>
 #include <vector>
@@ -212,8 +212,9 @@ protected:
 
     /** eg: class ClassA{...} varA, varB, varC
       * This function will read the "varA, varB, varC"
+      * \return True, if token was handled, false, if an unexpected token was read.
       */
-    void ReadVarNames();
+    bool ReadVarNames();
 
     /** handle class names, e.g., the code below
       *typedef class AAA{
@@ -222,8 +223,9 @@ protected:
       *} BBB,CCC;
       * @param ancestor class name = "AAA"
       * this function reads the following "BBB" and "CCC", and regard them as derived classes of "AAA"
+      * @return True, if token was handled, false, if an unexpected token was read.
       */
-    void ReadClsNames(wxString& ancestor);
+    bool ReadClsNames(wxString& ancestor);
 
     /** add one token to the token tree
       * @param kind Token type, see @TokenKind Emun for more details

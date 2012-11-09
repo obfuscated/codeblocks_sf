@@ -38,6 +38,8 @@
 #include <wx/tokenzr.h>
 
 //(*IdInit(CCTestFrame)
+const long CCTestFrame::ID_CHK_DO_HEADERS = wxNewId();
+const long CCTestFrame::ID_CHK_HIDE = wxNewId();
 const long CCTestFrame::wxID_TOKEN = wxNewId();
 //*)
 
@@ -94,7 +96,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     wxMenuItem* mnu_item_token;
     wxMenu* mnu_search;
     wxPanel* panParserSearchTree;
-    wxNotebook* nbParser;
     wxMenuItem* mnu_itm_open;
     wxMenu* mnu_file;
     wxMenuItem* mnu_itm_reparse;
@@ -112,7 +113,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_include->Add(m_IncludeCtrl, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_misc->Add(bsz_include, 0, wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_headers = new wxBoxSizer(wxVERTICAL);
-    m_DoHeadersCtrl = new wxCheckBox(this, wxID_ANY, _("Parse the following priority files/headers first (colon separated):"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    m_DoHeadersCtrl = new wxCheckBox(this, ID_CHK_DO_HEADERS, _("Parse the following priority files/headers first (colon separated):"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_DO_HEADERS"));
     m_DoHeadersCtrl->SetValue(false);
     bsz_headers->Add(m_DoHeadersCtrl, 0, wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     m_HeadersCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
@@ -121,23 +122,26 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_misc->Add(bsz_headers, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_misc, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_search_tree = new wxBoxSizer(wxHORIZONTAL);
-    m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation of parser\'s internal search tree (careful, might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation of parser\'s internal search tree (might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
     m_DoTreeCtrl->SetValue(false);
     bsz_search_tree->Add(m_DoTreeCtrl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    m_DoHideCtrl = new wxCheckBox(this, ID_CHK_HIDE, _("Hide frame"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_HIDE"));
+    m_DoHideCtrl->SetValue(true);
+    bsz_search_tree->Add(m_DoHideCtrl, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     bsz_search_tree->Add(-1,-1,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     btnParse = new wxButton(this, wxID_ANY, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
-    bsz_search_tree->Add(btnParse, 0, wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    bsz_search_tree->Add(btnParse, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
     bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_parser = new wxBoxSizer(wxVERTICAL);
-    nbParser = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    panParserInput = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    m_ParserCtrl = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    panParserInput = new wxPanel(m_ParserCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     bszParserInput = new wxBoxSizer(wxVERTICAL);
     m_Control = new wxScintilla(panParserInput,wxID_ANY,wxDefaultPosition,wxDefaultSize);
     bszParserInput->Add(m_Control, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     panParserInput->SetSizer(bszParserInput);
     bszParserInput->Fit(panParserInput);
     bszParserInput->SetSizeHints(panParserInput);
-    panParserOutput = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    panParserOutput = new wxPanel(m_ParserCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     bszParserOutput = new wxBoxSizer(wxVERTICAL);
     m_LogCtrl = new wxTextCtrl(panParserOutput, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
     m_LogCtrl->SetMinSize(wxSize(640,250));
@@ -145,7 +149,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     panParserOutput->SetSizer(bszParserOutput);
     bszParserOutput->Fit(panParserOutput);
     bszParserOutput->SetSizeHints(panParserOutput);
-    panParserSearchTree = new wxPanel(nbParser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    panParserSearchTree = new wxPanel(m_ParserCtrl, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     bszParserSearchTree = new wxBoxSizer(wxVERTICAL);
     m_TreeCtrl = new wxTextCtrl(panParserSearchTree, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
     m_TreeCtrl->SetMinSize(wxSize(640,150));
@@ -153,10 +157,10 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     panParserSearchTree->SetSizer(bszParserSearchTree);
     bszParserSearchTree->Fit(panParserSearchTree);
     bszParserSearchTree->SetSizeHints(panParserSearchTree);
-    nbParser->AddPage(panParserInput, _("Parser input"), true);
-    nbParser->AddPage(panParserOutput, _("Parser output"), false);
-    nbParser->AddPage(panParserSearchTree, _("Parser search tree"), false);
-    bsz_parser->Add(nbParser, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ParserCtrl->AddPage(panParserInput, _("Parser input"), true);
+    m_ParserCtrl->AddPage(panParserOutput, _("Parser output"), false);
+    m_ParserCtrl->AddPage(panParserSearchTree, _("Parser search tree"), false);
+    bsz_parser->Add(m_ParserCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_main->Add(bsz_parser, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(bsz_main);
     mnu_main = new wxMenuBar();
@@ -195,7 +199,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_main->SetSizeHints(this);
     Center();
 
-    Connect(wxID_ANY,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
+    Connect(ID_CHK_DO_HEADERS,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
     Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
     Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReparseSelected);
@@ -240,6 +244,8 @@ CCTestFrame::~CCTestFrame()
 
 void CCTestFrame::Start()
 {
+    if (m_ParserCtrl) m_ParserCtrl->SetSelection(1); // make sure "Output" tab is selected
+
     CCTestAppGlobal::s_includeDirs.Clear();
     CCTestAppGlobal::s_fileQueue.Clear();
     CCTestAppGlobal::s_filesParsed.Clear();
@@ -296,7 +302,7 @@ void CCTestFrame::Start()
         return;
     }
 
-    Hide();
+    if (m_DoHideCtrl && m_DoHideCtrl->IsChecked()) Hide();
 
     m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."), _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
     m_ProgDlg->SetSize(640,100);
@@ -393,12 +399,14 @@ void CCTestFrame::Start()
 
     if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 
-    Show();
+    if ( !IsShown() ) Show();
 
     TokenTree* tt = CCTest::Get()->GetTokenTree();
     if (tt)
+    {
         AppendToLog((wxString::Format(_("The parser contains %lu tokens, found in %lu files."),
                                       static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FileMap.size()))));
+    }
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
@@ -526,8 +534,10 @@ void CCTestFrame::SetMarkerStyle(int marker, int markerType, wxColor fore, wxCol
 void CCTestFrame::LoadToControl()
 {
   if (!m_MainFile.IsEmpty() && !m_Control->LoadFile(m_MainFile))
+  {
       wxMessageBox(_("Could not load input file."), _("CCTest"),
                    wxOK | wxICON_EXCLAMATION, this);
+  }
 }
 
 void CCTestFrame::OnMenuQuitSelected(wxCommandEvent& /*event*/)

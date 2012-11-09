@@ -38,6 +38,8 @@ public:
 
 protected:
     //(*Identifiers(CCTestFrame)
+    static const long ID_CHK_DO_HEADERS;
+    static const long ID_CHK_HIDE;
     static const long wxID_TOKEN;
     //*)
 
@@ -71,6 +73,8 @@ private:
     wxFileDialog* m_SaveFile;
     wxStatusBar* m_StatuBar;
     wxTextCtrl* m_LogCtrl;
+    wxNotebook* m_ParserCtrl;
+    wxCheckBox* m_DoHideCtrl;
     wxCheckBox* m_DoHeadersCtrl;
     wxTextCtrl* m_HeadersCtrl;
     wxTextCtrl* m_IncludeCtrl;

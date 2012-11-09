@@ -1812,13 +1812,16 @@ void ParserThread::HandleClass(EClassType ct)
             if (m_ParsingTypedef)
             {
                 m_Str.Clear();
-                ReadClsNames(newToken->m_Name);
+                TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
+                if ( !ReadClsNames(newToken->m_Name) )
+                    TRACE(_T("HandleClass() : ReadClsNames returned false [1]."));
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
-                ReadVarNames();
+                if ( !ReadVarNames() )
+                    TRACE(_T("HandleClass() : ReadVarNames returned false [1]."));
                 m_Str.Clear();
                 break;
             }
@@ -1877,13 +1880,15 @@ void ParserThread::HandleClass(EClassType ct)
             if (m_ParsingTypedef)
             {
                 m_Str.Clear();
-                ReadClsNames(newToken->m_Name);
+                if ( !ReadClsNames(newToken->m_Name) )
+                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
-                ReadVarNames();
+                if ( !ReadVarNames() )
+                    TRACE(_T("HandleClass() : ReadVarNames returned false [2]."));
                 m_Str.Clear();
                 break;
             }
@@ -2264,7 +2269,11 @@ void ParserThread::HandleTypedef()
                         ancestor << ParserConsts::space_chr;
                     ancestor << tempToken;
                 }
-                ReadClsNames(ancestor);
+                if ( !ReadClsNames(ancestor) )
+                {
+                    TRACE(_T("HandleTypedef() : ReadClsNames returned false."));
+                    m_Tokenizer.GetToken(); // eat it
+                }
             }
         }
         else if (token == ParserConsts::kw_enum)
@@ -2342,12 +2351,12 @@ void ParserThread::HandleTypedef()
         return; // invalid typedef
 
     if (!is_function_pointer && components.size() <= 1)
-            return; // invalid typedef
+        return; // invalid typedef
 
     // now get the type
     wxString ancestor;
     wxString alias;
-    if ( components.size() == 2
+    if (   (components.size() == 2)
         && m_LastParent
         && m_LastParent->m_TokenKind == tkClass
         && (!m_LastParent->m_TemplateType.IsEmpty()) )
@@ -2417,8 +2426,10 @@ void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
     }
 }
 
-void ParserThread::ReadVarNames()
+bool ParserThread::ReadVarNames()
 {
+    bool success = true; // optimistic start value
+
     while (IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken();
@@ -2434,9 +2445,7 @@ void ParserThread::ReadVarNames()
             break;
         }
         else if (token == ParserConsts::ptr)     // variable is a pointer
-        {
             m_PointerOrRef << token;
-        }
         else if (   wxIsalpha(token.GetChar(0))
                  || (token.GetChar(0) == ParserConsts::underscore_chr) )
         {
@@ -2455,13 +2464,17 @@ void ParserThread::ReadVarNames()
         else // unexpected
         {
             TRACE(_T("ReadVarNames() : Unexpected token '%s'."), token.wx_str());
+            success = false;
             break;
         }
     }
+    return success;
 }
 
-void ParserThread::ReadClsNames(wxString& ancestor)
+bool ParserThread::ReadClsNames(wxString& ancestor)
 {
+    bool success = true; // optimistic start value
+
     while (IS_ALIVE)
     {
         wxString token = m_Tokenizer.GetToken();
@@ -2478,9 +2491,7 @@ void ParserThread::ReadClsNames(wxString& ancestor)
             break;
         }
         else if (token == ParserConsts::ptr)     // variable is a pointer
-        {
             m_PointerOrRef << token;
-        }
         else if (   wxIsalpha(token.GetChar(0))
                  || (token.GetChar(0) == ParserConsts::underscore_chr) )
         {
@@ -2510,9 +2521,11 @@ void ParserThread::ReadClsNames(wxString& ancestor)
             // typedef std::enable_if<N > 1, get_type_N<N-1, Tail...>> type;
             m_Tokenizer.UngetToken();
             // Note: Do NOT remove m_Tokenizer.UngetToken();, otherwise it freezes somewhere else
+            success = false;
             break;
         }
     }
+    return success;
 }
 
 bool ParserThread::GetBaseArgs(const wxString & args, wxString& baseArgs)

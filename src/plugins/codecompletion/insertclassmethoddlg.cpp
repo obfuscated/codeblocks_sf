@@ -138,10 +138,9 @@ void InsertClassMethodDlg::FillClasses()
     for (size_t i = 0; i < tree->size(); ++i)
     {
         Token* token = tree->at(i);
-        //CCLogger::Get()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
+        //CCLogger::Get()->DebugLog(wxT("m_Filename=%s, token=%s"), m_Filename.wx_str(), token->m_Filename.wx_str());
         if (token && (token->m_TokenKind & (tkClass | tkTypedef)))
         {
-            //token->m_Filename == UnixFilename(m_Filename))
             // TODO: check against file's pair too
             lb->Append(token->m_Name, token);
         }

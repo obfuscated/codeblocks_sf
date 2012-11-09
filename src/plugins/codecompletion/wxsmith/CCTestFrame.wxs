@@ -37,7 +37,7 @@
 						<object class="wxBoxSizer" variable="bsz_headers" member="no">
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
-								<object class="wxCheckBox" name="wxID_ANY" variable="m_DoHeadersCtrl" member="yes">
+								<object class="wxCheckBox" name="ID_CHK_DO_HEADERS" variable="m_DoHeadersCtrl" member="yes">
 									<label>Parse the following priority files/headers first (colon separated):</label>
 									<handler function="OnDoHeadersClick" entry="EVT_CHECKBOX" />
 								</object>
@@ -63,9 +63,17 @@
 				<object class="wxBoxSizer" variable="bsz_search_tree" member="no">
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="wxID_ANY" variable="m_DoTreeCtrl" member="yes">
-							<label>Enable creation of parser&apos;s internal search tree (careful, might get HUGE!!!)</label>
+							<label>Enable creation of parser&apos;s internal search tree (might get HUGE!!!)</label>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHK_HIDE" variable="m_DoHideCtrl" member="yes">
+							<label>Hide frame</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="spacer">
@@ -78,7 +86,7 @@
 							<label>Parse</label>
 							<handler function="OnParse" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
@@ -89,7 +97,7 @@
 				<object class="wxBoxSizer" variable="bsz_parser" member="no">
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxNotebook" name="wxID_ANY" variable="nbParser" member="no">
+						<object class="wxNotebook" name="wxID_ANY" variable="m_ParserCtrl" member="yes">
 							<object class="notebookpage">
 								<object class="wxPanel" name="wxID_ANY" variable="panParserInput" member="no">
 									<object class="wxBoxSizer" variable="bszParserInput" member="no">
