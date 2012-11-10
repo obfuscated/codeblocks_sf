@@ -36,8 +36,8 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 		n++;
 	}
 	if(sn->delegate) {
-		const ScriptClassMemberDecl *members = sn->delegate;
-		const ScriptClassMemberDecl *m = NULL;
+		members = sn->delegate;
+		m = NULL;
 		sq_newtable(v);
 		while(members[n].name) {
 			m = &members[n];
@@ -52,7 +52,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 	}
 	sq_createslot(v,-3);
 	sq_pop(v,1);
-	
+
 	return TRUE;
 }
 

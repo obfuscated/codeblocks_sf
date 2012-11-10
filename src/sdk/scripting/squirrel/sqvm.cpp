@@ -593,9 +593,9 @@ bool SQVM::CLOSURE_OP(SQObjectPtr &target, SQFunctionProto *func)
 
 }
 
-bool SQVM::GETVARGV_OP(SQObjectPtr &target,SQObjectPtr &index,CallInfo *ci)
+bool SQVM::GETVARGV_OP(SQObjectPtr &target,SQObjectPtr &index,CallInfo *callinfo)
 {
-	if(ci->_vargs.size == 0) {
+	if(callinfo->_vargs.size == 0) {
 		Raise_Error(_SC("the function doesn't have var args"));
 		return false;
 	}
@@ -604,8 +604,8 @@ bool SQVM::GETVARGV_OP(SQObjectPtr &target,SQObjectPtr &index,CallInfo *ci)
 		return false;
 	}
 	SQInteger idx = tointeger(index);
-	if(idx < 0 || idx >= ci->_vargs.size){ Raise_Error(_SC("vargv index out of range")); return false; }
-	target = _vargsstack[ci->_vargs.base+idx];
+	if(idx < 0 || idx >= callinfo->_vargs.size){ Raise_Error(_SC("vargv index out of range")); return false; }
+	target = _vargsstack[callinfo->_vargs.base+idx];
 	return true;
 }
 

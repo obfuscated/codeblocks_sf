@@ -1287,6 +1287,8 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     wid = new wxSCIListBoxWin (GETWIN(parent.GetID()), ctrlID, location_);
     if (imgList != NULL)
         GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
+
+	(void) technology_;
 }
 
 
@@ -1487,6 +1489,10 @@ void ListBoxImpl::RegisterRGBAImage(int type, int width, int height,
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
     RegisterImageHelper(type, bmp);
 #endif
+	(void) type;
+	(void) width;
+	(void) height;
+	(void) pixelsImage;
 }
 
 

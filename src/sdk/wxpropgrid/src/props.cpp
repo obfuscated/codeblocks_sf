@@ -1169,7 +1169,7 @@ void wxBaseEnumProperty::OnSetValue()
     else if ( wxPGIsVariantType(m_value, string) )
         ValueFromString_( m_value, m_value.GetString(), 0 );
     else
-        wxASSERT( false );
+        { wxASSERT( false ); }
 
     if ( ms_nextIndex != -2 )
     {

@@ -132,7 +132,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
       case SCE_MYSQL_SYSTEMVARIABLE:
         if (!IsAWordChar(sc.ch))
         {
-          int length = sc.LengthCurrent() + 1;
+          length = sc.LengthCurrent() + 1;
           char* s = new char[length];
           sc.GetCurrentLowered(s, length);
 
@@ -323,7 +323,7 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
 
 	int styleNext = styler.StyleAt(startPos);
 	int style = initStyle;
-	
+
   bool endPending = false;
 	bool whenPending = false;
 	bool elseIfPending = false;
@@ -334,11 +334,11 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
 		int stylePrev = style;
 		style = styleNext;
 		styleNext = styler.StyleAt(i + 1);
-    
+
     char currentChar = nextChar;
     nextChar = styler.SafeGetCharAt(i + 1);
 		bool atEOL = (currentChar == '\r' && nextChar != '\n') || (currentChar == '\n');
-	
+
     switch (style)
     {
       case SCE_MYSQL_COMMENT:
@@ -360,7 +360,7 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
         break;
       case SCE_MYSQL_COMMENTLINE:
         if (foldComment)
-        { 
+        {
           // Not really a standard, but we add support for single line comments
           // with special curly braces syntax as foldable comments too.
           // MySQL needs -- comments to be followed by space or control char
@@ -473,12 +473,12 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
                 }
               }
             }
-          
+
           // Keep the current end state for the next round.
           endPending = endFound;
         }
         break;
-        
+
       default:
         if (!isspace(currentChar) && endPending)
         {
@@ -490,7 +490,7 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
         }
         break;
     }
-    
+
     if (atEOL)
     {
       // Apply the new folding level to this line.
@@ -504,7 +504,7 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
         lev |= SC_FOLDLEVELHEADERFLAG;
       if (lev != styler.LevelAt(lineCurrent))
         styler.SetLevel(lineCurrent, lev);
-      
+
       lineCurrent++;
       levelCurrent = levelNext;
       visibleChars = 0;
