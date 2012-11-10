@@ -43,8 +43,7 @@ void CrashHandlerSaveEditorFiles(wxString& buf)
     if (em)
     {
         bool AnyFileSaved = false;
-        wxMkdir(path);
-        if (wxDirExists(path))
+        if (wxMkdir(path) && wxDirExists(path))
         {
             for (int i = 0; i < em->GetEditorsCount(); ++i)
             {
@@ -57,14 +56,15 @@ void CrashHandlerSaveEditorFiles(wxString& buf)
                     // add number if filename already exists e.g. main.cpp.001, main.cpp.002, ...
                     int j = 1;
                     while (wxFileExists(newfnpath))
-                    {
                         newfnpath = fnpath + wxString::Format(wxT(".%03d"),j);
-                    }
+
                     if (cbSaveToFile(newfnpath,
                                     ed->GetControl()->GetText(),
                                     ed->GetEncoding(),
-                                    ed->GetUseBom() ))
+                                    ed->GetUseBom() ) )
+                    {
                         AnyFileSaved = true;
+                    }
                 }
             }
 
@@ -75,9 +75,7 @@ void CrashHandlerSaveEditorFiles(wxString& buf)
                 buf << _("\nHopefully, this will prevent you from losing recent modifications.\n\n");
             }
             else
-            {
                 wxRmdir(path);
-            }
         }
     }
 }

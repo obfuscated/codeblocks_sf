@@ -430,7 +430,7 @@ MainFrame* CodeBlocksApp::InitFrame()
 
 void CodeBlocksApp::CheckVersion()
 {
-    // This is a rudiment from early 2006 (Windows only), but keep the revision tag for possible future use
+    // This is a remnant from early 2006 (Windows only), but keep the revision tag for possible future use
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
     if (cfg->Read(_T("version")) != appglobals::AppActualVersion)
@@ -467,18 +467,22 @@ void CodeBlocksApp::InitLocale()
     path.Append(_T('/'));
     path.Append(info->CanonicalName);
 
-    wxDir dir(path);
+    if ( !wxDirExists(path) )
+        return;
 
+    wxDir dir(path);
     if (!dir.IsOpened())
         return;
 
     wxString moName;
 
     if (dir.GetFirst(&moName, _T("*.mo"), wxDIR_FILES))
-    do
     {
-        m_locale.AddCatalog(moName);
-    } while (dir.GetNext(&moName));
+        do
+        {
+            m_locale.AddCatalog(moName);
+        } while (dir.GetNext(&moName));
+    }
 }
 
 bool CodeBlocksApp::OnInit()

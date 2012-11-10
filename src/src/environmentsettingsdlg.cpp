@@ -205,15 +205,20 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
 
     wxString locPath = ConfigManager::GetDataFolder() + _T("/locale");
-    wxDir    locDir(locPath);
-    wxString locFName;
-    if (wxDirExists(locPath) && locDir.IsOpened() && locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
-    do
+    if ( wxDirExists(locPath) )
     {
-        const wxLanguageInfo* info = wxLocale::FindLanguageInfo(locFName);
-        if (info)
-            XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(info->Description);
-    } while ( locDir.GetNext(&locFName) );
+        wxString locFName;
+        wxDir    locDir(locPath);
+        if ( locDir.IsOpened() && locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/) )
+        {
+            do
+            {
+                const wxLanguageInfo* info = wxLocale::FindLanguageInfo(locFName);
+                if (info)
+                    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(info->Description);
+            } while ( locDir.GetNext(&locFName) );
+        }
+    }
 
     XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
 
