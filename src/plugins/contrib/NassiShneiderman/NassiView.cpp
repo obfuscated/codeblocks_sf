@@ -986,6 +986,9 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
             brick->SetTextByNumber( _("expression"), 1);
             break;
         default:
+        case NassiView::NASSI_TOOL_ESC:
+        case NassiView::NASSI_TOOL_SELECT:
+        case NassiView::NASSI_TOOL_PASTE:
         case NASSI_TOOL_INSTRUCTION:
             brick = new NassiInstructionBrick();
             brick->SetTextByNumber( _T("..."), 0);
@@ -1367,9 +1370,10 @@ void NassiView::ExportPS()
 
     psdc->SetPen(*wxBLACK_PEN);
     ///draw the diagram
-    BricksMap::iterator it;
-    for ( it = GraphBricks.begin() ; it != GraphBricks.end() ; it++)
+    for (BricksMap::iterator it = GraphBricks.begin() ; it != GraphBricks.end() ; ++it)
+    {
         it->second->Draw(psdc);
+    }
 
     delete psdc;
 
@@ -1380,8 +1384,8 @@ void NassiView::ExportPS()
     while ( GraphBricks.size() )
     {
         BricksMap::iterator it = GraphBricks.begin();
-        GraphNassiBrick *gbrick = it->second;
-        if ( gbrick ) delete gbrick;
+        GraphNassiBrick *gbrick2 = it->second;
+        delete gbrick2;
         GraphBricks.erase(it->first);
     }
     delete graphFabric;
@@ -1530,9 +1534,10 @@ void NassiView::ExportBitmap()
     memdc->SelectObject(bitmap);
     memdc->SetPen(*wxBLACK_PEN);
     ///draw the diagram
-    BricksMap::iterator it;
-    for ( it = GraphBricks.begin() ; it != GraphBricks.end() ; it++)
+    for (BricksMap::iterator it = GraphBricks.begin() ; it != GraphBricks.end() ; ++it)
+    {
         it->second->Draw(memdc);
+    }
 
     memdc->SelectObject(wxNullBitmap);
     delete memdc;
@@ -1546,8 +1551,8 @@ void NassiView::ExportBitmap()
     while ( GraphBricks.size() )
     {
         BricksMap::iterator it = GraphBricks.begin();
-        GraphNassiBrick *gbrick = it->second;
-        if ( gbrick ) delete gbrick;
+        GraphNassiBrick *gbrick2 = it->second;
+        delete gbrick2;
         GraphBricks.erase(it->first);
     }
     delete graphFabric;
@@ -1573,10 +1578,8 @@ GraphNassiBrick *NassiView::CreateGraphBrick(NassiBrick *brick)
 }
 GraphNassiBrick *NassiView::GetBrickAtPosition(const wxPoint &pos)
 {
-    BricksMap::iterator it;
-    for ( it = m_GraphBricks.begin() ; it != m_GraphBricks.end() ; it++)
+    for (BricksMap::iterator it = m_GraphBricks.begin() ; it != m_GraphBricks.end() ; ++it)
     {
-
         GraphNassiBrick *gbrick = it->second;
         if ( gbrick->HasPoint(pos) )
             return gbrick;

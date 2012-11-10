@@ -63,8 +63,8 @@ NassiDataObject::NassiDataObject(NassiBrick *brick, NassiView *view, wxString st
         while ( GraphBricks.size() )
         {
             BricksMap::iterator it = GraphBricks.begin();
-            GraphNassiBrick *gbrick = it->second;
-            if ( gbrick ) delete gbrick;
+            GraphNassiBrick* gbrick2 = it->second;
+            delete gbrick2;
             GraphBricks.erase(it->first);
         }
         delete graphFabric;

@@ -953,18 +953,18 @@ void GraphNassiIfBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         GraphNassiBrick *gfalse = this->GetGraphBrick(m_brick->GetChild(1));
         if ( gtrue ) // true-part
         {
-            wxPoint size(0,0);
-            gtrue->CalcMinSize(dc, size);
-            b3 = size.x;
-            h3 = size.y;
+            wxPoint Size(0,0);
+            gtrue->CalcMinSize(dc, Size);
+            b3 = Size.x;
+            h3 = Size.y;
         }
 
         if ( gfalse ) //false-part
         {
-            wxPoint size(0,0);
-            gfalse->CalcMinSize(dc, size);
-            b4 = size.x;
-            h4 = size.y;
+            wxPoint Size(0,0);
+            gfalse->CalcMinSize(dc, Size);
+            b4 = Size.x;
+            h4 = Size.y;
         }
 
         wxCoord q = 0 ; // THIS WAS NOT INITIALIZED ; KILLERBOT : I put it to 0 , is that a good value
@@ -1308,11 +1308,11 @@ void GraphNassiWhileBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         }
         else
         {
-            wxPoint size(0,0);
-            childgbrick->CalcMinSize(dc, size);
-            h += size.y;
-            if ( w < 3*dx + size.x)
-                w = 3*dx + size.x;
+            wxPoint Size(0,0);
+            childgbrick->CalcMinSize(dc, Size);
+            h += Size.y;
+            if ( w < 3*dx + Size.x)
+                w = 3*dx + Size.x;
         }
         bb = 3*dx;
     }
@@ -1821,11 +1821,11 @@ void GraphNassiForBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         }
         else
         {
-            wxPoint size(0,0);
-            childgbrick->CalcMinSize(dc, size);
-            h += size.y;
-            if ( w < 3*dx + size.x)
-                w = 3*dx + size.x;
+            wxPoint Size(0,0);
+            childgbrick->CalcMinSize(dc, Size);
+            h += Size.y;
+            if ( w < 3*dx + Size.x)
+                w = 3*dx + Size.x;
         }
         m_bb = 3*dx;
         m_b = 3*dx;
@@ -2052,11 +2052,11 @@ void GraphNassiBlockBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         }
         else
         {
-            wxPoint size(0,0);
-            childgbrick->CalcMinSize(dc, size);
-            h += size.y;
-            if ( w < 6 + size.x)
-                w = 6 + size.x;
+            wxPoint Size(0,0);
+            childgbrick->CalcMinSize(dc, Size);
+            h += Size.y;
+            if ( w < 6 + Size.x)
+                w = 6 + Size.x;
         }
     }
 
@@ -2426,16 +2426,16 @@ void GraphNassiSwitchBrick::CalcMinSize(wxDC *dc, wxPoint &size)
         std::vector<wxCoord> btext;
         std::vector<wxCoord> hblock;
         std::vector<wxCoord> bblock;
-        for( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; i++ )
+        for( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; ++i )
         {
-            wxCoord b=0, h=0;
+            wxCoord bb = 0, hh = 0;
             dc->SetFont(m_view->GetCommentFont() );
             TextGraph *ctg = m_textMap[m_brick->GetTextByNumber(2*(i+1))];
             if ( m_view->IsDrawingComment() )
             {
                 ctg->CalcMinSize(dc);
-                b = ctg->GetWidth();
-                h = ctg->GetTotalHeight();
+                bb = ctg->GetWidth();
+                hh = ctg->GetTotalHeight();
             }
             TextGraph *stg = m_textMap[m_brick->GetTextByNumber(2*(i+1)+1)];
             dc->SetFont(m_view->GetSourceFont() );
@@ -2443,35 +2443,35 @@ void GraphNassiSwitchBrick::CalcMinSize(wxDC *dc, wxPoint &size)
             {
                 stg->CalcMinSize(dc);
                 if ( m_view->IsDrawingComment() )
-                    h += dy;
-                h += stg->GetTotalHeight();
-                if ( b < static_cast<wxCoord>(stg->GetWidth()) )
-                    b = stg->GetWidth();
+                    hh += dy;
+                hh += stg->GetTotalHeight();
+                if ( bb < static_cast<wxCoord>(stg->GetWidth()) )
+                    bb = stg->GetWidth();
             }
 
-            h += 2 * dy;
-            b += 2 * dx;
-            htext.push_back(h);
-            btext.push_back(b);
+            hh += 2 * dy;
+            bb += 2 * dx;
+            htext.push_back(hh);
+            btext.push_back(bb);
 
             GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild(i));
             if ( gchild )
             {
-                wxPoint size(0,0);
-                gchild->CalcMinSize(dc, size);
-                hblock.push_back(size.y);
-                bblock.push_back(size.x);
+                wxPoint Size(0,0);
+                gchild->CalcMinSize(dc, Size);
+                hblock.push_back(Size.y);
+                bblock.push_back(Size.x);
             }
             else
             {
-                hblock.push_back(4*dy);
-                bblock.push_back(8*dx);
+                hblock.push_back(4 * dy);
+                bblock.push_back(8 * dx);
             }
         }
 
         ///calc the minimum height
         h=1;
-        for ( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; i++ )
+        for ( wxUint32 i = 0 ; i < m_brick->GetChildCount() ; ++i )
         {
             if ( hblock[i] < htext[i] ) // is the "case"-Text higher than the child-brick?
                 hblock[i] = htext[i];

@@ -232,8 +232,8 @@ bool NassiInsertBrickAfter::Undo(void)
 }
 
 ///this command will insert a brick as the first of a diagram
-NassiInsertFirstBrick::NassiInsertFirstBrick( NassiFileContent *nfc, NassiBrick *InsrBrick,  bool CanUndo)
-        :wxCommand(CanUndo, _("Insert Brick") )
+NassiInsertFirstBrick::NassiInsertFirstBrick( NassiFileContent *nfc, NassiBrick *InsrBrick,  bool CanUndoIn)
+        :wxCommand(CanUndoIn, _("Insert Brick") )
 {
     m_nfc = nfc;
     //m_tool = tool;
