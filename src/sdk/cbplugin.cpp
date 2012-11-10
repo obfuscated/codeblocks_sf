@@ -519,7 +519,7 @@ void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
     }
 }
 
-void cbDebuggerPlugin::OnEditorHook(cbEditor* editor, wxScintillaEvent& event)
+void cbDebuggerPlugin::OnEditorHook(cb_unused cbEditor* editor, wxScintillaEvent& event)
 {
     if (event.GetEventType() == wxEVT_SCI_START_DRAG)
         m_DragInProgress = true;
@@ -828,7 +828,7 @@ void cbDebuggerPlugin::MarkAsStopped()
     Manager::Get()->GetProjectManager()->SetIsRunning(NULL);
 }
 
-wxString cbDebuggerPlugin::GetConsoleTty(int ConsolePid)
+wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int ConsolePid)
 {
 #ifndef __WXMSW__
 
@@ -1167,7 +1167,7 @@ wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc
     return 0;
 }
 
-int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, bool skipNested)const
+int cbSmartIndentPlugin::FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, cb_unused bool skipNested)const
 {
     int lvl = 0;
     wxChar b = stc->GetCharAt(position);

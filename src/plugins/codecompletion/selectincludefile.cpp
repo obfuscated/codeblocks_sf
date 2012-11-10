@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+#include "prep.h"
 #include "selectincludefile.h"
 
 #include <wx/xrc/xmlres.h>
@@ -18,7 +19,7 @@ BEGIN_EVENT_TABLE(SelectIncludeFile,wxScrollingDialog)
     EVT_BUTTON(XRCID("ID_BTN_CANCEL"),SelectIncludeFile::OnCancel)
 END_EVENT_TABLE()
 
-SelectIncludeFile::SelectIncludeFile(wxWindow* parent,wxWindowID id)
+SelectIncludeFile::SelectIncludeFile(wxWindow* parent, cb_unused wxWindowID id) // TODO: verify if class def shouldn't be different
 {
     wxXmlResource::Get()->LoadObject(this,parent,_T("SelectIncludeFile"),_T("wxScrollingDialog"));
     LstIncludeFiles = XRCCTRL(*this,"ID_LBX_INCLUDE_FILES",wxListBox);
@@ -28,7 +29,7 @@ SelectIncludeFile::~SelectIncludeFile()
 {
 }
 
-void SelectIncludeFile::OnOk(wxCommandEvent& event)
+void SelectIncludeFile::OnOk(cb_unused wxCommandEvent& event)
 {
     int pos = LstIncludeFiles->GetSelection();
     if (pos != wxNOT_FOUND)
@@ -39,7 +40,7 @@ void SelectIncludeFile::OnOk(wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-void SelectIncludeFile::OnCancel(wxCommandEvent& event)
+void SelectIncludeFile::OnCancel(cb_unused wxCommandEvent& event)
 {
     EndModal(wxID_CANCEL);
 }

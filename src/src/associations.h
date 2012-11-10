@@ -45,7 +45,9 @@ namespace Associations
     bool Check();
 
     void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);
-    bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);
+    bool DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum);  // TODO: descriptions are not checked at all, and actually it's not necessary
+                                                                                                           //       (extension + executable is actually enough)
+                                                                                                           //        ---> decide whether to remove parameter from "Check" function or implement
     void DoClearAssociation(const wxString& ext);
 
     void UpdateChanges();

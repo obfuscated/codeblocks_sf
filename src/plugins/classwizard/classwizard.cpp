@@ -92,7 +92,7 @@ void ClassWizard::BuildMenu(wxMenuBar* menuBar)
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File menu!"));
 }
 
-void ClassWizard::OnLaunch(wxCommandEvent& event)
+void ClassWizard::OnLaunch(cb_unused wxCommandEvent& event)
 {
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* prj = prjMan->GetActiveProject();

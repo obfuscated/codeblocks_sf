@@ -218,7 +218,7 @@ void Associations::DoClearAssociation(const wxString& ext)
         key.DeleteSelf();
 }
 
-bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum)
+bool Associations::DoCheckAssociation(const wxString& ext, cb_unused const wxString& descr, const wxString& exe, int icoNum)
 {
     wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
 
@@ -337,7 +337,7 @@ ManageAssocsDialog::ManageAssocsDialog(wxWindow* parent)
     CentreOnParent();
 }
 
-void ManageAssocsDialog::OnApply(wxCommandEvent& event)
+void ManageAssocsDialog::OnApply(cb_unused wxCommandEvent& event)
 {
     wxChar name[MAX_PATH] = {0};
     GetModuleFileName(0L, name, MAX_PATH);
@@ -354,12 +354,12 @@ void ManageAssocsDialog::OnApply(wxCommandEvent& event)
     EndModal(0);
 }
 
-void ManageAssocsDialog::OnCancel(wxCommandEvent& event)
+void ManageAssocsDialog::OnCancel(cb_unused wxCommandEvent& event)
 {
     EndModal(0);
 }
 
-void ManageAssocsDialog::OnClearAll(wxCommandEvent& event)
+void ManageAssocsDialog::OnClearAll(cb_unused wxCommandEvent& event)
 {
     Associations::ClearAll();
     Associations::UpdateChanges();
@@ -378,12 +378,12 @@ AskAssocDialog::AskAssocDialog(wxWindow* parent)
     SetEscapeId(wxID_NONE);
 }
 
-void AskAssocDialog::OnOK(wxCommandEvent& event)
+void AskAssocDialog::OnOK(cb_unused wxCommandEvent& event)
 {
     EndModal(XRCCTRL(*this, "choice", wxRadioBox)->GetSelection());
 }
 
-void AskAssocDialog::OnESC(wxCommandEvent& event)
+void AskAssocDialog::OnESC(cb_unused wxCommandEvent& event)
 {
     EndModal(ASC_ASSOC_DLG_NO_ONLY_NOW);
 }

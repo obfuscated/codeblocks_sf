@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(cbStatusBar, wxStatusBar)
 END_EVENT_TABLE()
 
 
-cbStatusBar::cbStatusBar(wxWindow* parent,  wxWindowID id, long style, const wxString& name)
+cbStatusBar::cbStatusBar(wxWindow* parent, cb_unused  wxWindowID id, long style, const wxString& name) // TODO: Check if window id should be removed?
     : wxStatusBar(parent, wxID_ANY, style, name)
 {
 }

@@ -125,7 +125,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     return DoSelectConfiguration(root);
 }
 
-bool MSVC7Loader::Save(const wxString& filename)
+bool MSVC7Loader::Save(cb_unused const wxString& filename)
 {
     // no support to save MSVC7 projects
     return false;

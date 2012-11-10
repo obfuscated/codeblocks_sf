@@ -233,10 +233,10 @@ void Autosave::OnTimer(wxTimerEvent& e)
                             wxString tmp1;
                             wxString tmp2;
 
-                            for(unsigned int i = 8; i; --i)
+                            for(unsigned int revisions = 8; revisions; --revisions)
                             {
-                                tmp1.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), i,   fn.GetExt().c_str());
-                                tmp2.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), i+1, fn.GetExt().c_str());
+                                tmp1.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), revisions,   fn.GetExt().c_str());
+                                tmp2.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), revisions+1, fn.GetExt().c_str());
 
                                 if(::wxFileExists(tmp2))
                                     ::wxRemoveFile(tmp2);

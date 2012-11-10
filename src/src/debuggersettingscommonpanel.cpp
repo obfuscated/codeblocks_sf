@@ -123,7 +123,7 @@ void DebuggerSettingsCommonPanel::SaveChanges()
     cbDebuggerCommonConfig::SetPerspective(m_perspective->GetSelection());
 }
 
-void DebuggerSettingsCommonPanel::OnChooseFontClick(wxCommandEvent& event)
+void DebuggerSettingsCommonPanel::OnChooseFontClick(cb_unused wxCommandEvent& event)
 {
     wxNativeFontInfo fontInfo;
     fontInfo.FromString(m_valueTooltipFontInfo);

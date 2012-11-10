@@ -108,13 +108,13 @@ void EditMimeTypesDlg::UpdateDisplay()
     m_LastSelection = m_Selection;
 }
 
-void EditMimeTypesDlg::OnSelectionChanged(wxCommandEvent& event)
+void EditMimeTypesDlg::OnSelectionChanged(cb_unused wxCommandEvent& event)
 {
     m_Selection = XRCCTRL(*this, "lstWild", wxListBox)->GetSelection();
     UpdateDisplay();
 }
 
-void EditMimeTypesDlg::OnActionChanged(wxCommandEvent& event)
+void EditMimeTypesDlg::OnActionChanged(cb_unused wxCommandEvent& event)
 {
     bool useEd = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 2;
     bool useAssoc = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 1;
@@ -123,7 +123,7 @@ void EditMimeTypesDlg::OnActionChanged(wxCommandEvent& event)
     XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!useEd && !useAssoc);
 }
 
-void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
+void EditMimeTypesDlg::OnNew(cb_unused wxCommandEvent& event)
 {
     wxString wild = wxGetTextFromUser(_("Enter the new wildcard to add:"));
     if (wild.IsEmpty())
@@ -145,7 +145,7 @@ void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
     UpdateDisplay();
 }
 
-void EditMimeTypesDlg::OnDelete(wxCommandEvent& event)
+void EditMimeTypesDlg::OnDelete(cb_unused wxCommandEvent& event)
 {
     if (m_Selection == -1)
         return;
@@ -159,7 +159,7 @@ void EditMimeTypesDlg::OnDelete(wxCommandEvent& event)
     UpdateDisplay();
 }
 
-void EditMimeTypesDlg::OnBrowseProgram(wxCommandEvent& event)
+void EditMimeTypesDlg::OnBrowseProgram(cb_unused wxCommandEvent& event)
 {
     wxFileDialog dlg(0,
                      _("Select program"),

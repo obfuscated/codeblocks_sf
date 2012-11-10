@@ -812,7 +812,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData,
 
     if (!reallyUseAI)
     {
-        TokenTree* tree = m_Parser->GetTokenTree();
+        tree = m_Parser->GetTokenTree();
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
@@ -978,7 +978,7 @@ void NativeParser::CreateClassBrowser()
     m_ClassBrowser->SetParser(m_Parser); // Also updates class browser
 }
 
-void NativeParser::RemoveClassBrowser(bool appShutDown)
+void NativeParser::RemoveClassBrowser(cb_unused bool appShutDown)
 {
     if (!m_ClassBrowser)
         return;
@@ -1288,7 +1288,7 @@ void NativeParser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxB
 #endif
 }
 
-void NativeParser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour)
+void NativeParser::SetTokenKindImage(int kind, const wxBitmap& bitmap, cb_unused const wxColour& maskColour)
 {
     if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
         return;
@@ -2457,7 +2457,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
     event.Skip();
 }
 
-void NativeParser::OnParsingOneByOneTimer(wxTimerEvent& event)
+void NativeParser::OnParsingOneByOneTimer(cb_unused wxTimerEvent& event)
 {
     TRACE(_T("NativeParser::OnParsingOneByOneTimer()"));
 
@@ -2669,8 +2669,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
             }
         }
 
-        wxString log(F(_("Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
-        CCLogger::Get()->DebugLog(log);
+        CCLogger::Get()->DebugLog(F(_("Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
     }
     else
     {
@@ -2681,9 +2680,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
             parser->AddIncludeDir(file.GetPath());
             m_StandaloneFiles.Add(editor->GetFilename());
 
-            wxString log(F(_("Done adding stand-alone file (%s) of editor to parser."),
-                           editor->GetFilename().wx_str()));
-            CCLogger::Get()->DebugLog(log);
+            CCLogger::Get()->DebugLog(F(_("Done adding stand-alone file (%s) of editor to parser."), editor->GetFilename().wx_str()));
         }
     }
 }

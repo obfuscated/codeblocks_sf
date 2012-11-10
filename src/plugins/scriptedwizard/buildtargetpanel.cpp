@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+#include "prep.h"
 #include "buildtargetpanel.h"
 
 #include <wx/intl.h>
@@ -79,7 +80,7 @@ BuildTargetPanel::~BuildTargetPanel()
 }
 
 
-void BuildTargetPanel::OntxtNameText(wxCommandEvent& event)
+void BuildTargetPanel::OntxtNameText(cb_unused wxCommandEvent& event)
 {
     // update output dirs based on target name
     txtOut->SetValue(_T("bin") + wxString(wxFILE_SEP_PATH) + txtName->GetValue());

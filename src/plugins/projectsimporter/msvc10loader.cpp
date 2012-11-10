@@ -865,7 +865,7 @@ wxString MSVC10Loader::SubstituteConfigMacros(const wxString& sString)
     return sResult;
 }
 
-bool MSVC10Loader::Save(const wxString& filename)
+bool MSVC10Loader::Save(cb_unused const wxString& filename)
 {
     // no support to save MSVC10 projects
     return false;

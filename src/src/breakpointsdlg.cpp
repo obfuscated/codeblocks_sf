@@ -270,7 +270,7 @@ void BreakpointsDlg::EnableBreakpoint(const wxString& filename, int line, bool e
     }
 }
 
-void BreakpointsDlg::OnRemove(wxCommandEvent& event)
+void BreakpointsDlg::OnRemove(cb_unused wxCommandEvent& event)
 {
     long item = -1;
     bool reload = false;
@@ -298,12 +298,12 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
         (*it)->RefreshBreakpointMarkers();
 }
 
-void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
+void BreakpointsDlg::OnRemoveAll(cb_unused wxCommandEvent& event)
 {
     RemoveAllBreakpoints();
 }
 
-void BreakpointsDlg::OnProperties(wxCommandEvent& event)
+void BreakpointsDlg::OnProperties(cb_unused wxCommandEvent& event)
 {
     int sel = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (sel < 0 || sel >= static_cast<int>(m_breakpoints.size()))
@@ -323,7 +323,7 @@ void BreakpointsDlg::BreakpointProperties(const Item &item)
     Reload();
 }
 
-void BreakpointsDlg::OnOpen(wxCommandEvent& event)
+void BreakpointsDlg::OnOpen(cb_unused wxCommandEvent& event)
 {
     long item_index = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item_index < 0 || item_index >= static_cast<int>(m_breakpoints.size()))
@@ -342,7 +342,7 @@ void BreakpointsDlg::OnOpen(wxCommandEvent& event)
     }
 }
 
-void BreakpointsDlg::OnRightClick(wxListEvent& event)
+void BreakpointsDlg::OnRightClick(cb_unused wxListEvent& event)
 {
     long itemIndex = -1;
     bool hasEnabled = false, hasDisabled = false;
@@ -385,7 +385,7 @@ void BreakpointsDlg::OnRightClick(wxListEvent& event)
     PopupMenu(&menu);
 }
 
-void BreakpointsDlg::OnDoubleClick(wxListEvent& event)
+void BreakpointsDlg::OnDoubleClick(cb_unused wxListEvent& event)
 {
     wxCommandEvent evt;
     OnOpen(evt);
@@ -395,8 +395,8 @@ void BreakpointsDlg::OnKeyUp(wxKeyEvent& event)
 {
     if (event.GetKeyCode() == WXK_DELETE || event.GetKeyCode() == WXK_NUMPAD_DELETE)
     {
-        wxCommandEvent event;
-        OnRemove(event);
+        wxCommandEvent empty_event;
+        OnRemove(empty_event);
     }
 }
 
@@ -432,7 +432,7 @@ void BreakpointsDlg::OnBreakpointEdit(CodeBlocksEvent& event)
     Reload();
 }
 
-void BreakpointsDlg::OnShowTemp(wxCommandEvent& event)
+void BreakpointsDlg::OnShowTemp(cb_unused wxCommandEvent& event)
 {
     bool old = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::ShowTemporaryBreakpoints);
     cbDebuggerCommonConfig::SetFlag(cbDebuggerCommonConfig::ShowTemporaryBreakpoints, !old);

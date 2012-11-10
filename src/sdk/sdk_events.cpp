@@ -44,16 +44,16 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_i
     logIndex = Manager::Get()->GetLogManager()->FindIndex(logger);
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title, wxBitmap *icon)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(0), logIndex(logIndex), icon(icon), title(title), window(0)
+    logger(0), logIndex(logIndex_in), icon(icon_in), title(title_in), window(0)
 {
     logger = Manager::Get()->GetLogManager()->Slot(logIndex).GetLogger();
 }
 
-CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title, wxBitmap *icon)
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window_in, const wxString& title_in, wxBitmap *icon_in)
     : wxEvent(wxID_ANY, commandType),
-    logger(0), logIndex(-1), icon(icon), title(title), window(window)
+    logger(0), logIndex(-1), icon(icon_in), title(title_in), window(window_in)
 {
 }
 

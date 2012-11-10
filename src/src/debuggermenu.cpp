@@ -901,7 +901,7 @@ void DebuggerToolbarHandler::OnDebugWindows(cb_unused wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->PopupMenu(&m);
 }
 
-void DebuggerToolbarHandler::OnStop(wxCommandEvent& event)
+void DebuggerToolbarHandler::OnStop(cb_unused wxCommandEvent& event)
 {
     DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
     cbDebuggerPlugin *plugin = manager->GetActiveDebugger();

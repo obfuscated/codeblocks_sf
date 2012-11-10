@@ -42,7 +42,7 @@
 #include "wizpage.h"
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(Wizards);
+WX_DEFINE_OBJARRAY(Wizards); // TODO: find out why this causes a shadow warning for 'Item'
 
 namespace
 {

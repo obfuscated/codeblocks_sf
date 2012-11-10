@@ -563,7 +563,7 @@ int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo, int &old
 
 void ToDoListView::FocusEntry(size_t index)
 {
-    if (index >= 0 && index < (size_t)control->GetItemCount())
+    if (index < (size_t)control->GetItemCount())
     {
         control->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
         control->EnsureVisible(index);

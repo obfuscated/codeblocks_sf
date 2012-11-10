@@ -75,8 +75,8 @@ private:
     void AdjustFieldsSize();
     int  GetFieldNumberOfPlugin(cbPlugin* plugin) const;
 
-    void PushStatusText(const wxString& text,cbPlugin *plugin) { ; };
-    void PopStatusText(cbPlugin* plugin)                       { ; };
+    void PushStatusText(cb_unused const wxString& text, cb_unused cbPlugin *plugin) { ; };
+    void PopStatusText(cb_unused cbPlugin* plugin)                                  { ; };
 
     struct cbStatusBarElement
     {

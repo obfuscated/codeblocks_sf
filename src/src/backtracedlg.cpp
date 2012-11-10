@@ -118,7 +118,7 @@ void BacktraceDlg::EnableWindow(bool enable)
 }
 
 
-void BacktraceDlg::OnListRightClick(wxListEvent& event)
+void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
 {
     wxMenu m;
     m.Append(idJump, _("Jump to this file/line"));
@@ -138,7 +138,7 @@ void BacktraceDlg::OnListRightClick(wxListEvent& event)
     m_list->PopupMenu(&m);
 }
 
-void BacktraceDlg::OnJump(wxCommandEvent& event)
+void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
 {
     if (m_list->GetSelectedItemCount() == 0)
         return;
@@ -165,7 +165,7 @@ void BacktraceDlg::OnJump(wxCommandEvent& event)
     }
 }
 
-void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
+void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (!plugin)
@@ -183,7 +183,7 @@ void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
     if (m_list->GetItemText(index).ToLong(&realFrameNr))
     {
         // switch to this frame
-        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         if (plugin)
             plugin->SwitchToFrame(realFrameNr);
     }
@@ -191,7 +191,7 @@ void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
         cbMessageBox(_("Couldn't find out the frame number!"), _("Error"), wxICON_ERROR);
 }
 
-void BacktraceDlg::OnDoubleClick(wxListEvent& event)
+void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent& event)
 {
     bool jump = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
     wxCommandEvent evt;
@@ -201,7 +201,7 @@ void BacktraceDlg::OnDoubleClick(wxListEvent& event)
         OnSwitchFrame(evt);
 }
 
-void BacktraceDlg::OnSave(wxCommandEvent& event)
+void BacktraceDlg::OnSave(cb_unused wxCommandEvent& event)
 {
     wxFileDialog dlg(this, _("Save as text file"), wxEmptyString, wxEmptyString,
                      FileFilters::GetFilterAll(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -235,7 +235,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
     cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
-void BacktraceDlg::OnCopyToClipboard(wxCommandEvent& event)
+void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
 {
     wxString text;
     for (int ii = 0; ii < m_list->GetItemCount(); ++ii)

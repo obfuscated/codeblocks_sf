@@ -161,7 +161,7 @@ int FilePathPanel::GetTargetIndex()
     return m_Selection;
 }
 
-void FilePathPanel::OntxtFilenameText(wxCommandEvent& event)
+void FilePathPanel::OntxtFilenameText(cb_unused wxCommandEvent& event)
 {
     if (!txtFilename || txtFilename->GetValue().IsEmpty())
         return;
@@ -177,7 +177,7 @@ void FilePathPanel::OntxtFilenameText(wxCommandEvent& event)
     txtGuard->SetValue(name);
 }
 
-void FilePathPanel::OnbtnBrowseClick(wxCommandEvent& event)
+void FilePathPanel::OnbtnBrowseClick(cb_unused wxCommandEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     wxFileDialog dlg(this,
@@ -196,7 +196,7 @@ void FilePathPanel::OnchkAddToProjectChange(wxCommandEvent& event)
     SetAddToProject(event.IsChecked());
 }
 
-void FilePathPanel::OnbtnAllClick(wxCommandEvent& event)
+void FilePathPanel::OnbtnAllClick(cb_unused wxCommandEvent& event)
 {
     for (int i = 0; i < static_cast<int>(clbTargets->GetCount()); ++i)
     {
@@ -204,7 +204,7 @@ void FilePathPanel::OnbtnAllClick(wxCommandEvent& event)
     }
 } // end of OnbtnAllClick
 
-void FilePathPanel::OnbtnNoneClick(wxCommandEvent& event)
+void FilePathPanel::OnbtnNoneClick(cb_unused wxCommandEvent& event)
 {
     for (int i = 0; i < static_cast<int>(clbTargets->GetCount()); ++i)
     {

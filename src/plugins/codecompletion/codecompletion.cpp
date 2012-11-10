@@ -1195,7 +1195,7 @@ void CodeCompletion::CodeCompleteIncludes()
         for (FilesList::const_iterator it = project->GetFilesList().begin();
                                        it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = *it;
+            pf = *it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
                 wxString file = pf->file.GetFullPath();
@@ -1787,7 +1787,7 @@ void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
     event.Skip();
 }
 
-void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
+void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
@@ -1840,7 +1840,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 }
 
-void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
+void CodeCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent& event)
 {
     GotoFunctionPrevNext(); // prev function
 }
@@ -1850,12 +1850,12 @@ void CodeCompletion::OnGotoNextFunction(wxCommandEvent& event)
     GotoFunctionPrevNext(true); // next function
 }
 
-void CodeCompletion::OnClassMethod(wxCommandEvent& event)
+void CodeCompletion::OnClassMethod(cb_unused wxCommandEvent& event)
 {
     DoClassMethodDeclImpl();
 }
 
-void CodeCompletion::OnUnimplementedClassMethods(wxCommandEvent& event)
+void CodeCompletion::OnUnimplementedClassMethods(cb_unused wxCommandEvent& event)
 {
     DoAllMethodsImpl();
 }
@@ -2075,17 +2075,17 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         cbMessageBox(wxString::Format(_("Not found: %s"), target.wx_str()), _("Warning"), wxICON_WARNING);
 }
 
-void CodeCompletion::OnFindReferences(wxCommandEvent& event)
+void CodeCompletion::OnFindReferences(cb_unused wxCommandEvent& event)
 {
     m_CodeRefactoring.FindReferences();
 }
 
-void CodeCompletion::OnRenameSymbols(wxCommandEvent& event)
+void CodeCompletion::OnRenameSymbols(cb_unused wxCommandEvent& event)
 {
     m_CodeRefactoring.RenameSymbols();
 }
 
-void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
+void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent& event)
 {
     wxString lastIncludeFileFrom;
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -3104,12 +3104,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
                     fs.Scope = token->GetNamespace();
                     if (fs.Scope.IsEmpty())
                         fs.Scope = g_GlobalScope;
-                    wxString result = token->m_Name;
-                    fs.ShortName = result;
-                    result << token->GetFormattedArgs();
+                    wxString result_str = token->m_Name;
+                    fs.ShortName = result_str;
+                    result_str << token->GetFormattedArgs();
                     if (!token->m_BaseType.IsEmpty())
-                        result << _T(" : ") << token->m_BaseType;
-                    fs.Name = result;
+                        result_str << _T(" : ") << token->m_BaseType;
+                    fs.Name = result_str;
                     funcdata->m_FunctionsScope.push_back(fs);
                 }
                 else if (token->m_TokenKind & (tkEnum | tkClass | tkNamespace))
@@ -3317,7 +3317,7 @@ void CodeCompletion::DoParseOpenedProjectAndActiveEditor()
         m_NativeParser.OnEditorActivated(editor);
 }
 
-void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
+void CodeCompletion::OnCodeCompleteTimer(cb_unused wxTimerEvent& event)
 {
     if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_LastEditor) == -1)
         return; // editor is invalid (probably closed already)
@@ -3332,7 +3332,7 @@ void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
     }
 }
 
-void CodeCompletion::OnToolbarTimer(wxTimerEvent& event)
+void CodeCompletion::OnToolbarTimer(cb_unused wxTimerEvent& event)
 {
     TRACE(_T("OnToolbarTimer"));
 
@@ -3345,7 +3345,7 @@ void CodeCompletion::OnToolbarTimer(wxTimerEvent& event)
     }
 }
 
-void CodeCompletion::OnRealtimeParsingTimer(wxTimerEvent& event)
+void CodeCompletion::OnRealtimeParsingTimer(cb_unused wxTimerEvent& event)
 {
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!editor)
@@ -3369,7 +3369,7 @@ void CodeCompletion::OnRealtimeParsingTimer(wxTimerEvent& event)
         CCLogger::Get()->DebugLog(_T("Reparsing when typing for editor ") + m_LastFile);
 }
 
-void CodeCompletion::OnProjectSavedTimer(wxTimerEvent& event)
+void CodeCompletion::OnProjectSavedTimer(cb_unused wxTimerEvent& event)
 {
     cbProject* project = static_cast<cbProject*>(m_TimerProjectSaved.GetClientData());
     m_TimerProjectSaved.SetClientData(NULL);
@@ -3395,7 +3395,7 @@ void CodeCompletion::OnProjectSavedTimer(wxTimerEvent& event)
     }
 }
 
-void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
+void CodeCompletion::OnReparsingTimer(cb_unused wxTimerEvent& event)
 {
     if (ProjectManager::IsBusy() || !IsAttached() || !m_InitDone)
     {
@@ -3454,7 +3454,7 @@ void CodeCompletion::OnReparsingTimer(wxTimerEvent& event)
     }
 }
 
-void CodeCompletion::OnEditorActivatedTimer(wxTimerEvent& event)
+void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
 {
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
     const wxString& curFile = editor ? editor->GetFilename() : wxString(wxEmptyString);

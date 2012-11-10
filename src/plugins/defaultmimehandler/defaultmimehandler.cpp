@@ -109,7 +109,7 @@ void DefaultMimeHandler::OnAttach()
 }
 
 
-void DefaultMimeHandler::OnRelease(bool appShutDown)
+void DefaultMimeHandler::OnRelease(cb_unused bool appShutDown)
 {
     CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
     evt.pWindow = m_Html;
@@ -146,7 +146,7 @@ cbConfigurationPanel* DefaultMimeHandler::GetConfigurationPanel(wxWindow* parent
     return dlg;
 }
 
-bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const
+bool DefaultMimeHandler::CanHandleFile(cb_unused const wxString& filename) const
 {
     // always return true
     // even if we don't know how to handle the file,

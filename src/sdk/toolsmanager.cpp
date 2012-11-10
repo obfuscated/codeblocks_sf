@@ -70,11 +70,11 @@ ToolsManager::~ToolsManager()
     m_Tools.Clear();
 }
 
-void ToolsManager::CreateMenu(wxMenuBar* menuBar)
+void ToolsManager::CreateMenu(cb_unused wxMenuBar* menuBar)
 {
 }
 
-void ToolsManager::ReleaseMenu(wxMenuBar* menuBar)
+void ToolsManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
 {
 }
 
@@ -363,7 +363,7 @@ int ToolsManager::Configure()
 
 // events
 
-void ToolsManager::OnConfigure(wxCommandEvent& event)
+void ToolsManager::OnConfigure(cb_unused wxCommandEvent& event)
 {
     Configure();
 }

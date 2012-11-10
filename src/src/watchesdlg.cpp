@@ -201,7 +201,7 @@ class WatchRawDialog : public wxScrollingDialog
             SetSizer(bs);
         }
 
-        void OnClose(wxCloseEvent &event)
+        void OnClose(cb_unused wxCloseEvent &event)
         {
             for (Map::iterator it = s_dialogs.begin(); it != s_dialogs.end(); ++it)
             {
@@ -529,7 +529,7 @@ void WatchesDlg::OnPropertyLableEditEnd(wxPropertyGridEvent &event)
     RenameWatch(event.GetProperty(), label);
 }
 
-void WatchesDlg::OnIdle(wxIdleEvent &event)
+void WatchesDlg::OnIdle(cb_unused wxIdleEvent &event)
 {
     if (m_append_empty_watch)
     {
@@ -679,7 +679,7 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
     }
 }
 
-void WatchesDlg::OnMenuRename(wxCommandEvent &event)
+void WatchesDlg::OnMenuRename(cb_unused wxCommandEvent &event)
 {
     if (!m_grid->GetLabelEditor())
     {
@@ -688,7 +688,7 @@ void WatchesDlg::OnMenuRename(wxCommandEvent &event)
     }
 }
 
-void WatchesDlg::OnMenuProperties(wxCommandEvent &event)
+void WatchesDlg::OnMenuProperties(cb_unused wxCommandEvent &event)
 {
     wxPGProperty *selected = m_grid->GetSelection();
     if (selected)
@@ -704,7 +704,7 @@ void WatchesDlg::OnMenuProperties(wxCommandEvent &event)
     }
 }
 
-void WatchesDlg::OnMenuDelete(wxCommandEvent &event)
+void WatchesDlg::OnMenuDelete(cb_unused wxCommandEvent &event)
 {
     wxPGProperty *selected = m_grid->GetSelection();
     if (selected)
@@ -714,7 +714,7 @@ void WatchesDlg::OnMenuDelete(wxCommandEvent &event)
     }
 }
 
-void WatchesDlg::OnMenuDeleteAll(wxCommandEvent &event)
+void WatchesDlg::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
 {
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
     {
@@ -725,7 +725,7 @@ void WatchesDlg::OnMenuDeleteAll(wxCommandEvent &event)
     m_watches.clear();
 }
 
-void WatchesDlg::OnMenuAddDataBreak(wxCommandEvent &event)
+void WatchesDlg::OnMenuAddDataBreak(cb_unused wxCommandEvent &event)
 {
     wxPGProperty *selected = m_grid->GetSelection();
     if (!selected)
@@ -1028,7 +1028,7 @@ void ValueTooltip::OnExpand(wxPropertyGridEvent &event)
     Fit();
 }
 
-void ValueTooltip::OnTimer(wxTimerEvent &event)
+void ValueTooltip::OnTimer(cb_unused wxTimerEvent &event)
 {
     if (!wxTheApp->IsActive())
         Dismiss();

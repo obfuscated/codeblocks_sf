@@ -100,7 +100,7 @@ bool MSVCLoader::Open(const wxString& filename)
     return ParseSourceFiles();
 }
 
-bool MSVCLoader::Save(const wxString& filename)
+bool MSVCLoader::Save(cb_unused const wxString& filename)
 {
     // no support to save MSVC projects
     return false;

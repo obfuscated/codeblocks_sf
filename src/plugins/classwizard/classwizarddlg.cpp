@@ -150,7 +150,7 @@ void ClassWizardDlg::OnAncestorChange(wxCommandEvent& WXUNUSED(event))
     DoGuardBlock();
 }
 
-void ClassWizardDlg::OnAddMemberVar(wxCommandEvent& event)
+void ClassWizardDlg::OnAddMemberVar(cb_unused wxCommandEvent& event)
 {
     wxString member = XRCCTRL(*this, "txtMemberVar",    wxTextCtrl)->GetValue();
     bool     getter = XRCCTRL(*this, "chkGetter",       wxCheckBox)->GetValue();
@@ -203,7 +203,7 @@ void ClassWizardDlg::OnAddMemberVar(wxCommandEvent& event)
     XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr(memtyp, memvar));
 }
 
-void ClassWizardDlg::OnRemoveMemberVar(wxCommandEvent& event)
+void ClassWizardDlg::OnRemoveMemberVar(cb_unused wxCommandEvent& event)
 {
     wxString selection = XRCCTRL(*this, "lstMemberVars", wxListBox)->GetStringSelection();
     if (selection.IsEmpty())

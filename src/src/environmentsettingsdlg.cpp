@@ -434,13 +434,13 @@ void EnvironmentSettingsDlg::OnUseIpcCheck(wxCommandEvent& event)
     XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(event.IsChecked());
 }
 
-void EnvironmentSettingsDlg::OnDblClickMaximizes(wxCommandEvent& event)
+void EnvironmentSettingsDlg::OnDblClickMaximizes(cb_unused wxCommandEvent& event)
 {
     bool en = XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->GetValue();
     XRCCTRL(*this, "choLayoutToToggle", wxCheckBox)->Enable(en);
 }
 
-void EnvironmentSettingsDlg::OnMousewheelModifier(wxKeyEvent& event)
+void EnvironmentSettingsDlg::OnMousewheelModifier(cb_unused wxKeyEvent& event)
 {
     wxString keys;
 
@@ -462,7 +462,7 @@ void EnvironmentSettingsDlg::OnMousewheelModifier(wxKeyEvent& event)
         XRCCTRL(*this, "txtMousewheelModifier", wxTextCtrl)->SetValue(keys);
 }
 
-void EnvironmentSettingsDlg::OnUseTabMousewheel(wxCommandEvent& event)
+void EnvironmentSettingsDlg::OnUseTabMousewheel(cb_unused wxCommandEvent& event)
 {
     bool en = (bool)XRCCTRL(*this, "chkNBUseMousewheel",wxCheckBox)->GetValue();
     XRCCTRL(*this, "rbNBModToAdvance", wxRadioButton)->Enable(en);

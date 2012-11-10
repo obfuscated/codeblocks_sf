@@ -234,7 +234,7 @@ bool DebugInterfaceFactory::IsValueTooltipShown()
     return m_tooltip && m_tooltip->IsShown();
 }
 
-void DebugInterfaceFactory::OnEditorDeactivate(CodeBlocksEvent &event)
+void DebugInterfaceFactory::OnEditorDeactivate(cb_unused CodeBlocksEvent &event)
 {
     HideValueTooltip();
 }

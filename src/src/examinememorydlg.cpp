@@ -125,7 +125,7 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
     }
 }
 
-void ExamineMemoryDlg::OnGo(wxCommandEvent& event)
+void ExamineMemoryDlg::OnGo(cb_unused wxCommandEvent& event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)

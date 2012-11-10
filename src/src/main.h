@@ -37,10 +37,10 @@ class wxGauge;
 struct ToolbarInfo
 {
     ToolbarInfo() {}
-    ToolbarInfo(wxToolBar *toolbar, const wxAuiPaneInfo &paneInfo, int priority) :
-        paneInfo(paneInfo),
-        toolbar(toolbar),
-        priority(priority)
+    ToolbarInfo(wxToolBar *toolbar_in, const wxAuiPaneInfo &paneInfo_in, int priority_in) :
+        paneInfo(paneInfo_in),
+        toolbar(toolbar_in),
+        priority(priority_in)
     {
     }
 

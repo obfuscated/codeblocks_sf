@@ -452,7 +452,7 @@ bool ParserThread::InitTokenizer()
                 bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
                 Delete(m_Options.loader);
 
-                if (!ret) TRACE(_T("InitTokenizer() : Could not initialise tokenizer for file '%s'."), m_Filename.wx_str());
+                if (!ret) { TRACE(_T("InitTokenizer() : Could not initialise tokenizer for file '%s'."), m_Filename.wx_str()); }
                 return ret;
             }
 
@@ -1275,7 +1275,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         if (localParent)
             newToken = TokenExists(newname, baseArgs, localParent, kind);
         if (newToken)
-            TRACE(_T("DoAddToken() : Found token (ctor/dtor)."));
+            { TRACE(_T("DoAddToken() : Found token (ctor/dtor).")); }
     }
 
     // check for implementation member function
@@ -1285,7 +1285,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         if (localParent)
             newToken = TokenExists(newname, baseArgs, localParent, kind);
         if (newToken)
-            TRACE(_T("DoAddToken() : Found token (member function)."));
+            { TRACE(_T("DoAddToken() : Found token (member function).")); }
     }
 
     // none of the above; check for token under parent (but not if we 're parsing a temp buffer)
@@ -1293,7 +1293,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     {
         newToken = TokenExists(newname, baseArgs, m_LastParent, kind);
         if (newToken)
-            TRACE(_T("DoAddToken() : Found token (parent)."));
+			{ TRACE(_T("DoAddToken() : Found token (parent).")); }
     }
 
     // need to check if the current token already exists in the tokenTree
@@ -1814,14 +1814,14 @@ void ParserThread::HandleClass(EClassType ct)
                 m_Str.Clear();
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
                 if ( !ReadClsNames(newToken->m_Name) )
-                    TRACE(_T("HandleClass() : ReadClsNames returned false [1]."));
+                    { TRACE(_T("HandleClass() : ReadClsNames returned false [1].")); }
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
                 if ( !ReadVarNames() )
-                    TRACE(_T("HandleClass() : ReadVarNames returned false [1]."));
+                    { TRACE(_T("HandleClass() : ReadVarNames returned false [1].")); }
                 m_Str.Clear();
                 break;
             }
@@ -1881,14 +1881,14 @@ void ParserThread::HandleClass(EClassType ct)
             {
                 m_Str.Clear();
                 if ( !ReadClsNames(newToken->m_Name) )
-                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                    { TRACE(_T("HandleClass() : ReadClsNames returned false [2].")); }
                 break;
             }
             else
             {
                 m_Str = newToken->m_Name;
                 if ( !ReadVarNames() )
-                    TRACE(_T("HandleClass() : ReadVarNames returned false [2]."));
+                    { TRACE(_T("HandleClass() : ReadVarNames returned false [2].")); }
                 m_Str.Clear();
                 break;
             }
@@ -2923,7 +2923,7 @@ bool ParserThread::ResolveTemplateMap(const wxString& typeStr, const wxArrayStri
         return false;
 }
 
-bool ParserThread::IsStillAlive(const wxString& funcInfo)
+bool ParserThread::IsStillAlive(cb_unused const wxString& funcInfo)
 {
     const bool alive = !TestDestroy();
     if (!alive)

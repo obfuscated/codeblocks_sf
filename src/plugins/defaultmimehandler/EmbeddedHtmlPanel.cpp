@@ -126,7 +126,7 @@ void EmbeddedHtmlPanel::OnUpdateUI(wxUpdateUIEvent& event)
     event.Skip();
 }
 
-void EmbeddedHtmlPanel::OnbtnBackClick(wxCommandEvent& event)
+void EmbeddedHtmlPanel::OnbtnBackClick(cb_unused wxCommandEvent& event)
 {
     if (winHtml->HistoryCanBack())
     {
@@ -139,7 +139,7 @@ void EmbeddedHtmlPanel::OnbtnBackClick(wxCommandEvent& event)
     }
 }
 
-void EmbeddedHtmlPanel::OnbtnForwardClick(wxCommandEvent& event)
+void EmbeddedHtmlPanel::OnbtnForwardClick(cb_unused wxCommandEvent& event)
 {
     if (winHtml->HistoryCanForward())
     {

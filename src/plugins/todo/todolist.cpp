@@ -38,7 +38,7 @@
 #include "todosettingsdlg.h"
 
 #include <wx/arrimpl.cpp>
-WX_DEFINE_OBJARRAY(ToDoItems);
+WX_DEFINE_OBJARRAY(ToDoItems); // TODO: find out why this causes a shadow warning for 'Item'
 
 namespace
 {
@@ -290,13 +290,13 @@ void ToDoList::OnViewList(wxCommandEvent& event)
         {
             CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
             Manager::Get()->ProcessEvent(evtShow);
-            CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-            Manager::Get()->ProcessEvent(event);
+            CodeBlocksLogEvent evt(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(evt);
         }
         else
         {
-            CodeBlocksLogEvent event(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
-            Manager::Get()->ProcessEvent(event);
+            CodeBlocksLogEvent evt(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(evt);
         }
     }
 }
@@ -361,11 +361,11 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
                 streamStart = token.doxygenStreamCommentStart;
                 streamEnd = token.doxygenStreamCommentEnd;
             }
-            AskTypeDlg dlg(Manager::Get()->GetAppWindow(), streamStart, streamEnd);
-            PlaceWindow(&dlg);
-            if (dlg.ShowModal() != wxID_OK)
+            AskTypeDlg asktype_dlg(Manager::Get()->GetAppWindow(), streamStart, streamEnd);
+            PlaceWindow(&asktype_dlg);
+            if (asktype_dlg.ShowModal() != wxID_OK)
                 return;
-            switch(dlg.GetTypeCorrection())
+            switch(asktype_dlg.GetTypeCorrection())
             {
                 case tcStay:
                     break; // do nothing, leave things as they are

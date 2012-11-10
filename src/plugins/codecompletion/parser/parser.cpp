@@ -158,7 +158,7 @@ TokenTree* ParserBase::GetTokenTree()
     return m_TokenTree;
 }
 
-bool ParserBase::ParseFile(const wxString& filename, bool isGlobal, bool locked)
+bool ParserBase::ParseFile(cb_unused const wxString& filename, cb_unused bool isGlobal, cb_unused bool locked)
 {
     return false;
 }
@@ -753,7 +753,7 @@ bool Parser::RemoveFile(const wxString& filename)
     return result;
 }
 
-bool Parser::AddFile(const wxString& filename, cbProject* project, bool isLocal)
+bool Parser::AddFile(const wxString& filename, cbProject* project, cb_unused bool isLocal)
 {
     if (project != m_Project)
         return false;
@@ -969,7 +969,7 @@ void Parser::OnReparseTimer(wxTimerEvent& event)
     event.Skip();
 }
 
-void Parser::OnBatchTimer(wxTimerEvent& event)
+void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
 {
     if (Manager::IsAppShuttingDown())
         return;

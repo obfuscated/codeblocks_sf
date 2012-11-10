@@ -74,7 +74,7 @@ wxString CDB_driver::GetCommonCommandLine(const wxString& debugger)
 }
 
 // FIXME (obfuscated#): Implement user arguments
-wxString CDB_driver::GetCommandLine(const wxString& debugger, const wxString& debuggee, const wxString &userArguments)
+wxString CDB_driver::GetCommandLine(const wxString& debugger, const wxString& debuggee, cb_unused const wxString &userArguments)
 {
     wxString cmd = GetCommonCommandLine(debugger);
     cmd << _T(' ');
@@ -90,7 +90,7 @@ wxString CDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
 }
 
 // FIXME (obfuscated#): Implement user arguments
-wxString CDB_driver::GetCommandLine(const wxString& debugger, int pid, const wxString &userArguments)
+wxString CDB_driver::GetCommandLine(const wxString& debugger, int pid, cb_unused const wxString &userArguments)
 {
     wxString cmd = GetCommonCommandLine(debugger);
     // finally, add the PID
@@ -173,7 +173,7 @@ void CDB_driver::StepOut()
     QueueCommand(new CdbCmd_SwitchFrame(this, -1));
 }
 
-void CDB_driver::SetNextStatement(const wxString& filename, int line)
+void CDB_driver::SetNextStatement(cb_unused const wxString& filename, cb_unused int line)
 {
     NOT_IMPLEMENTED();
 }
@@ -244,7 +244,7 @@ void CDB_driver::InfoSignals()
     NOT_IMPLEMENTED();
 }
 
-void CDB_driver::EnableCatchingThrow(bool enable)
+void CDB_driver::EnableCatchingThrow(cb_unused bool enable)
 {
     NOT_IMPLEMENTED();
 }
@@ -264,7 +264,7 @@ void CDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipRect));
 }
 
-void CDB_driver::UpdateWatches(bool doLocals, bool /*doArgs*/, WatchesContainer &watches)
+void CDB_driver::UpdateWatches(cb_unused bool doLocals, cb_unused bool doArgs, WatchesContainer &watches) // TODO: check whether params intentionally unused
 {
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
         QueueCommand(new CdbCmd_Watch(this, *it));

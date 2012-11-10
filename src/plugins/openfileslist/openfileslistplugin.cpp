@@ -39,7 +39,7 @@ namespace
     class OpenFilesListData : public wxTreeItemData
     {
         public:
-            OpenFilesListData(EditorBase* ed) : ed(ed) {}
+            OpenFilesListData(EditorBase* ed_in) : ed(ed_in) {}
             EditorBase* GetEditor() const { return ed; }
         private:
             EditorBase* ed;
@@ -255,7 +255,7 @@ void OpenFilesListPlugin::RefreshOpenFilesTree(EditorBase* ed, bool remove)
     if (!found && !remove && ed->VisibleToTree() && !shortname.IsEmpty())
     {
         int mod = GetOpenFilesListIcon(ed);
-        wxTreeItemId item = m_pTree->AppendItem(m_pTree->GetRootItem(), shortname, mod, mod, new OpenFilesListData(ed));
+        item = m_pTree->AppendItem(m_pTree->GetRootItem(), shortname, mod, mod, new OpenFilesListData(ed));
         if(mgr->GetActiveEditor() == ed)
             m_pTree->SelectItem(item);
         m_pTree->SortChildren(m_pTree->GetRootItem());
@@ -350,7 +350,7 @@ void OpenFilesListPlugin::OnEditorSaved(CodeBlocksEvent& event)
     RefreshOpenFilesTree(event.GetEditor());
 }
 
-void OpenFilesListPlugin::OnProjectOpened(CodeBlocksEvent& event)
+void OpenFilesListPlugin::OnProjectOpened(cb_unused CodeBlocksEvent& event)
 {
     if (m_EditorArray.IsEmpty())
         return;

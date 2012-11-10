@@ -159,7 +159,7 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
         */
         if (!OtherLinkerOptions.IsEmpty())
         {
-            int Count = OtherLinkerOptions.GetCount();
+            Count = OtherLinkerOptions.GetCount();
             for (i = 0; i < Count; ++i)
             {
                 Temp = OtherLinkerOptions[i];

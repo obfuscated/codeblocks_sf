@@ -82,7 +82,7 @@ DebuggerSettingsPanel::~DebuggerSettingsPanel()
 	//*)
 }
 
-void DebuggerSettingsPanel::OnButtonCreate(wxCommandEvent& event)
+void DebuggerSettingsPanel::OnButtonCreate(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog dialog(this, _("Please specify a name for the configuration"), _("Create config"));
     PlaceWindow(&dialog);
@@ -99,12 +99,12 @@ void DebuggerSettingsPanel::OnButtonCreate(wxCommandEvent& event)
     }
 }
 
-void DebuggerSettingsPanel::OnButtonDelete(wxCommandEvent& event)
+void DebuggerSettingsPanel::OnButtonDelete(cb_unused wxCommandEvent& event)
 {
     m_dialog->DeleteConfig(this, m_plugin);
 }
 
-void DebuggerSettingsPanel::OnButtonReset(wxCommandEvent& event)
+void DebuggerSettingsPanel::OnButtonReset(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Are you sure you want to reset the settings for the selected plugin?"), _("Reset settings"),
                      wxICON_QUESTION | wxYES) == wxID_NO)

@@ -194,7 +194,7 @@ void DebuggerState::RemoveAllBreakpoints()
 
 struct MatchProject
 {
-    MatchProject(cbProject *project) : project(project) {}
+    MatchProject(cbProject *project_in) : project(project_in) {}
     bool operator()(const cb::shared_ptr<DebuggerBreakpoint> &bp)
     {
         return static_cast<cbProject*>(bp->userData) == project;

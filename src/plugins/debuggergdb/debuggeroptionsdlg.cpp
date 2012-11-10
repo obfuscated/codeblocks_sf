@@ -48,7 +48,7 @@ class DebuggerConfigurationPanel : public wxPanel
             pathCtrl->Refresh();
         }
     private:
-        void OnBrowse(wxCommandEvent &event)
+        void OnBrowse(cb_unused wxCommandEvent &event)
         {
             wxString oldPath = XRCCTRL(*this, "txtExecutablePath", wxTextCtrl)->GetValue();
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(oldPath);
@@ -62,7 +62,7 @@ class DebuggerConfigurationPanel : public wxPanel
             }
         }
 
-        void OnTextChange(wxCommandEvent &event)
+        void OnTextChange(cb_unused wxCommandEvent &event)
         {
             ValidateExecutablePath();
         }

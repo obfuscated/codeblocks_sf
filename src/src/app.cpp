@@ -263,7 +263,7 @@ class Splash
 };
 }; // namespace
 
-IMPLEMENT_APP(CodeBlocksApp)
+IMPLEMENT_APP(CodeBlocksApp) // TODO: This gives a "redundant declaration" warning, though I think it's false. Dig through macro and check.
 
 BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
     EVT_ACTIVATE_APP(CodeBlocksApp::OnAppActivate)

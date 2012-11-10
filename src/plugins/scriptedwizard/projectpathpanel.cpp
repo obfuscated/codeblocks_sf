@@ -113,18 +113,18 @@ void ProjectPathPanel::Update()
     m_LockUpdates = false;
 }
 
-void ProjectPathPanel::OnFullPathChanged(wxCommandEvent& event)
+void ProjectPathPanel::OnFullPathChanged(cb_unused wxCommandEvent& event)
 {
     Update();
 }
 
-void ProjectPathPanel::OntxtFinalDirText(wxCommandEvent& event)
+void ProjectPathPanel::OntxtFinalDirText(cb_unused wxCommandEvent& event)
 {
     if (!txtPrjName->GetValue().StartsWith(_("<invalid path>")))
         UpdateFromResulting();
 }
 
-void ProjectPathPanel::OntxtPrjTitleText(wxCommandEvent& event)
+void ProjectPathPanel::OntxtPrjTitleText(cb_unused wxCommandEvent& event)
 {
     wxString prjtitle = txtPrjTitle->GetValue();
     // Make a check if the project title has any extension or not

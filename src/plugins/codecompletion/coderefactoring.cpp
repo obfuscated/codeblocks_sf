@@ -101,9 +101,9 @@ public:
     static const long ID_PROJECT_FILES;
 
 private:
-    void OnClose(wxCloseEvent& event) { EndDialog(wxID_CLOSE); }
-    void OnOpenFilesClick(wxCommandEvent& event) { EndDialog(ID_OPEN_FILES);}
-    void OnProjectFilesClick(wxCommandEvent& event) { EndDialog(ID_PROJECT_FILES); }
+    void OnClose(cb_unused wxCloseEvent& event) { EndDialog(wxID_CLOSE); }
+    void OnOpenFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_OPEN_FILES);}
+    void OnProjectFilesClick(cb_unused wxCommandEvent& event) { EndDialog(ID_PROJECT_FILES); }
 
     wxButton* m_OpenFiles;
     wxButton* m_ProjectFiles;

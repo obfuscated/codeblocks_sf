@@ -114,7 +114,7 @@ DebuggerSettingsDlg::~DebuggerSettingsDlg()
 	//*)
 }
 
-void DebuggerSettingsDlg::OnOK(wxCommandEvent &event)
+void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
 {
     wxString t;
 

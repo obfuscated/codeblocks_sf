@@ -75,7 +75,7 @@ HINSTANCE kernelLib = 0;
 
 #ifdef __WXMSW__
 // disable the CTRL_C event
-BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
+BOOL WINAPI HandlerRoutine(cb_unused DWORD dwCtrlType)
 {
     return TRUE;
 }
@@ -288,7 +288,7 @@ cbConfigurationPanel* DebuggerGDB::GetProjectConfigurationPanel(wxWindow* parent
     return dlg;
 }
 
-void DebuggerGDB::OnConfigurationChange(bool isActive)
+void DebuggerGDB::OnConfigurationChange(cb_unused bool isActive)
 {
 }
 
@@ -1907,7 +1907,7 @@ void DebuggerGDB::OnIdle(wxIdleEvent& event)
         event.Skip();
 }
 
-void DebuggerGDB::OnTimer(wxTimerEvent& event)
+void DebuggerGDB::OnTimer(cb_unused wxTimerEvent& event)
 {
     // send any buffered (previous) output
     ParseOutput(wxEmptyString);
@@ -2064,11 +2064,11 @@ bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &v
     return true;
 }
 
-void DebuggerGDB::ExpandWatch(cb::shared_ptr<cbWatch> watch)
+void DebuggerGDB::ExpandWatch(cb_unused cb::shared_ptr<cbWatch> watch) // TODO: shouldn't this do something?
 {
 }
 
-void DebuggerGDB::CollapseWatch(cb::shared_ptr<cbWatch> watch)
+void DebuggerGDB::CollapseWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 {
 }
 
@@ -2101,7 +2101,7 @@ void DebuggerGDB::OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObj
     }
 }
 
-void DebuggerGDB::OnMenuWatchDereference(wxCommandEvent& event)
+void DebuggerGDB::OnMenuWatchDereference(cb_unused wxCommandEvent& event)
 {
     cbWatchesDlg *watches = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
     if (!watches)

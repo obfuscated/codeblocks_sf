@@ -262,7 +262,7 @@ void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
     }
 }
 
-void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt)
+void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, cb_unused const wxPoint& pt)
 {
 // NOTE: local variables are tricky! If you build two local menus
 // and attach menu B to menu A, on function exit both menu A and menu B
@@ -662,7 +662,7 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
     }
 }
 
-void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
+void ClassBrowser::OnDebugSmartSense(cb_unused wxCommandEvent& event)
 {
     s_DebugSmartSense = !s_DebugSmartSense;
 }
@@ -685,7 +685,7 @@ void ClassBrowser::OnSetSortType(wxCommandEvent& event)
         Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_sort_type"), (int)bst);
 }
 
-void ClassBrowser::OnSearch(wxCommandEvent& event)
+void ClassBrowser::OnSearch(cb_unused wxCommandEvent& event)
 {
     wxString search = m_Search->GetValue();
     if (search.IsEmpty() || !m_Parser)
@@ -816,7 +816,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
         else
         {
             // search in bottom tree too
-            wxTreeItemId res = FindChild(token->m_Name, m_CCTreeCtrlBottom, m_CCTreeCtrlBottom->GetRootItem(), true, true);
+            res = FindChild(token->m_Name, m_CCTreeCtrlBottom, m_CCTreeCtrlBottom->GetRootItem(), true, true);
             if (res.IsOk())
                 m_CCTreeCtrlBottom->SelectItem(res);
         }
@@ -840,7 +840,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
     }
 
     if (!thread_needs_run)
-        TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread..."));
+        { TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread...")); }
 
     bool thread_needs_resume = false;
     while (   !thread_needs_run
@@ -853,7 +853,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
         wxMilliSleep(20); // allow processing
     }
     if (thread_needs_resume)
-        TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused."));
+        { TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused.")); }
 
     // initialise it
     m_ClassBrowserBuilderThread->Init(m_NativeParser,

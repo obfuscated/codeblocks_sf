@@ -196,7 +196,7 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
     return cmd;
 }
 
-wxString GDB_driver::GetCommandLine(const wxString& debugger, int pid, const wxString &userArguments)
+wxString GDB_driver::GetCommandLine(const wxString& debugger, cb_unused int pid, const wxString &userArguments)
 {
     wxString cmd;
     cmd << debugger;
@@ -692,9 +692,10 @@ void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
 }
 
-void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, WatchesContainer &watches)
+void GDB_driver::UpdateWatches(cb_unused bool doLocals, cb_unused bool doArgs, WatchesContainer &watches)
 {
     // FIXME (obfuscated#): add local and argument watches
+    // FIXME : remove cb_unused from params when that's done
 
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
         QueueCommand(new GdbCmd_FindWatchType(this, *it));

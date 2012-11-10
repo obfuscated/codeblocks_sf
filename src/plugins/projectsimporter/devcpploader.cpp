@@ -174,7 +174,7 @@ bool DevCppLoader::Open(const wxString& filename)
     return true;
 }
 
-bool DevCppLoader::Save(const wxString& filename)
+bool DevCppLoader::Save(cb_unused const wxString& filename)
 {
     // no support to save DevCpp projects
     return false;

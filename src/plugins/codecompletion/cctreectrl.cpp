@@ -119,7 +119,7 @@ int CCTreeCtrl::CBScopeCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     return rhs->m_Token->m_Scope - lhs->m_Token->m_Scope;
 }
 
-int CCTreeCtrl::CBNoCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+int CCTreeCtrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlData* rhs)
 {
     return 0;
 }
