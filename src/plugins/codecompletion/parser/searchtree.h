@@ -6,6 +6,7 @@
 #ifndef SEARCHTREE_H
 #define SEARCHTREE_H
 
+#include "prep.h"
 #include <wx/string.h>
 
 #include <vector>
@@ -228,9 +229,9 @@ public:
     /** Gets the item found at position s. Inserts new empty one if not found. */
     T& operator[](const wxString& s);
     /// Serializes the stored items
-    virtual wxString SerializeItem(size_t /*idx*/) { return wxString(_T("")); }
+    virtual wxString SerializeItem(cb_unused size_t idx) { return wxString(_T("")); }
     /// Unserializes the items to be stored
-    virtual void* UnserializeItem(const wxString& /*s*/) { return NULL; }
+    virtual void* UnserializeItem(cb_unused const wxString& s) { return NULL; }
 
 protected:
     std::vector<T> m_Items;   /// The actual stored items

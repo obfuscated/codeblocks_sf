@@ -43,12 +43,12 @@ EditPairDlg::~EditPairDlg()
     //dtor
 }
 
-void EditPairDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void EditPairDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     XRCCTRL(*this, "wxID_OK", wxButton)->Enable(!XRCCTRL(*this, "txtKey", wxTextCtrl)->GetValue().IsEmpty());
 }
 
-void EditPairDlg::OnBrowse(wxCommandEvent& /*event*/)
+void EditPairDlg::OnBrowse(cb_unused wxCommandEvent& event)
 {
     switch (m_BrowseMode)
     {

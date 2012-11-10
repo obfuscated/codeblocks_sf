@@ -439,7 +439,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         void EndLoadingWorkspace();
 
-        ProjectManager& operator=(const ProjectManager& /*rhs*/) // prevent assignment operator
+        ProjectManager& operator=(cb_unused const ProjectManager& rhs) // prevent assignment operator
         {
             cbThrow(_T("Can't assign a ProjectManager* !!!"));
             return *this;
@@ -454,7 +454,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
                                       bool isRelative, bool isUnixFilename);
 
     private:
-        ProjectManager(const ProjectManager& /*rhs*/); // prevent copy construction
+        ProjectManager(cb_unused const ProjectManager& rhs); // prevent copy construction
 
         ProjectManager();
         ~ProjectManager();

@@ -6,6 +6,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "prep.h"
 #include <wx/string.h>
 #include "settings.h" // DLLIMPORT
 
@@ -47,10 +48,10 @@ public:
     virtual void      Append(const wxString& msg, Logger::level lv = info) = 0;
 
     virtual void      Clear() {};
-    virtual void      CopyContentsToClipboard(bool /*selectionOnly = false*/) {};
+    virtual void      CopyContentsToClipboard(cb_optional bool selectionOnly = false) {};
 
     virtual void      UpdateSettings() {};
-    virtual wxWindow* CreateControl(wxWindow* /*parent*/) { return 0; };
+    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return 0; };
 
     virtual bool      IsWrappableTextCtrl() { return false; };
 };

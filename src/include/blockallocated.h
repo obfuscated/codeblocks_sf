@@ -116,7 +116,7 @@ class BlockAllocated
 
 public:
 
-    inline void* operator new(size_t /*size*/)
+    inline void* operator new(cb_unused size_t size)
     {
         return allocator.New();
     };

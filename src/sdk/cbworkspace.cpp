@@ -120,7 +120,7 @@ bool cbWorkspace::Save(bool force)
     return ret;
 }
 
-bool cbWorkspace::SaveAs(const wxString& /*filename*/)
+bool cbWorkspace::SaveAs(cb_unused const wxString& filename)
 {
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                      _("Save workspace"),

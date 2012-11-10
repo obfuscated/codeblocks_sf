@@ -149,7 +149,7 @@ bool Abbreviations::BuildToolBar(wxToolBar* toolBar)
     return false;
 }
 
-void Abbreviations::OnEditAutoComplete(wxCommandEvent& /*event*/)
+void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
 {
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     cbStyledTextCtrl* control = editor->GetControl();

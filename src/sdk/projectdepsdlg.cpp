@@ -135,7 +135,7 @@ void ProjectDepsDlg::FillList()
     }
 }
 
-void ProjectDepsDlg::OnProjectChange(wxCommandEvent& /*event*/)
+void ProjectDepsDlg::OnProjectChange(cb_unused wxCommandEvent& event)
 {
     FillList();
 }

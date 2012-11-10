@@ -58,7 +58,7 @@ class Wiz : public cbWizardPlugin
 		Wiz();
 		~Wiz();
 
-        Wiz& operator=(const Wiz& /*rhs*/)  // prevent assignment operator
+        Wiz& operator=(cb_unused const Wiz& rhs)  // prevent assignment operator
         {
         	cbThrow(_T("Can't assign an Wiz* !!!"));
         	return *this;
@@ -195,7 +195,7 @@ class Wiz : public cbWizardPlugin
         wxString m_ReleaseOutputDir;
         wxString m_ReleaseObjOutputDir;
 	private:
-        Wiz(const Wiz& /*rhs*/); // prevent copy construction
+        Wiz(cb_unused const Wiz& rhs); // prevent copy construction
 };
 
 #endif // WIZ_H

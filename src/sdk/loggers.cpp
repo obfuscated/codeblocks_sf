@@ -412,7 +412,7 @@ HTMLFileLogger::HTMLFileLogger(const wxString& filename)
 
 
 
-void HTMLFileLogger::Append(const wxString& msg, Logger::level /*lv*/)
+void HTMLFileLogger::Append(const wxString& msg, cb_unused Logger::level lv)
 {
     fputs(wxSafeConvertWX2MB(msg), f.fp());
     fputs(::newline_string.mb_str(), f.fp());

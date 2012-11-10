@@ -6,6 +6,8 @@
 #ifndef EDITORBASE_H
 #define EDITORBASE_H
 
+#include "prep.h"
+
 #include <wx/hashmap.h>
 #include <wx/frame.h>
 #include <wx/panel.h>
@@ -33,7 +35,8 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual ~EditorBase();
 
         /** Don't use this. It throws an exception if you do. */
-        void operator=(const EditorBase& /*rhs*/){ cbThrow(_T("Can't assign an EditorBase* !!!")); }
+
+        void operator=(cb_optional const EditorBase& rhs){ cbThrow(_T("Can't assign an EditorBase* !!!")); }
 
         /** @brief Get the editor's filename (if applicable).
           *
@@ -168,7 +171,7 @@ class DLLIMPORT EditorBase : public wxPanel
           * @param line The line to check for breakpoint existence.
           * @return True if there is a breakpoint on this line, false if not.
           */
-        virtual bool HasBreakpoint(int /*line*/) const { return false; }
+        virtual bool HasBreakpoint(cb_optional int line) const { return false; }
 
         /** Go to next breakpoint. */
         virtual void GotoNextBreakpoint(){}
@@ -189,7 +192,7 @@ class DLLIMPORT EditorBase : public wxPanel
           * @param line The line to check for bookmark existence.
           * @return True if there is a bookmark on this line, false if not.
           */
-        virtual bool HasBookmark(int /*line*/) const { return false; }
+        virtual bool HasBookmark(cb_optional int line) const { return false; }
 
         /** Go to next bookmark. */
         virtual void GotoNextBookmark(){}
@@ -202,14 +205,14 @@ class DLLIMPORT EditorBase : public wxPanel
           * Highlight the line the debugger will execute next.
           * @param line The line in question.
           */
-        virtual void SetDebugLine(int /*line*/){}
+        virtual void SetDebugLine(cb_optional int line){}
 
         /** @brief Mark line as error.
           *
           * Highlight the specified line as compiler error.
           * @param line The line in question.
           */
-        virtual void SetErrorLine(int /*line*/){}
+        virtual void SetErrorLine(cb_optional int line){}
 
         /** Undo changes. */
         virtual void Undo(){}
@@ -227,7 +230,7 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual void GotoPreviousChanged(){}
 
         /** Enable or disable changebar */
-        virtual void SetChangeCollection(bool /*collectChange*/){}
+        virtual void SetChangeCollection(cb_optional bool collectChange){}
 
         /** Cut selected text/object to clipboard. */
         virtual void Cut(){}
@@ -300,7 +303,7 @@ class DLLIMPORT EditorBase : public wxPanel
           * @param type The module's type.
           * @param pluginsdone True if plugin menus have been created, false if not.
           */
-        virtual void AddToContextMenu(wxMenu* /*popup*/, ModuleType /*type*/, bool /*pluginsdone*/) {}
+        virtual void AddToContextMenu(cb_optional wxMenu* popup, cb_optional ModuleType type, cb_optional bool pluginsdone) {}
 
         /** Creates unique filename when asking to save the file.
           * @return A unique filename suggestion.
@@ -313,20 +316,20 @@ class DLLIMPORT EditorBase : public wxPanel
           * @param type specifies the "ModuleType" popup menu.
           * @return If the editor returns false, the context menu creation is aborted.
           */
-        virtual bool OnBeforeBuildContextMenu(const wxPoint& /*position*/, ModuleType /*type*/){ return true; }
+        virtual bool OnBeforeBuildContextMenu(cb_optional const wxPoint& position, cb_optional ModuleType type){ return true; }
 
         /** Informs the editor we 're done creating the context menu (just about to display it).
           * Default implementation does nothing.
           * @param type specifies the "ModuleType" context popup menu.
           */
-        virtual void OnAfterBuildContextMenu(ModuleType /*type*/){}
+        virtual void OnAfterBuildContextMenu(cb_optional ModuleType type){}
 
         bool m_IsBuiltinEditor; // do not mess with it!
         wxString m_Shortname;
         wxString m_Filename;
         EditorBaseInternalData* m_pData; ///< Use this to add new vars/functions w/out breaking the ABI
     private:
-        EditorBase(const EditorBase& /*rhs*/); // prevent copy construction
+        EditorBase(cb_unused const EditorBase& rhs); // prevent copy construction
 
         /** one event handler for all popup menu entries */
         void OnContextMenuEntry(wxCommandEvent& event);

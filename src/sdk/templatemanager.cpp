@@ -47,15 +47,15 @@ TemplateManager::~TemplateManager()
     //dtor
 }
 
-void TemplateManager::CreateMenu(wxMenuBar* /* menuBar */)
+void TemplateManager::CreateMenu(cb_unused wxMenuBar* menuBar)
 {
 }
 
-void TemplateManager::ReleaseMenu(wxMenuBar* /* menuBar */)
+void TemplateManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
 {
 }
 
-void TemplateManager::BuildToolsMenu(wxMenu* /* menu */)
+void TemplateManager::BuildToolsMenu(cb_unused wxMenu* menu)
 {
 }
 

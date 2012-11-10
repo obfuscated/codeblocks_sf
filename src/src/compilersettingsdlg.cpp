@@ -190,7 +190,7 @@ void CompilerSettingsDlg::UpdateListbookImages()
     XRCCTRL(*this, "pnlTitleInfo", wxPanel)->Layout();
 }
 
-void CompilerSettingsDlg::OnPageChanging(wxListbookEvent& /*event*/)
+void CompilerSettingsDlg::OnPageChanging(cb_unused wxListbookEvent& event)
 {
 }
 

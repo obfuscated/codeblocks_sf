@@ -28,7 +28,7 @@ DECLARE_ENUM_TYPE(EditPairDlg::BrowseMode);
 
 namespace ScriptBindings
 {
-    SQInteger EditArrayFileDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger EditArrayFileDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(EditArrayFileDlg);
     }
@@ -66,7 +66,7 @@ namespace ScriptBindings
         return SqPlus::PostConstruct<EditArrayFileDlg>(v, dlg, EditArrayFileDlg_Dtor);
     }
 
-    SQInteger EditArrayOrderDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger EditArrayOrderDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(EditArrayOrderDlg);
     }
@@ -87,7 +87,7 @@ namespace ScriptBindings
         return SqPlus::PostConstruct<EditArrayOrderDlg>(v, dlg, EditArrayOrderDlg_Dtor);
     }
 
-    SQInteger EditArrayStringDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger EditArrayStringDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(EditArrayStringDlg);
     }
@@ -106,7 +106,7 @@ namespace ScriptBindings
         return SqPlus::PostConstruct<EditArrayStringDlg>(v, dlg, EditArrayStringDlg_Dtor);
     }
 
-    SQInteger EditPairDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger EditPairDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(EditPairDlg);
     }
@@ -148,7 +148,7 @@ namespace ScriptBindings
         return SqPlus::PostConstruct<EditPairDlg>(v, dlg, EditPairDlg_Dtor);
     }
 
-    SQInteger EditPathDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger EditPathDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(EditPathDlg);
     }
@@ -223,7 +223,7 @@ namespace ScriptBindings
         return SqPlus::PostConstruct<EditPathDlg>(v, dlg, EditPathDlg_Dtor);
     }
 
-    SQInteger GenericMultiLineNotesDlg_Dtor(SQUserPointer up, SQInteger /*size*/)
+    SQInteger GenericMultiLineNotesDlg_Dtor(SQUserPointer up, cb_unused SQInteger size)
     {
       SQ_DELETE_CLASS(GenericMultiLineNotesDlg);
     }

@@ -70,7 +70,7 @@ bool cbEditorPrintout::OnPrintPage(int page)
     return false;
 }
 
-bool cbEditorPrintout::HasPage(int /*page*/)
+bool cbEditorPrintout::HasPage(cb_unused int page)
 {
     return (m_printed < m_SelEnd);
 }

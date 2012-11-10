@@ -594,12 +594,12 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     }
 }
 
-void ClassBrowser::OnRefreshTree(wxCommandEvent& /*event*/)
+void ClassBrowser::OnRefreshTree(cb_unused wxCommandEvent& event)
 {
     UpdateClassBrowserView();
 }
 
-void ClassBrowser::OnForceReparse(wxCommandEvent& /*event*/)
+void ClassBrowser::OnForceReparse(cb_unused wxCommandEvent& event)
 {
     if (m_NativeParser)
         m_NativeParser->ReparseCurrentProject();

@@ -235,55 +235,70 @@ namespace platform
     // These parameters possibly allow more fine-grained optimization and better diagnostics.
     // They are implemented for the GCC compiler family and 'quiet' for all others
     //
-    // IMPORTANT: Do not lie to the compiler when giving an optimization hint, or you will cause great evil.
+    // IMPORTANT: Do not lie to the compiler when marking functions pure or const, or you will cause great evil.
     //
     // a) Optimization hints:
     //
-    // pure_function        Function has no observable effects other than the return value
-    //                      and the return value depends only on parameters and global variables
-    //                      ALSO: function does not throw (makes sense with the above requirement).
+    // cb_pure_function        Function has no observable effects other than the return value
+    //                         and the return value depends only on parameters and global variables
+    //                         ALSO: function does not throw (makes sense with the above requirement).
     //
-    // const_function       Function has no observable effects other than the return value
-    //                      and the return value depends only on parameters.
-    //                      ALSO: No external memory, including memory referenced by parameters, may be touched.
-    //                      ALSO: function does not throw (makes sense with the above requirement).
+    // cb_const_function       Function has no observable effects other than the return value
+    //                         and the return value depends only on parameters.
+    //                         ALSO: No external memory, including memory referenced by parameters, may be touched.
+    //                         ALSO: function does not throw (makes sense with the above requirement).
     //
-    // force_inline         What the name says. This is the strongest available inline hint (the compiler may still ignore it).
+    // cb_force_inline         What the name says. This is the strongest available inline hint (the compiler may still ignore it).
     //
     //
     // b) Usage hints:
     //
-    // must_consume_result  The return value of a function must be consumed (usually because of taking ownership), i.e.
-    //                          ObjType* result = function();  ---> valid
-    //                          function();                    ---> will raise a warning
+    // cb_must_consume_result  The return value of a function must be consumed (usually because of taking ownership), i.e.
+    //                         ObjType* result = function();  ---> valid
+    //                         function();                    ---> will raise a warning
     //
-    // deprecated_function  The function is deprecated and may be removed in a future revision of the API.
-    //                      New code should not call the function. Doing so will work, but will raise a warning.
+    // cb_deprecated_function  The function is deprecated and may be removed in a future revision of the API.
+    //                         New code should not call the function. Doing so will work, but will raise a warning.
     //
-    // optional             No warning will be raised if the parameter is not used. Identical to "unused",
-    //                      but the wording sounds more like "you may omit using this" rather than "we are not using this"
+    // cb_optional             No warning will be raised if the parameter is not used. Identical to "unused",
+    //                         but the wording sounds more like "you may omit using this" rather than "we are not using this"
+    //                         Used for interfaces or base classes to convey the message that a (generally useful) parameter is passed,
+	//                         but it is allowable to ignore the parameter (and maybe a base class implementation does just that).
     //
-    // unused               No warning will be raised if the parameter is not used.
+    // cb_unused               No warning will be raised if the parameter is not used.
+    //                         Use this if you want to convey that you are aware of a parameter but you are intentionally not using it.
+    //
+    // POISON(message)         If you touch this, you'll die. The message tells you why.
+    //                         ALSO: It will break the build, so nobody else must die.
 
-    #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2)
+	#if defined(__GNUC__) && ((100 * __GNUC__ + 10 *__GNUC_MINOR__ + __GNUC_PATCHLEVEL__) >= 332)
+
         const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
-        #define pure_function       __attribute__ ((__pure__,  __nothrow__))
-        #define const_function      __attribute__ ((__const__, __nothrow__))
-        #define force_inline        __attribute__ ((__always_inline__))
-        #define must_consume_result __attribute__ ((__warn_unused_result__))
-        #define deprecated_function __attribute__ ((__deprecated__))
-        #define unused              __attribute__ ((__unused__))
+        #define cb_pure_function       __attribute__ ((__pure__,  __nothrow__))
+        #define cb_const_function      __attribute__ ((__const__, __nothrow__))
+        #define cb_force_inline        __attribute__ ((__always_inline__))
+        #define cb_must_consume_result __attribute__ ((__warn_unused_result__))
+        #define cb_deprecated_function __attribute__ ((__deprecated__))
+        #define cb_unused              __attribute__ ((__unused__))
+
+		#if((100 * __GNUC__ + 10 *__GNUC_MINOR__ + __GNUC_PATCHLEVEL__) >= 436)
+			#define POISON(message) __attribute__((__error__(#message))
+		#else
+			#define POISON(message)
+		#endif
+
     #else
         const int gcc = 0;
-        #define pure_function
-        #define const_function
-        #define force_inline
-        #define must_consume_result
-        #define deprecated_function
-        #define unused
+        #define cb_pure_function
+        #define cb_const_function
+        #define cb_force_inline
+        #define cb_must_consume_result
+        #define cb_deprecated_function
+        #define cb_unused
+		#define POISON(message)
     #endif
 
-	#define optional unused
+	#define cb_optional cb_unused
 }
 
 

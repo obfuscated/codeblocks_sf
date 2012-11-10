@@ -267,7 +267,7 @@ void CCOptionsDlg::OnApply()
     m_CodeCompletion->RereadOptions();
 }
 
-void CCOptionsDlg::OnAddRepl(wxCommandEvent& /*event*/)
+void CCOptionsDlg::OnAddRepl(cb_unused wxCommandEvent& event)
 {
     wxString key;
     wxString value;
@@ -283,7 +283,7 @@ void CCOptionsDlg::OnAddRepl(wxCommandEvent& /*event*/)
     }
 }
 
-void CCOptionsDlg::OnEditRepl(wxCommandEvent& /*event*/)
+void CCOptionsDlg::OnEditRepl(cb_unused wxCommandEvent& event)
 {
     wxString key;
     wxString value;
@@ -310,7 +310,7 @@ void CCOptionsDlg::OnEditRepl(wxCommandEvent& /*event*/)
     }
 }
 
-void CCOptionsDlg::OnDelRepl(wxCommandEvent& /*event*/)
+void CCOptionsDlg::OnDelRepl(cb_unused wxCommandEvent& event)
 {
     int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
     if (sel == -1)
@@ -341,12 +341,12 @@ void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
     }
 }
 
-void CCOptionsDlg::OnCCDelayScroll(wxScrollEvent& /*event*/)
+void CCOptionsDlg::OnCCDelayScroll(cb_unused wxScrollEvent& event)
 {
     UpdateCCDelayLabel();
 }
 
-void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     bool en = !XRCCTRL(*this, "chkNoCC",            wxCheckBox)->GetValue();
     bool al =  XRCCTRL(*this, "chkAutoLaunch",      wxCheckBox)->GetValue();

@@ -76,7 +76,7 @@ void ProjectsFileMasksDlg::ListChange()
     m_LastListSelection = sel;
 }
 
-void ProjectsFileMasksDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void ProjectsFileMasksDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     int sel = XRCCTRL(*this, "lstCategories", wxListBox)->GetSelection();
 
@@ -84,7 +84,7 @@ void ProjectsFileMasksDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "btnDelete", wxButton)->Enable(sel >= 0);
 }
 
-void ProjectsFileMasksDlg::OnAdd(wxCommandEvent& /*event*/)
+void ProjectsFileMasksDlg::OnAdd(cb_unused wxCommandEvent& event)
 {
     wxString groupName = wxGetTextFromUser(_("Enter the new group name:"),
                                             _("New group"));
@@ -98,7 +98,7 @@ void ProjectsFileMasksDlg::OnAdd(wxCommandEvent& /*event*/)
     XRCCTRL(*this, "txtFileMasks", wxTextCtrl)->SetFocus();
 }
 
-void ProjectsFileMasksDlg::OnEdit(wxCommandEvent& /*event*/)
+void ProjectsFileMasksDlg::OnEdit(cb_unused wxCommandEvent& event)
 {
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     wxString oldName = pList->GetStringSelection();
@@ -111,7 +111,7 @@ void ProjectsFileMasksDlg::OnEdit(wxCommandEvent& /*event*/)
     }
 }
 
-void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& /*event*/)
+void ProjectsFileMasksDlg::OnDelete(cb_unused wxCommandEvent& event)
 {
     wxListBox* pList = XRCCTRL(*this, "lstCategories", wxListBox);
     wxString name = pList->GetStringSelection();
@@ -123,13 +123,13 @@ void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& /*event*/)
     RebuildList();
 }
 
-void ProjectsFileMasksDlg::OnSetDefault(wxCommandEvent& /*event*/)
+void ProjectsFileMasksDlg::OnSetDefault(cb_unused wxCommandEvent& event)
 {
     m_FileGroupsAndMasksCopy.SetDefault();
     RebuildList();
 }
 
-void ProjectsFileMasksDlg::OnListChanged(wxCommandEvent& /*event*/)
+void ProjectsFileMasksDlg::OnListChanged(cb_unused wxCommandEvent& event)
 {
     ListChange();
 }

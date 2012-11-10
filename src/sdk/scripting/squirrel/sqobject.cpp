@@ -42,7 +42,7 @@ const SQChar *IdType2Name(SQObjectType type)
 
 const SQChar *GetTypeName(const SQObjectPtr &obj1)
 {
-	return IdType2Name(type(obj1));	
+	return IdType2Name(type(obj1));
 }
 
 SQString *SQString::Create(SQSharedState *ss,const SQChar *s,SQInteger len)
@@ -100,10 +100,10 @@ SQRefCounted::~SQRefCounted()
 	}
 }
 
-void SQWeakRef::Release() { 
-	if(ISREFCOUNTED(_obj._type)) { 
+void SQWeakRef::Release() {
+	if(ISREFCOUNTED(_obj._type)) {
 		_obj._unVal.pRefCounted->_weakref = NULL;
-	} 
+	}
 	sq_delete(this,SQWeakRef);
 }
 
@@ -165,7 +165,7 @@ bool SQGenerator::Resume(SQVM *v,SQInteger target)
 	v->ci->_target = (SQInt32)target;
 	v->ci->_generator = this;
 	v->ci->_vargs.size = (unsigned short)_vargsstack.size();
-	
+
 	for(SQInteger i=0;i<_ci._etraps;i++) {
 		v->_etraps.push_back(_etraps.top());
 		_etraps.pop_back();
@@ -199,7 +199,7 @@ void SQArray::Extend(const SQArray *a){
 const SQChar* SQFunctionProto::GetLocal(SQVM *vm,SQUnsignedInteger stackbase,SQUnsignedInteger nseq,SQUnsignedInteger nop)
 {
 	SQUnsignedInteger nvars=_nlocalvarinfos;
-	const SQChar *res=NULL; 
+	const SQChar *res=NULL;
 	if(nvars>=nseq){
  		for(SQUnsignedInteger i=0;i<nvars;i++){
 			if(_localvarinfos[i]._start_op<=nop && _localvarinfos[i]._end_op>=nop)
@@ -407,7 +407,7 @@ bool SQFunctionProto::Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr 
 	_CHECK_IO(CheckTag(v,read,up,SQ_CLOSURESTREAM_PART));
 	_CHECK_IO(ReadObject(v, up, read, sourcename));
 	_CHECK_IO(ReadObject(v, up, read, name));
-	
+
 	_CHECK_IO(CheckTag(v,read,up,SQ_CLOSURESTREAM_PART));
 	_CHECK_IO(SafeRead(v,read,up, &nliterals, sizeof(nliterals)));
 	_CHECK_IO(SafeRead(v,read,up, &nparameters, sizeof(nparameters)));
@@ -417,7 +417,7 @@ bool SQFunctionProto::Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr 
 	_CHECK_IO(SafeRead(v,read,up, &ndefaultparams, sizeof(ndefaultparams)));
 	_CHECK_IO(SafeRead(v,read,up, &ninstructions, sizeof(ninstructions)));
 	_CHECK_IO(SafeRead(v,read,up, &nfunctions, sizeof(nfunctions)));
-	
+
 
 	SQFunctionProto *f = SQFunctionProto::Create(ninstructions,nliterals,nparameters,
 			nfunctions,noutervalues,nlineinfos,nlocalvarinfos,ndefaultparams);
@@ -441,11 +441,11 @@ bool SQFunctionProto::Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr 
 
 	for(i = 0; i < noutervalues; i++){
 		SQUnsignedInteger type;
-		SQObjectPtr name;
+		SQObjectPtr name_;
 		_CHECK_IO(SafeRead(v,read,up, &type, sizeof(SQUnsignedInteger)));
 		_CHECK_IO(ReadObject(v, up, read, o));
-		_CHECK_IO(ReadObject(v, up, read, name));
-		f->_outervalues[i] = SQOuterVar(name,o, (SQOuterType)type);
+		_CHECK_IO(ReadObject(v, up, read, name_));
+		f->_outervalues[i] = SQOuterVar(name_,o, (SQOuterType)type);
 	}
 	_CHECK_IO(CheckTag(v,read,up,SQ_CLOSURESTREAM_PART));
 
@@ -474,7 +474,7 @@ bool SQFunctionProto::Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr 
 	_CHECK_IO(SafeRead(v,read,up, &f->_stacksize, sizeof(f->_stacksize)));
 	_CHECK_IO(SafeRead(v,read,up, &f->_bgenerator, sizeof(f->_bgenerator)));
 	_CHECK_IO(SafeRead(v,read,up, &f->_varparams, sizeof(f->_varparams)));
-	
+
 	ret = f;
 	return true;
 }

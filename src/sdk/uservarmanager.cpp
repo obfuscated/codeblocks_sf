@@ -83,9 +83,9 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
 
     void Help(wxCommandEvent& event);
     void DoClose();
-    void OnOK(wxCommandEvent& /*event*/)       { DoClose(); };
-    void OnCancel(wxCommandEvent& /*event*/)   { DoClose(); };
-    void CloseHandler(wxCloseEvent& /*event*/) { DoClose(); };
+    void OnOK(cb_unused wxCommandEvent& event)       { DoClose(); };
+    void OnCancel(cb_unused wxCommandEvent& event)   { DoClose(); };
+    void CloseHandler(cb_unused wxCloseEvent& event) { DoClose(); };
 
     void CloneVar(wxCommandEvent&  event);
     void CloneSet(wxCommandEvent&  event);
@@ -322,7 +322,7 @@ void UsrGlblMgrEditDialog::DoClose()
 }
 
 
-void UsrGlblMgrEditDialog::CloneVar(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new clone:"), _("Clone Variable"));
     PlaceWindow(&d);
@@ -359,7 +359,7 @@ void UsrGlblMgrEditDialog::CloneVar(wxCommandEvent& /*event*/)
     }
 }
 
-void UsrGlblMgrEditDialog::CloneSet(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new clone:"), _("Clone Set"));
     PlaceWindow(&d);
@@ -402,7 +402,7 @@ void UsrGlblMgrEditDialog::CloneSet(wxCommandEvent& /*event*/)
     }
 }
 
-void UsrGlblMgrEditDialog::DeleteVar(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
 {
     wxString msg;
     msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"), m_CurrentVar.c_str());
@@ -417,7 +417,7 @@ void UsrGlblMgrEditDialog::DeleteVar(wxCommandEvent& /*event*/)
     }
 }
 
-void UsrGlblMgrEditDialog::DeleteSet(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent& event)
 {
     wxString msg;
     msg.Printf(_("Do you really want to delete\nthe entire global compiler variable set \"%s\"?\n\nThis cannot be undone."), m_CurrentSet.c_str());
@@ -469,7 +469,7 @@ void UsrGlblMgrEditDialog::Sanitise(wxString& s)
         s.Prepend(_T("set_"));
 }
 
-void UsrGlblMgrEditDialog::NewVar(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::NewVar(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new variable:"), _("New Variable"));
     PlaceWindow(&d);
@@ -482,7 +482,7 @@ void UsrGlblMgrEditDialog::NewVar(wxCommandEvent& /*event*/)
     }
 }
 
-void UsrGlblMgrEditDialog::NewSet(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::NewSet(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new set:"), _("New Set"));
     PlaceWindow(&d);
@@ -502,14 +502,14 @@ void UsrGlblMgrEditDialog::NewSet(wxCommandEvent& /*event*/)
     }
 }
 
-void UsrGlblMgrEditDialog::SelectVar(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::SelectVar(cb_unused wxCommandEvent& event)
 {
     Save();
     m_CurrentVar = m_SelVar->GetStringSelection();
     Load();
 }
 
-void UsrGlblMgrEditDialog::SelectSet(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::SelectSet(cb_unused wxCommandEvent& event)
 {
     Save();
     m_CurrentSet = m_SelSet->GetStringSelection();
@@ -637,7 +637,7 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c->SetValue(path);
 }
 
-void UsrGlblMgrEditDialog::Help(wxCommandEvent& /*event*/)
+void UsrGlblMgrEditDialog::Help(cb_unused wxCommandEvent& event)
 {
     wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Global_compiler_variables"));
 }

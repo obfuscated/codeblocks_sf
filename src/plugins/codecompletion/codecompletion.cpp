@@ -3025,7 +3025,7 @@ void CodeCompletion::OnScope(wxCommandEvent&)
         UpdateFunctions(sel);
 }
 
-void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
+void CodeCompletion::OnFunction(cb_unused wxCommandEvent& event)
 {
     int selSc = (m_Scope) ? m_Scope->GetSelection() : 0;
     if (selSc != -1 && selSc < static_cast<int>(m_ScopeMarks.size()))

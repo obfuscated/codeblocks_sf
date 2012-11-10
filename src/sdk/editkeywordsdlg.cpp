@@ -43,7 +43,7 @@ EditKeywordsDlg::~EditKeywordsDlg()
     //dtor
 }
 
-void EditKeywordsDlg::OnSetChange(wxSpinEvent& /*event*/)
+void EditKeywordsDlg::OnSetChange(cb_unused wxSpinEvent& event)
 {
     m_pTheme->SetKeywords(m_Lang, m_LastSet, txtKeywords->GetValue());
     m_LastSet = spnSet->GetValue() - 1;

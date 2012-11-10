@@ -76,7 +76,7 @@ void CompilerMessages::FocusError(int nr)
     control->EnsureVisible(nr);
 }
 
-void CompilerMessages::OnClick(wxCommandEvent& /*event*/)
+void CompilerMessages::OnClick(cb_unused wxCommandEvent& event)
 {
     // single and double-click, behave the same
 

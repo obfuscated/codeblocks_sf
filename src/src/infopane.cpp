@@ -302,7 +302,7 @@ void InfoPane::OnCopy(wxCommandEvent& event)
     }
 }
 
-void InfoPane::OnWrapMode(wxCommandEvent& /*event*/)
+void InfoPane::OnWrapMode(cb_unused wxCommandEvent& event)
 {
     int i = GetPageIndexByWindow( GetPage(GetSelection()) );
     if (m_Pages.Item(i)->islogger && m_Pages.Item(i)->logger->IsWrappableTextCtrl())
@@ -312,7 +312,7 @@ void InfoPane::OnWrapMode(wxCommandEvent& /*event*/)
     }
 }
 
-void InfoPane::OnClear(wxCommandEvent& /*event*/)
+void InfoPane::OnClear(cb_unused wxCommandEvent& event)
 {
     int i = GetPageIndexByWindow( GetPage(GetSelection()) );
     if (m_Pages.Item(i)->islogger)
@@ -335,7 +335,7 @@ void InfoPane::OnMenu(wxCommandEvent& event)
     return;
 }
 
-void InfoPane::ContextMenu(wxContextMenuEvent& /*event*/)
+void InfoPane::ContextMenu(cb_unused wxContextMenuEvent& event)
 {
     DoShowContextMenu();
 }

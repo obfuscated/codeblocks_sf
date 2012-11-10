@@ -569,13 +569,13 @@ void ToDoListView::FocusEntry(size_t index)
         control->EnsureVisible(index);
     }
 }
-void ToDoListView::OnComboChange(wxCommandEvent& /* event */)
+void ToDoListView::OnComboChange(cb_unused wxCommandEvent& event)
 {
     Manager::Get()->GetConfigManager( _T("todo_list"))->Write(_T("source"), m_pSource->GetSelection() );
     Parse();
 }
 
-void ToDoListView::OnListItemSelected(wxCommandEvent& /* event */)
+void ToDoListView::OnListItemSelected(cb_unused wxCommandEvent& event)
 {
     long index = control->GetNextItem(-1,
                                       wxLIST_NEXT_ALL,
@@ -585,17 +585,17 @@ void ToDoListView::OnListItemSelected(wxCommandEvent& /* event */)
     FocusEntry(index);
 }
 
-void ToDoListView::OnButtonTypes(wxCommandEvent& /* event */)
+void ToDoListView::OnButtonTypes(cb_unused wxCommandEvent& event)
 {
     m_pAllowedTypesDlg->Show(!m_pAllowedTypesDlg->IsShown());
 }
 
-void ToDoListView::OnButtonRefresh(wxCommandEvent& /* event */)
+void ToDoListView::OnButtonRefresh(cb_unused wxCommandEvent& event)
 {
     Parse();
 }
 
-void ToDoListView::OnDoubleClick(wxCommandEvent& /* event */)
+void ToDoListView::OnDoubleClick(cb_unused wxCommandEvent& event)
 {    // pecan 1/2/2006 12PM : Switched with OnListItemSelected by Rick 20/07/2007
     long item = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
@@ -668,7 +668,7 @@ CheckListDialog::~CheckListDialog()
     m_okBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this);
 }
 
-void CheckListDialog::OkOnButtonClick(wxCommandEvent& /* event */)
+void CheckListDialog::OkOnButtonClick(cb_unused wxCommandEvent& event)
 {
     Show(false);
     Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types_selected"), GetChecked());

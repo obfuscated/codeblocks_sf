@@ -436,7 +436,7 @@ void GDB_driver::CorrectCygwinPath(wxString& path)
 }
 #else
     void GDB_driver::DetectCygwinMount(void){/* dummy */}
-    void GDB_driver::CorrectCygwinPath(wxString& /*path*/){/* dummy */}
+    void GDB_driver::CorrectCygwinPath(cb_unused wxString& path){/* dummy */}
 #endif
 
 #ifdef __WXMSW__

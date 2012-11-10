@@ -48,7 +48,7 @@ class CDB_driver : public DebuggerDriver
 
         void EnableCatchingThrow(bool enable);
 
-        virtual void SwitchThread(size_t /*threadIndex*/){} // not implemented
+        virtual void SwitchThread(cb_unused size_t threadIndex){} // not implemented
 
         virtual void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
         virtual void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);

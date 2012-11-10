@@ -142,7 +142,7 @@ private:
     void SaveAutoCompleteConfig();
 
 private:
-    void OnEditAutoComplete(wxCommandEvent& /*event*/);
+    void OnEditAutoComplete(cb_unused wxCommandEvent& event);
     void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
 
 public:

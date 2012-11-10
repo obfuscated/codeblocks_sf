@@ -28,7 +28,7 @@ PersonalityManager::PersonalityManager()
     PersonalityManager::pers = _T("default");
 }
 
-void PersonalityManager::SetPersonality(const wxString& personality, bool /*createIfNotExist*/)
+void PersonalityManager::SetPersonality(const wxString& personality, cb_unused bool createIfNotExist)
 {
     pers = personality;
 }

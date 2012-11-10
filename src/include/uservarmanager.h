@@ -36,13 +36,13 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         void Configure();
         void Migrate();
 
-        UserVariableManager& operator=(const UserVariableManager& /*rhs*/) // prevent assignment operator
+        UserVariableManager& operator=(cb_unused const UserVariableManager& rhs) // prevent assignment operator
         {
             cbThrow(_T("Can't assign a UserVariableManager* !!!"));
             return *this;
         }
     private:
-        UserVariableManager(const UserVariableManager& /*rhs*/); // prevent copy construction
+        UserVariableManager(cb_unused const UserVariableManager& rhs); // prevent copy construction
 };
 
 #endif // USER_VARIABLE_MANAGER_H

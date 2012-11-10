@@ -68,7 +68,7 @@ EditPathDlg::~EditPathDlg()
     //dtor
 }
 
-void EditPathDlg::OnBrowse(wxCommandEvent& /*event*/)
+void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
 {
     wxFileName path;
     wxArrayString multi;
@@ -172,7 +172,7 @@ void EditPathDlg::OnBrowse(wxCommandEvent& /*event*/)
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(result);
 }
 
-void EditPathDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void EditPathDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     wxButton* btn = (wxButton*)FindWindow(wxID_OK);
     if (btn)

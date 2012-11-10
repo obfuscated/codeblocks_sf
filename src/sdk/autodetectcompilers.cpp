@@ -118,7 +118,7 @@ AutoDetectCompilers::~AutoDetectCompilers()
     //dtor
 }
 
-void AutoDetectCompilers::OnDefaultClick(wxCommandEvent& /*event*/)
+void AutoDetectCompilers::OnDefaultClick(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     int idx = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);

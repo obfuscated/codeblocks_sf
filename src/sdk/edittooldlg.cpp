@@ -53,7 +53,7 @@ EditToolDlg::~EditToolDlg()
 
 // events
 
-void EditToolDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void EditToolDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     const wxString name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
     const wxString command = XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue();
@@ -61,7 +61,7 @@ void EditToolDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "wxID_OK", wxButton)->Enable(en);
 } // end of OnUpdateUI
 
-void EditToolDlg::OnBrowseCommand(wxCommandEvent& /*event*/)
+void EditToolDlg::OnBrowseCommand(cb_unused wxCommandEvent& event)
 {
     const wxFileName file(XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue());
     wxString filename = wxFileSelector(_("Select executable"), file.GetPath(wxPATH_GET_VOLUME), file.GetFullName());
@@ -69,7 +69,7 @@ void EditToolDlg::OnBrowseCommand(wxCommandEvent& /*event*/)
         XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(filename);
 } // end of OnBrowseCommand
 
-void EditToolDlg::OnBrowseDir(wxCommandEvent& /*event*/)
+void EditToolDlg::OnBrowseDir(cb_unused wxCommandEvent& event)
 {
     const wxString dir = ChooseDirectory(this, _("Select working directory"), XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue());
     if (!dir.IsEmpty())

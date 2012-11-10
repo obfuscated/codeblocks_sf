@@ -139,7 +139,7 @@ void MultiSelectDlg::SelectWildCard(const wxString& wild, bool select, bool clea
     UpdateStatus();
 }
 
-void MultiSelectDlg::OnWildcard(wxCommandEvent& /*event*/)
+void MultiSelectDlg::OnWildcard(cb_unused wxCommandEvent& event)
 {
     wxString wild = wxGetTextFromUser(_("Enter a selection wildcard\n(e.g. \"dlg*.cpp\" "
                                         "would select all files starting with \"dlg\" and "
@@ -168,12 +168,12 @@ void MultiSelectDlg::OnWildcard(wxCommandEvent& /*event*/)
     SelectWildCard(wild, true, clear);
 }
 
-void MultiSelectDlg::OnItemToggle(wxCommandEvent& /*event*/)
+void MultiSelectDlg::OnItemToggle(cb_unused wxCommandEvent& event)
 {
     UpdateStatus();
 }
 
-void MultiSelectDlg::OnToggle(wxCommandEvent& /*event*/)
+void MultiSelectDlg::OnToggle(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
     for (int i = 0; i < (int)lst->GetCount(); ++i)
@@ -182,7 +182,7 @@ void MultiSelectDlg::OnToggle(wxCommandEvent& /*event*/)
     UpdateStatus();
 }
 
-void MultiSelectDlg::OnSelectAll(wxCommandEvent& /*event*/)
+void MultiSelectDlg::OnSelectAll(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
     for (int i = 0; i < (int)lst->GetCount(); ++i)
@@ -191,7 +191,7 @@ void MultiSelectDlg::OnSelectAll(wxCommandEvent& /*event*/)
     UpdateStatus();
 }
 
-void MultiSelectDlg::OnDeselectAll(wxCommandEvent& /*event*/)
+void MultiSelectDlg::OnDeselectAll(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
     for (int i = 0; i < (int)lst->GetCount(); ++i)

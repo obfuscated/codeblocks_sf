@@ -22,7 +22,7 @@ wxColour BlendTextColour(wxColour col);
 class DLLIMPORT NullLogger : public Logger
 {
 public:
-    virtual void Append(const wxString& /*msg*/, Logger::level /*lv*/){};
+    virtual void Append(cb_unused const wxString& msg, cb_unused Logger::level lv){};
 };
 
 class DLLIMPORT StdoutLogger : public Logger
@@ -43,7 +43,7 @@ public:
     FileLogger(const wxString& filename) : f(filename, _T("wb")) {};
     FileLogger() {};
 
-    virtual void Append(const wxString& msg, Logger::level /*lv*/)
+    virtual void Append(const wxString& msg, cb_unused Logger::level lv)
     {
         fputs(wxSafeConvertWX2MB(msg), f.fp());
         fputs(::newline_string.mb_str(), f.fp());

@@ -14,7 +14,7 @@ class wxWindow;
 class FindReplaceBase : public wxScrollingDialog
 {
     public:
-        FindReplaceBase(wxWindow* /*parent*/, const wxString& /*initial*/, bool /*hasSelection*/){}
+        FindReplaceBase(cb_optional wxWindow* parent, cb_optional const wxString& initial, cb_optional bool hasSelection){}
         virtual ~FindReplaceBase(){}
         virtual wxString GetFindString() const = 0;
         virtual wxString GetReplaceString() const = 0;

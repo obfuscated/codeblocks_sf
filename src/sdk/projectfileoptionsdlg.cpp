@@ -253,7 +253,7 @@ void ProjectFileOptionsDlg::OnCompilerCombo(wxCommandEvent& event)
     }
 }
 
-void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void ProjectFileOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     if (m_ProjectFile)
     {

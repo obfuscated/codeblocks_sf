@@ -6,6 +6,7 @@
 #ifndef EDITORMANAGER_H
 #define EDITORMANAGER_H
 
+#include "prep.h"
 #include <wx/list.h>
 #include <wx/treectrl.h>
 #include <wx/hashmap.h>
@@ -65,7 +66,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         friend class Mgr<EditorManager>;
         static bool s_CanShutdown;
     public:
-        EditorManager& operator=(const EditorManager& /*rhs*/) // prevent assignment operator
+        EditorManager& operator=(cb_unused const EditorManager& rhs) // prevent assignment operator
         {
         	cbThrow(_T("Can't assign an EditorManager* !!!"));
         	return *this;
@@ -183,7 +184,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void LogSearch(const wxString& file, int line, const wxString& lineText);
 
     private:
-        EditorManager(const EditorManager& /*rhs*/); // prevent copy construction
+        EditorManager(cb_unused const EditorManager& rhs); // prevent copy construction
 
         EditorManager();
         ~EditorManager();

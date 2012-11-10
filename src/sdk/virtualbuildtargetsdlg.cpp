@@ -104,7 +104,7 @@ void VirtualBuildTargetsDlg::CheckTargets()
     }
 }
 
-void VirtualBuildTargetsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     bool hasSel = lstAliases->GetSelection() != -1;
     btnEdit->Enable(hasSel);
@@ -112,7 +112,7 @@ void VirtualBuildTargetsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     lstTargets->Enable(hasSel);
 }
 
-void VirtualBuildTargetsDlg::OnAddClick(wxCommandEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("New virtual build target"));
@@ -141,7 +141,7 @@ void VirtualBuildTargetsDlg::OnAddClick(wxCommandEvent& /*event*/)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("Edit virtual build target"),
@@ -172,7 +172,7 @@ void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& /*event*/)
     SetVirtualTarget(targetName);
 }
 
-void VirtualBuildTargetsDlg::OnRemoveClick(wxCommandEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Are you sure you want to remove this virtual build target?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION, this) == wxID_NO)
         return;
@@ -182,12 +182,12 @@ void VirtualBuildTargetsDlg::OnRemoveClick(wxCommandEvent& /*event*/)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnAliasesSelect(wxCommandEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnAliasesSelect(cb_unused wxCommandEvent& event)
 {
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnTargetsToggled(wxCommandEvent& /*event*/)
+void VirtualBuildTargetsDlg::OnTargetsToggled(cb_unused wxCommandEvent& event)
 {
     SetVirtualTarget(lstAliases->GetStringSelection());
 }

@@ -112,7 +112,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param parent The parent window.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/){ return 0; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(cb_optional wxWindow* parent){ return 0; }
 
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
@@ -121,7 +121,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param project The project that is being edited.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/){ return 0; }
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_optional wxWindow* parent, cb_optional cbProject* project){ return 0; }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -134,7 +134,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           *
           * @param menuBar the wxMenuBar to create items in
           */
-        virtual void BuildMenu(wxMenuBar* /* menuBar */) {}
+        virtual void BuildMenu(cb_optional wxMenuBar* menuBar) {}
 
         /** This method is called by Code::Blocks core modules (EditorManager,
           * ProjectManager etc) and is used by the plugin to add any menu
@@ -151,7 +151,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param menu pointer to the popup menu
           * @param data pointer to FileTreeData object (to access/modify the file tree)
           */
-        virtual void BuildModuleMenu(const ModuleType /* type */, wxMenu* /* menu */, const FileTreeData* data = 0) { (void) data; }
+        virtual void BuildModuleMenu(cb_optional const ModuleType type, cb_optional wxMenu* menu, cb_optional const FileTreeData* data = 0) { }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -161,7 +161,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param toolBar the wxToolBar to create items on
           * @return The plugin should return true if it needed the toolbar, false if not
           */
-        virtual bool BuildToolBar(wxToolBar* /* toolBar */) { return false; }
+        virtual bool BuildToolBar(cb_optional wxToolBar* toolBar ) { return false; }
 
         /** This method return the priority of the plugin's toolbar, the less value
           * indicates a more preceding position when C::B starts with no configuration file
@@ -175,7 +175,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * do nothing ;)
           * @param statusBar the cbStatusBar to create items on
           */
-        virtual void CreateStatusField(cbStatusBar *statusBar) { wxUnusedVar(statusBar); return; }
+        virtual void CreateStatusField(cbStatusBar *statusBar) { wxUnusedVar(statusBar); }
 #endif
 
         /** See whether this plugin is attached or not. A plugin should not perform
@@ -217,7 +217,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           *         case *don't* use Manager::Get()->Get...() functions or the
           *         behaviour is undefined...
           */
-        virtual void OnRelease(bool /*appShutDown*/){}
+        virtual void OnRelease(cb_optional bool appShutDown){}
 
         /** This method logs a "Not implemented" message and is provided for
           * convenience only.
@@ -674,11 +674,11 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         virtual int Execute() = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbToolPlugin
-        void BuildMenu(wxMenuBar* /*menuBar*/){}
-        void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
-        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
-        void RemoveToolBar(wxToolBar* /*toolBar*/){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void RemoveMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
 /** @brief Base class for mime plugins
@@ -719,11 +719,11 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         virtual bool HandlesEverything() const = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
-        void BuildMenu(wxMenuBar* /*menuBar*/){}
-        void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
-        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
-        void RemoveToolBar(wxToolBar* /*toolBar*/){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void RemoveMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
 /** @brief Base class for code-completion plugins
@@ -754,7 +754,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * @param cb The editor for which code completion
           * @return return true if the plugin handles completion for this editor,
           * false otherwise*/
-        virtual bool IsProviderFor(cbEditor* /*cb*/) { return false; }
+        virtual bool IsProviderFor(cbEditor* cb) { (void) cb; return false; }  // purposely not marked 'cb_optional', override should use param
 };
 
 /** @brief Base class for wizard plugins
@@ -811,11 +811,11 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         virtual CompileTargetBase* Launch(int index, wxString* createdFilename = 0) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
-        void BuildMenu(wxMenuBar* /*menuBar*/){}
-        void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
-        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
-        void RemoveToolBar(wxToolBar* /*toolBar*/){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void RemoveMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
 /** @brief Base class for SmartIndent plugins
@@ -831,11 +831,11 @@ class cbSmartIndentPlugin : public cbPlugin
         cbSmartIndentPlugin();
     private:
         // "Hide" some virtual members, that are not needed in cbSmartIndentPlugin
-        void BuildMenu(wxMenuBar* /*menuBar*/){}
-        void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
-        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
-        void RemoveToolBar(wxToolBar* /*toolBar*/){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void RemoveMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void RemoveToolBar(cb_unused wxToolBar* toolBar){}
     protected:
         void OnAttach();
         void OnRelease(bool appShutDown);

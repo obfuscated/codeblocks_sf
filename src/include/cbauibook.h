@@ -6,6 +6,7 @@
 #ifndef CBAUIBOOK_H_INCLUDED
 #define CBAUIBOOK_H_INCLUDED
 
+#include "prep.h"
 #include <wx/aui/auibook.h>
 #include <wx/dynarray.h>
 
@@ -56,7 +57,7 @@ class cbAuiNotebook : public wxAuiNotebook
          * @remarks Not implemented. Don't use it.
          *
          */
-        bool LoadPerspective(const wxString& /*layout*/) {return false;};
+        bool LoadPerspective(cb_unused const wxString& layout) {return false;};
         /** \brief Get the tab position
          *
          * Returns the position of the tab as it is visible.
@@ -151,7 +152,7 @@ class cbAuiNotebook : public wxAuiNotebook
          *
          * \param event unused
          */
-        void OnIdle(wxIdleEvent& /*event*/);
+        void OnIdle(cb_unused wxIdleEvent& event);
 #if !wxCHECK_VERSION(2, 9, 4)
         /** \brief Catch mousemotion-events
          *

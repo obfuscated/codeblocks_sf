@@ -361,7 +361,7 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     XRCCTRL(*this, "pnlTitleInfo", wxPanel)->Layout();
 }
 
-void EnvironmentSettingsDlg::OnPageChanging(wxListbookEvent& /*event*/)
+void EnvironmentSettingsDlg::OnPageChanging(cb_unused wxListbookEvent& event)
 {
 }
 
@@ -372,7 +372,7 @@ void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
         UpdateListbookImages();
 }
 
-void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& /*event*/)
+void EnvironmentSettingsDlg::OnSetAssocs(cb_unused wxCommandEvent& event)
 {
 #ifdef __WXMSW__
     Associations::SetCore();
@@ -380,7 +380,7 @@ void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& /*event*/)
 #endif
 }
 
-void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& /*event*/)
+void EnvironmentSettingsDlg::OnManageAssocs(cb_unused wxCommandEvent& event)
 {
 #ifdef __WXMSW__
     ManageAssocsDialog dlg(this);
@@ -404,7 +404,7 @@ void EnvironmentSettingsDlg::OnChooseColour(wxCommandEvent& event)
     }
 }
 
-void EnvironmentSettingsDlg::OnResetDefaultColours(wxCommandEvent& /*event*/)
+void EnvironmentSettingsDlg::OnResetDefaultColours(cb_unused wxCommandEvent& event)
 {
     wxAuiDockArt* art = new wxAuiDefaultDockArt;
 
@@ -421,7 +421,7 @@ void EnvironmentSettingsDlg::OnResetDefaultColours(wxCommandEvent& /*event*/)
     delete art;
 }
 
-void EnvironmentSettingsDlg::OnAutoHide(wxCommandEvent& /*event*/)
+void EnvironmentSettingsDlg::OnAutoHide(cb_unused wxCommandEvent& event)
 {
     bool en = XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue();
     XRCCTRL(*this, "chkAutoShowMessagesOnSearch",   wxCheckBox)->Enable(en);

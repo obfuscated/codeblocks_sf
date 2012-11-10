@@ -298,7 +298,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     return count != 0;
 }
 
-bool MSVC7WorkspaceLoader::Save(const wxString& /*title*/, const wxString& /*filename*/)
+bool MSVC7WorkspaceLoader::Save(cb_unused const wxString& title, cb_unused const wxString& filename)
 {
     // no support for saving solution files (.sln) yet
     return false;

@@ -216,14 +216,14 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         const TrustedScripts& GetTrustedScripts();
 
         // needed for SqPlus bindings
-        ScriptingManager& operator=(const ScriptingManager& /*rhs*/) // prevent assignment operator
+        ScriptingManager& operator=(cb_unused const ScriptingManager& rhs) // prevent assignment operator
         {
         	cbThrow(_T("Can't assign a ScriptingManager* !!!"));
         	return *this;
 		}
     private:
         // needed for SqPlus bindings
-        ScriptingManager(const ScriptingManager& /*rhs*/); // prevent copy construction
+        ScriptingManager(cb_unused const ScriptingManager& rhs); // prevent copy construction
 
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptPluginMenu(wxCommandEvent& event);

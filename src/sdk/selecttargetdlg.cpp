@@ -84,18 +84,18 @@ ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
 
 // events
 
-void SelectTargetDlg::OnListboxSelection(wxCommandEvent& /*event*/)
+void SelectTargetDlg::OnListboxSelection(cb_unused wxCommandEvent& event)
 {
     UpdateSelected();
 } // end of OnListboxSelection
 
-void SelectTargetDlg::OnListboxDClick(wxCommandEvent& /*event*/)
+void SelectTargetDlg::OnListboxDClick(cb_unused wxCommandEvent& event)
 {
     UpdateSelected();
     EndModal(wxID_OK);
 } // end of OnListboxDClick
 
-void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& /*event*/)
+void SelectTargetDlg::OnCheckboxSelection(cb_unused wxCommandEvent& event)
 {
     if (XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->GetValue())
     {
@@ -104,7 +104,7 @@ void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& /*event*/)
     }
 } // end of OnCheckboxSelection
 
-void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
+void SelectTargetDlg::OnHostApplicationButtonClick(cb_unused wxCommandEvent& event)
 {
     if(wxTextCtrl* obj = XRCCTRL(*this, "txtHostApp", wxTextCtrl))
     {

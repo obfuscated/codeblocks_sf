@@ -310,7 +310,7 @@ class GdbCmd_SetArguments : public DebuggerCmd
         {
             m_Cmd << _T("set args ") << args;
         }
-        void ParseOutput(const wxString& /*output*/)
+        void ParseOutput(cb_unused const wxString& output)
         {
             // No output
         }
@@ -1683,7 +1683,7 @@ class GdbCmd_RemoteBaud : public DebuggerCmd
             m_Cmd << _T("set remotebaud ") << baud;
             driver->Log(_("Setting serial connection speed to ") + baud);
         }
-        void ParseOutput(const wxString& /*output*/)
+        void ParseOutput(cb_unused const wxString& output)
         {
         }
 };

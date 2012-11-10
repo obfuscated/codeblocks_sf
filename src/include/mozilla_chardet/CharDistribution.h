@@ -41,7 +41,7 @@
 #include "nscore.h"
 
 #define ENOUGH_DATA_THRESHOLD 1024
- 
+
 #define MINIMUM_DATA_THRESHOLD  4
 
 class CharDistributionAnalysis
@@ -75,8 +75,8 @@ public:
   //return confidence base on existing data
   float GetConfidence(void);
 
-  //Reset analyser, clear any state 
-  void      Reset(PRBool aIsPreferredLanguage) 
+  //Reset analyser, clear any state
+  void      Reset(PRBool aIsPreferredLanguage)
   {
     mDone = PR_FALSE;
     mTotalChars = 0;

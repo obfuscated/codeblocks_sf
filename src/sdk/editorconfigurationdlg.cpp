@@ -525,7 +525,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
     }
 }
 
-void EditorConfigurationDlg::OnCaretStyle(wxCommandEvent& /* event */)
+void EditorConfigurationDlg::OnCaretStyle(cb_unused wxCommandEvent& event)
 {
     XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->Enable(XRCCTRL(*this, "lstCaretStyle", wxChoice)->GetSelection() == wxSCI_CARETSTYLE_LINE);
 }
@@ -625,7 +625,7 @@ void EditorConfigurationDlg::ChangeTheme()
 
 // events
 
-void EditorConfigurationDlg::OnColourTheme(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnColourTheme(cb_unused wxCommandEvent& event)
 {
     // theme has changed
     wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
@@ -636,7 +636,7 @@ void EditorConfigurationDlg::OnColourTheme(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorConfigurationDlg::OnAddColourTheme(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnAddColourTheme(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog dlg(this, _("Please enter the name of the new colour theme:"), _("New theme name"));
     PlaceWindow(&dlg);
@@ -650,7 +650,7 @@ void EditorConfigurationDlg::OnAddColourTheme(wxCommandEvent& /*event*/)
     ChangeTheme();
 }
 
-void EditorConfigurationDlg::OnDeleteColourTheme(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnDeleteColourTheme(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO, this) == wxID_YES)
     {
@@ -664,7 +664,7 @@ void EditorConfigurationDlg::OnDeleteColourTheme(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorConfigurationDlg::OnRenameColourTheme(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnRenameColourTheme(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog dlg(this, _("Please enter the new name of the new colour theme:"), _("New theme name"), m_Theme->GetName());
     PlaceWindow(&dlg);
@@ -685,7 +685,7 @@ void EditorConfigurationDlg::OnRenameColourTheme(wxCommandEvent& /*event*/)
     ChangeTheme();
 }
 
-void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnEditKeywords(cb_unused wxCommandEvent& event)
 {
     if (m_Theme && m_Lang != HL_NONE)
     {
@@ -697,7 +697,7 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorConfigurationDlg::OnEditFilemasks(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnEditFilemasks(cb_unused wxCommandEvent& event)
 {
     if (m_Theme && m_Lang != HL_NONE)
     {
@@ -709,7 +709,7 @@ void EditorConfigurationDlg::OnEditFilemasks(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorConfigurationDlg::OnColoursReset(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnColoursReset(cb_unused wxCommandEvent& event)
 {
     if (m_Theme && m_Lang != HL_NONE)
     {
@@ -726,7 +726,7 @@ void EditorConfigurationDlg::OnColoursReset(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnChangeLang(cb_unused wxCommandEvent& event)
 {
     if (m_Theme)
     {
@@ -737,7 +737,7 @@ void EditorConfigurationDlg::OnChangeLang(wxCommandEvent& /*event*/)
     CreateColoursSample();
 }
 
-void EditorConfigurationDlg::OnChangeDefCodeFileType(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnChangeDefCodeFileType(cb_unused wxCommandEvent& event)
 {
     int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
     if (sel != m_DefCodeFileType)
@@ -767,17 +767,17 @@ void EditorConfigurationDlg::OnChooseColour(wxCommandEvent& event)
         WriteColours();
 }
 
-void EditorConfigurationDlg::OnChooseFont(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnChooseFont(cb_unused wxCommandEvent& event)
 {
     UpdateSampleFont(true);
 }
 
-void EditorConfigurationDlg::OnColourComponent(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnColourComponent(cb_unused wxCommandEvent& event)
 {
     ReadColours();
 }
 
-void EditorConfigurationDlg::OnBoldItalicUline(wxCommandEvent& /*event*/)
+void EditorConfigurationDlg::OnBoldItalicUline(cb_unused wxCommandEvent& event)
 {
     WriteColours();
 }

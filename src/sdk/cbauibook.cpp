@@ -199,7 +199,7 @@ void cbAuiNotebook::SetZoom(int zoom)
     m_SetZoomOnIdle = true;
 }
 
-void cbAuiNotebook::OnIdle(wxIdleEvent& /*event*/)
+void cbAuiNotebook::OnIdle(cb_unused wxIdleEvent& event)
 {
     if (m_SetZoomOnIdle)
     {
@@ -223,7 +223,7 @@ void cbAuiNotebook::OnIdle(wxIdleEvent& /*event*/)
 
 }
 
-void cbAuiNotebook::OnDragDone(wxAuiNotebookEvent& /*event*/)
+void cbAuiNotebook::OnDragDone(cb_unused wxAuiNotebookEvent& event)
 {
     UpdateTabControlsArray();
 }

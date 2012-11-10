@@ -67,7 +67,7 @@ class DLLIMPORT cbEditor : public EditorBase
         };
 
         /** Don't use this. It throws an exception if you do. */
-        void operator=(const cbEditor& /*rhs*/){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
+        void operator=(cb_unused const cbEditor& rhs){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
 
         // properties
 
@@ -302,7 +302,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
         void AutoIndentDone();
     private:
-        cbEditor(const cbEditor& /*rhs*/); // prevent copy construction
+        cbEditor(cb_unused const cbEditor& rhs); // prevent copy construction
 
         // functions
         bool LineHasMarker(int marker, int line = -1) const;

@@ -611,7 +611,7 @@ ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& file
     return AddFile(idx, filename, compile, link, weight);
 }
 
-ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, unsigned short int /*weight*/)
+ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, cb_unused unsigned short int weight)
 {
 //  NOTE (Rick#1#): When loading the project, do not search for existing files
 //  (Assumming that there are no duplicate entries in the .cbp file)

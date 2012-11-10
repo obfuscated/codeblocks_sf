@@ -51,7 +51,7 @@ CCOptionsProjectDlg::~CCOptionsProjectDlg()
 {
 }
 
-void CCOptionsProjectDlg::OnAdd(wxCommandEvent& /*event*/)
+void CCOptionsProjectDlg::OnAdd(cb_unused wxCommandEvent& event)
 {
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
 
@@ -68,7 +68,7 @@ void CCOptionsProjectDlg::OnAdd(wxCommandEvent& /*event*/)
     }
 }
 
-void CCOptionsProjectDlg::OnEdit(wxCommandEvent& /*event*/)
+void CCOptionsProjectDlg::OnEdit(cb_unused wxCommandEvent& event)
 {
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     int sel = control->GetSelection();
@@ -88,7 +88,7 @@ void CCOptionsProjectDlg::OnEdit(wxCommandEvent& /*event*/)
     }
 }
 
-void CCOptionsProjectDlg::OnDelete(wxCommandEvent& /*event*/)
+void CCOptionsProjectDlg::OnDelete(cb_unused wxCommandEvent& event)
 {
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     int sel = control->GetSelection();
@@ -98,7 +98,7 @@ void CCOptionsProjectDlg::OnDelete(wxCommandEvent& /*event*/)
     control->Delete(sel);
 }
 
-void CCOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void CCOptionsProjectDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
     bool en = control->GetSelection() >= 0;

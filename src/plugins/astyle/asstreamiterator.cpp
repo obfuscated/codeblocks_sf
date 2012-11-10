@@ -37,7 +37,7 @@ inline bool ASStreamIterator::IsEOL(wxChar ch)
     return false;
 }
 
-std::string ASStreamIterator::nextLine(bool /*emptyLineWasDeleted*/)
+std::string ASStreamIterator::nextLine(cb_unused bool emptyLineWasDeleted)
 {
     // hack: m_curline = 0 is a special case we should not evaluate here
     if (m_cbe && m_curline && m_cbe->HasBookmark(m_curline))

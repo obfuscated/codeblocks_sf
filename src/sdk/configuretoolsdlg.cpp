@@ -71,7 +71,7 @@ bool ConfigureToolsDlg::DoEditTool(cbTool* tool)
 
 // events
 
-void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void ConfigureToolsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     bool hasSel = list->GetSelection() != -1;
@@ -88,7 +88,7 @@ void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "btnDown",   wxButton)->Enable(notLast);
 } // end of OnUpdateUI
 
-void ConfigureToolsDlg::OnAdd(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnAdd(cb_unused wxCommandEvent& event)
 {
     cbTool tool;
     if (DoEditTool(&tool))
@@ -98,7 +98,7 @@ void ConfigureToolsDlg::OnAdd(wxCommandEvent& /*event*/)
     }
 } // end of OnAdd
 
-void ConfigureToolsDlg::OnEdit(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnEdit(cb_unused wxCommandEvent& event)
 {
     const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     cbTool* tool = Manager::Get()->GetToolsManager()->GetToolByIndex(list->GetSelection());
@@ -106,7 +106,7 @@ void ConfigureToolsDlg::OnEdit(wxCommandEvent& /*event*/)
     DoFillList();
 } // end of OnEdit
 
-void ConfigureToolsDlg::OnRemove(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnRemove(cb_unused wxCommandEvent& event)
 {
     const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     int sel = list->GetSelection();
@@ -120,7 +120,7 @@ void ConfigureToolsDlg::OnRemove(wxCommandEvent& /*event*/)
     }
 } // end of OnRemove
 
-void ConfigureToolsDlg::OnAddSeparator(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnAddSeparator(cb_unused wxCommandEvent& event)
 {
     cbTool tool;
     tool.SetName(CB_TOOLS_SEPARATOR);
@@ -129,7 +129,7 @@ void ConfigureToolsDlg::OnAddSeparator(wxCommandEvent& /*event*/)
     DoFillList();
 } // end of OnAddSeparator
 
-void ConfigureToolsDlg::OnUp(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnUp(cb_unused wxCommandEvent& event)
 {
     wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     int sel = list->GetSelection();
@@ -141,7 +141,7 @@ void ConfigureToolsDlg::OnUp(wxCommandEvent& /*event*/)
     list->SetSelection(sel - 1);
 } // end of OnUp
 
-void ConfigureToolsDlg::OnDown(wxCommandEvent& /*event*/)
+void ConfigureToolsDlg::OnDown(cb_unused wxCommandEvent& event)
 {
     wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
     int sel = list->GetSelection();

@@ -90,7 +90,7 @@ void SearchResultsLog::SyncEditor(int selIndex)
     }
 }
 
-void SearchResultsLog::OnDoubleClick(wxCommandEvent& /*event*/)
+void SearchResultsLog::OnDoubleClick(cb_unused wxCommandEvent& event)
 {
     // go to the relevant file/line
     if (control->GetSelectedItemCount() == 0)

@@ -531,7 +531,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     return theproject;
 }
 
-CompileTargetBase* Wiz::RunTargetWizard(wxString* /*pFilename*/)
+CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 {
     cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
     ProjectBuildTarget* target = theproject->AddBuildTarget(GetTargetName());
@@ -645,7 +645,7 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
     return 0;
 }
 
-CompileTargetBase* Wiz::RunCustomWizard(wxString* /*pFilename*/)
+CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
 {
     try
     {
@@ -1357,7 +1357,7 @@ void Wiz::SetFilePathSelectionFilter(const wxString& filter)
         m_pWizFilePathPanel->SetFilePathSelectionFilter(filter);
 }
 
-void Wiz::SetCompilerDefault(const wxString& /*defCompilerID*/)
+void Wiz::SetCompilerDefault(cb_unused const wxString& defCompilerID)
 {
     // default compiler settings (returned if no compiler page is added in the wizard)
     m_DefCompilerID = CompilerFactory::GetDefaultCompilerID();

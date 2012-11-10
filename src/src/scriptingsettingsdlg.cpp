@@ -238,7 +238,7 @@ void ScriptingSettingsDlg::OnListDeselection(wxListEvent& event)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnScriptChanged(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnScriptChanged(cb_unused wxCommandEvent& event)
 {
     if (m_IgnoreTextEvents)
         return;
@@ -248,7 +248,7 @@ void ScriptingSettingsDlg::OnScriptChanged(wxCommandEvent& /*event*/)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnScriptMenuChanged(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnScriptMenuChanged(cb_unused wxCommandEvent& event)
 {
     if (m_IgnoreTextEvents)
         return;
@@ -258,7 +258,7 @@ void ScriptingSettingsDlg::OnScriptMenuChanged(wxCommandEvent& /*event*/)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnEnable(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnEnable(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -266,7 +266,7 @@ void ScriptingSettingsDlg::OnEnable(wxCommandEvent& /*event*/)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnRegister(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnRegister(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -294,7 +294,7 @@ void ScriptingSettingsDlg::OnAddScript(wxCommandEvent& event)
     OnBrowse(event);
 }
 
-void ScriptingSettingsDlg::OnRemoveScript(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnRemoveScript(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -310,7 +310,7 @@ void ScriptingSettingsDlg::OnRemoveScript(wxCommandEvent& /*event*/)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnBrowse(cb_unused wxCommandEvent& event)
 {
     wxFileDialog dlg(this,
                      _("Select script file"),
@@ -337,12 +337,12 @@ void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& /*event*/)
     }
 }
 
-void ScriptingSettingsDlg::OnTrustSelection(wxListEvent& /*event*/)
+void ScriptingSettingsDlg::OnTrustSelection(cb_unused wxListEvent& event)
 {
     UpdateTrustsState();
 }
 
-void ScriptingSettingsDlg::OnDeleteTrust(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnDeleteTrust(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -354,7 +354,7 @@ void ScriptingSettingsDlg::OnDeleteTrust(wxCommandEvent& /*event*/)
     UpdateTrustsState();
 }
 
-void ScriptingSettingsDlg::OnValidateTrusts(wxCommandEvent& /*event*/)
+void ScriptingSettingsDlg::OnValidateTrusts(cb_unused wxCommandEvent& event)
 {
     bool check = true;
     wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);

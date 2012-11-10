@@ -492,7 +492,7 @@ void CCDebugInfo::FillDescendants()
     cmbDescendants->SetSelection(0);
 }
 
-void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
+void CCDebugInfo::OnInit(cb_unused wxInitDialogEvent& event)
 {
     if (!m_Parser || !m_Parser->GetTokenTree())
         return;
@@ -508,7 +508,7 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
     txtFilter->SetFocus();
 }
 
-void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnFindClick(cb_unused wxCommandEvent& event)
 {
     TokenTree* tree = m_Parser->GetTokenTree();
     if (!tree) return;
@@ -560,7 +560,7 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
     DisplayTokenInfo();
 }
 
-void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnGoAscClick(cb_unused wxCommandEvent& event)
 {
     int idx = cmbAncestors->GetSelection();
     if (!m_Token || idx == -1)
@@ -579,7 +579,7 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
     }
 }
 
-void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnGoDescClick(cb_unused wxCommandEvent& event)
 {
     int idx = cmbDescendants->GetSelection();
     if (!m_Token || idx == -1)
@@ -598,7 +598,7 @@ void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
     }
 }
 
-void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnGoParentClick(cb_unused wxCommandEvent& event)
 {
     if (!m_Token || m_Token->m_ParentIndex == -1)
         return;
@@ -607,7 +607,7 @@ void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
     DisplayTokenInfo();
 }
 
-void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnGoChildrenClick(cb_unused wxCommandEvent& event)
 {
     int idx = cmbChildren->GetSelection();
     if (!m_Token || idx == -1)
@@ -626,7 +626,7 @@ void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
     }
 }
 
-void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
+void CCDebugInfo::OnSave(cb_unused wxCommandEvent& event)
 {
     TokenTree* tree = m_Parser->GetTokenTree();
 

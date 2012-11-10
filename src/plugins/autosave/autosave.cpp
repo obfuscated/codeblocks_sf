@@ -81,7 +81,7 @@ void Autosave::Start()
         timer2->Stop();
 }
 
-void Autosave::OnRelease(bool /*appShutDown*/)
+void Autosave::OnRelease(cb_unused bool appShutDown)
 {
     delete timer1;
     delete timer2;

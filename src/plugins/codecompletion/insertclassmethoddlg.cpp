@@ -177,17 +177,17 @@ void InsertClassMethodDlg::FillMethods()
 }
 
 // events
-void InsertClassMethodDlg::OnClassesChange(wxCommandEvent& /*event*/)
+void InsertClassMethodDlg::OnClassesChange(cb_unused wxCommandEvent& event)
 {
     FillMethods();
 }
 
-void InsertClassMethodDlg::OnCodeChange(wxCommandEvent& /*event*/)
+void InsertClassMethodDlg::OnCodeChange(cb_unused wxCommandEvent& event)
 {
     m_Decl = XRCCTRL(*this, "rbCode", wxRadioBox)->GetSelection() == 0;
 }
 
-void InsertClassMethodDlg::OnFilterChange(wxCommandEvent& /*event*/)
+void InsertClassMethodDlg::OnFilterChange(cb_unused wxCommandEvent& event)
 {
     FillMethods();
 }

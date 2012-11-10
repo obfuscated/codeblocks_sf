@@ -58,13 +58,13 @@ class MainFrame : public wxFrame
 {
 	public:
         // needed for binding with SqPlus
-        MainFrame& operator=(const MainFrame& /*rhs*/) // prevent assignment operator
+        MainFrame& operator=(cb_unused const MainFrame& rhs) // prevent assignment operator
         {
         	cbThrow(_T("Can't use MainFrame's operator="));
         	return *this;
 		}
     private:
-        MainFrame(const MainFrame& /*rhs*/); // prevent copy construction
+        MainFrame(cb_unused const MainFrame& rhs); // prevent copy construction
 
         wxAuiManager m_LayoutManager;
         LayoutViewsMap m_LayoutViews;
@@ -271,7 +271,7 @@ class MainFrame : public wxFrame
         void OnShiftTab(wxCommandEvent& event);
         void OnCtrlAltTab(wxCommandEvent& event);
         void StartupDone();
-        void OnNotebookDoubleClick(CodeBlocksEvent& /*event*/);
+        void OnNotebookDoubleClick(CodeBlocksEvent& event);
     protected:
         void CreateIDE();
         void CreateMenubar();
@@ -293,7 +293,6 @@ class MainFrame : public wxFrame
         ToolbarInfo DoAddPluginToolbar(cbPlugin* plugin);
         void DoAddPluginStatusField(cbPlugin* plugin);
         void AddPluginInPluginsMenu(cbPlugin* plugin);
-        void AddPluginInSettingsMenu(cbPlugin* plugin);
         void AddPluginInHelpPluginsMenu(cbPlugin* plugin);
         wxMenuItem* AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1, bool checkable = false);
         void RemovePluginFromMenus(const wxString& pluginName);

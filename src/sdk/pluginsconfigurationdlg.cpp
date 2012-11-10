@@ -36,9 +36,9 @@
 #include "pluginsconfigurationdlg.h" // class's header file
 
 #if wxCHECK_VERSION(2, 9, 1)
-int wxCALLBACK sortByTitle(long item1, long item2, wxIntPtr /*sortData*/)
+int wxCALLBACK sortByTitle(long item1, long item2, cb_unused wxIntPtr sortData)
 #else
-int wxCALLBACK sortByTitle(long item1, long item2, long /*sortData*/)
+int wxCALLBACK sortByTitle(long item1, long item2, cb_unused long sortData)
 #endif
 {
     const PluginElement* elem1 = (const PluginElement*)item1;
@@ -223,7 +223,7 @@ void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
     }
 }
 
-void PluginsConfigurationDlg::OnInstall(wxCommandEvent& /*event*/)
+void PluginsConfigurationDlg::OnInstall(cb_unused wxCommandEvent& event)
 {
     wxFileDialog fd(this,
                         _("Select plugin to install"),
@@ -254,7 +254,7 @@ void PluginsConfigurationDlg::OnInstall(wxCommandEvent& /*event*/)
         cbMessageBox(_("One or more plugins were not installed successfully:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
-void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& /*event*/)
+void PluginsConfigurationDlg::OnUninstall(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
     if (list->GetSelectedItemCount() == 0)
@@ -283,7 +283,7 @@ void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& /*event*/)
         cbMessageBox(_("One or more plugins were not un-installed successfully:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
-void PluginsConfigurationDlg::OnExport(wxCommandEvent& /*event*/)
+void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
     if (list->GetSelectedItemCount() == 0)
@@ -385,7 +385,7 @@ void PluginsConfigurationDlg::OnExport(wxCommandEvent& /*event*/)
         cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
-void PluginsConfigurationDlg::OnSelect(wxListEvent& /*event*/)
+void PluginsConfigurationDlg::OnSelect(cb_unused wxListEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
     if (list->GetSelectedItemCount() != 1)

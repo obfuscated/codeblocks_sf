@@ -102,7 +102,7 @@ void CDB_driver::SetTarget(ProjectBuildTarget* target)
     m_Target = target;
 }
 
-void CDB_driver::Prepare(bool /*isConsole*/, int /*printElements*/)
+void CDB_driver::Prepare(cb_unused bool isConsole, cb_unused int printElements)
 {
 	// The very first command won't get the right output back due to the spam on CDB launch.
 	// Throw in a dummy command to flush the output buffer.
@@ -113,7 +113,7 @@ void CDB_driver::Prepare(bool /*isConsole*/, int /*printElements*/)
 	QueueCommand(new CdbCmd_GetPID(this));
 }
 
-void CDB_driver::Start(bool /*breakOnEntry*/)
+void CDB_driver::Start(cb_unused bool breakOnEntry)
 {
     // start the process
     QueueCommand(new DebuggerCmd(this, _T("l+t"))); // source mode
@@ -204,7 +204,7 @@ void CDB_driver::SwitchToFrame(size_t number)
     QueueCommand(new CdbCmd_SwitchFrame(this, number));
 }
 
-void CDB_driver::SetVarValue(const wxString& /*var*/, const wxString& /*value*/)
+void CDB_driver::SetVarValue(cb_unused const wxString& var, cb_unused const wxString& value)
 {
     NOT_IMPLEMENTED();
 }
@@ -296,7 +296,7 @@ void CDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
 }
 
-void CDB_driver::Attach(int /*pid*/)
+void CDB_driver::Attach(cb_unused int pid)
 {
     // FIXME (obfuscated#): implement this
 }

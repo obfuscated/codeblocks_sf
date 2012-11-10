@@ -192,9 +192,9 @@ void NewFromTemplateDlg::BuildCategoriesFor(TemplateOutputType otype, wxChoice* 
 }
 
 #if wxCHECK_VERSION(2, 9, 1)
-int wxCALLBACK SortTemplates(long item1, long item2, wxIntPtr /*sortData*/)
+int wxCALLBACK SortTemplates(long item1, long item2, cb_unused wxIntPtr sortData)
 #else
-int wxCALLBACK SortTemplates(long item1, long item2, long /*sortData*/)
+int wxCALLBACK SortTemplates(long item1, long item2, cb_unused long sortData)
 #endif
 {
     ListItemData* data1 = reinterpret_cast<ListItemData*>(item1);
@@ -418,17 +418,17 @@ void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
     delete menu;
 }
 
-void NewFromTemplateDlg::OnListActivate(wxListEvent& /*event*/)
+void NewFromTemplateDlg::OnListActivate(cb_unused wxListEvent& event)
 {
     EndModal(wxID_OK);
 }
 
-void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnCategoryChanged(cb_unused wxCommandEvent& event)
 {
     BuildListFor(GetVisibleOutputType(), GetVisibleListCtrl(), GetVisibleCategory());
 }
 
-void NewFromTemplateDlg::OnEditScript(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnEditScript(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = GetVisibleListCtrl();
     if (!list)
@@ -441,7 +441,7 @@ void NewFromTemplateDlg::OnEditScript(wxCommandEvent& /*event*/)
     EditScript(wiz->GetScriptFilename(data->wizPluginIndex));
 }
 
-void NewFromTemplateDlg::OnDiscardScript(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnDiscardScript(cb_unused wxCommandEvent& event)
 {
     wxListCtrl* list = GetVisibleListCtrl();
     if (!list)
@@ -465,7 +465,7 @@ void NewFromTemplateDlg::OnDiscardScript(wxCommandEvent& /*event*/)
     }
 }
 
-void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnEditGlobalScript(cb_unused wxCommandEvent& event)
 {
     cbMessageBox(_("Any changes you make to the global wizard registration script will "
                     "take effect after you restart Code::Blocks."),
@@ -473,12 +473,12 @@ void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& /*event*/)
     EditScript(_T("config.script"));
 }
 
-void NewFromTemplateDlg::OnViewChange(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnViewChange(cb_unused wxCommandEvent& event)
 {
     ChangeView();
 }
 
-void NewFromTemplateDlg::OnHelp(wxCommandEvent& /*event*/)
+void NewFromTemplateDlg::OnHelp(cb_unused wxCommandEvent& event)
 {
     cbMessageBox(_("When you edit a wizard's script, you actually edit a copy of it which "
                     "is automatically placed inside your user configuration directory.\n"
@@ -496,7 +496,7 @@ void NewFromTemplateDlg::OnHelp(wxCommandEvent& /*event*/)
                     wxICON_INFORMATION, this);
 }
 
-void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
+void NewFromTemplateDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     size_t page = lb->GetSelection();

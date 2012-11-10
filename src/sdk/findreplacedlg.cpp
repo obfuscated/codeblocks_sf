@@ -498,7 +498,7 @@ bool FindReplaceDlg::IsMultiLine() const
 
 // events
 
-void FindReplaceDlg::OnScopeChange(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnScopeChange(cb_unused wxCommandEvent& event)
 {
     wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
     switch (rbScope->GetSelection())
@@ -525,7 +525,7 @@ void FindReplaceDlg::OnScopeChange(wxCommandEvent& /*event*/)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
 }
 
-void FindReplaceDlg::OnBrowsePath(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnBrowsePath(cb_unused wxCommandEvent& event)
 {
     wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
     wxString dir = ChooseDirectory(0, _("Select search path"), txtSearchPath);
@@ -533,7 +533,7 @@ void FindReplaceDlg::OnBrowsePath(wxCommandEvent& /*event*/)
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
 }
 
-void FindReplaceDlg::OnSearchProject(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnSearchProject(cb_unused wxCommandEvent& event)
 {
     wxChoice *chProject = XRCCTRL(*this, "chProject", wxChoice);
     wxChoice *chTarget = XRCCTRL(*this, "chTarget", wxChoice);
@@ -584,7 +584,7 @@ void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
     event.Skip();
 }
 
-void FindReplaceDlg::OnDeferredFocus(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnDeferredFocus(cb_unused wxCommandEvent& event)
 {
     if ( IsMultiLine() )
     {
@@ -600,7 +600,7 @@ void FindReplaceDlg::OnDeferredFocus(wxCommandEvent& /*event*/)
     }
 }
 
-void FindReplaceDlg::OnRegEx(wxCommandEvent& /*event*/)
+void FindReplaceDlg::OnRegEx(cb_unused wxCommandEvent& event)
 {
     XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
 }

@@ -142,7 +142,7 @@ void ScriptConsole::Log(const wxString& msg)
     Manager::ProcessPendingEvents();
 }
 
-void ScriptConsole::OnbtnExecuteClick(wxCommandEvent& /*event*/)
+void ScriptConsole::OnbtnExecuteClick(cb_unused wxCommandEvent& event)
 {
     wxString cmd = txtCommand->GetValue();
     cmd.Trim(false);
@@ -165,7 +165,7 @@ void ScriptConsole::OnbtnExecuteClick(wxCommandEvent& /*event*/)
     txtCommand->SetFocus();
 }
 
-void ScriptConsole::OnbtnLoadClick(wxCommandEvent& /*event*/)
+void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
 {
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     wxString path = mgr->Read(_T("/file_dialogs/file_run_script/directory"), wxEmptyString);
@@ -189,7 +189,7 @@ void ScriptConsole::OnbtnLoadClick(wxCommandEvent& /*event*/)
     txtCommand->SetFocus();
 }
 
-void ScriptConsole::OnbtnClearClick(wxCommandEvent& /*event*/)
+void ScriptConsole::OnbtnClearClick(cb_unused wxCommandEvent& event)
 {
     txtConsole->Clear();
     txtCommand->SetFocus();

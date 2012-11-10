@@ -211,7 +211,7 @@ void DebuggerGDB::OnAttachReal()
     Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBuildTargetSelected));
 }
 
-void DebuggerGDB::OnReleaseReal(bool /*appShutDown*/)
+void DebuggerGDB::OnReleaseReal(cb_unused bool appShutDown)
 {
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
 

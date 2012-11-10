@@ -1290,7 +1290,7 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*         tree,
                                            TokenIdxSet&       result,
                                            bool               caseSens,
                                            bool               isPrefix,
-                                           short int          /*kindMask*/)
+                                           cb_unused short int   kindMask)
 {
     if (!tree) return 0;
 

@@ -1019,11 +1019,11 @@ exception_trap:
 			if(traps) {
 				do {
 					if(ci->_etraps > 0) {
-						SQExceptionTrap &et = _etraps.top();
-						ci->_ip = et._ip;
-						_top = et._stacksize;
-						_stackbase = et._stackbase;
-						_stack._vals[_stackbase+et._extarget] = currerror;
+						SQExceptionTrap &etrap = _etraps.top();
+						ci->_ip = etrap._ip;
+						_top = etrap._stacksize;
+						_stackbase = etrap._stackbase;
+						_stack._vals[_stackbase+etrap._extarget] = currerror;
 						_etraps.pop_back(); traps--; ci->_etraps--;
 						CLEARSTACK(last_top);
 						goto exception_restore;
@@ -1083,11 +1083,11 @@ void SQVM::CallErrorHandler(SQObjectPtr &error)
 
 void SQVM::CallDebugHook(SQInteger type,SQInteger forcedline)
 {
-	SQObjectPtr temp_reg;
+	SQObjectPtr tmp_reg;
 	SQInteger nparams=5;
 	SQFunctionProto *func=_funcproto(_closure(ci->_closure)->_function);
 	Push(_roottable); Push(type); Push(func->_sourcename); Push(forcedline?forcedline:func->GetLine(ci->_ip)); Push(func->_name);
-	Call(_debughook,nparams,_top-nparams,temp_reg,SQFalse);
+	Call(_debughook,nparams,_top-nparams,tmp_reg,SQFalse);
 	Pop(nparams);
 }
 
@@ -1296,7 +1296,7 @@ bool SQVM::Set(const SQObjectPtr &self,const SQObjectPtr &key,const SQObjectPtr 
 
 bool SQVM::Clone(const SQObjectPtr &self,SQObjectPtr &target)
 {
-	SQObjectPtr temp_reg;
+	SQObjectPtr tmp_reg;
 	SQObjectPtr newobj;
 	switch(type(self)){
 	case OT_TABLE:
@@ -1308,7 +1308,7 @@ cloned_mt:
 		if(_delegable(newobj)->_delegate){
 			Push(newobj);
 			Push(self);
-			CallMetaMethod(_delegable(newobj),MT_CLONED,2,temp_reg);
+			CallMetaMethod(_delegable(newobj),MT_CLONED,2,tmp_reg);
 		}
 		target = newobj;
 		return true;
