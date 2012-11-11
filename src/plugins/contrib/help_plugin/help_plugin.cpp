@@ -64,8 +64,8 @@ namespace
 };
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
-	EVT_MENU(idViewMANViewer, HelpPlugin::OnViewMANViewer)
-	EVT_UPDATE_UI(idViewMANViewer, HelpPlugin::OnUpdateUI)
+    EVT_MENU(idViewMANViewer, HelpPlugin::OnViewMANViewer)
+    EVT_UPDATE_UI(idViewMANViewer, HelpPlugin::OnUpdateUI)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -150,10 +150,8 @@ HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0), m_manFrame(0)
 {
   //ctor
-  if(!Manager::LoadResource(_T("help_plugin.zip")))
-  {
+  if (!Manager::LoadResource(_T("help_plugin.zip")))
     NotifyMissingFile(_T("help_plugin.zip"));
-  }
 
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
@@ -172,9 +170,7 @@ HelpPlugin::HelpPlugin()
   ocx_module = LoadLibrary(_T("HHCTRL.OCX"));
 
   if (ocx_module)
-  {
     fp_htmlHelp = (HTMLHELP)GetProcAddress(ocx_module, HTMLHELP_NAME);
-  }
 #endif
 }
 
@@ -182,9 +178,7 @@ HelpPlugin::~HelpPlugin()
 {
 #ifdef __WXMSW__
   if (ocx_module)
-  {
     FreeLibrary(ocx_module);
-  }
 #endif
 }
 
@@ -202,9 +196,7 @@ void HelpPlugin::OnAttach()
         {
             // only add ; if a dir is already set
             if (all_man_dirs.Length() > man_prefix.Length())
-            {
                 all_man_dirs += _T(";");
-            }
 
             all_man_dirs += i->second.name.Mid(man_prefix.Length());
         }
@@ -228,14 +220,10 @@ void HelpPlugin::OnAttach()
     int baseFont = Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadInt(_T("/base_font_size"), 0);
 
     if (baseFont > 0)
-    {
         m_manFrame->SetBaseFontSize(baseFont);
-    }
 
     if (Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadBool(_T("/show_man_viewer"), false))
-    {
         ShowMANViewer();
-    }
 }
 
 cbConfigurationPanel* HelpPlugin::GetConfigurationPanel(wxWindow* parent)
@@ -250,9 +238,7 @@ void HelpPlugin::Reload()
     HelpCommon::HelpFilesVector::iterator it;
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
-    {
       RemoveFromHelpMenu(idHelpMenus[--counter], it->first);
-    }
 
     // reload configuration (saved in the config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
@@ -265,8 +251,8 @@ void HelpPlugin::OnRelease(bool /*appShutDown*/)
     CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
     evt.pWindow = m_manFrame;
     Manager::Get()->ProcessEvent(evt);
-	m_manFrame->Destroy();
-	m_manFrame = 0;
+    m_manFrame->Destroy();
+    m_manFrame = 0;
 }
 
 void HelpPlugin::BuildHelpMenu()
@@ -277,13 +263,9 @@ void HelpPlugin::BuildHelpMenu()
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
     {
         if (counter == HelpCommon::getDefaultHelpIndex())
-        {
             AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"), it->second.readFromIni);
-        }
         else
-        {
             AddToHelpMenu(idHelpMenus[counter], it->first, it->second.readFromIni);
-        }
     }
 
     m_LastId = idHelpMenus[0] + counter;
@@ -292,9 +274,7 @@ void HelpPlugin::BuildHelpMenu()
 void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 {
     if (!IsAttached())
-    {
         return;
-    }
 
     m_pMenuBar = menuBar;
 
@@ -322,16 +302,12 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* /*data*/)
 {
   if (!menu || !IsAttached() || !m_Vector.size())
-  {
     return;
-  }
 
   if (type == mtEditorManager)
   {
     if (m_Vector.size() != 0)
-    {
       menu->AppendSeparator();
-    }
 
     // add entries in popup menu
     int counter = 0;
@@ -339,9 +315,7 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
     wxMenu *sub_menu = new wxMenu;
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
-    {
       AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first, it->second.readFromIni);
-    }
 
     wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _T(""), wxITEM_NORMAL);
     locate_in_menu->SetSubMenu(sub_menu);
@@ -352,19 +326,17 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
 
 bool HelpPlugin::BuildToolBar(wxToolBar * /*toolBar*/)
 {
-	return false;
+    return false;
 }
 
 void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
 #ifdef __WXMSW__
-	fromIni
+    fromIni
 #endif
 )
 {
   if (!m_pMenuBar)
-  {
     return;
-  }
 
   int pos = m_pMenuBar->FindMenu(_("&Help"));
 
@@ -373,9 +345,7 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
     wxMenu *helpMenu = m_pMenuBar->GetMenu(pos);
 
     if (id == idHelpMenus[0])
-    {
       helpMenu->AppendSeparator();
-    }
 
 #ifdef __WXMSW__
     if (fromIni)
@@ -388,18 +358,14 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
     }
     else
 #endif
-    {
       helpMenu->Append(id, help);
-    }
   }
 }
 
 void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
 {
   if (!m_pMenuBar)
-  {
     return;
-  }
 
   int pos = m_pMenuBar->FindMenu(_("&Help"));
 
@@ -409,9 +375,7 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
     wxMenuItem *mi = helpMenu->Remove(id);
 
     if (id)
-    {
       delete mi;
-    }
 
     // remove separator too (if it's the last thing left)
     mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
@@ -430,7 +394,7 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
 
 void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
 #ifdef __WXMSW__
-	fromIni
+    fromIni
 #endif
 )
 {
@@ -447,9 +411,7 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
     }
     else
 #endif
-    {
       menu->Append(id, help);
-    }
   }
 }
 
@@ -461,9 +423,7 @@ HelpCommon::HelpFileAttrib HelpPlugin::HelpFileFromId(int id)
   for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
   {
     if (idHelpMenus[counter] == id)
-    {
       return it->second;
-    }
   }
 
   return HelpCommon::HelpFileAttrib();
@@ -491,7 +451,7 @@ void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
     // uncheck checkbox if window was closed
-    if(m_manFrame && !IsWindowReallyShown(m_manFrame))
+    if (m_manFrame && !IsWindowReallyShown(m_manFrame))
         pbar->Check(idViewMANViewer, false);
 }
 
@@ -504,14 +464,10 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
   // Patch by Yorgos Pagles: Use the new attributes to calculate the keyword
   wxString keyword = c_keyword.IsEmpty() ? defkeyword : c_keyword;
 
-  if(keyCase == HelpCommon::UpperCase)
-  {
+  if (keyCase == HelpCommon::UpperCase)
     keyword.MakeUpper();
-  }
   else if (keyCase == HelpCommon::LowerCase)
-  {
     keyword.MakeLower();
-  }
 
   helpfile.Replace(_T("$(keyword)"), keyword);
   Manager::Get()->GetMacrosManager()->ReplaceMacros(helpfile);
@@ -541,9 +497,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
         }
       }
       else
-      {
         Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
-      }
 
       return;
   }
@@ -554,13 +508,11 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
     Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
     cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(helpfile);
     if (p)
-    {
-        p->OpenFile(helpfile);
-    }
+      p->OpenFile(helpfile);
     else
     {
-        reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
-        ShowMANViewer();
+      reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
+      ShowMANViewer();
     }
     return;
   }
@@ -577,13 +529,9 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
   if (helpfile.Mid(0, man_prefix.size()).CmpNoCase(man_prefix) == 0)
   {
     if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(c_helpfile, keyword))
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
-    }
+      Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
     else
-    {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));
-    }
+      Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));
 
     ShowMANViewer();
     return;
@@ -608,21 +556,21 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
   // Operate on help files with keyword search (windows only)
   if (!keyword.IsEmpty())
   {
-  	if (ext.CmpNoCase(_T("hlp")) == 0)
-  	{
+    if (ext.CmpNoCase(_T("hlp")) == 0)
+    {
       wxWinHelpController HelpCtl;
       HelpCtl.Initialize(helpfile);
       HelpCtl.KeywordSearch(keyword);
       return;
-  	}
+    }
 
-  	if (ext.CmpNoCase(_T("chm")) == 0)
-  	{
+    if ((ext.CmpNoCase(_T("chm")) == 0) || (ext.CmpNoCase(_T("col")) == 0))
+    {
       LaunchCHMThread *p_thread = new LaunchCHMThread(helpfile, keyword);
       p_thread->Create();
       p_thread->Run();
       return;
-  	}
+    }
   }
 #endif
 
