@@ -748,12 +748,15 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
     // first get the dir with the files
     wxArrayString filesList;
     wxString enumdirs = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + srcdir;
-    if (!wxDirExists(enumdirs + _T("/")))
+    if ( !wxDirExists(enumdirs + _T("/")) )
         enumdirs = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + srcdir;
     wxString basepath = wxFileName(enumdirs).GetFullPath();
 
-    // recursively enumerate all files under srcdir
-    wxDir::GetAllFiles(enumdirs, &filesList);
+    if ( wxDirExists(enumdirs + _T("/")) )
+    {
+        // recursively enumerate all files under srcdir
+        wxDir::GetAllFiles(enumdirs, &filesList);
+    }
 
     // prepare the list of targets to add this file to (i.e. all of them)
     wxArrayInt targetIndices;
