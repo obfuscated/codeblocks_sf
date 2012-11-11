@@ -546,9 +546,8 @@ bool cbProject::LoadLayout()
                 // Load all requested files
                 std::vector<LoaderBase*> filesInMemory;
                 for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
-                {
                     filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*ofm_it).second->file.GetFullPath()));
-                }
+
                 // Open all requested files:
                 size_t i = 0;
                 for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
@@ -1853,9 +1852,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
             wxArrayString& tgts = it->second;
             index = tgts.Index(target->GetTitle());
             if (index != -1)
-            {
                 tgts[index] = targetName;
-            }
         }
 
         // rename target for all files that reference it

@@ -779,7 +779,7 @@ void Tokenizer::ReadParentheses(wxString& str)
         str.Append(realBuffer, p - realBuffer);
     TRACE(_T("ReadParentheses(): %s, line=%u"), str.wx_str(), m_LineNumber);
     if (str.Len() > 512)
-        { TRACE(_T("ReadParentheses(): Catched exception 2: %lu"), static_cast<unsigned long>(str.Len())); }
+    {   TRACE(_T("ReadParentheses(): Catched exception 2: %lu"), static_cast<unsigned long>(str.Len())); }
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)

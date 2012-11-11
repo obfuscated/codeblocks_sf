@@ -2493,7 +2493,6 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
                         toolTip.Replace(_("Project: ") + backupTitle,_("Project: ") + newTitle);
                         nb->SetPageToolTip(i, toolTip);
                     }
-
                 }
             }
         }

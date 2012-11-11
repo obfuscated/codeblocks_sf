@@ -9,18 +9,18 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/combobox.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/sizer.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/textdlg.h>
-#include <wx/xrc/xmlres.h>
-#include "compilerfactory.h"
-#include "globals.h"
+    #include <wx/checkbox.h>
+    #include <wx/choice.h>
+    #include <wx/combobox.h>
+    #include <wx/intl.h>
+    #include <wx/listbox.h>
+    #include <wx/sizer.h>
+    #include <wx/spinctrl.h>
+    #include <wx/textctrl.h>
+    #include <wx/textdlg.h>
+    #include <wx/xrc/xmlres.h>
+    #include "compilerfactory.h"
+    #include "globals.h"
 #endif
 #include "advancedcompileroptionsdlg.h"
 
@@ -207,10 +207,8 @@ void AdvancedCompilerOptionsDlg::DisplayCommand(int cmd, int ext)
 void AdvancedCompilerOptionsDlg::CheckForChanges()
 {
     // changes can only happen after constructor : aka no longer (-1, -1)
-    if(m_LastCmdIndex != -1 && m_LastExtIndex != -1)
-    {
+    if (m_LastCmdIndex != -1 && m_LastExtIndex != -1)
         SaveCommands(m_LastCmdIndex, m_LastExtIndex);
-    }
 }
 
 void AdvancedCompilerOptionsDlg::SaveCommands(int cmd, int ext)
@@ -459,15 +457,9 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
                     clt == cltNormal ? _("Normal")
                  : (clt == cltInfo   ? _("Info")
                  : (clt == cltError  ? _("Error") : _("Warning") ) ),
-#if wxCHECK_VERSION(2, 9, 0)
                 compiler->GetLastErrorFilename().wx_str(),
                 compiler->GetLastErrorLine().wx_str(),
                 compiler->GetLastError().wx_str()
-#else
-                compiler->GetLastErrorFilename().c_str(),
-                compiler->GetLastErrorLine().c_str(),
-                compiler->GetLastError().c_str()
-#endif
               );
 
     cbMessageBox(msg, _("Test results"), wxICON_INFORMATION, this);

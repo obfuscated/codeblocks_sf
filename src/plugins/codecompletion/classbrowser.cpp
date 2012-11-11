@@ -840,7 +840,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
     }
 
     if (!thread_needs_run)
-        { TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread...")); }
+    {   TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread...")); }
 
     bool thread_needs_resume = false;
     while (   !thread_needs_run
@@ -853,7 +853,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
         wxMilliSleep(20); // allow processing
     }
     if (thread_needs_resume)
-        { TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused.")); }
+    {   TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused.")); }
 
     // initialise it
     m_ClassBrowserBuilderThread->Init(m_NativeParser,

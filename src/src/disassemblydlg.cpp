@@ -169,12 +169,14 @@ void DisassemblyDlg::CenterLine(unsigned long int lineno)
         firstdispline = 0 ; //or is it zero?
     m_pCode->SetFirstVisibleLine(firstdispline) ;
 }
+
 void DisassemblyDlg::CenterCurrentLine()
 {
     int displine;
     displine = m_pCode->GetCurrentLine() ;
     CenterLine(displine);
 }
+
 bool DisassemblyDlg::SetActiveAddress(unsigned long int addr)
 {
     if (m_HasActiveAddr && addr == m_LastActiveAddr)

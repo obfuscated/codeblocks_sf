@@ -1284,13 +1284,13 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*      tree,
 
 // No critical section needed in this recursive function!
 // All functions that call this recursive function, should already entered a critical section.
-size_t NativeParserBase::GenerateResultSet(TokenTree*         tree,
-                                           const wxString&    target,
-                                           const TokenIdxSet& parentSet,
-                                           TokenIdxSet&       result,
-                                           bool               caseSens,
-                                           bool               isPrefix,
-                                           cb_unused short int   kindMask)
+size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
+                                           const wxString&     target,
+                                           const TokenIdxSet&  parentSet,
+                                           TokenIdxSet&        result,
+                                           bool                caseSens,
+                                           bool                isPrefix,
+                                           cb_unused short int kindMask)
 {
     if (!tree) return 0;
 

@@ -68,9 +68,9 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
     public:
         EditorManager& operator=(cb_unused const EditorManager& rhs) // prevent assignment operator
         {
-        	cbThrow(_T("Can't assign an EditorManager* !!!"));
-        	return *this;
-		}
+            cbThrow(_T("Can't assign an EditorManager* !!!"));
+            return *this;
+        }
 
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
