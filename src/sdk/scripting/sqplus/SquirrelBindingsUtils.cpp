@@ -36,6 +36,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 		n++;
 	}
 	if(sn->delegate) {
+        // C::B patch: Fix shadowed variable warning
 		members = sn->delegate;
 		m = NULL;
 		sq_newtable(v);

@@ -35,13 +35,13 @@ SquirrelError::SquirrelError()
 	}
 }
 
-// C::B patch: Add additional initilisation flags
+// C::B patch: Add additional initialisation flags
 void SquirrelVM::Init(SquirrelInitFlags flags)
 {
 	_VM = sq_open(1024);
 	sq_setprintfunc(_VM,SquirrelVM::PrintFunc);
 	sq_pushroottable(_VM);
-    // C::B patch: Add additional initilisation flags
+    // C::B patch: Add additional initialisation flags
 	if (flags & sqifIO) sqstd_register_iolib(_VM);
 	if (flags & sqifBlob) sqstd_register_bloblib(_VM);
 	if (flags & sqifMath) sqstd_register_mathlib(_VM);

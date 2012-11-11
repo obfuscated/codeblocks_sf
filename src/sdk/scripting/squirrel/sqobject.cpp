@@ -441,6 +441,7 @@ bool SQFunctionProto::Load(SQVM *v,SQUserPointer up,SQREADFUNC read,SQObjectPtr 
 
 	for(i = 0; i < noutervalues; i++){
 		SQUnsignedInteger type;
+		// C::B patch: Avoid compiler warnings about shadowing params
 		SQObjectPtr name_;
 		_CHECK_IO(SafeRead(v,read,up, &type, sizeof(SQUnsignedInteger)));
 		_CHECK_IO(ReadObject(v, up, read, o));

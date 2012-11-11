@@ -593,6 +593,7 @@ bool SQVM::CLOSURE_OP(SQObjectPtr &target, SQFunctionProto *func)
 
 }
 
+// C::B patch: Fix shadowed variable warning
 bool SQVM::GETVARGV_OP(SQObjectPtr &target,SQObjectPtr &index,CallInfo *callinfo)
 {
 	if(callinfo->_vargs.size == 0) {
@@ -1019,6 +1020,7 @@ exception_trap:
 			if(traps) {
 				do {
 					if(ci->_etraps > 0) {
+                        // C::B patch: Avoid compiler warnings about shadowing params
 						SQExceptionTrap &etrap = _etraps.top();
 						ci->_ip = etrap._ip;
 						_top = etrap._stacksize;
@@ -1083,6 +1085,7 @@ void SQVM::CallErrorHandler(SQObjectPtr &error)
 
 void SQVM::CallDebugHook(SQInteger type,SQInteger forcedline)
 {
+    // C::B patch: Avoid compiler warnings about shadowing params
 	SQObjectPtr tmp_reg;
 	SQInteger nparams=5;
 	SQFunctionProto *func=_funcproto(_closure(ci->_closure)->_function);
@@ -1296,6 +1299,7 @@ bool SQVM::Set(const SQObjectPtr &self,const SQObjectPtr &key,const SQObjectPtr 
 
 bool SQVM::Clone(const SQObjectPtr &self,SQObjectPtr &target)
 {
+    // C::B patch: Avoid compiler warnings about shadowing params
 	SQObjectPtr tmp_reg;
 	SQObjectPtr newobj;
 	switch(type(self)){

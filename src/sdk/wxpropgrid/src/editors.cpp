@@ -1814,6 +1814,7 @@ wxPGWindowList wxPGCheckBoxEditor::CreateControls( wxPropertyGrid* propGrid,
         // If mouse cursor was on the item, toggle the value now.
         if ( propGrid->GetInternalFlags() & wxPG_FL_ACTIVATION_BY_CLICK )
         {
+            // C::B patch: Fix shadowed variable warning
             pt = cb->ScreenToClient(::wxGetMousePosition());
             if ( pt.x <= (wxPG_XBEFORETEXT-2+cb->m_boxHeight) )
             {

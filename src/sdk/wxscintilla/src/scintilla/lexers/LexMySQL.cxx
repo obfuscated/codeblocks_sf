@@ -132,7 +132,9 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
       case SCE_MYSQL_SYSTEMVARIABLE:
         if (!IsAWordChar(sc.ch))
         {
+          /* C::B begin */
           length = sc.LengthCurrent() + 1;
+          /* C::B end */
           char* s = new char[length];
           sc.GetCurrentLowered(s, length);
 
