@@ -40,34 +40,36 @@ namespace
 
 }
 
-int id_et= wxNewId();
-int id_et_WordWrap= wxNewId();
-int id_et_ShowLineNumbers= wxNewId();
-int id_et_TabChar = wxNewId();
-int id_et_TabIndent = wxNewId();
-int id_et_TabSize2 = wxNewId();
-int id_et_TabSize4 = wxNewId();
-int id_et_TabSize6 = wxNewId();
-int id_et_TabSize8 = wxNewId();
-int id_et_ShowEOL = wxNewId();
+int id_et                     = wxNewId();
+int id_et_WordWrap            = wxNewId();
+int id_et_ShowLineNumbers     = wxNewId();
+int id_et_TabChar             = wxNewId();
+int id_et_TabIndent           = wxNewId();
+int id_et_TabSize2            = wxNewId();
+int id_et_TabSize4            = wxNewId();
+int id_et_TabSize6            = wxNewId();
+int id_et_TabSize8            = wxNewId();
+int id_et_ShowEOL             = wxNewId();
 int id_et_StripTrailingBlanks = wxNewId();
 int id_et_EnsureConsistentEOL = wxNewId();
-int id_et_EOLCRLF = wxNewId();
-int id_et_EOLCR = wxNewId();
-int id_et_EOLLF = wxNewId();
-int id_et_Fold1= wxNewId();
-int id_et_Fold2= wxNewId();
-int id_et_Fold3= wxNewId();
-int id_et_Fold4= wxNewId();
-int id_et_Fold5= wxNewId();
-int id_et_Unfold1= wxNewId();
-int id_et_Unfold2= wxNewId();
-int id_et_Unfold3= wxNewId();
-int id_et_Unfold4= wxNewId();
-int id_et_Unfold5= wxNewId();
-int id_et_align_others= wxNewId();
-int id_et_SuppressInsertKey= wxNewId();
-int id_et_ConvertBraces= wxNewId();
+int id_et_EOLCRLF             = wxNewId();
+int id_et_EOLCR               = wxNewId();
+int id_et_EOLLF               = wxNewId();
+int id_et_Fold1               = wxNewId();
+int id_et_Fold2               = wxNewId();
+int id_et_Fold3               = wxNewId();
+int id_et_Fold4               = wxNewId();
+int id_et_Fold5               = wxNewId();
+int id_et_Unfold1             = wxNewId();
+int id_et_Unfold2             = wxNewId();
+int id_et_Unfold3             = wxNewId();
+int id_et_Unfold4             = wxNewId();
+int id_et_Unfold5             = wxNewId();
+int id_et_align_others        = wxNewId();
+int id_et_align_auto          = wxNewId();
+int id_et_SuppressInsertKey   = wxNewId();
+int id_et_ConvertBraces       = wxNewId();
+int id_et_CenterCaret         = wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -113,8 +115,10 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_Unfold5, EditorTweaks::OnUnfold)
 
     EVT_MENU(id_et_SuppressInsertKey, EditorTweaks::OnSuppressInsert)
-    EVT_MENU(id_et_ConvertBraces, EditorTweaks::OnConvertBraces)
-    EVT_MENU(id_et_align_others, EditorTweaks::OnAlignOthers)
+    EVT_MENU(id_et_ConvertBraces,     EditorTweaks::OnConvertBraces)
+    EVT_MENU(id_et_CenterCaret,       EditorTweaks::OnCenterCaret)
+    EVT_MENU(id_et_align_others,      EditorTweaks::OnAlignOthers)
+    EVT_MENU(id_et_align_auto,        EditorTweaks::OnAlignAuto)
 END_EVENT_TABLE()
 
 // constructor
@@ -178,8 +182,9 @@ void EditorTweaks::OnAttach()
         AlignerMenuEntries.push_back(e);
         Connect(e.id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
-    m_suppress_insert=cfg->ReadBool(_("/suppress_insert_key"),false);
-    m_convert_braces=cfg->ReadBool(_("/convert_braces"),false);
+    m_suppress_insert = cfg->ReadBool(wxT("/suppress_insert_key"), false);
+    m_convert_braces  = cfg->ReadBool(wxT("/convert_braces"),      false);
+    m_center_caret    = cfg->ReadBool(wxT("/center_caret"),        false);
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -214,8 +219,9 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     cfg->Write(_T("/aligner/saved_entries"),i);
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
-    cfg->Write(_("/suppress_insert_key"),m_suppress_insert);
-    cfg->Write(_("/convert_braces"),m_convert_braces);
+    cfg->Write(wxT("/suppress_insert_key"), m_suppress_insert);
+    cfg->Write(wxT("/convert_braces"),      m_convert_braces);
+    cfg->Write(wxT("/center_caret"),        m_center_caret);
 }
 
 cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
@@ -279,15 +285,16 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->AppendSeparator();
     wxMenu *eolmenu=new wxMenu();
     eolmenu->AppendRadioItem( id_et_EOLCRLF, _( "CR LF" ), _( "Carriage Return - Line Feed (Windows Default)" ) );
-    eolmenu->AppendRadioItem( id_et_EOLCR, _( "CR" ), _( "Carriage Return (Mac Default)" ) );
-    eolmenu->AppendRadioItem( id_et_EOLLF, _( "LF" ), _( "Line Feed (Unix Default)" ) );
+    eolmenu->AppendRadioItem( id_et_EOLCR,   _( "CR" ),    _( "Carriage Return (Mac Default)" ) );
+    eolmenu->AppendRadioItem( id_et_EOLLF,   _( "LF" ),    _( "Line Feed (Unix Default)" ) );
     submenu->Append(wxID_ANY,_("End-of-Line Mode"),eolmenu);
-    submenu->AppendCheckItem( id_et_ShowEOL, _( "Show EOL Chars" ), _( "Show End-of-Line Characters" ) );
+    submenu->AppendCheckItem( id_et_ShowEOL,    _( "Show EOL Chars" ),            _( "Show End-of-Line Characters" ) );
     submenu->Append( id_et_StripTrailingBlanks, _( "Strip Trailing Blanks Now" ), _( "Strip trailing blanks from each line" ) );
-    submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ), _( "Convert End-of-Line Characters to the Active Setting" ) );
+    submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ),  _( "Convert End-of-Line Characters to the Active Setting" ) );
     submenu->AppendSeparator();
-    submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"), _("Disable toggle between insert and overwrite mode using the insert key") );
-    submenu->AppendCheckItem( id_et_ConvertBraces, _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
+    submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"),     _("Disable toggle between insert and overwrite mode using the insert key") );
+    submenu->AppendCheckItem( id_et_ConvertBraces,     _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
+    submenu->AppendCheckItem( id_et_CenterCaret,       _("Center Caret"),            _("Scroll the editor so the caret is always near the center") );
 
 
     wxMenu *foldmenu = 0;
@@ -358,8 +365,9 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_EOLCR,ed->GetControl()->GetEOLMode()==wxSCI_EOL_CR);
     submenu->Check(id_et_EOLLF,ed->GetControl()->GetEOLMode()==wxSCI_EOL_LF);
     submenu->Check(id_et_ShowEOL,ed->GetControl()->GetViewEOL());
-    submenu->Check(id_et_SuppressInsertKey,m_suppress_insert);
-    submenu->Check(id_et_ConvertBraces,m_convert_braces);
+    submenu->Check(id_et_SuppressInsertKey, m_suppress_insert);
+    submenu->Check(id_et_ConvertBraces,     m_convert_braces);
+    submenu->Check(id_et_CenterCaret,       m_center_caret);
 }
 
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
@@ -425,11 +433,17 @@ void EditorTweaks::OnEditorClose(CodeBlocksEvent& /*event*/)
 
 void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 {
-    if (m_suppress_insert && event.GetKeyCode()==WXK_INSERT && event.GetModifiers()==wxMOD_NONE)
+    int keyCode = event.GetKeyCode();
+    keyCode = (keyCode == WXK_NUMPAD_UP   ? WXK_UP :
+               keyCode == WXK_NUMPAD_DOWN ? WXK_DOWN : keyCode);
+    if (!( (keyCode == WXK_UP || keyCode == WXK_DOWN)
+           && event.GetModifiers() == wxMOD_CONTROL )) // do not interfere on Ctrl up/down
+        DoBufferEditorPos(keyCode == WXK_UP ? -1 : keyCode == WXK_DOWN ? 1 : 0);
+    if (m_suppress_insert && keyCode == WXK_INSERT && event.GetModifiers() == wxMOD_NONE)
         event.Skip(false);
     else
         event.Skip(true);
-    if (m_convert_braces && event.GetKeyCode() == WXK_DELETE && (event.GetModifiers()==wxMOD_NONE || event.GetModifiers()==wxMOD_SHIFT))
+    if (m_convert_braces && keyCode == WXK_DELETE && (event.GetModifiers() == wxMOD_NONE || event.GetModifiers() == wxMOD_SHIFT))
     {
         event.Skip(true);
         cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -541,6 +555,11 @@ void EditorTweaks::OnConvertBraces(wxCommandEvent& event)
     m_convert_braces = event.IsChecked();
 }
 
+void EditorTweaks::OnCenterCaret(wxCommandEvent& event)
+{
+    m_center_caret = event.IsChecked();
+}
+
 //void EditorTweaks::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 //{
 //}
@@ -573,14 +592,15 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     for ( unsigned int i = 0; i < AlignerMenuEntries.size() ; i++ )
         alignerMenu->Append(AlignerMenuEntries[i].id, AlignerMenuEntries[i].MenuName + _T("\t")  + _T("[") + AlignerMenuEntries[i].ArgumentString + _T("]"));
     alignerMenu->AppendSeparator();
-    alignerMenu->Append(id_et_align_others, _T("more ..."));
+    alignerMenu->Append(id_et_align_auto,   _("Auto"));
+    alignerMenu->Append(id_et_align_others, _("More ..."));
 
     // attach aligner menu
     menu->AppendSeparator();
     menu->Append(wxID_ANY, _T("Aligner"), alignerMenu);
 
     return; // DISABLED ALL OF THE STUFF BELOW (IT IS ALREADY IN THE MAIN MENU BAR)
-
+#if 0
     // build "editor tweaks" menu
     wxMenu *submenu=new wxMenu(); //_("Editor Tweaks")
 
@@ -642,7 +662,7 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ), _( "Convert End-of-Line Characters to the Active Setting" ) );
 
     menu->Append(wxID_ANY, _T("Editor Tweaks"), submenu);
-
+#endif
 }
 
 void EditorTweaks::OnWordWrap(wxCommandEvent &/*event*/)
@@ -945,6 +965,86 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
     }
 }
 
+void EditorTweaks::OnAlignAuto(wxCommandEvent& WXUNUSED(event))
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+    int line_start = wxSCI_INVALID_POSITION;
+    int line_end   = wxSCI_INVALID_POSITION;
+    if (!GetSelectionLines(line_start, line_end))
+        return;
+    wxArrayString lines;
+    for (int i = line_start; i <= line_end; ++i)
+        lines.Add(stc->GetLine(i));
+    if (lines.GetCount() < 2)
+        return;
+    int lexer = stc->GetLexer();
+    wxArrayString out;
+    for (size_t i = 0; i < lines.GetCount(); ++i)
+    {
+        lines[i].Replace(wxT("\t"), wxT(" "));
+        // buffer assignment operators and commas in C++
+        if (lexer == wxSCI_LEX_CPP)
+        {
+            const wxString op = wxT("=<>!+-*/%&^| "); // do not split compound operators
+            for (int j = lines[i].Length() - 2; j >= 0; --j)
+            {
+                if (   lines[i][j] == wxT(',')
+                    || (lines[i][j] == wxT('=') && lines[i][j + 1] != wxT('='))
+                    || (lines[i][j + 1] == wxT('=') && op.Find(lines[i][j]) == wxNOT_FOUND) )
+                {
+                    lines[i].insert(j + 1, wxT(' '));
+                }
+            }
+        }
+        // initialize output strings with their current indentation
+        out.Add(ed->GetLineIndentString(line_start + i));
+    }
+    // loop through number of columns
+    size_t numCols = 1;
+    for (size_t i = 0; i < numCols; ++i)
+    {
+        // add the next token
+        for (size_t j = 0; j < lines.GetCount(); ++j)
+        {
+            wxArrayString lnParts = GetArrayFromString(lines[j], wxT(" "));
+            if (i < lnParts.GetCount())
+                out[j].Append(lnParts[i]);
+            // set actual number of columns
+            if (lnParts.GetCount() > numCols)
+                numCols = lnParts.GetCount();
+        }
+        // find the column size
+        size_t colPos = 0;
+        for (size_t j = 0; j < out.GetCount(); ++j)
+        {
+            if (out[j].Length() > colPos)
+                colPos = out[j].Length();
+        }
+        // buffer output lines to column size + 1
+        for (size_t j = 0; j < out.GetCount(); ++j)
+        {
+            while (out[j].Length() <= colPos)
+                out[j].Append(wxT(' '));
+        }
+    }
+    // replace only the lines that have been modified
+    stc->BeginUndoAction();
+    for (size_t i = 0; i < out.GetCount(); ++i)
+    {
+        stc->SetSelectionVoid(stc->PositionFromLine(line_start + i),
+                              stc->GetLineEndPosition(line_start + i));
+        if (stc->GetSelectedText() != out[i].Trim())
+            stc->ReplaceSelection(out[i]);
+    }
+    stc->LineEnd(); // remove selection (if last line was not replaced)
+    stc->EndUndoAction();
+}
+
 void EditorTweaks::AlignToString(const wxString AlignmentString)
 {
     cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
@@ -1060,3 +1160,18 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
     return found_lines;
 }
 
+void EditorTweaks::DoBufferEditorPos(int delta)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc || stc->LinesOnScreen() < 10) // ignore small editors
+        return;
+    const int buffer = (m_center_caret ? (stc->LinesOnScreen() >> 1) - 2 : 4);
+    const int dist   = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - stc->GetFirstVisibleLine();
+    if (dist < buffer)
+        stc->LineScroll(0, -1);
+    else if (dist > stc->LinesOnScreen() - buffer)
+        stc->LineScroll(0, 1);
+}
