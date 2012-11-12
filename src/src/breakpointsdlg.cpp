@@ -183,10 +183,10 @@ bool BreakpointsDlg::AddBreakpoint(cbDebuggerPlugin *plugin, const wxString& fil
 
 struct FindBreakpointPred
 {
-    FindBreakpointPred(cbDebuggerPlugin *plugin, const wxString &filename, int line) :
-        plugin(plugin),
-        filename(filename),
-        line(line)
+    FindBreakpointPred(cbDebuggerPlugin *plugin_in, const wxString &filename_in, int line_in) :
+        plugin(plugin_in),
+        filename(filename_in),
+        line(line_in)
     {}
     bool operator()(const BreakpointsDlg::Item &item) const
     {

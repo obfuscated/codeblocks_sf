@@ -266,14 +266,10 @@ struct cbEditorInternalData
         // check that feature is enabled,
         // selected text has a minimal length of 3 and contains no spaces
         if ( cfg->ReadBool(_T("/highlight_occurrence/enabled"), true)
-#ifdef MORE_GENEROUS_HIGHLIGHTING
-				&& selectedText.Trim().Trim(false).Len() > 0
-#else
                 && selectedText.Len() > 2        // if there is no text selected (a == b), it stops here and does not hog the cpu further
                 && selectedText.Find(_T(' ')) == wxNOT_FOUND
                 && selectedText.Find(_T('\t')) == wxNOT_FOUND
                 && selectedText.Find(_T('\n')) == wxNOT_FOUND
-#endif
 			)
         {
             wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));

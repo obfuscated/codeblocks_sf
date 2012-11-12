@@ -3329,7 +3329,7 @@ void MainFrame::OnEditInsertNewLine(wxCommandEvent& event)
         ed->GetControl()->NewLine();
 }
 
-void MainFrame::OnEditGotoLineEnd(wxCommandEvent& event)
+void MainFrame::OnEditGotoLineEnd(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
@@ -4552,9 +4552,9 @@ void MainFrame::OnSettingsCompiler(cb_unused wxCommandEvent& event)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        CodeBlocksEvent event(cbEVT_SETTINGS_CHANGED);
-        event.SetInt(cbSettingsType::Compiler);
-        Manager::Get()->ProcessEvent(event);
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(cbSettingsType::Compiler);
+        Manager::Get()->ProcessEvent(event2);
     }
 }
 
@@ -4564,9 +4564,9 @@ void MainFrame::OnSettingsDebugger(cb_unused wxCommandEvent& event)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        CodeBlocksEvent event(cbEVT_SETTINGS_CHANGED);
-        event.SetInt(cbSettingsType::Debugger);
-        Manager::Get()->ProcessEvent(event);
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(cbSettingsType::Debugger);
+        Manager::Get()->ProcessEvent(event2);
     }
 }
 

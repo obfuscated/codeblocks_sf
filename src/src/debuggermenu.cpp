@@ -926,7 +926,7 @@ void DebuggerToolbarHandler::OnStop(cb_unused wxCommandEvent& event)
     }
     else
     {
-        wxCommandEvent event(wxEVT_COMMAND_TOOL_CLICKED, idMenuStop);
-        m_Toolbar->GetEventHandler()->ProcessEvent(event);
+        wxCommandEvent event2(wxEVT_COMMAND_TOOL_CLICKED, idMenuStop);
+        m_Toolbar->GetEventHandler()->ProcessEvent(event2);
     }
 }

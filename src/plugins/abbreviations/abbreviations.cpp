@@ -143,17 +143,19 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
     const int endPos = control->WordEndPosition(curPos, true);
 
     const wxString keyword = control->GetTextRange(startPos, endPos);
-    AutoCompleteMap::const_iterator it = acm.find(keyword);
+    AutoCompleteMap::const_iterator acm_it = acm.find(keyword);
 
-    if (it != acm.end())
+    if (acm_it != acm.end())
+    {
         DoAutoComplete(editor);
+	}
     else
     {
         wxArrayString items;
-        for (AutoCompleteMap::const_iterator it = acm.begin(); it != acm.end(); ++it)
+        for (acm_it = acm.begin(); acm_it != acm.end(); ++acm_it)
         {
-            if (it->first.Lower().StartsWith(keyword))
-                items.Add(it->first);
+            if (acm_it->first.Lower().StartsWith(keyword))
+                items.Add(acm_it->first);
         }
         items.Sort();
         wxString itemsStr = GetStringFromArray(items, _T(" "));

@@ -122,8 +122,8 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         for (size_t i = 0; i < paths.GetCount(); ++i)
         {
             tree->GetFileMatches(paths[i], result, true, true);
-            for (TokenFileSet::const_iterator it = result.begin(); it != result.end(); ++it)
-                m_CurrentFileSet.insert(*it);
+            for (TokenFileSet::const_iterator tfs_it = result.begin(); tfs_it != result.end(); ++tfs_it)
+                m_CurrentFileSet.insert(*tfs_it);
         }
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
@@ -134,10 +134,10 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
         cbProject* prj = static_cast<cbProject*>(m_UserData);
-        for (FilesList::const_iterator it = prj->GetFilesList().begin();
-                                       it != prj->GetFilesList().end(); ++it)
+        for (FilesList::const_iterator fl_it = prj->GetFilesList().begin();
+                                       fl_it != prj->GetFilesList().end(); ++fl_it)
         {
-            ProjectFile* curFile = *it;
+            ProjectFile* curFile = *fl_it;
             if (!curFile)
                 continue;
 
@@ -664,9 +664,9 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     const TokenIdxSet* tis = tt->GetGlobalNameSpaces();
-    for (TokenIdxSet::const_iterator it = tis->begin(); it != tis->end(); ++it)
+    for (TokenIdxSet::const_iterator tis_it = tis->begin(); tis_it != tis->end(); ++tis_it)
     {
-        const Token* token = tt->at(*it);
+        const Token* token = tt->at(*tis_it);
         if (token && token->m_IsLocal && TokenMatchesFilter(token, true))
         {
             if      (!hasGF && token->m_TokenKind == tkFunction)
@@ -1064,20 +1064,20 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token* token, bool lock
 
         // we got to check all children of this token (recursively)
         // to see if any of them matches the filter...
-        for (TokenIdxSet::const_iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+        for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin(); tis_it != token->m_Children.end(); ++tis_it)
         {
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            const Token* token = m_TokenTree->at(*it);
+            const Token* curr_token = m_TokenTree->at(*tis_it);
 
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-            if (!token)
+            if (!curr_token)
                 break;
 
-            if ( TokenMatchesFilter(token, locked) )
+            if ( TokenMatchesFilter(curr_token, locked) )
                 return true;
         }
     }
@@ -1099,9 +1099,9 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(const Token* token, 
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    for (TokenIdxSet::const_iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+    for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin(); tis_it != token->m_Children.end(); ++tis_it)
     {
-        const Token* child = tree->at(*it);
+        const Token* child = tree->at(*tis_it);
         if (child->m_TokenKind & kind)
         {
             isOfKind = true;
@@ -1207,6 +1207,9 @@ void ClassBrowserBuilderThread::SelectSavedItem()
 
     wxTreeItemId parent = m_CCTreeCtrlTop->GetRootItem();
 
+	// TODO: (Martin) wxTreeCtrl documentation states that cookie is for re-entrancy an must be unique for all calls that belong together.
+	//        So, this needs to be initialized to some value?
+	//        (Which value, though... I'm inclined to just use 1 and 2 for here and below... but no clue if you've used those elsewhere)
     wxTreeItemIdValue cookie;
     wxTreeItemId item = m_CCTreeCtrlTop->GetFirstChild(parent, cookie);
 
@@ -1219,9 +1222,10 @@ void ClassBrowserBuilderThread::SelectSavedItem()
             && wxStrcmp(data->m_TokenName, saved->m_TokenName) == 0
             && data->m_TokenKind == saved->m_TokenKind )
         {
-            wxTreeItemIdValue cookie;
+			// TODO: (Martin) see above. Different value here, I'd assume?
+            wxTreeItemIdValue cookie2;
             parent = item;
-            item   = m_CCTreeCtrlTop->GetFirstChild(item, cookie);
+            item   = m_CCTreeCtrlTop->GetFirstChild(item, cookie2);
             m_SelectedPath.pop_front();
         }
         else

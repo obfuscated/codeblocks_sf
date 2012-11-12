@@ -590,7 +590,7 @@ void ParserThread::DoParse()
                     // we have to return now...
                     if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     {
-                        m_Tokenizer.SetState(oldState);
+                        m_Tokenizer.SetState(oldState);  // This uses the top-level oldState (renamed shadowed versions below)
                         return;
                     }
                 }
@@ -610,7 +610,7 @@ void ParserThread::DoParse()
 
             case ParserConsts::hash_chr:
                 {
-                    TokenizerState oldState = m_Tokenizer.GetState();
+                    TokenizerState oldState2 = m_Tokenizer.GetState();
                     m_Tokenizer.SetState(tsSkipNone);
 
                     token = m_Tokenizer.GetToken();
@@ -624,7 +624,7 @@ void ParserThread::DoParse()
                         m_Tokenizer.SkipToEOL(false);
 
                     m_Str.Clear();
-                    m_Tokenizer.SetState(oldState);
+                    m_Tokenizer.SetState(oldState2);
                 }
                 break;
 
@@ -891,7 +891,7 @@ void ParserThread::DoParse()
             }
             else if (token == ParserConsts::kw_operator)
             {
-                TokenizerState oldState = m_Tokenizer.GetState();
+                TokenizerState oldState2 = m_Tokenizer.GetState();
                 m_Tokenizer.SetState(tsSkipNone);
                 wxString func = token;
                 while (IS_ALIVE)
@@ -916,7 +916,7 @@ void ParserThread::DoParse()
                     else
                         break;
                 }
-                m_Tokenizer.SetState(oldState);
+                m_Tokenizer.SetState(oldState2);
                 HandleFunction(func, true);
                 m_Str.Clear();
             }
@@ -2039,10 +2039,12 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineEnd = m_Tokenizer.GetLineNumber();
 
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
-                if (!m_IsBuffer)
+                if (!m_IsBuffer)  // TODO: (Martin) Compiler suggested braces around the single TRACE statement. Since the if() already doesn't correspond to above comment,
+                                  //       I'm feeling uneasy. Please check whether the semantics (break?) are as intended, or whether the compiler found a bug.
+                {
                     TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%u)."),
                           name.wx_str(), (lineEnd-lineStart), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
-
+				}
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -2372,7 +2374,7 @@ void ParserThread::HandleTypedef()
     {
         while (components.size() > 1)
         {
-            wxString token = components.front();
+            token = components.front();
             components.pop();
 
             if (!ancestor.IsEmpty())

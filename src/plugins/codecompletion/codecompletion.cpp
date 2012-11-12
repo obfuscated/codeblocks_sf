@@ -908,7 +908,7 @@ int CodeCompletion::CodeComplete()
                             continue;
 
                         unique_strings.insert(token->m_Aliases[i]);
-                        wxString tmp;
+                        tmp.Empty();
                         tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
                         items.Add(tmp);
                     }
@@ -1174,13 +1174,13 @@ void CodeCompletion::CodeCompleteIncludes()
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
         {
-            SystemHeadersMap::const_iterator it = m_SystemHeadersMap.find(incDirs[i]);
-            if (it != m_SystemHeadersMap.end())
+            SystemHeadersMap::const_iterator shm_it = m_SystemHeadersMap.find(incDirs[i]);
+            if (shm_it != m_SystemHeadersMap.end())
             {
-                const StringSet& headers = it->second;
-                for (StringSet::const_iterator it = headers.begin(); it != headers.end(); ++it)
+                const StringSet& headers = shm_it->second;
+                for (StringSet::const_iterator ss_it = headers.begin(); ss_it != headers.end(); ++ss_it)
                 {
-                    const wxString& file = *it;
+                    const wxString& file = *ss_it;
                     if (file.StartsWith(filename))
                         files.insert(file);
                 }
@@ -1355,16 +1355,26 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     cbStyledTextCtrl* control = editor->GetControl();
 
-    if      (event.GetEventType() == wxEVT_SCI_CHARADDED)
+    if(event.GetEventType() == wxEVT_SCI_CHARADDED)
+    {
         TRACE(_T("wxEVT_SCI_CHARADDED"));
-    else if (event.GetEventType() == wxEVT_SCI_CHANGE)
+	}
+    else if(event.GetEventType() == wxEVT_SCI_CHANGE)
+    {
         TRACE(_T("wxEVT_SCI_CHANGE"));
-    else if (event.GetEventType() == wxEVT_SCI_KEY)
-        TRACE(_T("wxEVT_SCI_KEY"));
-    else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
+	}
+    else if(event.GetEventType() == wxEVT_SCI_KEY)
+	{
+		TRACE(_T("wxEVT_SCI_KEY"));
+	}
+    else if(event.GetEventType() == wxEVT_SCI_MODIFIED)
+    {
         TRACE(_T("wxEVT_SCI_MODIFIED"));
-    else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
+	}
+    else if(event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
+    {
         TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION"));
+	}
 
     if ((event.GetKey() == '.') && control->AutoCompActive())
         control->AutoCompCancel();
@@ -1845,7 +1855,7 @@ void CodeCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent& event)
     GotoFunctionPrevNext(); // prev function
 }
 
-void CodeCompletion::OnGotoNextFunction(wxCommandEvent& event)
+void CodeCompletion::OnGotoNextFunction(cb_unused wxCommandEvent& event)
 {
     GotoFunctionPrevNext(true); // next function
 }

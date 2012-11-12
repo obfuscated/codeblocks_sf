@@ -313,10 +313,11 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
                                                   _T("msvctk"),
                                                   _T("msvc8"),
                                                   _T("msvc10") };
+
                     bool msvcFound = false;
-                    for (int i = 0; i < 4; ++i)
+                    for (unsigned int which_msvc = 0; which_msvc < array_size(msvcIds); ++which_msvc)
                     {
-                        Compiler* vcComp = CompilerFactory::GetCompiler(msvcIds[i]);
+                        Compiler* vcComp = CompilerFactory::GetCompiler(msvcIds[which_msvc]);
                         if (vcComp)
                         {
                             if (vcComp->AutoDetectInstallationDir() == adrDetected)

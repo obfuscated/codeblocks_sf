@@ -58,7 +58,7 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window
 }
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs)
-    : logger(rhs.logger), logIndex(rhs.logIndex), icon(rhs.icon), title(rhs.title), window(rhs.window)
+    : wxEvent(wxID_ANY, rhs.GetEventType()), logger(rhs.logger), logIndex(rhs.logIndex), icon(rhs.icon), title(rhs.title), window(rhs.window)
 {
 }
 

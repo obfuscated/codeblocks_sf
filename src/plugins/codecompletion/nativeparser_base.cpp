@@ -158,8 +158,8 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
             result.insert(id);
 
             // insert enumerators
-            for (TokenIdxSet::const_iterator it2 = token->m_Children.begin(); it2 != token->m_Children.end(); it2++)
-                result.insert(*it2);
+            for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin(); tis_it != token->m_Children.end(); tis_it++)
+                result.insert(*tis_it);
 
             continue; // done with this token
         }
@@ -255,16 +255,16 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
                 if (type_result.size() > 1)
                 {
                     // if we have more than one result, recurse for all of them
-                    TokenIdxSet::const_iterator it = type_result.begin();
-                    ++it;
-                    while (it != type_result.end())
+                    TokenIdxSet::const_iterator tis_it = type_result.begin();
+                    ++tis_it;
+                    while (tis_it != type_result.end())
                     {
                         std::queue<ParserComponent> lcomp = components;
                         // All functions that call the recursive FindAIMatches should already entered a critical section.
-                        FindAIMatches(tree, lcomp, result, *it, isPrefix,
+                        FindAIMatches(tree, lcomp, result, *tis_it, isPrefix,
                                       caseSensitive, use_inheritance,
                                       kindMask, search_scope);
-                        ++it;
+                        ++tis_it;
                     }
                 }
 

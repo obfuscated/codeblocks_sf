@@ -108,7 +108,7 @@ void AbbreviationsConfigPanel::AutoCompUpdate(int index)
     }
 }
 
-void AbbreviationsConfigPanel::OnAutoCompAdd(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnAutoCompAdd(cb_unused wxCommandEvent& event)
 {
     wxString key = wxGetTextFromUser(_("Please enter the new keyword"), _("Add keyword"));
     if (!key.IsEmpty())
@@ -127,7 +127,7 @@ void AbbreviationsConfigPanel::OnAutoCompAdd(wxCommandEvent& event)
     }
 }
 
-void AbbreviationsConfigPanel::OnAutoCompDelete(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnAutoCompDelete(cb_unused wxCommandEvent& event)
 {
     if (m_Keyword->GetSelection() == -1)
         return;
@@ -155,7 +155,7 @@ void AbbreviationsConfigPanel::OnAutoCompDelete(wxCommandEvent& event)
     }
 }
 
-void AbbreviationsConfigPanel::OnAutoCompKeyword(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnAutoCompKeyword(cb_unused wxCommandEvent& event)
 {
     if (m_Keyword->GetSelection() == m_LastAutoCompKeyword)
         return;
