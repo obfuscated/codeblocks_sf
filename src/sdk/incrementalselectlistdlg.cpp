@@ -94,7 +94,7 @@ IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const Incre
     m_Text = XRCCTRL(*this, "txtSearch", wxTextCtrl);
     m_List = XRCCTRL(*this, "lstItems", wxListBox);
 
-    myHandler* m_pMyEvtHandler = new myHandler(this, m_Text, m_List);
+    myHandler* m_pMyEvtHandler = new myHandler(this, m_Text, m_List); // TODO: find out whether this is an unluckily named local shadowing a member, or whether the intent was to set the member
     m_Text->SetNextHandler(m_pMyEvtHandler);
     m_List->SetNextHandler(m_pMyEvtHandler);
 

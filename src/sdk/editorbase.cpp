@@ -219,7 +219,7 @@ wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
             EditorBase* other = Manager::Get()->GetEditorManager()->GetEditor(i);
             if (!other || other == this)
                 continue;
-            int id = idSwitchFile1+i;
+            id = idSwitchFile1+i;
             m_SwitchTo[id] = other;
             menu->Append(id, other->GetShortName());
         }

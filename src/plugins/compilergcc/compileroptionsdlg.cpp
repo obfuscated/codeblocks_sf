@@ -221,8 +221,8 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
             // look in targets
             for (int x = 0; x < m_pProject->GetBuildTargetsCount(); ++x)
             {
-                ProjectBuildTarget* target = m_pProject->GetBuildTarget(x);
-                hasBuildScripts = target->GetBuildScripts().GetCount() != 0;
+                ProjectBuildTarget* curr_target = m_pProject->GetBuildTarget(x);
+                hasBuildScripts = curr_target->GetBuildScripts().GetCount() != 0;
                 if (hasBuildScripts)
                     break;
             }
@@ -693,9 +693,9 @@ void CompilerOptionsDlg::TextToOptions()
     }
 
     XRCCTRL(*this, "lstLibs", wxListBox)->Clear();
-    for (unsigned int i = 0; i < m_LinkLibs.GetCount(); ++i)
+    for (unsigned int j = 0; j < m_LinkLibs.GetCount(); ++j)
     {
-        XRCCTRL(*this, "lstLibs", wxListBox)->Append(m_LinkLibs[i]);
+        XRCCTRL(*this, "lstLibs", wxListBox)->Append(m_LinkLibs[j]);
     }
     m_LinkLibs.Clear();
 } // TextToOptions
@@ -2225,11 +2225,11 @@ void CompilerOptionsDlg::OnAdvancedClick(cb_unused wxCommandEvent& event)
     {
         wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
         int compilerIdx = cmb->GetSelection();
-        AdvancedCompilerOptionsDlg dlg(this, CompilerFactory::GetCompiler(compilerIdx)->GetID());
-        PlaceWindow(&dlg);
-        dlg.ShowModal();
+        AdvancedCompilerOptionsDlg dlg2(this, CompilerFactory::GetCompiler(compilerIdx)->GetID());
+        PlaceWindow(&dlg2);
+        dlg2.ShowModal();
         // check if dirty
-        if (dlg.IsDirty())
+        if (dlg2.IsDirty())
         {
 //            m_bDirty = true;  // TO DO : Activate when implemented in the adv dialog
         }

@@ -2109,8 +2109,8 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     }
 
     wxString wild;
-    for (unsigned i = 0; i < m_pFileGroups->GetGroupsCount(); i++)
-        wild += m_pFileGroups->GetFileMasks(i);
+    for (unsigned fm_idx = 0; fm_idx < m_pFileGroups->GetGroupsCount(); fm_idx++)
+        wild += m_pFileGroups->GetFileMasks(fm_idx);
 
     MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
     PlaceWindow(&dlg);

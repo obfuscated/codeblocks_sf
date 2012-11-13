@@ -262,15 +262,15 @@ wxString ListCtrlLogger::GetItemAsText(long item) const
 
     wxString text;
 
-    wxListItem info;
-    info.m_itemId = item;
-    info.m_mask = wxLIST_MASK_TEXT;
+    wxListItem li_info;
+    li_info.m_itemId = item;
+    li_info.m_mask = wxLIST_MASK_TEXT;
 
     for (size_t i = 0; i < titles.GetCount(); ++i)
     {
-        info.m_col = i;
-        control->GetItem(info);
-        text << info.m_text << _T('|');
+        li_info.m_col = i;
+        control->GetItem(li_info);
+        text << li_info.m_text << _T('|');
     }
     return text;
 } // end of GetItemAsText

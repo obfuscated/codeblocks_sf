@@ -251,7 +251,6 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     // read them all in the array
     for(size_t idx = 0; idx < sizeof(IdxToFileType)/sizeof(*IdxToFileType); ++ idx)
     {
-        wxString key;
         key.Printf(_T("/default_code/set%d"), IdxToFileType[idx]);
         m_DefaultCode.Add(cfg->Read(key, wxEmptyString));
     }// end for : idx

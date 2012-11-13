@@ -751,8 +751,8 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
                         encoding = (wxFontEncoding)i;
                         if (encoding == possibleEncoding)
                             continue; // skip if same as what was asked
-                        wxCSConv conv(encoding);
-                        strOut = wxString(strIn, conv);
+                        wxCSConv csconv(encoding);
+                        strOut = wxString(strIn, csconv);
                         if (strOut.Length() != 0)
                             break; // got it!
                     }

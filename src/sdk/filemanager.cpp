@@ -403,8 +403,8 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         else
         {
             // try wxCSConv, if nothing else works
-            wxCSConv conv(encoding);
-            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+            wxCSConv csconv(encoding);
+            mbBuff = csconv.cWC2MB(data.c_str(), inlen, &outlen);
         }
         delete[] tmp;
     }

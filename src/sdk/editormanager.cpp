@@ -1280,7 +1280,7 @@ bool EditorManager::SwapActiveHeaderSource()
     if (cbMessageBox(_("The file seems not to exist. Do you want to create it?"),
                 _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
-        cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+        project = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (project)
             wxSetWorkingDirectory(project->GetBasePath());
 
@@ -2717,9 +2717,9 @@ void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
         ed->Unsplit();
     else if (id >= idNBSwitchFile1 && id <= idNBSwitchFileMax)
     {
-        EditorBase* ed = GetEditor(id - idNBSwitchFile1);
-        if (ed)
-            SetActiveEditor(ed);
+        EditorBase* eb = GetEditor(id - idNBSwitchFile1);
+        if (eb)
+            SetActiveEditor(eb);
     }
 }
 
@@ -2966,7 +2966,7 @@ void EditorManager::OnSwapHeaderSource(cb_unused wxCommandEvent& event)
     Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
 }
 
-void EditorManager::OnOpenContainingFolder(wxCommandEvent& event)
+void EditorManager::OnOpenContainingFolder(cb_unused wxCommandEvent& event)
 {
     Manager::Get()->GetEditorManager()->OpenContainingFolder();
 }
@@ -3026,7 +3026,7 @@ void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnShowFileInTree(wxCommandEvent& event)
+void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
 {
     ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
