@@ -972,16 +972,16 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
         {
             wxKeyBind* pkbind = pcmd->GetShortcut(kk);
             if (pkbind)
-            {   wxString strKeyCode = wxKeyBind::KeyCodeToString(pkbind->GetKeyCode());
+            {   wxString strKeyCodeLoc = wxKeyBind::KeyCodeToString(pkbind->GetKeyCode());
                 if (pkbind->GetModifiers() & wxACCEL_SHIFT)
-                    strKeyCode.Prepend(_T("Shift-"));
+                    strKeyCodeLoc.Prepend(_T("Shift-"));
                 if (pkbind->GetModifiers() & wxACCEL_CTRL)
-                    strKeyCode.Prepend(_T("Ctrl-"));
+                    strKeyCodeLoc.Prepend(_T("Ctrl-"));
                 if (pkbind->GetModifiers() & wxACCEL_ALT)
-                    strKeyCode.Prepend(_T("Alt-"));
+                    strKeyCodeLoc.Prepend(_T("Alt-"));
                 #if defined(LOGGING)
                 LOGIT( _T("keybind[%d.%d] for [%s] is [%s]"),
-                        id, kk, name.wx_str(), strKeyCode.wx_str());
+                        id, kk, name.wx_str(), strKeyCodeLoc.wx_str());
                 #endif
             }
             else kbOk = false;

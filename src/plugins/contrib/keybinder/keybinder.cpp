@@ -245,6 +245,8 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 		res << wxT("."); break;
 	case WXK_NUMPAD_DIVIDE:
 		res << wxT("/"); break;
+    default:
+        break;
 	}
 
 	return res;
@@ -1008,7 +1010,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             if ( (6 == menuItemKeyStr.Length())
                  && (menuItemKeyStr.StartsWith(_T("Ctrl-"))) )
             {
-                wxChar c = menuItemKeyStr.GetChar(5);
+                const wxChar c = menuItemKeyStr.GetChar(5);
                 switch(c)
                 {
                     case _T('C'):
@@ -1017,6 +1019,8 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
                         if (menuItemLabel.Matches(_T("Paste"))) continue;
                     case _T('S'):
                         if (menuItemLabel.Matches(_T("Cut"))) continue;
+                    default:
+                        break;
                 }
                 if ( (c == _T('C')) || (c == _T('V')) || (c == _T('X')) )
                     continue;
