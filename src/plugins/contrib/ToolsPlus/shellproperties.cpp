@@ -5,9 +5,12 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ShellCommandVec);
 
+namespace
+{
 wxString istr0(int i)
 {
-    return wxString::Format(_T("%i"),i);
+    return wxString::Format(_T("%i"), i);
+}
 }
 
 
@@ -86,12 +89,15 @@ bool CommandCollection::ExportConfig(const wxString &filename)
     return true;
 }
 
+namespace
+{
 wxString readconfigdata(wxString &configstr)
 {
-    configstr=configstr.AfterFirst(':');
-    wxString data=configstr.BeforeFirst('\n');
-    configstr=configstr.AfterFirst('\n');
+    configstr = configstr.AfterFirst(':');
+    const wxString data = configstr.BeforeFirst('\n');
+    configstr = configstr.AfterFirst('\n');
     return data;
+}
 }
 
 bool CommandCollection::ImportConfig(const wxString &filename)

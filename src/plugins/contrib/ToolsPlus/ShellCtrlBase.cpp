@@ -105,6 +105,8 @@ bool ShellManager::QueryClose(ShellCtrlBase* sh)
             return false;
         case wxID_NO:
             return false;
+        default:
+            break;
         }
     }
     return true;

@@ -362,6 +362,8 @@ void CmdConfigDialog::GetDialogItems()
         case 2:
             interp.mode=_T("");
             break;
+        default:
+            break;
     }
     interp.envvarset = m_envvars->GetStringSelection();
 }
