@@ -292,13 +292,13 @@ void ReopenEditor::OnViewList(wxCommandEvent& event)
         {
                 CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
                 Manager::Get()->ProcessEvent(evtShow);
-                CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-                Manager::Get()->ProcessEvent(event);
+                CodeBlocksLogEvent event2(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+                Manager::Get()->ProcessEvent(event2);
         }
         else
         {
-            CodeBlocksLogEvent event(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
-            Manager::Get()->ProcessEvent(event);
+            CodeBlocksLogEvent event2(cbEVT_HIDE_LOG_WINDOW, m_pListLog);
+            Manager::Get()->ProcessEvent(event2);
         }
     }
     else
@@ -333,10 +333,10 @@ void ReopenEditor::ShowList()
         wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
         wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("undo.png"), wxBITMAP_TYPE_PNG));
 
-        CodeBlocksLogEvent evt1(cbEVT_ADD_LOG_WINDOW, m_pListLog, _("Closed files list"), bmp);
-        Manager::Get()->ProcessEvent(evt1);
-        CodeBlocksLogEvent evt2(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-        Manager::Get()->ProcessEvent(evt2);
+        CodeBlocksLogEvent evt3(cbEVT_ADD_LOG_WINDOW, m_pListLog, _("Closed files list"), bmp);
+        Manager::Get()->ProcessEvent(evt3);
+        CodeBlocksLogEvent evt4(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+        Manager::Get()->ProcessEvent(evt4);
     }
     else
     {

@@ -93,6 +93,8 @@ void RegExDlg::ReleaseAll()
     m_visible_dialogs.clear();
 }
 
+namespace
+{
 /**
     @brief Makes the input string to be valid html string (replaces <,>,&," with &lt;,&gt;,&amp;,&quot; respectively)
     @param [inout] s - string that will be escaped
@@ -103,6 +105,7 @@ void cbEscapeHtml(wxString &s)
     s.Replace(wxT("<"), wxT("&lt;"));
     s.Replace(wxT(">"), wxT("&gt;"));
     s.Replace(wxT("\""), wxT("&quot;"));
+}
 }
 
 void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)

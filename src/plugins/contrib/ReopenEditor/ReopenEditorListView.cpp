@@ -43,8 +43,7 @@ END_EVENT_TABLE()
 
 ReopenEditorListView::ReopenEditorListView(const wxArrayString& titles, const wxArrayInt& widths):
     wxPanel(Manager::Get()->GetAppWindow()),
-    titles(titles),
-    widths(widths)
+    mTitles(titles)
 {
     //ctor
     m_pListControl = new wxListCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT/* | wxLC_SINGLE_SEL*/);
@@ -89,7 +88,7 @@ void ReopenEditorListView::Prepend(const wxArrayString& colValues, Logger::level
     if (!m_pListControl)
         return;
 
-    if (colValues.GetCount() == 0 || colValues.GetCount() > titles.GetCount())
+    if (colValues.GetCount() == 0 || colValues.GetCount() > mTitles.GetCount())
         return;
 
     m_pListControl->Freeze();
@@ -116,7 +115,7 @@ wxArrayString ReopenEditorListView::GetItemAsArray(long item) const
     info.m_itemId = item;
     info.m_mask = wxLIST_MASK_TEXT;
 
-    for (size_t i = 0; i < titles.GetCount(); ++i)
+    for (size_t i = 0; i < mTitles.GetCount(); ++i)
     {
         info.m_col = i;
         m_pListControl->GetItem(info);

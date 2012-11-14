@@ -29,8 +29,7 @@ class ReopenEditorListView : public wxPanel
         virtual void SetProject(long item, cbProject* prj) const;
     private:
         wxListCtrl* m_pListControl;
-        wxArrayString titles;
-        wxArrayInt widths;
+        wxArrayString mTitles;
         struct ListStyles
         {
             wxFont font;
@@ -38,7 +37,6 @@ class ReopenEditorListView : public wxPanel
         };
         ListStyles style[Logger::num_levels];
         void OnDoubleClick(wxListEvent& event);
-//        void OnRightClick(wxListEvent& event);
         void OnContextMenu(wxContextMenuEvent& /*event*/);
         void OnReopenItems(wxCommandEvent& event);
         void OnRemoveItems(wxCommandEvent& event);
@@ -48,10 +46,7 @@ class ReopenEditorListView : public wxPanel
         void DoOpen(wxString fname);
         void DoOpen(wxArrayString fnames);
 
-//        wxWindow* m_pPanel;
-
         DECLARE_EVENT_TABLE()
 };
 
 #endif // REOPENEDITORLISTVIEW_H
-
