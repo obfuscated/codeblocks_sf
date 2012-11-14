@@ -579,6 +579,8 @@ void ProcessingDlg::CheckFilter(
             CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
             break;
         }
+        default:
+            break;
     }
 }
 

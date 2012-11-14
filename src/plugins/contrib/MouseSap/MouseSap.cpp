@@ -475,13 +475,13 @@ void MouseSap::OnWindowOpen(wxEvent& event)
     // Have to do this especially for split windows since CodeBlocks does not have
     // events when opening/closing split windows
 
-    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+    wxWindow* Window = (wxWindow*)(event.GetEventObject());
 
     // Some code (at times) is not issuing event EVT_APP_STARTUP_DONE
     // so here we do it ourselves. If not initialized and this is the first
     // scintilla window, initialize now.
     if ( (not m_bEditorsAttached)
-        && ( pWindow->GetName().Lower() == wxT("sciwindow")) )
+        && ( Window->GetName().Lower() == wxT("sciwindow")) )
         OnAppStartupDoneInit();
 
     // Attach a split window (or any other window)

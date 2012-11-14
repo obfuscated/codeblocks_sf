@@ -99,25 +99,25 @@ void ProjectConfiguration::XmlWrite(TiXmlElement* Node,cbProject* Project)
         LibFinder->SetAttribute("disable_auto","1");
     }
 
-    for ( size_t i=0; i<m_GlobalUsedLibs.Count(); i++ )
+    for ( size_t i = 0; i < m_GlobalUsedLibs.Count(); ++i )
     {
         LibFinder->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name",cbU2C(m_GlobalUsedLibs[i]));
     }
 
-    for ( wxMultiStringMap::iterator i=m_TargetsUsedLibs.begin();
-          i!=m_TargetsUsedLibs.end();
-          ++i )
+    for ( wxMultiStringMap::iterator iter = m_TargetsUsedLibs.begin();
+          iter != m_TargetsUsedLibs.end();
+          ++iter )
     {
-        if ( !Project->GetBuildTarget(i->first) ) continue;
+        if ( !Project->GetBuildTarget(iter->first) ) continue;
 
-        wxArrayString& Libs = i->second;
+        const wxArrayString& Libs = iter->second;
         if ( Libs.Count() )
         {
             TiXmlElement* TargetElem = LibFinder->InsertEndChild(TiXmlElement("target"))->ToElement();
-            TargetElem->SetAttribute("name",cbU2C(i->first));
-            for ( size_t i=0; i<Libs.Count(); i++ )
+            TargetElem->SetAttribute("name", cbU2C(iter->first));
+            for ( size_t Lib = 0; Lib < Libs.Count(); ++Lib )
             {
-                TargetElem->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name",cbU2C(Libs[i]));
+                TargetElem->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name", cbU2C(Libs[Lib]));
             }
         }
     }

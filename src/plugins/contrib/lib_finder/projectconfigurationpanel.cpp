@@ -277,16 +277,16 @@ void ProjectConfigurationPanel::FillKnownLibraries()
     // Collecting list of all global variable names,
     // currently without pkg-config entries (will be used later)
     wxArrayString Vars;
-    for ( int i=0; i<rtCount; i++ )
+    for ( int i = 0; i < rtCount; ++i )
     {
         if ( i==rtPkgConfig ) continue;
         m_KnownLibs[i].GetShortCodes(Vars);
     }
 
-    for ( size_t i=0; i<Vars.Count(); i++ )
+    for ( size_t i = 0; i < Vars.Count(); ++i )
     {
         ResultArray* Array = 0;
-        for ( int j=0; j<rtCount; j++ )
+        for ( int j = 0; j < rtCount; ++j )
         {
             if ( j!=rtPkgConfig )
             {
@@ -314,12 +314,12 @@ void ProjectConfigurationPanel::FillKnownLibraries()
                 BuildEntry(OtherCategoryId(),*Array);
             else
             {
-                for ( size_t i=0; i<Categories.Count(); i++ )
-                    BuildEntry(CategoryId(Categories[i]),*Array);
+                for ( size_t cat = 0; cat < Categories.Count(); cat )
+                    BuildEntry(CategoryId(Categories[cat]), *Array);
             }
         }
         else
-            BuildEntry(m_KnownLibrariesTree->GetRootItem(),*Array);
+            BuildEntry(m_KnownLibrariesTree->GetRootItem(), *Array);
     }
 
     // Now add pkg-config entries in separate category at the end

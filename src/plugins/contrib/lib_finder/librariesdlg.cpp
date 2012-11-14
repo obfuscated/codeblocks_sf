@@ -577,6 +577,8 @@ void LibrariesDlg::SelectConfiguration(LibraryResult* Configuration)
             m_Type->SetLabel(_("Pkg-Config"));
             break;
 
+        case rtCount:
+        case rtUnknown:
         default:
             break;
     }
@@ -646,6 +648,9 @@ wxString LibrariesDlg::GetDesc(LibraryResult* Configuration)
     {
         case rtPkgConfig:  ret += _("Pkg-Config: "); break;
         case rtPredefined: ret += _("Predefined: "); break;
+        case rtDetected:
+        case rtCount:
+        case rtUnknown:
         default: break;
     }
 

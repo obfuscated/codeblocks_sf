@@ -87,8 +87,8 @@ DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton4Click);
 	//*)
 	ConfigManager* mgr = Manager::Get()->GetConfigManager( _T("lib_finder") );
-	wxArrayString Dirs = mgr->ReadArrayString(_T("search_dirs"));
-	DirList->SetValue( GetStringFromArray(Dirs,_T("\n")) );
+	wxArrayString DirsLoc = mgr->ReadArrayString(_T("search_dirs"));
+	DirList->SetValue( GetStringFromArray(DirsLoc, _T("\n")) );
 }
 
 DirListDlg::~DirListDlg()
