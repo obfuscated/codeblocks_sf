@@ -1556,7 +1556,7 @@ void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
     sbar->AdjustFieldsSize();
 }
 
-void InitToolbar(wxToolBar *tb)
+inline void InitToolbar(wxToolBar *tb)
 {
 #if defined __WXMSW__ && !wxCHECK_VERSION(2, 8, 9)
     // HACK: for all windows versions (including XP *without* using a manifest file),
@@ -1731,10 +1731,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 {
     if (filename.IsEmpty())
         return false;
-    wxFileName fname(filename);
-    fname.ClearExt();
-    fname.SetExt(_T("cbp"));
-    switch (FileTypeOf(filename))
+
+    wxFileName fname(filename); fname.ClearExt(); fname.SetExt(_T("cbp"));
+    switch ( FileTypeOf(filename) )
     {
         //
         // Workspace
@@ -1745,7 +1744,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 return true;
             else
             {
-                if (DoCloseCurrentWorkspace())
+                if ( DoCloseCurrentWorkspace() )
                 {
                     wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                     ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
@@ -3640,10 +3639,12 @@ void MainFrame::OnEditBoxCommentSelected(cb_unused wxCommandEvent& event)
         wxString nlc;
         switch (stc->GetEOLMode())
         {
-            case wxSCI_EOL_CRLF: nlc=_T("\r\n"); break;
-            case wxSCI_EOL_CR:   nlc=_T("\r");   break;
-            case wxSCI_EOL_LF:   nlc=_T("\n");   break;
-
+            case wxSCI_EOL_CRLF: nlc = _T("\r\n"); break;
+            case wxSCI_EOL_CR:   nlc = _T("\r");   break;
+            case wxSCI_EOL_LF:   nlc = _T("\n");   break;
+            default:
+                (platform::windows ? (nlc = _T("\r\n")) : (nlc = _T("\n")));
+                break;
         }
 
         stc->BeginUndoAction();
@@ -4148,6 +4149,9 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
                 break;
             case wxSCI_EOL_LF:
                 mbar->Check(idEditEOLLF,   true);
+                break;
+            default:
+                (platform::windows ? mbar->Check(idEditEOLCRLF, true) : mbar->Check(idEditEOLLF,   true));
                 break;
         }
 
@@ -4696,6 +4700,7 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
         case CodeBlocksDockEvent::dsTop:      info.Top();    break;
         case CodeBlocksDockEvent::dsBottom:   info.Bottom(); break;
         case CodeBlocksDockEvent::dsFloating: info.Float();  break;
+        case CodeBlocksDockEvent::dsUndefined: // fall through
         default:                                             break;
     }
     info.Show(event.shown);
