@@ -236,9 +236,9 @@ void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
   }
   else                              // workspace scope
   {
-    ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
-    for ( size_t i=0; i<Projects->GetCount(); i++ )
-      AddFilesFromProject(FilesToProcess,(*Projects)[i]);
+    ProjectsArray* Projects2 = Manager::Get()->GetProjectManager()->GetProjects();
+    for ( size_t i = 0; i < Projects2->GetCount(); ++i )
+      AddFilesFromProject(FilesToProcess,(*Projects2)[i]);
   }
 
   if ( FilesToProcess.IsEmpty() )
@@ -250,8 +250,13 @@ void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
 
   // Generating list of header groups to use
   wxArrayString Groups;
-  for ( size_t i=0; i<m_Sets->GetCount(); i++ )
-    if ( m_Sets->IsChecked(i) ) Groups.Add(m_Sets->GetString(i));
+  for ( size_t i = 0; i < m_Sets->GetCount(); i++ )
+  {
+    if ( m_Sets->IsChecked(i) )
+    {
+      Groups.Add(m_Sets->GetString(i));
+    }
+  }
 
   if ( Groups.IsEmpty() )
   {
@@ -419,9 +424,9 @@ void Execution::SaveSettings()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::ToggleControls(bool Disable)
+void Execution::ToggleControls(bool DisableIn)
 {
-  if ( Disable )
+  if ( DisableIn )
   {
     m_Options->Disable();
     m_Scope->Disable();
@@ -738,14 +743,14 @@ void Execution::OperateToken(const wxString&      Token,
   }
 
   // iterate through all groups for bindings
-  for ( size_t i=0; i<Groups.GetCount(); i++ )
+  for ( size_t Group = 0; Group < Groups.GetCount(); ++Group )
   {
     wxArrayString RequiredHeadersForToken;
-    m_Bindings.GetBindings(Groups[i],Token,RequiredHeadersForToken);
+    m_Bindings.GetBindings(Groups[Group],Token,RequiredHeadersForToken);
 
     if ( !RequiredHeadersForToken.IsEmpty() ) // -> found bindings
     {
-      for ( size_t i=0; i<RequiredHeadersForToken.GetCount(); i++ )
+      for ( size_t i = 0; i < RequiredHeadersForToken.GetCount(); ++i )
       {
         // check if required header file is already included
         if ( IncludedHeaders.Index(RequiredHeadersForToken[i]) == wxNOT_FOUND )

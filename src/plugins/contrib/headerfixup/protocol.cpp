@@ -72,24 +72,24 @@ void Protocol::OnBtnOKClick(wxCommandEvent& /*event*/)
   EndModal(wxID_OK);
 }// OnBtnOkClick
 
-void Protocol::SetProtocol(const wxArrayString& Protocol)
+void Protocol::SetProtocol(const wxArrayString& ProtocolIn)
 {
     if (m_Protocol)
     {
         m_Protocol->Freeze();
 
-        const size_t COUNT(Protocol.GetCount());
+        const size_t COUNT(ProtocolIn.GetCount());
         for ( size_t i(0); i != COUNT; ++i )
         {
-            if ( Protocol[i].StartsWith(wxT("+")) )
+            if ( ProtocolIn[i].StartsWith(wxT("+")) )
             {
                 m_Protocol->SetDefaultStyle(wxTextAttr(wxNullColour,wxColour(130,255,130)));
-                m_Protocol->AppendText(Protocol[i]);
+                m_Protocol->AppendText(ProtocolIn[i]);
             }
             else
             {
                 m_Protocol->SetDefaultStyle(wxTextAttr(wxNullColour,*wxWHITE));
-                m_Protocol->AppendText(Protocol[i]);
+                m_Protocol->AppendText(ProtocolIn[i]);
             }
         }
 

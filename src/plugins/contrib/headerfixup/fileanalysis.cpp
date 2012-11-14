@@ -165,9 +165,9 @@ wxArrayString FileAnalysis::ParseForIncludes()
 
   m_IncludedHeaders.Clear();
 
-  for ( size_t i=0; i<m_LinesOfFile.GetCount(); i++ )
+  for (size_t LineIdx = 0; LineIdx < m_LinesOfFile.GetCount(); ++LineIdx )
   {
-    wxString Line = m_LinesOfFile.Item(i);
+    const wxString Line = m_LinesOfFile.Item(LineIdx);
     const wxRegEx RegEx(reInclude);
     wxString Include;
     if (RegEx.Matches(Line))
@@ -199,7 +199,7 @@ wxArrayString FileAnalysis::ParseForIncludes()
           wxArrayString MoreIncludedHeaders = fa.ParseForIncludes();
 
           // Only add headers that are not included by the source file
-          for ( size_t i=0; i<MoreIncludedHeaders.GetCount(); i++ )
+          for ( size_t i = 0; i < MoreIncludedHeaders.GetCount(); ++i )
             if ( m_IncludedHeaders.Index(MoreIncludedHeaders[i]) == wxNOT_FOUND )
               m_IncludedHeaders.Add(MoreIncludedHeaders[i]);
 

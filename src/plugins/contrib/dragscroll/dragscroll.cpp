@@ -1103,17 +1103,17 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
 {
     // wxEVT_CREATE entry
 
-    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+    wxWindow* window = (wxWindow*)(event.GetEventObject());
 
     // Some code (at times) is not issueing EVT_APP_STARTUP_DONE;
     // so here we do it ourselves. If not initialized and this is the first
     // scintilla window, initialize now.
 
     if ( (not m_bNotebooksAttached)
-        && ( pWindow->GetName().Lower() == wxT("sciwindow")) )
+        && ( window->GetName().Lower() == wxT("sciwindow")) )
     {
         #if defined(LOGGING)
-        LOGIT( _T("OnWindowOpen[%s]"), pWindow->GetName().c_str());
+        LOGIT( _T("OnWindowOpen[%s]"), window->GetName().c_str());
         #endif
         OnAppStartupDoneInit();
     }
