@@ -63,7 +63,7 @@ void DigitView::OnPutLine(OffsetT startOffset, HexEditLineBuffer& buff, char* co
 
             if ( offset >= bytes )
             {
-                for ( int j = BYTE_BITS / GetDigitBits(); j-->0; )
+                for ( int j2 = BYTE_BITS / GetDigitBits(); j2-- > 0; )
                 {
                     buff.PutChar( '.', sn );
                 }
@@ -73,11 +73,11 @@ void DigitView::OnPutLine(OffsetT startOffset, HexEditLineBuffer& buff, char* co
                 char currentByte = content[ offset ];
 
                 // TODO: Support for offset outside the content
-                for ( int j = BYTE_BITS / GetDigitBits(); j-->0; )
+                for ( int j2 = BYTE_BITS / GetDigitBits(); j2-- > 0; )
                 {
                     buff.PutChar(
-                        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" [ ( currentByte >> ( j * GetDigitBits() ) ) & GetMaxDigitValue() ],
-                        ( j == m_BitPosition / GetDigitBits() ) ? ss : sn );
+                        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" [ ( currentByte >> ( j2 * GetDigitBits() ) ) & GetMaxDigitValue() ],
+                        ( j2 == m_BitPosition / GetDigitBits() ) ? ss : sn );
                 }
             }
         }
@@ -89,7 +89,7 @@ void DigitView::OnPutLine(OffsetT startOffset, HexEditLineBuffer& buff, char* co
     {
         for ( int j = 0; j < GetBlockBytes(); ++j )
         {
-            for ( int j = BYTE_BITS / GetDigitBits(); j-->0; )
+            for ( int j2 = BYTE_BITS / GetDigitBits(); j2-- > 0; )
             {
                 buff.PutChar( ' ' );
             }

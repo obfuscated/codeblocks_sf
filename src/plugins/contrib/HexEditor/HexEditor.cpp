@@ -113,6 +113,10 @@ void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
             break;
 
 
+        case mtEditorManager:
+        case mtLogManager:
+        case mtOpenFilesList:
+        case mtEditorTab:
         default:
             break;
     }

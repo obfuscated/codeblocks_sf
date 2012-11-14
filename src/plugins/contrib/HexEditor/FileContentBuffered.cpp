@@ -74,6 +74,8 @@ class FileContentBuffered::IntModificationData: public FileContentBuffered::Modi
                     std::copy( m_NewData.begin(), m_NewData.end(), m_Buffer.begin() + m_Position );
                     break;
                 }
+                default:
+                    break;
             }
         }
 
@@ -105,6 +107,8 @@ class FileContentBuffered::IntModificationData: public FileContentBuffered::Modi
                     std::copy( m_OldData.begin(), m_OldData.end(), m_Buffer.begin() + m_Position );
                     break;
                 }
+                default:
+                    break;
             }
         }
 

@@ -1194,6 +1194,8 @@ void TestCases::Test<4>()
                 Ensure( Remove( pos, size ), _T("Stress test over 1MB initial file size - remove" ) );
                 break;
             }
+            default:
+                break;
         }
     }
 
