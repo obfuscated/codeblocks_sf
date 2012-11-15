@@ -161,8 +161,8 @@ public:
         // hangs on close
         while(!quit)
         {
-            int result=fd.do_select();
-            if(result<0)
+            const int result1 = fd.do_select();
+            if(result1 < 0)
                 break; //todo: error handling
             if(fd.fam_set())
             {
@@ -198,6 +198,8 @@ public:
                                 }
                                 m_active_count--;
                                 break;
+                            case FAMStartExecuting:
+                            case FAMStopExecuting:
                             default:
                                 break;
 //                            case ?????:
@@ -212,12 +214,10 @@ public:
 
                     }
                 }
-
-
             }
             if(fd.pipe_set())
             {
-                char c;
+                char c = 0;
                 read(m_msg_rcv, &c, 1);
                 switch(c)
                 {
@@ -231,6 +231,8 @@ public:
                         m_update_paths.Empty();
                         m_interrupt_mutex.Unlock();
                         UpdatePathsThread(fd);
+                        break;
+                    default:
                         break;
                 }
             }

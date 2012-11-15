@@ -139,7 +139,6 @@ private:
     void Refresh(wxTreeItemId ti);
     void RefreshExpanded(wxTreeItemId ti);
     void SetImages();
-    wxMenu *m_Popup; // the popup menu that displays on right clicks in the tree (and maybe loc in future??)
     wxString m_root;
     FileTreeCtrl *m_Tree; //the widget display the file tree from root defined by m_Loc
     wxComboBox *m_Loc; // the combo box maintaining a list of useful locations and the current location

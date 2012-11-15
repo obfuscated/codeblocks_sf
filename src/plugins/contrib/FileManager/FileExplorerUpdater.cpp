@@ -189,8 +189,8 @@ bool FileExplorerUpdater::CalcChanges()
         if(!match)
             tree_it++;
     }
-    for(FileDataVec::iterator tree_it=m_treestate.begin();tree_it!=m_treestate.end();tree_it++)
-        m_removers.push_back(*tree_it);
+    for(FileDataVec::iterator tree_it2 = m_treestate.begin(); tree_it2 != m_treestate.end(); ++tree_it2)
+        m_removers.push_back(*tree_it2);
     for(FileDataVec::iterator it=m_currentstate.begin();it!=m_currentstate.end();it++)
         m_adders.push_back(*it);
     return !TestDestroy();
@@ -313,6 +313,8 @@ bool FileExplorerUpdater::ParseSVNstate(const wxString &path, VCSstatearray &sa)
             case '~':
                 s.state=fvsVcLockStolen;
                 break;
+            default:
+                break;
         }
 #ifdef __WXMSW__
         wxFileName f(output[i].Mid(1).Strip(wxString::both));
@@ -377,6 +379,8 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
             case 'P': //pending merge
                 s.state=fvsVcOutOfDate;
                 break;
+            default:
+                break;
         }
         a=output[i][1];
         switch(a)
@@ -390,6 +394,8 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
             case 'K': //kind changed
             case 'M': //modified
                 s.state=fvsVcModified;
+                break;
+            default:
                 break;
         }
         if(output[i][0]=='C')
@@ -448,6 +454,8 @@ bool FileExplorerUpdater::ParseHGstate(const wxString &path, VCSstatearray &sa)
                 break;
             case 'M': //modified
                 s.state=fvsVcModified;
+                break;
+            default:
                 break;
         }
         wxFileName f(output[i].Mid(2));

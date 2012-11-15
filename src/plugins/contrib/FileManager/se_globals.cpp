@@ -58,6 +58,8 @@ bool PromptSaveOpenFile(wxString message, wxFileName path)
                     return true;
                 case wxCANCEL:
                     return false;
+                default:
+                    break;
             }
     }
     return true;

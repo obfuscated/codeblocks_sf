@@ -1097,17 +1097,17 @@ void FileExplorer::OnActivate(wxTreeEvent &event)
 
 void FileExplorer::OnKeyDown(wxKeyEvent &event)
 {
-    if(event.GetKeyCode()==WXK_DELETE)
+    if(event.GetKeyCode() == WXK_DELETE)
     {
-        wxCommandEvent event;
-        OnDelete(event);
+        wxCommandEvent event2;
+        OnDelete(event2);
     }
 }
 
 
 void FileExplorer::OnRightClick(wxTreeEvent &event)
 {
-    wxMenu *m_Popup=new wxMenu();
+    wxMenu* Popup = new wxMenu();
     m_ticount=m_Tree->GetSelections(m_selectti);
     if(!IsInSelection(event.GetItem())) //replace the selection with right clicked item if right clicked item isn't in the selection
     {
@@ -1129,28 +1129,28 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
             if(img==fvsFolder)
             {
                 ftd->SetKind(FileTreeData::ftdkFolder);
-                m_Popup->Append(ID_SETLOC,_T("Make roo&t"));
-                m_Popup->Append(ID_FILEEXPANDALL,_T("Expand All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
-                m_Popup->Append(ID_FILECOLLAPSEALL,_T("Collapse All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
-                m_Popup->Append(ID_FILEMAKEFAV,_T("Add to Favorites"));
-                m_Popup->Append(ID_FILENEWFILE,_T("New File..."));
-                m_Popup->Append(ID_FILENEWFOLDER,_T("New Directory..."));
-                m_Popup->Append(ID_FILERENAME,_T("&Rename..."));
+                Popup->Append(ID_SETLOC,_T("Make roo&t"));
+                Popup->Append(ID_FILEEXPANDALL,_T("Expand All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
+                Popup->Append(ID_FILECOLLAPSEALL,_T("Collapse All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
+                Popup->Append(ID_FILEMAKEFAV,_T("Add to Favorites"));
+                Popup->Append(ID_FILENEWFILE,_T("New File..."));
+                Popup->Append(ID_FILENEWFOLDER,_T("New Directory..."));
+                Popup->Append(ID_FILERENAME,_T("&Rename..."));
             } else
             {
-                m_Popup->Append(ID_FILERENAME,_T("&Rename..."));
+                Popup->Append(ID_FILERENAME,_T("&Rename..."));
             }
         }
         if(IsFilesOnly(m_selectti))
         {
-            m_Popup->Append(ID_OPENINED,_T("&Open in CB Editor"));
+            Popup->Append(ID_OPENINED,_T("&Open in CB Editor"));
             if(Manager::Get()->GetProjectManager()->GetActiveProject())
-                m_Popup->Append(ID_FILEADDTOPROJECT,_T("&Add to Active Project..."));
+                Popup->Append(ID_FILEADDTOPROJECT,_T("&Add to Active Project..."));
         }
-        m_Popup->Append(ID_FILEDUP,_T("&Duplicate"));
-        m_Popup->Append(ID_FILECOPY,_T("&Copy To..."));
-        m_Popup->Append(ID_FILEMOVE,_T("&Move To..."));
-        m_Popup->Append(ID_FILEDELETE,_T("D&elete"));
+        Popup->Append(ID_FILEDUP,_T("&Duplicate"));
+        Popup->Append(ID_FILECOPY,_T("&Copy To..."));
+        Popup->Append(ID_FILEMOVE,_T("&Move To..."));
+        Popup->Append(ID_FILEDELETE,_T("D&elete"));
     }
     wxMenu *viewpop=new wxMenu();
     viewpop->Append(ID_FILESETTINGS,_T("Favorite Directories..."));
@@ -1159,8 +1159,8 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     viewpop->AppendCheckItem(ID_FILEPARSESVN,_T("SVN Decorators"))->Check(m_parse_svn);
     viewpop->AppendCheckItem(ID_FILEPARSEHG,_T("Hg Decorators"))->Check(m_parse_hg);
     viewpop->AppendCheckItem(ID_FILEPARSEBZR,_T("Bzr Decorators"))->Check(m_parse_bzr);
-    m_Popup->AppendSubMenu(viewpop,_T("&View"));
-    m_Popup->Append(ID_FILEREFRESH,_T("Re&fresh"));
+    Popup->AppendSubMenu(viewpop,_T("&View"));
+    Popup->Append(ID_FILEREFRESH,_T("Re&fresh"));
     if(m_ticount>1)
     {
         ftd->SetKind(FileTreeData::ftdkVirtualGroup);
@@ -1172,11 +1172,10 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     else
         ftd->SetFolder(filepath);
     if(m_ticount>0)
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtUnknown, m_Popup, ftd);
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtUnknown, Popup, ftd);
     delete ftd;
-    wxWindow::PopupMenu(m_Popup);
-    delete m_Popup;
-
+    wxWindow::PopupMenu(Popup);
+    delete Popup;
 }
 
 void FileExplorer::OnNewFile(wxCommandEvent &/*event*/)
@@ -1676,6 +1675,8 @@ bool FileExplorer::ParseSVNstate(const wxString &path, VCSstatearray &sa)
             case '~':
                 s.state=fvsVcLockStolen;
                 break;
+            default:
+                break;
         }
 #ifdef __WXMSW__
         wxFileName f(output[i].Mid(7));
@@ -1734,6 +1735,8 @@ bool FileExplorer::ParseBZRstate(const wxString &path, VCSstatearray &sa)
             case 'P': //pending merge
                 s.state=fvsVcOutOfDate;
                 break;
+            default:
+                break;
         }
         a=output[i][1];
         switch(a)
@@ -1747,6 +1750,8 @@ bool FileExplorer::ParseBZRstate(const wxString &path, VCSstatearray &sa)
             case 'K': //kind changed
             case 'M': //modified
                 s.state=fvsVcModified;
+                break;
+            default:
                 break;
         }
         if(output[i][0]=='C')
@@ -1780,7 +1785,7 @@ bool FileExplorer::ParseHGstate(const wxString &path, VCSstatearray &sa)
     wxSetWorkingDirectory(wdir);
     if(hresult!=0)
         return false;
-    for(size_t i=0;i<output.GetCount();i++)
+    for(size_t i = 0; i < output.GetCount(); ++i)
     {
         if(output[i].Len()<=2)
             break;
@@ -1805,6 +1810,8 @@ bool FileExplorer::ParseHGstate(const wxString &path, VCSstatearray &sa)
                 break;
             case 'M': //modified
                 s.state=fvsVcModified;
+                break;
+            default:
                 break;
         }
         wxFileName f(output[i].Mid(2));
