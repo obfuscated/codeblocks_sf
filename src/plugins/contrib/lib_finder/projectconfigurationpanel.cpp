@@ -314,7 +314,7 @@ void ProjectConfigurationPanel::FillKnownLibraries()
                 BuildEntry(OtherCategoryId(),*Array);
             else
             {
-                for ( size_t cat = 0; cat < Categories.Count(); cat )
+                for ( size_t cat = 0; cat < Categories.Count(); ++cat )
                     BuildEntry(CategoryId(Categories[cat]), *Array);
             }
         }
