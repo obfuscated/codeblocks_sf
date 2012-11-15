@@ -40,7 +40,6 @@
 
 #include "menuutils.h"
 #include "cbkeybinder.h"
-extern wxString GetFullMenuPath(int);
 // ----------------------------------------------------------------------------
 wxString* pKeyFilename = 0;     // used by keybinder key definition dialog
 // ----------------------------------------------------------------------------
