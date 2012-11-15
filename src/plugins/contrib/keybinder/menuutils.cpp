@@ -134,8 +134,6 @@ int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
     return rCount;
 }//mergeSubmenu
 
-namespace
-{
 // ----------------------------------------------------------------------------
 wxString GetFullMenuPath(int id)
 // ----------------------------------------------------------------------------
@@ -203,6 +201,9 @@ wxString GetFullMenuPath(int id)
 
     return fullMenuPath;
 }
+
+namespace
+{
 
 // ----------------------------------------------------------------------------
 int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )

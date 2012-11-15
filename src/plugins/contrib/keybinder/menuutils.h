@@ -22,6 +22,7 @@
 #include "wx/dialog.h"
 #include "wx/listbox.h"
 #include "wx/treectrl.h"
+#include "wx/string.h"
 #include "keybinder.h"
 
 //! Returns the ID of the first menu item with the given name which
@@ -31,6 +32,7 @@
 int wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
 int FindMenuDuplicateCount(wxMenuBar *p, const wxString &str);
 int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount);
+wxString GetFullMenuPath(int);
 
 // some useful macros
 #define wxSAFE_DELETE(x)					{ if (x) delete x; x = NULL; }
