@@ -1,43 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="All contrib plugins">
-		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx29.cbp" active="1" />
-		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker_wx29.cbp" />
-		<Project filename="plugins\contrib\Cccc\Cccc_wx29.cbp" />
-		<Project filename="plugins\contrib\CppCheck\CppCheck_wx29.cbp" />
-		<Project filename="plugins\contrib\codesnippets\codesnippets_wx29.cbp" />
-		<Project filename="plugins\contrib\codestat\codestat_wx29.cbp" />
-		<Project filename="plugins\contrib\copystrings\copystrings_wx29.cbp" />
-		<Project filename="plugins\contrib\Cscope\Cscope_wx29.cbp" />
-		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin_wx29.cbp" />
-		<Project filename="plugins\contrib\DoxyBlocks\DoxyBlocks_wx29.cbp" />
-		<Project filename="plugins\contrib\dragscroll\dragscroll_wx29.cbp" />
-		<Project filename="plugins\contrib\EditorConfig\EditorConfig_wx29.cbp" />
-		<Project filename="plugins\contrib\EditorTweaks\EditorTweaks_wx29.cbp" />
-		<Project filename="plugins\contrib\envvars\envvars_wx29.cbp" />
-		<Project filename="plugins\contrib\source_exporter\Exporter_wx29.cbp" />
-		<Project filename="plugins\contrib\FileManager\FileManager_wx29.cbp" />
-		<Project filename="plugins\contrib\byogames\byogames_wx29.cbp" />
-		<Project filename="plugins\contrib\headerfixup\headerfixup_wx29.cbp" />
-		<Project filename="plugins\contrib\help_plugin\help-plugin_wx29.cbp" />
-		<Project filename="plugins\contrib\HexEditor\HexEditor_wx29-win.cbp" />
-		<Project filename="plugins\contrib\IncrementalSearch\IncrementalSearch_wx29.cbp" />
-		<Project filename="plugins\contrib\keybinder\keybinder_wx29.cbp" />
-		<Project filename="plugins\contrib\cb_koders\cb_koders_wx29.cbp" />
-		<Project filename="plugins\contrib\lib_finder\lib_finder_wx29.cbp">
-			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />
-		</Project>
-		<Project filename="plugins\contrib\MouseSap\MouseSap_wx29.cbp" />
-		<Project filename="plugins\contrib\NassiShneiderman\NassiShneiderman_wx29.cbp" />
-		<Project filename="plugins\contrib\profiler\cbprofiler_wx29.cbp" />
-		<Project filename="plugins\contrib\regex_testbed\RegExTestbed_wx29.cbp" />
-		<Project filename="plugins\contrib\ReopenEditor\ReopenEditor_wx29.cbp" />
-		<Project filename="plugins\contrib\SpellChecker\SpellChecker_wx29.cbp" />
-		<Project filename="plugins\contrib\symtab\symtab_wx29.cbp" />
-		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch_wx29.cbp">
-			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />
-		</Project>
-		<Project filename="plugins\contrib\ToolsPlus\ToolsPlus_wx29.cbp" />
+	<Workspace title="All contrib plugins wx2.9.x">
+		<Project filename="tools\cb_share_config\cb_share_config_wx29.cbp" />
+		<Project filename="tools\CBLauncher\CbLauncher_wx29.cbp" />
+		<Project filename="tools\Addr2LineUI\Addr2LineUI_wx29.cbp" />
+		<Project filename="plugins\codecompletion\cctest_wx29.cbp" />
 		<Project filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />
 		<Project filename="plugins\contrib\wxSmith\wxSmith_wx29.cbp" />
 		<Project filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems_wx29.cbp">
@@ -47,6 +14,44 @@
 		<Project filename="plugins\contrib\wxSmithAui\wxSmithAui_wx29.cbp">
 			<Depends filename="plugins\contrib\wxSmith\wxSmith_wx29.cbp" />
 		</Project>
-		<Project filename="tools\cb_share_config\cb_share_config_wx29.cbp" />
+		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx29.cbp" active="1" />
+		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker_wx29.cbp" />
+		<Project filename="plugins\contrib\byogames\byogames_wx29.cbp" />
+		<Project filename="plugins\contrib\cb_koders\cb_koders_wx29.cbp" />
+		<Project filename="plugins\contrib\Cccc\Cccc_wx29.cbp" />
+		<Project filename="plugins\contrib\codesnippets\codesnippets_wx29.cbp" />
+		<Project filename="plugins\contrib\codestat\codestat_wx29.cbp" />
+		<Project filename="plugins\contrib\copystrings\copystrings_wx29.cbp" />
+		<Project filename="plugins\contrib\CppCheck\CppCheck_wx29.cbp" />
+		<Project filename="plugins\contrib\Cscope\Cscope_wx29.cbp" />
+		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin_wx29.cbp" />
+		<Project filename="plugins\contrib\DoxyBlocks\DoxyBlocks_wx29.cbp" />
+		<Project filename="plugins\contrib\dragscroll\dragscroll_wx29.cbp" />
+		<Project filename="plugins\contrib\EditorConfig\EditorConfig_wx29.cbp" />
+		<Project filename="plugins\contrib\EditorTweaks\EditorTweaks_wx29.cbp" />
+		<Project filename="plugins\contrib\envvars\envvars_wx29.cbp" />
+		<Project filename="plugins\contrib\FileManager\FileManager_wx29.cbp" />
+		<Project filename="plugins\contrib\headerfixup\headerfixup_wx29.cbp" />
+		<Project filename="plugins\contrib\help_plugin\help-plugin_wx29.cbp" />
+		<Project filename="plugins\contrib\HexEditor\HexEditor_wx29-win.cbp" />
+		<Project filename="plugins\contrib\IncrementalSearch\IncrementalSearch_wx29.cbp" />
+		<Project filename="plugins\contrib\keybinder\keybinder_wx29.cbp" />
+		<Project filename="plugins\contrib\lib_finder\lib_finder_wx29.cbp">
+			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\MouseSap\MouseSap_wx29.cbp" />
+		<Project filename="plugins\contrib\NassiShneiderman\NassiShneiderman_wx29.cbp" />
+		<Project filename="plugins\contrib\profiler\cbprofiler_wx29.cbp" />
+		<Project filename="plugins\contrib\regex_testbed\RegExTestbed_wx29.cbp" />
+		<Project filename="plugins\contrib\ReopenEditor\ReopenEditor_wx29.cbp" />
+		<Project filename="plugins\contrib\rndgen\rndgen_wx29.cbp" />
+		<Project filename="plugins\contrib\SmartIndent\SmartIndent_wx29.cbp" />
+		<Project filename="plugins\contrib\SpellChecker\SpellChecker_wx29.cbp" />
+		<Project filename="plugins\contrib\source_exporter\Exporter_wx29.cbp" />
+		<Project filename="plugins\contrib\symtab\symtab_wx29.cbp" />
+		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch_wx29.cbp">
+			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />
+		</Project>
+		<Project filename="plugins\contrib\ToolsPlus\ToolsPlus_wx29.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
