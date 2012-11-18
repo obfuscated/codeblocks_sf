@@ -187,7 +187,6 @@ class wxsMenuEditor: public wxPanel
         //*)
 
         //(*Declarations(wxsMenuEditor)
-        wxStaticBoxSizer* StaticBoxSizer2;
         wxButton* Button4;
         wxStaticText* StaticText2;
         wxRadioButton* m_TypeNormal;
@@ -196,7 +195,6 @@ class wxsMenuEditor: public wxPanel
         wxTreeCtrl* m_Content;
         wxRadioButton* m_TypeRadio;
         wxStaticText* StaticText1;
-        wxBoxSizer* BoxSizer2;
         wxStaticText* StaticText3;
         wxCheckBox* m_Checked;
         wxButton* Button2;
@@ -206,15 +204,10 @@ class wxsMenuEditor: public wxPanel
         wxRadioButton* m_TypeSeparator;
         wxButton* Button5;
         wxButton* Button3;
-        wxGridSizer* GridSizer1;
         wxStaticText* StaticText5;
         wxCheckBox* m_Enabled;
         wxStaticLine* StaticLine1;
-        wxBoxSizer* BoxSizer1;
         wxRadioButton* m_TypeBreak;
-        wxStaticBoxSizer* StaticBoxSizer1;
-        wxFlexGridSizer* FlexGridSizer1;
-        wxBoxSizer* BoxSizer3;
         wxStaticText* StaticText4;
         wxTextCtrl* m_Label;
         wxTextCtrl* m_Help;

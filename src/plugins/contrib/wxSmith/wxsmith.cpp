@@ -28,10 +28,11 @@
 #include "wxsresourcefactory.h"
 #include "properties/wxsproperties.h"
 
-#include "cbauibook.h"
+#include <prep.h>
+#include <cbauibook.h>
 #include <projectloader_hooks.h>
-#include "manager.h"
-#include "configmanager.h"
+#include <manager.h>
+#include <configmanager.h>
 #include <projectmanager.h>
 #include <logmanager.h>
 #include <sqplus.h>
@@ -43,7 +44,6 @@ namespace
     const int ViewWxSmithId = wxNewId();
     const int ViewWxSmithResourceId = wxNewId();
     const int ViewWxSmithPropertyId = wxNewId();
-
 
     /* XPM */
     static const char * Events_xpm[] = {
@@ -211,7 +211,7 @@ void wxSmith::BuildBrowsers()
     m_PropertyBrowserParent->SetSizer(Sizer);
 }
 
-void wxSmith::OnRelease(bool appShutDown)
+void wxSmith::OnRelease(cb_unused bool appShutDown)
 {
     UnregisterScripting();
 
@@ -289,6 +289,9 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
                         view->InsertCheckItem(i,ViewWxSmithResourceId, _("wxSmith resource browser"), _("Toggle displaying the wxSmith resource browser"));
                         view->InsertCheckItem(i,ViewWxSmithPropertyId, _("wxSmith property browser"), _("Toggle displaying the wxSmith property browser"));
                         break;
+
+                    default:
+                        break;
                 }
                 return;
             }
@@ -305,16 +308,19 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
                 view->AppendCheckItem(ViewWxSmithResourceId, _("wxSmith resource browser"), _("Toggle displaying the wxSmith resource browser"));
                 view->AppendCheckItem(ViewWxSmithPropertyId, _("wxSmith property browser"), _("Toggle displaying the wxSmith property browser"));
                 break;
+
+            default:
+                break;
         }
         return;
     }
 }
 
-void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
+void wxSmith::BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, const FileTreeData* /*data*/)
 {
 }
 
-bool wxSmith::BuildToolBar(wxToolBar* toolBar)
+bool wxSmith::BuildToolBar(cb_unused wxToolBar* toolBar)
 {
     return false;
 }
@@ -345,7 +351,7 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void wxSmith::OnProjectRenamed(CodeBlocksEvent& event)
+void wxSmith::OnProjectRenamed(cb_unused CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
@@ -354,7 +360,7 @@ void wxSmith::OnProjectRenamed(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void wxSmith::OnConfigure(wxCommandEvent& event)
+void wxSmith::OnConfigure(cb_unused wxCommandEvent& event)
 {
     cbProject* Proj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if ( Proj )
@@ -390,14 +396,14 @@ void wxSmith::OnViewPropertyBrowser(wxCommandEvent& event)
     Manager::Get()->ProcessEvent(evt);
 }
 
-void wxSmith::OnViewResourceBrowser(wxCommandEvent& event)
+void wxSmith::OnViewResourceBrowser(cb_unused wxCommandEvent& event)
 {
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_ResourceBrowserParent;
     Manager::Get()->ProcessEvent(evt);
 }
 
-void wxSmith::OnUpdateUI(wxUpdateUIEvent& event)
+void wxSmith::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
     wxMenuBar* Bar = Manager::Get()->GetAppFrame()->GetMenuBar();
 

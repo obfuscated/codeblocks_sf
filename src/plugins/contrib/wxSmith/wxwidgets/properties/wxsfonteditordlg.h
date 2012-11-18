@@ -35,8 +35,8 @@
 #include <wx/radiobut.h>
 #include <wx/choice.h>
 #include <wx/button.h>
-#include <wx/combobox.h>
 #include "scrollingdialog.h"
+#include <wx/combobox.h>
 //*)
 
 class wxsFontEditorDlg: public wxScrollingDialog
@@ -97,13 +97,10 @@ class wxsFontEditorDlg: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxsFontEditorDlg)
-        wxBoxSizer* BoxSizer4;
         wxStaticBoxSizer* StaticBoxSizer2;
-        wxBoxSizer* BoxSizer6;
         wxChoice* BaseFontVal;
         wxRadioButton* WeightNorm;
         wxRadioButton* WeightBold;
-        wxBoxSizer* BoxSizer5;
         wxCheckBox* UnderUse;
         wxCheckBox* StyleUse;
         wxRadioButton* UnderYes;
@@ -123,13 +120,11 @@ class wxsFontEditorDlg: public wxScrollingDialog
         wxBoxSizer* BoxSizer2;
         wxTextCtrl* RelSizeVal;
         wxCheckBox* FamUse;
-        wxStaticBoxSizer* StaticBoxSizer7;
         wxRadioButton* WeightLight;
         wxStaticBoxSizer* StaticBoxSizer3;
         wxStaticBoxSizer* StaticBoxSizer6;
         wxCheckBox* SizeUse;
         wxButton* FaceDown;
-        wxBoxSizer* BoxSizer1;
         wxCheckBox* EncodUse;
         wxRadioButton* StyleItal;
         wxButton* FaceDel;
@@ -142,7 +137,6 @@ class wxsFontEditorDlg: public wxScrollingDialog
         wxRadioButton* UnderNo;
         wxButton* FaceEdit;
         wxBoxSizer* BaseFontSizer;
-        wxStdDialogButtonSizer* StdDialogButtonSizer1;
         //*)
 
     private:

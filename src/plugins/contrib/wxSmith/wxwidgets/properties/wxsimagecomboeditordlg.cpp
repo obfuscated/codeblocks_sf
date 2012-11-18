@@ -23,11 +23,11 @@
 
 
 //(*InternalHeaders(wxsImageComboEditorDlg)
-#include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
 #include <wx/artprov.h>
+#include <wx/bitmap.h>
+#include <wx/intl.h>
+#include <wx/image.h>
+#include <wx/string.h>
 //*)
 #include "../wxsitemresdata.h"
 #include "../wxsitem.h"
@@ -65,20 +65,20 @@ END_EVENT_TABLE()
     wxsImageComboEditorDlg::wxsImageComboEditorDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
     {
         //(*Initialize(wxsImageComboEditorDlg)
-        wxBoxSizer* BoxSizer3;
-        wxBoxSizer* BoxSizer10;
-        wxBoxSizer* BoxSizer7;
-        wxBoxSizer* BoxSizer11;
-        wxBoxSizer* BoxSizer13;
-        wxBoxSizer* BoxSizer2;
-        wxBoxSizer* BoxSizer9;
         wxBoxSizer* BoxSizer4;
-        wxBoxSizer* BoxSizer8;
-        wxBoxSizer* BoxSizer1;
-        wxBoxSizer* BoxSizer12;
-        wxBoxSizer* BoxSizer14;
         wxBoxSizer* BoxSizer6;
         wxBoxSizer* BoxSizer5;
+        wxBoxSizer* BoxSizer10;
+        wxBoxSizer* BoxSizer7;
+        wxBoxSizer* BoxSizer8;
+        wxBoxSizer* BoxSizer13;
+        wxBoxSizer* BoxSizer2;
+        wxBoxSizer* BoxSizer11;
+        wxBoxSizer* BoxSizer12;
+        wxBoxSizer* BoxSizer14;
+        wxBoxSizer* BoxSizer1;
+        wxBoxSizer* BoxSizer9;
+        wxBoxSizer* BoxSizer3;
 
         Create(parent, wxID_ANY, _("wxBitmapComboBox Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
         SetMinSize(wxSize(-1,-1));

@@ -86,6 +86,13 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 {
     Initialized = false;
     //(*Initialize(wxsFontEditorDlg)
+    wxBoxSizer* BoxSizer4;
+    wxBoxSizer* BoxSizer6;
+    wxBoxSizer* BoxSizer5;
+    wxStaticBoxSizer* StaticBoxSizer7;
+    wxBoxSizer* BoxSizer1;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
+
     Create(parent, id, _("Advanced font settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
@@ -95,7 +102,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
     FontType->SetSelection( FontType->Append(_("Default font")) );
     FontType->Append(_("Custom font"));
     FontType->Append(_("System-based font"));
-    StaticBoxSizer1->Add(FontType, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(FontType, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5->Add(StaticBoxSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Settings"));
     FlexGridSizer2 = new wxFlexGridSizer(0, 2, 0, 0);
@@ -184,7 +191,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
     BoxSizer6 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer6 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Faces"));
     FaceList = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-    StaticBoxSizer6->Add(FaceList, 1, wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer6->Add(FaceList, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer3 = new wxBoxSizer(wxVERTICAL);
     FaceAdd = new wxButton(this, ID_BUTTON4, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
     BoxSizer3->Add(FaceAdd, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -202,7 +209,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
     BoxSizer1->Add(BoxSizer4, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer7 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Test area"));
     TestArea = new wxTextCtrl(this, ID_TEXTCTRL2, _("This is sample text"), wxDefaultPosition, wxSize(316,53), 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-    StaticBoxSizer7->Add(TestArea, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer7->Add(TestArea, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(StaticBoxSizer7, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));

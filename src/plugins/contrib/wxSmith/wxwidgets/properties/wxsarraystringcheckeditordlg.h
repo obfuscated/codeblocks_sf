@@ -45,13 +45,11 @@ class wxsArrayStringCheckEditorDlg: public wxScrollingDialog
         //(*Identifiers(wxsArrayStringCheckEditorDlg)
         static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
-        static const long ID_STATICLINE1;
         static const long ID_CHECKLISTBOX1;
         static const long ID_BUTTON2;
         static const long ID_BUTTON4;
         static const long ID_BUTTON3;
         static const long ID_BUTTON5;
-        static const long ID_STATICLINE2;
         static const long ID_BUTTON6;
         static const long ID_BUTTON7;
         //*)
@@ -72,20 +70,14 @@ class wxsArrayStringCheckEditorDlg: public wxScrollingDialog
         //(*Declarations(wxsArrayStringCheckEditorDlg)
         wxBoxSizer* BoxSizer4;
         wxButton* Button4;
-        wxBoxSizer* BoxSizer5;
         wxButton* Button1;
-        wxBoxSizer* BoxSizer2;
         wxButton* Button2;
-        wxStaticLine* StaticLine2;
         wxButton* Button6;
         wxButton* Button5;
         wxButton* Button3;
         wxButton* Button7;
-        wxStaticLine* StaticLine1;
         wxCheckListBox* StringList;
-        wxBoxSizer* BoxSizer1;
         wxTextCtrl* EditArea;
-        wxBoxSizer* BoxSizer3;
         //*)
 
     private:

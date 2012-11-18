@@ -41,7 +41,6 @@ class wxsDeleteItemRes: public wxScrollingDialog
         static const long ID_CHECKBOX1;
         static const long ID_CHECKBOX2;
         static const long ID_CHECKBOX3;
-        static const long ID_STATICTEXT1;
         //*)
 
         //(*Handlers(wxsDeleteItemRes)
@@ -49,13 +48,9 @@ class wxsDeleteItemRes: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxsDeleteItemRes)
-        wxStaticText* StaticText1;
         wxCheckBox* m_PhysDeleteSources;
-        wxBoxSizer* BoxSizer1;
         wxCheckBox* m_DeleteSources;
-        wxStaticBoxSizer* StaticBoxSizer1;
         wxCheckBox* m_PhysDeleteWXS;
-        wxStdDialogButtonSizer* StdDialogButtonSizer1;
         //*)
 
     private:

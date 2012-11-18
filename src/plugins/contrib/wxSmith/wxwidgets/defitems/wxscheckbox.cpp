@@ -65,6 +65,7 @@ void wxsCheckBox::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsCheckBox::OnBuildCreatingCode"),GetLanguage());

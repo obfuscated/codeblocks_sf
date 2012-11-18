@@ -73,17 +73,21 @@ namespace
                 m_Extra(Extra)
             {
                 //(*Initialize(wxsChoicebookParentQP)
+                wxStaticBoxSizer* StaticBoxSizer2;
+                wxStaticBoxSizer* StaticBoxSizer1;
+                wxFlexGridSizer* FlexGridSizer1;
+
                 Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
                 StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
                 Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-                StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                StaticBoxSizer1->Add(Label, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
                 StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
                 Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
                 Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                StaticBoxSizer2->Add(Selected, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
@@ -136,11 +140,8 @@ namespace
             //*)
 
             //(*Declarations(wxsChoicebookParentQP)
-            wxStaticBoxSizer* StaticBoxSizer2;
             wxCheckBox* Selected;
             wxTextCtrl* Label;
-            wxStaticBoxSizer* StaticBoxSizer1;
-            wxFlexGridSizer* FlexGridSizer1;
             //*)
 
             wxsChoicebookExtra* m_Extra;
@@ -221,10 +222,10 @@ wxString wxsChoicebook::OnXmlGetExtraObjectClass()
 
 void wxsChoicebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 {
-    wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(GetChildIndex(Child));
-    if ( Extra )
+    wxsChoicebookExtra* CBExtra = (wxsChoicebookExtra*)GetChildExtra(GetChildIndex(Child));
+    if ( CBExtra )
     {
-        QPP->Register(new wxsChoicebookParentQP(QPP,Extra),_("Choicebook"));
+        QPP->Register(new wxsChoicebookParentQP(QPP,CBExtra),_("Choicebook"));
     }
 }
 
@@ -246,15 +247,15 @@ wxObject* wxsChoicebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
     for ( int i=0; i<GetChildCount(); i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
+        wxsChoicebookExtra* CBExtra = (wxsChoicebookExtra*)GetChildExtra(i);
 
         wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
         if ( !ChildPreview ) continue;
 
         bool Selected = (Child == m_CurrentSelection);
-        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        if ( PreviewFlags & pfExact ) Selected = CBExtra->m_Selected;
 
-        Choicebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+        Choicebook->AddPage(ChildPreview,CBExtra->m_Label,Selected);
     }
 
     return Choicebook;
@@ -274,8 +275,8 @@ void wxsChoicebook::OnBuildCreatingCode()
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.wx_str(),Extra->m_Selected);
+                wxsChoicebookExtra* CBExtra = (wxsChoicebookExtra*)GetChildExtra(i);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,CBExtra->m_Label.wx_str(),CBExtra->m_Selected);
             }
 
             break;
@@ -319,8 +320,8 @@ void wxsChoicebook::UpdateCurrentSelection()
     for ( int i=0; i<GetChildCount(); i++ )
     {
         if ( m_CurrentSelection == GetChild(i) ) return;
-        wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
-        if ( (i==0) || Extra->m_Selected )
+        wxsChoicebookExtra* CBExtra = (wxsChoicebookExtra*)GetChildExtra(i);
+        if ( (i==0) || CBExtra->m_Selected )
         {
             NewCurrentSelection = GetChild(i);
         }

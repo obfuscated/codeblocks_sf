@@ -26,7 +26,7 @@
 									<pos>8,20</pos>
 									<size>38,18</size>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -36,7 +36,7 @@
 									<size>96,18</size>
 									<style>wxST_NO_AUTORESIZE|wxSUNKEN_BORDER</style>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -45,7 +45,7 @@
 									<pos>144,20</pos>
 									<size>-1,18</size>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -55,7 +55,7 @@
 									<size>32,18</size>
 									<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE|wxSUNKEN_BORDER</style>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -64,7 +64,7 @@
 									<pos>248,20</pos>
 									<size>-1,18</size>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -74,7 +74,7 @@
 									<size>32,18</size>
 									<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE|wxSUNKEN_BORDER</style>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -83,7 +83,7 @@
 									<pos>344,20</pos>
 									<size>-1,18</size>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -93,11 +93,11 @@
 									<size>32,18</size>
 									<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE|wxSUNKEN_BORDER</style>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -111,10 +111,10 @@
 											<pos>8,52</pos>
 											<handler function="OnbLeftClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 									</object>
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -129,7 +129,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel2LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
@@ -140,7 +140,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer8" member="no">
@@ -154,7 +154,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel3LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
@@ -165,7 +165,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer9" member="no">
@@ -179,7 +179,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel4LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
@@ -190,7 +190,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer10" member="no">
@@ -204,7 +204,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel5LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
@@ -215,7 +215,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer11" member="no">
@@ -229,7 +229,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel8LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
@@ -240,7 +240,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer12" member="no">
@@ -254,7 +254,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel6LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
@@ -265,7 +265,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer13" member="no">
@@ -279,7 +279,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel7LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
@@ -290,7 +290,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer14" member="no">
@@ -304,7 +304,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel9LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
@@ -315,7 +315,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer15" member="no">
@@ -329,7 +329,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel10LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
@@ -340,7 +340,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer16" member="no">
@@ -354,7 +354,7 @@
 											<handler function="PaintPreviewPanel" entry="EVT_PAINT" />
 											<handler function="OnPanel11LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText12" member="yes">
@@ -365,7 +365,7 @@
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer17" member="no">
@@ -376,19 +376,20 @@
 											<pos>368,52</pos>
 											<handler function="OnbRightClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+						<flag>wxTOP|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -400,57 +401,41 @@
 								<object class="wxBoxSizer" variable="BoxSizer18" member="no">
 									<orient>wxVERTICAL</orient>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer20" member="no">
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText1" member="yes">
-													<label>Imported Image</label>
-													<pos>8,124</pos>
-													<size>92,16</size>
-													<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-												<option>1</option>
-											</object>
+										<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText1" member="yes">
+											<label>Imported Image</label>
+											<pos>8,124</pos>
+											<size>92,16</size>
+											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer21" member="no">
-											<object class="sizeritem">
-												<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
-													<pos>8,144</pos>
-													<size>92,92</size>
-													<bg>wxSYS_COLOUR_HOTLIGHT</bg>
-													<tooltip>Click any spot on the image to select a transparent color</tooltip>
-													<style>wxDOUBLE_BORDER|wxTAB_TRAVERSAL</style>
-													<handler function="OnPanel1Paint" entry="EVT_PAINT" />
-													<handler function="OnPanel1LeftUp" entry="EVT_LEFT_UP" />
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-											</object>
+										<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+											<pos>8,144</pos>
+											<size>92,92</size>
+											<bg>wxSYS_COLOUR_HOTLIGHT</bg>
+											<tooltip>Click any spot on the image to select a transparent color</tooltip>
+											<style>wxDOUBLE_BORDER|wxTAB_TRAVERSAL</style>
+											<handler function="OnPanel1Paint" entry="EVT_PAINT" />
+											<handler function="OnPanel1LeftUp" entry="EVT_LEFT_UP" />
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer22" member="no">
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT23" variable="StaticText23" member="yes">
-													<label>Label</label>
-													<pos>8,240</pos>
-													<size>92,14</size>
-													<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-												<option>1</option>
-											</object>
+										<object class="wxStaticText" name="ID_STATICTEXT23" variable="StaticText23" member="yes">
+											<label>Label</label>
+											<pos>8,240</pos>
+											<size>92,14</size>
+											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -464,7 +449,7 @@
 													<default>1</default>
 													<handler function="OnbReadClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT20" variable="StaticText20" member="yes">
@@ -475,7 +460,7 @@
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -486,11 +471,11 @@
 													<pos>108,174</pos>
 													<handler function="OncxTransparentClick" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>14</border>
+												<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -498,8 +483,6 @@
 											<object class="sizeritem">
 												<object class="wxButton" name="ID_BUTTON2" variable="bColor" member="yes">
 													<label>C</label>
-													<pos>104,192</pos>
-													<size>32,32</size>
 													<font>
 														<size>10</size>
 														<style>italic</style>
@@ -508,20 +491,21 @@
 														<family>swiss</family>
 														<face>Sans</face>
 													</font>
+													<style>wxBU_EXACTFIT</style>
 													<handler function="OnbColorClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT21" variable="StaticText21" member="yes">
 													<label>Mask Color</label>
 													<pos>136,200</pos>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -533,27 +517,28 @@
 													<style>wxBU_LEFT|wxBU_AUTODRAW</style>
 													<handler function="OnbAddClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT13" variable="StaticText11" member="yes">
 													<label>Add To List</label>
 													<pos>136,224</pos>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
@@ -562,53 +547,39 @@
 								<object class="wxBoxSizer" variable="BoxSizer27" member="no">
 									<orient>wxVERTICAL</orient>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer29" member="no">
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
-													<label>Selected Image</label>
-													<pos>208,124</pos>
-													<size>92,16</size>
-													<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-											</object>
+										<object class="wxStaticText" name="ID_STATICTEXT22" variable="StaticText22" member="yes">
+											<label>Selected Image</label>
+											<pos>208,124</pos>
+											<size>92,16</size>
+											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer30" member="no">
-											<object class="sizeritem">
-												<object class="wxPanel" name="ID_PANEL12" variable="Panel12" member="yes">
-													<pos>208,144</pos>
-													<size>92,92</size>
-													<bg>#FFFFFF</bg>
-													<style>wxDOUBLE_BORDER|wxTAB_TRAVERSAL</style>
-													<handler function="OnPanel12Paint" entry="EVT_PAINT" />
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-											</object>
+										<object class="wxPanel" name="ID_PANEL12" variable="Panel12" member="yes">
+											<pos>208,144</pos>
+											<size>92,92</size>
+											<bg>#FFFFFF</bg>
+											<style>wxDOUBLE_BORDER|wxTAB_TRAVERSAL</style>
+											<handler function="OnPanel12Paint" entry="EVT_PAINT" />
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxBoxSizer" variable="BoxSizer31" member="no">
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT28" variable="StaticText28" member="yes">
-													<label>Label</label>
-													<pos>208,240</pos>
-													<size>88,14</size>
-													<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
-												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-												<border>5</border>
-											</object>
+										<object class="wxStaticText" name="ID_STATICTEXT28" variable="StaticText28" member="yes">
+											<label>Label</label>
+											<pos>208,240</pos>
+											<size>88,14</size>
+											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -623,18 +594,18 @@
 													<pos>304,144</pos>
 													<handler function="OnbDelClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT14" variable="StaticText13" member="yes">
 													<label>Delete Image</label>
 													<pos>336,148</pos>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -646,18 +617,18 @@
 													<pos>304,174</pos>
 													<handler function="OnbClearClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT24" variable="StaticText24" member="yes">
 													<label>Clear List</label>
 													<pos>336,178</pos>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -669,30 +640,31 @@
 													<pos>304,204</pos>
 													<handler function="OnbSaveClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT25" variable="StaticText25" member="yes">
 													<label>Export BMP</label>
 													<pos>336,208</pos>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
+						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 				<border>5d</border>
 			</object>
 			<object class="sizeritem">
@@ -704,11 +676,11 @@
 							<pos>72,280</pos>
 							<handler function="OnbOKClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="spacer">
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -718,11 +690,11 @@
 							<pos>256,280</pos>
 							<handler function="OnbCancelClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 				<border>5</border>
 			</object>
 		</object>

@@ -26,6 +26,8 @@
 #include <wx/string.h>
 #include <wx/menu.h>
 
+#include "prep.h"
+
 class wxsResource;
 class wxsProject;
 
@@ -90,10 +92,10 @@ class wxsResourceFactory
         virtual wxsResource* OnCreate(int Number,wxsProject* Project) = 0;
 
         /** \brief Checking if factory can handle given file as external resource */
-        virtual bool OnCanHandleExternal(const wxString& FileName) { return false; }
+        virtual bool OnCanHandleExternal(cb_unused const wxString& FileName) { return false; }
 
         /** \brief Building external resource object */
-        virtual wxsResource* OnBuildExternal(const wxString& FileName) { return 0; }
+        virtual wxsResource* OnBuildExternal(cb_unused const wxString& FileName) { return 0; }
 
         /** \brief Function creating new resource object
          *
@@ -102,10 +104,10 @@ class wxsResourceFactory
          * data. Usually it will require some dialog box before creating resource
          * to get needed params.
          */
-        virtual bool OnNewWizard(int Number,wxsProject* Project) = 0;
+        virtual bool OnNewWizard(cb_unused int Number,wxsProject* Project) = 0;
 
         /** \brief Function getting icon in resource browser for this resource entry */
-        virtual int OnResourceTreeIcon(int Number) { return -1; }
+        virtual int OnResourceTreeIcon(cb_unused int Number) { return -1; }
 
     private:
 

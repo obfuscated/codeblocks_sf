@@ -155,7 +155,7 @@ class wxsItemResData
         inline const wxString& GetClassType() { return m_ClassType; }
 
         /** \brief Getting state of internationalize, this allows for translation */
-        inline const bool GetTranslation() { return m_Translation; }
+        inline bool GetTranslation() { return m_Translation; }
 
         /** \brief Getting language used in resource */
         inline wxsCodingLang GetLanguage() { return m_Language; }

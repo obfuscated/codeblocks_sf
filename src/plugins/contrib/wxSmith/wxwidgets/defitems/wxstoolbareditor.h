@@ -57,17 +57,11 @@ class wxsToolBarEditor: public wxPanel
         static const long ID_RADIOBUTTON3;
         static const long ID_RADIOBUTTON4;
         static const long ID_STATICLINE1;
-        static const long ID_STATICTEXT6;
         static const long ID_TEXTCTRL4;
-        static const long ID_STATICTEXT1;
         static const long ID_TEXTCTRL1;
-        static const long ID_STATICTEXT4;
         static const long ID_BITMAPBUTTON1;
-        static const long ID_STATICTEXT5;
         static const long ID_BITMAPBUTTON2;
-        static const long ID_STATICTEXT2;
         static const long ID_TEXTCTRL2;
-        static const long ID_STATICTEXT3;
         static const long ID_TEXTCTRL3;
         static const long ID_STATICLINE2;
         static const long ID_BUTTON3;
@@ -89,33 +83,16 @@ class wxsToolBarEditor: public wxPanel
         //*)
 
         //(*Declarations(wxsToolBarEditor)
-        wxStaticBoxSizer* StaticBoxSizer2;
         wxBitmapButton* m_Bitmap2;
-        wxButton* Button4;
-        wxStaticText* StaticText2;
         wxTextCtrl* m_HelpText;
         wxRadioButton* m_TypeNormal;
-        wxButton* Button1;
-        wxStaticText* StaticText6;
         wxRadioButton* m_TypeRadio;
-        wxStaticText* StaticText1;
-        wxBoxSizer* BoxSizer2;
-        wxStaticText* StaticText3;
-        wxButton* Button2;
         wxBitmapButton* m_Bitmap;
         wxStaticLine* StaticLine2;
         wxRadioButton* m_TypeCheck;
         wxRadioButton* m_TypeSeparator;
-        wxButton* Button3;
-        wxGridSizer* GridSizer1;
-        wxStaticText* StaticText5;
         wxStaticLine* StaticLine1;
-        wxBoxSizer* BoxSizer1;
         wxTextCtrl* m_ToolTip;
-        wxStaticBoxSizer* StaticBoxSizer1;
-        wxFlexGridSizer* FlexGridSizer1;
-        wxBoxSizer* BoxSizer3;
-        wxStaticText* StaticText4;
         wxListBox* m_Content;
         wxTextCtrl* m_Label;
         wxTextCtrl* m_Id;

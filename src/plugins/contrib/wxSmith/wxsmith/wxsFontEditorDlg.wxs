@@ -1,419 +1,407 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxScrollingDialog" name="wxsFontEditorDlg">
-        <title>Advanced font settings</title>
-        <style>wxDEFAULT_DIALOG_STYLE</style>
-        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <option>1</option>
-                <border>5</border>
-                <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxRIGHT|wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
-                        <object class="wxBoxSizer" variable="BoxSizer5" member="yes">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                                <border>5</border>
-                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <label>Font type</label>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxChoice" name="ID_CHOICE1" variable="FontType" member="yes">
-                                            <selection>0</selection>
-                                            <content>
-                                                <item>Default font</item>
-                                                <item>Custom font</item>
-                                                <item>System-based font</item>
-                                            </content>
-                                            <handler entry="EVT_CHOICE" function="OnUpdateContent" />
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <border>5</border>
-                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
-                                    <orient>wxVERTICAL</orient>
-                                    <label>Settings</label>
-                                    <object class="sizeritem">
-                                        <border>5</border>
-                                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
-                                            <rows>0</rows>
-                                            <cols>2</cols>
-                                            <vgap>0</vgap>
-                                            <hgap>0</hgap>
-                                            <growablecols>2</growablecols>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxBoxSizer" variable="BaseFontSizer" member="yes">
-                                                    <orient>wxHORIZONTAL</orient>
-                                                    <object class="sizeritem">
-                                                        <border>5</border>
-                                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                                        <object class="wxCheckBox" name="ID_CHECKBOX8" variable="BaseFontUse" member="yes">
-                                                            <label />
-                                                            <checked>1</checked>
-                                                            <handler entry="EVT_CHECKBOX" function="OnBaseFontUseChange" />
-                                                            <enabled>0</enabled>
-                                                        </object>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <option>1</option>
-                                                        <border>5</border>
-                                                        <flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
-                                                        <object class="wxStaticText" name="ID_STATICTEXT1" variable="BaseFontTxt" member="yes">
-                                                            <label>Base Font:</label>
-                                                        </object>
-                                                    </object>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxChoice" name="ID_CHOICE2" variable="BaseFontVal" member="yes">
-                                                    <selection>0</selection>
-                                                    <content>
-                                                        <item>wxSYS_OEM_FIXED_FONT</item>
-                                                        <item>wxSYS_ANSI_FIXED_FONT</item>
-                                                        <item>wxSYS_ANSI_VAR_FONT</item>
-                                                        <item>wxSYS_SYSTEM_FONT</item>
-                                                        <item>wxSYS_DEVICE_DEFAULT_FONT</item>
-                                                        <item>wxSYS_DEFAULT_PALETTE</item>
-                                                        <item>wxSYS_SYSTEM_FIXED_FONT</item>
-                                                        <item>wxSYS_DEFAULT_GUI_FONT</item>
-                                                    </content>
-                                                    <handler entry="EVT_CHOICE" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX2" variable="FamUse" member="yes">
-                                                    <label>Family:</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxComboBox" name="ID_COMBOBOX1" variable="FamVal" member="yes">
-                                                    <selection>0</selection>
-                                                    <content>
-                                                        <item>Decorative</item>
-                                                        <item>Roman</item>
-                                                        <item>Script</item>
-                                                        <item>Swiss</item>
-                                                        <item>Modern</item>
-                                                        <item>Teletype</item>
-                                                    </content>
-                                                    <handler entry="EVT_COMBOBOX" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="EncodUse" member="yes">
-                                                    <label>Font encoding:</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxChoice" name="ID_CHOICE3" variable="EncodVal" member="yes">
-                                                    <handler entry="EVT_CHOICE" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX7" variable="SizeUse" member="yes">
-                                                    <label>Size:</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="SizeVal" member="yes">
-                                                    <value>0</value>
-                                                    <min>-1000</min>
-                                                    <max>1000</max>
-                                                    <handler entry="EVT_SPINCTRL" function="OnSizeValChange" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX6" variable="RelSizeUse" member="yes">
-                                                    <label>Relative size:</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="RelSizeVal" member="yes">
-                                                    <value>1.0</value>
-                                                    <handler entry="EVT_TEXT" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxLEFT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
-                                            <orient>wxVERTICAL</orient>
-                                            <label />
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX3" variable="StyleUse" member="yes">
-                                                    <label>Style</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="StyleNorm" member="yes">
-                                                    <label>Normal</label>
-                                                    <value>1</value>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                    <style>wxRB_GROUP</style>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="StyleItal" member="yes">
-                                                    <label>Italic</label>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="StyleSlant" member="yes">
-                                                    <label>Slant</label>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="yes">
-                                            <orient>wxVERTICAL</orient>
-                                            <label />
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX4" variable="WeightUse" member="yes">
-                                                    <label>Weight</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="WeightLight" member="yes">
-                                                    <label>Light</label>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                    <style>wxRB_GROUP</style>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="WeightNorm" member="yes">
-                                                    <label>Normal</label>
-                                                    <value>1</value>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON6" variable="WeightBold" member="yes">
-                                                    <label>Bold</label>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="yes">
-                                            <orient>wxVERTICAL</orient>
-                                            <label />
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX5" variable="UnderUse" member="yes">
-                                                    <label>Underlined</label>
-                                                    <handler entry="EVT_CHECKBOX" function="OnUpdateContent" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON7" variable="UnderYes" member="yes">
-                                                    <label>Yes</label>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                    <style>wxRB_GROUP</style>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON8" variable="UnderNo" member="yes">
-                                                    <label>No</label>
-                                                    <value>1</value>
-                                                    <handler entry="EVT_RADIOBUTTON" function="OnUpdatePreview" />
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                        <object class="wxBoxSizer" variable="BoxSizer6" member="yes">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxRIGHT|wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
-                                <object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="yes">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <label>Faces</label>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxLEFT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxListBox" name="ID_LISTBOX1" variable="FaceList" member="yes">
-                                            <handler entry="EVT_LISTBOX" function="OnUpdateContent" />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
-                                        <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
-                                            <orient>wxVERTICAL</orient>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxButton" name="ID_BUTTON4" variable="FaceAdd" member="yes">
-                                                    <label>Add</label>
-                                                    <handler entry="EVT_BUTTON" function="OnFaceAddClick" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxButton" name="ID_BUTTON5" variable="FaceDel" member="yes">
-                                                    <label>Delete</label>
-                                                    <handler entry="EVT_BUTTON" function="OnFaceDelClick" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxButton" name="ID_BUTTON6" variable="FaceEdit" member="yes">
-                                                    <label>Edit</label>
-                                                    <handler entry="EVT_BUTTON" function="OnFaceEditClick" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxButton" name="ID_BUTTON8" variable="FaceUp" member="yes">
-                                                    <label>Move Up</label>
-                                                    <handler entry="EVT_BUTTON" function="OnFaceUpClick" />
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
-                                                <object class="wxButton" name="ID_BUTTON7" variable="FaceDown" member="yes">
-                                                    <label>Move Down</label>
-                                                    <handler entry="EVT_BUTTON" function="OnFaceDownClick" />
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                <object class="wxStaticBoxSizer" variable="StaticBoxSizer7" member="yes">
-                    <orient>wxHORIZONTAL</orient>
-                    <label>Test area</label>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TestArea" member="yes">
-                            <value>This is sample text</value>
-                            <size>316,53</size>
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                <object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
-                    <object class="button">
-                        <object class="wxButton" name="wxID_OK" />
-                    </object>
-                    <object class="button">
-                        <object class="wxButton" name="wxID_CANCEL" />
-                    </object>
-                </object>
-            </object>
-        </object>
-    </object>
+	<object class="wxScrollingDialog" name="wxsFontEditorDlg">
+		<title>Advanced font settings</title>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer5" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+									<label>Font type</label>
+									<object class="sizeritem">
+										<object class="wxChoice" name="ID_CHOICE1" variable="FontType" member="yes">
+											<content>
+												<item>Default font</item>
+												<item>Custom font</item>
+												<item>System-based font</item>
+											</content>
+											<selection>0</selection>
+											<handler function="OnUpdateContent" entry="EVT_CHOICE" />
+										</object>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+									<label>Settings</label>
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+											<cols>2</cols>
+											<growablecols>2</growablecols>
+											<object class="sizeritem">
+												<object class="wxBoxSizer" variable="BaseFontSizer" member="yes">
+													<object class="sizeritem">
+														<object class="wxCheckBox" name="ID_CHECKBOX8" variable="BaseFontUse" member="yes">
+															<checked>1</checked>
+															<enabled>0</enabled>
+															<handler function="OnBaseFontUseChange" entry="EVT_CHECKBOX" />
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT1" variable="BaseFontTxt" member="yes">
+															<label>Base Font:</label>
+														</object>
+														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+														<option>1</option>
+													</object>
+												</object>
+												<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxChoice" name="ID_CHOICE2" variable="BaseFontVal" member="yes">
+													<content>
+														<item>wxSYS_OEM_FIXED_FONT</item>
+														<item>wxSYS_ANSI_FIXED_FONT</item>
+														<item>wxSYS_ANSI_VAR_FONT</item>
+														<item>wxSYS_SYSTEM_FONT</item>
+														<item>wxSYS_DEVICE_DEFAULT_FONT</item>
+														<item>wxSYS_DEFAULT_PALETTE</item>
+														<item>wxSYS_SYSTEM_FIXED_FONT</item>
+														<item>wxSYS_DEFAULT_GUI_FONT</item>
+													</content>
+													<selection>0</selection>
+													<handler function="OnUpdatePreview" entry="EVT_CHOICE" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX2" variable="FamUse" member="yes">
+													<label>Family:</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxComboBox" name="ID_COMBOBOX1" variable="FamVal" member="yes">
+													<content>
+														<item>Decorative</item>
+														<item>Roman</item>
+														<item>Script</item>
+														<item>Swiss</item>
+														<item>Modern</item>
+														<item>Teletype</item>
+													</content>
+													<selection>0</selection>
+													<handler function="OnUpdatePreview" entry="EVT_COMBOBOX" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX1" variable="EncodUse" member="yes">
+													<label>Font encoding:</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxChoice" name="ID_CHOICE3" variable="EncodVal" member="yes">
+													<handler function="OnUpdatePreview" entry="EVT_CHOICE" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX7" variable="SizeUse" member="yes">
+													<label>Size:</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="SizeVal" member="yes">
+													<value>0</value>
+													<min>-1000</min>
+													<max>1000</max>
+													<handler function="OnSizeValChange" entry="EVT_SPINCTRL" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX6" variable="RelSizeUse" member="yes">
+													<label>Relative size:</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="RelSizeVal" member="yes">
+													<value>1.0</value>
+													<handler function="OnUpdatePreview" entry="EVT_TEXT" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX3" variable="StyleUse" member="yes">
+													<label>Style</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="StyleNorm" member="yes">
+													<label>Normal</label>
+													<style>wxRB_GROUP</style>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="StyleItal" member="yes">
+													<label>Italic</label>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="StyleSlant" member="yes">
+													<label>Slant</label>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="yes">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX4" variable="WeightUse" member="yes">
+													<label>Weight</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="WeightLight" member="yes">
+													<label>Light</label>
+													<style>wxRB_GROUP</style>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="WeightNorm" member="yes">
+													<label>Normal</label>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON6" variable="WeightBold" member="yes">
+													<label>Bold</label>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="yes">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX5" variable="UnderUse" member="yes">
+													<label>Underlined</label>
+													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
+												</object>
+												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON7" variable="UnderYes" member="yes">
+													<label>Yes</label>
+													<style>wxRB_GROUP</style>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON8" variable="UnderNo" member="yes">
+													<label>No</label>
+													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxTOP|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer6" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="yes">
+									<label>Faces</label>
+									<object class="sizeritem">
+										<object class="wxListBox" name="ID_LISTBOX1" variable="FaceList" member="yes">
+											<handler function="OnUpdateContent" entry="EVT_LISTBOX" />
+										</object>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON4" variable="FaceAdd" member="yes">
+													<label>Add</label>
+													<handler function="OnFaceAddClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON5" variable="FaceDel" member="yes">
+													<label>Delete</label>
+													<handler function="OnFaceDelClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON6" variable="FaceEdit" member="yes">
+													<label>Edit</label>
+													<handler function="OnFaceEditClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON8" variable="FaceUp" member="yes">
+													<label>Move Up</label>
+													<handler function="OnFaceUpClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="ID_BUTTON7" variable="FaceDown" member="yes">
+													<label>Move Down</label>
+													<handler function="OnFaceDownClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+									</object>
+								</object>
+								<flag>wxTOP|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer7" member="no">
+					<label>Test area</label>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="TestArea" member="yes">
+							<value>This is sample text</value>
+							<size>316,53</size>
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="no">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
 </wxsmith>

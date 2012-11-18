@@ -76,6 +76,7 @@ void wxsChoice::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsChoice::OnBuildCreatingCode"),GetLanguage());

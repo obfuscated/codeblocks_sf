@@ -33,6 +33,8 @@
 const long wxsArrayStringEditorDlg::ID_TEXTCTRL1 = wxNewId();
 //*)
 
+#include "prep.h"
+
 BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg,wxScrollingDialog)
     //(*EventTable(wxsArrayStringEditorDlg)
     //*)
@@ -52,15 +54,15 @@ wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString&
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Enter items (one item per line)"));
     Items = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxSize(350,200), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-    StaticBoxSizer1->Add(Items, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
-    BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(Items, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
+    BoxSizer1->Add(StaticBoxSizer1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     Button1 = new wxButton(this, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_OK"));
     Button1->SetDefault();
     BoxSizer2->Add(Button1, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button2 = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_CANCEL"));
     BoxSizer2->Add(Button2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(BoxSizer2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
@@ -84,7 +86,7 @@ wxsArrayStringEditorDlg::~wxsArrayStringEditorDlg()
 }
 
 
-void wxsArrayStringEditorDlg::OnOK(wxCommandEvent& event)
+void wxsArrayStringEditorDlg::OnOK(cb_unused wxCommandEvent& event)
 {
     wxStringTokenizer Tknz(Items->GetValue(),_T("\n"),wxTOKEN_RET_EMPTY);
     Data.Clear();
@@ -98,7 +100,7 @@ void wxsArrayStringEditorDlg::OnOK(wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-void wxsArrayStringEditorDlg::OnCancel(wxCommandEvent& event)
+void wxsArrayStringEditorDlg::OnCancel(cb_unused wxCommandEvent& event)
 {
     EndModal(wxID_CANCEL);
 }

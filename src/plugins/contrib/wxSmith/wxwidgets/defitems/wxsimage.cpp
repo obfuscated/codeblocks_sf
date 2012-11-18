@@ -101,6 +101,7 @@ void wxsImage::OnBuildCreatingCode()
                 return;
             }
 
+        case wxsUnknownLanguage: // fall through
         default:
             {
                 wxsCodeMarks::Unknown(_T("wxsImage::OnBuildCreatingCode"), GetLanguage());

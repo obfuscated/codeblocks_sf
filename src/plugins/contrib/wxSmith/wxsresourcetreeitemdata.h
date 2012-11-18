@@ -26,6 +26,8 @@
 #include <wx/treectrl.h>
 #include <wx/menu.h>
 
+#include "prep.h"
+
 /** \brief Data used by resource tree */
 class wxsResourceTreeItemData: public wxTreeItemData
 {
@@ -48,7 +50,7 @@ class wxsResourceTreeItemData: public wxTreeItemData
         /** \brief Called when popup menu generated event with given id
          *  \return true when event was processed, false otherwise
          */
-        virtual bool OnPopup(long Id) { return false; }
+        virtual bool OnPopup(cb_unused long Id) { return false; }
 
 
         /** \brief Function to properly display popup menu */

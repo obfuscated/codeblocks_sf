@@ -55,37 +55,36 @@ class wxsImageTreeEditorDlg: public wxScrollingDialog
 
 
         //(*Declarations(wxsImageTreeEditorDlg)
-        wxStaticBoxSizer* StaticBoxSizer2;
-        wxBitmapComboBox* cbSelected;
-        wxStaticText* StaticText13;
-        wxCheckBox* cxItemBold;
-        wxButton* bCancel;
-        wxBitmapButton        *bDelAllItems;
-        wxBitmapButton        *bAddItem;
-        wxBitmapComboBox* cbNormal;
-        wxBitmapButton        *bEditItem;
-        wxStaticText* StaticText1;
         wxStaticText* StaticText10;
-        wxPanel* Panel2;
-        wxStaticText* StaticText3;
-        wxBitmapButton        *bDelItem;
-        wxBitmapComboBox* cbSelExpanded;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText12;
-        wxStaticText* StaticText7;
+        wxStaticBoxSizer* StaticBoxSizer2;
+        wxStaticText* StaticText9;
+        wxButton* bOK;
+        wxBitmapComboBox* cbSelected;
+        wxBitmapComboBox* cbExpanded;
         wxBitmapButton        *bAddSubItem;
-        wxImageList* ImageList1;
-        wxStaticText* StaticText4;
-        wxStaticText* StaticText5;
+        wxButton* bCancel;
+        wxStaticText* StaticText13;
         wxStaticText* StaticText2;
-        wxButton* bItemColor;
         wxStaticText* StaticText6;
         wxTreeCtrl* Tree1;
-        wxButton* bOK;
-        wxStaticText* StaticText9;
+        wxStaticText* StaticText8;
         wxStaticText* StaticText11;
+        wxImageList* ImageList1;
+        wxBitmapButton        *bEditItem;
+        wxStaticText* StaticText1;
+        wxStaticText* StaticText3;
+        wxBitmapButton        *bDelAllItems;
+        wxBitmapButton        *bDelItem;
+        wxCheckBox* cxItemBold;
+        wxStaticText* StaticText5;
+        wxStaticText* StaticText7;
+        wxStaticText* StaticText12;
         wxStaticBoxSizer* StaticBoxSizer1;
-        wxBitmapComboBox* cbExpanded;
+        wxBitmapComboBox* cbSelExpanded;
+        wxStaticText* StaticText4;
+        wxButton* bItemColor;
+        wxBitmapButton        *bAddItem;
+        wxBitmapComboBox* cbNormal;
         //*)
 
 
@@ -119,7 +118,6 @@ class wxsImageTreeEditorDlg: public wxScrollingDialog
         static const long ID_STATICTEXT10;
         static const long ID_BUTTON1;
         static const long ID_BUTTON2;
-        static const long ID_PANEL2;
         //*)
 
     private:

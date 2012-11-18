@@ -30,8 +30,8 @@
 #include <wx/radiobut.h>
 #include <wx/statbmp.h>
 #include <wx/button.h>
-#include <wx/combobox.h>
 #include "scrollingdialog.h"
+#include <wx/combobox.h>
 //*)
 #include <wx/timer.h>
 
@@ -74,29 +74,24 @@ class wxsBitmapIconEditorDlg: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxsBitmapIconEditorDlg)
-        wxBoxSizer* BoxSizer4;
         wxStaticBoxSizer* StaticBoxSizer2;
         wxStaticBitmap* Preview;
         wxRadioButton* ImageArt;
         wxRadioButton* ImageCode;
-        wxBoxSizer* BoxSizer5;
         wxStaticText* StaticText2;
         wxTextCtrl* CodeText;
         wxButton* Button1;
         wxTextCtrl* FileName;
         wxFlexGridSizer* FlexGridSizer2;
         wxStaticText* StaticText1;
-        wxBoxSizer* BoxSizer2;
         wxButton* Button2;
         wxRadioButton* ImageFile;
         wxButton* Button3;
         wxComboBox* ArtClient;
-        wxBoxSizer* BoxSizer1;
         wxRadioButton* NoImage;
         wxComboBox* ArtId;
         wxStaticBoxSizer* StaticBoxSizer1;
         wxFlexGridSizer* FlexGridSizer1;
-        wxBoxSizer* BoxSizer3;
         //*)
         wxTimer* Timer1;
 

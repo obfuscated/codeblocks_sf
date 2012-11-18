@@ -44,12 +44,10 @@ class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
         virtual ~wxWidgetsGUIConfigPanel();
 
         //(*Identifiers(wxWidgetsGUIConfigPanel)
-        static const long ID_STATICTEXT1;
         static const long ID_TEXTCTRL1;
         static const long ID_BUTTON1;
         static const long ID_BUTTON2;
         static const long ID_COMBOBOX1;
-        static const long ID_STATICTEXT2;
         static const long ID_CHECKBOX2;
         static const long ID_CHECKBOX1;
         //*)
@@ -68,23 +66,10 @@ class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
         //*)
 
         //(*Declarations(wxWidgetsGUIConfigPanel)
-        wxBoxSizer* BoxSizer4;
-        wxStaticBoxSizer* StaticBoxSizer2;
-        wxBoxSizer* BoxSizer5;
-        wxStaticText* StaticText2;
-        wxButton* Button1;
         wxTextCtrl* AutoLoad;
         wxComboBox* MainRes;
-        wxStaticText* StaticText1;
-        wxBoxSizer* BoxSizer2;
-        wxButton* Button2;
         wxCheckBox* InitAll;
-        wxStaticBoxSizer* StaticBoxSizer3;
-        wxBoxSizer* BoxSizer1;
-        wxStaticBoxSizer* StaticBoxSizer1;
-        wxFlexGridSizer* FlexGridSizer1;
         wxCheckBox* InitAllNecessary;
-        wxBoxSizer* BoxSizer3;
         //*)
 
         wxWidgetsGUI* m_GUI;

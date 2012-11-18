@@ -202,7 +202,7 @@ class wxsPropertyContainer
          * Sub-container is other container called in OnEnumProperties using
          * SubContainer method.
          */
-        virtual void OnSubPropertyChanged(wxsPropertyContainer* SubContainer) {}
+        virtual void OnSubPropertyChanged(wxsPropertyContainer* sc) {}
 
         /** \brief Flag set when operating on property grid */
         static const long flPropGrid   = 0x40000000;

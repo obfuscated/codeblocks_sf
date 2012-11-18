@@ -25,13 +25,13 @@
 #define WXSIMAGECOMBOEDITORDLG_H
 
 //(*Headers(wxsImageComboEditorDlg)
-#include <wx/bmpbuttn.h>
-#include <wx/combobox.h>
+#include <wx/treectrl.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include "scrollingdialog.h"
-#include <wx/stattext.h>
-#include <wx/treectrl.h>
+#include <wx/combobox.h>
 //*)
 
 #include "../defitems/wxsimagelist.h"
@@ -62,26 +62,26 @@ class wxsImageComboEditorDlg: public wxScrollingDialog
 
 
         //(*Declarations(wxsImageComboEditorDlg)
-        wxBitmapComboBox* m_pCmbImage;
-        wxButton* m_pBtnOK;
-        wxBitmapButton* m_pBtnAddItem;
-        wxTreeCtrl* m_pTree;
-        wxBitmapButton* m_pBtnMoveUp;
-        wxButton* m_pBtnCancel;
-        wxStaticText* StaticText1;
         wxStaticText* StaticText10;
-        wxStaticText* StaticText3;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText7;
+        wxStaticText* StaticText9;
         wxBitmapButton* m_pBtnEditItem;
-        wxStaticText* StaticText4;
-        wxStaticText* StaticText5;
+        wxBitmapButton* m_pBtnMoveDown;
+        wxButton* m_pBtnOK;
         wxStaticText* StaticText2;
-        wxBitmapButton* m_pBtnDeleteAll;
         wxStaticText* StaticText6;
         wxBitmapButton* m_pBtnDeleteItem;
-        wxBitmapButton* m_pBtnMoveDown;
-        wxStaticText* StaticText9;
+        wxBitmapButton* m_pBtnDeleteAll;
+        wxStaticText* StaticText8;
+        wxStaticText* StaticText1;
+        wxStaticText* StaticText3;
+        wxTreeCtrl* m_pTree;
+        wxButton* m_pBtnCancel;
+        wxStaticText* StaticText5;
+        wxStaticText* StaticText7;
+        wxBitmapComboBox* m_pCmbImage;
+        wxBitmapButton* m_pBtnMoveUp;
+        wxBitmapButton* m_pBtnAddItem;
+        wxStaticText* StaticText4;
         //*)
 
     protected:

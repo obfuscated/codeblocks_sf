@@ -83,6 +83,7 @@ void wxsBitmapButton::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),GetLanguage());
