@@ -613,8 +613,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (!fileMissing.IsEmpty())
     {
         wxString warn;
-        warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependenc%s:"),
-                    target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()), wxString(fileMissing.Count() == 1 ? _("y") : _("ies")).wx_str());
+        warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependency/ies:"),
+                    target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()));
         ret.Add(wxString(COMPILER_SIMPLE_LOG) + warn);
         for (size_t i=0; i<fileMissing.Count(); i++)
             ret.Add(wxString(COMPILER_SIMPLE_LOG) + fileMissing[i]);
