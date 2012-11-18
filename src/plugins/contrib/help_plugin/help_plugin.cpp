@@ -537,6 +537,15 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
     return;
   }
 
+#ifdef __WXMSW__
+  if (helpfile.StartsWith(_T("ms-xhelp:///")))
+  {
+    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
+    ShellExecute(0, 0, helpfile.c_str(), 0, 0, SW_SHOWDEFAULT);
+    return;
+  }
+#endif // __WXMSW__
+
   wxFileName the_helpfile = wxFileName(helpfile);
   Manager::Get()->GetLogManager()->DebugLog(_T("Help File is ") + helpfile);
 
