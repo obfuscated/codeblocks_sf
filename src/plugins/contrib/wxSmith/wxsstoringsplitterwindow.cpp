@@ -55,6 +55,12 @@ void wxsStoringSplitterWindow::OnSize(wxSizeEvent& event)
     event.Skip();
 }
 
+void wxsStoringSplitterWindow::OnSplitterDClick(wxSplitterEvent& event)
+{
+    // Do not allow UnSplit of splitter window
+    event.Veto();
+}
+
 void wxsStoringSplitterWindow::OnSplitterChanging(wxSplitterEvent& event)
 {
     SplitPosition = event.GetSashPosition();
@@ -85,6 +91,7 @@ int wxsStoringSplitterWindow::SplitterFixup(int Position)
 
 BEGIN_EVENT_TABLE(wxsStoringSplitterWindow,wxPanel)
     EVT_SIZE(wxsStoringSplitterWindow::OnSize)
+    EVT_SPLITTER_DCLICK(SplitterId,wxsStoringSplitterWindow::OnSplitterDClick)
     EVT_SPLITTER_SASH_POS_CHANGING(SplitterId,wxsStoringSplitterWindow::OnSplitterChanging)
     EVT_SPLITTER_SASH_POS_CHANGED(SplitterId,wxsStoringSplitterWindow::OnSplitterChanged)
 END_EVENT_TABLE()

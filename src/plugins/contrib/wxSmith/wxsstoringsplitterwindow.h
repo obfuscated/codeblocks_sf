@@ -46,6 +46,7 @@ class wxsStoringSplitterWindow : public wxPanel
     private:
 
         void OnSize(wxSizeEvent& event);
+        void OnSplitterDClick(wxSplitterEvent& event);
         void OnSplitterChanging(wxSplitterEvent& event);
         void OnSplitterChanged(wxSplitterEvent& event);
 
