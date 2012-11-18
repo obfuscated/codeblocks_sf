@@ -1050,7 +1050,7 @@ void BrowseTracker::GetCurrentScreenPositions()
         {
             //-BrowseMarks& EdBrowse_Marks = *m_EbBrowse_MarksHash[eb];
             cbStyledTextCtrl* control = cbed->GetControl();
-            int m_CurrScrPosn = control->GetCurrentPos();
+            m_CurrScrPosn = control->GetCurrentPos();
             //-if (curPos == -1) break;
 
             m_CurrScrLine       = control->LineFromPosition(m_CurrScrPosn);

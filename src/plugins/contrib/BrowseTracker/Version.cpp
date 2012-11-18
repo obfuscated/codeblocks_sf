@@ -248,6 +248,8 @@ AppVersion::~AppVersion()
 //           Remove recording position for activated editor
 //  Commit 1.2.98 2012/08/10
 //       98) Add Wrap Jump Entries option
+//  Commit 1.2.99 2012/11/18
+//       99) remove shadowed var from GetCurrentScreenPosition()
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
