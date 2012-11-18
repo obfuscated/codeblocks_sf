@@ -65,16 +65,6 @@ EncodingDetector::EncodingDetector(const wxByte* buffer, size_t size, bool useLo
     m_IsOK = DetectEncoding(buffer, size);
 }
 
-//EncodingDetector::EncodingDetector(const EncodingDetector& rhs)
-//    : m_IsOK(rhs.m_IsOK),
-//    m_UseBOM(rhs.m_UseBOM),
-//    m_BOMSizeInBytes(rhs.m_BOMSizeInBytes),
-//    m_Encoding(rhs.m_Encoding),
-//    m_ConvStr(rhs.m_ConvStr)
-//{
-//
-//}
-
 EncodingDetector::~EncodingDetector()
 {
 }
@@ -111,8 +101,7 @@ wxString EncodingDetector::GetWxStr() const
     return m_ConvStr;
 }
 
-const wxString& EncodingDetector::DoIt(const char* aBuf,
-                                       PRUint32 aLen)
+const wxString& EncodingDetector::DoIt(const char* aBuf, PRUint32 aLen)
 {
     Reset();
     nsresult rv = HandleData(aBuf, aLen);
@@ -123,151 +112,7 @@ const wxString& EncodingDetector::DoIt(const char* aBuf,
     return mResult;
 }
 
-bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
-{
-    LogManager* logmgr = Manager::Get()->GetLogManager();
-    wxString    logmsg;
-
-    if (!buffer || size == 0)
-    {
-        if (m_UseLog)
-        {
-            logmsg.Printf(_T("Encoding conversion has failed (buffer is empty)!"));
-            logmgr->DebugLog(logmsg);
-        }
-        return false;
-    }
-
-    if (m_BOMSizeInBytes > 0)
-    {
-        for (int i = 0; i < m_BOMSizeInBytes; ++i)
-            buffer++;
-    }
-
-    size_t outlen = 0;
-
-/* NOTE (Biplab#5#): FileManager returns a buffer with 4 extra NULL chars appended.
-    But the buffer size is returned sans the NULL chars */
-
-    wxWCharBuffer wideBuff;
-
-    // if possible use the special conversion-routines, they are much faster than wxCSCov (at least on linux)
-    if ( m_Encoding == wxFONTENCODING_UTF7 )
-    {
-        wxMBConvUTF7 conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else if ( m_Encoding == wxFONTENCODING_UTF8 )
-    {
-        wxMBConvUTF8 conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else if ( m_Encoding == wxFONTENCODING_UTF16BE )
-    {
-        wxMBConvUTF16BE conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else if ( m_Encoding == wxFONTENCODING_UTF16LE )
-    {
-        wxMBConvUTF16LE conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else if ( m_Encoding == wxFONTENCODING_UTF32BE )
-    {
-        wxMBConvUTF32BE conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else if ( m_Encoding == wxFONTENCODING_UTF32LE )
-    {
-        wxMBConvUTF32LE conv;
-        wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-    }
-    else
-    {
-        // try wxEncodingConverter first, even it it only works for
-        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
-        // but it's much, much faster than wxCSConv (at least on linux)
-        wxEncodingConverter conv;
-        wchar_t* tmp = new wchar_t[size + 4 - m_BOMSizeInBytes];
-        if (   conv.Init(m_Encoding, wxFONTENCODING_UNICODE)
-           && conv.Convert((char*)buffer, tmp) )
-        {
-            wideBuff = tmp;
-            outlen = size + 4 - m_BOMSizeInBytes; // should be correct, because Convert has returned true
-        }
-        else
-        {
-            // try wxCSConv, if nothing else works
-            wxCSConv csconv(m_Encoding);
-            wideBuff = csconv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-        }
-        delete [] tmp;
-    }
-
-    m_ConvStr = wxString(wideBuff);
-
-    if (outlen == 0)
-    {
-        if (m_UseLog)
-        {
-            logmsg.Printf(_T("Encoding conversion using settings has failed!\n"
-                             "Encoding choosen was: %s (ID: %d)"),
-                          wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
-                          m_Encoding);
-            logmgr->DebugLog(logmsg);
-        }
-
-        // Try system locale (if requested by the settings)
-        ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
-        if (cfgMgr->ReadBool(_T("/default_encoding/use_system"), true))
-        {
-            // Conversion has failed. Let's try with system-default encoding.
-            if (platform::windows)
-            {
-                if (m_UseLog)
-                {
-                    logmgr->DebugLog(_T("Trying system locale as fallback..."));
-                }
-                m_Encoding = wxLocale::GetSystemEncoding();
-            }
-            else
-            {
-                // We can rely on the UTF-8 detection code ;-)
-                if (m_UseLog)
-                {
-                    logmgr->DebugLog(_T("Trying ISO-8859-1 as fallback..."));
-                }
-                m_Encoding = wxFONTENCODING_ISO8859_1;
-            }
-
-            wxCSConv conv_system(m_Encoding);
-            wideBuff = conv_system.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-            m_ConvStr = wxString(wideBuff);
-
-            if (outlen == 0)
-            {
-                if (m_UseLog)
-                {
-                    logmsg.Printf(_T("Encoding conversion using system locale fallback has failed!\n"
-                                     "Last encoding choosen was: %s (ID: %d)\n"
-                                     "Don't know what to do."),
-                                  wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
-                                  m_Encoding);
-                    logmgr->DebugLog(logmsg);
-                }
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool EncodingDetector::DetectEncoding(const wxString& filename, bool ConvertToWxString)
+bool EncodingDetector::DetectEncoding(const wxString& filename, bool convert_to_wxstring)
 {
     wxFile file(filename);
     if (!file.IsOpened())
@@ -294,16 +139,14 @@ bool EncodingDetector::DetectEncoding(const wxString& filename, bool ConvertToWx
     size_t readBytes = file.Read((void*)buffer, size);
     bool result = false;
     if (readBytes > 0)
-    {
-        result = DetectEncoding(buffer, size, ConvertToWxString);
-    }
+        result = DetectEncoding(buffer, size, convert_to_wxstring);
 
     file.Close();
     free(buffer);
     return result;
 }
 
-bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool ConvertToWxString)
+bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring)
 {
     ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
     wxString encname = cfgMgr->Read(_T("/default_encoding"));
@@ -327,60 +170,11 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
     {
         if (!buffer)
             return false;
-        if (size >= 4)
+
+        // Try our own detection for UTF-16 and UTF-32, the Mozilla-version does not work without BOM
+        if ( DetectEncodingEx(buffer, size) )
         {
-            // BOM is max 4 bytes
-            char buff[4] = {'\0'};
-            memcpy(buff, buffer, 4);
-
-            if (memcmp(buff, "\xEF\xBB\xBF", 3) == 0)
-            {
-                m_UseBOM = true;
-                m_BOMSizeInBytes = 3;
-                m_Encoding = wxFONTENCODING_UTF8;
-            }
-            else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
-            {
-                m_UseBOM = true;
-                m_BOMSizeInBytes = 4;
-                m_Encoding = wxFONTENCODING_UTF32BE;
-            }
-            else if (memcmp(buff, "\x00\x00\xFF\xFE", 4) == 0)
-            {
-            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
-            // X-ISO-10646-UCS-4-2143 can not (yet) be handled by wxWidgets
-                m_Encoding = (wxFontEncoding)-1;
-            }
-            else if (memcmp(buff, "\xFF\xFE\x00\x00", 4) == 0)
-            {
-                m_UseBOM = true;
-                m_BOMSizeInBytes = 4;
-                m_Encoding = wxFONTENCODING_UTF32LE;
-            }
-            else if (memcmp(buff, "\xFE\xFF\x00\x00", 4) == 0)
-            {
-            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
-            // X-ISO-10646-UCS-4-3412 can not (yet) be handled by wxWidgets
-                m_Encoding = (wxFontEncoding)-1;
-            }
-            else if (memcmp(buff, "\xFE\xFF", 2) == 0)
-            {
-                m_UseBOM = true;
-                m_BOMSizeInBytes = 2;
-                m_Encoding = wxFONTENCODING_UTF16BE;
-            }
-            else if (memcmp(buff, "\xFF\xFE", 2) == 0)
-            {
-                m_UseBOM = true;
-                m_BOMSizeInBytes = 2;
-                m_Encoding = wxFONTENCODING_UTF16LE;
-            }
-        }
-
-
-        if (m_UseBOM)
-        {
-            if (m_UseLog)
+            if (m_UseBOM && m_UseLog)
             {
                 wxString msg;
                 msg.Printf(_T("Detected encoding via BOM: %s (ID: %d)"),
@@ -389,12 +183,10 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
                 Manager::Get()->GetLogManager()->DebugLog(msg);
             }
         }
-        // Try our own detection for UTF-16 and UTF-32, the mozilla-version does not work without BOM
-        else if ( !DetectUTF16((wxByte*)buffer, size) &&
-                  !DetectUTF32((wxByte*)buffer, size) )
-            {
-            // if we still have no results try mozilla's detection
-            m_Encoding = wxFontMapper::Get()->CharsetToEncoding(DoIt((char*)buffer, size), false);
+        else
+        {
+            // if we still have no results try Mozilla's detection
+            m_Encoding = wxFontMapper::Get()->CharsetToEncoding( DoIt((char*)buffer, size), false );
             if (m_Encoding == wxFONTENCODING_DEFAULT)
             {
                 wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
@@ -413,7 +205,6 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
             {
                 // Use user-specified one; as a fallback
                 m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
-
                 if (m_UseLog)
                 {
                     wxString msg;
@@ -439,151 +230,333 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         Manager::Get()->GetLogManager()->DebugLog(msg);
     }
 
-    if (ConvertToWxString)
-        ConvertToWxStr(buffer, size);
+    if (convert_to_wxstring && !ConvertToWxString(buffer, size) && m_UseLog)
+        Manager::Get()->GetLogManager()->DebugLog(_T("Something seriously went wrong while converting file content to wxString!"));
 
     return true;
 }
 
-bool EncodingDetector::IsTextUTF16LE(const wxByte *text, size_t size)
+// Stolen from  https://github.com/etexteditor/e/blob/master/src/Strings.cpp
+//        and:  https://github.com/etexteditor/e/blob/master/src/Utf.cpp
+// Copyright (c) 2009, Alexander Stigsen, e-texteditor.com (All rights reserved)
+// http://www.e-texteditor.com/
+bool EncodingDetector::DetectEncodingEx(const wxByte* buffer, size_t size)
 {
-    if (size < 2)
-        return false;
+    if (!buffer || size == 0) return false;
 
-    bool ok = false;
-    bool highsurrogate = false;
+    const wxByte*  buff_ptr = buffer;
+    const wxByte*  buff_end = &buffer[size];
+    wxFontEncoding enc      = wxFONTENCODING_DEFAULT;
 
-    size = size & 0x1FFFFFFE;   // to even
-    while(size > 0)
+    // Check if the buffer starts with a BOM (Byte Order Marker)
+    if (size >= 2)
     {
-        if (text[1] == 0)
+        if      (size >= 4 && memcmp(buffer, "\xFF\xFE\x00\x00", 4) == 0)
         {
-            if (text[0] == 0)
-                return false;
-            ok = true;
+            enc = wxFONTENCODING_UTF32LE;
+            m_BOMSizeInBytes = 4;
+            m_UseBOM = true;
         }
-        else if (text[1] >= 0xD8 && text[1] <= 0xDB)
+        else if (size >= 4 && memcmp(buffer, "\xFE\xFF\x00\x00", 4) == 0)
         {
-            if (highsurrogate)
-                return false;
-            highsurrogate = true;
+            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
+            // X-ISO-10646-UCS-4-3412 can not (yet) be handled by wxWidgets
+            enc = (wxFontEncoding)-1;
         }
-        else if (text[1] >= 0xDC && text[1] <= 0xDF)
+        else if (size >= 4 && memcmp(buffer, "\x00\x00\xFE\xFF", 4) == 0)
         {
-            if (!highsurrogate)
-                return false;
-            highsurrogate = false;
+            enc = wxFONTENCODING_UTF32BE;
+            m_BOMSizeInBytes = 4;
+            m_UseBOM = true;
+        }
+        else if (size >= 4 && memcmp(buffer, "\x00\x00\xFF\xFE", 4) == 0)
+        {
+            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
+            // X-ISO-10646-UCS-4-2143 can not (yet) be handled by wxWidgets
+            enc = (wxFontEncoding)-1;
+        }
+        else if (             memcmp(buffer, "\xFF\xFE", 2) == 0)
+        {
+            enc = wxFONTENCODING_UTF16LE;
+            m_BOMSizeInBytes = 2;
+            m_UseBOM = true;
+        }
+        else if (             memcmp(buffer, "\xFE\xFF", 2) == 0)
+        {
+            enc = wxFONTENCODING_UTF16BE;
+            m_BOMSizeInBytes = 2;
+            m_UseBOM = true;
+        }
+        else if (size >= 3 && memcmp(buffer, "\xEF\xBB\xBF", 3) == 0)
+        {
+            enc = wxFONTENCODING_UTF8;
+            m_BOMSizeInBytes = 3;
+            m_UseBOM = true;
+        }
+        else if (size >= 5 && memcmp(buffer, "\x2B\x2F\x76\x38\x2D", 5) == 0)
+        {
+            enc = wxFONTENCODING_UTF7;
+            m_BOMSizeInBytes = 5;
+            m_UseBOM = true;
         }
 
-        size -= 2;
-        text += 2;
+        buff_ptr += m_BOMSizeInBytes;
     }
 
-    return ok;
-}
-
-bool EncodingDetector::IsTextUTF16BE(const wxByte *text, size_t size)
-{
-    if (size < 2)
-        return false;
-
-    bool ok = false;
-    bool highsurrogate = false;
-
-    size = size & 0x1FFFFFFE;     // to even
-
-    while(size > 0)
+    // If the file starts with a leading < (less) sign, it is probably an XML file
+    // and we can determine the encoding by how the sign is encoded.
+    if (enc == wxFONTENCODING_DEFAULT && size >= 2)
     {
-        if (text[0] == 0)
+        if      (size >= 4 && memcmp(buffer, "\x3C\x00\x00\x00", 4) == 0) enc = wxFONTENCODING_UTF32LE;
+        else if (size >= 4 && memcmp(buffer, "\x00\x00\x00\x3C", 4) == 0) enc = wxFONTENCODING_UTF32BE;
+        else if (             memcmp(buffer, "\x3C\x00",         2) == 0) enc = wxFONTENCODING_UTF16LE;
+        else if (             memcmp(buffer, "\x00\x3C",         2) == 0) enc = wxFONTENCODING_UTF16BE;
+    }
+
+    // Unicode Detection
+    if (enc == wxFONTENCODING_DEFAULT)
+    {
+        unsigned int null_byte_count  = 0;
+        unsigned int utf_bytes        = 0;
+        unsigned int good_utf_count   = 0;
+        unsigned int bad_utf_count    = 0;
+        unsigned int bad_utf32_count  = 0;
+        unsigned int bad_utf16_count  = 0;
+        unsigned int nl_utf32le_count = 0;
+        unsigned int nl_utf32be_count = 0;
+        unsigned int nl_utf16le_count = 0;
+        unsigned int nl_utf16be_count = 0;
+
+        while (buff_ptr != buff_end)
         {
-            if (text[1] == 0)
-                return false;
-            ok = true;
+            if (*buff_ptr == 0) ++null_byte_count;
+
+            // Detect UTF-8 by scanning for invalid sequences
+            if (utf_bytes == 0)
+            {
+                if ((*buff_ptr & 0xC0) == 0x80 || *buff_ptr == 0)
+                    ++bad_utf_count;
+                else
+                {
+                    const char c = *buff_ptr;
+                    utf_bytes = 5; // invalid length
+                    if      ((c & 0x80) == 0x00) utf_bytes = 1;
+                    else if ((c & 0xE0) == 0xC0) utf_bytes = 2;
+                    else if ((c & 0xF0) == 0xE0) utf_bytes = 3;
+                    else if ((c & 0xF8) == 0xF0) utf_bytes = 4;
+                    if (utf_bytes > 3)
+                    {
+                        ++bad_utf_count;
+                        utf_bytes = 0;
+                    }
+                }
+            }
+            else if ((*buff_ptr & 0xC0) == 0x80)
+            {
+                --utf_bytes;
+                if (utf_bytes == 0)
+                    ++good_utf_count;
+            }
+            else
+            {
+                ++bad_utf_count;
+                utf_bytes = 0;
+            }
+
+            // Detect UTF-32 by scanning for newlines (and lack of null chars)
+            if ((wxUIntPtr)buff_ptr % 4 == 0 && buff_ptr+4 <= buff_end)
+            {
+                if (*((wxUint32*)buff_ptr) == 0                        ) ++bad_utf32_count;
+                if (*((wxUint32*)buff_ptr) == wxUINT32_SWAP_ON_BE(0x0A)) ++nl_utf32le_count;
+                if (*((wxUint32*)buff_ptr) == wxUINT32_SWAP_ON_LE(0x0A)) ++nl_utf32be_count;
+            }
+
+            // Detect UTF-16 by scanning for newlines (and lack of null chars)
+            if ((wxUIntPtr)buff_ptr % 2 == 0 && buff_ptr+4 <= buff_end)
+            {
+                if (*((wxUint16*)buff_ptr) == 0)                         ++bad_utf16_count;
+                if (*((wxUint16*)buff_ptr) == wxUINT16_SWAP_ON_BE(0x0A)) ++nl_utf16le_count;
+                if (*((wxUint16*)buff_ptr) == wxUINT16_SWAP_ON_LE(0x0A)) ++nl_utf16be_count;
+            }
+
+            ++buff_ptr;
         }
-        else if (text[0] >= 0xD8 && text[0] <= 0xDB)
-        {
-            if (highsurrogate)
-                return false;
-            highsurrogate = true;
-        }
-        else if (text[0] >= 0xDC && text[0] <= 0xDF)
-        {
-            if (!highsurrogate)
-                return false;
-            highsurrogate = false;
-        }
 
-        size -= 2;
-        text += 2;
+        if      (bad_utf_count   == 0)                                  enc = wxFONTENCODING_UTF8;
+        else if (bad_utf32_count == 0 && nl_utf32le_count > size / 400) enc = wxFONTENCODING_UTF32LE;
+        else if (bad_utf32_count == 0 && nl_utf32be_count > size / 400) enc = wxFONTENCODING_UTF32BE;
+        else if (bad_utf16_count == 0 && nl_utf16le_count > size / 200) enc = wxFONTENCODING_UTF16LE;
+        else if (bad_utf16_count == 0 && nl_utf16be_count > size / 200) enc = wxFONTENCODING_UTF16BE;
+        else if (null_byte_count)
+            return false; // Maybe this is a binary file?
     }
 
-    return ok;
-}
-
-bool EncodingDetector::DetectUTF16(const wxByte *byt, size_t size)
-{
-    if (IsTextUTF16BE(byt, size))
-    {
-        m_Encoding = wxFONTENCODING_UTF16BE;
-        return true;
-    }
-    else if (IsTextUTF16LE(byt, size))
-    {
-        m_Encoding = wxFONTENCODING_UTF16LE;
-        return true;
-    }
-    return false;
-}
-
-bool EncodingDetector::IsTextUTF32LE(const wxByte *text, size_t size)
-{
-    size >>= 2; // to count
-    if (size < 4)
-        return false;
-
-    wxUint32 ucs4, *p=(wxUint32 *)text;
-
-    for (size_t i = 0; i < size; i++, p++)
-    {
-        ucs4 = wxINT32_SWAP_ON_BE(*p);
-
-        if (ucs4 <= 0 || ucs4 > 0x10FFFF)
-            return false;
-    }
+    // If we can't detect encoding and it does not contain null bytes just ignore it and try backup-procedures later...
+    if (enc != wxFONTENCODING_DEFAULT)
+        m_Encoding = enc;
 
     return true;
 }
 
-bool EncodingDetector::IsTextUTF32BE(const wxByte *text, size_t size)
+bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
 {
-    size >>= 2;   // to count
-    if (size < 4)
-        return false;
+    LogManager* logmgr = Manager::Get()->GetLogManager();
+    wxString    logmsg;
 
-    wxUint32 ucs4, *p = (wxUint32 *)text;
-
-    for (size_t i = 0; i < size; i++, p++)
+    if (!buffer || size == 0)
     {
-        ucs4 = wxINT32_SWAP_ON_LE(*p);
+        if (m_UseLog)
+        {
+            logmsg.Printf(_T("Encoding conversion has failed (buffer is empty)!"));
+            logmgr->DebugLog(logmsg);
+        }
+        return false; // Nothing we can do...
+    }
 
-        if (ucs4 <= 0 || ucs4 > 0x10FFFF)
-            return false;
+    if (m_BOMSizeInBytes > 0)
+    {
+        for (int i = 0; i < m_BOMSizeInBytes; ++i)
+            buffer++;
+    }
+
+    size_t outlen = 0;
+
+    /* NOTE (Biplab#5#): FileManager returns a buffer with 4 extra NULL chars appended.
+       But the buffer size is returned sans the NULL chars */
+
+    wxWCharBuffer wideBuff;
+
+    // if possible use the special conversion-routines, they are much faster than wxCSCov (at least on linux)
+    if      ( m_Encoding == wxFONTENCODING_UTF7 )
+    {
+        wxMBConvUTF7 conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else if ( m_Encoding == wxFONTENCODING_UTF8 )
+    {
+        wxMBConvUTF8 conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else if ( m_Encoding == wxFONTENCODING_UTF16BE )
+    {
+        wxMBConvUTF16BE conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else if ( m_Encoding == wxFONTENCODING_UTF16LE )
+    {
+        wxMBConvUTF16LE conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else if ( m_Encoding == wxFONTENCODING_UTF32BE )
+    {
+        wxMBConvUTF32BE conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else if ( m_Encoding == wxFONTENCODING_UTF32LE )
+    {
+        wxMBConvUTF32LE conv;
+        wideBuff = conv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+    }
+    else
+    {
+        // try wxEncodingConverter first, even it it only works for
+        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
+        // but it's much, much faster than wxCSConv (at least on Linux)
+        wxEncodingConverter conv;
+        wchar_t* tmp = new wchar_t[size + 4 - m_BOMSizeInBytes];
+        if (  conv.Init(m_Encoding, wxFONTENCODING_UNICODE)
+           && conv.Convert((const char*)buffer, tmp) )
+        {
+            wideBuff = tmp;
+            outlen = size + 4 - m_BOMSizeInBytes; // should be correct, because Convert has returned true
+            if (m_UseLog && outlen>0)
+            {
+                logmsg.Printf(_T("Conversion succeeded using wxEncodingConverter "
+                                 "(buffer size = %d, converted size = %d."), size, outlen);
+                logmgr->DebugLog(logmsg);
+            }
+        }
+        else
+        {
+            // try wxCSConv, if nothing else works
+            wxCSConv csconv(m_Encoding);
+            if (csconv.IsOk())
+            {
+                wideBuff = csconv.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+                if (m_UseLog && outlen>0)
+                {
+                    logmsg.Printf(_T("Conversion succeeded using wxCSConv "
+                                     "(buffer size = %d, converted size = %d."), size, outlen);
+                    logmgr->DebugLog(logmsg);
+                }
+            }
+        }
+        delete [] tmp;
+    }
+
+    if (outlen>0)
+    {
+        m_ConvStr = wxString(wideBuff);
+        return true; // Done.
+    }
+
+    // Here, outlen == 0, so an error occurred during conversion.
+    if (m_UseLog)
+    {
+        logmsg.Printf(_T("Encoding conversion using settings has failed!\n"
+                         "Encoding chosen was: %s (ID: %d)"),
+                      wxFontMapper::Get()->GetEncodingDescription(m_Encoding).wx_str(),
+                      m_Encoding);
+        logmgr->DebugLog(logmsg);
+    }
+
+    // Try system locale as fall-back (if requested by the settings)
+    ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
+    if (cfgMgr->ReadBool(_T("/default_encoding/use_system"), true))
+    {
+        if (platform::windows)
+        {
+            if (m_UseLog)
+                logmgr->DebugLog(_T("Trying system locale as fallback..."));
+
+            m_Encoding = wxLocale::GetSystemEncoding();
+        }
+        else
+        {
+            // We can rely on the UTF-8 detection code ;-)
+            if (m_UseLog)
+                logmgr->DebugLog(_T("Trying ISO-8859-1 as fallback..."));
+
+            m_Encoding = wxFONTENCODING_ISO8859_1;
+        }
+
+        wxCSConv conv_system(m_Encoding);
+        wideBuff = conv_system.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+        m_ConvStr = wxString(wideBuff);
+
+        if (outlen == 0)
+        {
+            if (m_UseLog)
+            {
+                logmsg.Printf(_T("Encoding conversion using system locale fallback has failed!\n"
+                                 "Last encoding choosen was: %s (ID: %d)\n"
+                                 "Don't know what to do."),
+                              wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                              m_Encoding);
+                logmgr->DebugLog(logmsg);
+            }
+            return false; // Nothing we can do...
+        }
+    }
+    else
+    {
+        if (m_UseLog)
+        {
+            logmgr->DebugLog(_T("Encoding conversion has seriously failed!\n"
+                                "Don't know what to do."));
+        }
+        return false; // Nothing we can do...
     }
 
     return true;
-}
-
-bool EncodingDetector::DetectUTF32(const wxByte *byt, size_t size)
-{
-    if (IsTextUTF32BE(byt, size))
-    {
-        m_Encoding = wxFONTENCODING_UTF32BE;
-        return true;
-    }
-    else if (IsTextUTF32LE(byt, size))
-    {
-        m_Encoding = wxFONTENCODING_UTF32LE;
-        return true;
-    }
-    return false;
 }

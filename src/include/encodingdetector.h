@@ -35,27 +35,21 @@ class DLLIMPORT EncodingDetector : public nsUniversalDetector
         wxString GetWxStr() const;
     protected:
         /** @return True if succeeded, false if not (e.g. file didn't exist). */
-        bool DetectEncoding(const wxString& filename, bool ConvertToWxString = true);
-        bool DetectEncoding(const wxByte* buffer, size_t size, bool ConvertToWxString = true);
+        bool DetectEncoding(const wxString& filename, bool convert_to_wxstring = true);
+        bool DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring = true);
+        bool DetectEncodingEx(const wxByte* buffer, size_t len);
         void Report(const char* aCharset);
 
-        bool m_IsOK;
-        bool m_UseBOM;
-        bool m_UseLog;
-        int m_BOMSizeInBytes;
+        bool           m_IsOK;
+        bool           m_UseBOM;
+        bool           m_UseLog;
+        int            m_BOMSizeInBytes;
         wxFontEncoding m_Encoding;
     private:
+        bool ConvertToWxString(const wxByte* buffer, size_t size);
+
         wxString mResult;
         wxString m_ConvStr;
-        bool ConvertToWxStr(const wxByte* buffer, size_t size);
-//        static inline bool IsUTF8Tail(wxByte b) { return ((b & 0xC0) == 0x80); };
-//        bool DetectUTF8(const wxByte* byt, size_t size);
-        bool IsTextUTF16BE(const wxByte *text, size_t size);
-        bool IsTextUTF16LE(const wxByte *text, size_t size);
-        bool DetectUTF16(const wxByte* byt, size_t size);
-        bool IsTextUTF32BE(const wxByte *text, size_t size);
-        bool IsTextUTF32LE(const wxByte *text, size_t size);
-        bool DetectUTF32(const wxByte* byt, size_t size);
 };
 
 #endif // ENCODINGDETECTOR_H

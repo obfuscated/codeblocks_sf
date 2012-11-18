@@ -115,8 +115,8 @@ struct cbEditorInternalData
             if (enc.IsOK())
             {
                 m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
-                m_useByteOrderMark = enc.UsesBOM();
-                m_encoding = enc.GetFontEncoding();
+                m_useByteOrderMark    = enc.UsesBOM();
+                m_encoding            = enc.GetFontEncoding();
             }
 #ifdef fileload_measuring
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Encoding via fileloader took : %d ms"),(int)sw.Time()));
@@ -1073,6 +1073,7 @@ void cbEditor::Split(cbEditor::SplitType split)
             m_pSplitter->SplitVertically(m_pControl, m_pControl2, 0);
             break;
 
+        case stNoSplit: // fall-trough
         default:
             break;
     }
@@ -1137,7 +1138,7 @@ void cbEditor::SetEditorStyle()
     SetEditorStyleAfterFileOpen();
 }
 
-void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
+inline void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
 {
     if (!control)
         return;
@@ -1150,6 +1151,8 @@ void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
             break;
         case wxSCI_LEX_MAKEFILE:
             control->SetUseTabs(true);
+            break;
+        default:
             break;
     }
 }
@@ -1471,10 +1474,11 @@ void cbEditor::SetColourSet(EditorColourSet* theme)
     SetLanguage( m_lang );
 }
 
-wxFontEncoding cbEditor::GetEncoding( ) const
+wxFontEncoding cbEditor::GetEncoding() const
 {
     if (!m_pData)
         return wxFONTENCODING_SYSTEM;
+
     return m_pData->m_encoding;
 }
 
@@ -1483,28 +1487,19 @@ wxString cbEditor::GetEncodingName( ) const
     return wxFontMapper::GetEncodingName(GetEncoding());
 }
 
-void cbEditor::SetEncoding( wxFontEncoding encoding )
+void cbEditor::SetEncoding(wxFontEncoding encoding)
 {
     if (!m_pData)
         return;
 
-    if ( encoding == wxFONTENCODING_SYSTEM )
+    if (encoding == wxFONTENCODING_SYSTEM)
         encoding = wxLocale::GetSystemEncoding();
 
-    if ( encoding == GetEncoding() )
+    if (encoding == m_pData->m_encoding)
         return;
 
     m_pData->m_encoding = encoding;
     SetModified(true);
-
-    /* NOTE (Biplab#1#): Following method is wrong. The file is still in old encoding
-    *  So if you try to load it with new encoding, you'll get garbage*/
-    /*wxString msg;
-    msg.Printf(_("Do you want to reload the file with the new encoding (you will lose any unsaved work)?"));
-    if (cbMessageBox(msg, _("Reload file?"), wxYES_NO) == wxID_YES)
-        Reload(false);
-    else
-        SetModified(true);*/
 }
 
 bool cbEditor::GetUseBom() const
@@ -1557,44 +1552,12 @@ void cbEditor::Touch()
     m_LastModified = wxDateTime::Now();
 }
 
-void cbEditor::DetectEncoding( )
-{
-    if (!m_pData)
-        return;
-#ifdef fileload_measuring
-    wxStopWatch sw;
-#endif
-    EncodingDetector detector(m_Filename);
-    if (!detector.IsOK())
-        return;
-
-    m_pData->m_useByteOrderMark = detector.UsesBOM();
-    m_pData->m_byteOrderMarkLength = detector.GetBOMSizeInBytes();
-    m_pData->m_encoding = detector.GetFontEncoding();
-
-    // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
-    if (m_pData->m_encoding == wxFONTENCODING_ISO8859_1)
-    {
-        // if the encoding detector returned the default value,
-        // use the user's preference then
-        wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
-        m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
-    }
-#ifdef fileload_measuring
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Encoding via filename took : %d ms"),(int)sw.Time()));
-#endif
-}
-
-void cbEditor::SetLanguage( HighlightLanguage lang )
+void cbEditor::SetLanguage(HighlightLanguage lang)
 {
     if (m_pTheme)
-    {
         m_lang = m_pTheme->Apply(this, lang);
-    }
     else
-    {
         m_lang = HL_AUTO;
-    }
 }
 
 bool cbEditor::Open(bool detectEncoding)
@@ -1613,8 +1576,6 @@ bool cbEditor::Open(bool detectEncoding)
     // open file
     m_pControl->SetReadOnly(false);
 
-    wxString st;
-
     m_pControl->ClearAll();
     m_pControl->SetModEventMask(0);
 
@@ -1622,23 +1583,19 @@ bool cbEditor::Open(bool detectEncoding)
         return false;
 
     if (!m_pData->m_pFileLoader)
-    {
         m_pData->m_pFileLoader = Manager::Get()->GetFileManager()->Load(m_Filename, false);
-    }
 
 #ifdef fileload_measuring
     wxStopWatch sw;
 #endif
     EncodingDetector enc((wxByte*)m_pData->m_pFileLoader->GetData(), m_pData->m_pFileLoader->GetLength());
-    st = enc.GetWxStr();
     if (detectEncoding)
     {
-        m_pData->m_useByteOrderMark = enc.UsesBOM();
+        m_pData->m_useByteOrderMark    = enc.UsesBOM();
         m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
-        m_pData->m_encoding = enc.GetFontEncoding();
+        m_pData->m_encoding            = enc.GetFontEncoding();
 
         SetEncoding(enc.GetFontEncoding());
-        m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
         SetUseBom(m_pData->m_byteOrderMarkLength > 0);
     }
 
@@ -1648,7 +1605,7 @@ bool cbEditor::Open(bool detectEncoding)
     sw.Start();
 #endif
 
-    m_pControl->InsertText(0, st);
+    m_pControl->InsertText(0, enc.GetWxStr());
     m_pControl->EmptyUndoBuffer(mgr->ReadBool(_T("/margin/use_changebar"), true));
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
 
@@ -1676,7 +1633,7 @@ bool cbEditor::Open(bool detectEncoding)
 
 bool cbEditor::Save()
 {
-    if (!GetModified())
+    if ( !GetModified() )
         return true;
 
     // one undo action for all modifications in this context
@@ -1699,7 +1656,7 @@ bool cbEditor::Save()
     NotifyPlugins(cbEVT_EDITOR_BEFORE_SAVE);
     m_pControl->EndUndoAction();
 
-    if (!cbSaveToFile(m_Filename, m_pControl->GetText(),GetEncoding(),GetUseBom()))
+    if ( !cbSaveToFile(m_Filename, m_pControl->GetText(), GetEncoding(), GetUseBom()) )
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), GetFilename().c_str());
@@ -2851,6 +2808,8 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
         case pcmInvertColours:
             m_pControl->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
             break;
+        default:
+            break;
     }
     InitPrinting();
     wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
@@ -3045,6 +3004,8 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
             GetControl()->ToggleFold(line);
             break;
         }
+        default:
+            break;
     }
     OnScintillaEvent(event);
 }
@@ -3120,7 +3081,7 @@ void cbEditor::AutoIndentDone()
 
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
 {
-    if (!wxTheApp->IsActive())
+    if ( !wxTheApp->IsActive() )
         return;
 
     cbStyledTextCtrl* control = GetControl();
