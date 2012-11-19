@@ -10,6 +10,7 @@
 
 #ifndef CB_PRECOMP
   #include <wx/arrstr.h>
+  #include <wx/button.h>
   #include <wx/dir.h>
   #include <wx/filename.h>
   #include <wx/sizer.h>
