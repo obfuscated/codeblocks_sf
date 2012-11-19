@@ -62,12 +62,14 @@
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_CODECOMPLETION_DEBUG_OUTPUT
-    #define CC_CODECOMPLETION_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_CODECOMPLETION_DEBUG_OUTPUT
-    #define CC_CODECOMPLETION_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_CODECOMPLETION_DEBUG_OUTPUT
+        #define CC_CODECOMPLETION_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_CODECOMPLETION_DEBUG_OUTPUT
+        #define CC_CODECOMPLETION_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
@@ -100,7 +102,7 @@ namespace
 namespace CodeCompletionHelper
 {
     // compare method for the sort algorithm for our FunctionScope struct
-    bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+    inline bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
     {
         int result = wxStricmp(fs1.Scope, fs2.Scope);
         if (result == 0)
@@ -113,7 +115,7 @@ namespace CodeCompletionHelper
         return result < 0;
     }
 
-    bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+    inline bool EqualFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
     {
         int result = wxStricmp(fs1.Scope, fs2.Scope);
         if (result == 0)
@@ -122,18 +124,18 @@ namespace CodeCompletionHelper
         return result == 0;
     }
 
-    bool LessNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+    inline bool LessNameSpace(const NameSpace& ns1, const NameSpace& ns2)
     {
         return ns1.Name < ns2.Name;
     }
 
-    bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
+    inline bool EqualNameSpace(const NameSpace& ns1, const NameSpace& ns2)
     {
         return ns1.Name == ns2.Name;
     }
 
     // for OnGotoFunction()
-    wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+    inline wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
             return 0;
@@ -155,7 +157,7 @@ namespace CodeCompletionHelper
     }
 
     // for OnGotoFunction()
-    wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
+    inline wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
             return 0;
@@ -179,13 +181,13 @@ namespace CodeCompletionHelper
     }
 
     // Sorting in GetLocalIncludeDirs()
-    int CompareStringLen(const wxString& first, const wxString& second)
+    inline int CompareStringLen(const wxString& first, const wxString& second)
     {
         return second.Len() - first.Len();
     }
 
     // for CodeCompleteIncludes()
-    bool TestIncludeLine(wxString const &line)
+    inline bool TestIncludeLine(wxString const &line)
     {
         size_t index = line.find(_T('#'));
         if (index == wxString::npos)
@@ -205,7 +207,7 @@ namespace CodeCompletionHelper
     }
 
     // for CodeCompleteIncludes()
-    void GetStringFromSet(wxString& str, const StringSet& s, const wxString& separator)
+    inline void GetStringFromSet(wxString& str, const StringSet& s, const wxString& separator)
     {
         size_t totalLen = 0;
         for (StringSet::const_iterator it = s.begin(); it != s.end(); ++it)
@@ -217,7 +219,7 @@ namespace CodeCompletionHelper
     }
 
     // invariant : on return true : NameUnderCursor is NOT empty
-    bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
+    inline bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
     {
         bool ReturnValue = false;
         if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
@@ -1355,26 +1357,16 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     cbStyledTextCtrl* control = editor->GetControl();
 
-    if(event.GetEventType() == wxEVT_SCI_CHARADDED)
-    {
-        TRACE(_T("wxEVT_SCI_CHARADDED"));
-	}
-    else if(event.GetEventType() == wxEVT_SCI_CHANGE)
-    {
-        TRACE(_T("wxEVT_SCI_CHANGE"));
-	}
-    else if(event.GetEventType() == wxEVT_SCI_KEY)
-	{
-		TRACE(_T("wxEVT_SCI_KEY"));
-	}
-    else if(event.GetEventType() == wxEVT_SCI_MODIFIED)
-    {
-        TRACE(_T("wxEVT_SCI_MODIFIED"));
-	}
-    else if(event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
-    {
-        TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION"));
-	}
+    if      (event.GetEventType() == wxEVT_SCI_CHARADDED)
+    {   TRACE(_T("wxEVT_SCI_CHARADDED")); }
+    else if (event.GetEventType() == wxEVT_SCI_CHANGE)
+    {   TRACE(_T("wxEVT_SCI_CHANGE")); }
+    else if (event.GetEventType() == wxEVT_SCI_KEY)
+    {   TRACE(_T("wxEVT_SCI_KEY")); }
+    else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
+    {   TRACE(_T("wxEVT_SCI_MODIFIED")); }
+    else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
+    {   TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION")); }
 
     if ((event.GetKey() == '.') && control->AutoCompActive())
         control->AutoCompCancel();
@@ -1872,16 +1864,16 @@ void CodeCompletion::OnUnimplementedClassMethods(cb_unused wxCommandEvent& event
 
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 {
-    EditorManager* edMan = Manager::Get()->GetEditorManager();
-    cbEditor* editor = edMan->GetBuiltinActiveEditor();
+    EditorManager* edMan  = Manager::Get()->GetEditorManager();
+    cbEditor*      editor = edMan->GetBuiltinActiveEditor();
     if (!editor)
         return;
 
     TRACE(_T("OnGotoDeclaration"));
 
-    const int pos = editor->GetControl()->GetCurrentPos();
+    const int pos      = editor->GetControl()->GetCurrentPos();
     const int startPos = editor->GetControl()->WordStartPosition(pos, true);
-    const int endPos = editor->GetControl()->WordEndPosition(pos, true);
+    const int endPos   = editor->GetControl()->WordEndPosition(pos, true);
     wxString target;
     if (CodeCompletionHelper::GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T('~'))
         target << _T('~');
@@ -1890,16 +1882,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         return;
 
     // prepare a boolean filter for declaration/implementation
-    bool isDecl = event.GetId() == idGotoDeclaration || event.GetId() == idMenuGotoDeclaration;
+    bool isDecl = event.GetId() == idGotoDeclaration    || event.GetId() == idMenuGotoDeclaration;
     bool isImpl = event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation;
-
-    wxString editorFilename;
-    unsigned editorLine = -1;
-    bool tokenFound = false;
-
-    // data for the choice dialog
-    std::deque<CodeCompletionHelper::GotoDeclarationItem> foundItems;
-    wxArrayString selections;
 
     // get the matching set
     TokenIdxSet result;
@@ -1941,8 +1925,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
         if (isClassOrConstructor)
         {
-            const bool isConstructor =   CodeCompletionHelper::GetNextNonWhitespaceChar(editor->GetControl(), endPos) == _T('(')
-                                      && CodeCompletionHelper::GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T(':');
+            const bool isConstructor = CodeCompletionHelper::GetNextNonWhitespaceChar(editor->GetControl(), endPos)   == _T('(')
+                                    && CodeCompletionHelper::GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T(':');
             for (TokenIdxSet::const_iterator it = result.begin(); it != result.end();)
             {
                 const Token* token = tree->at(*it);
@@ -1973,6 +1957,14 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         }
     }
 
+    // data for the choice dialog
+    std::deque<CodeCompletionHelper::GotoDeclarationItem> foundItems;
+    wxArrayString selections;
+
+    wxString editorFilename;
+    unsigned editorLine = -1;
+    bool     tokenFound = false;
+
     // one match
     if (result.size() == 1)
     {
@@ -1998,12 +1990,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             else if (isImpl)
             {
                 editorFilename = token->GetImplFilename();
-                editorLine = token->m_ImplLine - 1;
+                editorLine     = token->m_ImplLine - 1;
             }
             else if (isDecl)
             {
                 editorFilename = token->GetFilename();
-                editorLine = token->m_Line - 1;
+                editorLine     = token->m_Line - 1;
             }
 
             tokenFound = true;
@@ -2052,8 +2044,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
         const CodeCompletionHelper::GotoDeclarationItem &item = foundItems[sel];
         editorFilename = item.filename;
-        editorLine = item.line;
-        tokenFound = true;
+        editorLine     = item.line;
+        tokenFound     = true;
     }
     else if (selections.GetCount() == 1)
     {
@@ -2061,14 +2053,14 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
         // back on 1 entry no need to show a selection
         const CodeCompletionHelper::GotoDeclarationItem &item = foundItems.front();
         editorFilename = item.filename;
-        editorLine = item.line;
-        tokenFound = true;
+        editorLine     = item.line;
+        tokenFound     = true;
     }
 
     // do we have a token?
     if (tokenFound)
     {
-        cbEditor *targetEditor = edMan->Open(editorFilename);
+        cbEditor* targetEditor = edMan->Open(editorFilename);
         if (targetEditor)
             targetEditor->GotoTokenPosition(editorLine, target);
         else

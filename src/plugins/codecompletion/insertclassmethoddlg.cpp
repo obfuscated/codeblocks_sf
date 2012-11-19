@@ -27,8 +27,8 @@
 
 namespace InsertClassMethodDlgHelper
 {
-    void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& ns, bool includePrivate,
-                          bool includeProtected, bool includePublic)
+    inline void DoFillMethodsFor(wxCheckListBox* clb, Token* parentToken, const wxString& ns, bool includePrivate,
+                                 bool includeProtected, bool includePublic)
     {
         if (!parentToken)
             return;

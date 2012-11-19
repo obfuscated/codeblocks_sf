@@ -47,12 +47,14 @@
 
 #define CC_CLASS_BROWSER_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_CLASS_BROWSER_DEBUG_OUTPUT
-    #define CC_CLASS_BROWSER_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_CLASS_BROWSER_DEBUG_OUTPUT
-    #define CC_CLASS_BROWSER_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_CLASS_BROWSER_DEBUG_OUTPUT
+        #define CC_CLASS_BROWSER_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_CLASS_BROWSER_DEBUG_OUTPUT
+        #define CC_CLASS_BROWSER_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_CLASS_BROWSER_DEBUG_OUTPUT == 1
@@ -290,6 +292,17 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, cb_unused const w
                 if (ctd->m_Token->m_ImplLine != 0 && !ctd->m_Token->GetImplFilename().IsEmpty())
                     menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
                 // intentionally fall through
+            case tkNamespace:
+            case tkClass:
+            case tkEnum:
+            case tkTypedef:
+            case tkVariable:
+            case tkEnumerator:
+            case tkPreprocessor:
+            case tkMacro:
+            case tkAnyContainer:
+            case tkAnyFunction:
+            case tkUndefined:
             default:
                 menu->Append(idMenuJumpToDeclaration, _("Jump to &declaration"));
         }
@@ -542,14 +555,25 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
         bool toImp = false;
         switch (ctd->m_Token->m_TokenKind)
         {
-        case tkConstructor:
-        case tkDestructor:
-        case tkFunction:
-            if (ctd->m_Token->m_ImplLine != 0 && !ctd->m_Token->GetImplFilename().IsEmpty())
-                toImp = true;
-            break;
-        default:
-            break;
+            case tkConstructor:
+            case tkDestructor:
+            case tkFunction:
+                if (ctd->m_Token->m_ImplLine != 0 && !ctd->m_Token->GetImplFilename().IsEmpty())
+                    toImp = true;
+                break;
+            case tkNamespace:
+            case tkClass:
+            case tkEnum:
+            case tkTypedef:
+            case tkVariable:
+            case tkEnumerator:
+            case tkPreprocessor:
+            case tkMacro:
+            case tkAnyContainer:
+            case tkAnyFunction:
+            case tkUndefined:
+            default:
+                break;
         }
 
         wxFileName fname;
@@ -920,21 +944,23 @@ void ClassBrowser::OnThreadEvent(wxCommandEvent& event)
 
     switch (query)
     {
-      case ClassBrowserBuilderThread::selectItemRequired:
-      {
-          if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
-              m_ClassBrowserBuilderThread->SelectItemRequired();
-          break;
-      }
-      case ClassBrowserBuilderThread::buildTreeStart:
-      {
-          CCLogger::Get()->DebugLog(wxT("Updating class browser..."));
-          break;
-      }
-      case ClassBrowserBuilderThread::buildTreeEnd:
-      {
-          CCLogger::Get()->DebugLog(wxT("Class browser updated."));
-          break;
-      }
+        case ClassBrowserBuilderThread::selectItemRequired:
+        {
+            if (m_ClassBrowserBuilderThread && m_Parser && m_Parser->ClassBrowserOptions().treeMembers)
+                m_ClassBrowserBuilderThread->SelectItemRequired();
+            break;
+        }
+        case ClassBrowserBuilderThread::buildTreeStart:
+        {
+            CCLogger::Get()->DebugLog(wxT("Updating class browser..."));
+            break;
+        }
+        case ClassBrowserBuilderThread::buildTreeEnd:
+        {
+            CCLogger::Get()->DebugLog(wxT("Class browser updated."));
+            break;
+        }
+        default:
+            break;
     }
 }

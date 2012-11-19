@@ -43,12 +43,14 @@
 
 #define CC_PARSER_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_PARSER_DEBUG_OUTPUT
-    #define CC_PARSER_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_PARSER_DEBUG_OUTPUT
-    #define CC_PARSER_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_PARSER_DEBUG_OUTPUT
+        #define CC_PARSER_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_PARSER_DEBUG_OUTPUT
+        #define CC_PARSER_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_PARSER_DEBUG_OUTPUT == 1
@@ -864,7 +866,9 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
     }
 
-#if !CC_PARSER_PROFILE_TEST
+#if defined(CC_PARSER_PROFILE_TEST)
+    // Do nothing
+#else
     // Reparse system priority headers
     else if (!m_SystemPriorityHeaders.empty())
     {

@@ -32,12 +32,14 @@
 
 #define CC_BUILDERTHREAD_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
-    #define CC_BUILDERTHREAD_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
-    #define CC_BUILDERTHREAD_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
+        #define CC_BUILDERTHREAD_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_BUILDERTHREAD_DEBUG_OUTPUT
+        #define CC_BUILDERTHREAD_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_BUILDERTHREAD_DEBUG_OUTPUT == 1
@@ -291,6 +293,18 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                     case tkNamespace:
                         kind = tkNamespace | tkClass | tkEnum;
                         break;
+                    case tkEnum:
+                    case tkTypedef:
+                    case tkConstructor:
+                    case tkDestructor:
+                    case tkFunction:
+                    case tkVariable:
+                    case tkEnumerator:
+                    case tkPreprocessor:
+                    case tkMacro:
+                    case tkAnyContainer:
+                    case tkAnyFunction:
+                    case tkUndefined:
                     default:
                         break;
                 }
@@ -298,7 +312,13 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                     AddChildrenOf(m_CCTreeCtrlTop, item, data->m_Token->m_Index, kind);
                 break;
             }
-            default: break;
+            case sfGFuncs:
+            case sfGVars:
+            case sfPreproc:
+            case sfTypedef:
+            case sfMacro:
+            default:
+                break;
         }
     }
 
@@ -946,7 +966,11 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
                 // AddChildrenOf(tree, node, data->m_Token->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
                 break;
             }
-            default: break;
+            case sfRoot:
+            case sfBase:
+            case sfDerived:
+            default:
+                break;
         }
     }
 

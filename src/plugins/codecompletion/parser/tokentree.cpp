@@ -17,12 +17,14 @@
 
 #define CC_TOKENTREE_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_TOKENTREE_DEBUG_OUTPUT
-    #define CC_TOKENTREE_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_TOKENTREE_DEBUG_OUTPUT
-    #define CC_TOKENTREE_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_TOKENTREE_DEBUG_OUTPUT
+        #define CC_TOKENTREE_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_TOKENTREE_DEBUG_OUTPUT
+        #define CC_TOKENTREE_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_TOKENTREE_DEBUG_OUTPUT == 1
@@ -234,7 +236,7 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
     wxString f(filename); while (f.Replace(_T("\\"),_T("/"))) { ; }
     if ( !m_FilenameMap.HasItem(f) )
     {
-        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str()));
+//        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str()));
         TRACE(_T("TokenTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str());
         return 0;
     }
@@ -245,7 +247,7 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
     TokenFileMap::iterator itf = m_FileMap.find(idx);
     if (itf == m_FileMap.end())
     {
-        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx));
+//        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx));
         TRACE(_T("TokenTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx);
         return 0;
     }
@@ -259,7 +261,7 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
             result.insert(*it);
     }
 
-    CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str()));
+//    CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str()));
     TRACE(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str());
     return result.size();
 }
@@ -617,9 +619,11 @@ void TokenTree::RecalcInheritanceChain(Token* token)
                     TRACE(_T("RecalcInheritanceChain() :  + '%s'"), ancestorToken->m_Name.wx_str());
                 }
             }
-#if CC_TOKEN_DEBUG_OUTPUT
+#if defined(CC_TOKEN_DEBUG_OUTPUT)
+    #if CC_TOKEN_DEBUG_OUTPUT
             if (result.empty())
                 TRACE(_T("RecalcInheritanceChain() :  ! '%s' (unresolved)"), ancestor.wx_str());
+    #endif
 #endif
         }
 
@@ -627,10 +631,12 @@ void TokenTree::RecalcInheritanceChain(Token* token)
         token->m_DirectAncestors = token->m_Ancestors;
     }
 
-#if CC_TOKEN_DEBUG_OUTPUT
+#if defined(CC_TOKEN_DEBUG_OUTPUT)
+    #if CC_TOKEN_DEBUG_OUTPUT
     wxStopWatch sw;
     TRACE(_T("RecalcInheritanceChain() : First iteration took : %ld ms"), sw.Time());
     sw.Start();
+    #endif
 #endif
 
     // recalc
@@ -649,7 +655,8 @@ void TokenTree::RecalcInheritanceChain(Token* token)
         }
     }
 
-#if CC_TOKEN_DEBUG_OUTPUT
+#if defined(CC_TOKEN_DEBUG_OUTPUT)
+    #if CC_TOKEN_DEBUG_OUTPUT
     if (token)
     {
         // debug loop
@@ -663,10 +670,13 @@ void TokenTree::RecalcInheritanceChain(Token* token)
                 TRACE(_T("RecalcInheritanceChain() :  + NULL?!"));
         }
     }
+    #endif
 #endif
 
-#if CC_TOKEN_DEBUG_OUTPUT
+#if defined(CC_TOKEN_DEBUG_OUTPUT)
+    #if CC_TOKEN_DEBUG_OUTPUT
     TRACE(_T("RecalcInheritanceChain() : Second iteration took : %ld ms"), sw.Time());
+    #endif
 #endif
 
     TRACE(_T("RecalcInheritanceChain() : Full inheritance calculated."));

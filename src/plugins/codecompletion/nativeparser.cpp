@@ -47,12 +47,14 @@
 
 #define CC_NATIVEPARSER_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_NATIVEPARSER_DEBUG_OUTPUT
-    #define CC_NATIVEPARSER_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_NATIVEPARSER_DEBUG_OUTPUT
-    #define CC_NATIVEPARSER_DEBUG_OUTPUT 2
+#if defined (CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_NATIVEPARSER_DEBUG_OUTPUT
+        #define CC_NATIVEPARSER_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_NATIVEPARSER_DEBUG_OUTPUT
+        #define CC_NATIVEPARSER_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_NATIVEPARSER_DEBUG_OUTPUT == 1
@@ -377,6 +379,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_ENUM_PUBLIC;
                 case tsProtected: return PARSER_IMG_ENUM_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_ENUM_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
                 default:          return PARSER_IMG_ENUM;
             }
 
@@ -388,6 +391,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_CLASS_PUBLIC;
                 case tsProtected: return PARSER_IMG_CLASS_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_CLASS_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
                 default:          return PARSER_IMG_CLASS_PUBLIC;
             }
 
@@ -399,6 +403,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_TYPEDEF_PUBLIC;
                 case tsProtected: return PARSER_IMG_TYPEDEF_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_TYPEDEF_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
                 default:          return PARSER_IMG_TYPEDEF;
             }
 
@@ -408,6 +413,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_MACRO_PUBLIC;
                 case tsProtected: return PARSER_IMG_MACRO_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_MACRO_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
                 default:          return PARSER_IMG_MACRO;
             }
 
@@ -416,6 +422,8 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_CTOR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_CTOR_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
+                case tsPublic:
                 default:          return PARSER_IMG_CTOR_PUBLIC;
             }
 
@@ -424,6 +432,8 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_DTOR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_DTOR_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
+                case tsPublic:
                 default:          return PARSER_IMG_DTOR_PUBLIC;
             }
 
@@ -432,6 +442,8 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_FUNC_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_FUNC_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
+                case tsPublic:
                 default:          return PARSER_IMG_FUNC_PUBLIC;
             }
 
@@ -440,9 +452,14 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_VAR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_VAR_PRIVATE;
+                case tsUndefined: return PARSER_IMG_NONE;
+                case tsPublic:
                 default:          return PARSER_IMG_VAR_PUBLIC;
             }
 
+        case tkAnyContainer:
+        case tkAnyFunction:
+        case tkUndefined:
         default:                  return PARSER_IMG_NONE;
     }
 }
@@ -1147,9 +1164,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     }
 
     for (PriorityMap::iterator pm_it = priorityMap.begin(); pm_it != priorityMap.end(); ++pm_it)
-    {
         priority_files.push_back(pm_it->second);
-	}
 
     CCLogger::Get()->DebugLog(_T("Passing list of files to batch-parser."));
 
@@ -1826,8 +1841,8 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
     if (blockStart != -1)
     {
         ++blockStart; // skip {
-        const int pos = caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos;
-        const int line = searchData->control->LineFromPosition(pos);
+        const int pos      = (caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos);
+        const int line     = searchData->control->LineFromPosition(pos);
         const int blockEnd = searchData->control->GetLineEndPosition(line);
         if (blockEnd < 0 || blockEnd > searchData->control->GetLength())
         {
@@ -2381,32 +2396,33 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
 
     switch (state)
     {
-    case ParserCommon::ptCreateParser:
-        CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), prj.wx_str()));
-        {
-            std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
-            if (info.second && m_Parser != info.second)
+        case ParserCommon::ptCreateParser:
+            CCLogger::Get()->DebugLog(F(_("Starting batch parsing for project '%s'..."), prj.wx_str()));
             {
-                CCLogger::Get()->DebugLog(_T("Start switch from OnParserStart::ptCreateParser"));
-                SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
+                std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
+                if (info.second && m_Parser != info.second)
+                {
+                    CCLogger::Get()->DebugLog(_T("Start switch from OnParserStart::ptCreateParser"));
+                    SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
+                }
             }
-        }
-        break;
+            break;
 
-    case ParserCommon::ptAddFileToParser:
-        CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), prj.wx_str()));
-        break;
+        case ParserCommon::ptAddFileToParser:
+            CCLogger::Get()->DebugLog(F(_("Starting add file parsing for project '%s'..."), prj.wx_str()));
+            break;
 
-    case ParserCommon::ptReparseFile:
-        CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), prj.wx_str()));
-        break;
+        case ParserCommon::ptReparseFile:
+            CCLogger::Get()->DebugLog(F(_("Starting re-parsing for project '%s'..."), prj.wx_str()));
+            break;
 
-    case ParserCommon::ptUndefined:
-        if (event.GetString().IsEmpty())
-            CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), prj.wx_str()));
-        else
-            CCLogger::Get()->DebugLog(F(_("%s in project '%s'"), event.GetString().wx_str(), prj.wx_str()));
-        return;
+        case ParserCommon::ptUndefined:
+        default:
+            if (event.GetString().IsEmpty())
+                CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), prj.wx_str()));
+            else
+                CCLogger::Get()->DebugLog(F(_("%s in project '%s'"), event.GetString().wx_str(), prj.wx_str()));
+            return;
     }
 
     event.Skip();
@@ -2423,32 +2439,33 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
     switch (state)
     {
-    case ParserCommon::ptCreateParser:
-        {
-            wxString log(F(_("Project '%s' parsing stage done!"), prj.wx_str()));
-            CCLogger::Get()->Log(log);
-            CCLogger::Get()->DebugLog(log);
-        }
-        break;
-
-    case ParserCommon::ptAddFileToParser:
-        break;
-
-    case ParserCommon::ptReparseFile:
-        if (parser != m_Parser)
-        {
-            std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
-            if (info.second && info.second != m_Parser)
+        case ParserCommon::ptCreateParser:
             {
-                CCLogger::Get()->DebugLog(_T("Start switch from OnParserEnd::ptReparseFile"));
-                SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
+                wxString log(F(_("Project '%s' parsing stage done!"), prj.wx_str()));
+                CCLogger::Get()->Log(log);
+                CCLogger::Get()->DebugLog(log);
             }
-        }
-        break;
+            break;
 
-    case ParserCommon::ptUndefined:
-        CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), prj.wx_str()));
-        return;
+        case ParserCommon::ptAddFileToParser:
+            break;
+
+        case ParserCommon::ptReparseFile:
+            if (parser != m_Parser)
+            {
+                std::pair<cbProject*, ParserBase*> info = GetParserInfoByCurrentEditor();
+                if (info.second && info.second != m_Parser)
+                {
+                    CCLogger::Get()->DebugLog(_T("Start switch from OnParserEnd::ptReparseFile"));
+                    SwitchParser(info.first, info.second); // Calls SetParser() which also calls UpdateClassBrowserView()
+                }
+            }
+            break;
+
+        case ParserCommon::ptUndefined:
+        default:
+            CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), prj.wx_str()));
+            return;
     }
 
     if (!event.GetString().IsEmpty())

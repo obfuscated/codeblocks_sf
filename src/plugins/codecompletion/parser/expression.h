@@ -17,7 +17,7 @@ public:
         Unknown,        // Unknown
         Plus,           // +
         Subtract,       // -
-        MultiPly,       // *
+        Multiply,       // *
         Divide,         // /
         LParenthesis,   // (
         RParenthesis,   // )

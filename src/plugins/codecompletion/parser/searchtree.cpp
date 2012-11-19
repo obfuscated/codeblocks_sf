@@ -917,7 +917,9 @@ bool SearchTreeNode::UnSerializeString(const wxString& s,wxString& result)
                     }
                     result << ch;
                 }
-            break;
+                break;
+            default:
+                break;
         }
     }
     if (mode < 0)

@@ -32,12 +32,14 @@
 
 #define CC_DEBUGINFO_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_DEBUGINFO_DEBUG_OUTPUT
-    #define CC_DEBUGINFO_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_DEBUGINFO_DEBUG_OUTPUT
-    #define CC_DEBUGINFO_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_DEBUGINFO_DEBUG_OUTPUT
+        #define CC_DEBUGINFO_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_DEBUGINFO_DEBUG_OUTPUT
+        #define CC_DEBUGINFO_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_DEBUGINFO_DEBUG_OUTPUT == 1
@@ -61,7 +63,7 @@
 
 namespace CCDebugInfoHelper
 {
-    void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
+    inline void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
     {
         wxString fname;
         wxFileDialog dlg (Manager::Get()->GetAppWindow(),

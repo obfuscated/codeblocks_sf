@@ -27,12 +27,14 @@
 
 #define CC_PARSERTHREAD_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_PARSERTHREAD_DEBUG_OUTPUT
-    #define CC_PARSERTHREAD_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_PARSERTHREAD_DEBUG_OUTPUT
-    #define CC_PARSERTHREAD_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_PARSERTHREAD_DEBUG_OUTPUT
+        #define CC_PARSERTHREAD_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_PARSERTHREAD_DEBUG_OUTPUT
+        #define CC_PARSERTHREAD_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #ifdef CC_PARSER_TEST
@@ -590,7 +592,7 @@ void ParserThread::DoParse()
                     // we have to return now...
                     if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     {
-                        m_Tokenizer.SetState(oldState);  // This uses the top-level oldState (renamed shadowed versions below)
+                        m_Tokenizer.SetState(oldState); // This uses the top-level oldState (renamed shadowed versions below)
                         return;
                     }
                 }
@@ -2039,8 +2041,8 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineEnd = m_Tokenizer.GetLineNumber();
 
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
-                if (!m_IsBuffer)  // TODO: (Martin) Compiler suggested braces around the single TRACE statement. Since the if() already doesn't correspond to above comment,
-                                  //       I'm feeling uneasy. Please check whether the semantics (break?) are as intended, or whether the compiler found a bug.
+                if (!m_IsBuffer) // TODO: (Martin) Compiler suggested braces around the single TRACE statement. Since the if() already doesn't correspond to above comment,
+                                 //       I'm feeling uneasy. Please check whether the semantics (break?) are as intended, or whether the compiler found a bug.
                 {
                     TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%u)."),
                           name.wx_str(), (lineEnd-lineStart), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);

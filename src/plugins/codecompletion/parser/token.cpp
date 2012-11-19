@@ -16,12 +16,14 @@
 
 #define CC_TOKEN_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_TOKEN_DEBUG_OUTPUT
-    #define CC_TOKEN_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_TOKEN_DEBUG_OUTPUT
-    #define CC_TOKEN_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_TOKEN_DEBUG_OUTPUT
+        #define CC_TOKEN_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_TOKEN_DEBUG_OUTPUT
+        #define CC_TOKEN_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #if CC_TOKEN_DEBUG_OUTPUT == 1
@@ -311,6 +313,9 @@ wxString Token::GetTokenKindString() const
         case tkPreprocessor: return _T("preprocessor");
         case tkMacro:        return _T("macro");
         case tkVariable:     return _T("variable");
+        case tkAnyContainer: return _T("any container");
+        case tkAnyFunction:  return _T("any function");
+        case tkUndefined:    return _T("undefined");
         default:             return wxEmptyString; // tkUndefined
     }
 }
@@ -322,6 +327,7 @@ wxString Token::GetTokenScopeString() const
         case tsPrivate:   return _T("private");
         case tsProtected: return _T("protected");
         case tsPublic:    return _T("public");
+        case tsUndefined: return _T("undefined");
         default:          return wxEmptyString;
     }
 }

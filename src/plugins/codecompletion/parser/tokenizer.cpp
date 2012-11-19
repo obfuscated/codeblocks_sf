@@ -25,12 +25,14 @@
 
 #define CC_TOKENIZER_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_TOKENIZER_DEBUG_OUTPUT
-    #define CC_TOKENIZER_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_TOKENIZER_DEBUG_OUTPUT
-    #define CC_TOKENIZER_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_TOKENIZER_DEBUG_OUTPUT
+        #define CC_TOKENIZER_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_TOKENIZER_DEBUG_OUTPUT
+        #define CC_TOKENIZER_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #ifdef CC_PARSER_TEST
@@ -1439,39 +1441,42 @@ PreprocessorType Tokenizer::GetPreprocessorType()
 
     switch (token.Len())
     {
-    case 2:
-        if (token == TokenizerConsts::kw_if)
-            return ptIf;
-        break;
+        case 2:
+            if (token == TokenizerConsts::kw_if)
+                return ptIf;
+            break;
 
-    case 4:
-        if (token == TokenizerConsts::kw_else)
-            return ptElse;
-        else if (token == TokenizerConsts::kw_elif)
-            return ptElif;
-        break;
+        case 4:
+            if (token == TokenizerConsts::kw_else)
+                return ptElse;
+            else if (token == TokenizerConsts::kw_elif)
+                return ptElif;
+            break;
 
-    case 5:
-        if (token == TokenizerConsts::kw_ifdef)
-            return ptIfdef;
-        else if (token == TokenizerConsts::kw_endif)
-            return ptEndif;
-        break;
+        case 5:
+            if (token == TokenizerConsts::kw_ifdef)
+                return ptIfdef;
+            else if (token == TokenizerConsts::kw_endif)
+                return ptEndif;
+            break;
 
-    case 6:
-        if (token == TokenizerConsts::kw_ifndef)
-            return ptIfndef;
-        break;
+        case 6:
+            if (token == TokenizerConsts::kw_ifndef)
+                return ptIfndef;
+            break;
 
-    case 7:
-        if (token == TokenizerConsts::kw_elifdef)
-            return ptElifdef;
-        break;
+        case 7:
+            if (token == TokenizerConsts::kw_elifdef)
+                return ptElifdef;
+            break;
 
-    case 8:
-        if (token == TokenizerConsts::kw_elifndef)
-            return ptElifndef;
-        break;
+        case 8:
+            if (token == TokenizerConsts::kw_elifndef)
+                return ptElifndef;
+            break;
+
+        default:
+            break;
     }
 
     m_TokenIndex = undoIndex;
@@ -1483,7 +1488,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
 {
     switch (type)
     {
-    case ptIf:
+        case ptIf:
         {
             TRACE(_T("HandleConditionPreprocessor() : #if at line = %u"), m_LineNumber);
             bool result;
@@ -1501,7 +1506,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptIfdef:
+        case ptIfdef:
         {
             TRACE(_T("HandleConditionPreprocessor() : #ifdef at line = %u"), m_LineNumber);
             bool result;
@@ -1519,7 +1524,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptIfndef:
+        case ptIfndef:
         {
             TRACE(_T("HandleConditionPreprocessor() : #ifndef at line = %u"), m_LineNumber);
             bool result;
@@ -1537,7 +1542,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptElif:
+        case ptElif:
         {
             TRACE(_T("HandleConditionPreprocessor() : #elif at line = %u"), m_LineNumber);
             bool result = false;
@@ -1550,7 +1555,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptElifdef:
+        case ptElifdef:
         {
             TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %u"), m_LineNumber);
             bool result = false;
@@ -1563,7 +1568,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptElifndef:
+        case ptElifndef:
         {
             TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %u"), m_LineNumber);
             bool result = false;
@@ -1576,7 +1581,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptElse:
+        case ptElse:
         {
             TRACE(_T("HandleConditionPreprocessor() : #else at line = %u"), m_LineNumber);
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
@@ -1586,7 +1591,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptEndif:
+        case ptEndif:
         {
             TRACE(_T("HandleConditionPreprocessor() : #endif at line = %u"), m_LineNumber);
             SkipToEOL(false);
@@ -1595,8 +1600,9 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         }
         break;
 
-    case ptOthers:
-        break;
+        case ptOthers:
+        default:
+            break;
     }
 }
 
@@ -1665,10 +1671,13 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
     {
         switch ((wxChar)buffer.GetChar(i))
         {
-        case _T('\\'):
-        case _T('\r'):
-        case _T('\n'):
-            buffer.SetChar(i, _T(' '));
+            case _T('\\'):
+            case _T('\r'):
+            case _T('\n'):
+                buffer.SetChar(i, _T(' '));
+                break;
+            default:
+                break;
         }
     }
 

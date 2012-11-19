@@ -24,7 +24,7 @@ public:
     /** divide a statement to several pieces(parser component), each component has a type member*/
     enum ParserTokenType
     {
-        pttUndefine = 0,
+        pttUndefined = 0,
         pttSearchText,
         pttClass,
         pttNamespace,
@@ -34,7 +34,7 @@ public:
     /** the delimiter separating two Parser Component, See ParserComponent struct for more details */
     enum OperatorType
     {
-        otOperatorUndefine = 0,
+        otOperatorUndefined = 0,
         otOperatorSquare,
         otOperatorParentheses,
         otOperatorPointer,
@@ -62,8 +62,8 @@ public:
         void Clear()
         {
             component         = wxEmptyString;
-            tokenType         = pttUndefine;
-            tokenOperatorType = otOperatorUndefine;
+            tokenType         = pttUndefined;
+            tokenOperatorType = otOperatorUndefined;
         }
     };
 
@@ -126,7 +126,7 @@ protected:
     /** helper function to split the statement*/
     wxString GetCCToken(wxString&        line,
                         ParserTokenType& tokenType,
-                        OperatorType&    tokenOperatroType);
+                        OperatorType&    tokenOperatorType);
 
     /** helper function to split the statement*/
     unsigned int FindCCTokenStart(const wxString& line);
@@ -134,7 +134,7 @@ protected:
     /** helper function to read the next CCToken */
     wxString GetNextCCToken(const wxString& line,
                             unsigned int&   startAt,
-                            OperatorType&   tokenOperatroType);
+                            OperatorType&   tokenOperatorType);
 
     /** Remove the last function's childrens */
     void RemoveLastFunctionChildren(TokenTree* tree, int& lastFuncTokenIdx);

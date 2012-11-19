@@ -627,7 +627,7 @@ void CCTestFrame::OnDoHeadersClick(wxCommandEvent& event)
         m_HeadersCtrl->Enable(event.IsChecked());
 }
 
-void CCTestFrame::OnParse(wxCommandEvent& event)
+void CCTestFrame::OnParse(wxCommandEvent& WXUNUSED(event))
 {
     Start();
 }

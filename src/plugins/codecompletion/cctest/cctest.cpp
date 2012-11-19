@@ -141,8 +141,8 @@ void CCTest::PrintTokenTree(Token* token)
     TokenIdxSet& ids = token->m_Children;
     for (TokenIdxSet::iterator it=ids.begin(); it!=ids.end(); ++it)
     {
-        Token* token = m_pTokenTree->at(*it);
-        PrintTokenTree(token); // recursion
+        Token* token_ex = m_pTokenTree->at(*it);
+        PrintTokenTree(token_ex); // recursion
     }
 }
 

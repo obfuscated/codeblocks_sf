@@ -52,7 +52,6 @@
 						</object>
 						<object class="sizeritem">
 							<object class="wxSplitterWindow" name="splitterWin">
-								<minsize>64</minsize>
 								<style>wxSP_LIVE_UPDATE</style>
 								<object class="wxTreeCtrl" name="treeAll" subclass="CCTreeCtrl">
 									<style>wxTR_HAS_VARIABLE_ROW_HEIGHT|wxTR_DEFAULT_STYLE</style>

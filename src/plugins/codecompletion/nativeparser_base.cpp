@@ -18,12 +18,14 @@
 
 #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 0
 
-#if CC_GLOBAL_DEBUG_OUTPUT == 1
-    #undef CC_NATIVEPARSERBASE_DEBUG_OUTPUT
-    #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 1
-#elif CC_GLOBAL_DEBUG_OUTPUT == 2
-    #undef CC_NATIVEPARSERBASE_DEBUG_OUTPUT
-    #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 2
+#if defined(CC_GLOBAL_DEBUG_OUTPUT)
+    #if CC_GLOBAL_DEBUG_OUTPUT == 1
+        #undef CC_NATIVEPARSERBASE_DEBUG_OUTPUT
+        #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 1
+    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
+        #undef CC_NATIVEPARSERBASE_DEBUG_OUTPUT
+        #define CC_NATIVEPARSERBASE_DEBUG_OUTPUT 2
+    #endif
 #endif
 
 #ifdef CC_PARSER_TEST
@@ -448,7 +450,7 @@ bool NativeParserBase::BelongsToParentOrItsAncestors(TokenTree*   tree,
 
 wxString NativeParserBase::GetCCToken(wxString&        line,
                                       ParserTokenType& tokenType,
-                                      OperatorType&    tokenOperatroType)
+                                      OperatorType&    tokenOperatorType)
 {
     // line contains a string on the following form:
     // "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
@@ -467,13 +469,13 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
     // NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
 
     tokenType         = pttSearchText;
-    tokenOperatroType = otOperatorUndefine;
+    tokenOperatorType = otOperatorUndefined;
     if (line.IsEmpty())
         return wxEmptyString;
 
-    tokenOperatroType = otOperatorUndefine;
+    tokenOperatorType = otOperatorUndefined;
     unsigned int startAt = FindCCTokenStart(line);
-    wxString res = GetNextCCToken(line, startAt, tokenOperatroType);
+    wxString res = GetNextCCToken(line, startAt, tokenOperatorType);
 
     TRACE(_T("GetCCToken() : FindCCTokenStart returned %u \"%s\""), startAt, line.wx_str());
     TRACE(_T("GetCCToken() : GetNextCCToken returned %u \"%s\""), startAt, res.wx_str());
@@ -497,7 +499,7 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
         else if (IsOperatorEnd(startAt, line))
         {
             if (IsOperatorPointer(startAt, line) && !res.IsEmpty())
-                tokenOperatroType = otOperatorPointer;
+                tokenOperatorType = otOperatorPointer;
             if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
             else
@@ -510,7 +512,7 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
 
     TRACE(_T("GetCCToken() : Left \"%s\""), line.wx_str());
 
-    if (tokenOperatroType == otOperatorParentheses)
+    if (tokenOperatorType == otOperatorParentheses)
         tokenType = pttFunction;
 
     return res;
@@ -567,7 +569,8 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 
                         case '[':
                         case '(': --nest; --startAt; break;
-
+                        default:
+                            break;
                     }
 
                     startAt = BeforeWhitespace(startAt, line);
@@ -591,7 +594,7 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 
 wxString NativeParserBase::GetNextCCToken(const wxString& line,
                                           unsigned int&   startAt,
-                                          OperatorType&   tokenOperatroType)
+                                          OperatorType&   tokenOperatorType)
 {
     wxString res;
     int nest = 0;
@@ -607,7 +610,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
             if (line.GetChar(startAt) == '(')
                 ++nest;
             if (line.GetChar(startAt) == _T('*'))
-                tokenOperatroType = otOperatorStar;
+                tokenOperatorType = otOperatorStar;
             ++startAt;
         }
     }
@@ -633,9 +636,9 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
     if (IsOpeningBracket(startAt, line))
     {
         if (line.GetChar(startAt) == _T('('))
-            tokenOperatroType = otOperatorParentheses;
+            tokenOperatorType = otOperatorParentheses;
         else if (line.GetChar(startAt) == _T('['))
-            tokenOperatroType = otOperatorSquare;
+            tokenOperatorType = otOperatorSquare;
         ++nest;
         while (   (startAt < line.Len()-1)
                && (nest != 0) )
@@ -650,8 +653,10 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
                 case ']':
                 case ')': --nest; ++startAt; break;
 
-                case '[':tokenOperatroType = otOperatorSquare;
+                case '[':tokenOperatorType = otOperatorSquare;
                 case '(': ++nest; ++startAt; break;
+                default:
+                    break;
             }
 
             startAt = AfterWhitespace(startAt, line);
@@ -731,6 +736,7 @@ size_t NativeParserBase::BreakUpComponents(const wxString&              actual,
                 {   tokenTypeString = _T("Namespace");  break; }
                 case (pttSearchText):
                 {   tokenTypeString = _T("SearchText"); break; }
+                case (pttUndefined):
                 default:
                 {   tokenTypeString = _T("Undefined");         }
             }
@@ -947,7 +953,7 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
             break;
         }
 
-        if (subComponent.tokenOperatorType != otOperatorUndefine)
+        if (subComponent.tokenOperatorType != otOperatorUndefined)
         {
             TokenIdxSet operatorResult;
             ResolveOperator(tree, subComponent.tokenOperatorType, initialScope, searchScope, operatorResult);
@@ -994,16 +1000,17 @@ void NativeParserBase::ResolveOperator(TokenTree*         tree,
     wxString operatorStr;
     switch(tokenOperatorType)
     {
-    case otOperatorParentheses:
-        operatorStr = _T("operator()"); break;
-    case otOperatorSquare:
-        operatorStr = _T("operator[]"); break;
-    case otOperatorPointer:
-        operatorStr = _T("operator->"); break;
-    case otOperatorStar:
-        operatorStr = _T("operator*"); break;
-    default:
-        break;
+        case otOperatorParentheses:
+            operatorStr = _T("operator()"); break;
+        case otOperatorSquare:
+            operatorStr = _T("operator[]"); break;
+        case otOperatorPointer:
+            operatorStr = _T("operator->"); break;
+        case otOperatorStar:
+            operatorStr = _T("operator*"); break;
+        case otOperatorUndefined:
+        default:
+            break;
     }
     if (operatorStr.IsEmpty())
         return;
@@ -1184,7 +1191,7 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*      tree,
                                     parent ? parent->m_Name.wx_str() : _("Global namespace"),
 #endif
                                     parent ? parent->m_Index : 0,
-                                    parent ? parent->GetTokenKindString().wx_str():0,
+                                    parent ? parent->GetTokenKindString().wx_str() : 0,
                                     isPrefix ? 1 : 0));
 
     // parent == null means we are searching in the global scope
@@ -1620,8 +1627,18 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
             else
                 result += token->m_Name + wxT("::");
             return true;
+        case tkEnum:
+        case tkTypedef:
+        case tkDestructor:
+        case tkVariable:
+        case tkEnumerator:
+        case tkPreprocessor:
+        case tkMacro:
+        case tkAnyContainer:
+        case tkAnyFunction:
+        case tkUndefined:
         default:
-            ;
+            break;
     }
     return true;
 }
