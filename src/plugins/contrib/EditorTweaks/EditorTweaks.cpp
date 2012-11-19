@@ -1168,8 +1168,10 @@ void EditorTweaks::DoBufferEditorPos(int delta)
     cbStyledTextCtrl* stc = ed->GetControl();
     if (!stc || stc->LinesOnScreen() < 10) // ignore small editors
         return;
+    const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - stc->GetFirstVisibleLine();
+    if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen (see bug #18795)
+        return;
     const int buffer = (m_center_caret ? (stc->LinesOnScreen() >> 1) - 2 : 4);
-    const int dist   = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - stc->GetFirstVisibleLine();
     if (dist < buffer)
         stc->LineScroll(0, -1);
     else if (dist > stc->LinesOnScreen() - buffer)
