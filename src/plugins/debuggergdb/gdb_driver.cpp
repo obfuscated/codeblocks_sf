@@ -904,6 +904,12 @@ void GDB_driver::ParseOutput(const wxString& output)
             m_pDBG->Log(lines[i]);
         }
 
+        else if (lines[i].StartsWith(_T("Cannot find bounds of current function")))
+        {
+            m_pDBG->Log(lines[i]);
+            m_ProgramIsStopped = true;
+        }
+
         // pending breakpoint resolved?
         // e.g.
         // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
@@ -985,6 +991,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 }
             }
         }
+
         else if (lines[i].StartsWith(wxT("Temporary breakpoint")))
         {
             if (reTempBreakFound.Matches(lines[i]))
@@ -997,6 +1004,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
             }
         }
+
         // cursor change
         else if (lines[i].StartsWith(g_EscapeChar)) // ->->
         {
@@ -1021,6 +1029,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             else
                 HandleMainBreakPoint(reBreak, lines[i]);
         }
+
         else
         {
             // other break info, e.g.
