@@ -379,7 +379,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_ENUM_PUBLIC;
                 case tsProtected: return PARSER_IMG_ENUM_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_ENUM_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 default:          return PARSER_IMG_ENUM;
             }
 
@@ -391,7 +391,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_CLASS_PUBLIC;
                 case tsProtected: return PARSER_IMG_CLASS_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_CLASS_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 default:          return PARSER_IMG_CLASS_PUBLIC;
             }
 
@@ -403,7 +403,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_TYPEDEF_PUBLIC;
                 case tsProtected: return PARSER_IMG_TYPEDEF_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_TYPEDEF_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 default:          return PARSER_IMG_TYPEDEF;
             }
 
@@ -413,7 +413,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsPublic:    return PARSER_IMG_MACRO_PUBLIC;
                 case tsProtected: return PARSER_IMG_MACRO_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_MACRO_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 default:          return PARSER_IMG_MACRO;
             }
 
@@ -422,7 +422,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_CTOR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_CTOR_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 case tsPublic:
                 default:          return PARSER_IMG_CTOR_PUBLIC;
             }
@@ -432,7 +432,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_DTOR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_DTOR_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 case tsPublic:
                 default:          return PARSER_IMG_DTOR_PUBLIC;
             }
@@ -442,7 +442,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_FUNC_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_FUNC_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 case tsPublic:
                 default:          return PARSER_IMG_FUNC_PUBLIC;
             }
@@ -452,7 +452,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
             {
                 case tsProtected: return PARSER_IMG_VAR_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_VAR_PRIVATE;
-                case tsUndefined: return PARSER_IMG_NONE;
+                case tsUndefined:
                 case tsPublic:
                 default:          return PARSER_IMG_VAR_PUBLIC;
             }
@@ -2417,12 +2417,14 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
             break;
 
         case ParserCommon::ptUndefined:
-        default:
             if (event.GetString().IsEmpty())
                 CCLogger::Get()->DebugLog(F(_("Batch parsing error in project '%s'"), prj.wx_str()));
             else
                 CCLogger::Get()->DebugLog(F(_("%s in project '%s'"), event.GetString().wx_str(), prj.wx_str()));
             return;
+
+        default:
+            break;
     }
 
     event.Skip();
@@ -2463,9 +2465,11 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
             break;
 
         case ParserCommon::ptUndefined:
-        default:
             CCLogger::Get()->DebugLog(F(_T("Parser event handling error of project '%s'"), prj.wx_str()));
             return;
+
+        default:
+            break;
     }
 
     if (!event.GetString().IsEmpty())
