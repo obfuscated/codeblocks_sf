@@ -111,7 +111,7 @@ class DebuggerContinueBaseCmd : public DebuggerCmd
         bool IsContinueCommand() const { return true; }
 };
 
-/** Action-only debugger comand to signal the watches tree to update. */
+/** Action-only debugger command to signal the watches tree to update. */
 class DbgCmd_UpdateWatchesTree : public DebuggerCmd
 {
     public:

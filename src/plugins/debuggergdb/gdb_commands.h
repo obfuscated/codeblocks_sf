@@ -797,6 +797,9 @@ class GdbCmd_Watch : public DebuggerCmd
                     case Binary:        m_Cmd << _T("/t "); break;
                     case Char:          m_Cmd << _T("/c "); break;
                     case Float:         m_Cmd << _T("/f "); break;
+                    case Last:
+                    case Any:
+                    case Undefined:
                     default:            break;
                 }
 

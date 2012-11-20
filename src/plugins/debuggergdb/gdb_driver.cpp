@@ -1114,9 +1114,9 @@ void GDB_driver::ParseOutput(const wxString& output)
 }
 
 
-void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
+void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
 {
-    if ( reBreak.Matches(line) )
+    if ( reBreak_in.Matches(line) )
     {
         if (m_ManualBreakOnEntry)
             QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
@@ -1129,15 +1129,15 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
             wxString lineStr;
             if (platform::windows)
             {
-                m_Cursor.file = reBreak.GetMatch(line, 1) + reBreak.GetMatch(line, 2);
-                lineStr = reBreak.GetMatch(line, 3);
-                m_Cursor.address = reBreak.GetMatch(line, 4);
+                m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
+                lineStr = reBreak_in.GetMatch(line, 3);
+                m_Cursor.address = reBreak_in.GetMatch(line, 4);
             }
             else
             {
-                m_Cursor.file = reBreak.GetMatch( line, 1);
-                lineStr = reBreak.GetMatch( line, 2);
-                m_Cursor.address = reBreak.GetMatch( line, 3);
+                m_Cursor.file = reBreak_in.GetMatch( line, 1);
+                lineStr = reBreak_in.GetMatch(line, 2);
+                m_Cursor.address = reBreak_in.GetMatch( line, 3);
             }
 
             lineStr.ToLong(&m_Cursor.line);

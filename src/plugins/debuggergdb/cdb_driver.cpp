@@ -348,7 +348,6 @@ void CDB_driver::ParseOutput(const wxString& output)
         {
             Log(lines[i]);
         }
-
         else if (lines[i].Contains(_T("Access violation")))
         {
             m_ProgramIsStopped = true;

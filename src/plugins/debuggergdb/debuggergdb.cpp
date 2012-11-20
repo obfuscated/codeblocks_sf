@@ -75,7 +75,7 @@ HINSTANCE kernelLib = 0;
 
 #ifdef __WXMSW__
 // disable the CTRL_C event
-BOOL WINAPI HandlerRoutine(cb_unused DWORD dwCtrlType)
+inline BOOL WINAPI HandlerRoutine(cb_unused DWORD dwCtrlType)
 {
     return TRUE;
 }
@@ -1061,6 +1061,8 @@ void DebuggerGDB::RequestUpdate(DebugWindows window)
             if (IsWindowReallyShown(Manager::Get()->GetDebuggerManager()->GetWatchesDialog()->GetWindow()))
                 DoWatches();
             break;
+        default:
+            break;
     }
 }
 
@@ -1351,6 +1353,7 @@ void DebuggerGDB::UpdateBreakpoint(cb::shared_ptr<cbBreakpoint> breakpoint)
             }
             break;
         }
+        case DebuggerBreakpoint::bptFunction:
         default:
             return;
     }
@@ -1729,9 +1732,7 @@ void DebuggerGDB::OnCatchThrow(wxCommandEvent &event)
 void DebuggerGDB::OnInfoFrame(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
-    {
         m_State.GetDriver()->InfoFrame();
-    }
 }
 
 void DebuggerGDB::OnInfoDLL(wxCommandEvent& WXUNUSED(event))
@@ -1745,25 +1746,19 @@ void DebuggerGDB::OnInfoDLL(wxCommandEvent& WXUNUSED(event))
 void DebuggerGDB::OnInfoFiles(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
-    {
         m_State.GetDriver()->InfoFiles();
-    }
 }
 
 void DebuggerGDB::OnInfoFPU(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
-    {
         m_State.GetDriver()->InfoFPU();
-    }
 }
 
 void DebuggerGDB::OnInfoSignals(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
-    {
         m_State.GetDriver()->InfoSignals();
-    }
 }
 
 void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)
