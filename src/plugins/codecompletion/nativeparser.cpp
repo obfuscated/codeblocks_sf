@@ -392,7 +392,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 case tsProtected: return PARSER_IMG_CLASS_PROTECTED;
                 case tsPrivate:   return PARSER_IMG_CLASS_PRIVATE;
                 case tsUndefined:
-                default:          return PARSER_IMG_CLASS_PUBLIC;
+                default:          return PARSER_IMG_CLASS;
             }
 
         case tkNamespace:         return PARSER_IMG_NAMESPACE;
