@@ -2023,7 +2023,10 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     // add compiler include dirs
     for (int idxCompiler = 0; idxCompiler < nCompilers; ++idxCompiler)
     {
-        const wxArrayString& dirs = (Compilers[idxCompiler])->GetIncludeDirs();
+        Compiler* compiler = Compilers[idxCompiler];
+        if (!compiler) continue;
+
+        const wxArrayString& dirs = compiler->GetIncludeDirs();
         for (unsigned int i = 0; i < dirs.GetCount(); ++i)
         {
 //            CCLogger::Get()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
@@ -2042,9 +2045,9 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         // find out which compiler, if gnu, do the special trick
         // to find it's internal include paths
         // but do only once per C::B session, thus cache for later calls
-        wxString CompilerID = (Compilers[idxCompiler])->GetID();
+        wxString CompilerID = compiler->GetID();
         if (CompilerID.Contains(_T("gcc")))
-            AddGCCCompilerDirs(Compilers[idxCompiler]->GetMasterPath(), Compilers[idxCompiler]->GetPrograms().CPP, parser);
+            AddGCCCompilerDirs(Compilers[idxCompiler]->GetMasterPath(), compiler->GetPrograms().CPP, parser);
     } // end of while loop over the found compilers
 
     if (!nCompilers)
