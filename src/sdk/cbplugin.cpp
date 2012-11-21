@@ -238,18 +238,14 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
 
 void cbDebuggerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
 {
-    cbDebuggerPlugin *active_plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    if (active_plugin != this)
-        return;
-
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (!prj)
-        return;
     if (!IsAttached())
         return;
     // we 're only interested in editor menus
     // we 'll add a "debug watches" entry only when the debugger is running...
     if (type != mtEditorManager || !menu)
+        return;
+    cbDebuggerPlugin *active_plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    if (active_plugin != this)
         return;
 
     wxString word;
