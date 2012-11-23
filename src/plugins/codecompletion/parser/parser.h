@@ -21,47 +21,47 @@
 #include <cbthreadpool.h>
 #include <sdk_events.h>
 
-#define PARSER_IMG_NONE                -2
-#define PARSER_IMG_CLASS_FOLDER         0
-#define PARSER_IMG_CLASS                1
-#define PARSER_IMG_CLASS_PRIVATE        2
-#define PARSER_IMG_CLASS_PROTECTED      3
-#define PARSER_IMG_CLASS_PUBLIC         4
-#define PARSER_IMG_CTOR_PRIVATE         5
-#define PARSER_IMG_CTOR_PROTECTED       6
-#define PARSER_IMG_CTOR_PUBLIC          7
-#define PARSER_IMG_DTOR_PRIVATE         8
-#define PARSER_IMG_DTOR_PROTECTED       9
-#define PARSER_IMG_DTOR_PUBLIC          10
-#define PARSER_IMG_FUNC_PRIVATE         11
-#define PARSER_IMG_FUNC_PROTECTED       12
-#define PARSER_IMG_FUNC_PUBLIC          13
-#define PARSER_IMG_VAR_PRIVATE          14
-#define PARSER_IMG_VAR_PROTECTED        15
-#define PARSER_IMG_VAR_PUBLIC           16
-#define PARSER_IMG_PREPROCESSOR         17
-#define PARSER_IMG_ENUM                 18
-#define PARSER_IMG_ENUM_PRIVATE         19
-#define PARSER_IMG_ENUM_PROTECTED       20
-#define PARSER_IMG_ENUM_PUBLIC          21
-#define PARSER_IMG_ENUMERATOR           22
-#define PARSER_IMG_NAMESPACE            23
-#define PARSER_IMG_TYPEDEF              24
-#define PARSER_IMG_TYPEDEF_PRIVATE      25
-#define PARSER_IMG_TYPEDEF_PROTECTED    26
-#define PARSER_IMG_TYPEDEF_PUBLIC       27
-#define PARSER_IMG_SYMBOLS_FOLDER       28
-#define PARSER_IMG_VARS_FOLDER          29
-#define PARSER_IMG_FUNCS_FOLDER         30
-#define PARSER_IMG_ENUMS_FOLDER         31
-#define PARSER_IMG_PREPROC_FOLDER       32
-#define PARSER_IMG_OTHERS_FOLDER        33
-#define PARSER_IMG_TYPEDEF_FOLDER       34
-#define PARSER_IMG_MACRO                35
-#define PARSER_IMG_MACRO_PRIVATE        36
-#define PARSER_IMG_MACRO_PROTECTED      37
-#define PARSER_IMG_MACRO_PUBLIC         38
-#define PARSER_IMG_MACRO_FOLDER         39
+#define PARSER_IMG_NONE              -2
+#define PARSER_IMG_CLASS_FOLDER       0
+#define PARSER_IMG_CLASS              1
+#define PARSER_IMG_CLASS_PRIVATE      2
+#define PARSER_IMG_CLASS_PROTECTED    3
+#define PARSER_IMG_CLASS_PUBLIC       4
+#define PARSER_IMG_CTOR_PRIVATE       5
+#define PARSER_IMG_CTOR_PROTECTED     6
+#define PARSER_IMG_CTOR_PUBLIC        7
+#define PARSER_IMG_DTOR_PRIVATE       8
+#define PARSER_IMG_DTOR_PROTECTED     9
+#define PARSER_IMG_DTOR_PUBLIC        10
+#define PARSER_IMG_FUNC_PRIVATE       11
+#define PARSER_IMG_FUNC_PROTECTED     12
+#define PARSER_IMG_FUNC_PUBLIC        13
+#define PARSER_IMG_VAR_PRIVATE        14
+#define PARSER_IMG_VAR_PROTECTED      15
+#define PARSER_IMG_VAR_PUBLIC         16
+#define PARSER_IMG_PREPROCESSOR       17
+#define PARSER_IMG_ENUM               18
+#define PARSER_IMG_ENUM_PRIVATE       19
+#define PARSER_IMG_ENUM_PROTECTED     20
+#define PARSER_IMG_ENUM_PUBLIC        21
+#define PARSER_IMG_ENUMERATOR         22
+#define PARSER_IMG_NAMESPACE          23
+#define PARSER_IMG_TYPEDEF            24
+#define PARSER_IMG_TYPEDEF_PRIVATE    25
+#define PARSER_IMG_TYPEDEF_PROTECTED  26
+#define PARSER_IMG_TYPEDEF_PUBLIC     27
+#define PARSER_IMG_SYMBOLS_FOLDER     28
+#define PARSER_IMG_VARS_FOLDER        29
+#define PARSER_IMG_FUNCS_FOLDER       30
+#define PARSER_IMG_ENUMS_FOLDER       31
+#define PARSER_IMG_PREPROC_FOLDER     32
+#define PARSER_IMG_OTHERS_FOLDER      33
+#define PARSER_IMG_TYPEDEF_FOLDER     34
+#define PARSER_IMG_MACRO              35
+#define PARSER_IMG_MACRO_PRIVATE      36
+#define PARSER_IMG_MACRO_PROTECTED    37
+#define PARSER_IMG_MACRO_PUBLIC       38
+#define PARSER_IMG_MACRO_FOLDER       39
 
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
 #define PARSER_IMG_MAX PARSER_IMG_MACRO_FOLDER
@@ -83,13 +83,13 @@ private:
 /** Setting of the Parser, some of them will be passed down to ParserThreadOptions */
 struct ParserOptions
 {
-    bool followLocalIncludes;     /// parse XXX.h in directive #include "XXX.h"
-    bool followGlobalIncludes;    /// parse XXX.h in directive #include <XXX.h>
-    bool caseSensitive;           /// case sensitive in MarkItemsByAI
-    bool wantPreprocessor;        /// handle preprocessor directive in Tokenizer class
-    bool useSmartSense;           /// use real AI(scope sequence match) or not(plain text match)
-    bool whileTyping;             /// reparse the active editor while editing
-    bool parseComplexMacros;      /// this will let the Tokenizer to recursive expand macros
+    bool followLocalIncludes;  /// parse XXX.h in directive #include "XXX.h"
+    bool followGlobalIncludes; /// parse XXX.h in directive #include <XXX.h>
+    bool caseSensitive;        /// case sensitive in MarkItemsByAI
+    bool wantPreprocessor;     /// handle preprocessor directive in Tokenizer class
+    bool useSmartSense;        /// use real AI(scope sequence match) or not(plain text match)
+    bool whileTyping;          /// reparse the active editor while editing
+    bool parseComplexMacros;   /// this will let the Tokenizer to recursive expand macros
 };
 
 /** specify the scope of the shown symbols */
@@ -152,36 +152,36 @@ public:
     virtual ~ParserBase();
 
     virtual void AddPriorityHeaders(cb_unused const wxString& filename, cb_unused bool systemHeaderFile) { ; }
-    virtual void AddBatchParse(cb_unused const StringList& filenames)                              { ; }
-    virtual void AddParse(cb_unused const wxString& filename)                                      { ; }
-    virtual void AddPredefinedMacros(cb_unused const wxString& defs)                               { ; }
-    virtual bool UpdateParsingProject(cb_unused cbProject* project)                                { return false; }
+    virtual void AddBatchParse(cb_unused const StringList& filenames)                                    { ; }
+    virtual void AddParse(cb_unused const wxString& filename)                                            { ; }
+    virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                     { ; }
+    virtual bool UpdateParsingProject(cb_unused cbProject* project)                                      { return false; }
 
     virtual bool ParseBuffer(cb_unused const wxString& buffer, cb_unused bool isLocal, cb_unused bool bufferSkipBlocks = false,
                              cb_unused bool isTemp = false, cb_unused const wxString& filename = wxEmptyString,
                              cb_unused int parentIdx = -1, cb_unused int initLine = 0)                          { return false; }
-    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                   { return false; }
+    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                      { return false; }
     virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result)     { return false; }
     virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result){ return false; }
 
-    virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true)                           { return false; }
+    virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true)                              { return false; }
     virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true){ return false; }
-    virtual bool RemoveFile(cb_unused const wxString& filename)                                                    { return false; }
-    virtual bool IsFileParsed(cb_unused const wxString& filename)                                                  { return false; }
+    virtual bool RemoveFile(cb_unused const wxString& filename)                                                          { return false; }
+    virtual bool IsFileParsed(cb_unused const wxString& filename)                                                        { return false; }
 
-    virtual bool     Done()          { return true;             }
-    virtual wxString NotDoneReason() { return wxEmptyString;    }
+    virtual bool     Done()          { return true;            }
+    virtual wxString NotDoneReason() { return wxEmptyString;   }
 
     virtual TokenTree* GetTokenTree(); // allow other implementations of derived (dummy) classes
-    TokenTree* GetTempTokenTree()  { return m_TempTokenTree; }
+    TokenTree* GetTempTokenTree()    { return m_TempTokenTree; }
 
-    void AddIncludeDir(const wxString& dir);
+    void                 AddIncludeDir(const wxString& dir);
     const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
-    wxString GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
-    wxArrayString FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
+    wxString             GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
+    wxArrayString        FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
 
-    void ReadOptions();
-    void WriteOptions();
+    void            ReadOptions();
+    void            WriteOptions();
     ParserOptions&  Options()             { return m_Options;        }
     BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 
