@@ -443,19 +443,22 @@ bool ParserThread::InitTokenizer()
     {
         if (!m_IsBuffer)
         {
-            wxFile file(m_Buffer);
-            if (file.IsOpened())
+            if (wxFileExists(m_Buffer))
             {
-                m_Filename = m_Buffer;
-                m_FileSize = file.Length();
+                wxFile file(m_Buffer);
+                if (file.IsOpened())
+                {
+                    m_Filename = m_Buffer;
+                    m_FileSize = file.Length();
 
-                TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%u."), m_Filename.wx_str(), m_FileSize);
+                    TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%u."), m_Filename.wx_str(), m_FileSize);
 
-                bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
-                Delete(m_Options.loader);
+                    bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
+                    Delete(m_Options.loader);
 
-                if (!ret) { TRACE(_T("InitTokenizer() : Could not initialise tokenizer for file '%s'."), m_Filename.wx_str()); }
-                return ret;
+                    if (!ret) { TRACE(_T("InitTokenizer() : Could not initialise tokenizer for file '%s'."), m_Filename.wx_str()); }
+                    return ret;
+                }
             }
 
             TRACE(_T("InitTokenizer() : Could not open file: '%s'."), m_Buffer.wx_str());
@@ -1262,7 +1265,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     wxString baseArgs;
     if (kind & tkAnyFunction)
     {
-        if (!GetBaseArgs(args, baseArgs))
+        if ( !GetBaseArgs(args, baseArgs) )
             kind = tkVariable;
     }
 
