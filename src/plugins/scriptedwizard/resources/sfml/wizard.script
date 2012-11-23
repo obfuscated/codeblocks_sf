@@ -47,13 +47,9 @@ function OnLeave_SFMLPath(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, SFMLPathDefault, SFMLPathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Audio.hpp"), _T("SFML's include")))
-            return false;
         if (!VerifyFile(dir_nomacro_inc, _T("SFML/Config.hpp"), _T("SFML's include")))
             return false;
         if (!VerifyFile(dir_nomacro_inc, _T("SFML/Graphics.hpp"), _T("SFML's include")))
-            return false;
-        if (!VerifyFile(dir_nomacro_inc, _T("SFML/Network.hpp"), _T("SFML's include")))
             return false;
         if (!VerifyFile(dir_nomacro_inc, _T("SFML/System.hpp"), _T("SFML's include")))
             return false;
@@ -74,17 +70,6 @@ function OnLeave_SFMLPath(fwd)
         if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-system"), _T("SFML's")))
             return false;
         if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-window"), _T("SFML's")))
-            return false;
-
-        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-audio.dll"), _T("SFML's")))
-            return false;
-        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-graphics.dll"), _T("SFML's")))
-            return false;
-        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-network.dll"), _T("SFML's")))
-            return false;
-        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-system.dll"), _T("SFML's")))
-            return false;
-        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-window.dll"), _T("SFML's")))
             return false;
 
         SFMLPath = dir; // Remember the original selection.
@@ -126,11 +111,9 @@ function SetupProject(project)
 
         // add link libraries
         project.AddLinkLib(_T("mingw32"));
-        project.AddLinkLib(_T("sfml-audio.dll"));
-        project.AddLinkLib(_T("sfml-graphics.dll"));
-        project.AddLinkLib(_T("sfml-network.dll"));
-        project.AddLinkLib(_T("sfml-system.dll"));
-        project.AddLinkLib(_T("sfml-window.dll"));
+        project.AddLinkLib(_T("sfml-graphics"));
+        project.AddLinkLib(_T("sfml-window"));
+        project.AddLinkLib(_T("sfml-system"));
         project.AddLinkLib(_T("user32"));
         project.AddLinkLib(_T("gdi32"));
         project.AddLinkLib(_T("winmm"));
@@ -140,22 +123,18 @@ function SetupProject(project)
     {
         //project.AddCompilerOption(_T("-D_GNU_SOURCE=1 -D_THREAD_SAFE"));
         project.AddLinkerOption(_T("-framework SFML"));
-        project.AddLinkLib(_T("sfml-audio"));
         project.AddLinkLib(_T("sfml-graphics"));
-        project.AddLinkLib(_T("sfml-network"));
-        project.AddLinkLib(_T("sfml-system"));
         project.AddLinkLib(_T("sfml-window"));
+        project.AddLinkLib(_T("sfml-system"));
     }
     else
     {
         // unix way
-        project.AddLinkLib(_T("sfml-audio"));
         project.AddLinkLib(_T("sfml-graphics"));
-        project.AddLinkLib(_T("sfml-network"));
-        project.AddLinkLib(_T("sfml-system"));
         project.AddLinkLib(_T("sfml-window"));
-		// TODO: Enable these once SFML gets a sfml.pc
-		//project.AddCompilerOption(_T("`pkg-config sfml --cflags`"));
+        project.AddLinkLib(_T("sfml-system"));
+        // TODO: Enable these once SFML gets a sfml.pc
+        //project.AddCompilerOption(_T("`pkg-config sfml --cflags`"));
         //project.AddLinkerOption(_T("`pkg-config sfml --libs`"));
     }
 
