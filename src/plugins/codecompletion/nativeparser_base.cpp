@@ -808,9 +808,9 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
 
         if (s_DebugSmartSense)
         {
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope is %lu result."), static_cast<unsigned long>(initialScope.size())));
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope with %lu result:"), static_cast<unsigned long>(initialScope.size())));
             for (TokenIdxSet::const_iterator tt = initialScope.begin(); tt != initialScope.end(); ++tt)
-                CCLogger::Get()->DebugLog(F(_T("search scope: %d"), (*tt)));
+                CCLogger::Get()->DebugLog(F(_T("- Search scope: %d"), (*tt)));
         }
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)

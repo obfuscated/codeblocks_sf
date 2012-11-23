@@ -77,8 +77,8 @@ namespace ParserCommon
     static const int PARSER_BATCHPARSE_TIMER_DELAY = 300;
     static const int PARSER_REPARSE_TIMER_DELAY    = 100;
 
-    static volatile Parser*  s_CurrentParser = nullptr;
-    static wxMutex s_ParserMutex;
+    static volatile Parser* s_CurrentParser = nullptr;
+    static          wxMutex s_ParserMutex;
 
     int idParserStart = wxNewId();
     int idParserEnd   = wxNewId();
@@ -1003,7 +1003,8 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         m_PoolTask.pop();
 
         m_Pool.BatchEnd();
-        send_event = false; // error
+        send_event = false; // Error -> TODO: Why???
+        CCLogger::Get()->DebugLog(_T("Pool task operated?!"));
     }
     else if (   !m_PriorityHeaders.empty()
              || !m_BatchParseFiles.empty()
@@ -1014,7 +1015,10 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
 
         // Have not done any batch parsing
         if (ParserCommon::s_CurrentParser)
-            send_event = false; // error
+        {
+            send_event = false; // Error -> TODO: Why???
+            CCLogger::Get()->DebugLog(_T("Already current parser present?!"));
+        }
         else
         {
             ParserCommon::s_CurrentParser = this;
@@ -1022,13 +1026,21 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
             sendStartParseEvent = true;
         }
     }
+    else if (   m_PoolTask.empty()
+             && m_PriorityHeaders.empty()
+             && m_BatchParseFiles.empty()
+             && m_PredefinedMacros.IsEmpty() )
+    {
+        send_event = false; // TODO: Huh?!
+        CCLogger::Get()->DebugLog(_T("Nothing to do?!"));
+    }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 
     if (send_event)
     {
         if (sendStartParseEvent)
-            ProcessParserEvent(m_ParserState, ParserCommon::idParserStart);
+            ProcessParserEvent(m_ParserState,             ParserCommon::idParserStart);
         else
             ProcessParserEvent(ParserCommon::ptUndefined, ParserCommon::idParserStart, _T("Unexpected behaviour!"));
     }
