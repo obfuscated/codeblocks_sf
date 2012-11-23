@@ -1172,7 +1172,7 @@ wxString ParserThread::GetTokenBaseType()
 
     if (pos >= 0)
     {
-        // we have the end of the word we 're interested in
+        // we have the end of the word we're interested in
         int end = pos;
 
         // continue walking backwards until we find the start of the word
@@ -1293,12 +1293,12 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         {   TRACE(_T("DoAddToken() : Found token (member function).")); }
     }
 
-    // none of the above; check for token under parent (but not if we 're parsing a temp buffer)
-    if (!newToken && !m_Options.isTemp)
+    // none of the above; check for token under parent
+    if (!newToken)
     {
         newToken = TokenExists(newname, baseArgs, m_LastParent, kind);
         if (newToken)
-		{   TRACE(_T("DoAddToken() : Found token (parent).")); }
+        {   TRACE(_T("DoAddToken() : Found token (parent).")); }
     }
 
     // need to check if the current token already exists in the tokenTree
@@ -2535,7 +2535,7 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
     return success;
 }
 
-bool ParserThread::GetBaseArgs(const wxString & args, wxString& baseArgs)
+bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
 {
     const wxChar* ptr = args;  // pointer to current char in args string
     wxString word;             // compiled word of last arg
