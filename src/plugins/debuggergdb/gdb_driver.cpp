@@ -904,7 +904,8 @@ void GDB_driver::ParseOutput(const wxString& output)
             m_pDBG->Log(lines[i]);
         }
 
-        else if (lines[i].StartsWith(_T("Cannot find bounds of current function")))
+        else if (   (lines[i].StartsWith(_T("Cannot find bounds of current function")))
+                 || (lines[i].StartsWith(_T("No stack"))) )
         {
             m_pDBG->Log(lines[i]);
             m_ProgramIsStopped = true;
