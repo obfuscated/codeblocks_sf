@@ -623,7 +623,7 @@ bool NativeParser::DeleteParser(cbProject* project)
         if (it->second == m_Parser)
           SetParser(m_TempParser); // Also updates class browser
 
-        wxString log(F(_("Delete parser for project '%s'!"), prj.wx_str()));
+        wxString log(F(_("Deleting parser for project '%s'!"), prj.wx_str()));
         CCLogger::Get()->Log(log);
         CCLogger::Get()->DebugLog(log);
 
@@ -636,7 +636,7 @@ bool NativeParser::DeleteParser(cbProject* project)
     if (removeProjectFromParser)
         return true;
 
-    CCLogger::Get()->DebugLog(_T("Delete parser failed!"));
+    CCLogger::Get()->DebugLog(_T("Deleting parser failed!"));
     return false;
 }
 
@@ -1841,15 +1841,16 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
     if (blockStart != -1)
     {
         ++blockStart; // skip {
-        const int pos      = (caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos);
-        const int line     = searchData->control->LineFromPosition(pos);
-        const int blockEnd = searchData->control->GetLineEndPosition(line);
-        if (blockEnd < 0 || blockEnd > searchData->control->GetLength())
+        cbStyledTextCtrl* stc = searchData->control;
+        const int pos         = (caretPos == -1 ? stc->GetCurrentPos() : caretPos);
+        const int line        = stc->LineFromPosition(pos);
+        const int blockEnd    = stc->GetLineEndPosition(line);
+        if (blockEnd < 0 || blockEnd > stc->GetLength())
         {
             if (s_DebugSmartSense)
             {
                 CCLogger::Get()->DebugLog(F(_T("ParseLocalBlock() ERROR blockEnd=%d and edLength=%d?!"),
-                                            blockEnd, searchData->control->GetLength()));
+                                            blockEnd, stc->GetLength()));
             }
             return false;
         }
@@ -1857,7 +1858,70 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
         if (blockStart >= blockEnd)
             blockStart = blockEnd;
 
-        wxString buffer = searchData->control->GetTextRange(blockStart, blockEnd);
+//        wxString buffer = searchData->control->GetTextRange(blockStart, blockEnd);
+        wxString buffer;
+        // condense out-of-scope braces {...}
+        int scanPos = blockEnd;
+        for (int curPos = pos; curPos > blockStart; --curPos)
+        {
+            if (stc->GetCharAt(curPos) != wxT('}'))
+                continue;
+            const int style = stc->GetStyleAt(curPos);
+            if (   stc->IsString(style)
+                || stc->IsCharacter(style)
+                || stc->IsComment(style))
+            {
+                continue;
+            }
+            const int scopeStart = stc->BraceMatch(curPos);
+            if (scopeStart < blockStart)
+                break;
+            buffer.Prepend(stc->GetTextRange(curPos, scanPos));
+            int startLn = stc->LineFromPosition(scopeStart);
+            int endLn   = stc->LineFromPosition(curPos);
+            if (startLn < endLn) // maintain correct line numbers for parsed tokens
+                buffer.Prepend( wxString(wxT('\n'), endLn - startLn) );
+            scanPos = scopeStart + 1;
+            curPos  = scopeStart;
+
+            // condense out-of-scope for/if/while declarations
+            int prevCharIdx = scopeStart - 1;
+            for (; prevCharIdx > blockStart; --prevCharIdx)
+            {
+                if (stc->IsComment(stc->GetStyleAt(prevCharIdx)))
+                    continue;
+                if (!wxIsspace(stc->GetCharAt(prevCharIdx)))
+                    break;
+            }
+            if (stc->GetCharAt(prevCharIdx) != wxT(')'))
+                continue;
+            const int paramStart = stc->BraceMatch(prevCharIdx);
+            if (paramStart < blockStart)
+                continue;
+            for (prevCharIdx = paramStart - 1; prevCharIdx > blockStart; --prevCharIdx)
+            {
+                if (stc->IsComment(stc->GetStyleAt(prevCharIdx)))
+                    continue;
+                if (!wxIsspace(stc->GetCharAt(prevCharIdx)))
+                    break;
+            }
+            const wxString text = stc->GetTextRange(stc->WordStartPosition(prevCharIdx, true),
+                                                    stc->WordEndPosition(  prevCharIdx, true));
+            if (text == wxT("for"))
+                buffer.Prepend(wxT("(;;){"));
+            else if (text == wxT("if") || text == wxT("while"))
+                buffer.Prepend(wxT("(0){"));
+            else
+                continue;
+            startLn = stc->LineFromPosition(prevCharIdx);
+            endLn   = stc->LineFromPosition(scopeStart);
+            if (startLn < endLn)
+                buffer.Prepend( wxString(wxT('\n'), endLn - startLn) );
+            curPos  = stc->WordStartPosition(prevCharIdx, true);
+            scanPos = stc->WordEndPosition(  prevCharIdx, true);
+        }
+        buffer.Prepend(stc->GetTextRange(blockStart, scanPos));
+
         buffer.Trim();
         if (   !buffer.IsEmpty()
             && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, m_LastFuncTokenIdx, initLine) )
@@ -2394,7 +2458,7 @@ void NativeParser::OnParserStart(wxCommandEvent& event)
     TRACE(_T("NativeParser::OnParserStart()"));
 
     cbProject* project = static_cast<cbProject*>(event.GetClientData());
-    wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
+    wxString   prj     = (project ? project->GetTitle() : _T("*NONE*"));
     const ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
 
     switch (state)
