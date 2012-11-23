@@ -3,5 +3,6 @@
 	<resource_extra>
 		<object root="1" />
 		<object name="ID_SPINCTRL1" class="wxSpinCtrl" variable="SpinCtrl1" member="yes" />
+		<object name="ID_CHOICE1" class="wxChoice" variable="Choice1" member="yes" />
 	</resource_extra>
 </wxsmith>

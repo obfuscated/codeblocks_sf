@@ -18,6 +18,29 @@
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Editor caret buffer</label>
+					<object class="sizeritem">
+						<object class="wxChoice" name="ID_CHOICE1">
+							<content>
+								<item>None</item>
+								<item>1 line</item>
+								<item>2 lines</item>
+								<item>3 lines</item>
+								<item>4 lines</item>
+								<item>Center caret</item>
+							</content>
+							<selection>4</selection>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
 			<object class="spacer">
 				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>

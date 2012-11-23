@@ -5,6 +5,7 @@
 //(*Headers(EditorTweaksConfDlg)
 #include <wx/spinctrl.h>
 #include <wx/panel.h>
+#include <wx/choice.h>
 //*)
 
 class EditorTweaksConfDlg: public cbConfigurationPanel
@@ -16,6 +17,7 @@ class EditorTweaksConfDlg: public cbConfigurationPanel
 
 		//(*Declarations(EditorTweaksConfDlg)
 		wxSpinCtrl* SpinCtrl1;
+		wxChoice* Choice1;
 		//*)
 
 	protected:

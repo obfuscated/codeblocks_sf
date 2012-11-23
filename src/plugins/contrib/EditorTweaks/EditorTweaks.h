@@ -133,11 +133,10 @@ class EditorTweaks : public cbPlugin
         void OnAlignAuto(wxCommandEvent& event);
 		void OnSuppressInsert(wxCommandEvent& event);
 		void OnConvertBraces(wxCommandEvent& event);
-        void OnCenterCaret(wxCommandEvent& event);
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
 		bool GetSelectionLines(int& LineStart, int& LineEnd);
-        void DoBufferEditorPos(int delta);
+        void DoBufferEditorPos(int delta = 0);
 
 		std::vector<AlignerMenuEntry> AlignerMenuEntries;
 
@@ -145,7 +144,7 @@ class EditorTweaks : public cbPlugin
         int m_EditorHookId;
         bool m_suppress_insert;
         bool m_convert_braces;
-        bool m_center_caret;
+        int  m_buffer_caret;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
 

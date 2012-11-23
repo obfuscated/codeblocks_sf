@@ -69,7 +69,6 @@ int id_et_align_others        = wxNewId();
 int id_et_align_auto          = wxNewId();
 int id_et_SuppressInsertKey   = wxNewId();
 int id_et_ConvertBraces       = wxNewId();
-int id_et_CenterCaret         = wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -116,7 +115,6 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
 
     EVT_MENU(id_et_SuppressInsertKey, EditorTweaks::OnSuppressInsert)
     EVT_MENU(id_et_ConvertBraces,     EditorTweaks::OnConvertBraces)
-    EVT_MENU(id_et_CenterCaret,       EditorTweaks::OnCenterCaret)
     EVT_MENU(id_et_align_others,      EditorTweaks::OnAlignOthers)
     EVT_MENU(id_et_align_auto,        EditorTweaks::OnAlignAuto)
 END_EVENT_TABLE()
@@ -184,7 +182,6 @@ void EditorTweaks::OnAttach()
     }
     m_suppress_insert = cfg->ReadBool(wxT("/suppress_insert_key"), false);
     m_convert_braces  = cfg->ReadBool(wxT("/convert_braces"),      false);
-    m_center_caret    = cfg->ReadBool(wxT("/center_caret"),        false);
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -221,7 +218,6 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(wxT("/suppress_insert_key"), m_suppress_insert);
     cfg->Write(wxT("/convert_braces"),      m_convert_braces);
-    cfg->Write(wxT("/center_caret"),        m_center_caret);
 }
 
 cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
@@ -229,6 +225,7 @@ cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
     if ( !IsAttached() )
         return NULL;
 
+    m_buffer_caret = -1; // invalidate so value will be read from configuration on next use
     EditorTweaksConfDlg* cfg = new EditorTweaksConfDlg(parent);
     return cfg;
 }
@@ -294,7 +291,6 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->AppendSeparator();
     submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"),     _("Disable toggle between insert and overwrite mode using the insert key") );
     submenu->AppendCheckItem( id_et_ConvertBraces,     _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
-    submenu->AppendCheckItem( id_et_CenterCaret,       _("Center Caret"),            _("Scroll the editor so the caret is always near the center") );
 
 
     wxMenu *foldmenu = 0;
@@ -367,7 +363,6 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_ShowEOL,ed->GetControl()->GetViewEOL());
     submenu->Check(id_et_SuppressInsertKey, m_suppress_insert);
     submenu->Check(id_et_ConvertBraces,     m_convert_braces);
-    submenu->Check(id_et_CenterCaret,       m_center_caret);
 }
 
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
@@ -433,12 +428,49 @@ void EditorTweaks::OnEditorClose(CodeBlocksEvent& /*event*/)
 
 void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 {
-    int keyCode = event.GetKeyCode();
-    keyCode = (keyCode == WXK_NUMPAD_UP   ? WXK_UP :
-               keyCode == WXK_NUMPAD_DOWN ? WXK_DOWN : keyCode);
-    if (!( (keyCode == WXK_UP || keyCode == WXK_DOWN)
-           && event.GetModifiers() == wxMOD_CONTROL )) // do not interfere on Ctrl up/down
-        DoBufferEditorPos(keyCode == WXK_UP ? -1 : keyCode == WXK_DOWN ? 1 : 0);
+    const int keyCode = event.GetKeyCode();
+    switch (keyCode)
+    {
+    case WXK_NUMPAD_UP:
+    case WXK_UP:
+        if (event.GetModifiers() != wxMOD_CONTROL)
+            DoBufferEditorPos(-1);
+        break;
+
+    case WXK_NUMPAD_DOWN:
+    case WXK_DOWN:
+        if (event.GetModifiers() == wxMOD_CONTROL)
+            break;
+        // fall through
+    case WXK_NUMPAD_ENTER:
+    case WXK_RETURN:
+        DoBufferEditorPos(1);
+        break;
+
+    case WXK_TAB:
+        if (event.GetModifiers() != wxMOD_NONE)
+            break;
+        // fall through
+    case WXK_BACK:
+    case WXK_NUMPAD_DELETE:
+    case WXK_DELETE:
+    case WXK_NUMPAD_LEFT:
+    case WXK_LEFT:
+    case WXK_NUMPAD_RIGHT:
+    case WXK_RIGHT:
+        if (event.GetModifiers() == wxMOD_ALT)
+            break;
+        // fall through
+    case WXK_NUMPAD_HOME:
+    case WXK_HOME:
+    case WXK_NUMPAD_END:
+    case WXK_END:
+        DoBufferEditorPos();
+        break;
+
+    default:
+        break;
+    }
     if (m_suppress_insert && keyCode == WXK_INSERT && event.GetModifiers() == wxMOD_NONE)
         event.Skip(false);
     else
@@ -480,6 +512,7 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 void EditorTweaks::OnChar(wxKeyEvent& event)
 {
     event.Skip(true);
+    DoBufferEditorPos();
     wxChar ch = event.GetKeyCode();
     if (m_convert_braces &&
             (ch == _T('(') ||
@@ -553,11 +586,6 @@ void EditorTweaks::OnSuppressInsert(wxCommandEvent& event)
 void EditorTweaks::OnConvertBraces(wxCommandEvent& event)
 {
     m_convert_braces = event.IsChecked();
-}
-
-void EditorTweaks::OnCenterCaret(wxCommandEvent& event)
-{
-    m_center_caret = event.IsChecked();
 }
 
 //void EditorTweaks::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
@@ -1162,18 +1190,22 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
 
 void EditorTweaks::DoBufferEditorPos(int delta)
 {
+    if (m_buffer_caret == -1)
+        m_buffer_caret = Manager::Get()->GetConfigManager(wxT("EditorTweaks"))->ReadInt(wxT("/buffer_caret"), 4);
+    if (m_buffer_caret < 1) // feature disabled (selected "None" in settings)
+        return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return;
     cbStyledTextCtrl* stc = ed->GetControl();
-    if (!stc || stc->LinesOnScreen() < 10) // ignore small editors
+    if (!stc || stc->AutoCompActive() || stc->LinesOnScreen() < 10) // ignore small editors
         return;
     const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - stc->GetFirstVisibleLine();
     if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen (see bug #18795)
         return;
-    const int buffer = (m_center_caret ? (stc->LinesOnScreen() >> 1) - 2 : 4);
+    const int buffer = (m_buffer_caret > 4 ? (stc->LinesOnScreen() >> 1) - 2 : m_buffer_caret);
     if (dist < buffer)
-        stc->LineScroll(0, -1);
-    else if (dist > stc->LinesOnScreen() - buffer)
-        stc->LineScroll(0, 1);
+        stc->LineScroll(0, -1); // scroll up
+    else if (dist >= stc->LinesOnScreen() - buffer)
+        stc->LineScroll(0, 1); // scroll down
 }
