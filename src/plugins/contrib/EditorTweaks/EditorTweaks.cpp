@@ -182,6 +182,7 @@ void EditorTweaks::OnAttach()
     }
     m_suppress_insert = cfg->ReadBool(wxT("/suppress_insert_key"), false);
     m_convert_braces  = cfg->ReadBool(wxT("/convert_braces"),      false);
+    m_buffer_caret    = -1;
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -431,40 +432,32 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
     const int keyCode = event.GetKeyCode();
     switch (keyCode)
     {
-    case WXK_NUMPAD_UP:
-    case WXK_UP:
+    case WXK_NUMPAD_UP:      case WXK_UP:
         if (event.GetModifiers() != wxMOD_CONTROL)
             DoBufferEditorPos(-1);
         break;
 
-    case WXK_NUMPAD_DOWN:
-    case WXK_DOWN:
+    case WXK_NUMPAD_DOWN:    case WXK_DOWN:
         if (event.GetModifiers() == wxMOD_CONTROL)
             break;
         // fall through
-    case WXK_NUMPAD_ENTER:
-    case WXK_RETURN:
+    case WXK_NUMPAD_ENTER:   case WXK_RETURN:
         DoBufferEditorPos(1);
         break;
 
-    case WXK_TAB:
+    case WXK_NUMPAD_TAB:     case WXK_TAB:
         if (event.GetModifiers() != wxMOD_NONE)
             break;
         // fall through
     case WXK_BACK:
-    case WXK_NUMPAD_DELETE:
-    case WXK_DELETE:
-    case WXK_NUMPAD_LEFT:
-    case WXK_LEFT:
-    case WXK_NUMPAD_RIGHT:
-    case WXK_RIGHT:
+    case WXK_NUMPAD_DELETE:  case WXK_DELETE:
+    case WXK_NUMPAD_LEFT:    case WXK_LEFT:
+    case WXK_NUMPAD_RIGHT:   case WXK_RIGHT:
         if (event.GetModifiers() == wxMOD_ALT)
             break;
         // fall through
-    case WXK_NUMPAD_HOME:
-    case WXK_HOME:
-    case WXK_NUMPAD_END:
-    case WXK_END:
+    case WXK_NUMPAD_HOME:    case WXK_HOME:
+    case WXK_NUMPAD_END:     case WXK_END:
         DoBufferEditorPos();
         break;
 
