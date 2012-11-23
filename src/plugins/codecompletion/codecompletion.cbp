@@ -13,7 +13,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
-				<Option host_application="codeblocks.exe" />
+				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -59,6 +59,9 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DEXPORT_LIB=0" />
+			<Add option="-DEXPORT_EVENTS=0" />
+			<Add option="-DwxUSE_WX_RESOURCES=0" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)/gcc_dll$(WX_CONFIG)/msw$(WX_SUFFIX)" />
 			<Add directory="../../include" />
