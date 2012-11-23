@@ -1287,7 +1287,7 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
 
 wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool force)
 {
-    static cbProject* lastProject = nullptr;
+    static cbProject*    lastProject = nullptr;
     static wxArrayString incDirs;
 
     if (!force && project == lastProject)
@@ -2443,13 +2443,13 @@ void CodeCompletion::OnCCDebugLogger(wxCommandEvent& event)
 
 void CodeCompletion::OnParserStart(wxCommandEvent& event)
 {
-    cbProject* project = static_cast<cbProject*>(event.GetClientData());
-    ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
+    cbProject*                project = static_cast<cbProject*>(event.GetClientData());
+    ParserCommon::ParserState state   = static_cast<ParserCommon::ParserState>(event.GetInt());
     if (state == ParserCommon::ptCreateParser)
     {
         if (m_CCEnableHeaders)
         {
-            wxArrayString& dirs = GetSystemIncludeDirs(project, true);
+            wxArrayString&       dirs   = GetSystemIncludeDirs(project, true);
             SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS, m_SystemHeadersMap, dirs);
             m_SystemHeadersThreads.push_back(thread);
         }
@@ -2513,7 +2513,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         return;
     }
 
-    if (ed->GetControl()->CallTipActive())
+    if (ed->GetControl()->CallTipActive() && event.GetExtraLong() == 0)
         ed->GetControl()->CallTipCancel();
 //        CCLogger::Get()->DebugLog(F(_T("CodeCompletion::OnEditorTooltip: %p"), ed));
     /* NOTE: The following 2 lines of codes can fix [Bug #11785].
@@ -2604,6 +2604,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
                 pos = lnStart;
 
             ed->GetControl()->CallTipShow(pos, calltip);
+            event.SetExtraLong(1);
             TRACE(calltip);
         }
     }

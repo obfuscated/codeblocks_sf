@@ -832,4 +832,6 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
         pos = lnStart;
 
     stc->CallTipShow(pos, tip);
+    event.SetExtraLong(1); // notify CC not to cancel this tooltip
+    event.Skip();
 }

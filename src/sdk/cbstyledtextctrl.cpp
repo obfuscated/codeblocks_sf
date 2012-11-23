@@ -468,6 +468,7 @@ void cbStyledTextCtrl::EmulateDwellStart()
     int style = GetStyleAt(pos);
     event.SetInt(style);
     event.SetEditor(editor);
+    event.SetExtraLong(0); // allow plugins to recommend each other not to cancel a tooltip
     Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
