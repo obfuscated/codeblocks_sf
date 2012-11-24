@@ -113,6 +113,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Teodor Petrov       : Developer\n"
         "Daniel Anselmi      : Developer\n"
         "Yuanhui Zhang       : Developer\n"
+        "Damien Moore        : Developer\n"
         "Ricardo Garcia      : All-hands person\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
