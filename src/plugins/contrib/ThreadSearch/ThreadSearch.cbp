@@ -14,7 +14,7 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />

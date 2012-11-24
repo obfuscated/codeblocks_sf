@@ -41,7 +41,7 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
@@ -75,7 +75,7 @@
 			<Add alias="All" targets="Unix;Windows;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-g" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />

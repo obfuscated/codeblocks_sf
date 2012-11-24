@@ -25,7 +25,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-pipe" />
 			<Add option="-mthreads" />

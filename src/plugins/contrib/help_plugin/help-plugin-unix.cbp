@@ -42,7 +42,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<Linker>
 					<Add library="bzip2/libbzip2.a" />

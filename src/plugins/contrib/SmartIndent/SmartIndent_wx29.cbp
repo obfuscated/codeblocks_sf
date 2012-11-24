@@ -17,7 +17,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -38,7 +38,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -59,7 +59,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -80,7 +80,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -101,7 +101,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -122,7 +122,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -143,7 +143,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>

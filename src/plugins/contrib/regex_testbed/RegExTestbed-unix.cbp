@@ -15,7 +15,7 @@
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />

@@ -15,7 +15,7 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel29\codeblocks.exe" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DCB_PRECOMP" />
 				</Compiler>
 				<Linker>
@@ -29,7 +29,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 			</Target>
 			<Environment>

@@ -14,7 +14,7 @@
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />

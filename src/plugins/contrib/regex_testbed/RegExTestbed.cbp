@@ -16,7 +16,7 @@
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\RegExTestbed.zip manifest.xml *.xrc" />

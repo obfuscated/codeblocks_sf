@@ -41,7 +41,7 @@
 					<Add option="-D_LIB" />
 					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
 					<Add option="-W" />
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add directory="../include" />
 				</Compiler>
 			</Target>
@@ -81,7 +81,7 @@
 					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
 					<Add option="-D_CRT_NON_CONFORMING_SWPRINTFS" />
 					<Add option="-W" />
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add directory="../include" />
 				</Compiler>
 			</Target>

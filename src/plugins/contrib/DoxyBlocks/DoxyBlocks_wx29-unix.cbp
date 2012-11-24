@@ -17,7 +17,7 @@
 				<Option host_application="../../../devel29/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-Ulinux" />
 					<Add option="-Uunix" />
 					<Add option="`$(WX_CONFIG) --cflags`" />

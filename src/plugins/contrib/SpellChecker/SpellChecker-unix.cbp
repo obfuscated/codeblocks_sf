@@ -17,7 +17,7 @@
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="`pkg-config hunspell --cflags`" />
 					<Add option="-fmessage-length=0" />
@@ -49,7 +49,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />

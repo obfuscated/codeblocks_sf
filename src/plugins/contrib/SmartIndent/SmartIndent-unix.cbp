@@ -16,7 +16,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -36,7 +36,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -56,7 +56,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -76,7 +76,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -96,7 +96,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -116,7 +116,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -136,7 +136,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
-					<Add option="-g" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="." />
 				</Compiler>
@@ -153,7 +153,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-g" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />

@@ -28,7 +28,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-g" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />
