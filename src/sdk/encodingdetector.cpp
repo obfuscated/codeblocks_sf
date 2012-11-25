@@ -391,11 +391,15 @@ bool EncodingDetector::DetectEncodingEx(const wxByte* buffer, size_t size)
             return false; // Maybe this is a binary file?
     }
 
-    // If we can't detect encoding and it does not contain null bytes just ignore it and try backup-procedures later...
     if (enc != wxFONTENCODING_DEFAULT)
-        m_Encoding = enc;
+    {
+        m_Encoding = enc; // Success.
+        return true;
+    }
 
-    return true;
+    // If we can't detect encoding and it does not contain null bytes
+    // just ignore it and try backup-procedures (Mozilla) later...
+    return false;
 }
 
 bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
