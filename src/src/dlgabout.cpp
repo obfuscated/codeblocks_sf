@@ -53,7 +53,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
                                    "any kind of functionality to the core program, through the use of "
                                    "plugins...\n");
 
-    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1005.png");
+    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1211.png");
     wxImage im; im.LoadFile(file, wxBITMAP_TYPE_PNG); im.ConvertAlphaToMask();
     wxBitmap bmp(im);
     wxMemoryDC dc;
@@ -73,7 +73,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 
         dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, 0, 0, &largeFont);
 
-        int x_offset = 310;
+        int x_offset = 280;
         int y_offset = 150;
 
         lf_width >>= 1;

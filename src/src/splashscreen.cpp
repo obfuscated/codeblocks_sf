@@ -56,7 +56,7 @@ void cbSplashScreen::DoPaint(wxDC &dc)
 
         dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, 0, 0, &largeFont);
 
-        int x_offset = 310;
+        int x_offset = 280;
         int y_offset = 150;
 
         lf_width >>= 1;
