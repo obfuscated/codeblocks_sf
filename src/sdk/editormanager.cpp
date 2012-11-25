@@ -38,6 +38,8 @@
     #include "projectmanager.h"
     #include "sdk_events.h"
 #endif
+
+#include "annoyingdialog.h"
 #include "cbstyledtextctrl.h"
 
 #include <wx/bmpbuttn.h>
@@ -145,7 +147,7 @@ bool cbFindReplaceData::IsMultiLine()
 }
 
 // needed for initialization of variables
-int editormanager_RegisterId(int id)
+inline int cbRegisterId(int id)
 {
     wxRegisterId(id);
     return id;
@@ -171,7 +173,7 @@ static const int idNBShowFileInTree          = wxNewId();
 // The following lines reserve 255 consecutive id's
 static const int EditorMaxSwitchTo           = 255;
 static const int idNBSwitchFile1             = wxNewId();
-static const int idNBSwitchFileMax           = editormanager_RegisterId(idNBSwitchFile1 + EditorMaxSwitchTo - 1);
+static const int idNBSwitchFileMax           = cbRegisterId(idNBSwitchFile1 + EditorMaxSwitchTo - 1);
 
 
 /** *******************************************************
@@ -886,6 +888,8 @@ void EditorManager::Print(PrintScope ps, PrintColourMode pcm, bool line_numbers)
             }
             break;
         }
+    case psActiveEditor: // fall through
+    case psSelection:    // fall through
     default:
         {
             cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
@@ -1554,18 +1558,17 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         return -1;
     }
 
-    bool advRegex=false;
+    bool advRegex = false;
     bool advRegexNewLinePolicy =! data->IsMultiLine();
-    int replacecount=0;
-    int foundcount=0;
-    int flags = 0;
+    int replacecount = 0;
+    int foundcount   = 0;
+    int flags        = 0;
 
     {
         int eolMode = control->GetEOLMode();
         data->ConvertEOLs(eolMode); // Convert our S&R data to the file's EOL mode.
         if (data->IsMultiLine() && data->fixEOLs)
         {
-
             // First we must ensure that the file has consistent line endings.
             // As all the file's lines are affected, we disable change history for this step.
 
@@ -1592,7 +1595,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
@@ -1631,15 +1634,14 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 re.GetMatch(&start,&len,0);
                 pos=start+data->start;
                 lengthFound=len;
-                if (start==0&&len==0) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
+                if ((start==0) && (len==0)) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
                 {
                     text=text.Mid(1);
                     if (re.Matches(text))
                     {
-                        size_t start,len;
-                        re.GetMatch(&start,&len,0);
-                        pos=start+data->start+1;
-                        lengthFound=len;
+                        re.GetMatch(&start, &len, 0);
+                        pos = start+data->start + 1;
+                        lengthFound = len;
                     } else
                         pos=-1;
                 }
@@ -1734,6 +1736,8 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 break;
             case crCancel:
                 stop = true;
+                break;
+            default:
                 break;
             }
         }
@@ -1927,7 +1931,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
@@ -1964,8 +1968,8 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     int read_only_files_skipped = 0;
     for (int i = 0; i<filesCount && !stop; ++i)
     {
-        cbEditor *ed = NULL;
-        cbStyledTextCtrl *control = NULL;
+        cbEditor*         ed      = NULL;
+        cbStyledTextCtrl* control = NULL;
         bool fileWasNotOpen = false;
 
         if (progress)
@@ -1997,8 +2001,21 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             if (!file.IsOpened())
                 continue;
             fileContents = cbReadFileContents(file, def_encoding);
-            if (fileContents.Find(data->findText) == -1)
-                continue;
+            if (advRegex)
+            {
+                if (!re.Matches(fileContents))
+                    continue;
+            } else
+            {
+                int pos;
+                if (!data->matchCase)
+                    pos = fileContents.Upper().Find(data->findText.Upper());
+                else
+                    pos = fileContents.Find(data->findText);
+                if (pos == -1)
+                    continue;
+                //TODO: handling to skip file if data->matchWord or data->startWord are set
+            }
 
             //File was not open, i opened it.
             fileWasNotOpen = true;
@@ -2049,7 +2066,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         if (!all) confirm = true;
 
         //Replace in this file
-        while(!stop || wholeFile)
+        while (!stop || wholeFile)
         {
             int lengthFound = 0;
             if (!advRegex)
@@ -2060,29 +2077,28 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                 if (re.Matches(text))
                 {
                     size_t start,len;
-                    re.GetMatch(&start,&len,0);
-                    pos=start+data->start;
-                    lengthFound=len;
-                    if (start==0&&len==0) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
+                    re.GetMatch(&start, &len, 0);
+                    pos = start + data->start;
+                    lengthFound = len;
+                    if ((start==0) && (len==0)) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
                     {
-                        text=text.Mid(1);
+                        text = text.Mid(1);
                         if (re.Matches(text))
                         {
-                            size_t start,len;
-                            re.GetMatch(&start,&len,0);
-                            pos=start+data->start+1;
-                            lengthFound=len;
+                            re.GetMatch(&start, &len, 0);
+                            pos = start + data->start + 1;
+                            lengthFound = len;
                         } else
-                            pos=-1;
+                            pos = -1;
                     }
                 } else
-                    pos=-1;
+                    pos = -1;
             }
 
-            if (data->startFile && pos > 0)
+            if (data->startFile && (pos > 0))
                 pos = -1; // Not found at the beginning of file
 
-            if (pos == -1 || data->start==data->end)
+            if ((pos == -1) || (data->start == data->end))
                 break;
 
             if (confirm)
@@ -2124,19 +2140,19 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                         replace = false;
                         break;
                     case crAllInFile:
-                        confirm = false;
-                        replace = true;
+                        confirm   = false;
+                        replace   = true;
                         wholeFile = true;
                         break;
                     case crSkipFile:
-                        confirm = false;
-                        replace = false;
+                        confirm   = false;
+                        replace   = false;
                         wholeFile = true;
                         break;
                     case crAll:
                         replace = true;
                         confirm = false;
-                        all = true;
+                        all     = true;
                         // let's create a progress dialog because it might take some time depending on the files count
                         progress = new wxProgressDialog(_("Replace in files"),
                                      _("Please wait while replacing in files..."),
@@ -2149,6 +2165,8 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                         break;
                     case crCancel:
                         stop = true;
+                        break;
+                    default:
                         break;
                 }
             }// if
@@ -2170,11 +2188,10 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                             re.Replace(&text,data->replaceText,1);
                             lengthReplace=text.Len();
                             control->ReplaceSelection(text);
-                        } else
-                        {
-                            // replace with regEx support
-                            lengthReplace = control->ReplaceTargetRE(data->replaceText);
                         }
+                        else // replace with regEx support
+                            lengthReplace = control->ReplaceTargetRE(data->replaceText);
+
                         // reset target
                         control->SetTargetStart(0);
                         control->SetTargetEnd(0);
@@ -2185,7 +2202,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                     data->start += lengthReplace;
 
                     // adjust end pos by adding the length difference
-                    //between find and replace strings
+                    // between find and replace strings
                     int diff = lengthReplace - lengthFound;
                     if (data->directionDown)
                         data->end += diff;
@@ -2204,8 +2221,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
 
         control->EndUndoAction(); // undo
 
-        //If i opened the file and no replacement was made,
-        //close the editor
+        // If opened the file and no replacement was made, close the editor
         if (!replacementsWereMade && fileWasNotOpen)
             Close(ed, true);
     }// for
@@ -2222,6 +2238,11 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         Manager::Get()->GetAppWindow()->Thaw();
 
     delete progress;
+    AnnoyingDialog dlg(_("Replace in files"),
+                       _("Replace in files has finished all operations."),
+                       wxART_INFORMATION, AnnoyingDialog::OK, wxID_OK);
+    dlg.ShowModal();
+
     return pos;
 }
 
@@ -2230,7 +2251,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     if (!control || !data)
         return -1;
 
-    bool advRegex=false;
+    bool advRegex = false;
     bool advRegexNewLinePolicy =! data->IsMultiLine();
     int flags = 0;
     data->ConvertEOLs(control->GetEOLMode());
@@ -2248,7 +2269,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
         #ifdef wxHAS_REGEX_ADVANCED
-        advRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        advRegex = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
         #endif
     }
 
@@ -2281,22 +2302,21 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
         else
         {
-            wxString text=control->GetTextRange(data->start, data->end);
+            wxString text = control->GetTextRange(data->start, data->end);
             if (re.Matches(text))
             {
-                size_t start,len;
-                re.GetMatch(&start,&len,0);
-                pos=start+data->start;
-                lengthFound=len;
-                if (start==0&&len==0) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
+                size_t start, len;
+                re.GetMatch(&start, &len, 0);
+                pos = start + data->start;
+                lengthFound = len;
+                if ((start==0) && (len==0)) //For searches for "^" or "$" (and null returning variants on this) need to make sure we have forward progress and not simply matching on a previous BOL/EOL find
                 {
-                    text=text.Mid(1);
+                    text = text.Mid(1);
                     if (re.Matches(text))
                     {
-                        size_t start,len;
-                        re.GetMatch(&start,&len,0);
-                        pos=start+data->start+1;
-                        lengthFound=len;
+                        re.GetMatch(&start, &len, 0);
+                        pos = start + data->start + 1;
+                        lengthFound = len;
                     }
                     else
                         pos=-1;
@@ -2311,20 +2331,20 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             int onScreen = control->LinesOnScreen() >> 1;
             int l1 = line - onScreen;
             int l2 = line + onScreen;
-            for (int l=l1; l<=l2;l+=2)       // unfold visible lines on screen
+            for (int l=l1; l<=l2; l+=2)     // unfold visible lines on screen
                 control->EnsureVisible(l);
             control->GotoLine(l1);          // center selection on screen
             control->GotoLine(l2);
             control->GotoLine(line);
             control->SetSelectionVoid(pos, pos + lengthFound);
-            //            Manager::Get()->GetLogManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
+//            Manager::Get()->GetLogManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
             data->start = pos;
             break; // done
         }
         else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
-            if (     (data->directionDown && data->start != StartPos) ||
-                     (!data->directionDown && data->start != EndPos)     )
+            if (   (data->directionDown && data->start != StartPos)
+                || (!data->directionDown && data->start != EndPos) )
             {
                 wxString msg;
                 if (!data->scope == 1) // selected text
@@ -2717,7 +2737,7 @@ void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
         ed->Unsplit();
     else if (id >= idNBSwitchFile1 && id <= idNBSwitchFileMax)
     {
-        EditorBase* eb = GetEditor(id - idNBSwitchFile1);
+        eb = GetEditor(id - idNBSwitchFile1);
         if (eb)
             SetActiveEditor(eb);
     }
