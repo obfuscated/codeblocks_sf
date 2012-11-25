@@ -37,7 +37,7 @@
 #else
 #include <wx/file.h>
 #endif // wxUSE_FFILE
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
     #include <wx/dcbuffer.h>
 #endif
 

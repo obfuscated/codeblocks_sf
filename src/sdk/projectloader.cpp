@@ -27,7 +27,7 @@
 #endif
 
 #include <wx/dir.h>
-
+#include <string>
 
 #include <algorithm>
 #include "filefilters.h"

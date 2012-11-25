@@ -97,16 +97,20 @@ void URLLoader::operator()()
         return;
     }
 
-    char tmp[8192] = {};
-    size_t chunk = 0;
+    char   tmp[8192] = {};
+    size_t chunk     = 0;
 
     while ((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
     {
         mBuffer.insert(mBuffer.end(), tmp, tmp + chunk);
     }
 
+#ifdef __APPLE__
+    data = &mBuffer[0];
+#else
     data = mBuffer.data();
-    len = mBuffer.size();
+#endif
+    len  = mBuffer.size();
     const char Zeros4[] = "\0\0\0\0";
     mBuffer.insert(mBuffer.end(), Zeros4, Zeros4 + 4);
     Ready();
