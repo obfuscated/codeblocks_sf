@@ -985,14 +985,13 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         return;
     }
 
-    bool sendStartParseEvent = false;
-
     CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
     if (!m_StopWatchRunning)
         StartStopWatch();
 
-    bool send_event = true;
+    bool send_event          = true;
+    bool sendStartParseEvent = false;
     if (!m_PoolTask.empty())
     {
         m_Pool.BatchBegin();

@@ -149,6 +149,7 @@ namespace ParserConsts
     const wxString kw_undef        (_T("undef"));
     const wxString kw_union        (_T("union"));
     const wxString kw_using        (_T("using"));
+    const wxString kw_throw        (_T("throw"));
     const wxString kw_while        (_T("while"));
     // length: 6
     const wxString kw_define       (_T("define"));
@@ -2042,22 +2043,23 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineStart = m_Tokenizer.GetLineNumber();
                 SkipBlock(); // skip  to matching }
                 lineEnd = m_Tokenizer.GetLineNumber();
-
-                // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
-                if (!m_IsBuffer) // TODO: (Martin) Compiler suggested braces around the single TRACE statement. Since the if() already doesn't correspond to above comment,
-                                 //       I'm feeling uneasy. Please check whether the semantics (break?) are as intended, or whether the compiler found a bug.
-                {
-                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. %d lines from %d to %d (file name='%s', file size=%u)."),
-                          name.wx_str(), (lineEnd-lineStart), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
-				}
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
                 break; // function decl
             else if (peek == ParserConsts::kw_const)
                 isConst = true;
+            else if (peek == ParserConsts::kw_throw)
+            {
+                // Handle something like: std::string MyClass::MyMethod() throw(std::exception)
+                wxString arg = m_Tokenizer.GetToken(); // eat args ()
+            }
             else
+            {
+                TRACE(_T("HandleFunction() : Possible macro '%s' in function '%s' (file name='%s', line numer %d)."),
+                      peek.wx_str(), name.wx_str(), m_Filename.wx_str(), m_Tokenizer.GetLineNumber());
                 break; // darned macros that do not end with a semicolon :/
+            }
 
             // if we reached here, eat the token so peek gets a new value
             m_Tokenizer.GetToken();
