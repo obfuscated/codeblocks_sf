@@ -1288,7 +1288,7 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     if (imgList != NULL)
         GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
     /* C::B begin */
-	(void) technology_;
+    (void) technology_;
     /* C::B end */
 }
 
@@ -1491,10 +1491,10 @@ void ListBoxImpl::RegisterRGBAImage(int type, int width, int height,
     RegisterImageHelper(type, bmp);
 #endif
     /* C::B begin */
-	(void) type;
-	(void) width;
-	(void) height;
-	(void) pixelsImage;
+    (void) type;
+    (void) width;
+    (void) height;
+    (void) pixelsImage;
     /* C::B end */
 }
 

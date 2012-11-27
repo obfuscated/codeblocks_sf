@@ -89,14 +89,17 @@ static std::string GetRestOfLine(LexAccessor &styler, int start, bool allowSpace
 	char ch = styler.SafeGetCharAt(start, '\n');
 	while ((ch != '\r') && (ch != '\n')) {
 /* C::B begin */
-		if (ch == '/' && (styler.SafeGetCharAt(start + i + 1, '\n') == '/' ||
-						  styler.SafeGetCharAt(start + i + 1, '\n') == '*'))
+		/* Fix bug to allow comments after pre-processor definitions */
+		char chNext = styler.SafeGetCharAt(start + i + 1, '\n');
+		if (ch == '/' && (chNext == '/' || chNext == '*'))
 			break;
 /* C::B end */
 		if (allowSpace || (ch != ' '))
 			restOfLine += ch;
 		i++;
-		ch = styler.SafeGetCharAt(start + i, '\n');
+/* C::B begin */
+		ch = chNext;
+/* C::B end */
 	}
 	return restOfLine;
 }
@@ -1216,7 +1219,11 @@ bool LexerCPP::EvaluateExpression(const std::string &expr, const std::map<std::s
 	std::vector<std::string> tokens;
 	const char *cp = expr.c_str();
 	for (;;) {
-		if (setWord.Contains(*cp)) {
+/* C::B begin */
+		/* Fix crash (assert in bool CharacterSet::Contains(int val)) with #if §, for example. */
+		/* See: http://sourceforge.net/tracker/?func=detail&aid=3578824&group_id=2439&atid=102439 */
+		if (setWord.Contains(static_cast<unsigned char>(*cp))) {
+/* C::B end */
 			word += *cp;
 		} else {
 			std::map<std::string, std::string>::const_iterator it = preprocessorDefinitions.find(word);
@@ -1231,13 +1238,17 @@ bool LexerCPP::EvaluateExpression(const std::string &expr, const std::map<std::s
 			}
 			if ((*cp != ' ') && (*cp != '\t')) {
 				std::string op(cp, 1);
-				if (setRelOp.Contains(*cp)) {
-					if (setRelOp.Contains(cp[1])) {
+/* C::B begin */
+				if (setRelOp.Contains(static_cast<unsigned char>(*cp))) {
+					if (setRelOp.Contains(static_cast<unsigned char>(cp[1]))) {
+/* C::B end */
 						op += cp[1];
 						cp++;
 					}
-				} else if (setLogicalOp.Contains(*cp)) {
-					if (setLogicalOp.Contains(cp[1])) {
+/* C::B begin */
+				} else if (setLogicalOp.Contains(static_cast<unsigned char>(*cp))) {
+					if (setLogicalOp.Contains(static_cast<unsigned char>(cp[1]))) {
+/* C::B end */
 						op += cp[1];
 						cp++;
 					}
