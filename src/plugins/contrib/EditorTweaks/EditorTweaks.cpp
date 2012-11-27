@@ -1184,7 +1184,7 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
 void EditorTweaks::DoBufferEditorPos(int delta)
 {
     if (m_buffer_caret == -1)
-        m_buffer_caret = Manager::Get()->GetConfigManager(wxT("EditorTweaks"))->ReadInt(wxT("/buffer_caret"), 4);
+        m_buffer_caret = Manager::Get()->GetConfigManager(wxT("EditorTweaks"))->ReadInt(wxT("/buffer_caret"), 1);
     if (m_buffer_caret < 1) // feature disabled (selected "None" in settings)
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
