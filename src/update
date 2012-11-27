@@ -1,10 +1,20 @@
 
+# MSYSTEM is defined when cross-compilig with MinGW/MSYS
 if [ "x$MSYSTEM" != "x" ] ; then
+  echo Updating MinGW32/cross version.
   EXEEXT=".exe"
   LIBEXT="dll"
 else
-  EXEEXT=""
-  LIBEXT="so"
+  uname_str=$(uname)
+  if [ "$uname_str" == "Darwin" ] ; then
+    echo Updating Mac / Darwin version.
+    EXEEXT=""
+    LIBEXT="dylib"
+  else
+    echo Updating Linux version.
+    EXEEXT=""
+    LIBEXT="so"
+  fi
 fi
 
 echo Creating output directory tree
