@@ -1053,19 +1053,8 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     // add per-project dirs
     if (project)
     {
-        wxArrayString& pdirs = GetProjectSearchDirs(project);
-        wxString base = project->GetBasePath();
-        for (size_t i = 0; i < pdirs.GetCount(); ++i)
-        {
-            wxString path = pdirs[i];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
-            wxFileName dir(path);
-
-            if (NormalizePath(dir, base))
-                parser->AddIncludeDir(dir.GetFullPath());
-            else
-                CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), path.wx_str(), base.wx_str()));
-        }
+        AddIncludeDirsToParser(GetProjectSearchDirs(project),
+                               project->GetBasePath(), parser);
     }
 
     StringList priority_files;
@@ -1980,13 +1969,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         if (compiler)
         {
             // these dirs were the user's compiler include search dirs
-            const wxArrayString& dirs = compiler->GetIncludeDirs();
-            for (size_t i = 0; i < dirs.GetCount(); ++i)
-            {
-                wxString path = dirs[i];
-                Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
-                parser->AddIncludeDir(path);
-            }
+            AddIncludeDirsToParser(compiler->GetIncludeDirs(), wxEmptyString, parser);
 
             if (compiler->GetID().Contains(_T("gcc")))
                 AddGCCCompilerDirs(compiler->GetMasterPath(), compiler->GetPrograms().CPP, parser);
@@ -2007,19 +1990,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         generator->Init(project);
 
     // get project include dirs
-    for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
-    {
-        wxString out = project->GetIncludeDirs()[i];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
-        wxFileName dir(out);
-        if ( NormalizePath(dir, base) )
-        {
-            parser->AddIncludeDir(dir.GetFullPath());
-            TRACE(_T("AddCompilerDirs() : Adding project dir to parser: ") + dir.GetFullPath());
-        }
-        else
-            CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), out.wx_str(), base.wx_str()));
-    }
+    AddIncludeDirsToParser(project->GetIncludeDirs(), base, parser);
 
     // alloc array for project compiler AND "no. of targets" times target compilers
     int nCompilers = 1 + project->GetBuildTargetsCount();
@@ -2033,38 +2004,14 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         ProjectBuildTarget* target = project->GetBuildTarget(i);
         if (target && target->SupportsCurrentPlatform())
         {
+            // post-processed search dirs (from build scripts)
             if (compiler && generator)
-            {
-                // post-processed search dirs (from build scripts)
-                for (unsigned int ti = 0; ti < generator->GetCompilerSearchDirs(target).GetCount(); ++ti)
-                {
-                    wxString out = generator->GetCompilerSearchDirs(target)[ti];
-                    wxFileName dir(out);
-                    if ( NormalizePath(dir, base) )
-                    {
-                        parser->AddIncludeDir(dir.GetFullPath());
-                        TRACE(_T("AddCompilerDirs() : Adding compiler target dir to parser: ") + dir.GetFullPath());
-                    }
-                    else
-                        CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), out.wx_str(), base.wx_str()));
-                }
-            }
+                AddIncludeDirsToParser(generator->GetCompilerSearchDirs(target), base, parser);
 
             // apply target vars
 //            target->GetCustomVars().ApplyVarsToEnvironment();
-            for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
-            {
-                wxString out = target->GetIncludeDirs()[ti];
-                Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
-                wxFileName dir(out);
-                if ( NormalizePath(dir, base) )
-                {
-                    parser->AddIncludeDir(dir.GetFullPath());
-                    TRACE(_T("AddCompilerDirs() : Adding target dir to parser: ") + dir.GetFullPath());
-                }
-                else
-                    CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), out.wx_str(), base.wx_str()));
-            }
+            AddIncludeDirsToParser(target->GetIncludeDirs(), base, parser);
+
             // get the compiler
             wxString CompilerIndex = target->GetCompilerID();
             Compiler* tgtCompiler = CompilerFactory::GetCompiler(CompilerIndex);
@@ -2087,24 +2034,10 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     // add compiler include dirs
     for (int idxCompiler = 0; idxCompiler < nCompilers; ++idxCompiler)
     {
-        Compiler* compiler = Compilers[idxCompiler];
+        compiler = Compilers[idxCompiler];
         if (!compiler) continue;
 
-        const wxArrayString& dirs = compiler->GetIncludeDirs();
-        for (unsigned int i = 0; i < dirs.GetCount(); ++i)
-        {
-//            CCLogger::Get()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
-            wxString out = dirs[i];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
-            wxFileName dir(out);
-            if ( NormalizePath(dir,base) )
-            {
-                parser->AddIncludeDir(dir.GetFullPath());
-                TRACE(_T("AddCompilerDirs() : Adding compiler dir to parser: ") + dir.GetFullPath());
-            }
-            else
-                CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), out.wx_str(), base.wx_str()));
-        }
+        AddIncludeDirsToParser(compiler->GetIncludeDirs(), base, parser);
 
         // find out which compiler, if gnu, do the special trick
         // to find it's internal include paths
@@ -2159,29 +2092,24 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
     if (!compiler)
         return false;
 
-    wxFileName fn(wxEmptyString, compiler->GetPrograms().CPP);
     wxString masterPath = compiler->GetMasterPath();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-    fn.SetPath(masterPath);
-    fn.AppendDir(_T("bin"));
+    const wxString cpp_compiler = masterPath + _T("\\bin\\") + compiler->GetPrograms().CPP;
+    if ( !wxFileName::FileExists(cpp_compiler) )
+        return false;
 
-    const wxString cpp_compiler(fn.GetFullPath());
     static std::map<wxString, wxString> gccDefsMap;
     if (gccDefsMap[cpp_compiler].IsEmpty())
     {
+        static bool reentry = false;
+        if (reentry)
+            return false;
+
 #ifdef __WXMSW__
         const wxString args(_T(" -E -dM -x c++ nul"));
 #else
         const wxString args(_T(" -E -dM -x c++ /dev/null"));
 #endif
-
-        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-        if (Manager::IsAppShuttingDown())
-            return false;
-
-        static bool reentry = false;
-        if (reentry)
-            return false;
 
         wxArrayString output;
         reentry = true;
@@ -2192,6 +2120,10 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
             return false;
         }
         reentry = false;
+
+        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+        if ( Manager::IsAppShuttingDown() )
+            return false;
 
         wxString& gccDefs = gccDefsMap[cpp_compiler];
         for (size_t i = 0; i < output.Count(); ++i)
@@ -2226,7 +2158,7 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
     }
 
     if (useCxx0x)
-        defs = gccDefsMap[cpp_compiler] + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1 \n");
+        defs = gccDefsMap[cpp_compiler] + _T("#define __GXX_EXPERIMENTAL_CXX0X__ 1\n");
     else
         defs = gccDefsMap[cpp_compiler];
 
@@ -2246,10 +2178,8 @@ bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxS
 
         wxString masterPath = compiler->GetMasterPath();
         Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-        wxString cmd = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
-
-        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
-        if (Manager::IsAppShuttingDown())
+        const wxString c_compiler = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
+        if ( !wxFileName::FileExists(c_compiler) )
             return false;
 
         static bool reentry = false;
@@ -2258,13 +2188,20 @@ bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxS
 
         wxArrayString output, error;
         reentry = true;
-        if (wxExecute(cmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
+        // Just run the compiler which shows e.g.:
+        // "Microsoft (R) C/C++ Optimizing Compiler Version 12.00.8804, for x86"
+        // ...and extract platform information (32/64 bit) and compiler version (12) out of it
+        if ( wxExecute(c_compiler, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
         {
             TRACE(_T("AddCompilerPredefinedMacrosVC::wxExecute failed!"));
             reentry = false;
             return false;
         }
         reentry = false;
+
+        // wxExecute can be a long action and C::B might have been shutdown in the meantime...
+        if ( Manager::IsAppShuttingDown() )
+            return false;
 
         if (error.IsEmpty())
         {
@@ -2288,13 +2225,23 @@ bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxS
         pos = str.Find(tmp);
         if (pos != wxNOT_FOUND)
         {
-            wxString ver = str.Mid(pos + tmp.Length(), 4);
+            wxString ver = str.Mid(pos + tmp.Length(), 4); // is i.e. 12.0
             pos = ver.Find(_T('.'));
             if (pos != wxNOT_FOUND)
             {
-                ver[pos] = ver[pos + 1];
-                ver[pos + 1] = _T('0');
+                // out of "12.0" make "1200" for the #define
+                ver[pos]     = ver[pos + 1]; // move the mintor version first number to the dot position
+                ver[pos + 1] = _T('0');      // add another zero at the end
                 defs += _T("#define _MSC_VER ") + ver;
+                // Known to now:
+                // MSVC++ 11.0 _MSC_VER = 1700 (Visual Studio 2012)
+                // MSVC++ 10.0 _MSC_VER = 1600 (Visual Studio 2010)
+                // MSVC++ 9.0  _MSC_VER = 1500 (Visual Studio 2008)
+                // MSVC++ 8.0  _MSC_VER = 1400 (Visual Studio 2005)
+                // MSVC++ 7.1  _MSC_VER = 1310 (Visual Studio 2003)
+                // MSVC++ 7.0  _MSC_VER = 1300
+                // MSVC++ 6.0  _MSC_VER = 1200
+                // MSVC++ 5.0  _MSC_VER = 1100
             }
         }
     }
@@ -2395,7 +2342,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // action time  (everything shows up on the error stream
     wxArrayString Output, Errors;
     flag = true;
-    if (wxExecute(Command, Output, Errors, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1)
+    if ( wxExecute(Command, Output, Errors, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
     {
         TRACE(_T("GetGCCCompilerDirs::wxExecute failed!"));
         flag = false;
@@ -2405,7 +2352,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
 
     // wxExecute can be a long action and C::B might have been shutdown in the meantime...
     // This is here, to protect a long run:
-    if (Manager::IsAppShuttingDown())
+    if ( Manager::IsAppShuttingDown() )
         return dirs[cpp_compiler];
 
     // start from "#include <...>", and the path followed
@@ -2450,6 +2397,28 @@ void NativeParser::AddGCCCompilerDirs(const wxString& masterPath, const wxString
     {
         parser->AddIncludeDir(gccDirs[i]);
         TRACE(_T("AddCompilerDirs() : Adding cached compiler dir to parser: ") + gccDirs[i]);
+    }
+}
+
+void NativeParser::AddIncludeDirsToParser(const wxArrayString& dirs, const wxString& base, ParserBase* parser)
+{
+    for (unsigned int i = 0; i < dirs.GetCount(); ++i)
+    {
+        wxString dir = dirs[i];
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
+        if ( !base.IsEmpty() )
+        {
+            wxFileName fn(dir);
+            if ( NormalizePath(fn, base) )
+            {
+                parser->AddIncludeDir(fn.GetFullPath());
+                TRACE(_T("AddIncludeDirsToParser() : Adding directory to parser: ") + fn.GetFullPath());
+            }
+            else
+                CCLogger::Get()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), dir.wx_str(), base.wx_str()));
+        }
+        else
+            parser->AddIncludeDir(dir); // no base path, nothing to normalise
     }
 }
 

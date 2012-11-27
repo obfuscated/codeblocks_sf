@@ -2459,8 +2459,7 @@ bool ParserThread::ReadVarNames()
                  || (token.GetChar(0) == ParserConsts::underscore_chr) )
         {
             TRACE(_T("ReadVarNames() : Adding variable '%s' as '%s' to '%s'"),
-                  token.wx_str(),
-                  m_Str.wx_str(),
+                  token.wx_str(), m_Str.wx_str(),
                   (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
 
             Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
@@ -2472,7 +2471,10 @@ bool ParserThread::ReadVarNames()
         }
         else // unexpected
         {
-            TRACE(_T("ReadVarNames() : Unexpected token '%s'."), token.wx_str());
+            TRACE(F(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+            CCLogger::Get()->DebugLog(F(_T("ReadVarNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                        token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
             success = false;
             break;
         }
@@ -2524,8 +2526,10 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
         }
         else // unexpected
         {
-            TRACE(_T("ReadClsNames() : Unexpected token '%s'."), token.wx_str());
-            CCLogger::Get()->DebugLog(F(_T("ReadClsNames() : Unexpected token '%s'."), token.wx_str()));
+            TRACE(F(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                    token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
+            CCLogger::Get()->DebugLog(F(_T("ReadClsNames() : Unexpected token '%s' for '%s', file '%s', line %d."),
+                                        token.wx_str(), m_Str.wx_str(), m_Tokenizer.GetFilename().wx_str(), m_Tokenizer.GetLineNumber()));
             // The following code snippet freezes CC here:
             // typedef std::enable_if<N > 1, get_type_N<N-1, Tail...>> type;
             m_Tokenizer.UngetToken();

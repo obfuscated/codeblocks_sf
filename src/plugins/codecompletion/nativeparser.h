@@ -369,6 +369,9 @@ private:
     /** Add the collected default GCC compiler include file search paths to a parser */
     void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
 
+    /** Add a list of directories to the parser's search directories, normalise to "base" path, if "base" is not empty. Replaces macros. */
+    void AddIncludeDirsToParser(const wxArrayString& dirs, const wxString& base, ParserBase* parser);
+
     /** Event handler when the batch parse starts, print some log information */
     void OnParserStart(wxCommandEvent& event);
 

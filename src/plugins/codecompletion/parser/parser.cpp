@@ -74,8 +74,10 @@
 
 namespace ParserCommon
 {
-    static const int PARSER_BATCHPARSE_TIMER_DELAY = 300;
-    static const int PARSER_REPARSE_TIMER_DELAY    = 100;
+    static const int PARSER_BATCHPARSE_TIMER_DELAY           = 300;
+    static const int PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY = 10;
+    static const int PARSER_BATCHPARSE_TIMER_DELAY_LONG      = 1000;
+    static const int PARSER_REPARSE_TIMER_DELAY              = 100;
 
     static volatile Parser* s_CurrentParser = nullptr;
     static          wxMutex s_ParserMutex;
@@ -390,18 +392,18 @@ Parser::~Parser()
 
 void Parser::ConnectEvents()
 {
-    Connect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+    Connect(m_Pool.GetId(),         cbEVT_THREADTASK_ALLDONE,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
     Connect(m_ReparseTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnReparseTimer));
-    Connect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+    Connect(m_BatchTimer.GetId(),   wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
 void Parser::DisconnectEvents()
 {
-    Disconnect(m_Pool.GetId(), cbEVT_THREADTASK_ALLDONE,
+    Disconnect(m_Pool.GetId(),         cbEVT_THREADTASK_ALLDONE,
                (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&Parser::OnAllThreadsDone);
     Disconnect(m_ReparseTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnReparseTimer));
-    Disconnect(m_BatchTimer.GetId(), wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
+    Disconnect(m_BatchTimer.GetId(),   wxEVT_TIMER, wxTimerEventHandler(Parser::OnBatchTimer));
 }
 
 bool Parser::Done()
@@ -844,7 +846,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (event.GetId() != m_Pool.GetId())
     {
-        CCLogger::Get()->DebugLog(_T("Why event.GetId() not equal m_Pool.GetId()?"));
+        CCLogger::Get()->DebugLog(_T("Why is event.GetId() not equal m_Pool.GetId()?"));
         return;
     }
 
@@ -853,7 +855,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (!m_IsParsing)
     {
-        CCLogger::Get()->DebugLog(_T("Why m_IsParsing is false?"));
+        CCLogger::Get()->DebugLog(_T("Why is m_IsParsing false?"));
         return;
     }
 
@@ -863,9 +865,8 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         || !m_PriorityHeaders.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
-        m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
-
 #if defined(CC_PARSER_PROFILE_TEST)
     // Do nothing
 #else
@@ -883,7 +884,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_SystemPriorityHeaders.clear();
 
         // 4. Begin batch parsing
-        m_BatchTimer.Start(10, wxTIMER_ONE_SHOT);
+        m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
                  || m_ParserState == ParserCommon::ptAddFileToParser )
@@ -895,7 +896,6 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_Pool.AddTask(thread, true);
     }
 #endif
-
     // Finish all task, then we need post a PARSER_END event
     else
     {
@@ -907,7 +907,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_IsParsing          = false;
         m_IsBatchParseDone   = true;
 
-        EndStopWatch();
+        EndStopWatch(); // stop counting the time we take for parsing the files
 
         wxString prj = (m_Project ? m_Project->GetTitle() : _T("*NONE*"));
         wxString parseEndLog;
@@ -961,7 +961,7 @@ void Parser::EndStopWatch()
         m_StopWatch.Pause();
         m_StopWatchRunning = false;
         if (m_IsBatchParseDone)
-            m_LastStopWatchTime = m_StopWatch.Time();
+            m_LastStopWatchTime  = m_StopWatch.Time();
         else
             m_LastStopWatchTime += m_StopWatch.Time();
     }
@@ -978,21 +978,26 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     if (Manager::IsAppShuttingDown())
         return;
 
-    // Current batch parser is already exists
     if (ParserCommon::s_CurrentParser && ParserCommon::s_CurrentParser != this)
     {
-        m_BatchTimer.Start(1000, wxTIMER_ONE_SHOT);
+        // Current batch parser already exists, just return later
+        m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY_LONG, wxTIMER_ONE_SHOT);
         return;
     }
 
-    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
-
-    if (!m_StopWatchRunning)
-        StartStopWatch();
+    StartStopWatch(); // start counting the time we take for parsing the files
 
     bool send_event          = true;
     bool sendStartParseEvent = false;
-    if (!m_PoolTask.empty())
+
+    if (   m_PoolTask.empty()
+        && m_PriorityHeaders.empty()
+        && m_BatchParseFiles.empty()
+        && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
+    {
+        send_event = false; // Nothing to do.
+    }
+    else if (!m_PoolTask.empty()) // there are already batch jobs - so just add the new ones
     {
         m_Pool.BatchBegin();
 
@@ -1002,39 +1007,28 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         m_PoolTask.pop();
 
         m_Pool.BatchEnd();
-        send_event = false; // Error -> TODO: Why???
-        CCLogger::Get()->DebugLog(_T("Pool task operated?!"));
+        send_event = false; // nothing to do anymore, the pool si already being processed
     }
     else if (   !m_PriorityHeaders.empty()
              || !m_BatchParseFiles.empty()
              || !m_PredefinedMacros.IsEmpty() )
     {
+        CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
+
         ParserThreadedTask* thread = new ParserThreadedTask(this, ParserCommon::s_ParserMutex);
         m_Pool.AddTask(thread, true);
 
-        // Have not done any batch parsing
         if (ParserCommon::s_CurrentParser)
-        {
-            send_event = false; // Error -> TODO: Why???
-            CCLogger::Get()->DebugLog(_T("Already current parser present?!"));
-        }
-        else
+            send_event = false;
+        else // Have not done any batch parsing yet -> assign parser
         {
             ParserCommon::s_CurrentParser = this;
             m_StopWatch.Start(); // reset timer
             sendStartParseEvent = true;
         }
-    }
-    else if (   m_PoolTask.empty()
-             && m_PriorityHeaders.empty()
-             && m_BatchParseFiles.empty()
-             && m_PredefinedMacros.IsEmpty() )
-    {
-        send_event = false; // TODO: Huh?!
-        CCLogger::Get()->DebugLog(_T("Nothing to do?!"));
-    }
 
-    CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
+        CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
+    }
 
     if (send_event)
     {

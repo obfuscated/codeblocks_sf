@@ -47,6 +47,54 @@ typedef unsigned int i_uinteger;
 typedef void   t_void   (int i, const char *c, va_list v_l);
 typedef void (*t_p_void)(int i, const char *c, va_list v_l);
 
+// a very hard (stripped) sample from mmsystems.h:
+#ifndef NONAMELESSUNION
+  #ifdef __GNUC__
+    #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+      #define _ANONYMOUS_UNION __extension__
+      #define _ANONYMOUS_STRUCT __extension__
+    #else
+      #if defined(__cplusplus)
+        #define _ANONYMOUS_UNION __extension__
+      #endif /* __cplusplus */
+    #endif /* __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95) */
+  #endif /* __GNUC__ */
+#endif /* NONAMELESSUNION */
+typedef struct tagMIXERCONTROLA {
+	long cbStruct;
+	char szShortName[1024];
+	union {
+		_ANONYMOUS_STRUCT struct {
+			long lMinimum;
+			long lMaximum;
+		}_STRUCT_NAME(s);
+		_ANONYMOUS_STRUCT struct {
+			int dwMinimum;
+			int dwMaximum;
+		}_STRUCT_NAME(s1);
+		int dwReserved[6];
+	} Bounds;
+	union {
+		long cSteps;
+		long dwReserved[6];
+	} Metrics;
+} MIXERCONTROLA,*PMIXERCONTROLA,*LPMIXERCONTROLA;
+
+// another hard (stripped) example from windef.h and wtypes.h:
+#ifndef _ANONYMOUS_STRUCT
+  #define _ANONYMOUS_STRUCT
+  #define _STRUCT_NAME(x) x
+#else
+  #define _STRUCT_NAME(x)
+#endif
+typedef union tagCY {
+	_ANONYMOUS_STRUCT struct {
+		unsigned long Lo;
+		long Hi;
+	}_STRUCT_NAME(s);
+	long long int64;
+} CY;
+
 int main (void)
 {
     struct _s  s;

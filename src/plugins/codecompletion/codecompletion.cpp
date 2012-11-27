@@ -1390,9 +1390,9 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             control->DelLineRight();
             needReparse = true;
 
-            int pos = startPos;
+            int   pos = startPos;
             wxChar ch = control->GetCharAt(pos);
-            while (ch != _T('<') && ch != _T('"') && ch != _T('#'))
+            while (ch != _T('<') && ch != _T('"') && ch != _T('#') && (pos>0))
                 ch = control->GetCharAt(--pos);
             if (ch == _T('<') || ch == _T('"'))
                 startPos = pos + 1;
