@@ -8,16 +8,20 @@
  */
 
 #include <sdk.h>
-#include <configurationpanel.h>
-#include <cbstyledtextctrl.h>
 
-#include <editor_hooks.h>
+#ifndef CB_PRECOMP
+    #include <configurationpanel.h>
+    #include <cbstyledtextctrl.h>
+    #include <editorcolourset.h>
+#endif
 
 #include "abbreviations.h"
 #include "abbreviationsconfigpanel.h"
 
 #include <sqplus.h>
 #include <sc_base_types.h>
+#include <editor_hooks.h>
+
 
 // Register the plugin with Code::Blocks.
 // We are using an anonymous namespace so we don't litter the global one.
