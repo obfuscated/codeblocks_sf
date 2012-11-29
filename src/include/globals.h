@@ -187,6 +187,7 @@ extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
 
 extern DLLIMPORT wxString UnixFilename(const wxString& filename, wxPathFormat format = wxPATH_NATIVE);
 extern DLLIMPORT void QuoteStringIfNeeded(wxString& str);
+extern DLLIMPORT bool NeedQuotes(const wxString &str);
 
 /// Escapes spaces and tabs (NOT quoting the string)
 extern DLLIMPORT wxString EscapeSpaces(const wxString& str);

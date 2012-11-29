@@ -240,10 +240,15 @@ wxString UnixFilename(const wxString& filename, wxPathFormat format)
 
 void QuoteStringIfNeeded(wxString& str)
 {
+    if (NeedQuotes(str))
+        str = wxString(_T("\"")) + str + _T("\"");
+}
+
+bool NeedQuotes(const wxString &str)
+{
     bool hasSpace = str.Find(_T(' ')) != -1;
     bool hasParen = !platform::windows && (str.Find(_T('(')) != -1 || str.Find(_T(')')) != -1);
-    if (!str.IsEmpty() && str.GetChar(0) != _T('"') && (hasSpace || hasParen))
-        str = wxString(_T("\"")) + str + _T("\"");
+    return !str.IsEmpty() && str.GetChar(0) != _T('"') && (hasSpace || hasParen);
 }
 
 wxString EscapeSpaces(const wxString& str)

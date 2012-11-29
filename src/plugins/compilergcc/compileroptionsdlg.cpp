@@ -1554,6 +1554,19 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
     }
 } // OnCopyDirsClick
 
+static void QuoteString(wxString &value, const wxString &caption)
+{
+    if (NeedQuotes(value))
+    {
+        AnnoyingDialog dlgQuestion(caption,
+                                   _("The value contains spaces or strange characters. Do you want to quote it?"),
+                                   wxART_QUESTION, AnnoyingDialog::YES_NO, wxID_YES, false,
+                                   _("&Quote"), _("&Leave unquoted"));
+        if (dlgQuestion.ShowModal()==wxID_YES)
+            ::QuoteStringIfNeeded(value);
+    }
+}
+
 void CompilerOptionsDlg::OnAddVarClick(cb_unused wxCommandEvent& event)
 {
     wxString key;
@@ -1564,7 +1577,7 @@ void CompilerOptionsDlg::OnAddVarClick(cb_unused wxCommandEvent& event)
     {
         key.Trim(true).Trim(false);
         value.Trim(true).Trim(false);
-        ::QuoteStringIfNeeded(value);
+        QuoteString(value, _("Add variable quote string"));
         CustomVarAction Action = {CVA_Add, key, value};
         m_CustomVarActions.push_back(Action);
         XRCCTRL(*this, "lstVars", wxListBox)->Append(key + _T(" = ") + value);
@@ -1591,7 +1604,7 @@ void CompilerOptionsDlg::OnEditVarClick(cb_unused wxCommandEvent& event)
     {
         key.Trim(true).Trim(false);
         value.Trim(true).Trim(false);
-        ::QuoteStringIfNeeded(value);
+        QuoteString(value, _("Edit variable quote string"));
 
         if (value != old_value  ||  key != old_key)
         { // something has changed
