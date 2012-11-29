@@ -28,19 +28,31 @@ public:
 
 private:
     void InitCompText();
-    void AutoCompUpdate(int index);
+    void AutoCompUpdate(const wxString& key, const wxString& lang);
     void ApplyColours();
 
     void OnAutoCompKeyword(wxCommandEvent& event);
     void OnAutoCompAdd(wxCommandEvent& event);
     void OnAutoCompDelete(wxCommandEvent& event);
+    void OnLanguageSelect(wxCommandEvent& event);
+    void OnLanguageAdd(wxCommandEvent& event);
+    void OnLanguageCopy(wxCommandEvent& event);
+    void OnLanguageDelete(wxCommandEvent& event);
+
+    void FillLangugages();
+    void FillKeywords();
+    void LanguageSelected();
+    int  LanguageAdd();
 
 private:
     cbStyledTextCtrl* m_AutoCompTextControl;
     wxListBox*        m_Keyword;
-    int               m_LastAutoCompKeyword;
-    AutoCompleteMap   m_AutoCompMap;
+    wxString          m_LastAutoCompKeyword;
+    wxString          m_LastAutoCompLanguage;
+    AutoCompleteMap*  m_pCurrentAutoCompMap;
     Abbreviations*    m_Plugin;
+
+    wxComboBox*       m_LanguageCmb;
 
     DECLARE_EVENT_TABLE()
 };

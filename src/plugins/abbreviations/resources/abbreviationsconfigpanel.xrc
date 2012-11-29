@@ -58,6 +58,42 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
+					<label>Language</label>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="cmbAutoCompLanguage">
+							<style>wxCB_READONLY</style>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnAutoCompAddLanguage">
+							<label>Add</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnAutoCompCopyLanguage">
+							<label>Copy</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnAutoCompDelLanguage">
+							<label>Delete</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
 					<label>Keyword/code pairs</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
@@ -81,7 +117,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxListBox" name="lstAutoCompKeyword">
-									<style>wxLB_SINGLE | wxLB_NEEDED_SB | wxLB_SORT</style>
+									<style>wxLB_SINGLE|wxLB_NEEDED_SB|wxLB_SORT</style>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<option>1</option>

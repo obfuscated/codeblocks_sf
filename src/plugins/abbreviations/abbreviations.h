@@ -12,6 +12,10 @@
 
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 
+WX_DECLARE_STRING_HASH_MAP(AutoCompleteMap*, AutoCompLanguageMap);
+
+extern wxString defaultLanguageStr;
+
 class Abbreviations : public cbPlugin
 {
 public:
@@ -105,6 +109,9 @@ private:
     void LoadAutoCompleteConfig();
     void SaveAutoCompleteConfig();
 
+    void ClearAutoCompLanguageMap();
+    AutoCompleteMap* GetCurrentACMap(cbEditor* ed);
+
 private:
     void OnEditAutoComplete(cb_unused wxCommandEvent& event);
     void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
@@ -114,8 +121,8 @@ public:
 
 private:
     friend class AbbreviationsConfigPanel;
+    AutoCompLanguageMap m_AutoCompLanguageMap;
 
-    AutoCompleteMap m_AutoCompleteMap;
     int             m_EditorHookId;
     bool            m_IsAutoCompVisible; //!< is AutoComp opened by Abbreviations
 private:
