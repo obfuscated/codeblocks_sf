@@ -762,8 +762,11 @@ bool DebuggerManager::UnregisterDebugger(cbDebuggerPlugin *plugin)
             m_activeDebugger = m_registered.begin()->first;
         m_menuHandler->SetActiveDebugger(m_activeDebugger);
     }
-    m_menuHandler->RebuildMenus();
-    RefreshUI();
+    if (!Manager::IsAppShuttingDown())
+    {
+        m_menuHandler->RebuildMenus();
+        RefreshUI();
+    }
 
     if (m_registered.empty())
     {
