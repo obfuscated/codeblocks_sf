@@ -370,6 +370,20 @@ TEST(RepeatingChars11_children_name)
     CHECK_EQUAL(wxT("[2]"), getName(*w->GetChild(2)));
 }
 
+TEST(StringWide)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{m_impl = L\"st\", m_test = {a = 5}")));
+    CHECK_EQUAL(wxT("s= {m_impl=L\"st\",m_test= {a=5}}"), *w);
+}
+
+TEST(StringWideChar)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{m_impl = L's', m_test = {a = 5}")));
+    CHECK_EQUAL(wxT("s= {m_impl=L's',m_test= {a=5}}"), *w);
+}
+
 TEST(ChangeType0)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("*s")));
