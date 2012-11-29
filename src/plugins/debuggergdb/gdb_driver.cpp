@@ -784,9 +784,9 @@ void GDB_driver::ParseOutput(const wxString& output)
         buffer.Remove(idx);
         // remove the '>>>>>>' part of the prompt (or what's left of it)
         int cnt = 6; // max 6 '>'
-        while (buffer.Last() == _T('>') && cnt--)
+        while (!buffer.empty() && buffer.Last() == _T('>') && cnt--)
             buffer.RemoveLast();
-        if (buffer.Last() == _T('\n'))
+        if (!buffer.empty() && buffer.Last() == _T('\n'))
             buffer.RemoveLast();
         cmd->ParseOutput(buffer.Left(idx));
 
