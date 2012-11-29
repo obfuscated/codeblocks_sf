@@ -86,7 +86,7 @@
 			</AutoVersioning>
 			<DoxyBlocks>
 				<comment_style block="3" line="1" />
-				<doxyfile_project project_number="1.7.655" use_auto_version="1" />
+				<doxyfile_project project_number="1.7.668" use_auto_version="1" />
 				<doxyfile_build extract_private="1" extract_static="1" />
 				<doxyfile_warnings warn_if_undocumented="1" />
 				<doxyfile_output html_help="1" />

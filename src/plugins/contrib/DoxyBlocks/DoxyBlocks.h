@@ -205,6 +205,8 @@ class DoxyBlocks : public cbPlugin
         void GetBlockCommentStrings(int iBlockComment, wxString &sStartComment, wxString &sMidComment, wxString &sEndComment);
         void StartComment(cbStyledTextCtrl *control, int &iPos, int iBlockComment, wxString sStartComment, wxString sMidComment, wxString sTagBrief, wxString sIndent);
         void CommentFunction(cbStyledTextCtrl *control, int &iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent, wxString sParams, wxString sReturn,  wxString sFunction);
+        void CommentFortran(cbStyledTextCtrl *control, int iLine, int &iPos, wxString sMidComment, wxString sTagParam, wxString sTagReturn, wxString sIndent);
+        bool IsLanguageFortran(cbEditor *cbEd);
         void AddCommentLine(cbStyledTextCtrl *control, int &iPos, wxString sText);
         wxString ProcessReturnString(wxString sReturn, wxString sFunction);
         // Autoversioning.
