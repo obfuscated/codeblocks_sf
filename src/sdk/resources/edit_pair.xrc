@@ -3,6 +3,7 @@
   <object class="wxScrollingDialog" name="dlgEditPair">
     <title>Edit pair</title>
     <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
