@@ -376,10 +376,14 @@ void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch
             grid.SetPropertyTextColour(prop, wxColor(255, 0, 0));
             WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(prop));
         }
-#if !wxCHECK_VERSION(2, 9, 0)
         else
+        {
+#if wxCHECK_VERSION(2, 9, 0)
+            grid.SetPropertyColoursToDefault(prop);
+#else
             grid.SetPropertyColourToDefault(prop);
 #endif
+        }
 
         AppendChildren(grid, *prop, *child.get(), readonly);
     }
@@ -399,10 +403,14 @@ void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cb
     watch->GetType(type);
     if (watch->IsChanged())
         grid->SetPropertyTextColour(property, wxColor(255, 0, 0));
-#if !wxCHECK_VERSION(2, 9, 0)
     else
+    {
+#if wxCHECK_VERSION(2, 9, 0)
+        grid->SetPropertyColoursToDefault(property);
+#else
         grid->SetPropertyColourToDefault(property);
 #endif
+    }
     grid->SetPropertyAttribute(property, wxT("Units"), type);
     if (value.empty())
         grid->SetPropertyHelpString(property, wxEmptyString);
