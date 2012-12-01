@@ -67,7 +67,7 @@ void CompilerSDCC::Reset()
     m_Switches.linkLibs = _T("-l");
     m_Switches.defines = _T("-D");
     m_Switches.genericSwitch = _T("-");
-    m_Switches.objectExtension = _T("rel");
+    m_Switches.objectExtension = _T("o");
 
     m_Switches.needDependencies = true;
     m_Switches.forceCompilerUseQuotes = false;
