@@ -111,8 +111,6 @@ void AbbreviationsConfigPanel::AutoCompUpdate(const wxString& key, const wxStrin
     {
         AutoCompleteMap* compMap = m_Plugin->m_AutoCompLanguageMap[lang];
         (*compMap)[key] = m_AutoCompTextControl->GetText();
-        Manager::Get()->GetLogManager()->LogToStdOut(_T("AutoCompUpdate: key=") + key +
-                                                     _T(" text=") + m_AutoCompTextControl->GetText());
     }
 }
 
@@ -165,22 +163,11 @@ void AbbreviationsConfigPanel::OnAutoCompDelete(cb_unused wxCommandEvent& event)
 
 void AbbreviationsConfigPanel::OnAutoCompKeyword(cb_unused wxCommandEvent& event)
 {
-
-Manager::Get()->GetLogManager()->LogToStdOut(_T("OnAutoCompKeyword pradzioje"));
-
     if (   m_LastAutoCompKeyword.IsSameAs(m_Keyword->GetStringSelection())
         && m_LastAutoCompLanguage.IsSameAs(m_LanguageCmb->GetValue()))
         return;
 
-Manager::Get()->GetLogManager()->LogToStdOut(_T("OnAutoCompKeyword einam toliau"));
-
-
     AutoCompUpdate(m_LastAutoCompKeyword, m_LastAutoCompLanguage);
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("OnAutoCompKeyword po AutoCompUpdate"));
-    Manager::Get()->GetLogManager()->LogToStdOut(wxString::Format(_T("OnAutoCompKeyword selektintas %d '%s'"),
-                                                                  m_Keyword->GetSelection(),
-                                                                  m_Keyword->GetString(m_Keyword->GetSelection()).wx_str()));
 
     // list new keyword's code
     m_LastAutoCompKeyword  = m_Keyword->GetStringSelection();
@@ -227,20 +214,11 @@ void AbbreviationsConfigPanel::FillLangugages()
 
 void AbbreviationsConfigPanel::FillKeywords()
 {
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("keyword saraso pradzia"));
-    for (AutoCompleteMap::iterator it = m_pCurrentAutoCompMap->begin(); it != m_pCurrentAutoCompMap->end(); ++it)
-        Manager::Get()->GetLogManager()->LogToStdOut(it->first);
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("keyword saraso pabaiga"));
     m_Keyword->Clear();
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("FillKeywords. Po Clear"));
 
     for (AutoCompleteMap::iterator it = m_pCurrentAutoCompMap->begin(); it != m_pCurrentAutoCompMap->end(); ++it)
         m_Keyword->Append(it->first);
 
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("Pridejome visus keywordus"));
     if (!m_pCurrentAutoCompMap->empty())
     {
         m_Keyword->SetSelection(0);
@@ -252,12 +230,6 @@ void AbbreviationsConfigPanel::FillKeywords()
         m_LastAutoCompKeyword = wxEmptyString;
         m_AutoCompTextControl->SetText(wxEmptyString);
     }
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("Po parodymo keyword saraso pradzia"));
-    for (AutoCompleteMap::iterator it = m_pCurrentAutoCompMap->begin(); it != m_pCurrentAutoCompMap->end(); ++it)
-        Manager::Get()->GetLogManager()->LogToStdOut(it->first);
-
-    Manager::Get()->GetLogManager()->LogToStdOut(_T("Po parodymo keyword saraso pabaiga"));
 }
 
 void AbbreviationsConfigPanel::OnLanguageSelect(wxCommandEvent& event)
