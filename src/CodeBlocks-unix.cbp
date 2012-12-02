@@ -2369,6 +2369,9 @@
 		<Unit filename="sdk/resources/external_deps.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/findreplacedlg.xrc">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/generic_multi_select.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -2571,9 +2574,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/projectfile_options.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/findreplacedlg.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/scripting_security_dlg.xrc">

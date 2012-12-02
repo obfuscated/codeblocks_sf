@@ -24,7 +24,7 @@
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/libtxml29" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml29" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option type="2" />
@@ -60,7 +60,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/libsquirrel29" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel29" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option type="2" />
@@ -72,7 +72,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/libsqstdlib29" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqstdlib29" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel29.a;" />
@@ -85,7 +85,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/libsqplus29" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus29" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel29.a;sdk/scripting/lib/libsqstdlib29.a;" />
@@ -98,7 +98,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel29/libwxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel29/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option type="2" />
@@ -229,7 +229,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/libdepslib29" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/depslib29" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29" />
 				<Option type="2" />
@@ -2375,6 +2375,9 @@
 		<Unit filename="sdk/resources/external_deps.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/findreplacedlg.xrc">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/generic_multi_select.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -2577,9 +2580,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/projectfile_options.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/findreplacedlg.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/scripting_security_dlg.xrc">
