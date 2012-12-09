@@ -156,7 +156,7 @@
 				<Option external_deps="devel29/libcodeblocks.so;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -v" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="`pkg-config gtk+-2.0 --cflags`" />
