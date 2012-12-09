@@ -61,6 +61,7 @@ class InfoPane : public cbAuiNotebook
     void DoShowContextMenu();
     int  AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
     bool InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0 , int index = -1);
+    using wxWindow::Show;
 public:
 
     InfoPane(wxWindow* parent);
