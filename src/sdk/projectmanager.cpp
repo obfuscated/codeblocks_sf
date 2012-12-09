@@ -2325,22 +2325,36 @@ void ProjectManager::OnSaveProject(wxCommandEvent& WXUNUSED(event))
 
 void ProjectManager::OnCloseProject(wxCommandEvent& WXUNUSED(event))
 {
-    wxTreeItemId sel = GetTreeSelection();
-    if (!sel.IsOk())
-        return;
-
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-    cbProject *proj = 0;
-    if (ftd)
-        proj = ftd->GetProject();
-
-    if (proj)
+    if (m_IsLoadingProject)
     {
-        if (m_IsLoadingProject || proj->GetCurrentlyCompilingTarget())
-            wxBell();
-        else
-            CloseProject(proj);
+        wxBell();
+        return;
     }
+
+    wxArrayTreeItemIds selections;
+    int count = m_pTree->GetSelections(selections);
+    if (count == 0)
+        return;
+    std::set<cbProject*> projectsToClose;
+
+    for (size_t ii = 0; ii < selections.GetCount(); ++ii)
+    {
+        FileTreeData *ftd = reinterpret_cast<FileTreeData*>(m_pTree->GetItemData(selections[ii]));
+        if (ftd->GetKind() != FileTreeData::ftdkProject)
+            continue;
+
+        cbProject *project = ftd->GetProject();
+        if (project)
+        {
+            if (project->GetCurrentlyCompilingTarget())
+                wxBell();
+            else
+                projectsToClose.insert(project);
+        }
+    }
+
+    for (std::set<cbProject*>::iterator it = projectsToClose.begin(); it != projectsToClose.end(); ++it)
+        CloseProject(*it);
 
     if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
         SetProject(m_pProjects->Item(0), false);
