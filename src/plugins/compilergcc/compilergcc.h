@@ -177,6 +177,7 @@ class CompilerGCC : public cbCompilerPlugin
 
         void SaveOptions();
         void LoadOptions();
+        void DoRegisterCompilers();
         void DoPrepareQueue(bool clearLog=true);
         void NotifyCleanProject(const wxString& target);
         void NotifyCleanWorkspace();
@@ -233,6 +234,9 @@ class CompilerGCC : public cbCompilerPlugin
 
         // returns a string valid to be used as LD_LIBRARY_PATH (or equivalent)
         wxString GetDynamicLinkerPathForTarget(ProjectBuildTarget* target);
+
+        wxString GetErrWarnStr();
+        wxString GetMinSecStr();
 
         // when a build is about to start, a preprocessing step runs
         // in PreprocessJob(), that fills m_BuildJobTargetsList with

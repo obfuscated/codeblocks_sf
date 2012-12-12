@@ -31,6 +31,7 @@
 CompilerMINGW::CompilerMINGW(const wxString& name, const wxString& ID)
     : Compiler(name, ID)
 {
+    m_Weight = 4;
     Reset();
 }
 
@@ -41,9 +42,7 @@ CompilerMINGW::~CompilerMINGW()
 
 Compiler * CompilerMINGW::CreateCopy()
 {
-    Compiler* c = new CompilerMINGW(*this);
-    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
-    return c;
+    return (new CompilerMINGW(*this));
 }
 
 CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator(cbProject *project)
@@ -51,191 +50,6 @@ CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator(cbProject *project)
     CompilerMINGWGenerator *generator = new CompilerMINGWGenerator;
     generator->Init(project);
     return generator;
-}
-
-void CompilerMINGW::Reset()
-{
-    if (platform::windows)
-    {
-        m_Programs.C         = _T("mingw32-gcc.exe");
-        m_Programs.CPP       = _T("mingw32-g++.exe");
-        m_Programs.LD        = _T("mingw32-g++.exe");
-        m_Programs.DBGconfig = _T("gdb_debugger:Default");
-        m_Programs.LIB       = _T("ar.exe");
-        m_Programs.WINDRES   = _T("windres.exe");
-        m_Programs.MAKE      = _T("mingw32-make.exe");
-    }
-    else
-    {
-        m_Programs.C         = _T("gcc");
-        m_Programs.CPP       = _T("g++");
-        m_Programs.LD        = _T("g++");
-        m_Programs.DBGconfig = _T("gdb_debugger:Default");
-        m_Programs.LIB       = _T("ar");
-        m_Programs.WINDRES   = _T("");
-        m_Programs.MAKE      = _T("make");
-    }
-    m_Switches.includeDirs             = _T("-I");
-    m_Switches.libDirs                 = _T("-L");
-    m_Switches.linkLibs                = _T("-l");
-    m_Switches.defines                 = _T("-D");
-    m_Switches.genericSwitch           = _T("-");
-    m_Switches.objectExtension         = _T("o");
-    m_Switches.needDependencies        = true;
-    m_Switches.forceCompilerUseQuotes  = false;
-    m_Switches.forceLinkerUseQuotes    = false;
-    m_Switches.logging                 = CompilerSwitches::defaultLogging;
-    m_Switches.libPrefix               = _T("lib");
-    m_Switches.libExtension            = _T("a");
-    m_Switches.linkerNeedsLibPrefix    = false;
-    m_Switches.linkerNeedsLibExtension = false;
-    m_Switches.supportsPCH             = true;
-    m_Switches.PCHExtension            = _T("h.gch");
-    m_Switches.UseFullSourcePaths      = true; // use the GDB workaround !!!!!!!!
-
-    // Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
-
-    m_Options.ClearOptions();
-    m_Options.AddOption(_("Produce debugging symbols"),
-                _T("-g"),
-                _("Debugging"),
-                _T(""),
-                true,
-                _T("-s"),
-                _("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
-    wxString gprof_link = _T("-pg");
-    if (platform::windows)
-        gprof_link = _T("-pg -lgmon");
-    m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), gprof_link);
-
-    wxString category = _("Warnings");
-
-    // warnings
-    m_Options.AddOption(_("In C mode, support all ISO C90 programs. In C++ mode, remove GNU extensions that conflict with ISO C++"), _T("-ansi"), category);
-    m_Options.AddOption(_("Enable all compiler warnings (overrides many other settings)"), _T("-Wall"), category);
-    m_Options.AddOption(_("Enable extra compiler warnings"), _T("-Wextra"), category);
-    m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
-    m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
-    m_Options.AddOption(_("Have g++ follow the 1998 ISO C++ language standard"), _T("-std=c++98"), category);
-    m_Options.AddOption(_("Have g++ follow the coming C++0x ISO C++ language standard"), _T("-std=c++0x"), category);
-    m_Options.AddOption(_("Have g++ follow the C++11 ISO C++ language standard"), _T("-std=c++11"), category);
-    m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
-    m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
-    m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
-    m_Options.AddOption(_("Enable Effective-C++ warnings (thanks Scott Meyers)"), _T("-Weffc++"), category);
-    m_Options.AddOption(_("zero as null pointer constant"), _T("-Wzero-as-null-pointer-constant"), category);
-    m_Options.AddOption(_("Warn whenever a switch statement does not have a default case"), _T("-Wswitch-default"), category);
-    m_Options.AddOption(_("Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"), _T("-Wswitch-enum"), category);
-    m_Options.AddOption(_("Warn if a user supplied include directory does not exist"), _T("-Wmissing-include-dirs"), category);
-    m_Options.AddOption(_("Warn if a global function is defined without a previous declaration"), _T("-Wmissing-declarations"), category);
-    m_Options.AddOption(_("Warn if the compiler detects that code will never be executed"), _T("-Wunreachable-code"), category);
-    m_Options.AddOption(_("Warn if a function can not be inlined and it was declared as inline"), _T("-Winline"), category);
-    m_Options.AddOption(_("Warn if floating point values are used in equality comparisons"), _T("-Wfloat-equal"), category);
-    m_Options.AddOption(_("Warn if an undefined identifier is evaluated in an '#if' directive"), _T("-Wundef"), category);
-    m_Options.AddOption(_("Warn whenever a pointer is cast such that the required alignment of the target is increased"), _T("-Wcast-align"), category);
-    m_Options.AddOption(_("Warn if anything is declared more than once in the same scope"), _T("-Wredundant-decls"), category);
-    m_Options.AddOption(_("Warn about unitialized variables which are initialized with themselves"), _T("-Winit-self"), category);
-    m_Options.AddOption(_("Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"), _T("-Wshadow"), category);
-
-    // optimization
-    category = _("Optimization");
-    m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
-    m_Options.AddOption(_("Optimize generated code (for speed)"), _T("-O"), category);
-    m_Options.AddOption(_("Optimize more (for speed)"), _T("-O1"), category);
-    m_Options.AddOption(_("Optimize even more (for speed)"), _T("-O2"), category);
-    m_Options.AddOption(_("Optimize fully (for speed)"), _T("-O3"), category);
-    m_Options.AddOption(_("Optimize generated code (for size)"), _T("-Os"), category);
-    m_Options.AddOption(_("Expensive optimizations"), _T("-fexpensive-optimizations"), category);
-    m_Options.AddOption(_("Don't keep the frame pointer in a register for functions that don't need one"), _T("-fomit-frame-pointer"), category);
-    // machine dependent options - cpu arch
-    category = _("CPU architecture tuning (choose none, or only one of these)");
-    m_Options.AddOption(_("i386"), _T("-march=i386"), category);
-    m_Options.AddOption(_("i486"), _T("-march=i486"), category);
-    m_Options.AddOption(_("Intel Pentium"), _T("-march=i586"), category);
-    m_Options.AddOption(_("Intel Pentium (MMX)"), _T("-march=pentium-mmx"), category);
-    m_Options.AddOption(_("Intel Pentium PRO"), _T("-march=i686"), category);
-    m_Options.AddOption(_("Intel Pentium 2 (MMX)"), _T("-march=pentium2"), category);
-    m_Options.AddOption(_("Intel Pentium 3 (MMX, SSE)"), _T("-march=pentium3"), category);
-    m_Options.AddOption(_("Intel Pentium 4 (MMX, SSE, SSE2)"), _T("-march=pentium4"), category);
-    m_Options.AddOption(_("Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"), _T("-march=prescott"), category);
-    m_Options.AddOption(_("Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"), _T("-march=nocona"), category);
-    m_Options.AddOption(_("Intel Pentium M (MMX, SSE, SSE2)"), _T("-march=pentium-m"), category);
-    m_Options.AddOption(_("Intel Core2 (MMX, SSE, SSE2, SSE3, SSSE3, 64bit extensions)"), _T("-march=core2"), category);
-    m_Options.AddOption(_("AMD K6 (MMX)"), _T("-march=k6"), category);
-    m_Options.AddOption(_("AMD K6-2 (MMX, 3DNow!)"), _T("-march=k6-2"), category);
-    m_Options.AddOption(_("AMD K6-3 (MMX, 3DNow!)"), _T("-march=k6-3"), category);
-    m_Options.AddOption(_("AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon"), category);
-    m_Options.AddOption(_("AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon-tbird"), category);
-    m_Options.AddOption(_("AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-4"), category);
-    m_Options.AddOption(_("AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-xp"), category);
-    m_Options.AddOption(_("AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-mp"), category);
-    m_Options.AddOption(_("AMD K8 core (x86-64 instruction set)"), _T("-march=k8"), category);
-    m_Options.AddOption(_("AMD Opteron (x86-64 instruction set)"), _T("-march=opteron"), category);
-    m_Options.AddOption(_("AMD Athlon64 (x86-64 instruction set)"), _T("-march=athlon64"), category);
-    m_Options.AddOption(_("AMD Athlon-FX (x86-64 instruction set)"), _T("-march=athlon-fx"), category);
-
-    m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -o $object")));
-    m_Commands[(int)ctGenDependenciesCmd].push_back(CompilerTool(_T("$compiler -MM $options -MF $dep_object -MT $object $includes $file")));
-    m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp $res_includes -J rc -O coff -i $file -o $resource_output")));
-    m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs")));
-    if (platform::windows)
-    {
-        m_Commands[(int)ctLinkNativeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs --subsystem,native")));
-        m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows")));
-        m_Commands[(int)ctLinkDynamicCmd].push_back(CompilerTool(_T("$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs")));
-    }
-    else
-    {
-        m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // no -mwindows
-        m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // no -mwindows
-        m_Commands[(int)ctLinkDynamicCmd].push_back(CompilerTool(_T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs")));
-    }
-    m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r -s $static_output $link_objects")));
-
-    LoadDefaultRegExArray();
-
-    m_CompilerOptions.Clear();
-    m_LinkerOptions.Clear();
-    m_LinkLibs.Clear();
-    m_CmdsBefore.Clear();
-    m_CmdsAfter.Clear();
-    SetVersionString();
-}
-
-void CompilerMINGW::LoadDefaultRegExArray()
-{
-    m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, _T("FATAL:[ \t]*(.*)"), 1));
-    m_RegExes.Add(RegExStruct(_("'In function...' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):[ \t]+") + _T("([iI]n ([cC]lass|[cC]onstructor|[dD]estructor|[fF]unction|[mM]ember [fF]unction).*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("'Skipping N instantiation contexts' info (2)"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]+(\\[[ \t]+[Ss]kipping [0-9]+ instantiation contexts[ \t]+\\])"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("'Skipping N instantiation contexts' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]+(\\[[ \t]+[Ss]kipping [0-9]+ instantiation contexts[ \t]+\\])"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("'In instantiation' warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):[ \t]+([Ii]n [Ii]nstantiation.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("'Required from' warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]+([Rr]equired from.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("'Instantiated from' info (2)"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]+([Ii]nstantiated from .*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("'Instantiated from' info"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]+([Ii]nstantiated from .*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, _T("windres.exe:[ \t](") + FilePathWithSpaces + _T("):([0-9]+):[ \t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Resource compiler error (2)"), cltError, _T("windres.exe:[ \t](.*)"), 1));
-    m_RegExes.Add(RegExStruct(_("Preprocessor warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):([0-9]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)"), 4, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler note (2)"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]([Nn]ote:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler note"), cltInfo, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]([Nn]ote:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("General note"), cltInfo, _T("([Nn]ote:[ \t].*)"), 1));
-    m_RegExes.Add(RegExStruct(_("Preprocessor error"), cltError, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning (2)"), cltWarning, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t]([Ww]arning:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]([Ww]arning:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Undefined reference (2)"), cltError, FilePathWithSpaces + _T("\\.o:(") + FilePathWithSpaces + _T("):([0-9]+):[ \t](undefined reference.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error (2)"), cltError, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):\\(\\.text\\+[0-9a-fA-FxX]+\\):[ \t]([Ww]arning:[ \t].*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[0-9]+:[ \t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker error (2)"), cltError, FilePathWithSpaces + _T("\\(.text\\+[0-9A-Za-z]+\\):([ \tA-Za-z0-9_:+/\\.-]+):[ \t](.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Linker error (3)"), cltError, _T("(") + FilePathWithSpaces + _T("):\\(\\.text\\+[0-9a-fA-FxX]+\\):(.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Linker error (lib not found)"), cltError, _T(".*(ld.*):[ \t](cannot find.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Linker error (cannot open output file)"), cltError, _T(".*(ld.*):[ \t](cannot open output file.*):[ \t](.*)"), 2, 1, 0, 3));
-    m_RegExes.Add(RegExStruct(_("Linker error (unrecognized option)"), cltError, _T(".*(ld.*):[ \t](unrecognized option.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("No such file or directory"), cltError, _T(".*:(.*):[ \t](No such file or directory.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, _T("(") + FilePathWithSpaces + _T("):[ \t](undefined reference.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
-    m_RegExes.Add(RegExStruct(_("Auto-import info"), cltInfo, _T("([Ii]nfo:[ \t].*)\\(auto-import\\)"), 1));
 }
 
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
@@ -309,6 +123,17 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                     }
                 }
 #endif
+            }
+            // check for PortableApps.com installation
+            if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+            {
+                wxString drive = wxFileName(ConfigManager::GetExecutableFolder()).GetVolume() + wxT(":\\");
+                if (wxFileExists(drive + wxT("PortableApps\\CommonFiles\\MinGW\\bin\\") + m_Programs.C))
+                    m_MasterPath = drive + wxT("PortableApps\\CommonFiles\\MinGW");
+                else if (wxFileExists(drive + wxT("CommonFiles\\MinGW\\bin\\") + m_Programs.C))
+                    m_MasterPath = drive + wxT("CommonFiles\\MinGW");
+                else if (wxFileExists(drive + wxT("MinGW\\bin\\") + m_Programs.C))
+                    m_MasterPath = drive + wxT("MinGW");
             }
         }
         else

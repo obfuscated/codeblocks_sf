@@ -14,8 +14,6 @@ class CompilerG95 : public Compiler
     public:
         CompilerG95();
         virtual ~CompilerG95();
-        virtual void Reset();
-        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();

@@ -269,6 +269,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{_mandir}/man1/codeblocks.*
 %{_mandir}/man1/cb_console_runner.*
 %{_mandir}/man1/cb_share_config.*
+%{pkgdatadir}/compilers/*
 %{pkgdatadir}/icons/*
 %{pkgdatadir}/images/*.png
 %{pkgdatadir}/images/16x16/*

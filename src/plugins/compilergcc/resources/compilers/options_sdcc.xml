@@ -1,0 +1,178 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="sdcc.exe"/>
+        <Program name="CPP"       value="sdcc.exe"/>
+        <Program name="LD"        value="sdcc.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="sdcclib.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="sdcc"/>
+        <Program name="CPP"       value="sdcc"/>
+        <Program name="LD"        value="sdcc"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="sdcclib"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <!-- Summary of SDCC options: http://sdcc.sourceforge.net -->
+
+    <Option name="Produce debugging symbols"
+            option="--debug"
+            category="Debugging"
+            checkAgainst="--opt-code-speed --opt-code-size"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+
+    <Option name="All functions will be compiled as reentrant"
+            option="--stack-auto"/>
+    <Option name="Be verbose"
+            option="--verbose"/>
+    <Option name="Generate extra profiling information"
+            option="--profile"/>
+    <Option name="Callee will always save registers used"
+            option="--all-callee-saves"/>
+    <Option name="Leave out the frame pointer"
+            option="--fommit-frame-pointer"/>
+    <Option name="[MCS51/DS390] - use Bank1 for parameter passing"
+            option="--parms-in-bank1"/>
+
+    <Category name="Optimization"
+              exclusive="true">
+        <Option name="Optimize generated code (for speed)"
+                option="--opt-code-speed"/>
+        <Option name="Optimize generated code (for size)"
+                option="--opt-code-size"/>
+    </Category>
+
+    <Category name="CPU architecture"
+              exclusive="true">
+        <Option name="[CPU] Intel MCS51 (default)"
+                option="-mmcs51"/>
+        <Option name="[CPU] Dallas DS80C390"
+                option="-mds390"/>
+        <Option name="[CPU] Dallas DS80C400"
+                option="-mds400"/>
+        <Option name="[CPU] Freescale/Motorola HC08"
+                option="-mhc08"/>
+        <Option name="[CPU] Zilog Z80"
+                option="-mz80"/>
+        <Option name="[CPU] GameBoy Z80 (Not actively maintained)."
+                option="-mgbz80"/>
+        <Option name="[CPU] Atmel AVR (In development, not complete)"
+                option="-mavr"/>
+        <Option name="[CPU] Microchip PIC 14-bit (p16f84 and variants. In development, not complete)"
+                option="-mpic14"/>
+        <Option name="[CPU] PIC 16-bit (p18f452 and variants. In development, not complete)"
+                option="-mpic16"/>
+    </Category>
+
+    <Category name="MCS51 Options">
+        <Option name="[MCS51] Large model programs (default is Small)"
+                option="--model-large"/>
+        <Option name="[MCS51] Use a pseudo stack in the first 256 bytes in the external ram"
+                option="--xstack"/>
+        <Option name="[MCS51] Linker use old style for allocating memory areas."
+                option="--no-pack-iram"/>
+    </Category>
+
+    <Category name="DS390 / DS400 Options">
+        <Option name="[DS390 / DS400] Generate 24-bit flat mode code"
+                option="--model-flat24"/>
+        <Option name="[DS390 / DS400] Disable interrupts during ESP:SP updates"
+                option="--protect-sp-update"/>
+        <Option name="[DS390 / DS400] Insert call to function __stack_probe at each function prologue"
+                option="--stack-probe"/>
+        <Option name="[DS390 / DS400] Generate code for DS390 Arithmetic Accelerator"
+                option="--use-accelerator"/>
+    </Category>
+
+    <Category name="Z80 Options">
+        <Option name="[Z80] Force a called function to always save BC"
+                option="--callee-saves-bc"/>
+        <Option name="[Z80] When linking, skip the standard crt0.o object file"
+                option="--no-std-crt0"/>
+    </Category>
+
+    <Category name="Linker output format"
+              exclusive="true">
+        <Option name="Output Intel Hex (default)"
+                option="--out-fmt-ihx"/>
+        <Option name="Output Motorola S19"
+                option="--out-fmt-s19"/>
+        <Option name="Output ELF (Currently only supported for the HC08 processors)"
+                option="--out-fmt-elf"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="LinkExe"
+             value="$linker $libdirs -o $exe_output $options $link_options $libs $link_objects"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $options $link_options $libs $link_objects"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -r $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $options $link_options $libs $link_objects"/>
+    <Common name="cmds"/>
+
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1">
+        <![CDATA[FATAL:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning (.h)"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9:]+[ \t]([Ww]arning[: \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t]([Ww]arning[: \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t](.*[Ee]rror[: \t].*)]]>
+    </RegEx>
+    <RegEx name="Compiler error (2)"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9:]+ (.*: No such .*)]]>
+    </RegEx>
+    <RegEx name="Linker warning"
+           type="warning"
+           msg="1">
+        <![CDATA[(ASlink-Warning-.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

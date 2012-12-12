@@ -32,7 +32,7 @@
 													<object class="wxButton" name="btnSetDefaultCompiler">
 														<label>Set as default</label>
 													</object>
-													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
 												</object>
 												<object class="spacer">
@@ -43,32 +43,38 @@
 													<object class="wxButton" name="btnAddCompiler">
 														<label>Copy</label>
 													</object>
-													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnRenameCompiler">
 														<label>Rename</label>
 													</object>
-													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnDelCompiler">
 														<label>Delete</label>
 													</object>
-													<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
+												</object>
+												<object class="spacer">
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>5</border>
+													<size>24,-1</size>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnResetCompiler">
 														<label>Reset defaults</label>
 													</object>
-													<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
 												</object>
 											</object>
-											<flag>wxALIGN_RIGHT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxRIGHT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+											<border>4</border>
 										</object>
 									</object>
 								</object>
@@ -81,7 +87,7 @@
 									<hidden>1</hidden>
 									<fg>#800000</fg>
 								</object>
-								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>8</border>
 							</object>
 							<object class="sizeritem">
@@ -113,7 +119,7 @@
 																	<item>Append target options to project options</item>
 																</content>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -146,9 +152,17 @@
 																		<object class="wxCheckListBox" name="lstCompilerOptions">
 																			<style>wxLB_HSCROLL</style>
 																		</object>
-																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																		<border>8</border>
 																		<option>1</option>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxStaticText" name="ID_STATICTEXT31">
+																			<label>NOTE: Right-click to setup or edit compiler flags.</label>
+																			<fg>#800000</fg>
+																		</object>
+																		<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>8</border>
 																	</object>
 																</object>
 															</object>
@@ -222,7 +236,7 @@
 																	<item>Append target options to project options</item>
 																</content>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -292,7 +306,7 @@
 																			<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																		</object>
 																	</object>
-																	<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
 																	<border>4</border>
 																</object>
 																<object class="sizeritem">
@@ -368,7 +382,7 @@
 																								<item>Append target options to project options</item>
 																							</content>
 																						</object>
-																						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																					</object>
 																				</object>
 																				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -418,7 +432,7 @@
 																								<item>Append target options to project options</item>
 																							</content>
 																						</object>
-																						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																					</object>
 																				</object>
 																				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -468,7 +482,7 @@
 																								<item>Append target options to project options</item>
 																							</content>
 																						</object>
-																						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																					</object>
 																				</object>
 																				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -635,10 +649,10 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT7">
-																<label>NOTE: All programs below, must exist either in the &quot;bin&quot; sub-directory of this path or in any of the &quot;Additional paths&quot;...</label>
+																<label>NOTE: All programs must exist either in the &quot;bin&quot; sub-directory of this path, or in any of the &quot;Additional paths&quot;...</label>
 																<fg>#800000</fg>
 															</object>
-															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>8</border>
 														</object>
 													</object>
@@ -1222,26 +1236,16 @@
 															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<option>1</option>
 														</object>
-														<object class="sizeritem">
-															<object class="wxStaticText" name="ID_STATICTEXT24">
-																<label>Build method:</label>
-															</object>
-															<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-															<border>4</border>
-														</object>
-														<object class="sizeritem">
-															<object class="wxChoice" name="cmbBuildMethod">
-																<content>
-																	<item>Work with Makefiles (GNU &quot;make&quot; is required)</item>
-																	<item>Invoke compiler directly</item>
-																</content>
-																<selection>0</selection>
-															</object>
-															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-															<option>1</option>
-														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkNonPlatComp">
+														<label>Enable non-platform compilers</label>
+														<tooltip>Enable to use i.e. cross-platform compilers</tooltip>
+													</object>
+													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>8</border>
 												</object>
 												<object class="sizeritem">

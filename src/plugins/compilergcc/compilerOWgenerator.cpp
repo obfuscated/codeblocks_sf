@@ -7,8 +7,6 @@
  * $HeadURL$
  */
 
-#ifdef __WXMSW__ // For Windows Only
-
 #include <sdk.h>
 #ifndef CB_PRECOMP
 #   include "compiler.h"
@@ -277,5 +275,3 @@ void CompilerOWGenerator::MapDebuggerOptions(const wxString& Opt)
       m_DebuggerType = wxEmptyString;
   }
 }
-
-#endif // __WXMSW__

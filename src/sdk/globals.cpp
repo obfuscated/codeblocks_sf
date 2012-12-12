@@ -200,6 +200,11 @@ wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
     return out;
 }
 
+wxString MakeUniqueString(const wxString& text, const wxString& separator, bool caseSens)
+{
+    return GetStringFromArray( MakeUniqueArray( GetArrayFromString(text, separator), caseSens ), separator, false );
+}
+
 void AppendArray(const wxArrayString& from, wxArrayString& to)
 {
     for (unsigned int i = 0; i < from.GetCount(); ++i)

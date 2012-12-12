@@ -21,11 +21,12 @@
 
     #include <wx/intl.h>
     #include <wx/regex.h>
+    #include <wx/xml/xml.h>
 #endif
 
 #include "compilercommandgenerator.h"
-#include <wx/filefn.h>
 #include <wx/arrimpl.cpp>
+#include <wx/filefn.h>
 WX_DEFINE_OBJARRAY(RegExArray);
 
 // static
@@ -81,7 +82,7 @@ wxString Compiler::CommandTypeDescriptions[ctCount] =
     _("Link object files to native executable")
 };
 
-Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID) :
+Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID, int weight) :
     m_Name(name),
     m_ID(ID.Lower()),
     m_ParentID(parentID.Lower()),
@@ -95,6 +96,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_Switches.supportsPCH = false;
     m_Switches.forceFwdSlashes = false;
     m_VersionString = wxEmptyString;
+    m_Weight = weight;
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
@@ -114,9 +116,12 @@ Compiler::Compiler(const Compiler& other) :
     MakeValidID();
 
     m_MasterPath      = other.m_MasterPath;
+    m_ExtraPaths      = other.m_ExtraPaths;
     m_Programs        = other.m_Programs;
     m_Switches        = other.m_Switches;
     m_Options         = other.m_Options;
+    m_SortOptions[0]  = other.m_SortOptions[0];
+    m_SortOptions[1]  = other.m_SortOptions[1];
     m_IncludeDirs     = MakeUniqueArray(other.m_IncludeDirs,    true);
     m_ResIncludeDirs  = MakeUniqueArray(other.m_ResIncludeDirs, true);
     m_LibDirs         = MakeUniqueArray(other.m_LibDirs,        true);
@@ -127,6 +132,7 @@ Compiler::Compiler(const Compiler& other) :
     m_CmdsAfter       = other.m_CmdsAfter;
     m_RegExes         = other.m_RegExes;
     m_VersionString   = other.m_VersionString;
+    m_Weight          = 100; // place copied compilers at the end
 
     for (int i = 0; i < ctCount; ++i)
         m_Commands[(CommandType)i] = other.m_Commands[(CommandType)i];
@@ -138,6 +144,36 @@ Compiler::Compiler(const Compiler& other) :
 Compiler::~Compiler()
 {
     //dtor
+}
+
+void Compiler::Reset()
+{
+    m_Options.ClearOptions();
+    LoadDefaultOptions(GetID());
+
+    LoadDefaultRegExArray();
+
+    m_CompilerOptions.Clear();
+    m_LinkerOptions.Clear();
+    m_LinkLibs.Clear();
+    m_CmdsBefore.Clear();
+    m_CmdsAfter.Clear();
+    SetVersionString(); // Does nothing unless reimplemented
+}
+
+void Compiler::ReloadOptions()
+{
+    if (ConfigManager::LocateDataFile(wxT("compilers/options_") + GetID() + wxT(".xml"), sdDataUser | sdDataGlobal).IsEmpty())
+        return; // Do not clear if the options cannot be reloaded
+    m_Options.ClearOptions();
+    LoadDefaultOptions(GetID());
+    LoadDefaultRegExArray();
+}
+
+void Compiler::LoadDefaultRegExArray(bool globalPrecedence)
+{
+    m_RegExes.Clear();
+    LoadRegExArray(GetID(), globalPrecedence);
 }
 
 bool Compiler::IsValid()
@@ -183,7 +219,7 @@ bool Compiler::IsValid()
 void Compiler::MakeValidID()
 {
     // basically, make it XML-element compatible
-    // only allow a-z, 0-9 and _
+    // only allow a-z, 0-9, _, and -
     // (it is already lowercase)
     // any non-conformant character will be removed
 
@@ -195,16 +231,16 @@ void Compiler::MakeValidID()
     while (pos < m_ID.Length())
     {
         wxChar ch = m_ID[pos];
-        if (wxIsalnum(ch) || ch == _T('_')) // valid character
+        if (wxIsalnum(ch) || ch == _T('_') || ch == _T('-')) // valid character
             newID.Append(ch);
         else if (wxIsspace(ch)) // convert spaces to underscores
             newID.Append(_T('_'));
         ++pos;
     }
 
-    // make sure it's not starting with a number.
+    // make sure it's not starting with a number or a '-'.
     // if it is, prepend "cb"
-    if (wxIsdigit(newID.GetChar(0)))
+    if (wxIsdigit(newID.GetChar(0)) || newID.GetChar(0) == _T('-'))
         newID.Prepend(_T("cb"));
 
     if (newID.IsEmpty()) // empty? wtf?
@@ -301,6 +337,9 @@ void Compiler::MirrorCurrentSettings()
     m_Mirror.CmdsBefore       = m_CmdsBefore;
     m_Mirror.CmdsAfter        = m_CmdsAfter;
 
+    m_Mirror.SortOptions[0] = m_SortOptions[0];
+    m_Mirror.SortOptions[1] = m_SortOptions[1];
+
     m_Mirrored                = true;
 }
 
@@ -379,8 +418,6 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(tmp + _T("/res_compiler"),    m_Programs.WINDRES,   true);
     if (m_Mirror.Programs.MAKE != m_Programs.MAKE)
         cfg->Write(tmp + _T("/make"),            m_Programs.MAKE,      true);
-    if (m_Mirror.Programs.DBG != m_Programs.DBG)
-        cfg->Write(tmp + _T("/debugger"),        m_Programs.DBG,       true);
     if (m_Mirror.Programs.DBGconfig != m_Programs.DBGconfig)
         cfg->Write(tmp + _T("/debugger_config"), m_Programs.DBGconfig, true);
 
@@ -466,6 +503,12 @@ void Compiler::SaveSettings(const wxString& baseKey)
             cfg->Write(group + _T("/line"),     rs.line);
     }
 
+    // sorted flags
+    if (m_Mirror.SortOptions[0] != GetCOnlyFlags())
+        cfg->Write(tmp + _T("/sort/C"),   GetCOnlyFlags());
+    if (m_Mirror.SortOptions[1] != GetCPPOnlyFlags())
+        cfg->Write(tmp + _T("/sort/CPP"), GetCPPOnlyFlags());
+
     // custom vars
     wxString configpath = tmp + _T("/custom_variables/");
     cfg->DeleteSubPath(configpath);
@@ -508,7 +551,11 @@ void Compiler::LoadSettings(const wxString& baseKey)
         tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
 
     if (!cfg->Exists(tmp + _T("/name")))
-        return;
+    {
+        tmp.Replace(wxT("-"), wxEmptyString); // try again using previous id format
+        if (!cfg->Exists(tmp + _T("/name")))
+            return;
+    }
 
     wxString sep = wxFileName::GetPathSeparator();
 
@@ -522,7 +569,6 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.LIB       = cfg->Read(tmp + _T("/lib_linker"),      m_Programs.LIB);
     m_Programs.WINDRES   = cfg->Read(tmp + _T("/res_compiler"),    m_Programs.WINDRES);
     m_Programs.MAKE      = cfg->Read(tmp + _T("/make"),            m_Programs.MAKE);
-    m_Programs.DBG       = cfg->Read(tmp + _T("/debugger"),        m_Programs.DBG);
     m_Programs.DBGconfig = cfg->Read(tmp + _T("/debugger_config"), m_Programs.DBGconfig);
 
     // set member variable containing the version string with the configuration toolchain executables, not only
@@ -624,6 +670,10 @@ void Compiler::LoadSettings(const wxString& baseKey)
             m_RegExes.Add(rs);
     }
 
+    // sorted flags
+    m_SortOptions[0] = cfg->Read(tmp + _T("/sort/C"), m_SortOptions[0]);
+    m_SortOptions[1] = cfg->Read(tmp + _T("/sort/CPP"), m_SortOptions[1]);
+
     // custom vars
     wxString configpath = tmp + _T("/custom_variables/");
     UnsetAllVars();
@@ -682,4 +732,442 @@ CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
         }
     }
     return cltNormal; // default return value
+}
+
+void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
+{
+    wxXmlDocument options;
+    wxString doc = ConfigManager::LocateDataFile(wxT("compilers/options_") + name + wxT(".xml"), sdDataUser | sdDataGlobal);
+    if (doc.IsEmpty())
+    {
+        wxString msg(_("Error: file 'options_") + name + _(".xml' not found."));
+        Manager::Get()->GetLogManager()->Log(msg);
+        cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
+        return;
+    }
+    if (recursion > 5)
+    {
+        wxString msg(_("Warning: '") + doc + _("' not loaded due to excessive recursion."));
+        Manager::Get()->GetLogManager()->LogWarning(msg);
+        cbMessageBox(msg, _("Compiler options"), wxICON_EXCLAMATION);
+        return;
+    }
+    if (!options.Load(doc))
+    {
+        wxString msg(_("Error: Compiler options file '") + doc + _("' not found for compiler '") + name + wxT("'."));
+        Manager::Get()->GetLogManager()->Log(msg);
+        cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
+        return;
+    }
+    if (options.GetRoot()->GetName() != wxT("CodeBlocks_compiler_options"))
+    {
+        wxString msg(_("Error: Invalid Code::Blocks compiler options file for compiler '") + name + wxT("'."));
+        Manager::Get()->GetLogManager()->Log(msg);
+        cbMessageBox(msg, _("Compiler options"), wxICON_ERROR);
+        return;
+    }
+    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxEmptyString);
+    if (!extends.IsEmpty())
+        LoadDefaultOptions(extends, recursion + 1);
+    wxXmlNode* node = options.GetRoot()->GetChildren();
+    int depth = 0;
+    wxString categ;
+    bool exclu = false;
+
+    wxString baseKey = GetParentID().IsEmpty() ? wxT("/sets") : wxT("/user_sets");
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("compiler"));
+    wxString cmpKey;
+    cmpKey.Printf(wxT("%s/set%3.3d"), baseKey.c_str(), CompilerFactory::GetCompilerIndex(this) + 1);
+    if (!cfg->Exists(cmpKey + wxT("/name")))
+        cmpKey.Printf(wxT("%s/%s"), baseKey.c_str(), m_ID.c_str());
+    if (!cfg->Exists(cmpKey + wxT("/name")))
+        cmpKey.Replace(wxT("-"), wxEmptyString);
+
+    while (node)
+    {
+        const wxString value = node->GetAttribute(wxT("value"), wxEmptyString);
+        if (node->GetName() == wxT("if") && node->GetChildren())
+        {
+            if (EvalXMLCondition(node))
+            {
+                node = node->GetChildren();
+                ++depth;
+                continue;
+            }
+            else if (node->GetNext() && node->GetNext()->GetName() == wxT("else") &&
+                     node->GetNext()->GetChildren())
+            {
+                node = node->GetNext()->GetChildren();
+                ++depth;
+                continue;
+            }
+        }
+        else if (node->GetName() == wxT("Program")) // configuration is read so execution of renamed programs work, m_Mirror is needed to reset before leaving this function
+        {
+            wxString prog = node->GetAttribute(wxT("name"), wxEmptyString);
+            if (prog == wxT("C"))
+            {
+                m_Programs.C = cfg->Read(cmpKey + wxT("/c_compiler"), value);
+                m_Mirror.Programs.C = value;
+            }
+            else if (prog == wxT("CPP"))
+            {
+                m_Programs.CPP = cfg->Read(cmpKey + wxT("/cpp_compiler"), value);
+                m_Mirror.Programs.CPP = value;
+            }
+            else if (prog == wxT("LD"))
+            {
+                m_Programs.LD = cfg->Read(cmpKey + wxT("/linker"), value);
+                m_Mirror.Programs.LD = value;
+            }
+            else if (prog == wxT("DBGconfig"))
+                m_Programs.DBGconfig = value;
+            else if (prog == wxT("LIB"))
+            {
+                m_Programs.LIB = cfg->Read(cmpKey + wxT("/lib_linker"), value);
+                m_Mirror.Programs.LIB = value;
+            }
+            else if (prog == wxT("WINDRES"))
+            {
+                m_Programs.WINDRES = cfg->Read(cmpKey + wxT("/res_compiler"), value);
+                m_Mirror.Programs.WINDRES = value;
+            }
+            else if (prog == wxT("MAKE"))
+            {
+                m_Programs.MAKE = cfg->Read(cmpKey + wxT("/make"), value);
+                m_Mirror.Programs.MAKE = value;
+            }
+        }
+        else if (node->GetName() == wxT("Switch"))
+        {
+            wxString swi = node->GetAttribute(wxT("name"), wxEmptyString);
+            if (swi == wxT("includeDirs"))
+                m_Switches.includeDirs = value;
+            else if (swi == wxT("libDirs"))
+                m_Switches.libDirs = value;
+            else if (swi == wxT("linkLibs"))
+                m_Switches.linkLibs = value;
+            else if (swi == wxT("defines"))
+                m_Switches.defines = value;
+            else if (swi == wxT("genericSwitch"))
+                m_Switches.genericSwitch = value;
+            else if (swi == wxT("objectExtension"))
+                m_Switches.objectExtension = value;
+            else if (swi == wxT("forceFwdSlashes"))
+                m_Switches.forceFwdSlashes = (value == wxT("true"));
+            else if (swi == wxT("forceLinkerUseQuotes"))
+                m_Switches.forceLinkerUseQuotes = (value == wxT("true"));
+            else if (swi == wxT("forceCompilerUseQuotes"))
+                m_Switches.forceCompilerUseQuotes = (value == wxT("true"));
+            else if (swi == wxT("needDependencies"))
+                m_Switches.needDependencies = (value == wxT("true"));
+            else if (swi == wxT("logging"))
+            {
+                if (value == wxT("full"))
+                    m_Switches.logging = clogFull;
+                else if (value == wxT("simple"))
+                    m_Switches.logging = clogSimple;
+                else if (value == wxT("none"))
+                    m_Switches.logging = clogNone;
+                else
+                    m_Switches.logging = CompilerSwitches::defaultLogging;
+            }
+            else if (swi == wxT("libPrefix"))
+                m_Switches.libPrefix = value;
+            else if (swi == wxT("libExtension"))
+                m_Switches.libExtension = value;
+            else if (swi == wxT("linkerNeedsLibPrefix"))
+                m_Switches.linkerNeedsLibPrefix = (value == wxT("true"));
+            else if (swi == wxT("linkerNeedsLibExtension"))
+                m_Switches.linkerNeedsLibExtension = (value == wxT("true"));
+            else if (swi == wxT("supportsPCH"))
+                m_Switches.supportsPCH = (value == wxT("true"));
+            else if (swi == wxT("PCHExtension"))
+                m_Switches.PCHExtension = value;
+            else if (swi == wxT("UseFlatObjects"))
+                m_Switches.UseFlatObjects = (value == wxT("true"));
+            else if (swi == wxT("UseFullSourcePaths"))
+                m_Switches.UseFullSourcePaths = (value == wxT("true"));
+            else if (swi == wxT("Use83Paths"))
+                m_Switches.Use83Paths = (value == wxT("true"));
+        }
+        else if (node->GetName() == wxT("Category") && node->GetChildren())
+        {
+            categ = node->GetAttribute(wxT("name"), wxEmptyString);
+            exclu = (node->GetAttribute(wxT("exclusive"), wxEmptyString) == wxT("true"));
+            node = node->GetChildren();
+            ++depth;
+            continue;
+        }
+        else if (node->GetName() == wxT("Option"))
+        {
+            wxString category;
+            if (!node->GetAttribute(wxT("category"), &category))
+            {
+                if (categ.IsEmpty())
+                    category = wxT("General");
+                else
+                    category = categ;
+            }
+            wxString exclusive;
+            if (!node->GetAttribute(wxT("exclusive"), &exclusive))
+                exclusive = (exclu ? wxT("true") : wxT("false"));
+            m_Options.AddOption(node->GetAttribute(wxT("name"), wxEmptyString),
+                                node->GetAttribute(wxT("option"), wxEmptyString),
+                                category,
+                                node->GetAttribute(wxT("additionalLibs"), wxEmptyString),
+                                node->GetAttribute(wxT("checkAgainst"), wxEmptyString),
+                                node->GetAttribute(wxT("checkMessage"), wxEmptyString),
+                                node->GetAttribute(wxT("supersedes"), wxEmptyString),
+                                exclusive == wxT("true"));
+        }
+        else if (node->GetName() == wxT("Command"))
+        {
+            wxString cmd = node->GetAttribute(wxT("name"), wxEmptyString);
+            CompilerTool tool(value, node->GetAttribute(wxT("ext"), wxEmptyString),
+                              node->GetAttribute(wxT("gen"), wxEmptyString));
+            if (cmd == wxT("CompileObject"))
+                m_Commands[(int)ctCompileObjectCmd].push_back(tool);
+            else if (cmd == wxT("GenDependencies"))
+                m_Commands[(int)ctGenDependenciesCmd].push_back(tool);
+            else if (cmd == wxT("CompileResource"))
+                m_Commands[(int)ctCompileResourceCmd].push_back(tool);
+            else if (cmd == wxT("LinkExe"))
+                m_Commands[(int)ctLinkExeCmd].push_back(tool);
+            else if (cmd == wxT("LinkConsoleExe"))
+                m_Commands[(int)ctLinkConsoleExeCmd].push_back(tool);
+            else if (cmd == wxT("LinkDynamic"))
+                m_Commands[(int)ctLinkDynamicCmd].push_back(tool);
+            else if (cmd == wxT("LinkStatic"))
+                m_Commands[(int)ctLinkStaticCmd].push_back(tool);
+            else if (cmd == wxT("LinkNative"))
+                m_Commands[(int)ctLinkNativeCmd].push_back(tool);
+        }
+        else if (node->GetName() == wxT("Sort"))
+        {
+            wxString flags;
+            if (node->GetAttribute(wxT("CFlags"), &flags))
+            {
+                flags.Replace(wxT("\n"), wxT(" "));
+                flags.Replace(wxT("\r"), wxT(" "));
+                m_SortOptions[0] += wxT(" ") + flags;
+                m_SortOptions[0] = MakeUniqueString(GetCOnlyFlags(), wxT(" "));
+            }
+            else if (node->GetAttribute(wxT("CPPFlags"), &flags))
+            {
+                flags.Replace(wxT("\n"), wxT(" "));
+                flags.Replace(wxT("\r"), wxT(" "));
+                m_SortOptions[1] += wxT(" ") + flags;
+                m_SortOptions[1] = MakeUniqueString(GetCPPOnlyFlags(), wxT(" "));
+            }
+        }
+        else if (node->GetName() == wxT("Common"))
+        {
+            LoadDefaultOptions(wxT("common_") + node->GetAttribute(wxT("name"), wxEmptyString), recursion + 1);
+        }
+        while (!node->GetNext() && depth > 0)
+        {
+            node = node->GetParent();
+            if (node->GetName() == wxT("Category"))
+            {
+                categ = wxEmptyString;
+                exclu = false;
+            }
+            --depth;
+        }
+        node = node->GetNext();
+    }
+    if (recursion == 0) // reset programs to their actual defaults (customized settings are loaded in a different function)
+    {
+        m_Programs.C       = m_Mirror.Programs.C;
+        m_Programs.CPP     = m_Mirror.Programs.CPP;
+        m_Programs.LD      = m_Mirror.Programs.LD;
+        m_Programs.LIB     = m_Mirror.Programs.LIB;
+        m_Programs.WINDRES = m_Mirror.Programs.WINDRES;
+        m_Programs.MAKE    = m_Mirror.Programs.MAKE;
+    }
+}
+
+void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int recursion)
+{
+    wxXmlDocument options;
+    wxString doc;
+    const wxString fn = wxT("compilers/options_") + name + wxT(".xml");
+    if (globalPrecedence)
+    {
+        doc = ConfigManager::LocateDataFile(fn, sdDataGlobal);
+        if (doc.IsEmpty())
+            doc = ConfigManager::LocateDataFile(fn, sdDataUser);
+    }
+    else
+        doc = ConfigManager::LocateDataFile(fn, sdDataUser | sdDataGlobal);
+    if (doc.IsEmpty())
+    {
+        Manager::Get()->GetLogManager()->Log(_("Error: file 'options_") + name + _(".xml' not found"));
+        return;
+    }
+    if (recursion > 5)
+    {
+        Manager::Get()->GetLogManager()->LogWarning(_("Warning: '") + doc + _("' not loaded due to excessive recursion"));
+        return;
+    }
+    if (!options.Load(doc))
+    {
+        Manager::Get()->GetLogManager()->Log(_("Error parsing ") + doc);
+        return;
+    }
+    wxString extends = options.GetRoot()->GetAttribute(wxT("extends"), wxEmptyString);
+    if (!extends.IsEmpty())
+        LoadRegExArray(extends, globalPrecedence, recursion + 1);
+    wxXmlNode* node = options.GetRoot()->GetChildren();
+    int depth = 0;
+    while (node)
+    {
+        const wxString value = node->GetAttribute(wxT("value"), wxEmptyString);
+        if (node->GetName() == wxT("if") && node->GetChildren())
+        {
+            if (EvalXMLCondition(node))
+            {
+                node = node->GetChildren();
+                ++depth;
+                continue;
+            }
+            else if (node->GetNext() && node->GetNext()->GetName() == wxT("else") &&
+                     node->GetNext()->GetChildren())
+            {
+                node = node->GetNext()->GetChildren();
+                ++depth;
+                continue;
+            }
+        }
+        else if (node->GetName() == wxT("RegEx"))
+        {
+            wxString tp = node->GetAttribute(wxT("type"), wxEmptyString);
+            CompilerLineType clt = cltNormal;
+            if      (tp == wxT("warning"))
+                clt = cltWarning;
+            else if (tp == wxT("error"))
+                clt = cltError;
+            else if (tp == wxT("info"))
+                clt = cltInfo;
+            wxArrayString msg = GetArrayFromString(node->GetAttribute(wxT("msg"), wxEmptyString) + wxT(";0;0"));
+            m_RegExes.Add(RegExStruct(node->GetAttribute(wxT("name"), wxEmptyString), clt,
+                                      node->GetNodeContent().Trim().Trim(false), wxAtoi(msg[0]),
+                                      wxAtoi(node->GetAttribute(wxT("file"), wxT("0"))),
+                                      wxAtoi(node->GetAttribute(wxT("line"), wxT("0"))),
+                                      wxAtoi(msg[1]), wxAtoi(msg[2]) ) );
+        }
+        else if (node->GetName() == wxT("Common"))
+        {
+            LoadRegExArray(wxT("common_") + node->GetAttribute(wxT("name"), wxEmptyString),
+                           globalPrecedence, recursion + 1);
+        }
+        while (!node->GetNext() && depth > 0)
+        {
+            node = node->GetParent();
+            --depth;
+        }
+        node = node->GetNext();
+    }
+}
+
+bool Compiler::EvalXMLCondition(const wxXmlNode* node)
+{
+    bool val = false;
+    wxString test;
+    if (node->GetAttribute(wxT("platform"), &test))
+    {
+        if (test == wxT("windows"))
+            val = platform::windows;
+        else if (test == wxT("macosx"))
+            val = platform::macosx;
+        else if (test == wxT("linux"))
+            val = platform::linux;
+        else if (test == wxT("freebsd"))
+            val = platform::freebsd;
+        else if (test == wxT("netbsd"))
+            val = platform::netbsd;
+        else if (test == wxT("openbsd"))
+            val = platform::openbsd;
+        else if (test == wxT("darwin"))
+            val = platform::darwin;
+        else if (test == wxT("solaris"))
+            val = platform::solaris;
+        else if (test == wxT("unix"))
+            val = platform::unix;
+    }
+    else if (node->GetAttribute(wxT("exec"), &test))
+    {
+        wxArrayString cmd = GetArrayFromString(test, wxT(" "));
+        wxString path;
+        wxGetEnv(wxT("PATH"), &path);
+        const wxString origPath = path;
+        {
+            ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("compiler"));
+            wxString masterPath;
+            wxString loc = (m_ParentID.IsEmpty() ? wxT("/sets/") : wxT("/user_sets/")) + m_ID;
+            wxArrayString extraPaths;
+            if (cfg->Exists(loc + wxT("/name")))
+            {
+                masterPath = cfg->Read(loc + wxT("/master_path"), wxEmptyString);
+                extraPaths = MakeUniqueArray(GetArrayFromString(cfg->Read(loc + wxT("/extra_paths"), wxEmptyString)), true);
+            }
+            for (size_t i = 0; i < extraPaths.GetCount(); ++i)
+                path.Prepend(extraPaths[i] + wxPATH_SEP);
+            if (!masterPath.IsEmpty())
+                path.Prepend(masterPath + wxPATH_SEP + masterPath + wxFILE_SEP_PATH + wxT("bin") + wxPATH_SEP);
+        }
+        wxSetEnv(wxT("PATH"), path);
+        cmd[0] = GetExecName(cmd[0]);
+        if (node->GetAttribute(wxT("regex"), &test))
+        {
+            long ret;
+            {
+                wxLogNull logNo;
+                ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd);
+            }
+            wxRegEx re;
+            if (ret != 0)
+            {
+                val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
+            }
+            else if (re.Compile(test))
+            {
+                for (size_t i = 0; i < cmd.GetCount(); ++i)
+                {
+                    if (re.Matches(cmd[i]))
+                    {
+                        val = true;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            wxLogNull logNo;
+            long ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false));
+            val = (ret != 0);
+        }
+        wxSetEnv(wxT("PATH"), origPath);
+    }
+    return val;
+}
+
+wxString Compiler::GetExecName(const wxString& name)
+{
+    wxString ret;
+    if (name == wxT("C"))
+        ret = m_Programs.C;
+    else if (name == wxT("CPP"))
+        ret = m_Programs.CPP;
+    else if (name == wxT("LD"))
+        ret = m_Programs.LD;
+    else if (name == wxT("LIB"))
+        ret = m_Programs.LIB;
+    else if (name == wxT("WINDRES"))
+        ret = m_Programs.WINDRES;
+    else if (name == wxT("MAKE"))
+        ret = m_Programs.MAKE;
+    return ret;
 }

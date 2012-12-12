@@ -233,13 +233,26 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         return;
     }
 
+    enum CompilerExe
+    {
+        ceUnknown,
+        ceC,
+        ceCPP
+    };
+    CompilerExe compExec = ceUnknown;
     wxString compilerStr;
     if (pf)
     {
         if      (pf->compilerVar.Matches(_T("CPP")))
+        {
             compilerStr = compiler->GetPrograms().CPP;
+            compExec = ceCPP;
+        }
         else if (pf->compilerVar.Matches(_T("CC")))
+        {
             compilerStr = compiler->GetPrograms().C;
+            compExec = ceC;
+        }
         else if (pf->compilerVar.Matches(_T("WINDRES")))
             compilerStr = compiler->GetPrograms().WINDRES;
     }
@@ -248,9 +261,15 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         // filename might be quoted, so unquote it if needed or extension can be 'c"'
         wxFileName fname(UnquoteStringIfNeeded(file));
         if (fname.GetExt().Lower().Matches(_T("c")))
+        {
             compilerStr = compiler->GetPrograms().C;
+            compExec = ceC;
+        }
         else
+        {
             compilerStr = compiler->GetPrograms().CPP;
+            compExec = ceCPP;
+        }
     }
 
     // check that we have valid compiler/linker program names (and are indeed needed by the macro)
@@ -313,12 +332,27 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[1]: macro='%s', fileInc='%s'."),
                                                 macro.wx_str(), fileInc.wx_str()));
 #endif
+    wxString cFlags  = m_CFlags[target];
+    wxArrayString remFlags;
+    if (compExec == ceC)
+        remFlags = GetArrayFromString(compiler->GetCPPOnlyFlags(), wxT(" "));
+    else if (compExec == ceCPP)
+        remFlags = GetArrayFromString(compiler->GetCOnlyFlags(), wxT(" "));
+    if (!remFlags.IsEmpty())
+    {
+        wxArrayString aCflags = GetArrayFromString(cFlags, wxT(" "));
+        for (size_t i = 0; i < remFlags.GetCount(); ++i)
+        {
+            aCflags.Remove(remFlags[i]);
+        }
+        cFlags = GetStringFromArray(aCflags, wxT(" "), false);
+    }
 
     macro.Replace(_T("$compiler"),      compilerStr);
     macro.Replace(_T("$linker"),        compiler->GetPrograms().LD);
     macro.Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
     macro.Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
-    macro.Replace(_T("$options"),       m_CFlags[target]);
+    macro.Replace(_T("$options"),       cFlags);
     macro.Replace(_T("$link_options"),  m_LDFlags[target]);
     macro.Replace(_T("$includes"),      m_Inc[target] + fileInc);
     macro.Replace(_T("$res_includes"),  m_RC[target]  + fileInc);

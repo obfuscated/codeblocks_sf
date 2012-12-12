@@ -19,66 +19,51 @@ libcompiler_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la \
 				depslib/src/libdepslib.la
 
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
-			compilerBCC.cpp \
 			compiler_defs.cpp \
 			compilerCYGWIN.cpp \
-			compilerDMC.cpp \
-			compilerDMD.cpp \
 			compilererrors.cpp \
+			compilerflagdlg.cpp \
 			compilergcc.cpp \
 			compilerGDC.cpp \
-			compilerLDC.cpp \
 			compilerICC.cpp \
 			compilerLCC.cpp \
 			compilermessages.cpp \
 			compilerMINGW.cpp \
 			compilerMINGWgenerator.cpp \
 			compilerMSVC.cpp \
+			compilerMSVC8.cpp \
+			compilerMSVC10.cpp \
 			compileroptionsdlg.cpp \
 			compilerOW.cpp \
 			compilerOWgenerator.cpp \
-			compilerSDCC.cpp \
 			compilerG95.cpp \
 			compilerGNUARM.cpp \
-			compilerGNUAVR.cpp \
 			compilerGNUFortran.cpp \
-			compilerGNUMSP430.cpp \
-			compilerGNUPOWERPC.cpp \
-			compilerGNUTRICORE.cpp \
-			compilerTcc.cpp \
+			compilerXML.cpp \
 			directcommands.cpp
 
 noinst_HEADERS = advancedcompileroptionsdlg.h \
-			compilerBCC.h \
 			compiler_defs.h \
 			compilerCYGWIN.h \
-			compilerDMC.h \
-			compilerDMD.h \
 			compilererrors.h \
+			compilerflagdlg.h \
 			compilergcc.h \
 			compilerG95.h \
 			compilerGDC.h \
-			compilerLDC.h \
 			compilerICC.h \
 			compilerLCC.h \
 			compilermessages.h \
 			compilerMINGW.h \
 			compilerMINGWgenerator.h \
 			compilerMSVC.h \
+			compilerMSVC8.h \
+			compilerMSVC10.h \
 			compileroptionsdlg.h \
 			compilerOW.h \
 			compilerOWgenerator.h \
-			compilerSDCC.h \
 			compilerGNUARM.h \
-			compilerGNUAVR.h \
 			compilerGNUFortran.h \
-			compilerGNUMSP430.h \
-			compilerGNUPOWERPC.h \
-			compilerGNUTRICORE.h \
-			compilerTcc.h \
+			compilerXML.h \
 			directcommands.h
 
-EXTRA_DIST = compilerMSVC8.h \
-			compilerMSVC10.h \
-			compilerMSVC8.cpp \
-			compilerMSVC10.cpp
+

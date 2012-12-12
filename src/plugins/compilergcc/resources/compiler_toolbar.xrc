@@ -27,14 +27,11 @@
       <bitmap>images/stop.png</bitmap>
       <disabled>1</disabled>
     </object>
-    <object class="separator"/>
-    <object class="wxStaticText" name="idToolTargetLabel">
-      <label>Build target:</label>
-      <style>wxTRANSPARENT_WINDOW</style>
-    </object>
     <object class="wxChoice" name="idToolTarget">
       <content/>
 	  <size>136,-1</size>
+      <tooltip>Build target</tooltip>
+      <longhelp>Select the current build target</longhelp>
     </object>
   </object>
 </resource>

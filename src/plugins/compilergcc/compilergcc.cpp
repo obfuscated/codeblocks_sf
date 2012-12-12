@@ -55,34 +55,19 @@
 
 
 #include "compilerMINGW.h"
-#ifdef __WXGTK__
-// TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
-    #include "compilerGNUARM.h"
-    #include "compilerGNUAVR.h"
-#endif
-#ifdef __WXMSW__
-    #include "compilerMSVC.h"
-    #include "compilerMSVC8.h"
-    #include "compilerMSVC10.h"
-    #include "compilerBCC.h"
-    #include "compilerDMC.h"
-    #include "compilerOW.h"
-    #include "compilerGNUARM.h"
-    #include "compilerGNUAVR.h"
-    #include "compilerGNUMSP430.h"
-    #include "compilerCYGWIN.h"
-    #include "compilerLCC.h"
-#endif
+#include "compilerGNUARM.h"
+#include "compilerMSVC.h"
+#include "compilerMSVC8.h"
+#include "compilerMSVC10.h"
+#include "compilerOW.h"
+#include "compilerGNUARM.h"
+#include "compilerCYGWIN.h"
+#include "compilerLCC.h"
 #include "compilerICC.h"
-#include "compilerSDCC.h"
-#include "compilerTcc.h"
 #include "compilerGDC.h"
-#include "compilerLDC.h"
-#include "compilerDMD.h"
-#include "compilerGNUPOWERPC.h"
-#include "compilerGNUTRICORE.h"
 #include "compilerGNUFortran.h"
 #include "compilerG95.h"
+#include "compilerXML.h"
 
 #include <scripting/bindings/sc_base_types.h>
 
@@ -213,7 +198,6 @@ int idMenuClearErrors                              = XRCID("idCompilerMenuClearE
 int idMenuSettings                                 = XRCID("idCompilerMenuSettings");
 
 int idToolTarget                                   = XRCID("idToolTarget");
-int idToolTargetLabel                              = XRCID("idToolTargetLabel");
 
 int idGCCProcess1                                  = wxNewId();
 int idGCCProcess2                                  = wxNewId();
@@ -259,7 +243,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(idMenuClearErrors,                   CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuSettings,                      CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idToolTarget,                        CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(idToolTargetLabel,                   CompilerGCC::OnUpdateUI)
 
     EVT_IDLE(                                       CompilerGCC::OnIdle)
     EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
@@ -371,37 +354,8 @@ void CompilerGCC::OnAttach()
 
     for (int i = 0; i < MAX_TARGETS; ++i)
         idMenuSelectTargetOther[i] = wxNewId();
-    // register built-in compilers
-    CompilerFactory::RegisterCompiler(new CompilerMINGW);
-#ifdef __WXMSW__
-    // can't use platform::windows here due to classes do *not* exist on other platform than windows!
-    CompilerFactory::RegisterCompiler(new CompilerMSVC);
-    CompilerFactory::RegisterCompiler(new CompilerMSVC8);
-    CompilerFactory::RegisterCompiler(new CompilerMSVC10);
-    CompilerFactory::RegisterCompiler(new CompilerBCC);
-    CompilerFactory::RegisterCompiler(new CompilerDMC);
-    CompilerFactory::RegisterCompiler(new CompilerOW);
-    CompilerFactory::RegisterCompiler(new CompilerGNUMSP430);
-    CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
-    CompilerFactory::RegisterCompiler(new CompilerLCC);
-#endif
-    CompilerFactory::RegisterCompiler(new CompilerICC);
-    CompilerFactory::RegisterCompiler(new CompilerSDCC);
-    CompilerFactory::RegisterCompiler(new CompilerTcc);
-    CompilerFactory::RegisterCompiler(new CompilerGDC);
-    CompilerFactory::RegisterCompiler(new CompilerLDC);
-    CompilerFactory::RegisterCompiler(new CompilerDMD);
-    CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
-    CompilerFactory::RegisterCompiler(new CompilerG95);
-#if defined(__WIN32__) || defined(__linux__)
-    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
-    CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
-    CompilerFactory::RegisterCompiler(new CompilerGNUPOWERPC);
-    CompilerFactory::RegisterCompiler(new CompilerGNUTRICORE);
-#endif
 
-    // register (if any) user-copies of built-in compilers
-    CompilerFactory::RegisterUserCompilers();
+    DoRegisterCompilers();
 
     AllocProcesses();
 
@@ -608,7 +562,9 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     else if (data && data->GetKind() == FileTreeData::ftdkProject)
     {
         // popup menu on a project
-        menu->AppendSeparator();
+        wxMenuItem* itm = menu->FindItemByPosition(menu->GetMenuItemCount() - 1);
+        if (itm && !itm->IsSeparator())
+            menu->AppendSeparator();
         menu->Append(idMenuCompileFromProjectManager, _("Build"));
         menu->Append(idMenuRebuildFromProjectManager, _("Rebuild"));
         menu->Append(idMenuCleanFromProjectManager,   _("Clean"));
@@ -743,10 +699,17 @@ void CompilerGCC::SetupEnvironment()
     wxArrayString extraPaths = compiler->GetExtraPaths();
     wxString      extraPathsBinPath(wxEmptyString);
 
-    // Get configured masterpath, expand macros and remove trailing seperators
+    // Get configured masterpath, expand macros and remove trailing separators
     wxString masterPath = compiler->GetMasterPath();
+    bool isNoComp = false;
+    if (masterPath == wxT("-- No Compiler --")) // Special case so "No Compiler" is valid
+    {
+        isNoComp = true;
+        masterPath.Clear();
+    }
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
-    while ( (masterPath.Last() == '\\') || (masterPath.Last() == '/') )
+    while (   !masterPath.IsEmpty()
+           && ((masterPath.Last() == '\\') || (masterPath.Last() == '/')) )
         masterPath.RemoveLast();
 
     // Compile new PATH list...
@@ -757,7 +720,7 @@ void CompilerGCC::SetupEnvironment()
         pathList.Add(masterPath + pathSep + _T("bin"));
         pathList.Add(masterPath); // in case there is no "bin" sub-folder
     }
-    // [2] Get configured extrapath(s), expand macros and remove trailing seperators
+    // [2] Get configured extrapath(s), expand macros and remove trailing separators
     for (size_t i=0; i<extraPaths.GetCount(); ++i)
     {
         wxString extraPath = extraPaths[i];
@@ -800,7 +763,7 @@ void CompilerGCC::SetupEnvironment()
     /* TODO (jens#1#): Is the above correct ?
        Or should we search in the whole systempath (pathList in this case) for the executable? */
     // Try again...
-    if (binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND))
+    if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND)) && !isNoComp)
     {
         InfoWindow::Display(_("Environment error"),
                             _("Can't find compiler executable in your configured search path's for ") + compiler->GetName() + _T('\n'));
@@ -846,7 +809,7 @@ bool CompilerGCC::StopRunningDebugger()
                 dbg->Stop();
                 break;
             }
-            case wxID_NO: // fallthrough
+            case wxID_NO: // fall through
             default:
                 Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
                 return false;
@@ -866,6 +829,105 @@ void CompilerGCC::LoadOptions()
 {
     // load compiler sets
     CompilerFactory::LoadSettings();
+}
+
+void CompilerGCC::DoRegisterCompilers()
+{
+    bool nonPlatComp = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/non_plat_comp"), false);
+
+    // register built-in compilers
+    CompilerFactory::RegisterCompiler(new CompilerMINGW);
+    if (platform::windows || nonPlatComp)
+    {
+        CompilerFactory::RegisterCompiler(new CompilerMSVC);
+        CompilerFactory::RegisterCompiler(new CompilerMSVC8);
+        CompilerFactory::RegisterCompiler(new CompilerMSVC10);
+        CompilerFactory::RegisterCompiler(new CompilerOW);
+        CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
+        CompilerFactory::RegisterCompiler(new CompilerLCC);
+    }
+    CompilerFactory::RegisterCompiler(new CompilerICC);
+    CompilerFactory::RegisterCompiler(new CompilerGDC);
+    CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
+    CompilerFactory::RegisterCompiler(new CompilerG95);
+    if (platform::windows || platform::linux || nonPlatComp)
+        CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+
+    // register pure XML compilers
+    // user paths first
+    wxDir dir;
+    wxString filename;
+    wxArrayString compilers;
+    wxString path = ConfigManager::GetFolder(sdDataUser) + wxT("/compilers/");
+    if (wxDirExists(path) && dir.Open(path))
+    {
+        bool ok = dir.GetFirst(&filename, wxT("compiler_*.xml"), wxDIR_FILES);
+        while (ok)
+        {
+            compilers.Add(path + filename);
+            ok = dir.GetNext(&filename);
+        }
+    }
+    // global paths next
+    path = ConfigManager::GetFolder(sdDataGlobal) + wxT("/compilers/");
+    if (wxDirExists(path) && dir.Open(path))
+    {
+        bool ok = dir.GetFirst(&filename, wxT("compiler_*.xml"), wxDIR_FILES);
+        while (ok)
+        {
+            for (size_t i = 0; i < compilers.GetCount(); ++i)
+            {
+                if (compilers[i].EndsWith(filename))
+                {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) // user compilers of the same name take precedence
+                compilers.Add(path + filename);
+            ok = dir.GetNext(&filename);
+        }
+    }
+    for (size_t i = 0; i < compilers.GetCount(); ++i)
+    {
+        wxXmlDocument compiler;
+        if (!compiler.Load(compilers[i]) || compiler.GetRoot()->GetName() != wxT("CodeBlocks_compiler"))
+            Manager::Get()->GetLogManager()->Log(_("Error: Invalid Code::Blocks compiler definition '") + compilers[i] + wxT("'."));
+        else
+        {
+            bool val = true;
+            wxString test;
+            if (!nonPlatComp && compiler.GetRoot()->GetAttribute(wxT("platform"), &test))
+            {
+                if (test == wxT("windows"))
+                    val = platform::windows;
+                else if (test == wxT("macosx"))
+                    val = platform::macosx;
+                else if (test == wxT("linux"))
+                    val = platform::linux;
+                else if (test == wxT("freebsd"))
+                    val = platform::freebsd;
+                else if (test == wxT("netbsd"))
+                    val = platform::netbsd;
+                else if (test == wxT("openbsd"))
+                    val = platform::openbsd;
+                else if (test == wxT("darwin"))
+                    val = platform::darwin;
+                else if (test == wxT("solaris"))
+                    val = platform::solaris;
+                else if (test == wxT("unix"))
+                    val = platform::unix;
+            }
+            if (val)
+                CompilerFactory::RegisterCompiler(
+                                   new CompilerXML(compiler.GetRoot()->GetAttribute(wxT("name"), wxEmptyString),
+                                                   compiler.GetRoot()->GetAttribute(wxT("id"), wxEmptyString),
+                                                   compilers[i]));
+        }
+    }
+
+    // register (if any) user-copies of built-in compilers
+    CompilerFactory::RegisterUserCompilers();
 }
 
 const wxString& CompilerGCC::GetCurrentCompilerID()
@@ -1259,6 +1321,17 @@ int CompilerGCC::DoRunQueue()
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."),
                                         cmd->command.wx_str(), wxGetCwd().wx_str());
         LogMessage(err, cltError);
+        LogWarningOrError(cltError, 0, wxEmptyString, wxEmptyString, err);
+        if (!m_CommandQueue.LastCommandWasRun())
+        {
+            wxString msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
+            LogMessage(msg, cltError, ltAll, true);
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
+                              wxString::Format(_("=== Build failed: %s ==="), msg.wx_str()));
+            SaveBuildLog();
+            if (!Manager::IsBatchBuild() && m_pLog->progress)
+                m_pLog->progress->SetValue(0);
+        }
         Delete(m_CompilerProcessList.at(procIndex).pProcess);
         m_CommandQueue.Clear();
         ResetBuildState();
@@ -1295,18 +1368,12 @@ void CompilerGCC::DoClearTargetMenu()
 bool CompilerGCC::IsValidTarget(const wxString &target) const
 {
     if ( target.IsEmpty() )
-    {
         return false;
-    }
     if ( m_Targets.Index(target) == -1 )
-    {
         return false;
-    }
     const ProjectBuildTarget* tgt = Manager::Get()->GetProjectManager()->GetActiveProject()->GetBuildTarget(target);
     if ( tgt && ! tgt->SupportsCurrentPlatform() )
-    {
         return false;
-    }
     return true;
 }
 
@@ -1361,9 +1428,7 @@ void CompilerGCC::DoRecreateTargetMenu()
                 m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], GetTargetString(x), help);
             }
             if (m_pToolTarget)
-            {
                 m_pToolTarget->Append(GetTargetString(x));
-            }
         }
 
         // connect menu events
@@ -1436,17 +1501,13 @@ void CompilerGCC::UpdateProjectTargets(cbProject* project)
     // update the list of targets (virtual + real)
     wxArrayString virtuals = project->GetVirtualBuildTargets();
     for (size_t i = 0; i < virtuals.GetCount(); ++i)
-    {
         m_Targets.Add(virtuals[i]);
-    }
 
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
         ProjectBuildTarget *tgt = project->GetBuildTarget(i);
         if ( tgt->SupportsCurrentPlatform() )
-        {
             m_Targets.Add( tgt->GetTitle() );
-        }
     }
 
     // keep the index for the first real target
@@ -1671,7 +1732,7 @@ int CompilerGCC::Run(const wxString& target)
 
 int CompilerGCC::Run(ProjectBuildTarget* target)
 {
-    bool commandIsQuoted = false; // remeber if we quoted the command, avoid uneeded quotes, because they break execution with "konsole" under KDE
+    bool commandIsQuoted = false; // remember if we quoted the command, avoid unneeded quotes, because they break execution with "konsole" under KDE
     if (!CheckProject())
     {
         if (Manager::Get()->GetEditorManager()->GetActiveEditor())
@@ -1881,7 +1942,7 @@ wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
     Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
     if (compiler)
     {
-        CompilerCommandGenerator *generator = compiler->GetCommandGenerator(m_pProject);
+        CompilerCommandGenerator* generator = compiler->GetCommandGenerator(m_pProject);
         wxString libPath;
         const wxString libPathSep = platform::windows ? _T(";") : _T(":");
         libPath << _T(".") << libPathSep;
@@ -2408,7 +2469,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
                 }
                 wxString msg;
                 msg.Printf(_T("\"%s - %s\": The compiler's setup %sis invalid, so Code::Blocks cannot find/run the compiler.\n")
-                           _T("Probably the toolchain path within the compiler options is not setup correctly?!\n")
+                           _T("Probably the toolchain path within the compiler options is not setup correctly?! (Do you have a compiler installed?)\n")
                            _T("Goto \"Settings->Compiler and debugger...->Global compiler settings->%s->Toolchain executables\"")
                            _T(" and fix the compiler's setup.\n")
                            _T("Skipping..."),
@@ -3323,7 +3384,9 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     wxArrayString errors;
     errors.Add(filename);
     errors.Add(line);
-    errors.Add(msg);
+    wxString msgFix = msg;
+    msgFix.Replace(wxT("\t"), wxT("    "));
+    errors.Add(msgFix);
 
     Logger::level lv = Logger::info;
     if (lt == cltError)
@@ -3331,8 +3394,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     else if (lt == cltWarning)
         lv = Logger::warning;
 
-    m_pListLog->Append(errors, lv);
-//    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
+    m_pListLog->Append(errors, lv, 2);
 
     // add to error keeping struct
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(wxSafeConvertWX2MB(line)), msg);
@@ -3565,24 +3627,18 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         while (!m_BuildJobTargetsList.empty())
             m_BuildJobTargetsList.pop();
 
-
-        // long int elapsed = wxGetElapsedTime() / 1000;
-        wxLongLong localTime = wxGetLocalTimeMillis();
-        wxLongLong duration = localTime - m_StartTime;
-        long int elapsed = duration.ToLong();
-        elapsed /= 1000;
-        int mins = elapsed / 60;
-        int secs = (elapsed % 60);
-        wxString msg = wxString::Format(_("Process terminated with status %d (%d minutes, %d seconds)"), exitCode, mins, secs);
+        wxString msg = wxString::Format(_("Process terminated with status %d (%s)"), exitCode, GetMinSecStr().wx_str());
         LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            msg = wxString::Format(_("%u errors, %u warnings (%d minutes, %d seconds)"),
-                                            m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning), mins, secs);
+            msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
             LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
-                              wxString::Format(_("=== Build finished: %s ==="), msg.wx_str()));
+                              wxString::Format(_("=== Build %s: %s ==="),
+                                               wxString(exitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));
             SaveBuildLog();
+            if (!Manager::IsBatchBuild() && m_pLog->progress)
+                m_pLog->progress->SetValue(0);
         }
         else
         {
@@ -3606,9 +3662,6 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             Manager::Get()->ProcessEvent(evtSwitch);
 
             m_pListLog->FocusError(m_Errors.GetFirstError());
-            // Build is not completed, so clear the progress bar
-            if (m_pLog->progress)
-                m_pLog->progress->SetValue(0);
         }
         else
         {
@@ -3653,7 +3706,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
         return;
 
     m_BuildJob = bjIdle;
-    if (showNothingToBeDone)
+    if (showNothingToBeDone && m_Errors.GetCount(cltError) == 0)
     {
         LogMessage(m_Clean ? _("Done.\n") : _("Nothing to be done (all items are up-to-date).\n"));
         // if message manager is auto-hiding, unlock it (i.e. close it)
@@ -3671,4 +3724,18 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
         evt.SetInt(m_LastExitCode);
         Manager::Get()->ProcessEvent(evt);
     }
+}
+
+wxString CompilerGCC::GetErrWarnStr()
+{
+    return wxString::Format(_("%u error(s), %u warning(s)"),
+                            m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
+}
+
+wxString CompilerGCC::GetMinSecStr()
+{
+    long int elapsed = (wxGetLocalTimeMillis() - m_StartTime).ToLong() / 1000;
+    int mins =  elapsed / 60;
+    int secs = (elapsed % 60);
+    return wxString::Format(_("%d minute(s), %d second(s)"), mins, secs);
 }

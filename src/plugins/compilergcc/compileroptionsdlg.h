@@ -62,6 +62,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void DoLoadOptions();
         void DoSaveCompilerPrograms();
         void DoSaveVars();
+        void DoSaveCompilerDefinition();
         void CompilerChanged();
         void UpdateCompilerForTargets(int compilerIdx);
         void AutoDetectCompiler();
@@ -111,6 +112,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDirty(wxCommandEvent& event); // some controls who change their value -> dirty
         void OnMyCharHook(wxKeyEvent& event);
+        void OnFlagsPopup(wxMouseEvent& event);
+        void OnFlagsPopupClick(wxCommandEvent& event);
 
         CompilerGCC* m_Compiler;
         CompilerOptions m_Options;
@@ -121,10 +124,12 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         cbProject* m_pProject;
         ProjectBuildTarget* m_pTarget;
         bool m_bDirty;                    //!< true if a setting has changed since last save
-        std::vector<CustomVarAction>    m_CustomVarActions; //!< the actions carried out on the custom vars that need to be saved/applied
+        bool m_bFlagsDirty;               //!< true if a flag (not its value) has changed since last save
+        std::vector<CustomVarAction> m_CustomVarActions; //!< the actions carried out on the custom vars that need to be saved/applied
         wxString m_NewProjectOrTargetCompilerId; //!< keeps track of the changes of compiler of the selected project/target
 
         bool m_BuildingTree; //!< flag to ignore tree changing events while building it
+        static int m_MenuOption;
 
         DECLARE_EVENT_TABLE()
 };

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Tiny C Compiler"
+                     id="tcc"
+                     weight="48">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Fallback path="C:\tcc"/>
+        </if>
+        <else>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <Add><master/><separator/>include</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/><separator/>lib</Add>
+    </Path>
+</CodeBlocks_compiler>

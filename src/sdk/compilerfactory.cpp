@@ -45,9 +45,15 @@ Compiler* CompilerFactory::GetCompiler(const wxString& id)
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         if (Compilers[i]->GetID().IsSameAs(lid))
-        {
             return Compilers[i];
-        }
+    }
+    // try again using previous id format
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        wxString oldId = Compilers[i]->GetID();
+        oldId.Replace(wxT("-"), wxEmptyString);
+        if (oldId.IsSameAs(lid))
+            return Compilers[i];
     }
     return 0;
 }
@@ -68,9 +74,15 @@ int CompilerFactory::GetCompilerIndex(const wxString& id)
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         if (Compilers[i]->GetID().IsSameAs(lid))
-        {
             return i;
-        }
+    }
+    // try again using previous id format
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        wxString oldId = Compilers[i]->GetID();
+        oldId.Replace(wxT("-"), wxEmptyString);
+        if (oldId.IsSameAs(lid))
+            return i;
     }
     return -1;
 }
@@ -119,7 +131,13 @@ bool CompilerFactory::CompilerInheritsFrom(Compiler* compiler, const wxString& f
 
 void CompilerFactory::RegisterCompiler(Compiler* compiler)
 {
-    CompilerFactory::Compilers.Add(compiler);
+    size_t idx = CompilerFactory::Compilers.GetCount();
+    for (; idx > 0; --idx)
+    {
+        if (compiler->m_Weight >= Compilers[idx - 1]->m_Weight)
+            break;
+    }
+    CompilerFactory::Compilers.Insert(compiler, idx);
     // if it's the first one, set it as default
     if (!s_DefaultCompiler)
         s_DefaultCompiler = compiler;
@@ -164,6 +182,7 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
         newC->m_ID = newName;
         newC->MakeValidID();
     }
+    newC->ReloadOptions();
     RegisterCompiler(newC);
     newC->LoadSettings(_T("/user_sets"));
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), newC->GetName().wx_str()));

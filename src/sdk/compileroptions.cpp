@@ -46,18 +46,23 @@ void CompilerOptions::ClearOptions()
     m_Options.Clear();
 }
 
-void CompilerOptions::AddOption(CompOption* coption)
+void CompilerOptions::AddOption(CompOption* coption, int index)
 {
-    m_Options.Add(coption);
+    if (index == -1)
+        m_Options.Add(coption);
+    else
+        m_Options.Insert(coption, index);
 }
 
 void CompilerOptions::AddOption(const wxString& name,
                                 const wxString& option,
                                 const wxString& category,
                                 const wxString& additionalLibs,
-                                bool doChecks,
                                 const wxString& checkAgainst,
-                                const wxString& checkMessage)
+                                const wxString& checkMessage,
+                                const wxString& supersedes,
+                                bool exclusive,
+                                int index)
 {
     if (name.IsEmpty() || (option.IsEmpty() && additionalLibs.IsEmpty()))
         return;
@@ -75,10 +80,18 @@ void CompilerOptions::AddOption(const wxString& name,
     coption->additionalLibs = additionalLibs;
     coption->enabled = false;
     coption->category = category;
-    coption->doChecks = doChecks;
     coption->checkAgainst = checkAgainst;
     coption->checkMessage = checkMessage;
-    AddOption(coption);
+    coption->supersedes = supersedes;
+    coption->exclusive = exclusive;
+    AddOption(coption, index);
+}
+
+void CompilerOptions::RemoveOption(int index)
+{
+    CompOption* coption = m_Options.Item(index);
+    delete coption;
+    m_Options.RemoveAt(index);
 }
 
 CompOption* CompilerOptions::GetOptionByName(const wxString& name)

@@ -342,7 +342,7 @@ void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
     control->Thaw();
 }
 
-void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv)
+void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv, int autoSize)
 {
     if (!control)
         return;
@@ -355,6 +355,8 @@ void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv)
     int idx = control->GetItemCount() - 1;
     for (size_t i = 1; i < colValues.GetCount(); ++i)
         control->SetItem(idx, i, colValues[i]);
+    if (autoSize != -1)
+        control->SetColumnWidth(autoSize, wxLIST_AUTOSIZE);
     control->Thaw();
 }
 

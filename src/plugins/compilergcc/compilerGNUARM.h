@@ -13,8 +13,6 @@ class CompilerGNUARM : public Compiler
     public:
         CompilerGNUARM();
         virtual ~CompilerGNUARM();
-        virtual void Reset();
-        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();

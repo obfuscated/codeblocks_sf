@@ -11,6 +11,7 @@ set CB_OUTPUT_RESDIR=output29\share\CodeBlocks
 if not exist output29 md output29\
 if not exist output29\share md output29\share\
 if not exist %CB_OUTPUT_RESDIR% md %CB_OUTPUT_RESDIR%\
+if not exist %CB_OUTPUT_RESDIR%\compilers md %CB_OUTPUT_RESDIR%\compilers\
 if not exist %CB_OUTPUT_RESDIR%\lexers md %CB_OUTPUT_RESDIR%\lexers\
 if not exist %CB_OUTPUT_RESDIR%\images md %CB_OUTPUT_RESDIR%\images\
 if not exist %CB_OUTPUT_RESDIR%\images\settings md %CB_OUTPUT_RESDIR%\images\settings\
@@ -23,6 +24,7 @@ if not exist %CB_OUTPUT_RESDIR%\scripts md %CB_OUTPUT_RESDIR%\scripts\
 if not exist devel29 md devel29\
 if not exist devel29\share md devel29\share\
 if not exist %CB_DEVEL_RESDIR% md %CB_DEVEL_RESDIR%\
+if not exist %CB_DEVEL_RESDIR%\compilers md %CB_DEVEL_RESDIR%\compilers\
 if not exist %CB_DEVEL_RESDIR%\lexers md %CB_DEVEL_RESDIR%\lexers\
 if not exist %CB_DEVEL_RESDIR%\images md %CB_DEVEL_RESDIR%\images\
 if not exist %CB_DEVEL_RESDIR%\images\settings md %CB_DEVEL_RESDIR%\images\settings\
@@ -80,7 +82,9 @@ xcopy /D /y src\resources\images\16x16\*.png %CB_DEVEL_RESDIR%\images\16x16 > nu
 xcopy /D /y src\resources\images\16x16\*.png %CB_OUTPUT_RESDIR%\images\16x16 > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_DEVEL_RESDIR%\images\codecompletion > nul
 xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_OUTPUT_RESDIR%\images\codecompletion > nul
-echo Makefile.am > excludes.txt
+xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_DEVEL_RESDIR%\compilers > nul
+xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_OUTPUT_RESDIR%\compilers > nul
+echo Makefile.am >  excludes.txt
 echo Makefile.in >> excludes.txt
 echo \.svn\ >> excludes.txt
 echo *.gdb >> excludes.txt

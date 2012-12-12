@@ -183,6 +183,7 @@ extern DLLIMPORT std::vector<wxString> GetVectorFromString(const wxString& text,
                                                            const wxString& separator = DEFAULT_ARRAY_SEP,
                                                            bool trimSpaces = true);
 extern DLLIMPORT wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens);
+extern DLLIMPORT wxString MakeUniqueString(const wxString& text,  const wxString& separator = DEFAULT_ARRAY_SEP, bool caseSens = true);
 extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
 
 extern DLLIMPORT wxString UnixFilename(const wxString& filename, wxPathFormat format = wxPATH_NATIVE);

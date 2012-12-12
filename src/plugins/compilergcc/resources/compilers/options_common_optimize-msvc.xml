@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="Optimization">
+        <Option name="Maximum optimization (no need for other options)"
+                option="/Ox"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                exclusive="true"/>
+        <Option name="Disable optimizations"
+                option="/Od"
+                exclusive="true"/>
+        <Option name="Minimize space"
+                option="/O1"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="/O2 /Os /Ot"/>
+        <Option name="Maximize speed"
+                option="/O2"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="/O1 /Os /Ot"/>
+        <Option name="Favor code space"
+                option="/Os"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="/O1 /O2 /Ot"/>
+        <Option name="Favor code speed"
+                option="/Ot"
+                checkAgainst="/Zi /ZI"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="/O1 /O2 /Os"/>
+    </Category>
+</CodeBlocks_compiler_options>

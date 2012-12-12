@@ -18,6 +18,7 @@ class AutoDetectCompilers : public wxScrollingDialog
 		virtual ~AutoDetectCompilers();
 
 		void OnDefaultClick(wxCommandEvent& event);
+		void OnMouseMotion(wxMouseEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
         DECLARE_EVENT_TABLE()

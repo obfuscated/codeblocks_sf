@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="*No Compiler*"
+                     id="null"
+                     weight="100">
+    <Path type="master">
+        <Fallback path="-- No Compiler --"/>
+    </Path>
+</CodeBlocks_compiler>

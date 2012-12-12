@@ -20,6 +20,7 @@ fi
 echo Creating output directory tree
 
 mkdir -p output29/share/codeblocks/lexers
+mkdir -p output29/share/codeblocks/compilers
 mkdir -p output29/share/codeblocks/images/settings
 mkdir -p output29/share/codeblocks/images/codecompletion
 mkdir -p output29/share/codeblocks/images/16x16
@@ -28,6 +29,7 @@ mkdir -p output29/share/codeblocks/templates
 mkdir -p output29/share/codeblocks/templates/wizard
 mkdir -p output29/share/codeblocks/scripts
 mkdir -p devel29/share/codeblocks/lexers
+mkdir -p devel29/share/codeblocks/compilers
 mkdir -p devel29/share/codeblocks/images/settings
 mkdir -p devel29/share/codeblocks/images/codecompletion
 mkdir -p devel29/share/codeblocks/images/16x16
@@ -78,6 +80,7 @@ cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml ${RESDIR}/compilers > /dev/null
 
 cp -f ${RESDIR}/*.zip output29/share/codeblocks > /dev/null
 cp -f sdk/resources/lexers/lexer_* output29/share/codeblocks/lexers > /dev/null
@@ -85,6 +88,7 @@ cp -f src/resources/images/*.png output29/share/codeblocks/images > /dev/null
 cp -f src/resources/images/settings/*.png output29/share/codeblocks/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png output29/share/codeblocks/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output29/share/codeblocks/images/codecompletion > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml output29/share/codeblocks/compilers > /dev/null
 
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output29/share/codeblocks/templates/wizard > /dev/null

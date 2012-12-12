@@ -136,7 +136,7 @@ public:
     virtual void      CopyContentsToClipboard(bool selectionOnly = false);
     virtual void      UpdateSettings();
     virtual void      Append(const wxString& msg, Logger::level lv = info);
-    virtual void      Append(const wxArrayString& colValues, Logger::level lv = info);
+    virtual void      Append(const wxArrayString& colValues, Logger::level lv = info, int autoSize = -1);
     virtual size_t    GetItemsCount() const;
     virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);

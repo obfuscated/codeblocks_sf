@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Command name="CompileObject"
+             value="swig -c++ -lua $includes -o $file_dir/$file_name.cpp $file"
+             ext="i"
+             gen="$file_dir/$file_name.cpp"/>
+    <Command name="CompileObject"
+             value="ragel $file -C -L -o $file.cpp"
+             ext="rl"
+             gen="$file.cpp"/>
+    <Command name="CompileObject"
+             value="bison -v -d $file -o $file_dir/$file_name.parser.cc"
+             ext="y"
+             gen="$file_dir/$file_name.parser.cc;$file_dir/$file_name.parser.hh"/>
+    <Command name="CompileObject"
+             value="flex -o$file_dir/$file_name.scanner.cc $file"
+             ext="l"
+             gen="$file_dir/$file_name.scanner.cc"/>
+    <Command name="CompileObject"
+             value="cython $file"
+             ext="pyx"
+             gen="$file_dir/$file_name.c"/>
+    <Command name="CompileObject"
+             value="lzz $includes $file"
+             ext="lzz"
+             gen="$file_dir/$file_name.cpp;$file_dir/$file_name.h"/>
+</CodeBlocks_compiler_options>

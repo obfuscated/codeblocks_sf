@@ -7,16 +7,16 @@
  * $HeadURL$
  */
 
-#ifdef __WXMSW__
-// this compiler is valid only in windows
-
 #include "compilerCYGWIN.h"
 #include <wx/filefn.h>
-#include <wx/msw/registry.h>
+#ifdef __WXMSW__
+    #include <wx/msw/registry.h>
+#endif // __WXMSW__
 
 CompilerCYGWIN::CompilerCYGWIN()
     : CompilerMINGW(_("Cygwin GCC"), _T("cygwin"))
 {
+    m_Weight = 32;
     Reset();
 }
 
@@ -26,30 +26,7 @@ CompilerCYGWIN::~CompilerCYGWIN()
 
 Compiler * CompilerCYGWIN::CreateCopy()
 {
-    Compiler* c = new CompilerCYGWIN(*this);
-    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
-    return c;
-}
-
-void CompilerCYGWIN::Reset()
-{
-    CompilerMINGW::Reset();
-
-    // NOTE: Cygwin's gcc.exe maybe a file link and
-    // is not a good default name for running via cmd.exe
-    // TODO: May also be gcc-4.exe!!!
-    m_Programs.C = _T("gcc-3.exe");
-    m_Programs.CPP = _T("g++-3.exe");
-    m_Programs.LD = _T("g++-3.exe");
-    m_Programs.DBG = _T("gdb.exe");
-    m_Programs.DBGconfig = _T("gdb_debugger:Default");
-    m_Programs.LIB = _T("ar.exe");
-    m_Programs.WINDRES = _T("windres.exe");
-    m_Programs.MAKE = _T("make.exe");
-
-    m_Switches.forceFwdSlashes = true;
-
-    m_Options.AddOption(_("Do not use cygwin specific functionality"), _T("-mno-cygwin"), _("General"));
+    return (new CompilerCYGWIN(*this));
 }
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
@@ -61,6 +38,7 @@ AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 
     // look in registry for Cygwin
 
+#ifdef __WXMSW__
     wxRegKey key; // defaults to HKCR
     key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygwin\\setup"));
     if (key.Exists() && key.Open(wxRegKey::Read))
@@ -81,6 +59,7 @@ AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
                 validInstallationDir = true;
         }
     }
+#endif // __WXMSW__
 
     if (!validInstallationDir)
         return ret;
@@ -104,5 +83,3 @@ AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 
     return ret;
 }
-
-#endif // __WXMSW__

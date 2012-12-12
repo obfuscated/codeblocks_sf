@@ -21,9 +21,13 @@
 
     #include "compiler.h"
     #include "compilerfactory.h"
+    #include "configmanager.h"
     #include "manager.h"
     #include "macrosmanager.h"
 #endif
+#include <wx/tooltip.h>
+
+#include "infowindow.h"
 
 BEGIN_EVENT_TABLE(AutoDetectCompilers, wxScrollingDialog)
     EVT_UPDATE_UI(-1, AutoDetectCompilers::OnUpdateUI)
@@ -38,6 +42,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)
     {
+        list->Connect(wxEVT_MOTION, wxMouseEventHandler(AutoDetectCompilers::OnMouseMotion));
         list->ClearAll();
         list->InsertColumn(0, _("Compiler"), wxLIST_FORMAT_LEFT, 380);
         list->InsertColumn(1, _("Status"),   wxLIST_FORMAT_LEFT, 100);
@@ -55,21 +60,20 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             Manager::Get()->GetMacrosManager()->ReplaceMacros(path_no_macros);
 
             int idx = list->GetItemCount() - 1;
-            if (path.IsEmpty())
+            int highlight = 0;
+            if (path.IsEmpty() && Manager::Get()->GetConfigManager(wxT("compiler"))->Exists(wxT("/sets/") + compiler->GetID() + wxT("/name")))
             {
                 // Here, some user-interaction is required not to show this
                 // dialog again on each new start-up of C::B.
-                list->SetItem(idx, 1, _("Invalid (not set!)"));
+                list->SetItem(idx, 1, _("Invalid"));
                 // So we better clearly HIGHLIGHT this entry:
-                wxListItem li; li.SetId(idx);
-                if ( list->GetItem(li) ) // Why shouldn't this work?!
-                {
-                    li.SetBackgroundColour(*wxRED);
-                    list->SetItem(li);
-                }
+                highlight = 1;
             }
             else // The compiler is *probably* invalid, but at least a master-path is set
-                list->SetItem(idx, 1, _("Invalid"));
+            {
+                list->SetItem(idx, 1, _("Not found"));
+                highlight = -1;
+            }
 
             // Inspect deeper and probably try to auto-detect invalid compilers:
             if (compiler->GetParentID().IsEmpty()) // built-in compiler
@@ -86,13 +90,17 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
                         list->SetItem(idx, 1, _("Detected")); // OK
                     else
                         list->SetItem(idx, 1, _("User-defined")); // OK
+                    highlight = 0;
                 }
                 // In case auto-detection failed but a path was setup before:
                 else if ( !path.IsEmpty() )
                 {
                     // Check, if the master path is valid:
-                    if ( wxFileName::DirExists(path_no_macros) )
+                    if ( wxFileName::DirExists(path_no_macros) && !(path == pathDetected || path_no_macros == pathDetected) )
+                    {
                         list->SetItem(idx, 1, _("User-defined")); // OK
+                        highlight = 0;
+                    }
 
                     // Assume the user did the setup on purpose, so reset the old settings anyways:
                     compiler->SetMasterPath(path);
@@ -102,8 +110,16 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
             {
                 // Check, if the master path is valid:
                 if ( !path.IsEmpty() && wxFileName::DirExists(path_no_macros) )
+                {
                     list->SetItem(idx, 1, _("User-defined")); // OK
+                    highlight = 0;
+                }
             }
+
+            if (highlight == 1)
+                list->SetItemBackgroundColour(idx, *wxRED);
+            else if (highlight == -1)
+                list->SetItemTextColour(idx, *wxLIGHT_GREY);
         }
         // Resize columns so one can read the whole stuff:
         list->SetColumnWidth(0, wxLIST_AUTOSIZE);
@@ -127,6 +143,36 @@ void AutoDetectCompilers::OnDefaultClick(cb_unused wxCommandEvent& event)
         CompilerFactory::SetDefaultCompiler(idx);
         XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
     }
+}
+
+void AutoDetectCompilers::OnMouseMotion(wxMouseEvent& event)
+{
+    wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
+    int flags = 0;
+    int idx = list->HitTest(event.GetPosition(), flags);
+    wxString txt = wxEmptyString;
+    if (idx != wxNOT_FOUND)
+    {
+        wxListItem itm;
+        itm.m_itemId = idx;
+        itm.m_col = 1;
+        itm.m_mask = wxLIST_MASK_TEXT;
+        if (list->GetItem(itm))
+            txt = itm.m_text;
+    }
+    if (txt == wxT("Detected") || txt == wxT("User-defined"))
+        txt = CompilerFactory::GetCompiler(idx)->GetMasterPath();
+    else
+        txt = wxEmptyString;
+    if (list->GetToolTip())
+    {
+        if (txt.IsEmpty())
+            list->UnsetToolTip();
+        else if (txt != list->GetToolTip()->GetTip())
+            list->SetToolTip(txt);
+    }
+    else if (!txt.IsEmpty())
+        list->SetToolTip(txt);
 }
 
 void AutoDetectCompilers::OnUpdateUI(wxUpdateUIEvent& event)

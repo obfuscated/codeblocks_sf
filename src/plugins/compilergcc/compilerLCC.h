@@ -1,6 +1,3 @@
-#ifdef __WXMSW__
-// this compiler is valid only in windows
-
 #ifndef COMPILER_LCC_H
 #define COMPILER_LCC_H
 
@@ -11,9 +8,10 @@ class CompilerLCC : public Compiler
     public:
         CompilerLCC();
         virtual ~CompilerLCC();
+#ifdef __WXMSW__
         virtual bool IsValid();
+#endif // __WXMSW__
         virtual void Reset();
-        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();
@@ -22,5 +20,3 @@ class CompilerLCC : public Compiler
 };
 
 #endif // COMPILER_LCC_H
-
-#endif // __WXMSW__
