@@ -110,7 +110,10 @@ void AbbreviationsConfigPanel::AutoCompUpdate(const wxString& key, const wxStrin
     if (!key.IsEmpty())
     {
         AutoCompleteMap* compMap = m_Plugin->m_AutoCompLanguageMap[lang];
-        (*compMap)[key] = m_AutoCompTextControl->GetText();
+        wxString code = m_AutoCompTextControl->GetText();
+        code.Replace(wxT("\r\n"), wxT("\n"));
+        code.Replace(wxT("\r"),   wxT("\n"));
+        (*compMap)[key] = code;
     }
 }
 
