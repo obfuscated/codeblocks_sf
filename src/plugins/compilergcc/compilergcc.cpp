@@ -696,6 +696,7 @@ void CompilerGCC::SetupEnvironment()
     const bool     caseSens = !(platform::windows);
 
     wxString      cApp       = compiler->GetPrograms().C;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(cApp);
     wxArrayString extraPaths = compiler->GetExtraPaths();
     wxString      extraPathsBinPath(wxEmptyString);
 
