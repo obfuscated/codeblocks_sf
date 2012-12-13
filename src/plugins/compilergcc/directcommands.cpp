@@ -251,7 +251,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                                           pfd.dep_file);
     }
 
-    if (compiler_cmd.IsEmpty())
+    if (!is_header && compiler_cmd.IsEmpty())
     {
         ret.Add(  wxString(COMPILER_SIMPLE_LOG)
                 + _("Skipping file (no compiler program set): ")
