@@ -5,7 +5,7 @@
 # It is copied from ubuntus codeblocks-package.
 
 # Some variables to make maintaining this script easier
-CODEBLOCKS_VERSION="10.05svn6557-1"
+CODEBLOCKS_VERSION="12.11svn8629-1"
 CODEBLOCKS_URL_DIR="http://download.berlios.de/codeblocks"
 CODEBLOCKS_TARBALL="codeblocks-$CODEBLOCKS_VERSION-src.tar.bz2"
 CODEBLOCKS_TARBALL_CHECKSUM="ab077d562e98b0586f2f86c14cb773ba"

@@ -142,13 +142,13 @@
 	<key>CFBundleVersion</key>
 	<string>@REVISION@</string>
 	<key>CFBundleShortVersionString</key>
-	<string>10.05</string>
+	<string>12.11</string>
 	<key>CFBundleGetInfoString</key>
-	<string>CodeBlocks version 10.05 svn @REVISION@, (c) 2004-2010 Code::Blocks</string>
+	<string>CodeBlocks version 12.11 svn @REVISION@, (c) 2004-2012 Code::Blocks</string>
 	<key>CFBundleLongVersionString</key>
-	<string>10.05, (c) 2004-2010 Code::Blocks</string>
+	<string>12.11, (c) 2004-2012 Code::Blocks</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2004-2010, The Code::Blocks Team</string>
+	<string>Copyright 2004-2012, The Code::Blocks Team</string>
 	<key>LSRequiresCarbon</key>
 	<true/>
 </dict>
