@@ -33,6 +33,33 @@ namespace
 
 Abbreviations* Abbreviations::m_Singleton = nullptr;
 
+/* XPM */
+static const char* abbrev_xpm[] = {
+"16 16 7 1",
+"   c None",
+".  c #B00000",
+"+  c #F70000",
+"@  c #DD3F3F",
+"#  c #FF3A39",
+"$  c #D56D6C",
+"%  c #F5A8A8",
+"                ",
+"                ",
+"          +.    ",
+"   %%#++++++    ",
+"  %%#++++++++   ",
+" $%@+++++++++   ",
+" %@++. +++++++  ",
+" #++.  +++####  ",
+" +++   .@$$%%$@ ",
+"++++            ",
+"+++.            ",
+"+++             ",
+"++.             ",
+"+..             ",
+"                ",
+"                "};
+
 // events handling
 BEGIN_EVENT_TABLE(Abbreviations, cbPlugin)
     // add any events you want to handle here
@@ -163,11 +190,16 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
         for (acm_it = acm.begin(); acm_it != acm.end(); ++acm_it)
         {
             if (acm_it->first.Lower().StartsWith(keyword))
-                items.Add(acm_it->first);
+                items.Add(acm_it->first + _T("?0"));
         }
-        items.Sort();
-        wxString itemsStr = GetStringFromArray(items, _T(" "));
-        control->AutoCompShow(endPos-startPos, itemsStr);
+        if (!items.IsEmpty())
+        {
+            control->ClearRegisteredImages();
+            control->RegisterImage(0, wxBitmap(abbrev_xpm));
+            items.Sort();
+            wxString itemsStr = GetStringFromArray(items, _T(" "));
+            control->AutoCompShow(endPos-startPos, itemsStr);
+        }
         m_IsAutoCompVisible = control->AutoCompActive();
     }
 
@@ -269,6 +301,7 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
             control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
             control->ReplaceSelection(wxEmptyString);
         }
+        control->ChooseCaretX();
 
         control->EndUndoAction();
     }
@@ -312,6 +345,7 @@ void Abbreviations::LoadAutoCompleteConfig()
         (*pAutoCompleteMap)[_T("guard")]  = _T("#ifndef $(Guard token)\n#define $(Guard token)\n\n|\n\n#endif // $(Guard token)\n");
         (*pAutoCompleteMap)[_T("while")]  = _T("while (|)\n\t;");
         (*pAutoCompleteMap)[_T("whileb")] = _T("while (|)\n{\n\t\n}");
+        (*pAutoCompleteMap)[_T("do")]     = _T("do\n{\n\t\n} while (|);");
         (*pAutoCompleteMap)[_T("switch")] = _T("switch (|)\n{\ncase :\n\tbreak;\n\ndefault:\n\tbreak;\n}\n");
         (*pAutoCompleteMap)[_T("for")]    = _T("for (|; ; )\n\t;");
         (*pAutoCompleteMap)[_T("forb")]   = _T("for (|; ; )\n{\n\t\n}");
