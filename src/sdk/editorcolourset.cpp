@@ -20,6 +20,11 @@
     #include "filemanager.h"
     #include "manager.h"
 #endif
+
+#include <wx/regex.h>
+#include <wx/txtstrm.h>  // wxTextInputStream
+#include <wx/wfstream.h> // wxFileInputStream
+
 #include "cbstyledtextctrl.h"
 
 #include "editorcolourset.h"
@@ -380,6 +385,49 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
                 return it->first;
         }
     }
+    // parse #! directive
+    if ( wxFileExists(filename) )
+    {
+        wxFileInputStream input(filename);
+        wxTextInputStream text(input);
+        wxString line;
+        if (input.IsOk() && !input.Eof() )
+            line = text.ReadLine();
+        if (!line.IsEmpty())
+        {
+            wxRegEx reSheBang(wxT("#![ \t]*([a-zA-Z/]+)[ \t]*([a-zA-Z/]*)"));
+            if (reSheBang.Matches(line))
+            {
+                wxString prog = reSheBang.GetMatch(line, 1);
+                if (prog.EndsWith(wxT("env")))
+                    prog = reSheBang.GetMatch(line, 2);
+                if (prog.Find(wxT('/')) != wxNOT_FOUND)
+                    prog = prog.AfterLast(wxT('/'));
+                if (prog == wxT("sh"))
+                    prog = wxT("bash");
+                HighlightLanguage lang = GetHighlightLanguage(prog);
+                if (lang !=  HL_NONE)
+                    return lang;
+            }
+            else if (line.Trim().StartsWith(wxT("<?xml")))
+                return GetHighlightLanguage(wxT("XML"));
+        }
+    }
+    // standard headers
+    const wxString cppNames = wxT("|"
+            "algorithm|" "bitset|"    "complex|"    "deque|"
+            "exception|" "fstream|"   "functional|" "hash_map|"
+            "hash_set|"  "iomanip|"   "iostream|"   "iterator|"
+            "limits|"    "list|"      "locale|"     "map|"
+            "memory|"    "numeric|"   "queue|"      "set|"
+            "sstream|"   "stack|"     "stdexcept|"  "streambuf|"
+            "string|"    "strstream|" "utility|"    "valarray|"
+            "vector|"
+
+            "cassert|" "cctype|"  "clocale|" "cstdio|"
+            "cstdlib|" "cstring|" "ctime|"             );
+    if (cppNames.Find(wxT("|") + lfname + wxT("|")) != wxNOT_FOUND)
+        return GetHighlightLanguage(wxT("C/C++"));
     return HL_NONE;
 }
 
