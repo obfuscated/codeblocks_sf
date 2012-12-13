@@ -27,7 +27,7 @@
         <Add><master/><separator/>lib</Add>
     </Path>
     <if platform="windows">
-        <Add lib="phobos.lib"/>
+        <Add lib="phobos2.lib"/>
         <Path type="extra">
             <Add>C:\dm\bin</Add>
         </Path>
@@ -35,6 +35,6 @@
     <else>
         <Add lib="pthread"/>
         <Add lib="m"/>
-        <Add lib="phobos"/>
+        <Add lib="phobos2"/>
     </else>
 </CodeBlocks_compiler>

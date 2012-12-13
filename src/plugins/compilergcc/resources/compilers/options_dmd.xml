@@ -37,15 +37,15 @@
     <else>
         <Program name="C"         value="dmd"/>
         <Program name="CPP"       value="dmd"/>
-        <Program name="LD"        value="gcc"/>
+        <Program name="LD"        value="dmd"/>
         <Program name="DBGconfig" value="gdb_debugger:Default"/>
         <Program name="LIB"       value="ar"/>
         <Program name="WINDRES"   value=""/>
         <Program name="MAKE"      value="make"/>
 
         <Switch name="includeDirs"             value="-I"/>
-        <Switch name="libDirs"                 value="-L"/>
-        <Switch name="linkLibs"                value="-l"/>
+        <Switch name="libDirs"                 value="-L-L"/>
+        <Switch name="linkLibs"                value="-L-l"/>
         <Switch name="defines"                 value="-version="/>
         <Switch name="genericSwitch"           value="-"/>
         <Switch name="objectExtension"         value="o"/>
@@ -61,11 +61,11 @@
         <Command name="CompileResource"
                  value=""/>
         <Command name="LinkExe"
-                 value="$linker -o $exe_output $link_options $link_objects $libs"/>
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
         <Command name="LinkConsoleExe"
-                 value="$linker -o $exe_output $link_options $link_objects $libs"/>
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
         <Command name="LinkNative"
-                 value="$linker -o $exe_output $link_options $link_objects $libs"/>
+                 value="$linker -of$exe_output $link_options $link_objects $libs"/>
     </else>
     <Command name="CompileObject"
              value="$compiler $options $includes -c $file -of$object"/>
