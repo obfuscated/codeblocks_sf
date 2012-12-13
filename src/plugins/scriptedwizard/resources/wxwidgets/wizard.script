@@ -13,6 +13,7 @@ IsMonolithic <- false;
 IsUnicode <- false;
 IsAdvOpt <- false;
 IsEmpty <- false; // For empty projects
+IsPartialDebug <- false; // For debug linking against release libraries
 Configuration <- _T("");
 LibPath <- _T("");
 LibPrefix <- _T(""); // Prefix of lib name
@@ -375,13 +376,33 @@ function OnLeave_WxConf(fwd)
             if (!IO.FileExists(LibPath + _T("/") + lib_deb_name) && (chk_debug == true))
             {
                 // alarm!
-                if (Message(_T("A matching Debug configuration cannot be found in the wxWidgets directory " +
-                            "you specified.\n" +
-                            "This means that Debug target of your project will not build.\n\n" +
-                            "Are you sure you want to continue with these settings?"),
-                            _T("Warning"), wxYES_NO) == wxID_NO)
+                if (!IO.FileExists(LibPath + _T("/") + lib_rel_name))
                 {
-                    return false;
+                    if (Message(_T("A matching Debug configuration cannot be found in the wxWidgets directory " +
+                                "you specified.\n" +
+                                "This means that Debug target of your project will not build.\n\n" +
+                                "Are you sure you want to continue with these settings?"),
+                                _T("Warning"), wxYES_NO) == wxID_NO)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (Message(_T("A matching Debug configuration cannot be found in the wxWidgets directory " +
+                                "you specified.\n" +
+                                "Would you like to link this target against the release binaries instead?\n" +
+                                "(Debugging the executable will still be possible.)"),
+                                _T("Warning"), wxYES_NO) == wxID_YES)
+                    {
+                        IsPartialDebug = true;
+                    }
+                    else if (Message(_T("This means that Debug target of your project will not build.\n\n" +
+                                     "Are you sure you want to continue with these settings?"),
+                                     _T("Warning"), wxYES_NO) == wxID_NO)
+                    {
+                        return false;
+                    }
                 }
             }
             if (!IO.FileExists(LibPath + _T("/") + lib_rel_name) && (chk_release == true))
@@ -416,7 +437,7 @@ function OnLeave_WxConf(fwd)
                 }
             }
         }
-        
+
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
          || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))
          || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc10")))
@@ -845,7 +866,7 @@ function SetupTarget(target, is_debug)
     if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
         is_debug = ChkWxDebug && is_debug;
 
-    if (!is_debug)
+    if (!is_debug || IsPartialDebug)
         LibDebugSuffix = _T("");
 
     /* For Linux / Mac */
@@ -886,7 +907,7 @@ function SetupTarget(target, is_debug)
         local libdir = LibPath + _T("/msw");
         if (IsUnicode)
             libdir = libdir + _T("u");
-        if (is_debug)
+        if (is_debug && !IsPartialDebug)
         {
             target.AddIncludeDir(libdir + _T("d"));
             target.AddLibDir(LibPath);
@@ -900,11 +921,11 @@ function SetupTarget(target, is_debug)
         }
 
         /* Modified and added */
-        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")) && is_debug)
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")) && is_debug && !IsPartialDebug)
         {
             target.AddCompilerOption(_T("/D__WXDEBUG__")); // For Debug Build
         }
-        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && is_debug)
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && is_debug && !IsPartialDebug)
         {
             target.AddCompilerOption(_T("-D__WXDEBUG__"));
         }
@@ -912,7 +933,10 @@ function SetupTarget(target, is_debug)
         {
             if (is_debug)
             {
-                target.AddCompilerOption(_T("-D__WXDEBUG__"));
+                if (!IsPartialDebug)
+                {
+                    target.AddCompilerOption(_T("-D__WXDEBUG__"));
+                }
                 target.AddLinkerOption(_T("-v"));
             }
             if (WantPCH) // Add support for PCH
@@ -922,7 +946,10 @@ function SetupTarget(target, is_debug)
         {
             if (is_debug)
             {
-                target.AddCompilerOption(_T("-d__WXDEBUG__"));
+                if (!IsPartialDebug)
+                {
+                    target.AddCompilerOption(_T("-d__WXDEBUG__"));
+                }
                 target.AddLinkerOption(_T("-d2"));
             }
         }
