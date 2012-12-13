@@ -115,7 +115,7 @@ public:
     void*                        m_UserData;        // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
 
 protected:
-    TokenTree*                   m_TokenTree;      // a pointer to TokenTree
+    TokenTree*                   m_TokenTree;       // a pointer to TokenTree
     size_t                       m_Ticket;          // This is used in classbrowser to avoid duplication
 };
 
