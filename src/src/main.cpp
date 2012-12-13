@@ -3100,8 +3100,13 @@ void MainFrame::OnEditBookmarksPrevious(cb_unused wxCommandEvent& event)
 void MainFrame::OnEditUndo(cb_unused wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
+    if (ed && ed->CanUndo())
+    {
+        cbEditor* cbEd = Manager::Get()->GetEditorManager()->GetBuiltinEditor(ed);
+        if (cbEd && cbEd->GetControl()->AutoCompActive())
+            cbEd->GetControl()->AutoCompCancel();
         ed->Undo();
+    }
 }
 
 void MainFrame::OnEditRedo(cb_unused wxCommandEvent& event)
@@ -3333,7 +3338,12 @@ void MainFrame::OnEditInsertNewLine(wxCommandEvent& event)
     OnEditGotoLineEnd(event);
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
-        ed->GetControl()->NewLine();
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        if (stc->AutoCompActive())
+            stc->AutoCompCancel();
+        stc->NewLine();
+    }
 }
 
 void MainFrame::OnEditGotoLineEnd(cb_unused wxCommandEvent& event)
@@ -3341,9 +3351,10 @@ void MainFrame::OnEditGotoLineEnd(cb_unused wxCommandEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
-        cbStyledTextCtrl* control = ed->GetControl();
-        const int pos = control->GetLineEndPosition(control->GetCurrentLine());
-        control->GotoPos(pos);
+        cbStyledTextCtrl* stc = ed->GetControl();
+        if (stc->AutoCompActive())
+            stc->AutoCompCancel();
+        stc->LineEnd();
     }
 }
 

@@ -279,6 +279,7 @@ private:
     int                     m_ActiveCalltipsNest;
 
     bool                    m_IsAutoPopup;
+    bool                    m_CompletePPOnly;
     // The variables below were related to CC's toolbar
     /** the CC's toolbar */
     wxToolBar*              m_ToolBar;

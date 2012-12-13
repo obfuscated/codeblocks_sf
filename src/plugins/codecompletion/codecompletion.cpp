@@ -380,6 +380,36 @@ static const char * unknown_keyword_xpm[] = {
 "                ",
 "                "};
 
+// bitmap for #include file listings
+/* XPM */
+static const char* header_file_xpm[] = {
+"16 16 9 1",
+"   c None",
+"+  c #D23E39",
+"$  c #CF0C0A",
+"@  c #CB524B",
+"&  c #E2D8D8",
+"#  c #C7C7C4",
+"_  c #E4B9B5",
+"-  c #F7F9F7",
+"=  c #EBE9E7",
+"  #########     ",
+"  #=-----####   ",
+"  #--------=##  ",
+"  #--------=-#  ",
+"  #--=@_-----#  ",
+"  #--=+_-----#  ",
+"  #--=++@_---#  ",
+"  #--&$@@$=--#  ",
+"  #--&$__$&=-#  ",
+"  #--&$__$&=-#  ",
+"  #--&$__$&=-#  ",
+"  #-==#=&#==-#  ",
+"  #-========-#  ",
+"  #----=====-#  ",
+"  ############  ",
+"                "};
+
 // menu IDS
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
@@ -469,6 +499,7 @@ CodeCompletion::CodeCompletion() :
     m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
+    m_CompletePPOnly(false),
     m_ToolBar(0),
     m_Function(0),
     m_Scope(0),
@@ -837,6 +868,9 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
 
 int CodeCompletion::CodeComplete()
 {
+    const bool preprocessorOnly = m_CompletePPOnly;
+    m_CompletePPOnly = false;
+
     if (!IsAttached() || !m_InitDone)
         return -1;
 
@@ -888,6 +922,9 @@ int CodeCompletion::CodeComplete()
                 if (unique_strings.find(token->m_Name) != unique_strings.end())
                     continue;
 
+                if (preprocessorOnly && token->m_TokenKind != tkPreprocessor)
+                    continue;
+
                 unique_strings.insert(token->m_Name);
                 int iidx = m_NativeParser.GetTokenKindImage(token);
                 if (already_registered.Index(iidx) == wxNOT_FOUND)
@@ -919,7 +956,7 @@ int CodeCompletion::CodeComplete()
 
             CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-            if (m_NativeParser.LastAISearchWasGlobal())
+            if (m_NativeParser.LastAISearchWasGlobal() && !preprocessorOnly)
             {
                 // empty or partial search phrase: add theme keywords in search list
                 if (s_DebugSmartSense)
@@ -985,6 +1022,7 @@ int CodeCompletion::CodeComplete()
             final.RemoveLast(); // remove last space
 
             ed->GetControl()->AutoCompShow(pos - start, final);
+
             return 0;
         }
         else if (!ed->GetControl()->CallTipActive())
@@ -1095,9 +1133,19 @@ void CodeCompletion::CodeCompletePreprocessor()
         return;
 
     cbStyledTextCtrl* control = ed->GetControl();
-    const int curPos = control->GetCurrentPos();
-    const int start = control->WordStartPosition(curPos, true);
-    const int end = control->WordEndPosition(curPos, true);
+    if (control->GetLexer() != wxSCI_LEX_CPP)
+    {
+        const FileType fTp = FileTypeOf(ed->GetShortName());
+        if (   fTp != ftSource
+            && fTp != ftHeader
+            && fTp != ftResource )
+        {
+            return; // not C/C++
+        }
+    }
+    const int curPos    = control->GetCurrentPos();
+    const int start     = control->WordStartPosition(curPos, true);
+    const wxString text = control->GetTextRange(start, curPos);
 
     wxArrayString tokens;
     tokens.Add(_T("include"));
@@ -1115,9 +1163,21 @@ void CodeCompletion::CodeCompletePreprocessor()
     tokens.Add(_T("error"));
     tokens.Add(_T("line"));
     tokens.Sort();
-    ed->GetControl()->ClearRegisteredImages();
-    ed->GetControl()->AutoCompSetIgnoreCase(false);
-    ed->GetControl()->AutoCompShow(end - start, GetStringFromArray(tokens, _T(" ")));
+    control->ClearRegisteredImages();
+    for (int i = 0; i < (int)tokens.GetCount(); ++i)
+    {
+        if (!text.IsEmpty() && tokens[i][0] != text[0])
+        {
+            tokens.RemoveAt(i); // remove tokens that start with a different letter
+            --i;
+        }
+        else
+            tokens[i] += wxString::Format(wxT("?%d"), PARSER_IMG_PREPROCESSOR);
+    }
+    control->RegisterImage(PARSER_IMG_PREPROCESSOR,
+                           m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_PREPROCESSOR));
+    control->AutoCompSetIgnoreCase(false);
+    control->AutoCompShow(curPos - start, GetStringFromArray(tokens, _T(" ")));
 }
 
 // Do the code completion when we enter:
@@ -1155,9 +1215,9 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
 
     int keyPos = line.Find(_T('"'));
-    if (keyPos == wxNOT_FOUND)
+    if (keyPos == wxNOT_FOUND || keyPos >= pos - lineStartPos)
         keyPos = line.Find(_T('<'));
-    if (keyPos == wxNOT_FOUND || keyPos > pos - lineStartPos)
+    if (keyPos == wxNOT_FOUND || keyPos >= pos - lineStartPos)
         return;
     ++keyPos;
 
@@ -1166,6 +1226,10 @@ void CodeCompletion::CodeCompleteIncludes()
     filename.Replace(_T("\\"), _T("/"), true);
     if (filename.Last() == _T('"') || filename.Last() == _T('>'))
         filename.RemoveLast();
+
+    size_t maxFiles = m_CCMaxMatches;
+    if (filename.IsEmpty() && maxFiles > 3000)
+        maxFiles = 3000; // do not try to collect too many files if there is no context (prevent hang)
 
     // fill a list of matching files
     StringSet files;
@@ -1184,9 +1248,15 @@ void CodeCompletion::CodeCompleteIncludes()
                 {
                     const wxString& file = *ss_it;
                     if (file.StartsWith(filename))
+                    {
                         files.insert(file);
+                        if (files.size() > maxFiles)
+                            break;
+                    }
                 }
             }
+            if (files.size() > maxFiles)
+                break;
         }
     }
 
@@ -1226,6 +1296,8 @@ void CodeCompletion::CodeCompleteIncludes()
                 {
                     header.Replace(_T("\\"), _T("/"), true);
                     files.insert(header);
+                    if (files.size() > maxFiles)
+                        break;
                 }
             }
         }
@@ -1235,6 +1307,7 @@ void CodeCompletion::CodeCompleteIncludes()
     if (!files.empty())
     {
         control->ClearRegisteredImages();
+        control->RegisterImage(0, wxBitmap(header_file_xpm));
         control->AutoCompSetIgnoreCase(false);
         control->AutoCompSetCancelAtStart(true);
         control->AutoCompSetFillUps(m_CCFillupChars);
@@ -1242,7 +1315,7 @@ void CodeCompletion::CodeCompleteIncludes()
         control->AutoCompSetAutoHide(true);
         control->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
         wxString final_str;
-        CodeCompletionHelper::GetStringFromSet(final_str, files, _T(" "));
+        CodeCompletionHelper::GetStringFromSet(final_str, files, _T("?0 "));
         final_str.RemoveLast(); // remove last space
         control->AutoCompShow(pos - lineStartPos - keyPos, final_str);
         CCLogger::Get()->DebugLog(F(_T("Get include file count is %lu, use time is %ld"),
@@ -1367,6 +1440,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     {   TRACE(_T("wxEVT_SCI_MODIFIED")); }
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
     {   TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION")); }
+    else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
+    {   TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED")); }
 
     if ((event.GetKey() == '.') && control->AutoCompActive())
         control->AutoCompCancel();
@@ -1387,7 +1462,43 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
         if (control->IsPreprocessor(control->GetStyleAt(curPos)))
         {
-            control->DelLineRight();
+            curPos = control->GetLineEndPosition(control->GetCurrentLine()); // delete rest of line
+            bool addComment = (itemText == wxT("endif"));
+            for (int i = control->GetCurrentPos(); i < curPos; ++i)
+            {
+                if (control->IsComment(control->GetStyleAt(i)))
+                {
+                    curPos = i; // preserve line comment
+                    if (wxIsspace(control->GetCharAt(i - 1)))
+                        --curPos; // preserve a space before the comment
+                    addComment = false;
+                    break;
+                }
+            }
+            if (addComment) // search backwards for the #if*
+            {
+                wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
+                wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
+                int depth = -1;
+                for (int ppLine = control->GetCurrentLine() - 1; ppLine >= 0; --ppLine)
+                {
+                    if (control->GetLine(ppLine).Find(wxT('#')) != wxNOT_FOUND) // limit testing due to performance cost
+                    {
+                        if (ppIf.Matches(control->GetLine(ppLine))) // ignore else's, elif's, ...
+                            ++depth;
+                        else if (ppEnd.Matches(control->GetLine(ppLine)))
+                            --depth;
+                    }
+                    if (depth == 0)
+                    {
+                        wxRegEx pp(wxT("^[ \t]*#[ \t]*[a-z]*([ \t]+([a-zA-Z0-9_]+)|())"));
+                        pp.Matches(control->GetLine(ppLine));
+                        if (!pp.GetMatch(control->GetLine(ppLine), 2).IsEmpty())
+                            itemText.Append(wxT(" // ") + pp.GetMatch(control->GetLine(ppLine), 2));
+                        break;
+                    }
+                }
+            }
             needReparse = true;
 
             int   pos = startPos;
@@ -1409,16 +1520,17 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         std::map<wxString, int>::const_iterator it = m_SearchItem.find(itemText);
         if (it != m_SearchItem.end())
         {
-            //Check if there are brace behind the target
+            // Check if there are brace behind the target
             wxString addString(itemText);
             if (control->GetCharAt(curPos) != _T('('))
                 addString += _T("()");
 
-            control->ReplaceTarget(addString);
-            control->GotoPos(control->GetCurrentPos() + itemText.size() + 2);
+            if (control->GetTextRange(startPos, curPos) != addString)
+                control->ReplaceTarget(addString);
+            control->GotoPos(startPos + itemText.size() + 2);
             if ((*it).second != 0)
             {
-                control->GotoPos(control->GetCurrentPos() - 1);
+                control->CharLeft();
                 control->EnableTabSmartJump();
                 TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION -> ShowCallTip"));
                 ShowCallTip();
@@ -1426,7 +1538,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         }
         else
         {
-            if (control->IsPreprocessor(control->GetStyleAt(curPos)))
+            if (control->IsPreprocessor(control->GetStyleAt(startPos)))
             {
                 const wxChar start = control->GetCharAt(startPos - 1);
                 if (start == _T('"'))
@@ -1435,7 +1547,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                     itemText << _T('>');
             }
 
-            control->ReplaceTarget(itemText);
+            if (control->GetTextRange(startPos, curPos) != itemText)
+                control->ReplaceTarget(itemText);
             control->GotoPos(startPos + itemText.Length());
 
             if (needReparse)
@@ -1444,6 +1557,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 m_TimerRealtimeParsing.Start(1, wxTIMER_ONE_SHOT);
             }
         }
+        control->ChooseCaretX();
     }
 
     if (event.GetEventType() == wxEVT_SCI_CHARADDED)
@@ -1510,7 +1624,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                  || (   (ch == _T('>')) // ->
                      && (prevChar == _T('-')) )
                  || (   (ch == _T(':')) // ::
-                     && (prevChar == _T(':')) ) )
+                     && (prevChar == _T(':')) )
+                 || (   control->AutoCompActive() // refine listing:
+                     && (   ch == _T('/')         // for #include (reduce directories)
+                         || (pos - wordStartPos == m_CCAutoLaunchChars + 4)) ) // for more typed characters
+                                                                              )
         {
             int style = control->GetStyleAt(pos);
             TRACE(_T("Style at %d is %d (char '%c')"), pos, style, ch);
@@ -1525,6 +1643,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             else
             {
                 if (   style != wxSCI_C_DEFAULT
+                    && style != wxSCI_C_PREPROCESSOR
                     && style != wxSCI_C_OPERATOR
                     && style != wxSCI_C_IDENTIFIER
                     && style != wxSCI_C_WORD2
@@ -2152,7 +2271,7 @@ void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent& event)
         SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
         Dialog.AddListEntries(foundSet);
         PlaceWindow(&Dialog);
-        if(Dialog.ShowModal() == wxID_OK)
+        if (Dialog.ShowModal() == wxID_OK)
             selectedFile = Dialog.GetIncludeFile();
         else
             return; // user cancelled the dialog...
@@ -2684,10 +2803,23 @@ void CodeCompletion::DoCodeComplete()
         const int end = control->WordEndPosition(lineIndentPos + 1, true);
         const wxString str = control->GetTextRange(start, end);
 
-        if (str == _T("include"))
+        if (str == _T("include") && pos > end)
             CodeCompleteIncludes();
-        else if (end >= pos)
+        else if (end >= pos && pos > lineIndentPos)
             CodeCompletePreprocessor();
+        else if ( (   str == _T("define")
+                   || str == _T("if")
+                   || str == _T("ifdef")
+                   || str == _T("ifndef")
+                   || str == _T("elif")
+                   || str == _T("elifdef")
+                   || str == _T("elifndef")
+                   || str == _T("undef") )
+                 && pos > end )
+        {
+            m_CompletePPOnly = true;
+            CodeComplete();
+        }
         return;
     }
     else if (curChar == _T('#'))
@@ -2697,7 +2829,9 @@ void CodeCompletion::DoCodeComplete()
 
     if (   style != wxSCI_C_DEFAULT
         && style != wxSCI_C_OPERATOR
-        && style != wxSCI_C_IDENTIFIER )
+        && style != wxSCI_C_IDENTIFIER
+        && style != wxSCI_C_WORD2
+        && style != wxSCI_C_GLOBALCLASS )
         return;
 
     TRACE(_T("DoCodeComplete -> CodeComplete"));
@@ -2979,7 +3113,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
             if         (best_func_line  < current_line)     // candidate: is before current line
             {
                 if (   (func_start_line < current_line  )   // another candidate
-                    && (func_start_line > best_func_line) ) // decide which is more near
+                    && (func_start_line > best_func_line) ) // decide which is closer
                 { best_func = idx_func; found_best_func = true; }
             }
             else if    (func_start_line < current_line)     // candidate: is before current line
@@ -3459,7 +3593,7 @@ void CodeCompletion::OnReparsingTimer(cb_unused wxTimerEvent& event)
 
 void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
 {
-    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    EditorBase*     editor  = Manager::Get()->GetEditorManager()->GetActiveEditor();
     const wxString& curFile = editor ? editor->GetFilename() : wxString(wxEmptyString);
     if (!editor || editor != m_LastEditor || curFile.IsEmpty())
     {
@@ -3468,8 +3602,8 @@ void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
     }
 
     if (   !m_LastFile.IsEmpty()
-        && m_LastFile != g_StartHereTitle
-        && m_LastFile == curFile )
+        && (m_LastFile != g_StartHereTitle)
+        && (m_LastFile == curFile) )
     {
         TRACE(_T("OnEditorActivatedTimer() : Last activated file is %s"), curFile.wx_str());
         return;
