@@ -69,6 +69,7 @@ int id_et_align_others        = wxNewId();
 int id_et_align_auto          = wxNewId();
 int id_et_SuppressInsertKey   = wxNewId();
 int id_et_ConvertBraces       = wxNewId();
+int id_et_ScrollTimer         = wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -117,10 +118,13 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_ConvertBraces,     EditorTweaks::OnConvertBraces)
     EVT_MENU(id_et_align_others,      EditorTweaks::OnAlignOthers)
     EVT_MENU(id_et_align_auto,        EditorTweaks::OnAlignAuto)
+
+    EVT_TIMER(id_et_ScrollTimer, EditorTweaks::OnScrollTimer)
 END_EVENT_TABLE()
 
 // constructor
-EditorTweaks::EditorTweaks()
+EditorTweaks::EditorTweaks() :
+    m_scrollTimer(this, id_et_ScrollTimer)
 {
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
@@ -1181,7 +1185,7 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
     return found_lines;
 }
 
-void EditorTweaks::DoBufferEditorPos(int delta)
+void EditorTweaks::DoBufferEditorPos(int delta, bool isScrollTimer)
 {
     if (m_buffer_caret == -1)
         m_buffer_caret = Manager::Get()->GetConfigManager(wxT("EditorTweaks"))->ReadInt(wxT("/buffer_caret"), 1);
@@ -1193,12 +1197,31 @@ void EditorTweaks::DoBufferEditorPos(int delta)
     cbStyledTextCtrl* stc = ed->GetControl();
     if (!stc || stc->AutoCompActive() || stc->LinesOnScreen() < 10) // ignore small editors
         return;
-    const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - stc->GetFirstVisibleLine();
+    const int firstVisibleLine = stc->GetFirstVisibleLine();
+    const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - firstVisibleLine;
     if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen (see bug #18795)
+    {
+        if (!isScrollTimer && !m_scrollTimer.IsRunning())
+            m_scrollTimer.Start(5, wxTIMER_ONE_SHOT); // check to see if we moved into place
         return;
+    }
     const int buffer = (m_buffer_caret > 4 ? (stc->LinesOnScreen() >> 1) - 2 : m_buffer_caret);
+    int remaining = 0;
     if (dist < buffer)
-        stc->LineScroll(0, -1); // scroll up
+    {
+        remaining = buffer - dist - 1;
+        stc->LineScroll(0, (remaining > 3 ? -2 : -1)); // scroll up
+    }
     else if (dist >= stc->LinesOnScreen() - buffer)
-        stc->LineScroll(0, 1); // scroll down
+    {
+        remaining = dist + buffer - stc->LinesOnScreen();
+        stc->LineScroll(0, (remaining > 3 ? 2 : 1)); // scroll down
+    }
+    if (!m_scrollTimer.IsRunning() && remaining > 0 && firstVisibleLine != stc->GetFirstVisibleLine())
+        m_scrollTimer.Start(4 + (30 / remaining), wxTIMER_ONE_SHOT); // smooth scroll required lines
+}
+
+void EditorTweaks::OnScrollTimer(wxTimerEvent& WXUNUSED(event))
+{
+    DoBufferEditorPos(0, true);
 }

@@ -136,17 +136,19 @@ class EditorTweaks : public cbPlugin
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
 		bool GetSelectionLines(int& LineStart, int& LineEnd);
-        void DoBufferEditorPos(int delta = 0);
+        void DoBufferEditorPos(int delta = 0, bool isScrollTimer = false);
+        void OnScrollTimer(wxTimerEvent& event);
 
 		std::vector<AlignerMenuEntry> AlignerMenuEntries;
 
     private:
-        int m_EditorHookId;
+        int  m_EditorHookId;
         bool m_suppress_insert;
         bool m_convert_braces;
         int  m_buffer_caret;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
+        wxTimer m_scrollTimer;
 
         DECLARE_EVENT_TABLE();
 };
