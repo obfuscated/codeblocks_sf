@@ -92,7 +92,9 @@ void SpellCheckerConfig::ScanForDictionaries()
 void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
 {
     m_dictionaries.clear();
-    selectedDictionary = -1;
+    selectedDictionary = wxNOT_FOUND;
+    int systemDictionary = wxNOT_FOUND;
+    const wxLanguageInfo* langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
     //wxString filespec(_T("??_??.dic"));
     wxString filespec(_T("*.dic"));
 
@@ -109,6 +111,8 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
             {
                 if ( fname.GetName() == m_strDictionaryName )
                     selectedDictionary = m_dictionaries.size();
+                if (langInfo && fname.GetName() == langInfo->CanonicalName)
+                    systemDictionary = m_dictionaries.size();
                 m_dictionaries.push_back(fname.GetName());
 
             }
@@ -118,7 +122,14 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
     // disable online checker if there are no dictionaries found
     if (m_dictionaries.empty())
     {
-      m_EnableOnlineChecker = false;
+        m_EnableOnlineChecker = false;
+    }
+    else if (selectedDictionary == wxNOT_FOUND) // auto-select a valid dictionary if none matched
+    {
+        if (systemDictionary == wxNOT_FOUND)
+            systemDictionary = 0;
+        selectedDictionary = systemDictionary;
+        m_strDictionaryName = m_dictionaries[systemDictionary];
     }
 }
 const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
@@ -221,7 +232,8 @@ const wxString SpellCheckerConfig::GetPersonalDictionaryFilename()const
 void SpellCheckerConfig::Load()
 {
     m_EnableOnlineChecker = true;
-    m_strDictionaryName = _T("de_CH");
+    const wxLanguageInfo* langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
+    m_strDictionaryName = (langInfo ? langInfo->CanonicalName : _T("de_CH"));
     m_DictPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_ThesPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_BitmPath = m_pPlugin->GetOnlineCheckerConfigPath();
@@ -230,7 +242,7 @@ void SpellCheckerConfig::Load()
         m_EnableOnlineChecker = cfg->ReadBool(CFG_SPELLCHECK_ENABLE_ONLINE_CHECK, true);
         m_EnableSpellTooltips = cfg->ReadBool(CFG_SPELLCHECK_SPELL_TOOLTIPS_CHECK, true);
         m_EnableThesaurusTooltips = cfg->ReadBool(CFG_SPELLCHECK_THESAURUS_TOOLTIPS_CHECK, true);
-        m_strDictionaryName = cfg->Read(CFG_SPELLCHECK_DICTIONARY_NAME, _T("de_CH") );
+        m_strDictionaryName = cfg->Read(CFG_SPELLCHECK_DICTIONARY_NAME, m_strDictionaryName);
         m_DictPath = cfg->Read(CFG_SPELLCHECK_DICTIONARY_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
         m_ThesPath = cfg->Read(CFG_SPELLCHECK_THESAURI_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
         m_BitmPath = cfg->Read(CFG_SPELLCHECK_BITMAPS_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
@@ -316,11 +328,11 @@ void SpellCheckerConfig::PopulateLanguageNamesMap()
 }
 wxString SpellCheckerConfig::GetLanguageName(const wxString& language_id)
 {
-    std::map<wxString, wxString>::iterator it;
-
     if(language_id.empty())
         return language_id;
 
+    std::map<wxString, wxString>::iterator it;
+    // m_LanguageNamesMap[] is probably obsolete because of FindLanguageInfo()... consider removing m_LanguageNamesMap[]
     it = m_LanguageNamesMap.find(language_id);
     if (it != m_LanguageNamesMap.end() )
         return it->second;
@@ -332,11 +344,22 @@ wxString SpellCheckerConfig::GetLanguageName(const wxString& language_id)
     if (it != m_LanguageNamesMap.end() )
         return it->second;
 
+    const wxLanguageInfo* langInfo = wxLocale::FindLanguageInfo(language_id); // ask wxWidgets if it knows the name
+    if (langInfo)
+        return langInfo->Description;
+    langInfo = wxLocale::FindLanguageInfo(id_fix);
+    if (langInfo)
+        return langInfo->Description;
+
     id_fix = id_fix.BeforeLast(wxT('_')); // may be "*_v2", or root language may be known even if this specification is not
 
     it = m_LanguageNamesMap.find(id_fix);
     if (it != m_LanguageNamesMap.end() )
         return it->second + wxT(" (") + language_id + wxT(")"); // but may be incorrect, so specify the original name
+
+    langInfo = wxLocale::FindLanguageInfo(id_fix);
+    if (langInfo)
+        return langInfo->Description + wxT(" (") + language_id + wxT(")");
 
     return language_id;
 }
