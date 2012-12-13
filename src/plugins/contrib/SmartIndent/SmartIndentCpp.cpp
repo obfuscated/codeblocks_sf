@@ -42,7 +42,7 @@ void SmartIndentCpp::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
         return;
 
     wxString langname = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
-    if ( langname != _T("C/C++") && langname != _T("D") && langname != _T("Java") ) return;
+    if ( langname != wxT("D") && (stc->GetLexer() != wxSCI_LEX_CPP || langname == wxT("Hitachi asm"))) return;
 
     ed->AutoIndentDone(); // we are responsible.
 
