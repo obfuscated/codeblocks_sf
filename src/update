@@ -61,7 +61,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/t
 ${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
-${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
+${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 cd ../../sdk/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 echo Packing plugins UI bitmaps
@@ -89,8 +89,8 @@ cp -f sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
 cp -f src/resources/images/*.png output/share/codeblocks/images > /dev/null
 cp -f src/resources/images/settings/*.png output/share/codeblocks/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
-cp -f plugins/compilergcc/resources/compilers/*.xml output/share/codeblocks/compilers > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml output/share/codeblocks/compilers > /dev/null
 
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output/share/codeblocks/templates/wizard > /dev/null

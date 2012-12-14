@@ -57,7 +57,7 @@ echo Compressing plugins UI resources
 %ZIPCMD% -jqu9 %CB_DEVEL_RESDIR%\abbreviations.zip plugins\abbreviations\resources\manifest.xml plugins\abbreviations\resources\*.xrc > nul
 echo Packing core UI bitmaps
 cd src\resources
-%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\12x12\*.png images\16x16\*.png > nul
 cd ..\..\sdk\resources
 %ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png > nul
 echo Packing plugins UI bitmaps
@@ -86,8 +86,8 @@ xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_DEVEL_RESDIR%\comp
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_OUTPUT_RESDIR%\compilers > nul
 echo Makefile.am >  excludes.txt
 echo Makefile.in >> excludes.txt
-echo \.svn\ >> excludes.txt
-echo *.gdb >> excludes.txt
+echo \.svn\      >> excludes.txt
+echo *.gdb       >> excludes.txt
 xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
 xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
 xcopy /D /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
@@ -102,6 +102,10 @@ xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner29.exe output29 > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner29.exe devel29 > nul
+if exist devel29\cb_console_runner.exe del devel29\cb_console_runner.exe > nul
+ren devel29\cb_console_runner29.exe cb_console_runner.exe > nul
+if exist output29\cb_console_runner.exe del output29\cb_console_runner.exe > nul
+ren output29\cb_console_runner29.exe cb_console_runner.exe > nul
 xcopy /D /y devel29\*.exe output29 > nul
 xcopy /D /y devel29\*.dll output29 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul

@@ -19,8 +19,8 @@ fi
 
 echo Creating output directory tree
 
-mkdir -p output29/share/codeblocks/lexers
 mkdir -p output29/share/codeblocks/compilers
+mkdir -p output29/share/codeblocks/lexers
 mkdir -p output29/share/codeblocks/images/settings
 mkdir -p output29/share/codeblocks/images/codecompletion
 mkdir -p output29/share/codeblocks/images/16x16
@@ -28,8 +28,8 @@ mkdir -p output29/share/codeblocks/plugins
 mkdir -p output29/share/codeblocks/templates
 mkdir -p output29/share/codeblocks/templates/wizard
 mkdir -p output29/share/codeblocks/scripts
-mkdir -p devel29/share/codeblocks/lexers
 mkdir -p devel29/share/codeblocks/compilers
+mkdir -p devel29/share/codeblocks/lexers
 mkdir -p devel29/share/codeblocks/images/settings
 mkdir -p devel29/share/codeblocks/images/codecompletion
 mkdir -p devel29/share/codeblocks/images/16x16
@@ -59,7 +59,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/t
 ${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
-${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
+${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 cd ../../sdk/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 echo Packing plugins UI bitmaps
