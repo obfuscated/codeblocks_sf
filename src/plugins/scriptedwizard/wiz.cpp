@@ -6,11 +6,6 @@
  * $Id$
  * $HeadURL$
  */
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma implementation "wiz.h"
-#endif
-
 #include "wiz.h"
 #include <wx/dir.h>
 #include <wx/intl.h>

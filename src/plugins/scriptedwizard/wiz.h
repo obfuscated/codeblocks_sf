@@ -10,9 +10,6 @@
 #ifndef WIZ_H
 #define WIZ_H
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma interface "wiz.h"
-#endif
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
