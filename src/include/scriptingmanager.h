@@ -19,7 +19,7 @@
 #include "menuitemsmanager.h"
 #include <wx/intl.h>
 
-class SquirrelError;
+struct SquirrelError;
 
 /** @brief Provides scripting in Code::Blocks.
   *
