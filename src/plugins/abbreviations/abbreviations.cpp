@@ -323,12 +323,31 @@ void Abbreviations::LoadAutoCompleteConfig()
         if (name.IsEmpty())
             continue;
         // convert non-printable chars to printable
-        code.Replace(_T("\\n"),   _T("\n"));
-        code.Replace(_T("\\t"),   _T("\t"));
+        wxString resolved;
+        resolved.Alloc(code.Length());
+        for (size_t pos = 0; pos < code.Length(); ++pos)
+        {
+            if (code[pos] == wxT('\\') && pos < code.Length() - 1)
+            {
+                ++pos;
+                if (code[pos] == wxT('n'))
+                    resolved += wxT("\n");
+                else if (code[pos] == wxT('r')) // should not exist, remove in next step
+                    resolved += wxT("\r");
+                else if (code[pos] == wxT('t'))
+                    resolved += wxT("\t");
+                else if (code[pos] == wxT('\\'))
+                    resolved += wxT("\\");
+                else // ?!
+                    resolved += wxT("\\") + code[pos];
+            }
+            else
+                resolved += code[pos];
+        }
         // should not exist, but remove if it does (EOL style is matched just before code generation)
-        code.Replace(_T("\\r\n"), _T("\n"));
-        code.Replace(_T("\\r"),   _T("\n"));
-        (*pAutoCompleteMap)[name] = code;
+        resolved.Replace(wxT("\r\n"), wxT("\n"));
+        resolved.Replace(wxT("\r"),   wxT("\n"));
+        (*pAutoCompleteMap)[name] = resolved;
     }
 
     if (m_AutoCompLanguageMap.find(defaultLanguageStr) == m_AutoCompLanguageMap.end())
@@ -424,6 +443,7 @@ void Abbreviations::SaveAutoCompleteConfig()
         {
             wxString code = it->second;
             // convert non-printable chars to printable
+            code.Replace(_T("\\"),   _T("\\\\"));
             code.Replace(_T("\r\n"), _T("\\n")); // EOL style will be matched just before code generation
             code.Replace(_T("\n"),   _T("\\n"));
             code.Replace(_T("\r"),   _T("\\n"));
