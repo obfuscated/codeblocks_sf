@@ -521,6 +521,27 @@ bool cbAuiNotebook::MovePage(wxWindow* page, size_t new_idx)
     return result;
 }
 
+bool cbAuiNotebook::AddPage(wxWindow* page,
+                            const wxString& caption,
+                            bool select,
+                            const wxBitmap& bitmap)
+{
+    bool result = wxAuiNotebook::AddPage(page, caption, select, bitmap);
+    MinimizeFreeSpace();
+    return result;
+}
+
+bool cbAuiNotebook::InsertPage(size_t page_idx,
+                               wxWindow* page,
+                               const wxString& caption,
+                               bool select,
+                               const wxBitmap& bitmap)
+{
+    bool result = wxAuiNotebook::InsertPage(page_idx, page, caption, select, bitmap);
+    MinimizeFreeSpace();
+    return result;
+}
+
 int cbAuiNotebook::GetTabPositionFromIndex(int index)
 {
     if (GetPageCount() <= 0)

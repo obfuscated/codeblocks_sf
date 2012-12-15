@@ -119,6 +119,36 @@ class cbAuiNotebook : public wxAuiNotebook
          * \return true if successfull
          */
         bool MovePage(wxWindow* page, size_t new_idx);
+        /** \brief Add Page
+         *
+         * Calls the base-class function and after that
+         * MinmizeFreeSpace().
+         * \param page The page to add
+         * \param caption The caption of the page
+         * \param select If true the page gets selected
+         * \param bitmap The bitmap of the tab
+         * \return true if successfull
+         */
+        bool AddPage(wxWindow* page,
+                     const wxString& caption,
+                     bool select = false,
+                     const wxBitmap& bitmap = wxNullBitmap);
+        /** \brief Insert Page
+         *
+         * Calls the base-class function and after that
+         * MinmizeFreeSpace().
+         * \param page_idx The index where the page should be inserted
+         * \param page The page to add
+         * \param caption The caption of the page
+         * \param select If true the page gets selected
+         * \param bitmap The bitmap of the tab
+         * \return true if successfull
+         */
+        bool InsertPage(size_t page_idx,
+                        wxWindow* page,
+                        const wxString& caption,
+                        bool select = false,
+                        const wxBitmap& bitmap = wxNullBitmap);
         /** \brief Set zoomfactor for builtin editors
          *
          * Sets the zoomfactor for all visible builtin
