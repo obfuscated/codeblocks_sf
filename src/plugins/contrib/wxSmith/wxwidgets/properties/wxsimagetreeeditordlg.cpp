@@ -190,7 +190,7 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer4->Add(bCancel, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer1->Add(BoxSizer4, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     SetSizer(BoxSizer1);
-    static char * ImageList1_0_XPM[] = {
+    static const char * ImageList1_0_XPM[] = {
     "16 16 3 1",
     " 	c None",
     ".	c #000000",
