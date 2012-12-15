@@ -11,10 +11,8 @@
 #include "loggers.h"
 #include <map>
 
-namespace
-{
-    static const unsigned int max_logs = 32;
-
+//namespace cb
+//{
     inline wxString F(const wxChar* msg, ...)
     {
         va_list arg_list;
@@ -31,9 +29,7 @@ namespace
 
         return ::temp_string;
     };
-
-    static NullLogger g_null_log;
-}
+//} // namespace cb
 
 
 struct LogSlot
@@ -61,6 +57,7 @@ public:
         struct InstantiatorBase{ virtual Logger* New() { return 0; }; virtual bool RequiresFilename() const { return false; }; virtual ~InstantiatorBase() {}; };
         template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase{ virtual Logger* New() { return new type; }; virtual bool RequiresFilename() const { return requires_filename; }; };
 
+        enum { max_logs = 32 };
 private:
         typedef std::map<wxString, InstantiatorBase*> inst_map_t;
         inst_map_t instMap;
@@ -74,8 +71,8 @@ private:
         friend class Mgr<LogManager>;
         friend class Manager;
 
-        void ClearLogInternal(int i) { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Clear(); };
-        void LogInternal(const wxString& msg, int i, Logger::level lv) { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Append(msg, lv); };
+        void ClearLogInternal(int i);// { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Clear(); }
+        void LogInternal(const wxString& msg, int i, Logger::level lv);// { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Append(msg, lv); }
 
 public:
         enum { no_index = -1, invalid_log, stdout_log, app_log, debug_log};

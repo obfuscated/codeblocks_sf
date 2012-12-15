@@ -23,6 +23,8 @@
 template<> LogManager* Mgr<LogManager>::instance = 0;
 template<> bool  Mgr<LogManager>::isShutdown = false;
 
+static NullLogger g_null_log;
+
 LogSlot::LogSlot() :
     log(0),
     icon(0)
@@ -80,6 +82,18 @@ LogManager::~LogManager()
 {
     for (inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
         delete i->second;
+}
+
+void LogManager::ClearLogInternal(int i)
+{
+    if (i >= 0 && i <= max_logs && slot[i].log != &g_null_log)
+        slot[i].log->Clear();
+}
+
+void LogManager::LogInternal(const wxString& msg, int i, Logger::level lv)
+{
+    if (i >= 0 && i <= max_logs && slot[i].log != &g_null_log)
+        slot[i].log->Append(msg, lv);
 }
 
 size_t LogManager::SetLog(Logger* l, int i)

@@ -747,7 +747,7 @@ void MainFrame::SetupGUILogging()
 
         wxWindow* log;
 
-        for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
+        for(size_t i = LogManager::app_log; i < LogManager::max_logs; ++i)
         {
             if ((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
                 m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
