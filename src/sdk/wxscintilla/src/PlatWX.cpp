@@ -298,6 +298,7 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesire
 {
     PenColour(fore);
     BrushColour(back);
+/* C::B begin */
     wxPoint *p = new wxPoint[npts];
 
     for (int i=0; i<npts; i++) {
@@ -306,6 +307,7 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesire
     }
     hDC->DrawPolygon(npts, p);
     delete [] p;
+/* C::B end */
 }
 
 void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)
@@ -1312,6 +1314,11 @@ int ListBoxImpl::GetVisibleRows() const
 
 PRectangle ListBoxImpl::GetDesiredRect()
 {
+/* C::B begin */
+    // maximum width of listbox:
+    static const int cMaxWidth = 1000;
+/* C::B end */
+
     // wxListCtrl doesn't have a DoGetBestSize, so instead we kept track of
     // the max size in Append and calculate it here...
     int maxw = maxStrWidth * aveCharWidth;
@@ -1321,8 +1328,10 @@ PRectangle ListBoxImpl::GetDesiredRect()
     if (maxw == 0) maxw = 100;
     maxw += aveCharWidth * 3 +
             GETLBW(wid)->IconWidth() + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
-    if (maxw > 350)
-        maxw = 350;
+/* C::B begin */
+    if (maxw > cMaxWidth)
+        maxw = cMaxWidth;
+/* C::B end */
 
     // estimate a desired height
     int count = GETLB(wid)->GetItemCount();
@@ -1330,8 +1339,10 @@ PRectangle ListBoxImpl::GetDesiredRect()
         wxRect rect;
         GETLB(wid)->GetItemRect(0, rect);
         maxh = count * rect.GetHeight();
-        if (maxh > 140)  // TODO:  Use desiredVisibleRows??
-            maxh = 140;
+/* C::B begin */
+        if (maxh > desiredVisibleRows*lineHeight)
+            maxh = desiredVisibleRows*lineHeight;
+/* C::B end */
 
         // Try to make the size an exact multiple of some number of lines
         int lines = maxh / rect.GetHeight();
