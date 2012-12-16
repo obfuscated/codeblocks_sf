@@ -1035,12 +1035,11 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
                 || (token->m_TokenKind == tkDestructor)
                 || (token->m_TokenKind == tkMacro)
                 || (token->m_TokenKind == tkClass) )
+            {
                 str << token->GetFormattedArgs();
-            // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
-//            if (!token->m_ActualType.IsEmpty())
-//                 str = str + _T(" : ") + token->m_ActualType;
-            if (!token->m_BaseType.IsEmpty())
-                str = str + _T(" : ") + token->m_BaseType + token->m_TemplateArgument;
+            }
+            if (!token->m_FullType.IsEmpty())
+                str = str + _T(" : ") + token->m_FullType + token->m_TemplateArgument;
 
             wxTreeItemId child = tree->AppendItem(parent, str, img, img, new CCTreeCtrlData(sfToken, token, tokenKindMask));
 
