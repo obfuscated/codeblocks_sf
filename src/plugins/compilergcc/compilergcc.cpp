@@ -3424,10 +3424,10 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         if (isTitle)
             m_BuildLogContents << _T("<b>");
 
-        // replace the ´ family by "
+        // replace the ? family by "
         wxString Quoted = message;
-        Quoted.Replace(_T("‘"), _T("\""),    true);
-        Quoted.Replace(_T("’"), _T("\""),    true);
+        Quoted.Replace(_T("?"), _T("\""),    true);
+        Quoted.Replace(_T("?"), _T("\""),    true);
         // avoid conflicts with html-tags
         Quoted.Replace(_T("&"), _T("&amp;"), true);
         Quoted.Replace(_T("<"), _T("&lt;"),  true);
