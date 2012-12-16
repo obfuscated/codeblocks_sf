@@ -2089,7 +2089,7 @@ void CompilerGCC::ResetBuildState()
     }
 }
 
-wxString StateToString(BuildState bs)
+inline wxString StateToString(BuildState bs)
 {
     switch (bs)
     {
@@ -2102,6 +2102,7 @@ wxString StateToString(BuildState bs)
         case bsTargetDone:       return _T("bsTargetDone");
         case bsProjectPostBuild: return _T("bsProjectPostBuild");
         case bsProjectDone:      return _T("bsProjectDone");
+        default:                 break;
     }
     return _T("Huh!?!");
 }
@@ -2195,6 +2196,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
                 return bsNone;
         }
 
+        case bsNone: // fall-through
         default:
             break;
     }
@@ -2383,6 +2385,8 @@ void CompilerGCC::BuildStateManagement()
             break;
         }
 
+        case bsTargetDone: // fall-through
+        case bsNone:       // fall-through
         default:
             break;
     }
@@ -2777,13 +2781,17 @@ int CompilerGCC::KillProcess()
             }
             else switch (ret)
             {
+                case wxKILL_OK:
+                    Manager::Get()->GetLogManager()->Log(_("Process aborted (killed)."), m_PageIndex);
 //                case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied"));     break;
 //                case wxKILL_NO_PROCESS:    cbMessageBox(_("No process"));        break;
 //                case wxKILL_BAD_SIGNAL:    cbMessageBox(_("Bad signal"));        break;
 //                case wxKILL_ERROR:         cbMessageBox(_("Unspecified error")); break;
-                case wxKILL_OK:
-                default: break;
-                // Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed...")));
+                case wxKILL_ACCESS_DENIED: // fall-through
+                case wxKILL_NO_PROCESS:    // fall-through
+                case wxKILL_BAD_SIGNAL:    // fall-through
+                case wxKILL_ERROR:         // fall-through
+                default:                   break;
             }
         }
     }
@@ -3416,10 +3424,10 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         if (isTitle)
             m_BuildLogContents << _T("<b>");
 
-        // replace the Â´ family by "
+        // replace the ´ family by "
         wxString Quoted = message;
-        Quoted.Replace(_T("â€˜"), _T("\""),    true);
-        Quoted.Replace(_T("â€™"), _T("\""),    true);
+        Quoted.Replace(_T("‘"), _T("\""),    true);
+        Quoted.Replace(_T("’"), _T("\""),    true);
         // avoid conflicts with html-tags
         Quoted.Replace(_T("&"), _T("&amp;"), true);
         Quoted.Replace(_T("<"), _T("&lt;"),  true);
