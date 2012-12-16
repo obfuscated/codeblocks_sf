@@ -233,6 +233,8 @@ class WatchRawDialog : public wxScrollingDialog
                         m_text->SetValue(value);
                     }
                     break;
+                default:
+                    break;
             }
         }
 
@@ -350,7 +352,7 @@ WatchesDlg::WatchesDlg() :
     m_grid->Connect(idGrid, wxEVT_KEY_DOWN, wxKeyEventHandler(WatchesDlg::OnKeyDown), NULL, this);
 }
 
-void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch, bool readonly)
+inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch, bool readonly)
 {
     for(int ii = 0; ii < watch.GetChildCount(); ++ii)
     {
@@ -389,7 +391,7 @@ void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch
     }
 }
 
-void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch, bool readonly)
+inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cbWatch> watch, bool readonly)
 {
     if (!property)
         return;
@@ -430,7 +432,7 @@ void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared_ptr<cb
     WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(property));
 }
 
-void SetValue(WatchesProperty *prop)
+inline void SetValue(WatchesProperty *prop)
 {
     if (prop)
     {
@@ -464,7 +466,7 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
         item.property = last_prop;
 
         // if we are editing the label the calls SetPropertyLabel and SetPropertyName don't work,
-        // so we stop the edit operationś
+        // so we stop the edit operations
         if (m_grid->GetLabelEditor())
             m_grid->EndLabelEdit(0);
         m_grid->SetPropertyLabel(item.property, symbol);
@@ -627,6 +629,8 @@ void WatchesDlg::OnKeyDown(wxKeyEvent &event)
                 if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
                     m_grid->BeginLabelEdit(0);
             }
+            break;
+        default:
             break;
     }
 }
@@ -835,13 +839,13 @@ BEGIN_EVENT_TABLE(ValueTooltip, wxWindow)
     EVT_TIMER(idTooltipTimer, ValueTooltip::OnTimer)
 END_EVENT_TABLE()
 
-wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
+inline wxPGProperty* GetRealRoot(wxPropertyGrid *grid)
 {
     wxPGProperty *property = grid->GetRoot();
     return property ? grid->GetFirstChild(property) : nullptr;
 }
 
-void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
 #if wxCHECK_VERSION(2, 9, 0)
     wxPropertyGridPageState *state = grid->GetState();
@@ -882,14 +886,14 @@ void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *root, i
     width[2] = std::max(width[2], minWidths[2]);
 }
 
-void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
+inline void GetColumnWidths(wxPropertyGrid *grid, wxPGProperty *root, int width[3])
 {
     wxClientDC dc(grid);
     dc.SetFont(grid->GetFont());
     GetColumnWidths(dc, grid, root, width);
 }
 
-void SetMinSize(wxPropertyGrid *grid)
+inline void SetMinSize(wxPropertyGrid *grid)
 {
     wxPGProperty *p = GetRealRoot(grid);
     wxPGProperty *first = grid->wxPropertyGridInterface::GetFirst(wxPG_ITERATE_ALL);
