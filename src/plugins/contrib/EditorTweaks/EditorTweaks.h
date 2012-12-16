@@ -113,6 +113,7 @@ class EditorTweaks : public cbPlugin
         void OnTabSize4(wxCommandEvent &event);
         void OnTabSize6(wxCommandEvent &event);
         void OnTabSize8(wxCommandEvent &event);
+        void OnMakeIndentsConsistent(wxCommandEvent& event);
         void OnShowEOL(wxCommandEvent &event);
         void OnStripTrailingBlanks(wxCommandEvent &event);
         void OnEnsureConsistentEOL(wxCommandEvent &event);

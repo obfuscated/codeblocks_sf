@@ -49,6 +49,7 @@ int id_et_TabSize2            = wxNewId();
 int id_et_TabSize4            = wxNewId();
 int id_et_TabSize6            = wxNewId();
 int id_et_TabSize8            = wxNewId();
+int id_et_ConsistentIndent    = wxNewId();
 int id_et_ShowEOL             = wxNewId();
 int id_et_StripTrailingBlanks = wxNewId();
 int id_et_EnsureConsistentEOL = wxNewId();
@@ -97,6 +98,7 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_TabSize4, EditorTweaks::OnTabSize4)
     EVT_MENU(id_et_TabSize6, EditorTweaks::OnTabSize6)
     EVT_MENU(id_et_TabSize8, EditorTweaks::OnTabSize8)
+    EVT_MENU(id_et_ConsistentIndent, EditorTweaks::OnMakeIndentsConsistent)
     EVT_MENU(id_et_ShowEOL, EditorTweaks::OnShowEOL)
     EVT_MENU(id_et_StripTrailingBlanks, EditorTweaks::OnStripTrailingBlanks)
     EVT_MENU(id_et_EnsureConsistentEOL, EditorTweaks::OnEnsureConsistentEOL)
@@ -284,6 +286,7 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     tabsizemenu->AppendRadioItem( id_et_TabSize6, _( "6" ), _( "Tab Width of 6" ) );
     tabsizemenu->AppendRadioItem( id_et_TabSize8, _( "8" ), _( "Tab Width of 8" ) );
     submenu->Append(wxID_ANY,_("Tab Size"),tabsizemenu);
+    submenu->Append( id_et_ConsistentIndent, _( "Make Indents Consistent" ),  _( "Convert leading tabs/spaces to the active setting" ) );
     submenu->AppendSeparator();
     wxMenu *eolmenu=new wxMenu();
     eolmenu->AppendRadioItem( id_et_EOLCRLF, _( "CR LF" ), _( "Carriage Return - Line Feed (Windows Default)" ) );
@@ -796,6 +799,40 @@ void EditorTweaks::OnTabSize8(wxCommandEvent &/*event*/)
         return;
 
     ed->GetControl()->SetTabWidth(8);
+}
+
+void EditorTweaks::OnMakeIndentsConsistent(wxCommandEvent& /*event*/)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    cbStyledTextCtrl* stc = ed->GetControl();
+    const bool useTab     = stc->GetUseTabs();
+    const int  tabWidth   = stc->GetTabWidth();
+    const int  maxLines   = stc->GetLineCount();
+    bool  changed         = false;
+    for (int curLine = 0; curLine < maxLines; ++curLine)
+    {
+        const wxString curInd = ed->GetLineIndentString(curLine);
+        wxString indent = curInd;
+        if (useTab)
+            indent.Replace(wxString(wxT(' '), tabWidth), wxT("\t"));
+        else
+            indent.Replace(wxT("\t"), wxString(wxT(' '), tabWidth));
+        if (indent != curInd)
+        {
+            if (!changed) // all changes in a single undo step
+            {
+                stc->BeginUndoAction();
+                changed = true;
+            }
+            stc->SetTargetStart(stc->PositionFromLine(curLine));
+            stc->SetTargetEnd(stc->PositionFromLine(curLine) + curInd.Length());
+            stc->ReplaceTarget(indent);
+        }
+    }
+    if (changed)
+        stc->EndUndoAction();
 }
 
 void EditorTweaks::OnShowEOL(wxCommandEvent &/*event*/)
