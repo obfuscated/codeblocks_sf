@@ -28,7 +28,7 @@
 #include "scripting/sqplus/sqplus.h"
 
 // move this to globals if needed
-wxString UnquoteStringIfNeeded(const wxString& str)
+inline wxString UnquoteStringIfNeeded(const wxString& str)
 {
     wxString s = str;
     if (!str.IsEmpty() && str.GetChar(0) == _T('"') && str.Last() == _T('"'))
@@ -595,6 +595,11 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
             }
             break;
 
+        case ttExecutable:
+        case ttConsoleOnly:
+        case ttStaticLib:
+        case ttCommandsOnly:
+        case ttNative:
         default:
             {
                 // Replace Variables FIRST to address the $(VARIABLE)libfoo.a problem
@@ -973,6 +978,8 @@ wxString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarget* t
         case orAppendToParentOptions:
             result << project_options << target_options;
             break;
+        default:
+            break;
     }
     return result;
 }
@@ -1006,6 +1013,8 @@ wxArrayString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarg
                 result.Add(project_options[i]);
             for (size_t i = 0; i < target_options.GetCount(); ++i)
                 result.Add(target_options[i]);
+            break;
+        default:
             break;
     }
     return result;

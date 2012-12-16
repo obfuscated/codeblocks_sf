@@ -127,14 +127,14 @@ namespace
 
             void ReadData()
             {
-                if(!GetPropertyContainer() || !m_Extra) return;
+                if (!GetPropertyContainer() || !m_Extra) return;
                 Label->SetValue(m_Extra->m_Label);
                 Selected->SetValue(m_Extra->m_Selected);
             }
 
             void SaveData()
             {
-                if(!GetPropertyContainer() || !m_Extra) return;
+                if (!GetPropertyContainer() || !m_Extra) return;
                 m_Extra->m_Label = Label->GetValue();
                 m_Extra->m_Selected = Selected->GetValue();
                 NotifyChange();
@@ -225,9 +225,9 @@ void wxsTreebook::OnEnumContainerProperties(long Flags)
 
 bool wxsTreebook::OnCanAddChild(wxsItem *Item, bool ShowMessage)
 {
-    if(Item->GetType() == wxsTSizer)
+    if (Item->GetType() == wxsTSizer)
     {
-        if(ShowMessage)
+        if (ShowMessage)
         {
             wxMessageBox(_("Can not add sizer into treebook.\nAdd panels first"));
         }
@@ -249,10 +249,10 @@ wxString wxsTreebook::OnXmlGetExtraObjectClass()
 
 void wxsTreebook::OnAddChildQPP(wxsItem *Child, wxsAdvQPP *QPP)
 {
-    wxsTreebookExtra *Extra = (wxsTreebookExtra*)GetChildExtra(GetChildIndex(Child));
-    if(Extra)
+    wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(GetChildIndex(Child));
+    if (TBExtra)
     {
-        QPP->Register(new wxsTreebookParentQP(QPP, Extra), _("Treebook"));
+        QPP->Register(new wxsTreebookParentQP(QPP, TBExtra), _("Treebook"));
     }
 }
 
@@ -261,7 +261,7 @@ wxObject *wxsTreebook::OnBuildPreview(wxWindow *Parent, long PreviewFlags)
     UpdateCurrentSelection();
     wxTreebook *Treebook = new wxTreebook(Parent, -1, Pos(Parent), Size(Parent), Style());
 
-    if(!GetChildCount() && !(PreviewFlags & pfExact))
+    if (!GetChildCount() && !(PreviewFlags & pfExact))
     {
         // Adding additional empty Treebook to prevent from having zero-sized Treebook
         Treebook->AddPage(new wxPanel(Treebook, -1, wxDefaultPosition, wxSize(50, 50)), _("No pages"));
@@ -272,15 +272,15 @@ wxObject *wxsTreebook::OnBuildPreview(wxWindow *Parent, long PreviewFlags)
     for ( int i=0; i<GetChildCount(); i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsTreebookExtra* Extra = (wxsTreebookExtra*)GetChildExtra(i);
+        wxsTreebookExtra* TBExtra = (wxsTreebookExtra*)GetChildExtra(i);
 
         wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
         if ( !ChildPreview ) continue;
 
         bool Selected = (Child == m_CurrentSelection);
-        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        if ( PreviewFlags & pfExact ) Selected = TBExtra->m_Selected;
 
-        Treebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+        Treebook->AddPage(ChildPreview,TBExtra->m_Label,Selected);
     }
 
     return Treebook;
@@ -298,15 +298,19 @@ void wxsTreebook::OnBuildCreatingCode()
                 BuildSetupWindowCode();
                 AddChildrenCode();
 
-                for(int i = 0; i < GetChildCount(); i++)
+                for (int i = 0; i < GetChildCount(); i++)
                 {
-                    wxsTreebookExtra *Extra = (wxsTreebookExtra*)GetChildExtra(i);
-                    Codef(_T("%AAddPage(%o, %t, %b);\n"), i, Extra->m_Label.wx_str(), Extra->m_Selected);
+                    wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(i);
+                    if (TBExtra)
+                    {
+                        Codef(_T("%AAddPage(%o, %t, %b);\n"), i, TBExtra->m_Label.wx_str(), TBExtra->m_Selected);
+                    }
                 }
 
                 break;
             }
 
+        case wxsUnknownLanguage:
         default:
             {
                 wxsCodeMarks::Unknown(_T("wxsTreebook::OnBuildCreatingCode"), GetLanguage());
@@ -319,7 +323,7 @@ bool wxsTreebook::OnMouseClick(wxWindow *Preview, int PosX, int PosY)
     UpdateCurrentSelection();
     wxTreebook *Treebook = (wxTreebook*)Preview;
     int Hit = Treebook->HitTest(wxPoint(PosX, PosY));
-    if(Hit != wxNOT_FOUND)
+    if (Hit != wxNOT_FOUND)
     {
         wxsItem *OldSel = m_CurrentSelection;
         m_CurrentSelection = GetChild(Hit);
@@ -337,7 +341,7 @@ bool wxsTreebook::OnIsChildPreviewVisible(wxsItem *Child)
 
 bool wxsTreebook::OnEnsureChildPreviewVisible(wxsItem *Child)
 {
-    if(IsChildPreviewVisible(Child)) return false;
+    if (IsChildPreviewVisible(Child)) return false;
     m_CurrentSelection = Child;
     UpdateCurrentSelection();
     return true;
@@ -346,11 +350,11 @@ bool wxsTreebook::OnEnsureChildPreviewVisible(wxsItem *Child)
 void wxsTreebook::UpdateCurrentSelection()
 {
     wxsItem *NewCurrentSelection = 0;
-    for(int i = 0; i < GetChildCount(); i++)
+    for (int i = 0; i < GetChildCount(); i++)
     {
-        if(m_CurrentSelection == GetChild(i)) return;
-        wxsTreebookExtra *Extra = (wxsTreebookExtra*)GetChildExtra(i);
-        if((i == 0) || Extra->m_Selected)
+        if (m_CurrentSelection == GetChild(i)) return;
+        wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(i);
+        if ((i == 0) || (TBExtra && TBExtra->m_Selected))
         {
             NewCurrentSelection = GetChild(i);
         }
@@ -368,12 +372,12 @@ void wxsTreebook::OnPreparePopup(wxMenu *Menu)
     //Menu->AppendSeparator();
     wxMenuItem *Item3 = Menu->Append(popupFirstId, _("Make current page the first one"));
     wxMenuItem *Item4 = Menu->Append(popupLastId, _("Make current page the last one"));
-    if(!m_CurrentSelection || GetChildIndex(m_CurrentSelection) == 0)
+    if (!m_CurrentSelection || GetChildIndex(m_CurrentSelection) == 0)
     {
         //Item1->Enable(false);
         Item3->Enable(false);
     }
-    if(!m_CurrentSelection || GetChildIndex(m_CurrentSelection) == GetChildCount() - 1)
+    if (!m_CurrentSelection || GetChildIndex(m_CurrentSelection) == GetChildCount() - 1)
     {
         //Item2->Enable(false);
         Item4->Enable(false);
@@ -382,21 +386,21 @@ void wxsTreebook::OnPreparePopup(wxMenu *Menu)
 
 bool wxsTreebook::OnPopup(long Id)
 {
-    if(Id == popupNewPageId)
+    if (Id == popupNewPageId)
     {
         wxTextEntryDialog Dlg(0, _("Enter name of new page"), _("Adding page"), _("New page"));
-        if(Dlg.ShowModal() == wxID_OK)
+        if (Dlg.ShowModal() == wxID_OK)
         {
             wxsItem *Panel = wxsItemFactory::Build(_T("wxPanel"), GetResourceData());
-            if(Panel)
+            if (Panel)
             {
                 GetResourceData()->BeginChange();
-                if(AddChild(Panel))
+                if (AddChild(Panel))
                 {
-                    wxsTreebookExtra *Extra = (wxsTreebookExtra*)GetChildExtra(GetChildCount() - 1);
-                    if(Extra)
+                    wxsTreebookExtra *TBExtra = (wxsTreebookExtra*)GetChildExtra(GetChildCount() - 1);
+                    if (TBExtra)
                     {
-                        Extra->m_Label = Dlg.GetValue();
+                        TBExtra->m_Label = Dlg.GetValue();
                     }
                     m_CurrentSelection = Panel;
                 }
@@ -408,7 +412,7 @@ bool wxsTreebook::OnPopup(long Id)
             }
         }
     }
-    else if(Id == popupNextPageId)
+    else if (Id == popupNextPageId)
     {
         GetResourceData()->BeginChange();
         int Index = GetChildIndex(m_CurrentSelection);
@@ -416,7 +420,7 @@ bool wxsTreebook::OnPopup(long Id)
         UpdateCurrentSelection();
         GetResourceData()->EndChange();
     }
-    else if(Id == popupPrevPageId)
+    else if (Id == popupPrevPageId)
     {
         GetResourceData()->BeginChange();
         int Index = GetChildIndex(m_CurrentSelection);
@@ -424,13 +428,13 @@ bool wxsTreebook::OnPopup(long Id)
         UpdateCurrentSelection();
         GetResourceData()->EndChange();
     }
-    else if(Id == popupFirstId)
+    else if (Id == popupFirstId)
     {
         GetResourceData()->BeginChange();
         MoveChild(GetChildIndex(m_CurrentSelection), 0);
         GetResourceData()->EndChange();
     }
-    else if(Id == popupLastId)
+    else if (Id == popupLastId)
     {
         GetResourceData()->BeginChange();
         MoveChild(GetChildIndex(m_CurrentSelection), GetChildCount() - 1);

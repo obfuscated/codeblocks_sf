@@ -104,7 +104,7 @@ size_t LogManager::SetLog(Logger* l, int i)
     {
         for (index = debug_log + 1; index < max_logs; ++index)
         {
-            if(slot[index].GetLogger() == &g_null_log)
+            if (slot[index].GetLogger() == &g_null_log)
             {
                 slot[index].SetLogger(l);
                 return index;
@@ -164,18 +164,18 @@ bool LogManager::FilenameRequired(const wxString& name)
 
     if (i != instMap.end())
         return i->second->RequiresFilename();
-    else
-        return false;
+
+    return false;
 }
 
 Logger* LogManager::New(const wxString& name)
 {
     inst_map_t::iterator i;
 
-    if((i = instMap.find(name)) != instMap.end())
+    if ((i = instMap.find(name)) != instMap.end())
         return i->second->New();
-    else
-        return new NullLogger;
+
+    return new NullLogger;
 }
 
 void LogManager::Register(const wxString& name, InstantiatorBase* ins)

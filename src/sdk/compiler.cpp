@@ -253,7 +253,7 @@ void Compiler::MakeValidID()
     m_CompilerIDs.Add(m_ID);
 }
 
-CompilerCommandGenerator* Compiler::GetCommandGenerator(cbProject *project)
+CompilerCommandGenerator* Compiler::GetCommandGenerator(cbProject* project)
 {
     CompilerCommandGenerator* generator = new CompilerCommandGenerator;
     generator->Init(project);

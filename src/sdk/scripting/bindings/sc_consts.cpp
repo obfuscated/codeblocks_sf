@@ -29,22 +29,22 @@ namespace ScriptBindings
     void Register_Constants()
     {
         // platform constants
-        BIND_INT_CONSTANT_NAMED(0, "PLATFORM_MSW");
-        BIND_INT_CONSTANT_NAMED(1, "PLATFORM_GTK");
-        BIND_INT_CONSTANT_NAMED(2, "PLATFORM_MAC");
-        BIND_INT_CONSTANT_NAMED(3, "PLATFORM_OS2");
-        BIND_INT_CONSTANT_NAMED(4, "PLATFORM_X11");
+        BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
+        BIND_INT_CONSTANT_NAMED(1,  "PLATFORM_GTK");
+        BIND_INT_CONSTANT_NAMED(2,  "PLATFORM_MAC");
+        BIND_INT_CONSTANT_NAMED(3,  "PLATFORM_OS2");
+        BIND_INT_CONSTANT_NAMED(4,  "PLATFORM_X11");
         BIND_INT_CONSTANT_NAMED(99, "PLATFORM_UNKNOWN");
 
-        #ifdef __WXMSW__
+        #if   defined(__WXMSW__)
             BIND_INT_CONSTANT_NAMED(0, "PLATFORM");
-        #elif __WXGTK__
+        #elif defined(__WXGTK__)
             BIND_INT_CONSTANT_NAMED(1, "PLATFORM");
-        #elif __WXMAC__
+        #elif defined(__WXMAC__)
             BIND_INT_CONSTANT_NAMED(2, "PLATFORM");
-        #elif __WXOS2__
+        #elif defined(__WXOS2__)
             BIND_INT_CONSTANT_NAMED(3, "PLATFORM");
-        #elif __WXX11__
+        #elif defined(__WXX11__)
             BIND_INT_CONSTANT_NAMED(4, "PLATFORM");
         #else
             BIND_INT_CONSTANT_NAMED(99, "PLATFORM");

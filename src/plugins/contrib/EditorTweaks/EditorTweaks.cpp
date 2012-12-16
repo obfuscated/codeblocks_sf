@@ -562,6 +562,8 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
             case _T('}'):
                 opch = _T("{");
                 break;
+            default:
+              return;
         }
         int m = control->BraceMatch(l);
         if (m == wxSCI_INVALID_POSITION)

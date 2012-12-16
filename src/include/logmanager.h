@@ -34,19 +34,19 @@
 
 struct LogSlot
 {
-    Logger* log;
-    size_t index;
     friend class LogManager;
 
-    wxBitmap *icon;
-    wxString title;
+    Logger*   log;
+    size_t    index;
+    wxBitmap* icon;
+    wxString  title;
 
     LogSlot();
     ~LogSlot();
 
     size_t Index() const;
 
-    void SetLogger(Logger* in);
+    void    SetLogger(Logger* in);
     Logger* GetLogger() const;
 };
 
@@ -54,8 +54,17 @@ struct LogSlot
 class DLLIMPORT LogManager : public Mgr<LogManager>
 {
 public:
-        struct InstantiatorBase{ virtual Logger* New() { return 0; }; virtual bool RequiresFilename() const { return false; }; virtual ~InstantiatorBase() {}; };
-        template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase{ virtual Logger* New() { return new type; }; virtual bool RequiresFilename() const { return requires_filename; }; };
+        struct InstantiatorBase
+        {
+            virtual Logger* New()                 { return 0; };
+            virtual bool RequiresFilename() const { return false; };
+            virtual ~InstantiatorBase()           { ; };
+        };
+        template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase
+        {
+            virtual Logger* New()                 { return new type; };
+            virtual bool RequiresFilename() const { return requires_filename; };
+        };
 
         enum { max_logs = 32 };
 private:
@@ -71,8 +80,8 @@ private:
         friend class Mgr<LogManager>;
         friend class Manager;
 
-        void ClearLogInternal(int i);// { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Clear(); }
-        void LogInternal(const wxString& msg, int i, Logger::level lv);// { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Append(msg, lv); }
+        void ClearLogInternal(int i);
+        void LogInternal(const wxString& msg, int i, Logger::level lv);
 
 public:
         enum { no_index = -1, invalid_log, stdout_log, app_log, debug_log};

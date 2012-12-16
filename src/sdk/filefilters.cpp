@@ -185,11 +185,11 @@ const wxString FileFilters::RESOURCE_EXT            = _T("rc");
 const wxString FileFilters::RESOURCEBIN_EXT         = _T("res");
 const wxString FileFilters::XML_EXT                 = _T("xml");
 const wxString FileFilters::SCRIPT_EXT              = _T("script");
-#ifdef __WXMSW__
+#if   defined(__WXMSW__)
     const wxString FileFilters::DYNAMICLIB_EXT      = _T("dll");
     const wxString FileFilters::EXECUTABLE_EXT      = _T("exe");
     const wxString FileFilters::NATIVE_EXT          = _T("sys");
-#elif __WXMAC__
+#elif defined(__WXMAC__)
     const wxString FileFilters::DYNAMICLIB_EXT      = _T("dylib");
     const wxString FileFilters::EXECUTABLE_EXT      = _T("");
     const wxString FileFilters::NATIVE_EXT          = _T("");

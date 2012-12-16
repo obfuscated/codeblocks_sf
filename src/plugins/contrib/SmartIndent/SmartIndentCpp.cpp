@@ -153,16 +153,16 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
 
             if (autoIndentDone)
             {
-                const int pos = stc->GetLineIndentPosition(currLine - 1);
-                const wxString text = stc->GetTextRange(pos, stc->WordEndPosition(pos, true));
+                const int ind_pos = stc->GetLineIndentPosition(currLine - 1);
+                const wxString text = stc->GetTextRange(ind_pos, stc->WordEndPosition(ind_pos, true));
                 if (   text == _T("if")
                     || text == _T("else")
                     || text == _T("for")
                     || text == _T("while")
                     || text == _T("do") )
                 {
-                    const wxChar ch = GetLastNonWhitespaceChar(ed);
-                    if (ch != _T(';') && ch != _T('}'))
+                    const wxChar non_ws_ch = GetLastNonWhitespaceChar(ed);
+                    if (non_ws_ch != _T(';') && non_ws_ch != _T('}'))
                     {
                         autoIndentDone = false;
                         autoIndentLine = currLine - 1;
@@ -175,8 +175,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
             {
                 if (autoIndentStart)
                 {
-                    const wxChar ch = GetLastNonWhitespaceChar(ed);
-                    if (ch == _T(';') || ch == _T('}'))
+                    const wxChar non_ws_ch = GetLastNonWhitespaceChar(ed);
+                    if (non_ws_ch == _T(';') || non_ws_ch == _T('}'))
                     {
                         stc->SetLineIndentation(currLine, autoIndentLineIndent);
                         stc->GotoPos(stc->GetLineEndPosition(currLine));
@@ -333,17 +333,17 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
             {
                 // just the brace here; unindent
                 // find opening brace (skipping nested blocks)
-                int pos = stc->GetCurrentPos() - 2;
-                pos = FindBlockStart(stc, pos, _T('{'), _T('}'));
-                if (pos != -1)
+                int cur_pos = stc->GetCurrentPos() - 2;
+                cur_pos = FindBlockStart(stc, cur_pos, _T('{'), _T('}'));
+                if (cur_pos != -1)
                 {
-                    wxString indent = ed->GetLineIndentString(stc->LineFromPosition(pos));
+                    wxString indent = ed->GetLineIndentString(stc->LineFromPosition(cur_pos));
                     indent << _T('}');
                     stc->DelLineLeft();
                     stc->DelLineRight();
-                    pos = stc->GetCurrentPos();
-                    stc->InsertText(pos, indent);
-                    stc->GotoPos(pos + indent.Length());
+                    cur_pos = stc->GetCurrentPos();
+                    stc->InsertText(cur_pos, indent);
+                    stc->GotoPos(cur_pos + indent.Length());
                     stc->ChooseCaretX();
                 }
             }
@@ -358,8 +358,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
         if (smartIndent && stc->GetLexer() == wxSCI_LEX_CPP && !autoUnIndent)
         {
             const int curLine = stc->GetCurrentLine();
-            const int pos = stc->GetLineIndentPosition(curLine);
-            const wxString text = stc->GetTextRange(pos, stc->WordEndPosition(pos, true));
+            const int li_pos = stc->GetLineIndentPosition(curLine);
+            const wxString text = stc->GetTextRange(li_pos, stc->WordEndPosition(li_pos, true));
             if (   text == _T("public")
                 || text == _T("protected")
                 || text == _T("private")
@@ -523,6 +523,7 @@ void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
                 control->EndUndoAction();
                 return;
             }
+            default: return;
         }
     } // SelectionBraceCompletion
 }
@@ -568,15 +569,16 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
                     endIf.Prepend(wxT("#"));
                 switch (control->GetEOLMode())
                 {
-                case wxSCI_EOL_LF:
-                    endIf.Prepend(wxT("\n"));
-                    break;
-                case wxSCI_EOL_CRLF:
-                    endIf.Prepend(wxT("\r\n"));
-                    break;
-                case wxSCI_EOL_CR:
-                    endIf.Prepend(wxT("\r"));
-                    break;
+                    case wxSCI_EOL_LF:
+                        endIf.Prepend(wxT("\n"));
+                        break;
+                    case wxSCI_EOL_CRLF:
+                        endIf.Prepend(wxT("\r\n"));
+                        break;
+                    case wxSCI_EOL_CR:
+                        endIf.Prepend(wxT("\r"));
+                        break;
+                    default: return;
                 }
                 control->InsertText(pos, endIf);
                 return;

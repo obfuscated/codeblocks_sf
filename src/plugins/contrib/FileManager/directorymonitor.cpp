@@ -473,6 +473,8 @@ public:
                 case FILE_ACTION_MODIFIED:
                     action=MONITOR_FILE_CHANGED;
                     break;
+                default:
+                  break;
             }
             if(action&m_notifyfilter)
             {

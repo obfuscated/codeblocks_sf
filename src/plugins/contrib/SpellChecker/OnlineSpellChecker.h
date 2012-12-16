@@ -40,7 +40,7 @@ class OnlineSpellChecker : public EditorHooks::HookFunctorBase
         virtual ~OnlineSpellChecker();
         virtual void Call(cbEditor*, wxScintillaEvent&) const;
 
-        const int GetIndicator()const;
+        int GetIndicator()const;
         const wxColor GetIndicatorColor()const;
         void EnableOnlineChecks(bool check = true);
     private:

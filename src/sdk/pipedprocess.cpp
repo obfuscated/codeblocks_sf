@@ -48,17 +48,17 @@ class cbTextInputStream : public wxTextInputStream
         #if wxUSE_UNICODE
             wxChar wbuf[2];
             memset((void*)m_lastBytes, 0, 10);
-            for(size_t inlen = 0; inlen < 9; inlen++)
+            for (size_t inlen = 0; inlen < 9; inlen++)
             {
                 // actually read the next character
                 m_lastBytes[inlen] = m_input.GetC();
 
-                if(m_input.LastRead() <= 0)
+                if (m_input.LastRead() <= 0)
                     return wxEOT;
                 if (m_allowMBconversion)
                 {
                     int retlen = (int) m_conv->MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
-                    if(retlen >= 0) // res == 0 could happen for '\0' char
+                    if (retlen >= 0) // res == 0 could happen for '\0' char
                         return wbuf[0];
                 }
                 else
@@ -69,7 +69,7 @@ class cbTextInputStream : public wxTextInputStream
         #else
             m_lastBytes[0] = m_input.GetC();
 
-            if(m_input.LastRead() <= 0)
+            if (m_input.LastRead() <= 0)
                 return wxEOT;
 
             return m_lastBytes[0];
@@ -85,7 +85,7 @@ class cbTextInputStream : public wxTextInputStream
             while ( m_input.CanRead() && !m_input.Eof() )
             {
                 wxChar c = NextChar();
-                if(m_input.LastRead() <= 0)
+                if (m_input.LastRead() <= 0)
                     break;
 
                 if ( !m_input )
@@ -152,16 +152,16 @@ void PipedProcess::SendString(const wxString& text)
 void PipedProcess::ForfeitStreams()
 {
     char buf[4096];
-    if (IsErrorAvailable())
+    if ( IsErrorAvailable() )
     {
         wxInputStream *in = GetErrorStream();
-        while(in->Read(&buf, sizeof(buf)).LastRead())
+        while (in->Read(&buf, sizeof(buf)).LastRead())
             ;
     }
-    if (IsInputAvailable())
+    if ( IsInputAvailable() )
     {
         wxInputStream *in = GetInputStream();
-        while(in->Read(&buf, sizeof(buf)).LastRead())
+        while (in->Read(&buf, sizeof(buf)).LastRead())
             ;
     }
 }

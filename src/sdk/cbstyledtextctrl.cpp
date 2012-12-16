@@ -137,7 +137,7 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
     m_lastSelectedText = GetSelectedText();
     bool emulateDwellStart = false;
 
-    switch (event.GetKeyCode())
+    switch ( event.GetKeyCode() )
     {
         case _T('I'):
         {
@@ -204,6 +204,7 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
             emulateDwellStart = true;
         }
         break;
+        default: break;
     }
 
     if (event.ControlDown() && !emulateDwellStart)
@@ -225,7 +226,7 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
         case _T('('):   // ( for wxGTK
 #endif
         {
-            if (!AllowTabSmartJump())
+            if ( !AllowTabSmartJump() )
                 break;
 
             wxChar ch = keyCode;
@@ -268,6 +269,7 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
             m_tabSmartJump = false;
         }
         break;
+        default: break;
     }
 
     HighlightRightBrace();

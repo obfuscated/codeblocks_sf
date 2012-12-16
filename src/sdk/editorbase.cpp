@@ -28,7 +28,7 @@
 #include "cbstyledtextctrl.h"
 
 // needed for initialization of variables
-int editorbase_RegisterId(int id)
+inline int editorbase_RegisterId(int id)
 {
     wxRegisterId(id);
     return id;
@@ -176,14 +176,15 @@ bool EditorBase::QueryClose()
         msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), GetFilename().c_str());
         switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
-        case wxID_YES:
-            if (!Save())
+            case wxID_YES:
+                if (!Save())
+                    return false;
+                break;
+            case wxID_NO:
+                break;
+            case wxID_CANCEL:
+            default:
                 return false;
-            break;
-        case wxID_NO:
-            break;
-        case wxID_CANCEL:
-            return false;
         }
         SetModified(false);
     }

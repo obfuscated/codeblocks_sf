@@ -174,10 +174,11 @@ wxString CompileTargetBase::SuggestOutputFilename()
     switch (m_TargetType)
     {
         case ttConsoleOnly: // fall through
-        case ttExecutable:  suggestion = GetExecutableFilename(); break;
-        case ttDynamicLib:  suggestion = GetDynamicLibFilename(); break;
-        case ttStaticLib:   suggestion = GetStaticLibFilename();  break;
-        case ttNative:      suggestion = GetNativeFilename();     break;
+        case ttExecutable:   suggestion = GetExecutableFilename(); break;
+        case ttDynamicLib:   suggestion = GetDynamicLibFilename(); break;
+        case ttStaticLib:    suggestion = GetStaticLibFilename();  break;
+        case ttNative:       suggestion = GetNativeFilename();     break;
+        case ttCommandsOnly: // fall through
         default:
             suggestion.Clear();
             break;
@@ -305,6 +306,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 filename << fname.GetFullName();
             break;
         }
+        case ttCommandsOnly: // fall through
         default:
             filename.Clear();
             break;

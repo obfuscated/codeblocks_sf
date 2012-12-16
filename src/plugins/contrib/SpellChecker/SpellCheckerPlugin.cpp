@@ -184,7 +184,7 @@ void SpellCheckerPlugin::ConfigurePersonalDictionary()
         hsi->OpenPersonalDictionary(m_sccfg->GetPersonalDictionaryFilename());
 }
 
-void SpellCheckerPlugin::OnRelease(bool appShutDown)
+void SpellCheckerPlugin::OnRelease(cb_unused bool appShutDown)
 {
     // do de-initialization for your plugin
     // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
@@ -273,7 +273,7 @@ void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
         subMenu->Append(idCamelCase, _("CamelCase"), _("Make selection CamelCase"));
     }
 }
-void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
 {
     //Some library module is ready to display a pop-up menu.
     //Check the parameter \"type\" and see which module it is
@@ -369,7 +369,7 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, co
     }
 }
 
-bool SpellCheckerPlugin::BuildToolBar(wxToolBar* toolBar)
+bool SpellCheckerPlugin::BuildToolBar(cb_unused wxToolBar* toolBar)
 {
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
@@ -380,7 +380,7 @@ bool SpellCheckerPlugin::BuildToolBar(wxToolBar* toolBar)
     return false;
 }
 
-void SpellCheckerPlugin::OnSpelling(wxCommandEvent &event)
+void SpellCheckerPlugin::OnSpelling(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( !ed ) return;
@@ -397,7 +397,7 @@ void SpellCheckerPlugin::OnUpdateSpelling(wxUpdateUIEvent &event)
     else
         event.Enable(false);
 }
-void SpellCheckerPlugin::OnThesaurus(wxCommandEvent &event)
+void SpellCheckerPlugin::OnThesaurus(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( !ed ) return;
@@ -446,7 +446,7 @@ void SpellCheckerPlugin::OnUpdateThesaurus(wxUpdateUIEvent &event)
     else
         event.Enable(false);
 }
-void SpellCheckerPlugin::OnCamelCase(wxCommandEvent &event)
+void SpellCheckerPlugin::OnCamelCase(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed || !m_pSpellChecker->IsInitialized()) return;
@@ -610,7 +610,7 @@ void SpellCheckerPlugin::OnReplaceBySuggestion(wxCommandEvent &event)
     m_wordstart = -1;
     m_suggestions.Empty();
 }
-void SpellCheckerPlugin::OnMoreSuggestions(wxCommandEvent &event)
+void SpellCheckerPlugin::OnMoreSuggestions(cb_unused wxCommandEvent &event)
 {
     if ( m_wordstart == -1 || m_wordend == -1 ) return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -650,7 +650,7 @@ cbConfigurationPanel *SpellCheckerPlugin::GetConfigurationPanel(wxWindow* parent
     return new SpellCheckSettingsPanel(parent, m_sccfg);
 }
 
-void SpellCheckerPlugin::OnAddToPersonalDictionary(wxCommandEvent &event)
+void SpellCheckerPlugin::OnAddToPersonalDictionary(cb_unused wxCommandEvent &event)
 {
     if ( m_wordstart == -1 || m_wordend == -1 ) return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();

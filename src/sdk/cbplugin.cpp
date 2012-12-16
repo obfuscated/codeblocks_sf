@@ -364,7 +364,7 @@ cbDebuggerPlugin::SyncEditorResult cbDebuggerPlugin::SyncEditor(const wxString& 
     }
 }
 
-bool HasBreakpoint(cbDebuggerPlugin &plugin, wxString const &filename, int line)
+inline bool HasBreakpoint(cbDebuggerPlugin &plugin, wxString const &filename, int line)
 {
     int count = plugin.GetBreakpointsCount();
     for (int ii = 0; ii < count; ++ii)
@@ -662,6 +662,7 @@ bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDi
             ConvertDirectory(out);
             break;
 
+        case ttCommandsOnly: // fall through:
         default:
             Log(_("Unsupported target type (Project -> Properties -> Build Targets -> Type)"), Logger::error);
             return false;

@@ -105,9 +105,9 @@ void *ThreadSearchThread::Entry()
     if ( m_FindData.MustSearchInWorkspace() == true )
     {
         ProjectsArray* pProjectsArray = Manager::Get()->GetProjectManager()->GetProjects();
-        for ( size_t i=0; i < pProjectsArray->GetCount(); ++i )
+        for ( size_t j=0; j < pProjectsArray->GetCount(); ++j )
         {
-            AddProjectFiles(m_FilePaths, *pProjectsArray->Item(i));
+            AddProjectFiles(m_FilePaths, *pProjectsArray->Item(j));
             if ( TestDestroy() == true ) return 0;
         }
     }

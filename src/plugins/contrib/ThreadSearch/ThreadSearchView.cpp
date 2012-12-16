@@ -292,6 +292,8 @@ void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
         findData.SetRegEx(event.IsChecked());
         m_ThreadSearchPlugin.SetFindData(findData);
         break;
+    default:
+        break;
     }
 }
 
@@ -311,6 +313,8 @@ void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
         break;
     case idOptionRegEx:
         event.Check(findData.GetRegEx());
+        break;
+    default:
         break;
     }
 }

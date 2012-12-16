@@ -168,10 +168,10 @@ void SmartIndentHDL::DoIndent(cbEditor* ed, const wxString& langname) const
 
     if ( newlineindent )
     {
-        wxString indent;
-        Indent(stc, indent);
-        stc->InsertText(pos, indent);
-        stc->GotoPos(pos + indent.Length());
+        wxString nl_indent;
+        Indent(stc, nl_indent);
+        stc->InsertText(pos, nl_indent);
+        stc->GotoPos(pos + nl_indent.Length());
         stc->ChooseCaretX();
     }
     stc->EndUndoAction();

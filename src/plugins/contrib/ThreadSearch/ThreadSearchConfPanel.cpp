@@ -210,8 +210,8 @@ void ThreadSearchConfPanel::set_properties()
             radIndex = 1;
             break;
         }
+        case ThreadSearchViewManagerBase::TypeMessagesNotebook : // fall through
         default:
-        // case ThreadSearchViewManagerBase::TypeMessagesNotebook :
         {
             radIndex = 0;
             break;
@@ -227,8 +227,8 @@ void ThreadSearchConfPanel::set_properties()
             radIndex = 1;
             break;
         }
+        case ThreadSearchLoggerBase::TypeList : // fall through
         default:
-        // case ThreadSearchLoggerBase::TypeList :
         {
             radIndex = 0;
             break;

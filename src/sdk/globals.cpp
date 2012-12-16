@@ -245,7 +245,7 @@ wxString UnixFilename(const wxString& filename, wxPathFormat format)
 
 void QuoteStringIfNeeded(wxString& str)
 {
-    if (NeedQuotes(str))
+    if ( NeedQuotes(str) )
         str = wxString(_T("\"")) + str + _T("\"");
 }
 

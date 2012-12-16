@@ -51,13 +51,13 @@ void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent &event) const
     }
 }
 
-void OnlineSpellChecker::OnEditorChange(cbEditor* ctrl) const
+void OnlineSpellChecker::OnEditorChange(cb_unused cbEditor* ctrl) const
 {
     // clear internal states to force a refresh at next UpdateUI;
     alreadychecked = false;
 }
 
-const int OnlineSpellChecker::GetIndicator()const
+int OnlineSpellChecker::GetIndicator()const
 {
     const int theIndicator = 11;
     return theIndicator;

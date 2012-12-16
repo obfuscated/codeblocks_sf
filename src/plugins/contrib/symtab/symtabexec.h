@@ -46,8 +46,8 @@ class SymTabExecDlg : public wxScrollingDialog
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 public:
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-              SymTabExecDlg(wxWindow* parent) :
-                parent(parent), SymTabExecDlgLoaded(false),
+              SymTabExecDlg(wxWindow* parent_in) :
+                parent(parent_in), SymTabExecDlgLoaded(false),
                 m_ListCtrl(0L), m_TextHelp(0L),
                 m_TextMisc(0L) {}
   virtual    ~SymTabExecDlg();

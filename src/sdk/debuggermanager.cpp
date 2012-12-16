@@ -66,7 +66,7 @@ void cbWatch::RemoveChild(int index)
     m_children.erase(it);
 }
 
-bool TestIfMarkedForRemoval(cb::shared_ptr<cbWatch> watch)
+inline bool TestIfMarkedForRemoval(cb::shared_ptr<cbWatch> watch)
 {
     if(watch->IsRemoved())
         return true;
@@ -629,7 +629,7 @@ wxWindow* DebugTextCtrlLogger::CreateControl(wxWindow* parent)
 template<> DebuggerManager* Mgr<DebuggerManager>::instance = 0;
 template<> bool  Mgr<DebuggerManager>::isShutdown = false;
 
-void ReadActiveDebuggerConfig(wxString &name, int &configIndex)
+inline void ReadActiveDebuggerConfig(wxString &name, int &configIndex)
 {
     ConfigManager &config = *Manager::Get()->GetConfigManager(_T("debugger_common"));
     name = config.Read(wxT("active_debugger"), wxEmptyString);
@@ -639,7 +639,7 @@ void ReadActiveDebuggerConfig(wxString &name, int &configIndex)
         configIndex = std::max(0, config.ReadInt(wxT("active_debugger_config"), 0));
 }
 
-void WriteActiveDebuggerConfig(const wxString &name, int configIndex)
+inline void WriteActiveDebuggerConfig(const wxString &name, int configIndex)
 {
     ConfigManager &configMgr = *Manager::Get()->GetConfigManager(_T("debugger_common"));
     configMgr.Write(wxT("active_debugger"), name);
@@ -1087,7 +1087,7 @@ cbDebuggerPlugin* DebuggerManager::GetActiveDebugger()
     return m_activeDebugger;
 }
 
-void RefreshBreakpoints(cb_unused const cbDebuggerPlugin* plugin)
+inline void RefreshBreakpoints(cb_unused const cbDebuggerPlugin* plugin)
 {
     EditorManager *editorManager = Manager::Get()->GetEditorManager();
     int count = editorManager->GetEditorsCount();

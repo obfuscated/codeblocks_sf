@@ -77,6 +77,7 @@ void EditPairDlg::OnBrowse(cb_unused wxCommandEvent& event)
                 XRCCTRL(*this, "txtValue", wxTextCtrl)->SetValue(dir);
             break;
         }
+        case bmDisable: // fall through
         default: break;
     }
 }

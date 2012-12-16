@@ -468,7 +468,7 @@ void ThreadSearchLoggerList::OnSearchEnd()
         m_pListLog->SetColumnWidth(ii, wxLIST_AUTOSIZE);
 }
 
-int Compare(long a, long b)
+inline int Compare(long a, long b)
 {
     return (a < b ? -1 : (a > b ? 1 : 0));
 }
@@ -480,7 +480,7 @@ struct ItemLine
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-int wxCALLBACK SortLineAscending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortLineAscending(long item1, long item2, long /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -495,7 +495,7 @@ int wxCALLBACK SortLineAscending(long item1, long item2, long /*data*/)
     return Compare(i1.line, i2.line);
 }
 
-int wxCALLBACK SortLineDescending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortLineDescending(long item1, long item2, long /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -523,7 +523,7 @@ struct Item
         int c = directory.CompareTo(item.directory);
         if (c)
             return c;
-        c = filename.CompareTo(item.filename);
+            c = filename.CompareTo(item.filename);
 
         if (c)
             return c;
@@ -539,7 +539,7 @@ struct Item
     }
 };
 
-int wxCALLBACK SortDirectoryAscending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortDirectoryAscending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -554,7 +554,7 @@ int wxCALLBACK SortDirectoryAscending(long item1, long item2, long /*data*/)
     return i1.CompareDirectory(i2);
 }
 
-int wxCALLBACK SortDirectoryDescending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortDirectoryDescending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -569,7 +569,7 @@ int wxCALLBACK SortDirectoryDescending(long item1, long item2, long /*data*/)
     return i2.CompareDirectory(i1);
 }
 
-int wxCALLBACK SortFilenameAscending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortFilenameAscending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -584,7 +584,7 @@ int wxCALLBACK SortFilenameAscending(long item1, long item2, long /*data*/)
     return i1.CompareFile(i2);
 }
 
-int wxCALLBACK SortFilenameDescending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortFilenameDescending(long item1, long item2, long /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -607,7 +607,7 @@ struct ItemText
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-int wxCALLBACK SortTextAscending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortTextAscending(long item1, long item2, long /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
@@ -622,7 +622,7 @@ int wxCALLBACK SortTextAscending(long item1, long item2, long /*data*/)
     return i1.text.CompareTo(i2.text);
 }
 
-int wxCALLBACK SortTextDescending(long item1, long item2, long /*data*/)
+inline int wxCALLBACK SortTextDescending(long item1, long item2, long /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
@@ -794,6 +794,8 @@ void ThreadSearchLoggerList::OnColumnClick(wxListEvent& event)
 
                 delete [] items;
             }
+            break;
+        default:
             break;
     }
 }

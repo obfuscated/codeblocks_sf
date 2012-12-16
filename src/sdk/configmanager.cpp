@@ -61,7 +61,7 @@ wxString ConfigManager::temp_folder;
 bool ConfigManager::relo = 0;
 
 #ifdef __WINDOWS__
-wxString GetPortableConfigDir()
+inline wxString GetPortableConfigDir()
 {
     TCHAR buffer[MAX_PATH];
     if (::GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
@@ -535,6 +535,10 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         case sdDataUser:
             return ConfigManager::data_path_user;
 
+        case sdPath:
+        case sdAllUser:
+        case sdAllGlobal:
+        case sdAllKnown:
         default:
             return wxEmptyString;
     }

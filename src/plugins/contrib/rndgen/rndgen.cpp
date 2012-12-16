@@ -90,27 +90,27 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			wxString replace;
 			if(what == _T("ALNUM"))
 			{
-				for(int i = 0; i<arg; ++i)
+				for(int j = 0; j<arg; ++j)
 					replace += c[random() % c.length()];
 			}
 			if(what == _T("DIGITS"))
 			{
-				for(int i = 0; i<arg; ++i)
+				for(int j = 0; j<arg; ++j)
 					replace += c[random() % 10];
 			}
 			if(what == _T("CHARS"))
 			{
-				for(int i = 0; i<arg; ++i)
+				for(int j = 0; j<arg; ++j)
 					replace += c[10+ random() % (c.length() - 10)];
 			}
 			if(what == _T("UPPERCHARS"))
 			{
-				for(int i = 0; i<arg; ++i)
+				for(int j = 0; j<arg; ++j)
 					replace += c[36 + random() % 26];
 			}
 			if(what == _T("LOWERCHARS"))
 			{
-				for(int i = 0; i<arg; ++i)
+				for(int j = 0; j<arg; ++j)
 					replace += c[10 + random() % 26];
 			}
 			s.Replace(search, replace, false);

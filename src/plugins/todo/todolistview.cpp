@@ -206,6 +206,8 @@ void ToDoListView::Parse()
             }
             break;
         }
+        default:
+            break;
     }
     FillList();
 }
@@ -333,6 +335,8 @@ void ToDoListView::SortList()
                     break;
                 case 5: // filename
                     swap = item1.filename.CmpNoCase(item2.filename);
+                    break;
+                default:
                     break;
             }// switch
 

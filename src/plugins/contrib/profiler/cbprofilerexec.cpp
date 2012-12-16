@@ -360,8 +360,8 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
             // manually parse for space positions
             if (need_parsing)
             {
-                int count=0; int i=0; int len = TOKEN.Len();
-                while (i < len && count < 6) {
+                int cnt=0; int i=0; int len = TOKEN.Len();
+                while (i < len && cnt < 6) {
                     // we start with spaces
                     while (TOKEN[i] == ' ' && ++i < len);
                     if (i>=len) break;
@@ -369,7 +369,7 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
                     while (TOKEN[i] != ' ' && ++i < len);
                     if (i>=len) break;
                     // found a new space position
-                    spacePos[count++] = i;
+                    spacePos[cnt++] = i;
                 }
             }
         }

@@ -52,7 +52,7 @@
 template<> PluginManager* Mgr<PluginManager>::instance = 0;
 template<> bool  Mgr<PluginManager>::isShutdown = false;
 
-void VersionStringToNumbers(const wxString& version, long* major, long* minor, long* release)
+inline void VersionStringToNumbers(const wxString& version, long* major, long* minor, long* release)
 {
     wxString majorS = version.BeforeFirst(_T('.')); // 6.3.2 -> 6
     wxString minorS = version.AfterFirst(_T('.')); // 6.3.2 -> 3.2
@@ -67,7 +67,7 @@ void VersionStringToNumbers(const wxString& version, long* major, long* minor, l
 }
 
 // returns -1 if new is less then old, 0 if equal and 1 if new is greater than old
-int CompareVersions(const wxString& new_version, const wxString& old_version)
+inline int CompareVersions(const wxString& new_version, const wxString& old_version)
 {
     long new_major, new_minor, new_release;
     long old_major, old_minor, old_release;
@@ -98,7 +98,7 @@ namespace LibLoader
     typedef std::map<wxString, RefCountedLib> Libs;
     Libs s_Libs;
 
-    wxDynamicLibrary* LoadLibrary(const wxString& filename)
+    inline wxDynamicLibrary* LoadLibrary(const wxString& filename)
     {
         Libs::iterator it = s_Libs.find(filename);
         if (it != s_Libs.end())
@@ -115,7 +115,7 @@ namespace LibLoader
         return it->second.lib;
     }
 
-    void RemoveLibrary(wxDynamicLibrary* lib)
+    inline void RemoveLibrary(wxDynamicLibrary* lib)
     {
         Libs::iterator it;
         for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
@@ -140,7 +140,7 @@ namespace LibLoader
         // (or had wrong refcounting)
     }
 
-    void Cleanup()
+    inline void Cleanup()
     {
         Libs::iterator it;
         for (it = s_Libs.begin(); it != s_Libs.end(); ++it)
