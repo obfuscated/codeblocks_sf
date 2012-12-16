@@ -60,7 +60,7 @@ CompilerFlagDlg::~CompilerFlagDlg()
     // dtor
 }
 
-void CompilerFlagDlg::OnAdvancedOption(wxCommandEvent& event)
+void CompilerFlagDlg::OnAdvancedOption(cb_unused wxCommandEvent& event)
 {
     if (ExclusiveToggle->GetValue())
         ExclusiveToggle->SetLabel(_("True"));

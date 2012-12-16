@@ -226,6 +226,7 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
                 if (m_LibDirs.IsEmpty())
                     AddPath(value, sm);
                 break;
+            case none: // fall-through
             default:
                 break;
             }
@@ -286,6 +287,7 @@ bool CompilerXML::AddPath(const wxString& pth, SearchMode sm, int rmDirs)
     case lib:
         AddLibDir(path);
         break;
+    case none: // fall-through
     default:
         break;
     }

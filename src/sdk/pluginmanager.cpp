@@ -1258,7 +1258,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     return 0;
 }
 
-int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
+inline int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
 {
     return (*first)->GetConfigurationPriority() - (*second)->GetConfigurationPriority();
 }

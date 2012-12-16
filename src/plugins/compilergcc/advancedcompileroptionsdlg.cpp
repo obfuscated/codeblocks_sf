@@ -30,7 +30,7 @@
 //        meaning also the changes here should not be applied, but as it is now : too late, applied (TO FIX)
 
 
-wxString ControlCharsToString(const wxString& src)
+inline wxString ControlCharsToString(const wxString& src)
 {
     wxString ret = src;
     ret.Replace(_T("\t"), _T("\\t"));

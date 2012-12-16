@@ -150,6 +150,8 @@ void Autosave::SaveProject(cbProject *p, int method)
             }
             break;
         }
+        default:
+            break;
     }
 }
 
@@ -192,6 +194,8 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         workspace->SetModified(true);
                         break;
                     }
+                    default:
+                        break;
                 }
             }
         }
@@ -250,6 +254,8 @@ void Autosave::OnTimer(wxTimerEvent& e)
                             ed->SetModified(); // the "real" file has not been saved!
                             break;
                         }
+                        default:
+                            break;
                     }
                 }
 

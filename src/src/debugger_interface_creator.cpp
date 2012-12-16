@@ -18,7 +18,7 @@
 #include "threadsdlg.h"
 #include "watchesdlg.h"
 
-void RemoveDockWindow(wxWindow *window)
+inline void RemoveDockWindow(wxWindow *window)
 {
     if (window)
     {

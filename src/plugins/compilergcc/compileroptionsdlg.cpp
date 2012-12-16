@@ -297,15 +297,15 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
                      "If you click \"Cancel\", the project/target will remain configured for\n"
                      "that compiler and consequently can not be configured and will not be built."),
                     CompilerId.wx_str());
-        Compiler* compiler = 0;
+        Compiler* comp = 0;
         if ((m_pTarget && m_pTarget->SupportsCurrentPlatform()) || (!m_pTarget && m_pProject))
-            compiler = CompilerFactory::SelectCompilerUI(msg);
+            comp = CompilerFactory::SelectCompilerUI(msg);
 
-        if (compiler)
+        if (comp)
         {   // a new compiler was chosen, proceed as if the user manually selected another compiler
             // that means set the compiler selection list accordingly
             // and go directly to (On)CompilerChanged
-            int NewCompilerIdx = CompilerFactory::GetCompilerIndex(compiler);
+            int NewCompilerIdx = CompilerFactory::GetCompilerIndex(comp);
             DoFillCompilerSets(NewCompilerIdx);
             wxCommandEvent Dummy;
             OnCompilerChanged(Dummy);
@@ -409,7 +409,7 @@ void CompilerOptionsDlg::DoSaveCompilerDependentSettings()
     m_bFlagsDirty = false;
 } // DoSaveCompilerDependentSettings
 
-void ArrayString2ListBox(const wxArrayString& array, wxListBox* control)
+inline void ArrayString2ListBox(const wxArrayString& array, wxListBox* control)
 {
     control->Clear();
     int count = array.GetCount();
@@ -420,7 +420,7 @@ void ArrayString2ListBox(const wxArrayString& array, wxListBox* control)
     }
 } // ArrayString2ListBox
 
-void ListBox2ArrayString(wxArrayString& array, const wxListBox* control)
+inline void ListBox2ArrayString(wxArrayString& array, const wxListBox* control)
 {
     array.Clear();
     int count = control->GetCount();
@@ -705,7 +705,7 @@ void CompilerOptionsDlg::TextToOptions()
     m_LinkLibs.Clear();
 } // TextToOptions
 
-void ArrayString2TextCtrl(const wxArrayString& array, wxTextCtrl* control)
+inline void ArrayString2TextCtrl(const wxArrayString& array, wxTextCtrl* control)
 {
     control->Clear();
     int count = array.GetCount();
@@ -719,7 +719,7 @@ void ArrayString2TextCtrl(const wxArrayString& array, wxTextCtrl* control)
     }
 } // ArrayString2TextCtrl
 
-void DoGetCompileOptions(wxArrayString& array, const wxTextCtrl* control)
+inline void DoGetCompileOptions(wxArrayString& array, const wxTextCtrl* control)
 {
 /* NOTE (mandrav#1#): Under Gnome2, wxTextCtrl::GetLineLength() returns always 0,
                       so wxTextCtrl::GetLineText() is always empty...
@@ -1585,6 +1585,9 @@ void CompilerOptionsDlg::AutoDetectCompiler()
             }
         }
         break;
+
+        default:
+            break;
     }
     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->SetValue(compiler->GetMasterPath());
     XRCCTRL(*this, "lstExtraPaths", wxListBox)->Clear();
@@ -1829,6 +1832,8 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
                 break;
             case 2: // resource compiler dirs
                 base->AddResourceIncludeDir(control->GetString(selections[i]));
+                break;
+            default:
                 break;
         }
     }

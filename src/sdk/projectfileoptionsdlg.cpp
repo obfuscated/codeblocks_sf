@@ -53,7 +53,7 @@ struct SLanguageDef
     wxString      multiple_line_comment[2];
 };
 
-void AnalyseLine(const SLanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
+inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
 {
     int first_single_line_comment, first_multi_line_comment_begin, first_multi_line_comment_end;
 
@@ -114,9 +114,10 @@ void AnalyseLine(const SLanguageDef &language, wxString line, bool &comment, boo
     }
 }
 
-void CountLines(wxFileName filename, const SLanguageDef &language,
-                long int &code_lines, long int &codecomments_lines,
-                long int &comment_lines, long int &empty_lines, long int &total_lines)
+inline void CountLines(wxFileName filename, const SLanguageDef &language,
+                       long int &code_lines, long int &codecomments_lines,
+                       long int &comment_lines, long int &empty_lines,
+                       long int &total_lines)
 {
     wxTextFile file;
     if (file.Open(filename.GetFullPath(), wxConvFile))

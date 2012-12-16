@@ -171,7 +171,7 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
     EndModal(wxID_OK);
 }
 
-size_t FindPageIndex(wxTreebook *treebook, wxWindow *page)
+inline size_t FindPageIndex(wxTreebook *treebook, wxWindow *page)
 {
     size_t pageIndex = treebook->GetPageCount();
     for (size_t p = 0; p < treebook->GetPageCount(); ++p)

@@ -520,8 +520,8 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                 wxArrayString options;
                 if (ParseResponseFile(m_pProject->GetBasePath() + opt.Mid(1), options))
                 {
-                    for (size_t i = 0; i < options.GetCount(); ++i)
-                        ProcessCompilerOptions(target, options[i]);
+                    for (size_t j = 0; j < options.GetCount(); ++j)
+                        ProcessCompilerOptions(target, options[j]);
                 }
                 else
                 { // Fallback: Remember GCC will process Pre-processor macros only
@@ -602,8 +602,8 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 wxArrayString options;
                 if (ParseResponseFile(m_pProject->GetBasePath() + opt.Mid(1), options))
                 {
-                    for (size_t i = 0; i < options.GetCount(); ++i)
-                        ProcessLinkerOptions(target, options[i]);
+                    for (size_t j = 0; j < options.GetCount(); ++j)
+                        ProcessLinkerOptions(target, options[j]);
                 } // else ignore
             }
             else if (opt.Find(_T(".lib")) == -1) // don't add linking lib (added below, in common options)

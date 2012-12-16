@@ -110,6 +110,10 @@ cbProject* TemplateManager::NewFromTemplate(NewFromTemplateDlg& dlg, wxString* p
         switch (wiz->GetOutputType(dlg.GetWizardIndex()))
         {
             case totProject: prj = dynamic_cast<cbProject*>(ret); break;
+            case totTarget: // fall-though
+            case totFiles:  // fall-though
+            case totCustom: // fall-though
+            case totUser:   // fall-though
             default: break;
         }
     }

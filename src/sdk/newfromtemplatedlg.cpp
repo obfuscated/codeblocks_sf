@@ -192,9 +192,9 @@ void NewFromTemplateDlg::BuildCategoriesFor(TemplateOutputType otype, wxChoice* 
 }
 
 #if wxCHECK_VERSION(2, 9, 1)
-int wxCALLBACK SortTemplates(long item1, long item2, cb_unused wxIntPtr sortData)
+inline int wxCALLBACK SortTemplates(long item1, long item2, cb_unused wxIntPtr sortData)
 #else
-int wxCALLBACK SortTemplates(long item1, long item2, cb_unused long sortData)
+inline int wxCALLBACK SortTemplates(long item1, long item2, cb_unused long sortData)
 #endif
 {
     ListItemData* data1 = reinterpret_cast<ListItemData*>(item1);

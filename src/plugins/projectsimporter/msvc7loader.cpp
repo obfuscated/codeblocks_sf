@@ -400,12 +400,12 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             arr = GetArrayFromString(tmp, _T(","));
             if (arr.GetCount() == 1) // if it fails, try with semicolon
                 arr = GetArrayFromString(tmp, _T(";"));
-            for (unsigned int i = 0; i < arr.GetCount(); ++i)
+            for (unsigned int j = 0; j < arr.GetCount(); ++j)
             {
                 if (m_ConvertSwitches)
-                    bt->AddCompilerOption(wxString(_T("-D")) + arr[i]);
+                    bt->AddCompilerOption(wxString(_T("-D")) + arr[j]);
                 else
-                    bt->AddCompilerOption(wxString(_T("/D")) + arr[i]);
+                    bt->AddCompilerOption(wxString(_T("/D")) + arr[j]);
             }
 
             tmp = cbC2U(tool->Attribute("WarningLevel"));
@@ -538,9 +538,9 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             {
                 wxArrayString FIfiles;
                 ParseInputString(tmp, FIfiles);
-                for (size_t i = 0; i < FIfiles.GetCount(); ++i)
-                    bt->AddCompilerOption(m_ConvertSwitches? _T("-include ") + ReplaceMSVCMacros(FIfiles[i])
-                                          : _T("/FI ") + ReplaceMSVCMacros(FIfiles[i]));
+                for (size_t j = 0; j < FIfiles.GetCount(); ++j)
+                    bt->AddCompilerOption(m_ConvertSwitches? _T("-include ") + ReplaceMSVCMacros(FIfiles[j])
+                                          : _T("/FI ") + ReplaceMSVCMacros(FIfiles[j]));
             }
 
         }

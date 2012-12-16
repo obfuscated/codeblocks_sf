@@ -145,14 +145,15 @@ bool ToolsManager::Execute(const cbTool* tool)
             pipe = false; // no need to pipe output channels...
             break;
 
-        case cbTool::LAUNCH_HIDDEN:
-            break; // use the default values of pipe and flags...
-
         case cbTool::LAUNCH_VISIBLE:
         case cbTool::LAUNCH_VISIBLE_DETACHED:
             flags |= wxEXEC_NOHIDE;
             pipe = false;
             break;
+
+        case cbTool::LAUNCH_HIDDEN: // fall-through
+        default:
+            break; // use the default values of pipe and flags...
     }
 
     if (tool->GetLaunchOption() == cbTool::LAUNCH_VISIBLE_DETACHED)

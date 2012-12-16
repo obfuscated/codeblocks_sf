@@ -66,7 +66,7 @@
 #endif
 
 #ifndef __WXMAC__
-wxString GetResourcesDir(){ return wxEmptyString; };
+inline wxString GetResourcesDir(){ return wxEmptyString; };
 #endif
 
 namespace
@@ -359,6 +359,8 @@ void CodeBlocksApp::InitAssociations()
                 break;
             case ASC_ASSOC_DLG_YES_ALL_FILES:
                 Associations::SetAll();
+                break;
+            default:
                 break;
             };
         }

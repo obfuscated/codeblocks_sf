@@ -234,6 +234,7 @@ int Foo(bool isBar) {\n\
       XRCCTRL(*this, "rbLisp", wxRadioButton)->SetValue(true);
       break;
 #undef AS_LISP
+    case aspsCustom: // fall-through
     default:
       XRCCTRL(*this, "rbCustom", wxRadioButton)->SetValue(true);
       break;

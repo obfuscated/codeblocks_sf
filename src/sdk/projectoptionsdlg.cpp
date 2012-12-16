@@ -295,6 +295,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
                 browseO->Enable(true);
                 break;
 
+            case ttCommandsOnly: // fall-through
             default: // for commands-only targets
                 txt->SetValue(_T(""));
                 txt->Enable(false);
@@ -522,7 +523,8 @@ void ProjectOptionsDlg::OnProjectTypeChanged(cb_unused wxCommandEvent& event)
             txtI->SetValue(_T(""));
             txtD->SetValue(_T(""));
             break;
-        case ttCommandsOnly:
+        case ttCommandsOnly: // fall-through
+        default:
             txt->SetValue(_T(""));
             txtI->SetValue(_T(""));
             txtD->SetValue(_T(""));

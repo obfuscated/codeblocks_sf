@@ -23,7 +23,7 @@
 #include "crashhandler.h"
 #include <shlobj.h>
 
-void CrashHandlerSaveEditorFiles(wxString& buf)
+inline void CrashHandlerSaveEditorFiles(wxString& buf)
 {
     wxString path;
     //get the "My Files" folder
@@ -117,6 +117,8 @@ LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
 
         case IDRETRY:
         return EXCEPTION_CONTINUE_EXECUTION;
+        break;
+        default:
         break;
     }
     return EXCEPTION_CONTINUE_SEARCH;

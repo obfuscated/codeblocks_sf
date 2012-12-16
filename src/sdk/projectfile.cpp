@@ -402,6 +402,9 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 object_file_flat_native = object_file_native;
                 break;
             }
+
+            default:
+                break;
         }
     }
     else

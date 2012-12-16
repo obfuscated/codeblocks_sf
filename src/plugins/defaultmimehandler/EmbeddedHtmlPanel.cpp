@@ -36,7 +36,7 @@ const long EmbeddedHtmlPanel::ID_HTMLWINDOW1 = wxNewId();
 
 // (shamelessly stolen from help plugin)
 // build all HTML font sizes (1..7) from the given base size
-void wxBuildFontSizes(int *sizes, int size)
+inline void wxBuildFontSizes(int *sizes, int size)
 {
     // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
     // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
@@ -51,7 +51,7 @@ void wxBuildFontSizes(int *sizes, int size)
 }
 
 // (shamelessly stolen from help plugin)
-int wxGetDefaultHTMLFontSize()
+inline int wxGetDefaultHTMLFontSize()
 {
     // base the default font size on the size of the default system font but
     // also ensure that we have a font of reasonable size, otherwise small HTML

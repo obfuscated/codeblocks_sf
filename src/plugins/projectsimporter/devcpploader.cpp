@@ -113,11 +113,11 @@ bool DevCppLoader::Open(const wxString& filename)
     // read resource files
     dev->Read(_T("Resources"), &tmp, _T(""));
     array = GetArrayFromString(tmp, _T(",")); // make sure that this is comma-separated
-    for (unsigned int i = 0; i < array.GetCount(); ++i)
+    for (unsigned int j = 0; j < array.GetCount(); ++j)
     {
-        if (array[i].IsEmpty())
+        if (array[j].IsEmpty())
             continue;
-        tmp = array[i];
+        tmp = array[j];
         m_pProject->AddFile(0, tmp, true, true);
     }
 

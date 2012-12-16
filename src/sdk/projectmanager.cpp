@@ -935,7 +935,8 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
         {
             case wxID_YES:    if (!proj->Save()) return false;
             case wxID_NO:     break;
-            case wxID_CANCEL: return false;
+            case wxID_CANCEL: // fall-through
+            default:          return false;
         }
     }
     return true;
@@ -2199,6 +2200,10 @@ void FindFiles(wxArrayString &resultFiles, wxTreeCtrl &tree, wxTreeItemId item)
                 }
             }
             break;
+        case FileTreeData::ftdkUndefined:     // fall-through
+        case FileTreeData::ftdkProject:       // fall-through
+        case FileTreeData::ftdkVirtualGroup:  // fall-through
+        case FileTreeData::ftdkVirtualFolder: // fall-through
         default:
             for (FilesList::iterator it = ftd->GetProject()->GetFilesList().begin(); it != ftd->GetProject()->GetFilesList().end(); ++it)
                 resultFiles.Add(((ProjectFile*)*it)->relativeFilename);

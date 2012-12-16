@@ -238,6 +238,8 @@ void InfoWindow::OnTimer(cb_unused wxTimerEvent& e)
             Destroy();
         }
         break;
+    default:
+        break;
     };
 };
 

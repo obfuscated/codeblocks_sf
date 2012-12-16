@@ -235,7 +235,7 @@ void AbbreviationsConfigPanel::FillKeywords()
     }
 }
 
-void AbbreviationsConfigPanel::OnLanguageSelect(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnLanguageSelect(cb_unused wxCommandEvent& event)
 {
     LanguageSelected();
 }
@@ -250,7 +250,7 @@ void AbbreviationsConfigPanel::LanguageSelected()
     m_LastAutoCompLanguage = lang;
 }
 
-void AbbreviationsConfigPanel::OnLanguageAdd(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnLanguageAdd(cb_unused wxCommandEvent& event)
 {
     LanguageAdd();
 }
@@ -283,7 +283,7 @@ int AbbreviationsConfigPanel::LanguageAdd()
     return 0;
 }
 
-void AbbreviationsConfigPanel::OnLanguageCopy(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnLanguageCopy(cb_unused wxCommandEvent& event)
 {
     wxString langCopy = m_LanguageCmb->GetValue();
     if (LanguageAdd() == -1)
@@ -298,7 +298,7 @@ void AbbreviationsConfigPanel::OnLanguageCopy(wxCommandEvent& event)
     FillKeywords();
 }
 
-void AbbreviationsConfigPanel::OnLanguageDelete(wxCommandEvent& event)
+void AbbreviationsConfigPanel::OnLanguageDelete(cb_unused wxCommandEvent& event)
 {
     wxString lang = m_LanguageCmb->GetValue();
     if (lang.IsSameAs(defaultLanguageStr) || lang.IsSameAs(_T("Fortran")))

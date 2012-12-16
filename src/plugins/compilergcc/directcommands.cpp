@@ -276,6 +276,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                         + pfd.source_file_native );
             break;
 
+        case clogNone: // fall-through
         default:
             break;
     }
@@ -368,6 +369,7 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + filename);
                 break;
 
+            case clogNone: // fall-through
             default:
                 break;
         }
@@ -384,7 +386,9 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + linkerCmd);
                 break;
 
-            default:
+            case clogSimple: // fall-through
+            case clogNone:   // fall-through
+            default: // linker always simple log (if not full)
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking console executable: ") + exe_filename);
                 break;
         }
@@ -782,6 +786,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
 
+            case clogNone: // fall-through
             default: // linker always simple log (if not full)
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + output);
                 break;
