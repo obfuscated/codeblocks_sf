@@ -37,8 +37,6 @@ const wxString base_imgs[] =
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
 BEGIN_EVENT_TABLE(CompilerSettingsDlg, wxScrollingDialog)
-    EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), CompilerSettingsDlg::OnPageChanging)
-    EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), CompilerSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
 
 // This dialog initially contains only the batch-build settings.
@@ -54,8 +52,11 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     int sel = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0);
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
 
+    Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING,wxListbookEventHandler(CompilerSettingsDlg::OnPageChanging));
+    Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED, wxListbookEventHandler(CompilerSettingsDlg::OnPageChanged ));
+
     // tab "Batch builds"
-    if(platform::windows)
+    if (platform::windows)
         XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs));
     else
         XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
@@ -66,7 +67,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     if (!bbplugins.GetCount())
     {
         // defaults
-        if(platform::windows)
+        if (platform::windows)
             bbplugins.Add(_T("compiler.dll"));
         else
             bbplugins.Add(_T("libcompiler.so"));
