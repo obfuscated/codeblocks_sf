@@ -13,6 +13,7 @@
 #include <cbplugin.h> // for "class cbPlugin"
 #include <vector>
 #include <wx/string.h>
+#include  <wx/timer.h>
 
 class AlignerMenuEntry
 {
