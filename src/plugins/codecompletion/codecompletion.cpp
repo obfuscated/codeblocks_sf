@@ -1278,6 +1278,7 @@ void CodeCompletion::CodeCompleteIncludes()
                     if (file.StartsWith(dir))
                     {
                         header = file.Mid(dir.Len());
+                        header.Replace(_T("\\"), _T("/"));
                         break;
                     }
                 }
@@ -1289,12 +1290,11 @@ void CodeCompletion::CodeCompleteIncludes()
 
                     wxFileName fn(file);
                     fn.MakeRelativeTo(curPath);
-                    header = fn.GetFullPath();
+                    header = fn.GetFullPath(wxPATH_UNIX);
                 }
 
                 if (header.StartsWith(filename))
                 {
-                    header.Replace(_T("\\"), _T("/"), true);
                     files.insert(header);
                     if (files.size() > maxFiles)
                         break;
@@ -1443,8 +1443,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
     {   TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED")); }
 
-    if ((event.GetKey() == '.') && control->AutoCompActive())
+    if (   (event.GetKey() == '.') && control->AutoCompActive()
+        && !control->IsPreprocessor(control->GetStyleAt(control->GetCurrentPos())) )
+    {
         control->AutoCompCancel();
+    }
 
     if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
@@ -1632,7 +1635,15 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         {
             int style = control->GetStyleAt(pos);
             TRACE(_T("Style at %d is %d (char '%c')"), pos, style, ch);
-            if (prevChar == _T('"') || prevChar == _T('<'))
+            // typed a period in an #include filename (do not change the auto-comp box)
+            // AutoComp has already been canceled above if not preprocessor
+            if (ch == _T('.') && control->AutoCompActive())
+            {
+                event.Skip();
+                return;
+            }
+            // can only start an #include filename within a preprocessor command
+            else if (prevChar == _T('"') || prevChar == _T('<'))
             {
                 if (style != wxSCI_C_PREPROCESSOR)
                 {
