@@ -36,12 +36,10 @@ const long Configuration::ID_BTN_ADD_GROUP = wxNewId();
 const long Configuration::ID_BTN_DELETE_GROUP = wxNewId();
 const long Configuration::ID_BTN_RENAME_GROUP = wxNewId();
 const long Configuration::ID_BTN_DEFAULTS = wxNewId();
-const long Configuration::ID_LBL_IDENTIFIERS = wxNewId();
 const long Configuration::ID_LST_IDENTIFIERS = wxNewId();
 const long Configuration::ID_BTN_ADD_IDENTIFIER = wxNewId();
 const long Configuration::ID_BTN_DELETE_IDENTIFIERS = wxNewId();
 const long Configuration::ID_BTN_CHANGE_IDENTIFIER = wxNewId();
-const long Configuration::ID_LBL_HEADERS = wxNewId();
 const long Configuration::ID_TXT_HEADERS = wxNewId();
 //*)
 
@@ -54,17 +52,26 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-Configuration::Configuration(wxWindow* parent,wxWindowID id)
+Configuration::Configuration(wxWindow* parent)
 {
   //(*Initialize(Configuration)
-  wxBoxSizer* sizDefaults;
+  wxBoxSizer* sizMain;
+  wxBoxSizer* sizHeaders;
+  wxBoxSizer* sizAddDeleteChange;
+  wxStaticBoxSizer* sizGroups;
+  wxStaticText* lblHeaders;
+  wxBoxSizer* sizIdentifiers;
+  wxBoxSizer* sizAddDeleteRename;
+  wxStaticBoxSizer* sizBindings;
+  wxBoxSizer* sizIdentifiersMain;
+  wxStaticText* lblIdentifiers;
 
-  Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+  Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizGroups = new wxStaticBoxSizer(wxVERTICAL, this, _("Groups"));
   m_Groups = new wxListBox(this, ID_LST_GROUPS, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LST_GROUPS"));
   m_Groups->SetToolTip(_("This is a list of all groups of bindings available to the plugin."));
-  sizGroups->Add(m_Groups, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizGroups->Add(m_Groups, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizAddDeleteRename = new wxBoxSizer(wxHORIZONTAL);
   m_AddGroup = new wxButton(this, ID_BTN_ADD_GROUP, _("Add"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_ADD_GROUP"));
   m_AddGroup->SetToolTip(_("Add a new group..."));
@@ -75,43 +82,39 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   m_RenameGroup = new wxButton(this, ID_BTN_RENAME_GROUP, _("Rename"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_RENAME_GROUP"));
   m_RenameGroup->SetToolTip(_("Rename the selected group..."));
   sizAddDeleteRename->Add(m_RenameGroup, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
-  sizGroups->Add(sizAddDeleteRename, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizDefaults = new wxBoxSizer(wxHORIZONTAL);
+  sizGroups->Add(sizAddDeleteRename, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_Defaults = new wxButton(this, ID_BTN_DEFAULTS, _("Defaults"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_DEFAULTS"));
-  sizDefaults->Add(m_Defaults, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizGroups->Add(sizDefaults, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizGroups->Add(m_Defaults, 0, wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizMain->Add(sizGroups, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizBindings = new wxStaticBoxSizer(wxVERTICAL, this, _("Bindings"));
-  sizIdentifiersHor = new wxBoxSizer(wxHORIZONTAL);
-  sizIdentifiersVert = new wxBoxSizer(wxVERTICAL);
-  lblIdentifiers = new wxStaticText(this, ID_LBL_IDENTIFIERS, _("Identifiers:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_IDENTIFIERS"));
-  sizIdentifiersVert->Add(lblIdentifiers, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizIdentifiersMain = new wxBoxSizer(wxVERTICAL);
+  lblIdentifiers = new wxStaticText(this, wxID_ANY, _("Identifiers:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+  sizIdentifiersMain->Add(lblIdentifiers, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizIdentifiers = new wxBoxSizer(wxHORIZONTAL);
   m_Identifiers = new wxListBox(this, ID_LST_IDENTIFIERS, wxDefaultPosition, wxSize(188,115), 0, 0, 0, wxDefaultValidator, _T("ID_LST_IDENTIFIERS"));
   m_Identifiers->SetToolTip(_("This is a list of all identifiers (tokens) available within the selected group."));
-  sizIdentifiers->Add(m_Identifiers, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizIdentifiers->Add(m_Identifiers, 1, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizAddDeleteChange = new wxBoxSizer(wxVERTICAL);
   m_AddIdentifier = new wxButton(this, ID_BTN_ADD_IDENTIFIER, _("Add"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_ADD_IDENTIFIER"));
   m_AddIdentifier->SetToolTip(_("Add a new identifier..."));
-  sizAddDeleteChange->Add(m_AddIdentifier, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAddDeleteChange->Add(m_AddIdentifier, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_DeleteIdentifier = new wxButton(this, ID_BTN_DELETE_IDENTIFIERS, _("Delete"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_DELETE_IDENTIFIERS"));
   m_DeleteIdentifier->SetToolTip(_("Delete the selected identifier..."));
-  sizAddDeleteChange->Add(m_DeleteIdentifier, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAddDeleteChange->Add(m_DeleteIdentifier, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_ChangeIdentifier = new wxButton(this, ID_BTN_CHANGE_IDENTIFIER, _("Change"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_CHANGE_IDENTIFIER"));
   m_ChangeIdentifier->SetToolTip(_("Change (rename) the selected identifier..."));
-  sizAddDeleteChange->Add(m_ChangeIdentifier, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizIdentifiers->Add(sizAddDeleteChange, 0, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizIdentifiersVert->Add(sizIdentifiers, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizIdentifiersHor->Add(sizIdentifiersVert, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizBindings->Add(sizIdentifiersHor, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAddDeleteChange->Add(m_ChangeIdentifier, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizIdentifiers->Add(sizAddDeleteChange, 0, wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizIdentifiersMain->Add(sizIdentifiers, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizBindings->Add(sizIdentifiersMain, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizHeaders = new wxBoxSizer(wxVERTICAL);
-  lblHeaders = new wxStaticText(this, ID_LBL_HEADERS, _("Headers:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_HEADERS"));
-  sizHeaders->Add(lblHeaders, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  lblHeaders = new wxStaticText(this, wxID_ANY, _("Headers:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+  sizHeaders->Add(lblHeaders, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_Headers = new wxTextCtrl(this, ID_TXT_HEADERS, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER|wxTE_MULTILINE, wxDefaultValidator, _T("ID_TXT_HEADERS"));
   m_Headers->SetToolTip(_("This is a list of all header files required for the selected identifier (token) within the selected group."));
-  sizHeaders->Add(m_Headers, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizBindings->Add(sizHeaders, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizMain->Add(sizBindings, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizHeaders->Add(m_Headers, 1, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizBindings->Add(sizHeaders, 1, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizMain->Add(sizBindings, 1, wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
@@ -143,6 +146,28 @@ Configuration::~Configuration()
   //(*Destroy(Configuration)
   //*)
 }// ~Configuration
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+bool Configuration::IdentifierOK(const wxString& Identifier)
+{
+  if ( wxString(g_alpha_chars).Find(Identifier.GetChar(0)) == wxNOT_FOUND )
+  {
+    cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
+    return false;
+  }
+
+  for ( size_t i=1; i<Identifier.Length(); i++ )
+  {
+    if ( wxString(g_alpha_numeric_chars).Find(Identifier.GetChar(i)) == wxNOT_FOUND )
+    {
+      cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
+      return false;
+    }
+  }
+
+  return true;
+}// IdentifierOK
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -258,9 +283,11 @@ void Configuration::OnBtnDeleteGroupClick(wxCommandEvent& /*event*/)
 {
   if ( cbMessageBox(_("Are you sure?"),_("Deleting group"),wxYES|wxNO) != wxID_YES )
     return;
+
   wxString GroupName = m_Groups->GetStringSelection();
   if ( GroupName.IsEmpty() )
     return;
+
   m_Groups->Delete(m_Groups->GetSelection());
   m_Bindings.m_Groups.erase(GroupName);
   SelectGroup(m_Groups->GetSelection());
@@ -276,11 +303,12 @@ void Configuration::OnRenameGroup(wxCommandEvent& /*event*/)
   wxString OldName = GroupName;
   if ( GroupName.IsEmpty() )
     return;
+
   GroupName = ::wxGetTextFromUser(_("Enter new group name"),_("Change group name"),GroupName);
   if ( GroupName.IsEmpty() )
     return;
-  int Index = m_Groups->FindString(GroupName);
 
+  int Index = m_Groups->FindString(GroupName);
   if ( Index != wxNOT_FOUND && Index != m_Groups->GetSelection() )
   {
     cbMessageBox(_("Group with this name already exists."),_T("Header Fixup"));
@@ -291,7 +319,7 @@ void Configuration::OnRenameGroup(wxCommandEvent& /*event*/)
   {
     if ( wxString(g_alpha_numeric_chars).Find(GroupName.GetChar(i)) == wxNOT_FOUND )
     {
-      cbMessageBox(_("Inalid group name, please use only alphanumeric characters or '_'."),_T("Header Fixup"));
+      cbMessageBox(_("Invalid group name, please use only alphanumeric characters or '_'."),_T("Header Fixup"));
       return;
     }
   }
@@ -342,20 +370,8 @@ void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& /*event*/)
     return;
   }
 
-  if ( wxString(g_alpha_chars).Find(Identifier.GetChar(0)) == wxNOT_FOUND )
-  {
-    cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
+  if ( !IdentifierOK(Identifier) )
     return;
-  }
-
-  for ( size_t i=1; i<Identifier.Length(); i++ )
-  {
-    if ( wxString(g_alpha_numeric_chars).Find(Identifier.GetChar(i)) == wxNOT_FOUND )
-    {
-      cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
-      return;
-    }
-  }
 
   Bindings::MappingsT& Map = * ((Bindings::MappingsT*)m_Groups->GetClientData(m_Groups->GetSelection()));
   wxArrayString& Headers = Map[Identifier];
@@ -370,9 +386,11 @@ void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& /*event*/)
 {
   if ( cbMessageBox(_("Are you sure?"),_("Deleting identifier"),wxYES|wxNO) != wxID_YES )
     return;
+
   wxString Identifier = m_Identifiers->GetStringSelection();
   if ( Identifier.IsEmpty() )
     return;
+
   m_Identifiers->Delete(m_Identifiers->GetSelection());
 
   Bindings::MappingsT& Map = * ((Bindings::MappingsT*)m_Groups->GetClientData(m_Groups->GetSelection()));
@@ -390,31 +408,20 @@ void Configuration::OnChangeIdentifier(wxCommandEvent& /*event*/)
   wxString OldIdent = Identifier;
   if ( Identifier.IsEmpty() )
     return;
+
   Identifier = ::wxGetTextFromUser(_("Enter new identifier"),_("Change identifier"),Identifier);
   if ( Identifier.IsEmpty() )
     return;
-  int Index = m_Identifiers->FindString(Identifier);
 
+  int Index = m_Identifiers->FindString(Identifier);
   if ( Index != wxNOT_FOUND && Index != m_Identifiers->GetSelection() )
   {
     cbMessageBox(_("Such identifier already exists."),_T("Header Fixup"));
     return;
   }
 
-  if ( wxString(g_alpha_chars).Find(Identifier.GetChar(0)) == wxNOT_FOUND )
-  {
-    cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
+  if ( !IdentifierOK(Identifier) )
     return;
-  }
-
-  for ( size_t i=1; i<Identifier.Length(); i++ )
-  {
-    if ( wxString(g_alpha_numeric_chars).Find(Identifier.GetChar(i)) == wxNOT_FOUND )
-    {
-      cbMessageBox(_("Please enter valid C++ identifier."),_T("Header Fixup"));
-      return;
-    }
-  }
 
   m_Identifiers->SetString(m_Identifiers->GetSelection(),Identifier);
   Bindings::MappingsT& Map = * ((Bindings::MappingsT*)m_Groups->GetClientData(m_Groups->GetSelection()));

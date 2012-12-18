@@ -123,8 +123,8 @@ wxString FileAnalysis::GetNextLine()
     m_CurrentLine++;
     return LineOfFile;
   }
-  else
-    return wxEmptyString;
+
+  return wxEmptyString;
 }
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -136,21 +136,23 @@ wxString FileAnalysis::GetEOL()
   // Detect end-of-line style to prevent inconsistent EOLs
   for ( size_t i=0; i<m_FileContent.Len(); i++ )
   {
-    if (   m_FileContent.GetChar(i)==_T('\n')
-        || m_FileContent.GetChar(i)==_T('\r') )
+    if (   m_FileContent.GetChar(i)!=_T('\n')
+        && m_FileContent.GetChar(i)!=_T('\r') )
     {
-      EOL = m_FileContent.GetChar(i);
-      if ( ++i<m_FileContent.Len() )
-      {
-        if (   m_FileContent.GetChar(i)==_T('\n')
-            || m_FileContent.GetChar(i)==_T('\r') )
-        {
-          if ( m_FileContent.GetChar(i) != EOL.GetChar(0) )
-            EOL << m_FileContent.GetChar(i);
-        }
-      }
-      break;
+      continue; // no EOL
     }
+
+    EOL = m_FileContent.GetChar(i);
+    if ( ++i<m_FileContent.Len() )
+    {
+      if (   m_FileContent.GetChar(i)==_T('\n')
+          || m_FileContent.GetChar(i)==_T('\r') )
+      {
+        if ( m_FileContent.GetChar(i) != EOL.GetChar(0) )
+          EOL << m_FileContent.GetChar(i);
+      }
+    }
+    break;
   }
 
   return EOL;
@@ -169,45 +171,44 @@ wxArrayString FileAnalysis::ParseForIncludes()
   {
     const wxString Line = m_LinesOfFile.Item(LineIdx);
     const wxRegEx RegEx(reInclude);
+
     wxString Include;
     if (RegEx.Matches(Line))
-    {
       Include = RegEx.GetMatch(Line, 1);
-    }
+
     // Include is empty if the RegEx did *not* match.
-    if (!Include.IsEmpty())
+    if (Include.IsEmpty()) continue; // nothing else to do...
+
+    if (m_Verbose)
+      m_Log << _T("- Include detected via RegEx: \"") << Include << _T("\".\n");
+    m_IncludedHeaders.Add(Include);
+
+    if (m_IsHeaderFile) continue; // nothing else to do...
+
+    // if it's a source file try to obtain the included header file
+    wxFileName FileToParseFile(m_FileName);
+    wxFileName IncludeFile(Include); // e.g. myheader.h
+    if ( !FileToParseFile.GetName().IsSameAs(IncludeFile.GetName()) ) continue;
+
+    if (m_Verbose)
+      m_Log << _T("- Recursing into \"") << IncludeFile.GetFullName() << _T("\" for more included headers.\n");
+
+    // "Recursion" -> do another file analysis on the header file
+    FileAnalysis fa(FileToParseFile.GetPath()+
+                    FileToParseFile.GetPathSeparator()+
+                    IncludeFile.GetFullName());
+    fa.LoadFile();
+    wxArrayString MoreIncludedHeaders = fa.ParseForIncludes();
+
+    // Only add headers that are not included by the source file
+    for ( size_t i = 0; i < MoreIncludedHeaders.GetCount(); ++i )
     {
-      if (m_Verbose)
-        m_Log << _T("- Include detected via RegEx: \"") << Include << _T("\".\n");
-      m_IncludedHeaders.Add(Include);
-
-      // if it's a source file try to obtain the included header file
-      if ( !m_IsHeaderFile )
-      {
-        wxFileName FileToParseFile(m_FileName);
-        wxFileName IncludeFile(Include); // e.g. myheader.h
-        if ( FileToParseFile.GetName().IsSameAs(IncludeFile.GetName()) )
-        {
-          if (m_Verbose)
-            m_Log << _T("- Recursing into \"") << IncludeFile.GetFullName() << _T("\" for more included headers.\n");
-
-          // "Recursion" -> do another file analysis on the header file
-          FileAnalysis fa(FileToParseFile.GetPath()+
-                          FileToParseFile.GetPathSeparator()+
-                          IncludeFile.GetFullName());
-          fa.LoadFile();
-          wxArrayString MoreIncludedHeaders = fa.ParseForIncludes();
-
-          // Only add headers that are not included by the source file
-          for ( size_t i = 0; i < MoreIncludedHeaders.GetCount(); ++i )
-            if ( m_IncludedHeaders.Index(MoreIncludedHeaders[i]) == wxNOT_FOUND )
-              m_IncludedHeaders.Add(MoreIncludedHeaders[i]);
-
-          m_Log << fa.GetLog();
-          m_HasHeaderFile = true;
-        }
-      }
+      if ( m_IncludedHeaders.Index(MoreIncludedHeaders[i]) == wxNOT_FOUND )
+        m_IncludedHeaders.Add(MoreIncludedHeaders[i]);
     }
+
+    m_Log << fa.GetLog();
+    m_HasHeaderFile = true;
   }
 
   return m_IncludedHeaders;
@@ -231,9 +232,8 @@ wxArrayString FileAnalysis::ParseForFwdDecls()
     const wxRegEx RegEx(reFwdDecl);
     wxString FdwDecl;
     if (RegEx.Matches(Line))
-    {
       FdwDecl = RegEx.GetMatch(Line, 1);
-    }
+
     // Include is empty if the RegEx did *not* match.
     if (!FdwDecl.IsEmpty())
     {

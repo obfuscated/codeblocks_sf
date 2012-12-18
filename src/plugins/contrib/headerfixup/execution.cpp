@@ -67,6 +67,13 @@ END_EVENT_TABLE()
 Execution::Execution(wxWindow* parent,wxWindowID id)
 {
   //(*Initialize(Execution)
+  wxBoxSizer* sizMain;
+  wxBoxSizer* sizRight;
+  wxStaticBoxSizer* sizHeaderSets;
+  wxBoxSizer* sizLeft;
+  wxStaticBoxSizer* sizAdvancedOptions;
+  wxBoxSizer* sizAllNoneInvert;
+
   Create(parent, id, _("Header Fixup"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizLeft = new wxBoxSizer(wxVERTICAL);
@@ -75,81 +82,81 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   	_("Scan source files in project"),
   	_("Scan source files in workspace")
   };
-  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_SCOPE"));
+  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_SCOPE"));
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
-  sizLeft->Add(m_Scope, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizLeft->Add(m_Scope, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   wxString __wxRadioBoxChoices_2[2] =
   {
   	_("Use \"include.h\" (quotation marks)"),
   	_("Use <include.h> (brackets)")
   };
-  m_Options = new wxRadioBox(this, ID_RB_OPTIONS, _("Options"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_2, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_OPTIONS"));
+  m_Options = new wxRadioBox(this, ID_RB_OPTIONS, _("Options"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_OPTIONS"));
   m_Options->SetSelection(1);
   m_Options->SetToolTip(_("This will setup the way missing header files are included: By quotation mark or brackets."));
-  sizLeft->Add(m_Options, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizLeft->Add(m_Options, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   sizAdvancedOptions = new wxStaticBoxSizer(wxVERTICAL, this, _("Advanced options"));
   m_Ignore = new wxCheckBox(this, ID_CHK_IGNORE, _("Ignore any existing includes / forward decls"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_IGNORE"));
   m_Ignore->SetValue(false);
   m_Ignore->SetToolTip(_("This will work as if there were no incluides / forwards decls at all int the files (as \"from scratch\")."));
-  sizAdvancedOptions->Add(m_Ignore, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_Ignore, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   m_FwdDecl = new wxCheckBox(this, ID_CHK_FWD_DECL, _("Try to use forward declarations in header files"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_FWD_DECL"));
   m_FwdDecl->SetValue(false);
   m_FwdDecl->SetToolTip(_("This will setup if forward declarations shall be used for objects apearing *only* as pointers/references in header files."));
-  sizAdvancedOptions->Add(m_FwdDecl, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_FwdDecl, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   m_ObsoleteLog = new wxCheckBox(this, ID_CHK_OBSOLETE_LOG, _("Show includes not required (only for known bindings)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OBSOLETE_LOG"));
   m_ObsoleteLog->SetValue(false);
   m_ObsoleteLog->SetToolTip(_("This will show a list of included files in the log (protocol) which were found with unknown bindings that could *possibly* be removed."));
-  sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   wxString __wxRadioBoxChoices_3[3] =
   {
   	_("Process header files only"),
   	_("Process implementation files only"),
   	_("Process both files (2-step-fix up)")
   };
-  m_FileType = new wxRadioBox(this, ID_RDO_FILE_TYPE, _("File types to process:"), wxDefaultPosition, wxSize(317,95), 3, __wxRadioBoxChoices_3, 3, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RDO_FILE_TYPE"));
+  m_FileType = new wxRadioBox(this, ID_RDO_FILE_TYPE, _("File types to process:"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_3, 3, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RDO_FILE_TYPE"));
   m_FileType->SetSelection(2);
   m_FileType->SetToolTip(_("This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other)."));
-  sizAdvancedOptions->Add(m_FileType, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_FileType, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   m_Protocol = new wxCheckBox(this, ID_CHK_DEBUG_LOG, _("Show full log of parser operations in a protocol."), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_DEBUG_LOG"));
   m_Protocol->SetValue(false);
   m_Protocol->SetToolTip(_("This will show *all* interesting parser operations in a protocol window in the end as summary."));
-  sizAdvancedOptions->Add(m_Protocol, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_Protocol, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   m_Simulation = new wxCheckBox(this, ID_CHK_SIMULATION, _("Only simulate (do *not* change any files)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_SIMULATION"));
   m_Simulation->SetValue(false);
   m_Simulation->SetToolTip(_("This will setup if all operation shall be simulated only - interesting in combination with full log (protocol) to analyse a project without modifications."));
-  sizAdvancedOptions->Add(m_Simulation, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  sizLeft->Add(sizAdvancedOptions, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  sizMain->Add(sizLeft, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAdvancedOptions->Add(m_Simulation, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizLeft->Add(sizAdvancedOptions, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  sizMain->Add(sizLeft, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizRight = new wxBoxSizer(wxVERTICAL);
   sizHeaderSets = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Header sets"));
   m_Sets = new wxCheckListBox(this, ID_LST_SETS, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LST_SETS"));
-  sizHeaderSets->Add(m_Sets, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizHeaderSets->Add(m_Sets, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizAllNoneInvert = new wxBoxSizer(wxVERTICAL);
   m_SelectAll = new wxButton(this, ID_BTN_SELECT_ALL, _("All"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_SELECT_ALL"));
   m_SelectAll->SetToolTip(_("Select all."));
-  sizAllNoneInvert->Add(m_SelectAll, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAllNoneInvert->Add(m_SelectAll, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_SelectNone = new wxButton(this, ID_BTN_SELECT_NONE, _("None"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_SELECT_NONE"));
   m_SelectNone->SetToolTip(_("Select none."));
-  sizAllNoneInvert->Add(m_SelectNone, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAllNoneInvert->Add(m_SelectNone, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_Invert = new wxButton(this, ID_BTN_INVERT, _("Invert"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_INVERT"));
   m_Invert->SetToolTip(_("Invert selection."));
-  sizAllNoneInvert->Add(m_Invert, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizHeaderSets->Add(sizAllNoneInvert, 0, wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-  sizRight->Add(sizHeaderSets, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizAllNoneInvert->Add(m_Invert, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizHeaderSets->Add(sizAllNoneInvert, 0, wxLEFT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
+  sizRight->Add(sizHeaderSets, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizExecute = new wxStaticBoxSizer(wxVERTICAL, this, _("Execute"));
   m_Progress = new wxGauge(this, ID_GAU_PROGRESS, 100, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_GAU_PROGRESS"));
-  sizExecute->Add(m_Progress, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizExecute->Add(m_Progress, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizRunExit = new wxBoxSizer(wxHORIZONTAL);
   m_Run = new wxButton(this, ID_BTN_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_RUN"));
   m_Run->SetToolTip(_("Run the fixup plugin and begin parsing..."));
-  sizRunExit->Add(m_Run, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizRunExit->Add(m_Run, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_Exit = new wxButton(this, ID_BTN_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_EXIT"));
   m_Exit->SetToolTip(_("Exit the plugin without (further) modifications."));
-  sizRunExit->Add(m_Exit, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizExecute->Add(sizRunExit, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizRunExit->Add(m_Exit, 1, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizExecute->Add(sizRunExit, 0, wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizRight->Add(sizExecute, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizMain->Add(sizRight, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizMain->Add(sizRight, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
@@ -216,13 +223,13 @@ void Execution::OnBtnInvertClick(wxCommandEvent& /*event*/)
 
 void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
 {
-  ToggleControls(true);
+  ToggleControls(false);
 
   ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
   if ( !Projects->GetCount() )
   {
     cbMessageBox(_("No active project(s) to process."),_T("Header Fixup"));
-    ToggleControls(false);
+    ToggleControls(true);
     return;
   }
 
@@ -244,7 +251,7 @@ void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
   if ( FilesToProcess.IsEmpty() )
   {
     cbMessageBox(_("No files to process."),_T("Header Fixup"));
-    ToggleControls(false);
+    ToggleControls(true);
     return;
   }
 
@@ -261,7 +268,7 @@ void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
   if ( Groups.IsEmpty() )
   {
     cbMessageBox(_("Please select at least one header group."),_T("Header Fixup"));
-    ToggleControls(false);
+    ToggleControls(true);
     return;
   }
 
@@ -424,40 +431,21 @@ void Execution::SaveSettings()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::ToggleControls(bool DisableIn)
+void Execution::ToggleControls(bool DoEnable)
 {
-  if ( DisableIn )
-  {
-    m_Options->Disable();
-    m_Scope->Disable();
+  m_Options->Enable(DoEnable);
+  m_Scope->Enable(DoEnable);
 
-    m_Protocol->Disable();
-    m_ObsoleteLog->Disable();
-    m_FwdDecl->Disable();
-    m_FileType->Disable();
-    m_Simulation->Disable();
+  m_Protocol->Enable(DoEnable);
+  m_ObsoleteLog->Enable(DoEnable);
+  m_FwdDecl->Enable(DoEnable);
+  m_FileType->Enable(DoEnable);
+  m_Simulation->Enable(DoEnable);
 
-    m_Sets->Disable();
-    m_SelectAll->Disable();
-    m_SelectNone->Disable();
-    m_Invert->Disable();
-  }
-  else
-  {
-    m_Options->Enable();
-    m_Scope->Enable();
-
-    m_Protocol->Enable();
-    m_ObsoleteLog->Enable();
-    m_FwdDecl->Enable();
-    m_FileType->Enable();
-    m_Simulation->Enable();
-
-    m_Sets->Enable();
-    m_SelectAll->Enable();
-    m_SelectNone->Enable();
-    m_Invert->Enable();
-  }
+  m_Sets->Enable(DoEnable);
+  m_SelectAll->Enable(DoEnable);
+  m_SelectNone->Enable(DoEnable);
+  m_Invert->Enable(DoEnable);
 }// ToggleControls
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -518,6 +506,7 @@ int Execution::ProcessFile(const wxString& GlobalFileName, const wxArrayString& 
   // special operation modes:
   if ( !m_FileAnalysis.IsHeaderFile() && m_Processor==ProcessHeaderFiles )
     return 0; // header files only
+
   if (  m_FileAnalysis.IsHeaderFile() && m_Processor==ProcessSourceFiles )
     return 0; // implementation files only
 
@@ -543,86 +532,85 @@ int Execution::ProcessFile(const wxString& GlobalFileName, const wxArrayString& 
   {
     wxString Line = m_FileAnalysis.GetNextLine();
     Line.Trim(false);
-    if ( !Line.IsEmpty() && Line.GetChar(0)!=_T('#') )
+    if ( Line.IsEmpty() || Line.GetChar(0)!=_T('#') ) continue; // nothing we are looking for...
+
+    // line with content to analyse
+    while ( !Line.IsEmpty() )
     {
-      // line with content to analyse
-      while ( !Line.IsEmpty() )
+      if ( InMultilineComment )
+        InMultilineComment = nsHeaderFixUp::IsInsideMultilineComment( Line );
+      if ( InsideString )
+        InsideString       = nsHeaderFixUp::IsInsideString( Line );
+
+      // Extracting one token
+      wxString Token;
+
+      while ( !Line.IsEmpty() && !InsideString )
       {
-        if ( InMultilineComment )
-          InMultilineComment = nsHeaderFixUp::IsInsideMultilineComment( Line );
-        if ( InsideString )
-          InsideString       = nsHeaderFixUp::IsInsideString( Line );
-
-        // Extracting one token
-        wxString Token;
-
-        while ( !Line.IsEmpty() && !InsideString )
+        // Take the next char to process and remove it from Line
+        wxChar Ch = Line.GetChar(0);
+        Line.Remove(0,1);
+        // Check for comments of style "//" and "/* */"
+        if ( Ch == '/' )
         {
-          // Take the next char to process and remove it from Line
-          wxChar Ch = Line.GetChar(0);
-          Line.Remove(0,1);
-          // Check for comments of style "//" and "/* */"
-          if ( Ch == '/' )
+          if ( !Line.IsEmpty() )
           {
-            if ( !Line.IsEmpty() )
+            if ( Line.GetChar(0)=='/' )
             {
-              if ( Line.GetChar(0)=='/' )
-              {
-                // Comment of style "//" to the end of line -> skip line
-                Line.Clear();
-                break; // end while
-              }
-              if ( Line.GetChar(0)=='*' )
-              {
-                // BEGIN Multiline "/* */" comment
-                Line.Remove(0,1);
-                InMultilineComment = true;
-                break; // end while
-              }
+              // Comment of style "//" to the end of line -> skip line
+              Line.Clear();
+              break; // end while
             }
-          }
-          // Check for strings
-          else if ( Ch == '\"' )
-          {
-            // BEGIN Inside string
-            InsideString = true;
-            break; // end while
-          }
-
-          if ( Token.IsEmpty() )
-          {
-            // first char -> only alpha chars (cannot be numeric)
-            if ( wxString(g_alpha_chars).Find(Ch) != wxNOT_FOUND )
-              Token.Append(Ch);
-          }
-          else
-          {
-            // n'th char -> alpha and numeric chars
-            if ( wxString(g_alpha_numeric_chars).Find(Ch) != wxNOT_FOUND )
-              Token.Append(Ch);
-            else
+            if ( Line.GetChar(0)=='*' )
             {
-              // make sure to differ between objects and pointers/references
-              // for forward decls vs. include to work correctly
-              wxString FullToken = Token;
-              if      (nsHeaderFixUp::IsNextChar(_T("*"),Ch,Line))
-                FullToken = Token + _T("*");
-              else if (nsHeaderFixUp::IsNextChar(_T("&"),Ch,Line))
-                FullToken = Token + _T("&");
-
-              if (m_TokensProcessed.Index(FullToken) == wxNOT_FOUND)
-              {
-                OperateToken(Token,Groups,IncludedHeaders,ExistingFwdDecls,
-                             Ch,Line,RequiredHeaders,RequiredFwdDecls);
-                m_TokensProcessed.Add(FullToken);
-              }
-              Token.Clear();
+              // BEGIN Multiline "/* */" comment
+              Line.Remove(0,1);
+              InMultilineComment = true;
+              break; // end while
             }
           }
         }
-      }
-    }
-  }
+        // Check for strings
+        else if ( Ch == '\"' )
+        {
+          // BEGIN Inside string
+          InsideString = true;
+          break; // end while
+        }
+
+        if ( Token.IsEmpty() )
+        {
+          // first char -> only alpha chars (cannot be numeric)
+          if ( wxString(g_alpha_chars).Find(Ch) != wxNOT_FOUND )
+            Token.Append(Ch);
+        }
+        else
+        {
+          // n'th char -> alpha and numeric chars
+          if ( wxString(g_alpha_numeric_chars).Find(Ch) != wxNOT_FOUND )
+            Token.Append(Ch);
+          else
+          {
+            // make sure to differ between objects and pointers/references
+            // for forward decls vs. include to work correctly
+            wxString FullToken = Token;
+            if      (nsHeaderFixUp::IsNextChar(Ch,_T('*'),Line))
+              FullToken = Token + _T("*");
+            else if (nsHeaderFixUp::IsNextChar(Ch,_T('&'),Line))
+              FullToken = Token + _T("&");
+
+            if (m_TokensProcessed.Index(FullToken) == wxNOT_FOUND)
+            {
+              OperateToken(Token,Groups,IncludedHeaders,ExistingFwdDecls,
+                           Ch,Line,RequiredHeaders,RequiredFwdDecls);
+              m_TokensProcessed.Add(FullToken);
+            }
+            Token.Clear();
+          }
+        }
+      }// while
+    }// while
+  }// while
   m_Log.Add( m_FileAnalysis.GetLog());
 
   // Now in RequiredHeaders we have all headers used in this file,
@@ -695,9 +683,7 @@ int Execution::ProcessFile(const wxString& GlobalFileName, const wxArrayString& 
 
 
   if ( m_Simulation->IsChecked() )
-  {
     m_Log.Add( _T("++ \"")+GlobalFileName+_T("\" *would have been* updated (simulation only).\n"));
-  }
   else
   {
     m_FileAnalysis.SaveFile(HeadersCode);
@@ -748,40 +734,38 @@ void Execution::OperateToken(const wxString&      Token,
     wxArrayString RequiredHeadersForToken;
     m_Bindings.GetBindings(Groups[Group],Token,RequiredHeadersForToken);
 
-    if ( !RequiredHeadersForToken.IsEmpty() ) // -> found bindings
-    {
-      for ( size_t i = 0; i < RequiredHeadersForToken.GetCount(); ++i )
-      {
-        // check if required header file is already included
-        if ( IncludedHeaders.Index(RequiredHeadersForToken[i]) == wxNOT_FOUND )
-        {
-          // check: required header file not already included due to other binding
-          if ( RequiredHeaders.Index(RequiredHeadersForToken[i]) == wxNOT_FOUND )
-          {
-            // check: forward declaration might be enough, applies if:
-            // - we operate a header file (only there forward decls make sense)
-            // - option is enabled by the user
-            if ( m_FileAnalysis.IsHeaderFile() && m_FwdDecl->IsChecked() )
-            {
-              if (   nsHeaderFixUp::IsNextChar(_T("*"),Ch,Line)
-                  || nsHeaderFixUp::IsNextChar(_T("&"),Ch,Line) )
-              {
-                // replace header file with forward declaration
-                RequiredHeadersForToken[i] = _T("class ")+Token+_T(";");
-              }
-            }
+    if ( RequiredHeadersForToken.IsEmpty() ) continue; // -> not found bindings
 
-            RequiredHeaders.Add(RequiredHeadersForToken[i]);
-            if ( m_Protocol->IsChecked() )
-              m_Log.Add( _T("++ Token \"") + Token + _T("\" requires entry \"") + RequiredHeadersForToken[i] + _T("\".\n"));
+    for ( size_t i = 0; i < RequiredHeadersForToken.GetCount(); ++i )
+    {
+      // check if required header file is already included
+      if ( IncludedHeaders.Index(RequiredHeadersForToken[i]) == wxNOT_FOUND )
+      {
+        // check: required header file not already included due to other binding
+        if ( RequiredHeaders.Index(RequiredHeadersForToken[i]) != wxNOT_FOUND ) continue; // already included
+
+        // check: forward declaration might be enough, applies if:
+        // - we operate a header file (only there forward decls make sense)
+        // - option is enabled by the user
+        if ( m_FileAnalysis.IsHeaderFile() && m_FwdDecl->IsChecked() )
+        {
+          if (   nsHeaderFixUp::IsNextChar(Ch,_T('*'),Line)
+              || nsHeaderFixUp::IsNextChar(Ch,_T('&'),Line) )
+          {
+            // replace header file with forward declaration
+            RequiredHeadersForToken[i] = _T("class ") + Token + _T(";");
           }
         }
-        else if ( m_ObsoleteLog->IsChecked() ) // log header file anyway for obsolete record
-        {
-          RequiredHeaders.Add(RequiredHeadersForToken[i]);
-          if ( m_Protocol->IsChecked() )
-            m_Log.Add( _T("++ Token \"") + Token + _T("\" would require entry \"") + RequiredHeadersForToken[i] + _T("\" (already included).\n"));
-        }
+
+        RequiredHeaders.Add(RequiredHeadersForToken[i]);
+        if ( m_Protocol->IsChecked() )
+          m_Log.Add( _T("++ Token \"") + Token + _T("\" requires entry \"") + RequiredHeadersForToken[i] + _T("\".\n"));
+      }
+      else if ( m_ObsoleteLog->IsChecked() ) // log header file anyway for obsolete record
+      {
+        RequiredHeaders.Add(RequiredHeadersForToken[i]);
+        if ( m_Protocol->IsChecked() )
+          m_Log.Add( _T("++ Token \"") + Token + _T("\" would require entry \"") + RequiredHeadersForToken[i] + _T("\" (already included).\n"));
       }
     }
   }

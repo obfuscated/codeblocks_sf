@@ -31,9 +31,7 @@ namespace
 HeaderFixup::HeaderFixup()
 {
   if ( !Manager::LoadResource(_T("headerfixup.zip")) )
-  {
     NotifyMissingFile(_T("headerfixup.zip"));
-  }
 }// HeaderFixup
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
