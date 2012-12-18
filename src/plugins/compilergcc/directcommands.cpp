@@ -650,7 +650,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     MyFilesArray files = GetProjectFilesSortedByWeight(target, false, true);
     if (files.GetCount() == 0)
     {
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking stage skipped (build target has no object files to link)"));
+        if (target->GetTargetType() != ttCommandsOnly)
+            ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking stage skipped (build target has no object files to link)"));
         return ret;
     }
     if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)

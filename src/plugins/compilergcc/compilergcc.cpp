@@ -1880,9 +1880,16 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     else
     {
         // commands-only target?
-        cbMessageBox(_("You can't \"run\" a commands-only target..."));
-        m_pProject->SetCurrentlyCompilingTarget(0);
-        return -1;
+        if (target->GetHostApplication().IsEmpty())
+        {
+            cbMessageBox(_("You must select a host application to \"run\" a commands-only target..."));
+            m_pProject->SetCurrentlyCompilingTarget(0);
+            return -1;
+        }
+        command << hostapStr << strSPACE;
+        command << target->GetExecutionParameters();
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
     }
 
     wxString script = command;
@@ -1903,7 +1910,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         cmd << command;
 
     Manager::Get()->GetLogManager()->Log(_("Checking for existence: ") + f.GetFullPath(), m_PageIndex);
-    if (!wxFileExists(f.GetFullPath()))
+    if ( (target->GetTargetType() != ttCommandsOnly) && !wxFileExists(f.GetFullPath()) )
     {
         int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
                                 "Do you want to build it now?"),
@@ -3424,10 +3431,10 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         if (isTitle)
             m_BuildLogContents << _T("<b>");
 
-        // replace the Â´ family by "
+        // replace the ´ family by "
         wxString Quoted = message;
-        Quoted.Replace(_T("â€˜"), _T("\""),    true);
-        Quoted.Replace(_T("â€™"), _T("\""),    true);
+        Quoted.Replace(_T("‘"), _T("\""),    true);
+        Quoted.Replace(_T("’"), _T("\""),    true);
         // avoid conflicts with html-tags
         Quoted.Replace(_T("&"), _T("&amp;"), true);
         Quoted.Replace(_T("<"), _T("&lt;"),  true);

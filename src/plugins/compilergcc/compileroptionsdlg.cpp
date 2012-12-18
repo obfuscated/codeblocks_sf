@@ -327,7 +327,17 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // compiler dependent settings
         DoFillCompilerDependentSettings();
     }
-    nb->SetSelection(0);
+    if (m_pTarget && m_pTarget->GetTargetType() == ttCommandsOnly)
+    {
+        // disable pages for commands only target
+        nb->GetPage(0)->Disable(); // Compiler settings
+        nb->GetPage(1)->Disable(); // Linker settings
+        nb->GetPage(2)->Disable(); // Search directories
+        nb->GetPage(5)->Disable(); // "Make" commands
+        nb->SetSelection(3);       // Pre/post build steps
+    }
+    else
+        nb->SetSelection(0);
     sizer->Layout();
     Layout();
     GetSizer()->Layout();
@@ -1393,7 +1403,22 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
         else
         {
             if (nb)
+            {
+                // enable/disable invalid pages for commands only target
+                const bool cmd = (m_pTarget && m_pTarget->GetTargetType() == ttCommandsOnly);
+                nb->GetPage(0)->Enable(!cmd); // Compiler settings
+                nb->GetPage(1)->Enable(!cmd); // Linker settings
+                nb->GetPage(2)->Enable(!cmd); // Search directories
+                nb->GetPage(5)->Enable(!cmd); // "Make" commands
+                if (   cmd
+                    && nb->GetSelection() != 3   // Pre/post build steps
+                    && nb->GetSelection() != 4 ) // Custom variables
+                {
+                    nb->SetSelection(3);
+                }
+
                 nb->Enable();
+            }
             // the new selection might have a different compiler settings and/or even a different compiler
             // load all those new settings
             m_CurrentCompilerIdx = compilerIdx;
