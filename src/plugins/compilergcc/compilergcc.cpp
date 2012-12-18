@@ -3431,15 +3431,19 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         if (isTitle)
             m_BuildLogContents << _T("<b>");
 
-        // replace the ´ family by "
-        wxString Quoted = message;
-        Quoted.Replace(_T("‘"), _T("\""),    true);
-        Quoted.Replace(_T("’"), _T("\""),    true);
+        // Replace the script quotation marks family by "
+        // Using UTF codes to avoid "error: converting to execution character set: Illegal byte sequence"
+        // -> for UTF codes see here: http://www.utf8-chartable.de/unicode-utf8-table.pl
+        wxString sQuoted(message);
+        wxString sGA = wxString::FromUTF8("\x60");     // GRAVE ACCENT
+        wxString sAA = wxString::FromUTF8("\xC2\xB4"); // ACUTE ACCENT
+        sQuoted.Replace(sGA,     _T("\""),    true);
+        sQuoted.Replace(sAA,     _T("\""),    true);
         // avoid conflicts with html-tags
-        Quoted.Replace(_T("&"), _T("&amp;"), true);
-        Quoted.Replace(_T("<"), _T("&lt;"),  true);
-        Quoted.Replace(_T(">"), _T("&gt;"),  true);
-        m_BuildLogContents << Quoted;
+        sQuoted.Replace(_T("&"), _T("&amp;"), true);
+        sQuoted.Replace(_T("<"), _T("&lt;"),  true);
+        sQuoted.Replace(_T(">"), _T("&gt;"),  true);
+        m_BuildLogContents << sQuoted;
 
         if (isTitle)
             m_BuildLogContents << _T("</b>");
