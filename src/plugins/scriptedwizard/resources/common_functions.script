@@ -20,14 +20,14 @@ function WarningsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
         base.AddCompilerOption(_T("-Wall"));
     }
@@ -41,13 +41,23 @@ function WarningsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-wx")); // max. warning level
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
     {
         base.AddCompilerOption(_T("-w-"));
     }
-    else if( GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang")) )
+    {
+        base.AddCompilerOption(_T("-Weverything"));
+    }
+    else if(    GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
+    {
+        base.AddCompilerOption(_T("-A"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
     {
         // with SDCC all warnings are enabled by default. You can only ask for less by using --less-pedantic or --disable-warning.
+        // the (pseudo) compiler "No Compiler" takes no options
     }
     else
     {
@@ -67,16 +77,17 @@ function DebugSymbolsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
         base.AddCompilerOption(_T("-g"));
 
@@ -94,6 +105,10 @@ function DebugSymbolsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("/Zi"));
     }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
+    {
+        base.AddCompilerOption(_T("-g2"));
+    }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
         base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
@@ -101,6 +116,10 @@ function DebugSymbolsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
     {
         base.AddCompilerOption(_T("--debug"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
     }
     else
     {
@@ -125,60 +144,61 @@ function OptimizationsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc")) )
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
         base.AddCompilerOption(_T("-O2"));
 
-        if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
-            || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
-            || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
-            || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
+        if  (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran")) )
         {
             base.AddLinkerOption(_T("-s"));
         }
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*")) )
     {
         base.AddCompilerOption(_T("-Os"));
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
+    {
+        base.AddCompilerOption(_T("-o"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
     {
         base.AddCompilerOption(_T("-O"));
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")) )
     {
         base.AddCompilerOption(_T("/O2"));
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
     {
         base.AddCompilerOption(_T("-ot")); // optimize for time
         base.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
-    {
-        base.AddCompilerOption(_T("-o"));
-    }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")))
-    {
-        base.AddCompilerOption(_T("/O2"));
-    }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin")))
-    {
-        base.AddCompilerOption(_T("-O2"));
-    }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
     {
         base.AddCompilerOption(_T("--opt-code-size"));
     }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
     else
     {
-        ShowWarning(_T("This wizard doesn't know how to setup optimisation flags for this compiler.\n"));
+        ShowWarning(_T("This wizard doesn't know how to setup optimization flags for this compiler.\n"));
     }
     // TODO: Other compilers, fallback?
 }// OptimizationsOn
@@ -212,6 +232,10 @@ function CppExceptionsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("/EHs"));
     }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup exception flags for this compiler.\n"));
@@ -223,7 +247,7 @@ function CppExceptionsOn(base, compilerID)
 // Return the true directory having replaced all possible macros.
 function VerifyDirectory(dir_or_macro)
 {
-    // try to make it a real path and verify it's existense
+    // try to make it a real path and verify it's existence
     local dir = ReplaceMacros(dir_or_macro, true);
 
     if (!IO.DirectoryExists(dir))
@@ -238,7 +262,7 @@ function VerifyDirectory(dir_or_macro)
 
 function VerifyMacro(macro)
 {
-    // try to make it a real path and verify it's existense
+    // try to make it a real path and verify it's existence
     local dir = ReplaceMacros(macro, true);
 
     // verify if there are macros used at all...
@@ -258,7 +282,7 @@ function VerifyMacro(macro)
 function GetCompilerIncludeDir(selection, defaultSelection, defaultIncludeMacro)
 {
 
-    // make it a real path and verify it's existense
+    // make it a real path and verify it's existence
     local selection_nomacro = VerifyMacro(selection);
 
     // verify if there are macros used at all...
@@ -316,7 +340,7 @@ function GetCompilerIncludeDir(selection, defaultSelection, defaultIncludeMacro)
 function GetCompilerIncludeMacro(selection, defaultSelection, defaultIncludeMacro)
 {
 
-    // make it a real path and verify it's existense
+    // make it a real path and verify it's existence
     local selection_nomacro = VerifyMacro(selection);
 
     // verify if there are macros used at all...
@@ -356,7 +380,7 @@ function GetCompilerIncludeMacro(selection, defaultSelection, defaultIncludeMacr
 function GetCompilerLibDir(selection, defaultSelection, defaultLibMacro)
 {
 
-    // make it a real path and verify it's existense
+    // make it a real path and verify it's existence
     local selection_nomacro = VerifyMacro(selection);
 
     // verify if there are macros used at all...
@@ -414,7 +438,7 @@ function GetCompilerLibDir(selection, defaultSelection, defaultLibMacro)
 function GetCompilerLibMacro(selection, defaultSelection, defaultLibMacro)
 {
 
-    // make it a real path and verify it's existense
+    // make it a real path and verify it's existence
     local selection_nomacro = VerifyMacro(selection);
 
     // verify if there are macros used at all...
@@ -488,7 +512,7 @@ function VerifyFile(dir, file, type)
 
 // verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
 // dir  = the directory the library is expected in
-// file = name of the libryry to look for (usually for e.g. "libGL.a" providing "GL" is enough.
+// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough.
 // type = descriptive name of the library to show in the error message
 // Returns: true, if the library exists, false otherwise
 function VerifyLibFile(dir, file, type)
@@ -515,7 +539,7 @@ function VerifyLibFile(dir, file, type)
 // Add a file to a selection of target(s).
 // Thus the wizard must have had a FilePathPanel for the selection of these.
 // the_wiz  = a reference to the wizard (to access the targets indexes)
-// the_file = name of the file (including fuill path) that shall be added
+// the_file = name of the file (including full path) that shall be added
 function AddFileToTargets(the_wiz, the_file)
 {
     // get the first selected target to add the file to
