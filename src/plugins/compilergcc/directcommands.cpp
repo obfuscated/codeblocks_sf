@@ -787,7 +787,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
                 break;
 
-            case clogNone: // fall-through
+            case clogSimple: // fall-through
+            case clogNone:   // fall-through
             default: // linker always simple log (if not full)
                 ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + output);
                 break;
