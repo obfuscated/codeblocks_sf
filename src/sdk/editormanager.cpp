@@ -1012,11 +1012,14 @@ void EditorManager::CheckForExternallyModifiedFiles()
     m_isCheckingForExternallyModifiedFiles = false;
 }
 
-bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive)
+bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate)
 {
-    // Verify the base name mathes
-    if (candidateFile.GetName() == activeFile.GetName())
+    // Verify the base name matches
+    if (candidateFile.GetName().CmpNoCase(activeFile.GetName()) == 0)
     {
+        // matching case has priority over case-insensitive
+        isCandidate = (candidateFile.GetName() != activeFile.GetName());
+
         // Verify:
         // If looking for a header we have a source OR
         // If looking for a source we have a header
@@ -1056,13 +1059,12 @@ wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesAr
     {
         wxFileName currentCandidateFile(candidateFilesArray[i]);
 
-        if (IsHeaderSource(currentCandidateFile, activeFile, ftActive))
+        if (IsHeaderSource(currentCandidateFile, activeFile, ftActive, isCandidate))
         {
             bool isUpper = wxIsupper(currentCandidateFile.GetExt()[0]);
-            if (isUpper == extStartsWithCapital)
+            if (isUpper == extStartsWithCapital && !isCandidate)
             {
                 // we definitely found the header/source we were searching for
-                isCandidate = false;
                 return currentCandidateFile;
             }
             else
