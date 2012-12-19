@@ -247,7 +247,7 @@ AutoDetectResult CompilerXML::AutoDetectInstallationDir()
 
     if (   wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C)
         || wxFileExists(m_MasterPath + wxFILE_SEP_PATH + m_Programs.C)
-        || (m_MasterPath == wxT("-- No Compiler --")) ) // Special case so "No Compiler" is valid
+        || (GetID() == wxT("null")) ) // Special case so "No Compiler" is valid
     {
         return adrDetected;
     }

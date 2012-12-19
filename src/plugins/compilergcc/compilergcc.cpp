@@ -703,7 +703,7 @@ void CompilerGCC::SetupEnvironment()
     // Get configured masterpath, expand macros and remove trailing separators
     wxString masterPath = compiler->GetMasterPath();
     bool isNoComp = false;
-    if (masterPath == wxT("-- No Compiler --")) // Special case so "No Compiler" is valid
+    if (m_CompilerId == wxT("null")) // Special case so "No Compiler" is valid
     {
         isNoComp = true;
         masterPath.Clear();
@@ -1745,8 +1745,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         target = m_pProject->GetBuildTarget(m_pProject->GetActiveBuildTarget());
     }
     DoPrepareQueue();
-    if (!CompilerValid(target))
+    if (   !(target && (   target->GetTargetType() == ttCommandsOnly // do not require compiler for commands-only target
+                        || target->GetCompilerID() == wxT("null") )) // do not require compiler for "No Compiler" (why would you?)
+        && !CompilerValid(target) )
+    {
+        Manager::Get()->GetLogManager()->LogWarning(_("Target uses an invalid compiler; run aborted"), m_PageIndex);
         return -1;
+    }
 //    DBGLOG(_T("1) target=%s, m_RealTargetIndex=%d, m_TargetIndex=%d"), target ? target->GetTitle().c_str() : _T("null"), m_RealTargetIndex, m_TargetIndex);
 
     if (!target)
@@ -1913,9 +1918,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if ( (target->GetTargetType() != ttCommandsOnly) && !wxFileExists(f.GetFullPath()) )
     {
         int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
-                                "Do you want to build it now?"),
-                                _("Information"),
-                                wxYES_NO | wxCANCEL | wxICON_QUESTION);
+                                 "Do you want to build it now?"),
+                               _("Information"),
+                               wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
         {
             case wxID_YES:
