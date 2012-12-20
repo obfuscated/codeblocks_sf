@@ -1549,6 +1549,9 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_msp430-gcc.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/compiler_null.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/compiler_pgifortran.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1603,6 +1606,9 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/options_common_runtime.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_common_sort.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_common_warnings-msvc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1649,6 +1655,9 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_msvctk.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_null.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_ow.xml">
