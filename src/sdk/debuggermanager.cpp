@@ -673,11 +673,12 @@ DebuggerManager::DebuggerManager() :
     m_useTargetsDefault(false)
 {
     typedef cbEventFunctor<DebuggerManager, CodeBlocksEvent> Event;
-    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new Event(this, &DebuggerManager::OnProjectActivated));
-    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new Event(this, &DebuggerManager::OnTargetSelected));
-    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED, new Event(this, &DebuggerManager::OnSettingsChanged));
-    Manager::Get()->RegisterEventSink(cbEVT_PLUGIN_LOADING_COMPLETE,
-                                      new Event(this, &DebuggerManager::OnPluginLoadingComplete));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,        new Event(this, &DebuggerManager::OnProjectActivated));
+    // connect with cbEVT_PROJECT_OPEN, too (see here: http://forums.codeblocks.org/index.php/topic,17260.msg118431.html#msg118431)
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,            new Event(this, &DebuggerManager::OnProjectActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED,    new Event(this, &DebuggerManager::OnTargetSelected));
+    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED,        new Event(this, &DebuggerManager::OnSettingsChanged));
+    Manager::Get()->RegisterEventSink(cbEVT_PLUGIN_LOADING_COMPLETE, new Event(this, &DebuggerManager::OnPluginLoadingComplete));
 
     wxString activeDebuggerName;
     int activeConfig;
