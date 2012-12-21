@@ -672,7 +672,8 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
                 else
-                    m_Tokenizer.GetToken(); // skip arguments
+                    HandleConditionalArguments();
+
                 m_Str.Clear();
             }
             else
@@ -688,7 +689,8 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
                 else
-                    m_Tokenizer.GetToken(); // skip arguments
+                    HandleForLoopArguments();
+
                 m_Str.Clear();
             }
             else
@@ -733,7 +735,8 @@ void ParserThread::DoParse()
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
                 else
-                    m_Tokenizer.GetToken(); // skip arguments
+                    HandleConditionalArguments();
+
                 m_Str.Clear();
             }
             else if (token == ParserConsts::kw_const)
@@ -2084,6 +2087,188 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
     }
 }
 
+void ParserThread::HandleConditionalArguments()
+{
+    // if these aren't empty at this point, we have a syntax error
+    if (!m_Str.empty())
+        return;
+
+    if (!m_PointerOrRef.empty())
+        return;
+
+    if (!m_TemplateArgument.empty())
+        return;
+
+    // conditional arguments can look like this:
+    // (int i = 12)
+    // (Foo *bar = getFooBar())
+    // (var <= 12 && (getType() != 23))
+    wxString args = m_Tokenizer.GetToken();
+
+    // remove braces
+    if (args.StartsWith(_T("(")))
+        args = args.Mid(1, args.length() - 1);
+
+    if (args.EndsWith(_T(")")))
+        args = args.Mid(0, args.length() - 1);
+
+    // parse small tokens inside for loop head
+    TokenTree tree;
+    wxString fileName = m_Tokenizer.GetFilename();
+    Tokenizer smallTokenizer(&tree);
+
+    smallTokenizer.InitFromBuffer(args, fileName, m_Tokenizer.GetLineNumber());
+
+    while (IS_ALIVE)
+    {
+        wxString token = smallTokenizer.GetToken();
+        if (token.empty())
+            break;
+
+        wxString peek = smallTokenizer.PeekToken();
+
+        if (peek.empty())
+        {
+            if (!m_Str.empty())
+            {
+                // remove template argument if there is one
+                wxString varType, templateArgs;
+                RemoveTemplateArgs(m_Str, varType, templateArgs);
+
+                m_Str = varType;
+                m_TemplateArgument = templateArgs;
+
+                Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
+                if (newToken && !m_TemplateArgument.IsEmpty())
+                {
+                    ResolveTemplateArgs(newToken);
+                }
+                else
+                {
+                    TRACE(_T("HandleConditionalArguments() : Unable to create/add new token: ") + token);
+                }
+            }
+
+            break;
+        }
+        else
+        {
+            if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
+            {
+                m_PointerOrRef << token;
+            }
+            else
+            {
+                if (!m_Str.empty())
+                    m_Str << _T(" ");
+
+                m_Str << token;
+            }
+        }
+    }
+
+    m_Str.clear();
+    m_PointerOrRef.clear();
+    m_TemplateArgument.clear();
+}
+
+void ParserThread::HandleForLoopArguments()
+{
+    // if these aren't empty at this point, we have a syntax error
+    if (!m_Str.empty())
+        return;
+
+    if (!m_PointerOrRef.empty())
+        return;
+
+    if (!m_TemplateArgument.empty())
+        return;
+
+    // for loop heads look like this:
+    // ([init1 [, init2 ...] ] ; [cond1 [, cond2 ..]]; [mod1 [, mod2 ..]])
+    wxString args = m_Tokenizer.GetToken();
+
+    // remove braces
+    if (args.StartsWith(_T("(")))
+        args = args.Mid(1, args.length() - 1);
+    if (args.EndsWith(_T(")")))
+        args = args.Mid(0, args.length() - 1);
+
+    // parse small tokens inside for loop head
+    TokenTree tree;
+    wxString fileName = m_Tokenizer.GetFilename();
+    Tokenizer smallTokenizer(&tree);
+
+    smallTokenizer.InitFromBuffer(args, fileName, m_Tokenizer.GetLineNumber());
+
+    while (IS_ALIVE)
+    {
+        wxString token = smallTokenizer.GetToken();
+        if (token.empty())
+            break;
+
+        wxString peek = smallTokenizer.PeekToken();
+
+        bool createNewToken = false;
+        bool finished = false;
+
+        if (peek == ParserConsts::comma)
+        {
+            smallTokenizer.GetToken(); // eat comma
+            createNewToken = true;
+        }
+        else if (peek == ParserConsts::colon
+                 || peek == ParserConsts::semicolon
+                 || peek.empty())
+        {
+            createNewToken = true;
+            finished = true; // after this point there will be no further declarations
+        }
+        else
+        {
+            if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
+            {
+                m_PointerOrRef << token;
+            }
+            else
+            {
+                if (!m_Str.empty())
+                    m_Str << _T(" ");
+
+                m_Str << token;
+            }
+        }
+
+        if (createNewToken && !m_Str.empty())
+        {
+            // remove template argument if there is one
+            wxString name, templateArgs;
+            RemoveTemplateArgs(m_Str, name, templateArgs);
+
+            m_Str = name;
+            m_TemplateArgument = templateArgs;
+
+            Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
+            if (newToken && !m_TemplateArgument.IsEmpty())
+            {
+                ResolveTemplateArgs(newToken);
+            }
+            else
+            {
+                TRACE(_T("HandleForLoopArguments() : Unable to create/add new token: ") + token);
+            }
+
+        }
+
+        if (finished)
+            break;
+    }
+
+    m_Str.clear();
+    m_PointerOrRef.clear();
+    m_TemplateArgument.clear();
+}
+
 void ParserThread::HandleEnum()
 {
     // enums have the following rough definition:
@@ -2934,6 +3119,60 @@ bool ParserThread::ResolveTemplateMap(const wxString& typeStr, const wxArrayStri
     }
     else
         return false;
+}
+
+void ParserThread::RemoveTemplateArgs(const wxString &exp, wxString &expNoArgs, wxString &templateArgs)
+{
+    expNoArgs.clear();
+    templateArgs.clear();
+
+    int nestLvl = 0;
+    for (unsigned int i = 0; i < exp.length(); i++)
+    {
+        wxChar c = exp[i];
+
+        if (c == ParserConsts::lt_chr)
+        {
+            nestLvl++;
+            templateArgs << c;
+            continue;
+        }
+
+        if (c == ParserConsts::gt_chr)
+        {
+            nestLvl--;
+            templateArgs << c;
+            continue;
+        }
+
+        if (nestLvl == 0)
+        {
+            expNoArgs << c;
+        }
+        else
+        {
+            bool wanted = true;
+
+            // dont add unwanted whitespaces, i.e. ws around '<' and '>'
+            if(c == ParserConsts::space)
+            {
+                wxChar last = 0;
+                wxChar next = 0;
+
+                if (i > 0) last = exp[i - 1];
+                if (i < exp.length() - 1) next = exp[i + 1];
+
+                if (last == ParserConsts::gt || last == ParserConsts::lt)
+                    wanted = false;
+
+                if (next == ParserConsts::gt || next == ParserConsts::lt)
+                    wanted = false;
+            }
+
+            if (wanted == true)
+                templateArgs << c;
+        }
+    }
 }
 
 bool ParserThread::IsStillAlive(cb_unused const wxString& funcInfo)

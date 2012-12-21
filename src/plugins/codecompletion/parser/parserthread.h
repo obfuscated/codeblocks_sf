@@ -198,6 +198,16 @@ protected:
       */
     void HandleFunction(const wxString& name, bool isOperator = false);
 
+    /** parse for loop arguments:
+      * for(int X; ... ; ...)
+      */
+    void HandleForLoopArguments();
+
+    /** parse arguments like:
+      * if(int X = getNumber())
+      */
+    void HandleConditionalArguments();
+
     /** handle enum declaration */
     void HandleEnum();
 
@@ -314,6 +324,14 @@ private:
     /** associate formal argument with actual template argument*/
     bool ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,
                             std::map<wxString, wxString>& results);
+
+    /** remove template arguments from an expression
+      * example: 'std::list<string>' will be separated into 'std::list' and '<string>'
+      * @param expr Complete expression with template arguments
+      * @param expNoArgs Returned expression without template arguments
+      * @param templateArgs The removed template arguments
+    */
+    void RemoveTemplateArgs(const wxString& expr, wxString &expNoArgs, wxString &templateArgs);
 
     /** Only for debug */
     bool IsStillAlive(const wxString& funcInfo);
