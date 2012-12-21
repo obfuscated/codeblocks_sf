@@ -27,9 +27,9 @@ extern const wxString g_UnnamedSymbol;
 
 struct NameSpace
 {
-    wxString Name;
-    int StartLine;
-    int EndLine;
+    wxString Name;  // namespace's name
+    int StartLine;  // namespace start line (the line contains openbrace)
+    int EndLine;    // namespace end line (the line contains closebrace)
 };
 
 typedef std::vector<NameSpace> NameSpaceVec;

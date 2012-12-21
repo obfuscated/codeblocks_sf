@@ -3215,6 +3215,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         return;
 
     bool fileParseFinished = m_NativeParser.GetParser().IsFileParsed(filename);
+
+    // FunctionsScopePerFile contains all the function and namespace information for
+    // a specified file, m_AllFunctionsScopes[filename] will implicitly insert an new element in
+    // the map if no such key(filename) is found.
     FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
 
     // *** Part 1: Parse the file (if needed) ***
@@ -3226,13 +3230,14 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         funcdata->m_FunctionsScope.clear();
         funcdata->m_NameSpaces.clear();
 
+        // collect the function implementation inforamtion, just find the specified tokens in the TokenTree
         TokenIdxSet result;
         m_NativeParser.GetParser().FindTokensInFile(filename, result,
                                                     tkAnyFunction | tkEnum | tkClass | tkNamespace);
         if (!result.empty())
-            funcdata->parsed = true;
+            funcdata->parsed = true;    // if the file did have some containers, flag it as parsed
         else
-            fileParseFinished = false;
+            fileParseFinished = false;  // this indicates the batch parser does not finish parsing for the current file
 
         TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
@@ -3273,6 +3278,8 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         FunctionsScopeVec& functionsScopes = funcdata->m_FunctionsScope;
         NameSpaceVec& nameSpaces = funcdata->m_NameSpaces;
 
+        // collect the namespace information in the current file, this is done by running a parserthread
+        // on the editor's buffer
         m_NativeParser.GetParser().ParseBufferForNamespaces(ed->GetControl()->GetText(), nameSpaces);
         std::sort(nameSpaces.begin(), nameSpaces.end(), CodeCompletionHelper::LessNameSpace);
 
@@ -3285,11 +3292,11 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         functionsScopes.resize(it - functionsScopes.begin());
 
         TRACE(F(_T("Found %lu namespace locations"), static_cast<unsigned long>(nameSpaces.size())));
-        /*
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
         for (unsigned int i = 0; i < nameSpaces.size(); ++i)
             CCLogger::Get()->DebugLog(F(_T("\t%s (%d:%d)"),
                 nameSpaces[i].Name.wx_str(), nameSpaces[i].StartLine, nameSpaces[i].EndLine));
-        */
+#endif
 
         if (!m_ToolbarNeedRefresh)
             m_ToolbarNeedRefresh = true;
@@ -3320,12 +3327,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     }
 
     TRACE(F(_T("Parsed %lu functionscope items"), static_cast<unsigned long>(m_FunctionsScope.size())));
-    /*
+#if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
     for (unsigned int i = 0; i < m_FunctionsScope.size(); ++i)
         CCLogger::Get()->DebugLog(F(_T("\t%s%s (%d:%d)"),
             m_FunctionsScope[i].Scope.wx_str(), m_FunctionsScope[i].Name.wx_str(),
             m_FunctionsScope[i].StartLine, m_FunctionsScope[i].EndLine));
-    */
+#endif
 
     // Does the toolbar need a refresh?
     if (m_ToolbarNeedRefresh || m_LastFile != filename)
@@ -3374,7 +3381,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     // Find the current function and update
     FindFunctionAndUpdate(ed->GetControl()->GetCurrentLine());
 
-    // Control the toolbar state
+    // Control the toolbar state, if the batch parser does not finish parsing the file, no need to update CC toolbar.
     EnableToolbarTools(fileParseFinished);
 }
 

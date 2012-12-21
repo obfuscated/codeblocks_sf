@@ -27,9 +27,11 @@ class cbEditor;
 class wxScintillaEvent;
 class wxChoice;
 
-/** Code completion plugin can show function call-tip, automatically suggest code-completion
- *  lists while entering code. Also, it supports navigating the source files, jump between declarations
- *  and implementations, find symbol usage, or even rename a symbol(code re-factoring).
+/** Code completion plugin has those features:
+ * show function call-tip when the mouse hover over the variables/functions.
+ * automatically auto-completion lists prompted while entering code.
+ * navigate the source files, jump between declarations and implementations.
+ * find symbol usage, or even rename a symbol(code re-factoring).
  *
  *  We later use "CC" as an abbreviation of Code Completion plugin.
  * See the general architecture of code completion plugin on wiki page
@@ -44,25 +46,25 @@ public:
         FunctionScope() {}
         FunctionScope(const NameSpace& ns): StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
 
-        int StartLine;
-        int EndLine;
-        wxString ShortName;
-        wxString Name;
-        wxString Scope;    // class or namespace
+        int StartLine;      // function body (implementation) start line
+        int EndLine;        // function body (implementation) end line
+        wxString ShortName; // function's base name (without scope prefix)
+        wxString Name;      // function's long name (including arguments and return type)
+        wxString Scope;     // class or namespace
     };
 
-    /** each file contains on such vector, containing all the function information in the file */
+    /** each file has one such vector instance, containing all the function information in the file */
     typedef std::vector<FunctionScope> FunctionsScopeVec;
     /** helper class to support FunctionsScopeVec*/
     typedef std::vector<int> ScopeMarksVec;
 
     struct FunctionsScopePerFile
     {
-        FunctionsScopeVec m_FunctionsScope;
-        NameSpaceVec m_NameSpaces;
-        bool parsed;
+        FunctionsScopeVec m_FunctionsScope; // all functions in the file
+        NameSpaceVec m_NameSpaces;          // all namespaces in the file
+        bool parsed;                        // indicates whether this file is parsed or not
     };
-    /** filename -> FunctionsScopePerFile map, contains all the opened documents scope info*/
+    /** filename -> FunctionsScopePerFile map, contains all the opened files scope info*/
     typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
     /** Constructor */
@@ -76,12 +78,13 @@ public:
     virtual int GetConfigurationGroup() const { return cgEditor; }
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
-    /** offer for menu space by host */
+    /** build menus in the main frame */
     virtual void BuildMenu(wxMenuBar* menuBar);
-    /** offer for Context menu */
+    /** build context popup menu */
     virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-    /** offer for the Toolbar */
+    /** build CC Toolbar */
     virtual bool BuildToolBar(wxToolBar* toolBar);
+    /** toolbar priority value */
     virtual int GetToolBarPriority() { return 10; }
 
     // TODO unused, should be removed probably
@@ -90,24 +93,30 @@ public:
     virtual void ShowCallTip();
     virtual bool IsProviderFor(cbEditor* ed);
 
-    /** give auto suggestions on preprocessor directives*/
+    /** show auto-completion list for preprocessor directives*/
     void CodeCompletePreprocessor();
-    /** give auto suggestions after #include */
+    /** show auto-completion after #include */
     void CodeCompleteIncludes();
 
-    /** get the include paths setting by the project
+    /** get the include paths setting (usually set by user for each C::B project)
      * @param project project info
      * @param buildTargets target info
      * @return the local include paths
      */
     wxArrayString GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets);
 
-    /** the default compilers search paths
-     * @param force if false, then it just return a static wxArrayString to optimize the performance
+    /** the default compiler's search paths
+     * @param force if the value is false, just return a static wxArrayString to optimize the performance
      */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
 
-    /** search target file names (mostly relative names) under basePath, then return the absolute dirs*/
+    /** search target file names (mostly relative names) under basePath, then return the absolute dirs
+     * It just did the caculation below:
+     * "c:/ccc/ddd.cpp"(basePath) + "aaa/bbb.h"(target) => "c:/ccc/aaa/bbb.h"(dirs)
+     * @param basePath already located file path, this is usually the currently parsing file's location
+     * @param targets the relative filename, e.g. When you have #include "aaa/bbb.h", "aaa/bbb.h" is the target location
+     * @param dirs result location of the targets in absolute file path format
+     */
     void GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs);
 
     /** handle all the editor event*/
@@ -117,30 +126,38 @@ public:
     void RereadOptions(); // called by the configuration panel
 
 private:
-    /** Update CC's ToolBar*/
+    /** update CC's ToolBar*/
     void UpdateToolBar();
 
-    /** Token replacement map is used for Tokenizer, this function load it from configure file*/
+    /** load the token replacement map (macro definitions) from configuration file*/
     void LoadTokenReplacements();
     /** write the Token replacement map to the configure file */
     void SaveTokenReplacements();
 
-    /** event handler for updating UI*/
+    /** event handler for updating UI e.g. menu statues*/
     void OnUpdateUI(wxUpdateUIEvent& event);
+
+    /** event handler when user click Menu->View->Symbols browser */
     void OnViewClassBrowser(wxCommandEvent& event);
+
     /** event handler to list the suggestion, when a user press CTRL+space(by default)*/
     void OnCodeComplete(wxCommandEvent& event);
+
     /** event handler to show the call tip, when user press Ctrl-Shift-Space */
     void OnShowCallTip(wxCommandEvent& event);
 
+    /** event handler when user click Menu->Search->Goto function*/
     void OnGotoFunction(wxCommandEvent& event);
 
     /** navigate to the previous function body*/
     void OnGotoPrevFunction(wxCommandEvent& event);
+
     /** navigate to the next function body*/
     void OnGotoNextFunction(wxCommandEvent& event);
+
     /** handle CC's context menu->insert */
     void OnClassMethod(wxCommandEvent& event);
+
     /** handle CC's context menu->insert */
     void OnUnimplementedClassMethods(wxCommandEvent& event);
 
@@ -149,11 +166,14 @@ private:
 
     /** CC's re-factoring function, find all the reference place*/
     void OnFindReferences(wxCommandEvent& event);
+
     /** CC's re-factoring function, rename a symbol */
     void OnRenameSymbols(wxCommandEvent& event);
+
     /** open the include file under the caret position */
     void OnOpenIncludeFile(wxCommandEvent& event);
 
+    /** event handler when user select context menu->reparse file/projects */
     void OnCurrentProjectReparse(wxCommandEvent& event);
     void OnSelectedProjectReparse(wxCommandEvent& event);
     void OnSelectedFileReparse(wxCommandEvent& event);
@@ -206,7 +226,7 @@ private:
     void MatchCodeStyle(wxString& str, int eolStyle = wxSCI_EOL_LF, const wxString& indent = wxEmptyString, bool useTabs = false, int tabSize = 4);
 
     // CC's toolbar related functions
-    /** help method in finding the function position in the vector for the function containing the current line*/
+    /** helper method in finding the function position in the vector for the function containing the current line*/
     void FunctionPosition(int &scopeItem, int &functionItem) const;
     /** navigate between function bodies*/
     void GotoFunctionPrevNext(bool next = false);
@@ -253,7 +273,7 @@ private:
     wxMenu*                 m_ViewMenu;
     wxMenu*                 m_ProjectMenu;
 
-    /** this member will actually manage the many Parser objects*/
+    /** this member will actually manage all the Parser instances*/
     NativeParser            m_NativeParser;
     /** code re-factoring tool*/
     CodeRefactoring         m_CodeRefactoring;
@@ -274,12 +294,13 @@ private:
     /** delay after receive editor activated event*/
     wxTimer                 m_TimerEditorActivated;
 
-
     cbEditor*               m_LastEditor;
     int                     m_ActiveCalltipsNest;
 
     bool                    m_IsAutoPopup;
+    /** this indicates only show pre-processor directives in the auto-completion list */
     bool                    m_CompletePPOnly;
+
     // The variables below were related to CC's toolbar
     /** the CC's toolbar */
     wxToolBar*              m_ToolBar;
@@ -316,7 +337,8 @@ private:
 
     /** remember the number of bytes in the current editor/document */
     int                     m_CurrentLength;
-    /** collected header file names to support auto-completion after #include*/
+
+    /** header file names used for auto-completion after #include*/
     SystemHeadersMap        m_SystemHeadersMap;
 
     //options on code completion plugins
@@ -334,7 +356,7 @@ private:
     std::list<SystemHeadersThread*> m_SystemHeadersThreads;
     wxCriticalSection               m_SystemHeadersThreadCS;
 
-    /** map to collect all re-parsing files */
+    /** map to record all re-parsing files */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
     ReparsingMap m_ReparsingMap;
 
