@@ -1183,10 +1183,11 @@ void Wiz::AddWizard(TemplateOutputType otype,
     wxString typS;
     switch (otype)
     {
-        case totProject: typS = _T("Project"); break;
-        case totTarget: typS = _T("Build-target"); break;
-        case totFiles: typS = _T("File(s)"); break;
-        case totCustom: typS = _T("Custom"); break;
+        case totProject: typS = _T("Project");      break;
+        case totTarget:  typS = _T("Build-target"); break;
+        case totFiles:   typS = _T("File(s)");      break;
+        case totUser:    typS = _T("User");         break;
+        case totCustom:  typS = _T("Custom");       break;
         default: break;
     }
 
