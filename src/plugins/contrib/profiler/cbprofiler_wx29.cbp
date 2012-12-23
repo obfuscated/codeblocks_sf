@@ -40,7 +40,6 @@
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="$(#WX29.include)" />
-			<Add directory="$(#WX29)\contrib\include" />
 			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>

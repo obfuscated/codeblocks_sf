@@ -51,7 +51,6 @@
 			<Add option="-DSUPPORT_UTF8" />
 			<Add directory="$(#WX29.include)" />
 			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="$(#WX29)\contrib\include" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 		</Compiler>
