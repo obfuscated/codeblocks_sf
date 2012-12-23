@@ -28,6 +28,8 @@
 #include "wxsbaseproperties.h"
 #include "wxsflags.h"
 
+#include <prep.h>
+
 using namespace wxsFlags;
 
 /** \brief Container is a class which represents widget that can
@@ -74,7 +76,7 @@ class wxsContainer: public wxsParent
          * All QPPChild panels will be added before additional panels
          * added by widget.
          */
-        virtual void OnAddContainerQPP(wxsAdvQPP* QPP) { }
+        virtual void OnAddContainerQPP(cb_unused wxsAdvQPP* QPP) { }
 
         /** \brief Checking if can add child item
          *

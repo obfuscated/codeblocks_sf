@@ -4,6 +4,8 @@
 #include <wx/intl.h>
 #include "wxsproperty.h"
 
+#include <prep.h>
+
 /** \brief Class which may be used to create properties with custom editor */
 class wxsCustomEditorProperty : public wxsProperty
 {
@@ -20,10 +22,10 @@ class wxsCustomEditorProperty : public wxsProperty
          * \return true  - property value has changed,
          *         false - property has not changed
          */
-        virtual bool ShowEditor(wxsPropertyContainer* Object) =0;
+        virtual bool ShowEditor(wxsPropertyContainer* Object) = 0;
 
         /** \brief Function giving string representation of property */
-        virtual wxString GetStr(wxsPropertyContainer* Object) { return _("Click to edit"); }
+        virtual wxString GetStr(cb_unused wxsPropertyContainer* Object) { return _("Click to edit"); }
 
     protected:
 
@@ -32,7 +34,8 @@ class wxsCustomEditorProperty : public wxsProperty
          * After parsing, data should be stored in Object
          * \return true - parsing done, false - parsing error
          */
-        virtual bool ParseStr(wxsPropertyContainer* Object,wxString Value) { return false; }
+        virtual bool ParseStr(cb_unused wxsPropertyContainer* Object,
+                              cb_unused wxString              Value) { return false; }
 
         /** \brief Checking if this property is able to parse string */
         virtual bool CanParseStr() { return false; }

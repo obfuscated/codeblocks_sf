@@ -38,13 +38,15 @@ void wxsFloatProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManag
     PGRegister(Object,Grid,Grid->AppendIn(Parent,NEW_IN_WXPG14X wxFloatProperty(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
-bool wxsFloatProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsFloatProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,
+                              wxPGId Id, cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetDouble();
     return true;
 }
 
-bool wxsFloatProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsFloatProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,
+                               wxPGId Id, cb_unused long Index)
 {
     Grid->SetPropertyValue(Id,VALUE);
     return true;

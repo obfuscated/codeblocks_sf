@@ -22,6 +22,8 @@
 #include "../wxsitemresdata.h"
 #include <wx/printdlg.h>
 
+#include <prep.h>
+
 namespace
 {
     wxsRegisterItem<wxsPageSetupDialog> Reg(_T("PageSetupDialog"), wxsTTool, _T("Dialogs"), 130, false);
@@ -172,6 +174,7 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsPageSetupDialog::OnBuildCreatingCode"),GetLanguage());
@@ -185,7 +188,7 @@ void wxsPageSetupDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsPageSetupDialog::OnEnumToolProperties(long Flags)
+void wxsPageSetupDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     /*! \brief Paper IDs.
      */

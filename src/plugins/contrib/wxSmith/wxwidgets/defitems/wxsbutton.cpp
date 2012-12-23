@@ -22,6 +22,8 @@
 
 #include "wxsbutton.h"
 
+#include <prep.h>
+
 namespace
 {
     wxsRegisterItem<wxsButton> Reg(_T("Button"),wxsTWidget,_T("Standard"),340);
@@ -79,7 +81,7 @@ wxObject* wxsButton::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsButton::OnEnumWidgetProperties(long Flags)
+void wxsButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_STRING(wxsButton,Label,_("Label"),_T("label"),_T(""),false)
     WXS_BOOL(wxsButton,IsDefault,_("Is default"),_T("default"),false)

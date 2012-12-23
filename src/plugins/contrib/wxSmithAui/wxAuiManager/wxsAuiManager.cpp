@@ -57,10 +57,10 @@ namespace
                 Connect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
             }
 
-            void SetAuiManager(wxSmithAuiManager* AuiManager)
+            void SetAuiManager(wxSmithAuiManager* AuiManagerIn)
             {
                 Disconnect(wxID_ANY,wxEVT_PAINT,(wxObjectEventFunction)&wxsAuiManagerPreview::OnPaint);
-                AuiManager = AuiManager;
+                AuiManager = AuiManagerIn;
             }
 
         private:
@@ -363,6 +363,7 @@ wxString wxsAuiPaneInfoExtra::AllParamsCode(wxsCoderContext* Ctx,wxsItem* ChildP
             //Destroy on close
             if ( m_DestroyOnClose ) str << _T(".DestroyOnClose()");
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsAuiManagerExtra::AllParamsCode"),Ctx->m_Language);
     }
@@ -468,6 +469,7 @@ void wxsAuiManager::OnBuildAuiManagerCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsAuiManager::OnBuildAuiManagerCreatingCode"),GetLanguage());
@@ -484,9 +486,9 @@ void wxsAuiManager::OnBuildCreatingCode()
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsAuiPaneInfoExtra* Extra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
+        wxsAuiPaneInfoExtra* ANBExtra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
 
-        if (!Child || !Extra) continue;
+        if (!Child || !ANBExtra) continue;
 
         // Using same parent as we got, AuiManager is not a parent window
         Child->BuildCode(GetCoderContext());
@@ -499,10 +501,11 @@ void wxsAuiManager::OnBuildCreatingCode()
                 {
                     case wxsCPP:
                     {
-                        Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,Extra->AllParamsCode(GetCoderContext(),Child).wx_str());
+                        Codef(_T("%AAddPane(%o, wxAuiPaneInfo()%s);\n"),i,ANBExtra->AllParamsCode(GetCoderContext(),Child).wx_str());
                         break;
                     }
 
+                    case wxsUnknownLanguage: // fall-through
                     default:
                     {
                         UnknownLang = true;
@@ -547,7 +550,7 @@ wxObject* wxsAuiManager::OnBuildPreview(wxWindow* Parent,long Flags)
         for ( int i=0; i<Count; i++ )
         {
             wxsItem* Child = GetChild(i);
-            wxsAuiPaneInfoExtra* Extra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
+            wxsAuiPaneInfoExtra* APIExtra = (wxsAuiPaneInfoExtra*)GetChildExtra(i);
 
             // We pass either Parent passed to current BuildPreview function
             // or pointer to additional parent currently created
@@ -557,7 +560,8 @@ wxObject* wxsAuiManager::OnBuildPreview(wxWindow* Parent,long Flags)
 
             wxWindow* ChildAsWindow = wxDynamicCast(ChildPreview, wxWindow);
 
-            PaneInfo = Extra->GetPaneInfoFlags(NewParent, Child, Flags & pfExact);
+            if (APIExtra)
+                PaneInfo = APIExtra->GetPaneInfoFlags(NewParent, Child, Flags & pfExact);
 
             #if wxCHECK_VERSION(2,8,9)
             wxAuiToolBar* ChildAsToolBar = wxDynamicCast(ChildAsWindow, wxAuiToolBar);

@@ -127,6 +127,7 @@ void wxsSplitterWindow::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnBuildCreatingCode"),GetLanguage());

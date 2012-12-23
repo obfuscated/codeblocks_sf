@@ -25,6 +25,8 @@
 #include "../wxsitemresdata.h"
 #include <wx/choicebk.h>
 
+#include <prep.h>
+
 //(*Headers(wxsChoicebookParentQP)
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
@@ -56,7 +58,7 @@ namespace
 
         protected:
 
-            virtual void OnEnumProperties(long Flags)
+            virtual void OnEnumProperties(cb_unused long Flags)
             {
                 WXS_SHORT_STRING(wxsChoicebookExtra,m_Label,_("Page name"),_T("label"),_T(""),false);
                 WXS_BOOL(wxsChoicebookExtra,m_Selected,_("Page selected"),_T("selected"),false);
@@ -159,9 +161,9 @@ namespace
         //*)
     END_EVENT_TABLE()
 
-    void wxsChoicebookParentQP::OnLabelText(wxCommandEvent& event)       { SaveData(); }
-    void wxsChoicebookParentQP::OnLabelKillFocus(wxFocusEvent& event)    { SaveData(); event.Skip(); }
-    void wxsChoicebookParentQP::OnSelectionChange(wxCommandEvent& event) { SaveData(); }
+    void wxsChoicebookParentQP::OnLabelText(cb_unused wxCommandEvent& event)       { SaveData(); }
+    void wxsChoicebookParentQP::OnLabelKillFocus(cb_unused wxFocusEvent& event)    { SaveData(); event.Skip(); }
+    void wxsChoicebookParentQP::OnSelectionChange(cb_unused wxCommandEvent& event) { SaveData(); }
 
     WXS_ST_BEGIN(wxsChoicebookStyles,_T(""))
         WXS_ST_CATEGORY("wxChoicebook")
@@ -282,6 +284,7 @@ void wxsChoicebook::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsChoicebook::OnBuildCreatingCode"),GetLanguage());
@@ -289,7 +292,7 @@ void wxsChoicebook::OnBuildCreatingCode()
     }
 }
 
-bool wxsChoicebook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
+bool wxsChoicebook::OnMouseClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY)
 {
     UpdateCurrentSelection();
     if ( GetChildCount()<2 ) return false;

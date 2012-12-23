@@ -23,6 +23,7 @@
 #include "wxsstringproperty.h"
 
 #include <globals.h>
+#include <prep.h>
 
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxString)
@@ -55,14 +56,18 @@ void wxsStringProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
     PGRegister(Object,Grid,Id);
 }
 
-bool wxsStringProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsStringProperty::PGRead(cb_unused wxsPropertyContainer* Object,
+                               wxPropertyGridManager* Grid,wxPGId Id,
+                               cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetString();
     VALUE.Replace(_T("\\n"),_T("\n"));
     return true;
 }
 
-bool wxsStringProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsStringProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
+                                wxPropertyGridManager* Grid,wxPGId Id,
+                                cb_unused long Index)
 {
     wxString Fixed = VALUE;
     Fixed.Replace(_T("\n"),_T("\\n"));
@@ -70,7 +75,8 @@ bool wxsStringProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManag
     return true;
 }
 
-bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsStringProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
+                                TiXmlElement* Element)
 {
     if ( !Element )
     {
@@ -113,7 +119,8 @@ bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
     return true;
 }
 
-bool wxsStringProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsStringProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
+                                 TiXmlElement* Element)
 {
     if ( XmlStoreEmpty || (VALUE != Default) )
     {
@@ -138,12 +145,14 @@ bool wxsStringProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
     return false;
 }
 
-bool wxsStringProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsStringProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
+                                       wxsPropertyStream* Stream)
 {
     return Stream->GetString(GetDataName(),VALUE,Default);
 }
 
-bool wxsStringProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsStringProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
+                                        wxsPropertyStream* Stream)
 {
     return Stream->PutString(GetDataName(),VALUE,Default);
 }

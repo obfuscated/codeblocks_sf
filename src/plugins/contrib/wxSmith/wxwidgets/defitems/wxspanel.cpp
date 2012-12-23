@@ -78,6 +78,7 @@ void wxsPanel::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),GetLanguage());

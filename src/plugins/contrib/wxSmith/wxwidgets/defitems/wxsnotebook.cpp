@@ -28,6 +28,8 @@
 #include <wx/textdlg.h>
 #include "../wxsflags.h"
 
+#include <prep.h>
+
 using namespace wxsFlags;
 
 //(*Headers(wxsNotebookParentQP)
@@ -62,7 +64,7 @@ namespace
 
         protected:
 
-            virtual void OnEnumProperties(long Flags)
+            virtual void OnEnumProperties(cb_unused long Flags)
             {
                 WXS_SHORT_STRING(wxsNotebookExtra,m_Label,_("Page name"),_T("label"),_T(""),false);
                 WXS_BOOL(wxsNotebookExtra,m_Selected,_("Page selected"),_T("selected"),false);
@@ -165,9 +167,9 @@ namespace
         //*)
     END_EVENT_TABLE()
 
-    void wxsNotebookParentQP::OnLabelText(wxCommandEvent& event)       { SaveData(); }
-    void wxsNotebookParentQP::OnLabelKillFocus(wxFocusEvent& event)    { SaveData(); event.Skip(); }
-    void wxsNotebookParentQP::OnSelectionChange(wxCommandEvent& event) { SaveData(); }
+    void wxsNotebookParentQP::OnLabelText(cb_unused wxCommandEvent& event)       { SaveData(); }
+    void wxsNotebookParentQP::OnLabelKillFocus(wxFocusEvent& event)              { SaveData(); event.Skip(); }
+    void wxsNotebookParentQP::OnSelectionChange(cb_unused wxCommandEvent& event) { SaveData(); }
 
     WXS_ST_BEGIN(wxsNotebookStyles,_T(""))
         WXS_ST_CATEGORY("wxNotebook")
@@ -205,7 +207,7 @@ wxsNotebook::wxsNotebook(wxsItemResData* Data):
 {
 }
 
-void wxsNotebook::OnEnumContainerProperties(long Flags)
+void wxsNotebook::OnEnumContainerProperties(cb_unused long Flags)
 {
 }
 
@@ -235,10 +237,10 @@ wxString wxsNotebook::OnXmlGetExtraObjectClass()
 
 void wxsNotebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 {
-    wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(GetChildIndex(Child));
-    if ( Extra )
+    wxsNotebookExtra* NBExtra = (wxsNotebookExtra*)GetChildExtra(GetChildIndex(Child));
+    if ( NBExtra )
     {
-        QPP->Register(new wxsNotebookParentQP(QPP,Extra),_("Notebook"));
+        QPP->Register(new wxsNotebookParentQP(QPP,NBExtra),_("Notebook"));
     }
 }
 
@@ -260,15 +262,15 @@ wxObject* wxsNotebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
     for ( int i=0; i<GetChildCount(); i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
+        wxsNotebookExtra* NBExtra = (wxsNotebookExtra*)GetChildExtra(i);
 
         wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
         if ( !ChildPreview ) continue;
 
         bool Selected = (Child == m_CurrentSelection);
-        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        if ( PreviewFlags & pfExact ) Selected = NBExtra->m_Selected;
 
-        Notebook->AddPage(ChildPreview,Extra->m_Label,Selected);
+        Notebook->AddPage(ChildPreview,NBExtra->m_Label,Selected);
     }
 
     return Notebook;
@@ -288,13 +290,14 @@ void wxsNotebook::OnBuildCreatingCode()
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.wx_str(),Extra->m_Selected);
+                wxsNotebookExtra* NBExtra = (wxsNotebookExtra*)GetChildExtra(i);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,NBExtra->m_Label.wx_str(),NBExtra->m_Selected);
             }
 
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsNotebook::OnBuildCreatingCode"),GetLanguage());
@@ -337,8 +340,8 @@ void wxsNotebook::UpdateCurrentSelection()
     for ( int i=0; i<GetChildCount(); i++ )
     {
         if ( m_CurrentSelection == GetChild(i) ) return;
-        wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-        if ( (i==0) || Extra->m_Selected )
+        wxsNotebookExtra* NBExtra = (wxsNotebookExtra*)GetChildExtra(i);
+        if ( (i==0) || NBExtra->m_Selected )
         {
             NewCurrentSelection = GetChild(i);
         }
@@ -381,10 +384,10 @@ bool wxsNotebook::OnPopup(long Id)
                 GetResourceData()->BeginChange();
                 if ( AddChild(Panel) )
                 {
-                    wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(GetChildCount()-1);
-                    if ( Extra )
+                    wxsNotebookExtra* NBExtra = (wxsNotebookExtra*)GetChildExtra(GetChildCount()-1);
+                    if ( NBExtra )
                     {
-                        Extra->m_Label = Dlg.GetValue();
+                        NBExtra->m_Label = Dlg.GetValue();
                     }
                     m_CurrentSelection = Panel;
                 }

@@ -21,7 +21,9 @@
 */
 
 #include "wxslongproperty.h"
+
 #include <globals.h>
+#include <prep.h>
 
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
@@ -38,13 +40,15 @@ void wxsLongProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManage
     PGRegister(Object,Grid,Grid->AppendIn(Parent,NEW_IN_WXPG14X wxIntProperty(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
-bool wxsLongProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsLongProperty::PGRead(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
+                             wxPGId Id, cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetLong();
     return true;
 }
 
-bool wxsLongProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsLongProperty::PGWrite(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
+                              wxPGId Id, cb_unused long Index)
 {
     Grid->SetPropertyValue(Id,VALUE);
     return true;

@@ -31,6 +31,8 @@
 
 #include <clocale>
 
+#include <prep.h>
+
 using namespace wxsFlags;
 
 namespace
@@ -123,6 +125,7 @@ void wxsItem::OnBuildDeclarationsCode()
             AddDeclaration(GetUserClass() + (IsPointer() ? _T("* ") : _T(" ") ) + GetVarName() + _T(";"));
             return;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsItem::OnBuildDeclarationsCode"),GetLanguage());
     }
@@ -162,6 +165,7 @@ void wxsItem::OnBuildEventsConnectingCode()
             Events.GenerateBindingCode(GetCoderContext(),IdString,VarNameString);
             return;
         }
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsItem::OnBuildEventsConnectingCode"),GetLanguage());
@@ -190,6 +194,7 @@ void wxsItem::OnBuildIdCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsItem::OnBuildIdCode"),GetLanguage());
     }
@@ -273,6 +278,7 @@ void wxsItem::BuildSetupWindowCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsItem::BuildSetupWindowCode"),GetLanguage());
@@ -433,6 +439,7 @@ wxString wxsItem::GetCreatePrefix(wxsCodingLang Language)
             if ( IsPointer()  ) return GetVarName() + _T(" = new ") + GetUserClass();
             return GetVarName() + _T(".Create");
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsItem::GetCreatePrefix"),Language);
     }
@@ -448,6 +455,7 @@ wxString wxsItem::GetAccessPrefix(wxsCodingLang Language)
             if ( IsPointer()  ) return GetVarName() + _T("->");
             return GetVarName() + _T(".");
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsItem::GetAccessPrefix"),Language);
     }
@@ -529,6 +537,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << GetParent()->GetVarName(); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -537,6 +546,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << _T("(&") << GetParent()->GetVarName() << _T(")"); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -547,6 +557,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 switch ( Language )
                                 {
                                     case wxsCPP: Result << _T("this"); break;
+                                    case wxsUnknownLanguage: // fall-through
                                     default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
@@ -562,6 +573,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << _T("(*") << GetParent()->GetVarName() << _T(")"); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -570,6 +582,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << GetParent()->GetVarName(); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -580,6 +593,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 switch ( Language )
                                 {
                                     case wxsCPP: Result << _T("(*this)"); break;
+                                    case wxsUnknownLanguage: // fall-through
                                     default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
@@ -591,6 +605,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                             switch ( Language )
                             {
                                 case wxsCPP: Result << GetIdName(); break;
+                                case wxsUnknownLanguage: // fall-through
                                 default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                             }
                             break;
@@ -625,6 +640,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 switch ( Language )
                                 {
                                     case wxsCPP: Result << _T("this"); break;
+                                    case wxsUnknownLanguage: // fall-through
                                     default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
@@ -635,6 +651,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << GetVarName(); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -643,6 +660,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << _T("(&") << GetVarName() << _T(")"); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -670,6 +688,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 switch ( Language )
                                 {
                                     case wxsCPP: Result << _T("(*this)"); break;
+                                    case wxsUnknownLanguage: // fall-through
                                     default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
@@ -680,6 +699,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << _T("(*") << GetVarName() << _T(")"); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -688,6 +708,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     switch ( Language )
                                     {
                                         case wxsCPP: Result << GetVarName(); break;
+                                        case wxsUnknownLanguage: // fall-through
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
                                 }
@@ -739,6 +760,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                             switch ( Language )
                             {
                                 case wxsCPP: Result << WindowParent; break;
+                                case wxsUnknownLanguage: // fall-through
                                 default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                             }
                             break;
@@ -768,9 +790,9 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 Result.Append(_T('-'));
                                 Dec = -Dec;
                             }
-                            int Pos = 0;
-                            do Buff[Pos++] = _T('0') + (Dec%10), Dec /= 10; while ( Dec );
-                            while ( --Pos>=0 ) Result.Append(Buff[Pos]);
+                            int iPos = 0;
+                            do Buff[iPos++] = _T('0') + (Dec%10), Dec /= 10; while ( Dec );
+                            while ( --iPos>=0 ) Result.Append(Buff[iPos]);
                             break;
                         }
 
@@ -839,6 +861,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                         switch ( Language )
                                         {
                                             case wxsCPP: Result << Child->GetVarName(); break;
+                                            case wxsUnknownLanguage: // fall-through
                                             default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                         }
                                     }
@@ -847,6 +870,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                         switch ( Language )
                                         {
                                             case wxsCPP: Result << _T("(&") << Child->GetVarName() << _T(")"); break;
+                                            case wxsUnknownLanguage: // fall-through
                                             default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                         }
                                     }
@@ -859,8 +883,8 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
 
                         case _T('p'):
                         {
-                            wxsPositionData* Pos = va_arg(ap,wxsPositionData*);
-                            Result << Pos->GetPositionCode(Context);
+                            wxsPositionData* PosD = va_arg(ap,wxsPositionData*);
+                            Result << PosD->GetPositionCode(Context);
                             break;
                         }
 
@@ -878,6 +902,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                         switch ( Language )
                                         {
                                             case wxsCPP: Result << _T("(*") << Child->GetVarName() << _T(")"); break;
+                                            case wxsUnknownLanguage: // fall-through
                                             default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                         }
                                     }
@@ -886,6 +911,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                         switch ( Language )
                                         {
                                             case wxsCPP: Result << Child->GetVarName(); break;
+                                            case wxsUnknownLanguage: // fall-through
                                             default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                         }
                                     }
@@ -921,6 +947,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 switch ( Language )
                                 {
                                     case wxsCPP: Result << Var; break;
+                                    case wxsUnknownLanguage: // fall-through
                                     default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
@@ -929,8 +956,8 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
 
                         case _T('z'):
                         {
-                            wxsSizeData* Size = va_arg(ap,wxsSizeData*);
-                            Result << Size->GetSizeCode(Context);
+                            wxsSizeData* SizeD = va_arg(ap,wxsSizeData*);
+                            Result << SizeD->GetSizeCode(Context);
                             break;
                         }
 
@@ -1009,7 +1036,7 @@ wxString wxsItem::GetUserClass()
     return GetClassName();
 }
 
-wxString wxsItem::OnGetTreeLabel(int& Image)
+wxString wxsItem::OnGetTreeLabel(cb_unused int& Image)
 {
     if ( GetPropertiesFlags()&flVariable && !IsRootItem() )
     {
@@ -1048,7 +1075,7 @@ wxSize wxsItem::Size(wxWindow* Parent)
     return GetBaseProps()->m_Size.GetSize(Parent);
 }
 
-bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
+bool wxsItem::OnMouseDClick(cb_unused wxWindow* Preview,cb_unused int PosX,int cb_unused PosY)
 {
     // Search for first event (skip all categories)
     for ( int i=0; i<GetEvents().GetCount(); i++ )
@@ -1068,7 +1095,7 @@ bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
     return false;
 }
 
-bool wxsItem::OnMouseRightClick(wxWindow* Preview,int PosX,int PosY)
+bool wxsItem::OnMouseRightClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY)
 {
     wxMenu Popup;
     OnPreparePopup(&Popup);

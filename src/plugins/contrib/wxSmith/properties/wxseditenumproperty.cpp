@@ -23,6 +23,7 @@
 #include "wxseditenumproperty.h"
 
 #include <globals.h>
+#include <prep.h>
 
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxString)
@@ -79,7 +80,9 @@ void wxsEditEnumProperty::PGCreate(wxsPropertyContainer *Object, wxPropertyGridM
  * \date 27/8/10
  * Updated by Cryogen to use the item name rather than the enumerator value under wxPropertyGrid 1.4.
  */
-bool wxsEditEnumProperty::PGRead(wxsPropertyContainer *Object, wxPropertyGridManager *Grid, wxPGId Id, long Index)
+bool wxsEditEnumProperty::PGRead(cb_unused wxsPropertyContainer *Object,
+                                 wxPropertyGridManager *Grid, wxPGId Id,
+                                 cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValueAsString(Id);
     VALUE.Replace(_T("\\n"), _T("\n"));
@@ -96,7 +99,9 @@ bool wxsEditEnumProperty::PGRead(wxsPropertyContainer *Object, wxPropertyGridMan
  * \return bool
  *
  */
-bool wxsEditEnumProperty::PGWrite(wxsPropertyContainer *Object, wxPropertyGridManager *Grid, wxPGId Id, long Index)
+bool wxsEditEnumProperty::PGWrite(cb_unused wxsPropertyContainer *Object,
+                                  wxPropertyGridManager *Grid, wxPGId Id,
+                                  cb_unused long Index)
 {
     wxString Fixed = VALUE;
 
@@ -121,7 +126,8 @@ bool wxsEditEnumProperty::PGWrite(wxsPropertyContainer *Object, wxPropertyGridMa
  * \return bool
  *
  */
-bool wxsEditEnumProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *Element)
+bool wxsEditEnumProperty::XmlRead(cb_unused wxsPropertyContainer *Object,
+                                  TiXmlElement *Element)
 {
     if(!Element)
     {
@@ -181,7 +187,8 @@ bool wxsEditEnumProperty::XmlRead(wxsPropertyContainer *Object, TiXmlElement *El
  * \return bool
  *
  */
-bool wxsEditEnumProperty::XmlWrite(wxsPropertyContainer *Object, TiXmlElement *Element)
+bool wxsEditEnumProperty::XmlWrite(cb_unused wxsPropertyContainer *Object,
+                                   TiXmlElement *Element)
 {
     if(XmlStoreEmpty || (VALUE != Default))
     {
@@ -218,7 +225,8 @@ bool wxsEditEnumProperty::XmlWrite(wxsPropertyContainer *Object, TiXmlElement *E
  * \return bool
  *
  */
-bool wxsEditEnumProperty::PropStreamRead(wxsPropertyContainer *Object, wxsPropertyStream *Stream)
+bool wxsEditEnumProperty::PropStreamRead(cb_unused wxsPropertyContainer *Object,
+                                         wxsPropertyStream *Stream)
 {
     return Stream->GetString(GetDataName(), VALUE, Default);
 }
@@ -230,7 +238,8 @@ bool wxsEditEnumProperty::PropStreamRead(wxsPropertyContainer *Object, wxsProper
  * \return bool
  *
  */
-bool wxsEditEnumProperty::PropStreamWrite(wxsPropertyContainer *Object, wxsPropertyStream *Stream)
+bool wxsEditEnumProperty::PropStreamWrite(cb_unused wxsPropertyContainer *Object,
+                                          wxsPropertyStream *Stream)
 {
     return Stream->PutString(GetDataName(), VALUE, Default);
 }

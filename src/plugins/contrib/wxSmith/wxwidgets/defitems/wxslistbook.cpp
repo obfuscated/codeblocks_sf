@@ -222,10 +222,10 @@ wxString wxsListbook::OnXmlGetExtraObjectClass()
 
 void wxsListbook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 {
-    wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(GetChildIndex(Child));
-    if ( Extra )
+    wxsListbookExtra* LBExtra = (wxsListbookExtra*)GetChildExtra(GetChildIndex(Child));
+    if ( LBExtra )
     {
-        QPP->Register(new wxsListbookParentQP(QPP,Extra),_("Listbook"));
+        QPP->Register(new wxsListbookParentQP(QPP,LBExtra),_("Listbook"));
     }
 }
 
@@ -247,15 +247,15 @@ wxObject* wxsListbook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
     for ( int i=0; i<GetChildCount(); i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
+        wxsListbookExtra* LBExtra = (wxsListbookExtra*)GetChildExtra(i);
 
         wxWindow* ChildPreview = wxDynamicCast(GetChild(i)->GetLastPreview(),wxWindow);
         if ( !ChildPreview ) continue;
 
         bool Selected = (Child == m_CurrentSelection);
-        if ( PreviewFlags & pfExact ) Selected = Extra->m_Selected;
+        if ( PreviewFlags & pfExact ) Selected = LBExtra->m_Selected;
 
-        Listbook->AddPage(ChildPreview,Extra->m_Label,Selected);
+        Listbook->AddPage(ChildPreview,LBExtra->m_Label,Selected);
     }
 
     return Listbook;
@@ -275,13 +275,14 @@ void wxsListbook::OnBuildCreatingCode()
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.wx_str(),Extra->m_Selected);
+                wxsListbookExtra* LBExtra = (wxsListbookExtra*)GetChildExtra(i);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,LBExtra->m_Label.wx_str(),LBExtra->m_Selected);
             }
 
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsListbook::OnBuildCreatingCode"),GetLanguage());
@@ -325,8 +326,8 @@ void wxsListbook::UpdateCurrentSelection()
     for ( int i=0; i<GetChildCount(); i++ )
     {
         if ( m_CurrentSelection == GetChild(i) ) return;
-        wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
-        if ( (i==0) || Extra->m_Selected )
+        wxsListbookExtra* LBExtra = (wxsListbookExtra*)GetChildExtra(i);
+        if ( (i==0) || LBExtra->m_Selected )
         {
             NewCurrentSelection = GetChild(i);
         }

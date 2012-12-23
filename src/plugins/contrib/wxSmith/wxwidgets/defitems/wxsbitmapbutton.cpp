@@ -23,6 +23,8 @@
 #include <wx/bmpbuttn.h>
 #include "wxsbitmapbutton.h"
 
+#include <prep.h>
+
 namespace
 {
     wxsRegisterItem<wxsBitmapButton> Reg(_T("BitmapButton"),wxsTWidget,_T("Standard"),360);
@@ -119,7 +121,7 @@ wxObject* wxsBitmapButton::OnBuildPreview(wxWindow* Parent,long Flags)
 }
 
 
-void wxsBitmapButton::OnEnumWidgetProperties(long Flags)
+void wxsBitmapButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_BITMAP(wxsBitmapButton,BitmapLabel,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
     WXS_BITMAP(wxsBitmapButton,BitmapDisabled,_("Disabled bmp."),_T("disabled"),_T("wxART_OTHER"))

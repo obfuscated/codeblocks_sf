@@ -28,6 +28,8 @@
 #include "wxsstyle.h"
 #include "wxsflags.h"
 
+#include <prep.h>
+
 using namespace wxsFlags;
 
 /** \brief Class used as a base class for standard widgets without any children
@@ -83,7 +85,7 @@ class wxsWidget: public wxsItem
          * All QPPChild panels will be added before additional panels
          * added by widget.
          */
-        virtual void OnAddWidgetQPP(wxsAdvQPP* QPP) { }
+        virtual void OnAddWidgetQPP(cb_unused wxsAdvQPP* QPP) { }
 
     private:
 

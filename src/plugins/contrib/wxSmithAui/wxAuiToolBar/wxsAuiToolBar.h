@@ -22,6 +22,8 @@
 #include <wxwidgets/wxscontainer.h>
 #include <wx/aui/aui.h>
 
+#include <prep.h>
+
 class wxsAuiToolBar : public wxsContainer
 {
     public:
@@ -32,7 +34,7 @@ class wxsAuiToolBar : public wxsContainer
 
     protected:
     private:
-        virtual void OnEnumContainerProperties(long Flags) {}
+        virtual void OnEnumContainerProperties(cb_unused long Flags) {}
         virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
         virtual wxsPropertyContainer* OnBuildExtra();

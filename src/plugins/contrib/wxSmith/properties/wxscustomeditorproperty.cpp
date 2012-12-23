@@ -22,6 +22,8 @@
 
 #include "wxscustomeditorproperty.h"
 
+#include <prep.h>
+
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/propgrid/propgrid.h>
@@ -68,7 +70,7 @@ namespace
             }
 
 #if wxCHECK_VERSION(2,9,0)
-            virtual wxString ValueToString(  wxVariant& WXUNUSED(value), int argFlags = 0 ) const
+            virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
 #else
             virtual wxString GetValueAsString( int flags = 0 ) const
 #endif
@@ -95,12 +97,16 @@ void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGr
     PGRegister(Object,Grid,PGId);
 }
 
-bool wxsCustomEditorProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId PGId,long Index)
+bool wxsCustomEditorProperty::PGRead(cb_unused wxsPropertyContainer* Object,
+                                     wxPropertyGridManager*          Grid,
+                                     wxPGId PGId,cb_unused long Index)
 {
     return CanParseStr() && ParseStr(Object,Grid->GetPropertyValue(PGId).GetString());
 }
 
-bool wxsCustomEditorProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId PGId,long Index)
+bool wxsCustomEditorProperty::PGWrite(cb_unused wxsPropertyContainer*  Object,
+                                      cb_unused wxPropertyGridManager* Grid,
+                                      cb_unused wxPGId PGId,cb_unused long Index)
 {
     return true;
 }

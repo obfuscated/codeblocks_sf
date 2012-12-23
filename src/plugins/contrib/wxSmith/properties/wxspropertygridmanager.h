@@ -33,6 +33,8 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
+#include <prep.h>
+
 #if wxCHECK_VERSION(2, 9, 0)
 #define wxPGId wxPGProperty*
 #endif
@@ -86,7 +88,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
          * \param NewContainer new container associated with this manager,
          *        if 0, container has been unbinded and manager must be cleared.
          */
-        virtual void OnContainerChanged(wxsPropertyContainer* NewContainer) {}
+        virtual void OnContainerChanged(cb_unused wxsPropertyContainer* NewContainer) {}
 
     private:
 

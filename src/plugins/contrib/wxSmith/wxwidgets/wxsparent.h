@@ -25,6 +25,8 @@
 
 #include "wxsitem.h"
 
+#include <prep.h>
+
 /** \brief This class represents widget with child items
  *
  * Each item may have some additional configuration stored in wxsPropertyContainer
@@ -199,7 +201,7 @@ class wxsParent: public wxsItem
          * \param Child pointer to child
          * \return true if child visible, false if not
          */
-        virtual bool OnIsChildPreviewVisible(wxsItem* Child) { return true; }
+        virtual bool OnIsChildPreviewVisible(cb_unused wxsItem* Child) { return true; }
 
         /** \brief Function ensuring that given child of this item is visible inside editor
          *
@@ -209,7 +211,7 @@ class wxsParent: public wxsItem
          * \note This function does not make sure that parent is visible
          * \return false if nothing has changed, true if preview must be refreshed
          */
-        virtual bool OnEnsureChildPreviewVisible(wxsItem* /*Child*/) { return false; }
+        virtual bool OnEnsureChildPreviewVisible(cb_unused wxsItem* Child) { return false; }
 
     private:
 

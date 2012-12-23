@@ -23,6 +23,7 @@
 #include "wxsenumproperty.h"
 
 #include <globals.h>
+#include <prep.h>
 
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
@@ -44,13 +45,16 @@ void wxsEnumProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManage
     PGRegister(Object,Grid,Grid->AppendIn(Parent,NEW_IN_WXPG14X wxEnumProperty(GetPGName(),wxPG_LABEL,PGC,VALUE)));
 }
 
-bool wxsEnumProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsEnumProperty::PGRead(cb_unused wxsPropertyContainer* Object,
+                             wxPropertyGridManager* Grid,wxPGId Id,
+                             cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetLong();
     return true;
 }
 
-bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
+                              wxPGId Id, cb_unused long Index)
 {
     if ( UpdateEnteries )
     {
@@ -65,7 +69,8 @@ bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager
     return true;
 }
 
-bool wxsEnumProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsEnumProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
+                              TiXmlElement* Element)
 {
     if ( !Element )
     {
@@ -101,7 +106,8 @@ bool wxsEnumProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element
     return true;
 }
 
-bool wxsEnumProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsEnumProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
+                               TiXmlElement* Element)
 {
     if ( VALUE != Default )
     {
@@ -127,12 +133,14 @@ bool wxsEnumProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
     return false;
 }
 
-bool wxsEnumProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsEnumProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
+                                     wxsPropertyStream* Stream)
 {
     return Stream->GetLong(GetDataName(),VALUE,Default);
 }
 
-bool wxsEnumProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsEnumProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
+                                      wxsPropertyStream* Stream)
 {
     return Stream->PutLong(GetDataName(),VALUE,Default);
 }

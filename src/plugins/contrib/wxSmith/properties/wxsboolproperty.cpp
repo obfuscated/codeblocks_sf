@@ -22,6 +22,8 @@
 
 #include "wxsboolproperty.h"
 
+#include <prep.h>
+
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,bool)
 
@@ -39,19 +41,24 @@ void wxsBoolProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManage
     PGRegister(Object,Grid,ID);
 }
 
-bool wxsBoolProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsBoolProperty::PGRead(cb_unused wxsPropertyContainer* Object,
+                             wxPropertyGridManager* Grid,wxPGId Id,
+                             cb_unused long Index)
 {
     VALUE = Grid->GetPropertyValue(Id).GetBool();
     return true;
 }
 
-bool wxsBoolProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsBoolProperty::PGWrite(cb_unused wxsPropertyContainer* Object,
+                              wxPropertyGridManager* Grid,wxPGId Id,
+                              cb_unused long Index)
 {
     Grid->SetPropertyValue(Id,VALUE);
     return true;
 }
 
-bool wxsBoolProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsBoolProperty::XmlRead(cb_unused wxsPropertyContainer* Object,
+                              TiXmlElement* Element)
 {
     if ( !Element )
     {
@@ -68,7 +75,8 @@ bool wxsBoolProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element
     return true;
 }
 
-bool wxsBoolProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
+bool wxsBoolProperty::XmlWrite(cb_unused wxsPropertyContainer* Object,
+                               TiXmlElement* Element)
 {
     if ( VALUE != Default )
     {
@@ -78,12 +86,14 @@ bool wxsBoolProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
     return false;
 }
 
-bool wxsBoolProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsBoolProperty::PropStreamRead(cb_unused wxsPropertyContainer* Object,
+                                     wxsPropertyStream* Stream)
 {
     return Stream->GetBool(GetDataName(),VALUE,Default);
 }
 
-bool wxsBoolProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
+bool wxsBoolProperty::PropStreamWrite(cb_unused wxsPropertyContainer* Object,
+                                      wxsPropertyStream* Stream)
 {
     return Stream->PutBool(GetDataName(),VALUE,Default);
 }

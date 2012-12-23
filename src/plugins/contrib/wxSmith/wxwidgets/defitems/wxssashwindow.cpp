@@ -20,6 +20,8 @@
 #include "wxssashwindow.h"
 #include <wx/sashwin.h>
 
+#include <prep.h>
+
 //------------------------------------------------------------------------------
 
 namespace
@@ -103,6 +105,7 @@ void wxsSashWindow::OnBuildCreatingCode()
 
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsSashWindow::OnBuildCreatingCode"),GetLanguage());
     }
@@ -110,7 +113,7 @@ void wxsSashWindow::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-void wxsSashWindow::OnEnumContainerProperties(long Flags)
+void wxsSashWindow::OnEnumContainerProperties(cb_unused long Flags)
 {
     WXS_BOOL(wxsSashWindow, mTop,    _("Drag Top"),    _("dragtop"),    true);
     WXS_BOOL(wxsSashWindow, mBottom, _("Drag Bottom"), _("dragbottom"), true);
@@ -120,7 +123,7 @@ void wxsSashWindow::OnEnumContainerProperties(long Flags)
 
 //------------------------------------------------------------------------------
 
-bool wxsSashWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+bool wxsSashWindow::OnCanAddChild(cb_unused wxsItem* Item,cb_unused bool ShowMessage)
 {
     return true;
 }

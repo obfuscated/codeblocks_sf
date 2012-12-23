@@ -36,6 +36,7 @@
 
 #include <stdarg.h>
 
+#include <prep.h>
 
 class wxsItemResData;
 class wxsParent;
@@ -358,7 +359,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          *
          * \param QPP wxsAdvQPP class, root Quick properties panel
          */
-        virtual void OnAddItemQPP(wxsAdvQPP* QPP) {}
+        virtual void OnAddItemQPP(cb_unused wxsAdvQPP* QPP) {}
 
         /** \brief Function building preview for this item
          *
@@ -443,7 +444,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          * \param PosY Y position of mouse relative to item's position
          * \return false if nothing has changed, true if preview must be refreshed
          */
-        virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY) { return false; }
+        virtual bool OnMouseClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY) { return false; }
 
         /** \brief Function processing double-click event
          *
@@ -496,13 +497,14 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          *        after all detected formatting chars
          * \param ap pointer to arguments, get arguments through va_arg
          */
-        virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap) { return false; }
+        virtual bool OnCodefExtension(cb_unused wxsCodingLang Language,cb_unused wxString& Result,
+                                      cb_unused const wxChar* &FmtChar,cb_unused va_list ap) { return false; }
 
         /** \brief Function checking if this item is represented as pointer */
         virtual bool OnIsPointer();
 
         /** \brief Checking if this item can be added to given parent */
-        virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage) { return true; }
+        virtual bool OnCanAddToParent(cb_unused wxsParent* Parent,cb_unused bool ShowMessage) { return true; }
 
         /** \brief Getting name of entry in resource browser
          *

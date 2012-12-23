@@ -22,6 +22,8 @@
 
 #include "wxsboxsizer.h"
 
+#include <prep.h>
+
 namespace
 {
     wxsRegisterItem<wxsBoxSizer> Reg(_T("BoxSizer"), wxsTSizer, _T("Layout"), 90);
@@ -33,7 +35,7 @@ wxsBoxSizer::wxsBoxSizer(wxsItemResData* Data):
 {
 }
 
-wxSizer* wxsBoxSizer::OnBuildSizerPreview(wxWindow* Parent)
+wxSizer* wxsBoxSizer::OnBuildSizerPreview(cb_unused wxWindow* Parent)
 {
     return new wxBoxSizer(Orient);
 }
@@ -49,6 +51,7 @@ void wxsBoxSizer::OnBuildSizerCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
@@ -56,7 +59,7 @@ void wxsBoxSizer::OnBuildSizerCreatingCode()
     }
 }
 
-void wxsBoxSizer::OnEnumSizerProperties(long Flags)
+void wxsBoxSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
     static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
     static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), 0 };

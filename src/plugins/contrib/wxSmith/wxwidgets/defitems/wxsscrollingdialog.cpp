@@ -92,6 +92,7 @@ void wxsScrollingDialog::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsScrollingDialog::OnBuildCreatingCode"),GetLanguage());
