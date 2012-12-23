@@ -339,7 +339,10 @@ void Abbreviations::LoadAutoCompleteConfig()
                 else if (code[pos] == wxT('\\'))
                     resolved += wxT("\\");
                 else // ?!
-                    resolved += wxT("\\") + code[pos];
+                {
+                    resolved += wxT("\\");
+                    resolved += code[pos];
+                }
             }
             else
                 resolved += code[pos];
