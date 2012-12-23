@@ -2927,6 +2927,8 @@ void ProjectManager::WorkspaceChanged()
 
 void ProjectManager::CheckForExternallyModifiedProjects()
 {
+    if (Manager::IsBatchBuild())
+        return;
     if (m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
         return;
     m_isCheckingForExternallyModifiedProjects = true;
