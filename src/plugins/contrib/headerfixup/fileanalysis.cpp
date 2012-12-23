@@ -52,7 +52,7 @@ void FileAnalysis::ReInit(const wxString& FileName, bool verbose)
 {
   Reset();
   m_FileName = FileName;
-  m_Verbose = verbose;
+  m_Verbose  = verbose;
 
   wxFileName FileNameObj(m_FileName);
   if ( FileNameObj.GetExt().Lower() == _T("h")   ||
@@ -109,7 +109,17 @@ void FileAnalysis::SaveFile(const wxString& Prepend)
       return;
     }
 
-    File.Write(m_FileContent,wxConvUTF8);
+    if ( !File.Write(m_FileContent,wxConvUTF8) )
+    {
+      Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: ")+m_FileName+_T("\" could not be updated (written).")));
+      return;
+    }
+
+    if ( !File.Close() )
+    {
+      Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: ")+m_FileName+_T("\" could not be closed.")));
+      return;
+    }
   }
 }
 
@@ -117,7 +127,7 @@ void FileAnalysis::SaveFile(const wxString& Prepend)
 
 wxString FileAnalysis::GetNextLine()
 {
-  if (HasMoreLines())
+  if ( HasMoreLines() )
   {
     wxString LineOfFile = m_LinesOfFile.Item(m_CurrentLine);
     m_CurrentLine++;
