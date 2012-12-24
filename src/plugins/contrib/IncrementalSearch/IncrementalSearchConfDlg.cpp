@@ -20,6 +20,7 @@
     #include <configmanager.h>
 #endif
 
+#include <wx/spinctrl.h>
 #include "IncrementalSearchConfDlg.h"
 #include "IncrementalSearch.h"
 

@@ -13,6 +13,7 @@
 #define INCREMENTAL_SEARCH_H_INCLUDED
 
 #include <cbplugin.h>
+#include <wx/wxscintilla.h>
 
 class cbStyledTextCtrl;
 class wxComboCtrl;

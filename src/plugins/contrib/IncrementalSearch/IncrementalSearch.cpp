@@ -24,7 +24,7 @@
 #endif
 
 #include <wx/combo.h>
-#include <wx/choice.h>
+#include <wx/listbox.h>
 #include <cbstyledtextctrl.h>
 #include "IncrementalSearch.h"
 #include "IncrementalSearchConfDlg.h"
