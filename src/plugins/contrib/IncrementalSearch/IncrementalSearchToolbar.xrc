@@ -17,10 +17,6 @@
       <longhelp>Clear contents of textcontrol</longhelp>
       <bitmap>images/16x16/incsearchclear.png</bitmap>
     </object>
-    <object class="wxTextCtrl" name="idIncSearchText">
-	  <size>160,-1</size>
-	  <style>wxTE_PROCESS_ENTER|wxTE_NOHIDESEL</style>
-    </object>
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">
       <tooltip>Prev</tooltip>
@@ -62,10 +58,6 @@
       <tooltip>Clear</tooltip>
       <longhelp>Clear contents of textcontrol</longhelp>
       <bitmap>images/incsearchclear.png</bitmap>
-    </object>
-    <object class="wxTextCtrl" name="idIncSearchText">
-	  <size>160,-1</size>
-	  <style>wxTE_PROCESS_ENTER|wxTE_NOHIDESEL</style>
     </object>
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">

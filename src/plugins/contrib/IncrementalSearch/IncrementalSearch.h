@@ -15,6 +15,8 @@
 #include <cbplugin.h>
 
 class cbStyledTextCtrl;
+class wxComboCtrl;
+class cbIncSearchComboPopUp;
 
 class IncrementalSearch : public cbPlugin
 {
@@ -38,6 +40,7 @@ public:
     void BuildMenu(wxMenuBar* menuBar);
     void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0) {}
     bool BuildToolBar(wxToolBar* toolBar);
+    void SetMaxHistoryLen(int len);
 
 private:
     void OnAttach();
@@ -74,7 +77,11 @@ private:
     wxString m_SearchText;
     wxColour m_textCtrlBG_Default;
     wxToolBar* m_pToolbar;
+    // we need a wxComboCtrl here, because in wxComboBox the background colour of the
+    // text control can not be set (at least not with wxGTK).
+    wxComboCtrl* m_pComboCtrl;
     wxTextCtrl* m_pTextCtrl;
+    cbIncSearchComboPopUp* m_pChoice;
     cbEditor* m_pEditor;
     int m_NewPos;
     int m_OldPos;

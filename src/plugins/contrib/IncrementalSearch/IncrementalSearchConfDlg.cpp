@@ -21,6 +21,7 @@
 #endif
 
 #include "IncrementalSearchConfDlg.h"
+#include "IncrementalSearch.h"
 
 BEGIN_EVENT_TABLE(IncrementalSearchConfDlg,wxPanel)
     EVT_BUTTON(XRCID("btnIncSearchConfColourFound"),IncrementalSearchConfDlg::OnChooseColour)
@@ -49,6 +50,7 @@ IncrementalSearchConfDlg::IncrementalSearchConfDlg(wxWindow* parent)
     XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/selected_default_state"),0));
     XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0));
     XRCCTRL(*this, "idIncSearchRegExDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/regex_default_state"),0));
+    XRCCTRL(*this, "idIncSearchComboMaxItems", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/incremental_search/max_items_in_history"),20));
 }
 
 IncrementalSearchConfDlg::~IncrementalSearchConfDlg()
@@ -81,6 +83,11 @@ void IncrementalSearchConfDlg::SaveSettings()
     cfg->Write(_T("/incremental_search/selected_default_state"),        XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/match_case_default_state"),      XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/regex_default_state"),           XRCCTRL(*this, "idIncSearchRegExDefault", wxChoice)->GetSelection());
+    int maxItemsInHistory = XRCCTRL(*this, "idIncSearchComboMaxItems", wxSpinCtrl)->GetValue();
+    cfg->Write(_T("/incremental_search/max_items_in_history"),          maxItemsInHistory);
+    IncrementalSearch* plugin = wxStaticCast(Manager::Get()->GetPluginManager()->FindPluginByName(_T("IncrementalSearch")), IncrementalSearch);
+    plugin->SetMaxHistoryLen(maxItemsInHistory);
+
 
     // save colour-values
     cfg->Write(_T("/incremental_search/text_found_colour"),             XRCCTRL(*this, "btnIncSearchConfColourFound", wxButton)->GetBackgroundColour());

@@ -15,7 +15,7 @@
               release="12" />
   <Plugin name="IncrementalSearch">
     <Value title="IncrementalSearch" />
-    <Value version="0.8" />
+    <Value version="0.9" />
     <Value description="Searches and highlights a marked text incrementally within the open editor." />
     <Value author="Jens Lody" />
     <Value authorEmail="debian@jenslody.de" />
