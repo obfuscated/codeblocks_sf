@@ -257,17 +257,17 @@
       <object class="wxMenu" name="idEditEOLMode">
         <label>&amp;End-of-line mode</label>
         <object class="wxMenuItem" name="idEditEOLCRLF">
-          <label>CR &amp;&amp; LF</label>
+          <label>Windows (CR &amp;&amp; LF)</label>
           <help>End-of-line mode uses carriage return and line feed</help>
           <radio>1</radio>
         </object>
         <object class="wxMenuItem" name="idEditEOLCR">
-          <label>CR</label>
+          <label>Unix (CR)</label>
           <help>End-of-line mode uses carriage return only</help>
           <radio>1</radio>
         </object>
         <object class="wxMenuItem" name="idEditEOLLF">
-          <label>LF</label>
+          <label>Mac (LF)</label>
           <help>End-of-line mode uses line feed only</help>
           <radio>1</radio>
         </object>

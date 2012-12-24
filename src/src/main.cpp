@@ -34,6 +34,7 @@
 #include <wx/dnd.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
+#include <wx/gdicmn.h>
 #include <wx/printdlg.h>
 #include <wx/sstream.h>
 #include <wx/tipdlg.h>
@@ -1860,11 +1861,12 @@ void MainFrame::DoCreateStatusBar()
 
     wxCoord width[16]; // 16 max
     width[num++] = -1; // main field
+    dc.GetTextExtent(_(" Windows (CR+LF) "),        &width[num++], &h);
     dc.GetTextExtent(_(" WINDOWS-1252 "),           &width[num++], &h);
     dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[num++], &h);
     dc.GetTextExtent(_(" Overwrite "),              &width[num++], &h);
     dc.GetTextExtent(_(" Modified "),               &width[num++], &h);
-    dc.GetTextExtent(_(" Read/Write... "),          &width[num++], &h);
+    dc.GetTextExtent(_(" Read/Write "),             &width[num++], &h);
     dc.GetTextExtent(_(" name_of_profile "),        &width[num++], &h);
 
     wxStatusBar* sb = CreateStatusBar(num);
@@ -1886,6 +1888,14 @@ void MainFrame::DoUpdateStatusBar()
         int pos = ed->GetControl()->GetCurrentPos();
         wxString msg;
         SetStatusText(ed->GetFilename(), panel++);
+        switch (ed->GetControl()->GetEOLMode())
+        {
+            case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
+            case wxSCI_EOL_CR:   msg = _T("Unix (CR)");       break;
+            case wxSCI_EOL_LF:   msg = _T("Mac (LF)");        break;
+            default:                                          break;
+        }
+        SetStatusText(msg, panel++);
         SetStatusText(ed->GetEncodingName(), panel++);
         msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
         SetStatusText(msg, panel++);
@@ -1906,6 +1916,7 @@ void MainFrame::DoUpdateStatusBar()
             SetStatusText(eb->GetFilename(), panel++);
         else
             SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
+        SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
