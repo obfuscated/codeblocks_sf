@@ -152,7 +152,7 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
         if (!IsObjectOutdated(target, pfd, &err))
         {
             if (!err.IsEmpty())
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
+                ret.Add(wxString(COMPILER_WARNING_LOG) + err);
             return ret;
         }
     }
@@ -487,7 +487,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         else
         {
             if (!err.IsEmpty())
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
+                ret.Add(wxString(COMPILER_WARNING_LOG) + err);
         }
         if (m_doYield)
             Manager::Yield();
@@ -617,11 +617,16 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (!fileMissing.IsEmpty())
     {
         wxString warn;
+#ifdef NO_TRANSLATION
+        warn.Printf(wxT("WARNING: Target '%s': Unable to resolve %lu external dependenc%s:"),
+                    target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()), wxString(fileMissing.Count() == 1 ? wxT("y") : wxT("ies")).wx_str());
+#else
         warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependency/ies:"),
                     target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()));
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + warn);
-        for (size_t i=0; i<fileMissing.Count(); i++)
-            ret.Add(wxString(COMPILER_SIMPLE_LOG) + fileMissing[i]);
+#endif // NO_TRANSLATION
+        ret.Add(wxString(COMPILER_WARNING_LOG) + warn);
+        for (size_t i = 0; i < fileMissing.Count(); ++i)
+            ret.Add(wxString(COMPILER_NOTE_LOG) + wxString(wxT(' '), 8) + fileMissing[i]);
     }
 
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;

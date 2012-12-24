@@ -5,6 +5,8 @@
 #include <wx/hashmap.h>
 
 #define COMPILER_SIMPLE_LOG     _T("SLOG:")
+#define COMPILER_NOTE_LOG       _T("SLOG:NLOG:")
+#define COMPILER_WARNING_LOG    _T("SLOG:WLOG:")
 #define COMPILER_TARGET_CHANGE  _T("TGT:")
 #define COMPILER_WAIT           _T("WAIT")
 #define COMPILER_WAIT_LINK      _T("LINK")

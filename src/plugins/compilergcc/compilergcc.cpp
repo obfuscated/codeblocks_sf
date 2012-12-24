@@ -1325,11 +1325,14 @@ int CompilerGCC::DoRunQueue()
         LogWarningOrError(cltError, 0, wxEmptyString, wxEmptyString, err);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            wxString msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
-            LogMessage(msg, cltError, ltAll, true);
-            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
-                              wxString::Format(_("=== Build failed: %s ==="), msg.wx_str()));
-            SaveBuildLog();
+            if (!IsProcessRunning())
+            {
+                wxString msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
+                LogMessage(msg, cltError, ltAll, true);
+                LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
+                                  wxString::Format(_("=== Build failed: %s ==="), msg.wx_str()));
+                SaveBuildLog();
+            }
             if (!Manager::IsBatchBuild() && m_pLog->progress)
                 m_pLog->progress->SetValue(0);
         }
@@ -2765,6 +2768,8 @@ int CompilerGCC::KillProcess()
     m_RunAfterCompile = false;
     if (!IsProcessRunning())
         return 0;
+    if (!m_CommandQueue.LastCommandWasRun())
+        LogMessage(_("Aborting build..."), cltInfo, ltMessages);
     wxKillError ret = wxKILL_OK;
 
     m_CommandQueue.Clear();
@@ -3423,6 +3428,20 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 
 void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)
 {
+    const wxString noteStr = wxString(COMPILER_NOTE_LOG).AfterFirst(wxT(':'));
+    const wxString warnStr = wxString(COMPILER_WARNING_LOG).AfterFirst(wxT(':'));
+    wxString msg;
+    if (message.StartsWith(noteStr, &msg))
+        LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
+    else if (message.StartsWith(warnStr, &msg))
+    {
+        if (lt != cltError)
+            lt = cltWarning;
+        LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
+    }
+    else
+        msg = message;
+
     // log file
     if (log & ltFile)
     {
@@ -3439,7 +3458,7 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         // Replace the script quotation marks family by "
         // Using UTF codes to avoid "error: converting to execution character set: Illegal byte sequence"
         // -> for UTF codes see here: http://www.utf8-chartable.de/unicode-utf8-table.pl
-        wxString sQuoted(message);
+        wxString sQuoted(msg);
         wxString sGA = wxString::FromUTF8("\x60");     // GRAVE ACCENT
         wxString sAA = wxString::FromUTF8("\xC2\xB4"); // ACUTE ACCENT
         sQuoted.Replace(sGA,     _T("\""),    true);
@@ -3486,8 +3505,8 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
             }
         }
 
-        Manager::Get()->GetLogManager()->Log(progressMsg + message, m_PageIndex, lv);
-        Manager::Get()->GetLogManager()->LogToStdOut(progressMsg + message);
+        Manager::Get()->GetLogManager()->Log(progressMsg + msg, m_PageIndex, lv);
+        Manager::Get()->GetLogManager()->LogToStdOut(progressMsg + msg);
     }
 }
 
@@ -3586,7 +3605,8 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     m_timerIdleWakeUp.Stop();
     m_CompilerProcessList.at(procIndex).PID      = 0;
     m_CompilerProcessList.at(procIndex).pProcess = 0;
-    m_LastExitCode = exitCode;
+    if (m_LastExitCode == 0 || exitCode != 0) // prevent exit errors from being overwritten during multi-threaded build
+        m_LastExitCode = exitCode;
 
     wxString oFile = UnixFilename(m_CompilerProcessList.at(procIndex).OutputFile);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(oFile); // might contain macros!
@@ -3653,15 +3673,19 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             m_BuildJobTargetsList.pop();
 
         wxString msg = wxString::Format(_("Process terminated with status %d (%s)"), exitCode, GetMinSecStr().wx_str());
-        LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
+        if (m_LastExitCode == exitCode) // do not log extra if there is failure during multi-threaded build
+            LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
-            LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
-            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
-                              wxString::Format(_("=== Build %s: %s ==="),
-                                               wxString(exitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));
-            SaveBuildLog();
+            if (!IsProcessRunning())
+            {
+                msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
+                LogMessage(msg, m_LastExitCode == 0 ? cltWarning : cltError, ltAll, m_LastExitCode != 0);
+                LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
+                                  wxString::Format(_("=== Build %s: %s ==="),
+                                                   wxString(m_LastExitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));
+                SaveBuildLog();
+            }
             if (!Manager::IsBatchBuild() && m_pLog->progress)
                 m_pLog->progress->SetValue(0);
         }
@@ -3670,7 +3694,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             // last command was "Run"
             // force exit code to zero (0) or else debugger will think build failed if last run returned non-zero...
 // TODO (mandrav##): Maybe create and use GetLastRunExitCode()? Is it needed?
-            m_LastExitCode = 0;
+            m_LastExitCode = 0; // *might* not be needed anymore, see NotifyJobDone()
         }
         Manager::Get()->GetLogManager()->Log(_T(" "), m_PageIndex); // blank line
 
@@ -3748,13 +3772,20 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
         CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
         evt.SetInt(m_LastExitCode);
         Manager::Get()->ProcessEvent(evt);
+        m_LastExitCode = 0;
     }
 }
 
 wxString CompilerGCC::GetErrWarnStr()
 {
+#ifdef NO_TRANSLATION
+    return wxString::Format(wxT("%u error%s, %u warning%s"),
+                            m_Errors.GetCount(cltError),   wxString(m_Errors.GetCount(cltError)   == 1 ? wxT("") : wxT("s")).wx_str(),
+                            m_Errors.GetCount(cltWarning), wxString(m_Errors.GetCount(cltWarning) == 1 ? wxT("") : wxT("s")).wx_str());
+#else
     return wxString::Format(_("%u error(s), %u warning(s)"),
                             m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
+#endif // NO_TRANSLATION
 }
 
 wxString CompilerGCC::GetMinSecStr()
@@ -3762,5 +3793,11 @@ wxString CompilerGCC::GetMinSecStr()
     long int elapsed = (wxGetLocalTimeMillis() - m_StartTime).ToLong() / 1000;
     int mins =  elapsed / 60;
     int secs = (elapsed % 60);
+#ifdef NO_TRANSLATION
+    return wxString::Format(wxT("%d minute%s, %d second%s"),
+                            mins, wxString(mins == 1 ? wxT("") : wxT("s")).wx_str(),
+                            secs, wxString(secs == 1 ? wxT("") : wxT("s")).wx_str());
+#else
     return wxString::Format(_("%d minute(s), %d second(s)"), mins, secs);
+#endif // NO_TRANSLATION
 }
