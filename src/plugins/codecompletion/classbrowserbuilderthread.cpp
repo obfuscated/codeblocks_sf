@@ -540,8 +540,10 @@ void ClassBrowserBuilderThread::BuildTree()
 #endif
     }
 
-    // 13.) Expand namespaces
-    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem());
+    // 13.) Expand namespaces and classes
+    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkNamespace, 1);
+    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkClass, 1);
+    
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
     sw.Start();
@@ -642,11 +644,11 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
     }
 }
 
-void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
+void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node, TokenKind tokenKind, int level)
 {
     TRACE(_T("ClassBrowserBuilderThread::ExpandNamespaces"));
 
-    if (CBBT_SANITY_CHECK || !m_BrowserOptions.expandNS || !node.IsOk())
+    if (CBBT_SANITY_CHECK || !m_BrowserOptions.expandNS || !node.IsOk() || level <= 0 )
         return;
 
     wxTreeItemIdValue enumerationCookie;
@@ -656,11 +658,11 @@ void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
         CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(existing));
         if (   data
             && data->m_Token
-            && data->m_Token->m_TokenKind == tkNamespace )
+            && (data->m_Token->m_TokenKind == tokenKind) )
         {
             TRACE(F(_T("Auto-expanding: ") + data->m_Token->m_Name));
             m_CCTreeCtrlTop->Expand(existing);
-            ExpandNamespaces(existing); // re-curse
+            ExpandNamespaces(existing, tokenKind, level-1); // re-curse
         }
 
         existing = m_CCTreeCtrlTop->GetNextSibling(existing);

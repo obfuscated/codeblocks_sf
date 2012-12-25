@@ -49,7 +49,7 @@ protected:
 
     // Called from BuildTree():
     void RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemId parent); // recursive
-    void ExpandNamespaces(wxTreeItemId node);                       // recursive
+    void ExpandNamespaces(wxTreeItemId node, TokenKind tokenKind, int level);            // recursive
 
     // Called from ExpandItem():
     bool CreateSpecialFolders(CCTreeCtrl* tree, wxTreeItemId parent);
