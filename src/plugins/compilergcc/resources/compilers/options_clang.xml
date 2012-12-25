@@ -7,6 +7,15 @@
         <Program name="LD"        value="clang++.exe"/>
         <Program name="DBGconfig" value="gdb_debugger:Default"/>
         <Program name="LIB"       value="llvm-ar.exe"/>
+        <if exec="llvm-ar.exe -version">
+            <!-- found, do nothing -->
+        </if>
+        <else>
+            <if exec="ar.exe --version">
+                <!-- use GNU archiver -->
+                <Program name="LIB" value="ar.exe"/>
+            </if>
+        </else>
         <Program name="WINDRES"   value="windres.exe"/>
         <Program name="MAKE"      value="mingw32-make.exe"/>
     </if>
@@ -16,6 +25,15 @@
         <Program name="LD"        value="clang++"/>
         <Program name="DBGconfig" value="gdb_debugger:Default"/>
         <Program name="LIB"       value="llvm-ar"/>
+        <if exec="llvm-ar -version">
+            <!-- found, do nothing -->
+        </if>
+        <else>
+            <if exec="ar --version">
+                <!-- use GNU archiver -->
+                <Program name="LIB" value="ar"/>
+            </if>
+        </else>
         <Program name="WINDRES"   value=""/>
         <Program name="MAKE"      value="make"/>
     </else>
