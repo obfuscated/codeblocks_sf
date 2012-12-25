@@ -2815,7 +2815,14 @@ void CodeCompletion::DoCodeComplete()
         const wxString str = control->GetTextRange(start, end);
 
         if (str == _T("include") && pos > end)
+        {
+            if (   control->AutoCompActive() && curChar != _T('/')
+                && control->GetCharAt(pos - m_CCAutoLaunchChars - 5) == _T('/') )
+            {
+                return; // prevent listing refinement from causing the box to flash (rebuild) too much
+            }
             CodeCompleteIncludes();
+        }
         else if (end >= pos && pos > lineIndentPos)
             CodeCompletePreprocessor();
         else if ( (   str == _T("define")
