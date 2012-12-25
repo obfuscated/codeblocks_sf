@@ -360,65 +360,155 @@ int DoxyBlocks::Configure()
  */
 void DoxyBlocks::OnDialogueDone(ConfigPanel* pDlg)
 {
+    bool dirty = false;
     // Comments.
+    if (m_pConfig->GetBlockComment() != pDlg->GetBlockComment())
+        dirty = true;
     m_pConfig->SetBlockComment(pDlg->GetBlockComment());
+    if (m_pConfig->GetLineComment() != pDlg->GetLineComment())
+        dirty = true;
     m_pConfig->SetLineComment(pDlg->GetLineComment());
     // == Doxyfile defaults. ==
     // Project.
+    if (m_pConfig->GetProjectNumber() != pDlg->GetProjectNumber())
+        dirty = true;
     m_pConfig->SetProjectNumber(pDlg->GetProjectNumber());
+    if (m_pConfig->GetOutputDirectory() != pDlg->GetOutputDirectory())
+        dirty = true;
     m_pConfig->SetOutputDirectory(ValidateRelativePath(pDlg->GetOutputDirectory()));
+    if (m_pConfig->GetOutputLanguage() != pDlg->GetOutputLanguage())
+        dirty = true;
     m_pConfig->SetOutputLanguage(pDlg->GetOutputLanguage());
+    if (m_pConfig->GetUseAutoVersion() != pDlg->GetUseAutoVersion())
+        dirty = true;
     m_pConfig->SetUseAutoVersion(pDlg->GetUseAutoVersion());
+
     // Build.
+    if (m_pConfig->GetExtractAll() != pDlg->GetExtractAll())
+        dirty = true;
     m_pConfig->SetExtractAll(pDlg->GetExtractAll());
+    if (m_pConfig->GetExtractPrivate() != pDlg->GetExtractPrivate())
+        dirty = true;
     m_pConfig->SetExtractPrivate(pDlg->GetExtractPrivate());
+    if (m_pConfig->GetExtractStatic() != pDlg->GetExtractStatic())
+        dirty = true;
     m_pConfig->SetExtractStatic(pDlg->GetExtractStatic());
+
     // Warnings.
+    if (m_pConfig->GetWarnings() != pDlg->GetWarnings())
+        dirty = true;
     m_pConfig->SetWarnings(pDlg->GetWarnings());
+    if (m_pConfig->GetWarnIfDocError() != pDlg->GetWarnIfDocError())
+        dirty = true;
     m_pConfig->SetWarnIfDocError(pDlg->GetWarnIfDocError());
+    if (m_pConfig->GetWarnIfUndocumented() != pDlg->GetWarnIfUndocumented())
+        dirty = true;
     m_pConfig->SetWarnIfUndocumented(pDlg->GetWarnIfUndocumented());
+    if (m_pConfig->GetWarnNoParamdoc() != pDlg->GetWarnNoParamdoc())
+        dirty = true;
     m_pConfig->SetWarnNoParamdoc(pDlg->GetWarnNoParamdoc());
+
     //  Alphabetical Class Index.
+    if (m_pConfig->GetAlphabeticalIndex() != pDlg->GetAlphabeticalIndex())
+        dirty = true;
     m_pConfig->SetAlphabeticalIndex(pDlg->GetAlphabeticalIndex());
+
     // Output.
+    if (m_pConfig->GetGenerateHTML() != pDlg->GetGenerateHTML())
+        dirty = true;
     m_pConfig->SetGenerateHTML(pDlg->GetGenerateHTML());
+    if (m_pConfig->GetGenerateHTMLHelp() != pDlg->GetGenerateHTMLHelp())
+        dirty = true;
     m_pConfig->SetGenerateHTMLHelp(pDlg->GetGenerateHTMLHelp());
+    if (m_pConfig->GetGenerateCHI() != pDlg->GetGenerateCHI())
+        dirty = true;
     m_pConfig->SetGenerateCHI(pDlg->GetGenerateCHI());
+    if (m_pConfig->GetBinaryTOC() != pDlg->GetBinaryTOC())
+        dirty = true;
     m_pConfig->SetBinaryTOC(pDlg->GetBinaryTOC());
+    if (m_pConfig->GetGenerateLatex() != pDlg->GetGenerateLatex())
+        dirty = true;
     m_pConfig->SetGenerateLatex(pDlg->GetGenerateLatex());
+    if (m_pConfig->GetGenerateRTF() != pDlg->GetGenerateRTF())
+        dirty = true;
     m_pConfig->SetGenerateRTF(pDlg->GetGenerateRTF());
+    if (m_pConfig->GetGenerateMan() != pDlg->GetGenerateMan())
+        dirty = true;
     m_pConfig->SetGenerateMan(pDlg->GetGenerateMan());
+    if (m_pConfig->GetGenerateXML() != pDlg->GetGenerateXML())
+        dirty = true;
     m_pConfig->SetGenerateXML(pDlg->GetGenerateXML());
+    if (m_pConfig->GetGenerateAutogenDef() != pDlg->GetGenerateAutogenDef())
+        dirty = true;
     m_pConfig->SetGenerateAutogenDef(pDlg->GetGenerateAutogenDef());
+    if (m_pConfig->GetGeneratePerlMod() != pDlg->GetGeneratePerlMod())
+        dirty = true;
     m_pConfig->SetGeneratePerlMod(pDlg->GetGeneratePerlMod());
+
     // Pre-processor.
+    if (m_pConfig->GetEnablePreprocessing() != pDlg->GetEnablePreprocessing())
+        dirty = true;
     m_pConfig->SetEnablePreprocessing(pDlg->GetEnablePreprocessing());
+
     // Dot.
+    if (m_pConfig->GetClassDiagrams() != pDlg->GetClassDiagrams())
+        dirty = true;
     m_pConfig->SetClassDiagrams(pDlg->GetClassDiagrams());
+    if (m_pConfig->GetHaveDot() != pDlg->GetHaveDot())
+        dirty = true;
     m_pConfig->SetHaveDot(pDlg->GetHaveDot());
+
     // Paths.
+    if (m_pConfig->GetPathDoxygen() != pDlg->GetPathDoxygen())
+        dirty = true;
     m_pConfig->SetPathDoxygen(pDlg->GetPathDoxygen());
+    if (m_pConfig->GetPathDoxywizard() != pDlg->GetPathDoxywizard())
+        dirty = true;
     m_pConfig->SetPathDoxywizard(pDlg->GetPathDoxywizard());
+    if (m_pConfig->GetPathHHC() != pDlg->GetPathHHC())
+        dirty = true;
     m_pConfig->SetPathHHC(pDlg->GetPathHHC());
+    if (m_pConfig->GetPathDot() != pDlg->GetPathDot())
+        dirty = true;
     m_pConfig->SetPathDot(pDlg->GetPathDot());
+    if (m_pConfig->GetPathCHMViewer() != pDlg->GetPathCHMViewer())
+        dirty = true;
     m_pConfig->SetPathCHMViewer(pDlg->GetPathCHMViewer());
     // General Options
+
+    if (m_pConfig->GetOverwriteDoxyfile() != pDlg->GetOverwriteDoxyfile())
+        dirty = true;
     m_pConfig->SetOverwriteDoxyfile(pDlg->GetOverwriteDoxyfile());
+    if (m_pConfig->GetPromptBeforeOverwriting() != pDlg->GetPromptBeforeOverwriting())
+        dirty = true;
     m_pConfig->SetPromptBeforeOverwriting(pDlg->GetPromptBeforeOverwriting());
+    if (m_pConfig->GetUseAtInTags() != pDlg->GetUseAtInTags())
+        dirty = true;
     m_pConfig->SetUseAtInTags(pDlg->GetUseAtInTags());
+    if (m_pConfig->GetLoadTemplate() != pDlg->GetLoadTemplate())
+        dirty = true;
     m_pConfig->SetLoadTemplate(pDlg->GetLoadTemplate());
+    if (m_pConfig->GetUseInternalViewer() != pDlg->GetUseInternalViewer())
+        dirty = true;
     m_pConfig->SetUseInternalViewer(pDlg->GetUseInternalViewer());
+    if (m_pConfig->GetRunHTML() != pDlg->GetRunHTML())
+        dirty = true;
     m_pConfig->SetRunHTML(pDlg->GetRunHTML());
+    if (m_pConfig->GetRunCHM() != pDlg->GetRunCHM())
+        dirty = true;
     m_pConfig->SetRunCHM(pDlg->GetRunCHM());
 
-    cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if(prj){
-        SaveSettings();
-        // Update the config object and save the project so prefs don't get lost if a problem occurs before closing the project.
-        prj->Save();
-    }
-    else{
-        AppendToLog(_("No active project found. Settings not saved."), LOG_WARNING);
+    if (dirty)
+    {
+        cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if(prj){
+            SaveSettings();
+            // Update the config object and save the project so prefs don't get lost if a problem occurs before closing the project.
+            prj->Save();
+        }
+        else{
+            AppendToLog(_("No active project found. Settings not saved."), LOG_WARNING);
+        }
     }
 }
 
