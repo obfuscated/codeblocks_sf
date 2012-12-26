@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="wxFlatNoteBook">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxflatnotebook" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxflatnotebook" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -20,7 +20,7 @@
 			</Target>
 			<Target title="wxChartCtrl">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxchartctrl" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxchartctrl" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -30,7 +30,7 @@
 				</Compiler>
 			</Target>
 			<Target title="wxCustomButton">
-				<Option output="../../../devel/wxcustombutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxcustombutton" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -41,7 +41,7 @@
 			</Target>
 			<Target title="wxImagePanel">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wximagepanel" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwximagepanel" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -52,7 +52,7 @@
 			</Target>
 			<Target title="wxSpeedButton">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxspeedbutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxspeedbutton" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -60,7 +60,7 @@
 			</Target>
 			<Target title="wxKWIC">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxkwic" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxkwic" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -71,7 +71,7 @@
 			</Target>
 			<Target title="wxTreeList">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxtreelist" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxtreelist" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -82,7 +82,7 @@
 			</Target>
 			<Target title="wxLED">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxled" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxled" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
