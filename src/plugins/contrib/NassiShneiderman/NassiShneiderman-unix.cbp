@@ -2,11 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="NassiShneiderman" />
+		<Option title="NassiShneiderman (Unix)" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
+				<Option platforms="Unix;" />
 				<Option output="../../../devel/share/codeblocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/NassiShneiderman" />

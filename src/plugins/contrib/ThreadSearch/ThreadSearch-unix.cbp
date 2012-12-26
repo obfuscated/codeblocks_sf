@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="ThreadSearch-unix" />
+		<Option title="ThreadSearch (Unix)" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
@@ -40,7 +40,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add option="-z defs" />
 			<Add library="codeblocks" />
 			<Add library="wxcustombutton" />
 			<Add directory="../../../devel" />
