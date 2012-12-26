@@ -193,7 +193,7 @@ void* ClassBrowserBuilderThread::Entry()
         if (m_TerminationRequested || Manager::IsAppShuttingDown() )
             break;
 
-        if (platform::gtk)
+        if (platform::gtk || platform::macosx)
         {
             // this code (PART 1/2) seems to be good on linux
             // because of it the libcairo crash on dualcore processors
@@ -206,7 +206,7 @@ void* ClassBrowserBuilderThread::Entry()
 
         BuildTree();
 
-        if (platform::gtk)
+        if (platform::gtk || platform::macosx)
         {
             // this code (PART 2/2) seems to be good on linux
             // because of it the libcairo crash on dualcore processors
@@ -347,7 +347,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
         locked = true;
     }
 
-#ifndef __WXGTK__
+#if !defined(__WXGTK__) && !defined(__WXMAC__)
     m_CCTreeCtrlTop->CollapseAndReset(item); // this freezes gtk
 #else
     m_CCTreeCtrlTop->DeleteChildren(item);
@@ -503,7 +503,7 @@ void ClassBrowserBuilderThread::BuildTree()
 #endif // CC_NO_COLLAPSE_ITEM
 
     // seems like the "expand" event comes too late in wxGTK, so make it happen now
-    if (platform::gtk)
+    if (platform::gtk || platform::macosx)
         ExpandItem(root);
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
@@ -543,7 +543,7 @@ void ClassBrowserBuilderThread::BuildTree()
     // 13.) Expand namespaces and classes
     ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkNamespace, 1);
     ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkClass, 1);
-    
+
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
     sw.Start();

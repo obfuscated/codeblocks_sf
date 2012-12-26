@@ -20,7 +20,7 @@ wxDirectoryMonitorEvent::wxDirectoryMonitorEvent(const wxDirectoryMonitorEvent& 
     m_info_uri=wxString(c.m_info_uri.c_str());
 }
 
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 
 #include <map>
 
