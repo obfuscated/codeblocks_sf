@@ -2670,7 +2670,8 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         && (style != wxSCI_C_WORD2)
         && (style != wxSCI_C_GLOBALCLASS) )
     {
-        DoShowCallTip(pos);
+        if (style != wxSCI_C_WXSMITH && m_NativeParser.GetParser().Done())
+            DoShowCallTip(pos);
         event.Skip();
         return;
     }
@@ -2714,9 +2715,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-        if (calltip.IsEmpty())
-            DoShowCallTip(pos);
-        else
+        if (!calltip.IsEmpty())
         {
             calltip.RemoveLast(); // last \n
 
@@ -2737,8 +2736,10 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
             event.SetExtraLong(1);
             TRACE(calltip);
         }
+        else if (m_NativeParser.GetParser().Done())
+            DoShowCallTip(pos);
     }
-    else
+    else if (m_NativeParser.GetParser().Done())
         DoShowCallTip(pos);
 
     event.Skip();
