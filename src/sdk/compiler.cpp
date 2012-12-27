@@ -149,6 +149,8 @@ Compiler::~Compiler()
 void Compiler::Reset()
 {
     m_Options.ClearOptions();
+    for (int i = 0; i < ctCount; ++i)
+        m_Commands[i].clear();
     LoadDefaultOptions(GetID());
 
     LoadDefaultRegExArray();
@@ -926,22 +928,39 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
             wxString cmd = node->GetAttribute(wxT("name"), wxEmptyString);
             CompilerTool tool(value, node->GetAttribute(wxT("ext"), wxEmptyString),
                               node->GetAttribute(wxT("gen"), wxEmptyString));
+            CommandType cmdTp = ctCount;
             if (cmd == wxT("CompileObject"))
-                m_Commands[(int)ctCompileObjectCmd].push_back(tool);
+                cmdTp = ctCompileObjectCmd;
             else if (cmd == wxT("GenDependencies"))
-                m_Commands[(int)ctGenDependenciesCmd].push_back(tool);
+                cmdTp = ctGenDependenciesCmd;
             else if (cmd == wxT("CompileResource"))
-                m_Commands[(int)ctCompileResourceCmd].push_back(tool);
+                cmdTp = ctCompileResourceCmd;
             else if (cmd == wxT("LinkExe"))
-                m_Commands[(int)ctLinkExeCmd].push_back(tool);
+                cmdTp = ctLinkExeCmd;
             else if (cmd == wxT("LinkConsoleExe"))
-                m_Commands[(int)ctLinkConsoleExeCmd].push_back(tool);
+                cmdTp = ctLinkConsoleExeCmd;
             else if (cmd == wxT("LinkDynamic"))
-                m_Commands[(int)ctLinkDynamicCmd].push_back(tool);
+                cmdTp = ctLinkDynamicCmd;
             else if (cmd == wxT("LinkStatic"))
-                m_Commands[(int)ctLinkStaticCmd].push_back(tool);
+                cmdTp = ctLinkStaticCmd;
             else if (cmd == wxT("LinkNative"))
-                m_Commands[(int)ctLinkNativeCmd].push_back(tool);
+                cmdTp = ctLinkNativeCmd;
+            if  (cmdTp != ctCount)
+            {
+                bool assigned = false;
+                CompilerToolsVector& tools = m_Commands[cmdTp];
+                for (size_t i = 0; i < tools.size(); ++i)
+                {
+                    if (tools[i].extensions == tool.extensions)
+                    {
+                        tools[i] = tool;
+                        assigned = true;
+                        break;
+                    }
+                }
+                if (!assigned)
+                    tools.push_back(tool);
+            }
         }
         else if (node->GetName() == wxT("Sort"))
         {
