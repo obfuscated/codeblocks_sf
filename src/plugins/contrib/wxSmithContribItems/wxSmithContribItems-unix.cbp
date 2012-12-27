@@ -10,7 +10,7 @@
 		<Build>
 			<Target title="wxSmithContribItems">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/share/codeblocks/plugins/wxSmithContribItems" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libwxSmithContribItems" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxSmithContribItems" />
 				<Option external_deps="../../../devel/libwxsmithlib.so;../../../devel/libwxchartctrl.so;../../../devel/libwxcustombutton.so;../../../devel/libwxflatnotebook.so;../../../devel/libwximagepanel.so;../../../devel/libwxspeedbutton.so;../../../devel/libwxkwic.so;" />
 				<Option type="3" />

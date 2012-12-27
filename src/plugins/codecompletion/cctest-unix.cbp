@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="CC Test (unix)" />
+		<Option title="CC Test (Unix)" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="cctest">

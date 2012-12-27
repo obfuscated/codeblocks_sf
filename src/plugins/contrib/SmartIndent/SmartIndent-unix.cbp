@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="SmartIndentHDL">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentHDL" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentHDL" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -27,7 +27,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentPascal">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentPascal" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentPascal" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -47,7 +47,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentCpp">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentCpp" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentCpp" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -67,7 +67,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentPython">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentPython" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentPython" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -87,7 +87,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentLua">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentLua" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentLua" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -107,7 +107,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentFortran">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentFortran" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentFortran" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />
@@ -127,7 +127,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="SmartIndentXML">
-				<Option output="../../../devel/share/codeblocks/plugins/SmartIndentXML" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSmartIndentXML" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/SmartIndent" />
 				<Option type="3" />

@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Tools Plus Plugin (unix)" />
+		<Option title="Tools Plus Plugin (Unix)" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/ToolsPlus" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libToolsPlus" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/ToolsPlus" />
 				<Option type="3" />
 				<Option compiler="gcc" />

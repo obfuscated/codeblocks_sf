@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Plugin-unix">
-				<Option output="../../../devel/share/codeblocks/plugins/codesnippets" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libcodesnippets" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/codesnippets/plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -17,7 +17,7 @@
 				<Option run_host_application_in_terminal="0" />
 			</Target>
 			<Target title="App-unix">
-				<Option output="../../../devel/codesnippets" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/codesnippets" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/codesnippets/app" />
 				<Option type="0" />

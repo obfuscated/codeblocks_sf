@@ -8,13 +8,14 @@
 		<Build>
 			<Target title="Unix">
 				<Option platforms="Unix;Mac;" />
-				<Option output="..\..\..\devel\share\codeblocks\plugins\wxSmithAui" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithAui" />
-				<Option external_deps="..\..\..\devel\libwxsmithlib.so;" />
+				<Option output="../../../devel/share/codeblocks/plugins/libwxSmithAui" prefix_auto="0" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxSmithAui" />
+				<Option external_deps="../../../devel/libwxsmithlib.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni" />
-				<Option host_application="..\..\..\devel\codeblocks" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-Ulinux" />
 					<Add option="-Uunix" />
@@ -33,13 +34,14 @@
 			</Target>
 			<Target title="Windows">
 				<Option platforms="Windows;" />
-				<Option output="..\..\..\devel\share\codeblocks\plugins\wxSmithAui" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithAui" />
-				<Option external_deps="..\..\..\devel\wxsmithlib.dll;" />
+				<Option output="../../../devel/share/codeblocks/plugins/wxSmithAui" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxSmithAui" />
+				<Option external_deps="../../../devel/wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
@@ -50,7 +52,7 @@
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -59,7 +61,7 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
-					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithAui.zip manifest.xml" />
@@ -82,43 +84,43 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
-			<Add directory="..\..\..\sdk\wxpropgrid\include" />
-			<Add directory="..\wxSmith" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../sdk/wxpropgrid/include" />
+			<Add directory="../wxSmith" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />
 			<Add library="wxpropgrid" />
-			<Add directory="..\..\..\devel" />
+			<Add directory="../../../devel" />
 		</Linker>
 		<Unit filename="manifest.xml" />
-		<Unit filename="wxAuiManager\wxSmithAuiManager.h" />
-		<Unit filename="wxAuiManager\wxsAuiManager.cpp" />
-		<Unit filename="wxAuiManager\wxsAuiManager.h" />
-		<Unit filename="wxAuiManager\wxsAuiManagerParentQP.cpp" />
-		<Unit filename="wxAuiManager\wxsAuiManagerParentQP.h" />
-		<Unit filename="wxAuiManager\wxsAuiPaneInfoProperty.cpp" />
-		<Unit filename="wxAuiManager\wxsAuiPaneInfoProperty.h" />
-		<Unit filename="wxAuiNotebook\wxSmithAuiNotebook.cpp" />
-		<Unit filename="wxAuiNotebook\wxSmithAuiNotebook.h" />
-		<Unit filename="wxAuiNotebook\wxsAuiNotebook.cpp" />
-		<Unit filename="wxAuiNotebook\wxsAuiNotebook.h" />
-		<Unit filename="wxAuiToolBar\wxSmithAuiToolBar.cpp" />
-		<Unit filename="wxAuiToolBar\wxSmithAuiToolBar.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBar.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBar.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarItem.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarItem.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarItemBase.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarItemBase.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarLabel.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarLabel.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarSeparator.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarSeparator.h" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarSpacer.cpp" />
-		<Unit filename="wxAuiToolBar\wxsAuiToolBarSpacer.h" />
+		<Unit filename="wxAuiManager/wxSmithAuiManager.h" />
+		<Unit filename="wxAuiManager/wxsAuiManager.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiManager.h" />
+		<Unit filename="wxAuiManager/wxsAuiManagerParentQP.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiManagerParentQP.h" />
+		<Unit filename="wxAuiManager/wxsAuiPaneInfoProperty.cpp" />
+		<Unit filename="wxAuiManager/wxsAuiPaneInfoProperty.h" />
+		<Unit filename="wxAuiNotebook/wxSmithAuiNotebook.cpp" />
+		<Unit filename="wxAuiNotebook/wxSmithAuiNotebook.h" />
+		<Unit filename="wxAuiNotebook/wxsAuiNotebook.cpp" />
+		<Unit filename="wxAuiNotebook/wxsAuiNotebook.h" />
+		<Unit filename="wxAuiToolBar/wxSmithAuiToolBar.cpp" />
+		<Unit filename="wxAuiToolBar/wxSmithAuiToolBar.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBar.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBar.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItem.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItem.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItemBase.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarItemBase.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarLabel.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarLabel.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSeparator.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSeparator.h" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSpacer.cpp" />
+		<Unit filename="wxAuiToolBar/wxsAuiToolBarSpacer.h" />
 		<Unit filename="wxSmithAui.cpp" />
 		<Unit filename="wxSmithAui.h" />
 		<Extensions>

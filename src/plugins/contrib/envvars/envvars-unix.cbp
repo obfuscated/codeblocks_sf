@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/envvars" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/share/codeblocks/plugins/libenvvars" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/envvars" />
 				<Option type="3" />
 				<Option compiler="gcc" />
