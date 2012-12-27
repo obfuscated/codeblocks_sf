@@ -234,6 +234,12 @@ HighlightLanguage EditorColourSet::GetHighlightLanguage(int lexer)
     return HL_NONE;
 }
 
+// sorting helper function
+static int CompareStringNoCase(const wxString& first, const wxString& second)
+{
+    return first.CmpNoCase(second);
+}
+
 wxArrayString EditorColourSet::GetAllHighlightLanguages()
 {
     wxArrayString ret;
@@ -242,7 +248,7 @@ wxArrayString EditorColourSet::GetAllHighlightLanguages()
         if (!it->second.m_Langs.IsEmpty())
             ret.Add(it->second.m_Langs);
     }
-    ret.Sort();
+    ret.Sort(CompareStringNoCase);
     return ret;
 }
 
