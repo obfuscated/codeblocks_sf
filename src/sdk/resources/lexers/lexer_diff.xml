@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
         <Lexer name="Diff/Patch"
                 index="16"
-                filemasks="*.diff,*.patch">
+                filemasks="*.diff,*.patch,*.svnpatch.rej">
                 <Style name="Default"
                         index="0"
                         fg="0,0,0"

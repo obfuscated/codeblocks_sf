@@ -3144,7 +3144,7 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
         AppendArray(comp->GetCompilerOptions(), compilerFlags);
 
     wxArrayString defines;
-    for (size_t i = 0; i < compilerFlags.Count(); ++i)
+    for (size_t i = 0; i < compilerFlags.GetCount(); ++i)
     {
         if (   compilerFlags[i].StartsWith(wxT("-D"))
             || compilerFlags[i].StartsWith(wxT("/D")) )
@@ -3274,11 +3274,26 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
             defines.Add(wxT("__IA64__"));
         }
     }
-    wxString keywords = GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false);
-    m_Theme->SetKeywords(m_Theme->GetHighlightLanguage(wxT("C/C++")), 4, keywords);
-    wxString key = wxT("/colour_sets/") + m_Theme->GetName() + wxT("/cc/");
+    const wxString keywords = GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false);
+    const HighlightLanguage hlCpp = m_Theme->GetHighlightLanguage(wxT("C/C++"));
+    if (m_Theme->GetKeywords(hlCpp, 4) == keywords)
+        return; // no change
+
+    m_Theme->SetKeywords(hlCpp, 4, keywords);
+    const wxString key = wxT("/colour_sets/") + m_Theme->GetName() + wxT("/cc/");
     Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("editor/keywords/set4"), keywords);
     Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("name"), wxT("C/C++"));
+
+    // update open editors
+    for (int index = 0; index < GetEditorsCount(); ++index)
+    {
+        cbEditor* ed = GetBuiltinEditor(index);
+        if ( ed && (ed->GetLanguage() == hlCpp) )
+        {
+            cbStyledTextCtrl* stc = ed->GetControl();
+            stc->SetKeyWords(4, keywords);
+        }
+    }
     event.Skip();
 }
 
