@@ -157,9 +157,11 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
             chProject->SetSelection(i);
             chTarget->Clear();
             chTarget->AppendString(_("All project files"));
-            chTarget->SetSelection(0);
             for(int j=0;j<active_project->GetBuildTargetsCount();++j)
                 chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
+            const int targIdx = chTarget->FindString(active_project->GetActiveBuildTarget(), true);
+            chTarget->SetSelection(   cfg->ReadBool(CONF_GROUP _T("/target_scope_all"), true)
+                                   || targIdx < 0 ? 0 : targIdx );
         }
     }
 
@@ -313,6 +315,7 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/search_mask"),      XRCCTRL(*this, "txtSearchMask",        wxTextCtrl)->GetValue());
     cfg->Write(CONF_GROUP _T("/search_recursive"), XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/search_hidden"),    XRCCTRL(*this, "chkSearchHidden",      wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/target_scope_all"),(XRCCTRL(*this, "chTarget",             wxChoice)->GetSelection() == 0));
 
     if (m_findPage!=0)
         m_findPage->Destroy();
@@ -541,11 +544,13 @@ void FindReplaceDlg::OnSearchProject(cb_unused wxCommandEvent& event)
     if (i<0)
         return;
     cbProject *active_project=(*Manager::Get()->GetProjectManager()->GetProjects())[i];
+    const bool targAll = (chTarget->GetSelection() == 0);
     chTarget->Clear();
     chTarget->AppendString(_("All project files"));
-    chTarget->SetSelection(0);
     for(int j=0;j<active_project->GetBuildTargetsCount();++j)
         chTarget->AppendString(active_project->GetBuildTarget(j)->GetTitle());
+    const int targIdx = chTarget->FindString(active_project->GetActiveBuildTarget(), true);
+    chTarget->SetSelection(targAll || targIdx < 0 ? 0 : targIdx);
 }
 
 void FindReplaceDlg::OnReplaceChange(wxNotebookEvent& event)
