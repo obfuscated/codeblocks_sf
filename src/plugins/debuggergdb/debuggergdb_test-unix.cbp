@@ -28,7 +28,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_TEST_PROJECT" />
-			<Add directory="$(#unittest_pp)/src" />
+			<Add directory="$(#unittest_pp.include)" />
 			<Add directory="." />
 			<Add directory="../../include" />
 			<Add directory="../../include/scripting/include" />
@@ -39,7 +39,7 @@
 			<Add option="-z defs" />
 			<Add library="codeblocks" />
 			<Add library="UnitTest++" />
-			<Add directory="$(#unittest_pp)/" />
+			<Add directory="$(#unittest_pp.lib)/" />
 			<Add directory="../../devel" />
 		</Linker>
 		<ExtraCommands>

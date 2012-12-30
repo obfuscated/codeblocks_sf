@@ -27,7 +27,11 @@ struct Token
         Comma
     };
 
-    Token() : type(Undefined)
+    Token() :
+        start(0),
+        end(0),
+        type(Undefined),
+        hasRepeatedChar(false)
     {
     }
     Token(int start_, int end_, Type type_) :
