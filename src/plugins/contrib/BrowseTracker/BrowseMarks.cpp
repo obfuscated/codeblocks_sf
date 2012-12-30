@@ -109,6 +109,8 @@ void BrowseMarks::SetBrowseMarksStyle( int userStyle )
             gBrowse_MarkerStyle  = BROWSETRACKER_HIDDEN_STYLE;
             break;
         }
+        default:
+            break;
     }//switch
 
     // Define scintilla BrowseTracker margin marker
@@ -492,13 +494,13 @@ void BrowseMarks::RebuildBrowse_Marks(cbEditor* cbed, bool addedLines)
     }
 }
 // ----------------------------------------------------------------------------
-wxString BrowseMarks::GetStringOfBrowse_Marks()
+wxString BrowseMarks::GetStringOfBrowse_Marks() const
 // ----------------------------------------------------------------------------
 {
     // return a comma delimited string of browse marks
 
     wxString browseMarks = wxT("");
-    for (int i=0; i<MaxEntries; ++i)
+    for (int i = 0; i < MaxEntries; ++i)
     {
         if ( m_EdPosnArray[i] == -1 ) continue;
         if (not browseMarks.IsEmpty())  browseMarks << wxT(",") ;
@@ -521,9 +523,9 @@ void BrowseMarks::RemoveMarkerTypes( int markerId )
     //cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (eb) cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
     if (cbed) control = cbed->GetControl();
-    for (int i=0; i<MaxEntries; ++i )
+    for (int i = 0; i < MaxEntries; ++i )
     {
-            int pos = m_EdPosnArray[i];
+            const int pos = m_EdPosnArray[i];
             int line = -1;
             if (control && (pos != -1))
                 line = control->LineFromPosition(pos);
@@ -544,9 +546,9 @@ void BrowseMarks::PlaceMarkerTypes( int markerId )
     //cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (eb) cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
     if (cbed) control = cbed->GetControl();
-    for (int i=0; i<MaxEntries; ++i )
+    for (int i = 0; i < MaxEntries; ++i )
     {
-            int pos = m_EdPosnArray[i];
+            const int pos = m_EdPosnArray[i];
             int line = -1;
             if (control && (pos != -1))
                 line = control->LineFromPosition(pos);
@@ -569,9 +571,9 @@ void BrowseMarks::Dump()
     if (eb) cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
     if (cbed) control = cbed->GetControl();
     LOGIT( _T("BT Array[%p] Current[%d]Last[%d]"), this, m_currIndex, m_lastIndex);
-    for (int i=0; i<MaxEntries; ++i )
+    for (int i = 0; i < MaxEntries; ++i )
     {
-            int pos = m_EdPosnArray[i];
+            const int pos = m_EdPosnArray[i];
             if (control && (pos != -1))
             LOGIT(_T("BT Array[%p] index[%d]Line[%d]Pos[%d]"), this, i, control->LineFromPosition(pos) ,pos );
             else

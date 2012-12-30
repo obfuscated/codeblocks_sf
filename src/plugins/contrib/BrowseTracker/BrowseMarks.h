@@ -53,7 +53,7 @@ class BrowseMarks
         void        RemoveMarkerTypes( int markerId );
         void        PlaceMarkerTypes( int markerId );
         void        RebuildBrowse_Marks(cbEditor* cbed, bool addedLines);
-        wxString    GetStringOfBrowse_Marks();
+        wxString    GetStringOfBrowse_Marks() const;
         wxString    GetFilePath(){return m_filePath;}
         void        ToggleBook_MarksFrom(BrowseMarks& otherBook_Marks);
         void        GetBook_MarksFromEditor(wxString filename);

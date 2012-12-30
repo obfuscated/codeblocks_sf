@@ -296,10 +296,10 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
             ////LOGIT( _T("Layout processing for[%s]"),/*f->relativeFilename.c_str(),*/ f->file.GetFullPath().c_str() );
             #endif
             // Save the BrowseMarks
-            FileBrowse_MarksHash::iterator it = m_FileBrowse_MarksArchive.find(f->file.GetFullPath());
-            if (it != m_FileBrowse_MarksArchive.end() ) do
+            FileBrowse_MarksHash::iterator it2 = m_FileBrowse_MarksArchive.find(f->file.GetFullPath());
+            if (it2 != m_FileBrowse_MarksArchive.end() ) do
             {
-                BrowseMarks* pBrowse_Marks = it->second;
+                const BrowseMarks* pBrowse_Marks = it2->second;
                 if (not pBrowse_Marks) break;
                 wxString browseMarks = pBrowse_Marks->GetStringOfBrowse_Marks();
                 #if defined(LOGGING)
@@ -314,10 +314,10 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
             ////    #endif
             ////}
             // Save the Book_Marks
-            it = m_EdBook_MarksArchive.find(f->file.GetFullPath());
-            if (it != m_EdBook_MarksArchive.end() ) do
+            it2 = m_EdBook_MarksArchive.find(f->file.GetFullPath());
+            if (it2 != m_EdBook_MarksArchive.end() ) do
             {
-                BrowseMarks* pBook_Marks = it->second;
+                const BrowseMarks* pBook_Marks = it2->second;
                 if (not pBook_Marks) break;
                 wxString bookMarks = pBook_Marks->GetStringOfBrowse_Marks();
                 #if defined(LOGGING)

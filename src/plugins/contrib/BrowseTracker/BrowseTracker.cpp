@@ -319,6 +319,8 @@ void BrowseTracker::OnAttach()
             gBrowse_MarkerStyle  = BROWSETRACKER_HIDDEN_STYLE;
             break;
         }
+        default:
+            break;
     }//switch
 
 	// Hook to plugin events
