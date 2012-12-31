@@ -92,6 +92,42 @@ cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /d
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml output/share/codeblocks/compilers > /dev/null
 
+# several contrib plugins
+if [ -d "devel/share/codeblocks/images/codesnippets" ]
+then
+  mkdir -p output/share/codeblocks/images/codesnippets
+  cp -f devel/share/codeblocks/images/codesnippets/*.png output/share/codeblocks/images/codesnippets > /dev/null
+fi
+if [ -d "devel/share/codeblocks/images/DoxyBlocks" ]
+then
+  mkdir -p output/share/codeblocks/images/DoxyBlocks
+  cp -f devel/share/codeblocks/images/DoxyBlocks/*.png       output/share/codeblocks/images/DoxyBlocks > /dev/null
+  mkdir -p output/share/codeblocks/images/DoxyBlocks/16x16
+  cp -f devel/share/codeblocks/images/DoxyBlocks/16x16/*.png output/share/codeblocks/images/DoxyBlocks/16x16 > /dev/null
+fi
+if [ -d "devel/share/codeblocks/images/ThreadSearch" ]
+then
+  mkdir -p output/share/codeblocks/images/ThreadSearch
+  cp -f devel/share/codeblocks/images/ThreadSearch/*.png output/share/codeblocks/images/ThreadSearch > /dev/null
+  mkdir -p output/share/codeblocks/images/ThreadSearch/16x16
+  cp -f devel/share/codeblocks/images/ThreadSearch/16x16/*.png output/share/codeblocks/images/ThreadSearch/16x16 > /dev/null
+  mkdir -p output/share/codeblocks/images/ThreadSearch/22x22
+  cp -f devel/share/codeblocks/images/ThreadSearch/22x22/*.png output/share/codeblocks/images/ThreadSearch/22x22 > /dev/null
+fi
+if [ -d "devel/share/codeblocks/images/wxsmith" ]
+then
+  mkdir -p output/share/codeblocks/images/wxsmith
+  cp -f devel/share/codeblocks/images/wxsmith/*.png output/share/codeblocks/images/wxsmith > /dev/null
+fi
+if [ -d "devel/share/codeblocks/lib_finder" ]
+then
+  mkdir -p output/share/codeblocks/lib_finder
+  cp -f devel/share/codeblocks/lib_finder/*.xml output/share/codeblocks/lib_finder > /dev/null
+fi
+# misc. contrib plugin settings:
+cp -f devel/share/codeblocks/images/16x16/*.png    output/share/codeblocks/images/16x16    > /dev/null
+cp -f devel/share/codeblocks/images/settings/*.png output/share/codeblocks/images/settings > /dev/null
+
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output/share/codeblocks/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ output/share/codeblocks/templates > /dev/null
@@ -107,19 +143,32 @@ cp -f tips.txt output/share/codeblocks > /dev/null
 cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null
 cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
 cp -f devel/codeblocks${EXEEXT} output > /dev/null
-# cp -f devel/cb_share_config${EXEEXT} output > /dev/null
+if [ -f "devel/cb_share_config${EXEEXT}" ]
+then
+  cp -f devel/cb_share_config${EXEEXT} output > /dev/null
+fi
+if [ -f "devel/codesnippets${EXEEXT}" ]
+then
+  cp -f devel/codesnippets${EXEEXT} output > /dev/null
+fi
 cp -f devel/*.${LIBEXT} output > /dev/null
 cp -f ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
 # Now remove the exclude pattern file
 rm excludes.txt
 
 echo Stripping debug info from output tree
-strip output/codeblocks${EXEEXT}
-# strip output/cb_share_config${EXEEXT}
-strip output/cb_console_runner${EXEEXT}
-# strip output/codesnippets${EXEEXT}
-strip output/*.${LIBEXT}
-strip output/share/codeblocks/plugins/*.${LIBEXT}
+strip output/codeblocks${EXEEXT} > /dev/null
+if [ -f "output/cb_share_config${EXEEXT}" ]
+then
+  strip output/cb_share_config${EXEEXT} > /dev/null
+fi
+strip output/cb_console_runner${EXEEXT} > /dev/null
+if [ -f "output/codesnippets${EXEEXT}" ]
+then
+  strip output/codesnippets${EXEEXT} > /dev/null
+fi
+strip output/*.${LIBEXT} > /dev/null
+strip output/share/codeblocks/plugins/*.${LIBEXT} > /dev/null
 
 if [ "x$MSYSTEM" = "x" ] ; then
   echo Creating launch-scripts
