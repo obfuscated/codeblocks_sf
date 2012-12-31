@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>CodeBlocks</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>CodeBlocks</string>
+	<key>CFBundleIconFile</key>
+	<string>app.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleVersion</key>
+	<string>CodeBlocks version 12.11</string>
+	<key>CFBundleShortVersionString</key>
+	<string>CodeBlocks version 12.11</string>
+	<key>LSRequiresCarbon</key>
+	<true/>
+	<key>CFBundleGetInfoString</key>
+	<string>CodeBlocks version 12.11, (c) 2004-2012 Code::Blocks</string>
+	<key>CFBundleLongVersionString</key>
+	<string>CodeBlocks version 12.11 SVN revision 8629, (c) 2004-2012 Code::Blocks</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2004-2012, The Code::Blocks Team</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.codeblocks.app</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>cbp</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>cbp.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>CodeBlocks Project File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>workspace</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>csd.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>CodeBlocks Workspace File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>h</string>
+				<string>pch</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>h.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>C Header Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>hp</string>
+				<string>hpp</string>
+				<string>hxx</string>
+				<string>h++</string>
+				<string>pch++</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>h.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>C++ Header Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>c</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>c.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>C Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>cc</string>
+				<string>cp</string>
+				<string>cpp</string>
+				<string>cxx</string>
+				<string>c++</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>cpp.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>C++ Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>d</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>d.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>D Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>s</string>
+				<string>asm</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Assembly Source File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Plain Text File</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>****</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+</dict>
+</plist>
