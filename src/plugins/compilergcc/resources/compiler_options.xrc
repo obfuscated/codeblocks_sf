@@ -11,6 +11,7 @@
 						</object>
 						<flag>wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 						<border>8</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer">
@@ -1332,7 +1333,7 @@
 							</object>
 						</object>
 						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<option>1</option>
+						<option>5</option>
 					</object>
 				</object>
 				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
