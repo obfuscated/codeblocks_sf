@@ -821,7 +821,9 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
           Point pt = LocationFromPosition(wParam);
           char* defn = reinterpret_cast<char *>(lParam);
           AutoCompleteCancel();
-          pt.y += vs.lineHeight;
+/* C::B begin */
+          //pt.y += vs.lineHeight;
+/* C::B end */
 /* C::B begin */
           /* This fix will allow you to actually modify the calltip font (it
            * was hardcoded to STYLE_DEFAULT instead of allowing user to
