@@ -929,7 +929,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 int PluginManager::ScanForPlugins(const wxString& path)
 {
     static const wxString PluginsMask = platform::windows ? _T("*.dll")
-                                      : platform::  ? _T("*.dylib")
+                                      : (platform::darwin || platform::macosx) ? _T("*.dylib")
                                       : _T("*.so");
     int count = 0;
     if (!wxDirExists(path))
