@@ -928,9 +928,11 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 
 int PluginManager::ScanForPlugins(const wxString& path)
 {
-    static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
+    static const wxString PluginsMask = platform::windows ? _T("*.dll")
+                                      : platform::  ? _T("*.dylib")
+                                      : _T("*.so");
     int count = 0;
-    if(!wxDirExists(path))
+    if (!wxDirExists(path))
         return count;
     wxDir dir(path);
 
@@ -946,8 +948,10 @@ int PluginManager::ScanForPlugins(const wxString& path)
         if (!bbplugins.GetCount())
         {
             // defaults
-            if(platform::windows)
+            if      (platform::windows)
                 bbplugins.Add(_T("compiler.dll"));
+            else if (platform::macosx)
+                bbplugins.Add(_T("libcompiler.dylib"));
             else
                 bbplugins.Add(_T("libcompiler.so"));
         }
