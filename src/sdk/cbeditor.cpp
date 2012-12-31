@@ -1636,6 +1636,10 @@ bool cbEditor::Save()
     if ( !GetModified() )
         return true;
 
+    // remember current column (caret and anchor)
+    int columnC = m_pControl->GetColumn(m_pControl->GetCurrentPos());
+    int columnA = m_pControl->GetColumn(m_pControl->GetAnchor());
+
     // one undo action for all modifications in this context
     // (angled braces added for clarity)
     m_pControl->BeginUndoAction();
@@ -1648,6 +1652,14 @@ bool cbEditor::Save()
             m_pData->EnsureFinalLineEnd();
     }
     m_pControl->EndUndoAction();
+
+    // restore virtual position ( if changed by StripTrailingSpaces() )
+    columnC -= m_pControl->GetColumn(m_pControl->GetCurrentPos());
+    columnA -= m_pControl->GetColumn(m_pControl->GetAnchor());
+    if (columnC > 0)
+        m_pControl->SetSelectionNCaretVirtualSpace(0,  columnC);
+    if (columnA > 0)
+        m_pControl->SetSelectionNAnchorVirtualSpace(0, columnA);
 
     if (!m_IsOK)
         return SaveAs();
