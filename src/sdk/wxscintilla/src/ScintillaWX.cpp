@@ -856,6 +856,15 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
               rc.top -= offset;
               rc.bottom -= offset;
           }
+/* C::B begin */
+          // If the call-tip window would be out of the client space to
+          // the right, adjust it so right egde is at the right edge of
+          // the client.
+          if (rc.right > rcClient.right) {
+              rc.left -= rc.right - rcClient.right;
+              rc.right = rcClient.right;
+          }
+/* C::B end */
           // Now display the window.
           CreateCallTipWindow(rc);
           ct.wCallTip.SetPositionRelative(rc, wMain);
