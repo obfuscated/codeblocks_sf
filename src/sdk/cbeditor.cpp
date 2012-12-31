@@ -160,12 +160,6 @@ struct cbEditorInternalData
         cbStyledTextCtrl* control = m_pOwner->GetControl();
         // The following code was adapted from the SciTE sourcecode
 
-        int curLine = wxSCI_INVALID_POSITION; // do not modify the active line of the active editor
-        if ( cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() )
-        {
-            if (ed->GetControl() == control)
-                curLine = control->GetCurrentLine();
-        }
         int maxLines = control->GetLineCount();
         for (int line = 0; line < maxLines; line++)
         {
@@ -175,8 +169,6 @@ struct cbEditorInternalData
             wxChar ch = (wxChar)(control->GetCharAt(i));
             if (control->GetLexer() == wxSCI_LEX_DIFF)
                 lineStart++;
-            else if (line == curLine)
-                lineStart = control->GetCurrentPos();
             while ((i >= lineStart) && ((ch == _T(' ')) || (ch == _T('\t'))))
             {
                 i--;
