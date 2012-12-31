@@ -505,7 +505,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnViewHideFolderName(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
         void OnFindFile(wxCommandEvent& event);
-        wxTreeItemId FindItem(wxTreeItemId Node, const wxString& Search) const;
+        wxArrayString ListNodes(wxTreeItemId node) const;
         void OnBeginEditNode(wxTreeEvent& event);
         void OnEndEditNode(wxTreeEvent& event);
         void OnAddVirtualFolder(wxCommandEvent& event);

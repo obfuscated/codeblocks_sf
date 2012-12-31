@@ -649,6 +649,12 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Enable(idMenuFindFile, PopUpMenuOption);
         }
 
+        // if it is a virtual group (wild-card matching)
+        else if (ftd->GetKind() == FileTreeData::ftdkVirtualGroup)
+        {
+            menu.Append(idMenuFindFile, _("Find file..."));
+        }
+
         // ask any plugins to add items in this menu
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, ftd);
 
@@ -2719,44 +2725,70 @@ void ProjectManager::OnViewFileMasks(cb_unused wxCommandEvent& event)
     }
 }
 
-wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search) const
+wxArrayString ProjectManager::ListNodes(wxTreeItemId node) const
 {
+    wxArrayString nodes;
     wxTreeItemIdValue cookie;
-    wxTreeItemId item = m_pTree->GetFirstChild(Node, cookie );
-    while ( item.IsOk() )
+    wxTreeItemId item = m_pTree->GetFirstChild(node, cookie);
+    while (item.IsOk())
     {
-        if ( Search.IsSameAs( m_pTree->GetItemText( item ) ) )
-            return item;
-        else if ( m_pTree->ItemHasChildren( item ) )
+        nodes.Add(m_pTree->GetItemText(item));
+        if (m_pTree->ItemHasChildren(item))
         {
-            wxTreeItemId SearchId = FindItem( item, Search );
-            if ( SearchId.IsOk() )
-                return SearchId;
+            const wxArrayString& children = ListNodes(item);
+            const wxString parent = nodes.Last();
+            for (size_t i = 0; i < children.GetCount(); ++i)
+                nodes.Add(parent + wxT("/") + children[i]);
         }
-
-        item = m_pTree->GetNextChild(Node, cookie);
-    } // end while
-    wxTreeItemId notFound;
-    return notFound;
+        item = m_pTree->GetNextChild(node, cookie);
+    }
+    return nodes;
 }
 
 void ProjectManager::OnFindFile(cb_unused wxCommandEvent& event)
 {
-    const wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
-    if ( !text.IsEmpty() )
-    {
-        wxTreeItemId sel = GetTreeSelection();
-        if (!sel.IsOk())
-            return;
+    wxTreeItemId sel = GetTreeSelection();
+    if (!sel.IsOk())
+        return;
+    const wxArrayString& files = ListNodes(sel);
+    if (files.IsEmpty())
+        return;
+    IncrementalSelectIteratorStringArray iter(files);
+    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iter, _("Find file..."),
+                                 _("Please enter the name of the file you are searching:"));
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
+        return;
+    const long selection = dlg.GetSelection();
+    if (selection == wxNOT_FOUND)
+        return;
 
-        wxTreeItemId itemId = FindItem( sel, text );
-        if ( itemId.IsOk() )
+    wxTreeItemIdValue cookie;
+    wxTreeItemId item = m_pTree->GetFirstChild(sel, cookie);
+    wxString file = files[selection];
+    while (item.IsOk())
+    {
+        if (m_pTree->GetItemText(item) == file)
+            break; // found it, exit
+        else if (file.StartsWith(m_pTree->GetItemText(item) + wxT("/")))
         {
-            m_pTree->UnselectAll();
-            m_pTree->SelectItem(itemId);
+            // expand node
+            file = file.Mid(m_pTree->GetItemText(item).Length() + 1);
+            sel  = item;
+            item = m_pTree->GetFirstChild(sel, cookie);
         }
-        else
-            cbMessageBox(_("The file couldn't be found!"), _(""), wxICON_INFORMATION);
+        else // try next node
+            item = m_pTree->GetNextChild(sel, cookie);
+    }
+    if (item.IsOk())
+    {
+        m_pTree->UnselectAll();
+        m_pTree->SelectItem(item);
+    }
+    else
+    {
+        // error ?!
+        // ... this should not fail (unless the tree was modified during selection)
     }
 }
 
