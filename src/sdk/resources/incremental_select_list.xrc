@@ -9,7 +9,7 @@
         <object class="wxStaticText" name="lblMessage">
           <label>Please select:</label>
         </object>
-        <flag>wxTOP|wxLEFT|wxEXPAND</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">

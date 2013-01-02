@@ -2750,12 +2750,33 @@ void ProjectManager::OnFindFile(cb_unused wxCommandEvent& event)
     wxTreeItemId sel = GetTreeSelection();
     if (!sel.IsOk())
         return;
-    const wxArrayString& files = ListNodes(sel);
+    wxArrayString files = ListNodes(sel);
     if (files.IsEmpty())
         return;
+
+    // workspace selected, add *.cbp filenames
+    ConfigManagerContainer::StringToStringMap fileNameMap;
+    if ( m_pWorkspace && !(FileTreeData*)m_pTree->GetItemData(sel) )
+    {
+        for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+        {
+            const cbProject* prj = m_pProjects->Item(i);
+            const wxFileName file(prj->GetFilename());
+            files.Add(file.GetFullName());
+            fileNameMap[file.GetFullName()] = prj->GetTitle();
+        }
+    }
     IncrementalSelectIteratorStringArray iter(files);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iter, _("Find file..."),
                                  _("Please enter the name of the file you are searching:"));
+    wxListBox*     listBx  = XRCCTRL(dlg, "lstItems", wxListBox);
+    wxCheckBox*    chkOpen = new wxCheckBox(&dlg, wxID_ANY, wxT("Open file"));
+    ConfigManager* cfg     = Manager::Get()->GetConfigManager(wxT("project_manager"));
+    chkOpen->SetValue(cfg->ReadBool(wxT("/find_file_open"), false));
+    // insert the check box into the dialogue
+    listBx->GetParent()->GetSizer()->Add(chkOpen, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT, 8);
+    dlg.Fit();
+    dlg.SetMinSize(dlg.GetSize());
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -2763,9 +2784,12 @@ void ProjectManager::OnFindFile(cb_unused wxCommandEvent& event)
     if (selection == wxNOT_FOUND)
         return;
 
+    wxString file = files[selection];
+    ConfigManagerContainer::StringToStringMap::iterator it = fileNameMap.find(file);
+    if (it != fileNameMap.end())
+        file = it->second; // resolve .cbp project filename
     wxTreeItemIdValue cookie;
     wxTreeItemId item = m_pTree->GetFirstChild(sel, cookie);
-    wxString file = files[selection];
     while (item.IsOk())
     {
         if (m_pTree->GetItemText(item) == file)
@@ -2784,6 +2808,20 @@ void ProjectManager::OnFindFile(cb_unused wxCommandEvent& event)
     {
         m_pTree->UnselectAll();
         m_pTree->SelectItem(item);
+        const FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(item);
+        if (ftd && chkOpen->IsChecked())
+        {
+            ProjectFile* pf = ftd->GetProjectFile();
+            if (pf) // open the file
+                DoOpenFile(pf, pf->file.GetFullPath());
+            else if (   ftd->GetKind() == FileTreeData::ftdkProject
+                     && ftd->GetProject() )
+            {
+                // change active project
+                SetProject(ftd->GetProject(), false);
+            }
+        }
+        cfg->Write(wxT("/find_file_open"), chkOpen->IsChecked());
     }
     else
     {
