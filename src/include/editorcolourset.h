@@ -105,7 +105,7 @@ class EditorColourSet
         wxString GetName(){ return m_Name; }
         void SetName(const wxString& name){ m_Name = name; }
         HighlightLanguage Apply(cbEditor* editor, HighlightLanguage lang=HL_AUTO);
-        void Apply(HighlightLanguage lang, cbStyledTextCtrl* control);
+        void Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC = false);
         void Save();
         void Reset(HighlightLanguage lang);
         wxString& GetKeywords(HighlightLanguage lang, int idx);

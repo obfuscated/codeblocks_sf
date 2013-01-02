@@ -470,14 +470,18 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
     if (lang == HL_AUTO)
         lang = GetLanguageForFilename(editor->GetFilename());
 
-    Apply(lang, editor->GetLeftSplitViewControl());
-    Apply(lang, editor->GetRightSplitViewControl());
+    const bool isC = (   Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("no_stl_in_c"), true)
+                      && lang == GetHighlightLanguage(wxT("C/C++"))
+                      && editor->GetFilename().Lower().EndsWith(wxT(".c")) );
+
+    Apply(lang, editor->GetLeftSplitViewControl(),  isC);
+    Apply(lang, editor->GetRightSplitViewControl(), isC);
 
     return lang;
 }
 
 
-void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
+void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC)
 {
     if (!control)
         return;
@@ -548,7 +552,10 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
         }
     }
     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
-        control->SetKeyWords(i, mset.m_Keywords[i]);
+    {
+        if (!isC || i != 1) // exclude stl highlights for C
+            control->SetKeyWords(i, mset.m_Keywords[i]);
+    }
 
     control->Colourise(0, -1); // the *most* important part!
 }

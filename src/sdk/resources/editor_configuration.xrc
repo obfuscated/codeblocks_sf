@@ -442,12 +442,14 @@
                                   <object class="sizeritem">
                                     <object class="wxCheckBox" name="chkTrackPreprocessor">
                                       <label>Interpret #if, #else, #endif to grey out inactive preprocessor-code</label>
+                                      <checked>1</checked>
                                     </object>
                                     <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   </object>
                                   <object class="sizeritem">
                                     <object class="wxCheckBox" name="chkCollectPrjDefines">
                                       <label>Collect defines from project file</label>
+                                      <checked>1</checked>
                                     </object>
                                     <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                     <border>10</border>
@@ -464,7 +466,14 @@
                                       <label>Highlight wxSmith sections differently</label>
                                       <checked>1</checked>
                                     </object>
-                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                    <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                  </object>
+                                  <object class="sizeritem">
+                                    <object class="wxCheckBox" name="chkNoStlC">
+                                      <label>Do not highlight stl in C</label>
+                                      <checked>1</checked>
+                                    </object>
+                                    <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   </object>
                                 </object>
                                 <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
