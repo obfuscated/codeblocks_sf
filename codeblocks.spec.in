@@ -180,7 +180,7 @@ Group:                      Development/Tools/IDE
 Requires:                   %{name}-contrib%{?_isa} = %{version}
 
 %description contrib-devel
-This package contains the development libraries and headers needed to build wxSmith-pluhǵins and to use the wxContribItems in own programs.
+This package contains the development libraries and headers needed to build wxSmith-plugins and to use the wxContribItems in own programs.
  
 %{?debugrpm:%debug_package}
 
