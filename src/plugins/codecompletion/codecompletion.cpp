@@ -440,7 +440,7 @@ int idRealtimeParsingTimer      = wxNewId();
 int idToolbarTimer              = wxNewId();
 int idProjectSavedTimer         = wxNewId();
 int idReparsingTimer            = wxNewId();
-int idTimerEditorActivated      = wxNewId();
+int idEditorActivatedTimer      = wxNewId();
 
 // milliseconds
 #define REALTIME_PARSING_DELAY    500
@@ -476,7 +476,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_TIMER(idToolbarTimer,                      CodeCompletion::OnToolbarTimer         )
     EVT_TIMER(idProjectSavedTimer,                 CodeCompletion::OnProjectSavedTimer    )
     EVT_TIMER(idReparsingTimer,                    CodeCompletion::OnReparsingTimer       )
-    EVT_TIMER(idTimerEditorActivated,              CodeCompletion::OnEditorActivatedTimer )
+    EVT_TIMER(idEditorActivatedTimer,              CodeCompletion::OnEditorActivatedTimer )
 
     EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope   )
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
@@ -495,7 +495,7 @@ CodeCompletion::CodeCompletion() :
     m_TimerToolbar(this, idToolbarTimer),
     m_TimerProjectSaved(this, idProjectSavedTimer),
     m_TimerReparsing(this, idReparsingTimer),
-    m_TimerEditorActivated(this, idTimerEditorActivated),
+    m_TimerEditorActivated(this, idEditorActivatedTimer),
     m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
