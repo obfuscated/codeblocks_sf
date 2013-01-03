@@ -70,6 +70,9 @@ void CCTreeCtrl::SetCompareFunction(const BrowserSortType type)
         case bstScope:
             Compare = &CBScopeCompare;
             break;
+        case bstLine:
+            Compare = &CBLineCompare;
+            break;
         case bstNone:
         default:
             Compare = &CBNoCompare;
@@ -117,6 +120,25 @@ int CCTreeCtrl::CBScopeCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
         return CBKindCompare(lhs, rhs);
 
     return rhs->m_Token->m_Scope - lhs->m_Token->m_Scope;
+}
+
+int CCTreeCtrl::CBLineCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
+{
+    if (!lhs || !rhs)
+        return 1;
+    if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+        return -1;
+    if (!lhs->m_Token || !rhs->m_Token)
+        return 1;
+    if (lhs->m_Token->m_FileIdx == rhs->m_Token->m_FileIdx)
+    {
+        return (lhs->m_Token->m_Line > rhs->m_Token->m_Line) * 2 - 1; // from 0,1 to -1,1
+    }
+    else
+    {
+        return (lhs->m_Token->m_FileIdx > rhs->m_Token->m_FileIdx) * 2 - 1;
+    }
+        
 }
 
 int CCTreeCtrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlData* rhs)

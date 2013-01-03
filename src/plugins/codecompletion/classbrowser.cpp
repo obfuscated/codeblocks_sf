@@ -89,6 +89,7 @@ int idCBNoSort                 = wxNewId();
 int idCBSortByAlpabet          = wxNewId();
 int idCBSortByKind             = wxNewId();
 int idCBSortByScope            = wxNewId();
+int idCBSortByLine             = wxNewId();
 int idCBBottomTree             = wxNewId();
 int idThreadEvent              = wxNewId();
 
@@ -122,6 +123,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBSortByAlpabet,                          ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByKind,                             ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByScope,                            ClassBrowser::OnSetSortType)
+    EVT_MENU(idCBSortByLine,                             ClassBrowser::OnSetSortType)
     EVT_MENU(idCBBottomTree,                             ClassBrowser::OnCBViewMode)
 
     EVT_COMMAND(idThreadEvent, wxEVT_COMMAND_ENTER,      ClassBrowser::OnThreadEvent)
@@ -341,6 +343,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, cb_unused const w
     menu->AppendCheckItem(idCBSortByAlpabet, _("Sort alphabetically"));
     menu->AppendCheckItem(idCBSortByKind,    _("Sort by kind"));
     menu->AppendCheckItem(idCBSortByScope,   _("Sort by access"));
+    menu->AppendCheckItem(idCBSortByLine,    _("Sort by line"));
 
     const BrowserSortType& bst = options.sortType;
     switch (bst)
@@ -353,6 +356,9 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, cb_unused const w
             break;
         case bstScope:
             menu->Check(idCBSortByScope,   true);
+            break;
+        case bstLine:
+            menu->Check(idCBSortByLine,    true);
             break;
         case bstNone:
         default:
@@ -697,6 +703,7 @@ void ClassBrowser::OnSetSortType(wxCommandEvent& event)
     if      (event.GetId() == idCBSortByAlpabet) bst = bstAlphabet;
     else if (event.GetId() == idCBSortByKind)    bst = bstKind;
     else if (event.GetId() == idCBSortByScope)   bst = bstScope;
+    else if (event.GetId() == idCBSortByLine)    bst = bstLine;
     else                                         bst = bstNone;
 
     if (m_Parser)

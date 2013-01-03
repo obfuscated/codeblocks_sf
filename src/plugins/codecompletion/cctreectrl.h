@@ -77,6 +77,7 @@ protected:
     static int CBAlphabetCompare(CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
     static int CBKindCompare    (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
     static int CBScopeCompare   (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
+    static int CBLineCompare    (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
     static int CBNoCompare      (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs);
 
     int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);

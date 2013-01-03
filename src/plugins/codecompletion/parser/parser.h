@@ -107,6 +107,7 @@ enum BrowserSortType
     bstAlphabet = 0, /// alphabetical
     bstKind,         /// class, function, macros
     bstScope,        /// public, protected, private
+    bstLine,         /// code like order
     bstNone
 };
 
