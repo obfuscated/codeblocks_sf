@@ -28,7 +28,8 @@ set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks.workspace"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
-echo Do not forget to run "update.bat" after successful build!
+cd "%~dp0"
+call update.bat
 goto TheEnd
 
 :ErrNoCB
