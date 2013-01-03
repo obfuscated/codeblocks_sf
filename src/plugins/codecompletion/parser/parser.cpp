@@ -461,7 +461,10 @@ void Parser::AddPredefinedMacros(const wxString& defs)
         m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
+    {
+        TRACE(_T("Parser::AddPredefinedMacros(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
+    }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
@@ -484,7 +487,10 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
         m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
+    {
+        TRACE(_T("Parser::AddPriorityHeaders(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
+    }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
@@ -505,7 +511,10 @@ void Parser::AddBatchParse(const StringList& filenames)
         m_ParserState = ParserCommon::ptCreateParser;
 
     if (!m_IsParsing)
+    {
+        TRACE(_T("Parser::AddBatchParse(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
+    }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
@@ -520,7 +529,10 @@ void Parser::AddParse(const wxString& filename)
     m_BatchParseFiles.push_back(filename);
 
     if (!m_IsParsing)
+    {
+        TRACE(_T("Parser::AddParse(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
+    }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
@@ -800,6 +812,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
     m_NeedsReparse = true;
+    TRACE(_T("Parser::Reparse(): Starting m_ReparseTimer."));
     m_ReparseTimer.Start(ParserCommon::PARSER_REPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
 
     return true;
@@ -865,6 +878,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         || !m_PriorityHeaders.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
+        TRACE(_T("Parser::OnAllThreadsDone(1): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
 #if defined(CC_PARSER_PROFILE_TEST)
@@ -884,6 +898,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_SystemPriorityHeaders.clear();
 
         // 4. Begin batch parsing
+        TRACE(_T("Parser::OnAllThreadsDone(2): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
@@ -981,6 +996,7 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     if (ParserCommon::s_CurrentParser && ParserCommon::s_CurrentParser != this)
     {
         // Current batch parser already exists, just return later
+        TRACE(_T("Parser::OnBatchTimer(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY_LONG, wxTIMER_ONE_SHOT);
         return;
     }
@@ -1046,6 +1062,8 @@ void Parser::ReparseModifiedFiles()
         wxString msg(_T("Parser::ReparseModifiedFiles : The Parser is not done."));
         msg += NotDoneReason();
         CCLogger::Get()->DebugLog(msg);
+
+        TRACE(_T("Parser::ReparseModifiedFiles(): Starting m_ReparseTimer."));
         m_ReparseTimer.Start(ParserCommon::PARSER_REPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
         return;
     }

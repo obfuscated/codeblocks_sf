@@ -2512,6 +2512,7 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
         CCLogger::Get()->DebugLog(event.GetString());
 
     UpdateClassBrowser();
+    TRACE(_T("NativeParser::OnParserEnd(): Starting m_TimerParsingOneByOne."));
     m_TimerParsingOneByOne.Start(500, wxTIMER_ONE_SHOT);
 
     event.Skip();

@@ -2140,13 +2140,10 @@ void ParserThread::HandleConditionalArguments()
 
                 Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
                 if (newToken && !m_TemplateArgument.IsEmpty())
-                {
                     ResolveTemplateArgs(newToken);
-                }
                 else
-                {
-                    TRACE(_T("HandleConditionalArguments() : Unable to create/add new token: ") + token);
-                }
+                {   TRACE(_T("HandleConditionalArguments() : Unable to create/add new token: ") + token); }
+
             }
 
             break;
@@ -2154,9 +2151,7 @@ void ParserThread::HandleConditionalArguments()
         else
         {
             if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
-            {
                 m_PointerOrRef << token;
-            }
             else
             {
                 if (!m_Str.empty())
@@ -2227,9 +2222,7 @@ void ParserThread::HandleForLoopArguments()
         else
         {
             if (token == ParserConsts::ref_chr || token == ParserConsts::ptr_chr)
-            {
                 m_PointerOrRef << token;
-            }
             else
             {
                 if (!m_Str.empty())
@@ -2250,13 +2243,9 @@ void ParserThread::HandleForLoopArguments()
 
             Token *newToken = DoAddToken(tkVariable, token, smallTokenizer.GetLineNumber());
             if (newToken && !m_TemplateArgument.IsEmpty())
-            {
                 ResolveTemplateArgs(newToken);
-            }
             else
-            {
-                TRACE(_T("HandleForLoopArguments() : Unable to create/add new token: ") + token);
-            }
+            {   TRACE(_T("HandleForLoopArguments() : Unable to create/add new token: ") + token); }
 
         }
 
@@ -3146,9 +3135,7 @@ void ParserThread::RemoveTemplateArgs(const wxString &exp, wxString &expNoArgs, 
         }
 
         if (nestLvl == 0)
-        {
             expNoArgs << c;
-        }
         else
         {
             bool wanted = true;

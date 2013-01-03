@@ -542,7 +542,7 @@ void ClassBrowserBuilderThread::BuildTree()
 
     // 13.) Expand namespaces and classes
     ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkNamespace, 1);
-    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkClass, 1);
+    ExpandNamespaces(m_CCTreeCtrlTop->GetRootItem(), tkClass,     1);
 
 #ifdef CC_BUILDTREE_MEASURING
     CCLogger::Get()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
