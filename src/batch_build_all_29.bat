@@ -28,8 +28,7 @@ set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks_wx29.workspace"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
-cd "%~dp0"
-call update29.bat
+echo Do not forget to run "update_29.bat" after successful build!
 goto TheEnd
 
 :ErrNoCB
