@@ -52,6 +52,10 @@ LIST *headers1(const char *file, int depth)
 			printf("D file detected\n");
 	}
 
+	// C::B patch: Debug usage of root folder
+	if( DEBUG_HEADER )
+	    printf("header open %s\n", file);
+
 	if (!(f = fopen(file, "r")))
 		return result;
 

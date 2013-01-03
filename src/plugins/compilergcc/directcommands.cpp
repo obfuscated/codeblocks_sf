@@ -53,7 +53,17 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
     depsStart();
     wxFileName cwd;
     cwd.Assign(m_pProject->GetBasePath());
-    depsSetCWD(cwd.GetPath(wxPATH_GET_VOLUME).mb_str());
+    // depslib does special handling on Windows in case the CWD is a root
+    // folder like "R:". But this ONLY works, if its just "R:", NOT e.g. "R:/"
+    wxString depsCWD = cwd.GetPath(wxPATH_GET_VOLUME);
+    Manager::Get()->GetLogManager()->DebugLog(F(_("CWD for depslib was: %s."), depsCWD.wx_str()));
+    if (   (depsCWD.Len()==3) && (depsCWD.GetChar(1)==':')
+        && ( (depsCWD.GetChar(2)=='\\') || (depsCWD.GetChar(2)=='/')) )
+    {
+        depsCWD.RemoveLast();
+    }
+    Manager::Get()->GetLogManager()->DebugLog(F(_("CWD for depslib is: %s."), depsCWD.wx_str()));
+    depsSetCWD(depsCWD.mb_str());
 
     wxFileName fname(m_pProject->GetFilename());
     fname.SetExt(_T("depend"));

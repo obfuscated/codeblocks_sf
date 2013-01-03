@@ -1325,7 +1325,7 @@ int CompilerGCC::DoRunQueue()
         LogWarningOrError(cltError, 0, wxEmptyString, wxEmptyString, err);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            if (!IsProcessRunning())
+            if ( !IsProcessRunning() )
             {
                 wxString msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
                 LogMessage(msg, cltError, ltAll, true);
@@ -3677,7 +3677,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            if (!IsProcessRunning())
+            if ( !IsProcessRunning() )
             {
                 msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
                 LogMessage(msg, m_LastExitCode == 0 ? cltWarning : cltError, ltAll, m_LastExitCode != 0);

@@ -71,7 +71,6 @@ static const char *time_progress[] =
 	"FOUND"
 } ;
 
-
 /*
  * timestamp() - return timestamp on a file, if present
  */

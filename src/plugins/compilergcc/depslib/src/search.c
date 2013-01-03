@@ -58,6 +58,13 @@ const char *search(const char *source, const char *_header, time_t *time)
 	path_parent(f);
 	path_build(f, buf3, 1);
 
+	// C::B patch: Fix bug with usage of root folder
+# if PATH_DELIM == '\\'
+	/* Special case for D:/ - dirname is D:/, not "D:" */
+	if ((strlen(buf3)==3) && (buf3[1]==':') && ((buf3[2]=='\\') || (buf3[2]=='/')))
+		buf3[2] = 0;
+# endif
+
 	if (DEBUG_SEARCH)
 		printf( "search %s\n  included by %s\n", _header, source);
 
