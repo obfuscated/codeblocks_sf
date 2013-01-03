@@ -45,44 +45,44 @@ fi
 cp -f $LIB_ROOT/*.dylib $MACOS_ROOT
 
 echo Running install_name_tool...
-install_name_tool -id                                   @executable_path/libwx_macu-2.8.dylib  $MACOS_ROOT/libwx_macu-2.8.dylib
-install_name_tool -id                                   @executable_path/libcodeblocks.dylib     $MACOS_ROOT/libcodeblocks.dylib
-install_name_tool -id                                   @executable_path/libwxpropgrid.dylib     $MACOS_ROOT/libwxpropgrid.dylib
-install_name_tool -id                                   @executable_path/libwxsmithlib.dylib     $MACOS_ROOT/libwxsmithlib.dylib
+install_name_tool -id                                   @executable_path/libwx_macu-2.8.dylib     $MACOS_ROOT/libwx_macu-2.8.dylib
+install_name_tool -id                                   @executable_path/libcodeblocks.dylib      $MACOS_ROOT/libcodeblocks.dylib
+install_name_tool -id                                   @executable_path/libwxpropgrid.dylib      $MACOS_ROOT/libwxpropgrid.dylib
+install_name_tool -id                                   @executable_path/libwxsmithlib.dylib      $MACOS_ROOT/libwxsmithlib.dylib
 if [ -f "$MACOS_ROOT/libwxchartctrl.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxchartctrl.dylib    $MACOS_ROOT/libwxchartctrl.dylib
+  install_name_tool -id                                 @executable_path/libwxchartctrl.dylib     $MACOS_ROOT/libwxchartctrl.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxcustombutton.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxcustombutton.dylib $MACOS_ROOT/libwxcustombutton.dylib
+  install_name_tool -id                                 @executable_path/libwxcustombutton.dylib  $MACOS_ROOT/libwxcustombutton.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxflatnotebook.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxflatnotebook.dylib $MACOS_ROOT/libwxflatnotebook.dylib
+  install_name_tool -id                                 @executable_path/libwxflatnotebook.dylib  $MACOS_ROOT/libwxflatnotebook.dylib
 fi
 if [ -f "$MACOS_ROOT/libwximagepanel.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwximagepanel.dylib   $MACOS_ROOT/libwximagepanel.dylib
+  install_name_tool -id                                 @executable_path/libwximagepanel.dylib    $MACOS_ROOT/libwximagepanel.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxkwic.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxkwic.dylib         $MACOS_ROOT/libwxkwic.dylib
+  install_name_tool -id                                 @executable_path/libwxkwic.dylib          $MACOS_ROOT/libwxkwic.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxled.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxled.dylib          $MACOS_ROOT/libwxled.dylib
+  install_name_tool -id                                 @executable_path/libwxled.dylib           $MACOS_ROOT/libwxled.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxspeedbutton.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxspeedbutton.dylib  $MACOS_ROOT/libwxspeedbutton.dylib
+  install_name_tool -id                                 @executable_path/libwxspeedbutton.dylib   $MACOS_ROOT/libwxspeedbutton.dylib
 fi
 if [ -f "$MACOS_ROOT/libwxtreelist.dylib" ]
 then
-  install_name_tool -id                                 @executable_path/libwxtreelist.dylib     $MACOS_ROOT/libwxtreelist.dylib
+  install_name_tool -id                                 @executable_path/libwxtreelist.dylib      $MACOS_ROOT/libwxtreelist.dylib
 fi
 
-install_name_tool -change $WX_ROOT/libwx_macu-2.8.dylib   @executable_path/libwx_macu-2.8.dylib $MACOS_ROOT/CodeBlocks
+install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib @executable_path/libwx_macu-2.8.dylib   $MACOS_ROOT/CodeBlocks
 install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib    $MACOS_ROOT/CodeBlocks
 install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib    $MACOS_ROOT/CodeBlocks
 install_name_tool -change $LIB_ROOT/libwxpropgrid.dylib   @executable_path/libwxpropgrid.dylib    $MACOS_ROOT/CodeBlocks
@@ -90,30 +90,30 @@ install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwx
 
 if [ -f "$MACOS_ROOT/codesnippets" ]
 then
-  install_name_tool -change $WX_ROOT/libwx_macu-2.8.dylib   @executable_path/libwx_macu-2.8.dylib $MACOS_ROOT/codesnippets
-  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib    $MACOS_ROOT/codesnippets
-  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib    $MACOS_ROOT/codesnippets
-  install_name_tool -change $LIB_ROOT/libwxsmithlib.dylib   @executable_path/libwxsmithlib.dylib    $MACOS_ROOT/codesnippets
-  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib    $MACOS_ROOT/codesnippets
+  install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib @executable_path/libwx_macu-2.8.dylib $MACOS_ROOT/codesnippets
+  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib  $MACOS_ROOT/codesnippets
+  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib  $MACOS_ROOT/codesnippets
+  install_name_tool -change $LIB_ROOT/libwxsmithlib.dylib   @executable_path/libwxsmithlib.dylib  $MACOS_ROOT/codesnippets
+  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib  $MACOS_ROOT/codesnippets
 fi
 
 if [ -f "$MACOS_ROOT/cb_share_config" ]
 then
-  install_name_tool -change $WX_ROOT/libwx_macu-2.8.dylib   @executable_path/libwx_macu-2.8.dylib $MACOS_ROOT/cb_share_config
-  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib    $MACOS_ROOT/cb_share_config
-  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib    $MACOS_ROOT/cb_share_config
-  install_name_tool -change $LIB_ROOT/libwxpropgrid.dylib   @executable_path/libwxpropgrid.dylib    $MACOS_ROOT/cb_share_config
-  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib    $MACOS_ROOT/cb_share_config
+  install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib @executable_path/libwx_macu-2.8.dylib $MACOS_ROOT/cb_share_config
+  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib  $MACOS_ROOT/cb_share_config
+  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib  $MACOS_ROOT/cb_share_config
+  install_name_tool -change $LIB_ROOT/libwxpropgrid.dylib   @executable_path/libwxpropgrid.dylib  $MACOS_ROOT/cb_share_config
+  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib  $MACOS_ROOT/cb_share_config
 fi
 
 echo Looping libwx*.dylib files in MacOS...
 for dy_lib in $MACOS_ROOT/libwx*.dylib
 do
-  install_name_tool -change $WX_ROOT/libwx_macu-2.8.dylib   @executable_path/libwx_macu-2.8.dylib $dy_lib
-  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib    $dy_lib
-  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib    $dy_lib
-  install_name_tool -change $LIB_ROOT/libwxpropgrid.dylib   @executable_path/libwxpropgrid.dylib    $dy_lib
-  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib    $dy_lib
+  install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib @executable_path/libwx_macu-2.8.dylib $dy_lib
+  install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib  $dy_lib
+  install_name_tool -change devel/libcodeblocks.dylib       @executable_path/libcodeblocks.dylib  $dy_lib
+  install_name_tool -change $LIB_ROOT/libwxpropgrid.dylib   @executable_path/libwxpropgrid.dylib  $dy_lib
+  install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib  $dy_lib
 done
 
 echo Copying shared files...
@@ -130,7 +130,7 @@ echo Looping *.dylib files...
 for dy_lib in $RES_ROOT/share/codeblocks/plugins/*.dylib
 do
 #  echo Processing $dy_lib
-  install_name_tool -change $WX_ROOT/libwx_macu-2.8.dylib          @executable_path/libwx_macu-2.8.dylib  $dy_lib
+  install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib        @executable_path/libwx_macu-2.8.dylib    $dy_lib
   install_name_tool -change $LIB_ROOT/libcodeblocks.dylib          @executable_path/libcodeblocks.dylib     $dy_lib
   install_name_tool -change devel/libcodeblocks.dylib              @executable_path/libcodeblocks.dylib     $dy_lib
   install_name_tool -change ../../../devel/libcodeblocks.dylib     @executable_path/libcodeblocks.dylib     $dy_lib
