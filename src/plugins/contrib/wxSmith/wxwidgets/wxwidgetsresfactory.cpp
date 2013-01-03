@@ -199,6 +199,7 @@ wxsResource* wxWidgetsResFactory::OnCreate(int Number,wxsProject* Project)
         case wxScrollingDialogId: return new wxsScrollingDialogRes(Project);
         case wxFrameId:           return new wxsFrameRes(Project);
         case wxPanelId:           return new wxsPanelRes(Project);
+        default:                  break;
     }
     return 0;
 }
@@ -263,6 +264,7 @@ wxsResource* wxWidgetsResFactory::OnBuildExternal(const wxString& FileName)
         case wxScrollingDialogId: return new wxsScrollingDialogRes(FileName,Object);
         case wxFrameId:           return new wxsFrameRes(FileName,Object);
         case wxPanelId:           return new wxsPanelRes(FileName,Object);
+        default:                  break;
     }
     return 0;
 }
