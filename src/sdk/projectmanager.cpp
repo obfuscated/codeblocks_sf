@@ -10,12 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/checkbox.h>
     #include <wx/datetime.h>
     #include <wx/imaglist.h>
     #include <wx/frame.h>
     #include <wx/menu.h>
     #include <wx/splitter.h>
     #include <wx/filename.h>
+    #include <wx/xrc/xmlres.h>
 
     #include "projectmanager.h" // class's header file
     #include "sdk_events.h"
