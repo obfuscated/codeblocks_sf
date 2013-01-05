@@ -94,7 +94,7 @@ DirectCommands::~DirectCommands()
     delete m_pGenerator;
 }
 
-void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd, bool isLinkCmd)
+void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd, bool isLinkCmd) const
 {
     wxString cmd = cmds;
     while (!cmd.IsEmpty())
@@ -124,7 +124,7 @@ static int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
     return (diff == 0 ? (*one)->relativeFilename.Cmp((*two)->relativeFilename) : diff);
 }
 
-MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link)
+MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link) const
 {
     MyFilesArray files;
     for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
@@ -145,7 +145,7 @@ MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* t
     return files;
 }
 
-wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force)
+wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force) const
 {
     wxArrayString ret;
 
@@ -173,7 +173,7 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
     return ret;
 }
 
-wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
+wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf) const
 {
     wxArrayString ret;
     wxArrayString ret_generated;
@@ -321,7 +321,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 }
 
 /// This is to be used *only* for files not belonging to a project!!!
-wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filename)
+wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filename) const
 {
     wxArrayString ret;
 
@@ -410,7 +410,7 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
 }
 
 /// This is to be used *only* for files not belonging to a project!!!
-wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename)
+wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename) const
 {
     wxArrayString ret;
 
@@ -433,7 +433,7 @@ wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename
     return ret;
 }
 
-wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, bool force)
+wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, bool force) const
 {
     wxArrayString ret;
 
@@ -454,10 +454,10 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
     return ret;
 }
 
-wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
+wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force) const
 {
     wxArrayString ret;
-    m_pCurrTarget = target;
+//    m_pCurrTarget = target;
 
     // set list of #include directories
     DepsSearchStart(target);
@@ -510,7 +510,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     return ret;
 }
 
-wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
+wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target) const
 {
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
@@ -543,7 +543,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
     return buildcmds;
 }
 
-wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
+wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target) const
 {
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
@@ -582,7 +582,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
     return buildcmds;
 }
 
-wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool force)
+wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool force) const
 {
     wxArrayString ret;
 
@@ -603,7 +603,7 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
     return ret;
 }
 
-wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
+wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force) const
 {
     wxArrayString ret;
 
@@ -834,7 +834,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     return ret;
 }
 
-wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target, bool distclean)
+wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target, bool distclean) const
 {
     wxArrayString ret;
 
@@ -852,7 +852,7 @@ wxArrayString DirectCommands::GetCleanCommands(ProjectBuildTarget* target, bool 
     return ret;
 }
 
-wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean)
+wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean) const
 {
     wxArrayString ret;
 
@@ -905,7 +905,7 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
   */
 bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
                                              const wxString& buildOutput,
-                                             wxArrayString*  filesMissing)
+                                             wxArrayString*  filesMissing) const
 {
     Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
 
@@ -1044,7 +1044,7 @@ bool DirectCommands::AreExternalDepsOutdated(ProjectBuildTarget* target,
     return false; // no force relink
 }
 
-bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr)
+bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr) const
 {
     // If the source file does not exist, then do not compile.
     time_t timeSrc;
@@ -1094,7 +1094,7 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
     return false;
 }
 
-void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
+void DirectCommands::DepsSearchStart(ProjectBuildTarget* target) const
 {
     depsSearchStart();
 
