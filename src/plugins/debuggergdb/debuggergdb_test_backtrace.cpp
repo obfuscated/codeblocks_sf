@@ -252,7 +252,7 @@ TEST(match6_address)
     CHECK(GdbCmd_Backtrace::MatchLine(sf, hasLineInfo, wxT("#0  Foo::Bar::(anonymous namespace)::apply (this=0xbaf6cf0")
                                                        wxT(", stmt=0xb9d7160, stmtSubsts=...) ")
                                                        wxT("at Foo/Bar/apply.cpp:219")));
-    CHECK_EQUAL(0x0, sf.GetAddress());
+    CHECK_EQUAL(0x0ul, sf.GetAddress());
 }
 TEST(match6_symbol)
 {
