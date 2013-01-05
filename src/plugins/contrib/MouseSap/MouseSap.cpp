@@ -63,7 +63,7 @@ END_EVENT_TABLE()
 MouseSap* MouseSap::pMouseSap;
 
 // ----------------------------------------------------------------------------
-MouseSap::MouseSap()
+MouseSap::MouseSap() : m_pMyLog(nullptr), m_bEditorsAttached(false), m_bMouseSapEnabled(false), m_pMMSapEvents(nullptr)
 // ----------------------------------------------------------------------------
 {
 	//ctor
