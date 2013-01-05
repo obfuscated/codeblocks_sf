@@ -550,6 +550,18 @@
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT43">
+												<label>Linker needs path resolution:</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkLinkerNeedsPathRes" />
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT32">
 												<label>Force quotes for filenames in compiler command-line:</label>
 											</object>
@@ -619,6 +631,52 @@
 											<object class="wxCheckBox" name="chkUseFullSourcePaths" />
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT39">
+												<label>Include Directory Separator</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtIncludeDirSeparator" />
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT40">
+												<label>Library Directory Separator</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtLibDirSeparator" />
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT41">
+												<label>Object Separator</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtObjectSeparator" />
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT42">
+												<label>The maximum successful return value</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxSpinCtrl" name="spnStatusSuccess">
+												<value>0</value>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT38">

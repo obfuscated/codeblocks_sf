@@ -19,7 +19,7 @@
 #include "compilerGNUARM.h"
 
 CompilerGNUARM::CompilerGNUARM()
-    : Compiler(_("GNU GCC Compiler for ARM"),_T("arm-elf-gcc"))
+    : Compiler(_("GNU GCC Compiler for ARM"), _T("arm-elf-gcc"))
 {
     m_Weight = 56;
     Reset();

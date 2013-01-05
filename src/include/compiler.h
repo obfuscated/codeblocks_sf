@@ -177,6 +177,7 @@ struct CompilerSwitches
     wxString libExtension;        // a
     bool linkerNeedsLibPrefix;    // when adding a link library, linker needs prefix?
     bool linkerNeedsLibExtension; // when adding a link library, linker needs extension?
+    bool linkerNeedsPathResolved; // linker does not support libDirs; C::B must resolve file paths
     bool supportsPCH;             // supports pre-compiled headers?
     wxString PCHExtension;        // pre-compiled headers extension
     bool UseFlatObjects;          // Use Flat object file names (no extra subdirs)?
@@ -189,6 +190,10 @@ struct CompilerSwitches
                                   // therefore use 8.3 notation without spaces on Windows.
                                   // However, this will apply to all include path's as other tools might have the
                                   // same issue and it won't hurt to apply it to all include directories, if enabled.
+    wxChar includeDirSeparator;   // space
+    wxChar libDirSeparator;       // space
+    wxChar objectSeparator;       // space
+    int statusSuccess;            // 0    - treat exit-codes >= 0 and <= statusSuccess as success (do not set negative!)
 
     CompilerSwitches(); // constructor initializing the members, specific compilers should overrule if needed
 };

@@ -68,6 +68,11 @@ class DLLIMPORT CompilerCommandGenerator
         virtual void DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName);
         virtual wxString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
         virtual wxArrayString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxArrayString& project_options, const wxArrayString& target_options);
+        virtual wxArrayString GetOrderedIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxArrayString GetOrderedLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxArrayString GetOrderedResourceIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
+        static wxString MakeOptString(const wxArrayString& arr, const wxString& opt, wxChar separator = _T(' '));
+        static wxString PathSearch(const wxArrayString& arr, const wxString& filename);
         virtual wxString SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target);
         virtual wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
         virtual wxString SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target);
@@ -79,21 +84,21 @@ class DLLIMPORT CompilerCommandGenerator
         virtual wxString FixupLinkLibraries(Compiler* compiler, const wxString& lib);
         virtual void FixPathSeparators(Compiler* compiler, wxString& inAndOut);
 
-        OptionsMap m_Output; ///< output filenames, per-target
+        OptionsMap m_Output;       ///< output filenames, per-target
         OptionsMap m_StaticOutput; ///< static output filenames, per-target
-        OptionsMap m_DefOutput; ///< def output filenames, per-target
-        OptionsMap m_Inc; ///< compiler 'include' dirs, per-target
-        OptionsMap m_Lib; ///< linker 'include' dirs, per-target
-        OptionsMap m_RC; ///< resource compiler 'include' dirs, per-target
-        OptionsMap m_CFlags; ///< compiler flags, per-target
-        OptionsMap m_LDFlags; ///< linker flags, per-target
-        OptionsMap m_LDAdd; ///< link libraries, per-target
-        OptionsMap m_RCFlags; ///< resource compiler flags, per-target
+        OptionsMap m_DefOutput;    ///< def output filenames, per-target
+        OptionsMap m_Inc;          ///< compiler 'include' dirs, per-target
+        OptionsMap m_Lib;          ///< linker 'include' dirs, per-target
+        OptionsMap m_RC;           ///< resource compiler 'include' dirs, per-target
+        OptionsMap m_CFlags;       ///< compiler flags, per-target
+        OptionsMap m_LDFlags;      ///< linker flags, per-target
+        OptionsMap m_LDAdd;        ///< link libraries, per-target
+        OptionsMap m_RCFlags;      ///< resource compiler flags, per-target
 
         wxString m_PrjIncPath; ///< directive to add the project's top-level path in compiler search dirs (ready for the command line)
 
         SearchDirsMap m_CompilerSearchDirs; ///< array of final compiler search dirs, per-target
-        SearchDirsMap m_LinkerSearchDirs; ///< array of final linker search dirs, per-target
+        SearchDirsMap m_LinkerSearchDirs;   ///< array of final linker search dirs, per-target
     private:
         wxString GetProcessedIncludeDir(Compiler* compiler, ProjectBuildTarget* target,
                                         const wxArrayString& inc_dirs, const wxString& inc_switch);

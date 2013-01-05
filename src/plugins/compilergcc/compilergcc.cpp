@@ -63,6 +63,8 @@
 #include "compilerGNUARM.h"
 #include "compilerCYGWIN.h"
 #include "compilerLCC.h"
+#include "compilerKeilC51.h"
+#include "compilerIAR.h"
 #include "compilerICC.h"
 #include "compilerGDC.h"
 #include "compilerGNUFortran.h"
@@ -846,6 +848,9 @@ void CompilerGCC::DoRegisterCompilers()
         CompilerFactory::RegisterCompiler(new CompilerOW);
         CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
         CompilerFactory::RegisterCompiler(new CompilerLCC);
+        CompilerFactory::RegisterCompiler(new CompilerKeilC51);
+        CompilerFactory::RegisterCompiler(new CompilerKeilCX51);
+        CompilerFactory::RegisterCompiler(new CompilerIAR8051);
     }
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
@@ -3607,10 +3612,14 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     m_CompilerProcessList.at(procIndex).pProcess = 0;
     if (m_LastExitCode == 0 || exitCode != 0) // prevent exit errors from being overwritten during multi-threaded build
         m_LastExitCode = exitCode;
+    bool success(exitCode == 0);
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (compiler)
+        success = (exitCode >= 0) && (exitCode <= compiler->GetSwitches().statusSuccess);
 
     wxString oFile = UnixFilename(m_CompilerProcessList.at(procIndex).OutputFile);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(oFile); // might contain macros!
-    if (exitCode == 0 && !oFile.IsEmpty())
+    if (success && !oFile.IsEmpty())
     {
         wxLogNull silence; // In case opening the file fails
         wxFFile f(oFile.wx_str(), _T("r"));
@@ -3641,12 +3650,13 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             LogMessage(msg, cltNormal);
         }
     }
-
-    if (m_CommandQueue.GetCount() != 0 && exitCode == 0)
+    if (success)
+        m_LastExitCode = 0;
+    if (m_CommandQueue.GetCount() != 0 && success)
         DoRunQueue(); // continue running commands while last exit code was 0.
     else
     {
-        if (exitCode == 0)
+        if (success)
         {
             if (IsProcessRunning())
             {
@@ -3674,13 +3684,14 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
         wxString msg = wxString::Format(_("Process terminated with status %d (%s)"), exitCode, GetMinSecStr().wx_str());
         if (m_LastExitCode == exitCode) // do not log extra if there is failure during multi-threaded build
-            LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
+            LogMessage(msg, success ? cltWarning : cltError, ltAll, !success);
         if (!m_CommandQueue.LastCommandWasRun())
         {
             if ( !IsProcessRunning() )
             {
                 msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
-                LogMessage(msg, m_LastExitCode == 0 ? cltWarning : cltError, ltAll, m_LastExitCode != 0);
+                bool success = (m_LastExitCode >= 0) && (m_LastExitCode <= compiler->GetSwitches().statusSuccess);
+                LogMessage(msg, success ? cltWarning : cltError, ltAll, success != 0);
                 LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
                                   wxString::Format(_("=== Build %s: %s ==="),
                                                    wxString(m_LastExitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));

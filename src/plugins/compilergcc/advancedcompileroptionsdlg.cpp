@@ -114,6 +114,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkFwdSlashes",           wxCheckBox)->SetValue(switches.forceFwdSlashes);
     XRCCTRL(*this, "chkLinkerNeedsLibPrefix", wxCheckBox)->SetValue(switches.linkerNeedsLibPrefix);
     XRCCTRL(*this, "chkLinkerNeedsLibExt",    wxCheckBox)->SetValue(switches.linkerNeedsLibExtension);
+    XRCCTRL(*this, "chkLinkerNeedsPathRes",   wxCheckBox)->SetValue(switches.linkerNeedsPathResolved);
     XRCCTRL(*this, "chkNeedDeps",             wxCheckBox)->SetValue(switches.needDependencies);
     XRCCTRL(*this, "chkForceCompilerQuotes",  wxCheckBox)->SetValue(switches.forceCompilerUseQuotes);
     XRCCTRL(*this, "chkForceLinkerQuotes",    wxCheckBox)->SetValue(switches.forceLinkerUseQuotes);
@@ -121,6 +122,10 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "txtPCHExt",               wxTextCtrl)->SetValue(switches.PCHExtension);
     XRCCTRL(*this, "chkUseFlatObjects",       wxCheckBox)->SetValue(switches.UseFlatObjects);
     XRCCTRL(*this, "chkUseFullSourcePaths",   wxCheckBox)->SetValue(switches.UseFullSourcePaths);
+    XRCCTRL(*this, "txtIncludeDirSeparator",  wxTextCtrl)->SetValue(switches.includeDirSeparator);
+    XRCCTRL(*this, "txtLibDirSeparator",      wxTextCtrl)->SetValue(switches.libDirSeparator);
+    XRCCTRL(*this, "txtObjectSeparator",      wxTextCtrl)->SetValue(switches.objectSeparator);
+    XRCCTRL(*this, "spnStatusSuccess",        wxSpinCtrl)->SetValue(switches.statusSuccess);
     XRCCTRL(*this, "chkUse83Paths",           wxCheckBox)->SetValue(switches.Use83Paths);
 
     m_Regexes = compiler->GetRegExArray();
@@ -150,6 +155,7 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.forceFwdSlashes         = XRCCTRL(*this, "chkFwdSlashes",           wxCheckBox)->GetValue();
     switches.linkerNeedsLibPrefix    = XRCCTRL(*this, "chkLinkerNeedsLibPrefix", wxCheckBox)->GetValue();
     switches.linkerNeedsLibExtension = XRCCTRL(*this, "chkLinkerNeedsLibExt",    wxCheckBox)->GetValue();
+    switches.linkerNeedsPathResolved = XRCCTRL(*this, "chkLinkerNeedsPathRes",   wxCheckBox)->GetValue();
     switches.needDependencies        = XRCCTRL(*this, "chkNeedDeps",             wxCheckBox)->GetValue();
     switches.forceCompilerUseQuotes  = XRCCTRL(*this, "chkForceCompilerQuotes",  wxCheckBox)->GetValue();
     switches.forceLinkerUseQuotes    = XRCCTRL(*this, "chkForceLinkerQuotes",    wxCheckBox)->GetValue();
@@ -157,6 +163,22 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.PCHExtension            = XRCCTRL(*this, "txtPCHExt",               wxTextCtrl)->GetValue();
     switches.UseFlatObjects          = XRCCTRL(*this, "chkUseFlatObjects",       wxCheckBox)->GetValue();
     switches.UseFullSourcePaths      = XRCCTRL(*this, "chkUseFullSourcePaths",   wxCheckBox)->GetValue();
+    {
+        wxString value               = XRCCTRL(*this, "txtIncludeDirSeparator",  wxTextCtrl)->GetValue();
+        if (!value.IsEmpty())
+            switches.includeDirSeparator = value[0];
+    }
+    {
+        wxString value               = XRCCTRL(*this, "txtLibDirSeparator",      wxTextCtrl)->GetValue();
+        if (!value.IsEmpty())
+            switches.libDirSeparator = value[0];
+    }
+    {
+        wxString value               = XRCCTRL(*this, "txtObjectSeparator",      wxTextCtrl)->GetValue();
+        if (!value.IsEmpty())
+            switches.objectSeparator = value[0];
+    }
+    switches.statusSuccess           = XRCCTRL(*this, "spnStatusSuccess",        wxSpinCtrl)->GetValue();
     switches.Use83Paths              = XRCCTRL(*this, "chkUse83Paths",           wxCheckBox)->GetValue();
 
     compiler->SetSwitches(switches);

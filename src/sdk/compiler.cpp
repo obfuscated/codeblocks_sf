@@ -60,13 +60,17 @@ CompilerSwitches::CompilerSwitches()
     libExtension            = _T("a");
     linkerNeedsLibPrefix    = false;
     linkerNeedsLibExtension = false;
+    linkerNeedsPathResolved = false;
     supportsPCH             = true;
     PCHExtension            = _T("h.gch");
     UseFlatObjects          = false;
     UseFullSourcePaths      = false;
     Use83Paths              = false;
+    includeDirSeparator     = _T(' ');
+    libDirSeparator         = _T(' ');
+    objectSeparator         = _T(' ');
+    statusSuccess           = 0;
 }
-
 
 wxString Compiler::CommandTypeDescriptions[ctCount] =
 {
@@ -466,6 +470,8 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(tmp + _T("/switches/linkerNeedsLibPrefix"),    m_Switches.linkerNeedsLibPrefix);
     if (m_Mirror.Switches.linkerNeedsLibExtension != m_Switches.linkerNeedsLibExtension)
         cfg->Write(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
+    if (m_Mirror.Switches.linkerNeedsPathResolved != m_Switches.linkerNeedsPathResolved)
+        cfg->Write(tmp + _T("/switches/linkerNeedsPathResolved"), m_Switches.linkerNeedsPathResolved);
     if (m_Mirror.Switches.forceFwdSlashes != m_Switches.forceFwdSlashes)
         cfg->Write(tmp + _T("/switches/forceFwdSlashes"),         m_Switches.forceFwdSlashes);
     if (m_Mirror.Switches.supportsPCH != m_Switches.supportsPCH)
@@ -476,6 +482,14 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(tmp + _T("/switches/UseFlatObjects"),          m_Switches.UseFlatObjects);
     if (m_Mirror.Switches.UseFullSourcePaths != m_Switches.UseFullSourcePaths)
         cfg->Write(tmp + _T("/switches/UseFullSourcePaths"),      m_Switches.UseFullSourcePaths);
+    if (m_Mirror.Switches.includeDirSeparator != m_Switches.includeDirSeparator)
+        cfg->Write(tmp + _T("/switches/includeDirSeparator"),     (int)m_Switches.includeDirSeparator);
+    if (m_Mirror.Switches.libDirSeparator != m_Switches.libDirSeparator)
+        cfg->Write(tmp + _T("/switches/libDirSeparator"),         (int)m_Switches.libDirSeparator);
+    if (m_Mirror.Switches.objectSeparator != m_Switches.objectSeparator)
+        cfg->Write(tmp + _T("/switches/objectSeparator"),         (int)m_Switches.objectSeparator);
+    if (m_Mirror.Switches.statusSuccess != m_Switches.statusSuccess)
+        cfg->Write(tmp + _T("/switches/statusSuccess"),           m_Switches.statusSuccess);
     if (m_Mirror.Switches.Use83Paths != m_Switches.Use83Paths)
         cfg->Write(tmp + _T("/switches/Use83Paths"),              m_Switches.Use83Paths);
 
@@ -622,12 +636,17 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.libExtension            = cfg->Read(tmp + _T("/switches/libExtension"),                m_Switches.libExtension);
     m_Switches.linkerNeedsLibPrefix    = cfg->ReadBool(tmp + _T("/switches/linkerNeedsLibPrefix"),    m_Switches.linkerNeedsLibPrefix);
     m_Switches.linkerNeedsLibExtension = cfg->ReadBool(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
+    m_Switches.linkerNeedsPathResolved = cfg->ReadBool(tmp + _T("/switches/linkerNeedsPathResolved"), m_Switches.linkerNeedsPathResolved);
     m_Switches.forceFwdSlashes         = cfg->ReadBool(tmp + _T("/switches/forceFwdSlashes"),         m_Switches.forceFwdSlashes);
     m_Switches.supportsPCH             = cfg->ReadBool(tmp + _T("/switches/supportsPCH"),             m_Switches.supportsPCH);
     m_Switches.PCHExtension            = cfg->Read(tmp + _T("/switches/pchExtension"),                m_Switches.PCHExtension);
     m_Switches.UseFlatObjects          = cfg->ReadBool(tmp + _T("/switches/UseFlatObjects"),          m_Switches.UseFlatObjects);
     m_Switches.UseFullSourcePaths      = cfg->ReadBool(tmp + _T("/switches/UseFullSourcePaths"),      m_Switches.UseFullSourcePaths);
     m_Switches.Use83Paths              = cfg->ReadBool(tmp + _T("/switches/Use83Paths"),              m_Switches.Use83Paths);
+    m_Switches.includeDirSeparator  = (wxChar)cfg->ReadInt(tmp + _T("/switches/includeDirSeparator"), (int)m_Switches.includeDirSeparator);
+    m_Switches.libDirSeparator         = (wxChar)cfg->ReadInt(tmp + _T("/switches/libDirSeparator"),  (int)m_Switches.libDirSeparator);
+    m_Switches.objectSeparator         = (wxChar)cfg->ReadInt(tmp + _T("/switches/objectSeparator"),  (int)m_Switches.objectSeparator);
+    m_Switches.statusSuccess           = cfg->ReadInt(tmp + _T("/switches/statusSuccess"),            m_Switches.statusSuccess);
 
     // regexes
 
@@ -882,6 +901,8 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Switches.linkerNeedsLibPrefix = (value == wxT("true"));
             else if (swi == wxT("linkerNeedsLibExtension"))
                 m_Switches.linkerNeedsLibExtension = (value == wxT("true"));
+            else if (swi == wxT("linkerNeedsPathResolved"))
+                m_Switches.linkerNeedsPathResolved = (value == wxT("true"));
             else if (swi == wxT("supportsPCH"))
                 m_Switches.supportsPCH = (value == wxT("true"));
             else if (swi == wxT("PCHExtension"))
@@ -890,6 +911,18 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
                 m_Switches.UseFlatObjects = (value == wxT("true"));
             else if (swi == wxT("UseFullSourcePaths"))
                 m_Switches.UseFullSourcePaths = (value == wxT("true"));
+            else if (swi == wxT("includeDirSeparator") && !value.IsEmpty())
+                m_Switches.includeDirSeparator = value[0];
+            else if (swi == wxT("libDirSeparator") && !value.IsEmpty())
+                m_Switches.libDirSeparator = value[0];
+            else if (swi == wxT("objectSeparator") && !value.IsEmpty())
+                m_Switches.objectSeparator = value[0];
+            else if (swi == wxT("statusSuccess") && !value.IsEmpty())
+            {
+                long val;
+                if (value.ToLong(&val))
+                    m_Switches.statusSuccess = val;
+            }
             else if (swi == wxT("Use83Paths"))
                 m_Switches.Use83Paths = (value == wxT("true"));
         }
@@ -969,15 +1002,15 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
             {
                 flags.Replace(wxT("\n"), wxT(" "));
                 flags.Replace(wxT("\r"), wxT(" "));
-                m_SortOptions[0] += wxT(" ") + flags;
-                m_SortOptions[0] = MakeUniqueString(GetCOnlyFlags(), wxT(" "));
+                SetCOnlyFlags( MakeUniqueString(GetCOnlyFlags() + wxT(" ") + flags,
+                                                wxT(" ")) );
             }
             else if (node->GetAttribute(wxT("CPPFlags"), &flags))
             {
                 flags.Replace(wxT("\n"), wxT(" "));
                 flags.Replace(wxT("\r"), wxT(" "));
-                m_SortOptions[1] += wxT(" ") + flags;
-                m_SortOptions[1] = MakeUniqueString(GetCPPOnlyFlags(), wxT(" "));
+                SetCPPOnlyFlags( MakeUniqueString(GetCPPOnlyFlags() + wxT(" ") + flags,
+                                                  wxT(" ")) );
             }
         }
         else if (node->GetName() == wxT("Common"))
