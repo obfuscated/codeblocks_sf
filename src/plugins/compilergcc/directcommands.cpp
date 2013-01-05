@@ -38,7 +38,6 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
     m_pCompilerPlugin(compilerPlugin),
     m_pCompiler(compiler),
     m_pProject(project),
-    m_pCurrTarget(0),
     m_pGenerator(0)
 {
     // even if there is no project, the command generator need to be
@@ -457,7 +456,6 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force) const
 {
     wxArrayString ret;
-//    m_pCurrTarget = target;
 
     // set list of #include directories
     DepsSearchStart(target);
