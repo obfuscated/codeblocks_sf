@@ -10,6 +10,7 @@
 #include <sdk.h>
 #include <prep.h>
 #include "compilerIAR.h"
+#include <wx/dir.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>
