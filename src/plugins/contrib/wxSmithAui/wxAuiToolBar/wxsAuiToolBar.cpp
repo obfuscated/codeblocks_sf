@@ -303,11 +303,22 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                             ItemKind = _T("wxITEM_NORMAL");
                             break;
                         }
+                        case wxITEM_RADIO:
+                        {
+                            ItemKind = _T("wxITEM_RADIO");
+                            break;
+                        }
                         case wxITEM_CHECK:
                         {
                             ItemKind = _T("wxITEM_CHECK");
                             break;
                         }
+                        case wxITEM_SEPARATOR:
+                        {
+                            ItemKind = _T("wxITEM_SEPARATOR");
+                            break;
+                        }
+                        case wxITEM_MAX: // fall-through
                         default:
                         {
                             break;

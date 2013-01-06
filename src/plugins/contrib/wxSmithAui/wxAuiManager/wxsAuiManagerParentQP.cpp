@@ -18,6 +18,8 @@
 
 #include "wxsAuiManagerParentQP.h"
 
+#include <prep.h>
+
 //(*InternalHeaders(wxsAuiManagerParentQP)
 #include <wx/string.h>
 #include <wx/intl.h>
@@ -66,7 +68,7 @@ BEGIN_EVENT_TABLE(wxsAuiManagerParentQP,wxsAdvQPPChild)
     //*)
 END_EVENT_TABLE()
 
-wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent,wxsAuiPaneInfoExtra* Extra, wxWindowID id):
+wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoExtra* Extra, cb_unused wxWindowID id):
     wxsAdvQPPChild(parent,_("AuiManager")),
     m_Extra(Extra)
 {
@@ -345,6 +347,10 @@ void wxsAuiManagerParentQP::ReadData()
 
         case wxTOP:
             Gripper->SetSelection(2);
+            break;
+
+        default:
+            break;
     }
 
     //{Dock
@@ -422,7 +428,7 @@ void wxsAuiManagerParentQP::Update()
     ReadData();
 }
 
-void wxsAuiManagerParentQP::OnDockChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnDockChange(cb_unused wxCommandEvent& event)
 {
     if ( !GetPropertyContainer() || !m_Extra ) return;
 
@@ -432,7 +438,7 @@ void wxsAuiManagerParentQP::OnDockChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnDockDirectionChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnDockDirectionChange(cb_unused wxCommandEvent& event)
 {
     if ( !GetPropertyContainer() || !m_Extra ) return;
 
@@ -488,7 +494,7 @@ void wxsAuiManagerParentQP::OnDockDirectionChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnDockSiteChange(wxSpinEvent& event)
+void wxsAuiManagerParentQP::OnDockSiteChange(cb_unused wxSpinEvent& event)
 {
     if ( !GetPropertyContainer() || !m_Extra ) return;
 
@@ -499,7 +505,7 @@ void wxsAuiManagerParentQP::OnDockSiteChange(wxSpinEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnNameChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnNameChange(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -507,7 +513,7 @@ void wxsAuiManagerParentQP::OnNameChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnCaptionChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnCaptionChange(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -515,7 +521,7 @@ void wxsAuiManagerParentQP::OnCaptionChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnCaptionButtonClick(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnCaptionButtonClick(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -527,7 +533,7 @@ void wxsAuiManagerParentQP::OnCaptionButtonClick(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnDockableChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnDockableChange(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -549,28 +555,29 @@ void wxsAuiManagerParentQP::OnDockableChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnGripperSelect(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnGripperSelect(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
     switch ( Gripper->GetSelection() )
     {
-        case 0:
-            m_Extra->m_Gripper = 0;
-            break;
-
         case 1:
             m_Extra->m_Gripper = wxLEFT;
             break;
 
         case 2:
             m_Extra->m_Gripper = wxTOP;
+
+        case 0: // fall-though
+        default:
+            m_Extra->m_Gripper = 0;
+            break;
     }
 
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnGeneralChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnGeneralChange(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -584,7 +591,7 @@ void wxsAuiManagerParentQP::OnGeneralChange(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnCaptionVisibleClick(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnCaptionVisibleClick(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -593,7 +600,7 @@ void wxsAuiManagerParentQP::OnCaptionVisibleClick(wxCommandEvent& event)
     NotifyChange();
 }
 
-void wxsAuiManagerParentQP::OnStandardPaneChange(wxCommandEvent& event)
+void wxsAuiManagerParentQP::OnStandardPaneChange(cb_unused wxCommandEvent& event)
 {
     if ( !m_Extra ) return;
 
@@ -640,6 +647,9 @@ void wxsAuiManagerParentQP::OnStandardPaneChange(wxCommandEvent& event)
             m_Extra->m_CloseButton    = true;
             m_Extra->m_Gripper        = wxLEFT;
             if ( m_Extra->m_Layer == 0 ) m_Extra->m_Layer = 10;
+
+        default:
+            break;
     }
 
     NotifyChange();

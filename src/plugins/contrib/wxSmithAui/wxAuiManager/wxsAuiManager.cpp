@@ -215,6 +215,10 @@ void wxsAuiPaneInfoExtra::OnPropertyChanged()
 
             case wxAUI_DOCK_CENTER:
                 m_DockableFlags |= wxsAuiDockableProperty::Dockable;
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -262,6 +266,10 @@ void wxsAuiPaneInfoExtra::OnPropertyChanged()
                 m_CloseButton    = true;
                 m_Gripper        = wxLEFT;
                 if ( m_Layer == 0 ) m_Layer = 10;
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -282,16 +290,17 @@ wxString wxsAuiPaneInfoExtra::AllParamsCode(wxsCoderContext* Ctx,wxsItem* ChildP
             //Standard pane type
             switch ( m_StandardPane )
             {
-                case DefaultPane:
-                    str << _T(".DefaultPane()");
-                    break;
-
                 case CenterPane:
                     str << _T(".CenterPane()");
                     break;
 
                 case ToolbarPane:
                     str << _T(".ToolbarPane()");
+
+                case DefaultPane: // fall-though
+                default:
+                    str << _T(".DefaultPane()");
+                    break;
             }
 
             //Caption and caption bar buttons
@@ -379,16 +388,17 @@ wxAuiPaneInfo wxsAuiPaneInfoExtra::GetPaneInfoFlags(wxWindow* Parent,wxsItem* Ch
     //Standard pane type
     switch ( m_StandardPane )
     {
-        case DefaultPane:
-            PaneInfo.DefaultPane();
-            break;
-
         case CenterPane:
             PaneInfo.CenterPane();
             break;
 
         case ToolbarPane:
             PaneInfo.ToolbarPane();
+
+        case DefaultPane: // fall-though
+        default:
+            PaneInfo.DefaultPane();
+            break;
     }
 
     //Caption and caption bar buttons
