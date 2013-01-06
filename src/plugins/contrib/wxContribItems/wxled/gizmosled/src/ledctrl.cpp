@@ -374,7 +374,8 @@ void wxLEDNumberCtrl::RecalcInternals(const wxSize &CurrentSize)
         case wxLED_ALIGN_RIGHT :
             m_LeftStartPos = ClientWidth - ValueWidth - m_LineMargin;
             break;
-        case wxLED_ALIGN_CENTER :
+        case wxLED_ALIGN_CENTER : // fall-through
+        case wxLED_ALIGN_MASK :
             m_LeftStartPos = (ClientWidth - ValueWidth) / 2;
             break;
         default :
