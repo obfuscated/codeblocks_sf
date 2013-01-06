@@ -1151,6 +1151,8 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
     else if (node->GetAttribute(wxT("exec"), &test))
     {
         wxArrayString cmd = GetArrayFromString(test, wxT(" "));
+        if (cmd.IsEmpty())
+            return false;
         wxString path;
         wxGetEnv(wxT("PATH"), &path);
         const wxString origPath = path;
@@ -1171,19 +1173,20 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         }
         wxSetEnv(wxT("PATH"), path);
         cmd[0] = GetExecName(cmd[0]);
-        if (node->GetAttribute(wxT("regex"), &test))
+
+        long ret = -1;
+        if ( !cmd[0].IsEmpty() ) // should never be empty
         {
-            long ret;
-            {
-                wxLogNull logNo;
-                ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd);
-            }
+            wxLogNull logNo; // do not warn if execution fails
+            ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd);
+        }
+
+        if (ret != 0) // execution failed
+            val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
+        else if (node->GetAttribute(wxT("regex"), &test))
+        {
             wxRegEx re;
-            if (ret != 0)
-            {
-                val = (node->GetAttribute(wxT("default"), wxEmptyString) == wxT("true"));
-            }
-            else if (re.Compile(test))
+            if (re.Compile(test))
             {
                 for (size_t i = 0; i < cmd.GetCount(); ++i)
                 {
@@ -1195,20 +1198,17 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
                 }
             }
         }
-        else
-        {
-            wxLogNull logNo;
-            long ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false));
-            val = (ret != 0);
-        }
-        wxSetEnv(wxT("PATH"), origPath);
+        else // execution succeeded (and no regex test given)
+            val = true;
+
+        wxSetEnv(wxT("PATH"), origPath); // restore path
     }
     return val;
 }
 
 wxString Compiler::GetExecName(const wxString& name)
 {
-    wxString ret;
+    wxString ret = name;
     if (name == wxT("C"))
         ret = m_Programs.C;
     else if (name == wxT("CPP"))
