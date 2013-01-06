@@ -2865,13 +2865,14 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
             EditorBase* other = GetEditor(i);
             if (!other)
                 continue;
+            const wxString name = (other->GetModified() ? wxT("*") : wxEmptyString) + other->GetShortName();
             if (other == current)
             {
-                pop->AppendCheckItem(wxID_ANY, other->GetShortName()); // do nothing if the current tab is selected
+                pop->AppendCheckItem(wxID_ANY, name); // do nothing if the current tab is selected
                 pop->FindItemByPosition(pop->GetMenuItemCount() - 1)->Check(); // and mark it as active
             }
             else
-                pop->Append(idNBSwitchFile1 + i, other->GetShortName());
+                pop->Append(idNBSwitchFile1 + i, name);
         }
         m_pNotebook->PopupMenu(pop);
         delete pop;
