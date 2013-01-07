@@ -87,11 +87,13 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Option projectIncludeDirsRelation="2" />
 				<Compiler>
+					<Add option="-Iwxled/gizmosled/include" />
 					<Add directory="wxled/ledpanel/include" />
 					<Add directory="wxled/lcdWindow/include" />
 					<Add directory="wxled/led/include" />
-					<Add directory="wxled/gizmosled/include" />
 				</Compiler>
 			</Target>
 			<Environment>
