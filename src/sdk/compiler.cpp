@@ -21,12 +21,13 @@
 
     #include <wx/intl.h>
     #include <wx/regex.h>
-    #include <wx/xml/xml.h>
 #endif
 
 #include "compilercommandgenerator.h"
 #include <wx/arrimpl.cpp>
 #include <wx/filefn.h>
+#include <wx/xml/xml.h>
+
 WX_DEFINE_OBJARRAY(RegExArray);
 
 // static

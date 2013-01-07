@@ -12,6 +12,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
+#include <wx/control.h>
+
 const int kwxEVT_ANGREG_FIRST = wxEVT_FIRST + 5402;
 
 const wxEventType kwxEVT_ANGREG_CHANGE	= kwxEVT_ANGREG_FIRST + 1;

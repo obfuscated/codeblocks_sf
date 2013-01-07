@@ -38,6 +38,7 @@
 #include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
+#include <wx/xml/xml.h>
 
 #include "advancedcompileroptionsdlg.h"
 #include "annoyingdialog.h"

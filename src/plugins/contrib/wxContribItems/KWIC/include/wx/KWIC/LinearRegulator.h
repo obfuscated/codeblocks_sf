@@ -12,6 +12,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
+#include <wx/control.h>
+
 const int kwxEVT_LINEARREG_FIRST = wxEVT_FIRST + 5401;
 
 const wxEventType kwxEVT_LINEARREG_CHANGE	= kwxEVT_LINEARREG_FIRST + 1;
