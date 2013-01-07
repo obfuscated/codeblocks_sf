@@ -2,7 +2,12 @@ INCLUDES = $(WX_CXXFLAGS) \
 		$(CB_GAMIN_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/include/mozilla_chardet
+		-I$(top_srcdir)/src/include/mozilla_chardet \
+		-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
+		-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
+		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
+		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
+		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
 
 CXXFLAGS = @CXXFLAGS@ -D__FAM__
 

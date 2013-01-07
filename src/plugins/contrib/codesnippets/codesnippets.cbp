@@ -65,6 +65,11 @@
 			<Add directory="." />
 			<Add directory="..\..\..\include\tinyxml" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
+			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />
+			<Add directory="..\..\..\include\mozilla_chardet\nsprpub\pr\include" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />

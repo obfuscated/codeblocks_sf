@@ -6,7 +6,12 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/include/scripting/include \
 			-I$(top_srcdir)/src/include/scripting/sqplus \
-			-I$(top_srcdir)/src/include/mozilla_chardet
+ 			-I$(top_srcdir)/src/include/mozilla_chardet \
+ 			-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
+ 			-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
+ 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
+ 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
+ 			-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
 
 if GTK_NOTEBOOK
 GTK_NOTEBOOK_FLAGS = -DUSE_GTK_NOTEBOOK

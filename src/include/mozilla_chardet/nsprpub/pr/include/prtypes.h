@@ -1,46 +1,14 @@
 /* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is the Netscape Portable Runtime (NSPR).
- *
- * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998-2000
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /*
 ** File:                prtypes.h
 ** Description: Definitions of NSPR's basic types
 **
-** Prototypes and macros used to make up for deficiencies in ANSI environments
-** that we have found.
+** Prototypes and macros used to make up for deficiencies that we have found
+** in ANSI environments.
 **
 ** Since we do not wrap <stdlib.h> and all the other standard headers, authors
 ** of portable code will not know in general that they need these definitions.
@@ -112,81 +80,62 @@
 #define PR_CALLBACK_DECL
 #define PR_STATIC_CALLBACK(__x) static __x
 
-#elif defined(WIN16)
+#elif defined(XP_OS2) && defined(__declspec)
 
-#define PR_CALLBACK_DECL        __cdecl
+#define PR_EXPORT(__type) extern __declspec(dllexport) __type
+#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+#define PR_IMPORT(__type) extern  __declspec(dllimport) __type
+#define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
 
-#if defined(_WINDLL)
-#define PR_EXPORT(__type) extern __type _cdecl _export _loadds
-#define PR_IMPORT(__type) extern __type _cdecl _export _loadds
-#define PR_EXPORT_DATA(__type) extern __type _export
-#define PR_IMPORT_DATA(__type) extern __type _export
-
-#define PR_EXTERN(__type) extern __type _cdecl _export _loadds
-#define PR_IMPLEMENT(__type) __type _cdecl _export _loadds
-#define PR_EXTERN_DATA(__type) extern __type _export
-#define PR_IMPLEMENT_DATA(__type) __type _export
-
-#define PR_CALLBACK             __cdecl __loadds
-#define PR_STATIC_CALLBACK(__x) static __x PR_CALLBACK
-
-#else /* this must be .EXE */
-#define PR_EXPORT(__type) extern __type _cdecl _export
-#define PR_IMPORT(__type) extern __type _cdecl _export
-#define PR_EXPORT_DATA(__type) extern __type _export
-#define PR_IMPORT_DATA(__type) extern __type _export
-
-#define PR_EXTERN(__type) extern __type _cdecl _export
-#define PR_IMPLEMENT(__type) __type _cdecl _export
-#define PR_EXTERN_DATA(__type) extern __type _export
-#define PR_IMPLEMENT_DATA(__type) __type _export
-
-#define PR_CALLBACK             __cdecl __loadds
-#define PR_STATIC_CALLBACK(__x) __x PR_CALLBACK
-#endif /* _WINDLL */
-
-#elif defined(XP_MAC)
-
-#define PR_EXPORT(__type) extern __declspec(export) __type
-#define PR_EXPORT_DATA(__type) extern __declspec(export) __type
-#define PR_IMPORT(__type) extern __declspec(export) __type
-#define PR_IMPORT_DATA(__type) extern __declspec(export) __type
-
-#define PR_EXTERN(__type) extern __declspec(export) __type
-#define PR_IMPLEMENT(__type) __declspec(export) __type
-#define PR_EXTERN_DATA(__type) extern __declspec(export) __type
-#define PR_IMPLEMENT_DATA(__type) __declspec(export) __type
+#define PR_EXTERN(__type) extern __declspec(dllexport) __type
+#define PR_IMPLEMENT(__type) __declspec(dllexport) __type
+#define PR_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+#define PR_IMPLEMENT_DATA(__type) __declspec(dllexport) __type
 
 #define PR_CALLBACK
 #define PR_CALLBACK_DECL
 #define PR_STATIC_CALLBACK(__x) static __x
 
-#elif defined(XP_OS2_VACPP)
+#elif defined(SYMBIAN)
 
-#define PR_EXPORT(__type) extern __type
-#define PR_EXPORT_DATA(__type) extern __type
-#define PR_IMPORT(__type) extern __type
-#define PR_IMPORT_DATA(__type) extern __type
+#define PR_EXPORT(__type) extern __declspec(dllexport) __type
+#define PR_EXPORT_DATA(__type) extern __declspec(dllexport) __type
+#ifdef __WINS__
+#define PR_IMPORT(__type) extern __declspec(dllexport) __type
+#define PR_IMPORT_DATA(__type) extern __declspec(dllexport) __type
+#else
+#define PR_IMPORT(__type) extern __declspec(dllimport) __type
+#define PR_IMPORT_DATA(__type) extern __declspec(dllimport) __type
+#endif
 
 #define PR_EXTERN(__type) extern __type
 #define PR_IMPLEMENT(__type) __type
 #define PR_EXTERN_DATA(__type) extern __type
 #define PR_IMPLEMENT_DATA(__type) __type
-#define PR_CALLBACK _Optlink
+
+#define PR_CALLBACK
 #define PR_CALLBACK_DECL
-#define PR_STATIC_CALLBACK(__x) static __x PR_CALLBACK
+#define PR_STATIC_CALLBACK(__x) static __x
 
 #else /* Unix */
 
-#define PR_EXPORT(__type) extern __type
-#define PR_EXPORT_DATA(__type) extern __type
-#define PR_IMPORT(__type) extern __type
-#define PR_IMPORT_DATA(__type) extern __type
+/* GCC 3.3 and later support the visibility attribute. */
+#if (__GNUC__ >= 4) || \
+    (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
+#define PR_VISIBILITY_DEFAULT __attribute__((visibility("default")))
+#else
+#define PR_VISIBILITY_DEFAULT
+#endif
 
-#define PR_EXTERN(__type) extern __type
-#define PR_IMPLEMENT(__type) __type
-#define PR_EXTERN_DATA(__type) extern __type
-#define PR_IMPLEMENT_DATA(__type) __type
+#define PR_EXPORT(__type) extern PR_VISIBILITY_DEFAULT __type
+#define PR_EXPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+#define PR_IMPORT(__type) extern PR_VISIBILITY_DEFAULT __type
+#define PR_IMPORT_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+
+#define PR_EXTERN(__type) extern PR_VISIBILITY_DEFAULT __type
+#define PR_IMPLEMENT(__type) PR_VISIBILITY_DEFAULT __type
+#define PR_EXTERN_DATA(__type) extern PR_VISIBILITY_DEFAULT __type
+#define PR_IMPLEMENT_DATA(__type) PR_VISIBILITY_DEFAULT __type
 #define PR_CALLBACK
 #define PR_CALLBACK_DECL
 #define PR_STATIC_CALLBACK(__x) static __x
@@ -247,7 +196,44 @@
 #define PR_MAX(x,y)     ((x)>(y)?(x):(y))
 #define PR_ABS(x)       ((x)<0?-(x):(x))
 
+/***********************************************************************
+** MACROS:      PR_ARRAY_SIZE
+** DESCRIPTION:
+**  The number of elements in an array.
+***********************************************************************/
+#define PR_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
+
 PR_BEGIN_EXTERN_C
+
+/*
+** Starting in NSPR 4.9.5, NSPR's exact-width integer types should match
+** the exact-width integer types defined in <stdint.h>. This allows sloppy
+** code to use PRInt{N} and int{N}_t interchangeably.
+**
+** The 8-bit and 16-bit integer types can only be defined using char and
+** short. All platforms define the 32-bit integer types using int. So only
+** the 64-bit integer types could be defined differently.
+**
+** NSPR's original strategy was to use the "shortest" 64-bit integer type:
+** if long is 64-bit, then prefer it over long long. This strategy is also
+** used by Linux/glibc, FreeBSD, and NetBSD.
+**
+** Other platforms use a different strategy: simply define the 64-bit
+** integer types using long long. We define the PR_ALTERNATE_INT64_TYPEDEF
+** macro on these platforms. Note that PR_ALTERNATE_INT64_TYPEDEF is for
+** internal use by NSPR headers only. Do not define or test this macro in
+** your code.
+**
+** NOTE: NSPR can't use <stdint.h> because C99 requires C++ code to define
+** __STDC_LIMIT_MACROS and __STDC_CONSTANT_MACROS to make all the macros
+** defined in <stdint.h> available. This strange requirement is gone in
+** C11. When most platforms ignore this C99 requirement, NSPR will be able
+** to use <stdint.h>. A patch to do that is in NSPR bug 634793.
+*/
+
+#if defined(__APPLE__) || defined(__ANDROID__) || defined(__OpenBSD__)
+#define PR_ALTERNATE_INT64_TYPEDEF
+#endif
 
 /************************************************************************
 ** TYPES:       PRUint8
@@ -355,21 +341,46 @@ typedef long PRInt32;
 **      architectures and even different compilers have varying support for
 **      64 bit values. The only guaranteed portability requires the use of
 **      the LL_ macros (see prlong.h).
+**
+** MACROS:      PR_INT64
+**              PR_UINT64
+** DESCRIPTION:
+**  The PR_INT64 and PR_UINT64 macros provide a portable way for
+**      specifying 64-bit integer constants. They can only be used if
+**      PRInt64 and PRUint64 are defined as compiler-supported 64-bit
+**      integer types (i.e., if HAVE_LONG_LONG is defined, which is true
+**      for all the supported compilers topday). If PRInt64 and PRUint64
+**      are defined as structs, the LL_INIT macro defined in prlong.h has
+**      to be used.
+**
+** MACROS:      PR_INT64_MAX
+**              PR_INT64_MIN
+**              PR_UINT64_MAX
+** DESCRIPTION:
+**  The maximum and minimum values of a PRInt64 or PRUint64.
 ************************************************************************/
 #ifdef HAVE_LONG_LONG
-#if PR_BYTES_PER_LONG == 8
+/* Keep this in sync with prlong.h. */
+#if PR_BYTES_PER_LONG == 8 && !defined(PR_ALTERNATE_INT64_TYPEDEF)
 typedef long PRInt64;
 typedef unsigned long PRUint64;
-#elif defined(WIN16)
-typedef __int64 PRInt64;
-typedef unsigned __int64 PRUint64;
+#define PR_INT64(x)  x ## L
+#define PR_UINT64(x) x ## UL
 #elif defined(WIN32) && !defined(__GNUC__)
 typedef __int64  PRInt64;
 typedef unsigned __int64 PRUint64;
+#define PR_INT64(x)  x ## i64
+#define PR_UINT64(x) x ## ui64
 #else
 typedef long long PRInt64;
 typedef unsigned long long PRUint64;
+#define PR_INT64(x)  x ## LL
+#define PR_UINT64(x) x ## ULL
 #endif /* PR_BYTES_PER_LONG == 8 */
+
+#define PR_INT64_MAX PR_INT64(0x7fffffffffffffff)
+#define PR_INT64_MIN (-PR_INT64_MAX - 1)
+#define PR_UINT64_MAX PR_UINT64(-1)
 #else  /* !HAVE_LONG_LONG */
 typedef struct {
 #ifdef IS_LITTLE_ENDIAN
@@ -379,6 +390,11 @@ typedef struct {
 #endif
 } PRInt64;
 typedef PRInt64 PRUint64;
+
+#define PR_INT64_MAX (PRInt64){0x7fffffff, 0xffffffff}
+#define PR_INT64_MIN (PRInt64){0xffffffff, 0xffffffff}
+#define PR_UINT64_MAX (PRUint64){0xffffffff, 0xffffffff}
+
 #endif /* !HAVE_LONG_LONG */
 
 /************************************************************************
@@ -424,7 +440,7 @@ typedef PRInt64 PROffset64;
 ** TYPES:       PRPtrDiff
 ** DESCRIPTION:
 **  A type for pointer difference. Variables of this type are suitable
-**      for storing a pointer or pointer sutraction.
+**      for storing a pointer or pointer subtraction.
 ************************************************************************/
 typedef ptrdiff_t PRPtrdiff;
 
@@ -434,7 +450,11 @@ typedef ptrdiff_t PRPtrdiff;
 **  A type for pointer difference. Variables of this type are suitable
 **      for storing a pointer or pointer sutraction.
 ************************************************************************/
+#ifdef _WIN64
+typedef PRUint64 PRUptrdiff;
+#else
 typedef unsigned long PRUptrdiff;
+#endif
 
 /************************************************************************
 ** TYPES:       PRBool
@@ -442,7 +462,7 @@ typedef unsigned long PRUptrdiff;
 **  Use PRBool for variables and parameter types. Use PR_FALSE and PR_TRUE
 **      for clarity of target type in assignments and actual arguments. Use
 **      'if (bool)', 'while (!bool)', '(bool) ? x : y' etc., to test booleans
-**      juast as you would C int-valued conditions.
+**      just as you would C int-valued conditions.
 ************************************************************************/
 typedef PRIntn PRBool;
 #define PR_TRUE 1
@@ -451,7 +471,7 @@ typedef PRIntn PRBool;
 /************************************************************************
 ** TYPES:       PRPackedBool
 ** DESCRIPTION:
-**  Use PRPackedBOol within structs where bitfields are not desireable
+**  Use PRPackedBool within structs where bitfields are not desirable
 **      but minimum and consistant overhead matters.
 ************************************************************************/
 typedef PRUint8 PRPackedBool;
@@ -462,19 +482,14 @@ typedef PRUint8 PRPackedBool;
 */
 typedef enum { PR_FAILURE = -1, PR_SUCCESS = 0 } PRStatus;
 
-#ifdef MOZ_UNICODE
-/*
- * EXPERIMENTAL: This type may be removed in a future release.
- */
 #ifndef __PRUNICHAR__
 #define __PRUNICHAR__
-#if defined(WIN32) || defined(XP_MAC)
+#ifdef WIN32
 typedef wchar_t PRUnichar;
 #else
 typedef PRUint16 PRUnichar;
 #endif
 #endif
-#endif /* MOZ_UNICODE */
 
 /*
 ** WARNING: The undocumented data types PRWord and PRUword are
@@ -487,8 +502,13 @@ typedef PRUint16 PRUnichar;
 ** Specification, Addison-Wesley, September 1996.
 ** http://java.sun.com/docs/books/vmspec/index.html.)
 */
+#ifdef _WIN64
+typedef PRInt64 PRWord;
+typedef PRUint64 PRUword;
+#else
 typedef long PRWord;
 typedef unsigned long PRUword;
+#endif
 
 #if defined(NO_NSPR_10_SUPPORT)
 #else
@@ -526,14 +546,18 @@ typedef unsigned long PRUword;
 #define NSPR_END_EXTERN_C
 #endif
 
-//#ifdef XP_MAC
-//#include "protypes.h"
-//#else
 //#include "obsolete/protypes.h"
-//#endif
 
 /********* ????????????? End Fix me ?????????????????????????????? *****/
 #endif /* NO_NSPR_10_SUPPORT */
+
+/*
+** Compile-time assert. "condition" must be a constant expression.
+** The macro can be used only in places where an "extern" declaration is
+** allowed.
+*/
+#define PR_STATIC_ASSERT(condition) \
+    extern void pr_static_assert(int arg[(condition) ? 1 : -1])
 
 PR_END_EXTERN_C
 

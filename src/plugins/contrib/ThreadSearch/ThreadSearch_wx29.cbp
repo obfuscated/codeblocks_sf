@@ -53,6 +53,11 @@
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
+			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />
+			<Add directory="..\..\..\include\mozilla_chardet\nsprpub\pr\include" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
 			<Add directory="$(#WX29.include)" />
 			<Add directory="$(#WX29.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\wxContribItems\wxthings\include" />

@@ -688,6 +688,27 @@
 		<Unit filename="include/mozilla_chardet/JpCntx.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Assertions.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/NullPtr.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/StandardInteger.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Util.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/mozilla_chardet/nsBig5Prober.h">
 			<Option target="sdk" />
 		</Unit>
@@ -704,9 +725,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsEUCTWProber.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/mozilla_chardet/nsError.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsEscCharsetProber.h">
@@ -742,16 +760,40 @@
 		<Unit filename="include/mozilla_chardet/nsUniversalDetector.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nscore.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/prcpucfg.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/prmem.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_mac.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/prtypes.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_openbsd.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prmem.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prtypes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/xpcom/base/ErrorList.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/xpcom/base/nsError.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/xpcom/base/nscore.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/xpcom/glue/nsDebug.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/xpcom/glue/nsMemory.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/multiselectdlg.h">
