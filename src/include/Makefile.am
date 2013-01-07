@@ -139,8 +139,6 @@ ALLHEADERS = annoyingdialog.h \
 				mozilla_chardet/nsBig5Prober.h \
 				mozilla_chardet/nsCharSetProber.h \
 				mozilla_chardet/nsCodingStateMachine.h \
-				mozilla_chardet/nscore.h \
-				mozilla_chardet/nsError.h \
 				mozilla_chardet/nsEscCharsetProber.h \
 				mozilla_chardet/nsEUCJPProber.h \
 				mozilla_chardet/nsEUCKRProber.h \
@@ -155,9 +153,26 @@ ALLHEADERS = annoyingdialog.h \
 				mozilla_chardet/nsSJISProber.h \
 				mozilla_chardet/nsUniversalDetector.h \
 				mozilla_chardet/nsUTF8Prober.h \
-				mozilla_chardet/prcpucfg.h \
-				mozilla_chardet/prmem.h \
-				mozilla_chardet/prtypes.h
+				mozilla_chardet/mfbt/mozilla/Assertions.h \
+				mozilla_chardet/mfbt/mozilla/Attributes.h \
+				mozilla_chardet/mfbt/mozilla/Likely.h \
+				mozilla_chardet/mfbt/mozilla/NullPtr.h \
+				mozilla_chardet/mfbt/mozilla/StandardInteger.h \
+				mozilla_chardet/mfbt/mozilla/Types.h \
+				mozilla_chardet/mfbt/mozilla/Util.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg_darwin.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg_openbsd.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg_win95.h \
+				mozilla_chardet/nsprpub/pr/include/prcpucfg_winnt.h \
+				mozilla_chardet/nsprpub/pr/include/prmem.h \
+				mozilla_chardet/nsprpub/pr/include/prtypes.h \
+				mozilla_chardet/xpcom/base/ErrorList.h \
+				mozilla_chardet/xpcom/base/nscore.h \
+				mozilla_chardet/xpcom/base/nsError.h \
+				mozilla_chardet/xpcom/glue/nsDebug.h \
+				mozilla_chardet/xpcom/glue/nsMemory.h
 
 
 sdk_HEADERS = $(ALLHEADERS)

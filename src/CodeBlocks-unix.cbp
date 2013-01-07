@@ -138,6 +138,10 @@
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="include/mozilla_chardet/mfbt" />
+					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
+					<Add directory="include/mozilla_chardet/xpcom/base" />
+					<Add directory="include/mozilla_chardet/xpcom/glue" />
 					<Add directory="sdk/wxpropgrid/include" />
 				</Compiler>
 				<Linker>
@@ -284,6 +288,10 @@
 				<Compiler>
 					<Add directory="include" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="include/mozilla_chardet/mfbt" />
+					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
+					<Add directory="include/mozilla_chardet/xpcom/base" />
+					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -345,6 +353,10 @@
 				<Compiler>
 					<Add directory="include" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="include/mozilla_chardet/mfbt" />
+					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
+					<Add directory="include/mozilla_chardet/xpcom/base" />
+					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -378,6 +390,10 @@
 				<Compiler>
 					<Add directory="include" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="include/mozilla_chardet/mfbt" />
+					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
+					<Add directory="include/mozilla_chardet/xpcom/base" />
+					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
