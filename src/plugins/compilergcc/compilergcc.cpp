@@ -3691,8 +3691,8 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             if ( !IsProcessRunning() )
             {
                 msg = wxString::Format(_("%s (%s)"), GetErrWarnStr().wx_str(), GetMinSecStr().wx_str());
-                bool success = (m_LastExitCode >= 0) && (m_LastExitCode <= compiler->GetSwitches().statusSuccess);
-                LogMessage(msg, success ? cltWarning : cltError, ltAll, success != 0);
+                success = (m_LastExitCode >= 0) && (m_LastExitCode <= compiler->GetSwitches().statusSuccess);
+                LogMessage(msg, success ? cltWarning : cltError, ltAll, !success);
                 LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
                                   wxString::Format(_("=== Build %s: %s ==="),
                                                    wxString(m_LastExitCode == 0 ? _("finished") : _("failed")).wx_str(), msg.wx_str()));
