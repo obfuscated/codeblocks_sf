@@ -1891,8 +1891,8 @@ void MainFrame::DoUpdateStatusBar()
         switch (ed->GetControl()->GetEOLMode())
         {
             case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
-            case wxSCI_EOL_CR:   msg = _T("Unix (CR)");       break;
-            case wxSCI_EOL_LF:   msg = _T("Mac (LF)");        break;
+            case wxSCI_EOL_CR:   msg = _T("Mac (CR)");        break;
+            case wxSCI_EOL_LF:   msg = _T("Unix (LF)");       break;
             default:                                          break;
         }
         SetStatusText(msg, panel++);

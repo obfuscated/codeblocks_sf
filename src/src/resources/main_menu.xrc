@@ -262,12 +262,12 @@
           <radio>1</radio>
         </object>
         <object class="wxMenuItem" name="idEditEOLCR">
-          <label>Unix (CR)</label>
+          <label>Mac (CR)</label>
           <help>End-of-line mode uses carriage return only</help>
           <radio>1</radio>
         </object>
         <object class="wxMenuItem" name="idEditEOLLF">
-          <label>Mac (LF)</label>
+          <label>Unix (LF)</label>
           <help>End-of-line mode uses line feed only</help>
           <radio>1</radio>
         </object>
