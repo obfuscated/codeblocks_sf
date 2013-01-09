@@ -164,8 +164,6 @@ int idFileCloseAllProjects              = XRCID("idFileCloseAllProjects");
 int idFilePrintSetup                    = XRCID("idFilePrintSetup");
 int idFilePrint                         = XRCID("idFilePrint");
 int idFileExit                          = XRCID("idFileExit");
-int idFileNext                          = wxNewId();
-int idFilePrev                          = wxNewId();
 
 int idEditUndo                    = XRCID("idEditUndo");
 int idEditRedo                    = XRCID("idEditRedo");
@@ -282,6 +280,9 @@ int idHelpPlugins = XRCID("idHelpPlugins");
 int idLeftSash              = XRCID("idLeftSash");
 int idBottomSash            = XRCID("idBottomSash");
 int idCloseFullScreen       = XRCID("idCloseFullScreen");
+
+int idFileNext              = wxNewId();
+int idFilePrev              = wxNewId();
 int idShiftTab              = wxNewId();
 int idCtrlAltTab            = wxNewId();
 int idStartHerePageLink     = wxNewId();
