@@ -3299,7 +3299,14 @@ void MainFrame::OnEditLineMove(wxCommandEvent& event)
         return;
 
     int startPos = ctrl->PositionFromLine(ctrl->LineFromPosition(ctrl->GetSelectionStart()));
-    int endPos   = ctrl->PositionFromLine(ctrl->LineFromPosition(ctrl->GetSelectionEnd()) + 1) - 1;
+    int endPos   = ctrl->LineFromPosition(ctrl->GetSelectionEnd()); // is line
+    if (   ctrl->GetSelectionEnd() == ctrl->PositionFromLine(endPos)          // end is in first column
+        && ctrl->PositionFromLine(endPos) != ctrl->GetLineEndPosition(endPos) // this line has text
+        && endPos > ctrl->LineFromPosition(startPos) )                        // start and end are on different lines
+    {
+        --endPos; // do not unexpectedly select another line
+    }
+    endPos = ctrl->GetLineEndPosition(endPos); // is position
     if (event.GetId() == idEditLineUp)
     {
         if (startPos < 2)
@@ -3326,8 +3333,7 @@ void MainFrame::OnEditLineMove(wxCommandEvent& event)
         endPos   += line.Length();
         ctrl->EndUndoAction();
     }
-    ctrl->SetSelectionStart(startPos);
-    ctrl->SetSelectionEnd(endPos);
+    ctrl->SetSelectionVoid(startPos, endPos);
 }
 
 void MainFrame::OnEditUpperCase(cb_unused wxCommandEvent& event)
