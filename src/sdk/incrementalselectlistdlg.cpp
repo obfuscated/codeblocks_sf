@@ -53,13 +53,13 @@ void myHandler::OnKeyDown(wxKeyEvent& event)
         case WXK_PAGEUP:
         case WXK_NUMPAD_PAGEUP:
             sel = m_pList->GetSelection() - 10;
-            m_pList->SetSelection( sel > m_pList->GetCount() ? 0 : sel );
+            m_pList->SetSelection(sel > m_pList->GetCount() ? 0 : sel);
             break;
 
         case WXK_PAGEDOWN:
         case WXK_NUMPAD_PAGEDOWN:
             sel = m_pList->GetSelection() + 10;
-            m_pList->SetSelection( sel >= m_pList->GetCount() ? m_pList->GetCount() - 1 : sel );
+            m_pList->SetSelection(sel >= m_pList->GetCount() ? m_pList->GetCount() - 1 : sel);
             break;
 
         case WXK_HOME:
