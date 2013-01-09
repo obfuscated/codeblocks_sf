@@ -40,31 +40,40 @@ void myHandler::OnKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_UP:
+        case WXK_NUMPAD_UP:
             sel = m_pList->GetSelection() - 1;
             m_pList->SetSelection(sel == (size_t) -1 ? 0 : sel);
             break;
 
         case WXK_DOWN:
+        case WXK_NUMPAD_DOWN:
             m_pList->SetSelection(m_pList->GetSelection() + 1);
             break;
 
         case WXK_PAGEUP:
+        case WXK_NUMPAD_PAGEUP:
             sel = m_pList->GetSelection() - 10;
             m_pList->SetSelection( sel > m_pList->GetCount() ? 0 : sel );
             break;
 
         case WXK_PAGEDOWN:
+        case WXK_NUMPAD_PAGEDOWN:
             sel = m_pList->GetSelection() + 10;
             m_pList->SetSelection( sel >= m_pList->GetCount() ? m_pList->GetCount() - 1 : sel );
             break;
 
         case WXK_HOME:
-            m_pList->SetSelection(0);
+            if (wxGetKeyState(WXK_CONTROL))
+                m_pList->SetSelection(0);
+            else
+                event.Skip();
             break;
 
         case WXK_END:
-            m_pList->SetSelection( m_pList->GetCount() - 1 );
-            event.Skip();
+            if (wxGetKeyState(WXK_CONTROL))
+                m_pList->SetSelection(m_pList->GetCount() - 1);
+            else
+                event.Skip();
             break;
 
         default:

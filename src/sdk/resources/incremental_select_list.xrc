@@ -14,7 +14,7 @@
       </object>
       <object class="sizeritem">
         <object class="wxTextCtrl" name="txtSearch">
-          <style>wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB|wxWANTS_CHARS</style>
+          <style>wxTE_PROCESS_ENTER|wxWANTS_CHARS</style>
           <focused>1</focused>
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
