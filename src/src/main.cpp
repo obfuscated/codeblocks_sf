@@ -3295,46 +3295,61 @@ void MainFrame::OnEditLineMove(wxCommandEvent& event)
         return;
 
     // TODO (mortenmacfly##): Exclude rectangle selection here or not? What behaviour the majority of users expect here???
-    cbStyledTextCtrl* ctrl = ed->GetControl();
-    if (!ctrl || /*ctrl->SelectionIsRectangle() ||*/ (ctrl->GetSelections() > 1))
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc || /*stc->SelectionIsRectangle() ||*/ (stc->GetSelections() > 1))
+        return;
+    if (stc->GetLineCount() < 3) // why are you trying to move lines anyways?
         return;
 
-    int startPos = ctrl->PositionFromLine(ctrl->LineFromPosition(ctrl->GetSelectionStart()));
-    int endPos   = ctrl->LineFromPosition(ctrl->GetSelectionEnd()); // is line
-    if (   ctrl->GetSelectionEnd() == ctrl->PositionFromLine(endPos)          // end is in first column
-        && ctrl->PositionFromLine(endPos) != ctrl->GetLineEndPosition(endPos) // this line has text
-        && endPos > ctrl->LineFromPosition(startPos) )                        // start and end are on different lines
+    // note that these function calls are a much simpler, however
+    // they cause text to unnecessarily be marked as modified
+//    if (event.GetId() == idEditLineUp)
+//        stc->MoveSelectedLinesUp();
+//    else
+//        stc->MoveSelectedLinesDown();
+
+    int startPos = stc->PositionFromLine(stc->LineFromPosition(stc->GetSelectionStart()));
+    int endPos   = stc->LineFromPosition(stc->GetSelectionEnd()); // is line
+    if (   stc->GetSelectionEnd() == stc->PositionFromLine(endPos)          // end is in first column
+        && stc->PositionFromLine(endPos) != stc->GetLineEndPosition(endPos) // this line has text
+        && endPos > stc->LineFromPosition(startPos) )                       // start and end are on different lines
     {
         --endPos; // do not unexpectedly select another line
     }
-    endPos = ctrl->GetLineEndPosition(endPos); // is position
+    endPos = stc->GetLineEndPosition(endPos); // is position
+    const bool isLastLine = (stc->LineFromPosition(endPos) == stc->GetLineCount() - 1);
     if (event.GetId() == idEditLineUp)
     {
-        if (startPos < 2)
-            return;
-        ctrl->BeginUndoAction();
-        wxString line = ctrl->GetTextRange(ctrl->PositionFromLine(ctrl->LineFromPosition(startPos) - 1),
-                                           startPos);
-        ctrl->InsertText(endPos + 1, line);
-        ctrl->DeleteRange(startPos - line.Length(), line.Length());
-        startPos -= line.Length();
-        endPos   -= line.Length();
-        ctrl->EndUndoAction();
+        if (stc->LineFromPosition(startPos) < 1)
+            return; // cannot move up (we are at the top), exit
+        stc->BeginUndoAction();
+        const int offset     = (isLastLine ? startPos - stc->GetLineEndPosition(stc->LineFromPosition(startPos) - 1) : 0);
+        const int lineLength = startPos - stc->PositionFromLine(stc->LineFromPosition(startPos) - 1);
+        const wxString line  = stc->GetTextRange(startPos - lineLength - offset,
+                                                 startPos - offset);
+        stc->InsertText(endPos + (isLastLine ? 0 : 1), line);
+        // warning: line.Length() != lineLength if multibyte characters are used
+        stc->DeleteRange(startPos - lineLength, lineLength);
+        startPos -= lineLength;
+        endPos   -= lineLength;
+        stc->EndUndoAction();
     }
-    else
+    else // event.GetId() == idEditLineDown
     {
-        if (ctrl->LineFromPosition(ctrl->GetSelectionEnd()) == ctrl->GetLineCount())
-            return;
-        ctrl->BeginUndoAction();
-        wxString line = ctrl->GetTextRange(endPos + 1,
-                                           ctrl->PositionFromLine(ctrl->LineFromPosition(endPos + 1) + 1));
-        ctrl->DeleteRange(endPos + 1, line.Length());
-        ctrl->InsertText(startPos, line);
-        startPos += line.Length();
-        endPos   += line.Length();
-        ctrl->EndUndoAction();
+        if (isLastLine)
+            return; // cannot move down (we are at the bottom), exit
+        stc->BeginUndoAction();
+        const int lineLength = stc->PositionFromLine(stc->LineFromPosition(endPos + 1) + 1) - endPos - 1;
+        const wxString line  = stc->GetTextRange(endPos + 1,
+                                                 endPos + 1 + lineLength);
+        stc->InsertText(startPos, line);
+        // warning: line.Length() != lineLength if multibyte characters are used
+        startPos += lineLength;
+        endPos   += lineLength;
+        stc->DeleteRange(endPos + 1, lineLength);
+        stc->EndUndoAction();
     }
-    ctrl->SetSelectionVoid(startPos, endPos);
+    stc->SetSelectionVoid(startPos, endPos);
 }
 
 void MainFrame::OnEditUpperCase(cb_unused wxCommandEvent& event)
