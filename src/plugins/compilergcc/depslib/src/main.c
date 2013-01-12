@@ -83,7 +83,6 @@ int main(void)
         "../../../sdk",
         "../../../../../../wxWindows-2.4.2/include",
         "../../../../../../wxWindows-2.4.2-build/lib/wx/include/mswd-2.4",
-        "../../../../../../wxWindows-2.4.2/contrib/include",
         "/usr/include",
         0
     };

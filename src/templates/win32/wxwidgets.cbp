@@ -27,7 +27,6 @@
 			<Add option="-DUSE_PCH" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw" />
-			<Add directory="$(#WX)\contrib\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

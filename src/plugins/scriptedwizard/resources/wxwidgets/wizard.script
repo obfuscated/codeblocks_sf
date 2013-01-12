@@ -726,7 +726,6 @@ function SetupProject(project)
             project.AddCompilerOption(_T("/Zc:auto"));
         }
 
-        project.AddIncludeDir(WxPath + _T("/contrib/include"));
         if (!IsDLL)
         {
             project.AddLinkLib(LibPrefix + _T("kernel32") + LibSuffix);

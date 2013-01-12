@@ -40,7 +40,6 @@
 			<Add option="-DEXPORT_LIB" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#wx)\include" />
-			<Add directory="$(#wx)\contrib\include" />
 			<Add directory="$(#wx)\lib\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="include" />
 		</Compiler>

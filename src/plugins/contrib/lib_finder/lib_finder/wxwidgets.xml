@@ -28,7 +28,6 @@
         </filters>
         <settings>
             <path include="$(BASE_DIR)/include"/>
-            <path include="$(BASE_DIR)/contrib/include"/>
             <!-- NOTE: This is needed inly to force compatibility with current usage of $(#wx.libs) variable -->
             <path lib="$(BASE_DIR)/lib"/>
             <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
