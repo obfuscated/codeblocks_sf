@@ -109,6 +109,9 @@ class Wiz : public cbWizardPlugin
         void SetTextControlValue(const wxString& name, const wxString& value);
         wxString GetTextControlValue(const wxString& name);
 
+        void SetSpinControlValue(const wxString& name, int value);
+        int GetSpinControlValue(const wxString& name);
+
         // project path page
         wxString GetProjectPath();
         wxString GetProjectName();

@@ -1,7 +1,7 @@
 /*
  */
 
-#include <mcs51/8051.h>
+#include <[SYSTEM_HDR]>
 
 void main(void)
 {

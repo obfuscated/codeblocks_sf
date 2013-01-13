@@ -16,6 +16,7 @@
 #include <wx/panel.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/spinctrl.h>
 #include <wx/wxscintilla.h>
 
 #include <globals.h>
@@ -1031,6 +1032,29 @@ wxString Wiz::GetTextControlValue(const wxString& name)
     return wxEmptyString;
 }
 
+void Wiz::SetSpinControlValue(const wxString& name, int value)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxSpinCtrl* win = dynamic_cast<wxSpinCtrl*>(page->FindWindowByName(name, page));
+        if (win)
+            win->SetValue(value);
+    }
+}
+
+int Wiz::GetSpinControlValue(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxSpinCtrl* win = dynamic_cast<wxSpinCtrl*>(page->FindWindowByName(name, page));
+        if (win)
+            return win->GetValue();
+    }
+    return -1;
+}
+
 void Wiz::AddInfoPage(const wxString& pageId, const wxString& intro_msg)
 {
     // we don't track this; can add more than one
@@ -1408,6 +1432,8 @@ void Wiz::RegisterWizard()
             func(&Wiz::EnableWindow, "EnableWindow").
             func(&Wiz::SetTextControlValue, "SetTextControlValue").
             func(&Wiz::GetTextControlValue, "GetTextControlValue").
+            func(&Wiz::SetSpinControlValue, "SetSpinControlValue").
+            func(&Wiz::GetSpinControlValue, "GetSpinControlValue").
             func(&Wiz::CheckCheckbox, "CheckCheckbox").
             func(&Wiz::IsCheckboxChecked, "IsCheckboxChecked").
             func(&Wiz::FillComboboxWithCompilers, "FillComboboxWithCompilers").

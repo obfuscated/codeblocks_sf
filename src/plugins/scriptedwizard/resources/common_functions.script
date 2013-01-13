@@ -59,6 +59,14 @@ function WarningsOn(base, compilerID)
         // with SDCC all warnings are enabled by default. You can only ask for less by using --less-pedantic or --disable-warning.
         // the (pseudo) compiler "No Compiler" takes no options
     }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
+    {
+        base.AddCompilerOption(_T("WARNINGLEVEL(2)"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    {
+        base.AddCompilerOption(_T("--remarks"));
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup warning flags for this compiler.\n"));
@@ -113,7 +121,13 @@ function DebugSymbolsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
+    {
+        base.AddCompilerOption(_T("DEBUG"));
+        base.AddCompilerOption(_T("OBJECTEXTEND"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
         base.AddCompilerOption(_T("--debug"));
     }
@@ -187,6 +201,19 @@ function OptimizationsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-ot")); // optimize for time
         base.AddCompilerOption(_T("-ox")); // Maximum optimization
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilc51")))
+    {
+        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilcx51")))
+    {
+        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        base.AddCompilerOption(_T("OBJECTADVANCED"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    {
+        base.AddCompilerOption(_T("-Oh"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
     {
