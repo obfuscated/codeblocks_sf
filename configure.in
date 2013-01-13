@@ -364,6 +364,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/files/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/lccstub/Makefile
+	src/plugins/scriptedwizard/resources/mcs51/Makefile
 	src/plugins/scriptedwizard/resources/ogre/Makefile
 	src/plugins/scriptedwizard/resources/ogre/files/Makefile
 	src/plugins/scriptedwizard/resources/opengl/Makefile
