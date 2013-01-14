@@ -689,7 +689,10 @@ void EditorConfigurationDlg::OnEditKeywords(cb_unused wxCommandEvent& event)
 {
     if (m_Theme && m_Lang != HL_NONE)
     {
-        EditKeywordsDlg dlg(0, m_Theme, m_Lang);
+        wxArrayString descriptions;
+        if (m_TextColourControl)
+            descriptions = GetArrayFromString(m_TextColourControl->DescribeKeyWordSets(), wxT("\n"));
+        EditKeywordsDlg dlg(0, m_Theme, m_Lang, descriptions);
         PlaceWindow(&dlg);
         dlg.ShowModal();
 

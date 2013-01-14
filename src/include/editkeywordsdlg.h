@@ -16,7 +16,7 @@ class EditorColourSet;
 class EditKeywordsDlg : public wxScrollingDialog
 {
     public:
-        EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang);
+        EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang, const wxArrayString& descr);
         ~EditKeywordsDlg();
     protected:
         void OnSetChange(wxSpinEvent& event);
@@ -28,6 +28,8 @@ class EditKeywordsDlg : public wxScrollingDialog
         wxTextCtrl* txtKeywords;
         int m_LastSet;
     private:
+        void UpdateDlg();
+        const wxArrayString& descriptions;
         DECLARE_EVENT_TABLE()
 };
 
