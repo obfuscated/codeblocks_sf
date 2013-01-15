@@ -6,7 +6,7 @@ if [ "x$MSYSTEM" != "x" ] ; then
   LIBEXT="dll"
 else
   uname_str=$(uname)
-  if [ "$uname_str" == "Darwin" ] ; then
+  if [ "$uname_str" = "Darwin" ] ; then
     echo Updating Mac / Darwin version.
     EXEEXT=""
     LIBEXT="dylib"
