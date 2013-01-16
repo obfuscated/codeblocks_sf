@@ -106,8 +106,8 @@ then
   install_name_tool -change devel/libwxpropgrid.dylib       @executable_path/libwxpropgrid.dylib  $MACOS_ROOT/cb_share_config
 fi
 
-echo Looping libwx*.dylib files in MacOS...
-for dy_lib in $MACOS_ROOT/libwx*.dylib
+echo Looping lib*.dylib files in MacOS...
+for dy_lib in $MACOS_ROOT/lib*.dylib
 do
   install_name_tool -change $WX_ROOT/libwx_macu-2.8.0.dylib @executable_path/libwx_macu-2.8.dylib $dy_lib
   install_name_tool -change $LIB_ROOT/libcodeblocks.dylib   @executable_path/libcodeblocks.dylib  $dy_lib
