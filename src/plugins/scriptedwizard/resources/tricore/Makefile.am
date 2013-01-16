@@ -129,7 +129,7 @@ dist_tricore11src_DATA	= templates/TriBoard-TC1775/src/setup.c
 # for TriBoard-TC1792
 tricore12dir		= $(pkgdatadir)/templates/TriBoard-TC1792
 
-dist_tricore12_DATA	= templates/TriBoard-TC1792/memoryROM.x
+dist_tricore12_DATA	= templates/TriBoard-TC1792/memoryROM.x \
 			templates/TriBoard-TC1792/memoryROM-intern.x
 
 tricore12hdir		= $(pkgdatadir)/templates/TriBoard-TC1792/h
@@ -144,7 +144,7 @@ dist_tricore12src_DATA	= templates/TriBoard-TC1792/src/setup.c
 # for TriBoard-TC1796
 tricore13dir		= $(pkgdatadir)/templates/TriBoard-TC1796
 
-dist_tricore13_DATA	= templates/TriBoard-TC1796/memoryROM.x
+dist_tricore13_DATA	= templates/TriBoard-TC1796/memoryROM.x \
 			templates/TriBoard-TC1796/memoryROM-intern.x
 
 tricore13hdir		= $(pkgdatadir)/templates/TriBoard-TC1796/h
@@ -159,7 +159,7 @@ dist_tricore13src_DATA	= templates/TriBoard-TC1796/src/setup.c
 # for TriBoard-TC1797
 tricore14dir		= $(pkgdatadir)/templates/TriBoard-TC1797
 
-dist_tricore14_DATA	= templates/TriBoard-TC1797/memoryROM.x
+dist_tricore14_DATA	= templates/TriBoard-TC1797/memoryROM.x \
 			templates/TriBoard-TC1797/memoryROM-intern.x
 
 tricore14hdir		= $(pkgdatadir)/templates/TriBoard-TC1797/h
@@ -175,7 +175,6 @@ dist_tricore14src_DATA	= templates/TriBoard-TC1797/src/setup.c
 tricore15dir		= $(pkgdatadir)/templates/TriBoard-TC1920
 
 dist_tricore15_DATA	= templates/TriBoard-TC1920/memoryROM.x
-			templates/TriBoard-TC1920/memoryROM-intern.x
 
 tricore15hdir		= $(pkgdatadir)/templates/TriBoard-TC1920/h
 
