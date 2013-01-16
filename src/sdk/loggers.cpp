@@ -23,21 +23,25 @@
 
 #include "loggers.h"
 
+// Helper function which blends a colour with the default window text colour,
+// so that text will be readable in bright and dark colour schemes
 wxColour BlendTextColour(wxColour col)
 {
     wxColour fgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     wxColour bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-    int dist=
-        (fgCol.Red()*fgCol.Red() + fgCol.Green()*fgCol.Green() + fgCol.Blue()*fgCol.Blue()) -
-        (bgCol.Red()*bgCol.Red() + bgCol.Green()*bgCol.Green() + bgCol.Blue()*bgCol.Blue());
+
+    int dist = (fgCol.Red()*fgCol.Red() + fgCol.Green()*fgCol.Green() + fgCol.Blue()*fgCol.Blue())
+             - (bgCol.Red()*bgCol.Red() + bgCol.Green()*bgCol.Green() + bgCol.Blue()*bgCol.Blue());
     if (dist > 0)
     {
         // If foreground color is brighter than background color, this is a dark theme, so
         // brighten the text colour.
         // I would use wxColour::changeLightness(), but it's only available in v2.9.0 or later.
-        int d= int(sqrt(dist)/4);
-        int r= col.Red()+d, g= col.Green()+d, b= col.Blue()+d;
-        return wxColour( r>255? 255: r, g>255? 255: g, b>255? 255: b );
+        int d = int(sqrt(dist)/4);
+        int r = col.Red()   + d;
+        int g = col.Green() + d;
+        int b = col.Blue()  + d;
+        return wxColour( r>255 ? 255 : r, g>255 ? 255 : g, b>255 ? 255 : b );
     }
     return col;
 }

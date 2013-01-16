@@ -15,10 +15,6 @@
 
 class wxListCtrl;
 
-// Helper function which blends a colour with the default window text colour,
-// so that text will be readable in bright and dark colour schemes
-wxColour BlendTextColour(wxColour col);
-
 class DLLIMPORT NullLogger : public Logger
 {
 public:
