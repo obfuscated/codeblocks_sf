@@ -102,7 +102,6 @@ public:
 
         style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
         style[caption].SetFont(style[error].GetFont());
-        style[warning].SetTextColour(BlendTextColour(*wxBLUE));
         style[error].SetFont(style[info].GetFont());
     }
 

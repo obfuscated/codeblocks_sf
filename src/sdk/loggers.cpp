@@ -107,6 +107,7 @@ void TextCtrlLogger::UpdateSettings()
     style[success].SetTextColour(BlendTextColour(*wxBLUE));
 
     style[warning].SetFont(italic_font);
+    style[warning].SetTextColour( cfgman->ReadColour(_T("/log_warning_text_colour"), BlendTextColour(*wxBLUE)) );
 
     style[error].SetFont(bold_font);
     style[error].SetTextColour( cfgman->ReadColour(_T("/log_error_text_colour"),wxColour(0xf0, 0x00, 0x00)) ); // red
