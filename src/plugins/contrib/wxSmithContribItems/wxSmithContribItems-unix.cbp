@@ -15,7 +15,7 @@
 				<Option external_deps="../../../devel/libwxsmithlib.so;../../../devel/libwxchartctrl.so;../../../devel/libwxcustombutton.so;../../../devel/libwxflatnotebook.so;../../../devel/libwximagepanel.so;../../../devel/libwxspeedbutton.so;../../../devel/libwxkwic.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni -v" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />

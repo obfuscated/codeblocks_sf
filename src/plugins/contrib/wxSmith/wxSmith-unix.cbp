@@ -28,7 +28,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>

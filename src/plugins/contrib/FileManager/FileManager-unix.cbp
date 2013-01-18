@@ -12,7 +12,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/FileManager" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ni -ns -v" />
+				<Option parameters="--debug-log --multiple-instance -ni -ns -v -p debug" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
