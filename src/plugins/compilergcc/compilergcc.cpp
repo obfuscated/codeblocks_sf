@@ -1649,9 +1649,10 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
     wxString projectName = prj ? prj->GetTitle() : wxString(_("\"no project\""));
 
     wxString banner;
-    banner.Printf(_("-------------- %s: %s in %s (compiler: %s)---------------"),
+    banner.Printf(_("%s: %s in %s (compiler: %s)"),
                   Action.wx_str(), targetName.wx_str(), projectName.wx_str(), compilerName.wx_str());
-    LogMessage(banner, cltNormal, ltAll, false, true);
+    LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxT("=== ") + banner + wxT(" ==="));
+    LogMessage(wxT("-------------- ") + banner + wxT("---------------"), cltNormal, ltAll, false, true);
 }
 
 void CompilerGCC::DoGotoNextError()
@@ -3368,20 +3369,6 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
     // log to build messages if info/warning/error (aka != normal)
     if (clt != cltNormal)
     {
-        // display current project/target "header" in build messages, if different since last warning/error
-        static ProjectBuildTarget* last_bt = 0;
-        if (last_bt != m_pLastBuildingTarget)
-        {
-            last_bt = m_pLastBuildingTarget;
-            if (last_bt)
-            {
-                wxString msg;
-                msg.Printf(_T("=== %s, %s ==="),
-                            last_bt->GetParentProject()->GetTitle().wx_str(),
-                            last_bt->GetTitle().wx_str());
-                LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, msg);
-            }
-        }
         // actually log message
         wxString last_error_filename = compiler->GetLastErrorFilename();
         if ( UseMake() )
