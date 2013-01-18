@@ -10,6 +10,7 @@
 #include <wx/string.h>
 #include "settings.h" // DLLIMPORT
 
+class wxMenu;
 class wxWindow;
 
 namespace
@@ -35,6 +36,17 @@ public:
     enum level { caption, info, warning, success, error, critical, failure, pagetitle, spacer, asterisk };
     enum { num_levels = asterisk +1 };
 
+    struct Feature
+    {
+        enum Enum
+        {
+            IsWrappable = 0,
+            CanClear,
+            CanCopy,
+            Additional
+        };
+    };
+
     Logger() {}
     virtual ~Logger() {}
 
@@ -53,7 +65,9 @@ public:
     virtual void      UpdateSettings() {}
     virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return 0; }
 
-    virtual bool      IsWrappableTextCtrl() { return false; }
+    virtual bool      GetWrapMode() const { return false; }
+    virtual bool      HasFeature(cb_optional Feature::Enum feature) const { return false; }
+    virtual void      AppendAdditionalMenuItems(cb_optional wxMenu &menu) {}
 };
 
 #endif

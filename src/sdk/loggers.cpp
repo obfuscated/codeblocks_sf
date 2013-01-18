@@ -164,14 +164,33 @@ wxWindow* TextCtrlLogger::CreateControl(wxWindow* parent)
     return control;
 }
 
-bool TextCtrlLogger::IsWrappableTextCtrl()
+
+bool TextCtrlLogger::HasFeature(Feature::Enum feature) const
 {
-    return (control && control->IsMultiLine());
+    switch (feature)
+    {
+        case Feature::IsWrappable:
+            return (control && control->IsMultiLine());
+        case Feature::CanClear:
+        case Feature::CanCopy:
+            return true;
+        default:
+            return false;
+    }
+}
+
+bool TextCtrlLogger::GetWrapMode() const
+{
+    if (!control)
+        return false;
+    wxWindowUpdateLocker noUpdates(control);
+    long ctrl_style = control->GetWindowStyle();
+    return ((ctrl_style & wxTE_DONTWRAP)!=wxTE_DONTWRAP);
 }
 
 void TextCtrlLogger::ToggleWrapMode()
 {
-    if (!control || !IsWrappableTextCtrl())
+    if (!control || !HasFeature(Feature::IsWrappable))
         return;
 
     wxWindowUpdateLocker noUpdates(control);
@@ -388,6 +407,18 @@ wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)
     return control;
 }
 
+bool ListCtrlLogger::HasFeature(Feature::Enum feature) const
+{
+    switch (feature)
+    {
+    case Feature::CanClear:
+        return true;
+    case Feature::CanCopy:
+        return true;
+    default:
+        return false;
+    }
+}
 
 CSS::CSS() :
     caption  (_T("font-size: 12pt;")),

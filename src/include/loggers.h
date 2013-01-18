@@ -96,8 +96,9 @@ public:
     virtual void      Append(const wxString& msg, Logger::level lv = info);
     virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);
-    virtual bool      IsWrappableTextCtrl();
+    virtual bool      GetWrapMode() const;
     virtual void      ToggleWrapMode();
+    virtual bool      HasFeature(Feature::Enum feature) const;
 };
 
 
@@ -136,6 +137,7 @@ public:
     virtual size_t    GetItemsCount() const;
     virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);
+    virtual bool      HasFeature(Feature::Enum feature) const;
 };
 
 #endif // LOGGERS_H

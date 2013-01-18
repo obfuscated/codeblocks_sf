@@ -305,7 +305,7 @@ void InfoPane::OnCopy(wxCommandEvent& event)
 void InfoPane::OnWrapMode(cb_unused wxCommandEvent& event)
 {
     int i = GetPageIndexByWindow( GetPage(GetSelection()) );
-    if (m_Pages.Item(i)->islogger && m_Pages.Item(i)->logger->IsWrappableTextCtrl())
+    if (m_Pages.Item(i)->islogger && m_Pages.Item(i)->logger->HasFeature(Logger::Feature::IsWrappable))
     {
         TextCtrlLogger* tcl = static_cast<TextCtrlLogger*>(m_Pages.Item(i)->logger);
         if (tcl) tcl->ToggleWrapMode();
@@ -366,28 +366,49 @@ void InfoPane::DoShowContextMenu()
     m_Pages.Sort(&CompareIndexes);
 
     wxMenu menu;
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
-    	menu.Append(idNB_TabTop, _("Tabs at top"));
-    else
-    	menu.Append(idNB_TabBottom, _("Tabs at bottom"));
 
     int selection = GetSelection();
     if (   (selection >= 0)
         && (selection < static_cast<int>(GetPageCount()))
         && (m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->islogger) )
     {
-        menu.AppendSeparator();
-        menu.Append(idCopyAllToClipboard,      _("Copy contents to clipboard"));
-        menu.Append(idCopySelectedToClipboard, _("Copy selection to clipboard"));
-        menu.AppendSeparator();
-
         Logger* l = m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->logger;
-        if (l->IsWrappableTextCtrl())
-            menu.Append(idWrapMode, _("Toggle wrap mode"));
 
-        menu.Append(idClear, _("Clear contents"));
+        if (l->HasFeature(Logger::Feature::CanCopy))
+        {
+            menu.Append(idCopyAllToClipboard,      _("Copy contents to clipboard"));
+            menu.Append(idCopySelectedToClipboard, _("Copy selection to clipboard"));
+        }
+        bool needSeparator = true;
+        if (l->HasFeature(Logger::Feature::IsWrappable))
+        {
+            if (menu.GetMenuItemCount() > 0)
+            {
+                needSeparator = false;
+                menu.AppendSeparator();
+            }
+            menu.AppendCheckItem(idWrapMode, _("Toggle wrap mode"));
+            menu.Check(idWrapMode, l->GetWrapMode());
+        }
+        if (l->HasFeature(Logger::Feature::CanClear))
+        {
+            if (needSeparator && menu.GetMenuItemCount() > 0)
+                menu.AppendSeparator();
+            menu.Append(idClear, _("Clear contents"));
+        }
+        if (l->HasFeature(Logger::Feature::Additional))
+            l->AppendAdditionalMenuItems(menu);
     }
 
+    if (menu.GetMenuItemCount() > 0)
+        menu.AppendSeparator();
+
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
+    	menu.Append(idNB_TabTop, _("Tabs at top"));
+    else
+    	menu.Append(idNB_TabBottom, _("Tabs at bottom"));
+
+    // add toggle sub-menu
     wxMenu* view = new wxMenu;
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -397,11 +418,9 @@ void InfoPane::DoShowContextMenu()
             view->Check(m_Pages.Item(i)->eventID, m_Pages.Item(i)->indexInNB >= 0);
         }
     }
+
     if (view->GetMenuItemCount() > 0)
-    {
-        menu.AppendSeparator();
         menu.AppendSubMenu(view, _("Toggle..."));
-    }
     else
         delete view;
 
