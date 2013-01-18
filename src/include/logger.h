@@ -35,8 +35,8 @@ public:
     enum level { caption, info, warning, success, error, critical, failure, pagetitle, spacer, asterisk };
     enum { num_levels = asterisk +1 };
 
-    Logger() {};
-    virtual ~Logger() {};
+    Logger() {}
+    virtual ~Logger() {}
 
     /* Logger writers:
     *  This is the One Function you must implement. Everything else is optional or bull.
@@ -47,13 +47,13 @@ public:
     */
     virtual void      Append(const wxString& msg, Logger::level lv = info) = 0;
 
-    virtual void      Clear() {};
-    virtual void      CopyContentsToClipboard(cb_optional bool selectionOnly = false) {};
+    virtual void      Clear() {}
+    virtual void      CopyContentsToClipboard(cb_optional bool selectionOnly = false) {}
 
-    virtual void      UpdateSettings() {};
-    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return 0; };
+    virtual void      UpdateSettings() {}
+    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return 0; }
 
-    virtual bool      IsWrappableTextCtrl() { return false; };
+    virtual bool      IsWrappableTextCtrl() { return false; }
 };
 
 #endif
