@@ -402,6 +402,8 @@ void InfoPane::DoShowContextMenu()
         menu.AppendSeparator();
         menu.AppendSubMenu(view, _("Toggle..."));
     }
+    else
+        delete view;
 
     PopupMenu(&menu);
 }
