@@ -21,7 +21,7 @@ public:
     virtual ~CCOptionsDlg();
 
     virtual wxString GetTitle() const          { return _("Code completion"); }
-    virtual wxString GetBitmapBaseName() const { return _T("generic-plugin"); }
+    virtual wxString GetBitmapBaseName() const { return _T("codecompletion"); }
     virtual void OnApply();
     virtual void OnCancel()                    { ; }
 
