@@ -29,6 +29,7 @@
 #include "startherepage.h"
 #include "switcherdlg.h"
 #include "cbstatusbar.h"
+#include "loggers.h"
 
 #include <wx/display.h>
 #include <wx/dnd.h>

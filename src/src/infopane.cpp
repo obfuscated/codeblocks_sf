@@ -20,7 +20,7 @@
 #include <wx/wupdlock.h>
 #include <wx/tokenzr.h>
 #include "infopane.h"
-#include "logmanager.h"
+#include "loggers.h"
 
 namespace
 {
