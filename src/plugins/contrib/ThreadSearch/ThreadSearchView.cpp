@@ -107,11 +107,11 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
             (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
             &ThreadSearchView::OnContextMenu);
 
-    Connect(idTxtSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
+    Connect(idSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchDirPathTextEvent);
 
-    Connect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
+    Connect(idSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchMaskTextEvent);
     Connect(wxEVT_THREAD_SEARCH_ERROR,
@@ -137,11 +137,11 @@ ThreadSearchView::~ThreadSearchView()
             (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
             &ThreadSearchView::OnContextMenu);
 
-    Disconnect(idTxtSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
+    Disconnect(idSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchDirPathTextEvent);
 
-    Disconnect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
+    Disconnect(idSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ThreadSearchView::OnTxtSearchMaskTextEvent);
     Disconnect(wxEVT_THREAD_SEARCH_ERROR,
@@ -158,8 +158,8 @@ ThreadSearchView::~ThreadSearchView()
 BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     // begin wxGlade: ThreadSearchView::event_table
     EVT_TEXT_ENTER(idCboSearchExpr, ThreadSearchView::OnCboSearchExprEnter)
-    EVT_TEXT_ENTER(idTxtSearchDirPath, ThreadSearchView::OnCboSearchExprEnter)
-    EVT_TEXT_ENTER(idTxtSearchMask, ThreadSearchView::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idSearchDirPath, ThreadSearchView::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idSearchMask, ThreadSearchView::OnCboSearchExprEnter)
     EVT_BUTTON(idBtnSearch, ThreadSearchView::OnBtnSearchClick)
     EVT_BUTTON(idBtnOptions, ThreadSearchView::OnBtnOptionsClick)
 
@@ -484,7 +484,8 @@ void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
                 else
                 {
                     // Update combo box search history
-                    AddExpressionToSearchCombos(findData.GetFindText());
+                    AddExpressionToSearchCombos(findData.GetFindText(), findData.GetSearchPath(),
+                                                findData.GetSearchMask());
                     UpdateSearchButtons(true, cancel);
                     EnableControls(false);
 
@@ -654,7 +655,7 @@ void ThreadSearchView::OnContextMenu(wxContextMenuEvent& event)
 }
 
 
-void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression)
+void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression, const wxString& path, const wxString& mask)
 {
     // We perform tests on view combo and don't check toolbar one
     // because their contents are identical
@@ -685,6 +686,8 @@ void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression)
     m_pCboSearchExpr->SetSelection(0);
     pToolBarCombo->Insert(expression, 0);
     pToolBarCombo->SetSelection(0);
+
+    m_pPnlDirParams->AddExpressionToCombos(path, mask);
 }
 
 
@@ -804,8 +807,8 @@ void ThreadSearchView::EnableControls(bool enable)
         idBtnSearchProjectFiles,
         idBtnSearchWorkspaceFiles,
         idBtnSearchDirectoryFiles,
-        idTxtSearchDirPath,
-        idTxtSearchMask
+        idSearchDirPath,
+        idSearchMask
     };
 
     long toolBarIdsArray[] = {
@@ -1077,13 +1080,15 @@ int ThreadSearchView::GetSashPosition() const
 }
 
 
-void ThreadSearchView::SetSearchHistory(const wxArrayString& searchPatterns)
+void ThreadSearchView::SetSearchHistory(const wxArrayString& searchPatterns, const wxArrayString& searchDirs,
+                                        const wxArrayString& searchMasks)
 {
     m_pCboSearchExpr->Append(searchPatterns);
     if ( searchPatterns.GetCount() > 0 )
     {
         m_pCboSearchExpr->SetSelection(0);
     }
+    m_pPnlDirParams->SetSearchHistory(searchDirs, searchMasks);
 }
 
 
@@ -1092,6 +1097,15 @@ wxArrayString ThreadSearchView::GetSearchHistory() const
     return m_pCboSearchExpr->GetStrings();
 }
 
+wxArrayString ThreadSearchView::GetSearchDirsHistory() const
+{
+    return m_pPnlDirParams->GetSearchDirsHistory();
+}
+
+wxArrayString ThreadSearchView::GetSearchMasksHistory() const
+{
+    return m_pPnlDirParams->GetSearchMasksHistory();
+}
 
 // BEGIN Duplicated from cbeditor.cpp to apply folding options
 void ThreadSearchView::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back)

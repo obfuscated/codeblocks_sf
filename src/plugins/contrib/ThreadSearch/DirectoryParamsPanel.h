@@ -27,7 +27,7 @@
 class wxWindow;
 class wxButton;
 class wxCheckBox;
-class wxTextCtrl;
+class wxComboBox;
 class wxCommandEvent;
 
 
@@ -51,6 +51,12 @@ public:
     void     SetSearchDirHidden(bool bSearchHidden);
     void     SetSearchMask(const wxString& sMask);
 
+    void SetSearchHistory(const wxArrayString& searchDirs, const wxArrayString& searchMasks);
+    wxArrayString GetSearchDirsHistory() const;
+    wxArrayString GetSearchMasksHistory() const;
+
+    void AddExpressionToCombos(const wxString& path, const wxString& mask);
+
 private:
     // begin wxGlade: DirectoryParamsPanel::methods
     void set_properties();
@@ -59,11 +65,11 @@ private:
 
 protected:
     // begin wxGlade: DirectoryParamsPanel::attributes
-    wxTextCtrl* m_pTxtSearchDirPath;
+    wxComboBox* m_pSearchDirPath;
     wxButton* m_pBtnSelectDir;
     wxCheckBox* m_pChkSearchDirRecursively;
     wxCheckBox* m_pChkSearchDirHiddenFiles;
-    wxTextCtrl* m_pTxtMask;
+    wxComboBox* m_pMask;
     // end wxGlade
 
     DECLARE_EVENT_TABLE();

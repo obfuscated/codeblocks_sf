@@ -207,22 +207,27 @@ protected:
       * @param sashPosition : position of the splitter window.
       * @param mgrType      : type of view manager (Messages notebook, layout)
       * @param searchPatterns : - undocumented -
+      * @param searchDirs : - undocumented -
+      * @param searchMasks : - undocumented -
       */
     virtual void LoadConfig(bool &showPanel, int &sashPosition,
                             ThreadSearchViewManagerBase::eManagerTypes& mgrType,
-                            wxArrayString& searchPatterns);
+                            wxArrayString& searchPatterns, wxArrayString& searchDirs,
+                            wxArrayString& searchMasks);
 
     /** This method saves the plugin configuration to default.conf using
       * the standard ConfigManager
       * @param showPanel :    boolean telling if ThreadSearch panel is managed
       *                       by the MessageManager.
       * @param sashPosition : position of the splitter window.
-      * @param mgrType :      Type of view manager (Messages notebook, layout)
       * @param searchPatterns : - undocumented -
+      * @param searchDirs : - undocumented -
+      * @param searchMasks : - undocumented -
       */
     virtual void SaveConfig(bool showPanel, int sashPosition,
                             ThreadSearchViewManagerBase::eManagerTypes mgrType,
-                            const wxArrayString& searchPatterns);
+                            const wxArrayString& searchPatterns, const wxArrayString& searchDirs,
+                            const wxArrayString& searchMasks);
 
 private:
     /** Event handler called when user clicks on the 'Thread search'

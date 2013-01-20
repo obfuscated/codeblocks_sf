@@ -17,9 +17,9 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-    #include <wx/textctrl.h>
     #include <wx/button.h>
     #include <wx/checkbox.h>
+    #include <wx/combobox.h>
     #include <wx/dirdlg.h>
     #include <wx/sizer.h>
     #include <wx/stattext.h>
@@ -29,15 +29,44 @@
 #include "ThreadSearchControlIds.h"
 
 
+namespace
+{
+
+// Max number of items in search history combo box
+const unsigned int MAX_NB_SEARCH_ITEMS = 20;
+
+inline void AddItemToCombo(wxComboBox *combo, const wxString &str)
+{
+    int index = combo->FindString(str);
+
+    // Removes item if already in combos box
+    if (index != wxNOT_FOUND)
+        combo->Delete(index);
+
+    // Removes last item if max nb item is reached
+    if (combo->GetCount() >= MAX_NB_SEARCH_ITEMS)
+        combo->Delete(combo->GetCount()-1);
+
+    // Adds it to combos
+    combo->Insert(str, 0);
+    combo->SetSelection(0);
+}
+
+} // anonymouse namespace
+
 DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
+    const wxString choices[] = {};
+
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
-    m_pTxtSearchDirPath = new wxTextCtrl(this, idTxtSearchDirPath, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    m_pSearchDirPath = new wxComboBox(this, idSearchDirPath, wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                      0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
     m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, _("..."));
     m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, _("Recurse"));
     m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, _("Hidden"));
-    m_pTxtMask = new wxTextCtrl(this, idTxtSearchMask, wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    m_pMask = new wxComboBox(this, idSearchMask, wxT("*.*"), wxDefaultPosition, wxDefaultSize,
+                             0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
 
     set_properties();
     do_layout();
@@ -47,11 +76,11 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
 
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
     // begin wxGlade: DirectoryParamsPanel::event_table
-    EVT_TEXT(idTxtSearchDirPath, DirectoryParamsPanel::OnTxtTextEvent)
+    EVT_TEXT_ENTER(idSearchDirPath, DirectoryParamsPanel::OnTxtTextEvent)
     EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
     EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkClickEvent)
     EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkClickEvent)
-    EVT_TEXT(idTxtSearchMask, DirectoryParamsPanel::OnTxtTextEvent)
+    EVT_TEXT_ENTER(idSearchMask, DirectoryParamsPanel::OnTxtTextEvent)
     // end wxGlade
 END_EVENT_TABLE();
 
@@ -64,13 +93,13 @@ void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
 
 void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
 {
-    wxString dir = m_pTxtSearchDirPath->GetValue();
+    wxString dir = m_pSearchDirPath->GetValue();
     if (dir.empty())
         dir = wxGetCwd();
     wxDirDialog DlgDir(this, _("Select directory"), dir);
     if ( DlgDir.ShowModal() == wxID_OK )
     {
-        m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());
+        m_pSearchDirPath->SetValue(DlgDir.GetPath());
     }
 
     event.Skip();
@@ -89,13 +118,13 @@ void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent &event)
 void DirectoryParamsPanel::set_properties()
 {
     // begin wxGlade: DirectoryParamsPanel::set_properties
-    m_pTxtSearchDirPath->SetToolTip(_("Directory to search in files"));
+    m_pSearchDirPath->SetToolTip(_("Directory to search in files"));
     m_pBtnSelectDir->SetToolTip(_("Browse for directory to search in"));
     m_pChkSearchDirRecursively->SetToolTip(_("Search in directory files recursively"));
     m_pChkSearchDirRecursively->SetValue(1);
     m_pChkSearchDirHiddenFiles->SetToolTip(_("Search in directory hidden files"));
     m_pChkSearchDirHiddenFiles->SetValue(1);
-    m_pTxtMask->SetToolTip(wxT("*.cpp;*.c;*.h"));
+    m_pMask->SetToolTip(wxT("*.cpp;*.c;*.h"));
     // end wxGlade
 }
 
@@ -107,11 +136,11 @@ void DirectoryParamsPanel::do_layout()
 #endif
     // begin wxGlade: DirectoryParamsPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxHORIZONTAL);
-    SizerTop->Add(m_pTxtSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    SizerTop->Add(m_pSearchDirPath, 2, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SizerTop->Add(m_pBtnSelectDir, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SizerTop->Add(m_pChkSearchDirRecursively, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    SizerTop->Add(m_pTxtMask, 1, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
+    SizerTop->Add(m_pMask, 1, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     wxStaticText* m_pStatTxtMask = new wxStaticText(this, -1, _("mask"));
     SizerTop->Add(m_pStatTxtMask, 0, wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SetAutoLayout(true);
@@ -122,13 +151,43 @@ void DirectoryParamsPanel::do_layout()
 }
 
 // Getters
-wxString DirectoryParamsPanel::GetSearchDirPath()        const {return m_pTxtSearchDirPath->GetValue();}
+wxString DirectoryParamsPanel::GetSearchDirPath()        const {return m_pSearchDirPath->GetValue();}
 bool     DirectoryParamsPanel::GetSearchDirRecursively() const {return m_pChkSearchDirRecursively->IsChecked();}
 bool     DirectoryParamsPanel::GetSearchDirHidden()      const {return m_pChkSearchDirHiddenFiles->IsChecked();}
-wxString DirectoryParamsPanel::GetSearchMask()           const {return m_pTxtMask->GetValue();}
+wxString DirectoryParamsPanel::GetSearchMask()           const {return m_pMask->GetValue();}
 
 // Setters
-void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath) {m_pTxtSearchDirPath->SetValue(sDirPath);}
+void     DirectoryParamsPanel::SetSearchDirPath(const wxString& sDirPath) {m_pSearchDirPath->SetValue(sDirPath);}
 void     DirectoryParamsPanel::SetSearchDirRecursively(bool bRecurse)     {m_pChkSearchDirRecursively->SetValue(bRecurse);}
 void     DirectoryParamsPanel::SetSearchDirHidden(bool bSearchHidden)     {m_pChkSearchDirHiddenFiles->SetValue(bSearchHidden);}
-void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)       {m_pTxtMask->SetValue(sMask);}
+void     DirectoryParamsPanel::SetSearchMask(const wxString& sMask)       {m_pMask->SetValue(sMask);}
+
+void DirectoryParamsPanel::SetSearchHistory(const wxArrayString& searchDirs, const wxArrayString& searchMasks)
+{
+    for (wxArrayString::const_iterator it = searchDirs.begin(); it != searchDirs.end(); ++it)
+    {
+        if (!it->empty())
+            m_pSearchDirPath->Append(*it);
+    }
+    for (wxArrayString::const_iterator it = searchMasks.begin(); it != searchMasks.end(); ++it)
+    {
+        if (!it->empty())
+            m_pMask->Append(*it);
+    }
+}
+
+wxArrayString DirectoryParamsPanel::GetSearchDirsHistory() const
+{
+    return m_pSearchDirPath->GetStrings();
+}
+
+wxArrayString DirectoryParamsPanel::GetSearchMasksHistory() const
+{
+    return m_pMask->GetStrings();
+}
+
+void DirectoryParamsPanel::AddExpressionToCombos(const wxString& path, const wxString& mask)
+{
+    AddItemToCombo(m_pSearchDirPath, path);
+    AddItemToCombo(m_pMask, mask);
+}

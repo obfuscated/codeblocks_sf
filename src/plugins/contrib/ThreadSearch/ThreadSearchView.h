@@ -101,8 +101,11 @@ public:
     int  GetSashPosition() const;
 
     /** Sets/gets the search history */
-    void          SetSearchHistory(const wxArrayString& searchPatterns);
+    void          SetSearchHistory(const wxArrayString& searchPatterns, const wxArrayString& searchDirs,
+                                   const wxArrayString& searchMasks);
     wxArrayString GetSearchHistory() const;
+    wxArrayString GetSearchDirsHistory() const;
+    wxArrayString GetSearchMasksHistory() const;
 
     /** SetLoggerType
       * Sets the logger type. If value is different from current one,
@@ -200,8 +203,10 @@ protected:
       * If expression is already listed, it is removed before insertion.
       * Used to keep the search history in the combo box.
       * @param expression : searched text.
+      * @param path : searched path.
+      * @param mask : searched mask.
       */
-    void AddExpressionToSearchCombos(const wxString& expression);
+    void AddExpressionToSearchCombos(const wxString& expression, const wxString& path, const wxString& mask);
 
     /// enum defining the possible labels to update Search buttons (view and toolbars)
     /// Undefined can be used to skip label update

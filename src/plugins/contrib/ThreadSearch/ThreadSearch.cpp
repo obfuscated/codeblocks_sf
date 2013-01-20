@@ -85,8 +85,8 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
     EVT_TOOL      (idBtnSearch,              ThreadSearch::OnBtnSearchClick)
     EVT_TEXT_ENTER(idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
     EVT_TEXT      (idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
-    EVT_TEXT_ENTER(idTxtSearchDirPath,       ThreadSearch::OnCboSearchExprEnter)
-    EVT_TEXT_ENTER(idTxtSearchMask,          ThreadSearch::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idSearchDirPath,       ThreadSearch::OnCboSearchExprEnter)
+    EVT_TEXT_ENTER(idSearchMask,          ThreadSearch::OnCboSearchExprEnter)
 // ---------------------------------------------------------------------------
     // CodeBlocks main.cpp managers all the following UI entires in ONE routine.
     // So if only one changes, all may change.
@@ -173,14 +173,14 @@ void ThreadSearch::OnAttach()
     bool showPanel;
     int  sashPosition;
     ThreadSearchViewManagerBase::eManagerTypes mgrType;
-    wxArrayString searchPatterns;
+    wxArrayString searchPatterns, searchDirs, searchMasks;
 
     // Loads configuration from default.conf
-    LoadConfig(showPanel, sashPosition, mgrType, searchPatterns);
+    LoadConfig(showPanel, sashPosition, mgrType, searchPatterns, searchDirs, searchMasks);
 
     // Adds window to the manager
     m_pThreadSearchView = new ThreadSearchView(*this);
-    m_pThreadSearchView->SetSearchHistory(searchPatterns);
+    m_pThreadSearchView->SetSearchHistory(searchPatterns, searchDirs, searchMasks);
 
     // Builds manager
     m_pViewManager = ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(m_pThreadSearchView, true, mgrType);
@@ -250,7 +250,9 @@ void ThreadSearch::OnThreadSearchViewDestruction()
     SaveConfig(m_pViewManager->IsViewShown(),
                m_pThreadSearchView->GetSashPosition(),
                m_pViewManager->GetManagerType(),
-               m_pThreadSearchView->GetSearchHistory());
+               m_pThreadSearchView->GetSearchHistory(),
+               m_pThreadSearchView->GetSearchDirsHistory(),
+               m_pThreadSearchView->GetSearchMasksHistory());
 
     // Reset of the pointer as view is being deleted
     m_pThreadSearchView = NULL;
@@ -512,13 +514,15 @@ void ThreadSearch::Notify()
     SaveConfig(m_pViewManager->IsViewShown(),
                m_pThreadSearchView->GetSashPosition(),
                m_pViewManager->GetManagerType(),
-               m_pThreadSearchView->GetSearchHistory());
+               m_pThreadSearchView->GetSearchHistory(),
+               m_pThreadSearchView->GetSearchDirsHistory(),
+               m_pThreadSearchView->GetSearchMasksHistory());
 }
 
 
 void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
                               ThreadSearchViewManagerBase::eManagerTypes& mgrType,
-                              wxArrayString& searchPatterns)
+                              wxArrayString& searchPatterns, wxArrayString& searchDirs, wxArrayString& searchMasks)
 {
     if ( !IsAttached() )
         return;
@@ -571,12 +575,19 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
     }
 
     searchPatterns = pCfg->ReadArrayString(wxT("/SearchPatterns"));
+    searchDirs = pCfg->ReadArrayString(wxT("/SearchDirs"));
+    if (searchDirs.empty())
+        searchDirs.push_back(m_FindData.GetSearchPath());
+    searchMasks = pCfg->ReadArrayString(wxT("/SearchMasks"));
+    if (searchMasks.empty())
+        searchMasks.push_back(m_FindData.GetSearchMask());
 }
 
 
 void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
                               ThreadSearchViewManagerBase::eManagerTypes /*mgrType*/,
-                              const wxArrayString& searchPatterns)
+                              const wxArrayString& searchPatterns, const wxArrayString& searchDirs,
+                              const wxArrayString& searchMasks)
 {
     ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("ThreadSearch"));
 
@@ -610,6 +621,8 @@ void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
     pCfg->Write(wxT("/FileSorting"),           m_FileSorting);
 
     pCfg->Write(wxT("/SearchPatterns"),        searchPatterns);
+    pCfg->Write(wxT("/SearchDirs"),            searchDirs);
+    pCfg->Write(wxT("/SearchMasks"),           searchMasks);
 }
 
 
