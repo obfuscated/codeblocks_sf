@@ -253,11 +253,6 @@ public:
     void OnBtnSearchProjectFiles(wxCommandEvent &event);
     void OnBtnSearchWorkspaceFiles(wxCommandEvent &event);
     void OnBtnSearchDirectoryFiles(wxCommandEvent &event);
-    void OnChkSearchDirRecurse(wxCommandEvent &event);
-    void OnChkSearchDirHidden(wxCommandEvent &event);
-
-    void OnTxtSearchMaskTextEvent(wxCommandEvent &event);
-    void OnTxtSearchDirPathTextEvent(wxCommandEvent &event);
 
     void OnTmrListCtrlUpdate(wxTimerEvent& event);
 }; // wxGlade: end class

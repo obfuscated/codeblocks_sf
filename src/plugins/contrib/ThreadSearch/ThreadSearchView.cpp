@@ -84,7 +84,7 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
     m_pPnlSearchIn = new SearchInPanel(this, -1);
     m_pStaticLine2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
     m_pBtnShowDirItems = new wxBitmapButton(this, idBtnShowDirItemsClick, wxBitmap(prefix + wxT("showdir.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW);
-    m_pPnlDirParams = new DirectoryParamsPanel(this, -1);
+    m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), this, -1);
     m_pSearchPreview = new cbStyledTextCtrl(m_pPnlPreview, wxID_ANY, wxDefaultPosition, wxSize(1,1));
     m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this, m_ThreadSearchPlugin,
                                                                     m_ThreadSearchPlugin.GetLoggerType(),
@@ -107,13 +107,6 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
             (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
             &ThreadSearchView::OnContextMenu);
 
-    Connect(idSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchDirPathTextEvent);
-
-    Connect(idSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchMaskTextEvent);
     Connect(wxEVT_THREAD_SEARCH_ERROR,
             (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 }
@@ -137,13 +130,6 @@ ThreadSearchView::~ThreadSearchView()
             (wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
             &ThreadSearchView::OnContextMenu);
 
-    Disconnect(idSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchDirPathTextEvent);
-
-    Disconnect(idSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &ThreadSearchView::OnTxtSearchMaskTextEvent);
     Disconnect(wxEVT_THREAD_SEARCH_ERROR,
             (wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 
@@ -183,8 +169,6 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_TOGGLEBUTTON(idBtnSearchProjectFiles,   ThreadSearchView::OnBtnSearchProjectFiles)
     EVT_TOGGLEBUTTON(idBtnSearchWorkspaceFiles, ThreadSearchView::OnBtnSearchWorkspaceFiles)
     EVT_TOGGLEBUTTON(idBtnSearchDirectoryFiles, ThreadSearchView::OnBtnSearchDirectoryFiles)
-    EVT_CHECKBOX(idChkSearchDirRecurse,   ThreadSearchView::OnChkSearchDirRecurse)
-    EVT_CHECKBOX(idChkSearchDirHidden,    ThreadSearchView::OnChkSearchDirHidden)
 
     EVT_TIMER(idTmrListCtrlUpdate,          ThreadSearchView::OnTmrListCtrlUpdate)
 END_EVENT_TABLE();
@@ -760,34 +744,6 @@ void ThreadSearchView::OnBtnSearchWorkspaceFiles(wxCommandEvent &event)
 void ThreadSearchView::OnBtnSearchDirectoryFiles(wxCommandEvent &event)
 {
     m_ThreadSearchPlugin.GetFindData().UpdateSearchScope(ScopeDirectoryFiles, m_pPnlSearchIn->GetSearchInDirectory());
-    event.Skip();
-}
-
-
-void ThreadSearchView::OnChkSearchDirRecurse(wxCommandEvent &event)
-{
-    m_ThreadSearchPlugin.GetFindData().SetRecursiveSearch(event.IsChecked());
-    event.Skip();
-}
-
-
-void ThreadSearchView::OnChkSearchDirHidden(wxCommandEvent &event)
-{
-    m_ThreadSearchPlugin.GetFindData().SetHiddenSearch(event.IsChecked());
-    event.Skip();
-}
-
-
-void ThreadSearchView::OnTxtSearchMaskTextEvent(wxCommandEvent &event)
-{
-    m_ThreadSearchPlugin.GetFindData().SetSearchMask(event.GetString());
-    event.Skip();
-}
-
-
-void ThreadSearchView::OnTxtSearchDirPathTextEvent(wxCommandEvent &event)
-{
-    m_ThreadSearchPlugin.GetFindData().SetSearchPath(event.GetString());
     event.Skip();
 }
 

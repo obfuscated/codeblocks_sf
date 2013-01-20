@@ -45,7 +45,7 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     SizerThreadSearchLayout_staticbox = new wxStaticBox(this, -1, _("Layout"));
     SizerSearchIn_staticbox = new wxStaticBox(this, -1, _("Search in files:"));
     m_pPnlSearchIn = new SearchInPanel(this, wxID_ANY);
-    m_pPnlDirParams = new DirectoryParamsPanel(this, wxID_ANY);
+    m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), this, wxID_ANY);
     m_pChkWholeWord = new wxCheckBox(this, idChkWholeWord, _("Whole word"));
     m_pChkStartWord = new wxCheckBox(this, idChkStartWord, _("Start word"));
     m_pChkMatchCase = new wxCheckBox(this, idChkMatchCase, _("Match case"));

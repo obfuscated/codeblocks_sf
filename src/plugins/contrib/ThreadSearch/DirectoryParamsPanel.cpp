@@ -27,6 +27,7 @@
 
 #include "DirectoryParamsPanel.h"
 #include "ThreadSearchControlIds.h"
+#include "ThreadSearchFindData.h"
 
 
 namespace
@@ -54,8 +55,10 @@ inline void AddItemToCombo(wxComboBox *combo, const wxString &str)
 
 } // anonymouse namespace
 
-DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long WXUNUSED(style)):
-    wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
+DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWindow* parent, int id, const wxPoint& pos,
+                                           const wxSize& size, long WXUNUSED(style)):
+    wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL),
+    m_pFindData(findData)
 {
     const wxString choices[] = {};
 
@@ -76,17 +79,25 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
 
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
     // begin wxGlade: DirectoryParamsPanel::event_table
-    EVT_TEXT_ENTER(idSearchDirPath, DirectoryParamsPanel::OnTxtTextEvent)
+    EVT_TEXT_ENTER(idSearchDirPath, DirectoryParamsPanel::OnSearchDirTextEvent)
     EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
-    EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkClickEvent)
-    EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkClickEvent)
-    EVT_TEXT_ENTER(idSearchMask, DirectoryParamsPanel::OnTxtTextEvent)
+    EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkSearchDirRecurse)
+    EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkSearchDirHidden)
+    EVT_TEXT_ENTER(idSearchMask, DirectoryParamsPanel::OnSearchMaskTextEvent)
     // end wxGlade
 END_EVENT_TABLE();
 
 
-void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
+void DirectoryParamsPanel::OnSearchDirTextEvent(wxCommandEvent &event)
 {
+    m_pFindData->SetSearchPath(event.GetString());
+    event.Skip();
+}
+
+
+void DirectoryParamsPanel::OnSearchMaskTextEvent(wxCommandEvent &event)
+{
+    m_pFindData->SetSearchMask(event.GetString());
     event.Skip();
 }
 
@@ -100,14 +111,21 @@ void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
     if ( DlgDir.ShowModal() == wxID_OK )
     {
         m_pSearchDirPath->SetValue(DlgDir.GetPath());
+        m_pFindData->SetSearchPath(DlgDir.GetPath());
     }
 
     event.Skip();
 }
 
 
-void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent &event)
+void DirectoryParamsPanel::OnChkSearchDirRecurse(wxCommandEvent &event)
 {
+    m_pFindData->SetRecursiveSearch(event.IsChecked());
+    event.Skip();
+}
+void DirectoryParamsPanel::OnChkSearchDirHidden(wxCommandEvent &event)
+{
+    m_pFindData->SetHiddenSearch(event.IsChecked());
     event.Skip();
 }
 
