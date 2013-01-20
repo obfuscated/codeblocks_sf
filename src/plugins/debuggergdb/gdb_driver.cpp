@@ -39,13 +39,15 @@ WX_DEFINE_OBJARRAY(TypesArray);
 //[Switching to thread 2 (Thread 1082132832 (LWP 12298))]#0  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
 static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-Fa-f0-9]+) in (.*) from (.*)"));
 static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-Fa-f0-9]+) in (.*) from (.*):([0-9]+)"));
-#ifdef __WXMSW__
-    static wxRegEx reBreak(_T("([A-Za-z]*[:]*)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-Fa-f]+)"));
-    static wxRegEx reBreak_or32(_T("\032\032([A-Za-z]:)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
-#else
-    static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-Fa-f]+)"));
-    static wxRegEx reBreak_or32(_T("")); // not used on linux, but make sure it exists otherwise compilation fails on linux (if (platform::windows) blabla)
-#endif
+
+// Regular expresion for breakpoint. wxRegEx don't want to recognize '?' command, so a bit more general rule is used
+// here.
+//  ([A-Za-z]*[:]*) corresponds to windows disk name. Under linux it can be none empty in crosscompiling sessions;
+//  ([^:]+) corresponds to the path in linux or to the path within windows disk in windows to current file;
+//  ([0-9]+) corresponds to line number in current file;
+//  (0x[0-9A-Fa-f]+) correponds to current memory address.
+static wxRegEx reBreak(_T("\032*([A-Za-z]*[:]*)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-Fa-f]+)"));
+
 static wxRegEx reBreak2(_T("^(0x[A-Fa-f0-9]+) in (.*) from (.*)"));
 static wxRegEx reBreak3(_T("^(0x[A-Fa-f0-9]+) in (.*)"));
 // Catchpoint 1 (exception thrown), 0x00007ffff7b982b0 in __cxa_throw () from /usr/lib/gcc/x86_64-pc-linux-gnu/4.4.4/libstdc++.so.6
@@ -1025,12 +1027,8 @@ void GDB_driver::ParseOutput(const wxString& output)
             //^Z^ZC:\dev\wxwidgets\wxWidgets-2.8.10\build\msw/../../src/common/imagall.cpp:29:961:beg:0x6f826722
             //>>>>>>cb_gdb:
 
-            if (platform::windows && flavour.IsSameAs(_T("set disassembly-flavor or32")))
-                HandleMainBreakPoint(reBreak_or32, lines[i]);
-            else
-                HandleMainBreakPoint(reBreak, lines[i]);
+            HandleMainBreakPoint(reBreak, lines[i]);
         }
-
         else
         {
             // other break info, e.g.
@@ -1131,15 +1129,15 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
             if (platform::windows)
             {
                 m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
-                lineStr = reBreak_in.GetMatch(line, 3);
-                m_Cursor.address = reBreak_in.GetMatch(line, 4);
             }
             else
             {
-                m_Cursor.file = reBreak_in.GetMatch( line, 1);
-                lineStr = reBreak_in.GetMatch(line, 2);
-                m_Cursor.address = reBreak_in.GetMatch( line, 3);
+                // For debuging of usual linux application 'GetMatch(line, 1)' is empty.
+                // While for debuging of application under wine the name of the disk is useless.
+                m_Cursor.file = reBreak_in.GetMatch(line, 2);
             }
+            lineStr = reBreak_in.GetMatch(line, 3);
+            m_Cursor.address = reBreak_in.GetMatch(line, 4);
 
             lineStr.ToLong(&m_Cursor.line);
             m_Cursor.changed = true;
