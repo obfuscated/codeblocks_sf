@@ -31,3 +31,4 @@ Makefile.in
 *cscope_file_list
 /config.guess
 /config.sub
+*.cbTemp
