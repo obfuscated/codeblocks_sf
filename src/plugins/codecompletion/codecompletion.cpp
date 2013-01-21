@@ -969,7 +969,9 @@ int CodeCompletion::CodeComplete()
                     int iidx = ilist->GetImageCount();
                     bool isC = ft == ftHeader || ft == ftSource;
                     // theme keywords
-                    HighlightLanguage lang = theme->GetLanguageForFilename(_T(".")+wxFileName(ed->GetFilename()).GetExt());
+                    HighlightLanguage lang = ed->GetLanguage();
+                    if (lang == HL_NONE)
+                        lang = theme->GetLanguageForFilename(ed->GetFilename());
                     wxString strLang = theme->GetLanguageName(lang);
                     // if its sourcecode/header file and a known fileformat, show the corresponding icon
                     if (isC && strLang==_T("C/C++"))
@@ -1645,7 +1647,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             // can only start an #include filename within a preprocessor command
             else if (prevChar == _T('"') || prevChar == _T('<'))
             {
-                if (style != wxSCI_C_PREPROCESSOR)
+                if (!control->IsPreprocessor(style))
                 {
                     event.Skip();
                     return;
@@ -1653,12 +1655,9 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
             else
             {
-                if (   style != wxSCI_C_DEFAULT
-                    && style != wxSCI_C_PREPROCESSOR
-                    && style != wxSCI_C_OPERATOR
-                    && style != wxSCI_C_IDENTIFIER
-                    && style != wxSCI_C_WORD2
-                    && style != wxSCI_C_GLOBALCLASS )
+                if (   control->IsString(style)
+                    || control->IsComment(style)
+                    || control->IsCharacter(style) )
                 {
                     event.Skip();
                     return;
@@ -2643,20 +2642,21 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         return;
     }
 
-    if (ed->GetControl()->CallTipActive() && event.GetExtraLong() == 0)
-        ed->GetControl()->CallTipCancel();
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (stc->CallTipActive() && event.GetExtraLong() == 0)
+        stc->CallTipCancel();
 //        CCLogger::Get()->DebugLog(F(_T("CodeCompletion::OnEditorTooltip: %p"), ed));
     /* NOTE: The following 2 lines of codes can fix [Bug #11785].
     *       The solution may not the best one and it requires the editor
     *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
-    if (wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()))
+    if (wxWindow::FindFocus() != static_cast<wxWindow*>(stc))
     {
         event.Skip();
         return;
     }
 
-    int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
-    if (pos < 0 || pos >= ed->GetControl()->GetLength())
+    int pos = stc->PositionFromPointClose(event.GetX(), event.GetY());
+    if (pos < 0 || pos >= stc->GetLength())
     {
         event.Skip();
         return;
@@ -2664,11 +2664,10 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
 
     // ignore comments, strings, preprocesor, etc
     int style = event.GetInt();
-    if (   (style != wxSCI_C_DEFAULT)
-        && (style != wxSCI_C_OPERATOR)
-        && (style != wxSCI_C_IDENTIFIER)
-        && (style != wxSCI_C_WORD2)
-        && (style != wxSCI_C_GLOBALCLASS) )
+    if (   stc->IsString(style)
+        || stc->IsComment(style)
+        || stc->IsCharacter(style)
+        || stc->IsPreprocessor(style) )
     {
         if (style != wxSCI_C_WXSMITH && m_NativeParser.GetParser().Done())
             DoShowCallTip(pos);
@@ -2679,7 +2678,7 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
     TRACE(_T("OnEditorTooltip"));
 
     TokenIdxSet result;
-    int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
+    int endOfWord = stc->WordEndPosition(pos, true);
     if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
     {
         wxString      calltip;
@@ -2719,20 +2718,20 @@ void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
         {
             calltip.RemoveLast(); // last \n
 
-            int lnStart = ed->GetControl()->PositionFromLine(ed->GetControl()->LineFromPosition(pos));
+            int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
                          // pos - lnStart   == distance from start of line
                          //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
                          //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
                          //       horizontal scrolling is accounted for by PointFromPosition().x
             int offset = tipWidth + pos + 1 - lnStart -
-                         (ed->GetControl()->GetSize().x - ed->GetControl()->PointFromPosition(lnStart).x) /
-                          ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
+                         (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
+                          stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
             if (offset > 0)
                 pos -= offset;
             if (pos < lnStart) // do not go to previous line if tip is wider than editor
                 pos = lnStart;
 
-            ed->GetControl()->CallTipShow(pos, calltip);
+            stc->CallTipShow(pos, calltip);
             event.SetExtraLong(1);
             TRACE(calltip);
         }
@@ -2846,12 +2845,13 @@ void CodeCompletion::DoCodeComplete()
     else if (lineFirstChar == _T(':') && curChar == _T(':'))
         return;
 
-    if (   style != wxSCI_C_DEFAULT
-        && style != wxSCI_C_OPERATOR
-        && style != wxSCI_C_IDENTIFIER
-        && style != wxSCI_C_WORD2
-        && style != wxSCI_C_GLOBALCLASS )
+    if (   control->IsString(style)
+        || control->IsComment(style)
+        || control->IsCharacter(style)
+        || control->IsPreprocessor(style) )
+    {
         return;
+    }
 
     TRACE(_T("DoCodeComplete -> CodeComplete"));
     CodeComplete();
