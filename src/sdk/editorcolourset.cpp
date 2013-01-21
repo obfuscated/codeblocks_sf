@@ -421,17 +421,24 @@ HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filena
     }
     // standard headers
     const wxString cppNames = wxT("|"
-            "algorithm|" "bitset|"    "complex|"    "deque|"
-            "exception|" "fstream|"   "functional|" "hash_map|"
-            "hash_set|"  "iomanip|"   "iostream|"   "iterator|"
-            "limits|"    "list|"      "locale|"     "map|"
-            "memory|"    "numeric|"   "queue|"      "set|"
-            "sstream|"   "stack|"     "stdexcept|"  "streambuf|"
-            "string|"    "strstream|" "utility|"    "valarray|"
-            "vector|"
+            "algorithm|"        "array|"         "bitset|"        "chrono|"
+            "complex|"          "deque|"         "exception|"     "fstream|"
+            "forward_list|"     "functional|"    "hash_map|"      "hash_set|"
+            "initializer_list|" "iomanip|"       "ios|"           "iostream|"
+            "istream|"          "iterator|"      "limits|"        "list|"
+            "locale|"           "map|"           "memory|"        "new|"
+            "numeric|"          "ostream|"       "queue|"         "random|"
+            "ratio|"            "regex|"         "set|"           "sstream|"
+            "stack|"            "stdexcept|"     "streambuf|"     "string|"
+            "strstream|"        "system_error|"  "tuple|"         "typeinfo|"
+            "type_traits|"      "unordered_map|" "unordered_set|" "utility|"
+            "valarray|"         "vector|"
 
-            "cassert|" "cctype|"  "clocale|" "cstdio|"
-            "cstdlib|" "cstring|" "ctime|"             );
+            "cassert|" "cctype|"  "cerrno|"  "cfloat|"
+            "ciso646|" "climits|" "clocale|" "cmath|"
+            "csetjmp|" "csignal|" "cstdarg|" "cstdbool|"
+            "cstddef|" "cstdint|" "cstdio|"  "cstdlib|"
+            "cstring|" "ctime|"   "cwchar|"  "cwctype|"  );
     if (cppNames.Find(wxT("|") + lfname + wxT("|")) != wxNOT_FOUND)
         return GetHighlightLanguage(wxT("C/C++"));
     return HL_NONE;
