@@ -2,24 +2,24 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="structs_typedefs" />
+		<Option title="structs_typedefs_enums" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="structs_typedefs">
-				<Option output=".bin\structs_typedefs" prefix_auto="1" extension_auto="1" />
+				<Option output=".bin\structs_typedefs_enums" prefix_auto="1" extension_auto="1" />
 				<Option object_output="..\..\..\.objs\plugins\codecompletion\testing" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="structs_typedefs;" />
+			<Add alias="All" targets="structs_typedefs_enums;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="structs_typedefs.cpp" />
+		<Unit filename="structs_typedefs_enums.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

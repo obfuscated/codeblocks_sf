@@ -8,6 +8,6 @@
 		<Project filename="namespaces.cbp" />
 		<Project filename="preprocessors.cbp" />
 		<Project filename="stl.cbp" />
-		<Project filename="structs_typedefs.cbp" />
+		<Project filename="structs_typedefs_enums.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
