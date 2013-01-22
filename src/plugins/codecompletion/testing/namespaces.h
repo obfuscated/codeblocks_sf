@@ -1,3 +1,5 @@
+#include <wx/string>
+
 namespace my_namespace
 {
   class NameSpaces

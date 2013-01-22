@@ -9,7 +9,7 @@ struct _s
 typedef struct _s t_s;
 typedef _s (*t_ptr_s)(int a, int b);
 //typedef _s_ptr *(*ptr_t_ptr_s)(long l, int a, int b);
-typedef basic_string<char> my_string;
+typedef std::basic_string<char> my_string;
 
 typedef struct _s_inner
 {
@@ -47,6 +47,21 @@ typedef unsigned int i_uinteger;
 typedef void   t_void   (int i, const char *c, va_list v_l);
 typedef void (*t_p_void)(int i, const char *c, va_list v_l);
 
+// a hard (stripped) example from windef.h and wtypes.h:
+#ifndef _ANONYMOUS_STRUCT
+  #define _ANONYMOUS_STRUCT
+  #define _STRUCT_NAME(x) x
+#else
+  #define _STRUCT_NAME(x)
+#endif
+typedef union tagCY {
+	_ANONYMOUS_STRUCT struct {
+		unsigned long Lo;
+		long Hi;
+	}_STRUCT_NAME(s);
+	long long int64;
+} CY;
+
 // a very hard (stripped) sample from mmsystems.h:
 #ifndef NONAMELESSUNION
   #ifdef __GNUC__
@@ -80,20 +95,50 @@ typedef struct tagMIXERCONTROLA {
 	} Metrics;
 } MIXERCONTROLA,*PMIXERCONTROLA,*LPMIXERCONTROLA;
 
-// another hard (stripped) example from windef.h and wtypes.h:
-#ifndef _ANONYMOUS_STRUCT
-  #define _ANONYMOUS_STRUCT
-  #define _STRUCT_NAME(x) x
-#else
-  #define _STRUCT_NAME(x)
-#endif
-typedef union tagCY {
-	_ANONYMOUS_STRUCT struct {
-		unsigned long Lo;
-		long Hi;
-	}_STRUCT_NAME(s);
-	long long int64;
-} CY;
+// First comment
+enum EGlobalCommented // Here can be a comment, too
+// Here, too
+{ /* even here */
+                       egcOne,                 //!< Typical Doxygen comment
+  // In between comment
+                       egcTwo,                 /** another version */
+                       egcThree = 5 /* Foo */, // Inside comment
+/* Leading comment */  egcFour
+}; // Final comment
+
+enum EGlobal
+{
+  egOne, egTwo, egThree
+};
+
+enum EGlobalAssign
+{
+  egaOne = 1, egaTwo = 2, egaThree = egaTwo
+};
+
+enum class EEnumClassGlobal
+{
+	ecgOne,
+	ecgTwo,
+	ecgThree
+};
+
+struct SEnum
+{
+	enum ELocal
+	{
+		elOne, elTwo, elThree,
+	};
+
+	enum { eUnnamed };
+
+	enum class EEnumClassLocal
+	{
+		eclOne,
+		eclTwo,
+		eclThree
+  };
+};
 
 int main (void)
 {
@@ -159,6 +204,14 @@ int main (void)
 
 //    t_void(
 //    t_p_void(
+
+//    EGlobalCommented::
+//    EGlobal::
+//    EGlobalAssign::
+//    EEnumClassGlobal::
+//    SEnum::
+//    SEnum::ELocal::
+//    SEnum::eEnumClassLocal::
 
     return 0;
 }

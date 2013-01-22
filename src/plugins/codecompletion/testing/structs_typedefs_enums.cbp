@@ -7,14 +7,14 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="structs_typedefs">
-				<Option output=".bin\structs_typedefs_enums" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\codecompletion\testing" />
+				<Option output=".bin/structs_typedefs_enums" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/codecompletion/testing" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="structs_typedefs_enums;" />
+			<Add alias="All" targets="structs_typedefs;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
