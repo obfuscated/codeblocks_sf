@@ -116,12 +116,16 @@ enum EGlobalAssign
   egaOne = 1, egaTwo = 2, egaThree = egaTwo
 };
 
+// C++11:
 enum class EEnumClassGlobal
 {
 	ecgOne,
 	ecgTwo,
 	ecgThree
 };
+
+enum class EEnumClassGlobalType : unsigned int { ecgtOne, ecgtTwo };
+enum EEnumClassGlobalTypeAssign : unsigned int { ecgtaOne = 1, ecgtaTwo };
 
 struct SEnum
 {
