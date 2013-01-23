@@ -78,6 +78,7 @@ protected:
 
 private:
     void OnSearchDirTextEvent(wxCommandEvent &event);
+    void OnSearchDirComboChange(wxCommandEvent &event);
     void OnSearchMaskTextEvent(wxCommandEvent &event);
 
     /** Runs a dialog to set directory path.

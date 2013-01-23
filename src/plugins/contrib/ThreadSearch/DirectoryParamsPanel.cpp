@@ -80,10 +80,12 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
     // begin wxGlade: DirectoryParamsPanel::event_table
     EVT_TEXT_ENTER(idSearchDirPath, DirectoryParamsPanel::OnSearchDirTextEvent)
+    EVT_COMBOBOX(idSearchDirPath, DirectoryParamsPanel::OnSearchDirTextEvent)
     EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
     EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkSearchDirRecurse)
     EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkSearchDirHidden)
     EVT_TEXT_ENTER(idSearchMask, DirectoryParamsPanel::OnSearchMaskTextEvent)
+    EVT_COMBOBOX(idSearchMask, DirectoryParamsPanel::OnSearchMaskTextEvent)
     // end wxGlade
 END_EVENT_TABLE();
 
@@ -93,7 +95,6 @@ void DirectoryParamsPanel::OnSearchDirTextEvent(wxCommandEvent &event)
     m_pFindData->SetSearchPath(event.GetString());
     event.Skip();
 }
-
 
 void DirectoryParamsPanel::OnSearchMaskTextEvent(wxCommandEvent &event)
 {
