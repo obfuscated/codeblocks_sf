@@ -74,6 +74,7 @@
 		<Unit filename="ThreadSearch.h" />
 		<Unit filename="ThreadSearchConfPanel.cpp" />
 		<Unit filename="ThreadSearchConfPanel.h" />
+		<Unit filename="ThreadSearchControlIds.cpp" />
 		<Unit filename="ThreadSearchControlIds.h" />
 		<Unit filename="ThreadSearchEvent.cpp" />
 		<Unit filename="ThreadSearchEvent.h" />
