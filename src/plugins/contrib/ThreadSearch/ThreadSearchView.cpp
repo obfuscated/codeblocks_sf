@@ -258,49 +258,39 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
 void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
 {
     ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
-    switch (event.GetId())
+    if (event.GetId() == idOptionWholeWord)
     {
-    case idOptionWholeWord:
         findData.SetMatchWord(event.IsChecked());
         m_ThreadSearchPlugin.SetFindData(findData);
-        break;
-    case idOptionStartWord:
+    }
+    else if (event.GetId() == idOptionStartWord)
+    {
         findData.SetStartWord(event.IsChecked());
         m_ThreadSearchPlugin.SetFindData(findData);
-        break;
-    case idOptionMatchCase:
+    }
+    else if (event.GetId() == idOptionMatchCase)
+    {
         findData.SetMatchCase(event.IsChecked());
         m_ThreadSearchPlugin.SetFindData(findData);
-        break;
-    case idOptionRegEx:
+    }
+    else if (event.GetId() == idOptionRegEx)
+    {
         findData.SetRegEx(event.IsChecked());
         m_ThreadSearchPlugin.SetFindData(findData);
-        break;
-    default:
-        break;
     }
 }
 
 void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
 {
     ThreadSearchFindData &findData = m_ThreadSearchPlugin.GetFindData();
-    switch (event.GetId())
-    {
-    case idOptionWholeWord:
+    if (event.GetId() == idOptionWholeWord)
         event.Check(findData.GetMatchWord());
-        break;
-    case idOptionStartWord:
+    else if (event.GetId() == idOptionStartWord)
         event.Check(findData.GetStartWord());
-        break;
-    case idOptionMatchCase:
+    else if (event.GetId() == idOptionMatchCase)
         event.Check(findData.GetMatchCase());
-        break;
-    case idOptionRegEx:
+    else if (event.GetId() == idOptionRegEx)
         event.Check(findData.GetRegEx());
-        break;
-    default:
-        break;
-    }
 }
 
 void ThreadSearchView::OnBtnShowDirItemsClick(wxCommandEvent& WXUNUSED(event))

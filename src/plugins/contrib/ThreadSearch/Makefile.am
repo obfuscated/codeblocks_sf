@@ -27,6 +27,7 @@ libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			TextFileSearcherText.cpp \
 			ThreadSearch.cpp \
 			ThreadSearchConfPanel.cpp \
+			ThreadSearchControlIds.cpp \
 			ThreadSearchEvent.cpp \
 			ThreadSearchFindData.cpp \
 			ThreadSearchLoggerBase.cpp \
