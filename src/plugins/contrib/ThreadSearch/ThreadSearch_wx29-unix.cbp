@@ -48,7 +48,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
-			<Add option="-z defs" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add library="wxcustombutton" />
 			<Add directory="../../../devel29" />
