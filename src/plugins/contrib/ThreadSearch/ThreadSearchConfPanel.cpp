@@ -46,20 +46,30 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     SizerSearchIn_staticbox = new wxStaticBox(this, -1, _("Search in files:"));
     m_pPnlSearchIn = new SearchInPanel(this, wxID_ANY);
     m_pPnlDirParams = new DirectoryParamsPanel(&threadSearchPlugin.GetFindData(), this, wxID_ANY);
-    m_pChkWholeWord = new wxCheckBox(this, idChkWholeWord, _("Whole word"));
-    m_pChkStartWord = new wxCheckBox(this, idChkStartWord, _("Start word"));
-    m_pChkMatchCase = new wxCheckBox(this, idChkMatchCase, _("Match case"));
-    m_pChkRegExp = new wxCheckBox(this, idChkRegularExpression, _("Regular expression"));
-    m_pChkThreadSearchEnable = new wxCheckBox(this, idChkThreadSearchEnable, _("Enable 'Find occurrences' contextual menu item"));
-    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, idChkUseDefaultOptionsOnThreadSearch, _("Use default options when running 'Find occurrences' "));
-    m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, _("Show error message if file is missing"));
-    m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, _("Show error message if file cannot be opened"));
-    m_pChkDeletePreviousResults = new wxCheckBox(this, idChkChkDeletePreviousResults, _("Delete previous results at search begin"));
-    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, _("Show ThreadSearch toolbar"));
-    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, _("Show search widgets in ThreadSearch Messages panel"));
-    m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, _("Show code preview editor"));
-    m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders,_("Display header in log window"));
-    m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, _("Draw lines between log columns"));
+    m_pChkWholeWord = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkWholeWord), _("Whole word"));
+    m_pChkStartWord = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkStartWord), _("Start word"));
+    m_pChkMatchCase = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkMatchCase), _("Match case"));
+    m_pChkRegExp = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkRegularExpression), _("Regular expression"));
+    m_pChkThreadSearchEnable = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkThreadSearchEnable),
+                                                                   _("Enable 'Find occurrences' contextual menu item"));
+    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkUseDefaultOptionsOnThreadSearch),
+                                                            _("Use default options when running 'Find occurrences' "));
+    m_pChkShowMissingFilesError = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowMissingFilesError),
+                                                 _("Show error message if file is missing"));
+    m_pChkShowCantOpenFileError = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowCantOpenFileError),
+                                                 _("Show error message if file cannot be opened"));
+    m_pChkDeletePreviousResults = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkChkDeletePreviousResults),
+                                                 _("Delete previous results at search begin"));
+    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkViewThreadSearchToolBar),
+                                                   _("Show ThreadSearch toolbar"));
+    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowThreadSearchWidgets),
+                                                   _("Show search widgets in ThreadSearch Messages panel"));
+    m_pChkShowCodePreview = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkShowCodePreview),
+                                           _("Show code preview editor"));
+    m_pChkDisplayLogHeaders = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkDisplayLogHeaders),
+                                             _("Display header in log window"));
+    m_pChkDrawLogLines = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkDrawLogLines),
+                                        _("Draw lines between log columns"));
     const wxString m_pRadPanelManagement_choices[] = {
         _("Messages notebook"),
         _("Layout")
@@ -89,12 +99,16 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
 
 BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // begin wxGlade: ThreadSearchConfPanel::event_table
-    EVT_CHECKBOX(idChkThreadSearchEnable, ThreadSearchConfPanel::OnThreadSearchEnable)
-    EVT_CHECKBOX(idChkShowMissingFilesError, ThreadSearchConfPanel::OnChkShowMissingFilesErrorClick)
-    EVT_CHECKBOX(idChkShowCantOpenFileError, ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick)
-    EVT_CHECKBOX(idChkViewThreadSearchToolBar, ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick)
-    EVT_CHECKBOX(idChkShowThreadSearchWidgets, ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick)
-    EVT_CHECKBOX(idChkShowCodePreview, ThreadSearchConfPanel::OnChkCodePreview)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkThreadSearchEnable), ThreadSearchConfPanel::OnThreadSearchEnable)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkShowMissingFilesError),
+                 ThreadSearchConfPanel::OnChkShowMissingFilesErrorClick)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkShowCantOpenFileError),
+                 ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkViewThreadSearchToolBar),
+                 ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkShowThreadSearchWidgets),
+                 ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkShowCodePreview), ThreadSearchConfPanel::OnChkCodePreview)
     // end wxGlade
 END_EVENT_TABLE();
 

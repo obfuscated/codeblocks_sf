@@ -293,10 +293,10 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
 
-    pEvtHandler->Connect(idMenuCtxDeleteItem, wxEVT_COMMAND_MENU_SELECTED,
+    pEvtHandler->Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
             wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
 
-    pEvtHandler->Connect(idMenuCtxDeleteAllItems, wxEVT_COMMAND_MENU_SELECTED,
+    pEvtHandler->Connect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
             wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
 #endif // wxUSE_MENUS
 }
@@ -323,10 +323,10 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
 
-    pEvtHandler->Disconnect(idMenuCtxDeleteItem, wxEVT_COMMAND_MENU_SELECTED,
+    pEvtHandler->Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteItem), wxEVT_COMMAND_MENU_SELECTED,
             wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
 
-    pEvtHandler->Disconnect(idMenuCtxDeleteAllItems, wxEVT_COMMAND_MENU_SELECTED,
+    pEvtHandler->Disconnect(controlIDs.Get(ControlIDs::idMenuCtxDeleteAllItems), wxEVT_COMMAND_MENU_SELECTED,
             wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
 #endif // wxUSE_MENUS
 }

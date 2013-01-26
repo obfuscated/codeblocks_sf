@@ -63,13 +63,13 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
     const wxString choices[] = {};
 
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
-    m_pSearchDirPath = new wxComboBox(this, idSearchDirPath, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                      0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
-    m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, _("..."));
-    m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, _("Recurse"));
-    m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, _("Hidden"));
-    m_pMask = new wxComboBox(this, idSearchMask, wxT("*.*"), wxDefaultPosition, wxDefaultSize,
-                             0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
+    m_pSearchDirPath = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchDirPath), wxEmptyString,
+                                      wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
+    m_pBtnSelectDir = new wxButton(this, controlIDs.Get(ControlIDs::idBtnDirSelectClick), _("..."));
+    m_pChkSearchDirRecursively = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkSearchDirRecurse), _("Recurse"));
+    m_pChkSearchDirHiddenFiles = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkSearchDirHidden), _("Hidden"));
+    m_pMask = new wxComboBox(this, controlIDs.Get(ControlIDs::idSearchMask), wxT("*.*"),
+                             wxDefaultPosition, wxDefaultSize, 0, choices, wxCB_DROPDOWN|wxTE_PROCESS_ENTER);
 
     set_properties();
     do_layout();
@@ -79,13 +79,13 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
 
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
     // begin wxGlade: DirectoryParamsPanel::event_table
-    EVT_TEXT_ENTER(idSearchDirPath, DirectoryParamsPanel::OnSearchDirTextEvent)
-    EVT_COMBOBOX(idSearchDirPath, DirectoryParamsPanel::OnSearchDirTextEvent)
-    EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
-    EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkSearchDirRecurse)
-    EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkSearchDirHidden)
-    EVT_TEXT_ENTER(idSearchMask, DirectoryParamsPanel::OnSearchMaskTextEvent)
-    EVT_COMBOBOX(idSearchMask, DirectoryParamsPanel::OnSearchMaskTextEvent)
+    EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idSearchDirPath), DirectoryParamsPanel::OnSearchDirTextEvent)
+    EVT_COMBOBOX(controlIDs.Get(ControlIDs::idSearchDirPath), DirectoryParamsPanel::OnSearchDirTextEvent)
+    EVT_BUTTON(controlIDs.Get(ControlIDs::idBtnDirSelectClick), DirectoryParamsPanel::OnBtnDirSelectClick)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkSearchDirRecurse), DirectoryParamsPanel::OnChkSearchDirRecurse)
+    EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkSearchDirHidden), DirectoryParamsPanel::OnChkSearchDirHidden)
+    EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idSearchMask), DirectoryParamsPanel::OnSearchMaskTextEvent)
+    EVT_COMBOBOX(controlIDs.Get(ControlIDs::idSearchMask), DirectoryParamsPanel::OnSearchMaskTextEvent)
     // end wxGlade
 END_EVENT_TABLE();
 
