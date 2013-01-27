@@ -676,19 +676,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     }
     else if (!ftd && m_pWorkspace)
     {
-        menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace..."));
-        menu.AppendSeparator();
-        menu.Append(idMenuTreeSaveWorkspace,   _("Save workspace"));
-        menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
-        menu.AppendSeparator();
-        menu.Append(idMenuFindFile,            _("Find file..."));
-
-        // ask any plugins to add items in this menu
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu, NULL);
-
-        // this menu items should be always the last one
-        menu.AppendSeparator();
-        menu.Append(idMenuTreeCloseWorkspace,  _("Close workspace"));
+        wxCommandEvent event;
+        OnRightClick(event);
+        return;
     }
 
     if (menu.GetMenuItemCount() != 0)
@@ -1892,9 +1882,16 @@ void ProjectManager::OnExecParameters(cb_unused wxCommandEvent& event)
 
 void ProjectManager::OnRightClick(cb_unused wxCommandEvent& event)
 {
-    //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
-
     wxMenu menu;
+    if (m_pWorkspace)
+    {
+        menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace..."));
+        menu.AppendSeparator();
+        menu.Append(idMenuTreeSaveWorkspace,   _("Save workspace"));
+        menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
+        menu.AppendSeparator();
+        menu.Append(idMenuFindFile,            _("Find file..."));
+    }
 
     // ask any plugins to add items in this menu
     Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtProjectManager, &menu);
@@ -1920,6 +1917,13 @@ void ProjectManager::OnRightClick(cb_unused wxCommandEvent& event)
 
     menu.AppendSeparator();
     menu.Append(idMenuViewFileMasks, _("Edit file types && categories..."));
+
+    if (m_pWorkspace)
+    {
+        // this menu items should be always the last one
+        menu.AppendSeparator();
+        menu.Append(idMenuTreeCloseWorkspace,  _("Close workspace"));
+    }
 
     wxPoint pt = wxGetMousePosition();
     pt = m_pTree->ScreenToClient(pt);
