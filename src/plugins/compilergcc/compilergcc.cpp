@@ -546,7 +546,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     if (!IsAttached())
         return;
     // we 're only interested in project manager's menus
-    if (type != mtProjectManager || !menu || IsRunning())
+    if (type != mtProjectManager || !menu)
         return;
 
     if (!CheckProject())
@@ -560,6 +560,13 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
         menu->Append(idMenuBuildWorkspace,   _("Build workspace"));
         menu->Append(idMenuRebuildWorkspace, _("Rebuild workspace"));
         menu->Append(idMenuCleanWorkspace,   _("Clean workspace"));
+
+        if (IsRunning())
+        {
+            menu->Enable(idMenuBuildWorkspace, false);
+            menu->Enable(idMenuRebuildWorkspace, false);
+            menu->Enable(idMenuCleanWorkspace, false);
+        }
     }
     else if (data && data->GetKind() == FileTreeData::ftdkProject)
     {
@@ -574,7 +581,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
         menu->Append(idMenuProjectCompilerOptionsFromProjectManager, _("Build options..."));
 
         cbPlugin *otherRunning = Manager::Get()->GetProjectManager()->GetIsRunning();
-        if (otherRunning && otherRunning != this)
+        if (IsRunning() || (otherRunning && otherRunning != this))
         {
             menu->Enable(idMenuCompileFromProjectManager, false);
             menu->Enable(idMenuRebuildFromProjectManager, false);
@@ -590,6 +597,8 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
             // popup menu on a compilable file
             menu->AppendSeparator();
             menu->Append(idMenuCompileFileFromProjectManager, _("Build file"));
+            if (IsRunning())
+                menu->Enable(idMenuCompileFileFromProjectManager, false);
         }
     }
 }
