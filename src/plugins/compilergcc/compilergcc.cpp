@@ -3734,20 +3734,26 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             }
             else if (!Manager::IsBatchBuild())
             {
-                // don't close the message manager (if auto-hiding), if warnings are required to keep it open
-                if (m_Errors.GetCount(cltWarning) &&
-                    Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
+                // switch to the "Build messages" window only if the active log window is "Build log"
+                CodeBlocksLogEvent evtGetActive(cbEVT_GET_ACTIVE_LOG_WINDOW);
+                Manager::Get()->ProcessEvent(evtGetActive);
+                if (evtGetActive.logger == m_pLog)
                 {
-                    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-                    Manager::Get()->ProcessEvent(evtShow);
+                    // don't close the message manager (if auto-hiding), if warnings are required to keep it open
+                    if (m_Errors.GetCount(cltWarning) &&
+                        Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
+                    {
+                        CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+                        Manager::Get()->ProcessEvent(evtShow);
 
-                    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-                    Manager::Get()->ProcessEvent(evtSwitch);
-                }
-                else // if message manager is auto-hiding, unlock it (i.e. close it)
-                {
-                    CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
-                    Manager::Get()->ProcessEvent(evtShow);
+                        CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+                        Manager::Get()->ProcessEvent(evtSwitch);
+                    }
+                    else // if message manager is auto-hiding, unlock it (i.e. close it)
+                    {
+                        CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
+                        Manager::Get()->ProcessEvent(evtShow);
+                    }
                 }
             }
         }
