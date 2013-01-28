@@ -1553,8 +1553,10 @@ void CompilerGCC::DoPrepareQueue(bool clearLog)
         Manager::Get()->ProcessEvent(evt);
 
         if (clearLog)
+        {
             ClearLog();
-        DoClearErrors();
+            DoClearErrors();
+        }
         // wxStartTimer();
         m_StartTime = wxGetLocalTimeMillis();
     }
@@ -1764,7 +1766,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     {
         target = m_pProject->GetBuildTarget(m_pProject->GetActiveBuildTarget());
     }
-    DoPrepareQueue();
+    DoPrepareQueue(false);
     if (   !(target && (   target->GetTargetType() == ttCommandsOnly // do not require compiler for commands-only target
                         || target->GetCompilerID() == wxT("null") )) // do not require compiler for "No Compiler" (why would you?)
         && !CompilerValid(target) )
@@ -2056,7 +2058,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
         Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
 
     if (!m_IsWorkspaceOperation)
-        DoPrepareQueue();
+        DoPrepareQueue(true);
     if (!CompilerValid(target))
         return -1;
 
@@ -2882,7 +2884,7 @@ int CompilerGCC::CompileFile(const wxString& file)
     if ( CheckProject() )
         target = m_pProject->GetBuildTarget(m_pProject->GetActiveBuildTarget());
 
-    DoPrepareQueue();
+    DoPrepareQueue(true);
     if ( !CompilerValid(target) )
         return -1;
 

@@ -178,7 +178,7 @@ class CompilerGCC : public cbCompilerPlugin
         void SaveOptions();
         void LoadOptions();
         void DoRegisterCompilers();
-        void DoPrepareQueue(bool clearLog=true);
+        void DoPrepareQueue(bool clearLog);
         void NotifyCleanProject(const wxString& target);
         void NotifyCleanWorkspace();
         int DoRunQueue();
