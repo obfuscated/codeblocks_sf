@@ -209,6 +209,8 @@ class MainFrame : public wxFrame
         void OnHelpTips(wxCommandEvent& event);
         void OnHelpPluginMenu(wxCommandEvent& event);
 
+        void OnViewToolbarsFit(wxCommandEvent& event);
+        void OnViewToolbarsOptimize(wxCommandEvent& event);
         void OnToggleBar(wxCommandEvent& event);
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);

@@ -506,6 +506,15 @@
       </object>
       <object class="wxMenu" name="idViewToolbars">
         <label>Toolbars</label>
+        <object class="wxMenuItem" name="idViewToolFit">
+          <label>&amp;Fit toolbars</label>
+          <help>Try to reorder toolbars in such a way that all of them are visible</help>
+        </object>
+        <object class="wxMenuItem" name="idViewToolOptimize">
+          <label>&amp;Optimize toolbars</label>
+          <help>Try to reorder the toolbars in such a way that the use minimum space</help>
+        </object>
+        <object class="separator"/>
         <object class="wxMenuItem" name="idViewToolMain">
           <label>&amp;Main</label>
           <help>Show/hide main toolbar</help>

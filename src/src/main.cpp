@@ -243,6 +243,8 @@ int idEditBoxCommentSelected      = XRCID("idEditBoxCommentSelected");
 int idViewLayoutDelete       = XRCID("idViewLayoutDelete");
 int idViewLayoutSave         = XRCID("idViewLayoutSave");
 int idViewToolbars           = XRCID("idViewToolbars");
+int idViewToolFit            = XRCID("idViewToolFit");
+int idViewToolOptimize       = XRCID("idViewToolOptimize");
 int idViewToolMain           = XRCID("idViewToolMain");
 int idViewToolDebugger       = XRCID("idViewToolDebugger");
 int idViewManager            = XRCID("idViewManager");
@@ -480,6 +482,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idViewLayoutSave,            MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete,          MainFrame::OnViewLayoutDelete)
+    EVT_MENU(idViewToolFit,               MainFrame::OnViewToolbarsFit)
+    EVT_MENU(idViewToolOptimize,          MainFrame::OnViewToolbarsOptimize)
     EVT_MENU(idViewToolMain,              MainFrame::OnToggleBar)
     EVT_MENU(idViewToolDebugger,          MainFrame::OnToggleBar)
     EVT_MENU(idViewLogManager,            MainFrame::OnToggleBar)
@@ -4350,17 +4354,152 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
     event.Skip();
 }
 
+namespace
+{
+struct ToolbarFitInfo
+{
+    int row;
+    wxRect rect;
+    wxWindow *window;
+
+    bool operator<(const ToolbarFitInfo &r) const
+    {
+        if (row < r.row)
+            return true;
+        else if (row == r.row)
+            return rect.x < r.rect.x;
+        else
+            return false;
+    }
+};
+
+static void CollectToolbars(std::set<ToolbarFitInfo> &result, wxAuiManager &layoutManager)
+{
+    const wxAuiPaneInfoArray &panes = layoutManager.GetAllPanes();
+    for (size_t ii = 0; ii < panes.GetCount(); ++ii)
+    {
+        const wxAuiPaneInfo &info = panes[ii];
+        if (info.IsToolbar() && info.IsShown())
+        {
+            ToolbarFitInfo f;
+            f.row = info.dock_row;
+            f.rect = info.rect;
+            f.window = info.window;
+            result.insert(f);
+        }
+    }
+}
+
+struct ToolbarRowInfo
+{
+    ToolbarRowInfo() {}
+    ToolbarRowInfo(int width_, int position_) : width(width_), position(position_) {}
+
+    int width, position;
+};
+
+// Function which tries to make all toolbars visible.
+static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
+{
+    std::set<ToolbarFitInfo> sorted;
+    CollectToolbars(sorted, layoutManager);
+    if (sorted.empty())
+        return;
+
+    int maxWidth = mainFrame->GetSize().x;
+
+    // move all toolbars to the left as possible and add the non-fitting to a list
+    std::vector<ToolbarRowInfo> rows;
+    std::vector<wxWindow*> nonFitingToolbars;
+    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
+    {
+        wxAuiPaneInfo &pane = layoutManager.GetPane(it->window);
+        int row = pane.dock_row;
+        while (static_cast<int>(rows.size()) <= row)
+            rows.push_back(ToolbarRowInfo(0, 0));
+
+        int maxX = rows[row].width + it->window->GetSize().x;
+        if (maxX > maxWidth)
+            nonFitingToolbars.push_back(it->window);
+        else
+        {
+            rows[row].width = maxX;
+            pane.Position(rows[row].position++);
+        }
+    }
+
+    // move the non-fitting toolbars at the bottom
+    int lastRow = rows.empty() ? 0 : (rows.size() - 1);
+    int position = rows.back().position, maxX = rows.back().width;
+    for (std::vector<wxWindow*>::iterator it = nonFitingToolbars.begin(); it != nonFitingToolbars.end(); ++it)
+    {
+        maxX += (*it)->GetSize().x;
+        if (maxX > maxWidth)
+        {
+            position = 0;
+            lastRow++;
+            maxX = (*it)->GetSize().x;
+        }
+        layoutManager.GetPane(*it).Position(position++).Row(lastRow);
+    }
+}
+
+// Function which tries to minimize the space used by the toolbars.
+// Also it can be used to show toolbars which have gone outside the window.
+static void OptimizeToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
+{
+    std::set<ToolbarFitInfo> sorted;
+    CollectToolbars(sorted, layoutManager);
+    if (sorted.empty())
+        return;
+
+    int maxWidth = mainFrame->GetSize().x;
+    int lastRow = 0, position = 0, maxX = 0;
+    for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
+    {
+        maxX += it->window->GetSize().x;
+        if (maxX > maxWidth)
+        {
+            position = 0;
+            lastRow++;
+            maxX = it->window->GetSize().x;
+        }
+        layoutManager.GetPane(it->window).Position(position++).Row(lastRow);
+    }
+}
+
+} // anomymous namespace
+
+void MainFrame::OnViewToolbarsFit(wxCommandEvent& event)
+{
+    FitToolbars(m_LayoutManager, this);
+    DoUpdateLayout();
+}
+
+void MainFrame::OnViewToolbarsOptimize(wxCommandEvent& event)
+{
+    OptimizeToolbars(m_LayoutManager, this);
+    DoUpdateLayout();
+}
+
 void MainFrame::OnToggleBar(wxCommandEvent& event)
 {
-    wxWindow* win = 0;
+    wxWindow* win = nullptr;
+    bool toolbar = false;
     if (event.GetId() == idViewManager)
         win = Manager::Get()->GetProjectManager()->GetNotebook();
     else if (event.GetId() == idViewLogManager)
         win = m_pInfoPane;
     else if (event.GetId() == idViewToolMain)
+    {
         win = m_pToolbar;
+        toolbar = true;
+    }
     else if (event.GetId() == idViewToolDebugger)
+    {
         win = m_debuggerToolbarHandler->GetToolbar();
+        toolbar = true;
+    }
     else
     {
         wxString pluginName = m_PluginIDsMap[event.GetId()];
@@ -4368,7 +4507,10 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
         {
             cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
             if (plugin)
+            {
                 win = m_PluginsTools[plugin];
+                toolbar = true;
+            }
         }
     }
 
@@ -4379,6 +4521,8 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
              m_LayoutManager.GetPane(win).BestSize(win->GetSize());
 
         m_LayoutManager.GetPane(win).Show(event.IsChecked());
+        if (toolbar)
+            FitToolbars(m_LayoutManager, this);
         DoUpdateLayout();
     }
 }
