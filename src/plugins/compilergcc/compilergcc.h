@@ -74,7 +74,8 @@ enum LogTarget
 enum BuildAction
 {
     baClean = 0,
-    baBuild
+    baBuild,
+    baRun
 };
 
 class wxComboBox;

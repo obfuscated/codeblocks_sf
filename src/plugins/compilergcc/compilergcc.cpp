@@ -1648,9 +1648,20 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
     if (!prj)
         prj = m_pProject;
 
-    wxString Action = _("Build");
-    if (action ==  baClean)
+    wxString Action;
+    switch (action)
+    {
+    case baClean:
         Action = _("Clean");
+        break;
+    case baRun:
+        Action = _("Run");
+        break;
+    default:
+    case baBuild:
+        Action = _("Build");
+        break;
+    }
 
     wxString compilerName(_("unknown"));
     Compiler *compiler = CompilerFactory::GetCompiler(GetCurrentCompilerID(target));
@@ -1766,6 +1777,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     {
         target = m_pProject->GetBuildTarget(m_pProject->GetActiveBuildTarget());
     }
+    PrintBanner(baRun, m_pProject, target);
+
     DoPrepareQueue(false);
     if (   !(target && (   target->GetTargetType() == ttCommandsOnly // do not require compiler for commands-only target
                         || target->GetCompilerID() == wxT("null") )) // do not require compiler for "No Compiler" (why would you?)
