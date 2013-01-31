@@ -396,14 +396,33 @@ private:
     // for GenerateResultSet()
     bool AddChildrenOfUnnamed(TokenTree* tree, const Token* parent, TokenIdxSet& result)
     {
-        if (parent->m_TokenKind == tkClass && parent->m_Name.StartsWith(g_UnnamedSymbol))
+        if (((parent->m_TokenKind & (tkClass | tkEnum)) != 0) && parent->m_Name.StartsWith(g_UnnamedSymbol))
         {
             // add all its children
             for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
                                              it != parent->m_Children.end(); ++it)
             {
                 Token* tokenChild = tree->at(*it);
-                if (tokenChild)
+                if (tokenChild &&
+                    (parent->m_TokenKind == tkClass || tokenChild->m_Scope != tsPrivate))
+                    result.insert(*it);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    bool AddChildrenOfEnum(TokenTree* tree, const Token* parent, TokenIdxSet& result)
+    {
+        if (parent->m_TokenKind == tkEnum)
+        {
+            // add all its children
+            for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
+                                             it != parent->m_Children.end(); ++it)
+            {
+                Token* tokenChild = tree->at(*it);
+                if (tokenChild && tokenChild->m_Scope != tsPrivate)
                     result.insert(*it);
             }
 

@@ -2263,10 +2263,14 @@ void ParserThread::HandleEnum()
     // enums have the following rough definition:
     // enum [xxx] { type1 name1 [= 1][, [type2 name2 [= 2]]] };
     bool isUnnamed = false;
+    bool isEnumClass = false;
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString token = m_Tokenizer.GetToken();
     if (token == ParserConsts::kw_class)
+    {
         token = m_Tokenizer.GetToken();
+        isEnumClass = true;
+    }
     if (token.IsEmpty())
         return;
 
@@ -2357,7 +2361,8 @@ void ParserThread::HandleEnum()
             {
                 Token* lastParent = m_LastParent;
                 m_LastParent = newEnum;
-                DoAddToken(tkEnumerator, token, m_Tokenizer.GetLineNumber());
+                Token* enumerator = DoAddToken(tkEnumerator, token, m_Tokenizer.GetLineNumber());
+                enumerator->m_Scope = isEnumClass ? tsPrivate : tsPublic;
                 m_LastParent = lastParent;
             }
             if (peek==ParserConsts::colon)

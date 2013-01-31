@@ -1318,7 +1318,10 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                 if (!token)
                     continue;
                 if ( !AddChildrenOfUnnamed(tree, token, result) )
+                {
                     result.insert(*it);
+                    AddChildrenOfEnum(tree, token, result);
+                }
             }
 
             tree->RecalcInheritanceChain(parent);
@@ -1334,7 +1337,10 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                     if (!token)
                         continue;
                     if ( !AddChildrenOfUnnamed(tree, token, result) )
+                    {
                         result.insert(*it2);
+                        AddChildrenOfEnum(tree, token, result);
+                    }
                 }
             }
         }
