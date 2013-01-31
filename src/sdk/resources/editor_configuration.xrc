@@ -195,14 +195,13 @@
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
-                                            <object class="wxComboBox" name="cmbEOLMode">
+                                            <object class="wxChoice" name="cmbEOLMode">
                                               <content>
                                                 <item>CR LF</item>
                                                 <item>CR</item>
                                                 <item>LF</item>
                                                 <item>AUTO</item>
                                               </content>
-                                              <style>wxCB_READONLY</style>
                                             </object>
                                             <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                             <border>16</border>
@@ -505,8 +504,7 @@
                                     <border>5</border>
                                   </object>
                                   <object class="sizeritem">
-                                    <object class="wxComboBox" name="cmbEncoding">
-                                      <style>wxCB_READONLY</style>
+                                    <object class="wxChoice" name="cmbEncoding">
                                     </object>
                                     <flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                     <border>8</border>
@@ -583,14 +581,13 @@
                                     <border>5</border>
                                   </object>
                                   <object class="sizeritem">
-                                    <object class="wxComboBox" name="cmbViewWS">
+                                    <object class="wxChoice" name="cmbViewWS">
                                       <content>
                                         <item>No</item>
                                         <item>Always</item>
                                         <item>Only after indent</item>
                                       </content>
                                       <size>95,24</size>
-                                      <style>wxCB_READONLY</style>
                                     </object>
                                     <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                     <border>5</border>
@@ -1017,8 +1014,7 @@
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbThemes">
-                            <style>wxCB_READONLY</style>
+                          <object class="wxChoice" name="cmbThemes">
                           </object>
                           <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>8</border>
@@ -1058,8 +1054,7 @@
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbLangs">
-                            <style>wxCB_READONLY</style>
+                          <object class="wxChoice" name="cmbLangs">
                           </object>
                           <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
@@ -1207,12 +1202,11 @@
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxComboBox" name="cmbDefCodeFileType">
+                      <object class="wxChoice" name="cmbDefCodeFileType">
                         <content>
                           <item>C/C++ Source File</item>
                           <item>C/C++ Header File</item>
                         </content>
-                        <style>wxCB_READONLY</style>
                       </object>
                       <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>

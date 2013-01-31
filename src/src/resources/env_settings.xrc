@@ -460,14 +460,13 @@
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
-											<object class="wxComboBox" name="cmbEditorTabs">
+											<object class="wxChoice" name="cmbEditorTabs">
 												<content>
 													<item>Default</item>
 													<item>Simple tabs</item>
 													<item>Microsoft (tm) Visual Studio 7.1</item>
 													<item>Firefox 2</item>
 												</content>
-												<style>wxCB_READONLY</style>
 											</object>
 											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>4</border>
@@ -490,13 +489,12 @@
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxComboBox" name="cmbTabCloseStyle">
+											<object class="wxChoice" name="cmbTabCloseStyle">
 												<content>
 													<item>all tabs</item>
 													<item>current tab</item>
 													<item>the right side</item>
 												</content>
-												<style>wxCB_READONLY</style>
 											</object>
 											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>

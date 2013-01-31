@@ -13,7 +13,6 @@
     #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/choice.h>
-    #include <wx/combobox.h>
     #include <wx/settings.h>
     #include <wx/slider.h>
     #include <wx/spinctrl.h>
@@ -80,9 +79,9 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_CHECKBOX(XRCID("chkColoursItalics"),           EditorConfigurationDlg::OnBoldItalicUline)
     EVT_CHECKBOX(XRCID("chkColoursUnderlined"),        EditorConfigurationDlg::OnBoldItalicUline)
     EVT_LISTBOX(XRCID("lstComponents"),                EditorConfigurationDlg::OnColourComponent)
-    EVT_COMBOBOX(XRCID("cmbLangs"),                    EditorConfigurationDlg::OnChangeLang)
-    EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),          EditorConfigurationDlg::OnChangeDefCodeFileType)
-    EVT_COMBOBOX(XRCID("cmbThemes"),                   EditorConfigurationDlg::OnColourTheme)
+    EVT_CHOICE(XRCID("cmbLangs"),                      EditorConfigurationDlg::OnChangeLang)
+    EVT_CHOICE(XRCID("cmbDefCodeFileType"),            EditorConfigurationDlg::OnChangeDefCodeFileType)
+    EVT_CHOICE(XRCID("cmbThemes"),                     EditorConfigurationDlg::OnColourTheme)
     EVT_CHECKBOX(XRCID("chkDynamicWidth"),             EditorConfigurationDlg::OnDynamicCheck)
     EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),     EditorConfigurationDlg::OnHighlightOccurrences)
     EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"), EditorConfigurationDlg::OnMultipleSelections)
@@ -137,7 +136,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkResetZoom",                wxCheckBox)->SetValue(cfg->ReadBool(_T("/reset_zoom"),                 false));
     XRCCTRL(*this, "chkZoomAll",                  wxCheckBox)->SetValue(cfg->ReadBool(_T("/zoom_all"),                   false));
     XRCCTRL(*this, "spnTabSize",                  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"),                    4));
-    XRCCTRL(*this, "cmbViewWS",                   wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"),         0));
+    XRCCTRL(*this, "cmbViewWS",                   wxChoice)->SetSelection(cfg->ReadInt(_T("/view_whitespace"),         0));
     XRCCTRL(*this, "rbTabText",                   wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"),      true)? 1 : 0);
 
     XRCCTRL(*this, "chkTrackPreprocessor",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"),         true));
@@ -171,7 +170,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkEnsureFinalEOL",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"),       true));
     XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_consistent_line_ends"), false));
     // NOTE: duplicate line in cbeditor.cpp (CreateEditor)
-    XRCCTRL(*this, "cmbEOLMode",             wxComboBox)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"),                  platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF)); // Windows takes CR+LF, other platforms LF only
+    XRCCTRL(*this, "cmbEOLMode",             wxChoice)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"),                  platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF)); // Windows takes CR+LF, other platforms LF only
 
     //caret
     wxColour caretColour = cfg->ReadColour(_T("/caret/colour"), *wxBLACK);
@@ -218,7 +217,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     LoadThemes();
 
     // fill encodings
-    wxComboBox* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxComboBox);
+    wxChoice* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxChoice);
     if (cmbEnc)
     {
         cmbEnc->Clear();
@@ -240,7 +239,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkEncodingUseSystem",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/use_system"),    true));
 
     // default code
-    XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->SetSelection(m_DefCodeFileType);
+    XRCCTRL(*this, "cmbDefCodeFileType", wxChoice)->SetSelection(m_DefCodeFileType);
     wxString key;
     key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
@@ -532,7 +531,7 @@ void EditorConfigurationDlg::OnCaretStyle(cb_unused wxCommandEvent& event)
 
 void EditorConfigurationDlg::LoadThemes()
 {
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     cmbThemes->Clear();
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     wxArrayString list = cfg->EnumerateSubPaths(_T("/colour_sets"));
@@ -553,7 +552,7 @@ void EditorConfigurationDlg::LoadThemes()
 
 bool EditorConfigurationDlg::AskToSaveTheme()
 {
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     if (m_Theme && m_ThemeModified)
     {
         wxString msg;
@@ -576,7 +575,7 @@ bool EditorConfigurationDlg::AskToSaveTheme()
 
 void EditorConfigurationDlg::ChangeTheme()
 {
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     if (cmbThemes->GetSelection() == wxNOT_FOUND)
         cmbThemes->SetSelection(0);
     wxString key = cmbThemes->GetStringSelection();
@@ -598,7 +597,7 @@ void EditorConfigurationDlg::ChangeTheme()
     XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
     XRCCTRL(*this, "btnFilemasks", wxButton)->Enable(m_Theme);
 
-    wxComboBox* cmbLangs = XRCCTRL(*this, "cmbLangs", wxComboBox);
+    wxChoice* cmbLangs = XRCCTRL(*this, "cmbLangs", wxChoice);
     int sel = cmbLangs->GetSelection();
     cmbLangs->Clear();
     wxArrayString langs = m_Theme->GetAllHighlightLanguages();
@@ -628,7 +627,7 @@ void EditorConfigurationDlg::ChangeTheme()
 void EditorConfigurationDlg::OnColourTheme(cb_unused wxCommandEvent& event)
 {
     // theme has changed
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     if (m_Theme && m_Theme->GetName() != cmbThemes->GetStringSelection())
     {
         if (AskToSaveTheme())
@@ -644,7 +643,7 @@ void EditorConfigurationDlg::OnAddColourTheme(cb_unused wxCommandEvent& event)
         return;
 
     wxString name = dlg.GetValue();
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     cmbThemes->Append(name);
     cmbThemes->SetSelection(cmbThemes->GetCount() - 1);
     ChangeTheme();
@@ -655,7 +654,7 @@ void EditorConfigurationDlg::OnDeleteColourTheme(cb_unused wxCommandEvent& event
     if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO, this) == wxID_YES)
     {
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/colour_sets/") + m_Theme->GetName());
-        wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+        wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
         int idx = cmbThemes->FindString(m_Theme->GetName());
         if (idx != wxNOT_FOUND)
             cmbThemes->Delete(idx);
@@ -673,7 +672,7 @@ void EditorConfigurationDlg::OnRenameColourTheme(cb_unused wxCommandEvent& event
 
     wxString name = dlg.GetValue();
     wxString oldName = m_Theme->GetName();
-    wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
+    wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     int idx = cmbThemes->GetSelection();
     if (idx != wxNOT_FOUND)
         cmbThemes->SetString(idx, name);
@@ -733,7 +732,7 @@ void EditorConfigurationDlg::OnChangeLang(cb_unused wxCommandEvent& event)
 {
     if (m_Theme)
     {
-        wxString sel = XRCCTRL(*this, "cmbLangs", wxComboBox)->GetStringSelection();
+        wxString sel = XRCCTRL(*this, "cmbLangs", wxChoice)->GetStringSelection();
         m_Lang = m_Theme->GetHighlightLanguage(sel);
     }
     FillColourComponents();
@@ -742,7 +741,7 @@ void EditorConfigurationDlg::OnChangeLang(cb_unused wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnChangeDefCodeFileType(cb_unused wxCommandEvent& event)
 {
-    int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
+    int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxChoice)->GetSelection();
     if (sel != m_DefCodeFileType)
     {   // update array for previous selected and show the code for the newly selected
         m_DefaultCode[m_DefCodeFileType] = XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue();
@@ -838,7 +837,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/zoom_all"),                            zoomAll);
 
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize",                           wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS",                            wxComboBox)->GetSelection());
+        cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS",                            wxChoice)->GetSelection());
         cfg->Write(_T("/open_containing_folder"),              XRCCTRL(*this, "txtOpenFolder",                        wxTextCtrl)->GetValue());
         cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText",                            wxRadioBox)->GetSelection() ? true : false);
         cfg->Write(_T("/highlight_occurrence/enabled"),        XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->GetValue());
@@ -884,7 +883,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/eol/strip_trailing_spaces"),       XRCCTRL(*this, "chkStripTrailings",      wxCheckBox)->GetValue());
         cfg->Write(_T("/eol/ensure_final_line_end"),       XRCCTRL(*this, "chkEnsureFinalEOL",      wxCheckBox)->GetValue());
         cfg->Write(_T("/eol/ensure_consistent_line_ends"), XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->GetValue());
-        cfg->Write(_T("/eol/eolmode"),                (int)XRCCTRL(*this, "cmbEOLMode",             wxComboBox)->GetSelection());
+        cfg->Write(_T("/eol/eolmode"),                (int)XRCCTRL(*this, "cmbEOLMode",             wxChoice)->GetSelection());
 
         //gutter
         cfg->Write(_T("/gutter/mode"),                     XRCCTRL(*this, "lstGutterMode",   wxChoice)->GetSelection());
@@ -926,7 +925,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         }
         // default code : first update what's in the current txtCtrl,
         // and then write them all to the config file (even if unmodified)
-        int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();
+        int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxChoice)->GetSelection();
         m_DefaultCode[sel] = XRCCTRL(*this, "txtDefCode", wxTextCtrl)->GetValue();
         for(size_t idx = 0; idx < sizeof(IdxToFileType)/sizeof(*IdxToFileType); ++ idx)
         {
@@ -943,10 +942,10 @@ void EditorConfigurationDlg::EndModal(int retCode)
             Manager::Get()->GetEditorManager()->SetColourSet(m_Theme);
             cfg->Write(_T("/colour_sets/active_colour_set"), m_Theme->GetName());
         }
-        cfg->Write(_T("/colour_sets/active_lang"), XRCCTRL(*this, "cmbLangs", wxComboBox)->GetStringSelection());
+        cfg->Write(_T("/colour_sets/active_lang"), XRCCTRL(*this, "cmbLangs", wxChoice)->GetStringSelection());
 
         // encoding
-        wxComboBox* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxComboBox);
+        wxChoice* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxChoice);
         if (cmbEnc)
         {
             cfg->Write(_T("/default_encoding"), cmbEnc->GetStringSelection());
