@@ -15,7 +15,7 @@
     #include "projectmanager.h"
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
-    #include <wx/combobox.h>
+    #include <wx/choice.h>
     #include <wx/msgdlg.h>
     #include <wx/checklst.h>
 #endif
@@ -24,7 +24,7 @@
 
 
 BEGIN_EVENT_TABLE(ProjectDepsDlg, wxScrollingDialog)
-    EVT_COMBOBOX(XRCID("cmbProject"), ProjectDepsDlg::OnProjectChange)
+    EVT_CHOICE(XRCID("cmbProject"), ProjectDepsDlg::OnProjectChange)
 END_EVENT_TABLE()
 
 ProjectDepsDlg::ProjectDepsDlg(wxWindow* parent, cbProject* sel)
@@ -33,7 +33,7 @@ ProjectDepsDlg::ProjectDepsDlg(wxWindow* parent, cbProject* sel)
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureProjectDeps"),_T("wxScrollingDialog"));
 
-    wxComboBox* cmb = XRCCTRL(*this, "cmbProject", wxComboBox);
+    wxChoice* cmb = XRCCTRL(*this, "cmbProject", wxChoice);
 
     int idx = 0;
     ProjectsArray* mainarr = Manager::Get()->GetProjectManager()->GetProjects();
@@ -56,7 +56,7 @@ ProjectDepsDlg::~ProjectDepsDlg()
 
 bool ProjectDepsDlg::SaveList()
 {
-    wxComboBox* cmb = XRCCTRL(*this, "cmbProject", wxComboBox);
+    wxChoice* cmb = XRCCTRL(*this, "cmbProject", wxChoice);
     wxCheckListBox* lst = XRCCTRL(*this, "lstDeps", wxCheckListBox);
 
     if (m_LastSel == -1)
@@ -103,7 +103,7 @@ bool ProjectDepsDlg::SaveList()
 
 void ProjectDepsDlg::FillList()
 {
-    wxComboBox* cmb = XRCCTRL(*this, "cmbProject", wxComboBox);
+    wxChoice* cmb = XRCCTRL(*this, "cmbProject", wxChoice);
     wxCheckListBox* lst = XRCCTRL(*this, "lstDeps", wxCheckListBox);
 
     int idx = cmb->GetSelection();
