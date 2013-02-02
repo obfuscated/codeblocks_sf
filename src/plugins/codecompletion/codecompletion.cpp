@@ -678,13 +678,13 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     if (pos != wxNOT_FOUND)
     {
         m_SearchMenu = menuBar->GetMenu(pos);
-        m_SearchMenu->Append(idMenuGotoFunction,       _("Goto function...\tCtrl-Alt-G"));
+        m_SearchMenu->Append(idMenuGotoFunction,       _("Goto function...\tCtrl-Shift-G"));
         m_SearchMenu->Append(idMenuGotoPrevFunction,   _("Goto previous function\tCtrl-PgUp"));
         m_SearchMenu->Append(idMenuGotoNextFunction,   _("Goto next function\tCtrl-PgDn"));
         m_SearchMenu->Append(idMenuGotoDeclaration,    _("Goto declaration\tCtrl-Shift-."));
         m_SearchMenu->Append(idMenuGotoImplementation, _("Goto implementation\tCtrl-."));
         m_SearchMenu->Append(idMenuFindReferences,     _("Find references\tAlt-."));
-        m_SearchMenu->Append(idMenuOpenIncludeFile,    _("Open include file\tCtrl-Alt-."));
+        m_SearchMenu->Append(idMenuOpenIncludeFile,    _("Open include file\tCtrl-Shift-."));
     }
     else
         CCLogger::Get()->DebugLog(_T("Could not find Search menu!"));
