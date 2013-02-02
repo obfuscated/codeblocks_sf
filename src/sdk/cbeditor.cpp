@@ -102,7 +102,8 @@ struct cbEditorInternalData
         m_useByteOrderMark(false),
         m_byteOrderMarkLength(0),
         m_lineNumbersWidth(0),
-        m_pFileLoader(fileLoader)
+        m_pFileLoader(fileLoader),
+        m_highlightOccurencesLastPos(-1, -1)
     {
         m_encoding = wxLocale::GetSystemEncoding();
 
@@ -238,21 +239,18 @@ struct cbEditorInternalData
 
     void HighlightOccurrences()
     {
-        static long old_a;
-        static long old_b;
         // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
         // if they get updated from deprecated oldstyle indicators somedays.
         const int theIndicator = 10;
 
-        long a, b;
-        m_pOwner->GetControl()->GetSelection(&a, &b);
+        std::pair<long, long> curr;
+        m_pOwner->GetControl()->GetSelection(&curr.first, &curr.second);
 
         m_pOwner->GetControl()->SetIndicatorCurrent(theIndicator);
 
-        if (old_a == a && old_b == b) // whatever the current state is, we've already done it once
+        if (m_highlightOccurencesLastPos == curr) // whatever the current state is, we've already done it once
             return;
-
-        old_a = a; old_b = b;
+        m_highlightOccurencesLastPos = curr;
 
         int eof = m_pOwner->m_pControl->GetLength();
 
@@ -260,11 +258,11 @@ struct cbEditorInternalData
         // clear all style indications set in a previous run (is also done once after text gets unselected)
         m_pOwner->GetControl()->IndicatorClearRange(0, eof);
 
-        // if there is no text selected (a == b), it stops here and does not hog the cpu further
-        if (a == b)
+        // if there is no text selected, it stops here and does not hog the cpu further
+        if (curr.first == curr.second)
             return;
         // check if the selected text has space, tab or new line in it
-        wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
+        wxString selectedText(m_pOwner->GetControl()->GetTextRange(curr.first, curr.second));
         if (selectedText.find_first_of(wxT(" \t\n")) != wxString::npos)
             return;
 
@@ -406,7 +404,7 @@ struct cbEditorInternalData
     int m_lineNumbersWidth;
 
     LoaderBase* m_pFileLoader;
-
+    std::pair<long, long> m_highlightOccurencesLastPos;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
