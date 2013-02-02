@@ -254,23 +254,27 @@ struct cbEditorInternalData
 
         old_a = a; old_b = b;
 
-        wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
-
         int eof = m_pOwner->m_pControl->GetLength();
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
         // Set Styling:
         // clear all style indications set in a previous run (is also done once after text gets unselected)
         m_pOwner->GetControl()->IndicatorClearRange(0, eof);
 
-        // check that feature is enabled,
-        // selected text has a minimal length of 3 and contains no spaces
-        if ( cfg->ReadBool(_T("/highlight_occurrence/enabled"), true)
-                && selectedText.Len() > 2        // if there is no text selected (a == b), it stops here and does not hog the cpu further
-                && selectedText.Find(_T(' ')) == wxNOT_FOUND
-                && selectedText.Find(_T('\t')) == wxNOT_FOUND
-                && selectedText.Find(_T('\n')) == wxNOT_FOUND
-			)
+        // if there is no text selected (a == b), it stops here and does not hog the cpu further
+        if (a == b)
+            return;
+        // check if the selected text has space, tab or new line in it
+        wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
+        if (selectedText.find_first_of(wxT(" \t\n")) != wxString::npos)
+            return;
+
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        // check if the feature is enabled
+        if (!cfg->ReadBool(_T("/highlight_occurrence/enabled"), true))
+            return;
+        // selected text has a minimal length of controlled by the user (by default it is 3)
+        wxString::size_type minLength = std::max(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3), 1);
+        if (selectedText.length() >= minLength)
         {
             wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
             if ( m_pOwner->m_pControl )

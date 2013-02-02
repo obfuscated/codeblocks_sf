@@ -165,6 +165,11 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable(highlightEnabled);
     XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable(highlightEnabled);
 
+    wxSpinCtrl *minLength = XRCCTRL(*this, "spnHighlightLength", wxSpinCtrl);
+    minLength->SetValue(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3));
+    minLength->Enable(highlightEnabled);
+    XRCCTRL(*this, "stHighlightLength", wxStaticText)->Enable(highlightEnabled);
+
     XRCCTRL(*this, "chkShowEOL",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_eol"),                        false));
     XRCCTRL(*this, "chkStripTrailings",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/strip_trailing_spaces"),       true));
     XRCCTRL(*this, "chkEnsureFinalEOL",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/ensure_final_line_end"),       true));
@@ -844,6 +849,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/whole_word"),     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/colour"),         XRCCTRL(*this, "btnHighlightColour",                   wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/highlight_occurrence/min_length"),     XRCCTRL(*this, "spnHighlightLength",                   wxSpinCtrl)->GetValue());
 
         // find & replace, regex searches
 
