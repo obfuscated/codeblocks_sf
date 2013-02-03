@@ -23,6 +23,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
 
         void OnChooseFont(wxCommandEvent& event);
         void OnChooseColour(wxCommandEvent& event);
+        void OnSetDefaultColour(wxCommandEvent& event);
         void OnBoldItalicUline(wxCommandEvent& event);
         void OnColourTheme(wxCommandEvent& event);
         void OnAddColourTheme(wxCommandEvent& event);

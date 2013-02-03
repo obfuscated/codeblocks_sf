@@ -72,6 +72,8 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnGutterColour"),               EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnColoursFore"),                EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnColoursBack"),                EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnForeSetDefault"),             EditorConfigurationDlg::OnSetDefaultColour)
+    EVT_BUTTON(XRCID("btnBackSetDefault"),             EditorConfigurationDlg::OnSetDefaultColour)
     EVT_BUTTON(XRCID("btnColoursAddTheme"),            EditorConfigurationDlg::OnAddColourTheme)
     EVT_BUTTON(XRCID("btnColoursDeleteTheme"),         EditorConfigurationDlg::OnDeleteColourTheme)
     EVT_BUTTON(XRCID("btnColoursRenameTheme"),         EditorConfigurationDlg::OnRenameColourTheme)
@@ -470,6 +472,9 @@ void EditorConfigurationDlg::ReadColours()
             XRCCTRL(*this, "chkColoursBold", wxCheckBox)->Enable(opt->isStyle);
             XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->Enable(opt->isStyle);
             XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->Enable(opt->isStyle);
+            bool isDefault = (opt->name == _("Default"));
+            XRCCTRL(*this, "btnForeSetDefault", wxButton)->Enable(!isDefault);
+            XRCCTRL(*this, "btnBackSetDefault", wxButton)->Enable(!isDefault);
         }
     }
 }
@@ -486,9 +491,13 @@ void EditorConfigurationDlg::WriteColours()
             wxColour c = XRCCTRL(*this, "btnColoursFore", wxButton)->GetBackgroundColour();
             if (c != wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE))
                 opt->fore = c;
+            else
+                opt->fore = wxNullColour;
             c = XRCCTRL(*this, "btnColoursBack", wxButton)->GetBackgroundColour();
             if (c != wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE))
                 opt->back = c;
+            else
+                opt->back = wxNullColour;
             opt->bold = XRCCTRL(*this, "chkColoursBold", wxCheckBox)->GetValue();
             opt->italics = XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->GetValue();
             opt->underlined = XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->GetValue();
@@ -767,11 +776,26 @@ void EditorConfigurationDlg::OnChooseColour(wxCommandEvent& event)
     {
         wxColour colour = dlg.GetColourData().GetColour();
         sender->SetBackgroundColour(colour);
+        sender->SetLabel(wxEmptyString);
     }
 
     if (event.GetId() == XRCID("btnColoursFore") ||
         event.GetId() == XRCID("btnColoursBack"))
         WriteColours();
+}
+
+void EditorConfigurationDlg::OnSetDefaultColour(wxCommandEvent& event)
+{
+    wxWindow *button = nullptr;
+    if (event.GetId() == XRCID("btnForeSetDefault"))
+        button = FindWindowById(XRCID("btnColoursFore"));
+    else if (event.GetId() == XRCID("btnBackSetDefault"))
+        button = FindWindowById(XRCID("btnColoursBack"));
+    if (!button)
+        return;
+    button->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+    button->SetLabel(_("\"Default\""));
+    WriteColours();
 }
 
 void EditorConfigurationDlg::OnChooseFont(cb_unused wxCommandEvent& event)
