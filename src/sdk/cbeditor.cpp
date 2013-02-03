@@ -310,6 +310,9 @@ struct cbEditorInternalData
                 pos != wxSCI_INVALID_POSITION ;
                 pos = m_pOwner->GetControl()->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
+                // don't put indicator for the string selected by the user, because it looks ugly
+                if (pos == curr.first || pos == curr.second)
+                    continue;
                 // does not make sense anymore: check that the found occurrence is not the same as the selected,
                 // since it is not selected in the second view -> so highlight it
                 m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
