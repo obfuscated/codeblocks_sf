@@ -341,15 +341,26 @@ private:
     /** header file names used for auto-completion after #include*/
     SystemHeadersMap        m_SystemHeadersMap;
 
-    //options on code completion plugins
+    //options on code completion (auto suggestion list) feature
+    /** disable the code-completion while editing*/
     bool                    m_UseCodeCompletion;
+    /** how many characters will the user entered to trigger the code-completion*/
     int                     m_CCAutoLaunchChars;
+    /** will the code-completion list pop-up automatically or not*/
     bool                    m_CCAutoLaunch;
+    /** how long will the code-completion list delayed(in microseconds) after you hit the key, if
+        the value is zero, then the list will show immediately
+     */
     int                     m_CCLaunchDelay;
+    /** maximum allowed code-completion list entries*/
     size_t                  m_CCMaxMatches;
+    /** whether add parentheses after user select a function name in the code-completion suggestion list*/
     bool                    m_CCAutoAddParentheses;
+    /** defines characters that work like Tab (empty by Default) but are also inserted*/
     wxString                m_CCFillupChars;
+    /** Should a single item auto-completion list automatically choose the item */
     bool                    m_CCAutoSelectOne;
+    /** give code completion list for header files, it happens after the #include directive */
     bool                    m_CCEnableHeaders;
 
     /** thread to collect header file names */
