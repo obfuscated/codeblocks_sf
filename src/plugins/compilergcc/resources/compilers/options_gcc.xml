@@ -133,7 +133,7 @@
         <Command name="LinkDynamic"
                  value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
         <Command name="LinkStatic"
-                 value="test -w $static_output && rm -f $static_output\n$lib_linker -r -s $static_output $link_objects"/>
+                 value="test -w $static_output &amp;&amp; rm -f $static_output\n$lib_linker -r -s $static_output $link_objects"/>
     </else>
     <Common name="cmds"/>
 
