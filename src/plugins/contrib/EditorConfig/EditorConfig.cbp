@@ -12,7 +12,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\EditorConfig" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose --profile=debug" />
 				<Option host_application=".\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
