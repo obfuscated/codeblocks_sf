@@ -243,13 +243,13 @@ void ParserBase::AddIncludeDir(const wxString& dir)
         base.RemoveLast();
     if (!wxDir::Exists(base))
     {
-        TRACE(_T("AddIncludeDir() : Directory %s does not exist?!"), base.wx_str());
+        TRACE(_T("ParserBase::AddIncludeDir(): Directory %s does not exist?!"), base.wx_str());
         return;
     }
 
     if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
     {
-        TRACE(_T("AddIncludeDir() : Adding %s"), base.wx_str());
+        TRACE(_T("ParserBase::AddIncludeDir(): Adding %s"), base.wx_str());
         m_IncludeDirs.Add(base);
     }
 }
@@ -286,8 +286,8 @@ wxArrayString ParserBase::FindFileInIncludeDirs(const wxString& file, bool first
         }
     }
 
-    TRACE(_T("FindFileInIncludeDirs() : Searching %s"), file.wx_str());
-    TRACE(_T("FindFileInIncludeDirs() : Found %lu"), static_cast<unsigned long>(FoundSet.GetCount()));
+    TRACE(_T("ParserBase::FindFileInIncludeDirs(): Searching %s"), file.wx_str());
+    TRACE(_T("ParserBase::FindFileInIncludeDirs(): Found %lu"), static_cast<unsigned long>(FoundSet.GetCount()));
 
     return FoundSet;
 }
@@ -451,7 +451,11 @@ wxString Parser::NotDoneReason()
 void Parser::AddPredefinedMacros(const wxString& defs)
 {
     if (m_BatchTimer.IsRunning())
+    {
         m_BatchTimer.Stop();
+        TRACE(_T("Parser::AddPredefinedMacros(): Stop the m_BatchTimer."));
+    }
+
 
     CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
@@ -571,8 +575,8 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         if (!canparse)
         {
            if (opts.loader) // if a loader is already open at this point, the caller must clean it up
-               CCLogger::Get()->DebugLog(_T("Parse() : CodeCompletion Plugin: FileLoader memory leak ")
-                                         _T("likely while loading file ") + filename);
+               CCLogger::Get()->DebugLog(_T("Parser::Parse(): CodeCompletion Plugin: FileLoader memory leak ")
+                                         _T("while loading file ") + filename);
            break;
         }
 
@@ -582,13 +586,13 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
             opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
 
         ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokenTree);
-        TRACE(_T("Parse() : Parsing %s"), filename.wx_str());
+        TRACE(_T("Parser::Parse(): Parsing %s"), filename.wx_str());
 
         if (m_IsPriority)
         {
             if (isLocal) // Parsing priority files
             {
-                TRACE(_T("Parse() : Parsing priority header, %s"), filename.wx_str());
+                TRACE(_T("Parser::Parse(): Parsing priority header, %s"), filename.wx_str());
 
                 if (!locked)
                     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -605,7 +609,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
             {
                 CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
-                TRACE(_T("Parse() : Add task for priority header, %s"), filename.wx_str());
+                TRACE(_T("Parser::Parse(): Add task for priority header, %s"), filename.wx_str());
                 m_PoolTask.push(PTVector());
                 m_PoolTask.back().push_back(thread);
 
@@ -614,7 +618,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         }
         else
         {
-            TRACE(_T("Parse() : Parallel Parsing %s"), filename.wx_str());
+            TRACE(_T("Parser::Parse(): Parallel Parsing %s"), filename.wx_str());
 
             CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
@@ -640,7 +644,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 
             if (pool_task_empty)
             {
-                CCLogger::Get()->DebugLog(_T("Parse() : m_PoolTask is empty, why?!"));
+                CCLogger::Get()->DebugLog(_T("Parser::Parse(): m_PoolTask is empty, why?!"));
                 return false;
             }
         }
@@ -840,7 +844,7 @@ bool Parser::UpdateParsingProject(cbProject* project)
 
     else if (!Done())
     {
-        wxString msg(_T("Parser::UpdateParsingProject : The Parser is not done."));
+        wxString msg(_T("Parser::UpdateParsingProject(): The Parser is not done."));
         msg += NotDoneReason();
         CCLogger::Get()->DebugLog(msg);
         return false;
@@ -859,7 +863,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (event.GetId() != m_Pool.GetId())
     {
-        CCLogger::Get()->DebugLog(_T("Why is event.GetId() not equal m_Pool.GetId()?"));
+        CCLogger::Get()->DebugLog(_T("Parser::OnAllThreadsDone(): Why is event.GetId() not equal m_Pool.GetId()?"));
         return;
     }
 
@@ -868,7 +872,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     if (!m_IsParsing)
     {
-        CCLogger::Get()->DebugLog(_T("Why is m_IsParsing false?"));
+        CCLogger::Get()->DebugLog(_T("Parser::OnAllThreadsDone(): Why is m_IsParsing false?"));
         return;
     }
 
@@ -878,7 +882,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         || !m_PriorityHeaders.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
-        TRACE(_T("Parser::OnAllThreadsDone(1): Starting m_BatchTimer."));
+        TRACE(_T("Parser::OnAllThreadsDone(): Still some tasks left, starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
 #if defined(CC_PARSER_PROFILE_TEST)
@@ -898,7 +902,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_SystemPriorityHeaders.clear();
 
         // 4. Begin batch parsing
-        TRACE(_T("Parser::OnAllThreadsDone(2): Starting m_BatchTimer."));
+        TRACE(_T("Parser::OnAllThreadsDone(): Handling system priority headers, starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
@@ -909,6 +913,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_NeedMarkFileAsLocal = false;
         MarkFileAsLocalThreadedTask* thread = new MarkFileAsLocalThreadedTask(this, m_Project);
         m_Pool.AddTask(thread, true);
+        TRACE(_T("Parser::OnAllThreadsDone(): Add a MarkFileAsLocalThreadedTask."));
     }
 #endif
     // Finish all task, then we need post a PARSER_END event
@@ -942,6 +947,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         ProcessParserEvent(m_ParserState, ParserCommon::idParserEnd, parseEndLog);
         m_ParserState = ParserCommon::ptUndefined;
         ParserCommon::s_CurrentParser = nullptr;
+        TRACE(_T("Parser::OnAllThreadsDone(): Post a PARSER_END event"));
     }
 }
 
@@ -1012,9 +1018,12 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
     {
         send_event = false; // Nothing to do.
+        return;
     }
-    else if (!m_PoolTask.empty()) // there are already batch jobs - so just add the new ones
+
+    if (!m_PoolTask.empty()) // there are already batch jobs - so just add the new ones
     {
+        // prepare adding threads to the pool
         m_Pool.BatchBegin();
 
         PTVector& v = m_PoolTask.front();
@@ -1022,8 +1031,12 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
             m_Pool.AddTask(*it, true);
         m_PoolTask.pop();
 
+        // end of adding the task, execute the threads in the pool
         m_Pool.BatchEnd();
-        send_event = false; // nothing to do anymore, the pool si already being processed
+        TRACE(_T("Parser::OnBatchTimer(): m_PoolTask's front threads(contained in vector<Parserthread*>) were added to m_Pool."));
+
+        send_event = false; // nothing to do anymore, the pool is already being processed
+        return;
     }
     else if (   !m_PriorityHeaders.empty()
              || !m_BatchParseFiles.empty()
@@ -1032,7 +1045,8 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
         ParserThreadedTask* thread = new ParserThreadedTask(this, ParserCommon::s_ParserMutex);
-        m_Pool.AddTask(thread, true);
+        TRACE(_T("Parser::OnBatchTimer(): Adding a ParserThreadedTask thread to m_Pool."));
+        m_Pool.AddTask(thread, true); //once this function is called, the thread will be executed from the pool.
 
         if (ParserCommon::s_CurrentParser)
             send_event = false;
