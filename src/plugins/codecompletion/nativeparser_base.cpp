@@ -221,13 +221,9 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
                 const Token* parent = tree->at(*itsearch);
 
                 if (s_DebugSmartSense)
-#if wxCHECK_VERSION(2, 9, 0)
                     CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Now looking under '%s'"),
-                                                parent ? parent->m_Name.wx_str() : _("Global namespace").wx_str()));
-#else
-                    CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Now looking under '%s'"),
-                                                parent ? parent->m_Name.wx_str() : _("Global namespace")));
-#endif
+                                                parent ? parent->m_Name.wx_str() : wxString(_("Global namespace")).wx_str()));
+
                 do
                 {
                     // types are searched as whole words, case sensitive and only classes/namespaces
@@ -1185,11 +1181,7 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*      tree,
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(F(_("GenerateResultSet() search '%s', parent='%s (id:%d, type:%s), isPrefix=%d'"),
                                     target.wx_str(),
-#if wxCHECK_VERSION(2, 9, 0)
-                                    parent ? parent->m_Name.wx_str() : _("Global namespace").wx_str(),
-#else
-                                    parent ? parent->m_Name.wx_str() : _("Global namespace"),
-#endif
+                                    parent ? parent->m_Name.wx_str() : wxString(_T("Global namespace")).wx_str(),
                                     parent ? parent->m_Index : 0,
                                     parent ? parent->GetTokenKindString().wx_str() : 0,
                                     isPrefix ? 1 : 0));

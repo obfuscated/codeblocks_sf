@@ -136,7 +136,11 @@ protected:
                             unsigned int&   startAt,
                             OperatorType&   tokenOperatorType);
 
-    /** Remove the last function's childrens */
+    /** Remove the last function's children, when doing codecompletion in a function body, the
+     *  function body up to the caret position was parsed, and the local variables defined in
+     *  the function were recorded as the function's children. If the caret moves to another function,
+     *  those children tokens previously recorded in the tokentree should be removed.
+     */
     void RemoveLastFunctionChildren(TokenTree* tree, int& lastFuncTokenIdx);
 
     /** @brief break a statement to several ParserComponents, and store them in a queue.
