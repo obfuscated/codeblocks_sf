@@ -63,6 +63,7 @@ ParserThreadedTask::ParserThreadedTask(Parser* parser, wxMutex& parserMTX) :
 
 int ParserThreadedTask::Execute()
 {
+    TRACE(_T("ParserThreadedTask::Execute(): Enter"));
     CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
@@ -71,6 +72,7 @@ int ParserThreadedTask::Execute()
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
+    TRACE(_T("ParserThreadedTask::Execute(): Parse predefined macros(in buffer)"));
     if (!preDefs.IsEmpty())
         m_Parser->ParseBuffer(preDefs, false, false);
 
@@ -81,6 +83,7 @@ int ParserThreadedTask::Execute()
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
+    TRACE(_T("ParserThreadedTask::Execute(): Parse priority header files"));
     while (!priorityHeaders.empty())
     {
         m_Parser->Parse(priorityHeaders.front());
@@ -97,6 +100,7 @@ int ParserThreadedTask::Execute()
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
+    TRACE(_T("ParserThreadedTask::Execute(): Parse normal header and source files"));
     while (!batchFiles.empty())
     {
         m_Parser->Parse(batchFiles.front());
@@ -114,6 +118,7 @@ int ParserThreadedTask::Execute()
     }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
+    TRACE(_T("ParserThreadedTask::Execute(): Leave"));
 
     return 0;
 }
@@ -127,6 +132,7 @@ MarkFileAsLocalThreadedTask::MarkFileAsLocalThreadedTask(Parser* parser, cbProje
 
 int MarkFileAsLocalThreadedTask::Execute()
 {
+    TRACE(_T("MarkFileAsLocalThreadedTask::Execute()"));
     // mark all project files as local
     for (FilesList::const_iterator it  = m_Project->GetFilesList().begin();
                                    it != m_Project->GetFilesList().end(); ++it)

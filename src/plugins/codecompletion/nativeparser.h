@@ -95,7 +95,7 @@ public:
     cbProject* GetProjectByFilename(const wxString& filename);
 
     /** return the C::B project containing the cbEditor pointer
-     * @param editor Any vaild cbEditor pointer
+     * @param editor Any valid cbEditor pointer
      * @return project pointer
      */
     cbProject* GetProjectByEditor(cbEditor* editor);
@@ -106,7 +106,7 @@ public:
     /** Return true if use one Parser per whole workspace */
     bool IsParserPerWorkspace() const { return m_ParserPerWorkspace; }
 
-    /** Return true if all the parser's batch-parse stages finished, otherwise return false*/
+    /** Return true if all the parser's batch-parse stages are finished, otherwise return false*/
     bool Done();
 
     /** Used to support Symbol browser and codecompletion UI
@@ -127,7 +127,7 @@ public:
     wxArrayString GetAllPathsByFilename(const wxString& filename);
 
     /** Add the paths to path array, and this will be used in GetAllPathsByFilename() function.
-     *  internally, all the folder path was recorded in UNIX format.
+     *  internally, all the folder paths were recorded in UNIX format.
      */
     void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 

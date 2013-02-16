@@ -249,7 +249,7 @@ void ClassBrowser::UpdateClassBrowserView(bool checkHeaderSwap)
         activeProject = m_NativeParser->GetCurrentProject();
 
     if (!activeProject)
-        CCLogger::Get()->DebugLog(wxT("No active project available."));
+        CCLogger::Get()->DebugLog(wxT("ClassBrowser::UpdateClassBrowserView(): No active project available."));
 
     ThreadedBuildTree(activeProject); // (Re-) create tree UI
 
@@ -959,12 +959,12 @@ void ClassBrowser::OnThreadEvent(wxCommandEvent& event)
         }
         case ClassBrowserBuilderThread::buildTreeStart:
         {
-            CCLogger::Get()->DebugLog(wxT("Updating class browser..."));
+            CCLogger::Get()->DebugLog(wxT("ClassBrowser::OnThreadEvent(): Updating class browser..."));
             break;
         }
         case ClassBrowserBuilderThread::buildTreeEnd:
         {
-            CCLogger::Get()->DebugLog(wxT("Class browser updated."));
+            CCLogger::Get()->DebugLog(wxT("ClassBrowser::OnThreadEvent(): Class browser updated."));
             break;
         }
         default:

@@ -525,6 +525,10 @@ CodeCompletion::CodeCompletion() :
 
     Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnCCLogger));
     Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnCCDebugLogger));
+
+    // the two events below were generated from NativeParser, as currently, CodeCompletionPlugin is
+    // set as the next event handler for m_NativeParser, so it get chance to handle them.
+
     Connect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart));
     Connect(ParserCommon::idParserEnd,   wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserEnd));
 }
@@ -566,6 +570,9 @@ void CodeCompletion::OnAttach()
     RereadOptions();
 
     m_LastPosForCodeCompletion = -1;
+
+    // Events m_NativeParser does not handle will go to the the next event
+    // handler which is the instance of a CodeCompletion.
     m_NativeParser.SetNextHandler(this);
 
     m_NativeParser.CreateClassBrowser();
@@ -602,6 +609,9 @@ void CodeCompletion::OnRelease(bool appShutDown)
 
     m_NativeParser.RemoveClassBrowser(appShutDown);
     m_NativeParser.ClearParsers();
+
+    // remove chained handler
+    m_NativeParser.SetNextHandler(nullptr);
 
     // unregister hook
     // 'true' will delete the functor too
@@ -2486,7 +2496,7 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
-    TRACE(_T("OnEditorActivated"));
+    TRACE(_T("CodeCompletion::OnEditorActivated(): Enter"));
 
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
@@ -2495,7 +2505,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
         else
             m_LastEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
 
-        TRACE(_T("CodeCompletion::OnEditorActivated: Starting m_TimerEditorActivated."));
+        TRACE(_T("CodeCompletion::OnEditorActivated(): Starting m_TimerEditorActivated."));
         m_TimerEditorActivated.Start(EDITOR_ACTIVATED_DELAY, wxTIMER_ONE_SHOT);
 
         if (m_TimerToolbar.IsRunning())
@@ -2503,6 +2513,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
     }
 
     event.Skip();
+    TRACE(_T("CodeCompletion::OnEditorActivated(): Leave"));
 }
 
 void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
@@ -2519,7 +2530,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
     if (eb)
         activeFile = eb->GetFilename();
 
-    TRACE(_T("OnEditorClosed() : Closed editor's file is %s"), activeFile.wx_str());
+    TRACE(_T("CodeCompletion::OnEditorClosed(): Closed editor's file is %s"), activeFile.wx_str());
 
     if (m_LastEditor == event.GetEditor())
     {
@@ -2798,7 +2809,7 @@ void CodeCompletion::DoCodeComplete()
     if ( !IsProviderFor(ed) )
         return;
 
-    TRACE(_T("DoCodeComplete"));
+    TRACE(_T("CodeCompletion::DoCodeComplete(): Enter"));
 
     cbStyledTextCtrl* control = ed->GetControl();
     const int pos = control->GetCurrentPos();
@@ -2853,8 +2864,9 @@ void CodeCompletion::DoCodeComplete()
         return;
     }
 
-    TRACE(_T("DoCodeComplete -> CodeComplete"));
+    TRACE(_T("CodeCompletion::DoCodeComplete(): Calling CodeComplete()"));
     CodeComplete();
+    TRACE(_T("CodeCompletion::DoCodeComplete(): Leave"));
 }
 
 int CodeCompletion::DoClassMethodDeclImpl()
@@ -2939,7 +2951,7 @@ int CodeCompletion::DoAllMethodsImpl()
     TokenFileSet result;
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
-        CCLogger::Get()->DebugLog(_T("Trying to find matches for: ") + paths[i]);
+        CCLogger::Get()->DebugLog(_T("CodeCompletion::DoAllMethodsImpl(): Trying to find matches for: ") + paths[i]);
         TokenFileSet result_file;
         tree->GetFileMatches(paths[i], result_file, true, true);
         for (TokenFileSet::const_iterator it = result_file.begin(); it != result_file.end(); ++it)
@@ -3485,7 +3497,7 @@ void CodeCompletion::OnCodeCompleteTimer(cb_unused wxTimerEvent& event)
     if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_LastEditor) == -1)
         return; // editor is invalid (probably closed already)
 
-    TRACE(_T("OnCodeCompleteTimer"));
+    TRACE(_T("CodeCompletion::OnCodeCompleteTimer(): Calling DoCodeComplete()"));
 
     // ask for code-completion *only* if the editor is still after the "." or "->" operator
     if (m_LastEditor && m_LastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
@@ -3497,15 +3509,17 @@ void CodeCompletion::OnCodeCompleteTimer(cb_unused wxTimerEvent& event)
 
 void CodeCompletion::OnToolbarTimer(cb_unused wxTimerEvent& event)
 {
-    TRACE(_T("OnToolbarTimer"));
+    TRACE(_T("CodeCompletion::OnToolbarTimer(): Enter"));
 
     if (!ProjectManager::IsBusy())
         ParseFunctionsAndFillToolbar();
     else
     {
-        TRACE(_T("CodeCompletion::OnToolbarTimer: Starting m_TimerToolbar."));
+        TRACE(_T("CodeCompletion::OnToolbarTimer(): Starting m_TimerToolbar."));
         m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     }
+
+    TRACE(_T("CodeCompletion::OnToolbarTimer(): Leave"));
 }
 
 void CodeCompletion::OnRealtimeParsingTimer(cb_unused wxTimerEvent& event)
@@ -3631,11 +3645,11 @@ void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
         && (m_LastFile != g_StartHereTitle)
         && (m_LastFile == curFile) )
     {
-        TRACE(_T("OnEditorActivatedTimer() : Last activated file is %s"), curFile.wx_str());
+        TRACE(_T("OnEditorActivatedTimer(): Same as the last activated file(%s)."), curFile.wx_str());
         return;
     }
 
-    TRACE(_T("OnEditorActivatedTimer"));
+    TRACE(_T("OnEditorActivatedTimer(): Need to notify NativeParser and Refresh toolbar."));
 
     m_NativeParser.OnEditorActivated(editor);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer: Starting m_TimerToolbar."));
