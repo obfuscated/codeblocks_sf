@@ -2500,10 +2500,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
-        if (event.GetEditor()->GetFilename() == g_StartHereTitle)
-            m_LastEditor = nullptr;
-        else
-            m_LastEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+        m_LastEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
 
         TRACE(_T("CodeCompletion::OnEditorActivated(): Starting m_TimerEditorActivated."));
         m_TimerEditorActivated.Start(EDITOR_ACTIVATED_DELAY, wxTIMER_ONE_SHOT);
@@ -2539,12 +2536,16 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
             m_TimerEditorActivated.Stop();
     }
 
-    m_NativeParser.OnEditorClosed(event.GetEditor());
+    // tell m_NativeParser that a builtin editor was closed
+    if ( edm->GetBuiltinEditor(event.GetEditor()) )
+        m_NativeParser.OnEditorClosed(event.GetEditor());
+
     m_LastFile.Clear();
 
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
-    if (edm->GetEditorsCount() == 0 || activeFile == g_StartHereTitle)
+    // If no editors were opened, or a non-buildin-editor was active, disable the CC toolbar
+    if (edm->GetEditorsCount() == 0 || !edm->GetActiveEditor()->IsBuiltinEditor())
     {
         EnableToolbarTools(false);
 
@@ -3487,7 +3488,7 @@ void CodeCompletion::DoParseOpenedProjectAndActiveEditor()
         m_NativeParser.CreateParser(curProject);
 
     // parse any files opened through DDE or the command-line
-    EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    EditorBase* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (editor)
         m_NativeParser.OnEditorActivated(editor);
 }
@@ -3633,26 +3634,32 @@ void CodeCompletion::OnReparsingTimer(cb_unused wxTimerEvent& event)
 
 void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
 {
-    EditorBase*     editor  = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    const wxString& curFile = editor ? editor->GetFilename() : wxString(wxEmptyString);
-    if (!editor || editor != m_LastEditor || curFile.IsEmpty())
+    // the m_LastEditor variable was updated in CodeCompletion::OnEditorActivated, after that,
+    // the editor-activated-timer was started. So, here in the timer handler, we need to check
+    // whether the saved editor and the current editor are the same, otherwise, no need to update
+    // the toolbar, because there must be another editor activated before the timer hits.
+    // Note: only the builtin editor was considered.
+    EditorBase* editor  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!editor || editor != m_LastEditor)
     {
-        m_LastEditor = nullptr;
+        TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Not a builtin editor."));
+        //m_LastEditor = nullptr;
+        EnableToolbarTools(false);
         return;
     }
 
-    if (   !m_LastFile.IsEmpty()
-        && (m_LastFile != g_StartHereTitle)
-        && (m_LastFile == curFile) )
+    const wxString& curFile = editor->GetFilename();
+    // if the same file was activated, no need to update the toolbar
+    if ( !m_LastFile.IsEmpty() && m_LastFile == curFile )
     {
-        TRACE(_T("OnEditorActivatedTimer(): Same as the last activated file(%s)."), curFile.wx_str());
+        TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Same as the last activated file(%s)."), curFile.wx_str());
         return;
     }
 
-    TRACE(_T("OnEditorActivatedTimer(): Need to notify NativeParser and Refresh toolbar."));
+    TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Need to notify NativeParser and Refresh toolbar."));
 
     m_NativeParser.OnEditorActivated(editor);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer: Starting m_TimerToolbar."));
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
-    TRACE(_T("OnEditorActivatedTimer() : Current activated file is %s"), curFile.wx_str());
+    TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Current activated file is %s"), curFile.wx_str());
 }

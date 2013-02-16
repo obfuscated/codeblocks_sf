@@ -18,7 +18,6 @@
 /** debug only variable, used to print the AI match related log message*/
 extern bool s_DebugSmartSense;
 
-extern const wxString g_StartHereTitle;
 extern const int g_EditorActivatedDelay;
 
 // forward declaration

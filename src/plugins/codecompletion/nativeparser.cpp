@@ -123,7 +123,6 @@ namespace NativeParserHelper
 int idTimerParsingOneByOne = wxNewId();
 
 bool s_DebugSmartSense           = false;
-const wxString g_StartHereTitle  = _("Start here");
 
 NativeParser::NativeParser() :
     m_TimerParsingOneByOne(this, idTimerParsingOneByOne),
@@ -1297,7 +1296,8 @@ std::pair<cbProject*, ParserBase*> NativeParser::GetParserInfoByCurrentEditor()
 {
     std::pair<cbProject*, ParserBase*> info(nullptr, nullptr);
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (editor && editor->GetFilename() != g_StartHereTitle)
+
+    if ( editor ) //No need to check editor->GetFilename, because a built-in editor always have a filename
     {
         info.first  = GetProjectByEditor(editor);
         info.second = GetParserByProject(info.first);
@@ -2605,17 +2605,11 @@ void NativeParser::OnParsingOneByOneTimer(cb_unused wxTimerEvent& event)
 
 void NativeParser::OnEditorActivated(EditorBase* editor)
 {
-    const wxString& activatedFile = editor->GetFilename();
-    if (activatedFile == g_StartHereTitle)
-    {
-        SetParser(m_TempParser); // Also updates class browser
-        return;
-    }
-
     cbEditor* curEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor(editor);
     if (!curEditor)
         return;
 
+    const wxString& activatedFile = editor->GetFilename();
     if ( !wxFile::Exists(activatedFile) )
         return;
 
@@ -2676,10 +2670,8 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
 
 void NativeParser::OnEditorClosed(EditorBase* editor)
 {
+    // the caller of the function should guarantee its a built-in editor
     wxString filename = editor->GetFilename();
-    if (filename == g_StartHereTitle)
-        return;
-
     const int pos = m_StandaloneFiles.Index(filename);
     if (pos != wxNOT_FOUND)
     {
