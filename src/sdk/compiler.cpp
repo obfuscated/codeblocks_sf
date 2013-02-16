@@ -960,7 +960,9 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
         else if (node->GetName() == wxT("Command"))
         {
             wxString cmd = node->GetAttribute(wxT("name"), wxEmptyString);
-            CompilerTool tool(value, node->GetAttribute(wxT("ext"), wxEmptyString),
+            wxString unEscape = value;
+            unEscape.Replace(wxT("\\n"), wxT("\n")); // a single tool can support multiple commands
+            CompilerTool tool(unEscape, node->GetAttribute(wxT("ext"), wxEmptyString),
                               node->GetAttribute(wxT("gen"), wxEmptyString));
             CommandType cmdTp = ctCount;
             if (cmd == wxT("CompileObject"))
