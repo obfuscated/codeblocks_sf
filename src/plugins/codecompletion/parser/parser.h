@@ -300,6 +300,10 @@ protected:
     void OnReparseTimer(wxTimerEvent& event);
     void OnBatchTimer(wxTimerEvent& event);
 
+    /** The parser will let its parent (NativeParser) to handle the event, as the CodeCompletion instance
+     * was set as the next handler of the NativeParser. Those events can finally go to the CodeCompletion's
+     * event handler.
+     */
     void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
 
 private:
