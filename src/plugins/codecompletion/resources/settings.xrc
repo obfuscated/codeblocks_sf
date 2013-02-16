@@ -12,6 +12,7 @@
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkNoCC">
                     <label>Disable code-completion</label>
+                    <tooltip>If check this, no code suggestion list will be shown when your entering characters.</tooltip>
                   </object>
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>8</border>
