@@ -677,7 +677,9 @@ bool DoxyBlocks::DoRunDoxywizard()
     wxFileName fnDoxyfile(sPathDoxyfile + wxFileName::GetPathSeparator() + sCfgBaseFile);
     fnDoxyfile.Normalize();
     if(!sPathDoxyfile.IsEmpty()){
-        cmd.Append(wxT(" \"") + fnDoxyfile.GetFullPath() + wxT("\""));
+        wxString fullpath = fnDoxyfile.GetFullPath();
+        QuoteStringIfNeeded(fullpath);
+        cmd.Append(wxT(" ") + fullpath);
     }
 
     wxProcess *process = new wxProcess(this);
