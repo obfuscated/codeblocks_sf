@@ -2421,7 +2421,7 @@ void NativeParser::AddGCCCompilerDirs(const wxString& masterPath, const wxString
     for (size_t i=0; i<gccDirs.GetCount(); ++i)
     {
         parser->AddIncludeDir(gccDirs[i]);
-        TRACE(_T("NativeParser::AddCompilerDirs(): Adding cached compiler dir to parser: ") + gccDirs[i]);
+        TRACE(_T("NativeParser::AddGCCCompilerDirs(): Adding cached compiler dir to parser: ") + gccDirs[i]);
     }
 }
 
