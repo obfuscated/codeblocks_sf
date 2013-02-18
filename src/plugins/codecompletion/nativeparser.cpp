@@ -1182,7 +1182,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             const bool systemHeaderFile = (file.Last() == _T('1'));
             const int pos = file.Find(_T(','), true);
             file = file.Left(pos);
-            CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Header to parse with priority: '%s'"), file.wx_str()));
+            CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Add priority header file: '%s'"), file.wx_str()));
             parser->AddPriorityHeaders(file, systemHeaderFile);
         }
 

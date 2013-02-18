@@ -588,6 +588,9 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokenTree);
         TRACE(_T("Parser::Parse(): Parsing %s"), filename.wx_str());
 
+        // when parsing the priority header files themselves, let the ParserThread did the dirty
+        // job in the same thread (mostly called from ParserThreadedTask::Execute(), otherwise,
+        // ParserThread should work later(either put the ParserThread in the PoolTask or the Pool)
         if (m_IsPriority)
         {
             if (isLocal) // Parsing priority files
@@ -605,13 +608,26 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 
                 return true;
             }
-            else // Add task when parsing priority files
+            else // Adding parsing tasks when parsing priority files
             {
+                // those files were files included in the priority files, for example
+                // if you have a priority file named "cstddef" with the fullname
+                // D:\mingw463\lib\gcc\i686-w64-mingw32\4.6.3\include\c++\cstddef
+                // then, this "cstddef" internally will include "bits/c++config.h", so the file
+                // D:\mingw463\lib\gcc\i686-w64-mingw32\4.6.3\include\c++\i686-w64-mingw32\bits\c++config.h
+                // will assign a parsing task here.
+                // manipulate the PoolTask need a locker
                 CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
-                TRACE(_T("Parser::Parse(): Add task for priority header, %s"), filename.wx_str());
-                m_PoolTask.push(PTVector());
-                m_PoolTask.back().push_back(thread);
+                TRACE(_T("Parser::Parse(): Add task for files included in priority header, %s"), filename.wx_str());
+
+                if (!m_PoolTask.empty()) // append the thread to the last element of the PoolTask
+                    m_PoolTask.back().push_back(thread);
+                else // if the PoolTask is empty, then just add an empty PTVector object, and push the thread.
+                {
+                    m_PoolTask.push(PTVector());
+                    m_PoolTask.back().push_back(thread);
+                }
 
                 CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
             }
@@ -804,11 +820,6 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
     if (m_ReparseTimer.IsRunning())
         m_ReparseTimer.Stop();
 
-    if (isLocal)
-        m_LocalFiles.insert(filename);
-    else
-        m_LocalFiles.erase(filename);
-
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     m_TokenTree->FlagFileForReparsing(filename);
@@ -902,7 +913,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         m_SystemPriorityHeaders.clear();
 
         // 4. Begin batch parsing
-        TRACE(_T("Parser::OnAllThreadsDone(): Handling system priority headers, starting m_BatchTimer."));
+        TRACE(_T("Parser::OnAllThreadsDone(): Handling saved system priority headers again in the last, starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
     }
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
@@ -1025,15 +1036,19 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     {
         // prepare adding threads to the pool
         m_Pool.BatchBegin();
-
         PTVector& v = m_PoolTask.front();
+        TRACE(_T("Parser::OnBatchTimer(): m_PoolTask's front threads(contained in vector<Parserthread*>) were added to m_Pool."));
         for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
+        {
             m_Pool.AddTask(*it, true);
+            TRACE(_T("-Parser::OnBatchTimer(): Adding Parserthread for %s to m_Pool."), (*it)->GetFilename().wx_str());
+        }
+
         m_PoolTask.pop();
 
         // end of adding the task, execute the threads in the pool
         m_Pool.BatchEnd();
-        TRACE(_T("Parser::OnBatchTimer(): m_PoolTask's front threads(contained in vector<Parserthread*>) were added to m_Pool."));
+
 
         send_event = false; // nothing to do anymore, the pool is already being processed
         return;

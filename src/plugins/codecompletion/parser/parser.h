@@ -176,9 +176,14 @@ public:
     virtual TokenTree* GetTokenTree(); // allow other implementations of derived (dummy) classes
     TokenTree* GetTempTokenTree()    { return m_TempTokenTree; }
 
+    /** add a directory to the Parser's include path database */
     void                 AddIncludeDir(const wxString& dir);
     const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
     wxString             GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal);
+    /** it mimic what a compiler try to find an include header files, if the firstonly option is
+     * true, it will return the first found header file, otherwise, all the Parser's include path database
+     * will be searched.
+     */
     wxArrayString        FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
 
     void            ReadOptions();
@@ -209,6 +214,12 @@ protected:
 
 private:
     SearchTree<wxString> m_GlobalIncludes;
+
+    /** the include directories can be either three kinds below:
+     * 1, compiler's default search paths, e.g. E:\gcc\include
+     * 2, your project's common folder, e.g. the folder where you put the cbp file in
+     * 3, the compiler include search paths defined in the cbp, like: E:\wx2.8\msw\include
+     */
     wxArrayString        m_IncludeDirs;
 };
 
@@ -274,7 +285,9 @@ public:
     virtual wxString NotDoneReason();
 
 protected:
+    // used for measuring the batch parsing time
     void StartStopWatch();
+    // used for measuring the batch parsing time
     void EndStopWatch();
 
     /** Node: Currently, the max. concurrent ParserThread number should be ONE, CC does not support
@@ -298,6 +311,10 @@ protected:
     void OnAllThreadsDone(CodeBlocksEvent& event);
 
     void OnReparseTimer(wxTimerEvent& event);
+
+    /** A timer is used to optimized the event handling for parsing, e.g. several files/projects were added
+     * the the project, so we don't start the real parsing stage until the last file/project was added,
+     */
     void OnBatchTimer(wxTimerEvent& event);
 
     /** The parser will let its parent (NativeParser) to handle the event, as the CodeCompletion instance
@@ -310,8 +327,9 @@ private:
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     void ConnectEvents();
     void DisconnectEvents();
-
+    /** when initialized, this variable will be an instance of a NativeParser */
     wxEvtHandler*             m_Parent;
+    /** referring to the cbp project currently parsing */
     cbProject*                m_Project;
 
 protected:
@@ -319,26 +337,28 @@ protected:
     // in-memory data and cache
     bool                      m_UsingCache; //!< true if loaded from cache
 
-    /** Thread queue, these thread tasks will be executed in FIFO mode as they are added */
+    /** Thread queue, these thread tasks will be executed in FIFO mode as they are added, normally
+     * those ParserThread put in the the m_PoolTask will NOT run immediately, they are just tasks
+     * ready to be put in the m_Pool(see below), if will finally executed in the m_Pool.
+     */
     typedef std::vector<ParserThread*> PTVector;
     std::queue<PTVector>      m_PoolTask;
 
-    /** Thread Pool, manages all the ParserThread, used in batch parse mode. The thread pool can
-     * add/remove/execute the ParserThread tasks.
+    /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
+     * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
+     * was done.
      */
     cbThreadPool              m_Pool;
 
     /** true, if the parser is still busy with parsing, false if the parsing stage has finished */
     bool                      m_IsParsing;
 
-    /** Determine whether a Priority header parsing is needed. If yes, the added file will be parsed accordingly.
+    /** Determine whether the parser is doing Priority header parsing. If yes, the added files (usually
+     * the priority files) will be parsed accordingly.
      * Otherwise, added file will be parsed by thread pool (batch parse mode), thus the sequence
-     * of the parsed files is not important
+     * of the parsed files is not reserved. The thread pool may run those threads randomly.
      */
     bool                      m_IsPriority;
-
-    std::set<wxString, std::less<wxString> >
-                              m_LocalFiles;
 
     /** Indicates some files in the current project need to be re-parsed, this is commonly caused
       * that the "real-time parsing option" is enabled, and user is editing source file.
@@ -350,16 +370,24 @@ protected:
 
 private:
     wxTimer                   m_ReparseTimer;
+    /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a reference*/
     wxTimer                   m_BatchTimer;
+    /** a stop watch to measure parsing time*/
     wxStopWatch               m_StopWatch;
     bool                      m_StopWatchRunning;
     long                      m_LastStopWatchTime;
     bool                      m_IgnoreThreadEvents;
 
+    /** the files(mostly the header files) need to be parsed before any other files, we use this kind
+     * of files to get more correct macro definition.
+     */
     StringList                m_PriorityHeaders;       //!< All priority headers
+
+    // These priority header files are saved when first parsed, and the last stage of batch parsing,
+    // they will be reparsed again.
     StringList                m_SystemPriorityHeaders; //!< Only system priority headers, for re-parse
-    StringList                m_BatchParseFiles;       //!< All other batch parse files
-    wxString                  m_PredefinedMacros;      //!< Pre-defined macros
+    StringList                m_BatchParseFiles;       //!< All other batch parse files, like the normal headers/sources
+    wxString                  m_PredefinedMacros;      //!< Pre-defined macros, its a buffer queried from the compiler command line
     /** used to measure batch parse time*/
     bool                      m_IsBatchParseDone;
     ParserCommon::ParserState m_ParserState;           //!< indicated the current state the parser is in

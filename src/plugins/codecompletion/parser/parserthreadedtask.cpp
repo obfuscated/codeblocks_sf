@@ -103,6 +103,7 @@ int ParserThreadedTask::Execute()
     TRACE(_T("ParserThreadedTask::Execute(): Parse normal header and source files"));
     while (!batchFiles.empty())
     {
+        TRACE(_T("-ParserThreadedTask::Execute(): Parse %s"), batchFiles.front().wx_str());
         m_Parser->Parse(batchFiles.front());
         batchFiles.pop_front();
     }

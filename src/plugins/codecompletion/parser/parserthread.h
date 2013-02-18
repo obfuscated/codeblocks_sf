@@ -134,6 +134,8 @@ public:
       */
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 
+    wxString GetFilename(){return m_Buffer;}; //used in TRACE for debug only
+
 protected:
     /** specify which "class like type" we are handling: struct or class or union*/
     enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
@@ -341,7 +343,9 @@ private:
       */
     Tokenizer            m_Tokenizer;
 
-    /** a pointer to its parent Parser object */
+    /** a pointer to its parent Parser object, the Parserthread class has two place to communicate
+     * with Parser class. m_Parent->ParseFile() when it see an include directive.
+     */
     ParserBase*          m_Parent;
 
     /** a pointer to the token tree, all the tokens will be added to that tree structure */
