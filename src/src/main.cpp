@@ -3321,8 +3321,10 @@ void MainFrame::OnEditLineMove(wxCommandEvent& event)
     {
         --endPos; // do not unexpectedly select another line
     }
-    endPos = stc->GetLineEndPosition(endPos); // is position
-    const bool isLastLine = (stc->LineFromPosition(endPos) == stc->GetLineCount() - 1);
+    const bool isLastLine = (endPos == stc->GetLineCount() - 1);
+    // warning: stc->GetLineEndPosition(endPos) yields strange results for CR LF (see bug 18892)
+    endPos = (  isLastLine ? stc->GetLineEndPosition(endPos)
+              : stc->PositionFromLine(endPos + 1) - 1 ); // is position
     if (event.GetId() == idEditLineUp)
     {
         if (stc->LineFromPosition(startPos) < 1)
