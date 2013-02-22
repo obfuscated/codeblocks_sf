@@ -44,6 +44,8 @@ const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~[:alnum:]&_:+/\\
 // use his own settings or the new defaults
 const wxString CompilerSettingsVersion = _T("0.0.2");
 
+const wxString EmptyString;
+
 CompilerSwitches::CompilerSwitches()
 {   // default based upon gnu
     includeDirs             = _T("-I");
@@ -269,8 +271,13 @@ CompilerCommandGenerator* Compiler::GetCommandGenerator(cbProject* project)
 
 const wxString& Compiler::GetCommand(CommandType ct, const wxString& fileExtension) const
 {
-    size_t catchAll = 0;
     const CompilerToolsVector& vec = m_Commands[ct];
+
+    // no command?
+    if (vec.empty())
+        return EmptyString;
+
+    size_t catchAll = 0;
 
     if (!fileExtension.IsEmpty())
     {
