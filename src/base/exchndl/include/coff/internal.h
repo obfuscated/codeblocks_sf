@@ -1,6 +1,6 @@
 /* Internal format of COFF object file data structures, for GNU BFD.
    This file is part of BFD, the Binary File Descriptor library.
-   
+
    Copyright 1999, 2000, 2001, 2002, 2003, 2004. 2005, 2006, 2007
    Free Software Foundation, Inc.
 
@@ -8,12 +8,12 @@
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */
@@ -55,7 +55,7 @@ struct internal_extra_pe_filehdr
   unsigned short e_res2[10];	/* Reserved words, all 0x0 */
   bfd_vma  e_lfanew;		/* File address of new exe header, 0x80 */
   unsigned long dos_message[16]; /* text which always follows dos header */
-  bfd_vma  nt_signature;   	/* required NT signature, 0x4550 */ 
+  bfd_vma  nt_signature;   	/* required NT signature, 0x4550 */
 };
 
 struct internal_filehdr
@@ -98,8 +98,8 @@ struct internal_filehdr
 #define F_DLL           (0x2000)
 
 /* Extra structure which is used in the optional header.  */
-#ifndef _WINNT_H
-typedef struct _IMAGE_DATA_DIRECTORY 
+#if !(defined _WINNT_H || defined _WINNT_)
+typedef struct _IMAGE_DATA_DIRECTORY
 {
   bfd_vma VirtualAddress;
   long    Size;
@@ -138,7 +138,7 @@ typedef struct _IMAGE_DATA_DIRECTORY
 # define PE_DEF_FILE_ALIGNMENT 0x200
 #endif
 
-struct internal_extra_pe_aouthdr 
+struct internal_extra_pe_aouthdr
 {
   /* FIXME: The following entries are in AOUTHDR.  But they aren't
      available internally in bfd.  We add them here so that objdump
@@ -148,7 +148,7 @@ struct internal_extra_pe_aouthdr
   /* Linker major version number */
   char MajorLinkerVersion;
   /* Linker minor version number  */
-  char MinorLinkerVersion;	
+  char MinorLinkerVersion;
   /* Total size of all code sections  */
   long SizeOfCode;
   /* Total size of all initialized data sections  */
@@ -161,7 +161,7 @@ struct internal_extra_pe_aouthdr
   bfd_vma BaseOfCode;
   /* Address of the first data section relative to image base.  */
   bfd_vma BaseOfData;
- 
+
   /* PE stuff  */
   bfd_vma ImageBase;		/* address of specific location in memory that
 				   file is located, NT default 0x10000 */
@@ -171,14 +171,14 @@ struct internal_extra_pe_aouthdr
   short   MajorOperatingSystemVersion; /* minimum version of the operating */
   short   MinorOperatingSystemVersion; /* system req'd for exe, default to 1*/
   short   MajorImageVersion;	/* user defineable field to store version of */
-  short   MinorImageVersion;	/* exe or dll being created, default to 0 */ 
+  short   MinorImageVersion;	/* exe or dll being created, default to 0 */
   short   MajorSubsystemVersion; /* minimum subsystem version required to */
   short   MinorSubsystemVersion; /* run exe; default to 3.1 */
   long    Reserved1;		/* seems to be 0 */
   long    SizeOfImage;		/* size of memory to allocate for prog */
   long    SizeOfHeaders;	/* size of PE header and section table */
   long    CheckSum;		/* set to 0 */
-  short   Subsystem;	
+  short   Subsystem;
 
   /* type of subsystem exe uses for user interface,
      possible values:
@@ -189,7 +189,7 @@ struct internal_extra_pe_aouthdr
      7 - POSIX_CUI runs in Posix character subsystem */
   short   DllCharacteristics;	/* flags for DLL init, use 0 */
   bfd_vma SizeOfStackReserve;	/* amount of memory to reserve  */
-  bfd_vma SizeOfStackCommit;	/* amount of memory initially committed for 
+  bfd_vma SizeOfStackCommit;	/* amount of memory initially committed for
 				   initial thread's stack, default is 0x1000 */
   bfd_vma SizeOfHeapReserve;	/* amount of virtual memory to reserve and */
   bfd_vma SizeOfHeapCommit;	/* commit, don't know what to defaut it to */
@@ -474,7 +474,7 @@ struct internal_syment
 #define DT_FCN		(2)	/* function */
 #define DT_ARY		(3)	/* array */
 
-#ifndef _WINNT_H
+#if !(defined _WINNT_H || defined _WINNT_)
 #define BTYPE(x)	((x) & N_BTMASK)
 #define DTYPE(x)	(((x) & N_TMASK) >> N_BTSHFT)
 

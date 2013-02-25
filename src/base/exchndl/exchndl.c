@@ -52,6 +52,13 @@ DWORD GetModuleBase(DWORD dwAddress)
 
 
 #ifdef HAVE_BFD
+// define the PACKAGE and PACKAGE_VERSION to suppress a #error message in bfd.h
+#ifndef PACKAGE
+#define PACKAGE
+#endif /* PACKAGE */
+#ifndef PACKAGE_VERSION
+#define PACKAGE_VERSION
+#endif /* PACKAGE_VERSION */
 
 #include <bfd.h>
 #include <demangle.h>
