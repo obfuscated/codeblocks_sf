@@ -21,6 +21,8 @@
     #include <logmanager.h>
 #endif
 
+#include "cbcolourmanager.h"
+
 BEGIN_EVENT_TABLE(AbbreviationsConfigPanel, cbConfigurationPanel)
 END_EVENT_TABLE()
 
@@ -76,7 +78,7 @@ void AbbreviationsConfigPanel::InitCompText()
     m_AutoCompTextControl->SetViewWhiteSpace(1);
     m_AutoCompTextControl->SetMinSize(wxSize(50, 50));
 
-    wxColor ccolor = Manager::Get()->GetConfigManager(_T("editor"))->ReadColour(_T("/caret/colour"), *wxBLACK );
+    wxColor ccolor = Manager::Get()->GetColourManager()->GetColour(wxT("editor_caret"));
     m_AutoCompTextControl->SetCaretForeground( ccolor );
 
     ApplyColours();

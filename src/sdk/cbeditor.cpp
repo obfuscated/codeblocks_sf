@@ -38,6 +38,7 @@
     #include "sdk_events.h"
 #endif
 #include "cbstyledtextctrl.h"
+#include "cbcolourmanager.h"
 
 #include <wx/fontutil.h>
 #include <wx/splitter.h>
@@ -274,7 +275,7 @@ struct cbEditorInternalData
         wxString::size_type minLength = std::max(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3), 1);
         if (selectedText.length() >= minLength)
         {
-            wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
+            wxColour highlightColour(Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence")));
             if ( m_pOwner->m_pControl )
             {
                 m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
@@ -1275,7 +1276,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
     else
         control->SetCaretWidth(1);
-    control->SetCaretForeground(GetOptionColour(_T("/caret/colour"), *wxBLACK));
+    control->SetCaretForeground(Manager::Get()->GetColourManager()->GetColour(wxT("editor_caret")));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
     control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
@@ -1342,7 +1343,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
     // gutter
     control->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
-    control->SetEdgeColour(GetOptionColour(_T("/gutter/colour"), *wxLIGHT_GREY));
+    control->SetEdgeColour(Manager::Get()->GetColourManager()->GetColour(wxT("editor_gutter")));
     control->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
 
     control->StyleSetFont(wxSCI_STYLE_DEFAULT, font);

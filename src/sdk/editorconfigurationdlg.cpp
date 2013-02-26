@@ -35,6 +35,7 @@
     #include <wx/imaglist.h>
 #endif
 #include "cbstyledtextctrl.h"
+#include "cbcolourmanager.h"
 
 #include <wx/fontdlg.h>
 #include <wx/fontutil.h>
@@ -163,7 +164,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->Enable(highlightEnabled);
-    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
+    wxColour highlightColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence"));
+    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->SetBackgroundColour(highlightColour);
     XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable(highlightEnabled);
     XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable(highlightEnabled);
 
@@ -180,7 +182,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "cmbEOLMode",             wxChoice)->SetSelection(cfg->ReadInt(_T("/eol/eolmode"),                  platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF)); // Windows takes CR+LF, other platforms LF only
 
     //caret
-    wxColour caretColour = cfg->ReadColour(_T("/caret/colour"), *wxBLACK);
+    wxColour caretColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_caret"));
     int caretStyle = cfg->ReadInt(_T("/caret/style"), wxSCI_CARETSTYLE_LINE);
     XRCCTRL(*this, "lstCaretStyle",  wxChoice)->SetSelection(caretStyle);
     XRCCTRL(*this, "spnCaretWidth",  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/caret/width"), 1));
@@ -207,7 +209,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "spnFoldLimitLevel",      wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/folding/limit_level"),            1));
 
     //gutter
-    wxColour gutterColour = cfg->ReadColour(_T("/gutter/colour"), *wxLIGHT_GREY);
+    wxColour gutterColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_gutter"));
     XRCCTRL(*this, "lstGutterMode",   wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
     XRCCTRL(*this, "btnGutterColour", wxButton)->SetBackgroundColour(gutterColour);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetRange(1, 500);
@@ -872,7 +874,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/highlight_occurrence/enabled"),        XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/whole_word"),     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_occurrence/colour"),         XRCCTRL(*this, "btnHighlightColour",                   wxButton)->GetBackgroundColour());
+        wxColour highlightColour = XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour();
+        Manager::Get()->GetColourManager()->SetColour(wxT("editor_highlight_occurrence"), highlightColour);
         cfg->Write(_T("/highlight_occurrence/min_length"),     XRCCTRL(*this, "spnHighlightLength",                   wxSpinCtrl)->GetValue());
 
         // find & replace, regex searches
@@ -880,7 +883,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         //caret
         cfg->Write(_T("/caret/style"),                         XRCCTRL(*this, "lstCaretStyle",  wxChoice)->GetSelection());
         cfg->Write(_T("/caret/width"),                         XRCCTRL(*this, "spnCaretWidth",  wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/caret/colour"),                        XRCCTRL(*this, "btnCaretColour", wxButton)->GetBackgroundColour());
+        wxColour caretColour = XRCCTRL(*this, "btnCaretColour", wxButton)->GetBackgroundColour();
+        Manager::Get()->GetColourManager()->SetColour(wxT("editor_caret"), caretColour);
         cfg->Write(_T("/caret/period"),                        XRCCTRL(*this, "slCaretPeriod",  wxSlider)->GetValue());
 
         //folding
@@ -917,7 +921,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         //gutter
         cfg->Write(_T("/gutter/mode"),                     XRCCTRL(*this, "lstGutterMode",   wxChoice)->GetSelection());
-        cfg->Write(_T("/gutter/colour"),                   XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour());
+        wxColour gutterColour = XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour();
+        Manager::Get()->GetColourManager()->SetColour(wxT("editor_gutter"), gutterColour);
         cfg->Write(_T("/gutter/column"),                   XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
 
         //margin
@@ -990,6 +995,9 @@ void EditorConfigurationDlg::EndModal(int retCode)
             cbConfigurationPanel* panel = m_PluginPanels[i];
             panel->OnApply();
         }
+
+        // save the colours manager here, just in case there are duplicate colour controls
+        Manager::Get()->GetColourManager()->Save();
     }
     else
     {
