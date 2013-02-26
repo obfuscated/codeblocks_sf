@@ -683,7 +683,7 @@ void EnvironmentSettingsDlg::FillApplicationColours()
 
     if (fillCategories)
     {
-        categories->Append(_("Default"));
+        categories->Append(_("All"));
         categories->Select(0);
         for (std::set<wxString>::const_iterator it = setCategories.begin(); it != setCategories.end(); ++it)
             categories->Append(*it);
