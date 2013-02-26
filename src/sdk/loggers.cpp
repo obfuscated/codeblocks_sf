@@ -22,6 +22,7 @@
 #include <wx/wupdlock.h>
 
 #include "loggers.h"
+#include "cbcolourmanager.h"
 
 // Helper function which blends a colour with the default window text colour,
 // so that text will be readable in bright and dark colour schemes
@@ -108,17 +109,19 @@ void TextCtrlLogger::UpdateSettings()
     bigger_font.SetUnderlined(true);
     style[caption].SetFont(bigger_font);
 
-    style[success].SetTextColour(BlendTextColour(*wxBLUE));
+    ColourManager *colours = Manager::Get()->GetColourManager();
+
+    style[success].SetTextColour(colours->GetColour(wxT("logs_success_text")));
 
     style[warning].SetFont(italic_font);
-    style[warning].SetTextColour( cfgman->ReadColour(_T("/log_warning_text_colour"), BlendTextColour(*wxBLUE)) );
+    style[warning].SetTextColour(colours->GetColour(wxT("logs_warning_text")));
 
     style[error].SetFont(bold_font);
-    style[error].SetTextColour( cfgman->ReadColour(_T("/log_error_text_colour"),wxColour(0xf0, 0x00, 0x00)) ); // red
+    style[error].SetTextColour(colours->GetColour(wxT("logs_error_text")));
 
     style[critical].SetFont(bold_font);
-    style[critical].SetTextColour(BlendTextColour(*wxWHITE));     // we're setting both fore and background colors here
-    style[critical].SetBackgroundColour(BlendTextColour(*wxRED)); // so we don't have to mix in default colors
+    style[critical].SetTextColour(colours->GetColour(wxT("logs_critical_text")));     // we're setting both fore and background colors here
+    style[critical].SetBackgroundColour(colours->GetColour(wxT("logs_critical_back"))); // so we don't have to mix in default colors
     style[spacer].SetFont(small_font);
 
     // Tell control about the font change
@@ -327,17 +330,19 @@ void ListCtrlLogger::UpdateSettings()
         style[i].colour = default_text_colour;
     }
 
+    ColourManager *colours = Manager::Get()->GetColourManager();
+
     style[caption].font = bigger_font;
-    style[success].colour = BlendTextColour(*wxBLUE);
-    style[failure].colour = BlendTextColour(wxColour(0x00, 0x00, 0xa0));
+    style[success].colour = colours->GetColour(wxT("logs_success_text"));
+    style[failure].colour = colours->GetColour(wxT("logs_failure_text"));
 
     style[warning].font = italic_font;
-    style[warning].colour = cfgman->ReadColour(_T("/log_warning_text_colour"), wxColour(0x00, 0x00, 0xa0)); // navy blue
+    style[warning].colour = colours->GetColour(wxT("logs_warning_text"));
 
-    style[error].colour = cfgman->ReadColour(_T("/log_error_text_colour"), wxColour(0xf0, 0x00, 0x00)); // red
+    style[error].colour = colours->GetColour(wxT("logs_error_text"));
 
     style[critical].font = bold_font;
-    style[critical].colour = BlendTextColour(wxColour(0x0a, 0x00, 0x00));   // maroon
+    style[critical].colour = colours->GetColour(wxT("logs_critical_text_listctrl"));
 
     style[spacer].font = small_font;
     style[pagetitle] = style[caption];

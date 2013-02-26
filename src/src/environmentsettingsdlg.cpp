@@ -79,8 +79,6 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionGradientColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnResetDefaultColours"), EnvironmentSettingsDlg::OnResetDefaultColours)
-    EVT_BUTTON(XRCID("btnLogWarningTextColour"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnLogErrorTextColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_CHECKBOX(XRCID("chkUseIPC"), EnvironmentSettingsDlg::OnUseIpcCheck)
     EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
@@ -172,8 +170,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "rbSettingsIconsSize",     wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
     XRCCTRL(*this, "chkShowStartPage",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
     XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
-    XRCCTRL(*this, "btnLogWarningTextColour", wxButton)->SetBackgroundColour(mcfg->ReadColour(_T("/log_warning_text_colour"), wxColour(0x00, 0x00, 0xa0) )); //navy blue
-    XRCCTRL(*this, "btnLogErrorTextColour",   wxButton)->SetBackgroundColour(mcfg->ReadColour(_T("/log_error_text_colour"), wxColour(0xf0, 0x00, 0x00) )); //red
 
     bool en = mcfg->ReadBool(_T("/auto_hide"), false);
     XRCCTRL(*this, "chkAutoHideMessages",         wxCheckBox)->SetValue(en);
@@ -552,8 +548,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
             cfg->Write(_T("/locale/language"), wxEmptyString);
 
         mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize",          wxSpinCtrl)->GetValue());
-        mcfg->Write(_T("/log_warning_text_colour"),                 XRCCTRL(*this, "btnLogWarningTextColour", wxButton)->GetBackgroundColour());
-        mcfg->Write(_T("/log_error_text_colour"),                   XRCCTRL(*this, "btnLogErrorTextColour",   wxButton)->GetBackgroundColour());
 
         cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace",     wxCheckBox)->GetValue());
         cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead",   wxCheckBox)->GetValue() ? pdlHead : pdlCentre);

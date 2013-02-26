@@ -17,6 +17,7 @@
 #include <wx/log.h>
 #endif
 
+#include "cbcolourmanager.h"
 #include "logmanager.h"
 #include "loggers.h"
 
@@ -71,6 +72,16 @@ LogManager::LogManager()
     slot[stdout_log].title = _T("stdout");
     slot[app_log].title = _T("Code::Blocks");
     slot[debug_log].title = _T("Code::Blocks Debug");
+
+    ColourManager *manager = Manager::Get()->GetColourManager();
+    manager->RegisterColour(_("Logs"), _("Success text"), wxT("logs_success_text"), *wxBLUE);
+    manager->RegisterColour(_("Logs"), _("Warning text"), wxT("logs_warning_text"), *wxBLUE);
+    manager->RegisterColour(_("Logs"), _("Error text"), wxT("logs_error_text"), wxColour(0xf0, 0x00, 0x00));
+    manager->RegisterColour(_("Logs"), _("Critical text"), wxT("logs_critical_text"), *wxWHITE);
+    manager->RegisterColour(_("Logs"), _("Critical background"), wxT("logs_critical_back"), *wxRED);
+    manager->RegisterColour(_("Logs"), _("Critical text (ListCtrl)"),
+                            wxT("logs_critical_text_listctrl"), wxColour(0x0a, 0x00, 0x00));
+    manager->RegisterColour(_("Logs"), _("Failure text"), wxT("logs_failure_text"), wxColour(0x00, 0x00, 0xa0));
 
     Register(_T("null"),   new Instantiator<NullLogger>);
     Register(_T("stdout"), new Instantiator<StdoutLogger>);
