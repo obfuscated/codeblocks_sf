@@ -630,6 +630,9 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
             cbConfigurationPanel* panel = m_PluginPanels[i];
             panel->OnApply();
         }
+
+        // save the colours manager here, just in case there are duplicate colour controls
+        Manager::Get()->GetColourManager()->Save();
     }
     else
     {
@@ -782,5 +785,4 @@ void EnvironmentSettingsDlg::WriteApplicationColours()
     {
         manager->SetColour(it->first, it->second);
     }
-    manager->Save();
 }
