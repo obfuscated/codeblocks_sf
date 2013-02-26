@@ -34,6 +34,7 @@ ALLHEADERS = annoyingdialog.h \
 				base64.h \
 				blockallocated.h \
 				cbauibook.h \
+				cbcolourmanager.h \
 				cbdebugger_interfaces.h \
 				cbeditor.h \
 				cbeditorprintout.h \

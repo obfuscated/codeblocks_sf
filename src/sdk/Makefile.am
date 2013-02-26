@@ -33,6 +33,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						base64.cpp \
 						blockallocated.cpp \
 						cbauibook.cpp \
+						cbcolourmanager.cpp \
 						cbdebugger_interfaces.cpp \
 						cbeditor.cpp \
 						cbeditorprintout.cpp \

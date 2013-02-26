@@ -10,7 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-
+    #include "configmanager.h"
 #endif // CB_PRECOMP
 
 #include "cbcolourmanager.h"
