@@ -29,6 +29,7 @@
 
 #include "watchesdlg.h"
 
+#include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
 namespace
@@ -350,9 +351,13 @@ WatchesDlg::WatchesDlg() :
     m_grid->SetPropertyAttribute(prop, wxT("Units"), wxEmptyString);
 
     m_grid->Connect(idGrid, wxEVT_KEY_DOWN, wxKeyEventHandler(WatchesDlg::OnKeyDown), NULL, this);
+
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    colours->RegisterColour(_("Debugger"), _("Watches changed value"), wxT("dbg_watches_changed"), *wxRED);
 }
 
-inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch, bool readonly)
+inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch &watch,
+                           bool readonly, const wxColour &changedColour)
 {
     for(int ii = 0; ii < watch.GetChildCount(); ++ii)
     {
@@ -375,7 +380,7 @@ inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch
 
         if (child->IsChanged())
         {
-            grid.SetPropertyTextColour(prop, wxColor(255, 0, 0));
+            grid.SetPropertyTextColour(prop, changedColour);
             WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(prop));
         }
         else
@@ -387,7 +392,7 @@ inline void AppendChildren(wxPropertyGrid &grid, wxPGProperty &property, cbWatch
 #endif
         }
 
-        AppendChildren(grid, *prop, *child.get(), readonly);
+        AppendChildren(grid, *prop, *child.get(), readonly, changedColour);
     }
 }
 
@@ -395,6 +400,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
 {
     if (!property)
         return;
+    const wxColour &changedColour = Manager::Get()->GetColourManager()->GetColour(wxT("dbg_watches_changed"));
 
     wxString value, symbol, type;
     watch->GetSymbol(symbol);
@@ -404,7 +410,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     property->SetExpanded(watch->IsExpanded());
     watch->GetType(type);
     if (watch->IsChanged())
-        grid->SetPropertyTextColour(property, wxColor(255, 0, 0));
+        grid->SetPropertyTextColour(property, changedColour);
     else
     {
 #if wxCHECK_VERSION(2, 9, 0)
@@ -427,7 +433,7 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
         grid->SetPropertyLabel(property, symbol);
     }
 
-    AppendChildren(*grid, *property, *watch, readonly);
+    AppendChildren(*grid, *property, *watch, readonly, changedColour);
 
     WatchRawDialog::UpdateValue(static_cast<const WatchesProperty*>(property));
 }

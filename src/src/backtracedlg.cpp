@@ -69,9 +69,9 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent) :
     m_list->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
     m_list->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
 
-    Manager::Get()->GetColourManager()->RegisterColour(wxT("Debugger"), wxT("Backtrace active frame background"),
+    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame background"),
                                                        wxT("dbg_backtrace_active_background"), *wxRED);
-    Manager::Get()->GetColourManager()->RegisterColour(wxT("Debugger"), wxT("Backtrace active frame foreground"),
+    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame foreground"),
                                                        wxT("dbg_backtrace_active_foreground"), *wxWHITE);
 }
 

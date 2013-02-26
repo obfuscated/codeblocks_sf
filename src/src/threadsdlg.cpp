@@ -19,6 +19,7 @@
 #endif
 
 #include "threadsdlg.h"
+#include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
 namespace
@@ -48,6 +49,11 @@ ThreadsDlg::ThreadsDlg(wxWindow* parent) : wxPanel(parent)
     m_list->InsertColumn(0, _("Active"), wxLIST_FORMAT_LEFT, 64);
     m_list->InsertColumn(1, _("Number"), wxLIST_FORMAT_RIGHT, 64);
     m_list->InsertColumn(2, _("Info"), wxLIST_FORMAT_LEFT);
+
+    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Active thread text"),
+                                                       wxT("dbg_threads_active_text"), *wxWHITE);
+    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Active thread background"),
+                                                       wxT("dbg_threads_active_back"), *wxRED);
 }
 
 void ThreadsDlg::Reload()
@@ -55,6 +61,8 @@ void ThreadsDlg::Reload()
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (!plugin)
         return;
+
+    ColourManager *colours = Manager::Get()->GetColourManager();
 
     m_list->Freeze();
     m_list->DeleteAllItems();
@@ -69,7 +77,8 @@ void ThreadsDlg::Reload()
         m_list->SetItem(index, 2, thread->GetInfo());
         if (thread->IsActive())
         {
-            m_list->SetItemBackgroundColour(index, wxColor(255, 0, 0));
+            m_list->SetItemTextColour(index, colours->GetColour(wxT("dbg_threads_active_text")));
+            m_list->SetItemBackgroundColour(index, colours->GetColour(wxT("dbg_threads_active_back")));
             active_index = index;
         }
     }
