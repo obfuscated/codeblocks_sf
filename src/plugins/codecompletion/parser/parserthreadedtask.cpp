@@ -64,6 +64,8 @@ ParserThreadedTask::ParserThreadedTask(Parser* parser, wxMutex& parserMTX) :
 int ParserThreadedTask::Execute()
 {
     TRACE(_T("ParserThreadedTask::Execute(): Enter"));
+    if (!m_Parser) return 0;
+
     CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
@@ -134,6 +136,9 @@ MarkFileAsLocalThreadedTask::MarkFileAsLocalThreadedTask(Parser* parser, cbProje
 int MarkFileAsLocalThreadedTask::Execute()
 {
     TRACE(_T("MarkFileAsLocalThreadedTask::Execute()"));
+    if (!m_Project) return 0;
+    if (!m_Parser)  return 0;
+
     // mark all project files as local
     for (FilesList::const_iterator it  = m_Project->GetFilesList().begin();
                                    it != m_Project->GetFilesList().end(); ++it)
