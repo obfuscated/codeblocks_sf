@@ -27,7 +27,7 @@ void ColourManager::Load()
         const wxString &id = colours[ii].Lower();
         const wxColour &colour = config->ReadColour(wxT("list/") + id);
 
-        Map::iterator it = m_colours.find(id);
+        ColourDefMap::iterator it = m_colours.find(id);
         if (it != m_colours.end())
             it->second.value = colour;
         else
@@ -42,7 +42,7 @@ void ColourManager::Load()
 void ColourManager::Save()
 {
     ConfigManager *config = Manager::Get()->GetConfigManager(wxT("colours"));
-    for (Map::const_iterator it = m_colours.begin(); it != m_colours.end(); ++it)
+    for (ColourDefMap::const_iterator it = m_colours.begin(); it != m_colours.end(); ++it)
     {
         if (it->second.value != it->second.defaultValue)
             config->Write(wxT("list/") + it->first, it->second.value);
@@ -53,7 +53,7 @@ void ColourManager::RegisterColour(const wxString &category, const wxString &nam
                                    const wxString &id, const wxColour &defaultColour)
 {
     wxString lowerID =  id.Lower();
-    Map::iterator it = m_colours.find(lowerID);
+    ColourDefMap::iterator it = m_colours.find(lowerID);
     if (it != m_colours.end())
     {
         it->second.name = name;
@@ -72,6 +72,18 @@ void ColourManager::RegisterColour(const wxString &category, const wxString &nam
 
 wxColour ColourManager::GetColour(const wxString &id) const
 {
-    Map::const_iterator it = m_colours.find(id);
+    ColourDefMap::const_iterator it = m_colours.find(id);
     return it != m_colours.end() ? it->second.value : *wxBLACK;
+}
+
+void ColourManager::SetColour(const wxString &id, const wxColour &colour)
+{
+    ColourDefMap::iterator it = m_colours.find(id);
+    if (it != m_colours.end())
+        it->second.value = colour;
+}
+
+const ColourManager::ColourDefMap& ColourManager::GetColourDefinitions() const
+{
+    return m_colours;
 }

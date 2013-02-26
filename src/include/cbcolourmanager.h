@@ -20,14 +20,18 @@ class DLLIMPORT ColourManager : public Mgr<ColourManager>
         void RegisterColour(const wxString &category, const wxString &name,
                             const wxString &id, const wxColour &defaultColour);
         wxColour GetColour(const wxString &id) const;
-    private:
+        void SetColour(const wxString &id, const wxColour &colour);
+    public:
         struct ColourDef
         {
             wxString category, name;
             wxColour value, defaultValue;
         };
-        typedef std::map<wxString, ColourDef> Map;
-        Map m_colours;
+        typedef std::map<wxString, ColourDef> ColourDefMap;
+
+        const ColourDefMap& GetColourDefinitions() const;
+    private:
+        ColourDefMap m_colours;
 };
 
 #endif // X_COLOURMANAGER_H
