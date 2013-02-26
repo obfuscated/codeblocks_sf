@@ -158,8 +158,8 @@ IncrementalSearch::IncrementalSearch():
         m_flags(0),
         m_Highlight(false),
         m_SelectedOnly(false),
-        m_IndicFound(20),
-        m_IndicHighlight(21),
+        m_IndicFound(21),
+        m_IndicHighlight(22),
         m_LengthFound(0),
         m_LastInsertionPoint(0)
 
