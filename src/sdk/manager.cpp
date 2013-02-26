@@ -37,6 +37,7 @@
 #include <wx/toolbar.h>
 #include <wx/fs_mem.h>
 
+#include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
 static Manager* s_ManagerInstance = 0;
@@ -377,6 +378,11 @@ FileManager* Manager::GetFileManager() const
 DebuggerManager* Manager::GetDebuggerManager() const
 {
     return DebuggerManager::Get();
+}
+
+ColourManager* Manager::GetColourManager() const
+{
+    return ColourManager::Get();
 }
 
 bool Manager::LoadResource(const wxString& file)

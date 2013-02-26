@@ -542,6 +542,9 @@
 		<Unit filename="include/cbauibook.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cbcolourmanager.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/cbdebugger_interfaces.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2225,6 +2228,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbauibook.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/cbcolourmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbdebugger_interfaces.cpp">

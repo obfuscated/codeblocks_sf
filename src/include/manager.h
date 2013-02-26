@@ -39,6 +39,7 @@ class UserVariableManager;
 class ScriptingManager;
 class ConfigManager;
 class FileManager;
+class ColourManager;
 
 
 class DLLIMPORT Manager
@@ -119,7 +120,7 @@ public:
     ConfigManager*       GetConfigManager(const wxString& name_space) const;
     FileManager*         GetFileManager()                             const;
     DebuggerManager*     GetDebuggerManager()                         const;
-
+    ColourManager*       GetColourManager()                           const;
 
 
     /////// XML Resource functions ///////
