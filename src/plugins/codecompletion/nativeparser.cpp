@@ -1269,9 +1269,12 @@ void NativeParser::RemoveObsoleteParsers()
             if (it->second == info.second)
                 continue;
 
+            wxString prj = (it->first ? it->first->GetTitle() : _T("*NONE*"));
             if (DeleteParser(it->first))
             {
-                wxString prj = (it->first ? it->first->GetTitle() : _T("*NONE*"));
+                // Please note that DeleteParser() may erase one element of the m_ParserList, so
+                // do NOT use the constant iterator here again, as the element pointed by it may be
+                // destroyed in DeleteParser().
                 removedProjectNames.Add(prj);
                 deleted = true;
                 break;
