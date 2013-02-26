@@ -66,6 +66,8 @@
 #include "debugger_interface_creator.h"
 #include "debuggermenu.h"
 
+#include "cbcolourmanager.h"
+
 class cbFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -731,6 +733,8 @@ void MainFrame::CreateIDE()
 
     m_pEdMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
     m_pPrjMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
+
+    Manager::Get()->GetColourManager()->Load();
 }
 
 
