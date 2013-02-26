@@ -25,6 +25,7 @@
 #include "filefilters.h"
 
 #include "backtracedlg.h"
+#include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
 namespace
@@ -67,6 +68,11 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent) :
     m_list->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
     m_list->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
     m_list->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
+
+    Manager::Get()->GetColourManager()->RegisterColour(wxT("Debugger"), wxT("Backtrace active frame background"),
+                                                       wxT("dbg_backtrace_active_background"), *wxRED);
+    Manager::Get()->GetColourManager()->RegisterColour(wxT("Debugger"), wxT("Backtrace active frame foreground"),
+                                                       wxT("dbg_backtrace_active_foreground"), *wxWHITE);
 }
 
 void BacktraceDlg::Reload()
@@ -74,6 +80,10 @@ void BacktraceDlg::Reload()
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (!plugin)
         return;
+
+    ColourManager &colours = *Manager::Get()->GetColourManager();
+    const wxColour &activeBackground = colours.GetColour(wxT("dbg_backtrace_active_background"));
+    const wxColour &activeForeground = colours.GetColour(wxT("dbg_backtrace_active_foreground"));
 
     m_list->Freeze();
     m_list->DeleteAllItems();
@@ -99,7 +109,8 @@ void BacktraceDlg::Reload()
         if (active_frame == frame->GetNumber())
         {
             active_frame_index = ii;
-            m_list->SetItemBackgroundColour(ii, wxColor(255, 0, 0));
+            m_list->SetItemBackgroundColour(ii, activeBackground);
+            m_list->SetItemTextColour(ii, activeForeground);
         }
     }
 
