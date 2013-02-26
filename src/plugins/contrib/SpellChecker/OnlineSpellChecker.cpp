@@ -142,26 +142,33 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
         m_invalidatedRangesEnd.Add(stc->GetLength());
     }
     alreadychecked = true;
-    oldctrl = ctrl;
 
     // Set Styling:
     stc->SetIndicatorCurrent(GetIndicator());
-    stc->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
-    stc->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
-#ifndef wxHAVE_RAW_BITMAP
-    // If wxWidgets is build without rawbitmap-support, the indicators become opaque
-    // and hide the text, so we show them under the text.
-    // Not enabled as default, because the readability is a little bit worse.
-    stc->IndicatorSetUnder(GetIndicator(),true);
-#endif
-    if ( stcr )
+    if (oldctrl != ctrl)
     {
-        stcr->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
-        stcr->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
+        stc->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
+        stc->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
 #ifndef wxHAVE_RAW_BITMAP
-        stcr->IndicatorSetUnder(GetIndicator(),true);
+        // If wxWidgets is build without rawbitmap-support, the indicators become opaque
+        // and hide the text, so we show them under the text.
+        // Not enabled as default, because the readability is a little bit worse.
+        stc->IndicatorSetUnder(GetIndicator(),true);
 #endif
     }
+    if ( stcr )
+    {
+        if (oldctrl != ctrl)
+        {
+            stcr->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
+            stcr->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
+#ifndef wxHAVE_RAW_BITMAP
+            stcr->IndicatorSetUnder(GetIndicator(),true);
+#endif
+        }
+    }
+
+    oldctrl = ctrl;
 
     // Manager::Get()->GetLogManager()->Log(wxT("OSC: update regions"));
 
