@@ -26,6 +26,11 @@ class DLLIMPORT ColourManager : public Mgr<ColourManager>
         {
             wxString category, name;
             wxColour value, defaultValue;
+
+            bool IsValid() const
+            {
+                return !name.empty() && !category.empty();
+            }
         };
         typedef std::map<wxString, ColourDef> ColourDefMap;
 

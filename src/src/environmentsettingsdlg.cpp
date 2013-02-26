@@ -671,6 +671,8 @@ void EnvironmentSettingsDlg::FillApplicationColours()
     const ColourManager::ColourDefMap &colours = Manager::Get()->GetColourManager()->GetColourDefinitions();
     for (ColourManager::ColourDefMap::const_iterator it = colours.begin(); it != colours.end(); ++it)
     {
+        if (!it->second.IsValid())
+            continue;
         if (category.empty())
             list->Append(it->second.category + wxT(" : ") + it->second.name, new AppColoursClientData(it->first));
         else if (category == it->second.category)
