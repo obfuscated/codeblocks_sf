@@ -1020,15 +1020,11 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
 
     StartStopWatch(); // start counting the time we take for parsing the files
 
-    bool send_event          = true;
-    bool sendStartParseEvent = false;
-
     if (   m_PoolTask.empty()
         && m_PriorityHeaders.empty()
         && m_BatchParseFiles.empty()
         && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
     {
-        send_event = false; // Nothing to do.
         return;
     }
 
@@ -1049,13 +1045,14 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
         // end of adding the task, execute the threads in the pool
         m_Pool.BatchEnd();
 
-
-        send_event = false; // nothing to do anymore, the pool is already being processed
         return;
     }
-    else if (   !m_PriorityHeaders.empty()
-             || !m_BatchParseFiles.empty()
-             || !m_PredefinedMacros.IsEmpty() )
+
+    bool send_event          = true;
+    bool sendStartParseEvent = false;
+    if (   !m_PriorityHeaders.empty()
+        || !m_BatchParseFiles.empty()
+        || !m_PredefinedMacros.IsEmpty() )
     {
         CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
