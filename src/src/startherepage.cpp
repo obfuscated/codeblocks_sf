@@ -257,7 +257,11 @@ void StartHerePage::Reload()
     const wxString &linkColour = colours->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
     const wxString &textColour = colours->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
     ReplaceRecentProjectFiles(buf, *m_projects, *m_files, linkColour, textColour);
+
+    int x, y;
+    m_pWin->GetViewStart(&x, &y);
     m_pWin->SetPage(buf);
+    m_pWin->Scroll(x, y);
 }
 
 bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
