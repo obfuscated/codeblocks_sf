@@ -171,6 +171,7 @@ class MainFrame : public wxFrame
         void OnEditGotoLineEnd(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditSelectNext(wxCommandEvent& event);
+        void OnEditSelectNextSkip(wxCommandEvent& event);
         void OnEditCommentSelected(wxCommandEvent& event);
         void OnEditUncommentSelected(wxCommandEvent& event);
         void OnEditToggleCommentSelected(wxCommandEvent & event);

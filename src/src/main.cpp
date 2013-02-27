@@ -237,6 +237,7 @@ int idEditInsertNewLine           = XRCID("idEditInsertNewLine");
 int idEditGotoLineEnd             = XRCID("idEditGotoLineEnd");
 int idEditSelectAll               = XRCID("idEditSelectAll");
 int idEditSelectNext              = XRCID("idEditSelectNext");
+int idEditSelectNextSkip          = XRCID("idEditSelectNextSkip");
 int idEditCommentSelected         = XRCID("idEditCommentSelected");
 int idEditUncommentSelected       = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected   = XRCID("idEditToggleCommentSelected");
@@ -340,6 +341,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditEncoding,              MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSelectAll,             MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSelectNext,            MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditSelectNextSkip,        MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksToggle,       MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext,         MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious,     MainFrame::OnEditMenuUpdateUI)
@@ -465,6 +467,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditGotoLineEnd,           MainFrame::OnEditGotoLineEnd)
     EVT_MENU(idEditSelectAll,             MainFrame::OnEditSelectAll)
     EVT_MENU(idEditSelectNext,            MainFrame::OnEditSelectNext)
+    EVT_MENU(idEditSelectNextSkip,        MainFrame::OnEditSelectNextSkip)
     EVT_MENU(idEditBookmarksToggle,       MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,         MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,     MainFrame::OnEditBookmarksPrevious)
@@ -3347,19 +3350,10 @@ void MainFrame::OnEditSelectAll(cb_unused wxCommandEvent& event)
         eb->SelectAll();
 }
 
-void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
+namespace
 {
-    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (!eb || !eb->IsBuiltinEditor())
-        return;
-    cbEditor *editor = static_cast<cbEditor*>(eb);
-    std::pair<long, long> selection;
-    cbStyledTextCtrl *control = editor->GetControl();
-    control->GetSelection(&selection.first, &selection.second);
-    if (selection.first == selection.second)
-        return;
-    wxString selectedText(control->GetTextRange(selection.first, selection.second));
-
+void SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, const std::pair<long, long> &selection)
+{
     // always match case and try to match whole words if they have no special characters
     int flag = wxSCI_FIND_MATCHCASE;
     if (selectedText.find_first_of(wxT(";:\"'`~@#$%^,-+*/\\=|!?&*(){}[]")) == wxString::npos)
@@ -3377,6 +3371,52 @@ void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
     }
     else
         InfoWindow::Display(_("Select Next Occurrence"), _("No more available"));
+}
+}
+
+void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
+{
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (!eb || !eb->IsBuiltinEditor())
+        return;
+    cbStyledTextCtrl *control = static_cast<cbEditor*>(eb)->GetControl();
+
+    std::pair<long, long> selection;
+    control->GetSelection(&selection.first, &selection.second);
+    if (selection.first == selection.second)
+        return;
+    const wxString &selectedText(control->GetTextRange(selection.first, selection.second));
+    SelectNext(control, selectedText, selection);
+}
+
+void MainFrame::OnEditSelectNextSkip(cb_unused wxCommandEvent& event)
+{
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (!eb || !eb->IsBuiltinEditor())
+        return;
+    cbStyledTextCtrl *control = static_cast<cbEditor*>(eb)->GetControl();
+
+    std::pair<long, long> selection;
+    control->GetSelection(&selection.first, &selection.second);
+    if (selection.first == selection.second)
+        return;
+    const wxString &selectedText(control->GetTextRange(selection.first, selection.second));
+
+    // store the selections in a vector except for the current one
+    typedef std::vector<std::pair<int, int> > Selections;
+    Selections selections;
+    int count = control->GetSelections();
+    for (int ii = 0; ii < count; ++ii)
+    {
+        int start = control->GetSelectionNStart(ii);
+        int end = control->GetSelectionNEnd(ii);
+        if (!(start == selection.first && end == selection.second))
+            selections.push_back(Selections::value_type(start, end));
+    }
+    control->ClearSelections();
+    for (Selections::const_iterator it = selections.begin(); it != selections.end(); ++it)
+        control->AddSelection(it->first, it->second);
+    SelectNext(control, selectedText, selection);
 }
 
 /* This is a shameless rip-off of the original OnEditCommentSelected function,
