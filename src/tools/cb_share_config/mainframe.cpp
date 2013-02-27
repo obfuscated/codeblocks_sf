@@ -522,13 +522,14 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
                           std::vector<TiXmlNode*> *nodes, const wxString& prefix)
 {
   wxString section((*node)->Value(), wxConvLocal);
+  const wxString &sectionLower = section.MakeLower();
 
-  if      (section.MakeLower().Matches(wxT("auto_complete"))) // auto complete (abbreviations)
+  if      (sectionLower.Matches(wxT("auto_complete"))) // auto complete (abbreviations)
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("code_completion"))) // code completion plugin token replacements
+  else if (sectionLower.Matches(wxT("code_completion"))) // code completion plugin token replacements
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -537,7 +538,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<code_completion>")); // recursive call
     }
   }
-  else if (section.MakeLower().Matches(wxT("compiler")))    // compiler sets
+  else if (sectionLower.Matches(wxT("compiler")))    // compiler sets
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -546,7 +547,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<compiler>")); // recursive call
     }
   }
-  else if (section.MakeLower().Matches(wxT("editor")))      // editor colour sets
+  else if (sectionLower.Matches(wxT("editor")))      // editor colour sets
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -555,32 +556,32 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<editor>")); // recursive call
     }
   }
-  else if (section.MakeLower().Matches(wxT("envvars")))     // envvar plugin variables
+  else if (sectionLower.Matches(wxT("envvars")))     // envvar plugin variables
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("gcv")))         // global variables
+  else if (sectionLower.Matches(wxT("gcv")))         // global variables
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("help_plugin"))) // help plugin files
+  else if (sectionLower.Matches(wxT("help_plugin"))) // help plugin files
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("mime_types")))  // mime types
+  else if (sectionLower.Matches(wxT("mime_types")))  // mime types
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("plugins")))     // plugins
+  else if (sectionLower.Matches(wxT("plugins")))     // plugins
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
-  else if (section.MakeLower().Matches(wxT("project_manager"))) // file groups
+  else if (sectionLower.Matches(wxT("project_manager"))) // file groups
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -589,7 +590,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<project_manager>")); // recursive call
     }
   }
-  else if (section.MakeLower().Matches(wxT("tools")))       // tools setup by the user
+  else if (sectionLower.Matches(wxT("tools")))       // tools setup by the user
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -599,7 +600,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 1st recursion level: code_completion -> token_replacements
   // ----------------------------------------------------------
   else if (   prefix.Matches(wxT("<code_completion>"))
-           && section.MakeLower().Matches(wxT("token_replacements")))// token replacements
+           && sectionLower.Matches(wxT("token_replacements")))// token replacements
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -609,7 +610,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 1st recursion level: compiler -> sets/user sets
   // -----------------------------------------------
   else if (   prefix.Matches(wxT("<compiler>"))
-           && section.MakeLower().Matches(wxT("sets")))     // compiler sets
+           && sectionLower.Matches(wxT("sets")))     // compiler sets
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -619,7 +620,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
     }
   }
   else if (   prefix.Matches(wxT("<compiler>"))
-           && section.MakeLower().Matches(wxT("user_sets")))// compiler user sets
+           && sectionLower.Matches(wxT("user_sets")))// compiler user sets
   {
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
@@ -651,7 +652,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 1st recursion level: editor -> colour sets
   // ------------------------------------------
   else if (   prefix.Matches(wxT("<editor>"))
-           && section.MakeLower().Matches(wxT("colour_sets")))// colour sets
+           && sectionLower.Matches(wxT("colour_sets")))// colour sets
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -661,7 +662,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 1st recursion level: editor -> default code
   // -------------------------------------------
   else if (   prefix.Matches(wxT("<editor>"))
-           && section.MakeLower().Matches(wxT("default_code")))// default code
+           && sectionLower.Matches(wxT("default_code")))// default code
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -671,7 +672,7 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 1st recursion level: project_manager -> file_groups
   // ---------------------------------------------------
   else if (   prefix.Matches(wxT("<project_manager>"))
-           && section.MakeLower().Matches(wxT("file_groups")))// file groups
+           && sectionLower.Matches(wxT("file_groups")))// file groups
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
