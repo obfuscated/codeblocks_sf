@@ -2108,10 +2108,15 @@ void MainFrame::ShowHideStartPage(bool forceHasProject, int forceState)
         show=true;
 
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-    if (show && !sh)
+    if (show)
     {
-        sh = new StartHerePage(this, m_pProjectsHistory, m_pFilesHistory,
-                               Manager::Get()->GetEditorManager()->GetNotebook());
+        if (!sh)
+        {
+            sh = new StartHerePage(this, m_pProjectsHistory, m_pFilesHistory,
+                                   Manager::Get()->GetEditorManager()->GetNotebook());
+        }
+        else
+            static_cast<StartHerePage*>(sh)->Reload();
     }
     else if (!show && sh)
         sh->Destroy();
