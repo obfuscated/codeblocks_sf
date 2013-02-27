@@ -381,15 +381,6 @@ struct cbEditorInternalData
         return url;
     }
 
-    static void MakeNearbyLinesVisible(cbStyledTextCtrl* stc)
-    {
-        const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) - stc->GetFirstVisibleLine();
-        if (dist >= 0 && dist < 2)
-            stc->LineScroll(0, dist - 2);
-        else if (dist >= stc->LinesOnScreen() - 2)
-            stc->LineScroll(0, 3 + dist - stc->LinesOnScreen());
-    }
-
     // vars
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
@@ -2284,7 +2275,7 @@ void cbEditor::GotoNextChanged()
     if (newLine != wxSCI_INVALID_POSITION)
     {
         p_Control->GotoLine(newLine);
-        cbEditorInternalData::MakeNearbyLinesVisible(p_Control);
+        p_Control->MakeNearbyLinesVisible(p_Control->GetCurrentLine());
     }
 }
 
@@ -2303,7 +2294,7 @@ void cbEditor::GotoPreviousChanged()
     if (newLine != wxSCI_INVALID_POSITION)
     {
         p_Control->GotoLine(newLine);
-        cbEditorInternalData::MakeNearbyLinesVisible(p_Control);
+        p_Control->MakeNearbyLinesVisible(p_Control->GetCurrentLine());
     }
 }
 
@@ -2475,7 +2466,7 @@ void cbEditor::GotoMatchingBrace()
         control->GotoPos(matchingBrace);
         control->ChooseCaretX();
         // make nearby lines visible
-        cbEditorInternalData::MakeNearbyLinesVisible(control);
+        control->MakeNearbyLinesVisible(control->GetCurrentLine());
     }
 }
 

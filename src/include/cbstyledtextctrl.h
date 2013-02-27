@@ -41,6 +41,7 @@ class cbStyledTextCtrl : public wxScintilla
         static std::map<int, std::set<int> > &GetPreprocessorLexerStyles();
         static std::map<int, std::set<int> > &GetCommentLexerStyles();
 
+        void MakeNearbyLinesVisible(int line);
     private:
         void OnContextMenu(wxContextMenuEvent& event);
         void OnKillFocus(wxFocusEvent& event);

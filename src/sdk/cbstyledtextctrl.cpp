@@ -500,3 +500,12 @@ std::map<int, std::set<int> > &cbStyledTextCtrl::GetCommentLexerStyles()
 {
     return CommentLexerStyles;
 }
+
+void cbStyledTextCtrl::MakeNearbyLinesVisible(int line)
+{
+    const int dist = VisibleFromDocLine(line) - GetFirstVisibleLine();
+    if (dist >= 0 && dist < 2)
+        LineScroll(0, dist - 2);
+    else if (dist >= LinesOnScreen() - 2)
+        LineScroll(0, 3 + dist - LinesOnScreen());
+}
