@@ -460,6 +460,11 @@
         <accel>Ctrl-A</accel>
         <help>Selects the entire text range</help>
       </object>
+      <object class="wxMenuItem" name="idEditSelectNext">
+        <label>&amp;Select next occurrence</label>
+        <accel>Ctrl-E</accel>
+        <help>Selects the next occurrence of the currently selected text and allows editing all the occurrences</help>
+      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditCommentSelected">
         <label>Comme&amp;nt</label>

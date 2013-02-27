@@ -236,6 +236,7 @@ int idEditSpecialCommandsOther    = XRCID("idEditSpecialCommandsOther");
 int idEditInsertNewLine           = XRCID("idEditInsertNewLine");
 int idEditGotoLineEnd             = XRCID("idEditGotoLineEnd");
 int idEditSelectAll               = XRCID("idEditSelectAll");
+int idEditSelectNext              = XRCID("idEditSelectNext");
 int idEditCommentSelected         = XRCID("idEditCommentSelected");
 int idEditUncommentSelected       = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected   = XRCID("idEditToggleCommentSelected");
@@ -338,6 +339,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditEOLLF,                 MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditEncoding,              MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditSelectAll,             MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditSelectNext,            MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksToggle,       MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext,         MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious,     MainFrame::OnEditMenuUpdateUI)
@@ -462,6 +464,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditInsertNewLine,         MainFrame::OnEditInsertNewLine)
     EVT_MENU(idEditGotoLineEnd,           MainFrame::OnEditGotoLineEnd)
     EVT_MENU(idEditSelectAll,             MainFrame::OnEditSelectAll)
+    EVT_MENU(idEditSelectNext,            MainFrame::OnEditSelectNext)
     EVT_MENU(idEditBookmarksToggle,       MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,         MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,     MainFrame::OnEditBookmarksPrevious)
@@ -3344,6 +3347,37 @@ void MainFrame::OnEditSelectAll(cb_unused wxCommandEvent& event)
         eb->SelectAll();
 }
 
+void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
+{
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (!eb || !eb->IsBuiltinEditor())
+        return;
+    cbEditor *editor = static_cast<cbEditor*>(eb);
+    std::pair<long, long> selection;
+    cbStyledTextCtrl *control = editor->GetControl();
+    control->GetSelection(&selection.first, &selection.second);
+    if (selection.first == selection.second)
+        return;
+    wxString selectedText(control->GetTextRange(selection.first, selection.second));
+
+    // always match case and try to match whole words if they have no special characters
+    int flag = wxSCI_FIND_MATCHCASE;
+    if (selectedText.find_first_of(wxT(";:\"'`~@#$%^,-+*/\\=|!?&*(){}[]")) == wxString::npos)
+        flag |= wxSCI_FIND_WHOLEWORD;
+
+    int lengthFound = 0; // we need this to work properly with multibyte characters
+    int eof = control->GetLength();
+    int pos = control->FindText(selection.second, eof, selectedText, flag, &lengthFound);
+    if (pos != wxSCI_INVALID_POSITION)
+    {
+        control->AddSelection(pos, pos + lengthFound);
+        control->SetAdditionalSelectionTyping(true);
+        control->MakeNearbyLinesVisible(control->LineFromPosition(pos));
+    }
+    else
+        InfoWindow::Display(_("Select Next Occurrence"), _("No more available"));
+}
+
 /* This is a shameless rip-off of the original OnEditCommentSelected function,
  * now more suitingly named OnEditToggleCommentSelected (because that's what
  * it does :)
@@ -4108,6 +4142,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditGotoMatchingBrace,     ed);
     mbar->Enable(idEditHighlightMode,         ed);
     mbar->Enable(idEditSelectAll,             canSelAll);
+    mbar->Enable(idEditSelectNext,            hasSel);
     mbar->Enable(idEditBookmarks,             ed);
     mbar->Enable(idEditFolding,               ed &&
                                               Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false));
