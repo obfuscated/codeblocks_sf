@@ -93,7 +93,6 @@ class MainFrame : public wxFrame
         void OnSize(wxSizeEvent& event);
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
-        void OnStartHereVarSubst(wxCommandEvent& event);
 
         // File->New submenu entries handler
         void OnFileNewWhat(wxCommandEvent& event);

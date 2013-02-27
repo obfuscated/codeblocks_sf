@@ -8,6 +8,8 @@
  */
 
 #include <sdk.h>
+
+#include <wx/docview.h>
 #include <wx/wxhtml.h>
 #include <wx/intl.h>
 #include <wx/utils.h>
@@ -53,9 +55,81 @@ class MyHtmlWin : public wxHtmlWindow
 BEGIN_EVENT_TABLE(StartHerePage, EditorBase)
 END_EVENT_TABLE()
 
-StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
+namespace
+{
+
+void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, const wxFileHistory &files)
+{
+    // replace history vars
+    wxString links;
+
+    links << _T("<table>\n<tr><td colspan=\"2\"><b>");
+    links << _("Recent projects");
+    links << _T("</b></td></tr>\n");
+    if (projects.GetCount())
+    {
+        for (size_t i = 0; i < projects.GetCount(); ++i)
+        {
+            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
+                                      static_cast<unsigned long>(i + 1));
+            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%lu\">%s</a>"),
+                                      static_cast<unsigned long>(i + 1), projects.GetHistoryFile(i).wx_str());
+            links << _T("</td></tr>\n");
+        }
+    }
+    else
+    {
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
+        links << _("No recent projects");
+        links << _T("</td></tr>\n");
+    }
+
+    links << _T("</table>\n<table>\n<tr><td colspan=\"2\"><b>");
+    links << _("Recent files");
+    links <<_T("</b></td></tr>\n");
+    if (files.GetCount())
+    {
+        for (size_t i = 0; i < files.GetCount(); ++i)
+        {
+            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
+                                      static_cast<unsigned long>(i + 1));
+            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%lu\">%s</a>"),
+                                      static_cast<unsigned long>(i + 1), files.GetHistoryFile(i).wx_str());
+            links << _T("</td></tr>\n");
+        }
+    }
+    else
+    {
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
+        links << _("No recent files");
+        links << _T("</td></tr>\n");
+    }
+
+    links << _T("</table>\n");
+
+
+    // update page
+    buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
+    buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
+    buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
+    buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
+    buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
+    buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
+    buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
+}
+
+} // anonymous namespace
+
+StartHerePage::StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
+                             const wxFileHistory *files, wxWindow* parent)
     : EditorBase(parent, g_StartHereTitle),
-    m_pOwner(owner)
+    m_pOwner(owner),
+    m_projects(projects),
+    m_files(files)
 {
     //ctor
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
@@ -127,7 +201,6 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     buf.Replace(_T("CB_VAR_VERSION_VERB"), appglobals::AppActualVersionVerb);
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
     buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
-    m_pWin->SetPage(buf);
 
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
     Reload();
@@ -145,21 +218,10 @@ StartHerePage::~StartHerePage()
 
 void StartHerePage::Reload()
 {
-    // ask our parent to perform any more substitutions
-    // (for unknown vars to this, as CB_VAR_HISTORY_FILE_*)
-    // if the parent performs substitutions, it should call
-    // SetPageContent() on this...
-    if (m_pOwner)
-    {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageVarSubst);
-        evt.SetString(m_OriginalPageContent);
-        m_pOwner->ProcessEvent(evt); // direct call
-    }
-}
-
-void StartHerePage::SetPageContent(const wxString& buffer)
-{
-    m_pWin->SetPage(buffer);
+    // Called every time something in the history changes.
+    wxString buf = m_OriginalPageContent;
+    ReplaceRecentProjectFiles(buf, *m_projects, *m_files);
+    m_pWin->SetPage(buf);
 }
 
 bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)

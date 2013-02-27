@@ -291,7 +291,6 @@ int idFilePrev              = wxNewId();
 int idShiftTab              = wxNewId();
 int idCtrlAltTab            = wxNewId();
 int idStartHerePageLink     = wxNewId();
-int idStartHerePageVarSubst = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_ERASE_BACKGROUND(MainFrame::OnEraseBackground)
@@ -512,7 +511,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
 
     EVT_MENU(idStartHerePageLink,     MainFrame::OnStartHereLink)
-    EVT_MENU(idStartHerePageVarSubst, MainFrame::OnStartHereVarSubst)
 
     EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
@@ -2111,7 +2109,10 @@ void MainFrame::ShowHideStartPage(bool forceHasProject, int forceState)
 
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (show && !sh)
-        sh = new StartHerePage(this, Manager::Get()->GetEditorManager()->GetNotebook());
+    {
+        sh = new StartHerePage(this, m_pProjectsHistory, m_pFilesHistory,
+                               Manager::Get()->GetEditorManager()->GetNotebook());
+    }
     else if (!show && sh)
         sh->Destroy();
 
@@ -2190,77 +2191,6 @@ void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool can
         if (sh)
             ((StartHerePage*)sh)->Reload();
     }
-}
-
-void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
-{
-    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-    if (!sh)
-        return;
-
-    // replace history vars
-
-    wxString buf = event.GetString();
-    wxString links;
-
-    links << _T("<table>\n<tr><td colspan=\"2\"><b>");
-    links << _("Recent projects");
-    links << _T("</b></td></tr>\n");
-    if (m_pProjectsHistory->GetCount())
-    {
-        for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
-        {
-            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
-                                      static_cast<unsigned long>(i + 1));
-            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%lu\">%s</a>"),
-                                      static_cast<unsigned long>(i + 1), m_pProjectsHistory->GetHistoryFile(i).wx_str());
-            links << _T("</td></tr>\n");
-        }
-    }
-    else
-    {
-        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
-        links << _("No recent projects");
-        links << _T("</td></tr>\n");
-    }
-
-    links << _T("</table>\n<table>\n<tr><td colspan=\"2\"><b>");
-    links << _("Recent files");
-    links <<_T("</b></td></tr>\n");
-    if (m_pFilesHistory->GetCount())
-    {
-        for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
-        {
-            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
-                                      static_cast<unsigned long>(i + 1));
-            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%lu\">%s</a>"),
-                                      static_cast<unsigned long>(i + 1), m_pFilesHistory->GetHistoryFile(i).wx_str());
-            links << _T("</td></tr>\n");
-        }
-    }
-    else
-    {
-        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
-        links << _("No recent files");
-        links << _T("</td></tr>\n");
-    }
-
-    links << _T("</table>\n");
-
-
-    // update page
-    buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
-    buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
-    buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
-    buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
-    buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
-    buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
-    buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
-    ((StartHerePage*)sh)->SetPageContent(buf);
 }
 
 void MainFrame::InitializeRecentFilesHistory()

@@ -14,17 +14,18 @@ extern const wxString g_StartHereTitle;
 
 class wxHtmlWindow;
 class wxHtmlLinkInfo;
+class wxFileHistory;
 
 class StartHerePage : public EditorBase
 {
     wxString revInfo;
 
     public:
-        StartHerePage(wxEvtHandler* owner, wxWindow* parent);
+        StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
+                      const wxFileHistory *files, wxWindow* parent);
         virtual ~StartHerePage();
 
         bool LinkClicked(const wxHtmlLinkInfo& link);
-        void SetPageContent(const wxString& buffer); // set the HTML content
         virtual bool VisibleToTree() const { return false; }
         void Reload();
     protected:
@@ -32,6 +33,8 @@ class StartHerePage : public EditorBase
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
         wxString m_OriginalPageContent;
+        const wxFileHistory *m_projects;
+        const wxFileHistory *m_files;
     private:
         DECLARE_EVENT_TABLE()
 };
