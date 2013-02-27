@@ -28,6 +28,7 @@
 #include "startherepage.h"
 #include "main.h"
 #include "appglobals.h"
+#include "cbcolourmanager.h"
 
 #include <wx/clipbrd.h>
 #include <wx/docview.h>
@@ -63,13 +64,19 @@ END_EVENT_TABLE()
 namespace
 {
 
-void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, const wxFileHistory &files)
+wxString wrapText(const wxString &text, const wxString &textColour)
+{
+    return wxT("<font color=\"") + textColour + wxT("\">") + text + wxT("</font>");
+}
+
+void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, const wxFileHistory &files,
+                               const wxString &linkColour, const wxString &textColour)
 {
     // replace history vars
     wxString links;
 
     links << _T("<table>\n<tr><td colspan=\"2\"><b>");
-    links << _("Recent projects");
+    links << wrapText(_("Recent projects"), textColour);
     links << _T("</b></td></tr>\n");
     if (projects.GetCount())
     {
@@ -79,20 +86,21 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
             links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       static_cast<unsigned long>(i + 1));
             links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%lu\">%s</a>"),
-                                      static_cast<unsigned long>(i + 1), projects.GetHistoryFile(i).wx_str());
+            links << _T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_") << (i + 1) <<  _T("\">")
+                  << _T("<font color=\"") << linkColour << _T("\">") << projects.GetHistoryFile(i)
+                  << _T("</font></a>");
             links << _T("</td></tr>\n");
         }
     }
     else
     {
         links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
-        links << _("No recent projects");
+        links << wrapText(_("No recent projects"), textColour);
         links << _T("</td></tr>\n");
     }
 
     links << _T("</table>\n<table>\n<tr><td colspan=\"2\"><b>");
-    links << _("Recent files");
+    links << wrapText(_("Recent files"), textColour);
     links <<_T("</b></td></tr>\n");
     if (files.GetCount())
     {
@@ -102,15 +110,15 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
             links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%lu\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       static_cast<unsigned long>(i + 1));
             links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%lu\">%s</a>"),
-                                      static_cast<unsigned long>(i + 1), files.GetHistoryFile(i).wx_str());
+            links << _T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_") << (i + 1) << _T("\">")
+                  << _T("<font color=\"") << linkColour << _T("\">") << files.GetHistoryFile(i) << _T("</font></a>");
             links << _T("</td></tr>\n");
         }
     }
     else
     {
         links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
-        links << _("No recent files");
+        links << wrapText(_("No recent files"), textColour);
         links << _T("</td></tr>\n");
     }
 
@@ -136,6 +144,8 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
     m_projects(projects),
     m_files(files)
 {
+    RegisterColours();
+
     //ctor
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 
@@ -207,6 +217,13 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
     buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
 
+    wxColour bgColour = wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND);
+    buf.Replace(wxT("CB_BODY_BGCOLOUR"), bgColour.GetAsString(wxC2S_HTML_SYNTAX));
+    const wxColour &linkColour = Manager::Get()->GetColourManager()->GetColour(wxT("start_here_link"));
+    const wxColour &textColour = Manager::Get()->GetColourManager()->GetColour(wxT("start_here_text"));
+    buf.Replace(wxT("CB_LINK_COLOUR"), linkColour.GetAsString(wxC2S_HTML_SYNTAX));
+    buf.Replace(wxT("CB_TEXT_COLOUR"), textColour.GetAsString(wxC2S_HTML_SYNTAX));
+
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
     Reload();
 
@@ -221,11 +238,25 @@ StartHerePage::~StartHerePage()
     //m_pWin->Destroy();
 }
 
+void StartHerePage::RegisterColours()
+{
+    static bool inited = false;
+    if (inited)
+        return;
+    inited = true;
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    colours->RegisterColour(_("Start here page"), _("Link colour"), wxT("start_here_link"), *wxBLUE);
+    colours->RegisterColour(_("Start here page"), _("Text colour"), wxT("start_here_text"), *wxBLACK);
+}
+
 void StartHerePage::Reload()
 {
     // Called every time something in the history changes.
     wxString buf = m_OriginalPageContent;
-    ReplaceRecentProjectFiles(buf, *m_projects, *m_files);
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    const wxString &linkColour = colours->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
+    const wxString &textColour = colours->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
+    ReplaceRecentProjectFiles(buf, *m_projects, *m_files, linkColour, textColour);
     m_pWin->SetPage(buf);
 }
 

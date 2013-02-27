@@ -28,8 +28,9 @@ class StartHerePage : public EditorBase
         bool LinkClicked(const wxHtmlLinkInfo& link);
         virtual bool VisibleToTree() const { return false; }
         void Reload();
+    private:
+        void RegisterColours();
     protected:
-
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
         wxString m_OriginalPageContent;
