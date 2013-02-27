@@ -242,28 +242,29 @@ struct cbEditorInternalData
     {
         // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
         // if they get updated from deprecated oldstyle indicators somedays.
+        cbStyledTextCtrl *control = m_pOwner->m_pControl;
         const int theIndicator = 10;
 
         std::pair<long, long> curr;
-        m_pOwner->GetControl()->GetSelection(&curr.first, &curr.second);
+        control->GetSelection(&curr.first, &curr.second);
 
-        m_pOwner->GetControl()->SetIndicatorCurrent(theIndicator);
+        control->SetIndicatorCurrent(theIndicator);
 
         if (m_highlightOccurencesLastPos == curr) // whatever the current state is, we've already done it once
             return;
         m_highlightOccurencesLastPos = curr;
 
-        int eof = m_pOwner->m_pControl->GetLength();
+        int eof = control->GetLength();
 
         // Set Styling:
         // clear all style indications set in a previous run (is also done once after text gets unselected)
-        m_pOwner->GetControl()->IndicatorClearRange(0, eof);
+        control->IndicatorClearRange(0, eof);
 
         // if there is no text selected, it stops here and does not hog the cpu further
         if (curr.first == curr.second)
             return;
         // check if the selected text has space, tab or new line in it
-        wxString selectedText(m_pOwner->GetControl()->GetTextRange(curr.first, curr.second));
+        wxString selectedText(control->GetTextRange(curr.first, curr.second));
         if (selectedText.find_first_of(wxT(" \t\n")) != wxString::npos)
             return;
 
@@ -307,16 +308,16 @@ struct cbEditorInternalData
             }
             // search for every occurence
             int lengthFound = 0; // we need this to work properly with multibyte characters
-            for ( int pos = m_pOwner->GetControl()->FindText(0, eof, selectedText, flag, &lengthFound);
+            for ( int pos = control->FindText(0, eof, selectedText, flag, &lengthFound);
                 pos != wxSCI_INVALID_POSITION ;
-                pos = m_pOwner->GetControl()->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
+                pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
                 // don't put indicator for the string selected by the user, because it looks ugly
                 if (pos == curr.first || pos == curr.second)
                     continue;
                 // does not make sense anymore: check that the found occurrence is not the same as the selected,
                 // since it is not selected in the second view -> so highlight it
-                m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
+                control->IndicatorFillRange(pos, lengthFound);
             }
         }
     }
