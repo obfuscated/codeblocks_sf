@@ -581,6 +581,11 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
+  else if (sectionLower.Matches(wxT("colours")))     // plugins
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
   else if (sectionLower.Matches(wxT("project_manager"))) // file groups
   {
     TiXmlNode* child = NULL;
