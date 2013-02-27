@@ -9,24 +9,29 @@
 
 #include <sdk.h>
 
-#include <wx/docview.h>
-#include <wx/wxhtml.h>
-#include <wx/intl.h>
-#include <wx/utils.h>
-#include <wx/sizer.h>
-#include <wx/settings.h>
-#include <manager.h>
-#include <logmanager.h>
-#include <projectmanager.h>
-#include <templatemanager.h>
-#include <pluginmanager.h>
-#include <editormanager.h>
-#include <configmanager.h>
+#ifndef CB_PRECOMP
+    #include <wx/dataobj.h>
+    #include <wx/intl.h>
+    #include <wx/utils.h>
+    #include <wx/sizer.h>
+    #include <wx/settings.h>
+
+    #include <manager.h>
+    #include <logmanager.h>
+    #include <projectmanager.h>
+    #include <templatemanager.h>
+    #include <pluginmanager.h>
+    #include <editormanager.h>
+    #include <configmanager.h>
+#endif
+
 #include "startherepage.h"
 #include "main.h"
 #include "appglobals.h"
+
 #include <wx/clipbrd.h>
-#include <wx/dataobj.h>
+#include <wx/docview.h>
+#include <wx/wxhtml.h>
 
 const wxString g_StartHereTitle = _("Start here");
 int idWin = wxNewId();
