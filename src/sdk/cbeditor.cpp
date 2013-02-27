@@ -306,15 +306,42 @@ struct cbEditorInternalData
             {
                 flag |= wxSCI_FIND_WHOLEWORD;
             }
+
+            // list all selections and sort them
+            typedef std::vector<std::pair<long, long> > Selections;
+            Selections selections;
+            int count = control->GetSelections();
+            for (int ii = 0; ii < count; ++ii)
+            {
+                selections.push_back(Selections::value_type(control->GetSelectionNStart(ii),
+                                                            control->GetSelectionNEnd(ii)));
+            }
+            std::sort(selections.begin(), selections.end());
+            Selections::const_iterator currSelection = selections.begin();
+
             // search for every occurence
             int lengthFound = 0; // we need this to work properly with multibyte characters
             for ( int pos = control->FindText(0, eof, selectedText, flag, &lengthFound);
                 pos != wxSCI_INVALID_POSITION ;
                 pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
-                // don't put indicator for the string selected by the user, because it looks ugly
-                if (pos == curr.first || pos == curr.second)
+                // check if the found text is selected
+                // if it is don't add indicator for it, because it looks ugly
+                bool skip = false;
+                for (; currSelection != selections.end(); ++currSelection)
+                {
+                    // the found text is after the current selection, go to the next one
+                    if (currSelection->second < pos)
+                        continue;
+                    // if the end of the found text is not before the current selection start
+                    // then it must match and it should be skipped
+                    if (pos + lengthFound >= currSelection->first)
+                        skip = true;
+                    break;
+                }
+                if (skip)
                     continue;
+
                 // does not make sense anymore: check that the found occurrence is not the same as the selected,
                 // since it is not selected in the second view -> so highlight it
                 control->IndicatorFillRange(pos, lengthFound);

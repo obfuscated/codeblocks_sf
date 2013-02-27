@@ -3373,6 +3373,7 @@ void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
         control->AddSelection(pos, pos + lengthFound);
         control->SetAdditionalSelectionTyping(true);
         control->MakeNearbyLinesVisible(control->LineFromPosition(pos));
+        control->IndicatorClearRange(pos, lengthFound);
     }
     else
         InfoWindow::Display(_("Select Next Occurrence"), _("No more available"));
