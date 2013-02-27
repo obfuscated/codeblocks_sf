@@ -659,6 +659,22 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   else if (   prefix.Matches(wxT("<editor>"))
            && sectionLower.Matches(wxT("colour_sets")))// colour sets
   {
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<editor><colour_sets>")); // recursive call
+    }
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+  // --------------------------------------------------------
+  // 2st recursion level: editor -> colour sets -> theme name
+  // --------------------------------------------------------
+  else if (   prefix.Matches(wxT("<editor><colour_sets>"))
+           && !sectionLower.Matches(wxT("active_colour_set"))
+           && !sectionLower.Matches(wxT("active_lang"))) // colour sets themes
+  {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
