@@ -88,18 +88,13 @@ static std::string GetRestOfLine(LexAccessor &styler, int start, bool allowSpace
 	int i =0;
 	char ch = styler.SafeGetCharAt(start, '\n');
 	while ((ch != '\r') && (ch != '\n')) {
-/* C::B begin */
-		/* Fix bug to allow comments after pre-processor definitions */
 		char chNext = styler.SafeGetCharAt(start + i + 1, '\n');
 		if (ch == '/' && (chNext == '/' || chNext == '*'))
 			break;
-/* C::B end */
 		if (allowSpace || (ch != ' '))
 			restOfLine += ch;
 		i++;
-/* C::B begin */
 		ch = chNext;
-/* C::B end */
 	}
 	return restOfLine;
 }
@@ -484,6 +479,7 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 	bool continuationLine = false;
 	bool isIncludePreprocessor = false;
 	bool isStringInPreprocessor = false;
+	bool inRERange = false;
 
 	int lineCurrent = styler.GetLine(startPos);
 	if ((MaskActive(initStyle) == SCE_C_PREPROCESSOR) ||
@@ -557,6 +553,7 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 			visibleChars = 0;
 			lastWordWasUUID = false;
 			isIncludePreprocessor = false;
+			inRERange = false;
 			if (preproc.IsInactive()) {
 				activitySet = activeFlag;
 				sc.SetState(sc.state | activitySet);
@@ -761,16 +758,18 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 			case SCE_C_REGEX:
 				if (sc.atLineStart) {
 					sc.SetState(SCE_C_DEFAULT|activitySet);
-				} else if (sc.ch == '/') {
+				} else if (! inRERange && sc.ch == '/') {
 					sc.Forward();
 					while ((sc.ch < 0x80) && islower(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_C_DEFAULT|activitySet);
-				} else if (sc.ch == '\\') {
-					// Gobble up the quoted character
-					if (sc.chNext == '\\' || sc.chNext == '/') {
-						sc.Forward();
-					}
+				} else if (sc.ch == '\\' && (sc.chNext != '\n' && sc.chNext != '\r')) {
+					// Gobble up the escaped character
+					sc.Forward();
+				} else if (sc.ch == '[') {
+					inRERange = true;
+				} else if (sc.ch == ']') {
+					inRERange = false;
 				}
 				break;
 			case SCE_C_STRINGEOL:
@@ -871,6 +870,7 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 				   && (!setCouldBePostOp.Contains(chPrevNonWhite)
 				       || !FollowsPostfixOperator(sc, styler))) {
 				sc.SetState(SCE_C_REGEX|activitySet);	// JavaScript's RegEx
+				inRERange = false;
 			} else if (sc.ch == '\"') {
 				if (sc.chPrev == 'R') {
 					styler.Flush();
@@ -1219,11 +1219,7 @@ bool LexerCPP::EvaluateExpression(const std::string &expr, const std::map<std::s
 	std::vector<std::string> tokens;
 	const char *cp = expr.c_str();
 	for (;;) {
-/* C::B begin */
-		/* Fix crash (assert in bool CharacterSet::Contains(int val)) with #if §, for example. */
-		/* See: http://sourceforge.net/tracker/?func=detail&aid=3578824&group_id=2439&atid=102439 */
 		if (setWord.Contains(static_cast<unsigned char>(*cp))) {
-/* C::B end */
 			word += *cp;
 		} else {
 			std::map<std::string, std::string>::const_iterator it = preprocessorDefinitions.find(word);
@@ -1238,17 +1234,13 @@ bool LexerCPP::EvaluateExpression(const std::string &expr, const std::map<std::s
 			}
 			if ((*cp != ' ') && (*cp != '\t')) {
 				std::string op(cp, 1);
-/* C::B begin */
 				if (setRelOp.Contains(static_cast<unsigned char>(*cp))) {
 					if (setRelOp.Contains(static_cast<unsigned char>(cp[1]))) {
-/* C::B end */
 						op += cp[1];
 						cp++;
 					}
-/* C::B begin */
 				} else if (setLogicalOp.Contains(static_cast<unsigned char>(*cp))) {
 					if (setLogicalOp.Contains(static_cast<unsigned char>(cp[1]))) {
-/* C::B end */
 						op += cp[1];
 						cp++;
 					}

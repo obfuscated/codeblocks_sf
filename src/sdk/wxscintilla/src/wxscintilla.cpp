@@ -37,7 +37,7 @@
 #else
 #include <wx/file.h>
 #endif // wxUSE_FFILE
-#if defined(__WXGTK__) || defined(__WXMAC__)
+#ifdef __WXGTK__
     #include <wx/dcbuffer.h>
 #endif
 
@@ -169,11 +169,6 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(wxScintilla, wxControl)
 IMPLEMENT_DYNAMIC_CLASS(wxScintillaEvent, wxCommandEvent)
 
-#ifdef LINK_LEXERS
-// forces the linking of the lexer modules
-int Scintilla_LinkLexers();
-#endif
-
 //----------------------------------------------------------------------
 // Constructor and Destructor
 
@@ -196,9 +191,11 @@ bool wxScintilla::Create(wxWindow *parent,
                          long style,
                          const wxString& name)
 {
+/* C::B begin */
 #if defined (__WXMAC__) || wxCHECK_VERSION(2, 9, 0)
     style |= wxVSCROLL | wxHSCROLL;
 #endif
+/* C::B end */
     if (!wxControl::Create (parent, id, pos, size,
                             style | wxWANTS_CHARS | wxCLIP_CHILDREN,
                             wxDefaultValidator, name)) {
@@ -4209,6 +4206,19 @@ void wxScintilla::VCHomeDisplayExtend()
     SendMsg(SCI_VCHOMEDISPLAYEXTEND, 0, 0);
 }
 
+// Is the caret line always visible?
+bool wxScintilla::GetCaretLineVisibleAlways() const
+{
+    return SendMsg(SCI_GETCARETLINEVISIBLEALWAYS, 0, 0) != 0;
+}
+
+// Sets the caret line to always visible.
+void wxScintilla::SetCaretLineVisibleAlways(bool alwaysVisible)
+{
+    SendMsg(SCI_SETCARETLINEVISIBLEALWAYS, alwaysVisible, 0);
+}
+
+/* C::B begin */
 // On OS X, show a find indicator.
 void wxScintilla::FindIndicatorShow(int start, int end)
 {
@@ -4226,6 +4236,7 @@ void wxScintilla::FindIndicatorHide()
 {
     SendMsg(SCI_FINDINDICATORHIDE, 0, 0);
 }
+/* C::B end */
 
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord()
@@ -4676,36 +4687,58 @@ void wxScintilla::ScrollToColumn(int column)
 }
 
 
-bool wxScintilla::SaveFile(const wxString& filename)
+/* C::B begin */
+void wxScintilla::DoSetValue(const wxString& value, int /*flags*/)
 {
-#if wxUSE_FFILE
-    wxFFile file(filename, wxT("w"));
-    bool ok = file.IsOpened() && file.Write(GetText(), *wxConvCurrent);
-#else
-    wxFile file(filename, wxFile::write);
-    bool ok = file.IsOpened() && file.Write(GetText(), *wxConvCurrent);
-#endif // wxUSE_FFILE
+//    if ( flags & SetValue_SelectionOnly )
+//        ReplaceSelection(value);
+//    else
+/* C::B end */
+        SetText(value);
 
-    if (file.IsOpened())
-        file.Close();
-
-    if (ok)
-    {
-        SetSavePoint();
-    }
-    return ok;
+    // We don't send wxEVT_COMMAND_TEXT_UPDATED anyhow, so ignore the
+    // SetValue_SendEvent bit of the flags
 }
 
-bool wxScintilla::LoadFile(const wxString& filename)
+bool wxScintilla::DoSaveFile(const wxString& filename, int WXUNUSED(fileType))
 {
-    bool ok = false;
+#if wxUSE_FFILE || wxUSE_FILE
+
 #if wxUSE_FFILE
-    wxFFile file(filename);
-#else
-    wxFile file(filename, wxFile::read);
+    // Take care to use "b" to ensure that possibly non-native EOLs in the file
+    // contents are not mangled when saving it.
+    wxFFile file(filename, wxT("wb"));
+#elif wxUSE_FILE
+    wxFile file(filename, wxFile::write);
 #endif // wxUSE_FFILE
 
-    if (file.IsOpened())
+    if (file.IsOpened() && file.Write(GetValue(), *wxConvCurrent))
+    {
+        SetSavePoint();
+
+        return true;
+    }
+
+#endif // !wxUSE_FFILE && !wxUSE_FILE
+
+    return false;
+}
+
+bool wxScintilla::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
+{
+#if wxUSE_FFILE || wxUSE_FILE
+
+    bool ok = false;
+#if wxUSE_FFILE
+    // As above, we want to read the real EOLs from the file, e.g. without
+    // translating them to just LFs under Windows, so that the original CR LF
+    // are preserved when it's written back.
+    wxFFile file(filename, wxT("rb"));
+#else
+    wxFile file(filename);
+#endif // wxUSE_FFILE
+
+    if ( file.IsOpened() )
     {
         wxString text;
 #if wxUSE_FFILE
@@ -4728,6 +4761,24 @@ bool wxScintilla::LoadFile(const wxString& filename)
             ok = (file.Read(wxStringBuffer(buffer, len), len) == len);
             text = buffer;
 #endif // wxUSE_UNICODE
+            // Detect the EOL: we use just the first line because there is not
+            // much we can do if the file uses inconsistent EOLs anyhow, we'd
+            // need to ask the user about the one we should really use and we
+            // don't currently provide a way to do it.
+            //
+            // We also only check for Unix and DOS EOLs but not classic Mac
+            // CR-only one as it's obsolete by now.
+            const wxString::size_type posLF = text.find('\n');
+            if ( posLF != wxString::npos )
+            {
+                // Set EOL mode to ensure that the new lines inserted into the
+                // text use the same EOLs as the existing ones.
+                if ( posLF > 0 && text[posLF - 1] == '\r' )
+                    SetEOLMode(wxSTC_EOL_CRLF);
+                else
+                    SetEOLMode(wxSTC_EOL_LF);
+            }
+            //else: Use the default EOL for the current platform.
         }
         else
         {
@@ -4738,19 +4789,45 @@ bool wxScintilla::LoadFile(const wxString& filename)
         }
 #endif // wxUSE_FFILE
 
-        file.Close();
-
         if (ok)
         {
-            SetText(text);
+            SetValue(text);
             EmptyUndoBuffer();
             SetSavePoint();
+
+            return true;
         }
     }
+#endif // !wxUSE_FFILE && !wxUSE_FILE
 
-    return ok;
+   return false;
 }
 
+// If we don't derive from wxTextAreaBase, we need to implement these methods
+// ourselves, otherwise we already inherit them.
+/* C::B begin */
+//#if !wxUSE_TEXTCTRL
+/* C::B end */
+
+bool wxScintilla::SaveFile(const wxString& filename)
+{
+    if ( filename.empty() )
+        return false;
+
+    return DoSaveFile(filename, wxTEXT_TYPE_ANY);
+}
+
+bool wxScintilla::LoadFile(const wxString& filename)
+{
+    if ( filename.empty() )
+        return false;
+
+    return DoLoadFile(filename, wxTEXT_TYPE_ANY);
+}
+
+/* C::B begin */
+//#endif // !wxUSE_TEXTCTRL
+/* C::B end */
 
 #if wxUSE_DRAG_AND_DROP
 wxDragResult wxScintilla::DoDragOver(wxCoord x, wxCoord y, wxDragResult def)
@@ -4776,6 +4853,19 @@ void wxScintilla::DoDragLeave()
 }
 /* C::B end */
 #endif
+
+
+void wxScintilla::SetUseAntiAliasing(bool useAA) {
+    m_swx->SetUseAntiAliasing(useAA);
+}
+
+bool wxScintilla::GetUseAntiAliasing() {
+    return m_swx->GetUseAntiAliasing();
+}
+
+void wxScintilla::AnnotationClearLine(int line) {
+    SendMsg(SCI_ANNOTATIONSETTEXT, line, (uptr_t)(const char*)wx2sci(wxString(wxEmptyString)));
+}
 
 
 // Raw text handling for UTF-8
@@ -4893,15 +4983,11 @@ void wxScintilla::AppendTextRaw(const char* text, int length)
 
 void wxScintilla::OnPaint(wxPaintEvent& WXUNUSED(evt))
 {
-/* C::B begin */
-#if defined(__WXGTK__) || defined(__WXMAC__)
-    // avoid flickering, thanks Eran for the patch
-    // On Windows there is no real need for this
+#ifdef __WXGTK__
     wxBufferedPaintDC dc(this);
 #else
     wxPaintDC dc(this);
 #endif
-/* C::B end */
     m_swx->DoPaint(&dc, GetUpdateRegion().GetBox());
 }
 
@@ -5393,7 +5479,8 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 #if wxCHECK_VERSION(2, 9, 2)
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
-    return wxVersionInfo("Scintilla", 3, 23, 0, "Scintilla 3.23");
+    /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
+    return wxVersionInfo("Scintilla", 3, 25, 0, "Scintilla 3.25");
 }
 #endif
 /* C::B end */

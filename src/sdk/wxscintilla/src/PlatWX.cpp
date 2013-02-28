@@ -367,7 +367,9 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     return;
 #else
 
+/* C::B begin */
 #if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
 
     // TODO:  do something with cornerSize
     wxUnusedVar(cornerSize);
@@ -378,68 +380,72 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     if (!bmp.IsOk())
         return;
 /* C::B end */
-    wxAlphaPixelData pixData(bmp);
+
+    // This block is needed to ensure that the changes done to the bitmap via
+    // pixel data object are committed before the bitmap is drawn.
+    {
+        wxAlphaPixelData pixData(bmp);
 /* C::B begin */
-    #if !wxCHECK_VERSION(2, 9, 0)
-    pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
-    #endif
+        #if !wxCHECK_VERSION(2, 9, 0)
+        pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
+        #endif
 /* C::B end */
 
-    // Set the fill pixels
-    ColourDesired cdf(fill.AsLong());
-    int red   = cdf.GetRed();
-    int green = cdf.GetGreen();
-    int blue  = cdf.GetBlue();
+        // Set the fill pixels
+        ColourDesired cdf(fill.AsLong());
+        int red   = cdf.GetRed();
+        int green = cdf.GetGreen();
+        int blue  = cdf.GetBlue();
 
-    wxAlphaPixelData::Iterator p(pixData);
-    for (y=0; y<r.height; y++) {
-        p.MoveTo(pixData, 0, y);
+        wxAlphaPixelData::Iterator p(pixData);
+        for (y=0; y<r.height; y++) {
+            p.MoveTo(pixData, 0, y);
+            for (x=0; x<r.width; x++) {
+                p.Red()   = wxPy_premultiply(red,   alphaFill);
+                p.Green() = wxPy_premultiply(green, alphaFill);
+                p.Blue()  = wxPy_premultiply(blue,  alphaFill);
+                p.Alpha() = alphaFill;
+                ++p;
+            }
+        }
+
+        // Set the outline pixels
+        ColourDesired cdo(outline.AsLong());
+        red   = cdo.GetRed();
+        green = cdo.GetGreen();
+        blue  = cdo.GetBlue();
         for (x=0; x<r.width; x++) {
-            p.Red()   = wxPy_premultiply(red,   alphaFill);
-            p.Green() = wxPy_premultiply(green, alphaFill);
-            p.Blue()  = wxPy_premultiply(blue,  alphaFill);
-            p.Alpha() = alphaFill;
-            ++p;
-        }
-    }
-
-    // Set the outline pixels
-    ColourDesired cdo(outline.AsLong());
-    red   = cdo.GetRed();
-    green = cdo.GetGreen();
-    blue  = cdo.GetBlue();
-
-    for (x=0; x<r.width; x++) {
-        p.MoveTo(pixData, x, 0);
+            p.MoveTo(pixData, x, 0);
 /* C::B begin */
-        if (p.m_ptr) {
-            p.Red()   = wxPy_premultiply(red,   alphaOutline);
-            p.Green() = wxPy_premultiply(green, alphaOutline);
-            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-            p.Alpha() = alphaOutline;
-            p.MoveTo(pixData, x, r.height-1);
-            p.Red()   = wxPy_premultiply(red,   alphaOutline);
-            p.Green() = wxPy_premultiply(green, alphaOutline);
-            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-            p.Alpha() = alphaOutline;
-        }
+            if (p.m_ptr) {
+                p.Red()   = wxPy_premultiply(red,   alphaOutline);
+                p.Green() = wxPy_premultiply(green, alphaOutline);
+                p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+                p.Alpha() = alphaOutline;
+                p.MoveTo(pixData, x, r.height-1);
+                p.Red()   = wxPy_premultiply(red,   alphaOutline);
+                p.Green() = wxPy_premultiply(green, alphaOutline);
+                p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+                p.Alpha() = alphaOutline;
+            }
 /* C::B end */
-    }
-    for (y=0; y<r.height; y++) {
-        p.MoveTo(pixData, 0, y);
+        }
+        for (y=0; y<r.height; y++) {
+            p.MoveTo(pixData, 0, y);
 /* C::B begin */
-        if (p.m_ptr) {
-            p.Red()   = wxPy_premultiply(red,   alphaOutline);
-            p.Green() = wxPy_premultiply(green, alphaOutline);
-            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-            p.Alpha() = alphaOutline;
-            p.MoveTo(pixData, r.width-1, y);
-            p.Red()   = wxPy_premultiply(red,   alphaOutline);
-            p.Green() = wxPy_premultiply(green, alphaOutline);
-            p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-            p.Alpha() = alphaOutline;
-        }
+            if (p.m_ptr) {
+                p.Red()   = wxPy_premultiply(red,   alphaOutline);
+                p.Green() = wxPy_premultiply(green, alphaOutline);
+                p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+                p.Alpha() = alphaOutline;
+                p.MoveTo(pixData, r.width-1, y);
+                p.Red()   = wxPy_premultiply(red,   alphaOutline);
+                p.Green() = wxPy_premultiply(green, alphaOutline);
+                p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
+                p.Alpha() = alphaOutline;
+            }
 /* C::B end */
+        }
     }
 
     // Draw the bitmap
@@ -457,7 +463,9 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
 #endif
 }
 
+/* C::B begin */
 #if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
 wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsImage)
 {
     int x, y;
@@ -497,7 +505,9 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
 void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height,
                                 const unsigned char *pixelsImage)
 {
+/* C::B begin */
 #if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
 /* C::B begin */
@@ -594,9 +604,11 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *
     // Map the widths for UCS-2 characters back to the UTF-8 input string
     // NOTE:  I don't think this is right for when sizeof(wxChar) > 2, ie wxGTK2
     // so figure it out and fix it!
+/* C::B begin */
     int i = 0;
     size_t ui = 0;
     while (i < len) {
+/* C::B end */
         unsigned char uch = (unsigned char)s[i];
         positions[i++] = tpos[ui];
         if (uch >= 0x80) {
@@ -938,13 +950,21 @@ public:
 /* C::B end */
 
 /* C::B begin */
+#ifdef __WXGTK__
+        lv = new wxSCIListBox(this,   id, wxDefaultPosition, wxDefaultSize,
+#else
         lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
+#endif
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
 /* C::B end */
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
 
+/* C::B begin */
+        // this focus hack makes the selection unreadable for Ubuntu themes,
+        // so do not attempt under GTK
+#ifndef __WXGTK__
         // NOTE: We need to fool the wxListView into thinking that it has the
         // focus so it will use the normal selection colour and will look
         // "right" to the user.  But since the wxPopupWindow or its children
@@ -953,6 +973,8 @@ public:
         // then reparent it back to the popup.
         lv->SetFocus();
         lv->Reparent(this);
+#endif
+/* C::B end */
 #ifdef __WXMSW__
         lv->Show();
 #endif
@@ -1286,12 +1308,22 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     lineHeight =  lineHeight_;
     unicodeMode = unicodeMode_;
     maxStrWidth = 0;
-    wid = new wxSCIListBoxWin (GETWIN(parent.GetID()), ctrlID, location_);
+
+/* C::B begin */
+    if (wid == 0)
+        wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), ctrlID, location_);
+    else if (GETLBW(wid)->GetParent() != GETWIN(parent.GetID()))
+        GETLBW(wid)->Reparent(GETWIN(parent.GetID()));
+    GETLBW(wid)->SetPosition(wxPoint(location_.x,location_.y));
+    GETLBW(wid)->SetId(ctrlID);
+    GETLB(wid)->SetId(ctrlID);
+/* C::B end */
+
     if (imgList != NULL)
         GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
-    /* C::B begin */
+/* C::B begin */
     (void) technology_;
-    /* C::B end */
+/* C::B end */
 }
 
 
@@ -1501,12 +1533,12 @@ void ListBoxImpl::RegisterRGBAImage(int type, int width, int height,
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
     RegisterImageHelper(type, bmp);
 #endif
-    /* C::B begin */
+/* C::B begin */
     (void) type;
     (void) width;
     (void) height;
     (void) pixelsImage;
-    /* C::B end */
+/* C::B end */
 }
 
 

@@ -57,9 +57,11 @@ bool AutoComplete::Active() const {
 void AutoComplete::Start(Window &parent, int ctrlID,
 	int position, Point location, int startLen_,
 	int lineHeight, bool unicodeMode, int technology) {
-	if (active) {
-		Cancel();
-	}
+/* C::B begin */
+//	if (active) {
+//		Cancel();
+//	}
+/* C::B end */
 	lb->Create(parent, ctrlID, location, lineHeight, unicodeMode, technology);
 	lb->Clear();
 	active = true;
@@ -124,7 +126,10 @@ void AutoComplete::Show(bool show) {
 void AutoComplete::Cancel() {
 	if (lb->Created()) {
 		lb->Clear();
-		lb->Destroy();
+/* C::B begin */
+		//lb->Destroy();
+		lb->Show(false);
+/* C::B end */
 		active = false;
 	}
 }

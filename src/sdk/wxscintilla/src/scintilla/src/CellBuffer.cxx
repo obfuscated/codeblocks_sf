@@ -123,11 +123,15 @@ void LineVector::SetPerLine(PerLine *pl) {
 }
 
 /* CHANGEBAR begin */
-void LineVector::InsertText(int line, int delta, int edition, bool undoing) {
+void LineVector::InsertText(int line, int delta, int edition, bool undoing, bool lineUnchanged) {
 /* CHANGEBAR end */
 	starts.InsertText(line, delta);
 /* CHANGEBAR begin */
-    changes.InsertText(line, edition, undoing);
+	// Line stays unchanged if inserted/deleted "something\n" at line start
+	// or "\nsomething" at line end
+	if (!lineUnchanged) {
+		changes.InsertText(line, edition, undoing);
+	}
 /* CHANGEBAR end */
 }
 
@@ -747,6 +751,7 @@ void CellBuffer::RemoveLine(int line, bool undoing) {
 
 /* CHANGEBAR begin */
 void CellBuffer::BasicInsertString(int position, const char *s, int insertLength, bool undoing) {
+	bool atFileEnd = position == substance.Length();
 /* CHANGEBAR end */
 	if (insertLength == 0)
 		return;
@@ -759,7 +764,10 @@ void CellBuffer::BasicInsertString(int position, const char *s, int insertLength
 	bool atLineStart = lv.LineStart(lineInsert-1) == position;
 	// Point all the lines after the insertion point further along in the buffer
 /* CHANGEBAR begin */
-    lv.InsertText(lineInsert-1, insertLength, uh.Edition(), undoing);
+	bool atLineEnd = (lv.LineStart(lineInsert) == position+1) || atFileEnd;
+	bool lineUnchanged = (atLineStart && (s[insertLength-1] == '\n')) ||
+		(atLineEnd && (s[0] == '\r' || s[0] == '\n'));
+	lv.InsertText(lineInsert-1, insertLength, uh.Edition(), undoing, lineUnchanged);
 /* CHANGEBAR end */
 	char chPrev = substance.ValueAt(position - 1);
 	char chAfter = substance.ValueAt(position + insertLength);
@@ -812,13 +820,19 @@ void CellBuffer::BasicDeleteChars(int position, int deleteLength, bool undoing) 
 		// If whole buffer is being deleted, faster to reinitialise lines data
 		// than to delete each line.
 		lv.Init();
+/* CHANGEBAR begin */
+		lv.InsertText(0, 0, uh.Edition(), undoing, false);
+/* CHANGEBAR end */
 	} else {
 		// Have to fix up line positions before doing deletion as looking at text in buffer
 		// to work out which lines have been removed
 
 		int lineRemove = lv.LineFromPosition(position) + 1;
 /* CHANGEBAR begin */
-        lv.InsertText(lineRemove-1, - (deleteLength), uh.Edition(), undoing);
+		bool atLineEnd = (lv.LineStart(lineRemove) == position+1);
+		char chAfter = substance.ValueAt(position + deleteLength);
+		bool lineUnchanged = (atLineEnd && (chAfter == '\r' || chAfter == '\n'));
+		lv.InsertText(lineRemove-1, - (deleteLength), uh.Edition(), undoing, lineUnchanged);
 /* CHANGEBAR end */
 		char chPrev = substance.ValueAt(position - 1);
 		char chBefore = chPrev;
@@ -854,7 +868,9 @@ void CellBuffer::BasicDeleteChars(int position, int deleteLength, bool undoing) 
 		}
 		// May have to fix up end if last deletion causes cr to be next to lf
 		// or removes one of a crlf pair
-		char chAfter = substance.ValueAt(position + deleteLength);
+/* CHANGEBAR begin */
+		// char chAfter = substance.ValueAt(position + deleteLength);
+/* CHANGEBAR end */
 		if (chBefore == '\r' && chAfter == '\n') {
 			// Using lineRemove-1 as cr ended line before start of deletion
 /* CHANGEBAR begin */

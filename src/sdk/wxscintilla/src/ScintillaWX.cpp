@@ -587,38 +587,41 @@ void ScintillaWX::Paste() {
 /* C::B begin */
     wxString textString;
 
-    wxWX2MBbuf buf;
-    int   len  = 0;
     bool  rectangular = false;
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
-        // Leave the followig lines that way to enable compilation with GCC 3.3.3
+        // Leave the following lines that way to enable compilation with GCC 3.3.3
         wxDataFormat dataFormat(wxString(wxT("application/x-cbrectdata")));
         wxCustomDataObject selData(dataFormat);
         bool gotRectData = wxTheClipboard->GetData(selData);
 
         if (gotRectData && selData.GetSize()>1) {
+            wxTheClipboard->Close();
             const char* rectBuf = (const char*)selData.GetData();
             rectangular = rectBuf[0] == (char)1;
-            len = selData.GetDataSize()-1;
+            int len = selData.GetDataSize()-1;
             char* buffer = new char[len];
             memcpy (buffer, rectBuf+1, len);
             textString = sci2wx(buffer, len);
             delete [] buffer;
         } else {
             bool gotData = wxTheClipboard->GetData(data);
+            wxTheClipboard->Close();
             if (gotData) {
                 textString = wxTextBuffer::Translate (data.GetText(),
                                                       wxConvertEOLMode(pdoc->eolMode));
             }
         }
-        data.SetText(wxEmptyString); // free the data object content
-        wxTheClipboard->Close();
     }
 
-    buf = (wxWX2MBbuf)wx2sci(textString);
-    len  = strlen(buf);
+    wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(textString);
+#if wxUSE_UNICODE
+    // free up the old character buffer in case the text is real big
+    data.SetText(wxEmptyString);
+    textString = wxEmptyString;
+#endif
+    int len  = strlen(buf);
     int newPos = 0;
     int caretMain = CurrentPosition();
     if (rectangular) {
@@ -923,11 +926,19 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
 
     if (paintState == paintAbandoned) {
         // Painting area was insufficient to cover new styling or brace
-        // highlight positions
-/* C::B begin */
-        sci->Refresh(false); //Without a refresh, changes outside of the original clip region won't appear on screen
-/* C::B end */
+        // highlight positions.  So trigger a new paint event that will
+        // repaint the whole window.
+        sci->Refresh(false);
+
+    /* C::B begin */
+    // This used to be NOT within the #if defined(__WXOSX__):
+#if defined(__WXOSX__)
+        // On Mac we also need to finish the current paint to make sure that
+        // everything is on the screen that needs to be there between now and
+        // when the next paint event arrives.
         FullPaintDC(dc);
+#endif
+    /* C::B end */
     }
     paintState = notPainting;
 }
@@ -935,8 +946,13 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
 
 // Force the whole window to be repainted
 void ScintillaWX::FullPaint() {
-    wxClientDC dc(sci);
-    FullPaintDC(&dc);
+    /* C::B begin */
+    // This used to be:
+//    wxClientDC dc(sci);
+//    FullPaintDC(&dc);
+    /* C::B end */
+    sci->Refresh(false);
+    sci->Update();
 }
 
 

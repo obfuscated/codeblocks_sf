@@ -22,7 +22,8 @@
 
 #include <wx/defs.h>
 
-#define wxSCINTILLA_VERSION _T("3.23.0")
+/* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
+#define wxSCINTILLA_VERSION _T("3.25.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -4445,6 +4446,13 @@ public:
     // Like VCHomeDisplay but extending selection to new caret position.
     void VCHomeDisplayExtend();
 
+    // Is the caret line always visible?
+    bool GetCaretLineVisibleAlways() const;
+
+    // Sets the caret line to always visible.
+    void SetCaretLineVisibleAlways(bool alwaysVisible);
+
+/* C::B begin */
     // On OS X, show a find indicator.
     void FindIndicatorShow(int start, int end);
 
@@ -4453,6 +4461,7 @@ public:
 
     // On OS X, hide the find indicator.
     void FindIndicatorHide();
+/* C::B end */
 
     // Start notifying the container of all key presses and commands.
     void StartRecord();
@@ -4627,6 +4636,19 @@ public:
 
 #endif
 
+    // Specify whether anti-aliased fonts should be used.  Will have no effect
+    // on some platforms, but on some (wxMac for example) can greatly improve
+    // performance.
+    void SetUseAntiAliasing(bool useAA);
+
+    // Returns the current UseAntiAliasing setting.
+    bool GetUseAntiAliasing();
+
+    // Clear annotations from the given line.
+    void AnnotationClearLine(int line);
+
+
+
     // The following methods are nearly equivalent to their similarly named
     // cousins above.  The difference is that these methods bypass wxString
     // and always use a char* even if used in a unicode build of wxWidgets.
@@ -4708,10 +4730,17 @@ public:
 /* C::B end */
 
 protected:
+/* C::B begin */
+    wxString GetValue() const { return GetText(); }
+    void SetValue(const wxString& text) { SetText(text); }
+/* C::B end */
+    virtual void DoSetValue(const wxString& value, int flags);
     virtual wxString DoGetValue() const { return GetText(); }
     virtual wxWindow *GetEditableWindow() { return this; }
 
 #ifndef SWIG
+    virtual bool DoLoadFile(const wxString& file, int fileType);
+    virtual bool DoSaveFile(const wxString& file, int fileType);
 
     // Event handlers
     void OnPaint(wxPaintEvent& evt);

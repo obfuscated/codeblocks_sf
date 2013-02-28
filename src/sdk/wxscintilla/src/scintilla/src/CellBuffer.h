@@ -67,7 +67,7 @@ public:
 	void SetPerLine(PerLine *pl);
 
 /* CHANGEBAR begin */
-    void InsertText(int line, int delta, int edition, bool undoing);
+	void InsertText(int line, int delta, int edition, bool undoing, bool lineUnchanged);
     void InsertLine(int line, int position, bool lineStart, int edition, bool undoing);
 /* CHANGEBAR end */
 	void SetLineStart(int line, int position);

@@ -1009,6 +1009,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor(bool connectEvents)
             wxEVT_SCI_AUTOCOMP_SELECTION,
     //        wxEVT_SCI_INDICATOR_CLICK,
     //        wxEVT_SCI_INDICATOR_RELEASE,
+            wxEVT_SCI_AUTOCOMP_CANCELLED,
             wxEVT_SCI_TAB,
             wxEVT_SCI_ESC,
 
