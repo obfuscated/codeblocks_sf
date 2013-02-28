@@ -22,6 +22,10 @@ class cbStyledTextCtrl : public wxScintilla
     public:
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
         virtual ~cbStyledTextCtrl();
+
+        /** Don't use this. It throws an exception if you do. */
+        void operator=(const cbStyledTextCtrl& /*rhs*/);
+
         wxDateTime GetLastFocusTime() const {return m_lastFocusTime;}
         wxString GetLastSelectedText() const {return m_lastSelectedText;}
 
