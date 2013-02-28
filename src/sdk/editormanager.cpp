@@ -2015,12 +2015,12 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                     continue;
             } else
             {
-                int pos;
+                int pos_str;
                 if (!data->matchCase)
-                    pos = fileContents.Upper().Find(data->findText.Upper());
+                    pos_str = fileContents.Upper().Find(data->findText.Upper());
                 else
-                    pos = fileContents.Find(data->findText);
-                if (pos == -1)
+                    pos_str = fileContents.Find(data->findText);
+                if (pos_str == -1)
                     continue;
                 //TODO: handling to skip file if data->matchWord or data->startWord are set
             }
@@ -3182,6 +3182,7 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
             break;
         }
     }
+
     if (id.Find(wxT("gcc")) != wxNOT_FOUND)
     {
         defines.Add(wxT("__GNUC__"));
@@ -3192,6 +3193,7 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
         defines.Add(wxT("_MSC_VER"));
         defines.Add(wxT("__VISUALC__"));
     }
+
     if (Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/platform_defines"), false))
     {
         if (platform::windows)
@@ -3281,6 +3283,7 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
             defines.Add(wxT("__IA64__"));
         }
     }
+
     const wxString keywords = GetStringFromArray(MakeUniqueArray(defines, true), wxT(" "), false);
     const HighlightLanguage hlCpp = m_Theme->GetHighlightLanguage(wxT("C/C++"));
     if (m_Theme->GetKeywords(hlCpp, 4) == keywords)

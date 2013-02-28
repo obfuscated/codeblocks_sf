@@ -4487,13 +4487,13 @@ static void OptimizeToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
 
 } // anomymous namespace
 
-void MainFrame::OnViewToolbarsFit(wxCommandEvent& event)
+void MainFrame::OnViewToolbarsFit(cb_unused wxCommandEvent& event)
 {
     FitToolbars(m_LayoutManager, this);
     DoUpdateLayout();
 }
 
-void MainFrame::OnViewToolbarsOptimize(wxCommandEvent& event)
+void MainFrame::OnViewToolbarsOptimize(cb_unused wxCommandEvent& event)
 {
     OptimizeToolbars(m_LayoutManager, this);
     DoUpdateLayout();
