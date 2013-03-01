@@ -241,7 +241,7 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // find and compare file key path levels to each level of the actual menu
     for (int i=1; i < (int)levels.GetCount(); ++i)
     {
-        LOGIT( _T("Searcing for Level[%d][%s]"), i, levels[i].wx_str() );
+        LOGIT( _T("Searching for Level[%d][%s]"), i, levels[i].wx_str() );
         if (not pMenu) return wxNOT_FOUND;
         found = false;
         for (int j=0; j < (int)pMenu->GetMenuItemCount(); ++j )
