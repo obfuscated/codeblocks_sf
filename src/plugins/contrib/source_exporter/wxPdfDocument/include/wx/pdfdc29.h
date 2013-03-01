@@ -162,9 +162,19 @@ protected:
   virtual void DoGetSize(int* width, int* height) const;
   virtual void DoGetSizeMM(int* width, int* height) const;
 
-  virtual void DoDrawLines(int n, wxPoint points[],
+  virtual void DoDrawLines(int n,
+#if wxCHECK_VERSION(2, 9, 5)
+                           const wxPoint points[],
+#else
+                           wxPoint points[],
+#endif
                            wxCoord xoffset, wxCoord yoffset);
-  virtual void DoDrawPolygon(int n, wxPoint points[],
+  virtual void DoDrawPolygon(int n,
+#if wxCHECK_VERSION(2, 9, 5)
+                           const wxPoint points[],
+#else
+                           wxPoint points[],
+#endif
                              wxCoord xoffset, wxCoord yoffset,
                              wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
   virtual void DoDrawPolyPolygon(int n, int count[], wxPoint points[],
