@@ -46,6 +46,8 @@ void ColourManager::Save()
     {
         if (it->second.value != it->second.defaultValue)
             config->Write(wxT("list/") + it->first, it->second.value);
+        else
+            config->UnSet(wxT("list/") + it->first);
     }
 }
 
