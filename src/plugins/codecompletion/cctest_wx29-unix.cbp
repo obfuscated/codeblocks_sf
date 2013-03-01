@@ -43,7 +43,7 @@
 		<Linker>
 			<Add library="codeblocks" />
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
-			<Add directory="../../devel" />
+			<Add directory="../../devel29" />
 		</Linker>
 		<Unit filename="cctest/cctest_app.cpp" />
 		<Unit filename="cctest/cctest.cpp" />
