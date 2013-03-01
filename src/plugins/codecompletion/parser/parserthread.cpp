@@ -1294,7 +1294,15 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         if (localParent)
             newToken = TokenExists(newname, baseArgs, localParent, kind);
         if (newToken)
-        {   TRACE(_T("DoAddToken() : Found token (member function).")); }
+        {
+            TRACE(_T("DoAddToken() : Found token (member function)."));
+
+            // Special handling function implementation here, a function declaration and its
+            // function implementation share one Token. But the function implementation's arguments
+            // should take precedence, as they will be used for code-completion.
+            if(isImpl && (kind & tkAnyFunction))
+                newToken->m_Args = args;
+        }
     }
 
     // none of the above; check for token under parent
@@ -1302,7 +1310,12 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     {
         newToken = TokenExists(newname, baseArgs, m_LastParent, kind);
         if (newToken)
-        {   TRACE(_T("DoAddToken() : Found token (parent).")); }
+        {
+            TRACE(_T("DoAddToken() : Found token (parent)."));
+
+            if(isImpl && (kind & tkAnyFunction)) // Special handling function implementation, see comments above
+                newToken->m_Args = args;
+        }
     }
 
     // need to check if the current token already exists in the tokenTree
