@@ -217,7 +217,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
     buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
 
-    wxColour bgColour = wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND);
+    wxColour bgColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
     buf.Replace(wxT("CB_BODY_BGCOLOUR"), bgColour.GetAsString(wxC2S_HTML_SYNTAX));
 
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
