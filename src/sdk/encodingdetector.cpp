@@ -489,7 +489,7 @@ bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
             if (m_UseLog && outlen>0)
             {
                 logmsg.Printf(_T("Conversion succeeded using wxEncodingConverter "
-                                 "(buffer size = %d, converted size = %d."), size, outlen);
+                                 "(buffer size = %lu, converted size = %lu."), static_cast<unsigned long>(size), static_cast<unsigned long>(outlen));
                 logmgr->DebugLog(logmsg);
             }
         }
@@ -503,7 +503,7 @@ bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
                 if (m_UseLog && outlen>0)
                 {
                     logmsg.Printf(_T("Conversion succeeded using wxCSConv "
-                                     "(buffer size = %d, converted size = %d."), size, outlen);
+                                     "(buffer size = %lu, converted size = %lu."), static_cast<unsigned long>(size), static_cast<unsigned long>(outlen));
                     logmgr->DebugLog(logmsg);
                 }
             }
