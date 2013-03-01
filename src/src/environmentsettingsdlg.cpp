@@ -10,7 +10,6 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/aui/aui.h>
     #include <wx/button.h>
     #include <wx/menu.h>
     #include <wx/radiobut.h>
@@ -38,6 +37,8 @@
     #include "associations.h"
     #include "cbauibook.h"
 #endif
+
+#include <wx/aui/aui.h>
 
 #include <wx/listbook.h>
 
