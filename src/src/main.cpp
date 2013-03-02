@@ -4748,6 +4748,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;
         Manager::Get()->GetLogManager()->NotifyUpdate();
+        Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
         ShowHideStartPage();
     }
     if (needRestart)

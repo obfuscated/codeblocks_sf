@@ -83,6 +83,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
+        void RecreateOpenEditorStyles();
         int GetEditorsCount();
 
         EditorBase* IsOpen(const wxString& filename);

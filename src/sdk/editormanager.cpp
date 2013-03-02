@@ -370,18 +370,23 @@ void EditorManager::Configure()
 
     if (dlg.ShowModal() == wxID_OK)
     {
-        // tell all open editors to re-create their styles
-        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        RecreateOpenEditorStyles();
+    }
+}
+
+void EditorManager::RecreateOpenEditorStyles()
+{
+    // tell all open editors to re-create their styles
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    {
+        cbEditor* ed = InternalGetBuiltinEditor(i);
+        if (ed)
         {
-            cbEditor* ed = InternalGetBuiltinEditor(i);
-            if (ed)
+            bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
+            ed->SetEditorStyle();
+            if (saveSuccess)
             {
-                bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
-                ed->SetEditorStyle();
-                if (saveSuccess)
-                {
-                    ed->FixFoldState(); //Compare old fold levels with new and change the bugs
-                }
+                ed->FixFoldState(); //Compare old fold levels with new and change the bugs
             }
         }
     }
