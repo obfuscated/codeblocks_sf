@@ -222,7 +222,8 @@ void Valgrind::ProcessStack(const TiXmlElement& Stack, bool AddHeader)
 
 namespace
 {
-bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& CommandLineArguments)
+bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& CommandLineArguments,
+                       wxString &DynamicLinkerPath)
 {
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
@@ -267,20 +268,36 @@ bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& Command
 	}
 	// check the type of the target
 	const TargetType TType = Target->GetTargetType();
-	if(!(TType == ttExecutable || TType == ttConsoleOnly))
+
+    MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
+	if (TType == ttDynamicLib || TType == ttStaticLib)
 	{
+	    if (Target->GetHostApplication().IsEmpty())
+        {
+            wxString msg = _("You must select a host application to \"run\" a library wuth Valgrind");
+            cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
+
+        ExeTarget = Project->GetBasePath() + Target->GetHostApplication();
+        MacrosMgr->ReplaceMacros(ExeTarget, Target);
+        WorkDir = Target->GetWorkingDir();
+	}
+	else if (TType == ttExecutable || TType == ttConsoleOnly)
+	{
+        ExeTarget = Project->GetBasePath() + Target->GetOutputFilename();
+        MacrosMgr->ReplaceMacros(ExeTarget, Target);
+        WorkDir = Target->GetWorkingDir();
+	}
+    else
+    {
 		wxString msg = _("You need to have an ***executable*** target in your open project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
 		return false;
-	}
-	else
-	{
-        ExeTarget = Project->GetBasePath() + Target->GetOutputFilename();
-        MacrosManager* MacrosMgr = Manager::Get()->GetMacrosManager();
-        MacrosMgr->ReplaceMacros(ExeTarget, Target);
-        WorkDir = Target->GetWorkingDir();
-	}
+    }
+
 // Disable this check, because it is not a real requirement.
 // And also it breaks if the -g option is set for the project, not for the target!
 //	if(Target->GetCompilerOptions().Index(_T("-g")) == wxNOT_FOUND)
@@ -291,6 +308,7 @@ bool CheckRequirements(wxString& ExeTarget, wxString &WorkDir, wxString& Command
 //		return false;
 //	}
 	CommandLineArguments = Target->GetExecutionParameters();
+	DynamicLinkerPath = cbGetDynamicLinkerPathForTarget(Project, Target);
 	return true;
 }  // end of CheckRequirements
 }
@@ -443,7 +461,9 @@ void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
 	wxString ExeTarget;
 	wxString CommandLineArguments;
 	wxString WorkDir;
-	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments))
+	wxString DynamicLinkerPath;
+
+	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments, DynamicLinkerPath))
 	{
 		return;
 	}
@@ -461,12 +481,23 @@ void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
     wxString CommandLine = BuildMemCheckCmd() + wxT(" --xml=yes") + XmlOutputCommand + _T(" \"");
     CommandLine += ExeTarget + _T("\" ") + CommandLineArguments;
 
-	AppendToLog(CommandLine);
-	wxArrayString Output, Errors;
 	wxString OldWorkDir = wxGetCwd();
 	wxSetWorkingDirectory(WorkDir);
+
+    wxString OldLinkerPath;
+    wxGetEnv(CB_LIBRARY_ENVVAR, &OldLinkerPath);
+    DynamicLinkerPath = cbMergeLibPaths(OldLinkerPath, DynamicLinkerPath);
+    wxSetEnv(CB_LIBRARY_ENVVAR, DynamicLinkerPath);
+    AppendToLog(_("Setting dynamic linker path to: ") + DynamicLinkerPath);
+
+	AppendToLog(_("Executing command: ") + CommandLine);
+	AppendToLog(wxString(wxT("\n-------------- ")) + _("Application output") + wxT(" --------------"));
+	wxArrayString Output, Errors;
 	wxExecute(CommandLine, Output, Errors);
+
 	wxSetWorkingDirectory(OldWorkDir);
+    wxSetEnv(CB_LIBRARY_ENVVAR, OldLinkerPath);
+
 	size_t Count = Output.GetCount();
 	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
 	{
@@ -519,7 +550,8 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 	wxString ExeTarget;
 	wxString CommandLineArguments;
 	wxString WorkDir;
-	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments))
+	wxString Unused;
+	if(!CheckRequirements(ExeTarget, WorkDir, CommandLineArguments, Unused))
 	{
 		return;
 	}
