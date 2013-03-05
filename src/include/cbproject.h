@@ -756,6 +756,11 @@ class DLLIMPORT cbProject : public CompileTargetBase
         TiXmlElement* m_pExtensionsElement;
 };
 
+/// Returns a string valid to be used as LD_LIBRARY_PATH (or equivalent).
+wxString cbGetDynamicLinkerPathForTarget(cbProject *project, ProjectBuildTarget* target);
+/// Merges to LD_LIBRARY_PATH/PATH strings together to form a new valid string.
+wxString cbMergeLibPaths(const wxString &oldPath, const wxString &newPath);
+
 #endif // CBPROJECT_H
 
 

@@ -1302,11 +1302,8 @@ int CompilerGCC::DoRunQueue()
         dir = m_CdRun;
 
         // setup dynamic linker path
-        wxString newLibPath = GetDynamicLinkerPathForTarget(cmd->target);
-        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-        if (!newLibPath.IsEmpty() && newLibPath.Mid(newLibPath.Length() - 1, 1) != libPathSep)
-            newLibPath << libPathSep;
-        newLibPath << oldLibPath;
+        wxString newLibPath = cbGetDynamicLinkerPathForTarget(m_pProject, cmd->target);
+        newLibPath = cbMergeLibPaths(oldLibPath, newLibPath);
         wxSetEnv(CB_LIBRARY_ENVVAR, newLibPath);
     }
 
@@ -1885,7 +1882,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                     // set LD_LIBRARY_PATH
                     command << CB_LIBRARY_ENVVAR << _T("=$") << CB_LIBRARY_ENVVAR << _T(':');
                     // we have to quote the string, just escape the spaces does not work
-                    wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
+                    wxString strLinkerPath=cbGetDynamicLinkerPathForTarget(m_pProject, target);
                     QuoteStringIfNeeded(strLinkerPath);
                     command << strLinkerPath << strSPACE;
                 }
@@ -1980,28 +1977,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     Manager::Get()->GetProjectManager()->SetIsRunning(this);
     return 0;
-}
-
-wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
-{
-    if (!target)
-        return wxEmptyString;
-
-    Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
-    if (compiler)
-    {
-        CompilerCommandGenerator* generator = compiler->GetCommandGenerator(m_pProject);
-        wxString libPath;
-        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-        libPath << _T(".") << libPathSep;
-        libPath << GetStringFromArray(generator->GetLinkerSearchDirs(target), libPathSep);
-        if (!libPath.IsEmpty() && libPath.Mid(libPath.Length() - 1, 1) == libPathSep)
-            libPath.Truncate(libPath.Length() - 1);
-
-        delete generator;
-        return libPath;
-    }
-    return wxEmptyString;
 }
 
 wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target)

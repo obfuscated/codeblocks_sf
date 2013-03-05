@@ -233,9 +233,6 @@ class CompilerGCC : public cbCompilerPlugin
         // active target, currently building project or active project
         wxString GetCurrentCompilerID(ProjectBuildTarget* target);
 
-        // returns a string valid to be used as LD_LIBRARY_PATH (or equivalent)
-        wxString GetDynamicLinkerPathForTarget(ProjectBuildTarget* target);
-
         wxString GetErrWarnStr();
         wxString GetMinSecStr();
 

@@ -51,6 +51,7 @@
 #include "filefilters.h"
 #include "annoyingdialog.h"
 #include "genericmultilinenotesdlg.h"
+#include "compilercommandgenerator.h"
 
 // class constructor
 cbProject::cbProject(const wxString& filename) :
@@ -2400,4 +2401,37 @@ void cbProject::SetGlobs(const std::vector<Glob>& globs)
 std::vector<cbProject::Glob> cbProject::GetGlobs() const
 {
     return m_Globs;
+}
+
+
+wxString cbGetDynamicLinkerPathForTarget(cbProject *project, ProjectBuildTarget* target)
+{
+    if (!target)
+        return wxEmptyString;
+
+    Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+    if (compiler)
+    {
+        CompilerCommandGenerator* generator = compiler->GetCommandGenerator(project);
+        wxString libPath;
+        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+        libPath << _T(".") << libPathSep;
+        libPath << GetStringFromArray(generator->GetLinkerSearchDirs(target), libPathSep);
+        if (!libPath.IsEmpty() && libPath.Mid(libPath.Length() - 1, 1) == libPathSep)
+            libPath.Truncate(libPath.Length() - 1);
+
+        delete generator;
+        return libPath;
+    }
+    return wxEmptyString;
+}
+
+wxString cbMergeLibPaths(const wxString &oldPath, const wxString &newPath)
+{
+    wxString result = newPath;
+    const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+    if (!newPath.IsEmpty() && newPath.Mid(newPath.Length() - 1, 1) != libPathSep)
+        result << libPathSep;
+    result << oldPath;
+    return result;
 }
