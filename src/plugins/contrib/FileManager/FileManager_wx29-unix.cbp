@@ -49,7 +49,7 @@
 			<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="`$(WX_CONFIG) --libs std,aui`" />
 			<Add option="`pkg-config --libs gamin`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />

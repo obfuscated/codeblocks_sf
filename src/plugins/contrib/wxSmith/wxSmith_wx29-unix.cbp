@@ -19,7 +19,7 @@
 					<Add option="`$(WX_CONFIG) --cflags`" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 				</Linker>
 			</Target>
 			<Target title="wxSmith">

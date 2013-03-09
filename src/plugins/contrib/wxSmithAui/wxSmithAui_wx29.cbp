@@ -25,7 +25,7 @@
 					<Add option="-fPIC" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(WX_CONFIG) --libs std, propgrid`" />
+					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel29/share/codeblocks/wxSmithAui.zip manifest.xml" />
