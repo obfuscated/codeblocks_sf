@@ -52,6 +52,7 @@
 			<Add option="-Ulinux" />
 			<Add option="-Uunix" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add option="`pkg-config --cflags fontconfig`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
@@ -64,6 +65,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="`pkg-config --libs fontconfig`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add directory="../../../devel29" />
