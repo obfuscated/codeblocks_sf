@@ -17,6 +17,7 @@ Build-Depends: debhelper (>= 7.4.11~)
  , libstdc++6-4.3-dev | libstdc++6-4.4-dev | libstdc++6-4.5-dev | libstdc++6-4.6-dev
  , libboost1.40-dev | libboost-dev (>= 1.40)
  , libhunspell-dev
+ , libfontconfig1-dev
 Standards-Version: 3.9.1
 
 Package: codeblocks

@@ -121,7 +121,7 @@ It is based on a self-developed plugin framework allowing unlimited extensibilit
 Summary:                    Code::Blocks contrib plugins
 Group:                      Development/Tools/IDE
 Requires:                   %{name}%{?_isa} = %{version}
-BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, hunspell-devel
+BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, hunspell-devel, fontconfig-devel
 %if 0%{?nassi_shneiderman}
 BuildRequires:              boost-devel
 %endif
