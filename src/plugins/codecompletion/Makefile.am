@@ -25,6 +25,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
 			coderefactoring.cpp \
+			doxygen_parser.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
 			nativeparser_base.cpp \
@@ -49,6 +50,7 @@ noinst_HEADERS = ccoptionsdlg.h \
 			classbrowserbuilderthread.h \
 			codecompletion.h \
 			coderefactoring.h \
+			doxygen_parser.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
 			nativeparser_base.h \
