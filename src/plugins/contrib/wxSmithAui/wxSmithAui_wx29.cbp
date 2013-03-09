@@ -70,7 +70,7 @@
 				<Environment>
 					<Variable name="WX_CFG" value="" />
 					<Variable name="WX_SUFFIX" value="u" />
-                    <Variable name="WX_VERSION" value="29" />
+					<Variable name="WX_VERSION" value="29" />
 				</Environment>
 			</Target>
 			<Environment>
@@ -93,6 +93,7 @@
 			<Add directory="../wxSmith" />
 		</Compiler>
 		<Linker>
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />
 			<Add directory="../../../devel29" />

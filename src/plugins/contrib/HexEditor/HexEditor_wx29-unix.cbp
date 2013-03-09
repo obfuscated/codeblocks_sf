@@ -41,6 +41,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="libcodeblocks.a" />
 			<Add directory="../../../devel29" />
 		</Linker>

@@ -31,6 +31,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel29" />
 				</Linker>
@@ -52,9 +53,6 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 		</Compiler>
-		<Linker>
-			<Add option="`$(WX_CONFIG) --libs`" />
-		</Linker>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />
 		<Unit filename="Config.cpp" />

@@ -96,10 +96,8 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-			</Environment>
-			<Environment>
 				<Variable name="WX_CONFIG" value="wx-config --version=2.9" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -119,6 +117,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<Unit filename="KWIC/include/wx/KWIC/AngularMeter.h">
 			<Option target="wxKWIC" />

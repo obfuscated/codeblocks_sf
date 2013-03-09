@@ -37,6 +37,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add directory="$(CBDIR)/devel29" />
 		</Linker>

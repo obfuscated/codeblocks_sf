@@ -44,6 +44,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="txml29" />
 					<Add directory="base/tinyxml" />
 				</Linker>
@@ -58,6 +59,9 @@
 				<Compiler>
 					<Add option="-Os" />
 				</Compiler>
+				<Linker>
+					<Add option="-Wl,--no-undefined" />
+				</Linker>
 			</Target>
 			<Target title="Squirrel">
 				<Option output="sdk/scripting/lib/squirrel29" prefix_auto="1" extension_auto="1" />
@@ -199,6 +203,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -217,6 +222,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -234,6 +240,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -265,6 +272,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib29" />
 					<Add directory="devel29" />
@@ -286,6 +294,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -310,6 +319,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -327,6 +337,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -344,6 +355,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -361,6 +373,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -384,6 +397,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -403,6 +417,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -426,6 +441,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel29" />
 				</Linker>
@@ -488,6 +504,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">

@@ -46,6 +46,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel29/share/codeblocks/keybinder.zip manifest.xml" />

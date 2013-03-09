@@ -38,6 +38,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="txml29" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel29" />

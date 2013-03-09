@@ -41,6 +41,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="txml" />
 					<Add directory="base/tinyxml" />
 				</Linker>
@@ -54,6 +55,9 @@
 				<Compiler>
 					<Add option="-Os" />
 				</Compiler>
+				<Linker>
+					<Add option="-Wl,--no-undefined" />
+				</Linker>
 			</Target>
 			<Target title="Squirrel">
 				<Option output="sdk/scripting/lib/libsquirrel" prefix_auto="0" extension_auto="1" />
@@ -196,6 +200,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -212,6 +217,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -227,6 +233,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -256,6 +263,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
 					<Add directory="devel" />
@@ -275,6 +283,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -295,6 +304,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -310,6 +320,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -325,6 +336,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -340,6 +352,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -360,6 +373,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -377,6 +391,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -397,6 +412,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
@@ -452,9 +468,8 @@
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
-			<Add option="`wx-config --libs aui`" />
-			<Add option="`pkg-config --libs gtk+-2.0`" />
+			<Add option="`wx-config --libs std,aui`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">

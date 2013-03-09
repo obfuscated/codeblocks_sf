@@ -53,6 +53,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add library="wxflatnotebook" />
 			<Add directory="../../../devel29" />

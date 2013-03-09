@@ -80,6 +80,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
+			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxSmithContribItems.cpp" />

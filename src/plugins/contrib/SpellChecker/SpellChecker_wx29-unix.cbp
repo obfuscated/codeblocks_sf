@@ -87,6 +87,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Linker>
+			<Add option="-Wl,--no-undefined" />
+		</Linker>
 		<Unit filename="DictionariesNeededDialog.cpp">
 			<Option target="plugin" />
 		</Unit>

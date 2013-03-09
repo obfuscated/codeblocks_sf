@@ -56,6 +56,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="`pkg-config --libs gamin`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add directory="../../../devel" />
 		</Linker>

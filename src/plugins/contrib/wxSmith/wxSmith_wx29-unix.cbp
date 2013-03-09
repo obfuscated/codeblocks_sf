@@ -72,7 +72,7 @@
 			<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 		</Compiler>
 		<Linker>
-			<Add option="`$(WX_CONFIG) --libs std,propgrid,richtext`" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add directory="../../../devel29" />
 		</Linker>
