@@ -98,6 +98,7 @@ namespace TokenTreeHelper
             }
             return true;
         }
+        return false;
     }
 
     static bool CompareBaseArguments(const wxString& left, const wxString& right)
