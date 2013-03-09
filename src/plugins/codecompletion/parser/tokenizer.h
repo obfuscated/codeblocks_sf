@@ -79,6 +79,7 @@ enum PreprocessorType
 struct TokenizerOptions
 {
     bool wantPreprocessor;
+    bool storeDocumentation;
 };
 
 /** @brief This is just a simple lexer class
@@ -120,10 +121,11 @@ public:
     /** Undo the GetToken. */
     void     UngetToken();
 
-    /** Handle condition preprocessor or not */
-    void SetTokenizerOption(bool wantPreprocessor)
+    /** Handle condition preprocessor and store documentation or not */
+    void SetTokenizerOption(bool wantPreprocessor, bool storeDocumentation)
     {
         m_TokenizerOptions.wantPreprocessor = wantPreprocessor;
+        m_TokenizerOptions.storeDocumentation = storeDocumentation;
     };
 
     /** Set the Tokenizer skipping options. E.g. sometimes, we need to skip the statement after "=",
@@ -426,6 +428,8 @@ private:
 
     /** Filename of the buffer */
     wxString             m_Filename;
+    /** File index, useful when parsing documentation; \sa SkipComment */
+    int                  m_FileIdx;
     /** Buffer content, all the lexical analysis is done on this */
     wxString             m_Buffer;
     /** Buffer length */

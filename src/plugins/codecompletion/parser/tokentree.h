@@ -24,6 +24,7 @@ typedef SearchTree<TokenIdxSet>                                  TokenSearchTree
 typedef BasicSearchTree                                          TokenFilenameMap;
 typedef std::map< size_t, TokenIdxSet,       std::less<size_t> > TokenFileMap;
 typedef std::map< size_t, FileParsingStatus, std::less<size_t> > TokenFileStatusMap;
+typedef std::map< int, wxString >                                TokenIdxStringMap;
 
 extern wxMutex s_TokenTreeMutex;
 
@@ -98,6 +99,13 @@ public:
     void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
     void MarkFileTokensAsLocal(size_t fileIdx, bool local = true, void* userData = 0);
 
+    // documentation functions
+    void SetDocumentation(int fileIdx, int lineNo, const wxString& doc);
+    void PrependDocumentation(int fileIdx, int lineNo, const wxString& doc);
+    void AppendDocumentation(int fileIdx, int lineNo, const wxString& doc);
+    wxString GetDocumentation(int fileIdx, int lineNo) const;
+    wxString GetDocumentation(int tokenIdx) const;
+
     size_t        m_StructUnionUnnamedCount;
     size_t        m_EnumUnnamedCount;
     size_t        m_TokenTicketCount;
@@ -134,6 +142,8 @@ protected:
     TokenFileMap        m_FileMap;             /** Map: file indices -> sets of TokenIndexes */
     TokenFileStatusMap  m_FileStatusMap;       /** Map: file indices -> status */
     TokenFileSet        m_FilesToBeReparsed;   /** Set: file indices */
+
+    TokenIdxStringMap   m_TokenDocumentationMap; /** Map: hashed file and line -> documentation */
 };
 
 #endif // TOKENTREE_H

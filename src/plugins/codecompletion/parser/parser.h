@@ -90,6 +90,7 @@ struct ParserOptions
     bool useSmartSense;        /// use real AI(scope sequence match) or not(plain text match)
     bool whileTyping;          /// reparse the active editor while editing
     bool parseComplexMacros;   /// this will let the Tokenizer to recursive expand macros
+    bool storeDocumentation;   /// should tokenizer detect and store doxygen documentation?
 };
 
 /** specify the scope of the shown symbols */

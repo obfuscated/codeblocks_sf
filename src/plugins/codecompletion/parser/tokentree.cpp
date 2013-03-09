@@ -46,6 +46,84 @@
     #define TRACE2(format, args...)
 #endif
 
+namespace TokenTreeHelper
+{
+    inline int HashFileIdxAndLineNo(int fileIdx, int lineNo)
+    {
+        // It supports 2^13 files with maximum 2^19 lines in each.
+        // In bigger projects hash value may be not unique
+        return lineNo | (fileIdx << 19);
+    }
+
+    static bool CompareArgumentType(wxString left, wxString right)
+    {
+        wxStringTokenizer lTokenizer (left, _T(" "));
+        wxStringTokenizer rTokenizer (right, _T(" "));
+
+        int lSpacesCount = lTokenizer.CountTokens();
+        int rSpacesCount = rTokenizer.CountTokens();
+
+        if (lSpacesCount == rSpacesCount)
+        {
+            while ( lTokenizer.HasMoreTokens() )
+            {
+                if(lTokenizer.GetNextToken() != rTokenizer.GetNextToken())
+                    return false;
+            }
+            return true;
+        }
+        else if (lSpacesCount < rSpacesCount)
+        {
+            if (rSpacesCount - lSpacesCount > 1 || lSpacesCount == 0)
+                return false;
+
+            // left argument may doesn't have name
+            while ( lTokenizer.HasMoreTokens() )
+            {
+                if (lTokenizer.GetNextToken() != rTokenizer.GetNextToken())
+                    return false;
+            }
+            return true;
+        }
+        else if (lSpacesCount > rSpacesCount)
+        {
+            if (lSpacesCount - rSpacesCount > 1 || rSpacesCount == 0)
+                return false;
+
+            // right argument may doesn't have name
+            while ( rTokenizer.HasMoreTokens() )
+            {
+                if (rTokenizer.GetNextToken() != lTokenizer.GetNextToken())
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    static bool CompareBaseArguments(const wxString& left, const wxString& right)
+    {
+        if (left == right) // No args, or exactly same names
+            return true;
+
+        // tokenize strings without parentheses:
+        wxStringTokenizer lTokenizer(left.Mid(1, left.size()-1), _T(","));
+        wxStringTokenizer rTokenizer(right.Mid(1, right.size()-1), _T(","));
+
+        if (lTokenizer.CountTokens() != rTokenizer.CountTokens())
+            return false;
+
+        while( lTokenizer.HasMoreTokens())
+        {
+            wxString lTok = lTokenizer.GetNextToken();
+            wxString rTok = rTokenizer.GetNextToken();
+            if ( !CompareArgumentType(lTok,rTok) )
+                return false;
+        }
+
+        return true;
+    }
+}
+
 wxMutex s_TokenTreeMutex;
 
 TokenTree::TokenTree() :
@@ -95,6 +173,8 @@ void TokenTree::clear()
             delete token;
     }
     m_Tokens.clear();
+
+    m_TokenDocumentationMap.clear();
 }
 
 size_t TokenTree::size()
@@ -382,7 +462,18 @@ void TokenTree::RemoveToken(Token* oldToken)
         m_TopNameSpaces.erase(idx);
     }
 
-    // Step 6: Finally, remove it from the list.
+    // Step 6: Delete documentation associated with removed token
+
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(oldToken->m_FileIdx, oldToken->m_Line);
+    m_TokenDocumentationMap.erase(hashedIdx);
+    if (oldToken->m_TokenKind & tkFunction)
+    {
+        // Remove implementation's documentation
+        hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(oldToken->m_ImplFileIdx, oldToken->m_ImplLine);
+        m_TokenDocumentationMap.erase(hashedIdx);
+    }
+
+    // Step 7: Finally, remove it from the list.
 
     RemoveTokenFromList(idx);
 }
@@ -830,4 +921,92 @@ void TokenTree::FlagFileForReparsing(const wxString& filename)
 void TokenTree::FlagFileAsParsed(const wxString& filename)
 {
     m_FileStatusMap[ InsertFileOrGetIndex(filename) ] = fpsDone;
+}
+
+void TokenTree::SetDocumentation(int fileIdx, int lineNo, const wxString& doc)
+{
+    //generate unique index:
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
+
+    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
+    if (it != m_TokenDocumentationMap.end())
+    {
+        it->second = doc;
+        it->second.Shrink();
+    }
+    else
+    {
+        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
+        newDoc = doc;
+        newDoc.Shrink();
+    }
+}
+
+void TokenTree::PrependDocumentation(int fileIdx, int lineNo, const wxString& doc)
+{
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
+
+    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
+    if (it != m_TokenDocumentationMap.end())
+    {
+        it->second.Prepend(doc);
+        it->second.Shrink();
+    }
+    else
+    {
+        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
+        newDoc = doc;
+        newDoc.Shrink();
+    }
+}
+
+void TokenTree::AppendDocumentation(int fileIdx, int lineNo, const wxString& doc)
+{
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
+
+    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
+    if (it != m_TokenDocumentationMap.end())
+    {
+        it->second += doc;
+        it->second.Shrink();
+    }
+    else
+    {
+        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
+        newDoc = doc;
+        newDoc.Shrink();
+    }
+}
+
+wxString TokenTree::GetDocumentation(int fileIdx, int lineNo) const
+{
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
+    TokenIdxStringMap::const_iterator it = m_TokenDocumentationMap.find(hashedIdx);
+    if (it != m_TokenDocumentationMap.end())
+        return it->second;
+
+    return wxEmptyString;
+}
+
+//! also returns documentation found before implementation
+wxString TokenTree::GetDocumentation(int tokenIdx) const
+{
+    const Token* token = at(tokenIdx);
+    if (!token)
+        return wxEmptyString;
+    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(token->m_FileIdx, token->m_Line);
+
+    wxString out;
+    TokenIdxStringMap::const_iterator it = m_TokenDocumentationMap.find(hashedIdx);
+    if (it != m_TokenDocumentationMap.end())
+        out = it->second;
+
+    if (token->m_TokenKind & tkAnyFunction)
+    {
+        hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(token->m_ImplFileIdx, token->m_ImplLine);
+        it = m_TokenDocumentationMap.find(hashedIdx);
+        if (it != m_TokenDocumentationMap.end())
+            out += it->second;
+    }
+    return out;
 }

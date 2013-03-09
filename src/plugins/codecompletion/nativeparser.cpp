@@ -122,7 +122,7 @@ namespace NativeParserHelper
 
 int idTimerParsingOneByOne = wxNewId();
 
-bool s_DebugSmartSense           = false;
+bool s_DebugSmartSense = false;
 
 NativeParser::NativeParser() :
     m_TimerParsingOneByOne(this, idTimerParsingOneByOne),
@@ -348,7 +348,6 @@ cbProject* NativeParser::GetCurrentProject()
 
 bool NativeParser::Done()
 {
-
     bool done = true;
     for (ParserList::const_iterator it = m_ParserList.begin(); it != m_ParserList.end(); ++it)
     {
@@ -1270,7 +1269,7 @@ void NativeParser::RemoveObsoleteParsers()
                 continue;
 
             wxString prj = (it->first ? it->first->GetTitle() : _T("*NONE*"));
-            if (DeleteParser(it->first))
+            if ( DeleteParser(it->first) )
             {
                 // Please note that DeleteParser() may erase one element of the m_ParserList, so
                 // do NOT use the constant iterator here again, as the element pointed by it may be

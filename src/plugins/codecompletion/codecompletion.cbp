@@ -160,6 +160,12 @@
 		<Unit filename="coderefactoring.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="doxygen_parser.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="doxygen_parser.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>

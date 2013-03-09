@@ -198,6 +198,7 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
             control->RegisterImage(0, wxBitmap(abbrev_xpm));
             items.Sort();
             wxString itemsStr = GetStringFromArray(items, _T(" "));
+            control->AutoCompSetSeparator(_T(' '));
             control->AutoCompShow(endPos-startPos, itemsStr);
         }
         m_IsAutoCompVisible = control->AutoCompActive();

@@ -203,6 +203,9 @@ void ParserBase::ReadOptions()
     m_BrowserOptions.displayFilter   = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
     m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
 
+    // Page "Documentation:
+    m_Options.storeDocumentation     = cfg->ReadBool(_T("/use_documentation_helper"),         false);
+
     // force e-read of file types
     ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
     wxUnusedVar(ft_dummy);
@@ -231,6 +234,9 @@ void ParserBase::WriteOptions()
     // Token tree
     cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
     cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
+
+    // Page "Documentation:
+    // m_Options.storeDocumentation will be written by DocumentationPopup
 }
 
 void ParserBase::AddIncludeDir(const wxString& dir)
@@ -456,7 +462,6 @@ void Parser::AddPredefinedMacros(const wxString& defs)
         TRACE(_T("Parser::AddPredefinedMacros(): Stop the m_BatchTimer."));
     }
 
-
     CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
     m_PredefinedMacros << defs;
@@ -553,6 +558,8 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
     opts.followGlobalIncludes  = m_Options.followGlobalIncludes;
     opts.wantPreprocessor      = m_Options.wantPreprocessor;
     opts.parseComplexMacros    = m_Options.parseComplexMacros;
+
+    opts.storeDocumentation    = m_Options.storeDocumentation;
 
     opts.loader                = loader; // maybe 0 at this point
 
@@ -692,6 +699,8 @@ bool Parser::ParseBuffer(const wxString& buffer,   bool isLocal,
 
     opts.handleFunctions      = false;
 
+    opts.storeDocumentation   = m_Options.storeDocumentation;
+
     ParserThread thread(this, buffer, isLocal, opts, m_TokenTree);
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -717,6 +726,8 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 
     opts.handleFunctions      = true;
 
+    opts.storeDocumentation   = m_Options.storeDocumentation;
+
     ParserThread thread(this, buffer, false, opts, m_TempTokenTree);
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -739,6 +750,8 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = false;
 
+    opts.storeDocumentation   = m_Options.storeDocumentation;
+
     ParserThread thread(this, wxEmptyString, true, opts, m_TempTokenTree);
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -760,6 +773,8 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
     opts.followGlobalIncludes = false;
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = false;
+
+    opts.storeDocumentation   = m_Options.storeDocumentation;
 
     ParserThread thread(this, wxEmptyString, false, opts, m_TempTokenTree);
 

@@ -14,8 +14,10 @@
 #include "coderefactoring.h"
 #include "nativeparser.h"
 #include "systemheadersthread.h"
+#include "doxygen_parser.h"
 
 #include <wx/arrstr.h>
+#include <wx/listctrl.h>
 #include <wx/string.h>
 #include <wx/timer.h>
 
@@ -26,6 +28,7 @@
 class cbEditor;
 class wxScintillaEvent;
 class wxChoice;
+class DocumentationHelper;
 
 /** Code completion plugin has those features:
  * show function call-tip when the mouse hover over the variables/functions.
@@ -57,6 +60,9 @@ public:
     typedef std::vector<FunctionScope> FunctionsScopeVec;
     /** helper class to support FunctionsScopeVec*/
     typedef std::vector<int> ScopeMarksVec;
+
+    /** class to store token name and it's ID */
+    typedef std::vector<std::pair<wxString,int> > AutocompNameIdxVec;
 
     struct FunctionsScopePerFile
     {
@@ -244,6 +250,11 @@ private:
     void EnableToolbarTools(bool enable = true);
     void DoParseOpenedProjectAndActiveEditor();
 
+    /** Returns token index of autocomplete item; might be -1
+     *  @param itemIndex index to m_AutocompNameIdx; when itemIndex is < 0 then AutoCompGetCurrent will be used
+     */
+    int GetAutocompTokenIdx(int itemIndex = -1);
+
     /** delayed for code completion */
     void OnCodeCompleteTimer(wxTimerEvent& event);
 
@@ -261,6 +272,9 @@ private:
 
     /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
+
+    /** */
+    void OnAutocompleteSelect(wxListEvent& event);
 
     /** Not used*/
     int                     m_PageIndex;
@@ -323,8 +337,6 @@ private:
 
     /** current caret line */
     int                     m_CurrentLine;
-    /** TODO */
-    std::map<wxString, int> m_SearchItem;
 
     /** the file updating the toolbar info*/
     wxString                m_LastFile;
@@ -356,6 +368,7 @@ private:
     size_t                  m_CCMaxMatches;
     /** whether add parentheses after user select a function name in the code-completion suggestion list*/
     bool                    m_CCAutoAddParentheses;
+    bool                    m_CCDetectImplementation;
     /** defines characters that work like Tab (empty by Default) but are also inserted*/
     wxString                m_CCFillupChars;
     /** Should a single item auto-completion list automatically choose the item */
@@ -370,6 +383,18 @@ private:
     /** map to record all re-parsing files */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
     ReparsingMap m_ReparsingMap;
+
+    /** names and token's ids of autocomplete items; filled up in CodeComplete */
+    AutocompNameIdxVec      m_AutocompNameIdx;
+
+    /** which position in autocomplete list was selected? */
+    int                     m_LastAutocompIndex;
+
+    /** Popup window to display documentation */
+    DocumentationHelper     m_DocHelper;
+
+    friend void DocumentationHelper::OnLink(wxHtmlLinkEvent&);
+    friend void DocumentationHelper::OnSelectionChange(wxListEvent&);
 
     DECLARE_EVENT_TABLE()
 };

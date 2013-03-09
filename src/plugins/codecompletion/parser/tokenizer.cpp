@@ -109,6 +109,7 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_RepeatReplaceCount(0)
 {
     m_TokenizerOptions.wantPreprocessor = true;
+    m_TokenizerOptions.storeDocumentation = true;
 
     if (!m_Filename.IsEmpty())
         Init(m_Filename);
@@ -159,6 +160,8 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
     }
 
     while (m_Filename.Replace(_T("\\"),_T("/"))) { ; }
+
+    m_FileIdx = m_TokenTree->GetFileIndex(m_Filename);
 
     m_IsOK = true;
     return true;
@@ -900,31 +903,126 @@ bool Tokenizer::SkipComment()
     else
         return false;     // Not a comment, return false;
 
-    TRACE(_T("SkipComment() : Start from line = %u"), m_LineNumber);
     MoveToNextChar(2);    // Skip the comment prompt
 
-    // Here, we are in the comment body
-    while (true)
+    bool isDoc = false;
+    if (m_TokenizerOptions.storeDocumentation)
     {
-        if (cstyle)      // C style comment
-        {
-            SkipToChar('/');
-            if (PreviousChar() == '*') // end of a C style comment
-            {
-                MoveToNextChar();
-                break;
-            }
-            if (!MoveToNextChar())
-                break;
-        }
-        else             // C++ style comment
-        {
-            TRACE(_T("SkipComment() : Need to call SkipToInlineCommentEnd() here at line = %u"), m_LineNumber);
-            SkipToInlineCommentEnd();
-            break;
-        }
+        isDoc = (CurrentChar() == '!');	//	"/*!" or "//!"
+
+        if (!isDoc && cstyle) //  "/*" + ?
+            isDoc = (CurrentChar() == '*' && NextChar() != '/'); //	"/**" but not "/**/" and not //*
+
+        if (!isDoc && !cstyle) // "//" + ?
+            isDoc = (CurrentChar() == '/'); // "///"
     }
 
+    TRACE(_T("SkipComment() : Start from line = %u"), m_LineNumber);
+
+    if (!isDoc)
+    {
+        // Here, we are in the comment body
+        while (true)
+        {
+            if (cstyle) // C style comment
+            {
+                SkipToChar('/');
+                if (PreviousChar() == '*') // end of a C style comment
+                {
+                    MoveToNextChar();
+                    break;
+                }
+                if (!MoveToNextChar())
+                    break;
+            }
+            else        // C++ style comment
+            {
+                TRACE(_T("SkipComment() : Need to call SkipToInlineCommentEnd() here at line = %u"), m_LineNumber);
+                SkipToInlineCommentEnd();
+                break;
+            }
+        }
+    }
+    else
+    {
+        //Inside documentation body
+        wxString doc;
+        MoveToNextChar();    // Skip '!' or '*' or '/'
+        wxChar c = CurrentChar();
+
+        int lineToAppend = -1;
+
+        if (c == _T('<'))
+        {  // documentation for already added token - //!< or /*!< or something like this
+            MoveToNextChar();
+            c = CurrentChar();
+            lineToAppend = m_LineNumber;
+        }
+
+        if (cstyle)
+        {
+            while (true)
+            {
+                c = CurrentChar();
+                if (c == '*' && NextChar() == '/') //End of block comment
+                {
+                    MoveToNextChar(2); // eat '/'
+                    break;
+                }
+                else
+                {
+                    doc += c; // Appending char by char may be slow
+                    if (!MoveToNextChar())
+                        break;
+                }
+            }
+        }
+        else	// C++ style comment
+        {
+            while (true)
+            {
+                c = CurrentChar();
+                if (c == '\n' && !IsBackslashBeforeEOL())
+                {
+                    MoveToNextChar();
+                    break;
+                }
+                else
+                {
+                    doc += c;
+                    if (!MoveToNextChar())
+                        break;
+                }
+            }
+        }
+
+        if (doc.size()>0) // dont push empty strings
+        {
+            doc += _T('\n');
+
+            if (lineToAppend >= 0)
+                m_TokenTree->AppendDocumentation(m_FileIdx, lineToAppend, doc);
+            else
+            {
+                // Find next token's line:
+                // At first skip whitespace
+                while (SkipWhiteSpace())
+                    ;
+
+                // Maybe there is another coment?
+                // Recursive call
+                bool skipped = SkipComment();
+
+                //!
+                /*!
+                */
+                if (!cstyle && skipped)
+                    doc = _T("@brief ") + doc + _T('\n');
+
+                m_TokenTree->PrependDocumentation(m_FileIdx, m_LineNumber, doc);
+            }
+        }
+    }
     return true;
 }
 

@@ -59,6 +59,8 @@ struct ParserThreadOptions
         handleEnums(true),
         handleTypedefs(true),
 
+        storeDocumentation(false),
+
         loader(nullptr)
         {}
 
@@ -84,6 +86,8 @@ struct ParserThreadOptions
     bool        handleClasses;
     bool        handleEnums;
     bool        handleTypedefs;
+
+    bool        storeDocumentation;
 
     LoaderBase* loader; // if not NULL, load through filemanager (using threads)
 };
@@ -134,7 +138,7 @@ public:
       */
     bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 
-    wxString GetFilename(){return m_Buffer;}; //used in TRACE for debug only
+    wxString GetFilename() { return m_Buffer; } // used in TRACE for debug only
 
 protected:
     /** specify which "class like type" we are handling: struct or class or union*/

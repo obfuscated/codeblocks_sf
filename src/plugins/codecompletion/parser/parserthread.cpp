@@ -197,7 +197,8 @@ ParserThread::ParserThread(ParserBase*          parent,
     m_IsBuffer(parserThreadOptions.useBuffer),
     m_Buffer(bufferOrFilename)
 {
-    m_Tokenizer.SetTokenizerOption(parserThreadOptions.wantPreprocessor);
+    m_Tokenizer.SetTokenizerOption(parserThreadOptions.wantPreprocessor,
+                                   parserThreadOptions.storeDocumentation);
     if (!m_TokenTree)
         cbThrow(_T("m_TokenTree is a nullptr?!"));
 }
@@ -1296,11 +1297,10 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         if (newToken)
         {
             TRACE(_T("DoAddToken() : Found token (member function)."));
-
             // Special handling function implementation here, a function declaration and its
             // function implementation share one Token. But the function implementation's arguments
             // should take precedence, as they will be used for code-completion.
-            if(isImpl && (kind & tkAnyFunction))
+            if (isImpl && (kind & tkAnyFunction))
                 newToken->m_Args = args;
         }
     }
@@ -1312,8 +1312,8 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         if (newToken)
         {
             TRACE(_T("DoAddToken() : Found token (parent)."));
-
-            if(isImpl && (kind & tkAnyFunction)) // Special handling function implementation, see comments above
+            // Special handling function implementation, see comments above
+            if (isImpl && (kind & tkAnyFunction))
                 newToken->m_Args = args;
         }
     }
