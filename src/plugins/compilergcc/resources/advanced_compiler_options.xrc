@@ -135,7 +135,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT8">
-												<label>$$compiler&#x0D;&#x0A;$$rescomp&#x0D;&#x0A;$$linker&#x0D;&#x0A;$$lib&amp;linker&#x0D;&#x0A;$$options&#x0D;&#x0A;$$link&amp;options&#x0D;&#x0A;$$includes&#x0D;&#x0A;$$res&amp;includes&#x0D;&#x0A;$$libdirs&#x0D;&#x0A;$$libs&#x0D;&#x0A;$$file&#x0D;&#x0A;$$file&amp;dir&#x0D;&#x0A;$$file&amp;name&#x0D;&#x0A;$$file&amp;ext&#x0D;&#x0A;$$object&#x0D;&#x0A;$$dep&amp;object&#x0D;&#x0A;$$link&amp;objects&#x0D;&#x0A;$$link&amp;flat&amp;objects&#x0D;&#x0A;$$link&amp;resobjects&#x0D;&#x0A;$$exe&amp;output&#x0D;&#x0A;$$exe&amp;dir&#x0D;&#x0A;$$exe&amp;name&#x0D;&#x0A;$$exe&amp;ext&#x0D;&#x0A;$$static&amp;output&#x0D;&#x0A;$$exe&amp;output&#x0D;&#x0A;$$def&amp;output&#x0D;&#x0A;$$resource&amp;output&#x0D;&#x0A;$$objects&amp;output&amp;dir</label>
+												<label>$$compiler&#x0D;&#x0A;$$rescomp&#x0D;&#x0A;$$linker&#x0D;&#x0A;$$lib_linker&#x0D;&#x0A;$$options&#x0D;&#x0A;$$link_options&#x0D;&#x0A;$$includes&#x0D;&#x0A;$$res_includes&#x0D;&#x0A;$$libdirs&#x0D;&#x0A;$$libs&#x0D;&#x0A;$$file&#x0D;&#x0A;$$file_dir&#x0D;&#x0A;$$file_name&#x0D;&#x0A;$$file_ext&#x0D;&#x0A;$$object&#x0D;&#x0A;$$dep_object&#x0D;&#x0A;$$link_objects&#x0D;&#x0A;$$link_flat_objects&#x0D;&#x0A;$$link_resobjects&#x0D;&#x0A;$$exe_output&#x0D;&#x0A;$$exe_dir&#x0D;&#x0A;$$exe_name&#x0D;&#x0A;$$exe_ext&#x0D;&#x0A;$$static_output&#x0D;&#x0A;$$exe_output&#x0D;&#x0A;$$def_output&#x0D;&#x0A;$$resource_output&#x0D;&#x0A;$$objects_output_dir</label>
 											</object>
 											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
