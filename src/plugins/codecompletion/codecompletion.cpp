@@ -1058,7 +1058,7 @@ int CodeCompletion::CodeComplete()
                     if (lang == HL_NONE)
                         lang = theme->GetLanguageForFilename(ed->GetFilename());
                     wxString strLang = theme->GetLanguageName(lang);
-                    // if its sourcecode/header file and a known fileformat, show the corresponding icon
+                    // if it is source/header file and a known file format, show the corresponding icon
                     if (isC && strLang==_T("C/C++"))
                         ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
                     else if (isC && strLang==_T("D"))
