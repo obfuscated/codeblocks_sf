@@ -130,7 +130,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Daniel Orb          : RPM spec file and packages\n"
         "Mario Cupelli       : Compiler support for embedded systems\n"
         "byo,elvstone, me22  : Conversion to Unicode\n"
-        "pasgui              : Providing linux nightly packages\n"
+        "pasgui              : Providing Ubuntu nightly packages\n"
         "Hakki Dogusan       : DigitalMars compiler support\n"
         "ybx                 : OpenWatcom compiler support\n"
         "Tim Baker           : Patches for the direct-compile-mode\n"

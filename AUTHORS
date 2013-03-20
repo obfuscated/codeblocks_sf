@@ -3,28 +3,32 @@ Developers:
 Yiannis Mandravellos: Developer - Project leader
 Thomas Denk         : Developer
 Lieven de Cock      : Developer
+"tiwag"             : Developer
 Martin Halle        : Developer
 Biplab Modak        : Developer
-Jens Lody           : Developer and debian nightlies
+Jens Lody           : Developer - Fedora, CentOS and Debian nightlies
 Yuchen Deng         : Developer
+Teodor Petrov       : Developer
+Daniel Anselmi      : Developer
+Yuanhui Zhang       : Developer
+Damien Moore        : Developer
 Ricardo Garcia      : All-hands person
 Paul A. Jimenez     : Help and AStyle plugins
+Thomas Lorblanches  : CodeStat and Profiler plugins
 Bartlomiej Swiecki  : wxSmith RAD plugin
 Jerome Antoine      : ThreadSearch plugin
-Mario Cupelli       : User's manual
-"tiwag"             : Developer
 Pecan Heber         : Keybinder, BrowseTracker, DragScroll
                       CodeSnippets plugins
 Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)
-Thomas Lorblanchès  : CodeStat and Profiler plugins
-Anders F Björklund  : wxMac compatibility
+Mario Cupelli       : User's manual
+Anders F Bjoerklund : wxMac compatibility
 
 Contributors (in no special order):
 -----------------------------------
 Daniel Orb          : RPM spec file and packages
 Mario Cupelli       : Compiler support for embedded systems
 byo,elvstone, me22  : Conversion to Unicode
-pasgui              : Providing linux nightly packages
+pasgui              : Providing Ubuntu nightly packages
 Hakki Dogusan       : DigitalMars compiler support
 ybx                 : OpenWatcom compiler support
 Tim Baker           : Patches for the direct-compile-mode
