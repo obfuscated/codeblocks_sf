@@ -35,7 +35,7 @@
 #include "editormanager.h"
 
 #include "startherepage.h"
-
+// remove this line - comment line to test commits at SourceForge
 // ----------------------------------------------------------------------------
 //  TextCtrlLogger class to allow IsLoggerControl() access to "control" pointer
 // ----------------------------------------------------------------------------
