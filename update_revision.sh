@@ -28,6 +28,9 @@ if svn --xml info >/dev/null 2>&1; then
 elif svn --info >/dev/null 2>&1; then
 	REV=`svn info | grep "^Revision:" | cut -d" " -f2`
 	LCD=`svn info | grep "^Last Changed Date:" | cut -d" " -f4,5`
+elif git version >/dev/null 2>&1; then
+	REV=`git log --max-count=1 | grep -o -e "trunk@\([0-9]*\)" | cut -b 7-`
+	LCD=`git log --max-count=1 | grep -o -e "Date: \(.*\)" | cut -d " " -f 5-9`
 elif git svn --version >/dev/null 2>&1; then
 	REV=`git svn info | grep "^Revision:" | cut -d" " -f2`
 	LCD=`git svn info | grep "^Last Changed Date:" | cut -d" " -f4,5`
