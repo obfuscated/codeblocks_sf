@@ -481,6 +481,7 @@ int idToolbarTimer              = wxNewId();
 int idProjectSavedTimer         = wxNewId();
 int idReparsingTimer            = wxNewId();
 int idEditorActivatedTimer      = wxNewId();
+int idAutocompSelectTimer       = wxNewId();
 
 // milliseconds
 #define REALTIME_PARSING_DELAY    500
@@ -525,6 +526,8 @@ CodeCompletion::CodeCompletion() :
     m_TimerProjectSaved(this, idProjectSavedTimer),
     m_TimerReparsing(this, idReparsingTimer),
     m_TimerEditorActivated(this, idEditorActivatedTimer),
+    m_TimerAutocompSelect(this, idAutocompSelectTimer),
+    m_LastSelectEvent(0),
     m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
@@ -569,6 +572,7 @@ CodeCompletion::CodeCompletion() :
     Connect(idProjectSavedTimer,    wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnProjectSavedTimer)   );
     Connect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
+    Connect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
     Connect(SystemHeadersThreadHelper::idSystemHeadersThreadUpdate,    wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
     Connect(SystemHeadersThreadHelper::idSystemHeadersThreadCompleted, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
@@ -588,6 +592,7 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idProjectSavedTimer,    wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnProjectSavedTimer)   );
     Disconnect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
+    Disconnect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
     Disconnect(SystemHeadersThreadHelper::idSystemHeadersThreadUpdate,    wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
     Disconnect(SystemHeadersThreadHelper::idSystemHeadersThreadCompleted, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
@@ -3894,11 +3899,19 @@ void CodeCompletion::OnAutocompleteSelect(wxListEvent& event)
 
     TRACE(_T("OnAutocompleteSelect"));
 
+    m_TimerAutocompSelect.Start(35, wxTIMER_ONE_SHOT);
+    m_LastSelectEvent = (wxListEvent*)event.Clone();
+}
+
+void CodeCompletion::OnAutocompSelectTimer(wxTimerEvent& WXUNUSED(event))
+{
+    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!editor || !m_LastSelectEvent)
+        return;
     cbStyledTextCtrl* control = editor->GetControl();
     if (control->AutoCompActive())
     {
         m_LastAutocompIndex = control->AutoCompGetCurrent();
-
-        m_DocHelper.OnSelectionChange(event);
+        m_DocHelper.OnSelectionChange(*m_LastSelectEvent);
     }
 }

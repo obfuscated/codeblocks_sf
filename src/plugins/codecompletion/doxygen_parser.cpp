@@ -557,7 +557,7 @@ wxString DocumentationHelper::DoxygenToHTML(const wxString& doc)
         keyword = parser.FindNextKeyword(doc);
     }
     // process nested keywords:
-    for (int i = 0; i < (size_t)(sizeof(arguments)/sizeof(arguments[0])); ++i)
+    for (size_t i = 0; i < (size_t)(sizeof(arguments)/sizeof(arguments[0])); ++i)
     {
         arguments[i].Trim(true).Trim(false);
 

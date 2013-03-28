@@ -85,7 +85,7 @@ namespace TokenTreeHelper
             }
             return true;
         }
-        else if (lSpacesCount > rSpacesCount)
+        else
         {
             if (lSpacesCount - rSpacesCount > 1 || rSpacesCount == 0)
                 return false;
@@ -98,7 +98,6 @@ namespace TokenTreeHelper
             }
             return true;
         }
-        return false;
     }
 
     static bool CompareBaseArguments(const wxString& left, const wxString& right)

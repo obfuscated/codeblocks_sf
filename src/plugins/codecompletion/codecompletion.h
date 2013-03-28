@@ -276,6 +276,9 @@ private:
     /** */
     void OnAutocompleteSelect(wxListEvent& event);
 
+    /** delayed show of documentation to prevent scroll stuttering */
+    void OnAutocompSelectTimer(wxTimerEvent& event);
+
     /** Not used*/
     int                     m_PageIndex;
     /** Indicates CC's initialization is done*/
@@ -307,6 +310,9 @@ private:
     wxTimer                 m_TimerReparsing;
     /** delay after receive editor activated event*/
     wxTimer                 m_TimerEditorActivated;
+
+    wxTimer                 m_TimerAutocompSelect;
+    wxListEvent*            m_LastSelectEvent;
 
     cbEditor*               m_LastEditor;
     int                     m_ActiveCalltipsNest;
