@@ -4749,6 +4749,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         needRestart = m_SmallToolBar != tbarsmall;
         Manager::Get()->GetLogManager()->NotifyUpdate();
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
+        Manager::Get()->GetProjectManager()->RebuildTree();
         ShowHideStartPage();
     }
     if (needRestart)

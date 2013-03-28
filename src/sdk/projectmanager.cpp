@@ -44,6 +44,7 @@
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
 #include <wx/progdlg.h>
+#include <wx/settings.h>
 #include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include <wx/utils.h>
@@ -54,6 +55,7 @@
 #include "projectdepsdlg.h"
 #include "multiselectdlg.h"
 #include "filefilters.h"
+#include "cbcolourmanager.h"
 #include "confirmreplacedlg.h"
 #include "projectfileoptionsdlg.h"
 
@@ -231,6 +233,10 @@ ProjectManager::ProjectManager()
     // Constructors and destructors must always follow the LIFO rule:
     // Last in, first out.
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
+
+    Manager::Get()->GetColourManager()->RegisterColour(_("Project Tree"), _("Not-compiled files (headers/resources)"),
+                                                       wxT("project_tree_non_source_files"),
+                                                       wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
 }
 
 // class destructor

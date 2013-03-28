@@ -14,7 +14,6 @@
 #endif
 
 #include <wx/choicdlg.h>
-#include <wx/settings.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include <wx/textdlg.h>
@@ -52,6 +51,7 @@
 #include "annoyingdialog.h"
 #include "genericmultilinenotesdlg.h"
 #include "compilercommandgenerator.h"
+#include "cbcolourmanager.h"
 
 // class constructor
 cbProject::cbProject(const wxString& filename) :
@@ -1143,7 +1143,10 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl*                    tree,
     {
         ret = tree->AppendItem(parent, text, image, image, data);
         if (!compiles)
-            tree->SetItemTextColour(ret, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
+        {
+            ColourManager *manager = Manager::Get()->GetColourManager();
+            tree->SetItemTextColour(ret, manager->GetColour(wxT("project_tree_non_source_files")));
+        }
     }
     return ret;
 }
