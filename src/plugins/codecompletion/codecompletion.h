@@ -255,6 +255,9 @@ private:
      */
     int GetAutocompTokenIdx(int itemIndex = -1);
 
+    /** highlight member variables */
+    void UpdateEditorSyntax(cbEditor* ed = NULL);
+
     /** delayed for code completion */
     void OnCodeCompleteTimer(wxTimerEvent& event);
 
@@ -355,6 +358,9 @@ private:
 
     /** remember the number of bytes in the current editor/document */
     int                     m_CurrentLength;
+
+    /** batch run UpdateEditorSyntax() after first parsing */
+    bool                    m_NeedsBatchColour;
 
     /** header file names used for auto-completion after #include*/
     SystemHeadersMap        m_SystemHeadersMap;

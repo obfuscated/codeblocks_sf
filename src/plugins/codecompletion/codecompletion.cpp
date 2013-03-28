@@ -540,6 +540,7 @@ CodeCompletion::CodeCompletion() :
     m_CurrentLine(0),
     m_NeedReparse(false),
     m_CurrentLength(-1),
+    m_NeedsBatchColour(true),
     m_UseCodeCompletion(true),
     m_CCAutoLaunchChars(3),
     m_CCAutoLaunch(true),
@@ -2567,6 +2568,8 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
             m_NativeParser.UpdateClassBrowser();
     }
 
+    m_NeedsBatchColour = true;
+
     event.Skip();
 }
 
@@ -2804,12 +2807,24 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
         }
     }
 
-    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    cbEditor* editor = edMan->GetBuiltinActiveEditor();
     if (editor)
     {
         m_ToolbarNeedReparse = true;
         TRACE(_T("CodeCompletion::OnParserEnd: Starting m_TimerToolbar."));
         m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+    }
+
+    if (m_NeedsBatchColour)
+    {
+        for (int edIdx = edMan->GetEditorsCount() - 1; edIdx >= 0; --edIdx)
+        {
+            editor = edMan->GetBuiltinEditor(edIdx);
+            if (editor)
+                UpdateEditorSyntax(editor);
+        }
+        m_NeedsBatchColour = false;
     }
 
     event.Skip();
@@ -3684,6 +3699,84 @@ void CodeCompletion::DoParseOpenedProjectAndActiveEditor()
         m_NativeParser.OnEditorActivated(editor);
 }
 
+void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
+{
+    if (!ed)
+        ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed || ed->GetControl()->GetLexer() != wxSCI_LEX_CPP)
+        return;
+
+    TokenIdxSet result;
+    int flags = tkAnyContainer | tkAnyFunction;
+    if (ed->GetFilename().EndsWith(wxT(".c")))
+        flags |= tkVariable;
+    m_NativeParser.GetParser().FindTokensInFile(ed->GetFilename(), result, flags);
+    TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
+
+    std::set<wxString> varList;
+    TokenIdxSet parsedTokens;
+    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+    for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
+    {
+        Token* token = tree->at(*it);
+        if (!token)
+            continue;
+        if (token->m_TokenKind == tkVariable) // global var - only added in C
+        {
+            varList.insert(token->m_Name);
+            continue;
+        }
+        else if (token->m_TokenKind & tkAnyFunction) // find parent class
+        {
+            if (token->m_ParentIndex == wxNOT_FOUND)
+                continue;
+            else
+                token = tree->at(token->m_ParentIndex);
+        }
+        if (!token || parsedTokens.find(token->m_Index) != parsedTokens.end())
+            continue; // no need to check the same token multiple times
+        parsedTokens.insert(token->m_Index);
+        for (TokenIdxSet::const_iterator chIt = token->m_Children.begin();
+             chIt != token->m_Children.end(); ++chIt)
+        {
+            const Token* chToken = tree->at(*chIt);
+            if (chToken && chToken->m_TokenKind == tkVariable)
+            {
+                varList.insert(chToken->m_Name);
+            }
+        }
+        // inherited members
+        if (token->m_Ancestors.empty())
+            tree->RecalcInheritanceChain(token);
+        for (TokenIdxSet::const_iterator ancIt = token->m_Ancestors.begin();
+             ancIt != token->m_Ancestors.end(); ++ancIt)
+        {
+            const Token* ancToken = tree->at(*ancIt);
+            if (!ancToken || parsedTokens.find(ancToken->m_Index) != parsedTokens.end())
+                continue;
+            for (TokenIdxSet::const_iterator chIt = ancToken->m_Children.begin();
+                 chIt != ancToken->m_Children.end(); ++chIt)
+            {
+                const Token* chToken = tree->at(*chIt);
+                if (   chToken && chToken->m_TokenKind == tkVariable
+                    && chToken->m_Scope != tsPrivate) // cannot inherit these...
+                {
+                    varList.insert(chToken->m_Name);
+                }
+            }
+        }
+    }
+    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    wxString keywords = Manager::Get()->GetEditorManager()->GetColourSet()->GetKeywords(ed->GetLanguage(), 3);
+    for (std::set<wxString>::const_iterator keyIt = varList.begin();
+         keyIt != varList.end(); ++keyIt)
+    {
+        keywords += wxT(" ") + *keyIt;
+    }
+    ed->GetControl()->SetKeyWords(3, keywords);
+    ed->GetControl()->Colourise(0, -1);
+}
+
 int CodeCompletion::GetAutocompTokenIdx(int selectedItem)
 {
     cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -3885,6 +3978,7 @@ void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer: Starting m_TimerToolbar."));
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Current activated file is %s"), curFile.wx_str());
+    UpdateEditorSyntax();
 }
 
 void CodeCompletion::OnAutocompleteSelect(wxListEvent& event)
