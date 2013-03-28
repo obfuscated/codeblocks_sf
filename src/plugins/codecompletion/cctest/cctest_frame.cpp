@@ -492,6 +492,12 @@ void CCTestFrame::InitControl()
 
     m_Control->SetKeyWords(0, kw);
 
+    const wxString kwStl(wxT(
+    "basic_string bitset deque hash_map hash_multimap hash_multiset hash_set list map multimap "
+    "multiset pair priority_queue queue set stack std string valarray vector"));
+
+    m_Control->SetKeyWords(1, kwStl);
+
     m_Control->SetProperty(_T("fold"),              _T("1"));
     m_Control->SetProperty(_T("fold.html"),         _T("1"));
     m_Control->SetProperty(_T("fold.comment"),      _T("1"));
