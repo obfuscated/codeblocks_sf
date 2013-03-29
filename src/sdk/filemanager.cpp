@@ -190,7 +190,7 @@ namespace platform
 #else
 	inline bool move(wxString const& old_name, wxString const& new_name)
 	{
-		return ::wxRename(oldname, newname, true);
+		return ::wxRenameFile(old_name, new_name, true);
 	};
 #endif
 }
