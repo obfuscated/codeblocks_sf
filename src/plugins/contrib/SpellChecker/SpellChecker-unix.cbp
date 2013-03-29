@@ -112,6 +112,9 @@
 		<Unit filename="OnlineSpellChecker.h">
 			<Option target="plugin" />
 		</Unit>
+		<Unit filename="OnlineSpellChecking.xml">
+			<Option target="plugin" />
+		</Unit>
 		<Unit filename="SpellCheckHelper.cpp">
 			<Option target="plugin" />
 		</Unit>

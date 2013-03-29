@@ -93,8 +93,6 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
 {
     m_dictionaries.clear();
     selectedDictionary = wxNOT_FOUND;
-    int systemDictionary = wxNOT_FOUND;
-    const wxLanguageInfo* langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
     //wxString filespec(_T("??_??.dic"));
     wxString filespec(_T("*.dic"));
 
@@ -111,8 +109,6 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
             {
                 if ( fname.GetName() == m_strDictionaryName )
                     selectedDictionary = m_dictionaries.size();
-                if (langInfo && fname.GetName() == langInfo->CanonicalName)
-                    systemDictionary = m_dictionaries.size();
                 m_dictionaries.push_back(fname.GetName());
 
             }
@@ -120,16 +116,9 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
         }
     }
     // disable online checker if there are no dictionaries found
-    if (m_dictionaries.empty())
+    if (selectedDictionary == wxNOT_FOUND)
     {
         m_EnableOnlineChecker = false;
-    }
-    else if (selectedDictionary == wxNOT_FOUND) // auto-select a valid dictionary if none matched
-    {
-        if (systemDictionary == wxNOT_FOUND)
-            systemDictionary = 0;
-        selectedDictionary = systemDictionary;
-        m_strDictionaryName = m_dictionaries[systemDictionary];
     }
 }
 const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
@@ -137,6 +126,27 @@ const std::vector<wxString> &SpellCheckerConfig::GetPossibleDictionaries()const
     return m_dictionaries;
 }
 const wxString SpellCheckerConfig::GetDictionaryPath()const
+{
+    wxString dictPath = m_DictPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dictPath);
+    return dictPath;
+}
+const wxString SpellCheckerConfig::GetThesaurusPath()const
+{
+    wxString thesPath = m_ThesPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(thesPath);
+    return thesPath;
+}
+const wxString SpellCheckerConfig::GetBitmapPath()const
+{
+    wxString bitmPath = m_BitmPath;
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
+    if (wxDirExists(bitmPath) && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
+        return bitmPath;
+    return m_pPlugin->GetOnlineCheckerConfigPath();
+}
+
+void SpellCheckerConfig::DetectDictionaryPath()
 {
     wxArrayString dictPaths;
     dictPaths.Add(m_DictPath);
@@ -169,11 +179,15 @@ const wxString SpellCheckerConfig::GetDictionaryPath()const
     for (size_t i = 0; i < dictPaths.GetCount(); ++i)
     {
         if (wxDirExists(dictPaths[i]) && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
-            return dictPaths[i];
+        {
+            if (i != 0)
+                m_DictPath = dictPaths[i];
+            break;
+        }
     }
-    return dictPaths[0];
 }
-const wxString SpellCheckerConfig::GetThesaurusPath()const
+
+void SpellCheckerConfig::DetectThesaurusPath()
 {
     wxArrayString thesPaths;
     thesPaths.Add(m_ThesPath);
@@ -202,17 +216,12 @@ const wxString SpellCheckerConfig::GetThesaurusPath()const
     for (size_t i = 0; i < thesPaths.GetCount(); ++i)
     {
         if (wxDirExists(thesPaths[i]) && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
-            return thesPaths[i];
+        {
+            if (i != 0)
+                m_ThesPath = thesPaths[i];
+            break;
+        }
     }
-    return thesPaths[0];
-}
-const wxString SpellCheckerConfig::GetBitmapPath()const
-{
-    wxString bitmPath = m_BitmPath;
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
-    if (wxDirExists(bitmPath) && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
-        return bitmPath;
-    return m_pPlugin->GetOnlineCheckerConfigPath();
 }
 
 const wxString SpellCheckerConfig::GetRawDictionaryPath()const{return m_DictPath;}
@@ -233,7 +242,10 @@ void SpellCheckerConfig::Load()
 {
     m_EnableOnlineChecker = true;
     const wxLanguageInfo* langInfo = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT); // current system locale
-    m_strDictionaryName = (langInfo ? langInfo->CanonicalName : _T("de_CH"));
+    if (langInfo)
+        m_strDictionaryName = langInfo->CanonicalName;
+    if (!m_strDictionaryName.StartsWith(_T("en"))) // default language is English (system designation preferred)
+        m_strDictionaryName = _T("en_US");
     m_DictPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_ThesPath = m_pPlugin->GetOnlineCheckerConfigPath();
     m_BitmPath = m_pPlugin->GetOnlineCheckerConfigPath();
@@ -247,6 +259,8 @@ void SpellCheckerConfig::Load()
         m_ThesPath = cfg->Read(CFG_SPELLCHECK_THESAURI_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
         m_BitmPath = cfg->Read(CFG_SPELLCHECK_BITMAPS_PATH, m_pPlugin->GetOnlineCheckerConfigPath());
     }
+    DetectDictionaryPath();
+    DetectThesaurusPath();
 }
 void SpellCheckerConfig::Save()
 {

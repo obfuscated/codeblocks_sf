@@ -8,9 +8,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="hunspell">
-				<Option output="..\..\..\devel\hunspell" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/hunspell" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SpellChecker\hunspell" />
+				<Option object_output="../../../.objs/plugins/contrib/SpellChecker/hunspell" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -22,21 +22,21 @@
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="wxspellchecker\include" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll\mswu" />
-					<Add directory="hunspell\src\hunspell" />
-					<Add directory="hunspell\" />
+					<Add directory="$(#wx.lib)/gcc_dll/mswu" />
+					<Add directory="hunspell/src/hunspell" />
+					<Add directory="hunspell/" />
 				</Compiler>
 				<Linker>
 					<Add library="wxmsw28u" />
-					<Add directory="$(#wx.lib)\gcc_dll" />
+					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 			</Target>
 			<Target title="wxSpellChecker">
-				<Option output="..\..\..\devel\wxSpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/wxSpellChecker" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SpellChecker\wxSpellChecker" />
+				<Option object_output="../../../.objs/plugins/contrib/SpellChecker/wxSpellChecker" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -48,25 +48,25 @@
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="hunspell\src" />
-					<Add directory="wxspellchecker\include" />
+					<Add directory="hunspell/src" />
+					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll\mswu" />
+					<Add directory="$(#wx.lib)/gcc_dll/mswu" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
 					<Add library="wxmsw28u" />
-					<Add directory="..\..\..\devel" />
-					<Add directory="$(#wx.lib)\gcc_dll" />
+					<Add directory="../../../devel" />
+					<Add directory="$(#wx.lib)/gcc_dll" />
 				</Linker>
 			</Target>
 			<Target title="plugin">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\SpellChecker" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\SpellChecker" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns -nd --multiple-instance" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
@@ -78,12 +78,12 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="hunspell\src" />
-					<Add directory="wxspellchecker\include" />
-					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="hunspell/src" />
+					<Add directory="wxspellchecker/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
@@ -91,8 +91,8 @@
 					<Add library="hunspell" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
-					<Add directory="..\..\..\devel" />
-					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="../../../devel" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist ..\..\..\devel\share\CodeBlocks\SpellChecker mkdir ..\..\..\devel\share\CodeBlocks\SpellChecker" />
@@ -149,6 +149,9 @@
 		<Unit filename="OnlineSpellChecker.h">
 			<Option target="plugin" />
 		</Unit>
+		<Unit filename="OnlineSpellChecking.xml">
+			<Option target="plugin" />
+		</Unit>
 		<Unit filename="SpellCheckHelper.cpp">
 			<Option target="plugin" />
 		</Unit>
@@ -194,94 +197,94 @@
 		<Unit filename="ThesaurusDialog.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\affentry.cxx">
+		<Unit filename="hunspell/src/hunspell/affentry.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\affentry.hxx">
+		<Unit filename="hunspell/src/hunspell/affentry.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\affixmgr.cxx">
+		<Unit filename="hunspell/src/hunspell/affixmgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\affixmgr.hxx">
+		<Unit filename="hunspell/src/hunspell/affixmgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\atypes.hxx">
+		<Unit filename="hunspell/src/hunspell/atypes.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\baseaffix.hxx">
+		<Unit filename="hunspell/src/hunspell/baseaffix.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\csutil.cxx">
+		<Unit filename="hunspell/src/hunspell/csutil.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\csutil.hxx">
+		<Unit filename="hunspell/src/hunspell/csutil.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\dictmgr.cxx">
+		<Unit filename="hunspell/src/hunspell/dictmgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\dictmgr.hxx">
+		<Unit filename="hunspell/src/hunspell/dictmgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\filemgr.cxx">
+		<Unit filename="hunspell/src/hunspell/filemgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\filemgr.hxx">
+		<Unit filename="hunspell/src/hunspell/filemgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hashmgr.cxx">
+		<Unit filename="hunspell/src/hunspell/hashmgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hashmgr.hxx">
+		<Unit filename="hunspell/src/hunspell/hashmgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\htypes.hxx">
+		<Unit filename="hunspell/src/hunspell/htypes.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.cxx">
+		<Unit filename="hunspell/src/hunspell/hunspell.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.h">
+		<Unit filename="hunspell/src/hunspell/hunspell.h">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunspell.hxx">
+		<Unit filename="hunspell/src/hunspell/hunspell.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunvisapi.h">
+		<Unit filename="hunspell/src/hunspell/hunvisapi.h">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunzip.cxx">
+		<Unit filename="hunspell/src/hunspell/hunzip.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\hunzip.hxx">
+		<Unit filename="hunspell/src/hunspell/hunzip.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\langnum.hxx">
+		<Unit filename="hunspell/src/hunspell/langnum.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\phonet.cxx">
+		<Unit filename="hunspell/src/hunspell/phonet.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\phonet.hxx">
+		<Unit filename="hunspell/src/hunspell/phonet.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\replist.cxx">
+		<Unit filename="hunspell/src/hunspell/replist.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\replist.hxx">
+		<Unit filename="hunspell/src/hunspell/replist.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\suggestmgr.cxx">
+		<Unit filename="hunspell/src/hunspell/suggestmgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\suggestmgr.hxx">
+		<Unit filename="hunspell/src/hunspell/suggestmgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\utf_info.cxx">
+		<Unit filename="hunspell/src/hunspell/utf_info.cxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell\src\hunspell\w_char.hxx">
+		<Unit filename="hunspell/src/hunspell/w_char.hxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="manifest.xml">
@@ -299,70 +302,70 @@
 		<Unit filename="wxThes.h">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxsmith\SpellCheckSettingsPanel.wxs">
+		<Unit filename="wxsmith/SpellCheckSettingsPanel.wxs">
 			<Option target="plugin" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\PersonalDictionary.h">
+		<Unit filename="wxspellchecker/include/PersonalDictionary.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckCmdLineInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckCmdLineInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckDialogInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckDialogInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckEngineInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckEngineInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckEngineOption.h">
+		<Unit filename="wxspellchecker/include/SpellCheckEngineOption.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckUserInterface.h">
+		<Unit filename="wxspellchecker/include/SpellCheckUserInterface.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\SpellCheckerOptionsDialog.h">
+		<Unit filename="wxspellchecker/include/SpellCheckerOptionsDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\XmlPersonalDictionaryDialog.h">
+		<Unit filename="wxspellchecker/include/XmlPersonalDictionaryDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\XmlSpellCheckDialog.h">
+		<Unit filename="wxspellchecker/include/XmlSpellCheckDialog.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\include\exports.h">
+		<Unit filename="wxspellchecker/include/exports.h">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\PersonalDictionary.cpp">
+		<Unit filename="wxspellchecker/src/PersonalDictionary.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckCmdLineInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckCmdLineInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckDialogInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckDialogInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckEngineInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckEngineInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckEngineOption.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckEngineOption.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckUserInterface.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckUserInterface.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\SpellCheckerOptionsDialog.cpp">
+		<Unit filename="wxspellchecker/src/SpellCheckerOptionsDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\XmlPersonalDictionaryDialog.cpp">
+		<Unit filename="wxspellchecker/src/XmlPersonalDictionaryDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\XmlSpellCheckDialog.cpp">
+		<Unit filename="wxspellchecker/src/XmlSpellCheckDialog.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\exports.cpp">
+		<Unit filename="wxspellchecker/src/exports.cpp">
 			<Option target="wxSpellChecker" />
 		</Unit>
-		<Unit filename="wxspellchecker\src\open.xpm">
+		<Unit filename="wxspellchecker/src/open.xpm">
 			<Option target="wxSpellChecker" />
 		</Unit>
 		<Extensions>
