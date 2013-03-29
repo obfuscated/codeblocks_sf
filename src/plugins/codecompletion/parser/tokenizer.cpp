@@ -106,7 +106,9 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_Loader(0),
     m_IsReplaceParsing(false),
     m_FirstRemainingLength(0),
-    m_RepeatReplaceCount(0)
+    m_RepeatReplaceCount(0),
+    m_NextTokenDoc(),
+    m_LastTokenIdx(-1)
 {
     m_TokenizerOptions.wantPreprocessor = true;
     m_TokenizerOptions.storeDocumentation = true;
@@ -179,6 +181,8 @@ bool Tokenizer::InitFromBuffer(const wxString& buffer, const wxString& fileOfBuf
 
     while (m_Filename.Replace(_T("\\"),_T("/"))) { ; }
 
+    m_FileIdx = m_TokenTree->GetFileIndex(m_Filename);
+
     return true;
 }
 
@@ -200,6 +204,8 @@ void Tokenizer::BaseInit()
     m_FirstRemainingLength = 0;
     m_RepeatReplaceCount   = 0;
     m_Buffer.Clear();
+    m_NextTokenDoc.clear();
+    m_LastTokenIdx         = -1;
 }
 
 bool Tokenizer::ReadFile()
@@ -916,6 +922,10 @@ bool Tokenizer::SkipComment()
         if (!isDoc && !cstyle) // "//" + ?
             isDoc = (CurrentChar() == '/'); // "///"
     }
+    if(isDoc)
+    {
+        isDoc = m_ExpressionResult.empty() || (m_ExpressionResult.top() == true);
+    }
 
     TRACE(_T("SkipComment() : Start from line = %u"), m_LineNumber);
 
@@ -1001,7 +1011,13 @@ bool Tokenizer::SkipComment()
             doc += _T('\n');
 
             if (lineToAppend >= 0)
-                m_TokenTree->AppendDocumentation(m_FileIdx, lineToAppend, doc);
+            {
+                if(m_LastTokenIdx != -1)
+                {
+                    m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
+                }
+                m_NextTokenDoc.clear();
+            }
             else
             {
                 // Find next token's line:
@@ -1019,7 +1035,7 @@ bool Tokenizer::SkipComment()
                 if (!cstyle && skipped)
                     doc = _T("@brief ") + doc + _T('\n');
 
-                m_TokenTree->PrependDocumentation(m_FileIdx, m_LineNumber, doc);
+                m_NextTokenDoc = doc + m_NextTokenDoc;
             }
         }
     }
@@ -1886,6 +1902,19 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
         return index;
     else
         return -1;
+}
+
+void Tokenizer::SetLastTokenIdx(int tokenIdx)
+{
+    m_LastTokenIdx = tokenIdx;
+    if(tokenIdx != -1 && !m_NextTokenDoc.IsEmpty())
+    {
+        if(m_ExpressionResult.empty() || m_ExpressionResult.top() == true)
+        {
+            m_TokenTree->AppendDocumentation(tokenIdx, m_NextTokenDoc);
+        }
+    }
+    m_NextTokenDoc.clear();
 }
 
 bool Tokenizer::GetActualContextForMacro(const Token* tk, wxString& actualContext)

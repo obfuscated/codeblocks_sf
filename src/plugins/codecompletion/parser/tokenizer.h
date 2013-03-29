@@ -273,6 +273,8 @@ public:
     /** KMP find, get the first position, if find nothing, return -1 */
     int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
 
+    void SetLastTokenIdx(int tokenIdx);
+
 protected:
     /** Initialize some member variables */
     void BaseInit();
@@ -477,6 +479,9 @@ private:
 
     /** Static member, this is a hash map storing all macro replacement rules */
     static wxStringHashMap s_Replacements;
+
+    wxString             m_NextTokenDoc;
+    int                  m_LastTokenIdx;
 };
 
 #endif // TOKENIZER_H

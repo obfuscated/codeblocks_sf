@@ -1387,6 +1387,8 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     newToken->m_IsTemp     = m_Options.isTemp;
     newToken->m_IsOperator = isOperator;
 
+    m_Tokenizer.SetLastTokenIdx(newToken->m_Index);
+
     if (!isImpl)
     {
         newToken->m_FileIdx = m_FileIdx;

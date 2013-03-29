@@ -99,12 +99,9 @@ public:
     void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
     void MarkFileTokensAsLocal(size_t fileIdx, bool local = true, void* userData = 0);
 
-    // documentation functions
-    void SetDocumentation(int fileIdx, int lineNo, const wxString& doc);
-    void PrependDocumentation(int fileIdx, int lineNo, const wxString& doc);
-    void AppendDocumentation(int fileIdx, int lineNo, const wxString& doc);
-    wxString GetDocumentation(int fileIdx, int lineNo) const;
-    wxString GetDocumentation(int tokenIdx) const;
+    // Documentation related functions
+    void AppendDocumentation(int tokenIdx, const wxString& doc);
+    wxString GetDocumentation(int tokenIdx);
 
     size_t        m_StructUnionUnnamedCount;
     size_t        m_EnumUnnamedCount;
@@ -143,7 +140,7 @@ protected:
     TokenFileStatusMap  m_FileStatusMap;       /** Map: file indices -> status */
     TokenFileSet        m_FilesToBeReparsed;   /** Set: file indices */
 
-    TokenIdxStringMap   m_TokenDocumentationMap; /** Map: hashed file and line -> documentation */
+    TokenIdxStringMap   m_TokenDocumentationMap; /** Map: token index -> documentation */
 };
 
 #endif // TOKENTREE_H

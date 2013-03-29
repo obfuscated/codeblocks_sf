@@ -48,13 +48,6 @@
 
 namespace TokenTreeHelper
 {
-    inline int HashFileIdxAndLineNo(int fileIdx, int lineNo)
-    {
-        // It supports 2^13 files with maximum 2^19 lines in each.
-        // In bigger projects hash value may be not unique
-        return lineNo | (fileIdx << 19);
-    }
-
     static bool CompareArgumentType(wxString left, wxString right)
     {
         wxStringTokenizer lTokenizer (left, _T(" "));
@@ -464,14 +457,7 @@ void TokenTree::RemoveToken(Token* oldToken)
 
     // Step 6: Delete documentation associated with removed token
 
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(oldToken->m_FileIdx, oldToken->m_Line);
-    m_TokenDocumentationMap.erase(hashedIdx);
-    if (oldToken->m_TokenKind & tkFunction)
-    {
-        // Remove implementation's documentation
-        hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(oldToken->m_ImplFileIdx, oldToken->m_ImplLine);
-        m_TokenDocumentationMap.erase(hashedIdx);
-    }
+    m_TokenDocumentationMap.erase(oldToken->m_Index);
 
     // Step 7: Finally, remove it from the list.
 
@@ -923,90 +909,14 @@ void TokenTree::FlagFileAsParsed(const wxString& filename)
     m_FileStatusMap[ InsertFileOrGetIndex(filename) ] = fpsDone;
 }
 
-void TokenTree::SetDocumentation(int fileIdx, int lineNo, const wxString& doc)
+void TokenTree::AppendDocumentation(int tokenIdx, const wxString& doc)
 {
-    //generate unique index:
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
-
-    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
-    if (it != m_TokenDocumentationMap.end())
-    {
-        it->second = doc;
-        it->second.Shrink();
-    }
-    else
-    {
-        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
-        newDoc = doc;
-        newDoc.Shrink();
-    }
+    wxString& newDoc = m_TokenDocumentationMap[tokenIdx];
+    newDoc += doc;
+    newDoc.Shrink();
 }
 
-void TokenTree::PrependDocumentation(int fileIdx, int lineNo, const wxString& doc)
+wxString TokenTree::GetDocumentation(int tokenIdx)
 {
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
-
-    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
-    if (it != m_TokenDocumentationMap.end())
-    {
-        it->second.Prepend(doc);
-        it->second.Shrink();
-    }
-    else
-    {
-        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
-        newDoc = doc;
-        newDoc.Shrink();
-    }
-}
-
-void TokenTree::AppendDocumentation(int fileIdx, int lineNo, const wxString& doc)
-{
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
-
-    TokenIdxStringMap::iterator it = m_TokenDocumentationMap.find(hashedIdx);
-    if (it != m_TokenDocumentationMap.end())
-    {
-        it->second += doc;
-        it->second.Shrink();
-    }
-    else
-    {
-        wxString& newDoc = m_TokenDocumentationMap[hashedIdx];
-        newDoc = doc;
-        newDoc.Shrink();
-    }
-}
-
-wxString TokenTree::GetDocumentation(int fileIdx, int lineNo) const
-{
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(fileIdx, lineNo);
-    TokenIdxStringMap::const_iterator it = m_TokenDocumentationMap.find(hashedIdx);
-    if (it != m_TokenDocumentationMap.end())
-        return it->second;
-
-    return wxEmptyString;
-}
-
-//! also returns documentation found before implementation
-wxString TokenTree::GetDocumentation(int tokenIdx) const
-{
-    const Token* token = at(tokenIdx);
-    if (!token)
-        return wxEmptyString;
-    int hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(token->m_FileIdx, token->m_Line);
-
-    wxString out;
-    TokenIdxStringMap::const_iterator it = m_TokenDocumentationMap.find(hashedIdx);
-    if (it != m_TokenDocumentationMap.end())
-        out = it->second;
-
-    if (token->m_TokenKind & tkAnyFunction)
-    {
-        hashedIdx = TokenTreeHelper::HashFileIdxAndLineNo(token->m_ImplFileIdx, token->m_ImplLine);
-        it = m_TokenDocumentationMap.find(hashedIdx);
-        if (it != m_TokenDocumentationMap.end())
-            out += it->second;
-    }
-    return out;
+    return m_TokenDocumentationMap[tokenIdx];
 }
