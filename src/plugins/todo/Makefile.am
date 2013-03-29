@@ -17,7 +17,7 @@ pluginlib_LTLIBRARIES = libtodo.la
 
 libtodo_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libtodo_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
+libtodo_la_LIBADD = $(WX_LIBS) ../../sdk/libcodeblocks.la
 
 libtodo_la_SOURCES = addtododlg.cpp \
 			asktypedlg.cpp \

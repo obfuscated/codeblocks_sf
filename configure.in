@@ -255,21 +255,6 @@ AC_SUBST(WXPROPGRID_INCLUDE)
 AC_SUBST(POSTLINK_COMMAND)
 AC_SUBST(MACSETFILE)
 
-PLUGIN_WX_LIBS=
-
-AC_MSG_CHECKING(if wxWidgets libraries are needed for plugins)
-case `uname` in
-    Darwin)
-        AC_MSG_RESULT(yes)
-        PLUGIN_WX_LIBS="$WX_LIBS"
-    ;;
-    *)
-        AC_MSG_RESULT(no)
-    ;;
-esac
-
-AC_SUBST(PLUGIN_WX_LIBS)
-
 PIC_FLAGS=
 
 AC_MSG_CHECKING(for PIC flags)

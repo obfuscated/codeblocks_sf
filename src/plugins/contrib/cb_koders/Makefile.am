@@ -8,7 +8,7 @@ pluginlib_LTLIBRARIES = libcb_koders.la
 
 libcb_koders_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcb_koders_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+libcb_koders_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libcb_koders_la_SOURCES = kodersdialog.cpp \
 			cb_koders.cpp

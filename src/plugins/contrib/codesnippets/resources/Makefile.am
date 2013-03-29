@@ -18,11 +18,11 @@ pluginlibdir = $(pkglibdir)/plugins
 ##pluginlib_LTLIBRARIES = codesnippets
 bin_PROGRAMS = codesnippets
 
-##codesnippets_LIBADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
-##codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
+##codesnippets_LIBADD = $(WX_LIBS) ../../../../sdk/libcodeblocks.la
+##codesnippets_LDADD = $(WX_LIBS) ../../../../sdk/libcodeblocks.la
 codesnippets_LDADD =  -L../../../../base/tinyxml -ltinyxml \
             -L../../../../sdk ../../../../sdk/libcodeblocks.la \
-			$(PLUGIN_WX_LIBS) $(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
+			$(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
 
 codesnippets_SOURCES =	$(srcdir)/../version.cpp \
 		$(srcdir)/../Search/DirectoryParamsPanel.cpp \

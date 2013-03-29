@@ -8,7 +8,7 @@ pluginlib_LTLIBRARIES = libReopenEditor.la
 
 libReopenEditor_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libReopenEditor_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libReopenEditor_la_LIBADD = $(WX_LIBS) \
 							../../../sdk/libcodeblocks.la
 libReopenEditor_la_SOURCES = ReopenEditor.cpp \
 			ReopenEditorConfDLg.cpp \

@@ -20,7 +20,7 @@ pluginlib_LTLIBRARIES = libhelp_plugin.la
 
 libhelp_plugin_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libhelp_plugin_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libhelp_plugin_la_LIBADD = $(WX_LIBS) \
 							../../../sdk/libcodeblocks.la
 
 if ! HAVE_BZIP2

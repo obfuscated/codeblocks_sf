@@ -19,7 +19,7 @@ lib_LTLIBRARIES = libwxsmithlib.la
 
 libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
 
-libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) \
+libwxsmithlib_la_LIBADD = $(WX_LIBS) \
 				../../../sdk/libcodeblocks.la \
 				properties/libwxsmith_properties.la \
 				wxwidgets/libwxsmith_wxwidgets.la

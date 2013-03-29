@@ -8,7 +8,7 @@ pluginlib_LTLIBRARIES = libautosave.la
 
 libautosave_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libautosave_la_LIBADD =  $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
+libautosave_la_LIBADD =  $(WX_LIBS) ../../sdk/libcodeblocks.la
 
 libautosave_la_SOURCES = autosave.cpp
 noinst_HEADERS = autosave.h

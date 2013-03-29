@@ -11,7 +11,7 @@ pluginlib_LTLIBRARIES = libastyle.la
 
 libastyle_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libastyle_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
+libastyle_la_LIBADD = $(WX_LIBS) ../../sdk/libcodeblocks.la
 
 libastyle_la_SOURCES = asstreamiterator.cpp \
                        astyleconfigdlg.cpp \
