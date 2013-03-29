@@ -51,6 +51,6 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
     printer.SetIndent("\t");
     doc->Accept(&printer);
 
-    return Manager::Get()->GetFileManager()->Save(filename, printer.CStr(), printer.Size());
+    return Manager::Get()->GetFileManager()->SaveUTF8(filename, printer.CStr(), printer.Size());
 }
 
