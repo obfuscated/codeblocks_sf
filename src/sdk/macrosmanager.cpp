@@ -490,12 +490,16 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while (m_RE_RemoveQuotes.Matches(buffer))
     {
         search = m_RE_RemoveQuotes.GetMatch(buffer, 0);
-        const wxString content = m_RE_RemoveQuotes.GetMatch(buffer, 1);
+        wxString content = m_RE_RemoveQuotes.GetMatch(buffer, 1).Trim().Trim(false);
+        if (content.StartsWith(wxT("$")))
+            ReplaceMacros(content, target, subrequest);
         if (content.Len()>2 && content.StartsWith(wxT("\"")) && content.EndsWith(wxT("\"")))
         {
             replace = content.Mid(1,content.Len()-2); // with first and last char (the quotes) removed
             buffer.Replace(search, replace, false);
         }
+        else
+            buffer.Replace(search, content, false);
     }
 
     while (m_RE_Unix.Matches(buffer))
