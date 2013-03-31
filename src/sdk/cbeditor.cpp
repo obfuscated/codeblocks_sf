@@ -56,6 +56,7 @@ const wxString g_EditorModified = _T("*");
 #define BOOKMARK_STYLE   wxSCI_MARK_ARROW
 #define BREAKPOINT_STYLE wxSCI_MARK_CIRCLE
 #define DEBUG_STYLE      wxSCI_MARK_ARROW
+#define DEBUG_STYLE_HIGHLIGHT wxSCI_MARK_BACKGROUND
 
 #define BREAKPOINT_OTHER_MARKER    1
 #define BREAKPOINT_DISABLED_MARKER 2
@@ -63,6 +64,7 @@ const wxString g_EditorModified = _T("*");
 #define BOOKMARK_MARKER            4
 #define ERROR_MARKER               5
 #define DEBUG_MARKER               6
+#define DEBUG_MARKER_HIGHLIGHT     7
 
 #define C_LINE_MARGIN      0 // Line numbers
 #define C_MARKER_MARGIN    1 // Bookmarks, Breakpoints...
@@ -1384,6 +1386,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
                            | (1 << BREAKPOINT_DISABLED_MARKER)
                            | (1 << BREAKPOINT_OTHER_MARKER)
                            | (1 << DEBUG_MARKER)
+                           | (1 << DEBUG_MARKER_HIGHLIGHT)
                            | (1 << ERROR_MARKER) );
 
     // 1.) Marker for Bookmarks etc...
@@ -1419,6 +1422,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // 3.) Marker for Debugging (currently debugged line) etc...
     control->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
+
+    control->MarkerDefine(DEBUG_MARKER_HIGHLIGHT, DEBUG_STYLE_HIGHLIGHT);
+    control->MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, control->GetCaretLineBackground());
 
     // 4.) Marker for Errors...
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
@@ -2263,6 +2269,8 @@ void cbEditor::GotoPreviousBookmark()
 void cbEditor::SetDebugLine(int line)
 {
     MarkLine(DEBUG_MARKER, line);
+    if (GetControl()->GetCaretLineVisible())
+        MarkLine(DEBUG_MARKER_HIGHLIGHT, line);
     m_pData->m_LastDebugLine = line;
 }
 
