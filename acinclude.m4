@@ -589,8 +589,14 @@ do
 	-CppCheck)
 		AM_CONDITIONAL([BUILD_CPPCHECK], [false])
 		;;
+	none)
+		;;
 	*)
-		echo "Unknown contrib plugin $plugin, ignoring"
+		echo
+		echo "Error: Unknown contrib plugin $plugin." >&2
+		echo "       Note: the names are case-sensitive!" >&2
+		echo "       Try $[0] --help for exact spelling." >&2
+		exit 1
 		;;
     esac
 done
