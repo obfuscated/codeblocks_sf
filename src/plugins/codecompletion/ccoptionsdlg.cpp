@@ -104,7 +104,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
 
     // Page "Code Completion"
     XRCCTRL(*this, "chkNoCC",               wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
-    XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool(_T("/semantic_keywords"),   true));
+    XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool(_T("/semantic_keywords"),   false));
     XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"),         true));
     XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"),      false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));

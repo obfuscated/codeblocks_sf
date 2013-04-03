@@ -3701,7 +3701,7 @@ void CodeCompletion::DoParseOpenedProjectAndActiveEditor()
 
 void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
 {
-    if (!Manager::Get()->GetConfigManager(wxT("code_completion"))->ReadBool(wxT("/semantic_keywords"), true))
+    if (!Manager::Get()->GetConfigManager(wxT("code_completion"))->ReadBool(wxT("/semantic_keywords"), false))
         return;
     if (!ed)
         ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
