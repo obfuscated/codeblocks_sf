@@ -57,18 +57,8 @@ void RecentItemsList::AddToHistory(wxMenu* menu, const wxString& FileName)
     menu->FindItem(m_menuID, &recentFiles);
     if (recentFiles)
     {
-        while (recentFiles->GetMenuItemCount() > 1)
-            recentFiles->Delete(recentFiles->GetMenuItems()[0]);
-        if (m_list->GetCount() > 0)
-        {
-            recentFiles->InsertSeparator(0);
-            for (size_t i = 0; i < m_list->GetCount(); ++i)
-            {
-                const wxString &name = wxString::Format(_T("&%lu "), static_cast<unsigned long>(i + 1))
-                                       + m_list->GetHistoryFile(i);
-                recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, m_firstMenuItemID + i, name);
-            }
-        }
+        ClearMenu(recentFiles);
+        BuildMenu(recentFiles);
     }
 }
 
@@ -136,15 +126,7 @@ void RecentItemsList::Initialize(wxMenu *menu)
             if (wxFileExists(files[i]))
                 m_list->AddFileToHistory(files[i]);
         }
-        if (m_list->GetCount() > 0)
-        {
-            recentFiles->InsertSeparator(0);
-            for (size_t i = 0; i < m_list->GetCount(); ++i)
-            {
-                recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, m_firstMenuItemID + i,
-                    wxString::Format(_T("&%lu "), static_cast<unsigned long>(i + 1)) + m_list->GetHistoryFile(i));
-            }
-        }
+        BuildMenu(recentFiles);
     }
 }
 
@@ -165,10 +147,7 @@ void RecentItemsList::TerminateHistory(wxMenu *menu)
             if (recentFiles)
             {
                 if (!Manager::IsAppShuttingDown())
-                {
-                    while (recentFiles->GetMenuItemCount() > 1)
-                        recentFiles->Delete(recentFiles->GetMenuItems()[0]);
-                }
+                    ClearMenu(recentFiles);
                 else
                     m_list->RemoveMenu(recentFiles);
             }
@@ -178,3 +157,22 @@ void RecentItemsList::TerminateHistory(wxMenu *menu)
     }
 }
 
+void RecentItemsList::BuildMenu(wxMenu *menu)
+{
+    if (m_list->GetCount() > 0)
+    {
+        menu->InsertSeparator(0);
+        for (size_t i = 0; i < m_list->GetCount(); ++i)
+        {
+            const wxString &name = wxString::Format(_T("&%lu "), static_cast<unsigned long>(i + 1))
+                                   + m_list->GetHistoryFile(i);
+            menu->Insert(menu->GetMenuItemCount() - 2, m_firstMenuItemID + i, name);
+        }
+    }
+}
+
+void RecentItemsList::ClearMenu(wxMenu *menu)
+{
+    while (menu->GetMenuItemCount() > 1)
+        menu->Delete(menu->GetMenuItems()[0]);
+}

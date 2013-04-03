@@ -24,6 +24,9 @@ class RecentItemsList
         const wxFileHistory* GetFileHistory() const { return m_list; }
         bool Empty() const { return !m_list || m_list->GetCount() == 0; }
     private:
+        void BuildMenu(wxMenu *menu);
+        void ClearMenu(wxMenu *menu);
+    private:
         wxFileHistory* m_list;
         wxString m_configPath;
         int m_menuID, m_firstMenuItemID;
