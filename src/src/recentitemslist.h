@@ -27,6 +27,7 @@ class RecentItemsList
         void BuildMenu(wxMenu *menu);
         void ClearMenu(wxMenu *menu);
         wxMenu* GetMenu();
+        void RefreshStartHerePage();
     private:
         wxFileHistory* m_list;
         wxString m_menuName, m_configPath;

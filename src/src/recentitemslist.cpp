@@ -58,6 +58,7 @@ void RecentItemsList::AddToHistory(const wxString& FileName)
         ClearMenu(recentFiles);
         BuildMenu(recentFiles);
     }
+    RefreshStartHerePage();
 }
 
 wxString RecentItemsList::GetHistoryFile(size_t id) const
@@ -86,10 +87,13 @@ void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
     if (dialog.ShowModal() == wxID_YES)
     {
         m_list->RemoveFileFromHistory(id);
-        // update start here page
-        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-        if (sh)
-            ((StartHerePage*)sh)->Reload();
+        wxMenu* recentFiles = GetMenu();
+        if (recentFiles)
+        {
+            ClearMenu(recentFiles);
+            BuildMenu(recentFiles);
+        }
+        RefreshStartHerePage();
     }
 }
 
@@ -99,11 +103,8 @@ void RecentItemsList::ClearHistory()
         m_list->RemoveFileFromHistory(0);
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(m_configPath);
 
-    // update start here page
     Initialize();
-    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-    if (sh)
-        ((StartHerePage*)sh)->Reload();
+    RefreshStartHerePage();
 }
 
 void RecentItemsList::Initialize()
@@ -180,4 +181,12 @@ wxMenu* RecentItemsList::GetMenu()
     wxMenu *recentFiles;
     menu->FindItem(m_menuID, &recentFiles);
     return recentFiles;
+}
+
+void RecentItemsList::RefreshStartHerePage()
+{
+    // update start here page
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+    if (sh)
+        ((StartHerePage*)sh)->Reload();
 }
