@@ -17,15 +17,16 @@
 #include "annoyingdialog.h"
 #include "startherepage.h"
 
-RecentItemsList::RecentItemsList(const wxString &configPath, int menuID, int firstMenuItemID) :
+RecentItemsList::RecentItemsList(const wxString &menuName, const wxString &configPath, int menuID, int firstMenuItemID) :
     m_list(nullptr),
+    m_menuName(menuName),
     m_configPath(configPath),
     m_menuID(menuID),
     m_firstMenuItemID(firstMenuItemID)
 {
 }
 
-void RecentItemsList::AddToHistory(wxMenu* menu, const wxString& FileName)
+void RecentItemsList::AddToHistory(const wxString& FileName)
 {
     wxString filename = FileName;
 #ifdef __WXMSW__
@@ -51,10 +52,7 @@ void RecentItemsList::AddToHistory(wxMenu* menu, const wxString& FileName)
     // b) clear the menu (Biplab#1: except the last item)
     // c) fill it with the history items (Biplab#1: by inserting them)
     // and d) append "Clear history"... (Biplab#1: Not needed, item has not been removed)
-    if (!menu)
-        return;
-    wxMenu* recentFiles = 0;
-    menu->FindItem(m_menuID, &recentFiles);
+    wxMenu* recentFiles = GetMenu();
     if (recentFiles)
     {
         ClearMenu(recentFiles);
@@ -95,29 +93,26 @@ void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
     }
 }
 
-void RecentItemsList::ClearHistory(wxMenu *menu)
+void RecentItemsList::ClearHistory()
 {
     while (m_list->GetCount())
         m_list->RemoveFileFromHistory(0);
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(m_configPath);
 
     // update start here page
-    Initialize(menu);
+    Initialize();
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (sh)
         ((StartHerePage*)sh)->Reload();
 }
 
-void RecentItemsList::Initialize(wxMenu *menu)
+void RecentItemsList::Initialize()
 {
-    TerminateHistory(menu);
+    TerminateHistory();
 
     m_list = new wxFileHistory(16, m_firstMenuItemID);
 
-    if (!menu)
-        return;
-    wxMenu* recentFiles = 0;
-    menu->FindItem(m_menuID, &recentFiles);
+    wxMenu* recentFiles = GetMenu();
     if (recentFiles)
     {
         wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(m_configPath);
@@ -131,7 +126,7 @@ void RecentItemsList::Initialize(wxMenu *menu)
 }
 
 
-void RecentItemsList::TerminateHistory(wxMenu *menu)
+void RecentItemsList::TerminateHistory()
 {
     if (m_list)
     {
@@ -140,17 +135,13 @@ void RecentItemsList::TerminateHistory(wxMenu *menu)
             files.Add(m_list->GetHistoryFile(i));
         Manager::Get()->GetConfigManager(_T("app"))->Write(m_configPath, files);
 
-        if (menu)
+        wxMenu* recentFiles = GetMenu();
+        if (recentFiles)
         {
-            wxMenu* recentFiles = 0;
-            menu->FindItem(m_menuID, &recentFiles);
-            if (recentFiles)
-            {
-                if (!Manager::IsAppShuttingDown())
-                    ClearMenu(recentFiles);
-                else
-                    m_list->RemoveMenu(recentFiles);
-            }
+            if (!Manager::IsAppShuttingDown())
+                ClearMenu(recentFiles);
+            else
+                m_list->RemoveMenu(recentFiles);
         }
         delete m_list;
         m_list = nullptr;
@@ -175,4 +166,18 @@ void RecentItemsList::ClearMenu(wxMenu *menu)
 {
     while (menu->GetMenuItemCount() > 1)
         menu->Delete(menu->GetMenuItems()[0]);
+}
+
+wxMenu* RecentItemsList::GetMenu()
+{
+    wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    if (!mbar)
+        return nullptr;
+    int pos = mbar->FindMenu(m_menuName);
+    if (pos == wxNOT_FOUND)
+        return nullptr;
+    wxMenu *menu = mbar->GetMenu(pos);
+    wxMenu *recentFiles;
+    menu->FindItem(m_menuID, &recentFiles);
+    return recentFiles;
 }

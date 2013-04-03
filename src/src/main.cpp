@@ -534,8 +534,8 @@ MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
        m_LayoutManager(this),
        m_pAccel(0L),
-       m_filesHistory(wxT("/recent_files"), idFileOpenRecentFileClearHistory, wxID_CBFILE01),
-       m_projectsHistory(wxT("/recent_projects"), idFileOpenRecentProjectClearHistory, wxID_CBFILE17),
+       m_filesHistory(_("&File"), wxT("/recent_files"), idFileOpenRecentFileClearHistory, wxID_CBFILE01),
+       m_projectsHistory(_("&File"), wxT("/recent_projects"), idFileOpenRecentProjectClearHistory, wxID_CBFILE17),
        m_pCloseFullScreenBtn(0L),
        m_pEdMan(0L),
        m_pPrjMan(0L),
@@ -1767,8 +1767,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                     if (!ret)
                         ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
                     else if (addToHistory)
-                        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")),
-                                                       Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
+                        m_projectsHistory.AddToHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
                     return ret;
                 }
                 else
@@ -1818,7 +1817,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             }
             if (plugin->OpenFile(filename) == 0)
             {
-                m_filesHistory.AddToHistory(GetMenuByName(_("&File")), filename);
+                m_filesHistory.AddToHistory(filename);
                 return true;
             }
             return false;
@@ -1841,7 +1840,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
     if (prj)
     {
         if (addToHistory)
-            m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), prj->GetFilename());
+            m_projectsHistory.AddToHistory(prj->GetFilename());
         return true;
     }
     ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
@@ -1856,7 +1855,7 @@ bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
         // Cryogen 24/3/10 Activate the editor after opening. Partial fix for bug #14087.
         ed->Activate();
         if (addToHistory)
-            m_filesHistory.AddToHistory(GetMenuByName(_("&File")), ed->GetFilename());
+            m_filesHistory.AddToHistory(ed->GetFilename());
         return true;
     }
     return false;
@@ -2185,33 +2184,14 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 
 void MainFrame::InitializeRecentFilesHistory()
 {
-    wxMenu *menu = GetMenuByName(_("&File"));
-    if (menu)
-    {
-        m_filesHistory.Initialize(menu);
-        m_projectsHistory.Initialize(menu);
-    }
+    m_filesHistory.Initialize();
+    m_projectsHistory.Initialize();
 }
 
 void MainFrame::TerminateRecentFilesHistory()
 {
-    wxMenu *menu = GetMenuByName(_("&File"));
-    if (menu)
-    {
-        m_filesHistory.TerminateHistory(menu);
-        m_projectsHistory.TerminateHistory(menu);
-    }
-}
-
-wxMenu* MainFrame::GetMenuByName(const wxString &name)
-{
-    wxMenuBar* mbar = GetMenuBar();
-    if (!mbar)
-        return nullptr;
-    int pos = mbar->FindMenu(name);
-    if (pos == wxNOT_FOUND)
-        return nullptr;
-    return mbar->GetMenu(pos);
+    m_filesHistory.TerminateHistory();
+    m_projectsHistory.TerminateHistory();
 }
 
 wxString MainFrame::GetEditorDescription(EditorBase* eb)
@@ -2309,9 +2289,9 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         if (!filename.IsEmpty())
         {
             if (prj)
-                m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), filename);
+                m_projectsHistory.AddToHistory(filename);
             else
-                m_filesHistory.AddToHistory(GetMenuByName(_("&File")), filename);
+                m_filesHistory.AddToHistory(filename);
         }
         if (prj && tot == totProject) // Created project should be parsed
         {
@@ -2333,7 +2313,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         ed->GetControl()->SetChangeCollection(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
 
     if (ed && ed->IsOK())
-        m_filesHistory.AddToHistory(GetMenuByName(_("&File")), ed->GetFilename());
+        m_filesHistory.AddToHistory(ed->GetFilename());
 
     if (!ed || !project)
         return;
@@ -2480,7 +2460,7 @@ void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 
 void MainFrame::OnFileOpenRecentProjectClearHistory(cb_unused wxCommandEvent& event)
 {
-    m_projectsHistory.ClearHistory(GetMenuByName(_("&File")));
+    m_projectsHistory.ClearHistory();
 
 }
 
@@ -2494,7 +2474,7 @@ void MainFrame::OnFileReopen(wxCommandEvent& event)
 
 void MainFrame::OnFileOpenRecentClearHistory(cb_unused wxCommandEvent& event)
 {
-    m_filesHistory.ClearHistory(GetMenuByName(_("&File")));
+    m_filesHistory.ClearHistory();
 }
 
 void MainFrame::OnFileSave(cb_unused wxCommandEvent& event)
@@ -2525,7 +2505,7 @@ void MainFrame::OnFileSaveProject(cb_unused wxCommandEvent& event)
     // no need to call SaveActiveProjectAs(), because this is handled in cbProject::Save()
     ProjectManager *prjManager = Manager::Get()->GetProjectManager();
     if (prjManager->SaveActiveProject())
-        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), prjManager->GetActiveProject()->GetFilename());
+        m_projectsHistory.AddToHistory(prjManager->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
@@ -2534,7 +2514,7 @@ void MainFrame::OnFileSaveProjectAs(cb_unused wxCommandEvent& event)
 {
     ProjectManager *prjManager = Manager::Get()->GetProjectManager();
     if (prjManager->SaveActiveProjectAs())
-        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), prjManager->GetActiveProject()->GetFilename());
+        m_projectsHistory.AddToHistory(prjManager->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
@@ -2557,7 +2537,7 @@ void MainFrame::OnFileSaveAll(cb_unused wxCommandEvent& event)
         && !prjManager->GetWorkspace()->IsDefault()
         && prjManager->SaveWorkspace())
     {
-        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), prjManager->GetWorkspace()->GetFilename());
+        m_projectsHistory.AddToHistory(prjManager->GetWorkspace()->GetFilename());
     }
     DoUpdateStatusBar();
     DoUpdateAppTitle();
@@ -2632,14 +2612,14 @@ void MainFrame::OnFileSaveWorkspace(cb_unused wxCommandEvent& event)
 {
     ProjectManager *pman = Manager::Get()->GetProjectManager();
     if (pman->SaveWorkspace())
-        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), pman->GetWorkspace()->GetFilename());
+        m_projectsHistory.AddToHistory(pman->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileSaveWorkspaceAs(cb_unused wxCommandEvent& event)
 {
     ProjectManager *pman = Manager::Get()->GetProjectManager();
     if (pman->SaveWorkspaceAs(_T("")))
-        m_projectsHistory.AddToHistory(GetMenuByName(_("&File")), pman->GetWorkspace()->GetFilename());
+        m_projectsHistory.AddToHistory(pman->GetWorkspace()->GetFilename());
 }
 
 void MainFrame::OnFileCloseWorkspace(cb_unused wxCommandEvent& event)

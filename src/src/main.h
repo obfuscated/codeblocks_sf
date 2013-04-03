@@ -337,8 +337,6 @@ class MainFrame : public wxFrame
         #if wxUSE_STATUSBAR
         virtual wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
         #endif
-    private:
-        wxMenu* GetMenuByName(const wxString &name);
     protected:
 
 
