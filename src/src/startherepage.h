@@ -14,15 +14,15 @@ extern const wxString g_StartHereTitle;
 
 class wxHtmlWindow;
 class wxHtmlLinkInfo;
-class wxFileHistory;
+class RecentItemsList;
 
 class StartHerePage : public EditorBase
 {
     wxString revInfo;
 
     public:
-        StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
-                      const wxFileHistory *files, wxWindow* parent);
+        StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
+                      const RecentItemsList &files, wxWindow* parent);
         virtual ~StartHerePage();
 
         bool LinkClicked(const wxHtmlLinkInfo& link);
@@ -34,8 +34,8 @@ class StartHerePage : public EditorBase
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
         wxString m_OriginalPageContent;
-        const wxFileHistory *m_projects;
-        const wxFileHistory *m_files;
+        const RecentItemsList &m_projects;
+        const RecentItemsList &m_files;
     private:
         DECLARE_EVENT_TABLE()
 };

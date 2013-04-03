@@ -18,6 +18,7 @@
 #include "cbexception.h"
 #include "cbplugin.h"
 #include "sdk_events.h"
+#include "recentitemslist.h"
 #include "scripting/bindings/sc_base_types.h"
 #include "scrollingdialog.h"
 
@@ -306,8 +307,6 @@ class MainFrame : public wxFrame
         void DoFixToolbarsLayout();
         bool DoCheckCurrentLayoutForChanges(bool canCancel = true);
 
-        void AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool cannot_open = true);
-
         void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
         void RemoveEditorFromWindowMenu(const wxString& filename);
         int IsEditorInWindowMenu(const wxString& filename);
@@ -334,15 +333,17 @@ class MainFrame : public wxFrame
         void LoadWindowSize();
 
         void InitializeRecentFilesHistory();
-        void AddToRecentFilesHistory(const wxString& filename);
-        void AddToRecentProjectsHistory(const wxString& filename);
         void TerminateRecentFilesHistory();
         #if wxUSE_STATUSBAR
         virtual wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
         #endif
+    private:
+        wxMenu* GetMenuByName(const wxString &name);
+    protected:
 
-        wxFileHistory* m_pFilesHistory;
-        wxFileHistory* m_pProjectsHistory;
+
+
+        RecentItemsList m_filesHistory, m_projectsHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;

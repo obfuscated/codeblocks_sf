@@ -29,6 +29,7 @@
 #include "main.h"
 #include "appglobals.h"
 #include "cbcolourmanager.h"
+#include "recentitemslist.h"
 
 #include <wx/clipbrd.h>
 #include <wx/docview.h>
@@ -137,8 +138,8 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
 
 } // anonymous namespace
 
-StartHerePage::StartHerePage(wxEvtHandler* owner, const wxFileHistory *projects,
-                             const wxFileHistory *files, wxWindow* parent)
+StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &projects,
+                             const RecentItemsList &files, wxWindow* parent)
     : EditorBase(parent, g_StartHereTitle),
     m_pOwner(owner),
     m_projects(projects),
@@ -252,7 +253,7 @@ void StartHerePage::Reload()
     ColourManager *colours = Manager::Get()->GetColourManager();
     const wxString &linkColour = colours->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
     const wxString &textColour = colours->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
-    ReplaceRecentProjectFiles(buf, *m_projects, *m_files, linkColour, textColour);
+    ReplaceRecentProjectFiles(buf, *m_projects.GetFileHistory(), *m_files.GetFileHistory(), linkColour, textColour);
 
     buf.Replace(wxT("CB_LINK_COLOUR"), linkColour);
     buf.Replace(wxT("CB_TEXT_COLOUR"), textColour);
