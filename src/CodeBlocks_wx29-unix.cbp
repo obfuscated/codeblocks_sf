@@ -3614,6 +3614,12 @@
 		<Unit filename="src/printdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/recentitemslist.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/recentitemslist.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/app_compiler_settings.xrc">
 			<Option target="src" />
 		</Unit>
