@@ -58,6 +58,7 @@ codeblocks_SOURCES = app.cpp \
 			notebookstyles.cpp \
 			prefix.cpp \
 			printdlg.cpp \
+			recentitemslist.cpp \
 			scriptconsole.cpp \
 			scriptingsettingsdlg.cpp \
 			splashscreen.cpp \
@@ -89,6 +90,7 @@ noinst_HEADERS = app.h \
 			notebookstyles.h \
 			prefix.h \
 			printdlg.h \
+			recentitemslist.h \
 			scriptconsole.h \
 			scriptingsettingsdlg.h \
 			splashscreen.h \

@@ -10,6 +10,12 @@
 
 #include <sdk.h>
 
+#ifndef CB_PRECOMP
+    #include <wx/menu.h>
+    #include "configmanager.h"
+    #include "editormanager.h"
+#endif
+
 #include <wx/docview.h>
 
 #include "recentitemslist.h"
