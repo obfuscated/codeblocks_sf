@@ -951,13 +951,21 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
         html += ConvertTypeToAnchor(token->m_FullType) + sep + b1 + token->m_Name + b0 + br;
         break;
 
+    case tkEnumerator:
+        if (token->m_Scope != tsUndefined)
+            html += i1 + token->GetTokenScopeString() + i0 + sep;
+        html += token->m_FullType + sep + b1 + token->m_Name + b0;
+        if (!token->m_Args.IsEmpty())
+            html += wxT(" = ") + token->GetFormattedArgs();
+        html += br;
+        break;
+
     case tkNamespace:    // fall-through
     case tkClass:        // fall-through
     case tkEnum:         // fall-through
     case tkTypedef:      // fall-through
     case tkConstructor:  // fall-through
     case tkDestructor:   // fall-through
-    case tkEnumerator:   // fall-through
     case tkMacro:        // fall-through
     case tkAnyContainer: // fall-through
     case tkAnyFunction:  // fall-through
