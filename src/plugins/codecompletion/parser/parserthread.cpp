@@ -2356,18 +2356,21 @@ void ParserThread::HandleEnum()
 
     int lineStart = m_Tokenizer.GetLineNumber();
 
+    m_Tokenizer.SetState(tsSkipNone);
+    Token* lastEnumerator;
     while (IS_ALIVE)
     {
         // process enumerators
         token = m_Tokenizer.GetToken();
         wxString peek = m_Tokenizer.PeekToken();
         if (token.IsEmpty() || peek.IsEmpty())
+        {
+            m_Tokenizer.SetState(tsSkipUnWanted);
             return; //eof
+        }
         if (token==ParserConsts::clbrace && level == m_Tokenizer.GetNestingLevel())
             break;
-        // assignments (=xxx) are ignored by the tokenizer,
-        // so we don't have to worry about them here ;)
-        if (peek==ParserConsts::comma || peek==ParserConsts::clbrace || peek==ParserConsts::colon)
+        if (peek==ParserConsts::comma || peek==ParserConsts::clbrace || peek==ParserConsts::colon || peek==ParserConsts::equals)
         {
             // this "if", avoids non-valid enumerators
             // like a comma (if no enumerators follow)
@@ -2378,6 +2381,46 @@ void ParserThread::HandleEnum()
                 m_LastParent = newEnum;
                 Token* enumerator = DoAddToken(tkEnumerator, token, m_Tokenizer.GetLineNumber());
                 enumerator->m_Scope = isEnumClass ? tsPrivate : tsPublic;
+                // parse assignments
+                if (peek==ParserConsts::equals)
+                {
+                    m_Tokenizer.GetToken(); // assignment
+                    peek = m_Tokenizer.PeekToken(); // value
+                    while (!peek.IsEmpty() && ParserConsts::commaclbrace.Find(peek[0]) == wxNOT_FOUND)
+                    {
+                        enumerator->m_Args += peek; // enumerator values are stored in m_Args
+                        m_Tokenizer.GetToken();
+                        peek = m_Tokenizer.PeekToken();
+                    }
+                }
+                // assignment was not stated; parse previous enumerator to infer value
+                if (enumerator->m_Args.IsEmpty())
+                {
+                    if (!lastEnumerator)
+                        enumerator->m_Args = wxT("0"); // first enumerator has value of: 0
+                    else if (!lastEnumerator->m_Args.IsEmpty())
+                    {
+                        long val;
+                        // parse last value as hexadecimal
+                        if (lastEnumerator->m_Args.StartsWith(wxT("0x")))
+                        {
+                            if (lastEnumerator->m_Args.Length() > 2 && lastEnumerator->m_Args.ToLong(&val, 16))
+                            {
+                                ++val; // iterate forwards to next (current) value
+                                // hexadecimal often has leading zeros -> preserve width
+                                wxString width = wxString::Format(wxT("0%d"), lastEnumerator->m_Args.Length());
+                                enumerator->m_Args.Printf(wxT("%#") + width + wxT("x"), (size_t)val);
+                            }
+                        }
+                        // parse last value as decimal
+                        else if (lastEnumerator->m_Args.ToLong(&val))
+                        {
+                            ++val; // iterate forwards to next (current) value
+                            enumerator->m_Args.Printf(wxT("%d"), (int)val);
+                        }
+                    }
+                }
+                lastEnumerator = enumerator;
                 m_LastParent = lastParent;
             }
             if (peek==ParserConsts::colon)
@@ -2392,6 +2435,7 @@ void ParserThread::HandleEnum()
     newEnum->m_ImplLine      = lineNr;
     newEnum->m_ImplLineStart = lineStart;
     newEnum->m_ImplLineEnd   = m_Tokenizer.GetLineNumber();
+    m_Tokenizer.SetState(tsSkipUnWanted);
 //    // skip to ;
 //    SkipToOneOfChars(ParserConsts::semicolon);
 }
