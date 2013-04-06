@@ -289,9 +289,9 @@ void wxBmpComboBox::OnSize( wxSizeEvent& event )
 
     if (!m_labelWin || !m_dropdownButton) return;
 
-	wxSize size = GetClientSize();
+    wxSize size = GetClientSize();
     //wxPrintf(wxT("ComboOnSize %d %d\n"), size.x, size.y);
-	int width = size.x - ((wxWindow*)m_dropdownButton)->GetSize().x;
+    int width = size.x - ((wxWindow*)m_dropdownButton)->GetSize().x;
     m_labelWin->SetSize(0, 0, width, size.y);
 }
 
@@ -307,7 +307,7 @@ void wxBmpComboBox::DoSetSize(int x, int y, int width, int height, int sizeFlags
 */
     DropDownBase::DoSetSize(x, y, width, height, sizeFlags);
 /*
-	width = width - ((wxWindow*)m_dropdownButton)->GetSize().x;
+    width = width - ((wxWindow*)m_dropdownButton)->GetSize().x;
     m_labelWin->SetSize(0, 0, width, height);
 */
 }

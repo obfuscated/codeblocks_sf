@@ -293,10 +293,10 @@ bool DropDownBase::Create( wxWindow* parent, wxWindowID id,
         s_dropdownBitmap = wxBitmap(down_arrow_xpm_data);
 
     m_dropdownButton = new wxCustomButton(this, IDD_DROPDOWN_BUTTON,
-		                                  s_dropdownBitmap,
-										  wxDefaultPosition,
-										  wxSize(DROPDOWN_DROP_WIDTH, wxDefaultCoord),
-										  wxCUSTBUT_BUTTON);
+                                          s_dropdownBitmap,
+                                          wxDefaultPosition,
+                                          wxSize(DROPDOWN_DROP_WIDTH, wxDefaultCoord),
+                                          wxCUSTBUT_BUTTON);
 
     return true;
 }
@@ -307,10 +307,10 @@ void DropDownBase::OnSize( wxSizeEvent& event )
 /*
     if (!m_dropdownButton) return;
 
-	wxSize size = GetClientSize();
+    wxSize size = GetClientSize();
     wxPrintf(wxT("DropDownBase %d %d\n"), size.x, size.y);
 
-	wxSize dropSize = m_dropdownButton->GetSize();
+    wxSize dropSize = m_dropdownButton->GetSize();
     m_dropdownButton->SetSize(size.x-dropSize.x, 0, dropSize.x, size.y);
 */
 }
@@ -326,7 +326,7 @@ void DropDownBase::DoSetSize(int x, int y, int width, int height, int sizeFlags)
 
     wxControl::DoSetSize(x, y, width, height, sizeFlags);
 
-	wxSize dropSize = m_dropdownButton->GetSize();
+    wxSize dropSize = m_dropdownButton->GetSize();
     m_dropdownButton->SetSize(width-dropSize.x, 0, dropSize.x, height);
 }
 
@@ -348,7 +348,7 @@ bool DropDownBase::ShowPopup()
     int height = DoGetBestDropHeight(displayRect.GetBottom() - y);
     if (height < 1) return false;
 
-	m_popupWin = new DropDownPopup(this);
+    m_popupWin = new DropDownPopup(this);
 
     m_popupWin->SetSize(x, y, width, height);
     if (m_popupWin->GetChild())

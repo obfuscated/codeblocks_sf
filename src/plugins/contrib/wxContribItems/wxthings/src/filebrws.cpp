@@ -103,12 +103,14 @@ enum
 int wxFileBrowser::FBStyleToLCStyle(int s) const // wxFileBrowserStyles_Type to wxLC_XXX
 {
     return
-        (s)&wxFILEBROWSER_TREE       ? wxLC_REPORT :
-        (s)&wxFILEBROWSER_LIST       ? wxLC_LIST :
-        (s)&wxFILEBROWSER_DETAILS    ? wxLC_REPORT :
-        (s)&wxFILEBROWSER_SMALL_ICON ? wxLC_SMALL_ICON :
-        (s)&wxFILEBROWSER_LARGE_ICON ? wxLC_ICON :
-        (s)&wxFILEBROWSER_PREVIEW    ? wxLC_ICON : wxLC_REPORT;
+       ((s)&wxFILEBROWSER_SINGLE_SELECTION ? wxLC_SINGLE_SEL  : 0 ) |
+       ((s)&wxFILEBROWSER_RENAME_INPLACE   ? wxLC_EDIT_LABELS : 0 ) |
+       ((s)&wxFILEBROWSER_TREE             ? wxLC_REPORT      :
+        (s)&wxFILEBROWSER_LIST             ? wxLC_LIST        :
+        (s)&wxFILEBROWSER_DETAILS          ? wxLC_REPORT      :
+        (s)&wxFILEBROWSER_SMALL_ICON       ? wxLC_SMALL_ICON  :
+        (s)&wxFILEBROWSER_LARGE_ICON       ? wxLC_ICON        :
+        (s)&wxFILEBROWSER_PREVIEW          ? wxLC_ICON        : wxLC_REPORT);
 }
 int wxFileBrowser::FBStyleToMenuID(int s) const // wxFileBrowserStyles_Type menu id
 {
@@ -792,8 +794,8 @@ END_EVENT_TABLE()
 void wxFileBrowser::Init()
 {
     m_ignore_tree_event = true;  // turned off after Create
-    m_init_filters = 0;
-    m_browser_style = wxFILEBROWSER_LIST;
+    m_init_filters      = 0;
+    m_browser_style     = wxFILEBROWSER_LIST;
 
     m_path_history_index = 0;
 
@@ -811,7 +813,7 @@ void wxFileBrowser::Init()
     m_viewMenu      = NULL;
 
     m_filterComboSelection = 0;
-    m_pathComboSelection = 0;
+    m_pathComboSelection   = 0;
 
     m_show_hidden = false;
 }
@@ -860,8 +862,8 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
     m_treeMenu->Append(ID_wxFILEBROWSER_TREE_MENU_PROPERITES, wxT("P&roperties"));
 
     wxMenu *optionsMenu = new wxMenu(wxEmptyString);
-    optionsMenu->AppendCheckItem(ID_wxFILEBROWSER_SHOW_HIDDEN, wxT("Show Hidden Files"));
-    optionsMenu->AppendCheckItem(ID_wxFILEBROWSER_SHOW_FOLDERS, wxT("Show Folders"));
+    optionsMenu->AppendCheckItem(ID_wxFILEBROWSER_SHOW_HIDDEN,    wxT("Show Hidden Files"));
+    optionsMenu->AppendCheckItem(ID_wxFILEBROWSER_SHOW_FOLDERS,   wxT("Show Folders"));
     optionsMenu->AppendCheckItem(ID_wxFILEBROWSER_SPLIT_VERTICAL, wxT("Split Vertically"));
     m_listMenu->Append(ID_wxFILEBROWSER_LIST_MENU_OPTIONS, wxT("Optio&ns"), optionsMenu);
 
@@ -995,11 +997,11 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
 #if wxCHECK_VERSION(2, 9, 0)
     m_fileCtrl = new wxFileListCtrl(m_splitterWin, wxID_ANY, GetWild(), false,
                                 wxDefaultPosition, wxSize(50,50),
-                                wxNO_BORDER|wxLC_SINGLE_SEL|FBStyleToLCStyle(style));
+                                wxNO_BORDER|wxLC_EDIT_LABELS|FBStyleToLCStyle(style));
 #else
     m_fileCtrl = new wxFileCtrl(m_splitterWin, wxID_ANY, GetWild(), false,
                                 wxDefaultPosition, wxSize(50,50),
-                                wxNO_BORDER|wxLC_SINGLE_SEL|FBStyleToLCStyle(style));
+                                wxNO_BORDER|FBStyleToLCStyle(style));
 #endif // wxCHECK_VERSION(2, 9, 0)
 
     m_fileCtrl->GoToDir(m_path);
@@ -1020,14 +1022,6 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
 wxFileBrowser::~wxFileBrowser()
 {
     m_ignore_tree_event = true;
-
-    // delete all the attached data
-    int n, count = m_filterCombo->GetCount();
-    for ( n = 0; n < count; n++ )
-    {
-        wxString *data = (wxString*)m_filterCombo->GetClientData(n);
-        delete data;
-    }
 
     delete m_listMenu;
     delete m_treeMenu;
@@ -1074,8 +1068,6 @@ void wxFileBrowser::OnSize( wxSizeEvent &event )
         if (GTK_WIDGET_VISIBLE(widget))
             gtk_widget_queue_resize(widget);
     }
-#else
-    void GtkToolbarResizeWindow(wxWindow* , const wxSize& ) {}
 #endif //__WXGTK__
 
 void wxFileBrowser::DoSize()
@@ -1440,9 +1432,9 @@ void wxFileBrowser::UpdateMenu( wxMenu* menu )
 
     // Update options menu ---------------------------
 
-    CheckMenuItem(menu,  ID_wxFILEBROWSER_SHOW_HIDDEN, GetShowHidden());
-    EnableMenuItem(menu, ID_wxFILEBROWSER_SHOW_FOLDERS, !HasBrowserStyle(wxFILEBROWSER_TREE));
-    CheckMenuItem(menu,  ID_wxFILEBROWSER_SHOW_FOLDERS, GetShowFolders());
+    CheckMenuItem(menu,  ID_wxFILEBROWSER_SHOW_HIDDEN,    GetShowHidden());
+    EnableMenuItem(menu, ID_wxFILEBROWSER_SHOW_FOLDERS,  !HasBrowserStyle(wxFILEBROWSER_TREE));
+    CheckMenuItem(menu,  ID_wxFILEBROWSER_SHOW_FOLDERS,   GetShowFolders());
     CheckMenuItem(menu,  ID_wxFILEBROWSER_SPLIT_VERTICAL, GetSplitVertical());
 
     // Update go items ---------------------------
@@ -1611,10 +1603,11 @@ bool wxFileBrowser::SetPath(const wxString &dirname)
     if (!HasBrowserStyle(wxFILEBROWSER_TREE)) // don't care otherwise
     {
 #if defined(__WINDOWS__)
-        if (dirname.IsEmpty())
+        if (dirname.IsEmpty() || (dirname == wxT("\\")))
         {
             wxFileName filename(m_path);
-            m_fileCtrl->GoToDir(filename.GetVolume());
+            wxString volume(filename.GetVolume());
+            m_fileCtrl->GoToDir(volume + wxFileName::GetVolumeSeparator());
             m_fileCtrl->GoToParentDir();
         }
         else
@@ -1869,13 +1862,13 @@ wxArrayFileData wxFileBrowser::GetSelectedListFileData() const
 
 wxFileData wxFileBrowser::CreateFileData(const wxFileName& fileName) const
 {
-    if (fileName.DirExists())
+    if (fileName.FileExists())
+    {
+        return wxFileData(fileName.GetFullPath(), fileName.GetFullName(), wxFileData::is_file, wxFileIconsTable::file);
+    }
+    else if (fileName.DirExists())
     {
         return wxFileData(fileName.GetPath(), fileName.GetName(), wxFileData::is_dir, wxFileIconsTable::folder);
-    }
-    else if (fileName.FileExists())
-    {
-        return wxFileData(fileName.GetPath(), fileName.GetName(), wxFileData::is_file, wxFileIconsTable::file);
     }
 #if defined(__WINDOWS__) || defined(__DOS__) || defined(__WXMAC__) || defined(__OS2__)
     else
@@ -2167,7 +2160,7 @@ void wxFileBrowser::OnListMenu(wxCommandEvent &event)
         case ID_wxFILEBROWSER_LIST_MENU_NEW_FOLDER :
         {
             m_fileCtrl->MakeDir();
-            SetPath(GetPath(true));
+            //SetPath(GetPath(true));
             break;
         }
         case wxID_CUT :
@@ -2264,6 +2257,8 @@ void wxFileBrowser::OnListMenu(wxCommandEvent &event)
                 }
 
                 textCtrl->AppendText(s);
+                textCtrl->SetInsertionPoint(0);
+                textCtrl->ShowPosition(0);
                 frame->Show(true);
 
 /*
@@ -2442,14 +2437,24 @@ bool wxFileBrowser::InsertComboItem(wxComboBox *combo, const wxString &item, int
     int combo_index = combo->FindString(item);
 
     if (combo_index == wxNOT_FOUND)
-        combo->Insert(item, pos, (void*)NULL);
+        combo->Insert(item, pos);
     else if ((combo_index == pos) || (combo_index < pos))
         return true;
     else if (combo_index > pos)
     {
-        wxString *data = (wxString*) combo->GetClientData(combo_index);
-        combo->Delete(combo_index);
-        combo->Insert(item, pos, (void*)data);
+        wxStringClientData* clientData = (wxStringClientData*) combo->GetClientObject(combo_index);
+        if (clientData)
+        {
+            // NOTE: 2.9 has DetachClientObject(int n), we just copy it for simplicity
+            wxStringClientData* clientData2 = new wxStringClientData(clientData->GetData());
+            combo->Delete(combo_index); // clientData is deleted here
+            combo->Insert(item, pos, clientData2);
+        }
+        else
+        {
+            combo->Delete(combo_index);
+            combo->Insert(item, pos);
+        }
     }
 
     if (combo->GetSelection() != pos)
@@ -2462,10 +2467,12 @@ bool wxFileBrowser::SetFilter( int n )
 {
     wxCHECK_MSG((n>=0) && (n<int(m_filterCombo->GetCount())), false, wxT("Invalid filter item"));
 
+    // Use the client data string if available since the one shown may be "human readable"
     wxString filter = m_filterCombo->GetString(n);
-    wxString *data = (wxString*)m_filterCombo->GetClientData(n);
-    if (data && !data->IsEmpty())
-        filter += wxT("|") + (*data);
+    wxStringClientData *clientData = (wxStringClientData*)m_filterCombo->GetClientObject(n);
+
+    if (clientData && !clientData->GetData().IsEmpty())
+        filter += wxT("|") + clientData->GetData();
     else
         filter += wxT("|") + filter;
 
@@ -2516,16 +2523,8 @@ bool wxFileBrowser::SetFilters(const wxString &filter, int select)
     m_filter = filterNames[select] + wxT("|") + filterArray[select];
     m_init_filters = filterArray.GetCount();
 
-    // delete old filters if any
-    int n, count = m_filterCombo->GetCount();
-    for ( n = 0; n < count; n++ )
-    {
-        wxString *data = (wxString*)m_filterCombo->GetClientData(n);
-        delete data;
-    }
-
-    for ( n = 0; n < m_init_filters; n++ )
-        m_filterCombo->Append(filterNames[n], (void*)new wxString(filterArray[n]));
+    for ( int n = 0; n < m_init_filters; n++ )
+        m_filterCombo->Append(filterNames[n], new wxStringClientData(filterArray[n]));
 
     m_filterCombo->SetSelection(select);
     m_filterComboSelection = select;
@@ -2550,16 +2549,17 @@ void wxFileBrowser::OnFilterCombo(wxCommandEvent &event)
     m_filterComboSelection = sel;
 
     wxString filter = event.GetString();
-    wxString *data = (wxString*)m_filterCombo->GetClientData(sel);
-    if (data && !data->IsEmpty())
-        filter += wxT("|") + (*data);
+    wxStringClientData *clientData = (wxStringClientData*)m_filterCombo->GetClientObject(sel);
+
+    if (clientData && !clientData->GetData().IsEmpty())
+        filter += wxT("|") + clientData->GetData();
     else
         filter += wxT("|") + filter;
 
     // see OnPathCombo for why it's done this way
     wxCommandEvent setevent( wxEVT_COMMAND_MENU_SELECTED, ID_wxFILEBROWSER_COMBOSETFILTER );
     setevent.SetString(filter);
-    setevent.SetInt(data && !data->IsEmpty() ? sel : -1);
+    setevent.SetInt(clientData && !clientData->GetData().IsEmpty() ? sel : -1);
     GetEventHandler()->AddPendingEvent(setevent);
 }
 void wxFileBrowser::OnSetFilter( wxCommandEvent &event )
@@ -2622,7 +2622,7 @@ void wxFileBrowser::LoadConfig(wxConfigBase& config, bool paths, bool filters,
             if (!value.IsEmpty())
             {
                 if (m_filterCombo->FindString(value) == wxNOT_FOUND)
-                    m_filterCombo->Append(value, (void*)NULL);
+                    m_filterCombo->Append(value); // no client data needed
             }
             n++;
             key = configPath + wxString::Format(wxT("/filter%d"), 1+n);
@@ -2656,8 +2656,8 @@ void wxFileBrowser::SaveConfig(wxConfigBase& config, int n_paths, int n_filters,
         for (n = 0; (n < count) && (item < n_filters); n++)
         {
             // don't save the initial filters since they are programmed in
-            wxString *data = (wxString*)m_filterCombo->GetClientData(n);
-            if (data) continue;
+            wxStringClientData *clientData = (wxStringClientData*)m_filterCombo->GetClientObject(n);
+            if (clientData) continue;
 
             value = m_filterCombo->GetString(n);
             if (!value.IsEmpty())

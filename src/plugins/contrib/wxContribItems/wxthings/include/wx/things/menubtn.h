@@ -76,7 +76,7 @@ public:
                   const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = wxDefaultSize,
                   long style = 0,
-				  const wxValidator& val = wxDefaultValidator,
+                  const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
                   : wxControl()
     {
@@ -91,7 +91,7 @@ public:
                   const wxSize& size = wxDefaultSize,
                   int n = 0, const wxString choices[] = (const wxString *) NULL,
                   long style = 0,
-				  const wxValidator& val = wxDefaultValidator,
+                  const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
                   : wxControl()
     {
@@ -107,7 +107,7 @@ public:
                   const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = wxDefaultSize,
                   long style = 0,
-				  const wxValidator& val = wxDefaultValidator,
+                  const wxValidator& val = wxDefaultValidator,
                   const wxString& name = wxT("wxMenuButton"))
                   : wxControl()
     {

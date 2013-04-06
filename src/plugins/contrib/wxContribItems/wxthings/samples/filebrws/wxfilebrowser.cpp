@@ -198,10 +198,10 @@ void MyFrame::OnFileBrowser(wxFileBrowserEvent &event)
 
     wxEventType type = event.GetEventType();
 
-    if (type == wxEVT_FILEBROWSER_FILE_SELECTED) text += wxT(" File Selected\n");
+    if      (type == wxEVT_FILEBROWSER_FILE_SELECTED)  text += wxT(" File Selected\n");
     else if (type == wxEVT_FILEBROWSER_FILE_ACTIVATED) text += wxT(" File Activated\n");
-    else if (type == wxEVT_FILEBROWSER_DIR_SELECTED) text += wxT(" Dir Selected\n");
-    else if (type == wxEVT_FILEBROWSER_DIR_ACTIVATED) text += wxT(" Dir Activated\n");
+    else if (type == wxEVT_FILEBROWSER_DIR_SELECTED)   text += wxT(" Dir Selected\n");
+    else if (type == wxEVT_FILEBROWSER_DIR_ACTIVATED)  text += wxT(" Dir Activated\n");
 
     m_textCtrl->AppendText(text);
     event.Skip();
