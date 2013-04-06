@@ -34,10 +34,12 @@ public:
                      int stateChange, int stateValues,
                      const wxString& fileName );
 
+    virtual ~wxSTEditorEvent() {}
+
     /// Has the state of the editor changed see STE_StateType for different states.
     /// Can OR states together to see if any of them have changed.
     bool HasStateChange(int stateChange) const         { return (GetStateChange() & stateChange) != 0; }
-    bool GetStateValue(STE_StateType stateValue) const { return (GetStateValues() & stateValue) != 0; }
+    bool GetStateValue(STE_StateType stateValue) const { return (GetStateValues() & stateValue)  != 0; }
 
     /// Get the changes of the wxSTEditor::GetState() for the wxEVT_STEDITOR_STATE_CHANGED.
     int  GetStateChange() const          { return GetInt(); }

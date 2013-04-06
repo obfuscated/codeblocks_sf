@@ -32,7 +32,7 @@ wxSTETreeItemData::wxSTETreeItemData(int page_num, wxWindow* win)
 
 wxSTETreeItemData::~wxSTETreeItemData()
 {
-    // The wxTreeCtrl should be the one deleting this.
+    // The wxTreeCtrl should be the one deleting the tree item data.
     if (m_steRefData != NULL)
         m_steRefData->m_treeItemData = NULL;
 }
@@ -62,7 +62,7 @@ bool wxSTEditorTreeCtrl::Create(wxWindow *parent, wxWindowID id,
     imageList->Add(wxArtProvider::GetBitmap(wxART_FOLDER,      wxART_MENU, wxSize(16, 16)));
     imageList->Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_MENU, wxSize(16, 16)));
     imageList->Add(wxArtProvider::GetBitmap(wxART_REPORT_VIEW, wxART_MENU, wxSize(16, 16)));
-    AssignImageList(imageList);
+    AssignImageList(imageList); // the treectrl will delete the list
 
     m_popupMenu = new wxMenu;
     m_popupMenu->Append(ID_STT_FILE_OPEN,  wxGetStockLabelEx(wxID_OPEN), _("Open file"));
@@ -72,10 +72,10 @@ bool wxSTEditorTreeCtrl::Create(wxWindow *parent, wxWindowID id,
     m_popupMenu->Append(ID_STT_EXPAND_ALL,   _("Expand all paths"),   _("Expand all paths"));
     m_popupMenu->Append(ID_STT_COLLAPSE_ALL, _("Collapse all paths"), _("Collapse all paths"));
     m_popupMenu->AppendSeparator();
-    m_popupMenu->AppendRadioItem(ID_STT_SHOW_FILENAME_ONLY,      _("Show only the filename"), _("Show only the filename"));
+    m_popupMenu->AppendRadioItem(ID_STT_SHOW_FILENAME_ONLY,      _("Show only the filename"),       _("Show only the filename"));
     m_popupMenu->AppendRadioItem(ID_STT_SHOW_FILEPATH_ONLY,      _("Show only the full file path"), _("Show only the full file path"));
-    m_popupMenu->AppendRadioItem(ID_STT_SHOW_PATH_THEN_FILENAME, _("Show files grouped by paths"), _("Show files grouped by paths"));
-    m_popupMenu->AppendRadioItem(ID_STT_SHOW_ALL_PATHS,          _("Show all paths"), _("Show all paths"));
+    m_popupMenu->AppendRadioItem(ID_STT_SHOW_PATH_THEN_FILENAME, _("Show files grouped by paths"),  _("Show files grouped by paths"));
+    m_popupMenu->AppendRadioItem(ID_STT_SHOW_ALL_PATHS,          _("Show all paths"),               _("Show all paths"));
 
     m_popupMenu->Check(ID_STT_SHOW_PATH_THEN_FILENAME, true);
 
@@ -255,7 +255,11 @@ void wxSTEditorTreeCtrl::OnNotebookPageChanged(wxNotebookEvent &event)
     if (m_notePageId) SetItemBold(m_notePageId, false);
 
     wxNotebook* notebook = wxDynamicCast(event.GetEventObject(), wxNotebook);
-    wxWindow* page = notebook->GetPage(event.GetSelection());
+    int selection = event.GetSelection();
+    wxWindow* page = NULL;
+    if (notebook && (selection >= 0) && (selection < (int)notebook->GetPageCount()))
+        page = notebook->GetPage(selection);
+
     wxLongToLongHashMap::iterator it = m_windowToSTETreeItemDataMap.find((long)page);
     if (it != m_windowToSTETreeItemDataMap.end())
     {

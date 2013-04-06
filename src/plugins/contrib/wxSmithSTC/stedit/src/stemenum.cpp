@@ -61,7 +61,6 @@ void wxSTEditorMenuManager::InitAcceleratorArray() const
         m_accelEntryArray->Add(wxAcceleratorHelper::GetStockAccelerator(wxID_EXIT));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_ALT,                  WXK_RETURN, ID_STE_PROPERTIES));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 'W',        ID_STN_CLOSE_PAGE));
-        m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL,                 WXK_F4,     ID_STN_CLOSE_PAGE));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'W',        ID_STN_CLOSE_ALL));
         m_accelEntryArray->Add(wxAcceleratorEntry(wxACCEL_CTRL | wxACCEL_SHIFT, 'A',        ID_STN_SAVE_ALL));
     }
@@ -285,9 +284,9 @@ wxMenu* wxSTEditorMenuManager::CreateSplitterPopupMenu(wxMenu *menu_) const
     wxMenu *menu = menu_;
     if (!menu) menu = new wxMenu;
 
-    menu->AppendRadioItem(ID_STS_UNSPLIT,     _("&Unsplit editor"), _("Unsplit the editor"));
+    menu->AppendRadioItem(ID_STS_UNSPLIT,     _("&Unsplit editor"),            _("Unsplit the editor"));
     menu->AppendRadioItem(ID_STS_SPLIT_HORIZ, _("Split editor &horizontally"), _("Split editor horizontally"));
-    menu->AppendRadioItem(ID_STS_SPLIT_VERT,  _("Split editor &vertically"), _("Split editor vertically"));
+    menu->AppendRadioItem(ID_STS_SPLIT_VERT,  _("Split editor &vertically"),   _("Split editor vertically"));
 
     return menu;
 }
@@ -308,14 +307,14 @@ wxMenu* wxSTEditorMenuManager::CreateNotebookPopupMenu(wxMenu *menu_) const
     menu->Append(ID_STN_WIN_PREVIOUS, _("Previous page"));
     menu->Append(ID_STN_WIN_NEXT,     _("Next page"));
 
-    menu->Append(ID_STN_MENU_GOTO,  _("Goto page"), gotoMenu);
+    menu->Append(ID_STN_MENU_GOTO,    _("Goto page"), gotoMenu);
     menu->AppendSeparator();
     menu->Append(ID_STN_CLOSE_PAGE,       _("Close current page"));
     menu->Append(ID_STN_CLOSE_ALL,        _("Close all pages..."));
     menu->Append(ID_STN_CLOSE_ALL_OTHERS, _("Close all other pages"));
     menu->Append(ID_STN_MENU_CLOSE,       _("Close page"), closeMenu);
     menu->AppendSeparator();
-    menu->Append(ID_STN_WINDOWS,    _("&Windows..."), _("Manage opened windows"));
+    menu->Append(ID_STN_WINDOWS,          _("&Windows..."), _("Manage opened windows"));
 
     return menu;
 }

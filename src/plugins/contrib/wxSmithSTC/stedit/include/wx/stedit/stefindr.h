@@ -68,6 +68,44 @@ WXDLLIMPEXP_STEDIT void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
 
 
 //-----------------------------------------------------------------------------
+/// wxSTEditorFoundStringData 
+//-----------------------------------------------------------------------------
+
+class WXDLLIMPEXP_STEDIT wxSTEditorFoundStringData : public wxStringClientData
+{
+public:
+    wxSTEditorFoundStringData();
+    wxSTEditorFoundStringData(const wxFileName& fileName,
+                              int line_number,    int line_start_pos,
+                              int file_start_pos, int string_length,
+                              const wxString& lineText);
+
+    virtual ~wxSTEditorFoundStringData() {}
+
+    bool IsOk() const { return GetLineString().Length() > 0; }
+
+    const wxString& GetLineString() const    { return GetData(); }
+    void SetLineString(const wxString& text) { SetData(text); }
+
+    const wxFileName& GetFileName() const { return m_fileName; }
+    int GetLineNumber()             const { return m_line_number; }
+    int GetLineStartPosition()      const { return m_line_start_pos; }
+    int GetFileStartPosition()      const { return m_file_start_pos; }
+    int GetStringLength()           const { return m_string_length; }
+
+    wxString ToString() const;
+    bool FromString(const wxString& data);
+
+    wxFileName m_fileName;          ///< Name of the file the string was found in.
+    int        m_line_number;       ///< Line number of the file the string is on.
+    int        m_line_start_pos;    ///< Starting position of the line of the found string in the file.
+    int        m_file_start_pos;    ///< Starting position of the found string in the file.
+    int        m_string_length;     ///< Length of the found string.
+};
+
+WX_DECLARE_OBJARRAY_WITH_DECL(wxSTEditorFoundStringData, wxArraySTEditorFoundStringData, class WXDLLIMPEXP_STEDIT);
+
+//-----------------------------------------------------------------------------
 /// STEFindReplaceFlags Flags for wxSTEditorFindReplaceData find/replace behavior.
 //-----------------------------------------------------------------------------
 
@@ -157,22 +195,11 @@ public:
 
     /// Get the find all strings, set from a previous call to find all.
     /// Format is ("%ld|%s|%d|%s", &editor, filename, line#, line text).
-    const wxArrayString& GetFindAllStrings() const { return m_findAllStrings; }
-          wxArrayString& GetFindAllStrings()       { return m_findAllStrings; }
+    const wxArraySTEditorFoundStringData& GetFoundStringArray() const { return m_foundStringArray; }
+          wxArraySTEditorFoundStringData& GetFoundStringArray()       { return m_foundStringArray; }
 
-    /// Create a "find all" string with the information coded into it.
-    static wxString CreateFindAllString(const wxString& fileName,
-                                        int line_number,      int line_start_pos,
-                                        int string_start_pos, int string_length,
-                                        const wxString& lineText);
-    /// Parse a "find all" string with the information coded into it, returning success.
-    static bool ParseFindAllString(const wxString& findAllString,
-                                   wxString& fileName,
-                                   int& line_number,      int& line_start_pos,
-                                   int& string_start_pos, int& string_length,
-                                   wxString& lineText);
-    /// Goto and select the text in the "find all" string created by CreateFindAllString().
-    static bool GotoFindAllString(const wxString& findAllString,
+    /// Goto and select the text in the found string data.
+    static bool GotoFindAllString(const wxSTEditorFoundStringData& foundStringData,
                                   wxSTEditor* editor);
 
     /// Compare the strings with flags = -1 for internal flags or use own flags.
@@ -209,7 +236,7 @@ protected:
     bool          m_loaded_config;
     wxArrayString m_findStrings;
     wxArrayString m_replaceStrings;
-    wxArrayString m_findAllStrings;
+    wxArraySTEditorFoundStringData m_foundStringArray;
     wxSize        m_dialogSize;
 };
 

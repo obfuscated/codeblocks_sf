@@ -17,6 +17,9 @@
 #include "stedlgs_wdr.h"
 #include "wxext.h"
 
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY( wxArraySTEditorFoundStringData );
+
 //-----------------------------------------------------------------------------
 // Static functions for prepending strings to wxArrayString and wxComboBoxes
 //-----------------------------------------------------------------------------
@@ -132,6 +135,78 @@ void wxSTEUpdateSearchCtrl(wxSearchCtrl* searchCtrl,
     }
 }
 
+//-----------------------------------------------------------------------------
+// wxSTEditorFoundStringData
+//-----------------------------------------------------------------------------
+
+wxSTEditorFoundStringData::wxSTEditorFoundStringData()
+                          :wxStringClientData(),
+                           m_line_number(0),    m_line_start_pos(0),
+                           m_file_start_pos(0), m_string_length(0)
+{
+}
+
+wxSTEditorFoundStringData::wxSTEditorFoundStringData(const wxFileName& fileName,
+                                                     int line_number,    int line_start_pos,
+                                                     int file_start_pos, int string_length,
+                                                     const wxString& text)
+                          :wxStringClientData(text),
+                           m_fileName(fileName),
+                           m_line_number(line_number),       m_line_start_pos(line_start_pos),
+                           m_file_start_pos(file_start_pos), m_string_length(string_length)
+{
+}
+
+wxString wxSTEditorFoundStringData::ToString() const
+{
+    return wxString::Format(wxT("%s|%d|%d|%d|%d>"),
+                            m_fileName.GetFullPath().wx_str(),
+                            m_line_number, m_line_start_pos,
+                            m_file_start_pos, m_string_length) + GetLineString();
+}
+
+bool wxSTEditorFoundStringData::FromString(const wxString& findAllString)
+{
+    wxString s(findAllString);
+    long value = 0;
+
+    m_fileName = s.BeforeFirst(wxT('|'));
+    s = s.AfterFirst(wxT('|'));
+
+    if (s.BeforeFirst(wxT('|')).ToLong(&value))
+    {
+        m_line_number = (int)value;
+        s = s.AfterFirst(wxT('|'));
+    }
+    else
+        return false;
+
+    if (s.BeforeFirst(wxT('|')).ToLong(&value))
+    {
+        m_line_start_pos = (int)value;
+        s = s.AfterFirst(wxT('|'));
+    }
+    else
+        return false;
+
+    if (s.BeforeFirst(wxT('|')).ToLong(&value))
+    {
+        m_file_start_pos = (int)value;
+        s = s.AfterFirst(wxT('|'));
+    }
+    else
+        return false;
+
+    if (s.BeforeFirst(wxT('>')).ToLong(&value))
+    {
+        m_string_length = (int)value;
+        SetLineString(s.AfterFirst(wxT('>')));
+    }
+    else
+        return false;
+
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 // wxSTEditorFindReplaceData
@@ -174,96 +249,19 @@ int wxSTEditorFindReplaceData::ScintillaToSTEFindFlags(int sci_flags)
 }
 
 // static
-wxString wxSTEditorFindReplaceData::CreateFindAllString(const wxString& fileName,
-                                                        int line_number,      int line_start_pos,
-                                                        int string_start_pos, int string_length,
-                                                        const wxString& lineText)
-{
-    return wxString::Format(wxT("%s|%d|%d|%d|%d>"),
-                                fileName.wx_str(),
-                                line_number, line_start_pos,
-                                string_start_pos, string_length) + lineText;
-}
-
-// static
-bool wxSTEditorFindReplaceData::ParseFindAllString(const wxString& findAllString,
-                                                    wxString& fileName,
-                                                    int& line_number_,      int& line_start_pos_,
-                                                    int& string_start_pos_, int& string_length_,
-                                                    wxString& lineText)
-{
-    wxString s(findAllString);
-    long line_number      = 0;
-    long line_start_pos   = 0;
-    long string_start_pos = 0;
-    long string_length    = 0;
-
-    fileName = s.BeforeFirst(wxT('|'));
-    s = s.AfterFirst(wxT('|'));
-
-    if (s.BeforeFirst(wxT('|')).ToLong(&line_number))
-    {
-        line_number_ = (int)line_number;
-        s = s.AfterFirst(wxT('|'));
-    }
-    else
-        return false;
-
-    if (s.BeforeFirst(wxT('|')).ToLong(&line_start_pos))
-    {
-        line_start_pos_ = (int)line_start_pos;
-        s = s.AfterFirst(wxT('|'));
-    }
-    else
-        return false;
-
-    if (s.BeforeFirst(wxT('|')).ToLong(&string_start_pos))
-    {
-        string_start_pos_ = (int)string_start_pos;
-        s = s.AfterFirst(wxT('|'));
-    }
-    else
-        return false;
-
-    if (s.BeforeFirst(wxT('>')).ToLong(&string_length))
-    {
-        string_length_ = (int)string_length;
-        s = s.AfterFirst(wxT('>'));
-    }
-    else
-        return false;
-
-    lineText = s;
-
-    return true;
-}
-
-// static
-bool wxSTEditorFindReplaceData::GotoFindAllString(const wxString& findAllString,
+bool wxSTEditorFindReplaceData::GotoFindAllString(const wxSTEditorFoundStringData& foundStringData,
                                                   wxSTEditor* editor)
 {
     wxCHECK_MSG(editor, false, wxT("Invalid wxSTEditor to goto line in."));
 
-    wxString fileName;
-    int line_number      = 0;
-    int line_start_pos   = 0;
-    int string_start_pos = 0;
-    int string_length    = 0;
-    wxString lineText;
-
-    bool ok = wxSTEditorFindReplaceData::ParseFindAllString(findAllString,
-                                                            fileName,
-                                                            line_number, line_start_pos,
-                                                            string_start_pos, string_length,
-                                                            lineText);
-
     // sanity check, maybe just go to the end if the doc if now shorter?
-    if (ok && (wxFileName(fileName) == editor->GetFileName()))
+    if (foundStringData.GetFileName() == editor->GetFileName())
     {
-        if (string_start_pos+string_length <= editor->GetLength())
+        if (foundStringData.GetFileStartPosition()+foundStringData.GetStringLength() <= editor->GetLength())
         {
-            editor->GotoPos(string_start_pos);
-            editor->SetSelection(string_start_pos, string_start_pos+string_length);
+            editor->GotoPos(foundStringData.GetFileStartPosition());
+            editor->SetSelection(foundStringData.GetFileStartPosition(), 
+                                 foundStringData.GetFileStartPosition()+foundStringData.GetStringLength());
         }
         else
             editor->GotoPos(editor->GetLength()); // move the cursor, hopefully they'll remember that they changed the file.
@@ -376,8 +374,8 @@ void wxSTEditorFindResultsEditor::SetResults(const wxSTEditorFindReplaceData& fi
 {
     m_findReplaceData = findReplaceData;
 
-    const wxArrayString& findAllStrings = m_findReplaceData.GetFindAllStrings();
-    size_t n, count = findAllStrings.GetCount();
+    const wxArraySTEditorFoundStringData& foundStringArray = m_findReplaceData.GetFoundStringArray();
+    size_t n, count = foundStringArray.GetCount();
 
     m_lineArrayMap.Clear();
     ClearAll();
@@ -397,40 +395,27 @@ void wxSTEditorFindResultsEditor::SetResults(const wxSTEditorFindReplaceData& fi
     wxSTEditorStyles::GetGlobalEditorStyles().SetEditorStyle( 3, STE_STYLE_STRING, this, false);
     wxSTEditorStyles::GetGlobalEditorStyles().SetEditorStyle( 4, STE_STYLE_NUMBER, this, false);
 
-    wxString fileName;
-    int line_number      = 0;
-    int line_start_pos   = 0;
-    int string_start_pos = 0;
-    int string_length    = 0;
-    wxString lineText;
-
     int pos = 0;
-    wxString lastFileName;
+    wxFileName lastFileName;
     wxString str;
 
     SetReadOnly(false);
 
     for (n = 0; n < count; n++)
     {
-        bool parsed = wxSTEditorFindReplaceData::ParseFindAllString(findAllStrings.Item(n),
-                                                                    fileName,
-                                                                    line_number, line_start_pos,
-                                                                    string_start_pos, string_length,
-                                                                    lineText);
-        if (!parsed)
-            continue;
-
-        if (fileName != lastFileName)
+        if (foundStringArray[n].GetFileName() != lastFileName)
         {
-            lastFileName = fileName;
+            lastFileName = foundStringArray[n].GetFileName();
 
             pos = GetLength();
             SetFoldLevel(LineFromPosition(pos), 0);
 
+            wxString fileNameString(foundStringArray[n].GetFileName().GetFullPath());
+
             m_lineArrayMap.Add(-1);
-            AppendText(fileName + wxT("\n"));
+            AppendText(fileNameString + wxT("\n"));
             StartStyling(pos, 31);
-            SetStyling(fileName.Length(), 3);
+            SetStyling(fileNameString.Length(), 3);
         }
 
         m_lineArrayMap.Add(n);
@@ -438,18 +423,17 @@ void wxSTEditorFindResultsEditor::SetResults(const wxSTEditorFindReplaceData& fi
         pos = GetLength();
         SetFoldLevel(LineFromPosition(pos), 1);
 
-        wxString lineString(wxString::Format(wxT("%5d"), line_number));
+        wxString lineString(wxString::Format(wxT("%5d"), foundStringArray[n].GetLineNumber()+1));
         AppendText(lineString);
         StartStyling(pos, 31);
         SetStyling(lineString.Length(), 4);
 
         pos = GetLength();
-        AppendText(wxT(" : ") + lineText);
+        AppendText(wxT(" : ") + foundStringArray[n].GetLineString());
 
-        SetIndicator(pos + 3 + (string_start_pos-line_start_pos),
-                     string_length,
+        SetIndicator(pos + 3 + (foundStringArray[n].GetFileStartPosition()-foundStringArray[n].GetLineStartPosition()),
+                     foundStringArray[n].GetStringLength(),
                      wxSTC_INDIC2_MASK);
-
     }
 
     SetReadOnly(true);
@@ -496,7 +480,7 @@ void wxSTEditorFindResultsEditor::OnMarginClick( wxStyledTextEvent &event )
 
     wxFindDialogEvent findEvent(wxEVT_STEFIND_GOTO, GetId());
     findEvent.SetEventObject(this);
-    findEvent.SetFindString(m_findReplaceData.GetFindAllStrings()[findall_index]);
+    findEvent.SetFindString(m_findReplaceData.GetFoundStringArray()[findall_index].ToString());
     findEvent.SetFlags(m_findReplaceData.GetFlags());
     findEvent.SetExtraLong(findall_index);
     //Send(findEvent);
@@ -877,7 +861,7 @@ void wxSTEditorFindReplacePanel::Send(wxFindDialogEvent& event)
         ((event.GetEventType() == wxEVT_COMMAND_FIND) ||
          (event.GetEventType() == wxEVT_COMMAND_FIND_NEXT)))
     {
-        m_findReplaceData->GetFindAllStrings().Clear();
+        m_findReplaceData->GetFoundStringArray().Clear();
         resultsEditor->SetResults(*m_findReplaceData);
     }
 

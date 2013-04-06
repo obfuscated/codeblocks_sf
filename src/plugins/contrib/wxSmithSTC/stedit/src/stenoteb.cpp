@@ -1169,6 +1169,30 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
     wxSTERecursionGuard guard(m_rGuard_OnFindDialog);
     if (guard.IsInside()) return;
 
+    wxEventType eventType = event.GetEventType();
+    wxString findString   = event.GetFindString();
+    long flags            = event.GetFlags();
+
+    // For this event we only go to the previously found location.
+    if (eventType == wxEVT_STEFIND_GOTO)
+    {
+        wxSTEditorFoundStringData foundStringData;
+        bool ok = foundStringData.FromString(event.GetString());
+
+        int page = wxNOT_FOUND;
+
+        if (ok)
+            page = FindEditorPageByFileName(foundStringData.GetFileName());
+
+        if (page != wxNOT_FOUND)
+        {
+            SetSelection(page);
+            GetEditor(page)->HandleFindDialogEvent(event);
+        }
+
+        return;
+    }
+
     // currently opened page is where the search starts
     wxSTEditor *editor = GetEditor();
 
@@ -1181,10 +1205,6 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
         editor->HandleFindDialogEvent(event);
         return;
     }
-
-    wxEventType eventType = event.GetEventType();
-    wxString findString   = event.GetFindString();
-    long flags            = event.GetFlags();
 
     editor->SetFindString(findString, true);
     editor->SetFindFlags(flags, true);
@@ -1202,35 +1222,7 @@ void wxSTEditorNotebook::OnFindDialog(wxFindDialogEvent &event)
                 pos -= (STE_TextPos)findString.Length() + 1; // doesn't matter if it matches or not, skip it
     }
 
-
-    if (eventType == wxEVT_STEFIND_GOTO)
-    {
-        wxString findAllString(event.GetString());
-
-        wxString fileName;
-        int line_number      = 0;
-        int line_start_pos   = 0;
-        int string_start_pos = 0;
-        int string_length    = 0;
-        wxString lineText;
-
-        bool ok = wxSTEditorFindReplaceData::ParseFindAllString(findAllString,
-                                                                fileName,
-                                                                line_number, line_start_pos,
-                                                                string_start_pos, string_length,
-                                                                lineText);
-        int page = wxNOT_FOUND;
-
-        if (ok)
-            page = FindEditorPageByFileName(fileName);
-
-        if (page != wxNOT_FOUND)
-        {
-            SetSelection(page);
-            GetEditor(page)->HandleFindDialogEvent(event);
-        }
-    }
-    else if ((eventType == wxEVT_COMMAND_FIND) || (eventType == wxEVT_COMMAND_FIND_NEXT))
+    if ((eventType == wxEVT_COMMAND_FIND) || (eventType == wxEVT_COMMAND_FIND_NEXT))
     {
         if (STE_HASBIT(flags, STE_FR_FINDALL|STE_FR_BOOKMARKALL))
         {
