@@ -16,8 +16,9 @@ class wxsLed : public wxsWidget
         void      OnEnumWidgetProperties(long Flags);
 
         wxsColourData	m_Disable;
-        wxsColourData	m_On;
-        wxsColourData	m_Off;
+        wxsColourData	m_EnableOn;
+        wxsColourData	m_EnableOff;
+        bool m_State;
 
     private:
 };

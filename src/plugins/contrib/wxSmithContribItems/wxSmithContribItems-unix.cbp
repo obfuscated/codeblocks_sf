@@ -133,8 +133,8 @@
 		<Unit filename="wxgbsizer/wxsGridBagSizer.h" />
 		<Unit filename="wximagebutton/wxImageButton16.xpm" />
 		<Unit filename="wximagebutton/wxImageButton32.xpm" />
-		<Unit filename="wximagebutton/wxsimagebutton.cpp" />
-		<Unit filename="wximagebutton/wxsimagebutton.h" />
+		<Unit filename="wximagebutton/wxsImageButton.cpp" />
+		<Unit filename="wximagebutton/wxsImageButton.h" />
 		<Unit filename="wximagepanel/wxImagePanel16.xpm" />
 		<Unit filename="wximagepanel/wxImagePanel32.xpm" />
 		<Unit filename="wximagepanel/wxsimagepanel.cpp" />
@@ -147,6 +147,8 @@
 		<Unit filename="wxled/images/wxLedPanel32.xpm" />
 		<Unit filename="wxled/images/wxled16.xpm" />
 		<Unit filename="wxled/images/wxled32.xpm" />
+		<Unit filename="wxled/images/wxstateled16.xpm" />
+		<Unit filename="wxled/images/wxstateled32.xpm" />
 		<Unit filename="wxled/wxsLcdWindow.cpp" />
 		<Unit filename="wxled/wxsLcdWindow.h" />
 		<Unit filename="wxled/wxsLed.cpp" />
@@ -155,6 +157,8 @@
 		<Unit filename="wxled/wxsLedNumber.h" />
 		<Unit filename="wxled/wxsLedPanel.cpp" />
 		<Unit filename="wxled/wxsLedPanel.h" />
+		<Unit filename="wxled/wxsStateLed.cpp" />
+		<Unit filename="wxled/wxsStateLed.h" />
 		<Unit filename="wxspeedbutton/SpeedButton16.xpm" />
 		<Unit filename="wxspeedbutton/SpeedButton32.xpm" />
 		<Unit filename="wxspeedbutton/wxsSpeedButton.cpp" />
