@@ -2357,7 +2357,8 @@ void ParserThread::HandleEnum()
     int lineStart = m_Tokenizer.GetLineNumber();
 
     m_Tokenizer.SetState(tsSkipNone);
-    Token* lastEnumerator;
+    // make sure nullpointer check will work to avoid segfault !!
+    Token* lastEnumerator = nullptr;
     while (IS_ALIVE)
     {
         // process enumerators
