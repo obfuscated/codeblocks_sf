@@ -170,4 +170,4 @@ int AnnoyingDialog::ShowModal()
         return defRet;
     PlaceWindow(this);
     return wxScrollingDialog::ShowModal();
-};
+}

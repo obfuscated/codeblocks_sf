@@ -28,7 +28,7 @@ public:
         pttSearchText,
         pttClass,
         pttNamespace,
-        pttFunction,
+        pttFunction
     };
 
     /** the delimiter separating two Parser Component, See ParserComponent struct for more details */

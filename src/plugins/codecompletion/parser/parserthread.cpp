@@ -177,7 +177,7 @@ namespace ParserConsts
     const wxString kw_protected    (_T("protected"));
     // length: 13
     const wxString kw_attribute    (_T("__attribute__"));
-};
+}
 
 ParserThread::ParserThread(ParserBase*          parent,
                            const wxString&      bufferOrFilename,

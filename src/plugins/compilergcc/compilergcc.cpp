@@ -83,7 +83,7 @@ namespace ScriptBindings
     {
         Manager::Get()->GetLogManager()->Log(msg, gBuildLogId);
     }
-};
+}
 
 const int idBuildLog = wxNewId();
 

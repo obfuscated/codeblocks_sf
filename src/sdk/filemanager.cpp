@@ -29,25 +29,25 @@ LoaderBase::~LoaderBase()
 {
     WaitReady();
     delete[] data;
-};
+}
 
 bool LoaderBase::Sync()
 {
     WaitReady();
     return data;
-};
+}
 
 char* LoaderBase::GetData()
 {
     WaitReady();
     return data;
-};
+}
 
 size_t LoaderBase::GetLength()
 {
     WaitReady();
     return len;
-};
+}
 
 // ***** class: FileLoader *****
 void FileLoader::operator()()

@@ -15,6 +15,6 @@ namespace wxCrc32
 {
     DLLIMPORT wxUint32 FromFile(const wxString& filename);
     DLLIMPORT wxUint32 FromString(const wxString& text);
-};
+}
 
 #endif // CRC32_H

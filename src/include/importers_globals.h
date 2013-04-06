@@ -34,6 +34,6 @@ namespace ImportersGlobals
     extern DLLIMPORT bool UseDefaultCompiler;
     // ask which targets to import?
     extern DLLIMPORT bool ImportAllTargets;
-};
+}
 
 #endif // IMPORTERS_GLOBALS_H

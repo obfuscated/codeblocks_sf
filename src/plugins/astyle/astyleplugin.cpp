@@ -342,6 +342,7 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
             break;
 
         case wxSCI_EOL_LF:
+        default:
             eolChars = _T("\n");
             break;
     }

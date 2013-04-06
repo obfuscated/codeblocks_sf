@@ -21,7 +21,7 @@ namespace BlkAllc
 
     const bool enable_global_debug = false;
     const bool verbose = false;
-};
+}
 
 
 template <class T, unsigned int pool_size, const bool debug>

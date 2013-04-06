@@ -102,6 +102,6 @@ namespace SqPlus
         operator ScriptVarType() { return ScriptVarType(TypeID); }
     };
 #endif
-};
+}
 
 #endif // SC_BASE_TYPES_H

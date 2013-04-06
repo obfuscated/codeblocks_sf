@@ -16,7 +16,7 @@
     #include "macrosmanager.h"
 #endif
 
-namespace { static const bool case_sensitive = platform::windows ? false : true; };
+namespace { static const bool case_sensitive = platform::windows ? false : true; }
 
 CompileOptionsBase::CompileOptionsBase()
     : m_Platform(spAll),

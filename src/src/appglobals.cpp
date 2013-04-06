@@ -70,4 +70,4 @@ namespace appglobals
                                         + AppWXAnsiUnicode + wxT(")") + bit_type );
 
     const wxString DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
-};
+}

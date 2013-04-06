@@ -66,7 +66,7 @@
 #endif
 
 #ifndef __WXMAC__
-inline wxString GetResourcesDir(){ return wxEmptyString; };
+inline wxString GetResourcesDir(){ return wxEmptyString; }
 #endif
 
 namespace
@@ -261,7 +261,7 @@ class Splash
     private:
         cbSplashScreen* m_pSplash;
 };
-}; // namespace
+} // namespace
 
 IMPLEMENT_APP(CodeBlocksApp) // TODO: This gives a "redundant declaration" warning, though I think it's false. Dig through macro and check.
 

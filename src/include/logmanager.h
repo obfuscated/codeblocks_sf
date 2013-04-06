@@ -27,7 +27,7 @@
         va_end(arg_list);
 
         return ::temp_string;
-    };
+    }
 //} // namespace cb
 
 

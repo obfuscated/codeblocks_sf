@@ -9,6 +9,6 @@
 namespace ScriptBindings
 {
     void RegisterBindings();
-};
+}
 
 #endif // SCRIPTBINDINGS_H

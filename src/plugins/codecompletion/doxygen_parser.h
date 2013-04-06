@@ -66,7 +66,7 @@ namespace Doxygen
         RANGE_PARAGRAPH,
         RANGE_BLOCK,
         RANGE_LINE,
-        RANGE_WORD,
+        RANGE_WORD
     };
 
 
@@ -184,7 +184,7 @@ public:
         cmdSearchAll,       // args: token name
         cmdOpenDecl,        // args: token index
         cmdOpenImpl,        // args: token index
-        cmdClose,           // args: -----
+        cmdClose            // args: -----
     };
 
     //helper functions:

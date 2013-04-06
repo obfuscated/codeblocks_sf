@@ -94,6 +94,6 @@ namespace EditorHooks
         private:
             cbSmartIndentPlugin* m_plugin;
     };
-};
+}
 
 #endif // EDITOR_HOOKS_H

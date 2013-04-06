@@ -61,7 +61,7 @@ static void CaptureScriptOutput(HSQUIRRELVM /*v*/, const SQChar * s, ...)
     scvsprintf(temp,s,vl);
     ::capture.append(cbC2U(temp));
     va_end(vl);
-};
+}
 
 BEGIN_EVENT_TABLE(ScriptingManager, wxEvtHandler)
 //

@@ -34,7 +34,7 @@ namespace
     long idClear                   = wxNewId();
 
     long idNB                      = wxNewId();
-};
+}
 
 BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
     EVT_MENU(idNB_TabTop,    InfoPane::OnTabPosition)

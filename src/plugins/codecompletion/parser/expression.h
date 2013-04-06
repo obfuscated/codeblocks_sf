@@ -36,7 +36,7 @@ public:
         LTOrEqual,      // <=
         LShift,         // <<
         RShift,         // >>
-        Numeric,        // Numeric
+        Numeric         // Numeric
     };
 
     ExpressionNode();

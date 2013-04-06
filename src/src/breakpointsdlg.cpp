@@ -46,7 +46,7 @@ namespace
     const long idEnable = wxNewId();
     const long idDisable = wxNewId();
     const long idShowTemp = wxNewId();
-};
+}
 
 BEGIN_EVENT_TABLE(BreakpointsDlg, wxPanel)
     EVT_MENU(idRemove, BreakpointsDlg::OnRemove)

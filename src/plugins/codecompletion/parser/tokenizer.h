@@ -72,7 +72,7 @@ enum PreprocessorType
     ptElifndef          = 0x0006,   // #elifndef
     ptElse              = 0x0007,   // #else
     ptEndif             = 0x0008,   // #endif
-    ptOthers            = 0x0009,   // #include, #define ...
+    ptOthers            = 0x0009    // #include, #define ...
 };
 
 /// Whether we need to handle C-preprocessor directives

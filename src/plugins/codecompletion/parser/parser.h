@@ -133,7 +133,7 @@ namespace ParserCommon
         ptCreateParser    = 1,
         ptReparseFile     = 2,
         ptAddFileToParser = 3,
-        ptUndefined       = 4,
+        ptUndefined       = 4
     };
 
     enum EFileType

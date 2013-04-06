@@ -111,7 +111,7 @@ namespace
             return _T(".");
         #endif
         #endif
-    };
+    }
 
     wxString DetermineResourcesPath()
     {
@@ -128,8 +128,8 @@ namespace
         #else
             return _T(".");
         #endif
-    };
-};
+    }
+}
 
 
 inline void ConfigManager::Collapse(wxString& str) const
@@ -152,7 +152,7 @@ inline void ConfigManager::Collapse(wxString& str) const
             ++src;
     }
     str.Truncate(len);
-};
+}
 
 ISerializable::ISerializable()
 {}
@@ -452,7 +452,7 @@ inline void to_upper(wxString& s)
         if (q >= 'a' && q <= 'z')
             *p = q - 32;
     }
-};
+}
 
 inline void to_lower(wxString& s)
 {
@@ -470,7 +470,7 @@ inline void to_lower(wxString& s)
         if (q >= 'A' && q <= 'Z')
             *p = q + 32;
     }
-};
+}
 
 
 /* ------------------------------------------------------------------------------------------------------------------
@@ -618,7 +618,7 @@ wxString ConfigManager::GetPath() const
     }
     ret.Prepend(_T('/'));
     return ret;
-};
+}
 
 void ConfigManager::SetPath(const wxString& path)
 {
@@ -805,7 +805,7 @@ void ConfigManager::Write(const wxString& key, const char* str)
     /* NOTE (mandrav#1#): Do *not* remove 'false' from the call because in ANSI builds,
     it matches this very function and overflows the stack... */
     Write(key, cbC2U(str), false);
-};
+}
 
 wxString ConfigManager::Read(const wxString& name, const wxString& defaultVal)
 {

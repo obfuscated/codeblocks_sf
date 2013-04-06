@@ -33,6 +33,6 @@ namespace appglobals
     extern const wxString AppBuildTimestamp;
 
     extern const wxString DefaultBatchBuildArgs;
-};
+}
 
 #endif // APPGLOBALS_H

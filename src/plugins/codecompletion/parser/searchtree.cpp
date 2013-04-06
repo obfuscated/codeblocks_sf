@@ -1010,7 +1010,7 @@ wxString BasicSearchTree::SerializeLabel(nSearchTreeLabel labelno)
     wxString label = m_Labels[labelno];
     result = SearchTreeNode::SerializeString(label);
     return result;
-};
+}
 
 wxString BasicSearchTree::SerializeLabels()
 {

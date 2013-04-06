@@ -24,7 +24,7 @@
 namespace
 {
     const int ID_List = wxNewId();
-};
+}
 
 BEGIN_EVENT_TABLE(SearchResultsLog, wxEvtHandler)
 //
@@ -50,7 +50,7 @@ wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
             &SearchResultsLog::OnDoubleClick);
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
-};
+}
 
 void SearchResultsLog::FocusEntry(size_t index)
 {

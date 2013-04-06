@@ -95,7 +95,7 @@ enum DebugCommandConst
     CMD_DISASSEMBLE,
     CMD_REGISTERS,
     CMD_MEMORYDUMP,
-    CMD_RUNNINGTHREADS,
+    CMD_RUNNINGTHREADS
 };
 
 const wxString g_EscapeChar = wxChar(26);

@@ -203,4 +203,4 @@ void LogManager::Panic(const wxString& msg, const wxString& component)
         title.Append(_T("Code::Blocks"));
 
     wxSafeShowMessage(title, msg);
-};
+}

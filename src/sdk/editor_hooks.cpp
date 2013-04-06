@@ -79,4 +79,4 @@ namespace EditorHooks
     {
         m_plugin->OnEditorHook(editor, event);
     }
-};
+}

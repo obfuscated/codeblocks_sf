@@ -40,4 +40,4 @@ namespace BlkAllc
 
         wxSafeShowMessage(_T("Block Allocator"), s);
     } // end of DebugLog
-};
+}

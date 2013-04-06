@@ -51,7 +51,7 @@ namespace Associations
     void DoClearAssociation(const wxString& ext);
 
     void UpdateChanges();
-};
+}
 
 class ManageAssocsDialog : public wxScrollingDialog
 {

@@ -20,10 +20,10 @@ using namespace std;
     #define WIN32_LEAN_AND_MEAN 1
     #define NOGDI
     #include <windows.h>
-    inline void set_env(const char* k, const char* v) { SetEnvironmentVariable(k, v); };
+    inline void set_env(const char* k, const char* v) { SetEnvironmentVariable(k, v); }
 #else
     #include <stdlib.h>
-    inline void set_env(const char* k, const char* v) { setenv(k, v, 1); };
+    inline void set_env(const char* k, const char* v) { setenv(k, v, 1); }
 #endif
 
 #if !defined WIFEXITED

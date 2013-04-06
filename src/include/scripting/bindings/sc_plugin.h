@@ -21,7 +21,7 @@ namespace ScriptBindings
 
         void OnScriptMenu(int id);
         void OnScriptModuleMenu(int id);
-    }; // namespace ScriptPluginWrapper
-};
+    } // namespace ScriptPluginWrapper
+}
 
 #endif // SC_PLUGIN_H

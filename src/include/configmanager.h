@@ -54,10 +54,10 @@ namespace ConfigManagerContainer
 {
     typedef std::map<wxString, wxString> StringToStringMap;
     typedef std::map<int, wxString> IntToStringMap;
-    typedef std::set<wxString> StringSet;;
+    typedef std::set<wxString> StringSet;
 
     typedef std::map<wxString, ISerializable*> SerializableObjectMap;
-};
+}
 
 
 /* ------------------------------------------------------------------------------------------------------------------*/
@@ -83,7 +83,7 @@ enum SearchDirs
 
     sdAllGlobal       = 0xf000, ///< Convenience value meaning "all sd*Global values"
 
-    sdAllKnown        = 0xffff, ///< All known dirs (i.e. all of the above)
+    sdAllKnown        = 0xffff  ///< All known dirs (i.e. all of the above)
 };
 
 
@@ -294,7 +294,7 @@ public:
                 obj->SerializeIn(wxBase64::Decode(cbC2U(e->FirstChild()->ToText()->Value())));
                 (*map)[cbC2U(e->Value())] = obj;
             }
-    };
+    }
 };
 
 /** Wrapper class for reading or writing config values, without the need for the full path.

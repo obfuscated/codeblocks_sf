@@ -1287,7 +1287,7 @@ namespace platform
 
             return winver_UnknownWindows;
         }
-    };
+    }
 
     windows_version_t WindowsVersion()
     {

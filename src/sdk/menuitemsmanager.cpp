@@ -19,7 +19,7 @@
 namespace
 {
     wxRegEx reInsert(_T("([0-9]+):.+"));
-};
+}
 
 MenuItemsManager::MenuItemsManager(bool autoClearOnDestroy)
     : m_AutoClearOnDestroy(autoClearOnDestroy)

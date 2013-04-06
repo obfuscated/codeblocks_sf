@@ -155,6 +155,6 @@ namespace FileFilters
     extern const DLLIMPORT wxString RESOURCEBIN_DOT_EXT;
     extern const DLLIMPORT wxString XML_DOT_EXT;
     extern const DLLIMPORT wxString SCRIPT_DOT_EXT;
-};
+}
 
 #endif // FILEFILTERS_H

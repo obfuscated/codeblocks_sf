@@ -197,7 +197,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
 
         Show();
         m_timer->Start(hysteresis, false);
-    };
+    }
 
 
 InfoWindow::~InfoWindow()
@@ -206,7 +206,7 @@ InfoWindow::~InfoWindow()
     stacker.ReleaseMe(pos);
 
     active_messages.erase(my_message_iterator);
-};
+}
 
 void InfoWindow::OnTimer(cb_unused wxTimerEvent& e)
 {
@@ -241,7 +241,7 @@ void InfoWindow::OnTimer(cb_unused wxTimerEvent& e)
     default:
         break;
     };
-};
+}
 
 void InfoWindow::OnMove(cb_unused wxMouseEvent& e)
 {

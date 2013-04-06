@@ -29,7 +29,7 @@ namespace
     int idList = wxNewId();
     int idMenuFit = wxNewId();
     int idMenuAutoFit = wxNewId();
-};
+}
 
 BEGIN_EVENT_TABLE(CompilerMessages, wxEvtHandler)
 END_EVENT_TABLE()
@@ -133,7 +133,7 @@ void CompilerMessages::OnDoubleClick(wxCommandEvent& event)
     return;
 }
 
-void CompilerMessages::OnFit(wxCommandEvent& event)
+void CompilerMessages::OnFit(wxCommandEvent& WXUNUSED(event))
 {
     FitColumns();
 }
