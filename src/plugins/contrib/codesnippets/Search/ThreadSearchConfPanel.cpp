@@ -200,8 +200,8 @@ void ThreadSearchConfPanel::set_properties()
 			radIndex = 1;
 			break;
 		}
+		case ThreadSearchViewManagerBase::TypeMessagesNotebook : // fall-though
 		default:
-		// case ThreadSearchViewManagerBase::TypeMessagesNotebook :
 		{
 			radIndex = 0;
 			break;
@@ -217,8 +217,8 @@ void ThreadSearchConfPanel::set_properties()
 			radIndex = 1;
 			break;
 		}
+		case ThreadSearchLoggerBase::TypeList : // fall-though
 		default:
-		// case ThreadSearchLoggerBase::TypeList :
 		{
 			radIndex = 0;
 			break;
@@ -252,8 +252,8 @@ void ThreadSearchConfPanel::set_properties()
 			radIndex = 1;
 			break;
 		}
+		case InsertIndexManager::SortByFilePath : // fall-through
 		default:
-		// case ThreadSearch::SortByFilePath :
 		{
 			radIndex = 0;
 			break;
