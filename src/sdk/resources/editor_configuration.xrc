@@ -109,6 +109,13 @@
 																			<vgap>4</vgap>
 																			<hgap>4</hgap>
 																			<object class="sizeritem">
+																				<object class="wxCheckBox" name="chkDetectIndent">
+																					<label>Detect indent style</label>
+																					<checked>1</checked>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																			</object>
+																			<object class="sizeritem">
 																				<object class="wxCheckBox" name="chkUseTab">
 																					<label>Use TAB character</label>
 																				</object>

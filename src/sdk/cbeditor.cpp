@@ -411,6 +411,111 @@ struct cbEditorInternalData
         return url;
     }
 
+    static wxString GetLineIndentString(int line, cbStyledTextCtrl* stc)
+    {
+        int currLine = (line == -1)
+                        ? stc->LineFromPosition(stc->GetCurrentPos())
+                        : line;
+        wxString text = stc->GetLine(currLine);
+        unsigned int len = text.Length();
+        wxString indent;
+        for (unsigned int i = 0; i < len; ++i)
+        {
+            if (text[i] == _T(' ') || text[i] == _T('\t'))
+            {
+                indent << text[i];
+            }
+            else
+            {
+                break;
+            }
+        }
+        return indent;
+    }
+
+    /** Detect the indentation style used in a document.
+     * Values for the thresholds are from trial and error over many
+     * example files. If this function is not certain on the style
+     * used, it will return -1.
+     */
+    static int DetectIndentStyle(cbStyledTextCtrl* stc)
+    {
+        int lineCount[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        // lineCount[0] == number of lines with tabs
+        // lineCount[1] == number of lines with only spaces
+        // lineCount[2 ... 8] == number of lines divisible by that number
+        for (int line = 0; line < stc->GetLineCount() && line < 1000; ++line)
+        {
+            const wxString& indent = cbEditorInternalData::GetLineIndentString(line, stc);
+            if (indent.IsEmpty())
+                continue;
+            if (indent.Find(wxT('\t')) != wxNOT_FOUND)
+                ++lineCount[0];
+            else
+            {
+                ++lineCount[1];
+                for (int i = 2; i < 9; ++i)
+                {
+                    if (indent.Length() % i == 0)
+                        ++lineCount[i];
+                }
+            }
+        }
+
+        if (lineCount[0] > 0 && lineCount[1] == 0)
+            return 0;  // tabs
+        double total = lineCount[0] + lineCount[1];
+        if (total < 10)
+            return -1; // not sure -> use defaults
+        else if (lineCount[0] / total > 0.75)
+            return 0;  // tabs
+        else if (lineCount[1] / total < 0.75)
+            return -1; // not sure -> use defaults
+
+        total = lineCount[1];
+        int tabSize = 8;
+        for (int i = 2; i < 8; ++i)
+        {
+            if (lineCount[i] > lineCount[tabSize])
+                tabSize = i;
+        }
+        if (lineCount[tabSize] / total < 0.65)
+            return -1; // not sure -> use defaults
+
+        switch (tabSize)
+        {
+            case 2:
+                if ((lineCount[2] - lineCount[6]) / total < 0.1)
+                    return 6;
+                if (   lineCount[2] > lineCount[4] * 1.8
+                    || lineCount[4] / total < 0.5 )
+                    return 2;
+                // fall through
+            case 4:
+                if (   lineCount[4] > lineCount[8] * 1.8
+                    || lineCount[8] / total < 0.5 )
+                    return 4;
+                // fall through
+            case 8:
+                if (lineCount[8] / total < 0.6)
+                    return -1; // not sure -> use defaults
+                return 8;
+
+            case 3:
+                if (   lineCount[3] > lineCount[6] * 1.8
+                    || lineCount[6] / total < 0.5 )
+                    return 3;
+                if (lineCount[6] / total < 0.6)
+                    return -1; // not sure -> use defaults
+                return 6;
+
+            default:
+                if (lineCount[tabSize] / total < 0.7)
+                    return -1; // not sure -> use defaults
+                return tabSize;
+        }
+    }
+
     // vars
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
@@ -1474,6 +1579,20 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
         eolMode = DetectLineEnds(control);
 
     control->SetEOLMode(eolMode);
+
+    // indentation style is already set
+    if (mgr->ReadBool(_T("/detect_indent"), true))
+    {
+        // override style if auto-detection succeeds
+        int indentStyle = cbEditorInternalData::DetectIndentStyle(control);
+        if (indentStyle == 0)
+            control->SetUseTabs(true);
+        else if (indentStyle != -1)
+        {
+            control->SetUseTabs(false);
+            control->SetTabWidth(indentStyle);
+        }
+    }
 
     // Interpret #if/#else/#endif to grey out code that is not active
     control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), true) ? _T("1") : _T("0"));
@@ -2571,25 +2690,7 @@ int cbEditor::GetLineIndentInSpaces(int line) const
 
 wxString cbEditor::GetLineIndentString(int line) const
 {
-    cbStyledTextCtrl* control = GetControl();
-    int currLine = (line == -1)
-                    ? control->LineFromPosition(control->GetCurrentPos())
-                    : line;
-    wxString text = control->GetLine(currLine);
-    unsigned int len = text.Length();
-    wxString indent;
-    for (unsigned int i = 0; i < len; ++i)
-    {
-        if (text[i] == _T(' ') || text[i] == _T('\t'))
-        {
-            indent << text[i];
-        }
-        else
-        {
-            break;
-        }
-    }
-    return indent;
+    return cbEditorInternalData::GetLineIndentString(line, GetControl());
 }
 
 // Creates a submenu for a Context Menu based on the submenu's specific Id
