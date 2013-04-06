@@ -783,7 +783,6 @@ wxArrayString CompilerCommandGenerator::GetOrderedLibrariesDirs(Compiler* compil
         // decide order
         result = GetOrderedOptions(target, ortLibDirs, target->GetParentProject()->GetLibDirs(), target->GetLibDirs());
     }
-
     // compiler dirs
     const wxArrayString& carr = compiler->GetLibDirs();
     for (unsigned int x = 0; x < carr.GetCount(); ++x)
@@ -809,11 +808,8 @@ wxArrayString CompilerCommandGenerator::GetOrderedResourceIncludeDirs(Compiler* 
 {
     wxArrayString result;
 
-    if (target)
-    {
-        // decide order
+    if (target) // decide order
         result = GetOrderedOptions(target, ortResDirs, target->GetParentProject()->GetResourceIncludeDirs(), target->GetResourceIncludeDirs());
-        }
 
     // compiler dirs
     const wxArrayString& carr = compiler->GetResourceIncludeDirs();
@@ -1022,23 +1018,16 @@ wxString CompilerCommandGenerator::SetupLinkLibraries(Compiler* compiler, Projec
 {
     wxArrayString libs;
 
-    if (target)
-    {
-        // decide order
+    if (target) // decide order
         libs = GetOrderedOptions(target, ortLinkerOptions, target->GetParentProject()->GetLinkLibs(), target->GetLinkLibs());
-    }
 
     // compiler link libraries
     const wxArrayString& carr = compiler->GetLinkLibs();
     for (unsigned int x = 0; x < carr.GetCount(); ++x)
-    {
         libs.Add(carr[x]);
-    }
 
     for (unsigned int x = 0; x < libs.GetCount(); ++x)
-    {
         libs[x] = FixupLinkLibraries(compiler, libs[x]);
-    }
 
     if (compiler->GetSwitches().linkerNeedsPathResolved)
     {

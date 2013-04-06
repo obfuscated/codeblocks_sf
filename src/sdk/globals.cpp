@@ -834,11 +834,8 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
 
         wxString bt;
         BackticksMap::iterator it = m_Backticks.find(cmd);
-        if (it != m_Backticks.end())
-        {
-            // in cache :)
+        if (it != m_Backticks.end()) // in the cache :)
             bt = it->second;
-        }
         else
         {
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
@@ -846,7 +843,7 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
             if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
                 wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
             else
-                wxExecute(cmd, output, wxEXEC_NODISABLE);
+                wxExecute(cmd,                 output, wxEXEC_NODISABLE);
             bt = GetStringFromArray(output, _T(" "), false);
             // add it in the cache
             m_Backticks[cmd] = bt;

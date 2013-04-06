@@ -338,9 +338,6 @@ class MainFrame : public wxFrame
         virtual wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
         #endif
     protected:
-
-
-
         RecentItemsList m_filesHistory, m_projectsHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
