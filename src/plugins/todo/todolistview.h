@@ -6,11 +6,13 @@
 #ifndef TODOLISTVIEW_H
 #define TODOLISTVIEW_H
 
+#include <wx/dynarray.h> // WX_DECLARE_OBJARRAY
 #include <wx/string.h>
-#include "loggers.h"
+
 #include <vector>
 #include <map>
-using namespace std;
+
+#include "loggers.h"
 
 class cbEditor;
 class wxArrayString;
@@ -31,10 +33,9 @@ struct ToDoItem
     int line;
     int priority;
 };
-
-typedef map<wxString,vector<ToDoItem> > TodoItemsMap;
-
+typedef std::map<wxString,std::vector<ToDoItem> > TodoItemsMap;
 WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
+
 class CheckListDialog : public wxDialog
 {
     public:
@@ -62,7 +63,7 @@ class CheckListDialog : public wxDialog
     private:
 };
 
-class ToDoListView :  public wxEvtHandler, public ListCtrlLogger
+class ToDoListView : public wxEvtHandler, public ListCtrlLogger
 {
     public:
         ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
