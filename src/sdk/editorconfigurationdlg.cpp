@@ -113,7 +113,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkAutoIndent",               wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_indent"),                true));
     XRCCTRL(*this, "chkSmartIndent",              wxCheckBox)->SetValue(cfg->ReadBool(_T("/smart_indent"),               true));
     XRCCTRL(*this, "chkBraceCompletion",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_completion"),           true));
-    XRCCTRL(*this, "chkDetectIndent",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/detect_indent"),              true));
+    XRCCTRL(*this, "chkDetectIndent",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/detect_indent"),              false));
     XRCCTRL(*this, "chkUseTab",                   wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tab"),                    false));
     m_EnableScrollWidthTracking = cfg->ReadBool(_T("/margin/scroll_width_tracking"), false);
     XRCCTRL(*this, "chkScrollWidthTracking",      wxCheckBox)->SetValue(m_EnableScrollWidthTracking);

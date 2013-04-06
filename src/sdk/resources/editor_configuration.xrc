@@ -111,7 +111,6 @@
 																			<object class="sizeritem">
 																				<object class="wxCheckBox" name="chkDetectIndent">
 																					<label>Detect indent style</label>
-																					<checked>1</checked>
 																				</object>
 																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																			</object>

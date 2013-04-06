@@ -1581,7 +1581,7 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     control->SetEOLMode(eolMode);
 
     // indentation style is already set
-    if (mgr->ReadBool(_T("/detect_indent"), true))
+    if (mgr->ReadBool(_T("/detect_indent"), false))
     {
         // override style if auto-detection succeeds
         int indentStyle = cbEditorInternalData::DetectIndentStyle(control);
