@@ -22,13 +22,6 @@
 
 #include "codecompletion.h"
 
-/** @return avarange char width */
-static int GetAverangeCharWidth( cbStyledTextCtrl* control, int style)
-{
-    const wxString allChars = _T("1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?");
-    return control->TextWidth(style, allChars) / allChars.size();
-}
-
 // Doxygen documents parser
 namespace Doxygen
 {
