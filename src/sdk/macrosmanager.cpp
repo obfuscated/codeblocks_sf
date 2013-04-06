@@ -195,6 +195,20 @@ wxString GetSelectedText()
     return wxEmptyString;
 }
 
+namespace
+{
+template<typename T>
+void ReadMacros(MacrosMap &macros, T *object)
+{
+    if (object)
+    {
+        const StringHash& v = object->GetAllVars();
+        for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
+            macros[it->first.Upper()] = it->second;
+    }
+}
+} // namespace
+
 void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBuildTarget* target)
 {
     m_ActiveEditorFilename = wxEmptyString; // invalidate
@@ -302,23 +316,14 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_LastProject = project;
     }
 
+    // get compiler variables
     if (target)
     {
         const Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
-        if (compiler)
-        {
-            const StringHash& v = compiler->GetAllVars();
-            for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
-                m_Macros[it->first.Upper()] = it->second;
-        }
+        ReadMacros(m_Macros, compiler);
     }
 
-    if (project)
-    {
-        const StringHash& v = project->GetAllVars();
-        for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
-            m_Macros[it->first.Upper()] = it->second;
-    }
+    ReadMacros(m_Macros, project);
 
     if (!target)
     {
@@ -342,9 +347,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
 
     if (target)
     {
-        const StringHash& v = target->GetAllVars();
-        for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
-            m_Macros[it->first.Upper()] = it->second;
+        ReadMacros(m_Macros, target);
 
         if (Compiler* c = CompilerFactory::GetCompiler(target->GetCompilerID()))
         {
