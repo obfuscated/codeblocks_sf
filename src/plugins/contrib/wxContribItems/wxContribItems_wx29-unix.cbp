@@ -428,6 +428,15 @@
 		<Unit filename="wxled/led/src/led.cpp">
 			<Option target="wxLED" />
 		</Unit>
+		<Unit filename="wxled/led/src/stateLed.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/src/xrc/xh_ledHandler.cpp">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/src/xrc/xh_stateLedHandler.cpp">
+			<Option target="wxLED" />
+		</Unit>
 		<Unit filename="wxled/ledpanel/include/wx/advancedmatrixobject.h">
 			<Option target="wxLED" />
 		</Unit>
