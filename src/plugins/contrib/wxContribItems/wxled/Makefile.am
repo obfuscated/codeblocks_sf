@@ -18,6 +18,9 @@ libwxled_la_SOURCES = \
 ./gizmosled/src/ledctrl.cpp \
 ./lcdWindow/src/lcdwindow.cpp\
 ./led/src/led.cpp \
+./led/src/stateLed.cpp \
+./led/src/xrc/xh_ledHandler.cpp \
+./led/src/xrc/xh_stateLedHandler.cpp \
 ./ledpanel/src/advancedmatrixobject.cpp \
 ./ledpanel/src/font75.cpp \
 ./ledpanel/src/font77.cpp \

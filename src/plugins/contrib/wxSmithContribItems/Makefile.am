@@ -79,6 +79,7 @@ libwxsmithcontribitems_la_SOURCES = \
 ./wxled/wxsLed.cpp \
 ./wxled/wxsLedNumber.cpp \
 ./wxled/wxsLedPanel.cpp \
+./wxled/wxsStateLed.cpp \
 ./wxSmithContribItems.cpp
 
 noinst_HEADERS = \
@@ -102,4 +103,5 @@ noinst_HEADERS = \
 ./wxled/wxsLed.h \
 ./wxled/wxsLedNumber.h \
 ./wxled/wxsLedPanel.h \
+./wxled/wxsStateLed.h \
 ./wxSmithContribItems.h
