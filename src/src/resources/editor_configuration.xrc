@@ -1219,14 +1219,20 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnColoursCopy">
-																<label>Copy from</label>
+																<label>Copy</label>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>5</border>
-															<option>1</option>
+														</object>
+														<object class="sizeritem">
+															<object class="wxButton" name="btnColoursCopyAll">
+																<label>Copy All</label>
+															</object>
+															<flag>wxSHAPED|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>5</border>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>

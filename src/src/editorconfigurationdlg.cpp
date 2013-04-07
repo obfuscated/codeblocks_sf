@@ -69,6 +69,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnFilemasks"),                  EditorConfigurationDlg::OnEditFilemasks)
     EVT_BUTTON(XRCID("btnColoursReset"),               EditorConfigurationDlg::OnColoursReset)
     EVT_BUTTON(XRCID("btnColoursCopy"),                EditorConfigurationDlg::OnColoursCopyFrom)
+    EVT_BUTTON(XRCID("btnColoursCopyAll"),             EditorConfigurationDlg::OnColoursCopyAllFrom)
     EVT_BUTTON(XRCID("btnCaretColour"),                EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnGutterColour"),               EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnColoursFore"),                EditorConfigurationDlg::OnChooseColour)
@@ -752,8 +753,6 @@ void EditorConfigurationDlg::OnColoursReset(cb_unused wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnColoursCopyFrom(cb_unused wxCommandEvent &event)
 {
-    m_MenuIDToLanguageOption.clear();
-
     const wxArrayString &listLang = m_Theme->GetAllHighlightLanguages();
 
     wxMenu menu;
@@ -773,10 +772,8 @@ void EditorConfigurationDlg::OnColoursCopyFrom(cb_unused wxCommandEvent &event)
                 long menuID = wxNewId();
 
                 optionsMenu->Append(menuID, opt->name);
-
                 Connect(menuID, wxEVT_COMMAND_MENU_SELECTED,
-                        wxCommandEventHandler(EditorConfigurationDlg::OnColourMenuItem));
-
+                        wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyFrom));
                 m_MenuIDToLanguageOption.insert(MenuIDToLanguageOption::value_type(menuID, id));
             }
         }
@@ -790,11 +787,12 @@ void EditorConfigurationDlg::OnColoursCopyFrom(cb_unused wxCommandEvent &event)
          ++it)
     {
         Disconnect(it->first, wxEVT_COMMAND_MENU_SELECTED,
-                   wxCommandEventHandler(EditorConfigurationDlg::OnColourMenuItem));
+                   wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyFrom));
     }
+    m_MenuIDToLanguageOption.clear();
 }
 
-void EditorConfigurationDlg::OnColourMenuItem(wxCommandEvent &event)
+void EditorConfigurationDlg::OnMenuColoursCopyFrom(wxCommandEvent &event)
 {
     if (!m_Theme)
         return;
@@ -819,6 +817,69 @@ void EditorConfigurationDlg::OnColourMenuItem(wxCommandEvent &event)
         UpdateColourControls(optDest);
         ApplyColours();
     }
+}
+
+void EditorConfigurationDlg::OnColoursCopyAllFrom(cb_unused wxCommandEvent &event)
+{
+    const wxArrayString &listLang = m_Theme->GetAllHighlightLanguages();
+
+    wxMenu menu;
+    for (size_t ii = 0; ii < listLang.GetCount(); ++ii)
+    {
+        MenuItemLanguageOptionID id;
+        id.index = -1;
+        id.langID = m_Theme->GetHighlightLanguage(listLang[ii]);;
+
+        long menuID = wxNewId();
+
+        menu.Append(menuID, listLang[ii]);
+        Connect(menuID, wxEVT_COMMAND_MENU_SELECTED,
+                wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyAllFrom));
+        m_MenuIDToLanguageOption.insert(MenuIDToLanguageOption::value_type(menuID, id));
+    }
+
+    PopupMenu(&menu);
+
+    for (MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.begin();
+         it != m_MenuIDToLanguageOption.end();
+         ++it)
+    {
+        Disconnect(it->first, wxEVT_COMMAND_MENU_SELECTED,
+                   wxCommandEventHandler(EditorConfigurationDlg::OnMenuColoursCopyAllFrom));
+    }
+    m_MenuIDToLanguageOption.clear();
+}
+
+void EditorConfigurationDlg::OnMenuColoursCopyAllFrom(wxCommandEvent &event)
+{
+    if (!m_Theme)
+        return;
+    long id = event.GetId();
+    MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.find(id);
+    if (it == m_MenuIDToLanguageOption.end())
+        return;
+    const wxString &srcLang = it->second.langID;
+    for (int destIndex = 0; destIndex < m_Theme->GetOptionCount(m_Lang); ++destIndex)
+    {
+        OptionColour *optDest = m_Theme->GetOptionByIndex(m_Lang, destIndex);
+        if (!optDest)
+            continue;
+        OptionColour *optSource = m_Theme->GetOptionByName(srcLang, optDest->name);
+        // if the option is not found and we are looking for comment,
+        // then try to get the C/C++ option for comments.
+        if (!optSource && optDest->name == wxT("Comment"))
+            optSource = m_Theme->GetOptionByName(srcLang, wxT("Comment (normal)"));
+        if (optSource)
+        {
+            optDest->back = optSource->back;
+            optDest->fore = optSource->fore;
+            optDest->bold = optSource->bold;
+            optDest->italics = optSource->italics;
+            optDest->underlined = optSource->underlined;
+        }
+    }
+    ApplyColours();
+    ReadColours();
 }
 
 void EditorConfigurationDlg::OnChangeLang(cb_unused wxCommandEvent& event)

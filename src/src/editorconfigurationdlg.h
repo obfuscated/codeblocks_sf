@@ -34,7 +34,9 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void OnColourComponent(wxCommandEvent& event);
         void OnColoursReset(wxCommandEvent& event);
         void OnColoursCopyFrom(wxCommandEvent& event);
-        void OnColourMenuItem(wxCommandEvent& event);
+        void OnMenuColoursCopyFrom(wxCommandEvent& event);
+        void OnColoursCopyAllFrom(wxCommandEvent& event);
+        void OnMenuColoursCopyAllFrom(wxCommandEvent &event);
         void OnEditKeywords(wxCommandEvent& event);
         void OnEditFilemasks(wxCommandEvent& event);
         void OnChangeLang(wxCommandEvent& event);
