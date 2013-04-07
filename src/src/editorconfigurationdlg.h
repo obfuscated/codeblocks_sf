@@ -6,6 +6,7 @@
 #ifndef EDITORCONFIGURATION_H
 #define EDITORCONFIGURATION_H
 
+#include <map>
 #include "scrollingdialog.h"
 #include <wx/arrstr.h>
 #include "settings.h"
@@ -21,6 +22,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
         EditorConfigurationDlg(wxWindow* parent);
         ~EditorConfigurationDlg();
 
+    private:
         void OnChooseFont(wxCommandEvent& event);
         void OnChooseColour(wxCommandEvent& event);
         void OnSetDefaultColour(wxCommandEvent& event);
@@ -31,6 +33,8 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void OnRenameColourTheme(wxCommandEvent& event);
         void OnColourComponent(wxCommandEvent& event);
         void OnColoursReset(wxCommandEvent& event);
+        void OnColoursCopyFrom(wxCommandEvent& event);
+        void OnColourMenuItem(wxCommandEvent& event);
         void OnEditKeywords(wxCommandEvent& event);
         void OnEditFilemasks(wxCommandEvent& event);
         void OnChangeLang(wxCommandEvent& event);
@@ -54,6 +58,15 @@ class EditorConfigurationDlg : public wxScrollingDialog
         void LoadThemes();
         void ChangeTheme();
         bool AskToSaveTheme();
+        void UpdateColourControls(const OptionColour *opt);
+    private:
+        struct MenuItemLanguageOptionID
+        {
+            wxString langID;
+            int index;
+        };
+        typedef std::map<long, MenuItemLanguageOptionID> MenuIDToLanguageOption;
+    private:
         cbStyledTextCtrl* m_TextColourControl;
         EditorColourSet* m_Theme;
         HighlightLanguage m_Lang;
@@ -64,6 +77,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
         wxString m_FontString; // This is to store font data temporarily
         bool m_EnableChangebar; // remember whether changebar was enabled or not
         bool m_EnableScrollWidthTracking; // remember whether scrollbarwidthtracking was enabled or not
+        MenuIDToLanguageOption m_MenuIDToLanguageOption;
 
         DECLARE_EVENT_TABLE()
 };

@@ -1210,10 +1210,25 @@
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
-													<object class="wxButton" name="btnColoursReset">
-														<label>Reset defaults</label>
+													<object class="wxBoxSizer">
+														<object class="sizeritem">
+															<object class="wxButton" name="btnColoursReset">
+																<label>Reset defaults</label>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+														</object>
+														<object class="sizeritem">
+															<object class="wxButton" name="btnColoursCopy">
+																<label>Copy from</label>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>5</border>
+													<option>1</option>
 												</object>
 											</object>
 											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

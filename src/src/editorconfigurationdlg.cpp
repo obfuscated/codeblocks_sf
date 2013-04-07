@@ -33,6 +33,7 @@
     #include <wx/colordlg.h>
     #include <wx/radiobox.h>
     #include <wx/imaglist.h>
+    #include <wx/menu.h>
 #endif
 #include "cbstyledtextctrl.h"
 #include "cbcolourmanager.h"
@@ -69,6 +70,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnKeywords"),                   EditorConfigurationDlg::OnEditKeywords)
     EVT_BUTTON(XRCID("btnFilemasks"),                  EditorConfigurationDlg::OnEditFilemasks)
     EVT_BUTTON(XRCID("btnColoursReset"),               EditorConfigurationDlg::OnColoursReset)
+    EVT_BUTTON(XRCID("btnColoursCopy"),                EditorConfigurationDlg::OnColoursCopyFrom)
     EVT_BUTTON(XRCID("btnCaretColour"),                EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnGutterColour"),               EditorConfigurationDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnColoursFore"),                EditorConfigurationDlg::OnChooseColour)
@@ -441,44 +443,49 @@ void EditorConfigurationDlg::ReadColours()
         wxListBox* colours = XRCCTRL(*this, "lstComponents", wxListBox);
 /* TODO (mandrav#1#): FIXME!!! */
         OptionColour* opt = m_Theme->GetOptionByName(m_Lang, colours->GetStringSelection());
-        if (opt)
+        UpdateColourControls(opt);
+    }
+}
+
+void EditorConfigurationDlg::UpdateColourControls(const OptionColour *opt)
+{
+    if (opt)
+    {
+        wxColour c = opt->fore;
+        if (c == wxNullColour)
         {
-            wxColour c = opt->fore;
-            if (c == wxNullColour)
-            {
-                XRCCTRL(*this, "btnColoursFore", wxButton)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-                XRCCTRL(*this, "btnColoursFore", wxButton)->SetLabel(_("\"Default\""));
-            }
-            else
-            {
-                XRCCTRL(*this, "btnColoursFore", wxButton)->SetBackgroundColour(c);
-                XRCCTRL(*this, "btnColoursFore", wxButton)->SetLabel(_T(""));
-            }
+            XRCCTRL(*this, "btnColoursFore", wxButton)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+            XRCCTRL(*this, "btnColoursFore", wxButton)->SetLabel(_("\"Default\""));
+        }
+        else
+        {
+            XRCCTRL(*this, "btnColoursFore", wxButton)->SetBackgroundColour(c);
+            XRCCTRL(*this, "btnColoursFore", wxButton)->SetLabel(_T(""));
+        }
 
-            c = opt->back;
-            if (c == wxNullColour)
-            {
-                XRCCTRL(*this, "btnColoursBack", wxButton)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-                XRCCTRL(*this, "btnColoursBack", wxButton)->SetLabel(_("\"Default\""));
-            }
-            else
-            {
-                XRCCTRL(*this, "btnColoursBack", wxButton)->SetBackgroundColour(c);
-                XRCCTRL(*this, "btnColoursBack", wxButton)->SetLabel(_T(""));
-            }
+        c = opt->back;
+        if (c == wxNullColour)
+        {
+            XRCCTRL(*this, "btnColoursBack", wxButton)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+            XRCCTRL(*this, "btnColoursBack", wxButton)->SetLabel(_("\"Default\""));
+        }
+        else
+        {
+            XRCCTRL(*this, "btnColoursBack", wxButton)->SetBackgroundColour(c);
+            XRCCTRL(*this, "btnColoursBack", wxButton)->SetLabel(_T(""));
+        }
 
-            XRCCTRL(*this, "chkColoursBold", wxCheckBox)->SetValue(opt->bold);
-            XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->SetValue(opt->italics);
-            XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->SetValue(opt->underlined);
+        XRCCTRL(*this, "chkColoursBold", wxCheckBox)->SetValue(opt->bold);
+        XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->SetValue(opt->italics);
+        XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->SetValue(opt->underlined);
 
 //          XRCCTRL(*this, "btnColorsFore", wxButton)->Enable(opt->isStyle);
-            XRCCTRL(*this, "chkColoursBold", wxCheckBox)->Enable(opt->isStyle);
-            XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->Enable(opt->isStyle);
-            XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->Enable(opt->isStyle);
-            bool isDefault = (opt->name == _("Default"));
-            XRCCTRL(*this, "btnForeSetDefault", wxButton)->Enable(!isDefault);
-            XRCCTRL(*this, "btnBackSetDefault", wxButton)->Enable(!isDefault);
-        }
+        XRCCTRL(*this, "chkColoursBold", wxCheckBox)->Enable(opt->isStyle);
+        XRCCTRL(*this, "chkColoursItalics", wxCheckBox)->Enable(opt->isStyle);
+        XRCCTRL(*this, "chkColoursUnderlined", wxCheckBox)->Enable(opt->isStyle);
+        bool isDefault = (opt->name == _("Default"));
+        XRCCTRL(*this, "btnForeSetDefault", wxButton)->Enable(!isDefault);
+        XRCCTRL(*this, "btnBackSetDefault", wxButton)->Enable(!isDefault);
     }
 }
 
@@ -742,6 +749,77 @@ void EditorConfigurationDlg::OnColoursReset(cb_unused wxCommandEvent& event)
             ReadColours();
             m_ThemeModified = true;
         }
+    }
+}
+
+void EditorConfigurationDlg::OnColoursCopyFrom(cb_unused wxCommandEvent &event)
+{
+    m_MenuIDToLanguageOption.clear();
+
+    const wxArrayString &listLang = m_Theme->GetAllHighlightLanguages();
+
+    wxMenu menu;
+    for (size_t ii = 0; ii < listLang.GetCount(); ++ii)
+    {
+        wxMenu *optionsMenu = new wxMenu;
+        const wxString &langID = m_Theme->GetHighlightLanguage(listLang[ii]);
+        for (int optIndex = 0; optIndex < m_Theme->GetOptionCount(langID); ++optIndex)
+        {
+            const OptionColour* opt = m_Theme->GetOptionByIndex(langID, optIndex);
+            if (optionsMenu->FindItem(opt->name) == wxNOT_FOUND)
+            {
+                MenuItemLanguageOptionID id;
+                id.index = optIndex;
+                id.langID = langID;
+
+                long menuID = wxNewId();
+
+                optionsMenu->Append(menuID, opt->name);
+
+                Connect(menuID, wxEVT_COMMAND_MENU_SELECTED,
+                        wxCommandEventHandler(EditorConfigurationDlg::OnColourMenuItem));
+
+                m_MenuIDToLanguageOption.insert(MenuIDToLanguageOption::value_type(menuID, id));
+            }
+        }
+        menu.AppendSubMenu(optionsMenu, listLang[ii]);
+    }
+
+    PopupMenu(&menu);
+
+    for (MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.begin();
+         it != m_MenuIDToLanguageOption.end();
+         ++it)
+    {
+        Disconnect(it->first, wxEVT_COMMAND_MENU_SELECTED,
+                   wxCommandEventHandler(EditorConfigurationDlg::OnColourMenuItem));
+    }
+}
+
+void EditorConfigurationDlg::OnColourMenuItem(wxCommandEvent &event)
+{
+    if (!m_Theme)
+        return;
+    long id = event.GetId();
+    MenuIDToLanguageOption::const_iterator it = m_MenuIDToLanguageOption.find(id);
+    if (it == m_MenuIDToLanguageOption.end())
+        return;
+
+    MenuItemLanguageOptionID option = it->second;
+    const OptionColour* optSource = m_Theme->GetOptionByIndex(option.langID, option.index);
+
+    wxListBox* colours = XRCCTRL(*this, "lstComponents", wxListBox);
+    OptionColour* optDest = m_Theme->GetOptionByName(m_Lang, colours->GetStringSelection());
+    if (optSource && optDest)
+    {
+        optDest->back = optSource->back;
+        optDest->fore = optSource->fore;
+        optDest->bold = optSource->bold;
+        optDest->italics = optSource->italics;
+        optDest->underlined = optSource->underlined;
+
+        UpdateColourControls(optDest);
+        ApplyColours();
     }
 }
 
