@@ -13,6 +13,12 @@
     #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/choice.h>
+    #include <wx/colordlg.h>
+    #include <wx/imaglist.h>
+    #include <wx/listbox.h>
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+    #include <wx/radiobox.h>
     #include <wx/settings.h>
     #include <wx/slider.h>
     #include <wx/spinctrl.h>
@@ -21,19 +27,13 @@
     #include <wx/xrc/xmlres.h>
 
     #include "manager.h"
-    #include "configmanager.h"
-    #include "pluginmanager.h"
-    #include "editormanager.h"
-    #include "cbeditor.h"
     #include "cbauibook.h"
+    #include "cbeditor.h"
     #include "cbplugin.h" // cgEditor
+    #include "configmanager.h"
+    #include "editormanager.h"
     #include "globals.h"
-    #include <wx/listbook.h>
-    #include <wx/listbox.h>
-    #include <wx/colordlg.h>
-    #include <wx/radiobox.h>
-    #include <wx/imaglist.h>
-    #include <wx/menu.h>
+    #include "pluginmanager.h"
 #endif
 #include "cbstyledtextctrl.h"
 #include "cbcolourmanager.h"
@@ -41,14 +41,12 @@
 #include <wx/fontdlg.h>
 #include <wx/fontutil.h>
 #include <wx/fontmap.h>
-#include <wx/textctrl.h>
 #include <wx/listbook.h>
-#include <wx/listctrl.h>
 
 #include "configurationpanel.h"
+#include "editkeywordsdlg.h"
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
-#include "editkeywordsdlg.h"
 
 // images by order of pages
 const wxString base_imgs[] =
