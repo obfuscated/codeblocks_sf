@@ -568,7 +568,6 @@ const int idSplit = wxNewId();
 const int idSplitHorz = wxNewId();
 const int idSplitVert = wxNewId();
 const int idUnsplit = wxNewId();
-const int idConfigureEditor = wxNewId();
 const int idProperties = wxNewId();
 const int idAddFileToProject = wxNewId();
 const int idRemoveFileFromProject = wxNewId();
@@ -610,7 +609,6 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idFoldingFoldCurrent, cbEditor::OnContextMenuEntry)
     EVT_MENU(idFoldingUnfoldCurrent, cbEditor::OnContextMenuEntry)
     EVT_MENU(idFoldingToggleCurrent, cbEditor::OnContextMenuEntry)
-    EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
     EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
     EVT_MENU(idAddFileToProject, cbEditor::OnContextMenuEntry)
     EVT_MENU(idRemoveFileFromProject, cbEditor::OnContextMenuEntry)
@@ -2815,8 +2813,6 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         splitMenu->Enable(idUnsplit, isSplitHorz || isSplitVert);
         popup->Append(idSplit, _("Split view"), splitMenu);
 
-        if (!noeditor)
-            popup->Append(idConfigureEditor, _("Configure editor..."));
         popup->Append(idProperties, _("Properties..."));
 
         if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
@@ -3072,8 +3068,6 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         Split(stVertical);
     else if (id == idUnsplit)
         Unsplit();
-    else if (id == idConfigureEditor)
-        Manager::Get()->GetEditorManager()->Configure();
     else if (id == idProperties)
     {
         if (m_pProjectFile)

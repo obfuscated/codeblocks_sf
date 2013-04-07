@@ -67,6 +67,7 @@
 #include "debuggermenu.h"
 
 #include "cbcolourmanager.h"
+#include "editorconfigurationdlg.h"
 
 class cbFileDropTarget : public wxFileDropTarget
 {
@@ -4494,7 +4495,17 @@ void MainFrame::OnGlobalUserVars(cb_unused wxCommandEvent& event)
 
 void MainFrame::OnSettingsEditor(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->Configure();
+    // editor lexers loading takes some time; better reflect this with a hourglass
+    wxBeginBusyCursor();
+
+    EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
+
+    // done, restore pointer
+    wxEndBusyCursor();
+
+    if (dlg.ShowModal() == wxID_OK)
+        Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
 }
 
 void MainFrame::OnSettingsCompiler(cb_unused wxCommandEvent& event)

@@ -629,9 +629,6 @@
 		<Unit filename="include/editorcolourset.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/editorconfigurationdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/editorlexerloader.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2315,9 +2312,6 @@
 		<Unit filename="sdk/editorcolourset.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editorconfigurationdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editorlexerloader.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2559,9 +2553,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/edit_tool.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/editor_configuration.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/editor_manager.xrc">
@@ -3588,6 +3579,12 @@
 		<Unit filename="src/dlgaboutplugin.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/editorconfigurationdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/editorconfigurationdlg.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/environmentsettingsdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3658,6 +3655,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/dlg_about_plugin.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/editor_configuration.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/env_settings.xrc">

@@ -49,7 +49,6 @@
 #include "cbauibook.h"
 
 #include "editorcolourset.h"
-#include "editorconfigurationdlg.h"
 #include "encodingdetector.h"
 #include "findreplacedlg.h"
 #include "confirmreplacedlg.h"
@@ -355,23 +354,6 @@ void EditorManager::CreateMenu(cb_unused wxMenuBar* menuBar)
 
 void EditorManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
 {
-}
-
-void EditorManager::Configure()
-{
-    // editor lexers loading takes some time; better reflect this with a hourglass
-    wxBeginBusyCursor();
-
-    EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
-    PlaceWindow(&dlg);
-
-    // done, restore pointer
-    wxEndBusyCursor();
-
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        RecreateOpenEditorStyles();
-    }
 }
 
 void EditorManager::RecreateOpenEditorStyles()

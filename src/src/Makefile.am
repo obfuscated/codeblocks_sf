@@ -51,6 +51,7 @@ codeblocks_SOURCES = app.cpp \
 			disassemblydlg.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
+			editorconfigurationdlg.cpp \
 			environmentsettingsdlg.cpp \
 			examinememorydlg.cpp \
 			infopane.cpp \
@@ -83,6 +84,7 @@ noinst_HEADERS = app.h \
 			disassemblydlg.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
+			editorconfigurationdlg.h \
 			environmentsettingsdlg.h \
 			examinememorydlg.h \
 			infopane.h \

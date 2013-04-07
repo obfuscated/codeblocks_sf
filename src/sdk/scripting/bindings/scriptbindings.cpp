@@ -645,7 +645,6 @@ namespace ScriptBindings
                 staticFuncVarArgs(&cbEditor_GetText, "GetText", "*");
 
         SqPlus::SQClassDef<EditorManager>("EditorManager").
-                func(&EditorManager::Configure, "Configure").
                 func(&EditorManager::New, "New").
                 staticFuncVarArgs(&EditorManager_Open, "Open").
                 func(&EditorManager::IsBuiltinOpen, "IsBuiltinOpen").
