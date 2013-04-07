@@ -29,6 +29,12 @@
                 <Style name="Error"
                         index="4"
                         fg="255,0,0"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
                 <SampleCode value="lexer_make.sample"/>
                 <LanguageAttributes
                     LineComment="#"
