@@ -133,8 +133,8 @@
 		<Unit filename="wxgbsizer/wxsGridBagSizer.h" />
 		<Unit filename="wximagebutton/wxImageButton16.xpm" />
 		<Unit filename="wximagebutton/wxImageButton32.xpm" />
-		<Unit filename="wximagebutton/wxsImageButton.cpp" />
-		<Unit filename="wximagebutton/wxsImageButton.h" />
+		<Unit filename="wximagebutton/wxsimagebutton.cpp" />
+		<Unit filename="wximagebutton/wxsimagebutton.h" />
 		<Unit filename="wximagepanel/wxImagePanel16.xpm" />
 		<Unit filename="wximagepanel/wxImagePanel32.xpm" />
 		<Unit filename="wximagepanel/wxsimagepanel.cpp" />
