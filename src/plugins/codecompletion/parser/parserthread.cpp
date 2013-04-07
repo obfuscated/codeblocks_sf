@@ -2401,20 +2401,44 @@ void ParserThread::HandleEnum()
                         enumerator->m_Args = wxT("0"); // first enumerator has value of: 0
                     else if (!lastEnumerator->m_Args.IsEmpty())
                     {
+                        wxString lastVal = lastEnumerator->m_Args;
+                        TokenIdxSet guard;
+                        // attempt simple resolution of enumerator assigned enumerator
+                        while (wxIsalpha(lastVal[0]) || lastVal[0] == ParserConsts::underscore_chr)
+                        {
+                            bool done = true;
+                            for ( TokenIdxSet::const_iterator tknIt = newEnum->m_Children.begin();
+                                  tknIt != newEnum->m_Children.end(); ++tknIt )
+                            {
+                                Token* tkn = m_TokenTree->at(*tknIt);
+                                if (tkn && tkn->m_Name == lastVal && !tkn->m_Args.IsEmpty())
+                                {
+                                    lastVal = tkn->m_Args;
+                                    if (guard.find(*tknIt) == guard.end())
+                                    {
+                                        guard.insert(*tknIt);
+                                        done = false; // loop again if value still needs resolution
+                                    }
+                                    break;
+                                }
+                            }
+                            if (done)
+                                break;
+                        }
                         long val;
                         // parse last value as hexadecimal
-                        if (lastEnumerator->m_Args.StartsWith(wxT("0x")))
+                        if (lastVal.StartsWith(wxT("0x")))
                         {
-                            if (lastEnumerator->m_Args.Length() > 2 && lastEnumerator->m_Args.ToLong(&val, 16))
+                            if (lastVal.Length() > 2 && lastVal.ToLong(&val, 16))
                             {
                                 ++val; // iterate forwards to next (current) value
                                 // hexadecimal often has leading zeros -> preserve width
-                                wxString width = wxString::Format(wxT("0%d"), lastEnumerator->m_Args.Length());
+                                wxString width = wxString::Format(wxT("0%d"), lastVal.Length());
                                 enumerator->m_Args.Printf(wxT("%#") + width + wxT("x"), (size_t)val);
                             }
                         }
                         // parse last value as decimal
-                        else if (lastEnumerator->m_Args.ToLong(&val))
+                        else if (lastVal.ToLong(&val))
                         {
                             ++val; // iterate forwards to next (current) value
                             enumerator->m_Args.Printf(wxT("%d"), (int)val);

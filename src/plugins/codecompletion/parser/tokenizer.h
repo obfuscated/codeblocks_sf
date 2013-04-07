@@ -48,14 +48,14 @@ WX_DECLARE_HASH_MAP(wxString, wxString, HashForWxStringMap, EqualForWxStringMap,
 /// Enum defines the skip state of the Tokenizer
 enum TokenizerState
 {
-    tsSkipEqual         = 0x0001,         ///< Skip the assignment statement
-    tsSkipQuestion      = 0x0002,         ///< Skip the conditional evaluation statement
-    tsSkipSubScrip      = 0x0004,         ///< Skip the array-subscript notation statement
+    tsSkipEqual         = 0x0001,         //!< Skip the assignment statement
+    tsSkipQuestion      = 0x0002,         //!< Skip the conditional evaluation statement
+    tsSkipSubScrip      = 0x0004,         //!< Skip the array-subscript notation statement
 
-    tsSingleAngleBrace  = 0x0008,         ///< Reserve angle braces
-    tsReadRawExpression = 0x0010,         ///< Reserve every chars
+    tsSingleAngleBrace  = 0x0008,         //!< Reserve angle braces
+    tsReadRawExpression = 0x0010,         //!< Reserve every chars
 
-    tsSkipNone          = 0x1000,         ///< Skip None
+    tsSkipNone          = 0x1000,         //!< Skip None
     // convenient masks
     tsSkipUnWanted      = tsSkipEqual    | tsSkipQuestion | tsSkipSubScrip,
     tsTemplateArgument  = tsSkipUnWanted | tsSingleAngleBrace
@@ -64,15 +64,15 @@ enum TokenizerState
 /// Enum categorizing C-preprocessor directives
 enum PreprocessorType
 {
-    ptIf                = 0x0001,   // #if
-    ptIfdef             = 0x0002,   // #ifdef
-    ptIfndef            = 0x0003,   // #ifndef
-    ptElif              = 0x0004,   // #elif
-    ptElifdef           = 0x0005,   // #elifdef
-    ptElifndef          = 0x0006,   // #elifndef
-    ptElse              = 0x0007,   // #else
-    ptEndif             = 0x0008,   // #endif
-    ptOthers            = 0x0009    // #include, #define ...
+    ptIf                = 0x0001,   //!< #if
+    ptIfdef             = 0x0002,   //!< #ifdef
+    ptIfndef            = 0x0003,   //!< #ifndef
+    ptElif              = 0x0004,   //!< #elif
+    ptElifdef           = 0x0005,   //!< #elifdef
+    ptElifndef          = 0x0006,   //!< #elifndef
+    ptElse              = 0x0007,   //!< #else
+    ptEndif             = 0x0008,   //!< #endif
+    ptOthers            = 0x0009    //!< #include, #define ...
 };
 
 /// Whether we need to handle C-preprocessor directives
@@ -440,10 +440,10 @@ private:
     /** These variables define the current token string and its auxiliary information,
      * such as the token name, the line number of the token, the current brace nest level.
      */
-    wxString             m_Token;                ///< token name
-    unsigned int         m_TokenIndex;           ///< index offset in buffer
-    unsigned int         m_LineNumber;           ///< line offset in buffer
-    unsigned int         m_NestLevel;            ///< keep track of block nesting { }
+    wxString             m_Token;                //!< token name
+    unsigned int         m_TokenIndex;           //!< index offset in buffer
+    unsigned int         m_LineNumber;           //!< line offset in buffer
+    unsigned int         m_NestLevel;            //!< keep track of block nesting { }
     unsigned int         m_SavedNestingLevel;
 
     /** Backup the previous Token information */
