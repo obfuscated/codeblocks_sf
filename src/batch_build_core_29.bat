@@ -8,15 +8,14 @@ rem Setup GCC root folder with "bin" subfolder
 rem ------------------------------------------
 if not defined GCC_ROOT set GCC_ROOT=%CB_ROOT%\MinGW
 rem run update.bat after build
-if not defined CB_RUN_UPDATE_BAT set CB_RUN_UPDATE_BAT=0
+rem if not defined CB_RUN_UPDATE_BAT set CB_RUN_UPDATE_BAT=0
 
 rem -------------------------------------------
 rem Usually below here no changes are required.
 rem -------------------------------------------
 if not exist "%CB_ROOT%"  goto ErrNoCB
 if not exist "%GCC_ROOT%" goto ErrNoGCC
-rem quotes are here to prevent problems with spaces in paths
-set "PATH=%CB_ROOT%;%GCC_ROOT%;%PATH%"
+set PATH=%CB_ROOT%;%GCC_ROOT%;%PATH%
 
 set BUILD_TYPE=--build
 if "%1"=="r"        set BUILD_TYPE=--rebuild
@@ -31,8 +30,7 @@ set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks_wx29.cbp"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
-echo .
-if %CB_RUN_UPDATE_BAT% NEQ 0 call "%~dp0update29.bat" else echo Do not forget to run "update29.bat" after successful build!
+echo Do not forget to run "update29.bat" after successful build!
 goto TheEnd
 
 :ErrNoCB
