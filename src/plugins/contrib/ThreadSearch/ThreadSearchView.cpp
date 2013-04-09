@@ -25,6 +25,7 @@
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "editorcolourset.h"
+    #include "infowindow.h"
     #include "logmanager.h"
 #endif
 
@@ -185,6 +186,7 @@ END_EVENT_TABLE();
 void ThreadSearchView::OnThreadSearchErrorEvent(const ThreadSearchEvent& event)
 {
     Manager::Get()->GetLogManager()->Log(F(_T("ThreadSearch: %s"), event.GetString().wx_str()));
+    InfoWindow::Display(_("Thread Search Error"), event.GetString());
 }
 
 void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &/*event*/)
