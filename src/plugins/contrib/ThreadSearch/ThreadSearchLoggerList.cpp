@@ -207,7 +207,7 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
     m_pListLog->Freeze();
     long index = m_IndexManager.GetInsertionIndex(filename.GetFullPath(), words.GetCount()/2);
     index += m_IndexOffset;
-    for (size_t i = 0; i < words.GetCount(); i += 2)
+    for (size_t i = 0; i + 1 < words.GetCount(); i += 2)
     {
         m_pListLog->InsertItem(index, filename.GetPath());     // Directory
         m_pListLog->SetItem(index, 1, filename.GetFullName()); // File name
