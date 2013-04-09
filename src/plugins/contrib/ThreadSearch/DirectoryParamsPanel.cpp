@@ -80,11 +80,13 @@ DirectoryParamsPanel::DirectoryParamsPanel(ThreadSearchFindData *findData, wxWin
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
     // begin wxGlade: DirectoryParamsPanel::event_table
     EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idSearchDirPath), DirectoryParamsPanel::OnSearchDirTextEvent)
+    EVT_TEXT(controlIDs.Get(ControlIDs::idSearchDirPath), DirectoryParamsPanel::OnSearchDirTextEvent)
     EVT_COMBOBOX(controlIDs.Get(ControlIDs::idSearchDirPath), DirectoryParamsPanel::OnSearchDirTextEvent)
     EVT_BUTTON(controlIDs.Get(ControlIDs::idBtnDirSelectClick), DirectoryParamsPanel::OnBtnDirSelectClick)
     EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkSearchDirRecurse), DirectoryParamsPanel::OnChkSearchDirRecurse)
     EVT_CHECKBOX(controlIDs.Get(ControlIDs::idChkSearchDirHidden), DirectoryParamsPanel::OnChkSearchDirHidden)
     EVT_TEXT_ENTER(controlIDs.Get(ControlIDs::idSearchMask), DirectoryParamsPanel::OnSearchMaskTextEvent)
+    EVT_TEXT(controlIDs.Get(ControlIDs::idSearchMask), DirectoryParamsPanel::OnSearchMaskTextEvent)
     EVT_COMBOBOX(controlIDs.Get(ControlIDs::idSearchMask), DirectoryParamsPanel::OnSearchMaskTextEvent)
     // end wxGlade
 END_EVENT_TABLE();
