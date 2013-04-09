@@ -94,8 +94,21 @@ void *ThreadSearchThread::Entry()
         int flags = wxDIR_FILES | wxDIR_DIRS | wxDIR_DOTDOT;
         flags    |= m_FindData.GetHiddenSearch() ? wxDIR_HIDDEN : 0;
 
-        wxDir Dir(m_FindData.GetSearchPath(true));
-        Dir.Traverse(*(static_cast<wxDirTraverser*>(this)), wxEmptyString, flags);
+        const wxString &path = m_FindData.GetSearchPath(true);
+        if (!wxDir::Exists(path))
+        {
+            ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+            event.SetString(_("Cannot open folder ") + path);
+
+            // Using wxPostEvent, we avoid multi-threaded memory violation.
+            wxPostEvent(m_pThreadSearchView,event);
+            return 0;
+        }
+        else
+        {
+            wxDir Dir(path);
+            Dir.Traverse(*(static_cast<wxDirTraverser*>(this)), wxEmptyString, flags);
+        }
 
         // Tests thread stop (cancel search, app shutdown)
         if ( TestDestroy() == true ) return 0;
