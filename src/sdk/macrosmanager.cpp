@@ -456,12 +456,12 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     wxString replace;
 
     if (buffer.find(_T("$if")) != wxString::npos)
-    while (m_RE_If.Matches(buffer))
-    {
-        search = m_RE_If.GetMatch(buffer, 0);
-        replace = EvalCondition(m_RE_If.GetMatch(buffer, 1), m_RE_If.GetMatch(buffer, 3), m_RE_If.GetMatch(buffer, 5), target);
-        buffer.Replace(search, replace, false);
-    }
+        while (m_RE_If.Matches(buffer))
+        {
+            search = m_RE_If.GetMatch(buffer, 0);
+            replace = EvalCondition(m_RE_If.GetMatch(buffer, 1), m_RE_If.GetMatch(buffer, 3), m_RE_If.GetMatch(buffer, 5), target);
+            buffer.Replace(search, replace, false);
+        }
 
     while (m_RE_Script.Matches(buffer))
     {
