@@ -95,27 +95,36 @@ class EditorColourSet
                        bool underlined = false,
                        bool isStyle = true);
         bool AddOption(HighlightLanguage lang, OptionColour* option, bool checkIfExists = true);
+
         OptionColour* GetOptionByName(HighlightLanguage lang, const wxString& name);
         OptionColour* GetOptionByValue(HighlightLanguage lang, int value);
         OptionColour* GetOptionByIndex(HighlightLanguage lang, int index);
+
         void UpdateOptionsWithSameName(HighlightLanguage lang, OptionColour* base);
         int GetOptionCount(HighlightLanguage lang);
+
         HighlightLanguage GetLanguageForFilename(const wxString& filename);
         wxString GetLanguageName(HighlightLanguage lang);
         wxString GetName(){ return m_Name; }
         void SetName(const wxString& name){ m_Name = name; }
+
         HighlightLanguage Apply(cbEditor* editor, HighlightLanguage lang=HL_AUTO);
         void Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC = false);
         void Save();
         void Reset(HighlightLanguage lang);
+
         wxString& GetKeywords(HighlightLanguage lang, int idx);
         void SetKeywords(HighlightLanguage lang, int idx, const wxString& keywords);
+
         const wxArrayString& GetFileMasks(HighlightLanguage lang);
         void SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& = _(","));
+
         wxString GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine);
         void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);
+
         CommentToken GetCommentToken(HighlightLanguage lang);
         void SetCommentToken(HighlightLanguage lang, CommentToken token);
+
         bool GetCaseSensitivity(HighlightLanguage lang);
         void SetCaseSensitivity(HighlightLanguage lang, bool CaseSensitive);
         void SetStringLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
