@@ -376,6 +376,27 @@ int EditorColourSet::GetOptionCount(HighlightLanguage lang)
     return m_Sets[lang].m_Colours.GetCount();
 }
 
+// Encapsulate the getter for the default option. The default option
+// is the option named "Default" and if there is no such option we use
+// the option with value/index equal to 0.
+OptionColour* EditorColourSet::GetDefaultOption(HighlightLanguage lang)
+{
+    if (lang == HL_NONE)
+        return nullptr;
+
+    OptionSet& mset = m_Sets[lang];
+    OptionColour *defaultOpt = nullptr;
+    for (size_t i = 0; i < mset.m_Colours.GetCount(); ++i)
+    {
+        OptionColour* opt = mset.m_Colours.Item(i);
+        if (opt->name == wxT("Default"))
+            return opt;
+        if (opt->value == 0)
+            defaultOpt = opt;
+    }
+    return defaultOpt;
+}
+
 HighlightLanguage EditorColourSet::GetLanguageForFilename(const wxString& filename)
 {
     // convert filename to lowercase first (m_FileMasks already contains
@@ -498,7 +519,7 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
         return;
 
     // first load the default colours to all styles used by the actual lexer (ignoring some built-in styles)
-    OptionColour* defaults = GetOptionByName(lang, _T("Default"));
+    OptionColour* defaults = GetDefaultOption(lang);
     OptionSet& mset = m_Sets[lang];
     control->SetLexer(mset.m_Lexers);
     control->SetStyleBits(control->GetStyleBitsNeeded());

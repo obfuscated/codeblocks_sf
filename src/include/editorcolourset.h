@@ -132,13 +132,14 @@ class EditorColourSet
         void SetCharacterLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
         void SetPreprocessorLexerStyles(HighlightLanguage lang, const std::set<int> &styles);
 
-    protected:
-
     private:
         void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColour* option);
         void LoadAvailableSets();
         void Load();
         void ClearAllOptionColours();
+
+        OptionColour* GetDefaultOption(HighlightLanguage lang);
+
 
         wxString m_Name;
         OptionSetsMap m_Sets;
