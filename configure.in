@@ -468,6 +468,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxContribItems/wxled/gizmosled/include/wx/gizmos/Makefile
 	src/plugins/contrib/wxContribItems/wxled/lcdWindow/include/wx/Makefile
 	src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
+	src/plugins/contrib/wxContribItems/wxled/led/include/xrc/Makefile
 	src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/wxsmith.pc
