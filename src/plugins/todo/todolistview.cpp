@@ -680,7 +680,9 @@ void CheckListDialog::OkOnButtonClick(cb_unused wxCommandEvent& event)
 
 bool CheckListDialog::IsChecked(wxString item)
 {
-    return m_checkList->IsChecked(m_checkList->FindString(item, true));
+    int result = m_checkList->FindString(item, true);
+    result = (result == wxNOT_FOUND) ? 0 : result;
+    return m_checkList->IsChecked(result);
 }
 
 wxArrayString CheckListDialog::GetChecked()
