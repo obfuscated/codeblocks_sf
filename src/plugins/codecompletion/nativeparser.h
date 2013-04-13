@@ -335,6 +335,13 @@ private:
      */
     bool ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
+    /** collect the using namespace directive in the buffer specified by searchData
+     * @param buffer code to parse
+     * @param search_scope resulting tokens collection
+     * @param bufferSkipBlocks skip brace sets { }
+     */
+    bool ParseBufferForUsingNamespace(const wxString& buffer, TokenIdxSet& search_scope, bool bufferSkipBlocks = true);
+
     /** collect function argument, add them to the token tree (as temporary tokens)
      * @param searchData search location
      * @param caretPos caret position, if not specified, we use the current caret position
@@ -343,9 +350,10 @@ private:
 
     /** parses from the start of function up to the cursor, this is used to collect local variables.
      * @param searchData search location
+     * @param search_scope resulting tokens collection of local using namespace
      * @param caretPos caret position, if not specified, we use the current caret position
      */
-    bool ParseLocalBlock(ccSearchData* searchData, int caretPos = -1);
+    bool ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
     /** collect the compiler default header file search directories */
     bool AddCompilerDirs(cbProject* project, ParserBase* parser);

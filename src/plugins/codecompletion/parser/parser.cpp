@@ -763,7 +763,7 @@ bool Parser::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& resu
     return success;
 }
 
-bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
+bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result, bool bufferSkipBlocks)
 {
     ParserThreadOptions opts;
 
@@ -773,6 +773,7 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
     opts.followGlobalIncludes = false;
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = false;
+    opts.bufferSkipBlocks     = bufferSkipBlocks;
 
     opts.storeDocumentation   = m_Options.storeDocumentation;
 

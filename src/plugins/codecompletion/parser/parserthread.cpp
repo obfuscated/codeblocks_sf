@@ -22,6 +22,8 @@
     #include <manager.h>
 #endif
 
+#include <wx/tokenzr.h>
+
 #include "parserthread.h"
 #include "parser.h"
 
@@ -409,7 +411,7 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
             if (!token.IsEmpty())
                 result.Add(token);
         }
-        else if (token==ParserConsts::opbrace)
+        else if (token==ParserConsts::opbrace && m_Options.bufferSkipBlocks)
         {
             SkipBlock();
         }
@@ -769,6 +771,23 @@ void ParserThread::DoParse()
                         else
                             m_LastParent->m_AncestorsString << ParserConsts::comma_chr << m_Str;
                     }
+                    else if(    !m_Str.IsEmpty()
+                             && (m_LastParent == 0 || m_LastParent->m_Index == -1) )
+                    {
+                        // using namespace in global scope
+                        // "using namespace first::second::third;"
+
+                        Token* foundNsToken = nullptr;
+                        wxStringTokenizer tokenizer(m_Str, ParserConsts::dcolon);
+                        while (tokenizer.HasMoreTokens())
+                        {
+                            std::queue<wxString> nsQuqe;
+                            nsQuqe.push(tokenizer.GetNextToken());
+                            foundNsToken = FindTokenFromQueue(nsQuqe, foundNsToken, true, foundNsToken);
+                            foundNsToken->m_TokenKind = tkNamespace;
+                        }
+                        m_UsedNamespacesIds.insert(foundNsToken->m_Index);
+                    }
                 }
                 else
                     SkipToOneOfChars(ParserConsts::semicolonclbrace);
@@ -1120,14 +1139,30 @@ Token* ParserThread::TokenExists(const wxString& name, const Token* parent, shor
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    return m_TokenTree->at(m_TokenTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask));
+
+    // Lookup in local parent or in global scope
+    int foundIdx = m_TokenTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask);
+    if(foundIdx != wxNOT_FOUND)
+        return m_TokenTree->at(foundIdx);
+
+    // Lookup in included namespaces
+    foundIdx = m_TokenTree->TokenExists(name, m_UsedNamespacesIds, kindMask);
+    return m_TokenTree->at(foundIdx);
 }
 
 Token* ParserThread::TokenExists(const wxString& name, const wxString& baseArgs, const Token* parent, TokenKind kind)
 {
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    return m_TokenTree->at(m_TokenTree->TokenExists(name, baseArgs, parent ? parent->m_Index : -1, kind));
+
+    // Lookup in local parent or in global scope
+    int foundIdx = m_TokenTree->TokenExists(name, baseArgs, parent ? parent->m_Index : -1, kind);
+    if(foundIdx != wxNOT_FOUND)
+        return m_TokenTree->at(foundIdx);
+
+    // Lookup in included namespaces
+    foundIdx = m_TokenTree->TokenExists(name, baseArgs, m_UsedNamespacesIds, kind);
+    return m_TokenTree->at(foundIdx);
 }
 
 wxString ParserThread::GetTokenBaseType()

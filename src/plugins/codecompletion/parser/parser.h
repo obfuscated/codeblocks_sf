@@ -164,7 +164,8 @@ public:
                              cb_unused int parentIdx = -1, cb_unused int initLine = 0)                          { return false; }
     virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                      { return false; }
     virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result)     { return false; }
-    virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result){ return false; }
+    virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result,
+                                              cb_unused bool bufferSkipBlocks = true)                           { return false; }
 
     virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true)                              { return false; }
     virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true){ return false; }
@@ -275,7 +276,7 @@ public:
                              int parentIdx = -1, int initLine = 0);
     virtual bool ParseBufferForFunctions(const wxString& buffer);
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
-    virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
+    virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result, bool bufferSkipBlocks = true);
 
     virtual bool Reparse(const wxString& filename, bool isLocal = true);
     virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true);

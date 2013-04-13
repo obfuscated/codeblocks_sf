@@ -79,6 +79,7 @@ public:
     wxString                     m_Name;     // Token's name, it can be searched in the TokenTree
     wxString                     m_Args;     // If it is a function Token, then this value is function arguments
                                              // e.g.   (int arg1 = 10, float arg2 = 9.0)
+                                             // If it is an enumerator, then this is the assigned (inferred) value
     wxString                     m_BaseArgs; // stripped arguments e.g. (int arg1, float arg2)
 
     wxString                     m_AncestorsString; // all ancestors comma-separated list

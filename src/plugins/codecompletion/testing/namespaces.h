@@ -12,6 +12,11 @@ namespace my_namespace
     int* m_Int1;
     int* m_Int2;
   };
+
+  namespace nested_namespace
+  {
+    bool variable;
+  }
 }
 
 #define DLLIMPORT __declspec (dllexport)

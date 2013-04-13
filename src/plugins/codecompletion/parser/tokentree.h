@@ -61,6 +61,8 @@ public:
 
     int    TokenExists(const wxString& name, int parent, short int kindMask);
     int    TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind);
+    int    TokenExists(const wxString& name, const TokenIdxSet& parents, short int kindMask);
+    int    TokenExists(const wxString& name, const wxString& baseArgs, const TokenIdxSet& parents, TokenKind kind);
     size_t FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask = tkUndefined);
     size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
     void   RemoveFile(const wxString& filename);

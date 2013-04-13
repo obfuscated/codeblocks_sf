@@ -822,7 +822,7 @@ size_t NativeParser::MarkItemsByAI(ccSearchData* searchData,
     ParseFunctionArguments(searchData, caretPos);
 
     // parse current code block (from the start of function up to the cursor)
-    ParseLocalBlock(searchData, caretPos);
+    ParseLocalBlock(searchData, search_scope, caretPos);
 
     if (!reallyUseAI)
     {
@@ -1675,14 +1675,20 @@ bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& se
         CCLogger::Get()->DebugLog(_T("ParseUsingNamespace() Parse file scope for \"using namespace\""));
     TRACE(_T("NativeParser::ParseUsingNamespace()"));
 
-    wxArrayString ns;
     int pos = caretPos == -1 ? searchData->control->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > searchData->control->GetLength())
         return false;
 
     // Get the buffer from begin of the editor to the current caret position
     wxString buffer = searchData->control->GetTextRange(0, pos);
-    m_Parser->ParseBufferForUsingNamespace(buffer, ns);
+
+    return ParseBufferForUsingNamespace(buffer, search_scope);
+}
+
+bool NativeParser::ParseBufferForUsingNamespace(const wxString& buffer, TokenIdxSet& search_scope, bool bufferSkipBlocks)
+{
+    wxArrayString ns;
+    m_Parser->ParseBufferForUsingNamespace(buffer, ns, bufferSkipBlocks);
 
     TokenTree* tree = m_Parser->GetTokenTree();
 
@@ -1821,7 +1827,7 @@ bool NativeParser::ParseFunctionArguments(ccSearchData* searchData, int caretPos
     return true;
 }
 
-bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
+bool NativeParser::ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos)
 {
     if (s_DebugSmartSense)
         CCLogger::Get()->DebugLog(_T("ParseLocalBlock() Parse local block"));
@@ -1934,6 +1940,9 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, int caretPos)
         buffer.Prepend(stc->GetTextRange(blockStart, scanPos));
 
         buffer.Trim();
+
+        ParseBufferForUsingNamespace(buffer, search_scope, false);
+
         if (   !buffer.IsEmpty()
             && !m_Parser->ParseBuffer(buffer, false, false, true, searchData->file, m_LastFuncTokenIdx, initLine) )
         {

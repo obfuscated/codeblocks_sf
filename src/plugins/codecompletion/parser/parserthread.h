@@ -404,6 +404,11 @@ private:
       */
     std::queue<wxString> m_EncounteredTypeNamespaces;
 
+    /** globally included namespaces
+     *  by "using namespace" statement
+     */
+    TokenIdxSet          m_UsedNamespacesIds;
+
     /** TODO: describe me here*/
     wxString             m_LastUnnamedTokenName;
 
