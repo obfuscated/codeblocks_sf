@@ -304,6 +304,7 @@ EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 void EnvironmentSettingsDlg::AddPluginPanels()
 {
     const wxString base = _T("images/settings/");
+    // for plugins who do not supply icons, use common generic icons
     const wxString noimg = _T("images/settings/generic-plugin");
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
@@ -357,12 +358,6 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
     // set page images according to their on/off status
     for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
         lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
-
-    // the selection colour is ruining the on/off effect,
-    // so make sure no item is selected ;)
-    // (only if we have icons showing)
-    if (GetSettingsIconsStyle(lb->GetListView()) != sisNoIcons)
-        lb->GetListView()->Select(sel, false);
 
     // update the page title
     wxString label = lb->GetPageText(sel);

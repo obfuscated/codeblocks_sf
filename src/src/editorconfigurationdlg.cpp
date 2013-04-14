@@ -309,6 +309,7 @@ EditorConfigurationDlg::~EditorConfigurationDlg()
 void EditorConfigurationDlg::AddPluginPanels()
 {
     const wxString base = _T("images/settings/");
+    // for plugins who do not supply icons, use common generic icons
     const wxString noimg = _T("images/settings/generic-plugin");
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
@@ -345,12 +346,6 @@ void EditorConfigurationDlg::UpdateListbookImages()
     {
         lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
     }
-
-    // the selection colour is ruining the on/off effect,
-    // so make sure no item is selected ;)
-    // (only if we have icons showing)
-    if (GetSettingsIconsStyle(lb->GetListView()) != sisNoIcons)
-        lb->GetListView()->Select(sel, false);
 
     // update the page title
     wxString label = lb->GetPageText(sel);
