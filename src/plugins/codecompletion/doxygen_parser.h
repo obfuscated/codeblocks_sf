@@ -128,48 +128,7 @@ namespace Doxygen
 }//namespace Doxygen
 
 
-//imported with small changes from PlatWX.cpp
-class UnfocusablePopupWindow :
-#if wxUSE_POPUPWIN
-    public wxPopupWindow
-{
-public:
-    typedef wxPopupWindow BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = wxBORDER_NONE) :
-        wxPopupWindow(parent, style)
-#else
-     public wxFrame
-{
-public:
-    typedef wxFrame BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = 0) :
-        wxFrame(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                style | wxFRAME_NO_TASKBAR | wxFRAME_FLOAT_ON_PARENT | wxNO_BORDER | wxFRAME_SHAPED
-#ifdef __WXMAC__
-                | wxPOPUP_WINDOW
-#endif
-            )
-#endif // wxUSE_POPUPWIN
-    {
-        Hide();
-    }
-
-    bool Destroy();
-
-    void OnFocus(wxFocusEvent& event);
-
-    void ActivateParent();
-
-    virtual void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO);
-
-    virtual bool Show(bool show = true);
-
-private:
-    DECLARE_EVENT_TABLE()
-};
-
+class UnfocusablePopupWindow;
 
 class DocumentationHelper : public wxEvtHandler
 {
