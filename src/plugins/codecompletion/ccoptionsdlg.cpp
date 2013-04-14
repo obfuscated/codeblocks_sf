@@ -395,6 +395,7 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkDetectImpl",                 wxCheckBox)->Enable(en && aap);
     XRCCTRL(*this, "chkAddDoxgenComment",           wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkEnableHeaders",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkNoSemantic",                 wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoLaunch",                 wxCheckBox)->Enable(en);
     XRCCTRL(*this, "spnAutoLaunchChars",            wxSpinCtrl)->Enable(en && al);
     XRCCTRL(*this, "lblMaxMatches",                 wxStaticText)->Enable(en);
