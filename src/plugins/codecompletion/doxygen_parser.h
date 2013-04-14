@@ -73,53 +73,33 @@ namespace Doxygen
     struct DoxygenParser
     {
         static const wxString Keywords[];
-
         static const int KwCount;
-
         static const wxString NewLineReplacment;
-
 
         DoxygenParser();
 
         int FindNextKeyword(const wxString& doc);
-
         int GetArgument(const wxString& doc, int range, wxString& output);
-
         int GetPosition() const;
-
         void ReplaceInDoc(wxString& doc, size_t start, size_t count, const wxString& str);
-
         void ReplaceCurrentKeyword(wxString& doc, const wxString& str);
 
     protected:
-
         int CheckKeyword(const wxString& doc);
-
         int GetParagraphArgument(const wxString& doc, wxString& output);
-
         void GetWordArgument(const wxString& doc, wxString& output);
-
         void GetBlockArgument(const wxString& doc, wxString& output);
-
         int GetLineArgument(const wxString& doc, wxString& output);
-
-
         bool IsKeywordBegin(const wxString& doc) const;
-
         bool IsOneOf(wxChar c, const wxChar* chars) const;
 
     protected:
-
         bool IsEnd(const wxString& doc) const;
-
         int GetEndLine(const wxString& doc) const;
-
         //! \return true if m_Pos has changed
         bool SkipDecorations(const wxString& doc);
-
         //! \return true if m_Pos has changed
         bool HandleNewLine(const wxString& doc, wxString& output, const wxString& replaceWith = NewLineReplacment);
-
 
         int m_FoundKw;   // index to Keywors array
         int m_Pos;          // index to doc
@@ -148,18 +128,12 @@ public:
 
     //helper functions:
     static wxString DoxygenToHTML(const wxString& doc);
-
     static wxString ConvertTypeToAnchor(wxString fullType);
-
     static wxString ConvertArgsToAnchors(wxString args);
-
     /*! returns argument base type */
     static wxString ExtractTypeAndName(wxString type, wxString* outName = 0);
-
     static wxString CommandToAnchor(Command cmd, const wxString& name, const wxString* args = 0);
-
     static wxString CommandToAnchorInt(Command cmd, const wxString& name, int arg0);
-
     static Command HrefToCommand(const wxString& href, wxString& args);
 
     static const wxChar   separatorTag;
@@ -168,70 +142,50 @@ public:
     struct Options
     {
         Options();
+
         bool m_Enabled;
         bool m_ShowAlways;
     };
 
     DocumentationHelper(CodeCompletion* cc);
-
     ~DocumentationHelper();
 
     void Hide();
-
     void OnAttach();
-
     void OnRelease();
-
     bool ShowDocumentation(const wxString& html);
-
     wxString GenerateHTML(int tokenIdx, TokenTree* tree);
-
     wxString GenerateHTML(const TokenIdxSet& tokensIdx, TokenTree* tree);
-
     void OnSelectionChange(wxListEvent& event);
-
     void ResetSize(const wxSize& size);
-
     bool IsAttached() const;
-
     bool IsVisible() const;
-
     void RereadOptions(ConfigManager* cfg);
-
     void WriteOptions(ConfigManager* cfg);
 
-    Options& Options() { return m_Opts; }
+    Options& GetOptions() { return m_Opts; }
 
 protected:
     void SaveTokenIdx();
-
     void FitToContent();
-
     //events:
     void OnCbEventHide(CodeBlocksEvent& event);
-
     void OnWxEventHide(wxEvent& event);
-
 public:
     void OnLink(wxHtmlLinkEvent& event);
 
     /*Members:*/
 protected:
     UnfocusablePopupWindow* m_Popup;
-
     wxHtmlWindow* m_Html;
-
     /** Pointer to CodeComplete object */
     CodeCompletion* m_CC;
-
     /** Documentation of which token was previously displayed */
     int m_CurrentTokenIdx, m_LastTokenIdx;
-
     wxPoint     m_Pos;
     wxSize      m_Size;
-
     // User options
-    class Options m_Opts;
+    Options m_Opts;
 
     DECLARE_EVENT_TABLE()
 };

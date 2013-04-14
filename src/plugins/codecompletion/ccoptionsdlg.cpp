@@ -182,8 +182,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkTreeMembers",        wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().treeMembers);
 
     // Page Documentation
-    XRCCTRL(*this, "chkDocumentation",      wxCheckBox)->SetValue(m_Documentation->Options().m_Enabled);
-    XRCCTRL(*this, "chkDocPopupAlways",     wxCheckBox)->SetValue(m_Documentation->Options().m_ShowAlways);
+    XRCCTRL(*this, "chkDocumentation",      wxCheckBox)->SetValue(m_Documentation->GetOptions().m_Enabled);
+    XRCCTRL(*this, "chkDocPopupAlways",     wxCheckBox)->SetValue(m_Documentation->GetOptions().m_ShowAlways);
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     XRCCTRL(*this, "btnDocBgColor",         wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_back")));
@@ -290,8 +290,8 @@ void CCOptionsDlg::OnApply()
     m_Documentation->RereadOptions(cfg);
 
     m_Parser.Options().storeDocumentation    = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
-    m_Documentation->Options().m_Enabled     = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
-    m_Documentation->Options().m_ShowAlways  = XRCCTRL(*this, "chkDocPopupAlways", wxCheckBox)->GetValue();
+    m_Documentation->GetOptions().m_Enabled     = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
+    m_Documentation->GetOptions().m_ShowAlways  = XRCCTRL(*this, "chkDocPopupAlways", wxCheckBox)->GetValue();
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     wxColor colour = XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour();
