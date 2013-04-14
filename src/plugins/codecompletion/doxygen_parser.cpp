@@ -20,6 +20,7 @@
 
 #include "doxygen_parser.h"
 
+#include "cbcolourmanager.h"
 #include "codecompletion.h"
 
 // Doxygen documents parser
@@ -736,44 +737,13 @@ DocumentationHelper::Command DocumentationHelper::HrefToCommand(const wxString& 
     return (Command)(command);
 }
 
-wxString DocumentationHelper::ColorToHTMLString(wxColour col)
-{
-    return wxString::Format(_T("#%02x%02x%02x"), col.Red(), col.Green(), col.Blue());
-}
-
-wxColour DocumentationHelper::ColorFromHTMLString(const wxString& str, wxColour defCol)
-{
-    if (str.size() != 7)
-        return defCol;
-    if (str[0] != _T('#'))
-        return defCol;
-    unsigned long red, green, blue;
-
-    wxString s2 = str.Mid(1,2); // First = 1, Count = 2
-    if (!s2.ToULong(&red,16))
-        return defCol;
-
-    s2 = str.Mid(3,2); // First = 3
-    if (!s2.ToULong(&green,16))
-        return defCol;
-
-    s2 = str.Mid(5,2); // First = 3
-    if (!s2.ToULong(&blue,16))
-        return defCol;
-
-    return wxColour(red,green,blue, 0xff);
-}
-
 const wxChar   DocumentationHelper::separatorTag = _T('+');
 const wxString DocumentationHelper::commandTag = _T("cmd=");
 
 /* DocumentationPopup implementation: */
 DocumentationHelper::Options::Options() :
     m_Enabled(false),
-    m_ShowAlways(false),
-    m_BackgroundColor(_T("#000000")),
-    m_TextColor(_T("#ffffff")),
-    m_LinkColor(_T("#0000ff"))
+    m_ShowAlways(false)
 {
 }
 
@@ -788,6 +758,10 @@ DocumentationHelper::DocumentationHelper(CodeCompletion* cc) :
     m_Size(),
     m_Opts()
 {
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    colours->RegisterColour(_("Code completion"), _("Documentation popup background"), wxT("cc_docs_back"), *wxWHITE);
+    colours->RegisterColour(_("Code completion"), _("Documentation popup text"), wxT("cc_docs_fore"), *wxBLACK);
+    colours->RegisterColour(_("Code completion"), _("Documentation popup link"), wxT("cc_docs_link"), *wxBLUE);
 }
 
 DocumentationHelper::~DocumentationHelper()
@@ -885,11 +859,12 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
 
     if (tokenIdx == -1)
         return wxEmptyString;
+    ColourManager *colours = Manager::Get()->GetColourManager();
 
     wxString html = _T("<html><body bgcolor=\"");
-    html += m_Opts.m_BackgroundColor + _T("\" text=\"");
-    html += m_Opts.m_TextColor + _T("\" link=\"");
-    html += m_Opts.m_LinkColor + _T("\">");
+    html += colours->GetColour(wxT("cc_docs_back")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" text=\"");
+    html += colours->GetColour(wxT("cc_docs_fore")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" link=\"");
+    html += colours->GetColour(wxT("cc_docs_link")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\">");
 
     html += _T("<a name=\"top\"></a>");
 
@@ -1056,11 +1031,11 @@ wxString DocumentationHelper::GenerateHTML(const TokenIdxSet& tokensIdx, TokenTr
 
     if (tokensIdx.size() == 1)
         return GenerateHTML(*tokensIdx.begin(),tree);
-
+    ColourManager *colours = Manager::Get()->GetColourManager();
     wxString html = _T("<html><body bgcolor=\"");
-    html += m_Opts.m_BackgroundColor + _T("\" text=\"");
-    html += m_Opts.m_TextColor + _T("\" link=\"");
-    html += m_Opts.m_LinkColor + _T("\">");
+    html += colours->GetColour(wxT("cc_docs_back")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" text=\"");
+    html += colours->GetColour(wxT("cc_docs_fore")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\" link=\"");
+    html += colours->GetColour(wxT("cc_docs_link")).GetAsString(wxC2S_HTML_SYNTAX) + _T("\">");
 
     html += _T("<a name=\"top\"></a>");
 
@@ -1160,15 +1135,6 @@ void DocumentationHelper::RereadOptions(ConfigManager* cfg)
     m_Opts.m_Enabled = cfg->ReadBool(_T("/use_documentation_helper"), false);
     m_Opts.m_ShowAlways = cfg->ReadBool(_T("/always_show_doc"), false);
 
-    wxColour col = cfg->ReadColour(_T("/documentation_helper_background_color"), *wxWHITE);
-    m_Opts.m_BackgroundColor = ColorToHTMLString(col);
-
-    col = cfg->ReadColour(_T("/documentation_helper_text_color"), *wxBLACK);
-    m_Opts.m_TextColor = ColorToHTMLString(col);
-
-    col = cfg->ReadColour(_T("/documentation_helper_link_color"), *wxBLUE);
-    m_Opts.m_LinkColor = ColorToHTMLString(col);
-
     // Apply changes
     if (m_Opts.m_Enabled)
         OnAttach();
@@ -1183,10 +1149,6 @@ void DocumentationHelper::WriteOptions(ConfigManager* cfg)
 
     cfg->Write(_T("/use_documentation_helper"), m_Opts.m_Enabled);
     cfg->Write(_T("/always_show_doc"),          m_Opts.m_ShowAlways);
-
-    cfg->Write(_T("/documentation_helper_background_color"), ColorFromHTMLString(m_Opts.m_BackgroundColor, *wxWHITE));
-    cfg->Write(_T("/documentation_helper_text_color"),       ColorFromHTMLString(m_Opts.m_TextColor,       *wxBLACK));
-    cfg->Write(_T("/documentation_helper_link_color"),       ColorFromHTMLString(m_Opts.m_LinkColor,       *wxBLUE));
 }
 
 void DocumentationHelper::FitToContent()

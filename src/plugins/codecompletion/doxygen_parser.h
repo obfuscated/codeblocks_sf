@@ -203,10 +203,6 @@ public:
 
     static Command HrefToCommand(const wxString& href, wxString& args);
 
-    static wxString ColorToHTMLString(wxColour col);
-
-    static wxColour ColorFromHTMLString(const wxString& str, wxColour defCol);
-
     static const wxChar   separatorTag;
     static const wxString commandTag;
 
@@ -215,9 +211,6 @@ public:
         Options();
         bool m_Enabled;
         bool m_ShowAlways;
-        wxString m_BackgroundColor;
-        wxString m_TextColor;
-        wxString m_LinkColor;
     };
 
     DocumentationHelper(CodeCompletion* cc);

@@ -33,6 +33,7 @@
 
 #include <editpairdlg.h>
 
+#include "cbcolourmanager.h"
 #include "ccoptionsdlg.h"
 #include "codecompletion.h"
 #include "doxygen_parser.h" // For DocumentationHelper
@@ -183,9 +184,11 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     // Page Documentation
     XRCCTRL(*this, "chkDocumentation",      wxCheckBox)->SetValue(m_Documentation->Options().m_Enabled);
     XRCCTRL(*this, "chkDocPopupAlways",     wxCheckBox)->SetValue(m_Documentation->Options().m_ShowAlways);
-    XRCCTRL(*this, "btnDocBgColor",         wxButton)->SetBackgroundColour(DocumentationHelper::ColorFromHTMLString(m_Documentation->Options().m_BackgroundColor, *wxWHITE));
-    XRCCTRL(*this, "btnDocTextColor",       wxButton)->SetBackgroundColour(DocumentationHelper::ColorFromHTMLString(m_Documentation->Options().m_TextColor,       *wxBLACK));
-    XRCCTRL(*this, "btnDocLinkColor",       wxButton)->SetBackgroundColour(DocumentationHelper::ColorFromHTMLString(m_Documentation->Options().m_LinkColor,       *wxBLUE));
+
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    XRCCTRL(*this, "btnDocBgColor",         wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_back")));
+    XRCCTRL(*this, "btnDocTextColor",       wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_fore")));
+    XRCCTRL(*this, "btnDocLinkColor",       wxButton)->SetBackgroundColour(colours->GetColour(wxT("cc_docs_link")));
 
 //    m_Parser.ParseBuffer(g_SampleClasses, true);
 //    m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
@@ -289,9 +292,14 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().storeDocumentation    = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
     m_Documentation->Options().m_Enabled     = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
     m_Documentation->Options().m_ShowAlways  = XRCCTRL(*this, "chkDocPopupAlways", wxCheckBox)->GetValue();
-    m_Documentation->Options().m_BackgroundColor = DocumentationHelper::ColorToHTMLString(XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour());
-    m_Documentation->Options().m_TextColor       = DocumentationHelper::ColorToHTMLString(XRCCTRL(*this, "btnDocTextColor", wxButton)->GetBackgroundColour());
-    m_Documentation->Options().m_LinkColor       = DocumentationHelper::ColorToHTMLString(XRCCTRL(*this, "btnDocLinkColor", wxButton)->GetBackgroundColour());
+
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    wxColor colour = XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour();
+    colours->SetColour(wxT("cc_docs_back"), colour);
+    colour = XRCCTRL(*this, "btnDocTextColor",   wxButton)->GetBackgroundColour();
+    colours->SetColour(wxT("cc_docs_text"), colour);
+    colour = XRCCTRL(*this, "btnDocLinkColor",   wxButton)->GetBackgroundColour();
+    colours->SetColour(wxT("cc_docs_link"), colour);
 
     // Now write the parser options and re-read them again to make sure they are up-to-date
     m_Parser.WriteOptions();
