@@ -27,11 +27,12 @@
 
 #include "annoyingdialog.h"
 #include "prep.h"
-#include <wx/settings.h>
-#include <wx/filedlg.h>
 #include <wx/dirdlg.h>
-#include <wx/progdlg.h>
+#include <wx/filedlg.h>
 #include <wx/html/htmlwin.h>
+#include <wx/progdlg.h>
+#include <wx/settings.h>
+#include <wx/tooltip.h>
 
 #include "pluginsconfigurationdlg.h" // class's header file
 
@@ -115,6 +116,9 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     initialInfo << _T("</font></i><br /></body></html>\n");
 
     XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(initialInfo);
+
+    XRCCTRL(*this, "lstPlugins", wxListCtrl)->Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(PluginsConfigurationDlg::OnMouseMotion));
+    XRCCTRL(*this, "lstPlugins", wxListCtrl)->Connect(wxEVT_MOTION,       wxMouseEventHandler(PluginsConfigurationDlg::OnMouseMotion));
 }
 
 void PluginsConfigurationDlg::FillList()
@@ -140,7 +144,7 @@ void PluginsConfigurationDlg::FillList()
         long idx = list->InsertItem(i, elem->info.title);
         list->SetItem(idx, 1, elem->info.version);
         list->SetItem(idx, 2, elem->plugin->IsAttached() ? _("Yes") : _("No"));
-        list->SetItem(idx, 3, UnixFilename(elem->fileName));
+        list->SetItem(idx, 3, UnixFilename(elem->fileName).AfterLast(wxFILE_SEP_PATH));
         list->SetItemData(idx, (long)elem);
 
         if (!elem->plugin->IsAttached())
@@ -409,6 +413,36 @@ void PluginsConfigurationDlg::OnSelect(cb_unused wxListEvent& event)
     info << _T("</body></html>\n");
 
     XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(info);
+}
+
+void PluginsConfigurationDlg::OnMouseMotion(wxMouseEvent& event)
+{
+    event.Skip();
+    wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
+    if (event.Leaving())
+    {
+        if (list->GetToolTip())
+            list->UnsetToolTip();
+        return;
+    }
+    int flags = 0;
+    long idx = list->HitTest(event.GetPosition(), flags);
+    wxString path;
+    if (flags & wxLIST_HITTEST_ONITEM)
+    {
+        const PluginElement* elem = (const PluginElement*)list->GetItemData(idx);
+        if (elem)
+            path = elem->fileName;
+    }
+    if (list->GetToolTip())
+    {
+        if (path.IsEmpty())
+            list->UnsetToolTip();
+        else if (path != list->GetToolTip()->GetTip())
+            list->SetToolTip(path);
+    }
+    else if (!path.IsEmpty())
+        list->SetToolTip(path);
 }
 
 void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
