@@ -3322,16 +3322,32 @@ void MainFrame::OnEditToggleCommentSelected(cb_unused wxCommandEvent& event)
                 --endLine;
             }
 
+            bool doComment = false;
             while( curLine <= endLine )
             {
-                // For each line: If it's commented, uncomment. Otherwise, comment.
+                // Check is any of the selected lines is commented
                 wxString strLine = stc->GetLine( curLine );
                 int commentPos = strLine.Strip( wxString::leading ).Find( comment );
 
-                if ( -1 == commentPos || commentPos > 0 )
+                if (commentPos != 0)
+                {
+                    // At least one line is not commented, so comment the whole selection
+                    // (else if all lines are commented, uncomment the selection)
+                    doComment = true;
+                    break;
+                }
+                ++curLine;
+            }
+
+            curLine = startLine;
+            while( curLine <= endLine )
+            {
+                if (doComment)
                     stc->InsertText( stc->PositionFromLine( curLine ), comment );
                 else
-                {      // we know the comment is there (maybe preceded by white space)
+                {
+                    // we know the comment is there (maybe preceded by white space)
+                    wxString strLine = stc->GetLine( curLine );
                     int Pos = strLine.Find(comment);
                     int start = stc->PositionFromLine( curLine ) + Pos;
                     int end = start + comment.Length();
