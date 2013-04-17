@@ -55,6 +55,7 @@ namespace
     const int idCamelCase                  = wxNewId();
 
     const unsigned int MaxSuggestEntries = 5;
+    const unsigned int GetWordStartsLimit = 30;
     const int idSuggest[MaxSuggestEntries] =
         {static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
     const int idAddToDictionary            = wxNewId();
@@ -309,45 +310,71 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
                     break;
                 }
             }
+            wxMenuItem *item;
             if (insertPos != wxNOT_FOUND)
-                subMenu->Insert(insertPos, idCamelCase, _("CamelCase"));
+                item = subMenu->Insert(insertPos, idCamelCase, _("CamelCase"));
             else
-                subMenu->Append(idCamelCase, _("CamelCase"));
+                item = subMenu->Append(idCamelCase, _("CamelCase"));
+            if( stc->GetSelectedText().IsEmpty() )
+                item->Enable(false);
         }
     }
 
     int pos = stc->GetCurrentPos();
-    stc->GetIndicatorValue();
-    m_wordstart= -1;
+    //stc->GetIndicatorValue();
+    m_wordstart = -1;
     m_wordend = -1;
     m_suggestions.Empty();
+    int wordstart, wordend;
     //Manager::Get()->GetLogManager()->Log( wxString::Format(_T("SpellChecker indicator: %d"), indic) );
     if ( !stc->GetSelectedText().IsEmpty() )
     {
-        menu->AppendSeparator();
-        menu->Append(idSpellCheck, _T("Spelling..."));
+        // take only the first word from the selection
+        wordstart = stc->GetSelectionStart();
+        while ( wordstart < stc->GetLength() )
+        {
+            wxChar ch = stc->GetCharAt(wordstart);
+            if ( !m_pSpellHelper->IsWhiteSpace( ch ))
+                break;
+            //else if ((ch >= _T('A') && ch <= _T('Z'))
+            wordstart++;
+        }
     }
     else if ( stc->IndicatorValueAt( m_pOnlineChecker->GetIndicator(), pos) )
     {
-        // indicator is on -> check if we can find a suggestion or show that there are no suggestions
-        menu->AppendSeparator();
-        wxString misspelledWord;
 
-        int wordstart = pos, wordend = pos;
-        while ( wordstart )
+        wordstart = pos;
+        while ( wordstart > 1 )
         {
-            if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(wordstart-1) ) )
+            wxChar ch = stc->GetCharAt(wordstart-1);
+            if ( m_pSpellHelper->IsWhiteSpace( ch ) )
                 break;
+            else if ( ch >= _T('A') && ch <= _T('Z') )
+            {
+                wordstart--;
+                break;
+            }
             wordstart--;
         }
-        while ( wordend < stc->GetLength() )
-        {
-            if ( m_pSpellHelper->IsWhiteSpace( stc->GetCharAt(++wordend) ) )
-                break;
-        }
+    }
+    wordend = wordstart;
+    while ( wordend < stc->GetLength()-1 )
+    {
+        wxChar ch = stc->GetCharAt(++wordend);
+        if ( (ch >= _T('A') && ch <= _T('Z')) || m_pSpellHelper->IsWhiteSpace( ch ) )
+            break;
+    }
+
+    wxString misspelledWord;
+    if ( wordend - wordstart > 0 && wordend != -1)
         misspelledWord = stc->GetTextRange(wordstart, wordend);
+
+    if ( !misspelledWord.IsEmpty() )
+    {
         m_wordstart = wordstart;
         m_wordend   = wordend;
+
+        menu->AppendSeparator();
 
         m_suggestions = m_pSpellChecker->GetSuggestions( misspelledWord );
         if ( m_suggestions.size() )
@@ -479,8 +506,8 @@ void SpellCheckerPlugin::OnCamelCase(cb_unused wxCommandEvent &event)
 
     if (selend - selstart < 4) // too small
         return;
-    else if (selend - selstart > 30) // max limit (DoGetWordStarts() is recursive, so watch out)
-        selend = selstart + 30;
+    else if (selend - selstart > GetWordStartsLimit) // max limit (DoGetWordStarts() is recursive, so watch out)
+        selend = selstart + GetWordStartsLimit;
 
     wxString text = stc->GetTextRange(selstart, selend);
     wxArrayString prefixes = GetArrayFromString(wxT("Get;Set;Do;On;Is;wx"));
