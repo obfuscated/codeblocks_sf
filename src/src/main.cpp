@@ -640,6 +640,8 @@ MainFrame::~MainFrame()
     delete m_pAccel;
 
     DeInitPrinting();
+
+    delete m_debuggerMenuHandler;
 }
 
 void MainFrame::RegisterEvents()
