@@ -3634,7 +3634,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                 units = _("MB");
             }
             wxString msg;
-            msg.Printf(_("Output size is %.2f %s"), displaySize, units.wx_str());
+            msg.Printf(_("Output file is %s with size %.2f %s"), oFile.wx_str(), displaySize, units.wx_str());
             LogMessage(msg, cltNormal);
         }
     }
