@@ -1207,42 +1207,6 @@ void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
                     (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnHelpPluginMenu);
 }
 
-void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
-{
-    //Manager::Get()->GetLogManager()->DebugLog("Unloading %s plugin", pluginName.wx_str());
-    if (pluginName.IsEmpty())
-        return;
-
-    // look for plugin's id
-    wxArrayInt id;
-    PluginIDsMap::iterator it = m_PluginIDsMap.begin();
-    while (it != m_PluginIDsMap.end())
-    {
-        if (pluginName.Matches(it->second))
-        {
-            id.Add(it->first);
-            PluginIDsMap::iterator it2 = it;
-            ++it;
-            m_PluginIDsMap.erase(it2);
-        }
-        else
-            ++it;
-    }
-    //Manager::Get()->GetLogManager()->DebugLog("id=%d", id);
-    if (id.GetCount() == 0)
-        return; // not found
-
-    for (unsigned int i = 0; i < id.GetCount(); ++i)
-    {
-        Disconnect( id[i],  wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &MainFrame::OnPluginsExecuteMenu );
-        m_PluginIDsMap.erase(id[i]);
-        m_PluginsMenu->Delete(id[i]);
-        m_HelpPluginsMenu->Delete(id[i]);
-    }
-}
-
 void MainFrame::LoadWindowState()
 {
     wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));

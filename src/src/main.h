@@ -299,7 +299,6 @@ class MainFrame : public wxFrame
         void AddPluginInPluginsMenu(cbPlugin* plugin);
         void AddPluginInHelpPluginsMenu(cbPlugin* plugin);
         wxMenuItem* AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1, bool checkable = false);
-        void RemovePluginFromMenus(const wxString& pluginName);
 
         void LoadViewLayout(const wxString& name, bool isTemp = false);
         void SaveViewLayout(const wxString& name, const wxString& layout, const wxString& layoutMP, bool select = false);
