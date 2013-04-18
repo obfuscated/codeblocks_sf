@@ -179,6 +179,10 @@
                                    since skip skipline struct subsection test throw todo typedef
                                    union until var verbatim verbinclude version warning weakgroup
                                    $ @ \ & < > # { }"/>
+                        <!-- wxSmith block identifiers -->
+                        <Set index="5"
+                            value="^AppHeaders ^AppInitialize ^Declarations ^Destroy ^EventTable ^Handlers
+                                   ^Headers ^IdInit ^Identifiers ^Initialize ^InternalHeaders"/>
                 </Keywords>
                 <SampleCode value="lexer_cpp.sample"
                         breakpoint_line="20"

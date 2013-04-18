@@ -253,6 +253,9 @@ static const char *const cppWordLists[] = {
             "Documentation comment keywords",
             "Global classes and typedefs",
             "Preprocessor definitions",
+/* C::B begin */
+            "wxSmith block identifiers",
+/* C::B end */
             0,
 };
 
@@ -332,6 +335,9 @@ class LexerCPP : public ILexer {
 	WordList keywords3;
 	WordList keywords4;
 	WordList ppDefinitions;
+/* C::B begin */
+	WordList wxSmithIds;
+/* C::B end */
 	std::map<std::string, std::string> preprocessorDefinitionsStart;
 	OptionsCPP options;
 	OptionSetCPP osCPP;
@@ -419,6 +425,11 @@ int SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	case 4:
 		wordListN = &ppDefinitions;
 		break;
+/* C::B begin */
+	case 5:
+		wordListN = &wxSmithIds;
+		break;
+/* C::B end */
 	}
 	int firstModification = -1;
 	if (wordListN) {
@@ -852,7 +863,7 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC|activitySet);
 /* C::B begin */
-				else if (sc.Match("//(*") && options.highlightWxSmith) {
+				else if (sc.Match("//(*") && options.highlightWxSmith && wxSmithIds.InList(GetRestOfLine(styler, sc.currentPos + 4, true).c_str())) {
 					// Support for wxSmith auto-generated code
 					sc.SetState(SCE_C_WXSMITH|activitySet);
 					sc.Forward(4);
