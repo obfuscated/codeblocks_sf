@@ -642,6 +642,7 @@ MainFrame::~MainFrame()
     DeInitPrinting();
 
     delete m_debuggerMenuHandler;
+    delete m_debuggerToolbarHandler;
 }
 
 void MainFrame::RegisterEvents()
