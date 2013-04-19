@@ -35,7 +35,7 @@
     <Switch name="linkerNeedsLibPrefix"    value="false"/>
     <Switch name="linkerNeedsLibExtension" value="false"/>
     <Switch name="supportsPCH"             value="true"/>
-    <Switch name="PCHExtension"            value="h.gch"/>
+    <Switch name="PCHExtension"            value="gch"/>
     <Switch name="UseFullSourcePaths"      value="true"/>
 
     <!-- Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html -->

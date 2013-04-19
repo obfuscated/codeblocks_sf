@@ -599,7 +599,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT35">
-												<label>PCH extension (e.g. h.gch)</label>
+												<label>PCH extension (e.g. gch)</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>

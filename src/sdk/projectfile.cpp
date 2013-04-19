@@ -186,9 +186,12 @@ void ProjectFile::SetObjName(const wxString& name)
         if (compiler && compiler->GetSwitches().supportsPCH)
         {
             // PCHs are always using the extended name mode (at least for GCC)
-            // the extension is set to "h.gch"
+            // the extension is set to "h.gch" for .h files
             if (project->GetModeForPCH() == pchSourceFile)
                 fname.Assign(relativeFilename);
+            // Make the current file extension part of the filename
+            fname.SetName(fname.GetFullName());
+            // PCHExtension will contain, for example, 'gch'
             fname.SetExt(compiler->GetSwitches().PCHExtension);
             m_ObjName = fname.GetFullPath();
         }
@@ -382,7 +385,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
 
                 wxFileName fn(source_file_native);
                 object_file_native = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
-                                    fn.GetName() + _T('.') + compiler->GetSwitches().PCHExtension +
+                                    fn.GetFullName() + _T('.') + compiler->GetSwitches().PCHExtension +
                                     wxFILE_SEP_PATH +
                                     new_gch;
                 object_file_flat_native = object_file_native;

@@ -42,7 +42,7 @@ const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~[:alnum:]&_:+/\\
 // when this is different from what is saved in the config, a message appears
 // to the user saying that default settings have changed and asks him if he wants to
 // use his own settings or the new defaults
-const wxString CompilerSettingsVersion = _T("0.0.2");
+const wxString CompilerSettingsVersion = _T("0.0.3");
 
 const wxString EmptyString;
 
@@ -65,7 +65,7 @@ CompilerSwitches::CompilerSwitches()
     linkerNeedsLibExtension = false;
     linkerNeedsPathResolved = false;
     supportsPCH             = true;
-    PCHExtension            = _T("h.gch");
+    PCHExtension            = _T("gch");
     UseFlatObjects          = false;
     UseFullSourcePaths      = false;
     Use83Paths              = false;
