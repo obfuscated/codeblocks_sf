@@ -433,7 +433,7 @@ void PluginsConfigurationDlg::OnMouseMotion(wxMouseEvent& event)
     {
         const PluginElement* elem = (const PluginElement*)list->GetItemData(idx);
         if (elem)
-            path = UnixFilename(elem->fileName);
+            path = elem->fileName;
     }
     if (list->GetToolTip())
     {
