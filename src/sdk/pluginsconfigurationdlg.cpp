@@ -164,7 +164,8 @@ void PluginsConfigurationDlg::FillList()
 // class destructor
 PluginsConfigurationDlg::~PluginsConfigurationDlg()
 {
-    // insert your code here
+    XRCCTRL(*this, "lstPlugins", wxListCtrl)->Disconnect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(PluginsConfigurationDlg::OnMouseMotion));
+    XRCCTRL(*this, "lstPlugins", wxListCtrl)->Disconnect(wxEVT_MOTION,       wxMouseEventHandler(PluginsConfigurationDlg::OnMouseMotion));
 }
 
 void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
@@ -432,7 +433,7 @@ void PluginsConfigurationDlg::OnMouseMotion(wxMouseEvent& event)
     {
         const PluginElement* elem = (const PluginElement*)list->GetItemData(idx);
         if (elem)
-            path = elem->fileName;
+            path = UnixFilename(elem->fileName);
     }
     if (list->GetToolTip())
     {
