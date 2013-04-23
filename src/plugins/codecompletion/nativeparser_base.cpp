@@ -621,7 +621,10 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
     while (   (nest > 0)
            && (startAt < line.Len()) )
     {
-        if (line.GetChar(startAt) == ')')
+        // TODO: handle nested scope resolution (A::getC()).|
+        if (line.GetChar(startAt) == '(')
+            ++nest;
+        else if (line.GetChar(startAt) == ')')
             --nest;
         ++startAt;
     }
