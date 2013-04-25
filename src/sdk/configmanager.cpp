@@ -207,7 +207,7 @@ wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
 #else
     wxString u(wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + filename);
 #endif
-    wxString e(::DetermineExecutablePath() + wxFILE_SEP_PATH +filename);
+    wxString e(::DetermineExecutablePath() + wxFILE_SEP_PATH + filename);
 
     if (::wxFileExists(e))
     {
@@ -515,19 +515,19 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
         case sdPluginsGlobal:
 #ifndef CB_AUTOCONF
-            return ConfigManager::data_path_global + _T("/plugins");
+            return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("plugins");
 #else
             return ConfigManager::plugin_path_global;
 #endif
 
         case sdPluginsUser:
-            return ConfigManager::data_path_user   + _T("/plugins");
+            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("plugins");
 
         case sdScriptsGlobal:
-            return ConfigManager::data_path_global + _T("/scripts");
+            return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("scripts");
 
         case sdScriptsUser:
-            return ConfigManager::data_path_user   + _T("/scripts");
+            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("scripts");
 
         case sdDataGlobal:
             return ConfigManager::data_path_global;
@@ -1442,12 +1442,14 @@ void ConfigManager::InitPaths()
     if (data_path_global.IsEmpty())
     {
         if (platform::windows)
-            ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
+            ConfigManager::data_path_global = app_path + _T("\\share\\codeblocks");
         else if (platform::macosx)
             ConfigManager::data_path_global = res_path + _T("/share/codeblocks");
         else
             ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
     }
+    else
+        ConfigManager::data_path_global = UnixFilename(data_path_global);
 #ifdef CB_AUTOCONF
     if (plugin_path_global.IsEmpty())
     {
@@ -1469,7 +1471,7 @@ void ConfigManager::InitPaths()
     }
 #endif
 
-    ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + _T("/share/codeblocks");
+    ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
 
     CreateDirRecursively(ConfigManager::config_folder);
     CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
