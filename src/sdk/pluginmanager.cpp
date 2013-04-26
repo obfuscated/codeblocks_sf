@@ -986,7 +986,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
         m_pCurrentlyLoadingManifestDoc = 0;
         if (ReadManifestFile(filename))
         {
-            if (LoadPlugin(path + _T('/') + filename))
+            if (LoadPlugin(path + wxFILE_SEP_PATH + filename))
                 ++count;
             else
                 failed << _T('\n') << filename;
