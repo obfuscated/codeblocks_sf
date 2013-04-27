@@ -91,9 +91,6 @@ void CompilerCommandGenerator::Init(cbProject* project)
             if (m_PrjIncPath.Last() == _T('\\'))
                 m_PrjIncPath.RemoveLast();
             QuoteStringIfNeeded(m_PrjIncPath);
-            m_PrjIncPath.Prepend(compiler->GetSwitches().includeDirs);
-            if (compiler->GetSwitches().includeDirs.EndsWith(_T("("))) // special handling for "INCDIR(path1;path2)" style includes
-                m_PrjIncPath.Append(_T(')'));
         }
     }
 
