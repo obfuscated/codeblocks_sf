@@ -296,6 +296,7 @@ wxString wxsAuiPaneInfoExtra::AllParamsCode(wxsCoderContext* Ctx,wxsItem* ChildP
 
                 case ToolbarPane:
                     str << _T(".ToolbarPane()");
+                    break;
 
                 case DefaultPane: // fall-though
                 default:
@@ -394,6 +395,7 @@ wxAuiPaneInfo wxsAuiPaneInfoExtra::GetPaneInfoFlags(wxWindow* Parent,wxsItem* Ch
 
         case ToolbarPane:
             PaneInfo.ToolbarPane();
+            break;
 
         case DefaultPane: // fall-though
         default:
