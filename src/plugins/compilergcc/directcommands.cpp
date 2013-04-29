@@ -701,15 +701,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         {
             // -----------------------------------------
             // Following lines have been modified for OpenWatcom
-            if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)
+            if (IsOpenWatcom && target->GetTargetType() == ttStaticLib)
             {
                 if (subseq)
                 {
-                    linkfiles << _T(",");
-                    FlatLinkFiles << _T(",");
+                    linkfiles << _T(" ");
+                    FlatLinkFiles << _T(" ");
                 }
-                linkfiles << prependHack << Object << _T(","); // see QUICK HACK above (prependHack)
-                FlatLinkFiles << prependHack << pfd.object_file_flat << _T(","); // see QUICK HACK above (prependHack)
+                linkfiles << prependHack << Object; // see QUICK HACK above (prependHack)
+                FlatLinkFiles << prependHack << pfd.object_file_flat; // see QUICK HACK above (prependHack)
             }
             else
             {

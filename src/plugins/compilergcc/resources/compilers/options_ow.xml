@@ -22,6 +22,7 @@
     <Switch name="libExtension"            value="lib"/>
     <Switch name="linkerNeedsLibPrefix"    value="false"/>
     <Switch name="linkerNeedsLibExtension" value="true"/>
+    <Switch name="objectSeparator"         value=","/>
 
     <Option name="treat source files as C code"
             option="-cc"/>

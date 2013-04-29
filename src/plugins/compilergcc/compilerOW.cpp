@@ -40,6 +40,7 @@ Compiler * CompilerOW::CreateCopy()
 
 CompilerCommandGenerator* CompilerOW::GetCommandGenerator(cbProject *project)
 {
+    // also see hack in: DirectCommands::GetTargetLinkCommands()
     CompilerOWGenerator *generator = new CompilerOWGenerator;
     generator->Init(project);
     return generator;
