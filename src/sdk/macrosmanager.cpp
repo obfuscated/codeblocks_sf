@@ -43,6 +43,9 @@ template<> bool  Mgr<MacrosManager>::isShutdown = false;
 
 static const wxString const_COIN(_T("COIN"));
 static const wxString const_RANDOM(_T("RANDOM"));
+static const wxString toNativePath(_T("$TO_NATIVE_PATH{"));
+static const wxString toUnixPath(_T("$TO_UNIX_PATH{"));
+static const wxString toWindowsPath(_T("$TO_WINDOWS_PATH{"));
 
 MacrosManager::MacrosManager()
 {
@@ -490,6 +493,31 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(search, replace, false);
     }
 
+    int index = wxNOT_FOUND;
+    while ((index = buffer.Index(toNativePath)) != wxNOT_FOUND)
+    {
+        int end = MatchBrace(buffer, index + toNativePath.Length() - 1);
+        wxString content = buffer.Mid(index + toNativePath.Length(), end - index - toNativePath.Length());
+        ReplaceMacros(content, target, true);
+        buffer.Replace(buffer.Mid(index, end - index + 1), UnixFilename(content), false);
+    }
+
+    while ((index = buffer.Index(toUnixPath)) != wxNOT_FOUND)
+    {
+        int end = MatchBrace(buffer, index + toUnixPath.Length() - 1);
+        wxString content = buffer.Mid(index + toUnixPath.Length(), end - index - toUnixPath.Length());
+        ReplaceMacros(content, target, true);
+        buffer.Replace(buffer.Mid(index, end - index + 1), UnixFilename(content, wxPATH_UNIX), false);
+    }
+
+    while ((index = buffer.Index(toWindowsPath)) != wxNOT_FOUND)
+    {
+        int end = MatchBrace(buffer, index + toWindowsPath.Length() - 1);
+        wxString content = buffer.Mid(index + toWindowsPath.Length(), end - index - toWindowsPath.Length());
+        ReplaceMacros(content, target, true);
+        buffer.Replace(buffer.Mid(index, end - index + 1), UnixFilename(content, wxPATH_WIN), false);
+    }
+
     while (m_RE_RemoveQuotes.Matches(buffer))
     {
         search = m_RE_RemoveQuotes.GetMatch(buffer, 0);
@@ -624,4 +652,20 @@ wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& t
         condCode = NE;
 
     return condCode & compare ? true_clause : false_clause;
+}
+
+int MacrosManager::MatchBrace(const wxString& buffer, int index)
+{
+    int depth = 0;
+    while (index < (int)buffer.Length())
+    {
+        if (buffer[index] == wxT('{'))
+            ++depth;
+        else if (buffer[index] == wxT('}'))
+            --depth;
+        if (depth == 0)
+            break;
+        ++index;
+    }
+    return index;
 }
