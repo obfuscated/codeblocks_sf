@@ -298,8 +298,8 @@ class wxsProperty
  * \param Variable name of variable inside class
  */
 #define wxsOFFSET(Class,Variable) \
-    ( (long)(((char*)(&(((Class*)1)->Variable)))) - \
-      (long)(((char*)((wxsPropertyContainer*)((Class*)1)))) )
+    ( (intptr_t)(((char*)(&(((Class*)1)->Variable)))) - \
+      (intptr_t)(((char*)((wxsPropertyContainer*)((Class*)1)))) )
 
 /** \brief Macro converting variable offset to value
  *
