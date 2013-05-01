@@ -30,7 +30,8 @@ wxsLed::wxsLed(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         NULL,
-        flVariable | flId|flEnabled)
+        flVariable | flId|flEnabled),
+        m_State(true)
 {
     //ctor
     m_Disable = wxColour(128,128,128);
