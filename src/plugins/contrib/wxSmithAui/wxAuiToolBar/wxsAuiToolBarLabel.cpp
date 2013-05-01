@@ -50,7 +50,9 @@ namespace
 }
 
 wxsAuiToolBarLabel::wxsAuiToolBarLabel(wxsItemResData* Data)
-    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0)
+    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
+    m_IsDefault(true),
+    m_Width(0)
 {}
 
 void wxsAuiToolBarLabel::OnEnumItemProperties(long Flags)

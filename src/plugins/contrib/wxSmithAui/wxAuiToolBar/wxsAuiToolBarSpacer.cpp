@@ -49,7 +49,10 @@ namespace
 }
 
 wxsAuiToolBarSpacer::wxsAuiToolBarSpacer(wxsItemResData* Data)
-    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0)
+    : wxsAuiToolBarItemBase(Data,&Reg.Info,flId,0,0),
+    m_Stretch(false),
+    m_Pixels(0),
+    m_Proportion(1)
 {}
 
 void wxsAuiToolBarSpacer::OnEnumItemProperties(long Flags)
