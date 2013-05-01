@@ -73,7 +73,7 @@ void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
         return;
 
     wxArrayString checked;
-    for (int i = 0; i < (int)lstTargets->GetCount(); ++i)
+    for (unsigned int i = 0; i < lstTargets->GetCount(); ++i)
     {
         if (lstTargets->IsChecked(i))
             checked.Add(lstTargets->GetString(i));
