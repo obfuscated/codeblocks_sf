@@ -529,6 +529,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idShiftTab,   MainFrame::OnShiftTab)
     EVT_MENU(idCtrlAltTab, MainFrame::OnCtrlAltTab)
 
+    /// Used for mouse right click in the free area of MainFrame
+    EVT_RIGHT_UP(MainFrame::OnMouseRightUp)
+
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
@@ -1061,7 +1064,13 @@ void MainFrame::CreateToolbars()
 
     m_pToolbar->Realize();
 
+    // Right click on the main toolbar will popup a context menu
+    m_pToolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
+
     m_pToolbar->SetInitialSize();
+
+    // Right click on the debugger toolbar will popup a context menu
+    m_debuggerToolbarHandler->GetToolbar()->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
 
     std::vector<ToolbarInfo> toolbars;
 
@@ -1079,7 +1088,11 @@ void MainFrame::CreateToolbars()
         {
             ToolbarInfo info = DoAddPluginToolbar(plug);
             if (info.toolbar)
+            {
                 toolbars.push_back(info);
+                // support showing context menu of the plugins' toolbar
+                info.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
+            }
         }
     }
 
@@ -1677,6 +1690,8 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
                 }
                 wxAuiPaneInfo paneInfo(toolbarInfo.paneInfo);
                 m_LayoutManager.AddPane(toolbarInfo.toolbar, paneInfo. ToolbarPane().Top().Row(row).Position(position));
+                // Add the event handler for mouse right click
+                toolbarInfo.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
 
                 DoUpdateLayout();
             }
@@ -2717,6 +2732,16 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     {
         m_pInfoPane->Destroy();
         m_pInfoPane = 0L;
+    }
+
+    // Disconnect the mouse right click event handler for toolbars, this should be done before the plugin is
+    // unloaded in Manager::Shutdown().
+    PluginToolbarsMap::iterator it;
+    for( it = m_PluginsTools.begin(); it != m_PluginsTools.end(); ++it )
+    {
+        wxToolBar* toolbar = it->second;
+        if (toolbar)//Disconnect the mouse right click event handler before the toolbar is destroyed
+            toolbar->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
     }
 
     Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
@@ -4439,6 +4464,8 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
     // remove toolbar, if any
     if (m_PluginsTools[plugin])
     {
+        // Disconnect the mouse right click event handler before the toolbar is destroyed
+        m_PluginsTools[plugin]->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
         m_LayoutManager.DetachPane(m_PluginsTools[plugin]);
         m_PluginsTools[plugin]->Destroy();
         m_PluginsTools.erase(plugin);
@@ -4812,3 +4839,33 @@ wxStatusBar* MainFrame::OnCreateStatusBar(int number, long style, wxWindowID id,
 
     return sb;
 }
+
+// Let the user toggle the toolbar from the context menu
+void MainFrame::OnMouseRightUp(wxMouseEvent& event)
+{
+    PopupToggleToolbarMenu();
+    event.Skip();
+}
+
+void MainFrame::OnToolBarRightClick(wxCommandEvent& event)
+{
+    PopupToggleToolbarMenu();
+    event.Skip();
+}
+
+void MainFrame::PopupToggleToolbarMenu()
+{
+    wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    int idx = menuBar->FindMenu(_("&View"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* viewMenu = menuBar->GetMenu(idx);
+        idx = viewMenu->FindItem(_("Toolbars"));
+        if (idx != wxNOT_FOUND)
+        {
+            wxMenu* toolbarMenu = viewMenu->FindItem(idx)->GetSubMenu();
+            PopupMenu(toolbarMenu);
+        }
+    }
+}
+

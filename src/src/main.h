@@ -95,6 +95,16 @@ class MainFrame : public wxFrame
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
 
+        // the two functions below are used to show context menu to toggle toolbar view status
+        // OnMouseRightUp is handler for right click on MainFrame's free area which is not covered by
+        // any sub panels, OnToolBarRightClick is used to response the mouse right click command
+        // on the toolbar.
+        void OnMouseRightUp(wxMouseEvent& event);
+        void OnToolBarRightClick(wxCommandEvent& event);
+
+        // common function to show context menu for toggle toolbars
+        void PopupToggleToolbarMenu();
+
         // File->New submenu entries handler
         void OnFileNewWhat(wxCommandEvent& event);
 
@@ -347,14 +357,14 @@ class MainFrame : public wxFrame
         LogManager*     m_pLogMan;
         InfoPane*       m_pInfoPane;
 
-        wxToolBar* m_pToolbar;
-        PluginToolbarsMap m_PluginsTools;
+        wxToolBar* m_pToolbar;   // main toolbar
+        PluginToolbarsMap m_PluginsTools; // plugin -> toolbar map
 
         PluginIDsMap m_PluginIDsMap;
         wxMenu* m_ToolsMenu;
         wxMenu* m_PluginsMenu;
         wxMenu* m_HelpPluginsMenu;
-        bool    m_ScanningForPlugins;
+        bool    m_ScanningForPlugins; // this variable is used to delay the UI construction
 
         bool m_SmallToolBar;
         bool m_StartupDone;
