@@ -95,7 +95,7 @@
 												<tooltip>If this is checked, member variables will not be highlighted in the editor.</tooltip>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>8</border>
+											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxFlexGridSizer">
