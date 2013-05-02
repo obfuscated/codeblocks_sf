@@ -900,6 +900,8 @@ void CompilerOptionsDlg::OptionsToText()
         }
     }
 
+    wxArrayString compilerOpConflicts;
+    wxArrayString linkerOpConflicts;
     for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
     {
         CompOption* copt = m_Options.GetOption(i);
@@ -914,14 +916,32 @@ void CompilerOptionsDlg::OptionsToText()
         }
         else
         {
+            // mark items for removal
+            if (m_CompilerOptions.Index(copt->option) != wxNOT_FOUND)
+                compilerOpConflicts.Add(copt->option);
+            if (m_LinkerOptions.Index(copt->additionalLibs) != wxNOT_FOUND)
+                linkerOpConflicts.Add(copt->additionalLibs);
+        }
+    }
+
+    if (!compilerOpConflicts.IsEmpty() || !linkerOpConflicts.IsEmpty())
+    {
+        wxString msg = _("The compiler flags\n  ")
+                       + GetStringFromArray(compilerOpConflicts, wxT("\n  "))
+                       + GetStringFromArray(linkerOpConflicts,   wxT("\n  "));
+        msg.RemoveLast(2); // remove two trailing spaces
+        msg += _("were stated in 'Other Options' but unchecked in 'Compiler Flags'.\n"
+                 "Do you want to enable these flags?");
+        AnnoyingDialog dlg(_("Enable compiler flags?"), msg, wxART_QUESTION,
+                           AnnoyingDialog::YES_NO, wxID_NO);
+        if (dlg.ShowModal() == wxID_NO)
+        {
             // for disabled options, remove relative text option *and*
             // relative linker option
-            int idx = m_CompilerOptions.Index(copt->option);
-            if (idx != wxNOT_FOUND)
-                m_CompilerOptions.RemoveAt(idx, 1);
-            idx = m_LinkerOptions.Index(copt->additionalLibs);
-            if (idx != wxNOT_FOUND)
-                m_LinkerOptions.RemoveAt(idx, 1);
+            for (size_t i = 0; i < compilerOpConflicts.GetCount(); ++i)
+                m_CompilerOptions.Remove(compilerOpConflicts[i]);
+            for (size_t i = 0; i < linkerOpConflicts.GetCount(); ++i)
+                m_LinkerOptions.Remove(linkerOpConflicts[i]);
         }
     }
 
