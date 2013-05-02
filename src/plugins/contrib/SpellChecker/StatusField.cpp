@@ -6,6 +6,7 @@
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
 
+#include <algorithm>
 #include <vector>
 
 #include "SpellCheckerConfig.h"
@@ -138,6 +139,12 @@ void SpellCheckerStatusField::OnSelect(wxCommandEvent &event)
     else if (!dicts.empty() && event.GetId() == idEnableSpellCheck)
     {
         m_sccfg->SetEnableOnlineChecker(!m_sccfg->GetEnableOnlineChecker()); // toggle
+        if (   m_sccfg->GetEnableOnlineChecker()
+            && std::find(dicts.begin(), dicts.end(), m_sccfg->GetDictionaryName()) == dicts.end() )
+        {
+            // insure there always is a valid dictionary selected when enabled
+            m_sccfg->SetDictionaryName(dicts[0]);
+        }
         m_sccfg->Save();
     }
 
