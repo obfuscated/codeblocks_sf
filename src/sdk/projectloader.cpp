@@ -1520,7 +1520,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
 
         pfa.Add(f);
     }
-    for (size_t i = 0; i< pfa.GetCount(); ++i)
+    for (size_t i=0; i<pfa.GetCount(); ++i)
     {
         ProjectFile* f = pfa[i];
         FileType ft = FileTypeOf(f->relativeFilename);

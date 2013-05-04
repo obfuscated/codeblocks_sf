@@ -262,7 +262,7 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
         }
     }
 
-    list->SortItems(SortTemplates, 0);
+    list->SortItems(SortTemplates, (wxIntPtr)0);
 }
 
 wxListCtrl* NewFromTemplateDlg::GetVisibleListCtrl()

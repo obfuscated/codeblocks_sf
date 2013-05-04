@@ -135,6 +135,7 @@ void cache_read(const char *path)
 			continue;
 		}
 
+		// C::B patch: Compatibility with 64 bit compiler / OS
 		#if defined(_WIN64)
 		sscanf(buf, "%I64d %n", &timeval, &n);
 		#else
@@ -165,6 +166,7 @@ void cache_write(const char *path)
 	for (h = hdrlist; h; h = h->next)
 	{
 		LIST *l;
+		// C::B patch: Compatibility with 64 bit compiler / OS
 		#if defined(_WIN64)
 		fprintf(f, "%I64d %s\n", h->time, h->file);
 		#else

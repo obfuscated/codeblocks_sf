@@ -6,16 +6,10 @@
 #if ( !defined(PREP_H) && defined(__cplusplus) )
 #define PREP_H
 
+#include <stdint.h>
+
 #ifndef wxMAJOR_VERSION
     #include <wx/version.h>
-#endif
-
-#if wxCHECK_VERSION(2, 9, 0)
-    #include <wx/defs.h>
-    #define cbIntPtr wxIntPtr
-#else
-    // We need to define cbIntPtr
-    #define cbIntPtr size_t
 #endif
 
 #if !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__)
@@ -378,6 +372,15 @@ namespace compatibility
         A::Z() and B::Z() will return a shared counter that increments if either A or B is asked to return a value.
 */
 
+#if wxCHECK_VERSION(2, 9, 0)
+    #include <wx/defs.h>
+    #define cbIntPtr wxIntPtr
+#else
+    // We need to define cbIntPtr
+    #include <cstring> // size_t for NOPCH
+    #define cbIntPtr size_t
+#endif
+
 class ID
 {
     cbIntPtr value;
@@ -392,7 +395,7 @@ public:
     ID() : value ((cbIntPtr) -1) {};
 
     operator cbIntPtr() const { return value; };
-    operator void*() const { return reinterpret_cast<void*>(value); };
+    operator void*() const { return reinterpret_cast<void*>(static_cast<uintptr_t>(value)); };
 
     bool Valid() const { return value != ((cbIntPtr) -1); };
     bool operator!() const { return !Valid(); };
@@ -401,7 +404,7 @@ public:
     friend bool operator==(ID a, int b)   { return a.value      == (cbIntPtr) b; };
 
     friend bool operator!=(ID a, ID b)    { return a.value      != b.value; };
-    friend bool operator!=(ID a, int b)   { return a.value      != (unsigned) b; };
+    friend bool operator!=(ID a, int b)   { return a.value      != (cbIntPtr) b; };
 };
 
 
@@ -411,8 +414,8 @@ template<typename whatever> inline ID GetID()
     return ID(++id);
 }
 
-inline ID GetID() { return GetID<void>(); };
-inline ID ConstructID(cbIntPtr i) { return ID(i); };
+inline ID GetID() { return GetID<void>(); }
+inline ID ConstructID(cbIntPtr i) { return ID(i); }
 
 #include <tr1/memory>
 

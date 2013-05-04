@@ -265,6 +265,7 @@ hashstat( struct hash *hp )
 
 #ifdef __LP64__ // avoid warning on 64-bit machines
 	printf( "%s table: %d+%d+%d (%dK+%luK) items+table+hash, %f density\n",
+// C::B patch: Compatibility with 64 bit compiler / OS
 #elif defined(_WIN64)
 	printf( "%s table: %d+%d+%d (%dK+%I64dK) items+table+hash, %f density\n",
 #else
