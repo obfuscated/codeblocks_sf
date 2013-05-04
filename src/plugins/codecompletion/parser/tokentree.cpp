@@ -907,6 +907,8 @@ void TokenTree::FlagFileAsParsed(const wxString& filename)
 void TokenTree::AppendDocumentation(int tokenIdx, const wxString& doc)
 {
     wxString& newDoc = m_TokenDocumentationMap[tokenIdx];
+    if (newDoc == doc) // Do not duplicate
+        return;
     newDoc += doc;
     newDoc.Shrink();
 }
