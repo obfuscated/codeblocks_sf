@@ -423,20 +423,20 @@ class CdbCmd_Backtrace : public DebuggerCmd
             cbStackFrame frameToSwitch;
 
             // start from line 1
-            for (unsigned int i = 1; i < lines.GetCount(); ++i)
+            /*for (unsigned int i = 1; i < lines.GetCount(); ++i)
             {
                 if (reBT1.Matches(lines[i]))
                 {
-                    cbStackFrame sf;
-                    sf.MakeValid(true);
-
-                    unsigned long int number, address;
-
-                    reBT1.GetMatch(lines[i], 1).ToULong(&number);
-                    reBT1.GetMatch(lines[i], 2).ToULong(&address, 16); // match 2 or 3 ???
-                    sf.SetNumber(number);
-                    sf.SetAddress(address);
-                    sf.SetSymbol(reBT1.GetMatch(lines[i], 4));
+                    StackFrame sf;
+                    sf.valid = true;
+                    #if defined(_WIN64)
+                    reBT1.GetMatch(lines[i], 1).ToULongLong(&sf.number);
+                    reBT1.GetMatch(lines[i], 2).ToULongLong(&sf.address, 16); // match 2 or 3 ???
+                    #else
+                    reBT1.GetMatch(lines[i], 1).ToULong(&sf.number);
+                    reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
+                    #endif
+                    sf.function = reBT1.GetMatch(lines[i], 4);
                     // do we have file/line info?
                     if (reBT2.Matches(lines[i]))
                     {
@@ -451,7 +451,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
                         frameToSwitch = sf;
                     }
                 }
-            }
+            }*/
             Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
             if (!firstValid)
             {
