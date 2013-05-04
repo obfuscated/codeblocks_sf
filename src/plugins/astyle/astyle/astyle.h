@@ -1,7 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   astyle.h
  *
- *   Copyright (C) 2006-2011 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -35,24 +35,32 @@
 #include <cassert>
 #endif
 
-#include <string.h>         // need both string and string.h for GCC
+#include <cctype>
+#include <iostream>		// for cout
 #include <string>
 #include <vector>
-#include <cctype>
 
-// define STDCALL for a Windows dynamic libraries (DLLs) only
-// MINGW defines STDCALL in Windows.h (actually windef.h)
-#ifdef STDCALL
-#undef STDCALL
+#if defined(__GNUC__)
+#include <string.h>		// need both string and string.h for GCC
 #endif
-#if defined(_WIN32) && !defined(ASTYLE_STATIC) \
-&& ( defined(ASTYLE_LIB) || defined(ASTYLE_JNI) || defined(ASTYLE_CONLIB) )
+
+// define STDCALL and EXPORT for Windows
+// MINGW defines STDCALL in Windows.h (actually windef.h)
+// EXPORT has no value for Visual C if ASTYLE_NO_VCX (no VC Exports) is defined
+#ifdef _WIN32
+#ifndef STDCALL
 #define STDCALL __stdcall
-#define EXPORT  __declspec(dllexport)
+#endif
+#if defined(_MSC_VER) && defined(ASTYLE_NO_VCX)
+#define EXPORT
+#else
+#define EXPORT __declspec(dllexport)
+#endif
+// define STDCALL and EXPORT for non-Windows
 #else
 #define STDCALL
 #define EXPORT
-#endif	// #if defined(_WIN32) ...
+#endif	// #ifdef _WIN32
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4996)  // secure version deprecation warnings
@@ -71,8 +79,7 @@
 
 using namespace std;
 
-namespace astyle
-{
+namespace astyle {
 
 enum FileType      { C_TYPE=0, JAVA_TYPE=1, SHARP_TYPE=2 };
 
@@ -99,8 +106,7 @@ enum BracketMode   { NONE_MODE,
                      BREAK_MODE,
                      LINUX_MODE,
                      STROUSTRUP_MODE,
-                     RUN_IN_MODE,
-                     BDAC_MODE = LINUX_MODE
+                     RUN_IN_MODE
                    };
 
 enum BracketType   { NULL_TYPE = 0,
@@ -216,7 +222,7 @@ class ASResource
 		static const string AS_GCC_MIN_ASSIGN, AS_GCC_MAX_ASSIGN;
 		static const string AS_EQUAL, AS_PLUS_PLUS, AS_MINUS_MINUS, AS_NOT_EQUAL, AS_GR_EQUAL, AS_GR_GR_GR, AS_GR_GR;
 		static const string AS_LS_EQUAL, AS_LS_LS_LS, AS_LS_LS;
-		static const string AS_QUESTION_QUESTION, AS_EQUAL_GR;
+		static const string AS_QUESTION_QUESTION, AS_LAMBDA;
 		static const string AS_ARROW, AS_AND, AS_OR;
 		static const string AS_COLON_COLON;
 		static const string AS_PLUS, AS_MINUS, AS_MULT, AS_DIV, AS_MOD, AS_GR, AS_LS;
@@ -248,7 +254,6 @@ class ASBase
 		string getCurrentWord(const string &line, size_t index) const;
 
 	protected:
-
 		void init(int fileTypeArg) { baseFileType = fileTypeArg; }
 		bool isCStyle() const { return (baseFileType == C_TYPE); }
 		bool isJavaStyle() const { return (baseFileType == JAVA_TYPE); }
@@ -363,14 +368,16 @@ class ASBeautifier : protected ASResource, protected ASBase
 		const string* findOperator(const string &line, int i,
 		                           const vector<const string*>* possibleOperators) const;
 		int getNextProgramCharDistance(const string &line, int i) const;
-		int  indexOf(vector<const string*> &container, const string* element);
+		int  indexOf(vector<const string*> &container, const string* element) const;
 		string trim(const string &str);
+		string rtrim(const string &str);
 
 		// variables set by ASFormatter - must be updated in activeBeautifierStack
 		int  inLineNumber;
 		int  horstmannIndentInStatement;
 		int  nonInStatementBracket;
 		bool lineCommentNoBeautify;
+		bool isElseHeaderIndent;
 		bool isNonInStatementArray;
 		bool isSharpAccessor;
 		bool isSharpDelegate;
@@ -378,17 +385,19 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool isInBeautifySQL;
 		bool isInIndentableStruct;
 
-	private:
+	private:  // functions
 		ASBeautifier(const ASBeautifier &copy);
 		ASBeautifier &operator=(ASBeautifier &);       // not to be implemented
 
 		void computePreliminaryIndentation();
 		void parseCurrentLine(const string &line);
-		void processProcessor(string &line);
+		void popLastInStatementIndent();
+		void processPreProcessor(string &line);
 		void registerInStatementIndent(const string &line, int i, int spaceIndentCount,
 		                               int tabIncrementIn, int minIndent, bool updateParenStack);
 		void initVectors();
 		string preLineWS(int spaceTabCount_, int tabCount_);
+		int  adjustIndentCountForBreakElseIfComments() const;
 		int  convertTabToSpaces(int i, int tabIncrementIn) const;
 		int  getInStatementIndentAssign(const string &line, size_t currPos) const;
 		int  getInStatementIndentComma(const string &line, size_t currPos) const;
@@ -400,11 +409,11 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool statementEndsWithComma(const string &line, int index) const;
 		vector<vector<const string*>*>* copyTempStacks(const ASBeautifier &other) const;
 		template<typename T> void deleteContainer(T &container);
-		void deleteContainer(vector<vector<const string*>*>* &container);
+		void deleteBeautifierContainer(vector<ASBeautifier*>* &container);
+		void deleteTempStacksContainer(vector<vector<const string*>*>* &container);
 		template<typename T> void initContainer(T &container, T value);
 
 	private:  // variables
-
 		int beautifierFileType;
 		vector<const string*>* headers;
 		vector<const string*>* nonParenHeaders;
@@ -414,19 +423,19 @@ class ASBeautifier : protected ASResource, protected ASBase
 		vector<const string*>* nonAssignmentOperators;
 		vector<const string*>* indentableHeaders;
 
-		vector<ASBeautifier*> *waitingBeautifierStack;
-		vector<ASBeautifier*> *activeBeautifierStack;
-		vector<int> *waitingBeautifierStackLengthStack;
-		vector<int> *activeBeautifierStackLengthStack;
-		vector<const string*> *headerStack;
-		vector< vector<const string*>* > *tempStacks;
-		vector<int> *blockParenDepthStack;
-		vector<bool> *blockStatementStack;
-		vector<bool> *parenStatementStack;
-		vector<bool> *bracketBlockStateStack;
-		vector<int> *inStatementIndentStack;
-		vector<int> *inStatementIndentStackSizeStack;
-		vector<int> *parenIndentStack;
+		vector<ASBeautifier*>* waitingBeautifierStack;
+		vector<ASBeautifier*>* activeBeautifierStack;
+		vector<int>* waitingBeautifierStackLengthStack;
+		vector<int>* activeBeautifierStackLengthStack;
+		vector<const string*>* headerStack;
+		vector< vector<const string*>* >* tempStacks;
+		vector<int>* blockParenDepthStack;
+		vector<bool>* blockStatementStack;
+		vector<bool>* parenStatementStack;
+		vector<bool>* bracketBlockStateStack;
+		vector<int>* inStatementIndentStack;
+		vector<int>* inStatementIndentStackSizeStack;
+		vector<int>* parenIndentStack;
 
 		ASSourceIterator* sourceIterator;
 		const string* currentHeader;
@@ -467,7 +476,8 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool shouldForceTabIndentation;
 		bool emptyLineFill;
 		bool backslashEndsPrevLine;
-		bool lineOpensComment;
+		bool lineOpensWithLineComment;
+		bool lineOpensWithComment;
 		bool blockCommentNoIndent;
 		bool blockCommentNoBeautify;
 		bool previousLineProbationTab;
@@ -585,6 +595,9 @@ class ASFormatter : public ASBeautifier
 		void setFormattingStyle(FormatStyle style);
 		void setAddBracketsMode(bool state);
 		void setAddOneLineBracketsMode(bool state);
+		void setAttachClass(bool state);
+		void setAttachNamespace(bool state);
+		void setAttachInline(bool state);
 		void setBracketFormatMode(BracketMode mode);
 		void setBreakAfterMode(bool state);
 		void setBreakClosingHeaderBracketsMode(bool state);
@@ -640,28 +653,27 @@ class ASFormatter : public ASBeautifier
 		bool isPointerOrReference() const;
 		bool isPointerOrReferenceCentered() const;
 		bool isSharpStyleWithParen(const string* header) const;
-		bool isSplittableOperator(char appendedChar) const;
 		bool isStructAccessModified(string  &firstLine, size_t index) const;
 		bool isUnaryOperator() const;
 		bool isImmediatelyPostCast() const;
 		bool isInExponent() const;
 		bool isNextCharOpeningBracket(int startChar) const;
 		bool isOkToBreakBlock(BracketType bracketType) const;
-//		int  findRemainingPadding() const;
+		bool pointerSymbolFollows() const;
 		int  getCurrentLineCommentAdjustment();
 		int  getNextLineCommentAdjustment();
 		int  isOneLineBlockReached(string &line, int startChar) const;
 		void adjustComments();
 		void appendChar(char ch, bool canBreakLine);
 		void appendCharInsideComments();
+		void appendOperator(const string &sequence, bool canBreakLine = true);
 		void appendSequence(const string &sequence, bool canBreakLine = true);
 		void appendSpacePad();
 		void appendSpaceAfter();
 		void breakLine(bool isSplitLine=false);
 		void buildLanguageVectors();
-		void checkForHeaderFollowingComment(const string &firstLine);
 		void updateFormattedLineSplitPoints(char appendedChar);
-		void updateFormattedLineSplitPointSequence(const string &sequence);
+		void updateFormattedLineSplitPointsOperator(const string &sequence);
 		void checkIfTemplateOpener();
 		void clearFormattedLineSplitPoints();
 		void convertTabToSpaces();
@@ -679,6 +691,9 @@ class ASFormatter : public ASBeautifier
 		void formatQuoteOpener();
 		void formatPointerOrReference();
 		void formatPointerOrReferenceCast();
+		void formatPointerOrReferenceToMiddle();
+		void formatPointerOrReferenceToName();
+		void formatPointerOrReferenceToType();
 		void fixOptionVariableConflicts();
 		void goForward(int i);
 		void isLineBreakBeforeClosingHeader();
@@ -689,10 +704,12 @@ class ASFormatter : public ASBeautifier
 		void processPreprocessor();
 		void setAttachClosingBracket(bool state);
 		void setBreakBlocksVariables();
-		void testForTimeToSplitFormattedLine(int sequenceLength=0);
+		void testForTimeToSplitFormattedLine();
 		void trimContinuationLine();
-		size_t findFormattedLineSplitPoint(int sequenceLength) const;
+		void updateFormattedLineSplitPointsPointerOrReference(size_t index);
+		size_t findFormattedLineSplitPoint() const;
 		size_t findNextChar(string &line, char searchChar, int searchStart = 0);
+		const string* checkForHeaderFollowingComment(const string &firstLine) const;
 		const string* getFollowingOperator() const;
 		string getPreviousWord(const string &line, int currPos) const;
 		string peekNextText(const string &firstLine, bool endOnEmptyLine=false, bool shouldReset=false) const;
@@ -710,10 +727,10 @@ class ASFormatter : public ASBeautifier
 		ASSourceIterator* sourceIterator;
 		ASEnhancer* enhancer;
 
-		vector<const string*> *preBracketHeaderStack;
-		vector<BracketType> *bracketTypeStack;
-		vector<int> *parenStack;
-		vector<bool> *structStack;
+		vector<const string*>* preBracketHeaderStack;
+		vector<BracketType>* bracketTypeStack;
+		vector<int>* parenStack;
+		vector<bool>* structStack;
 		string readyFormattedLine;
 		string currentLine;
 		string formattedLine;
@@ -740,12 +757,13 @@ class ASFormatter : public ASBeautifier
 		size_t maxCodeLength;
 
 		// possible split points
-		size_t maxAndOr;		// probably an 'if' statement
 		size_t maxSemi;			// probably a 'for' statement
+		size_t maxAndOr;		// probably an 'if' statement
 		size_t maxComma;
 		size_t maxParen;
 		size_t maxWhiteSpace;
 		size_t maxSemiPending;
+		size_t maxAndOrPending;
 		size_t maxCommaPending;
 		size_t maxParenPending;
 		size_t maxWhiteSpacePending;
@@ -769,6 +787,9 @@ class ASFormatter : public ASBeautifier
 		bool shouldConvertTabs;
 		bool shouldIndentCol1Comments;
 		bool shouldCloseTemplates;
+		bool shouldAttachNamespace;
+		bool shouldAttachClass;
+		bool shouldAttachInline;
 		bool isInLineComment;
 		bool isInComment;
 		bool isInCommentStartLine;
@@ -787,6 +808,7 @@ class ASFormatter : public ASBeautifier
 		bool haveLineContinuationChar;
 		bool isInQuoteContinuation;
 		bool isInBlParen;
+		bool isHeaderInMultiStatementLine;
 		bool isSpecialChar;
 		bool isNonParenHeader;
 		bool foundQuestionMark;
@@ -807,6 +829,7 @@ class ASFormatter : public ASBeautifier
 		bool isInAsmOneLine;
 		bool isInAsmBlock;
 		bool isLineReady;
+		bool elseHeaderFollowsComments;
 		bool isPreviousBracketBlockRelated;
 		bool isInPotentialCalculation;
 		bool isCharImmediatelyPostComment;

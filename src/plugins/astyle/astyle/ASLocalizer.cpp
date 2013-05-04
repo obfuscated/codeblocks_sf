@@ -5,7 +5,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   ASLocalizer.cpp
  *
- *   Copyright (C) 2006-2011 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -69,8 +69,7 @@
 #include <stdlib.h>
 #include <typeinfo>
 
-namespace astyle
-{
+namespace astyle {
 
 #ifndef ASTYLE_LIB
 
@@ -221,7 +220,6 @@ void ASLocalizer::setLanguageFromName(const char* langID)
 {
 	// the constants describing the format of lang_LANG locale string
 	static const size_t LEN_LANG = 2;
-	static const size_t LEN_SUBLANG = 2;
 
 	m_lcid = 0;
 	string langStr = langID;
@@ -230,7 +228,7 @@ void ASLocalizer::setLanguageFromName(const char* langID)
 	// need the sublang for chinese
 	if (m_langID == "zh" && langStr[LEN_LANG] == '_')
 	{
-		string subLang = langStr.substr(LEN_LANG + 1, LEN_SUBLANG);
+		string subLang = langStr.substr(LEN_LANG + 1, LEN_LANG);
 		if (subLang == "CN" || subLang == "SG")
 			m_subLangID = "CHS";
 		else
@@ -253,6 +251,12 @@ void ASLocalizer::setTranslationClass()
 // Get the language ID at http://msdn.microsoft.com/en-us/library/ee797784%28v=cs.20%29.aspx
 {
 	assert(m_langID.length());
+	// delete previously set (--ascii option)
+	if (m_translation)
+	{
+		delete m_translation;
+		m_translation = NULL;
+	}
 	if (m_langID == "zh" && m_subLangID == "CHS")
 		m_translation = new ChineseSimplified;
 	else if (m_langID == "zh" && m_subLangID == "CHT")

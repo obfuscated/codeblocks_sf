@@ -1,7 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   ASResource.cpp
  *
- *   Copyright (C) 2006-2011 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -29,8 +29,8 @@
 #include <algorithm>
 
 
-namespace astyle
-{
+namespace astyle {
+
 const string ASResource::AS_IF = string("if");
 const string ASResource::AS_ELSE = string("else");
 const string ASResource::AS_FOR = string("for");
@@ -117,7 +117,7 @@ const string ASResource::AS_LS_EQUAL = string("<=");
 const string ASResource::AS_LS_LS = string("<<");
 const string ASResource::AS_LS_LS_LS = string("<<<");
 const string ASResource::AS_QUESTION_QUESTION = string("??");
-const string ASResource::AS_EQUAL_GR = string("=>");            // C# lambda expression arrow
+const string ASResource::AS_LAMBDA = string("=>");            // C# lambda expression arrow
 const string ASResource::AS_ARROW = string("->");
 const string ASResource::AS_AND = string("&&");
 const string ASResource::AS_OR = string("||");
@@ -315,7 +315,7 @@ void ASResource::buildNonAssignmentOperators(vector<const string*>* nonAssignmen
 	nonAssignmentOperators->push_back(&AS_ARROW);
 	nonAssignmentOperators->push_back(&AS_AND);
 	nonAssignmentOperators->push_back(&AS_OR);
-	nonAssignmentOperators->push_back(&AS_EQUAL_GR);
+	nonAssignmentOperators->push_back(&AS_LAMBDA);
 
 	sort(nonAssignmentOperators->begin(), nonAssignmentOperators->end(), sortOnLength);
 }
@@ -400,7 +400,7 @@ void ASResource::buildOperators(vector<const string*>* operators, int fileType)
 	operators->push_back(&AS_LS_LS_LS);
 	operators->push_back(&AS_LS_LS);
 	operators->push_back(&AS_QUESTION_QUESTION);
-	operators->push_back(&AS_EQUAL_GR);
+	operators->push_back(&AS_LAMBDA);
 	operators->push_back(&AS_ARROW);
 	operators->push_back(&AS_AND);
 	operators->push_back(&AS_OR);

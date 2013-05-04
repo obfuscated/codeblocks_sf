@@ -30,24 +30,46 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         &nbsp;</p>
 
     <h3>
-        Artistic Style 2.03&nbsp; (pending)</h3>
+        Artistic Style 2.04&nbsp; (pending)</h3>
 
     <p>
-        A new option, "indent=force-tab-tab=#" or "xT#", will allow force tab indents with a tab length that is different
-        than the indent length. See the documentation for details.</p>
+        With a new Artistic Style release some unchanged source files will be formatted because of changes to Artistic
+        Style. You may want to format your source before making program changes in order to bring it up to date.</p>
+    <p>
+        Three new bracket modifier options, "attach-namespaces", "attach-classes", and "attach-inlines", can be
+        used to modify your selected bracket style.&nbsp;See the documentation for details. They are described in a new "Bracket
+        Modifier Options" section.</p>
+
+    <h3>
+        Artistic Style 2.03&nbsp; (April 2013)</h3>
+
+    <p>
+        With a new Artistic Style release some unchanged source files will be formatted because of changes to Artistic
+        Style. You may want to format your source before making program changes in order to bring it up to date.</p>
     <p>
         A new option, "max-code-length=#" or "xC#", will limit the length of code on a line. A new option "break&#8209;after&#8209;logical",
-        or "xL", will modify a line break for conditionals. See the documentation for details.</p>
+        or "xL", will modify a line break for conditionals. See the documentation for details.
+    </p>
     <p>
-        A new option, "pad-first-paren-out" or "xd", will pad only the first paren in a seies on the outside. See the
-        documentation for details.</p>
+        A new option, "pad-first-paren-out" or "xd", will pad only the first paren in a series on the outside. See the
+        documentation for details.
+    </p>
+    <p>
+        A new option, "indent=force-tab-tab=#" or "xT#", will allow force tab indents with a tab length that is different
+        than the indent length. See the documentation for details.
+    </p>
     <p>
         The short option for delete-empty-lines has changed from "xd" to "xe".
     </p>
     <p>
-        Closing the ending angle brackets of templates
-        is now allowed by the C++11 standard.. A new option, &quot;close-templates&quot; or-xy, will close the whitespace in the angle brackets of template definitions. Be 
-        sure your compiler supports this before making the changes.</p>
+        The C++11 standard for range-based "for" loops, "enum" with a base type, and rvalue references is now supported.
+        The formatting of rvalue references is determined from the existing &quot;align-pointer&quot; and &quot;align-reference&quot;
+        options.</p>
+    <p>
+        Closing the ending angle brackets of templates is now allowed by the C++11 standard. A new option, &quot;close-templates&quot;
+        or "xy", will close the whitespace in the angle brackets of template definitions. Be sure your compiler supports
+        this before making the changes.
+    </p>
     <p>
         The C/C++ keyword 'extern "C"' in a preprocessor no longer causes an extra indent.
     </p>
@@ -56,8 +78,14 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         option.
     </p>
     <p>
-        The byte order mark (BOM) has been removed from ASLocalizer.cpp for all platforms. The encoding of the file is 
-        UTF-8.</p>
+        &nbsp;The breaking of switch &quot;default&quot; statements has been fixed. The &quot;default&quot; statements
+        that have been incorrectly broken will be fixed in this release.
+    </p>
+    <p>
+        The byte order mark (BOM) has been removed from ASLocalizer.cpp for all platforms. The encoding of the file is
+        UTF-8. Many Windows editors can now recognize UTF-8 encoding without the BOM. Visual Studio has an option that
+        needs to be set. With others. such as CodeBlocks, identification is automatic. On Linux, UTF-8 is the default
+        encoding.</p>
     <p>
         Translations have been added for Dutch, Finnish, Italian, Japanese, Korean, Polish, Portuguese, Russian, Swedish,
         and Ukrainian. The translations were done with an automated translation program, Google Translate, so they may
@@ -67,33 +95,57 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         the addition as a bug report and it will be included in the next release.
     </p>
     <p>
+        There is a new Linux makefile for the Clang Compiler. Clang is a free compiler can be installed as a package on
+        many Linux distributions. Some of its features are fast compiles, low memory use, expressive diagnostic messages,
+        and GCC compatibility. It includes a static analyzer tool that finds potential bugs in your source code. An experimental
+        version can be installed on a Windows platform. There is more information in the Install Information documentation.</p>
+    <p>
+        Visual Studio automatically creates an import library and an export file when you link a program that contains
+        exports. It will do this for even a static library if it contains a __declspec(dllexport) definition. The Artistic
+        Style library (ASTYLE_LIB) build contains such exports which causes an import library and export file to be created
+        when they may not be needed. A new preprocessor definition, ASTYLE_NO_VCX (no Visual Studio exports) can be declared
+        to eliminate the files from the output. Use this only for static libraries or when the AStyle source is included
+        in the compile. Do NOT use this when compiled as a shared (dynamic) library. It is effective only for Visual Studio
+        2012. It will NOT work with previous versions. It has no effect with other compilers since they require a separate
+        option to create the import library and export files.<o:p></o:p>
+    </p>
+    <p>
+        The executable included in the Windows distribution was compiled with Visual Studio 2010 (platform toolset v100).
+        Visual Studio 2012 (platform toolset v110) contains dependencies on Windows API functions that exist only on Windows
+        Vista, Windows 7, and Windows 8. This means that applications built with a Visual Studio 2012 C++ compiler would
+        fail to load and execute on Windows XP. Artistic Style was therefore compiled with Visual Studio 2010 to work
+        on computers using Windows XP.
+    </p>
+    <p>
+        If you are using Windows Vista or higher, and have the Visual Studio 2012 compiler available, recompiling with
+        Visual Studio 2012 will probably result in faster execution. The Windows distribution has Visual Studio 2012 project
+        files available.
+    </p>
+    <p>
+        If you use a compiler other than Visual Studio, you can probably get better execution by compiling using the C++11
+        standards. Artistic Style uses a lot of string vectors and the new move semantics will probably result in faster
+        execution. (To use C++11 on GCC and MinGW use the option --std=c++0x). This may change on future compiler releases.).
+    </p>
+    <p>
         The "Developer Information" page has a new example and download for calling Artistic Style from a Python script.
         It will run with both Python 2 and Python 3. Using Python 3 shows an example of formatting a Unicode string with
-        Artistis Style. The Unicode strings must be encoded to UTF-8 before formatting and decoded back to Unicode afterward.
+        Artistic Style. Unicode strings must be encoded to UTF-8 before formatting and decoded back to Unicode afterward.
         The example script shows the technique for doing this. It also shows how to set up the function pointers and allocate
         memory in Python.
     </p>
     <p>
-        Thanks to Christopher Sean Morrison, Keith OHara, louis6g, and J for their contributions.
-    </p>
-
-    <h4>
-        Python IDE</h4>
-
-    <p>
         If you use Visual Studio on Windows, it can now be used for Python development. <a href="https://pytools.codeplex.com/"
             target="_blank" title="open new window">Python Tools for Visual Studio</a> (PTVS) is a free and open source
-        plug-in for Visual Studio 2010 that supports CPython and IronPython. Other interpreters such Jython and PyPy
-        can be added. It can be easily changed between Python versions or different interpreters. But the best thing is
-        the Visual Studio debugging support using the .NET debugger and the normal Visual Studio debugger. It enables
-        you to set break points, step through functions, change the current statement, inspect local variables, and perform
-        other operations while debugging.</p>
+        plug-in for Visual Studio 2010 that supports Python and Iron Python. Other interpreters such Jython can be added.
+        It can be easily switched between Python versions or different interpreters. But the best thing is the Visual
+        Studio debugging support using the .NET debugger and the normal Visual Studio debugger. It enables you to set
+        break points, step through functions, change the current statement, inspect local variables, and perform other
+        operations while debugging. It is best to use it with a project file, a minor irritation for single page scripts.
+        And there are some minor bugs. But overall it works quite well.
+    </p>
     <p>
-        It is best to use it with a project file, a minor irritation for single page scripts. And there are some minor
-        bugs. But overall it works quite well.</p>
-    <p>
-        PTVS does not install into VS Express Editions (Express editions aren't pluggable). However PTVS plus a free VS
-        Integrated Shell essentially gives you a "VS Python Express". The PTVS installation instructions give the details.</p>
+        Thanks to Christopher Sean Morrison, Keith OHara, louis6g, and J for their contributions.
+    </p>
 
     <h3>
         Artistic Style 2.02&nbsp; (May 2011)</h3>
@@ -349,10 +401,8 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         The use of locales affects only the command line build.</p>
     <p>
         &nbsp;</p>
-
-    <h3>
-        Previous releases are available in the <a href="http://astyle.sourceforge.net/news.html">News Archives</a>.</h3>
-
+    <p>
+        <strong>Previous releases are available in the <a href="http://astyle.sourceforge.net/newsArchives.html">News Archives</a>.</strong></p>
     <p>
         &nbsp;</p>
 

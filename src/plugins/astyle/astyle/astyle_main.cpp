@@ -1,7 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   astyle_main.cpp
  *
- *   Copyright (C) 2006-2011 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -28,11 +28,10 @@
 #include "astyle_main.h"
 
 #include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cstdlib>
 #include <errno.h>
+#include <fstream>
+#include <sstream>
 
 // includes for recursive getFileNames() function
 #ifdef _WIN32
@@ -61,8 +60,7 @@
 int _CRT_glob = 0;
 #endif
 
-namespace astyle
-{
+namespace astyle {
 
 #ifdef _WIN32
 char g_fileSeparator = '\\';
@@ -85,7 +83,7 @@ jobject   g_obj;
 jmethodID g_mid;
 #endif
 
-const char* g_version = "2.03 beta";
+const char* g_version = "2.04 beta";
 
 //-----------------------------------------------------------------------------
 // ASStreamIterator class
@@ -431,18 +429,22 @@ void ASConsole::formatCinToCout()
 	// Assure that redirected cin is all Windows line ends.
 	// TODO: The following can be removed when tellg() is removed.
 	// Windows line ends must be used on the input. If not, a problem occurs
-	// when tellg() statements are used. The tellg() will be out of sequence 
-	// with the get() statements. The following file conversion could be 
+	// when tellg() statements are used. The tellg() will be out of sequence
+	// with the get() statements. The following file conversion could be
 	// eliminated if the tellg() statements were removed.
 	istream* streamIn = &cin;
 	ostringstream out;
-	char buf[65536];    // 64 KB
+	const int bufSize = 65536;	// 64 KB
+	char* buf = new(nothrow) char[bufSize];
+	if (!buf)
+		error("Cannot allocate memory for input file", "");
 	while (!streamIn->eof())
 	{
-		streamIn->read(buf, sizeof(buf) - 1);
-		buf[streamIn->gcount()] = '\0';
-		out << buf;
+		streamIn->read(buf, bufSize);
+		out.write(buf, streamIn->gcount());;
 	}
+	delete [] buf;
+	buf = NULL;
 	convertLineEnds(out, LINEEND_WINDOWS);
 	stringstream in(out.str().c_str());
 	ASStreamIterator<stringstream> streamIterator(&in); // create iterator for converted input
@@ -611,9 +613,7 @@ vector<string> ASConsole::getArgvOptions(int argc, char** argv) const
 
 // for unit testing
 vector<bool> ASConsole::getExcludeHitsVector()
-{
-	return excludeHitsVector;
-}
+{ return excludeHitsVector; }
 
 // for unit testing
 vector<string> ASConsole::getExcludeVector()
@@ -631,59 +631,66 @@ vector<string> ASConsole::getFileNameVector()
 vector<string> ASConsole::getFileOptionsVector()
 { return fileOptionsVector; }
 
-int ASConsole::getFilesUnchanged()
-{ return filesUnchanged; }
-
+// for unit testing
 int ASConsole::getFilesFormatted()
 { return filesFormatted; }
 
+// for unit testing
 bool ASConsole::getIgnoreExcludeErrors()
 { return ignoreExcludeErrors; }
 
+// for unit testing
 bool ASConsole::getIgnoreExcludeErrorsDisplay()
 { return ignoreExcludeErrorsDisplay; }
 
+// for unit testing
 bool ASConsole::getIsFormattedOnly()
 { return isFormattedOnly; }
 
+// for unit testing
 string ASConsole::getLanguageID() const
 { return localizer.getLanguageID(); }
 
+// for unit testing
 bool ASConsole::getIsQuiet()
 { return isQuiet; }
 
+// for unit testing
 bool ASConsole::getIsRecursive()
 { return isRecursive; }
 
+// for unit testing
 bool ASConsole::getIsVerbose()
 { return isVerbose; }
 
+// for unit testing
 bool ASConsole::getLineEndsMixed()
 { return lineEndsMixed; }
 
+// for unit testing
 bool ASConsole::getNoBackup()
 { return noBackup; }
 
+// for unit testing
 string ASConsole::getOptionsFileName()
 { return optionsFileName; }
-
-bool ASConsole::getOptionsFileRequired()
-{ return optionsFileRequired; }
 
 // for unit testing
 vector<string> ASConsole::getOptionsVector()
 { return optionsVector; }
 
+// for unit testing
 string ASConsole::getOrigSuffix()
 { return origSuffix; }
+
+// for unit testing
+bool ASConsole::getPreserveDate()
+{ return preserveDate; }
 
 string ASConsole::getParam(const string &arg, const char* op)
 {
 	return arg.substr(strlen(op));
 }
-
-bool ASConsole::getPreserveDate()
-{ return preserveDate; }
 
 // initialize output end of line
 void ASConsole::initializeOutputEOL(LineEndFormat lineEndFormat)
@@ -775,9 +782,6 @@ void ASConsole::setNoBackup(bool state)
 
 void ASConsole::setOptionsFileName(string name)
 { optionsFileName = name; }
-
-void ASConsole::setOptionsFileRequired(bool state)
-{ optionsFileRequired = state; }
 
 void ASConsole::setOrigSuffix(string suffix)
 { origSuffix = suffix; }
@@ -1235,7 +1239,7 @@ void ASConsole::getFilePaths(string &filePath)
 			if (!ignoreExcludeErrorsDisplay)
 			{
 				if (ignoreExcludeErrors)
-					printMsg(_("Exclude (unmatched)  %s\n"), excludeVector[ix].c_str());
+					printMsg(_("Exclude (unmatched)  %s\n"), excludeVector[ix]);
 				else
 					fprintf(stderr, _("Exclude (unmatched)  %s\n"), excludeVector[ix].c_str());
 			}
@@ -1435,6 +1439,17 @@ void ASConsole::printHelp() const
 	(*_err) << "    Attached opening brackets and attached closing brackets.\n";
 	(*_err) << "    Uses keep one line statements.\n";
 	(*_err) << endl;
+	(*_err) << "Bracket Modifier Options:\n";
+	(*_err) << "-------------------------\n";
+	(*_err) << "    --attach-namespaces  OR  -xn\n";
+	(*_err) << "    Attach brackets to a namespace statement.\n";
+	(*_err) << endl;
+	(*_err) << "    --attach-classes  OR  -xc\n";
+	(*_err) << "    Attach brackets to a class statement.\n";
+	(*_err) << endl;
+	(*_err) << "    --attach-inlines  OR  -xi\n";
+	(*_err) << "    Attach brackets to class inline function definitions.\n";
+	(*_err) << endl;
 	(*_err) << "Tab Options:\n";
 	(*_err) << "------------\n";
 	(*_err) << "    default indent option\n";
@@ -1460,33 +1475,6 @@ void ASConsole::printHelp() const
 	(*_err) << "    from the indent length. This may cause the indentation to be\n";
 	(*_err) << "    a mix of both spaces and tabs. This option sets the tab length.\n";
 	(*_err) << endl;
-	(*_err) << "Old Bracket Options (depreciated):\n";
-	(*_err) << "----------------------------------\n";
-	(*_err) << "The following bracket options have been depreciated and\n";
-	(*_err) << "will be removed in a future release.\n";
-	(*_err) << "Use the above Bracket Style Options instead.\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=break  OR  -b  (depreciated)\n";
-	(*_err) << "    Break brackets from pre-block code (i.e. ANSI C/C++ style).\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=attach  OR  -a  (depreciated)\n";
-	(*_err) << "    Attach brackets to pre-block code (i.e. Java/K&R style).\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=linux  OR  -l  (depreciated)\n";
-	(*_err) << "    Break definition-block brackets and attach command-block\n";
-	(*_err) << "    brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=stroustrup  OR  -u  (depreciated)\n";
-	(*_err) << "    Attach all brackets except function definition brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=run-in  OR  -g  (depreciated)\n";
-	(*_err) << "    Break brackets from pre-block code, but allow following\n";
-	(*_err) << "    run-in statements on the same line as an opening bracket.\n";
-	(*_err) << endl;
-	(*_err) << "    --brackets=horstmann\n";
-	(*_err) << "    THIS IS NO LONGER A VALID OPTION.\n";
-	(*_err) << "    Use style=horstmann instead.\n";
-	(*_err) << endl;
 	(*_err) << "Indentation options:\n";
 	(*_err) << "--------------------\n";
 	(*_err) << "    --indent-classes  OR  -C\n";
@@ -1501,14 +1489,6 @@ void ASConsole::printHelp() const
 	(*_err) << "    --indent-cases  OR  -K\n";
 	(*_err) << "    Indent case blocks from the 'case XXX:' headers.\n";
 	(*_err) << "    Case statements not enclosed in blocks are NOT indented.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-brackets  OR  -B\n";
-	(*_err) << "    THIS IS NO LONGER A VALID OPTION.\n";
-	(*_err) << "    Use style=whitesmith or style=banner instead.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-blocks  OR  -G\n";
-	(*_err) << "    THIS IS NO LONGER A VALID OPTION.\n";
-	(*_err) << "    Use style=gnu instead.\n";
 	(*_err) << endl;
 	(*_err) << "    --indent-namespaces  OR  -N\n";
 	(*_err) << "    Indent the contents of namespace blocks.\n";
@@ -1559,6 +1539,10 @@ void ASConsole::printHelp() const
 	(*_err) << "    --pad-paren-out  OR  -d\n";
 	(*_err) << "    Insert space padding around parenthesis on the outside only.\n";
 	(*_err) << endl;
+	(*_err) << "    --pad-first-paren-out  OR  -xd\n";
+	(*_err) << "    Insert space padding around first parenthesis in a series on\n";
+	(*_err) << "    the outside only.\n";
+	(*_err) << endl;
 	(*_err) << "    --pad-paren-in  OR  -D\n";
 	(*_err) << "    Insert space padding around parenthesis on the inside only.\n";
 	(*_err) << endl;
@@ -1580,7 +1564,7 @@ void ASConsole::printHelp() const
 	(*_err) << "    --align-pointer=type    OR  -k1\n";
 	(*_err) << "    --align-pointer=middle  OR  -k2\n";
 	(*_err) << "    --align-pointer=name    OR  -k3\n";
-	(*_err) << "    Attach a pointer or reference operator (* or &) to either\n";
+	(*_err) << "    Attach a pointer or reference operator (*, &, or ^) to either\n";
 	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
 	(*_err) << "    To align the reference separately use --align-reference.\n";
 	(*_err) << endl;
@@ -1732,7 +1716,7 @@ void ASConsole::processFiles()
 
 // process options from the command line and options file
 // build the vectors fileNameVector, excludeVector, optionsVector, and fileOptionsVector
-void ASConsole::processOptions(vector<string>& argvOptions)
+void ASConsole::processOptions(vector<string> &argvOptions)
 {
 	string arg;
 	bool ok = true;
@@ -1850,31 +1834,36 @@ void ASConsole::processOptions(vector<string>& argvOptions)
 // remove a file and check for an error
 void ASConsole::removeFile(const char* fileName_, const char* errMsg) const
 {
-	remove(fileName_);
-	if (errno == ENOENT)        // no file is OK
-		errno = 0;
-	if (errno)
+	if (remove(fileName_))
 	{
-		perror("errno message");
-		error(errMsg, fileName_);
+		if (errno == ENOENT)        // no file is OK
+			errno = 0;
+		if (errno)
+		{
+			perror("errno message");
+			error(errMsg, fileName_);
+		}
 	}
 }
 
 // rename a file and check for an error
 void ASConsole::renameFile(const char* oldFileName, const char* newFileName, const char* errMsg) const
 {
-	rename(oldFileName, newFileName);
-	// if file still exists the remove needs more time - retry
-	if (errno == EEXIST)
+	int result = rename(oldFileName, newFileName);
+	if (result != 0)
 	{
-		errno = 0;
-		waitForRemove(newFileName);
-		rename(oldFileName, newFileName);
-	}
-	if (errno)
-	{
-		perror("errno message");
-		error(errMsg, oldFileName);
+		// if file still exists the remove needs more time - retry
+		if (errno == EEXIST)
+		{
+			errno = 0;
+			waitForRemove(newFileName);
+			result = rename(oldFileName, newFileName);
+		}
+		if (result != 0)
+		{
+			perror("errno message");
+			error(errMsg, oldFileName);
+		}
 	}
 }
 
@@ -2922,19 +2911,20 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setBreakAfterMode(true);
 	}
+	else if ( isOption(arg, "xc", "attach-classes") )
+	{
+		formatter.setAttachClass(true);
+	}
+	else if ( isOption(arg, "xn", "attach-namespaces") )
+	{
+		formatter.setAttachNamespace(true);
+	}
+	else if ( isOption(arg, "xi", "attach-inlines") )
+	{
+		formatter.setAttachInline(true);
+	}
 	// depreciated options release 2.02 ///////////////////////////////////////////////////////////////////////////////
-	else if ( isOption(arg, "brackets=horstmann") )
-	{
-		isOptionError(arg, errorInfo);
-	}
-	else if ( isOption(arg, "B", "indent-brackets") )
-	{
-		isOptionError(arg, errorInfo);
-	}
-	else if ( isOption(arg, "G", "indent-blocks") )
-	{
-		isOptionError(arg, errorInfo);
-	}
+	//
 	// end depreciated options ////////////////////////////////////////////////////////////////////////////////////////
 #ifdef ASTYLE_LIB
 	// End of options used by GUI /////////////////////////////////////////////////////////////////////////////////////
@@ -3075,7 +3065,7 @@ string ASOptions::getParam(const string &arg, const char* op1, const char* op2)
 	return isParamOption(arg, op1) ? getParam(arg, op1) : getParam(arg, op2);
 }
 
-bool ASOptions::isOption(const string arg, const char* op)
+bool ASOptions::isOption(const string &arg, const char* op)
 {
 	return arg.compare(op) == 0;
 }
@@ -3190,11 +3180,10 @@ char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded)
  *                                                            /EXPORT:AStyleGetVersion=_AStyleGetVersion@0
  * No /EXPORT is required for x64
  */
-extern "C" EXPORT char* STDCALL
-AStyleMain(const char* pSourceIn,          // pointer to the source to be formatted
-           const char* pOptions,           // pointer to AStyle options, separated by \n
-           fpError fpErrorHandler,         // pointer to error handler function
-           fpAlloc fpMemoryAlloc)          // pointer to memory allocation function
+extern "C" EXPORT char* STDCALL AStyleMain(const char* pSourceIn,          // pointer to the source to be formatted
+                                           const char* pOptions,           // pointer to AStyle options, separated by \n
+                                           fpError fpErrorHandler,         // pointer to error handler function
+                                           fpAlloc fpMemoryAlloc)          // pointer to memory allocation function
 {
 	if (fpErrorHandler == NULL)         // cannot display a message if no error handler
 		return NULL;

@@ -28,11 +28,11 @@
 <body>
 
     <h1>
-        Artistic Style 2.03</h1>
+        Artistic Style 2.04</h1>
 
     <h2>
         A Free, Fast and Small Automatic Formatter<br />
-        for C, C++, C#, and Java Source Code</h2>
+        for C, C++, C++/CLI, C#, and Java Source Code</h2>
 
     <h3 id="Contents">
         Contents</h3>
@@ -61,6 +61,13 @@
         <a class="contents" href="#_style=1tbs">style=1tbs</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_style=pico">style=pico</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_style=lisp">style=lisp</a>&nbsp;&nbsp;&nbsp;
+    </p>
+    <p class="contents1">
+        <a class="contents" href="#_Bracket_Modifier_Options">Bracket&nbsp;Modifier&nbsp;Options</a></p>
+    <p class="contents2">
+        <a class="contents" href="#_attach_namespaces">attach&#8209;namespaces</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_attach_classes">attach&#8209;classes</a>&nbsp;&nbsp;&nbsp; 
+        <a class="contents" href="#_attach_inlines">attach&#8209;inlines</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
         <a class="contents" href="#_Tab_Options">Tab&nbsp;Options</a>
@@ -361,11 +368,9 @@ indent-switches     <span class="comment"># cannot do this on the command line</
         Bracket Style Options</h3>
 
     <p>
-        Bracket Style options define the bracket style to use. This option always overrides any individual option settings.
-        You will always get the requested style regardless of other defined options.</p>
-    <p>
-        All other options are available to customize the bracket style. By default, none of the styles indent namespaces.
-        All options default to 4 spaces per indent, indented with spaces.</p>
+        Bracket Style options define the bracket style to use. There are bracket modifier options that will silghtly alter
+        the selected style. By default, none of the styles indent namespaces or class blocks. All options default to 4
+        spaces per indent, indented with spaces.</p>
     <p>
         &nbsp;</p>
     <p id="_default_bracket_style">
@@ -603,6 +608,56 @@ indent-switches     <span class="comment"># cannot do this on the command line</
         &nbsp;</p>
     <hr />
 
+    <!--  * * * * * * * * * * * *   Bracket Modifier Options   * * * * * * * * * * * * -->
+
+    <h3 id="_Bracket_Modifier_Options">
+        Bracket Modifier Options</h3>
+
+    <p id="_attach_namespaces">
+        <code class="title">--attach-namespaces / -xn</code><br />
+        Attach brackets to a namespace statement. This is done regardless of the bracket style being used.</p>
+    <div class="code">
+        <p class="code">
+            the bracket is always attached to a namespace statement:</p>
+        <pre>namespace FooName <span class="brace">{</span>
+...
+<span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_attach_classes">
+        <code class="title">--attach-classes / -xc</code><br />
+        Attach brackets to a class statement. This is done regardless of the bracket style being used.</p>
+    <div class="code">
+        <p class="code">
+            the bracket is always attached to a class statement:</p>
+        <pre>class FooClass <span class="brace">{</span>
+...
+<span class="brace">}</span>;
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_attach_inlines">
+        <code class="title">--attach-inlines / -xi</code><br />
+        Attach brackets to class and struct inline function definitions. This is not done for run-in type brackets (Horstmann
+        and Pico styles). This option is effective for C++ files only.</p>
+    <div class="code">
+        <p class="code">
+            all brackets are always attached to class and struct inline function definitions:</p>
+        <pre>class FooClass
+<span class="brace">{</span>
+    void Foo() <span class="brace">{</span>
+    ...
+<span class="brace">    }</span>
+<span class="brace">}</span>;
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <hr />
+
     <!--  * * * * * * * * * * * * * * *   Tab Options  * * * * * * * * * * * * * * * -->
 
     <h3 id="_Tab_Options">
@@ -816,16 +871,6 @@ case 2:
 <span class="brace">}</span>
 </pre>
     </div>
-    <p>
-        &nbsp;</p>
-    <p id="_indent-brackets">
-        <code class="title">--indent-brackets / -B</code><br />
-        THIS IS NO LONGER A VALID OPTION. Instead use style=whitesmith or style=banner.</p>
-    <p>
-        &nbsp;</p>
-    <p id="_indent-blocks">
-        <code class="title">--indent-blocks / -G</code><br />
-        THIS IS NO LONGER A VALID OPTION. Instead use style=gnu.</p>
     <p>
         &nbsp;</p>
     <p id="_indent-namespaces">
@@ -1221,7 +1266,7 @@ isBar = false;
         <code class="title">--align-pointer=type&nbsp;&nbsp; / -k1<br />
             --align-pointer=middle / -k2<br />
             --align-pointer=name&nbsp;&nbsp; / -k3</code><br />
-        Attach a pointer or reference operator (* or &amp;) to either the variable type (left) or variable name (right),
+        Attach a pointer or reference operator (*, &amp;, or ^) to either the variable type (left) or variable name (right),
         or place it between the type and name (middle). The spacing between the type and name will be preserved, if possible.
         This option is for C/C++, C++/CLI, and C# files. To format references separately use the following align-reference
         option.</p>
@@ -1575,7 +1620,7 @@ else
         Command Line Only</h3>
 
     <p>These options are available for the command-line only. They are NOT available in an options file.</p>
-    <p id="_options">
+    <p id="P1">
         <code class="title">--options=<span class="option">####</span></code><br />
         Specify an options file #### to read and use. It must contain a file path for the file. This will allow the file
         name to be changed from astylerc or .astylerc.</p>
