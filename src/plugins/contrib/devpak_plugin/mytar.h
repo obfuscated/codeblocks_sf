@@ -64,7 +64,7 @@ class TAR
             FileType ft;
         };
 
-        TAR(const wxString& filename = 0);
+        TAR(const wxString& filename = wxEmptyString);
         ~TAR();
 
         bool Open(const wxString& filename);
