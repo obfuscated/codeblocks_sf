@@ -1,3 +1,18 @@
+2013-04-19 John Thomson <john thomson at SIL>
+        * win_api: add remove() of Hunspell API (hun#3606435)
+
+2013-04-19 Rouslan Solomokhin <at sf.net>
+        * fix crash in suggestions for 99-character long words
+          by extending arrays of SuggestMgr::forgotchar_*
+          (hun#3595024, also http://crbug.com/130128),
+          thanks to also Paweł Hajdan to report the patch
+
+2013-04-01 Caolán McNamara <caolanm at LibO>:
+	* hunspell: -Werror=undef
+
+2013-03-13 Caolán McNamara <caolanm at LibO>:
+	* rhbz#918938 crash in interaction with danish thesaurus
+
 2012-09-18 Németh László <nemeth at numbertext dot org>:
         * src/hunspell/affixmgr.*: - fix morphological analysis of
         compound words (hun#3544994, reported by Dávid Nemeskey, fdo#55045)
