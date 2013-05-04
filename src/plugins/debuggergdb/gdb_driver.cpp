@@ -1126,16 +1126,14 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
         {
             m_ManualBreakOnEntry = false;
             wxString lineStr;
+
             if (platform::windows)
-            {
                 m_Cursor.file = reBreak_in.GetMatch(line, 1) + reBreak_in.GetMatch(line, 2);
-            }
             else
-            {
                 // For debuging of usual linux application 'GetMatch(line, 1)' is empty.
                 // While for debuging of application under wine the name of the disk is useless.
-                m_Cursor.file = reBreak_in.GetMatch(line, 2);
-            }
+                m_Cursor.file = reBreak_in.GetMatch( line, 2);
+
             lineStr = reBreak_in.GetMatch(line, 3);
             m_Cursor.address = reBreak_in.GetMatch(line, 4);
 
