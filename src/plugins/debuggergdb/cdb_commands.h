@@ -422,6 +422,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
             bool firstValid = true;
             cbStackFrame frameToSwitch;
 
+            #if !defined(_WIN64) | !defined(WIN64) // TODO: Win64 build with exchndl
             // start from line 1
             for (unsigned int i = 1; i < lines.GetCount(); ++i)
             {
@@ -452,6 +453,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
                     }
                 }
             }
+            #endif
             Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
             if (!firstValid)
             {
