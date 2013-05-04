@@ -1,6 +1,8 @@
 #ifndef _SQUIRREL_OBJECT_H_
 #define _SQUIRREL_OBJECT_H_
 
+#include "sqplus.h"
+
 class SquirrelObject
 {
 	friend class SquirrelVM;
@@ -14,48 +16,48 @@ public:
 	void AttachToStackObject(SQInteger idx);
   void Reset(void); // Release (any) reference and reset _o.
   SquirrelObject Clone();
-	BOOL SetValue(const SquirrelObject &key,const SquirrelObject &val);
+	BOOL_T SetValue(const SquirrelObject &key,const SquirrelObject &val);
 
-	BOOL SetValue(SQInteger key,const SquirrelObject &val);
-	BOOL SetValue(INT key,bool b); // Compiler treats SQBool as INT.
-	BOOL SetValue(INT key,INT n);
-	BOOL SetValue(INT key,FLOAT f);
-	BOOL SetValue(INT key,const SQChar *s);
+	BOOL_T SetValue(SQInteger key,const SquirrelObject &val);
+	BOOL_T SetValue(INT_T key,bool b); // Compiler treats SQBool as INT_T.
+	BOOL_T SetValue(INT_T key,INT_T n);
+	BOOL_T SetValue(INT_T key,FLOAT f);
+	BOOL_T SetValue(INT_T key,const SQChar *s);
 
-	BOOL SetValue(const SQChar *key,const SquirrelObject &val);
-	BOOL SetValue(const SQChar *key,bool b);
-	BOOL SetValue(const SQChar *key,INT n);
-	BOOL SetValue(const SQChar *key,FLOAT f);
-	BOOL SetValue(const SQChar *key,const SQChar *s);
+	BOOL_T SetValue(const SQChar *key,const SquirrelObject &val);
+	BOOL_T SetValue(const SQChar *key,bool b);
+	BOOL_T SetValue(const SQChar *key,INT_T n);
+	BOOL_T SetValue(const SQChar *key,FLOAT f);
+	BOOL_T SetValue(const SQChar *key,const SQChar *s);
 
-  BOOL SetUserPointer(const SQChar * key,SQUserPointer up);
+  BOOL_T SetUserPointer(const SQChar * key,SQUserPointer up);
   SQUserPointer GetUserPointer(const SQChar * key);
-  BOOL SetUserPointer(INT key,SQUserPointer up);
-  SQUserPointer GetUserPointer(INT key);
+  BOOL_T SetUserPointer(INT_T key,SQUserPointer up);
+  SQUserPointer GetUserPointer(INT_T key);
 
-  BOOL NewUserData(const SQChar * key,INT size,SQUserPointer * typetag=0);
-  BOOL GetUserData(const SQChar * key,SQUserPointer * data,SQUserPointer * typetag=0);
-  BOOL RawGetUserData(const SQChar * key,SQUserPointer * data,SQUserPointer * typetag=0);
+  BOOL_T NewUserData(const SQChar * key,INT_T size,SQUserPointer * typetag=0);
+  BOOL_T GetUserData(const SQChar * key,SQUserPointer * data,SQUserPointer * typetag=0);
+  BOOL_T RawGetUserData(const SQChar * key,SQUserPointer * data,SQUserPointer * typetag=0);
 
   // === BEGIN Arrays ===
 
-  BOOL ArrayResize(INT newSize);
-  BOOL ArrayExtend(INT amount);
-  BOOL ArrayReverse(void);
+  BOOL_T ArrayResize(INT_T newSize);
+  BOOL_T ArrayExtend(INT_T amount);
+  BOOL_T ArrayReverse(void);
   SquirrelObject ArrayPop(SQBool returnPoppedVal=SQTrue);
 
   void ArrayAppend(const SquirrelObject &o);
 
   template<typename T>
-  BOOL ArrayAppend(T item);
+  BOOL_T ArrayAppend(T item);
 
   // === END Arrays ===
 
-	BOOL SetInstanceUP(SQUserPointer up);
-	BOOL IsNull() const;
+	BOOL_T SetInstanceUP(SQUserPointer up);
+	BOOL_T IsNull() const;
 	SQInteger IsNumeric() const;
 	SQInteger Len() const;
-	BOOL SetDelegate(SquirrelObject &obj);
+	BOOL_T SetDelegate(SquirrelObject &obj);
 	SquirrelObject GetDelegate();
 	const SQChar* ToString();
 	bool ToBool();
@@ -63,37 +65,37 @@ public:
 	SQFloat ToFloat();
 	SQUserPointer GetInstanceUP(SQUserPointer tag) const;
 	SquirrelObject GetValue(const SQChar *key) const;
-	BOOL Exists(const SQChar *key) const;
+	BOOL_T Exists(const SQChar *key) const;
 	FLOAT GetFloat(const SQChar *key) const;
-	INT GetInt(const SQChar *key) const;
+	INT_T GetInt(const SQChar *key) const;
 	const SQChar *GetString(const SQChar *key) const;
 	bool GetBool(const SQChar *key) const;
-	SquirrelObject GetValue(INT key) const;
-	FLOAT GetFloat(INT key) const;
-	INT GetInt(INT key) const;
-	const SQChar *GetString(INT key) const;
-	bool GetBool(INT key) const;
+	SquirrelObject GetValue(INT_T key) const;
+	FLOAT GetFloat(INT_T key) const;
+	INT_T GetInt(INT_T key) const;
+	const SQChar *GetString(INT_T key) const;
+	bool GetBool(INT_T key) const;
 	SquirrelObject GetAttributes(const SQChar *key = NULL);
 	SQObjectType GetType();
 	HSQOBJECT & GetObjectHandle(){return _o;}
-	BOOL BeginIteration();
-	BOOL Next(SquirrelObject &key,SquirrelObject &value);
+	BOOL_T BeginIteration();
+	BOOL_T Next(SquirrelObject &key,SquirrelObject &value);
 	void EndIteration();
 
-  BOOL GetTypeTag(SQUserPointer * typeTag);
+  BOOL_T GetTypeTag(SQUserPointer * typeTag);
 
   // === Get the type name of item/object through string key in a table or class. Returns NULL if the type name is not set (not an SqPlus registered type).
   const SQChar * GetTypeName(const SQChar * key);
   // === Get the type name of item/object through INT key in a table or class. Returns NULL if the type name is not set (not an SqPlus registered type).
-  const SQChar * GetTypeName(INT key);
+  const SQChar * GetTypeName(INT_T key);
   // === Get the type name of this object, else return NULL if not an SqPlus registered type.
   const SQChar * GetTypeName(void);
 
 
 private:
-	BOOL GetSlot(const SQChar *name) const;
-  BOOL RawGetSlot(const SQChar *name) const;
-	BOOL GetSlot(INT key) const;
+	BOOL_T GetSlot(const SQChar *name) const;
+  BOOL_T RawGetSlot(const SQChar *name) const;
+	BOOL_T GetSlot(INT_T key) const;
 	HSQOBJECT _o;
 };
 
@@ -159,7 +161,7 @@ struct StackHandler {
 		}
 		return NULL;
 	}
-	BOOL GetBool(SQInteger idx)
+	BOOL_T GetBool(SQInteger idx)
 	{
 		SQBool ret;
 		if(idx > 0 && idx <= _top) {
@@ -189,7 +191,7 @@ struct StackHandler {
 		sq_pushfloat(v,f);
 		return 1;
 	}
-	SQInteger Return(INT i)
+	SQInteger Return(INT_T i)
 	{
 		sq_pushinteger(v,i);
 		return 1;

@@ -10,6 +10,8 @@
 #include <unknwn.h>
 #endif
 
+#include "sqplus.h"
+
 #ifndef SQUIRREL_BINDINGS_UTILS_H
 #include "SquirrelBindingsUtils.h"
 #endif

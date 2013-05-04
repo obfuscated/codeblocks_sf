@@ -50,7 +50,7 @@ class DLLIMPORT cbCPURegistersDlg
         virtual wxWindow* GetWindow() = 0;
 
         virtual void Clear() = 0;
-        virtual void SetRegisterValue(const wxString& reg_name, unsigned long int value) = 0;
+        virtual void SetRegisterValue(const wxString& reg_name, size_t value) = 0;
         virtual void EnableWindow(bool enable) = 0;
 };
 
@@ -62,10 +62,10 @@ class DLLIMPORT cbDisassemblyDlg
         virtual wxWindow* GetWindow() = 0;
 
         virtual void Clear(const cbStackFrame& frame) = 0;
-        virtual void AddAssemblerLine(unsigned long int addr, const wxString& line) = 0;
-        virtual void AddSourceLine(unsigned long int lineno, const wxString& line) = 0;
-        virtual bool SetActiveAddress(unsigned long int addr) = 0;
-        virtual void CenterLine(unsigned long int lineno) = 0;
+        virtual void AddAssemblerLine(size_t addr, const wxString& line) = 0;
+        virtual void AddSourceLine(size_t lineno, const wxString& line) = 0;
+        virtual bool SetActiveAddress(size_t addr) = 0;
+        virtual void CenterLine(size_t lineno) = 0;
         virtual void CenterCurrentLine() = 0;
         virtual bool HasActiveAddr() = 0;
         virtual void EnableWindow(bool enable) = 0;

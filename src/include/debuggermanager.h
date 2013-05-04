@@ -109,13 +109,13 @@ class DLLIMPORT cbStackFrame
         cbStackFrame();
 
         void SetNumber(int number);
-        void SetAddress(unsigned long int address);
+        void SetAddress(size_t address);
         void SetSymbol(const wxString& symbol);
         void SetFile(const wxString& filename, const wxString &line);
         void MakeValid(bool flag);
 
         int GetNumber() const;
-        unsigned long int GetAddress() const;
+        size_t GetAddress() const;
         const wxString& GetSymbol() const;
         const wxString& GetFilename() const;
         const wxString& GetLine() const;
@@ -123,7 +123,7 @@ class DLLIMPORT cbStackFrame
     private:
         bool m_valid; ///< Is this stack frame valid?
         int m_number; ///< Stack frame's number (used in backtraces).
-        unsigned long int m_address; ///< Stack frame's address.
+        size_t m_address; ///< Stack frame's address.
         wxString m_symbol; ///< Current function name.
         wxString m_file; ///< Current file.
         wxString m_line; ///< Current line in file.

@@ -10,6 +10,14 @@
     #include <wx/version.h>
 #endif
 
+#if wxCHECK_VERSION(2, 9, 0)
+    #include <wx/defs.h>
+    #define cbIntPtr wxIntPtr
+#else
+    // We need to define cbIntPtr
+    #define cbIntPtr size_t
+#endif
+
 #if !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__)
     // it is a const object...
     const class nullptr_t
@@ -372,25 +380,25 @@ namespace compatibility
 
 class ID
 {
-    unsigned int value;
+    cbIntPtr value;
 
-    ID(unsigned int in) : value(in) {};
+    ID(cbIntPtr in) : value(in) {};
 
     template<typename> friend ID GetID();
-    friend ID ConstructID(unsigned int);
+    friend ID ConstructID(cbIntPtr);
 
 public:
 
-    ID() : value ((unsigned) -1) {};
+    ID() : value ((cbIntPtr) -1) {};
 
-    operator unsigned int() const { return value; };
+    operator cbIntPtr() const { return value; };
     operator void*() const { return reinterpret_cast<void*>(value); };
 
-    bool Valid() const { return value != ((unsigned) -1); };
+    bool Valid() const { return value != ((cbIntPtr) -1); };
     bool operator!() const { return !Valid(); };
 
     friend bool operator==(ID a, ID b)    { return a.value      == b.value; };
-    friend bool operator==(ID a, int b)   { return a.value      == (unsigned) b; };
+    friend bool operator==(ID a, int b)   { return a.value      == (cbIntPtr) b; };
 
     friend bool operator!=(ID a, ID b)    { return a.value      != b.value; };
     friend bool operator!=(ID a, int b)   { return a.value      != (unsigned) b; };
@@ -399,12 +407,12 @@ public:
 
 template<typename whatever> inline ID GetID()
 {
-    static unsigned int id = (unsigned int) -1;
+    static cbIntPtr id = (cbIntPtr) -1;
     return ID(++id);
 }
 
-inline ID GetID() { return GetID<void>(); }
-inline ID ConstructID(unsigned int i) { return ID(i); }
+inline ID GetID() { return GetID<void>(); };
+inline ID ConstructID(cbIntPtr i) { return ID(i); };
 
 #include <tr1/memory>
 
