@@ -19,7 +19,7 @@ class CPURegistersDlg : public wxPanel, public cbCPURegistersDlg
         wxWindow* GetWindow() { return this; }
 
         void Clear();
-        void SetRegisterValue(const wxString& reg_name, unsigned long int value);
+        void SetRegisterValue(const wxString& reg_name, size_t value);
         void EnableWindow(bool enable);
     protected:
         int RegisterIndex(const wxString& reg_name);

@@ -23,10 +23,10 @@ class DisassemblyDlg : public wxPanel, public cbDisassemblyDlg
         wxWindow* GetWindow() { return this; }
 
         void Clear(const cbStackFrame& frame);
-        void AddAssemblerLine(unsigned long int addr, const wxString& line);
-        void AddSourceLine(unsigned long int lineno, const wxString& line);
-        bool SetActiveAddress(unsigned long int addr);
-        void CenterLine(unsigned long int lineno);
+        void AddAssemblerLine(size_t addr, const wxString& line);
+        void AddSourceLine(size_t lineno, const wxString& line);
+        bool SetActiveAddress(size_t addr);
+        void CenterLine(size_t lineno);
         void CenterCurrentLine();
         bool HasActiveAddr() { return m_HasActiveAddr; }
         void EnableWindow(bool enable);

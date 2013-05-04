@@ -54,7 +54,7 @@ int CPURegistersDlg::RegisterIndex(const wxString& reg_name)
     return -1;
 }
 
-void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, unsigned long int value)
+void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, size_t value)
 {
     // find existing register
     int idx = RegisterIndex(reg_name);
@@ -66,7 +66,7 @@ void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, unsigned long i
     }
 
     wxString fmt;
-    fmt.Printf(_T("0x%x"), (size_t)value);
+    fmt.Printf(_T("0x%x"), value);
     m_pList->SetItem(idx, 1, fmt);
     fmt.Printf(_T("%lu"), value);
     m_pList->SetItem(idx, 2, fmt);

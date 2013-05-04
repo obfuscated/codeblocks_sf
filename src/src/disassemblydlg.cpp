@@ -122,7 +122,7 @@ void DisassemblyDlg::Clear(const cbStackFrame& frame)
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }
 
-void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& line)
+void DisassemblyDlg::AddAssemblerLine(size_t addr, const wxString& line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -141,7 +141,7 @@ void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& li
     m_LineTypes.push_back('D') ;
 }
 
-void DisassemblyDlg::AddSourceLine(unsigned long int lineno, const wxString& line)
+void DisassemblyDlg::AddSourceLine(size_t lineno, const wxString& line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -158,7 +158,7 @@ void DisassemblyDlg::AddSourceLine(unsigned long int lineno, const wxString& lin
     m_LineTypes.push_back('S') ;
 }
 
-void DisassemblyDlg::CenterLine(unsigned long int lineno)
+void DisassemblyDlg::CenterLine(size_t lineno)
 {
     //make line middle of display window if reasonable
     int firstdispline ;
@@ -177,7 +177,7 @@ void DisassemblyDlg::CenterCurrentLine()
     CenterLine(displine);
 }
 
-bool DisassemblyDlg::SetActiveAddress(unsigned long int addr)
+bool DisassemblyDlg::SetActiveAddress(size_t addr)
 {
     if (m_HasActiveAddr && addr == m_LastActiveAddr)
         return m_HasActiveAddr ;
