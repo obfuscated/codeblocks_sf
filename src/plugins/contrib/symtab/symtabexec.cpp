@@ -239,7 +239,7 @@ void SymTabExecDlg::ClearUserData()
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 // Sorting function of the nm output columns
-inline int wxCALLBACK SortFunction(long item1, long item2, long dlg)
+inline int wxCALLBACK SortFunction(intptr_t item1, intptr_t item2, intptr_t dlg)
 {
   SymTabExecDlg   *dialog = (SymTabExecDlg*)   dlg;
   customListEntry *data1  = (customListEntry*) item1;
@@ -288,7 +288,7 @@ void SymTabExecDlg::OnColumnClick(wxListEvent& event)
 
   ms_iSortColumn = event.GetColumn();
   wxBusyInfo wait(_("Please wait, sorting..."));
-  m_ListCtrl->SortItems(SortFunction, (long)this);
+  m_ListCtrl->SortItems(SortFunction, (intptr_t)this);
 }// OnColumnClick
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -566,7 +566,7 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
           }
 
           // now associate a user-data with this entry
-          m_ListCtrl->SetItemData(item, (long)new customListEntry(n, the_value, the_type, the_name));
+          m_ListCtrl->SetItemData(item, (intptr_t)new customListEntry(n, the_value, the_type, the_name));
 
           ++entries;
         }

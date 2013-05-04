@@ -134,7 +134,11 @@ namespace
       link.pszWindow    = NULL;
       link.fIndexOnFail = TRUE;
 
+      #if defined(_WIN64) | defined(WIN64)
+      fp_htmlHelp(0L, (const wxChar*)m_filename, cbHH_KEYWORD_LOOKUP, (DWORDLONG)&link);
+      #else
       fp_htmlHelp(0L, (const wxChar*)m_filename, cbHH_KEYWORD_LOOKUP, (DWORD)&link);
+      #endif
     }
     else // do it the wx way then (which is the same thing, except for the 0L in the call to fp_htmlHelp)
     {

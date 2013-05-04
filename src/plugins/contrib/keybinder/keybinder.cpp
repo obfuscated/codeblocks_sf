@@ -2283,7 +2283,7 @@ void wxKeyConfigPanel::AddRootIfMissing(const wxString &rootname)
 wxCmd *wxKeyConfigPanel::GetSelCmd() const
 // ----------------------------------------------------------------------------
 {
-	int id;
+	intptr_t id;
 
 	if (IsUsingTreeCtrl()) {
 
@@ -2301,7 +2301,7 @@ wxCmd *wxKeyConfigPanel::GetSelCmd() const
 		if (sel < 0)
 			return NULL;
 
-		id = (long)m_pCommandsList->GetClientData(sel);
+		id = (intptr_t)m_pCommandsList->GetClientData(sel);
 	}
 
 	return m_kBinder.GetCmd(id);

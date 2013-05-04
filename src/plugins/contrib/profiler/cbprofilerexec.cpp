@@ -141,7 +141,7 @@ void CBProfilerExecDlg::EndModal(int retCode)
 }
 
 // Sorting function of the flat profile columns
-int wxCALLBACK SortFunction(long item1, long item2, long sortData)
+int wxCALLBACK SortFunction(cbIntPtr item1, cbIntPtr item2, cbIntPtr sortData)
 {
     CBProfilerExecDlg *dialog = (CBProfilerExecDlg*) sortData;
 
@@ -209,7 +209,7 @@ void CBProfilerExecDlg::OnColumnClick(wxListEvent& event)
         sortAscending = !sortAscending;
 
     sortColumn = event.GetColumn();
-    outputFlatProfileArea->SortItems(SortFunction, (long)this);
+    outputFlatProfileArea->SortItems(SortFunction, (wxIntPtr)this);
 }
 
 void CBProfilerExecDlg::ParseMisc(const wxArrayString& msg, wxProgressDialog &progress, const size_t maxcount, size_t &count)
