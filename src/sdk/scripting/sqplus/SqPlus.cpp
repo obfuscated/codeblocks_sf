@@ -76,8 +76,8 @@ static SQInteger setVar(StackHandler & sa,VarRef * vr,void * data) {
     } // if
     break;
   } // case
-  case TypeInfo<FLOAT>::TypeID: {
-    FLOAT * val = (FLOAT *)data; // Address
+  case TypeInfo<FLOAT_T>::TypeID: {
+    FLOAT_T * val = (FLOAT_T *)data; // Address
     if (val) {
       *val = sa.GetFloat(3);
       return sa.Return(*val);
@@ -148,14 +148,14 @@ static SQInteger getVar(StackHandler & sa,VarRef * vr,void * data) {
     } // if
     break;
   } // case
-  case TypeInfo<FLOAT>::TypeID: {
+  case TypeInfo<FLOAT_T>::TypeID: {
     if (!(vr->access & VAR_ACCESS_CONSTANT)) {
-      FLOAT * val = (FLOAT *)data; // Address
+      FLOAT_T * val = (FLOAT_T *)data; // Address
       if (val) {
         return sa.Return(*val);
       } // if
     } else {
-      FLOAT * val = (FLOAT *)&data; // Constant value
+      FLOAT_T * val = (FLOAT_T *)&data; // Constant value
       return sa.Return(*val);
     } // if
     break;

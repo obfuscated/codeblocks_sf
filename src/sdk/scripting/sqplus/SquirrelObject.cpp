@@ -162,7 +162,7 @@ BOOL_T SquirrelObject::SetValue(INT_T key,INT_T n)
 	_SETVALUE_INT_END
 }
 
-BOOL_T SquirrelObject::SetValue(INT_T key,FLOAT f)
+BOOL_T SquirrelObject::SetValue(INT_T key,FLOAT_T f)
 {
 	_SETVALUE_INT_BEGIN
 	sq_pushfloat(SquirrelVM::_VM,f);
@@ -224,7 +224,7 @@ BOOL_T SquirrelObject::SetValue(const SQChar *key,INT_T n)
 	_SETVALUE_STR_END
 }
 
-BOOL_T SquirrelObject::SetValue(const SQChar *key,FLOAT f)
+BOOL_T SquirrelObject::SetValue(const SQChar *key,FLOAT_T f)
 {
 	_SETVALUE_STR_BEGIN
 	sq_pushfloat(SquirrelVM::_VM,f);
@@ -380,9 +380,9 @@ SquirrelObject SquirrelObject::GetValue(INT_T key)const
 	return ret;
 }
 
-FLOAT SquirrelObject::GetFloat(INT_T key) const
+FLOAT_T SquirrelObject::GetFloat(INT_T key) const
 {
-	FLOAT ret = 0.0f;
+	FLOAT_T ret = 0.0f;
 	if(GetSlot(key)) {
 		sq_getfloat(SquirrelVM::_VM,-1,&ret);
 		sq_pop(SquirrelVM::_VM,1);
@@ -467,9 +467,9 @@ SquirrelObject SquirrelObject::GetValue(const SQChar *key)const
 	return ret;
 }
 
-FLOAT SquirrelObject::GetFloat(const SQChar *key) const
+FLOAT_T SquirrelObject::GetFloat(const SQChar *key) const
 {
-	FLOAT ret = 0.0f;
+	FLOAT_T ret = 0.0f;
 	if(GetSlot(key)) {
 		sq_getfloat(SquirrelVM::_VM,-1,&ret);
 		sq_pop(SquirrelVM::_VM,1);

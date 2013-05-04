@@ -76,10 +76,10 @@ public:
   static void PushValue(INT_T val) {
     sq_pushinteger(_VM,val);
   } // PushValue
-  static void PushValue(FLOAT val) {
+  static void PushValue(FLOAT_T val) {
     sq_pushfloat(_VM,val);
   } // PushValue
-  static void PushValue(bool val) { // Compiler treats SQBool as INT.
+  static void PushValue(bool val) { // Compiler treats SQBool as INT_T.
     sq_pushbool(_VM,val);
   } // PushValue
   static void PushValue(SQChar * val) {

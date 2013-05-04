@@ -266,7 +266,6 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 
   // C::B patch: Avoid compiler warnings (and below)
 //	SQInteger op;
-	// C::B Patch end
 	SQBool isgreedy = SQFalse;
 	unsigned short p0 = 0, p1 = 0;
 	switch(*exp->_p){

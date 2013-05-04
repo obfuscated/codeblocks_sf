@@ -49,29 +49,12 @@
 
 #include "squirrel.h"
 
-// C::B patch: so it builds on 64bit, ecapsulate bool/int/float using Squirrel types
-#ifndef _WINDEF_
-/*#if defined(BOOL)
-#undef BOOL
-#endif
-#if defined(INT)
-#undef INT
-#endif
-#if defined(FLOAT)
-#undef FLOAT
-#endif
-
-#define BOOL SQInteger
-#define INT SQInteger
-#define FLOAT SQFloat*/
-  //typedef SQInteger BOOL;
-  //typedef SQInteger INT_T;
-  typedef SQFloat   FLOAT;
-  #define TRUE 1
-  #define FALSE 0
-#endif
+// C::B patch: so it builds on 64bit, ecapsulate bool/int/float using Squirrel types (this patch applies everywhere, where threse types are used)
 typedef SQInteger BOOL_T;
 typedef SQInteger INT_T;
+typedef SQFloat   FLOAT_T;
+#define TRUE 1
+#define FALSE 0
 
 #include "SquirrelObject.h"
 #include "SquirrelVM.h"
@@ -201,10 +184,10 @@ struct TypeInfo<INT_T> {
 };
 
 template<>
-struct TypeInfo<FLOAT> {
+struct TypeInfo<FLOAT_T> {
   const SQChar * typeName;
   TypeInfo() : typeName(sqT("float")) {}
-  enum {TypeID=VAR_TYPE_FLOAT,Size=sizeof(FLOAT)};
+  enum {TypeID=VAR_TYPE_FLOAT,Size=sizeof(FLOAT_T)};
   operator ScriptVarType() { return ScriptVarType(TypeID); }
 };
 
@@ -212,7 +195,7 @@ template<>
 struct TypeInfo<bool> {
   const SQChar * typeName;
   TypeInfo() : typeName(sqT("bool")) {}
-  enum {TypeID=VAR_TYPE_BOOL,Size=sizeof(bool)};
+  enum {TypeID=VAR_TYPE_BOOL,Size=sizeof(BOOL_T)};
   operator ScriptVarType() { return ScriptVarType(TypeID); }
 };
 
@@ -424,7 +407,7 @@ void BindVariable(SquirrelObject & so,T * var,const SQChar * scriptVarName,VarAc
   createTableSetGetHandlers(so);
 } // BindVariable
 
-// === Bind a constant by value: INT_T, FLOAT, BOOL, or CONST CHAR * (for tables only (not classes)) ===
+// === Bind a constant by value: INT_T, FLOAT_T, BOOL_T, or CONST CHAR * (for tables only (not classes)) ===
 
 template<typename T>
 void BindConstant(SquirrelObject & so,T constant,const SQChar * scriptVarName) {
@@ -478,7 +461,7 @@ void RegisterInstanceConstant(SquirrelObject & so,SQUserPointer classType,T cons
 /////////// BEGIN Generalized Class/Struct Instance Support //////////////
 //////////////////////////////////////////////////////////////////////////
 
-//BOOL CreateNativeClassInstance(HSQUIRRELVM v,const SQChar * classname,SQUserPointer ud,SQRELEASEHOOK hook); // In SquirrelBindingUtils.cpp.
+//BOOL_T CreateNativeClassInstance(HSQUIRRELVM v,const SQChar * classname,SQUserPointer ud,SQRELEASEHOOK hook); // In SquirrelBindingUtils.cpp.
 
 // Create native class instance and leave on stack.
 inline BOOL_T CreateConstructNativeClassInstance(HSQUIRRELVM v,const SQChar * className) {
@@ -1249,7 +1232,7 @@ public:
 //    SQUserPointer calleeType = ClassType<Callee>::type();
 //    if (typetag != calleeType) {
 //      SquirrelObject typeTable = so.GetValue(SQ_CLASS_OBJECT_TABLE_NAME);
-//      instance = (Callee *)typeTable.GetUserPointer(INT((size_t)ClassType<Callee>::type())); // <TODO> 64-bit compatible version.
+//      instance = (Callee *)typeTable.GetUserPointer(INT_T((size_t)ClassType<Callee>::type())); // <TODO> 64-bit compatible version.
 //      if (!instance) {
 //        return sq_throwerror(v,sqT("Invalid Instance Type"));
 //      } // if
@@ -1280,7 +1263,7 @@ public:
 //    SQUserPointer calleeType = ClassType<Callee>::type();
 //    if (typetag != calleeType) {
 //      SquirrelObject typeTable = so.GetValue(SQ_CLASS_OBJECT_TABLE_NAME);
-//      instance = (Callee *)typeTable.GetUserPointer(INT((size_t)ClassType<Callee>::type())); // <TODO> 64-bit compatible version.
+//      instance = (Callee *)typeTable.GetUserPointer(INT_T((size_t)ClassType<Callee>::type())); // <TODO> 64-bit compatible version.
 //      if (!instance) {
 //        return sq_throwerror(v,sqT("Invalid Instance Type"));
 //      } // if
@@ -1845,7 +1828,7 @@ struct SQClassDef {
 #include "SqPlusConst.h"
 #endif
 
-  // Register a constant (read-only in script, passed by value (only INT_T, FLOAT, or BOOL types)).
+  // Register a constant (read-only in script, passed by value (only INT_T, FLOAT_T, or BOOL_T types)).
   template<typename ConstantType>
   SQClassDef & constant(ConstantType constant_,const SQChar * name_) {
     RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant_,name_);
@@ -1862,23 +1845,23 @@ struct SQClassDef {
 
 // === BEGIN Function Call Handlers ===
 
-inline void Push(HSQUIRRELVM v,char value)           { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned char value)  { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,short value)          { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned short value) { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,int value)            { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned int value)   { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,long value)           { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,long long value)      { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned long value)  { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned long long value)  { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,double value)         { sq_pushfloat(v,(FLOAT)value); }
-inline void Push(HSQUIRRELVM v,float value)          { sq_pushfloat(v,(FLOAT)value); }
-inline void Push(HSQUIRRELVM v,const SQChar * value) { sq_pushstring(v,value,-1); }
-inline void Push(HSQUIRRELVM v,const SquirrelNull &) { sq_pushnull(v); }
-inline void Push(HSQUIRRELVM v,SQFUNCTION value)     { sq_pushuserpointer(v,(void*)value); }
-inline void Push(HSQUIRRELVM v,SQAnythingPtr value)  { sq_pushuserpointer(v,(void*)value); } // Cast to SQAnythingPtr instead of void * if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
-inline void Push(HSQUIRRELVM v,SquirrelObject & so)  { sq_pushobject(v,so.GetObjectHandle()); }
+inline void Push(HSQUIRRELVM v,char value)               { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned char value)      { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,short value)              { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned short value)     { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,int value)                { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned int value)       { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,long value)               { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,long long value)          { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned long value)      { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned long long value) { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,double value)             { sq_pushfloat(v,(FLOAT_T)value); }
+inline void Push(HSQUIRRELVM v,float value)              { sq_pushfloat(v,(FLOAT_T)value); }
+inline void Push(HSQUIRRELVM v,const SQChar * value)     { sq_pushstring(v,value,-1); }
+inline void Push(HSQUIRRELVM v,const SquirrelNull &)     { sq_pushnull(v); }
+inline void Push(HSQUIRRELVM v,SQFUNCTION value)         { sq_pushuserpointer(v,(void*)value); }
+inline void Push(HSQUIRRELVM v,SQAnythingPtr value)      { sq_pushuserpointer(v,(void*)value); } // Cast to SQAnythingPtr instead of void * if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
+inline void Push(HSQUIRRELVM v,SquirrelObject & so)      { sq_pushobject(v,so.GetObjectHandle()); }
 
 
 #define USE_ARGUMENT_DEPENDANT_OVERLOADS
@@ -1895,41 +1878,43 @@ inline void Push(HSQUIRRELVM v,const SQUserPointer & value) { sq_pushuserpointer
 
 #define SQPLUS_CHECK_GET(res) if (!SQ_SUCCEEDED(res)) throw SquirrelError(sqT("sq_get*() failed (type error)"))
 
-inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_BOOL; }
-inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, SQInteger idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)            { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)   { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)  { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool Match(TypeWrapper<unsigned long long>,HSQUIRRELVM v,SQInteger idx)      { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)          { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)         { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM /*v*/,SQInteger /*idx*/)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
-inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,SQInteger idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
+inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)               { return sq_gettype(v,idx) == OT_BOOL; }
+inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)               { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, SQInteger idx)     { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)              { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx)     { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)                { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)       { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)               { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool Match(TypeWrapper<long long>,HSQUIRRELVM v,SQInteger idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)      { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool Match(TypeWrapper<unsigned long long>,HSQUIRRELVM v,SQInteger idx) { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)              { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)             { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx)     { return sq_gettype(v,idx) == OT_STRING; }
+inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM /*v*/,SQInteger /*idx*/){ return true; } // See Get() for HSQUIRRELVM below (v is always present).
+inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,SQInteger idx)              { return sq_gettype(v,idx) == OT_USERPOINTER; }
 inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM /*v*/,SQInteger /*idx*/) { return true; } // See sq_getstackobj(): always returns true.
 
-inline void           Get(TypeWrapper<void>,HSQUIRRELVM /*v*/,int)                {}
-inline bool           Get(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)            { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
-inline char           Get(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)            { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
-inline unsigned char  Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,SQInteger idx)   { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
-inline short          Get(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)           { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
-inline unsigned short	Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx)  { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
-inline int            Get(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)             { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<int>(i); } // C::B patch- to eliminate warning
-inline unsigned int   Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)    { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
-inline long           Get(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)            { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
-inline unsigned long  Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)   { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
+inline void               Get(TypeWrapper<void>,HSQUIRRELVM /*v*/,int)                      { ; }
+inline bool               Get(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)                { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
+inline char               Get(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)                { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
+inline unsigned char      Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,SQInteger idx)       { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
+inline short              Get(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)               { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
+inline unsigned short     Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx)      { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
+inline int                Get(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)                 { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return i; }
+inline unsigned int       Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)        { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
+inline long               Get(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)                { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
+inline long long          Get(TypeWrapper<long long>,HSQUIRRELVM v,SQInteger idx)           { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long long>(i); }
+inline unsigned long      Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)       { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
 inline unsigned long long Get(TypeWrapper<unsigned long long>, HSQUIRRELVM v,SQInteger idx) { INT_T i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long long>(i); }
-inline float          Get(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)           { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
-inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)          { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
-inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
-inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,SQInteger idx)    { (void)v, (void)idx; return SquirrelNull();  }
-inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,SQInteger idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
-inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,SQInteger /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
-inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,SQInteger idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
+inline float              Get(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)               { FLOAT_T f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
+inline double             Get(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)              { FLOAT_T f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
+inline const SQChar *     Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx)      { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
+inline SquirrelNull       Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,SQInteger idx)        { (void)v, (void)idx; return SquirrelNull();  }
+inline void *             Get(TypeWrapper<void *>,HSQUIRRELVM v,SQInteger idx)              { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
+inline HSQUIRRELVM        Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,SQInteger /*idx*/)     { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
+inline SquirrelObject     Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,SQInteger idx)      { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
 
 #ifdef SQPLUS_SUPPORT_STD_STRING
 inline void Push(HSQUIRRELVM v,const std::string& value) { sq_pushstring(v,value.c_str(),-1); }

@@ -1,6 +1,7 @@
 #ifndef _SQUIRREL_OBJECT_H_
 #define _SQUIRREL_OBJECT_H_
 
+// C::B patch: Include required, so references are found
 #include "sqplus.h"
 
 class SquirrelObject
@@ -21,13 +22,13 @@ public:
 	BOOL_T SetValue(SQInteger key,const SquirrelObject &val);
 	BOOL_T SetValue(INT_T key,bool b); // Compiler treats SQBool as INT_T.
 	BOOL_T SetValue(INT_T key,INT_T n);
-	BOOL_T SetValue(INT_T key,FLOAT f);
+	BOOL_T SetValue(INT_T key,FLOAT_T f);
 	BOOL_T SetValue(INT_T key,const SQChar *s);
 
 	BOOL_T SetValue(const SQChar *key,const SquirrelObject &val);
 	BOOL_T SetValue(const SQChar *key,bool b);
 	BOOL_T SetValue(const SQChar *key,INT_T n);
-	BOOL_T SetValue(const SQChar *key,FLOAT f);
+	BOOL_T SetValue(const SQChar *key,FLOAT_T f);
 	BOOL_T SetValue(const SQChar *key,const SQChar *s);
 
   BOOL_T SetUserPointer(const SQChar * key,SQUserPointer up);
@@ -66,12 +67,12 @@ public:
 	SQUserPointer GetInstanceUP(SQUserPointer tag) const;
 	SquirrelObject GetValue(const SQChar *key) const;
 	BOOL_T Exists(const SQChar *key) const;
-	FLOAT GetFloat(const SQChar *key) const;
+	FLOAT_T GetFloat(const SQChar *key) const;
 	INT_T GetInt(const SQChar *key) const;
 	const SQChar *GetString(const SQChar *key) const;
 	bool GetBool(const SQChar *key) const;
 	SquirrelObject GetValue(INT_T key) const;
-	FLOAT GetFloat(INT_T key) const;
+	FLOAT_T GetFloat(INT_T key) const;
 	INT_T GetInt(INT_T key) const;
 	const SQChar *GetString(INT_T key) const;
 	bool GetBool(INT_T key) const;
@@ -86,7 +87,7 @@ public:
 
   // === Get the type name of item/object through string key in a table or class. Returns NULL if the type name is not set (not an SqPlus registered type).
   const SQChar * GetTypeName(const SQChar * key);
-  // === Get the type name of item/object through INT key in a table or class. Returns NULL if the type name is not set (not an SqPlus registered type).
+  // === Get the type name of item/object through INT_T key in a table or class. Returns NULL if the type name is not set (not an SqPlus registered type).
   const SQChar * GetTypeName(INT_T key);
   // === Get the type name of this object, else return NULL if not an SqPlus registered type.
   const SQChar * GetTypeName(void);
@@ -186,7 +187,7 @@ struct StackHandler {
 		sq_pushstring(v,s,-1);
 		return 1;
 	}
-	SQInteger Return(FLOAT f)
+	SQInteger Return(FLOAT_T f)
 	{
 		sq_pushfloat(v,f);
 		return 1;
