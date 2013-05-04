@@ -423,7 +423,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
             cbStackFrame frameToSwitch;
 
             // start from line 1
-            /*for (unsigned int i = 1; i < lines.GetCount(); ++i)
+            for (unsigned int i = 1; i < lines.GetCount(); ++i)
             {
                 if (reBT1.Matches(lines[i]))
                 {
@@ -451,7 +451,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
                         frameToSwitch = sf;
                     }
                 }
-            }*/
+            }
             Manager::Get()->GetDebuggerManager()->GetBacktraceDialog()->Reload();
             if (!firstValid)
             {
