@@ -192,6 +192,7 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
             if (acm_it->first.Lower().StartsWith(keyword))
                 items.Add(acm_it->first + _T("?0"));
         }
+
         if (!items.IsEmpty())
         {
             control->ClearRegisteredImages();
