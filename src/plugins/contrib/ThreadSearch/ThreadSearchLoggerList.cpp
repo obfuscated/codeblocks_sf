@@ -480,7 +480,7 @@ struct ItemLine
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-inline int wxCALLBACK SortLineAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortLineAscending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -495,7 +495,7 @@ inline int wxCALLBACK SortLineAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr
     return Compare(i1.line, i2.line);
 }
 
-inline int wxCALLBACK SortLineDescending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortLineDescending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     ItemLine const &i1 = *reinterpret_cast<ItemLine const *>(item1);
     ItemLine const &i2 = *reinterpret_cast<ItemLine const *>(item2);
@@ -539,7 +539,7 @@ struct Item
     }
 };
 
-inline int wxCALLBACK SortDirectoryAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortDirectoryAscending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -554,7 +554,7 @@ inline int wxCALLBACK SortDirectoryAscending(cbIntPtr item1, cbIntPtr item2, cbI
     return i1.CompareDirectory(i2);
 }
 
-inline int wxCALLBACK SortDirectoryDescending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortDirectoryDescending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -569,7 +569,7 @@ inline int wxCALLBACK SortDirectoryDescending(cbIntPtr item1, cbIntPtr item2, cb
     return i2.CompareDirectory(i1);
 }
 
-inline int wxCALLBACK SortFilenameAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortFilenameAscending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -584,7 +584,7 @@ inline int wxCALLBACK SortFilenameAscending(cbIntPtr item1, cbIntPtr item2, cbIn
     return i1.CompareFile(i2);
 }
 
-inline int wxCALLBACK SortFilenameDescending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortFilenameDescending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     Item const &i1 = *reinterpret_cast<Item const *>(item1);
     Item const &i2 = *reinterpret_cast<Item const *>(item2);
@@ -607,7 +607,7 @@ struct ItemText
     int type; //(0 - header, 1 - normal item, 2 - footer)
 };
 
-inline int wxCALLBACK SortTextAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortTextAscending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);
@@ -622,7 +622,7 @@ inline int wxCALLBACK SortTextAscending(cbIntPtr item1, cbIntPtr item2, cbIntPtr
     return i1.text.CompareTo(i2.text);
 }
 
-inline int wxCALLBACK SortTextDescending(cbIntPtr item1, cbIntPtr item2, cbIntPtr /*data*/)
+inline int wxCALLBACK SortTextDescending(wxIntPtr item1, wxIntPtr item2, wxIntPtr /*data*/)
 {
     ItemText const &i1 = *reinterpret_cast<ItemText const *>(item1);
     ItemText const &i2 = *reinterpret_cast<ItemText const *>(item2);

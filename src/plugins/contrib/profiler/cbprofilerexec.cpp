@@ -141,7 +141,7 @@ void CBProfilerExecDlg::EndModal(int retCode)
 }
 
 // Sorting function of the flat profile columns
-int wxCALLBACK SortFunction(cbIntPtr item1, cbIntPtr item2, cbIntPtr sortData)
+int wxCALLBACK SortFunction(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 {
     CBProfilerExecDlg *dialog = (CBProfilerExecDlg*) sortData;
 

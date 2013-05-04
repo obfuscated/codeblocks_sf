@@ -239,7 +239,7 @@ void SymTabExecDlg::ClearUserData()
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 // Sorting function of the nm output columns
-inline int wxCALLBACK SortFunction(intptr_t item1, intptr_t item2, intptr_t dlg)
+inline int wxCALLBACK SortFunction(wxIntPtr item1, wxIntPtr item2, wxIntPtr dlg)
 {
   SymTabExecDlg   *dialog = (SymTabExecDlg*)   dlg;
   customListEntry *data1  = (customListEntry*) item1;
