@@ -138,7 +138,6 @@ int CCTreeCtrl::CBLineCompare (CCTreeCtrlData* lhs, CCTreeCtrlData* rhs)
     {
         return (lhs->m_Token->m_FileIdx > rhs->m_Token->m_FileIdx) * 2 - 1;
     }
-        
 }
 
 int CCTreeCtrl::CBNoCompare(cb_unused CCTreeCtrlData* lhs, cb_unused CCTreeCtrlData* rhs)

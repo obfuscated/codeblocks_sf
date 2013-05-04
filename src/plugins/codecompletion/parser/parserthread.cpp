@@ -771,7 +771,7 @@ void ParserThread::DoParse()
                         else
                             m_LastParent->m_AncestorsString << ParserConsts::comma_chr << m_Str;
                     }
-                    else if(    !m_Str.IsEmpty()
+                    else if (   !m_Str.IsEmpty()
                              && (m_LastParent == 0 || m_LastParent->m_Index == -1) )
                     {
                         // using namespace in global scope
@@ -1142,7 +1142,7 @@ Token* ParserThread::TokenExists(const wxString& name, const Token* parent, shor
 
     // Lookup in local parent or in global scope
     int foundIdx = m_TokenTree->TokenExists(name, parent ? parent->m_Index : -1, kindMask);
-    if(foundIdx != wxNOT_FOUND)
+    if (foundIdx != wxNOT_FOUND)
         return m_TokenTree->at(foundIdx);
 
     // Lookup in included namespaces

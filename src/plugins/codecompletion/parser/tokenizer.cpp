@@ -922,10 +922,9 @@ bool Tokenizer::SkipComment()
         if (!isDoc && !cstyle) // "//" + ?
             isDoc = (CurrentChar() == '/'); // "///"
     }
-    if(isDoc)
-    {
-        isDoc = m_ExpressionResult.empty() || (m_ExpressionResult.top() == true);
-    }
+
+    if (isDoc)
+        isDoc = m_ExpressionResult.empty() || m_ExpressionResult.top();
 
     TRACE(_T("SkipComment() : Start from line = %u"), m_LineNumber);
 
@@ -1012,10 +1011,9 @@ bool Tokenizer::SkipComment()
 
             if (lineToAppend >= 0)
             {
-                if(m_LastTokenIdx != -1)
-                {
+                if (m_LastTokenIdx != -1)
                     m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
-                }
+
                 m_NextTokenDoc.clear();
             }
             else
@@ -1907,12 +1905,10 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
 void Tokenizer::SetLastTokenIdx(int tokenIdx)
 {
     m_LastTokenIdx = tokenIdx;
-    if(tokenIdx != -1 && !m_NextTokenDoc.IsEmpty())
+    if (tokenIdx != -1 && !m_NextTokenDoc.IsEmpty())
     {
-        if(m_ExpressionResult.empty() || m_ExpressionResult.top() == true)
-        {
+        if (m_ExpressionResult.empty() || m_ExpressionResult.top())
             m_TokenTree->AppendDocumentation(tokenIdx, m_NextTokenDoc);
-        }
     }
     m_NextTokenDoc.clear();
 }

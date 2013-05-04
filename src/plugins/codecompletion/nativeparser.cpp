@@ -357,7 +357,7 @@ bool NativeParser::Done()
             break;
         }
     }
-    TRACE(_T("NativeParser::Done(): Whether it's done? answer is %s"), done? _T("true"): _T("false"));
+    TRACE(_T("NativeParser::Done(): %s"), done ? _T("true"): _T("false"));
     return done;
 }
 

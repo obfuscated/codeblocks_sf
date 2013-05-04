@@ -3717,6 +3717,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
 
     std::set<wxString> varList;
     TokenIdxSet parsedTokens;
+
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
     for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
     {
@@ -3769,6 +3770,7 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
         }
     }
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
     wxString keywords = Manager::Get()->GetEditorManager()->GetColourSet()->GetKeywords(ed->GetLanguage(), 3);
     for (std::set<wxString>::const_iterator keyIt = varList.begin();
          keyIt != varList.end(); ++keyIt)
