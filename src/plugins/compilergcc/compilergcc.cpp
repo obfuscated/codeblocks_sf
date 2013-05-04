@@ -3403,15 +3403,12 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     wxArrayString errors;
     errors.Add(filename);
     errors.Add(line);
-    wxString msgFix = msg;
-    msgFix.Replace(wxT("\t"), wxT("    "));
+
+    wxString msgFix = msg; msgFix.Replace(wxT("\t"), wxT("    "));
     errors.Add(msgFix);
 
-    Logger::level lv = Logger::info;
-    if (lt == cltError)
-        lv = Logger::error;
-    else if (lt == cltWarning)
-        lv = Logger::warning;
+    Logger::level lv = (lt == cltError)   ? Logger::error
+                     : (lt == cltWarning) ? Logger::warning : Logger::info;
 
     m_pListLog->Append(errors, lv, 2);
 

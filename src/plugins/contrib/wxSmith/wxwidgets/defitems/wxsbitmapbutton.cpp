@@ -52,8 +52,8 @@ wxsBitmapButton::wxsBitmapButton(wxsItemResData* Data):
         Data,
         &Reg.Info,
         wxsBitmapButtonEvents,
-        wxsBitmapButtonStyles) ,
-        IsDefault(false)
+        wxsBitmapButtonStyles),
+    IsDefault(false)
 {}
 
 void wxsBitmapButton::OnBuildCreatingCode()

@@ -619,7 +619,7 @@ void CompilerOptionsDlg::DoFillCategories()
     cmb->Clear();
     cmb->Append(_("<All categories>"));
 
-    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
     {
         CompOption* copt = m_Options.GetOption(i);
         if (cmb->FindString(copt->category) == -1)
@@ -641,7 +641,7 @@ void CompilerOptionsDlg::DoFillOptions()
     wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
     list->Clear();
 
-    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
     {
         const CompOption* copt = m_Options.GetOption(i);
         if (isAll || copt->category.Matches(cat))
@@ -660,7 +660,7 @@ void CompilerOptionsDlg::DoFillOptions()
 void CompilerOptionsDlg::TextToOptions()
 {
     // disable all options
-    for (unsigned int n = 0; n < m_Options.GetCount(); ++n)
+    for (size_t n = 0; n < m_Options.GetCount(); ++n)
     {
         if (CompOption* copt = m_Options.GetOption(n))
             copt->enabled = false;
@@ -902,7 +902,7 @@ void CompilerOptionsDlg::OptionsToText()
 
     wxArrayString compilerOpConflicts;
     wxArrayString linkerOpConflicts;
-    for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
     {
         CompOption* copt = m_Options.GetOption(i);
         if (copt->enabled)
@@ -947,7 +947,7 @@ void CompilerOptionsDlg::OptionsToText()
 
     // linker options and libs
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    for (int i = 0; i < (int)lstLibs->GetCount(); ++i)
+    for (size_t i = 0; i < lstLibs->GetCount(); ++i)
         m_LinkLibs.Add(lstLibs->GetString(i));
 } // OptionsToText
 
@@ -1886,7 +1886,7 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
         return;
 
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (int i = 0; i < (int)selections.GetCount(); ++i)
+    for (size_t i = 0; i < selections.GetCount(); ++i)
     {
         switch (nb->GetSelection())
         {
@@ -1999,7 +1999,7 @@ void CompilerOptionsDlg::OnClearVarClick(cb_unused wxCommandEvent& event)
                         wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
     {
         // Unset all variables of lstVars
-        for (int i=0; i < (int)lstVars->GetCount(); ++i)
+        for (size_t i=0; i < lstVars->GetCount(); ++i)
         {
             wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
             if (!key.IsEmpty())
@@ -2175,10 +2175,8 @@ void CompilerOptionsDlg::OnAddLibClick(cb_unused wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_OK)
     {
         wxArrayString paths = GetArrayFromString(dlg.GetPath());
-        for (unsigned int i = 0; i < paths.GetCount(); ++i)
-        {
+        for (size_t i = 0; i < paths.GetCount(); ++i)
             lstLibs->Append(paths[i]);
-        }
         m_bDirty = true;
     }
 } // OnAddLibClick
@@ -2295,7 +2293,7 @@ void CompilerOptionsDlg::OnCopyLibsClick(cb_unused wxCommandEvent& event)
                                 : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
     if (!base)
         return;
-    for (int i = 0; i < (int)lstLibs->GetCount(); ++i)
+    for (size_t i = 0; i < lstLibs->GetCount(); ++i)
     {
         if (lstLibs->IsSelected(i))
             base->AddLinkLib(lstLibs->GetString(i));
