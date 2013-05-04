@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 
+#include <wx/defs.h> // wxIntPtr
 #ifndef wxMAJOR_VERSION
     #include <wx/version.h>
 #endif
@@ -372,50 +373,41 @@ namespace compatibility
         A::Z() and B::Z() will return a shared counter that increments if either A or B is asked to return a value.
 */
 
-#if wxCHECK_VERSION(2, 9, 0)
-    #include <wx/defs.h>
-    #define cbIntPtr wxIntPtr
-#else
-    // We need to define cbIntPtr
-    #include <cstring> // size_t for NOPCH
-    #define cbIntPtr size_t
-#endif
-
 class ID
 {
-    cbIntPtr value;
+    wxIntPtr value;
 
-    ID(cbIntPtr in) : value(in) {};
+    ID(wxIntPtr in) : value(in) {};
 
     template<typename> friend ID GetID();
-    friend ID ConstructID(cbIntPtr);
+    friend ID ConstructID(wxIntPtr);
 
 public:
 
-    ID() : value ((cbIntPtr) -1) {};
+    ID() : value ((wxIntPtr) -1) {};
 
-    operator cbIntPtr() const { return value; };
+    operator wxIntPtr() const { return value; };
     operator void*() const { return reinterpret_cast<void*>(static_cast<uintptr_t>(value)); };
 
-    bool Valid() const { return value != ((cbIntPtr) -1); };
+    bool Valid() const { return value != ((wxIntPtr) -1); };
     bool operator!() const { return !Valid(); };
 
     friend bool operator==(ID a, ID b)    { return a.value      == b.value; };
-    friend bool operator==(ID a, int b)   { return a.value      == (cbIntPtr) b; };
+    friend bool operator==(ID a, int b)   { return a.value      == (wxIntPtr) b; };
 
     friend bool operator!=(ID a, ID b)    { return a.value      != b.value; };
-    friend bool operator!=(ID a, int b)   { return a.value      != (cbIntPtr) b; };
+    friend bool operator!=(ID a, int b)   { return a.value      != (wxIntPtr) b; };
 };
 
 
 template<typename whatever> inline ID GetID()
 {
-    static cbIntPtr id = (cbIntPtr) -1;
+    static wxIntPtr id = (wxIntPtr) -1;
     return ID(++id);
 }
 
 inline ID GetID() { return GetID<void>(); }
-inline ID ConstructID(cbIntPtr i) { return ID(i); }
+inline ID ConstructID(wxIntPtr i) { return ID(i); }
 
 #include <tr1/memory>
 

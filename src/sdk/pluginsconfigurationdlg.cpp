@@ -37,7 +37,7 @@
 #include "pluginsconfigurationdlg.h" // class's header file
 
 #if wxCHECK_VERSION(2, 9, 1)
-inline int wxCALLBACK sortByTitle(cbIntPtr item1, cbIntPtr item2, cb_unused cbIntPtr sortData)
+inline int wxCALLBACK sortByTitle(wxIntPtr item1, wxIntPtr item2, cb_unused wxIntPtr sortData)
 #else
 inline int wxCALLBACK sortByTitle(long item1, long item2, cb_unused long sortData)
 #endif
