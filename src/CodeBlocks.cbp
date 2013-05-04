@@ -382,6 +382,8 @@
 					<Add after="cmd /c if not exist devel\share\CodeBlocks mkdir devel\share\CodeBlocks" />
 					<Add after="zip -jq9 devel\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -0 -q ..\..\..\devel\share\CodeBlocks\compiler.zip images\*.png images\16x16\*.png&quot;' />
+					<Add after="cmd /c if not exist devel\share\CodeBlocks\compilers mkdir devel\share\CodeBlocks\compilers" />
+					<Add after="cmd /c xcopy plugins\compilergcc\resources\compilers\*.* devel\share\CodeBlocks\compilers /y" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -1040,16 +1042,19 @@
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_darwin.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_mac.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_openbsd.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win95.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_winnt.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prmem.h">
