@@ -887,7 +887,7 @@ void CompilerOptionsDlg::OptionsToText()
     {
         if (!array[i].IsEmpty())
         {
-            if (array[i].StartsWith(_T("-")))
+            if (array[i].StartsWith(compiler ? compiler->GetSwitches().genericSwitch : _T("-")))
             {
                 if (m_CompilerOptions.Index(array[i]) == wxNOT_FOUND)
                     m_CompilerOptions.Add(array[i]);
