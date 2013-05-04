@@ -986,6 +986,71 @@ void Wiz::SetListboxSelection(const wxString& name, int sel)
     }
 }
 
+wxString Wiz::GetCheckListboxChecked(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxCheckListBox* clb = dynamic_cast<wxCheckListBox*>(page->FindWindowByName(name, page));
+        if (clb)
+        {
+            wxString result;
+            unsigned int i;
+            for (i = 0; i < clb->GetCount(); ++i)
+            {
+                if (clb->IsChecked(i))
+                    result.Append(wxString::Format(_T("%u;"), i));
+            }
+            return result;
+        }
+    }
+    return wxEmptyString;
+}
+
+wxString Wiz::GetCheckListboxStringChecked(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxCheckListBox* clb = dynamic_cast<wxCheckListBox*>(page->FindWindowByName(name, page));
+        if (clb)
+        {
+            wxString result;
+            unsigned int i;
+            for (i = 0; i < clb->GetCount(); ++i)
+            {
+                if (clb->IsChecked(i))
+                    result.Append(wxString::Format(_T("%s;"), clb->GetString(i).wx_str()));
+            }
+            return result;
+        }
+    }
+    return wxEmptyString;
+}
+
+bool Wiz::IsCheckListboxItemChecked(const wxString& name, unsigned int item)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxCheckListBox* clb = dynamic_cast<wxCheckListBox*>(page->FindWindowByName(name, page));
+        if (clb)
+            return clb->IsChecked(item);
+    }
+    return false;
+}
+
+void Wiz::CheckCheckListboxItem(const wxString& name, unsigned int item, bool check)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxCheckListBox* clb = dynamic_cast<wxCheckListBox*>(page->FindWindowByName(name, page));
+        if (clb)
+            clb->Check(item, check);
+    }
+}
+
 void Wiz::CheckCheckbox(const wxString& name, bool check)
 {
     wxWizardPage* page = m_pWizard->GetCurrentPage();
@@ -1447,6 +1512,10 @@ void Wiz::RegisterWizard()
             func(&Wiz::GetListboxSelections, "GetListboxSelections").
             func(&Wiz::GetListboxStringSelections, "GetListboxStringSelections").
             func(&Wiz::SetListboxSelection, "SetListboxSelection").
+            func(&Wiz::GetCheckListboxChecked, "GetCheckListboxChecked").
+            func(&Wiz::GetCheckListboxStringChecked, "GetCheckListboxStringChecked").
+            func(&Wiz::IsCheckListboxItemChecked, "IsCheckListboxItemChecked").
+            func(&Wiz::CheckCheckListboxItem, "CheckCheckListboxItem").
             // get various common info
             func(&Wiz::GetWizardType, "GetWizardType").
             func(&Wiz::FindTemplateFile, "FindTemplateFile").

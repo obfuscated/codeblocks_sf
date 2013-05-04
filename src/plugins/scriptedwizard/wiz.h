@@ -106,6 +106,11 @@ class Wiz : public cbWizardPlugin
         wxString GetListboxStringSelections(const wxString& name);
         void SetListboxSelection(const wxString& name, int sel);
 
+        wxString GetCheckListboxChecked(const wxString& name);
+        wxString GetCheckListboxStringChecked(const wxString& name);
+        bool IsCheckListboxItemChecked(const wxString& name, unsigned int item);
+        void CheckCheckListboxItem(const wxString& name, unsigned int item, bool check);
+
         void SetTextControlValue(const wxString& name, const wxString& value);
         wxString GetTextControlValue(const wxString& name);
 
