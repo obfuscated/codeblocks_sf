@@ -380,8 +380,8 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 
         // files options
         wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-        unsigned int count = list->GetCount();
-        for (unsigned int i = 0; i < count; ++i)
+        size_t count = list->GetCount();
+        for (size_t i = 0; i < count; ++i)
         {
             ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
             if (!pf)

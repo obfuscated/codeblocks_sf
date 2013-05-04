@@ -279,7 +279,7 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
     if (retCode == wxID_OK && m_ProjectFile)
     {
         wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
-        for (unsigned int i = 0; i < list->GetCount(); i++)
+        for (size_t i = 0; i < list->GetCount(); i++)
         {
             if (list->IsChecked(i))
                 m_ProjectFile->AddBuildTarget(list->GetString(i));

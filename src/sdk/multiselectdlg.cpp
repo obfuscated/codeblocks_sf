@@ -75,7 +75,7 @@ void MultiSelectDlg::UpdateStatus()
 {
     int count = 0;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
     {
         if (lst->IsChecked(i))
             ++count;
@@ -89,7 +89,7 @@ wxArrayString MultiSelectDlg::GetSelectedStrings() const
 {
     wxArrayString ret;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
     {
         if (lst->IsChecked(i))
             ret.Add(lst->GetString(i));
@@ -101,7 +101,7 @@ wxArrayInt MultiSelectDlg::GetSelectedIndices() const
 {
     wxArrayInt ret;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
     {
         if (lst->IsChecked(i))
             ret.Add(i);
@@ -115,7 +115,7 @@ void MultiSelectDlg::SelectWildCard(const wxString& wild, bool select, bool clea
         return;
     wxArrayString wilds = GetArrayFromString(wild, _T(";"));
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (unsigned int i = 0; i < lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
     {
         if (clearOld || !lst->IsChecked(i))
         {
@@ -151,7 +151,7 @@ void MultiSelectDlg::OnWildcard(cb_unused wxCommandEvent& event)
     // Do not ask to un-select before if there are no items selected
     bool ask_clear = false;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (int i = 0; i < (int)lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
     {
         if (lst->IsChecked(i))
         {
@@ -176,7 +176,7 @@ void MultiSelectDlg::OnItemToggle(cb_unused wxCommandEvent& event)
 void MultiSelectDlg::OnToggle(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (int i = 0; i < (int)lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
         lst->Check(i, !lst->IsChecked(i));
 
     UpdateStatus();
@@ -185,7 +185,7 @@ void MultiSelectDlg::OnToggle(cb_unused wxCommandEvent& event)
 void MultiSelectDlg::OnSelectAll(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (int i = 0; i < (int)lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
         lst->Check(i, true);
 
     UpdateStatus();
@@ -194,7 +194,7 @@ void MultiSelectDlg::OnSelectAll(cb_unused wxCommandEvent& event)
 void MultiSelectDlg::OnDeselectAll(cb_unused wxCommandEvent& event)
 {
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
-    for (int i = 0; i < (int)lst->GetCount(); ++i)
+    for (size_t i = 0; i < lst->GetCount(); ++i)
         lst->Check(i, false);
 
     UpdateStatus();

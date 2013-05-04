@@ -218,7 +218,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
         ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
         wxArrayString bbplugins;
         wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
-        for (unsigned int i = 0; i < clb->GetCount(); ++i)
+        for (size_t i = 0; i < clb->GetCount(); ++i)
         {
             if (clb->IsChecked(i))
             {

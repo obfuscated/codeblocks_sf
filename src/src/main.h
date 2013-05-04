@@ -357,7 +357,7 @@ class MainFrame : public wxFrame
         LogManager*     m_pLogMan;
         InfoPane*       m_pInfoPane;
 
-        wxToolBar* m_pToolbar;   // main toolbar
+        wxToolBar* m_pToolbar; // main toolbar
         PluginToolbarsMap m_PluginsTools; // plugin -> toolbar map
 
         PluginIDsMap m_PluginIDsMap;
