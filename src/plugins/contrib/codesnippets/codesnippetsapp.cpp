@@ -418,10 +418,11 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
             // Got the first instance handle of the window from the config file
             HWND pFirstInstance;
             // gotten from cfgFile.Read( wxT("WindowHandle"),  &windowHandle ) ;
-            size_t val;
             #if defined(_WIN64) | defined(WIN64)
+            size_t val;
             if ( GetConfig()->m_sWindowHandle.ToULongLong( &val, 16) )
             #else
+            long unsigned int val;
             if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
             #endif
                 pFirstInstance = (HWND)val;
