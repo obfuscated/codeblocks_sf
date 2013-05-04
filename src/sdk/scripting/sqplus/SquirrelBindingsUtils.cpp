@@ -2,7 +2,7 @@
 
 
 
-BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
+BOOL_T CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 {
 	SQInteger n = 0;
 	sq_pushroottable(v);
@@ -57,7 +57,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 	return TRUE;
 }
 
-BOOL CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd)
+BOOL_T CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd)
 {
 	SQInteger n = 0;
 	SQInteger oldtop = sq_gettop(v);
@@ -98,7 +98,7 @@ BOOL CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd)
 	return TRUE;
 }
 
-BOOL CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook)
+BOOL_T CreateNativeClassInstance(HSQUIRRELVM v,const SQChar *classname,SQUserPointer ud,SQRELEASEHOOK hook)
 {
 	SQInteger oldtop = sq_gettop(v);
 	sq_pushroottable(v);

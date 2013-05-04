@@ -129,7 +129,11 @@ long IncrementalSelectListDlg::GetSelection()
     if (selection == wxNOT_FOUND)
         return wxNOT_FOUND;
 
+    #if defined(_WIN64)
+    return reinterpret_cast<long long>(m_List->GetClientData(selection));
+    #else
     return reinterpret_cast<long>(m_List->GetClientData(selection));
+    #endif
 }
 
 void IncrementalSelectListDlg::FillList()

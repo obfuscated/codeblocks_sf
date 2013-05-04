@@ -213,7 +213,7 @@ void cbStackFrame::SetNumber(int number)
     m_number = number;
 }
 
-void cbStackFrame::SetAddress(unsigned long int address)
+void cbStackFrame::SetAddress(size_t address)
 {
     m_address = address;
 }
@@ -239,7 +239,7 @@ int cbStackFrame::GetNumber() const
     return m_number;
 }
 
-unsigned long int cbStackFrame::GetAddress() const
+size_t cbStackFrame::GetAddress() const
 {
     return m_address;
 }
