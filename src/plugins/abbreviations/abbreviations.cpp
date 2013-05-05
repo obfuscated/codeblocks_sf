@@ -230,6 +230,7 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
 
     if (control->AutoCompActive())
         control->AutoCompCancel();
+
     if (control->CallTipActive())
         control->CallTipCancel();
 
@@ -261,6 +262,7 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
             // locate ending parenthesis
             int macroPosEnd = macroPos + 2;
             int len = (int)code.Length();
+
             while (macroPosEnd < len && code.GetChar(macroPosEnd) != _T(')'))
                 ++macroPosEnd;
 
@@ -321,7 +323,9 @@ void Abbreviations::LoadAutoCompleteConfig()
         wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/code"), wxEmptyString);
         if (m_AutoCompLanguageMap.find(langStr) == m_AutoCompLanguageMap.end())
             m_AutoCompLanguageMap[langStr] = new AutoCompleteMap();
+
         pAutoCompleteMap = m_AutoCompLanguageMap[langStr];
+
         if (name.IsEmpty())
             continue;
         // convert non-printable chars to printable
@@ -349,6 +353,7 @@ void Abbreviations::LoadAutoCompleteConfig()
             else
                 resolved += code[pos];
         }
+
         // should not exist, but remove if it does (EOL style is matched just before code generation)
         resolved.Replace(wxT("\r\n"), wxT("\n"));
         resolved.Replace(wxT("\r"),   wxT("\n"));
