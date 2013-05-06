@@ -90,6 +90,7 @@ void ToDoList::OnAttach()
     titles.Add(_("User")); widths.Add(64);
     titles.Add(_("Prio")); widths.Add(48);
     titles.Add(_("Line")); widths.Add(48);
+    titles.Add(_("Date")); widths.Add(56);
     titles.Add(_("File")); widths.Add(640);
 
     m_pListLog = new ToDoListView(titles, widths, m_Types);
@@ -445,7 +446,7 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
     wxString priority = wxString::Format(_T("%d"), dlg.GetPriority()); // do it like this (wx bug with int and streams)
 
     // now do the () part
-    buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
+    buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#") << (dlg.DateRequested() ? (wxDateTime::Today().Format(_T("%x): "))) :  _T("): "));
 
     wxString text = dlg.GetText();
 

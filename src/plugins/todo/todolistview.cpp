@@ -333,7 +333,21 @@ void ToDoListView::SortList()
                     else
                         swap =  0;
                     break;
-                case 5: // filename
+                case 5: // date
+                    {
+                        wxDateTime date1;
+                        wxDateTime date2;
+                        date1.ParseDate(item1.date.c_str());
+                        date2.ParseDate(item2.date.c_str());
+                        if      (date1 > date2)
+                            swap =  1;
+                        else if (date1 < date2)
+                            swap = -1;
+                        else
+                            swap =  0;
+                        break;
+                    }
+                case 6: // filename
                     swap = item1.filename.CmpNoCase(item2.filename);
                     break;
                 default:
@@ -370,7 +384,8 @@ void ToDoListView::FillListControl()
             control->SetItem(idx, 2, item.user);
             control->SetItem(idx, 3, item.priorityStr);
             control->SetItem(idx, 4, item.lineStr);
-            control->SetItem(idx, 5, item.filename);
+            control->SetItem(idx, 5, item.date);
+            control->SetItem(idx, 6, item.filename);
             control->SetItemData(idx, i);
         }
     }
@@ -512,13 +527,33 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                             const wxString allowedChars = _T("0123456789");
                             if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
                                 item.priorityStr << c1;
-                            // skip to start of text
+                            // skip to start of date
+                            while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
+                            {
+                                wxChar c2 = buffer.GetChar(pos);
+                                if ( c2 == _T('#'))
+                                {
+                                    pos++;
+                                    break;
+                                }
+                                if ( c2 == _T(')') )
+                                    break;
+                                pos++;
+                            }
+                            // look for date
                             while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
                             {
                                 wxChar c2 = buffer.GetChar(pos++);
                                 if (c2 == _T(')'))
                                     break;
+                                item.date << c2;
                             }
+
+                            break;
+                        }
+                        else if (c1 == _T(')'))
+                        {
+                            ++pos;
                             break;
                         }
                         else
@@ -540,6 +575,8 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 item.text.Trim(false);
                 item.user.Trim();
                 item.user.Trim(false);
+                wxDateTime date;
+                if ( !date.ParseDate(item.date.c_str()) ) item.date.clear(); // not able to parse date so clear the string
                 item.line = CalculateLineNumber(buffer, pos, oldline, oldlinepos);
                 item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
                 m_ItemsMap[filename].push_back(item);

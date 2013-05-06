@@ -41,6 +41,7 @@ class AddTodoDlg : public wxScrollingDialog
 
         wxString GetText() const;
         wxString GetUser() const;
+        bool DateRequested() const;
         int GetPriority() const;
         ToDoPosition GetPosition() const;
         wxString GetType() const;

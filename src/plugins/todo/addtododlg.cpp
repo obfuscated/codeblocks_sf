@@ -39,6 +39,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
     wxString lastType  = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
     wxString lastStyle = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_style"));
     wxString lastPos   = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_position"));
+    bool lastDateReq   = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("last_date_req"), false);
 
     // load users
     wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
@@ -119,6 +120,8 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
         if (sel != -1)
             cmb->SetSelection(sel);
     }
+
+    XRCCTRL(*this, "ID_CHECKBOX1", wxCheckBox)->SetValue(lastDateReq);
 }
 
 AddTodoDlg::~AddTodoDlg()
@@ -199,6 +202,9 @@ void AddTodoDlg::EndModal(int retVal)
 
         cmb = XRCCTRL(*this, "chcPosition", wxChoice);
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetStringSelection());
+
+        wxCheckBox *checkAddDate = XRCCTRL(*this, "ID_CHECKBOX1", wxCheckBox);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_date_req"), checkAddDate->GetValue() );
     }
 
     wxScrollingDialog::EndModal(retVal);
@@ -259,4 +265,8 @@ void AddTodoDlg::OnDelType(wxCommandEvent&)
     cmb->Delete(sel);
     if (cmb->GetCount()>0)
       cmb->SetSelection(0);
+}
+bool AddTodoDlg::DateRequested() const
+{
+    return XRCCTRL(*this, "ID_CHECKBOX1", wxCheckBox)->IsChecked();
 }

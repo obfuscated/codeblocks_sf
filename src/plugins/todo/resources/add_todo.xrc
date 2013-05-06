@@ -1,175 +1,189 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
-  <object class="wxScrollingDialog" name="dlgAddToDo">
-    <title>Add Todo item</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Text:</label>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxTextCtrl" name="txtText">
-          <style>wxTE_MULTILINE</style>
-        </object>
-        <option>1</option>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxFlexGridSizer">
-          <cols>2</cols>
-          <hgap>8</hgap>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>User:</label>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>0,0</size>
-          </object>
-          <object class="sizeritem">
-            <object class="wxChoice" name="chcUser">
-              <content/>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <growablecols>0</growablecols>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btAddUser">
-                  <label>Add new user</label>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btDelUser">
-                  <label>Delete user</label>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Type:</label>
-            </object>
-          </object>
-          <object class="spacer"/>
-
-          <object class="sizeritem">
-            <object class="wxChoice" name="chcType">
-              <content/>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btAddType">
-                  <label>Add new type</label>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btDelType">
-                  <label>Delete type</label>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Priority (1-9):</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Position:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxSpinCtrl" name="spnPriority">
-              <value>1</value>
-              <min>1</min>
-              <max>9</max>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-
-          <object class="sizeritem">
-            <object class="wxChoice" name="chcPosition">
-              <content>
-                <item>New line above current line</item>
-                <item>Exactly where caret is now</item>
-                <item>New line below current line</item>
-              </content>
-              <selection>0</selection>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Comment style:</label>
-            </object>
-          </object>
-          <object class="spacer"/>
-          <object class="sizeritem">
-            <object class="wxChoice" name="chcStyle">
-              <content>
-                <item>C++ style comment</item>
-                <item>C style comment</item>
-				<item>Doxygen C style comment (in block)</item>
-				<item>Doxygen C++ style comment</item>
-                <item>Compiler warning</item>
-                <item>Compiler error</item>
-                <item>Fortran comment</item>
-              </content>
-              <selection>0</selection>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <object class="spacer"/>
-        </object>
-        <option>1</option>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
-  </object>
+	<object class="wxScrollingDialog" name="dlgAddToDo">
+		<title>Add Todo item</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Text:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="txtText">
+					<style>wxTE_MULTILINE</style>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<hgap>8</hgap>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>User:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<size>0,0</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="chcUser" />
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxButton" name="btAddUser">
+									<label>Add new user</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btDelUser">
+									<label>Delete user</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT3">
+							<label>Type:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="chcType" />
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxButton" name="btAddType">
+									<label>Add new type</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btDelType">
+									<label>Delete type</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+							</object>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT4">
+							<label>Priority (1-9):</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT5">
+							<label>Position:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxSpinCtrl" name="spnPriority">
+							<value>1</value>
+							<min>1</min>
+							<max>9</max>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="chcPosition">
+							<content>
+								<item>New line above current line</item>
+								<item>Exactly where caret is now</item>
+								<item>New line below current line</item>
+							</content>
+							<selection>0</selection>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT6">
+							<label>Comment style:</label>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="chcStyle">
+							<content>
+								<item>C++ style comment</item>
+								<item>C style comment</item>
+								<item>Doxygen C style comment (in block)</item>
+								<item>Doxygen C++ style comment</item>
+								<item>Compiler warning</item>
+								<item>Compiler error</item>
+								<item>Fortran comment</item>
+							</content>
+							<selection>0</selection>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX1">
+							<label>Add current date to item</label>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;OK</label>
+							<default>1</default>
+						</object>
+						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label>&amp;Cancel</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

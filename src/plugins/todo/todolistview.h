@@ -30,6 +30,7 @@ struct ToDoItem
     wxString filename;
     wxString lineStr;
     wxString priorityStr;
+    wxString date;
     int line;
     int priority;
 };
