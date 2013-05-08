@@ -13,7 +13,12 @@
     #include <wx/version.h>
 #endif
 
-#if !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__)
+#ifndef __has_feature
+    #define __has_feature(x) 0
+#endif
+
+#if    !(__GNUC__ == 4 && __GNUC_MINOR__ >= 6 && defined __GXX_EXPERIMENTAL_CXX0X__) \
+    && !(__clang__ && __has_feature(cxx_nullptr))
     // it is a const object...
     const class nullptr_t
     {
