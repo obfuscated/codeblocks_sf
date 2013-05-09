@@ -126,6 +126,7 @@ END_EVENT_TABLE()
 
 // constructor
 EditorTweaks::EditorTweaks() :
+    m_isUpdatingUI(false),
     m_scrollTimer(this, id_et_ScrollTimer)
 {
     // Make sure our resources are available.
@@ -357,6 +358,7 @@ void EditorTweaks::UpdateUI()
 
     wxMenu *submenu = m_tweakmenu; //_("Editor Tweaks") TODO: Retrieve actual menu
 
+    m_isUpdatingUI = true; // ignore events the following can trigger
     submenu->Check(id_et_WordWrap,ed->GetControl()->GetWrapMode()>0);
     submenu->Check(id_et_ShowLineNumbers,ed->GetControl()->GetMarginWidth(0)>0);
     submenu->Check(id_et_TabChar,ed->GetControl()->GetUseTabs());
@@ -371,6 +373,7 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_ShowEOL,ed->GetControl()->GetViewEOL());
     submenu->Check(id_et_SuppressInsertKey, m_suppress_insert);
     submenu->Check(id_et_ConvertBraces,     m_convert_braces);
+    m_isUpdatingUI = false; // done
 }
 
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
@@ -698,7 +701,7 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
 void EditorTweaks::OnWordWrap(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     bool enabled=ed->GetControl()->GetWrapMode()>0;
@@ -714,7 +717,7 @@ void EditorTweaks::OnWordWrap(wxCommandEvent &/*event*/)
 void EditorTweaks::OnShowLineNumbers(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     bool enabled=ed->GetControl()->GetMarginWidth(0)>0;
@@ -752,7 +755,7 @@ void EditorTweaks::OnShowLineNumbers(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabChar(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetUseTabs(!ed->GetControl()->GetUseTabs());
@@ -761,7 +764,7 @@ void EditorTweaks::OnTabChar(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabIndent(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetTabIndents(!ed->GetControl()->GetTabIndents());
@@ -770,7 +773,7 @@ void EditorTweaks::OnTabIndent(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize2(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetTabWidth(2);
@@ -779,7 +782,7 @@ void EditorTweaks::OnTabSize2(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize4(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetTabWidth(4);
@@ -788,7 +791,7 @@ void EditorTweaks::OnTabSize4(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize6(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetTabWidth(6);
@@ -797,7 +800,7 @@ void EditorTweaks::OnTabSize6(wxCommandEvent &/*event*/)
 void EditorTweaks::OnTabSize8(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetTabWidth(8);
@@ -840,7 +843,7 @@ void EditorTweaks::OnMakeIndentsConsistent(wxCommandEvent& /*event*/)
 void EditorTweaks::OnShowEOL(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetViewEOL(!ed->GetControl()->GetViewEOL());
@@ -888,7 +891,7 @@ void EditorTweaks::OnEnsureConsistentEOL(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLCRLF(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_CRLF);
@@ -897,7 +900,7 @@ void EditorTweaks::OnEOLCRLF(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLCR(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_CR);
@@ -906,7 +909,7 @@ void EditorTweaks::OnEOLCR(wxCommandEvent &/*event*/)
 void EditorTweaks::OnEOLLF(wxCommandEvent &/*event*/)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl())
+    if (!ed || !ed->GetControl() || m_isUpdatingUI)
         return;
 
     ed->GetControl()->SetEOLMode(wxSCI_EOL_LF);

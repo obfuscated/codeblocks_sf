@@ -148,6 +148,7 @@ class EditorTweaks : public cbPlugin
         bool m_suppress_insert;
         bool m_convert_braces;
         int  m_buffer_caret;
+        bool m_isUpdatingUI;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
         wxTimer m_scrollTimer;
