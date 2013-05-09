@@ -1405,6 +1405,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
     m_LastFindReplaceData->NewSearch = true;
+
     if (control)
     {   // if editor : store the selection start/end
         // only use this in case of !findInFiles and scope==1 (search in selection)
@@ -1412,6 +1413,16 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         m_LastFindReplaceData->SearchInSelectionEnd = control->GetSelectionEnd();
     }
     dlg->Destroy();
+
+    if ( m_LastFindReplaceData->regEx )
+    {
+        // Match nasty regexes
+        if ( m_LastFindReplaceData->findText.IsSameAs('^') || m_LastFindReplaceData->findText.IsSameAs('$') )
+        {
+            cbMessageBox(_T("Bad regex entered!\nPlease correct regex and try again!"), _T("Error!"), wxICON_ERROR);
+            return 0;
+        }
+    }
 
     int ReturnValue = 0;
     if (!replace)
