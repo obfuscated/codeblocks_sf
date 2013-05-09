@@ -47,6 +47,7 @@ const wxString cSlashBase(_T("/base"));
 const wxString cInclude  (_T("include"));
 const wxString cLib      (_T("lib"));
 const wxString cObj      (_T("obj"));
+const wxString cBin      (_T("bin"));
 const wxString cCflags   (_T("cflags"));
 const wxString cLflags   (_T("lflags"));
 const wxString cSets     (_T("/sets/"));
@@ -75,6 +76,7 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
     wxTextCtrl *m_Include;
     wxTextCtrl *m_Lib;
     wxTextCtrl *m_Obj;
+    wxTextCtrl *m_Bin;
 
     wxTextCtrl *m_Name[7];
     wxTextCtrl *m_Value[7];
@@ -93,7 +95,7 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
     void NewSet(wxCommandEvent&    event);
     void DeleteVar(wxCommandEvent& event);
     void DeleteSet(wxCommandEvent& event);
-
+    // handler for the folder selection button
     void OnFS(wxCommandEvent& event);
 
     void SelectSet(wxCommandEvent& event);
@@ -155,7 +157,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
     if (member.IsEmpty() || member.IsSameAs(cBase))
         return base;
 
-    if (member.IsSameAs(cInclude) || member.IsSameAs(cLib) || member.IsSameAs(cObj))
+    if (member.IsSameAs(cInclude) || member.IsSameAs(cLib) || member.IsSameAs(cObj) || member.IsSameAs(cBin))
     {
         wxString ret = m_CfgMan->Read(path + member);
         if (ret.IsEmpty())
@@ -274,6 +276,7 @@ BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("fs2"), UsrGlblMgrEditDialog::OnFS)
     EVT_BUTTON(XRCID("fs3"), UsrGlblMgrEditDialog::OnFS)
     EVT_BUTTON(XRCID("fs4"), UsrGlblMgrEditDialog::OnFS)
+    EVT_BUTTON(XRCID("fs5"), UsrGlblMgrEditDialog::OnFS)
 
     EVT_CHOICE(XRCID("selSet"), UsrGlblMgrEditDialog::SelectSet)
     EVT_CHOICE(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
@@ -292,6 +295,7 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
     m_Include = XRCCTRL(*this, "include", wxTextCtrl);
     m_Lib     = XRCCTRL(*this, "lib",     wxTextCtrl);
     m_Obj     = XRCCTRL(*this, "obj",     wxTextCtrl);
+    m_Bin     = XRCCTRL(*this, "bin",     wxTextCtrl);
 
     wxSplitterWindow *splitter = XRCCTRL(*this, "splitter", wxSplitterWindow);
     if (splitter)
@@ -629,6 +633,8 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c = m_Lib;
     else if (id == XRCID("fs4"))
         c = m_Obj;
+    else if (id == XRCID("fs5"))
+        c = m_Bin;
     else
         cbThrow(_T("Encountered invalid button ID"));
 
