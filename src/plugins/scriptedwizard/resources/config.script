@@ -36,6 +36,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("lf"),           _T("Lightfeather project"),  _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("matlab_csf"),   _T("Matlab project"),        _T("Console"));
+    RegisterWizard(wizProject,     _T("opencv"),       _T("OpenCV project"),        _T("Console"));
     RegisterWizard(wizProject,     _T("opengl"),       _T("OpenGL project"),        _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
