@@ -77,12 +77,15 @@
         <Option name="Have clang++ follow the C++11 ISO C++ language standard"
                 option="-std=c++11"
                 supersedes="-std=c++98 -std=c++0x"/>
+        <Option name="Enable all common compiler warnings"
+                option="-Wall"
+                supersedes="-w"/>
         <Option name="Enable all warnings"
                 option="-Weverything"
                 supersedes="-w"/>
         <Option name="Disable all warnings"
                 option="-w"
-                supersedes="-Weverything"/>
+                supersedes="-Wall -Weverything"/>
         <Option name="Turn warnings into errors"
                 option="-Werror"/>
         <Option name="Warn on language extensions"
