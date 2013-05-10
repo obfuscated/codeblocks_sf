@@ -1,4 +1,4 @@
-SUBDIRS = arm avr c_file console d directx dll empty empty_file fltk fortran glfw glut gtk h_file irrlicht lf mcs51 matlab_csf ogre opengl plugins ppc qt4 sdl sfml smartwin staticlib stlport sharedlib sys tricore win32gui wxwidgets
+SUBDIRS = arm avr c_file console d directx dll empty empty_file fltk fortran glfw glut gtk h_file irrlicht lf mcs51 matlab_csf ogre opencv opengl plugins ppc qt4 sdl sfml smartwin staticlib stlport sharedlib sys tricore win32gui wxwidgets
 
 pkgdata_DATA = scriptedwizard.zip
 CLEANFILES = $(pkgdata_DATA)
