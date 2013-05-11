@@ -228,5 +228,6 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmith \
 		wxSmithContribItems \
 		wxSmithAui \
-		wxSmithDateTimePicker
+		wxSmithDateTimePicker \
+		wxSmithDemo
 
