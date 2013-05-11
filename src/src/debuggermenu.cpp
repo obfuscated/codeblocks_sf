@@ -861,22 +861,26 @@ void DebuggerToolbarHandler::OnUpdateUI(wxUpdateUIEvent& event)
         stopped = plugin->IsStopped();
         isRunning = plugin->IsRunning();
     }
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    cbPlugin *runningPlugin = manager->GetIsRunning();
-    if (runningPlugin != NULL && runningPlugin != plugin)
-        en = false;
+    if (m_Toolbar)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-    m_Toolbar->EnableTool(idMenuDebug, (!isRunning || stopped) && en);
-    m_Toolbar->EnableTool(idMenuRunToCursor, en && ed && stopped);
-    m_Toolbar->EnableTool(idMenuNext, isRunning && en && stopped);
-    m_Toolbar->EnableTool(idMenuNextInstr, isRunning && en && stopped);
-    m_Toolbar->EnableTool(idMenuStepIntoInstr, isRunning && en && stopped);
-    m_Toolbar->EnableTool(idMenuStep, en && stopped);
-    m_Toolbar->EnableTool(idMenuStepOut, isRunning && en && stopped);
-    m_Toolbar->EnableTool(idToolbarStop, isRunning && en);
-    m_Toolbar->EnableTool(idMenuBreak, isRunning && !stopped && en);
-    m_Toolbar->EnableTool(idDebuggerToolInfo, plugin && plugin->ToolMenuEnabled());
+        cbPlugin *runningPlugin = manager->GetIsRunning();
+        if (runningPlugin != NULL && runningPlugin != plugin)
+            en = false;
+
+        m_Toolbar->EnableTool(idMenuDebug, (!isRunning || stopped) && en);
+        m_Toolbar->EnableTool(idMenuRunToCursor, en && ed && stopped);
+        m_Toolbar->EnableTool(idMenuNext, isRunning && en && stopped);
+        m_Toolbar->EnableTool(idMenuNextInstr, isRunning && en && stopped);
+        m_Toolbar->EnableTool(idMenuStepIntoInstr, isRunning && en && stopped);
+        m_Toolbar->EnableTool(idMenuStep, en && stopped);
+        m_Toolbar->EnableTool(idMenuStepOut, isRunning && en && stopped);
+        m_Toolbar->EnableTool(idToolbarStop, isRunning && en);
+        m_Toolbar->EnableTool(idMenuBreak, isRunning && !stopped && en);
+        m_Toolbar->EnableTool(idDebuggerToolInfo, plugin && plugin->ToolMenuEnabled());
+    }
 
     // allow other UpdateUI handlers to process this event
     // *very* important! don't forget it...
