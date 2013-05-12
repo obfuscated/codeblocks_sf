@@ -102,8 +102,8 @@
 				<Compiler>
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
-					<Add option="-DSCI_LEXER" />
 					<Add option="-DLINK_LEXERS" />
+					<Add option="-DSCI_LEXER" />
 					<Add option="-DWXMAKINGDLL_SCI" />
 					<Add directory="sdk/wxscintilla/src/scintilla/include" />
 					<Add directory="sdk/wxscintilla/src/scintilla/src" />
@@ -794,16 +794,19 @@
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_darwin.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_mac.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_openbsd.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win.h">
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_win95.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prcpucfg_winnt.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsprpub/pr/include/prmem.h">
@@ -2980,6 +2983,9 @@
 		<Unit filename="sdk/wxscintilla/src/ScintillaWX.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/cppcheck.suppress">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/include/ILexer.h">
 			<Option target="scintilla" />
 		</Unit>
@@ -3107,6 +3113,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKix.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexLaTeX.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexLisp.cxx">
@@ -3316,6 +3325,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/StyleContext.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/SubStyles.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexlib/WordList.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3428,9 +3440,6 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/RunStyles.h">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/wxscintilla/src/scintilla/src/SVector.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/ScintillaBase.cxx">
