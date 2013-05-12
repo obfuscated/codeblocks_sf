@@ -35,7 +35,7 @@
 		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx29.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx29.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin_wx29.cbp" />
-		<Project filename="plugins/contrib/HexEditor/HexEditor_wx29-win.cbp" />
+		<Project filename="plugins/contrib/HexEditor/HexEditor_wx29.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_wx29.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder_wx29.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder_wx29.cbp">
