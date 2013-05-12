@@ -232,3 +232,13 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmithDemo \
 		wxSmithPlot
 
+EXTRA_DIST = FortranProject/*.h \
+		FortranProject/*.cpp \
+		FortranProject/*.xml \
+		FortranProject/*.cbp \
+		FortranProject/update* \
+		FortranProject/images/*.png \
+		FortranProject/images/16x16/*.png \
+		FortranProject/images/fortranproject/*.png \
+		FortranProject/images/fortranproject/*.f90 \
+		FortranProject/resources/*.xrc
