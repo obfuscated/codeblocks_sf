@@ -186,7 +186,7 @@ bool TextCtrlLogger::GetWrapMode() const
 {
     if (!control)
         return false;
-    wxWindowUpdateLocker noUpdates(control);
+
     long ctrl_style = control->GetWindowStyle();
     return ((ctrl_style & wxTE_DONTWRAP)!=wxTE_DONTWRAP);
 }
@@ -195,8 +195,6 @@ void TextCtrlLogger::ToggleWrapMode()
 {
     if (!control || !HasFeature(Feature::IsWrappable))
         return;
-
-    wxWindowUpdateLocker noUpdates(control);
 
     long ctrl_style = control->GetWindowStyle();
 
