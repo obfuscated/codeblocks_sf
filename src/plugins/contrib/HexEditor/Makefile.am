@@ -59,8 +59,7 @@ EXTRA_DIST = \
 	wxsmith/SearchDialog.wxs \
 	wxsmith/SelectStoredExpressionDlg.wxs \
 	wxsmith/TestCasesDlg.wxs \
-	HexEditor-unix.cbp \
-	HexEditor-win.cbp \
+	*.cbp \
 	manifest.xml
 
 pkgdata_DATA = HexEditor.zip
