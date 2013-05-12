@@ -27,6 +27,7 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager_wx29-unix.cbp" />
+		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_wx29-unix.cbp" />
@@ -40,8 +41,9 @@
 		<Project filename="plugins/contrib/profiler/cbprofiler_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_wx29-unix.cbp" />
-		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx29-unix.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter_wx29-unix.cbp" />
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab_wx29-unix.cbp" />
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_wx29-unix.cbp">
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_wx29-unix.cbp" />

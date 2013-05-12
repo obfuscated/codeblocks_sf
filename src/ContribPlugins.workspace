@@ -1,44 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
-		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning.cbp" active="1" />
-		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker.cbp" />
-		<Project filename="plugins/contrib/Cccc/Cccc.cbp" />
-		<Project filename="plugins/contrib/CppCheck/CppCheck.cbp" />
-		<Project filename="plugins/contrib/codesnippets/codesnippets.cbp" />
-		<Project filename="plugins/contrib/codestat/codestat.cbp" />
-		<Project filename="plugins/contrib/copystrings/copystrings.cbp" />
-		<Project filename="plugins/contrib/Cscope/Cscope.cbp" />
-		<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin.cbp" />
-		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks.cbp" />
-		<Project filename="plugins/contrib/dragscroll/dragscroll.cbp" />
-		<Project filename="plugins/contrib/EditorConfig/EditorConfig.cbp" />
-		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks.cbp" />
-		<Project filename="plugins/contrib/envvars/envvars.cbp" />
-		<Project filename="plugins/contrib/source_exporter/Exporter.cbp" />
-		<Project filename="plugins/contrib/FileManager/FileManager.cbp" />
-		<Project filename="plugins/contrib/byogames/byogames.cbp" />
-		<Project filename="plugins/contrib/headerfixup/headerfixup.cbp" />
-		<Project filename="plugins/contrib/help_plugin/help-plugin.cbp" />
-		<Project filename="plugins/contrib/HexEditor/HexEditor-win.cbp" />
-		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch.cbp" />
-		<Project filename="plugins/contrib/keybinder/keybinder.cbp" />
-		<Project filename="plugins/contrib/cb_koders/cb_koders.cbp" />
-		<Project filename="plugins/contrib/lib_finder/lib_finder.cbp">
-			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/MouseSap/MouseSap.cbp" />
-		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman.cbp" />
-		<Project filename="plugins/contrib/profiler/cbprofiler.cbp" />
-		<Project filename="plugins/contrib/regex_testbed/RegExTestbed.cbp" />
-		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor.cbp" />
-		<Project filename="plugins/contrib/SmartIndent/SmartIndent.cbp" />
-		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
-		<Project filename="plugins/contrib/symtab/symtab.cbp" />
-		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch.cbp">
-			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus.cbp" />
+		<Project filename="tools/cb_share_config/cb_share_config.cbp" />
+		<Project filename="tools/CBLauncher/CbLauncher.cbp" />
+		<Project filename="tools/Addr2LineUI/Addr2LineUI.cbp" />
+		<Project filename="plugins/codecompletion/cctest.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems.cbp">
@@ -48,6 +14,45 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith.cbp" />
 		</Project>
-		<Project filename="tools/cb_share_config/cb_share_config.cbp" />
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning.cbp" active="1" />
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker.cbp" />
+		<Project filename="plugins/contrib/byogames/byogames.cbp" />
+		<Project filename="plugins/contrib/cb_koders/cb_koders.cbp" />
+		<Project filename="plugins/contrib/Cccc/Cccc.cbp" />
+		<Project filename="plugins/contrib/codesnippets/codesnippets.cbp" />
+		<Project filename="plugins/contrib/codestat/codestat.cbp" />
+		<Project filename="plugins/contrib/copystrings/copystrings.cbp" />
+		<Project filename="plugins/contrib/CppCheck/CppCheck.cbp" />
+		<Project filename="plugins/contrib/Cscope/Cscope.cbp" />
+		<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin.cbp" />
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks.cbp" />
+		<Project filename="plugins/contrib/dragscroll/dragscroll.cbp" />
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig.cbp" />
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks.cbp" />
+		<Project filename="plugins/contrib/envvars/envvars.cbp" />
+		<Project filename="plugins/contrib/FileManager/FileManager.cbp" />
+		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn.cbp" />
+		<Project filename="plugins/contrib/headerfixup/headerfixup.cbp" />
+		<Project filename="plugins/contrib/help_plugin/help-plugin.cbp" />
+		<Project filename="plugins/contrib/HexEditor/HexEditor.cbp" />
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch.cbp" />
+		<Project filename="plugins/contrib/keybinder/keybinder.cbp" />
+		<Project filename="plugins/contrib/lib_finder/lib_finder.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/MouseSap/MouseSap.cbp" />
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman.cbp" />
+		<Project filename="plugins/contrib/profiler/cbprofiler.cbp" />
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed.cbp" />
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor.cbp" />
+		<Project filename="plugins/contrib/rndgen/rndgen.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent.cbp" />
+		<Project filename="plugins/contrib/source_exporter/Exporter.cbp" />
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
+		<Project filename="plugins/contrib/symtab/symtab.cbp" />
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

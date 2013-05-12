@@ -26,14 +26,15 @@
 		<Project filename="plugins\contrib\Cscope\Cscope_wx29.cbp" />
 		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin_wx29.cbp" />
 		<Project filename="plugins\contrib\DoxyBlocks\DoxyBlocks_wx29.cbp" />
-		<Project filename="plugins\contrib\dragscroll\dragscroll_wx29.cbp" />
+		<Project filename="plugins\contrib\dragscroll\DragScroll_wx29.cbp" />
 		<Project filename="plugins\contrib\EditorConfig\EditorConfig_wx29.cbp" />
 		<Project filename="plugins\contrib\EditorTweaks\EditorTweaks_wx29.cbp" />
 		<Project filename="plugins\contrib\envvars\envvars_wx29.cbp" />
 		<Project filename="plugins\contrib\FileManager\FileManager_wx29.cbp" />
+		<Project filename="plugins\contrib\FortranProject\FortranProject_cbsvn_wx29.cbp" />
 		<Project filename="plugins\contrib\headerfixup\headerfixup_wx29.cbp" />
 		<Project filename="plugins\contrib\help_plugin\help-plugin_wx29.cbp" />
-		<Project filename="plugins\contrib\HexEditor\HexEditor_wx29-win.cbp" />
+		<Project filename="plugins\contrib\HexEditor\HexEditor_wx29.cbp" />
 		<Project filename="plugins\contrib\IncrementalSearch\IncrementalSearch_wx29.cbp" />
 		<Project filename="plugins\contrib\keybinder\keybinder_wx29.cbp" />
 		<Project filename="plugins\contrib\lib_finder\lib_finder_wx29.cbp">
@@ -46,8 +47,8 @@
 		<Project filename="plugins\contrib\ReopenEditor\ReopenEditor_wx29.cbp" />
 		<Project filename="plugins\contrib\rndgen\rndgen_wx29.cbp" />
 		<Project filename="plugins\contrib\SmartIndent\SmartIndent_wx29.cbp" />
-		<Project filename="plugins\contrib\SpellChecker\SpellChecker_wx29.cbp" />
 		<Project filename="plugins\contrib\source_exporter\Exporter_wx29.cbp" />
+		<Project filename="plugins\contrib\SpellChecker\SpellChecker_wx29.cbp" />
 		<Project filename="plugins\contrib\symtab\symtab_wx29.cbp" />
 		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch_wx29.cbp">
 			<Depends filename="plugins\contrib\wxContribItems\wxContribItems_wx29.cbp" />

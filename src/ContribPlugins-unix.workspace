@@ -1,44 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
-		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning-unix.cbp" active="1" />
-		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker-unix.cbp" />
-		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp" />
-		<Project filename="plugins/contrib/CppCheck/CppCheck-unix.cbp" />
-		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp" />
-		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />
-		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
-		<Project filename="plugins/contrib/Cscope/Cscope-unix.cbp" />
-		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks-unix.cbp" />
-		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
-		<Project filename="plugins/contrib/EditorConfig/EditorConfig-unix.cbp" />
-		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks-unix.cbp" />
-		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
-		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
-		<Project filename="plugins/contrib/FileManager/FileManager-unix.cbp" />
-		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
-		<Project filename="plugins/contrib/headerfixup/headerfixup-unix.cbp" />
-		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
-		<Project filename="plugins/contrib/HexEditor/HexEditor-unix.cbp" />
-		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch-unix.cbp" />
-		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
-		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
-		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp">
-			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/MouseSap/MouseSap-unix.cbp" />
-		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman-unix.cbp" />
-		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
-		<Project filename="plugins/contrib/regex_testbed/RegExTestbed-unix.cbp" />
-		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor-unix.cbp" />
-		<Project filename="plugins/contrib/SmartIndent/SmartIndent-unix.cbp" />
-		<Project filename="plugins/contrib/SpellChecker/SpellChecker-unix.cbp" />
-		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />
-		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp">
-			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
-		</Project>
-		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus-unix.cbp" />
-		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />
+		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp">
@@ -48,6 +11,44 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		</Project>
-		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning-unix.cbp" active="1" />
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker-unix.cbp" />
+		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
+		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
+		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp" />
+		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp" />
+		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />
+		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
+		<Project filename="plugins/contrib/CppCheck/CppCheck-unix.cbp" />
+		<Project filename="plugins/contrib/Cscope/Cscope-unix.cbp" />
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks-unix.cbp" />
+		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig-unix.cbp" />
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks-unix.cbp" />
+		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
+		<Project filename="plugins/contrib/FileManager/FileManager-unix.cbp" />
+		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn-unix.cbp" />
+		<Project filename="plugins/contrib/headerfixup/headerfixup-unix.cbp" />
+		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
+		<Project filename="plugins/contrib/HexEditor/HexEditor-unix.cbp" />
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch-unix.cbp" />
+		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
+		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/MouseSap/MouseSap-unix.cbp" />
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman-unix.cbp" />
+		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed-unix.cbp" />
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor-unix.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent-unix.cbp" />
+		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker-unix.cbp" />
+		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus-unix.cbp" />
+		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

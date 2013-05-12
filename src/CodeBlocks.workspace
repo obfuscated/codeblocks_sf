@@ -32,6 +32,7 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager.cbp" />
+		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor-win.cbp" />
