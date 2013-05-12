@@ -576,7 +576,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 item.user.Trim();
                 item.user.Trim(false);
                 wxDateTime date;
-                if ( !date.ParseDate(item.date.c_str()) ) item.date.clear(); // not able to parse date so clear the string
+                if ( !date.ParseDate(item.date.wx_str()) ) item.date.clear(); // not able to parse date so clear the string
                 item.line = CalculateLineNumber(buffer, pos, oldline, oldlinepos);
                 item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
                 m_ItemsMap[filename].push_back(item);
