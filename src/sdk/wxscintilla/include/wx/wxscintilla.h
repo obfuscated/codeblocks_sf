@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.25.0")
+#define wxSCINTILLA_VERSION _T("3.31.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -133,6 +133,7 @@
 /* C::B begin */
 #define wxSCI_MASK_FOLDERS 0xFF800000
 /* C::B end */
+#define wxSCI_MAX_MARGIN 4
 #define wxSCI_MARGIN_SYMBOL 0
 #define wxSCI_MARGIN_NUMBER 1
 #define wxSCI_MARGIN_BACK 2
@@ -199,6 +200,7 @@
 #define wxSCI_INDIC_SQUIGGLELOW 11
 #define wxSCI_INDIC_DOTBOX 12
 #define wxSCI_INDIC_SQUIGGLEPIXMAP 13
+#define wxSCI_INDIC_COMPOSITIONTHICK 14
 /* C::B begin */
 #define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
 /* C::B end */
@@ -236,6 +238,12 @@
 #define wxSCI_FOLDLEVELWHITEFLAG 0x1000
 #define wxSCI_FOLDLEVELHEADERFLAG 0x2000
 #define wxSCI_FOLDLEVELNUMBERMASK 0x0FFF
+#define wxSCI_FOLDACTION_CONTRACT 0
+#define wxSCI_FOLDACTION_EXPAND 1
+#define wxSCI_FOLDACTION_TOGGLE 2
+#define wxSCI_AUTOMATICFOLD_SHOW 0x0001
+#define wxSCI_AUTOMATICFOLD_CLICK 0x0002
+#define wxSCI_AUTOMATICFOLD_CHANGE 0x0004
 #define wxSCI_FOLDFLAG_LINEBEFORE_EXPANDED 0x0002
 #define wxSCI_FOLDFLAG_LINEBEFORE_CONTRACTED 0x0004
 #define wxSCI_FOLDFLAG_LINEAFTER_EXPANDED 0x0008
@@ -314,6 +322,9 @@
 #define wxSCI_SEL_THIN 3
 #define wxSCI_CASEINSENSITIVEBEHAVIOUR_RESPECTCASE 0
 #define wxSCI_CASEINSENSITIVEBEHAVIOUR_IGNORECASE 1
+#define wxSCI_ORDER_PRESORTED 0
+#define wxSCI_ORDER_PERFORMSORT 1
+#define wxSCI_ORDER_CUSTOM 2
 #define wxSCI_CARETSTICKY_OFF 0
 #define wxSCI_CARETSTICKY_ON 1
 #define wxSCI_CARETSTICKY_WHITESPACE 2
@@ -932,6 +943,7 @@
 #define wxSCI_ERR_TIDY 19
 #define wxSCI_ERR_JAVA_STACK 20
 #define wxSCI_ERR_VALUE 21
+#define wxSCI_ERR_GCC_INCLUDED_FROM 22
 
 // Lexical states for SCLEX_BATCH
 #define wxSCI_BAT_DEFAULT 0
@@ -1557,6 +1569,10 @@
 #define wxSCI_HA_COMMENTBLOCK 14
 #define wxSCI_HA_COMMENTBLOCK2 15
 #define wxSCI_HA_COMMENTBLOCK3 16
+#define wxSCI_HA_PRAGMA 17
+#define wxSCI_HA_PREPROCESSOR 18
+#define wxSCI_HA_STRINGEOL 19
+#define wxSCI_HA_RESERVED_OPERATOR 20
 
 // Lexical states of SCLEX_TADS3
 #define wxSCI_T3_DEFAULT 0
@@ -1897,6 +1913,9 @@
 #define wxSCI_POWERSHELL_FUNCTION 11
 #define wxSCI_POWERSHELL_USER1 12
 #define wxSCI_POWERSHELL_COMMENTSTREAM 13
+#define wxSCI_POWERSHELL_HERE_STRING 14
+#define wxSCI_POWERSHELL_HERE_CHARACTER 15
+#define wxSCI_POWERSHELL_COMMENTDOCKEYWORD 16
 
 // Lexical state for SCLEX_MYSQL
 #define wxSCI_MYSQL_DEFAULT 0
@@ -1921,6 +1940,7 @@
 #define wxSCI_MYSQL_USER2 19
 #define wxSCI_MYSQL_USER3 20
 #define wxSCI_MYSQL_HIDDENCOMMAND 21
+#define wxSCI_MYSQL_PLACEHOLDER 22
 
 // Lexical state for SCLEX_PO
 #define wxSCI_PO_DEFAULT 0
@@ -2218,6 +2238,14 @@
 #define wxSCI_VISUALPROLOG_STRING_VERBATIM 20
 #define wxSCI_VISUALPROLOG_STRING_VERBATIM_SPECIAL 21
 #define wxSCI_VISUALPROLOG_STRING_VERBATIM_EOL 22
+
+/// Events
+/// GTK+ Specific to work around focus and accelerator problems:
+/// Line end types which may be used in addition to LF, CR, and CRLF
+/// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
+/// U+2029 Paragraph Separator, and U+0085 Next Line
+#define wxSCI_LINE_END_TYPE_DEFAULT 0
+#define wxSCI_LINE_END_TYPE_UNICODE 1
 
 //}}}
 //----------------------------------------------------------------------
@@ -3254,6 +3282,11 @@ public:
     // Ensure the caret is visible.
     void EnsureCaretVisible();
 
+    // Scroll the argument positions and the range between them into view giving
+    // priority to the primary position then the secondary position.
+    // This may be used to make a search match visible.
+    void ScrollRange(int secondary, int primary);
+
     // Replace the selected text with the argument text.
     void ReplaceSelection(const wxString& text);
 
@@ -3419,8 +3452,26 @@ public:
     // Switch a header line between expanded and contracted.
     void ToggleFold(int line);
 
+    // Expand or contract a fold header.
+    void FoldLine(int line, int action);
+
+    // Expand or contract a fold header and its children.
+    void FoldChildren(int line, int action);
+
+    // Expand a fold header and all children. Use the level argument instead of the line's current level.
+    void ExpandChildren(int line, int level);
+
+    // Expand or contract all fold headers.
+    void FoldAll(int action);
+
     // Ensure a particular line is visible by expanding any header line hiding it.
     void EnsureVisible(int line);
+
+    // Set automatic folding behaviours.
+    void SetAutomaticFold(int automaticFold);
+
+    // Get automatic folding behaviours.
+    int GetAutomaticFold() const;
 
     // Set some style options for folding.
     void SetFoldFlags(int flags);
@@ -4060,6 +4111,12 @@ public:
     // Get auto-completion case insensitive behaviour.
     int AutoCompGetCaseInsensitiveBehaviour() const;
 
+    // Set the way autocompletion lists are ordered.
+    void AutoCSetOrder(int order);
+
+    // Get the way autocompletion lists are ordered.
+    int AutoCGetOrder() const;
+
 /* C::B begin */
     // Get currently selected item text in the auto-completion list
     // Returns the length of the item text
@@ -4258,6 +4315,12 @@ public:
 
     // Get the start of the range of style numbers used for annotations
     int AnnotationGetStyleOffset() const;
+
+    // Release all extended (>255) style numbers
+    void ReleaseAllExtendedStyles();
+
+    // Allocate some extended (>255) style numbers and return the start of the range
+    int AllocateExtendedStyles(int numberStyles);
 
     // Add a container action to the undo stack
     void AddUndoAction(int token, int flags);
@@ -4515,6 +4578,43 @@ public:
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
     wxString DescribeKeyWordSets() const;
+
+    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+    void SetLineEndTypesAllowed(int lineEndBitSet);
+
+    // Get the line end types currently allowed.
+    int GetLineEndTypesAllowed() const;
+
+    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+    int GetLineEndTypesActive() const;
+
+    // Bit set of LineEndType enumertion for which line ends beyond the standard
+    // LF, CR, and CRLF are supported by the lexer.
+    int GetLineEndTypesSupported() const;
+
+    // Allocate a set of sub styles for a particular base style, returning start of range
+    int AllocateSubStyles(int styleBase, int numberStyles);
+
+    // The starting style number for the sub styles associated with a base style
+    int GetSubStylesStart(int styleBase) const;
+
+    // The number of sub styles associated with a base style
+    int GetSubStylesLength(int styleBase) const;
+
+    // Free allocated sub styles
+    void FreeSubStyles();
+
+    // Set the identifiers that are shown in a particular style
+    void SetIdentifiers(int style, const wxString& identifiers);
+
+    // Where styles are duplicated by a feature such as active/inactive code
+    // return the distance between the two types.
+    int DistanceToSecondaryStyles() const;
+
+/* C::B begin */
+    // Get the set of base styles that can be extended with sub styles
+    wxString GetSubStyleBases() const;
+/* C::B end */
 
 /* C::B begin */
     // Retrieve the name of the lexer.

@@ -49,6 +49,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexHaskell.cxx \
 			src/scintilla/lexers/LexInno.cxx \
 			src/scintilla/lexers/LexKix.cxx \
+			src/scintilla/lexers/LexLaTeX.cxx \
 			src/scintilla/lexers/LexLisp.cxx \
 			src/scintilla/lexers/LexLout.cxx \
 			src/scintilla/lexers/LexLua.cxx \
@@ -150,6 +151,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/lexlib/PropSetSimple.h \
 			src/scintilla/lexlib/SparseState.h \
 			src/scintilla/lexlib/StyleContext.h \
+			src/scintilla/lexlib/SubStyles.h \
 			src/scintilla/lexlib/WordList.h \
 			src/scintilla/src/AutoComplete.h \
 			src/scintilla/src/CallTip.h \
@@ -174,7 +176,6 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/Selection.h \
 			src/scintilla/src/SplitVector.h \
 			src/scintilla/src/Style.h \
-			src/scintilla/src/SVector.h \
 			src/scintilla/src/UniConversion.h \
 			src/scintilla/src/ViewStyle.h \
 			src/scintilla/src/XPM.h

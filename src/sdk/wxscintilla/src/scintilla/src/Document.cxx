@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "Platform.h"
 
@@ -67,6 +68,17 @@ void LexInterface::Colourise(int start, int end) {
 	}
 }
 
+int LexInterface::LineEndTypesSupported() {
+	if (instance) {
+		int interfaceVersion = instance->Version();
+		if (interfaceVersion >= lvSubStyles) {
+			ILexerWithSubStyles *ssinstance = static_cast<ILexerWithSubStyles *>(instance);
+			return ssinstance->LineEndTypesSupported();
+		}
+	}
+	return 0;
+}
+
 Document::Document() {
 	refCount = 0;
 	pcf = NULL;
@@ -76,6 +88,7 @@ Document::Document() {
 	eolMode = SC_EOL_LF;
 #endif
 	dbcsCodePage = 0;
+	lineEndBitSet = SC_LINE_END_TYPE_DEFAULT;
 	stylingBits = 5;
 	stylingBitsMask = 0x1F;
 	stylingMask = 0;
@@ -90,8 +103,6 @@ Document::Document() {
 	useTabs = true;
 	tabIndents = true;
 	backspaceUnindents = false;
-	watchers = 0;
-	lenWatchers = 0;
 
 	matchesValid = false;
 	regex = 0;
@@ -110,16 +121,13 @@ Document::Document() {
 }
 
 Document::~Document() {
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifyDeleted(this, watchers[i].userData);
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifyDeleted(this, it->userData);
 	}
-	delete []watchers;
 	for (int j=0; j<ldSize; j++) {
 		delete perLineData[j];
 		perLineData[j] = 0;
 	}
-	watchers = 0;
-	lenWatchers = 0;
 	delete regex;
 	regex = 0;
 	delete pli;
@@ -135,11 +143,35 @@ void Document::Init() {
 	}
 }
 
+int Document::LineEndTypesSupported() const {
+	if ((SC_CP_UTF8 == dbcsCodePage) && pli)
+		return pli->LineEndTypesSupported();
+	else
+		return 0;
+}
+
 bool Document::SetDBCSCodePage(int dbcsCodePage_) {
 	if (dbcsCodePage != dbcsCodePage_) {
 		dbcsCodePage = dbcsCodePage_;
 		SetCaseFolder(NULL);
+		cb.SetLineEndTypes(lineEndBitSet & LineEndTypesSupported());
 		return true;
+	} else {
+		return false;
+	}
+}
+
+bool Document::SetLineEndTypesAllowed(int lineEndBitSet_) {
+	if (lineEndBitSet != lineEndBitSet_) {
+		lineEndBitSet = lineEndBitSet_;
+		int lineEndBitSetActive = lineEndBitSet & LineEndTypesSupported();
+		if (lineEndBitSetActive != cb.GetLineEndTypes()) {
+			ModifiedAt(0);
+			cb.SetLineEndTypes(lineEndBitSetActive);
+			return true;
+		} else {
+			return false;
+		}
 	} else {
 		return false;
 	}
@@ -253,11 +285,25 @@ int SCI_METHOD Document::LineStart(int line) const {
 	return cb.LineStart(line);
 }
 
-int Document::LineEnd(int line) const {
+int SCI_METHOD Document::LineEnd(int line) const {
 	if (line == LinesTotal() - 1) {
 		return LineStart(line + 1);
 	} else {
-		int position = LineStart(line + 1) - 1;
+		int position = LineStart(line + 1);
+		if (SC_CP_UTF8 == dbcsCodePage) {
+			unsigned char bytes[] = {
+				static_cast<unsigned char>(cb.CharAt(position-3)),
+				static_cast<unsigned char>(cb.CharAt(position-2)),
+				static_cast<unsigned char>(cb.CharAt(position-1)),
+			};
+			if (UTF8IsSeparator(bytes)) {
+				return position - UTF8SeparatorLength;
+			}
+			if (UTF8IsNEL(bytes+1)) {
+				return position - UTF8NELLength;
+			}
+		}
+		position--; // Back over CR or LF
 		// When line terminator is CR+LF, may need to go back one more
 		if ((position > LineStart(line)) && (cb.CharAt(position - 1) == '\r')) {
 			position--;
@@ -267,9 +313,9 @@ int Document::LineEnd(int line) const {
 }
 
 void SCI_METHOD Document::SetErrorStatus(int status) {
-	// Tell the watchers the lexer has changed.
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifyErrorOccurred(this, watchers[i].userData, status);
+	// Tell the watchers an error has occurred.
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifyErrorOccurred(this, it->userData, status);
 	}
 }
 
@@ -283,6 +329,10 @@ int Document::LineEndPosition(int position) const {
 
 bool Document::IsLineEndPosition(int position) const {
 	return LineEnd(LineFromPosition(position)) == position;
+}
+
+bool Document::IsPositionInLineEnd(int position) const {
+	return position >= LineEnd(LineFromPosition(position));
 }
 
 int Document::VCHomePosition(int position) const {
@@ -864,7 +914,7 @@ void * SCI_METHOD Document::ConvertToDocument() {
 int Document::Undo() {
 	int newPos = -1;
 	CheckReadOnly();
-	if (enteredModification == 0) {
+	if ((enteredModification == 0) && (cb.IsCollectingUndo())) {
 		enteredModification++;
 		if (!cb.IsReadOnly()) {
 			bool startSavePoint = cb.IsSavePoint();
@@ -957,7 +1007,7 @@ int Document::Undo() {
 int Document::Redo() {
 	int newPos = -1;
 	CheckReadOnly();
-	if (enteredModification == 0) {
+	if ((enteredModification == 0) && (cb.IsCollectingUndo())) {
 		enteredModification++;
 		if (!cb.IsReadOnly()) {
 			bool startSavePoint = cb.IsSavePoint();
@@ -1036,11 +1086,6 @@ bool Document::InsertChar(int pos, char ch) {
  */
 bool Document::InsertCString(int position, const char *s) {
 	return InsertString(position, s, static_cast<int>(s ? strlen(s) : 0));
-}
-
-void Document::ChangeChar(int pos, char ch) {
-	DeleteChars(pos, 1);
-	InsertChar(pos, ch);
 }
 
 void Document::DelChar(int pos) {
@@ -1200,32 +1245,25 @@ void Document::Indent(bool forwards, int lineBottom, int lineTop) {
 
 // Convert line endings for a piece of text to a particular mode.
 // Stop at len or when a NUL is found.
-// Caller must delete the returned pointer.
-char *Document::TransformLineEnds(int *pLenOut, const char *s, size_t len, int eolModeWanted) {
-	char *dest = new char[2 * len + 1];
-	const char *sptr = s;
-	char *dptr = dest;
-	for (size_t i = 0; (i < len) && (*sptr != '\0'); i++) {
-		if (*sptr == '\n' || *sptr == '\r') {
+std::string Document::TransformLineEnds(const char *s, size_t len, int eolModeWanted) {
+	std::string dest;
+	for (size_t i = 0; (i < len) && (s[i]); i++) {
+		if (s[i] == '\n' || s[i] == '\r') {
 			if (eolModeWanted == SC_EOL_CR) {
-				*dptr++ = '\r';
+				dest.push_back('\r');
 			} else if (eolModeWanted == SC_EOL_LF) {
-				*dptr++ = '\n';
+				dest.push_back('\n');
 			} else { // eolModeWanted == SC_EOL_CRLF
-				*dptr++ = '\r';
-				*dptr++ = '\n';
+				dest.push_back('\r');
+				dest.push_back('\n');
 			}
-			if ((*sptr == '\r') && (i+1 < len) && (*(sptr+1) == '\n')) {
+			if ((s[i] == '\r') && (i+1 < len) && (s[i+1] == '\n')) {
 				i++;
-				sptr++;
 			}
-			sptr++;
 		} else {
-			*dptr++ = *sptr++;
+			dest.push_back(s[i]);
 		}
 	}
-	*dptr++ = '\0';
-	*pLenOut = (dptr - dest) - 1;
 	return dest;
 }
 
@@ -1655,25 +1693,6 @@ int Document::LinesTotal() const {
 	return cb.Lines();
 }
 
-void Document::ChangeCase(Range r, bool makeUpperCase) {
-	for (int pos = r.start; pos < r.end;) {
-		int len = LenChar(pos);
-		if (len == 1) {
-			char ch = CharAt(pos);
-			if (makeUpperCase) {
-				if (IsLowerCase(ch)) {
-					ChangeChar(pos, static_cast<char>(MakeUpperCase(ch)));
-				}
-			} else {
-				if (IsUpperCase(ch)) {
-					ChangeChar(pos, static_cast<char>(MakeLowerCase(ch)));
-				}
-			}
-		}
-		pos += len;
-	}
-}
-
 void Document::SetDefaultCharClasses(bool includeWordClass) {
     charClass.SetDefaultCharClasses(includeWordClass);
 }
@@ -1751,8 +1770,9 @@ void Document::EnsureStyledTo(int pos) {
 			pli->Colourise(endStyledTo, pos);
 		} else {
 			// Ask the watchers to style, and stop as soon as one responds.
-			for (int i = 0; pos > GetEndStyled() && i < lenWatchers; i++) {
-				watchers[i].watcher->NotifyStyleNeeded(this, watchers[i].userData, pos);
+			for (std::vector<WatcherWithUserData>::iterator it = watchers.begin();
+				(pos > GetEndStyled()) && (it != watchers.end()); ++it) {
+				it->watcher->NotifyStyleNeeded(this, it->userData, pos);
 			}
 		}
 	}
@@ -1760,8 +1780,8 @@ void Document::EnsureStyledTo(int pos) {
 
 void Document::LexerChanged() {
 	// Tell the watchers the lexer has changed.
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifyLexerChanged(this, watchers[i].userData);
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifyLexerChanged(this, it->userData);
 	}
 }
 
@@ -1809,20 +1829,12 @@ void Document::MarginSetStyles(int line, const unsigned char *styles) {
 	NotifyModified(DocModification(SC_MOD_CHANGEMARGIN, LineStart(line), 0, 0, 0, line));
 }
 
-int Document::MarginLength(int line) const {
-	return static_cast<LineAnnotation *>(perLineData[ldMargin])->Length(line);
-}
-
 void Document::MarginClearAll() {
 	int maxEditorLine = LinesTotal();
 	for (int l=0; l<maxEditorLine; l++)
 		MarginSetText(l, 0);
 	// Free remaining data
 	static_cast<LineAnnotation *>(perLineData[ldMargin])->ClearAll();
-}
-
-bool Document::AnnotationAny() const {
-	return static_cast<LineAnnotation *>(perLineData[ldAnnotation])->AnySet();
 }
 
 StyledText Document::AnnotationStyledText(int line) {
@@ -1854,10 +1866,6 @@ void Document::AnnotationSetStyles(int line, const unsigned char *styles) {
 	}
 }
 
-int Document::AnnotationLength(int line) const {
-	return static_cast<LineAnnotation *>(perLineData[ldAnnotation])->Length(line);
-}
-
 int Document::AnnotationLines(int line) const {
 	return static_cast<LineAnnotation *>(perLineData[ldAnnotation])->Lines(line);
 }
@@ -1883,54 +1891,34 @@ void SCI_METHOD Document::DecorationFillRange(int position, int value, int fillL
 }
 
 bool Document::AddWatcher(DocWatcher *watcher, void *userData) {
-	for (int i = 0; i < lenWatchers; i++) {
-		if ((watchers[i].watcher == watcher) &&
-		        (watchers[i].userData == userData))
-			return false;
-	}
-	WatcherWithUserData *pwNew = new WatcherWithUserData[lenWatchers + 1];
-	for (int j = 0; j < lenWatchers; j++)
-		pwNew[j] = watchers[j];
-	pwNew[lenWatchers].watcher = watcher;
-	pwNew[lenWatchers].userData = userData;
-	delete []watchers;
-	watchers = pwNew;
-	lenWatchers++;
+	WatcherWithUserData wwud(watcher, userData);
+	std::vector<WatcherWithUserData>::iterator it =
+		std::find(watchers.begin(), watchers.end(), wwud);
+	if (it != watchers.end())
+		return false;
+	watchers.push_back(wwud);
 	return true;
 }
 
 bool Document::RemoveWatcher(DocWatcher *watcher, void *userData) {
-	for (int i = 0; i < lenWatchers; i++) {
-		if ((watchers[i].watcher == watcher) &&
-		        (watchers[i].userData == userData)) {
-			if (lenWatchers == 1) {
-				delete []watchers;
-				watchers = 0;
-				lenWatchers = 0;
-			} else {
-				WatcherWithUserData *pwNew = new WatcherWithUserData[lenWatchers];
-				for (int j = 0; j < lenWatchers - 1; j++) {
-					pwNew[j] = (j < i) ? watchers[j] : watchers[j + 1];
-				}
-				delete []watchers;
-				watchers = pwNew;
-				lenWatchers--;
-			}
-			return true;
-		}
+	std::vector<WatcherWithUserData>::iterator it =
+		std::find(watchers.begin(), watchers.end(), WatcherWithUserData(watcher, userData));
+	if (it != watchers.end()) {
+		watchers.erase(it);
+		return true;
 	}
 	return false;
 }
 
 void Document::NotifyModifyAttempt() {
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifyModifyAttempt(this, watchers[i].userData);
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifyModifyAttempt(this, it->userData);
 	}
 }
 
 void Document::NotifySavePoint(bool atSavePoint) {
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifySavePoint(this, watchers[i].userData, atSavePoint);
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifySavePoint(this, it->userData, atSavePoint);
 	}
 }
 
@@ -1940,8 +1928,8 @@ void Document::NotifyModified(DocModification mh) {
 	} else if (mh.modificationType & SC_MOD_DELETETEXT) {
 		decorations.DeleteRange(mh.position, mh.length);
 	}
-	for (int i = 0; i < lenWatchers; i++) {
-		watchers[i].watcher->NotifyModified(this, mh, watchers[i].userData);
+	for (std::vector<WatcherWithUserData>::iterator it = watchers.begin(); it != watchers.end(); ++it) {
+		it->watcher->NotifyModified(this, mh, it->userData);
 	}
 }
 
@@ -2115,10 +2103,9 @@ int Document::BraceMatch(int position, int /*maxReStyle*/) {
  */
 class BuiltinRegex : public RegexSearchBase {
 public:
-	BuiltinRegex(CharClassify *charClassTable) : search(charClassTable), substituted(NULL) {}
+	BuiltinRegex(CharClassify *charClassTable) : search(charClassTable) {}
 
 	virtual ~BuiltinRegex() {
-		delete substituted;
 	}
 
 	virtual long FindText(Document *doc, int minPos, int maxPos, const char *s,
@@ -2129,7 +2116,7 @@ public:
 
 private:
 	RESearch search;
-	char *substituted;
+	std::string substituted;
 };
 
 // Define a way for the Regular Expression code to access the document
@@ -2224,6 +2211,8 @@ long BuiltinRegex::FindText(Document *doc, int minPos, int maxPos, const char *s
 		int success = search.Execute(di, startOfLine, endOfLine);
 		if (success) {
 			pos = search.bopat[0];
+			// Ensure only whole characters selected
+			search.eopat[0] = doc->MovePositionOutsideChar(search.eopat[0], 1, false);
 			lenRet = search.eopat[0] - search.bopat[0];
 			// There can be only one start of a line, so no need to look for last match in line
 			if ((increment == -1) && (s[0] != '^')) {
@@ -2249,86 +2238,55 @@ long BuiltinRegex::FindText(Document *doc, int minPos, int maxPos, const char *s
 }
 
 const char *BuiltinRegex::SubstituteByPosition(Document *doc, const char *text, int *length) {
-	delete []substituted;
-	substituted = 0;
+	substituted.clear();
 	DocumentIndexer di(doc, doc->Length());
-	if (!search.GrabMatches(di))
-		return 0;
-	unsigned int lenResult = 0;
-	for (int i = 0; i < *length; i++) {
-		if (text[i] == '\\') {
-			if (text[i + 1] >= '0' && text[i + 1] <= '9') {
-				unsigned int patNum = text[i + 1] - '0';
-				lenResult += search.eopat[patNum] - search.bopat[patNum];
-				i++;
-			} else {
-				switch (text[i + 1]) {
-				case 'a':
-				case 'b':
-				case 'f':
-				case 'n':
-				case 'r':
-				case 't':
-				case 'v':
-				case '\\':
-					i++;
-				}
-				lenResult++;
-			}
-		} else {
-			lenResult++;
-		}
-	}
-	substituted = new char[lenResult + 1];
-	char *o = substituted;
+	search.GrabMatches(di);
 	for (int j = 0; j < *length; j++) {
 		if (text[j] == '\\') {
 			if (text[j + 1] >= '0' && text[j + 1] <= '9') {
 				unsigned int patNum = text[j + 1] - '0';
 				unsigned int len = search.eopat[patNum] - search.bopat[patNum];
-				if (search.pat[patNum])	// Will be null if try for a match that did not occur
-					memcpy(o, search.pat[patNum], len);
-				o += len;
+				if (!search.pat[patNum].empty())	// Will be null if try for a match that did not occur
+					substituted.append(search.pat[patNum].c_str(), len);
 				j++;
 			} else {
 				j++;
 				switch (text[j]) {
 				case 'a':
-					*o++ = '\a';
+					substituted.push_back('\a');
 					break;
 				case 'b':
-					*o++ = '\b';
+					substituted.push_back('\b');
 					break;
 				case 'f':
-					*o++ = '\f';
+					substituted.push_back('\f');
 					break;
 				case 'n':
-					*o++ = '\n';
+					substituted.push_back('\n');
 					break;
 				case 'r':
-					*o++ = '\r';
+					substituted.push_back('\r');
 					break;
 				case 't':
-					*o++ = '\t';
+					substituted.push_back('\t');
 					break;
 				case 'v':
-					*o++ = '\v';
+					substituted.push_back('\v');
 					break;
 				case '\\':
-					*o++ = '\\';
+					substituted.push_back('\\');
 					break;
 				default:
-					*o++ = '\\';
+					substituted.push_back('\\');
 					j--;
 				}
 			}
 		} else {
-			*o++ = text[j];
+			substituted.push_back(text[j]);
 		}
 	}
-	*o = '\0';
-	*length = lenResult;
-	return substituted;
+	*length = static_cast<int>(substituted.length());
+	return substituted.c_str();
 }
 
 #ifndef SCI_OWNREGEX

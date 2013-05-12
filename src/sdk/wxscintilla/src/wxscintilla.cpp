@@ -1750,6 +1750,14 @@ void wxScintilla::EnsureCaretVisible()
     SendMsg(SCI_SCROLLCARET, 0, 0);
 }
 
+// Scroll the argument positions and the range between them into view giving
+// priority to the primary position then the secondary position.
+// This may be used to make a search match visible.
+void wxScintilla::ScrollRange(int secondary, int primary)
+{
+    SendMsg(SCI_SCROLLRANGE, secondary, primary);
+}
+
 // Replace the selected text with the argument text.
 void wxScintilla::ReplaceSelection(const wxString& text)
 {
@@ -2095,10 +2103,46 @@ void wxScintilla::ToggleFold(int line)
     SendMsg(SCI_TOGGLEFOLD, line, 0);
 }
 
+// Expand or contract a fold header.
+void wxScintilla::FoldLine(int line, int action)
+{
+    SendMsg(SCI_FOLDLINE, line, action);
+}
+
+// Expand or contract a fold header and its children.
+void wxScintilla::FoldChildren(int line, int action)
+{
+    SendMsg(SCI_FOLDCHILDREN, line, action);
+}
+
+// Expand a fold header and all children. Use the level argument instead of the line's current level.
+void wxScintilla::ExpandChildren(int line, int level)
+{
+    SendMsg(SCI_EXPANDCHILDREN, line, level);
+}
+
+// Expand or contract all fold headers.
+void wxScintilla::FoldAll(int action)
+{
+    SendMsg(SCI_FOLDALL, action, 0);
+}
+
 // Ensure a particular line is visible by expanding any header line hiding it.
 void wxScintilla::EnsureVisible(int line)
 {
     SendMsg(SCI_ENSUREVISIBLE, line, 0);
+}
+
+// Set automatic folding behaviours.
+void wxScintilla::SetAutomaticFold(int automaticFold)
+{
+    SendMsg(SCI_SETAUTOMATICFOLD, automaticFold, 0);
+}
+
+// Get automatic folding behaviours.
+int wxScintilla::GetAutomaticFold() const
+{
+    return SendMsg(SCI_GETAUTOMATICFOLD, 0, 0);
 }
 
 // Set some style options for folding.
@@ -3370,6 +3414,18 @@ int wxScintilla::AutoCompGetCaseInsensitiveBehaviour() const
     return SendMsg(SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR, 0, 0);
 }
 
+// Set the way autocompletion lists are ordered.
+void wxScintilla::AutoCSetOrder(int order)
+{
+    SendMsg(SCI_AUTOCSETORDER, order, 0);
+}
+
+// Get the way autocompletion lists are ordered.
+int wxScintilla::AutoCGetOrder() const
+{
+    return SendMsg(SCI_AUTOCGETORDER, 0, 0);
+}
+
 /* C::B begin */
 // Get currently selected item text in the auto-completion list
 // Returns the length of the item text
@@ -3393,12 +3449,6 @@ void wxScintilla::Allocate(int bytes)
 {
     SendMsg(SCI_ALLOCATE, bytes, 0);
 }
-
-// Target as UTF8 (SCI_TARGETASUTF8) not supported
-
-// Set lenght for encode (SCI_SETLENGTHFORENCODE) not supported
-
-// Set endoce from UTF8 (SCI_ENCODEDFROMUTF8) not supported
 
 // Find the position of a column on a line taking into account tabs and
 // multi-byte characters. If beyond end of line, return line end position.
@@ -3806,6 +3856,18 @@ void wxScintilla::AnnotationSetStyleOffset(int style)
 int wxScintilla::AnnotationGetStyleOffset() const
 {
     return SendMsg(SCI_ANNOTATIONGETSTYLEOFFSET, 0, 0);
+}
+
+// Release all extended (>255) style numbers
+void wxScintilla::ReleaseAllExtendedStyles()
+{
+    SendMsg(SCI_RELEASEALLEXTENDEDSTYLES, 0, 0);
+}
+
+// Allocate some extended (>255) style numbers and return the start of the range
+int wxScintilla::AllocateExtendedStyles(int numberStyles)
+{
+    return SendMsg(SCI_ALLOCATEEXTENDEDSTYLES, numberStyles, 0);
 }
 
 // Add a container action to the undo stack
@@ -4382,6 +4444,82 @@ wxString wxScintilla::DescribeKeyWordSets() const
     return sci2wx(buf);
 }
 
+// Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+void wxScintilla::SetLineEndTypesAllowed(int lineEndBitSet)
+{
+    SendMsg(SCI_SETLINEENDTYPESALLOWED, lineEndBitSet, 0);
+}
+
+// Get the line end types currently allowed.
+int wxScintilla::GetLineEndTypesAllowed() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESALLOWED, 0, 0);
+}
+
+// Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+int wxScintilla::GetLineEndTypesActive() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESACTIVE, 0, 0);
+}
+
+// Bit set of LineEndType enumertion for which line ends beyond the standard
+// LF, CR, and CRLF are supported by the lexer.
+int wxScintilla::GetLineEndTypesSupported() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESSUPPORTED, 0, 0);
+}
+
+// Allocate a set of sub styles for a particular base style, returning start of range
+int wxScintilla::AllocateSubStyles(int styleBase, int numberStyles)
+{
+    return SendMsg(SCI_ALLOCATESUBSTYLES, styleBase, numberStyles);
+}
+
+// The starting style number for the sub styles associated with a base style
+int wxScintilla::GetSubStylesStart(int styleBase) const
+{
+    return SendMsg(SCI_GETSUBSTYLESSTART, styleBase, 0);
+}
+
+// The number of sub styles associated with a base style
+int wxScintilla::GetSubStylesLength(int styleBase) const
+{
+    return SendMsg(SCI_GETSUBSTYLESLENGTH, styleBase, 0);
+}
+
+// Free allocated sub styles
+void wxScintilla::FreeSubStyles()
+{
+    SendMsg(SCI_FREESUBSTYLES, 0, 0);
+}
+
+// Set the identifiers that are shown in a particular style
+void wxScintilla::SetIdentifiers(int style, const wxString& identifiers)
+{
+    SendMsg(SCI_SETIDENTIFIERS, style, (sptr_t)(const char*)wx2sci(identifiers));
+}
+
+// Where styles are duplicated by a feature such as active/inactive code
+// return the distance between the two types.
+int wxScintilla::DistanceToSecondaryStyles() const
+{
+    return SendMsg(SCI_DISTANCETOSECONDARYSTYLES, 0, 0);
+}
+
+// Get the set of base styles that can be extended with sub styles
+wxString wxScintilla::GetSubStyleBases() const
+{
+    int len = SendMsg(SCI_GETSUBSTYLEBASES, 0, (uptr_t)NULL);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_GETSUBSTYLEBASES, 0, (uptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
 /* C::B begin */
 wxSciFnDirect wxScintilla::GetDirectFunction()
 {
@@ -4724,6 +4862,7 @@ bool wxScintilla::DoSaveFile(const wxString& filename, int WXUNUSED(fileType))
     return false;
 }
 
+/* C::B begin */
 bool wxScintilla::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
 {
 #if wxUSE_FFILE || wxUSE_FILE
@@ -4802,6 +4941,7 @@ bool wxScintilla::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
 
    return false;
 }
+/* C::B end */
 
 // If we don't derive from wxTextAreaBase, we need to implement these methods
 // ourselves, otherwise we already inherit them.
@@ -4864,11 +5004,10 @@ bool wxScintilla::GetUseAntiAliasing() {
 }
 
 void wxScintilla::AnnotationClearLine(int line) {
-    SendMsg(SCI_ANNOTATIONSETTEXT, line, (uptr_t)(const char*)wx2sci(wxString(wxEmptyString)));
+    SendMsg(SCI_ANNOTATIONSETTEXT, line, (uptr_t)NULL);
 }
 
 
-// Raw text handling for UTF-8
 
 
 void wxScintilla::AddTextRaw(const char* text, int length)
@@ -5480,7 +5619,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 25, 0, "Scintilla 3.25");
+    return wxVersionInfo("Scintilla", 3, 31, 0, "Scintilla 3.31");
 }
 #endif
 /* C::B end */

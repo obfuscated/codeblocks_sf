@@ -609,8 +609,8 @@ void ScintillaWX::Paste() {
             bool gotData = wxTheClipboard->GetData(data);
             wxTheClipboard->Close();
             if (gotData) {
-                textString = wxTextBuffer::Translate (data.GetText(),
-                                                      wxConvertEOLMode(pdoc->eolMode));
+                textString = wxTextBuffer::Translate(data.GetText(),
+                                                     wxConvertEOLMode(pdoc->eolMode));
             }
         }
     }
@@ -930,15 +930,12 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
         // repaint the whole window.
         sci->Refresh(false);
 
-    /* C::B begin */
-    // This used to be NOT within the #if defined(__WXOSX__):
 #if defined(__WXOSX__)
         // On Mac we also need to finish the current paint to make sure that
         // everything is on the screen that needs to be there between now and
         // when the next paint event arrives.
         FullPaintDC(dc);
 #endif
-    /* C::B end */
     }
     paintState = notPainting;
 }
@@ -946,11 +943,6 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
 
 // Force the whole window to be repainted
 void ScintillaWX::FullPaint() {
-    /* C::B begin */
-    // This used to be:
-//    wxClientDC dc(sci);
-//    FullPaintDC(&dc);
-    /* C::B end */
     sci->Refresh(false);
     sci->Update();
 }

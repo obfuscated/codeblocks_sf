@@ -190,6 +190,7 @@ public:
 	virtual ~LexInterface() {
 	}
 	void Colourise(int start, int end);
+	int LineEndTypesSupported();
 	bool UseContainerLexing() const {
 		return instance == 0;
 	}
@@ -197,21 +198,21 @@ public:
 
 /**
  */
-class Document : PerLine, public IDocument, public ILoader {
+class Document : PerLine, public IDocumentWithLineEnd, public ILoader {
 
 public:
 	/** Used to pair watcher pointer with user data. */
-	class WatcherWithUserData {
-	public:
+	struct WatcherWithUserData {
 		DocWatcher *watcher;
 		void *userData;
-		WatcherWithUserData() {
-			watcher = 0;
-			userData = 0;
+		WatcherWithUserData(DocWatcher *watcher_=0, void *userData_=0) :
+			watcher(watcher_), userData(userData_) {
+		}
+		bool operator==(const WatcherWithUserData &other) {
+			return (watcher == other.watcher) && (userData == other.userData);
 		}
 	};
 
-	enum charClassification { ccSpace, ccNewLine, ccWord, ccPunctuation };
 private:
 	int refCount;
 	CellBuffer cb;
@@ -224,8 +225,7 @@ private:
 	int enteredStyling;
 	int enteredReadOnlyCount;
 
-	WatcherWithUserData *watchers;
-	int lenWatchers;
+	std::vector<WatcherWithUserData> watchers;
 
 	// ldSize is not real data - it is for dimensions and loops
 	enum lineData { ldMarkers, ldLevels, ldState, ldMargin, ldAnnotation, ldSize };
@@ -244,6 +244,7 @@ public:
 	int eolMode;
 	/// Can also be SC_CP_UTF8 to enable UTF-8 mode
 	int dbcsCodePage;
+	int lineEndBitSet;
 	int tabInChars;
 	int indentInChars;
 	int actualIndentInChars;
@@ -260,12 +261,16 @@ public:
 	int SCI_METHOD Release();
 
 	virtual void Init();
+	int LineEndTypesSupported() const;
 	bool SetDBCSCodePage(int dbcsCodePage_);
+	int GetLineEndTypesAllowed() { return cb.GetLineEndTypes(); }
+	bool SetLineEndTypesAllowed(int lineEndBitSet_);
+	int GetLineEndTypesActive() { return cb.GetLineEndTypes(); }
 	virtual void InsertLine(int line);
 	virtual void RemoveLine(int line);
 
 	int SCI_METHOD Version() const {
-		return dvOriginal;
+		return dvLineEnd;
 	}
 
 	void SCI_METHOD SetErrorStatus(int status);
@@ -322,14 +327,13 @@ public:
 	int CountCharacters(int startPos, int endPos);
 	int FindColumn(int line, int column);
 	void Indent(bool forwards, int lineBottom, int lineTop);
-	static char *TransformLineEnds(int *pLenOut, const char *s, size_t len, int eolModeWanted);
+	static std::string TransformLineEnds(const char *s, size_t len, int eolModeWanted);
 	void ConvertLineEnds(int eolModeSet);
 	void SetReadOnly(bool set) { cb.SetReadOnly(set); }
 	bool IsReadOnly() { return cb.IsReadOnly(); }
 
 	bool InsertChar(int pos, char ch);
 	bool InsertCString(int position, const char *s);
-	void ChangeChar(int pos, char ch);
 	void DelChar(int pos);
 	void DelCharBack(int pos);
 
@@ -350,9 +354,10 @@ public:
 	void DeleteAllMarks(int markerNum);
 	int LineFromHandle(int markerHandle);
 	int SCI_METHOD LineStart(int line) const;
-	int LineEnd(int line) const;
+	int SCI_METHOD LineEnd(int line) const;
 	int LineEndPosition(int position) const;
 	bool IsLineEndPosition(int position) const;
+	bool IsPositionInLineEnd(int position) const;
 	int VCHomePosition(int position) const;
 
 	int SCI_METHOD SetLevel(int line, int level);
@@ -378,8 +383,6 @@ public:
 		bool wordStart, bool regExp, int flags, int *length);
 	const char *SubstituteByPosition(const char *text, int *length);
 	int LinesTotal() const;
-
-	void ChangeCase(Range r, bool makeUpperCase);
 
 	void SetDefaultCharClasses(bool includeWordClass);
 	void SetCharClasses(const unsigned char *chars, CharClassify::cc newCharClass);
@@ -407,22 +410,17 @@ public:
 	void MarginSetStyle(int line, int style);
 	void MarginSetStyles(int line, const unsigned char *styles);
 	void MarginSetText(int line, const char *text);
-	int MarginLength(int line) const;
 	void MarginClearAll();
 
-	bool AnnotationAny() const;
 	StyledText AnnotationStyledText(int line);
 	void AnnotationSetText(int line, const char *text);
 	void AnnotationSetStyle(int line, int style);
 	void AnnotationSetStyles(int line, const unsigned char *styles);
-	int AnnotationLength(int line) const;
 	int AnnotationLines(int line) const;
 	void AnnotationClearAll();
 
 	bool AddWatcher(DocWatcher *watcher, void *userData);
 	bool RemoveWatcher(DocWatcher *watcher, void *userData);
-	const WatcherWithUserData *GetWatchers() const { return watchers; }
-	int GetLenWatchers() const { return lenWatchers; }
 
 	CharClassify::cc WordCharClass(unsigned char ch);
 	bool IsWordPartSeparator(char ch);

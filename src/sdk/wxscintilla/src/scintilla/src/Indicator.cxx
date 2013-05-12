@@ -152,6 +152,9 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 			surface->FillRectangle(rcDot, fore);
 			x += 2;
 		}
+	} else if (style == INDIC_COMPOSITIONTHICK) {
+		PRectangle rcComposition(rc.left+1, rcLine.bottom-2, rc.right-1, rcLine.bottom);
+		surface->FillRectangle(rcComposition, fore);
 /* C::B begin */
 	} else if (style == INDIC_HIGHLIGHT) {
 		PRectangle rcBox = rcLine;

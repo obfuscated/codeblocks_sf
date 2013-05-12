@@ -33,7 +33,6 @@
 #include "Accessor.h"
 #endif
 #include "ContractionState.h"
-#include "SVector.h"
 #include "CellBuffer.h"
 #include "CallTip.h"
 #include "KeyMap.h"

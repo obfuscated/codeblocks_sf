@@ -68,11 +68,11 @@ public:
 
 /* CHANGEBAR begin */
 	void InsertText(int line, int delta, int edition, bool undoing, bool lineUnchanged);
-    void InsertLine(int line, int position, bool lineStart, int edition, bool undoing);
+	void InsertLine(int line, int position, bool lineStart, int edition, bool undoing);
 /* CHANGEBAR end */
 	void SetLineStart(int line, int position);
 /* CHANGEBAR begin */
-    void RemoveLine(int line, bool undoing);
+	void RemoveLine(int line, bool undoing);
 /* CHANGEBAR end */
 	int Lines() const {
 		return starts.Partitions();
@@ -125,7 +125,7 @@ public:
 
 	Action();
 	~Action();
-	void Create(actionType at_, int position_=0, char *data_=0, int lenData_=0, bool mayCoalesce_=true);
+	void Create(actionType at_, int position_=0, const char *data_=0, int lenData_=0, bool mayCoalesce_=true);
 	void Destroy();
 	void Grab(Action *source);
 };
@@ -147,12 +147,15 @@ class UndoHistory {
 
 	void EnsureUndoRoom();
 
+	// Private so UndoHistory objects can not be copied
+	UndoHistory(const UndoHistory &);
+
 public:
 	UndoHistory();
 	~UndoHistory();
 
 /* CHANGEBAR begin */
-	void AppendAction(actionType at, int position, char *data, int length, bool &startSequence, char *persistantChanges, bool mayCoalesce=true);
+	void AppendAction(actionType at, int position, const char *data, int length, bool &startSequence, char *persistantChanges, bool mayCoalesce=true);
 /* CHANGEBAR end */
 
 	void BeginUndoAction();
@@ -161,8 +164,8 @@ public:
 	void DeleteUndoHistory();
 
 /* CHANGEBAR begin */
-    void DeleteChangeHistory();
-    void EnableChangeHistory(bool enable);
+	void DeleteChangeHistory();
+	void EnableChangeHistory(bool enable);
 /* CHANGEBAR end */
 
 	/// The save point is a marker in the undo stack where the container has stated that
@@ -170,7 +173,7 @@ public:
 	void SetSavePoint();
 	bool IsSavePoint() const;
 /* CHANGEBAR begin */
-    bool BeforeSavePointEffective(int action) const;
+	bool BeforeSavePointEffective(int action) const;
 /* CHANGEBAR end */
 
 	/// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
@@ -180,7 +183,7 @@ public:
 	const Action &GetUndoStep() const;
 	void CompletedUndoStep();
 /* CHANGEBAR begin */
-    char *GetChangesStep() const;
+	char *GetChangesStep() const;
 /* CHANGEBAR end */
 	bool CanRedo() const;
 	int StartRedo();
@@ -188,7 +191,7 @@ public:
 	void CompletedRedoStep();
 
 /* CHANGEBAR begin */
-    int Edition() const;
+	int Edition() const;
 /* CHANGEBAR end */
 };
 
@@ -202,16 +205,19 @@ private:
 	SplitVector<char> substance;
 	SplitVector<char> style;
 	bool readOnly;
+	int utf8LineEnds;
 
 	bool collectingUndo;
 	UndoHistory uh;
 
 	LineVector lv;
 
+	bool UTF8LineEndOverlaps(int position) const;
 	/// Actions without undo
 /* CHANGEBAR begin */
-    void BasicInsertString(int position, const char *s, int insertLength, bool undoing);
-    void BasicDeleteChars(int position, int deleteLength, bool undoing);
+	void ResetLineEnds(bool undoing);
+	void BasicInsertString(int position, const char *s, int insertLength, bool undoing);
+	void BasicDeleteChars(int position, int deleteLength, bool undoing);
 /* CHANGEBAR end */
 
 public:
@@ -230,13 +236,15 @@ public:
 
 	int Length() const;
 	void Allocate(int newSize);
+	int GetLineEndTypes() const { return utf8LineEnds; }
+	void SetLineEndTypes(int utf8LineEnds_);
 	void SetPerLine(PerLine *pl);
 	int Lines() const;
 	int LineStart(int line) const;
 	int LineFromPosition(int pos) const { return lv.LineFromPosition(pos); }
 /* CHANGEBAR begin */
-    void InsertLine(int line, int position, bool lineStart, int edition, bool undoing);
-    void RemoveLine(int line, bool undoing);
+	void InsertLine(int line, int position, bool lineStart, int edition, bool undoing);
+	void RemoveLine(int line, bool undoing);
 /* CHANGEBAR end */
 	const char *InsertString(int position, const char *s, int insertLength, bool &startSequence);
 
@@ -256,11 +264,11 @@ public:
 	bool IsSavePoint();
 
 /* CHANGEBAR begin */
-    void EnableChangeCollection(bool changesCollecting_);
-    bool SetChangeCollection(bool collectChange);
-    void DeleteChangeCollection();
-    int GetChanged(int line) const;
-    int GetChangesEdition() const;
+	void EnableChangeCollection(bool changesCollecting_);
+	bool SetChangeCollection(bool collectChange);
+	void DeleteChangeCollection();
+	int GetChanged(int line) const;
+	int GetChangesEdition() const;
 /* CHANGEBAR end */
 
 	bool SetUndoCollection(bool collectUndo);
@@ -269,7 +277,7 @@ public:
 	void EndUndoAction();
 	void AddUndoAction(int token, bool mayCoalesce);
 /* CHANGEBAR begin */
-    void DeleteUndoHistory(bool collectChangeHistory);
+	void DeleteUndoHistory(bool collectChangeHistory);
 /* CHANGEBAR end */
 
 	/// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is

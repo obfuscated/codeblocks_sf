@@ -21,6 +21,9 @@ class AutoComplete {
 	char separator;
 	char typesep; // Type seperator
 	enum { maxItemLen=1000 };
+/* C::B begin */
+	std::vector<int> sortMatrix;
+/* C::B end */
 
 public:
 
@@ -36,6 +39,12 @@ public:
 	unsigned int ignoreCaseBehaviour;
 	int widthLBDefault;
 	int heightLBDefault;
+/* C::B begin */
+	/// 0 == Assume the list is presorted; selection will fail if it is not alphabetical
+	/// 1 == Handle non-alphabetical entries; start up performance cost for generating a sorted lookup table
+	/// 2 == Sort the list alphabetically; start up performance cost for sorting
+	int autoSort;
+/* C::B end */
 
 	AutoComplete();
 	~AutoComplete();
@@ -65,7 +74,7 @@ public:
 
 	/// The list string contains a sequence of words separated by the separator character
 	void SetList(const char *list);
-	
+
 	/// Return the position of the currently selected list item
 	int GetSelection() const;
 
