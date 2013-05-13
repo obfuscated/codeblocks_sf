@@ -2497,7 +2497,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
                 wxString msg;
                 msg.Printf(_T("\"%s - %s\": The compiler's setup %sis invalid, so Code::Blocks cannot find/run the compiler.\n")
                            _T("Probably the toolchain path within the compiler options is not setup correctly?! (Do you have a compiler installed?)\n")
-                           _T("Goto \"Settings->Compiler and debugger...->Global compiler settings->%s->Toolchain executables\"")
+                           _T("Goto \"Settings->Compiler...->Global compiler settings->%s->Toolchain executables\"")
                            _T(" and fix the compiler's setup.\n")
                            _T("Skipping..."),
                            prj->GetTitle().wx_str(), tlist[x].wx_str(), compilerName.wx_str(), compilerName2.wx_str());
