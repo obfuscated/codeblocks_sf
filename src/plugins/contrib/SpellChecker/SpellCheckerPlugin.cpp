@@ -357,6 +357,8 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
             wordstart--;
         }
     }
+    else
+        return;
     wordend = wordstart;
     while ( wordend < stc->GetLength()-1 )
     {
