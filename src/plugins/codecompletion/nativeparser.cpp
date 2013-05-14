@@ -1857,8 +1857,10 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search
 
     if (blockStart != -1)
     {
-        ++blockStart; // skip {
         cbStyledTextCtrl* stc = searchData->control;
+        // if we are in a function body, then blockStart points to the '{', so we just skip the '{'.
+        if (stc->GetCharAt(blockStart) == wxT('{'))
+            ++blockStart;
         const int pos         = (caretPos == -1 ? stc->GetCurrentPos() : caretPos);
         const int line        = stc->LineFromPosition(pos);
         const int blockEnd    = stc->GetLineEndPosition(line);
