@@ -15,6 +15,7 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/wxSmithPlot/wxsSmithPlot.cbp" />
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames.cbp" />
