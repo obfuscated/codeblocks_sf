@@ -176,7 +176,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkFixEOLs1">
-																<label>Make EOLs consistent &#x0A;before search</label>
+																<label>Make EOLs consistent&#x0A;before search</label>
 																<tooltip>Slower but catches mixed line endings</tooltip>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -395,7 +395,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine2">
-																<label>Multiline search</label>
+																<label>Multi-line search</label>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
