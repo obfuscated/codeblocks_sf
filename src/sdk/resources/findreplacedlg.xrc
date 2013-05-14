@@ -74,7 +74,7 @@
 															<object class="sizeritem">
 																<object class="wxTextCtrl" name="txtMultiLineFind1">
 																	<size>200,40d</size>
-																	<style>wxTE_MULTILINE|wxHSCROLL|wxTE_LEFT|wxALWAYS_SHOW_SB</style>
+																	<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
 																</object>
 																<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<border>8</border>
@@ -100,7 +100,7 @@
 															<object class="sizeritem">
 																<object class="wxTextCtrl" name="txtMultiLineReplace1">
 																	<size>200,40d</size>
-																	<style>wxTE_MULTILINE|wxHSCROLL|wxTE_LEFT|wxALWAYS_SHOW_SB</style>
+																	<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
 																</object>
 																<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<border>8</border>
@@ -162,21 +162,21 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkAutoWrapSearch">
-																<label>Auto-wrap at EOF</label>
+																<label>A&amp;uto-wrap at EOF</label>
 															</object>
 															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine1">
-																<label>Multi-line search</label>
+																<label>Multi-lin&amp;e search</label>
 															</object>
 															<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkFixEOLs1">
-																<label>Make EOLs consistent&#x0A;before search</label>
+																<label>Ma&amp;ke EOLs consistent&#x0A;before search</label>
 																<tooltip>Slower but catches mixed line endings</tooltip>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -212,7 +212,7 @@
 											<object class="wxRadioBox" name="rbOrigin">
 												<label>Origin</label>
 												<content>
-													<item>&amp;From cursor</item>
+													<item>Fr&amp;om cursor</item>
 													<item>&amp;Beginning of file</item>
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
@@ -308,7 +308,7 @@
 															<object class="sizeritem">
 																<object class="wxTextCtrl" name="txtMultiLineFind2">
 																	<size>200,40d</size>
-																	<style>wxTE_MULTILINE|wxHSCROLL|wxTE_LEFT|wxALWAYS_SHOW_SB</style>
+																	<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
 																</object>
 																<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<border>8</border>
@@ -334,7 +334,7 @@
 															<object class="sizeritem">
 																<object class="wxTextCtrl" name="txtMultiLineReplace2">
 																	<size>200,40d</size>
-																	<style>wxTE_MULTILINE|wxHSCROLL|wxTE_LEFT|wxALWAYS_SHOW_SB</style>
+																	<style>wxTE_MULTILINE|wxTE_LEFT|wxHSCROLL|wxALWAYS_SHOW_SB</style>
 																</object>
 																<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<border>8</border>
@@ -395,14 +395,14 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine2">
-																<label>Multi-line search</label>
+																<label>Multi-lin&amp;e search</label>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkFixEOLs2">
-																<label>Make EOLs consistent&#x0A;before search</label>
+																<label>Ma&amp;ke EOLs consistent&#x0A;before search</label>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
@@ -434,8 +434,8 @@
 												<content>
 													<item>&amp;Open files</item>
 													<item>&amp;Project files</item>
-													<item>Workspace files</item>
-													<item>Search path</item>
+													<item>&amp;Workspace files</item>
+													<item>&amp;Search path</item>
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
