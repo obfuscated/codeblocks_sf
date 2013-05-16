@@ -225,6 +225,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to integrate fortran-plugin in dist-tarball)
+enable_fortran_default="yes"
+AC_ARG_ENABLE(fortran, [AC_HELP_STRING([--enable-fortran], [integrate (external) fortran plugin in dist-tarball (default YES), NOTE: it will not be build automatically])],,
+                       enable_fortran=$enable_fortran_default)
+AM_CONDITIONAL([ENABLE_FORTRAN], [test "x$enable_fortran" = "xyes"])
+if test "x$enable_fortran" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to use gtk-notebook as default notebook)
 gtk_notebook_default="yes"
 AC_ARG_ENABLE(gtk-notebook, [AC_HELP_STRING([--enable-gtk-notebook], [use gtk-notebook as default notebook (default YES)])],,
