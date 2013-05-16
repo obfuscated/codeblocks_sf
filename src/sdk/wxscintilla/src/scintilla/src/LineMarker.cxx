@@ -102,10 +102,10 @@ void LineMarker::Draw(Surface *surface, PRectangle &rcWhole, Font &fontForCharac
 /*
 		// Make rectangle just large enough to fit image centred on centre of rcWhole
 		PRectangle rcImage;
-		rcImage.top = static_cast<int>(((rcWhole.top + rcWhole.bottom) - image->GetHeight()) / 2);
-		rcImage.bottom = rcImage.top + image->GetHeight();
-		rcImage.left = static_cast<int>(((rcWhole.left + rcWhole.right) - image->GetWidth()) / 2);
-		rcImage.right = rcImage.left + image->GetWidth();
+		rcImage.top = static_cast<int>(((rcWhole.top + rcWhole.bottom) - image->GetScaledHeight()) / 2);
+		rcImage.bottom = rcImage.top + image->GetScaledHeight();
+		rcImage.left = static_cast<int>(((rcWhole.left + rcWhole.right) - image->GetScaledWidth()) / 2);
+		rcImage.right = rcImage.left + image->GetScaledWidth();
 		surface->DrawRGBAImage(rcImage, image->GetWidth(), image->GetHeight(), image->Pixels());
 */
 /* C::B end */

@@ -943,7 +943,7 @@ void CellBuffer::BasicDeleteChars(int position, int deleteLength, bool undoing) 
 			}
 		}
 
-		char ch = chNext;
+		unsigned char ch = chNext;
 		for (int i = 0; i < deleteLength; i++) {
 			chNext = substance.ValueAt(position + i + 1);
 			if (ch == '\r') {

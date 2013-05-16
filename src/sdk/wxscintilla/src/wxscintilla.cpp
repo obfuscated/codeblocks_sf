@@ -5619,7 +5619,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 31, 0, "Scintilla 3.31");
+    return wxVersionInfo("Scintilla", 3, 32, 0, "Scintilla 3.32");
 }
 #endif
 /* C::B end */

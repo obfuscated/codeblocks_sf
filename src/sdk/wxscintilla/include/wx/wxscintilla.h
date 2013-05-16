@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.31.0")
+#define wxSCINTILLA_VERSION _T("3.32.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -524,8 +524,9 @@
 #define wxSCI_LEX_ECL 105
 #define wxSCI_LEX_OSCRIPT 106
 #define wxSCI_LEX_VISUALPROLOG 107
+#define wxSCI_LEX_LITERATEHASKELL 108
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_VISUALPROLOG // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_LITERATEHASKELL // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -575,6 +576,7 @@
 #define wxSCI_C_TRIPLEVERBATIM 21
 #define wxSCI_C_HASHQUOTEDSTRING 22
 #define wxSCI_C_PREPROCESSORCOMMENT 23
+#define wxSCI_C_PREPROCESSORCOMMENTDOC 24
 
 /* C::B begin */
 // Keep in sync with SciLexer.h      -> SCE_C_WXSMITH
@@ -1573,6 +1575,8 @@
 #define wxSCI_HA_PREPROCESSOR 18
 #define wxSCI_HA_STRINGEOL 19
 #define wxSCI_HA_RESERVED_OPERATOR 20
+#define wxSCI_HA_LITERATE_COMMENT 21
+#define wxSCI_HA_LITERATE_CODEDELIM 22
 
 // Lexical states of SCLEX_TADS3
 #define wxSCI_T3_DEFAULT 0
@@ -4086,18 +4090,14 @@ public:
     void SetWhitespaceChars(const wxString& characters);
 
     // Get the set of characters making up whitespace for when moving or selecting by word.
-/* C::B begin */
     wxString GetWhitespaceChars() const;
-/* C::B end */
 
     // Set the set of characters making up punctuation characters
     // Should be called after SetWordChars.
     void SetPunctuationChars(const wxString& characters);
 
     // Get the set of characters making up punctuation characters
-/* C::B begin */
     wxString GetPunctuationChars() const;
-/* C::B end */
 
     // Reset the set of characters for whitespace and word characters to the defaults.
     void SetCharsDefault();

@@ -702,7 +702,11 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 					if ((isIncludePreprocessor && sc.Match('<')) || sc.Match('\"')) {
 						isStringInPreprocessor = true;
 					} else if (sc.Match('/', '*')) {
-						sc.SetState(SCE_C_PREPROCESSORCOMMENT|activitySet);
+						if (sc.Match("/**") || sc.Match("/*!")) {
+							sc.SetState(SCE_C_PREPROCESSORCOMMENTDOC|activitySet);
+						} else {
+							sc.SetState(SCE_C_PREPROCESSORCOMMENT|activitySet);
+						}
 						sc.Forward();	// Eat the *
 					} else if (sc.Match('/', '/')) {
 						sc.SetState(SCE_C_DEFAULT|activitySet);
@@ -710,6 +714,7 @@ void SCI_METHOD LexerCPP::Lex(unsigned int startPos, int length, int initStyle, 
 				}
 				break;
 			case SCE_C_PREPROCESSORCOMMENT:
+			case SCE_C_PREPROCESSORCOMMENTDOC:
 				if (sc.Match('*', '/')) {
 					sc.Forward();
 					sc.ForwardSetState(SCE_C_PREPROCESSOR|activitySet);

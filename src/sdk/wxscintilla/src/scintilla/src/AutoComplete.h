@@ -21,9 +21,7 @@ class AutoComplete {
 	char separator;
 	char typesep; // Type seperator
 	enum { maxItemLen=1000 };
-/* C::B begin */
 	std::vector<int> sortMatrix;
-/* C::B end */
 
 public:
 
@@ -39,12 +37,11 @@ public:
 	unsigned int ignoreCaseBehaviour;
 	int widthLBDefault;
 	int heightLBDefault;
-/* C::B begin */
-	/// 0 == Assume the list is presorted; selection will fail if it is not alphabetical
-	/// 1 == Handle non-alphabetical entries; start up performance cost for generating a sorted lookup table
-	/// 2 == Sort the list alphabetically; start up performance cost for sorting
+	/** SC_ORDER_PRESORTED:   Assume the list is presorted; selection will fail if it is not alphabetical<br />
+	 *  SC_ORDER_PERFORMSORT: Sort the list alphabetically; start up performance cost for sorting<br />
+	 *  SC_ORDER_CUSTOM:      Handle non-alphabetical entries; start up performance cost for generating a sorted lookup table
+	 */
 	int autoSort;
-/* C::B end */
 
 	AutoComplete();
 	~AutoComplete();
