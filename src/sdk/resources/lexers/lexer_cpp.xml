@@ -21,7 +21,7 @@
                         index="2,66"
                         fg="190,190,230"/>
                 <Style name="Comment (documentation)"
-                        index="3,67"
+                        index="3,24,67,88"
                         fg="128,128,255"
                         bold="1"/>
                 <Style name="Comment line (documentation)"
