@@ -230,8 +230,9 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmithAui \
 		wxSmithDateTimePicker \
 		wxSmithDemo \
+		wxSmithIExplore \
 		wxSmithPlot \
-		wxSmithIExplore
+		wxSmithSTC
 
 if ENABLE_FORTRAN
 EXTRA_DIST = FortranProject/*.h \
