@@ -4,7 +4,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// globals (used under windows only)
+// globals
+SFMLVersion <- 1	// 0 - SFML 1.6, 1 - SFML 2.0
+SFMLLinkType <- 1	// 0 - static library, 1 - dynamic link library
+SFMLDebugLib <- 0   // 0 - debug libraries are not available, 1 - debug libraries are available
+// windows globals
 SFMLPathDefault    <- _T("$(#sfml)");
 SFMLPathDefaultInc <- _T("$(#sfml.include)");
 SFMLPathDefaultLib <- _T("$(#sfml.lib)");
@@ -14,8 +18,8 @@ function BeginWizard()
 {
     local intro_msg = _T("Welcome to the new SFML project wizard!\n\n" +
                          "This wizard will guide you to create a new project\n" +
-                         "using the SFML multimedia library.\n\n" +
-                         "When you 're ready to proceed, please click \"Next\"...");
+                         "using the Simple and Fast Multimedia Library.\n\n" +
+                         "When you are ready to proceed, please click \"Next\"...");
 
     local sfmlpath_descr = _T("Please select the location of SFML on your computer.\n" +
                              "This is the top-level folder where SFML was installed (unpacked).\n" +
@@ -23,6 +27,9 @@ function BeginWizard()
                              "\"include\" and \"lib\".");
 
     Wizard.AddInfoPage(_T("SFMLIntro"), intro_msg);
+    Wizard.AddGenericSingleChoiceListPage(_T("SFMLVersionPage"), _T("Please select the SFML version you want to use."), _T("SFML 1.6;SFML 2.0"), SFMLVersion);
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddGenericSingleChoiceListPage(_T("SFMLLinkPage"), _T("Please choose the kind of library you want to link to."), _T("Static Library;Dynamic Link Library"), SFMLLinkType);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddGenericSelectPathPage(_T("SFMLPath"), sfmlpath_descr, _T("Please select SFML's location:"), SFMLPathDefault);
@@ -72,6 +79,13 @@ function OnLeave_SFMLPath(fwd)
         if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-window"), _T("SFML's")))
             return false;
 
+        if (   SilentVerifyLibFile(dir_nomacro_lib, _T("sfml-window-d"))
+            || SilentVerifyLibFile(dir_nomacro_lib, _T("sfml-window-s-d")) )
+        {
+            // assume the other debug files exist if these exist
+            SFMLDebugLib = 1;
+        }
+
         SFMLPath = dir; // Remember the original selection.
 
         local is_macro = _T("");
@@ -95,10 +109,48 @@ function OnLeave_SFMLPath(fwd)
     return true;
 }
 
+function OnEnter_SFMLVersionPage(fwd)
+{
+    if (fwd)
+    {
+        SFMLVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnLeave_SFMLVersionPage(fwd)
+{
+    if (fwd)
+    {
+        SFMLVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnEnter_SFMLLinkPage(fwd)
+{
+    if (fwd)
+    {
+        SFMLLinkType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnLeave_SFMLLinkPage(fwd)
+{
+    if (fwd)
+    {
+        SFMLLinkType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
 // return the files this project contains
 function GetFilesDir()
 {
-    return _T("sfml/files");
+    if(SFMLVersion == 1)
+        return _T("sfml/sfml2");
+    return _T("sfml/sfml1");
 }
 
 // setup the already created project
@@ -111,28 +163,23 @@ function SetupProject(project)
 
         // add link libraries
         project.AddLinkLib(_T("mingw32"));
-        project.AddLinkLib(_T("sfml-graphics"));
-        project.AddLinkLib(_T("sfml-window"));
-        project.AddLinkLib(_T("sfml-system"));
         project.AddLinkLib(_T("user32"));
         project.AddLinkLib(_T("gdi32"));
         project.AddLinkLib(_T("winmm"));
         project.AddLinkLib(_T("dxguid"));
+        if (SFMLLinkType == 0) // static library
+        {
+            project.AddCompilerOption(_T("-DSFML_STATIC"));
+        }
     }
     else if (PLATFORM == PLATFORM_MAC)
     {
         //project.AddCompilerOption(_T("-D_GNU_SOURCE=1 -D_THREAD_SAFE"));
         project.AddLinkerOption(_T("-framework SFML"));
-        project.AddLinkLib(_T("sfml-graphics"));
-        project.AddLinkLib(_T("sfml-window"));
-        project.AddLinkLib(_T("sfml-system"));
     }
     else
     {
         // unix way
-        project.AddLinkLib(_T("sfml-graphics"));
-        project.AddLinkLib(_T("sfml-window"));
-        project.AddLinkLib(_T("sfml-system"));
         // TODO: Enable these once SFML gets a sfml.pc
         //project.AddCompilerOption(_T("`pkg-config sfml --cflags`"));
         //project.AddLinkerOption(_T("`pkg-config sfml --libs`"));
@@ -147,6 +194,22 @@ function SetupProject(project)
     {
         target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
         target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        local suffix = _T("");
+        if (SFMLDebugLib == 1)
+            suffix = _T("-d");
+        if(SFMLLinkType == 1)	// DLL library
+        {
+            target.AddLinkLib(_T("sfml-graphics") + suffix);
+            target.AddLinkLib(_T("sfml-window") + suffix);
+            target.AddLinkLib(_T("sfml-system") + suffix);
+        }
+        else	// static library
+        {
+            target.AddLinkLib(_T("sfml-graphics-s") + suffix);
+            target.AddLinkLib(_T("sfml-window-s") + suffix);
+            target.AddLinkLib(_T("sfml-system-s") + suffix);
+            target.AddLinkLib(_T("sfml-main") + suffix);
+        }
         // enable generation of debugging symbols for target
         DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
@@ -157,6 +220,19 @@ function SetupProject(project)
     {
         target.SetTargetType(ttExecutable); // ttExecutable: no console
         target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        if(SFMLLinkType == 1)	// DLL library
+        {
+            target.AddLinkLib(_T("sfml-graphics"));
+            target.AddLinkLib(_T("sfml-window"));
+            target.AddLinkLib(_T("sfml-system"));
+        }
+        else	// static library
+        {
+            target.AddLinkLib(_T("sfml-graphics-s"));
+            target.AddLinkLib(_T("sfml-window-s"));
+            target.AddLinkLib(_T("sfml-system-s"));
+            target.AddLinkLib(_T("sfml-main"));
+        }
         // enable optimizations for target
         OptimizationsOn(target, Wizard.GetCompilerID());
     }

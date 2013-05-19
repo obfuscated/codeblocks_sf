@@ -539,20 +539,28 @@ function VerifyFile(dir, file, type)
 
 // verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
 // dir  = the directory the library is expected in
-// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough.
+// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough).
+// Returns: true, if the library exists, false otherwise
+function SilentVerifyLibFile(dir, file)
+{
+    return (   IO.FileExists(dir + wxFILE_SEP_PATH + file)
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file)
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so")) );
+}
+
+// verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
+// dir  = the directory the library is expected in
+// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough).
 // type = descriptive name of the library to show in the error message
 // Returns: true, if the library exists, false otherwise
 function VerifyLibFile(dir, file, type)
 {
-    if (   (!IO.FileExists(dir + wxFILE_SEP_PATH + file))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so"))))
-
+    if (!SilentVerifyLibFile(dir, file))
     {
         ShowError(_T("The path you entered seems valid, but this wizard\n" +
                      "can't locate the following ") + type + _T(" library file:\n") +

@@ -1,4 +1,4 @@
-SUBDIRS = files
+SUBDIRS = sfml1 sfml2
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/sfml
 
