@@ -1488,14 +1488,13 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The perspective '%s' has changed. Do you want to save it?"), m_LastLayoutName.wx_str()),
                             wxART_QUESTION,
-                            canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO,
-                            wxID_YES);
+                            canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO);
         switch (dlg.ShowModal())
         {
-            case wxID_YES:
+            case AnnoyingDialog::rtYES:
                 SaveViewLayout(m_LastLayoutName, lastlayout, lastmessagepanelayout, false);
                 break;
-            case wxID_CANCEL:
+            case AnnoyingDialog::rtCANCEL:
                 DoSelectLayout(m_LastLayoutName);
                 return false;
             default:

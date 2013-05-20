@@ -33,8 +33,21 @@ class DLLIMPORT AnnoyingDialog : public wxScrollingDialog
             THREE_BUTTONS
         };
 
+        enum dReturnType
+        {
+            rtINVALID = -1,
+            rtSAVE_CHOICE,
+            rtONE,
+            rtTWO,
+            rtTHREE,
+            rtYES,
+            rtNO,
+            rtOK,
+            rtCANCEL
+        };
+
         AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon = wxART_INFORMATION,
-                       dStyle style = YES_NO, int defaultReturn = wxID_YES, bool separate = true,
+                       dStyle style = YES_NO, dReturnType defaultReturn = rtYES,
                        const wxString& b1 = wxEmptyString, const wxString& b2 = wxEmptyString, const wxString& b3 = wxEmptyString);
         virtual ~AnnoyingDialog(){}
         virtual int ShowModal();
@@ -42,7 +55,7 @@ class DLLIMPORT AnnoyingDialog : public wxScrollingDialog
         void OnButton(wxCommandEvent& event);
         wxCheckBox *cb;
         bool dontAnnoy;
-        int defRet;
+        dReturnType defRet;
         DECLARE_EVENT_TABLE()
 };
 

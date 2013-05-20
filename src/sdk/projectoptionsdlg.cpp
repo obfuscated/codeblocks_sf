@@ -737,8 +737,8 @@ void ProjectOptionsDlg::OnExportTargetClick(cb_unused wxCommandEvent& event)
                         _("This project will be saved before exporting the build target.\n"
                         "Are you sure you want to export the selected "
                         "build target to a new project?"),
-                        wxART_QUESTION, AnnoyingDialog::YES_NO, wxID_YES);
-    if (dlg.ShowModal() == wxID_YES)
+                        wxART_QUESTION);
+    if (dlg.ShowModal() == AnnoyingDialog::rtYES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
             cbMessageBox(_("New project created successfully!"), _("Information"), wxICON_INFORMATION, this);

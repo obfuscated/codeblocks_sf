@@ -2995,10 +2995,8 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild the entire project?"),
-                    wxART_QUESTION,
-                    AnnoyingDialog::YES_NO,
-                    wxID_YES);
-    if (m_pProject && dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION);
+    if (m_pProject && dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
     int bak = m_RealTargetIndex;
@@ -3027,10 +3025,8 @@ void CompilerGCC::OnRebuildAll(cb_unused wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild ALL the projects?"),
-                    wxART_QUESTION,
-                    AnnoyingDialog::YES_NO,
-                    wxID_YES);
-    if (dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION);
+    if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
     RebuildWorkspace();
@@ -3047,10 +3043,8 @@ void CompilerGCC::OnCleanAll(cb_unused wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
-                    wxART_QUESTION,
-                    AnnoyingDialog::YES_NO,
-                    wxID_YES);
-    if (dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION);
+    if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
     CleanWorkspace();
@@ -3068,10 +3062,8 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
-                    wxART_QUESTION,
-                    AnnoyingDialog::YES_NO,
-                    wxID_YES);
-    if (m_pProject && dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION);
+    if (m_pProject && dlg.ShowModal() == AnnoyingDialog::rtNO)
         return;
 
     int bak = m_RealTargetIndex;

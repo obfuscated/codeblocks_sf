@@ -412,7 +412,7 @@ void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
     msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"), m_CurrentVar.c_str());
     AnnoyingDialog d(_("Delete Global Variable"), msg, wxART_QUESTION);
     PlaceWindow(&d);
-    if (d.ShowModal() == wxID_YES)
+    if (d.ShowModal() == AnnoyingDialog::rtYES)
     {
         m_CfgMan->DeleteSubPath(cSets + m_CurrentSet + _T('/') + m_CurrentVar + _T('/'));
         m_CurrentVar = wxEmptyString;
@@ -427,7 +427,7 @@ void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent& event)
     msg.Printf(_("Do you really want to delete\nthe entire global compiler variable set \"%s\"?\n\nThis cannot be undone."), m_CurrentSet.c_str());
     AnnoyingDialog d(_("Delete Global Variable Set"), msg, wxART_QUESTION);
     PlaceWindow(&d);
-    if (d.ShowModal() == wxID_YES)
+    if (d.ShowModal() == AnnoyingDialog::rtYES)
     {
         m_CfgMan->DeleteSubPath(cSets + m_CurrentSet + _T('/'));
         m_CurrentSet = wxEmptyString;

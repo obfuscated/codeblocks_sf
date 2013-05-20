@@ -2246,7 +2246,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     delete progress;
     AnnoyingDialog dlg(_("Replace in files"),
                        _("Replace in files has finished all operations."),
-                       wxART_INFORMATION, AnnoyingDialog::OK, wxID_OK);
+                       wxART_INFORMATION, AnnoyingDialog::OK);
     dlg.ShowModal();
 
     return pos;

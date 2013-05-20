@@ -118,8 +118,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                                 _("This project file was saved with a newer version of Code::Blocks.\n"
                                 "Will try to load, but you should make sure all the settings were loaded correctly..."),
                                 wxART_WARNING,
-                                AnnoyingDialog::OK,
-                                wxID_OK);
+                                AnnoyingDialog::OK);
             dlg.ShowModal();
         }
         else
@@ -178,8 +177,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                 AnnoyingDialog dlg(_("Project file format changed"),
                                     msg,
                                     wxART_INFORMATION,
-                                    AnnoyingDialog::OK,
-                                    wxID_OK);
+                                    AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
 
@@ -189,8 +187,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
                 AnnoyingDialog dlg(_("Project file upgrade warning"),
                                     warn_msg,
                                     wxART_WARNING,
-                                    AnnoyingDialog::OK,
-                                    wxID_OK);
+                                    AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
         }

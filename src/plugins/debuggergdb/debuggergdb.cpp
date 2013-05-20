@@ -1843,10 +1843,8 @@ void DebuggerGDB::CheckIfConsoleIsClosed()
         AnnoyingDialog dialog(_("Terminal/Console closed"),
                               _("Detected that the Terminal/Console has been closed. "
                                 "Do you want to stop the debugging session?"),
-                              wxART_QUESTION,
-                              AnnoyingDialog::YES_NO,
-                              wxID_YES);
-        if (dialog.ShowModal() == wxID_NO)
+                              wxART_QUESTION);
+        if (dialog.ShowModal() == AnnoyingDialog::rtYES)
             m_stopDebuggerConsoleClosed = false;
         else
         {

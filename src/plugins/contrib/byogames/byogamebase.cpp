@@ -101,8 +101,7 @@ void byoGameBase::BackToWorkTimer()
                 AnnoyingDialog dlg(_("Work reminder (stop playing games!)"),
                                    _("Don't you think you had enough already?\nGet back to work, NOW!"),
                                    wxART_WARNING,
-                                   AnnoyingDialog::OK,
-                                   wxID_OK);
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
 
                 if ( IsMinWorkTime )
@@ -145,12 +144,11 @@ void byoGameBase::BackToWorkTimer()
                 AnnoyingDialog dlg(_("Repose reminder"),
                                    _("You've been working for a long time.\n"
                                      "Please stand up, take small walk,\n"
-                                     "make tea or cofee, smile to your neighbours :)\n"
+                                     "make tea or coffee, smile to your neighbours :)\n"
                                      "\n"
                                      "I'm watching you, do not cheat\n"),
                                    wxART_WARNING,
-                                   AnnoyingDialog::OK,
-                                   wxID_OK);
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
                 WorkingTicks = 0;
             }

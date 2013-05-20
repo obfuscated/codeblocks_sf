@@ -508,7 +508,7 @@ void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
                            _("The project you were debugging has closed.\n"
                              "(The application most likely just finished.)\n"
                              "The debugging session will terminate immediately."),
-                            wxART_WARNING, AnnoyingDialog::OK, wxID_OK);
+                            wxART_WARNING, AnnoyingDialog::OK);
         dlg.ShowModal();
         Stop();
         ResetProject();
@@ -737,8 +737,8 @@ void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent& event)
         if (m_pCompiler && m_pCompiler->GetExitCode() != 0)
         {
             AnnoyingDialog dlg(_("Debug anyway?"), _("Build failed, do you want to debug the program?"),
-                               wxART_QUESTION, AnnoyingDialog::YES_NO, wxID_NO);
-            if (dlg.ShowModal() != wxID_YES)
+                               wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO);
+            if (dlg.ShowModal() != AnnoyingDialog::rtYES)
             {
                 ProjectManager *manager = Manager::Get()->GetProjectManager();
                 if (manager->GetIsRunning() && manager->GetIsRunning() == this)

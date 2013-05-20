@@ -933,8 +933,8 @@ void CompilerOptionsDlg::OptionsToText()
         msg += _("were stated in 'Other Options' but unchecked in 'Compiler Flags'.\n"
                  "Do you want to enable these flags?");
         AnnoyingDialog dlg(_("Enable compiler flags?"), msg, wxART_QUESTION,
-                           AnnoyingDialog::YES_NO, wxID_NO);
-        if (dlg.ShowModal() == wxID_NO)
+                           AnnoyingDialog::YES_NO, AnnoyingDialog::rtNO);
+        if (dlg.ShowModal() == AnnoyingDialog::rtNO)
         {
             // for disabled options, remove relative text option *and*
             // relative linker option
@@ -1518,18 +1518,17 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
                     "No     : will undo the changes\n"
                     "Cancel : will revert your selection in the project/target tree"),
                     wxART_QUESTION,
-                    AnnoyingDialog::YES_NO_CANCEL,
-                    wxID_YES);
+                    AnnoyingDialog::YES_NO_CANCEL);
 
         switch(dlg.ShowModal())
         {
-            case wxID_YES :
+            case AnnoyingDialog::rtYES :
                 DoSaveCompilerDependentSettings();
                 break;
-            case wxID_CANCEL :
+            case AnnoyingDialog::rtCANCEL :
                 event.Veto();
                 break;
-            case wxID_NO :
+            case AnnoyingDialog::rtNO :
             default:
                 {
                     m_bDirty = false;
@@ -1718,8 +1717,7 @@ void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
                         AnnoyingDialog dlg(_("Compiler options conflict"),
                                            message,
                                            wxART_INFORMATION,
-                                           AnnoyingDialog::OK,
-                                           wxID_OK);
+                                           AnnoyingDialog::OK);
                         dlg.ShowModal();
                         break;
                     }
@@ -1911,9 +1909,9 @@ static void QuoteString(wxString &value, const wxString &caption)
     {
         AnnoyingDialog dlgQuestion(caption,
                                    _("The value contains spaces or strange characters. Do you want to quote it?"),
-                                   wxART_QUESTION, AnnoyingDialog::YES_NO, wxID_YES, false,
+                                   wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtYES,
                                    _("&Quote"), _("&Leave unquoted"));
-        if (dlgQuestion.ShowModal()==wxID_YES)
+        if (dlgQuestion.ShowModal() == AnnoyingDialog::rtYES)
             ::QuoteStringIfNeeded(value);
     }
 }
@@ -2588,10 +2586,8 @@ void CompilerOptionsDlg::OnAdvancedClick(cb_unused wxCommandEvent& event)
                         "*exactly* what you 're doing, it is suggested to "
                         "NOT tamper with these...\n\n"
                         "Are you sure you want to proceed?"),
-                    wxART_QUESTION,
-                    AnnoyingDialog::YES_NO,
-                    wxID_YES);
-    if (dlg.ShowModal() == wxID_YES)
+                    wxART_QUESTION);
+    if (dlg.ShowModal() == AnnoyingDialog::rtYES)
     {
         wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
         int compilerIdx = cmb->GetSelection();

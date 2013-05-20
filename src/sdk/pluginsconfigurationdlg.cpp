@@ -359,21 +359,20 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
 
         if (!confirmed && wxFileExists(filename))
         {
-            AnnoyingDialog dlg(_("Confirmation"),
+            AnnoyingDialog dlg(_("Overwrite confirmation"),
                                 wxString::Format(_("%s already exists.\n"
                                 "Are you sure you want to overwrite it?"), filename.c_str()),
                                 wxART_QUESTION,
                                 AnnoyingDialog::THREE_BUTTONS,
-                                1,
-                                true,
+                                AnnoyingDialog::rtONE,
                                 _("&Yes"), _("Yes to &all"), _("&No"));
             switch (dlg.ShowModal())
             {
-                case 3:
+                case AnnoyingDialog::rtTHREE:
                     continue;
                     break;
 
-                case 2:
+                case AnnoyingDialog::rtTWO:
                     confirmed = true;
                     break;
 

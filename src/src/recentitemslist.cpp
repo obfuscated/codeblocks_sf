@@ -88,9 +88,9 @@ void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
     else
         query << question;
 
-    AnnoyingDialog dialog(_("Question"), query, wxART_QUESTION);
+    AnnoyingDialog dialog(_("Remove file from list"), query, wxART_QUESTION);
     PlaceWindow(&dialog);
-    if (dialog.ShowModal() == wxID_YES)
+    if (dialog.ShowModal() == AnnoyingDialog::rtYES)
     {
         m_list->RemoveFileFromHistory(id);
         wxMenu* recentFiles = GetMenu();

@@ -46,10 +46,13 @@ class EnvironmentSettingsDlg : public wxScrollingDialog
 
         void FillApplicationColours();
         void WriteApplicationColours();
+        wxString AnnoyingDlgReturnToString(const wxString& caption);
+        wxString StringToAnnoyingDlgReturn(const wxString& caption);
     private:
         wxAuiDockArt* m_pArt;
         ConfigurationPanelsArray m_PluginPanels;
         std::map<wxString, wxColour> m_ChangedAppColours;
+        std::map<wxString, wxString> m_AnnoyingDlgReturnMap;
 
         DECLARE_EVENT_TABLE()
 };

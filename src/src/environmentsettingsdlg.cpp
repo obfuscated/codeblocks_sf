@@ -41,6 +41,7 @@
 #include <wx/aui/aui.h>
 #include <wx/listbook.h>
 
+#include "annoyingdialog.h"
 #include "configurationpanel.h"
 #include "environmentsettingsdlg.h"
 #include "cbcolourmanager.h"
@@ -274,9 +275,27 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     wxCheckListBox* clb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
     clb->Clear();
 
-    ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled"));
+    m_AnnoyingDlgReturnMap[F(wxT("%d"), AnnoyingDialog::rtOK)]     = _("OK");
+    m_AnnoyingDlgReturnMap[F(wxT("%d"), AnnoyingDialog::rtCANCEL)] = _("Cancel");
+    m_AnnoyingDlgReturnMap[F(wxT("%d"), AnnoyingDialog::rtYES)]    = _("Yes");
+    m_AnnoyingDlgReturnMap[F(wxT("%d"), AnnoyingDialog::rtNO)]     = _("No");
+    ConfigManagerContainer::StringSet dialogs;
+    if (acfg->Exists(wxT("/disabled_ret")))
+    {
+        // new config style
+        dialogs = acfg->ReadSSet(wxT("/disabled_ret"));
+    }
+    else
+    {
+        // if the new config key does not exist, read from the old one
+        dialogs = acfg->ReadSSet(wxT("/disabled"));
+        // and copy it to the new one
+        acfg->Write(wxT("/disabled_ret"), dialogs);
+        // we do not do an in place upgrade of the format to maintain
+        // compatibility with previous versions
+    }
     for (ConfigManagerContainer::StringSet::iterator i = dialogs.begin(); i != dialogs.end(); ++i)
-            clb->Append(*i);
+        clb->Append(AnnoyingDlgReturnToString(*i));
 
     // tab "Network"
     XRCCTRL(*this, "txtProxy", wxTextCtrl)->SetValue(cfg->Read(_T("/network_proxy")));
@@ -600,15 +619,15 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         // tab "Dialogs"
         wxCheckListBox* lb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
 
-        ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled"));
+        ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled_ret"));
 
         for (size_t i = 0; i < lb->GetCount(); ++i)
         {
             if (lb->IsChecked(i))
-                dialogs.erase(lb->GetString(i));
+                dialogs.erase(StringToAnnoyingDlgReturn(lb->GetString(i)));
         }
 
-        acfg->Write(_T("/disabled"), dialogs);
+        acfg->Write(_T("/disabled_ret"), dialogs);
 
         // tab "Network"
         cfg->Write(_T("/network_proxy"),    XRCCTRL(*this, "txtProxy", wxTextCtrl)->GetValue());
@@ -776,4 +795,31 @@ void EnvironmentSettingsDlg::WriteApplicationColours()
     {
         manager->SetColour(it->first, it->second);
     }
+}
+
+/*
+  AnnoyingDialog captions are in the form of
+  "Question xyz?:4"
+  where '4' corresponds to an AnnoyingDialog::dReturnType enum value
+  The following two methods translate to and from the human readable form of
+  "Question xyz?:Yes
+ */
+
+wxString EnvironmentSettingsDlg::AnnoyingDlgReturnToString(const wxString& caption)
+{
+    std::map<wxString, wxString>::const_iterator it = m_AnnoyingDlgReturnMap.find(caption.AfterLast(wxT(':')));
+    if (it != m_AnnoyingDlgReturnMap.end())
+        return caption.BeforeLast(wxT(':')) + wxT(':') + it->second;
+    return caption;
+}
+
+wxString EnvironmentSettingsDlg::StringToAnnoyingDlgReturn(const wxString& caption)
+{
+    for (std::map<wxString, wxString>::const_iterator it = m_AnnoyingDlgReturnMap.begin();
+         it != m_AnnoyingDlgReturnMap.end(); ++it)
+    {
+        if (caption.AfterLast(wxT(':')) == it->second)
+            return caption.BeforeLast(wxT(':')) + wxT(':') + it->first;
+    }
+    return caption;
 }

@@ -27,21 +27,71 @@ BEGIN_EVENT_TABLE(AnnoyingDialog, wxScrollingDialog)
 END_EVENT_TABLE()
 
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon,
-                               dStyle style, int defaultReturn, bool /*separate*/,
+                               dStyle style, dReturnType defaultReturn,
                                const wxString& b1, const wxString& b2, const wxString& b3)
         : wxScrollingDialog(NULL, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
-        cb(0),
+        cb(nullptr),
         dontAnnoy(false),
         defRet(defaultReturn)
 {
     // Code::Blocks needs wxWidgets 2.8
     CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
 
-    ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
-    if(disabled.find(caption) != disabled.end())
+    ConfigManagerContainer::StringSet disabled;
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("an_dlg"));
+    if (cfg->Exists(wxT("/disabled_ret")))
     {
-        dontAnnoy = true;
-        return;
+        // new config style, includes return code in format:
+        // "caption:dReturnType"
+        // example:
+        // "Question XYZ?:4"
+        disabled = cfg->ReadSSet(wxT("/disabled_ret"));
+    }
+    else
+    {
+        // if the new config key does not exist, read from the old one
+        // old keys are in format:
+        // "caption"
+        disabled = cfg->ReadSSet(wxT("/disabled"));
+        // and copy it to the new one
+        cfg->Write(wxT("/disabled_ret"), disabled);
+        // we do not do an in place upgrade of the format to maintain
+        // compatibility with previous versions
+    }
+
+    ConfigManagerContainer::StringSet::const_iterator it = disabled.lower_bound(caption);
+    if (it != disabled.end())
+    {
+        if (*it == caption)
+        {
+            // upgrade old settings
+            dontAnnoy = true;
+            if (defRet == rtSAVE_CHOICE)
+                defRet = rtYES; // default value
+            disabled.erase(it);
+            disabled.insert(caption + F(wxT(":%d"), defRet));
+            // save updated format
+            cfg->Write(wxT("/disabled_ret"), disabled);
+            return;
+        }
+        else if (it->BeforeLast(wxT(':')) == caption)
+        {
+            dontAnnoy = true;
+            if (defRet == rtSAVE_CHOICE)
+            {
+                // read the choice the user made when they dismissed this dialog
+                // and store it for ShowModal() to use
+                long ret = rtSAVE_CHOICE;
+                if (it->AfterLast(wxT(':')).ToLong(&ret) && ret != rtSAVE_CHOICE)
+                {
+                    Manager::Get()->GetLogManager()->Log(*it);
+                    defRet = (dReturnType)ret;
+                }
+                else
+                    defRet = rtYES; // default value
+            }
+            return;
+        }
     }
 
     wxBoxSizer *outerSizer = new wxBoxSizer( wxVERTICAL );
@@ -56,9 +106,9 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     mainArea->Add( 1, 1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
     int numButtons = 0;
-    int id1 = -1;
-    int id2 = -1;
-    int id3 = -1;
+    dReturnType id1 = rtINVALID;
+    dReturnType id2 = rtINVALID;
+    dReturnType id3 = rtINVALID;
     wxString bTxt1;
     wxString bTxt2;
     wxString bTxt3;
@@ -66,25 +116,30 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     if(style == OK || style == ONE_BUTTON)
     {
         numButtons = 1;
-        id1 = (style == OK ? wxID_OK : 1);
+        // only one choice, so set defRet
+        defRet = (style == OK ? rtOK : rtONE);
+        id1 = defRet;
         bTxt1 = b1.IsEmpty() ? wxString(_("&OK")) : b1;
     }
     else if(style == YES_NO || style == OK_CANCEL || style == TWO_BUTTONS)
     {
         numButtons = 2;
-        id1 = (style == YES_NO ? wxID_YES : (style == OK_CANCEL ? wxID_OK     : 1));
-        id2 = (style == YES_NO ? wxID_NO  : (style == OK_CANCEL ? wxID_CANCEL : 2));
+        id1 = (style == YES_NO ? rtYES : (style == OK_CANCEL ? rtOK     : rtONE));
+        id2 = (style == YES_NO ? rtNO  : (style == OK_CANCEL ? rtCANCEL : rtTWO));
         bTxt1 = b1.IsEmpty() ? (style == YES_NO ? wxString(_("&Yes")) : wxString(_("&OK")))     : b1;
         bTxt2 = b2.IsEmpty() ? (style == YES_NO ? wxString(_("&No"))  : wxString(_("&Cancel"))) : b2;
+        // this is the default, so apply correct return type (if it was not set)
+        if (defRet == rtYES)
+            defRet = id1;
     }
     else if(style == YES_NO_CANCEL || style == THREE_BUTTONS)
     {
         numButtons = 3;
-        id1 = (style == YES_NO_CANCEL ? wxID_YES    : 1);
-        id2 = (style == YES_NO_CANCEL ? wxID_NO     : 2);
-        id3 = (style == YES_NO_CANCEL ? wxID_CANCEL : 3);
-        bTxt1 = b1.IsEmpty() ? wxString(_("&Yes")) : b1;
-        bTxt2 = b2.IsEmpty() ? wxString(_("&No")) : b2;
+        id1 = (style == YES_NO_CANCEL ? rtYES    : rtONE);
+        id2 = (style == YES_NO_CANCEL ? rtNO     : rtTWO);
+        id3 = (style == YES_NO_CANCEL ? rtCANCEL : rtTHREE);
+        bTxt1 = b1.IsEmpty() ? wxString(_("&Yes"))    : b1;
+        bTxt2 = b2.IsEmpty() ? wxString(_("&No"))     : b2;
         bTxt3 = b3.IsEmpty() ? wxString(_("&Cancel")) : b3;
     }
     else
@@ -95,20 +150,22 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     {
         wxStdDialogButtonSizer *buttonArea = new wxStdDialogButtonSizer();
 
-        wxButton *but1 = new wxButton(this, id1, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
+        wxButton* but1 = new wxButton(this, id1 == rtYES ? wxID_YES : wxID_OK, bTxt1, wxDefaultPosition, wxDefaultSize, 0);
         but1->SetDefault();
         buttonArea->AddButton(but1);
 
         if(numButtons > 1)
         {
-            wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
-            but2->SetDefault();
+            wxButton* but2 = new wxButton(this, id2 == rtNO ? wxID_NO : wxID_CANCEL, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
+            if (id2 == defRet)
+                but2->SetDefault();
             buttonArea->AddButton(but2);
         }
         if(numButtons > 2)
         {
-            wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
-            but3->SetDefault();
+            wxButton* but3 = new wxButton(this, wxID_CANCEL, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
+            if (id3 == defRet)
+                but3->SetDefault();
             buttonArea->AddButton(but3);
         }
         buttonArea->Realize();
@@ -127,13 +184,15 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         if(numButtons > 1)
         {
             wxButton *but2 = new wxButton(this, id2, bTxt2, wxDefaultPosition, wxDefaultSize, 0);
-            but2->SetDefault();
+            if (id2 == defRet)
+                but2->SetDefault();
             buttonSizer->Add(but2, 0, wxRIGHT, 5);
         }
         if(numButtons > 2)
         {
             wxButton *but3 = new wxButton(this, id3, bTxt3, wxDefaultPosition, wxDefaultSize, 0);
-            but3->SetDefault();
+            if (id3 == defRet)
+                but3->SetDefault();
             buttonSizer->Add(but3, 0, wxRIGHT, 5);
         }
     }
@@ -141,7 +200,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     outerSizer->Add( mainArea, 0, wxALIGN_CENTER|wxALL, 5);
     outerSizer->Add( buttonSizer, 0, wxALIGN_CENTER);
 
-    cb = new wxCheckBox(this, -1, _("Don't annoy me again!"), wxDefaultPosition, wxDefaultSize, 0);
+    cb = new wxCheckBox(this, wxID_ANY, _("Don't annoy me again!"), wxDefaultPosition, wxDefaultSize, 0);
     outerSizer->Add(cb, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     SetSizer( outerSizer );
@@ -155,13 +214,35 @@ void AnnoyingDialog::OnButton(wxCommandEvent& event)
     if(!cb)
         cbThrow(_T("Ow... null pointer."));
 
+    int id = event.GetId();
+    // convert IDs from standard buttons to dReturnType
+    switch (id)
+    {
+        case wxID_YES:
+            id = rtYES;
+            break;
+        case wxID_OK:
+            id = rtOK;
+            break;
+        case wxID_NO:
+            id = rtOK;
+            break;
+        case wxID_CANCEL:
+            id = rtCANCEL;
+            break;
+        default:
+            break;
+    }
+
     if(cb->IsChecked())
     {
-        ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
-        disabled.insert(GetTitle());
-        Manager::Get()->GetConfigManager(_T("an_dlg"))->Write(_T("/disabled"), disabled);
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("an_dlg"));
+        ConfigManagerContainer::StringSet disabled = cfg->ReadSSet(wxT("/disabled_ret"));
+        // if we are supposed to remember the users choice, save the button
+        disabled.insert(GetTitle() + F(wxT(":%d"), defRet == rtSAVE_CHOICE ? id : defRet));
+        cfg->Write(wxT("/disabled_ret"), disabled);
     }
-    EndModal(event.GetId());
+    EndModal(id);
 }
 
 int AnnoyingDialog::ShowModal()
