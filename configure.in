@@ -375,7 +375,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sdl/Makefile
 	src/plugins/scriptedwizard/resources/sdl/files/Makefile
 	src/plugins/scriptedwizard/resources/sfml/Makefile
-	src/plugins/scriptedwizard/resources/sfml/files/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/c/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/cpp/Makefile
