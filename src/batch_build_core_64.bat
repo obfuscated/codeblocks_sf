@@ -26,7 +26,7 @@ if "%1"=="-rebuild" set BUILD_TYPE=--rebuild
 if not defined START_CMD set START_CMD=start "Code::Blocks Build" /D"%~dp0" /min /b
 set CB_EXE="%CB_ROOT%\codeblocks.exe"
 if not defined CB_PARAMS set CB_PARAMS=--batch-build-notify --no-batch-window-close
-set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks_wx29.cbp"
+set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks_wx29_64.cbp"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
